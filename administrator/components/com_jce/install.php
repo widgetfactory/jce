@@ -647,7 +647,10 @@ abstract class WFInstall {
             $site . '/editor/tiny_mce/themes/advanced/skins/highcontrast',
 
             // remove installer views
-            $admin . '/views/installer'
+            $admin . '/views/installer',
+
+            // remove jcefilebrowser quickicon
+            $site . '/plugins/quickicon/jcefilebrowser'
         );
 
         foreach ($folders as $folder) {
@@ -1095,7 +1098,7 @@ abstract class WFInstall {
             'content'   => array('jce'),
             'installer' => array('jce'),
             'extension' => array('jce'),
-            'quickicon' => array('jcefilebrowser'),
+            'quickicon' => array('jce'),
             'module'    => array('mod_jcefilebrowser')
         );
 

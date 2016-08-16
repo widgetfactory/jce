@@ -774,12 +774,3 @@ span.colorpicker_widget {
 .ui-repeatable  + .ui-repeatable .ui-repeatable-create {
   display: none;
 }
-
-.com_jce .sbox-content-iframe iframe {
-    height: 100%;
-}
-#sbox-window {
-  top: 50% !important;
-  margin-top: calc(-50vh + 20px);
-  height: calc(100vh - 60px) !important;
-}

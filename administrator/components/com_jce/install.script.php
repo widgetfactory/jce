@@ -130,7 +130,7 @@ class com_jceInstallerScript {
           'content'   => array('jce'),
           'installer' => array('jce'),
           'extension' => array('jce'),
-          'quickicon' => array('jcefilebrowser')
+          'quickicon' => array('jce')
         );
 
         $modules = array('mod_jcefilebrowser');
