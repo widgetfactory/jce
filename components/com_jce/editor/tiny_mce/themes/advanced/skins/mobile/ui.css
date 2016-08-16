@@ -1,0 +1,94 @@
+/* https://www.google.com/design/spec/style/color.html#color-color-palette */
+
+@import url('../default/ui.css');
+/*@import url('fonts.css');*/
+
+.mobileSkin .mceToolbar {
+  background-color: #f5f5f5;
+}
+
+.mobileSkin .mceLayout .mceFirst, .mobileSkin .mceLayout .mceLast {
+  background-color: #f5f5f5;
+}
+
+.mobileSkin .mceButton {
+  padding: 7px;
+  border-color: #dcdcdc;
+
+  background-color: #fafafa;
+}
+.mobileSkin .mceListBox .mceText a {
+  line-height: 34px;
+  border-color: #dcdcdc;
+  width: 85px;
+}
+.mobileSkin .mceListBox .mceOpen a {
+  height: 34px;
+  border-color: #dcdcdc;
+  width: 18px;
+
+  background-color: #fafafa;
+}
+
+.mobileSkin .mceSplitButton .mceOpen a {
+  height: 34px;
+  border-color: #dcdcdc;
+  width: 18px;
+
+  background-color: #fafafa;
+}
+
+.mobileSkin .mceSplitButton .mceText a {
+  border-color: #dcdcdc;
+  padding: 7px;
+
+  background-color: #fafafa;
+}
+.mobileSkin .mceListBox .mceOpen a::after, .mobileSkin .mceSplitButton .mceOpen a::after {
+  line-height: 32px;
+}
+
+.mobileSkin .mceButtonDialog::before {
+  width: 34px;
+  left: -1px;
+}
+
+.mobileSkin .mceLayout .mceFirst, .mobileSkin .mceLayout .mceLast {
+  border-color: #dcdcdc;
+}
+.mobileSkin .mceIframeContainer {
+  border-color: #dcdcdc;
+}
+
+.mobileSkin .mceButtonEnabled:hover, .mobileSkin .mceButtonActive, .mobileSkin .mceButtonSelected {
+  background-color: #E1F5FE;
+  border-color: #81D4FA;
+}
+.mobileSkin .mceColorSplitMenu a.mceMoreColors:hover {
+    border-color: #81D4FA;
+    background-color: #E1F5FE;
+}
+.mobileSkin .mceMenu .mceMenuItemEnabled a:hover, .mobileSkin .mceMenu .mceMenuItemActive {
+    background-color: #E1F5FE;
+}
+.mobileSkin .mceTableSplitMenu {
+  width: 135px;
+}
+.mobileSkin .mceTableSplitMenu table {
+  padding: 2px;
+}
+.mobileSkin .mceTableSplitMenu td {
+  border-color: #dcdcdc;
+}
+.mobileSkin .mceTableSplitMenu .selected {
+  background-color: #E1F5FE;
+  border-color: #81D4FA;
+}
+.mobileSkin .mceSeparator {
+    height: 34px;
+    background: #dcdcdc;
+}
+
+.defaultSkin .mceSplitButtonDisabled .mceOpen a:after {
+  color: #dcdcdc;
+}

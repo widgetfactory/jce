@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="module" version="1.5.0" method="upgrade" client="administrator" >
+	<name>JCE File Browser</name>
+	<author>Ryan Demmer</author>
+	<creationDate>@@date@@</creationDate>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<authorEmail>@@email@@</authorEmail>
+	<authorUrl>http://www.joomlacontenteditor.net</authorUrl>
+	<version>@@version@@</version>
+	<description>JCE File Browser Quick Icon Module</description>
+	<files>
+		<filename module="mod_jcefilebrowser">mod_jcefilebrowser.php</filename>
+	</files>
+</install>

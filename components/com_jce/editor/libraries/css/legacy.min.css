@@ -1,0 +1,397 @@
+/* jQuery UI conflict */
+
+.ui-icon {
+    text-indent: inherit;
+    overflow: inherit;
+}
+.action:hover .ui-icon, .action:hover span {
+    opacity: 0.8
+}
+.ui-tabs {}
+span.ui-datalist {
+    display: inline-block;
+}
+span.ui-datalist input[type="text"] {
+    width: inherit;
+    margin: 0 !important;
+}
+span.ui-datalist select {
+    width: 100%;
+}
+td > label {
+    min-width: 100px;
+    display: inline-block;
+    padding: 5px 0 7px 0;
+}
+
+/*#advanced_tab td > label {min-width: 120px;}
+#advanced_tab td select {width: 440px;}*/
+
+td {
+    padding: 0;
+}
+td > input[type="text"] {
+    width: 440px;
+}
+td > input.colour, td > input.color, span > input.colour, span > input.color {
+    width: 100px
+}
+td > input.editable-input {
+    width: 80px !important;
+}
+td > label[for^="margin_"], td > label[for^="border_"] {
+    min-width: 40px;
+}
+td > #width, td > #height {
+    width: 50px;
+}
+td > input[id^="margin_"][type="text"] {
+    margin: 0 !important;
+    width: 40px !important;
+}
+td > input[id^="border_"][type="text"], td > select[id^="border_"] {
+    width: inherit !important;
+}
+
+td.ui-form-icon-flip > [class*="ui-icon-"] {
+    right: 7px;
+}
+
+/* datalist conversion */
+
+[for="border_width"] + .ui-datalist {
+    width: 80px;
+}
+
+/* Image Manager Extended */
+[data-plugin="imgmanager_ext"] #upload-transform {
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px dashed #ccc;
+  background: #f5f5f5;
+  box-shadow: inherit;
+}
+[data-plugin="imgmanager_ext"] #upload-transform label {
+    display: inline-block;
+    min-width: 40px;
+    margin: 0 5px;
+}
+[data-plugin="imgmanager_ext"] #upload-transform > div > input + label {
+    min-width: 80px;
+}
+[data-plugin="imgmanager_ext"] #upload-transform label[for$="_height"] {
+  min-width: 40px;
+  margin-left: 40px;
+}
+[data-plugin="imgmanager_ext"] table {
+    padding: 0;
+}
+[data-plugin="imgmanager_ext"] legend {
+    display: none;
+}
+[data-plugin="imgmanager_ext"] #view_mode {
+    background: none;
+}
+[data-plugin="imgmanager_ext"] td > label[for="popup_src"] {
+    min-width: 145px;
+}
+[data-plugin="imgmanager_ext"] #popup_src {
+    margin: 0;
+    width: 596px;
+}
+[data-plugin="imgmanager_ext"] #popups_tab {
+    overflow-x: hidden;
+}
+#transform_tab, #effects_tab {
+    margin: 5px 0 0 0
+}
+.ui-accordion-content div.row:last-child {
+    text-align: center;
+}
+.view_mode .ui-icon-th-list {
+    display: none;
+}
+.view_mode.images .ui-icon-th-list {
+    display: inline-block;
+}
+.view_mode.images .ui-icon-th-large {
+    display: none;
+}
+[data-plugin="imgmanager_ext"] .preview {
+    height: 200px;
+}
+[data-plugin="imgmanager_ext"] #align {
+    width: 200px;
+}
+[data-plugin="imgmanager_ext"] #clear {
+    width: 120px;
+}
+[data-plugin="imgmanager_ext"] .action .ui-icon-th-large:before {
+    background: url('../../tiny_mce/plugins/imgmanager_ext/img/icons-24.png') no-repeat 0 0;
+    margin: 2px 0;
+    width: 24px;
+    height: 24px;
+}
+[data-plugin="imgmanager_ext"] .action .ui-icon-th-list:before {
+    background: url('../../tiny_mce/plugins/imgmanager_ext/img/icons-24.png') no-repeat 0 -24px;
+    margin: 2px 0;
+    width: 24px;
+    height: 24px;
+}
+[data-plugin="imgmanager_ext"] .button .ui-icon-thumb-create:before {
+    background: url('../../tiny_mce/plugins/imgmanager_ext/img/icons.png') no-repeat 0 0;
+}
+[data-plugin="imgmanager_ext"] .button .ui-icon-thumb-delete:before {
+    background: url('../../tiny_mce/plugins/imgmanager_ext/img/icons.png') no-repeat 0 -20px;
+}
+[data-plugin="imgmanager_ext"] .button .ui-icon-image-editor:before {
+    background: url('../../tiny_mce/plugins/imgmanager_ext/img/icons.png') no-repeat 0 -60px;
+}
+[data-plugin="imgmanager_ext"] #width, [data-plugin="imgmanager_ext"] #height {
+    color: #888;
+}
+[data-plugin="imgmanager_ext"] #width.edited, [data-plugin="imgmanager_ext"] #height.edited {
+    color: #444;
+}
+
+[data-plugin="imgmanager_ext"] #thumbnail-create-crop {
+  background: #f5f5f5 none;
+  border: 1px dashed #ccc;
+  box-shadow: inherit;
+}
+[data-plugin="imgmanager_ext"] .form-left, [data-plugin="imgmanager_ext"] .form-right {
+  float: left;
+  box-sizing: border-box;
+}
+[data-plugin="imgmanager_ext"] .form-left {width: 66.666%;}
+[data-plugin="imgmanager_ext"] .form-right {width: 33.333%;}
+
+[data-plugin="imgmanager_ext"] .form-right legend {
+  display: inherit;
+}
+
+[data-plugin="imgmanager_ext"] .form-right label {
+  display: inline-block;
+  min-width: 60px;
+}
+[data-plugin="imgmanager_ext"] #thumbnail-create-crop img,
+[data-plugin="imgmanager_ext"] #thumbnail-create-preview img {max-width: inherit;}
+
+[data-plugin="imgmanager_ext"] > form {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+[data-plugin="imgmanager_ext"] #editor {
+  width: inherit;
+  max-height: 92.2%;
+  max-height: calc(100% - 59px);
+  box-sizing: border-box;
+}
+[data-plugin="imgmanager_ext"] #editor-image {
+  background: #f5f5f5 none;
+  border: 1px dashed #ccc;
+  box-shadow: inherit;
+  box-sizing: border-box;
+}
+[data-plugin="imgmanager_ext"] .ui-button-text, [data-plugin="imgmanager_ext"] button .ui-text {display: inline-block !important; font-weight: normal;}
+[data-plugin="imgmanager_ext"] #editor ~ .ui-modal label {
+  display: inline-block; width: 80px;
+}
+[data-plugin="imgmanager_ext"] .ui-modal .row {margin-top: 10px;}
+[data-plugin="imgmanager_ext"] #image_quality {margin-left: 10px;}
+
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .preview {
+  height: inherit;
+  min-height: inherit;
+  padding: 2px;
+  margin: auto;
+  display: block;
+  width: 86px;
+  box-sizing: border-box;
+}
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .label {
+  margin: auto;
+  display: block;
+}
+
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .preview img,
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .preview canvas {max-width: inherit; width: 80px;}
+[data-plugin="imgmanager_ext"] #transform_tab label {
+    display: inline-block;
+    min-width: 50px;
+}
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect {width: 50%; margin: 5px 0;}
+[data-plugin="imgmanager_ext"] #editor-tools img, [data-plugin="imgmanager_ext"] #editor-image img, [data-plugin="imgmanager_ext"] #editor-image canvas {max-width: inherit;}
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .editor_effect_unit {
+  left: 4px;
+  bottom: 4px;
+  width: auto;
+  right: 4px;
+}
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .editor_effect_unit span {line-height: 16px; font-size: 12px;}
+[data-plugin="imgmanager_ext"] #editor_effects .editor_effect .editor_effect_unit .unit {position: inherit; margin: auto;}
+/* IFrame */
+
+[data-plugin="iframe"] legend {
+    display: none;
+}
+[data-plugin="iframe"] .ui-tabs-panel fieldset {
+    height: auto;
+}
+[data-plugin="iframe"] table td {
+    padding: 0 !important;
+}
+[data-plugin="iframe"] input[id^="margin_"][type="text"] {
+    margin: 0 !important;
+    width: 40px !important;
+}
+
+/* Microdata */
+
+[data-plugin="microdata"] .ui-tabs-panel {
+    height: auto;
+}
+[data-plugin="microdata"] .ui-tabs-panel > div {
+    margin: 0;
+}
+[data-plugin="microdata"] label {
+    min-width: 100px;
+    display: inline-block;
+}
+[data-plugin="microdata"] .loader {
+    display: none;
+}
+[data-plugin="microdata"] .loading .loader {
+    display: inline-block;
+}
+
+/* MediaManager */
+
+
+/*[data-plugin="mediamanager"] .ui-browser .ui-form {
+  height: 60%;
+}
+[data-plugin="mediamanager"] .ui-tabs {
+  min-height: 40%;
+}*/
+[data-plugin="mediamanager"] table tr {margin: 5px 0}
+[data-plugin="mediamanager"] #divx_previewimage {
+    width: 505px;
+}
+[data-plugin="mediamanager"] #video_poster, [data-plugin="mediamanager"] #video_fallback, [data-plugin="mediamanager"] #audio_fallback {
+    width: 440px;
+}
+[data-plugin="mediamanager"] legend {
+    display: none;
+}
+[data-plugin="mediamanager"] #src {
+    width: 440px;
+}
+[data-plugin="mediamanager"] .preview {
+    min-height: 180px;
+}
+[data-plugin="mediamanager"] .media_option td > input[type="text"], [data-plugin="mediamanager"] .media_option td > select {
+    margin: 0 5px 0 0;
+}
+
+/* Template Manager */
+[data-plugin="templatemanager"] .action .ui-icon-save:before {
+    background: url('../../tiny_mce/plugins/templatemanager/img/templatemanager.png') no-repeat 0 0;
+}
+[data-plugin="templatemanager"] .ui-modal-prompt label {
+    display: inline-block;
+    min-width: 100px;
+}
+
+/* File Manager */
+
+[data-plugin="filemanager"] .ui-browser .ui-form {
+    height: 55%;
+}
+[data-plugin="filemanager"] .ui-tabs {
+    height: 45%;
+}
+[data-plugin="filemanager"] legend {
+    display: none;
+}
+[data-plugin="filemanager"] input[type="text"], [data-plugin="filemanager"] #advanced_tab input[type="text"] {
+    width: 440px;
+}
+[data-plugin="filemanager"] td > label {
+    padding: 5px 0;
+}
+[data-plugin="filemanager"] td + td > label {
+    min-width: 80px;
+}
+[data-plugin="filemanager"] .ui-datalist {
+    width: 100px;
+}
+[data-plugin="filemanager"] #advanced_tab .ui-datalist {
+    width: 250px;
+}
+[data-plugin="filemanager"] #advanced_tab .ui-datalist input[type="text"] {
+  width: 92.5%;
+  width: calc(100% - 20px);
+}
+[data-plugin="filemanager"] #options_list li {
+    line-height: 28px;
+    padding: 0 2px;
+    box-sizing: border-box;
+}
+[data-plugin="filemanager"] #options_list li input[type="checkbox"] {
+    border: inherit;
+    line-height: 24px;
+    margin-bottom: 2px;
+}
+[data-plugin="filemanager"] #options_list input[type="text"] {
+    height: 24px;
+    margin: 0 0 2px 0;
+}
+[data-plugin="filemanager"] .ui-state-highlight {
+  height: 30px !important;
+}
+[data-plugin="filemanager"] #href,
+[data-plugin="filemanager"] #title,
+[data-plugin="filemanager"] #text {
+  width: 587px;
+}
+
+/* Caption */
+[data-plugin="caption"] form {
+  position: relative;
+  height: calc(100% - 180px)
+}
+[data-plugin="caption"] #preview {
+  top: inherit;
+  padding: 5px;
+}
+[data-plugin="caption"] > form .ui-tabs {
+  height: 100%;
+}
+[data-plugin="caption"] legend {
+  padding: 0 0 3px 0;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 20px;
+}
+[data-plugin="caption"] .ui-datalist #border_width {
+  width: 92.5%;
+  width: calc(100% - 20px);
+}
+[data-plugin="caption"] td > label {padding: 5px 0;}
+[data-plugin="caption"] td > input[id^="text_padding_"][type="text"],
+[data-plugin="caption"] td > input[id^="text_margin_"][type="text"],
+[data-plugin="caption"] td > input[id^="padding_"][type="text"],
+[data-plugin="caption"] td > input[id^="margin_"][type="text"] {
+  width: 50px;
+}
+[data-plugin="caption"] #text_color {margin: 0;}
+[data-plugin="caption"] select {min-width: 160px}
+
+[data-plugin="caption"] .ui-datalist select {min-width: inherit;}
+[data-plugin="caption"] #border_style {min-width: inherit;}
+[data-plugin="caption"] #classlist, [data-plugin="caption"] #text_classlist {width: 420px;}

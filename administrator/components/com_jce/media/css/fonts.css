@@ -1,0 +1,73 @@
+.ui-jce ul.adminformlist li div.fontlist {
+    margin-left: 220px;
+    clear: none;
+    position: relative;
+}
+
+.ui-jce ul.adminformlist li div.fontlist ul {
+    display: block;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce div.fontlist a.close {
+    line-height: 35px;
+    vertical-align: middle;
+} 
+
+.ui-jce div.fontlist a.plus {
+    background: none;
+    border: 1px dashed #000000;
+    display: block;
+    float: left;
+    margin: 5px 0;
+    max-width: 400px;
+    padding: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.ui-jce div.fontlist a.plus span {
+    width : 100%;
+    max-width : 380px;
+    display: inline-block;
+}
+
+.ui-jce div.fontlist a.plus span + span {
+    width : 20px;
+    text-align : center;
+}
+
+.ui-jce div.fontlist ul li,
+.ui-jce div.fontlist ul li.fontlist-highlight {
+    border: 1px solid #CCCCCC;
+    padding: 5px;
+    margin : 2px 0;
+    max-width : 400px;
+    position: relative;
+    background-color: #fff;
+}
+
+.ui-jce div.fontlist ul li.fontlist-highlight {
+    border-style: dashed;
+    min-height : 30px;
+    margin : 5px 0;
+    background-color: #F7F7F7;
+}
+
+.ui-jce div.fontlist ul li {
+    cursor: move;
+}
+
+.ui-jce div.fontlist ul li.font-item input {
+    width : 100px;
+    margin-right : 2px;
+    float : none;
+}
+
+.ui-jce div.fontlist ul li.font-item input + input {
+    width : 250px;
+}
+

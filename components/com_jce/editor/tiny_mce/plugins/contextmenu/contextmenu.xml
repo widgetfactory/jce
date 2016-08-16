@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<install version="2.0" type="plugin" plugin="contextmenu" core="1" editable="0">
+  <name>WF_CONTEXTMENU_TITLE</name>
+  <version>@@version@@</version>
+  <creationDate>@@date@@</creationDate>
+  <author>Ryan Demmer</author>
+  <authorEmail>@@e-mail@@</authorEmail>
+  <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+  <copyright>Ryan Demmer</copyright>
+  <license>@@licence@@</license>
+  <description>WF_CONTEXTMENU_DESC</description>
+  <icon></icon>
+  <params></params>
+  <help></help>
+  <languages></languages>
+</install>

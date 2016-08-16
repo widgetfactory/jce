@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<install version="2.0" type="plugin" plugin="formatselect" core="1" editable="1">
+    <name>WF_FORMATSELECT_TITLE</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>info@joomlacontenteditor.net</authorEmail>
+    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <copyright>Ryan Demmer</copyright>
+    <license>@@licence@@</license>
+    <description>WF_FORMATSELECT_DESC</description>
+    <icon>formatselect</icon>
+    <params group="standard">
+        <param name="blockformats" type="blockformats" default="" label="WF_PARAM_BLOCK_FORMAT" description="WF_PARAM_BLOCK_FORMAT_DESC" />
+    </params>
+    <help></help>
+    <languages></languages>
+</install>

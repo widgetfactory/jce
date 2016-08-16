@@ -1,0 +1,97 @@
+.mceItemMedia,
+.mceItemFlash,
+.mceItemShockWave,
+.mceItemQuickTime,
+.mceItemWindowsMedia,
+.mceItemRealMedia,
+.mceItemDivX,
+.mceItemSilverlight,
+.mceItemGeneric,
+.mceItemEmbed,
+.mceItemAudio,
+.mceItemVideo,
+.mceItemIframe  {
+    outline:1px dashed #bbb !important;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#fafafa;
+}
+.mceItemGeneric {
+    min-width   : 50px;
+    min-height  : 50px;
+}
+.mceItemGeneric, .mceItemEmbed {
+    background-image:url(../img/generic.png);
+}
+.mceItemShockWave {
+    background-image: url(../img/shockwave.png);
+}
+.mceItemFlash {
+    background-image:url(../img/swf.png);
+}
+.mceItemQuickTime {
+    background-image:url(../img/quicktime.png);
+}
+.mceItemWindowsMedia {
+    background-image:url(../img/windowsmedia.png);
+}
+.mceItemRealMedia {
+    background-image:url(../img/real.png);
+}
+.mceItemDivX {
+    background-image:url(../img/video.png);
+}
+.mceItemSilverlight {
+    background-image:url(../img/video.png);
+}
+.mceItemPDF {
+    background-image:url(../img/pdf.png);
+}
+.mceItemIframe {
+    background-image:url(../img/iframe.png);
+}
+.mceItemAudio {
+    background-image:url(../img/audio.png);
+}
+.mceItemVideo {
+    background-image:url(../img/video.png);
+}
+.mceItemAudio {
+    width: 200px;
+    height: 25px;
+}
+.mceItemAudio.mceItemAgentGecko {
+    height: 28px;
+}
+.mceItemAudio.mceItemAgentOpera, .mceItemAudio.mceItemAgentChrome, .mceItemAudio.mceItemAgentGecko {
+    width: 300px;
+}
+.mceItemAudio.mceItemAgentChrome {
+    height: 32px;
+}
+.mceItemPreview.mceItemSelected {
+    outline: 2px solid #3399ff !important;
+    background-color: #fafafa !important;
+}
+.mceItemPreview {
+    background-color: #fafafa;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+}
+.mceItemPreview iframe {
+    z-index: 5;
+}
+.mceItemShim {
+    background: rgba(0, 0, 0, 0.5) url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") repeat scroll 0 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    display: block;
+}
+.mceItemPreview.mceItemSelected .mceItemShim {
+    display: none;
+}

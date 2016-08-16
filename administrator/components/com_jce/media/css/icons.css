@@ -1,0 +1,77 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.icon-48-logo {
+	background-image: url(../img/logo.png);
+}
+
+span.icon-remove, span.icon-add, span.icon-legend {
+	cursor: pointer;
+	line-height: 20px;
+	height: 20px;
+	float: left;
+	margin: 2px;
+	padding-right: 2px;
+}
+.icon-remove { 
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -340px;
+}
+.icon-add { 
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -300px;
+}
+.icon-download { 
+	display: block;
+	line-height: 20px;
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1160px;
+	padding-left: 22px;
+	vertical-align: middle;
+}
+.icon-text {
+	margin-left: 22px;
+	vertical-align: middle;
+	line-height: 20px;
+} 
+.icon-edit {
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1080px;
+	line-height: 20px;
+	float: left;
+	padding-right: 2px;
+}
+.icon-update {
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat;
+	line-height: 20px;
+	float: left;
+	padding-right: 2px;
+}
+button#update.check span.icon-update {
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1040px;
+}
+ul#table_status {
+	list-style: none;
+	margin:0;
+	padding:0;
+}
+ul#table_status li {
+	list-style: none;
+	margin:0;
+	padding: 0 0 0 20px;
+	line-height: 20px;
+}
+span.ok, span.error, span.update_icon {
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+}
+span.ok, ul#table_status li.ok {
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -520px;
+}
+span.error, ul#table_status li.error {
+	background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -1060px;
+}

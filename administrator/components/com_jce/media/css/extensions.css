@@ -1,0 +1,78 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @ddcense   	GNU/GPL 2 or later - http://www.gnu.org/ddcenses/old-ddcenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Pubddc ddcense, and as distributed it includes or
+ * is derivative of works ddcensed under the GNU General Pubddc ddcense or
+ * other free or open source software ddcenses.
+ */
+.ui-jce .extensions > input[type="text"] {
+  padding-right: 30px;
+  width: 220px;
+  box-sizing: border-box;
+  height: 30px;
+}
+.ui-jce .extensions dl {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    width: 220px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.ui-jce .extensions dl dd {
+    border: 1px dashed #ccc;
+    padding: 0;
+    margin: 2px 0;
+    position: relative;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+.ui-jce .extensions dl dd .file {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.ui-jce .extensions dl dd label {
+    padding: 0 0 0 10px;
+}
+.ui-jce .extensions dl input[type="text"] {
+    width: 100px;
+    margin-left: 10px;
+}
+.ui-jce .extensions dl .extension-custom .extension-remove {
+    display: none;
+}
+.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-add {
+    display: none;
+}
+.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-remove {
+    display: inline-block;
+}
+
+.ui-jce .extensions dl .extension-custom input + .extension-remove {display: inline-block;}
+
+.ui-jce .extensions dl .extension-custom {
+    padding-left: 33px;
+}
+.ui-jce .extensions dl .btn {
+    padding: 0.5em;
+    margin: 0 5px;
+    color: #ccc;
+    float: right;
+}
+
+.ui-jce .extensions .btn {
+  padding: 2px;
+  margin-left: -26px;
+}
+.ui-jce .extensions dt {
+  line-height: 30px;
+  background-color: #eee;
+  text-align: center;
+}
+.ui-jce .extensions .ui-sortable-handle {cursor: move;}

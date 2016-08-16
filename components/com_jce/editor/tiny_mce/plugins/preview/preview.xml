@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<install version="2.0" type="plugin" plugin="preview" core="1" editable="1">
+	<name>WF_PREVIEW_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>Ryan Demmer</copyright>
+	<license>@@licence@@</license>
+	<description>WF_PREVIEW_DESC</description>
+	<icon>preview</icon>
+	<params group="standard">
+		<param name="process_content" type="radio" default="1" label="WF_PREVIEW_PARAM_PROCESS_CONTENT" description="WF_PREVIEW_PARAM_PROCESS_CONTENT_DESC">
+				<option value="1">WF_OPTION_YES</option>
+				<option value="0">WF_OPTION_NO</option>
+		</param>
+	</params>
+	<help>
+		<topic key="preview.about" title="WF_PREVIEW_HELP_ABOUT" />
+	</help>
+	<languages></languages>
+</install>

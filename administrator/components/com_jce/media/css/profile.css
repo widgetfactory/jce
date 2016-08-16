@@ -1,0 +1,322 @@
+#profile-list a {
+    text-decoration: underline;
+}
+
+table#profiles_restrictions p {
+    margin : 0 0 5px 0;
+    padding : 0;
+}
+table#profiles_restrictions p label, table#profiles_restrictions p input {
+    vertical-align : middle;
+}
+table#profiles_restrictions p button {
+    margin : 5px 5px 0 0;
+}
+div#plugin_params h3 span.defaultSkin span.mceIcon, div#plugin_params h3 img {
+    display: inline-block;
+    vertical-align:middle;
+    margin: 0 10px 0 0;
+}
+div#plugin_params h3.plugin_params_visible {
+    display : block;
+}
+div#plugin_params h3.plugin_params_hidden {
+    display : none;
+}
+input#components-all, input#components-select, label[for="components-all"], label[for="components-select"] {
+    clear: none;
+    float: none;
+    display: inline;
+    margin: 0 5px 0 0;
+}
+.ui-jce a.ui-button span.icon-add, .ui-jce a.ui-button span.icon-remove {
+    left: 0;
+    margin-top: -10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+}
+.ui-jce #search {
+    width: 200px;
+}
+
+.ui-jce span.profiles-enable,  .ui-jce span.profiles-disable {
+    background: url(../img/tick.png) no-repeat 0 0;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+.ui-jce span.profiles-disable {
+    background: url(../img/error.png) no-repeat 0 0;
+}
+.ui-jce span.profiles-enable.loading,  .ui-jce span.profiles-disable.loading {
+    background : url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center;
+}
+.ui-jce input[type="radio"] + label {
+    display: inline;
+}
+
+#plugin_params .mceIcon {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px 0 0;
+}
+
+#plugin_params fieldset {
+    margin-left: 0;
+}
+div#plugin_params h2 {
+    font-size: 1.5em;
+    padding: 0 0.1em
+}
+
+.ui-jce #tabs h2 {
+    margin: 0 0 .8em 8px;
+    font-size: 2em;
+}
+
+.ui-jce span.browser {
+    width: 20px;
+    height: 20px;
+    background: transparent url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -960px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align:middle;
+    margin: 0 0 0 -25px;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
+    border-width: 0 0 0 1px;
+    float: right;
+    padding: 0 0.2em 0 0.1em;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
+    padding-left: 0.1em;
+    border-right-width: 1px;
+    margin-right: -1px;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li {
+    margin: 0 1px 0.2em 0;
+    border-left: 0 none;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
+    margin: 0 13em 0 0;
+}
+
+.ui-jce #tabs-setup ul li .list {
+    width : 300px;
+    display: inline-block;
+}
+
+.ui-jce #tabs-setup ul li .list div {
+    margin : 5px 0;
+}
+
+.ui-jce #tabs-setup ul li .list > div > label {
+    margin-left : 6px;
+}
+
+.ui-jce input.checkbox-list-toggle-all {
+    /*margin : 2px 6px;*/
+}
+.ui-jce input.checkbox-list-toggle-all + label {
+    /*margin : 0 5px;*/
+}
+
+.ui-jce #tabs-setup input.checkbox-list-toggle-all, .ui-jce #tabs-setup input#components-select-all {
+}
+
+.ui-jce ul.checkbox-list {
+    border: 1px solid #EEEEEE;
+    height: 200px;
+    overflow: auto;
+    padding: 2px 5px;
+    white-space: nowrap;
+    word-wrap: normal;
+    margin : 0;
+    list-style : none;
+    min-width : 250px;
+}
+
+.ui-jce ul.checkbox-list li {
+    padding : 5px 0;
+}
+
+.ui-jce ul.users-list {
+    border: 1px solid #EEEEEE;
+    height: 200px;
+    overflow: auto;
+    padding: 2px 5px;
+    white-space: nowrap;
+    word-wrap: normal;
+    margin : 0;
+    list-style : none;
+    min-width : 200px;
+}
+
+.ui-jce ul.users-list li {
+    margin : 5px 0 0 0;
+}
+
+.ui-jce ul.users-list span.users-list-delete {
+    width : 20px;
+    height : 20px;
+    display: inline-block;
+    background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -180px;
+    vertical-align: middle;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.ui-jce ul.checkbox-list li input[type="checkbox"] {
+    margin: 5px 5px 5px 0;
+}
+
+.ui-jce ul.checkbox-list li label {
+    margin : 0 10px;
+    display: inline-block;
+}
+
+.ui-jce ul.users-list li label {
+    border : 1px solid #eee;
+    display: inline-block;
+    padding: 5px 0;
+    width: 100%;
+    -ms-user-select : none;
+    -moz-user-select : none;
+    -webkit-user-select: none;
+    user-select : none;
+}
+
+.ui-jce #users-add {
+    float : right;
+    margin: 5px 0;
+}
+
+.ui-jce #users-add i.icon-add {
+    background: none;
+}
+
+.ui-jce #users-add i.icon-add:before {
+    content : "";
+}
+
+/* Button Checklist */
+/*.ui-jce div.buttonlist li {
+    border : 0 none;
+    position: relative;
+    display : inline;
+    margin-left : 10px;
+}
+.ui-jce div.buttonlist li span.checkbox {
+    left: -10px;
+    position: absolute;
+    top: -10px;
+    z-index: 10;
+}*/
+
+
+.ui-jce .buttonlist .mceIcon {
+    cursor: default;
+}
+
+.ui-jce .buttonlist .mceButton, .ui-jce .buttonlist .mceSplitButton {
+    margin : 0 10px 0 0;
+    vertical-align: middle;
+}
+
+.ui-jce ul.adminformlist li div.buttonlist {
+    display: inline-block;
+    margin: 5px 0 0;
+    vertical-align: middle;
+}
+.ui-jce div.tabs-plugin-parameters {
+    margin : 0;
+}
+
+.ui-jce .ui-tabs-vertical .ui-tabs-panel {
+    margin: 0;
+}
+
+.ui-jce .tabs-plugin-parameters h3 {
+    margin : 0 7px;
+}
+
+.ui-jce .tabs-plugin-parameters h3 + p, .ui-jce .tabs-plugin-parameters h3 + p + ul {
+    margin-left : 20px;
+}
+
+.ui-jce .tabs-plugin-parameters p {
+    font-size : 1em;
+    margin : 5px 7px;
+    padding: 10px 5px;
+}
+
+.ui-jce .tabs-plugin-parameters input[type="checkbox"], .ui-jce .tabs-plugin-parameters .ui-checkbox {
+    margin : 10px;
+    background-color: #fff;
+}
+
+.ui-jce .tabs-plugin-parameters a[href^="http"] {
+    cursor: pointer;
+}
+
+.ui-jce table td.order input[type="text"] {
+    max-width : 30px;
+    margin : 0 10px;
+}
+
+.ui-jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
+    max-width: 100px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    white-space: pre-wrap;
+    cursor: pointer;
+
+    background-color : #F5F5F5;
+    border-color : #eee #ddd #eee #eee;
+
+    -webkit-box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+    box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+}
+
+.ui-jce div.tab-pane.tabbable.tabs-left ul li.active > a {
+    background-color : #fff;
+    border-color : #eee #fff #eee #eee;
+
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.ui-jce #tabs ul li span.tabs-label {
+    margin : 5px 0;
+    display : block;
+}
+
+input#profile_description {
+    width : 500px;
+}
+
+/* Mobile stuff */
+@media (max-width: 767px) {
+    input[type="text"] {
+        max-width : 250px;
+    }
+}
+
+.ui-jce a.btn.browser {
+  margin: 0;
+  margin-left: -2.5em;
+  padding: 0.5em;
+}
+
+ul#profileAdditionalFeatures li input[type="checkbox"] {margin: 0px 10px 2px 0px}
+ul#profileAdditionalFeatures li span {line-height: 30px;display: inline-block;}
+
+.buttonlist .widget-checklist .mceToolBarItem {
+  display: inline-block;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: 0px 5px;
+}

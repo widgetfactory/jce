@@ -1,0 +1,672 @@
+Sat May 23 17:32:25 2015 +0100
+Remove class attribute completely
+
+editor/tiny_mce/plugins/article/editor_plugin.js
+
+Sat May 23 11:29:32 2015 +0100
+Remove console.log!!!
+
+editor/tiny_mce/plugins/table/editor_plugin.js
+
+Sat May 23 11:29:10 2015 +0100
+Only clone node inside cell if table_clone_elements set
+
+editor/tiny_mce/plugins/table/editor_plugin.js
+
+Sat May 23 11:00:47 2015 +0100
+Simplify toggle function; Fix textarea wrap bug in Chrome
+
+editor/libraries/js/editor.js
+
+Tue May 19 16:50:09 2015 +0100
+Update for new Schema
+
+editor/tiny_mce/plugins/media/editor_plugin.js
+
+Tue May 19 16:50:01 2015 +0100
+Add other options to preserve empty tags
+
+editor/tiny_mce/plugins/cleanup/editor_plugin.js
+
+Tue May 19 16:49:38 2015 +0100
+Add back div_container format
+
+editor/tiny_mce/plugins/formatselect/classes/config.php
+editor/tiny_mce/plugins/formatselect/editor_plugin.js
+
+Tue May 19 16:49:23 2015 +0100
+Add Mixed schema option
+
+editor/libraries/js/editor.js
+editor/libraries/xml/config/editor.xml
+editor/libraries/xml/config/profiles.xml
+editor/tiny_mce/plugins/cleanup/classes/config.php
+
+Thu May 7 10:01:48 2015 +0100
+Check for links using count
+
+editor/tiny_mce/plugins/link/tmpl/link.php
+
+Tue May 5 12:04:24 2015 +0100
+Check for com_weblinks
+
+editor/extensions/links/joomlalinks.php
+
+Mon May 4 12:02:51 2015 +0100
+Use repo classes
+
+editor/tiny_mce/classes/AddOnManager.js
+editor/tiny_mce/classes/ControlManager.js
+editor/tiny_mce/classes/Editor.Events.js
+editor/tiny_mce/classes/Editor.js
+editor/tiny_mce/classes/EditorCommands.js
+editor/tiny_mce/classes/EditorManager.js
+editor/tiny_mce/classes/EnterKey.js
+editor/tiny_mce/classes/ForceBlocks.js
+editor/tiny_mce/classes/Formatter.js
+editor/tiny_mce/classes/LegacyInput.js
+editor/tiny_mce/classes/Popup.js
+editor/tiny_mce/classes/UndoManager.js
+editor/tiny_mce/classes/WindowManager.js
+editor/tiny_mce/classes/dom/DOMUtils.js
+editor/tiny_mce/classes/dom/Element.js
+editor/tiny_mce/classes/dom/EventUtils.js
+editor/tiny_mce/classes/dom/Range.js
+editor/tiny_mce/classes/dom/RangeUtils.js
+editor/tiny_mce/classes/dom/ScriptLoader.js
+editor/tiny_mce/classes/dom/Selection.js
+editor/tiny_mce/classes/dom/Serializer.js
+editor/tiny_mce/classes/dom/Sizzle.js
+editor/tiny_mce/classes/dom/TreeWalker.js
+editor/tiny_mce/classes/dom/TridentSelection.js
+editor/tiny_mce/classes/firebug/FIREBUG.LICENSE
+editor/tiny_mce/classes/firebug/firebug-lite.js
+editor/tiny_mce/classes/html/DomParser.js
+editor/tiny_mce/classes/html/Entities.js
+editor/tiny_mce/classes/html/Node.js
+editor/tiny_mce/classes/html/SaxParser.js
+editor/tiny_mce/classes/html/Schema.js
+editor/tiny_mce/classes/html/Serializer.js
+editor/tiny_mce/classes/html/Styles.js
+editor/tiny_mce/classes/html/Writer.js
+editor/tiny_mce/classes/tinymce.js
+editor/tiny_mce/classes/ui/Button.js
+editor/tiny_mce/classes/ui/ColorSplitButton.js
+editor/tiny_mce/classes/ui/Container.js
+editor/tiny_mce/classes/ui/Control.js
+editor/tiny_mce/classes/ui/DropMenu.js
+editor/tiny_mce/classes/ui/KeyboardNavigation.js
+editor/tiny_mce/classes/ui/ListBox.js
+editor/tiny_mce/classes/ui/Menu.js
+editor/tiny_mce/classes/ui/MenuButton.js
+editor/tiny_mce/classes/ui/MenuItem.js
+editor/tiny_mce/classes/ui/NativeListBox.js
+editor/tiny_mce/classes/ui/Separator.js
+editor/tiny_mce/classes/ui/SplitButton.js
+editor/tiny_mce/classes/ui/Toolbar.js
+editor/tiny_mce/classes/ui/ToolbarGroup.js
+editor/tiny_mce/classes/util/Cookie.js
+editor/tiny_mce/classes/util/Dispatcher.js
+editor/tiny_mce/classes/util/JSON.js
+editor/tiny_mce/classes/util/JSONP.js
+editor/tiny_mce/classes/util/JSONRequest.js
+editor/tiny_mce/classes/util/Quirks.js
+editor/tiny_mce/classes/util/URI.js
+editor/tiny_mce/classes/util/VK.js
+editor/tiny_mce/classes/util/XHR.js
+editor/tiny_mce/tiny_mce.js
+editor/tiny_mce/tiny_mce_popup.js
+
+Mon May 4 10:17:39 2015 +0100
+Remove search and link areas if disabled
+
+editor/libraries/classes/extensions/link.php
+editor/tiny_mce/plugins/link/tmpl/link.php
+
+Mon May 4 10:17:14 2015 +0100
+Add dailymotion aggregator
+
+editor/extensions/aggregator/dailymotion.php
+editor/extensions/aggregator/dailymotion.xml
+editor/extensions/aggregator/dailymotion/js/dailymotion.js
+editor/extensions/aggregator/dailymotion/tmpl/default.php
+
+Mon Mar 16 11:48:07 2015 +0000
+Simplify name check using regular expression
+
+editor/libraries/classes/browser.php
+
+Mon Mar 16 11:47:38 2015 +0000
+Quotes converted on Paste as Plain Text
+
+editor/tiny_mce/plugins/clipboard/editor_plugin.js
+
+Mon Mar 16 11:47:18 2015 +0000
+Fix issue applying class to block element child
+
+editor/tiny_mce/classes/Formatter.js
+editor/tiny_mce/plugins/importcss/editor_plugin.js
+editor/tiny_mce/plugins/styleselect/editor_plugin.js
+
+Mon Mar 2 14:27:29 2015 +0000
+Fix window popup position
+
+editor/extensions/popups/window/js/window.js
+
+Mon Mar 2 10:51:47 2015 +0000
+Improve file name validation
+
+editor/libraries/classes/browser.php
+
+Mon Mar 2 10:51:17 2015 +0000
+Reformat
+
+editor/libraries/js/lib/popups.js
+
+Mon Mar 2 10:50:42 2015 +0000
+Update dimensions events
+
+editor/tiny_mce/plugins/imgmanager/js/imgmanager.js
+editor/tiny_mce/plugins/imgmanager/tmpl/image.php
+
+Wed Feb 25 14:58:16 2015 +0000
+Remove loader on error
+
+editor/libraries/js/lib/manager.js
+
+Wed Feb 25 14:58:06 2015 +0000
+Remove redundant code
+
+editor/extensions/filesystem/joomla.php
+
+Sat Feb 21 14:59:45 2015 +0000
+Only use decodeURIComponent in some instances; Set default MediaBox options to prevent error
+
+editor/extensions/popups/jcemediabox/js/jcemediabox.js
+
+Sat Feb 21 14:59:08 2015 +0000
+Update with code from TinyMCE 4, remove WebKit "fix"
+
+editor/tiny_mce/classes/Formatter.js
+
+Sat Feb 21 10:50:30 2015 +0000
+add tinymce dev file loader
+
+editor/tiny_mce/tiny_mce.js
+
+Sat Feb 21 10:50:11 2015 +0000
+Add tinymce dev files
+
+editor/tiny_mce/classes/AddOnManager.js
+editor/tiny_mce/classes/ControlManager.js
+editor/tiny_mce/classes/Editor.Events.js
+editor/tiny_mce/classes/Editor.js
+editor/tiny_mce/classes/EditorCommands.js
+editor/tiny_mce/classes/EditorManager.js
+editor/tiny_mce/classes/EnterKey.js
+editor/tiny_mce/classes/ForceBlocks.js
+editor/tiny_mce/classes/Formatter.js
+editor/tiny_mce/classes/LegacyInput.js
+editor/tiny_mce/classes/Popup.js
+editor/tiny_mce/classes/UndoManager.js
+editor/tiny_mce/classes/WindowManager.js
+editor/tiny_mce/classes/dom/DOMUtils.js
+editor/tiny_mce/classes/dom/Element.js
+editor/tiny_mce/classes/dom/EventUtils.js
+editor/tiny_mce/classes/dom/Range.js
+editor/tiny_mce/classes/dom/RangeUtils.js
+editor/tiny_mce/classes/dom/ScriptLoader.js
+editor/tiny_mce/classes/dom/Selection.js
+editor/tiny_mce/classes/dom/Serializer.js
+editor/tiny_mce/classes/dom/Sizzle.js
+editor/tiny_mce/classes/dom/TreeWalker.js
+editor/tiny_mce/classes/dom/TridentSelection.js
+editor/tiny_mce/classes/firebug/FIREBUG.LICENSE
+editor/tiny_mce/classes/firebug/firebug-lite.js
+editor/tiny_mce/classes/html/DomParser.js
+editor/tiny_mce/classes/html/Entities.js
+editor/tiny_mce/classes/html/Node.js
+editor/tiny_mce/classes/html/SaxParser.js
+editor/tiny_mce/classes/html/Schema.js
+editor/tiny_mce/classes/html/Serializer.js
+editor/tiny_mce/classes/html/Styles.js
+editor/tiny_mce/classes/html/Writer.js
+editor/tiny_mce/classes/tinymce.js
+editor/tiny_mce/classes/ui/Button.js
+editor/tiny_mce/classes/ui/ColorSplitButton.js
+editor/tiny_mce/classes/ui/Container.js
+editor/tiny_mce/classes/ui/Control.js
+editor/tiny_mce/classes/ui/DropMenu.js
+editor/tiny_mce/classes/ui/KeyboardNavigation.js
+editor/tiny_mce/classes/ui/ListBox.js
+editor/tiny_mce/classes/ui/Menu.js
+editor/tiny_mce/classes/ui/MenuButton.js
+editor/tiny_mce/classes/ui/MenuItem.js
+editor/tiny_mce/classes/ui/NativeListBox.js
+editor/tiny_mce/classes/ui/Separator.js
+editor/tiny_mce/classes/ui/SplitButton.js
+editor/tiny_mce/classes/ui/Toolbar.js
+editor/tiny_mce/classes/ui/ToolbarGroup.js
+editor/tiny_mce/classes/util/Cookie.js
+editor/tiny_mce/classes/util/Dispatcher.js
+editor/tiny_mce/classes/util/JSON.js
+editor/tiny_mce/classes/util/JSONP.js
+editor/tiny_mce/classes/util/JSONRequest.js
+editor/tiny_mce/classes/util/Quirks.js
+editor/tiny_mce/classes/util/URI.js
+editor/tiny_mce/classes/util/VK.js
+editor/tiny_mce/classes/util/XHR.js
+editor/tiny_mce/tiny_mce.js
+editor/tiny_mce/tiny_mce_popup.js
+
+Fri Feb 20 10:41:00 2015 +0000
+Update with missing functions
+
+editor/tiny_mce/plugins/table/js/table.js
+
+Thu Feb 19 13:44:09 2015 +0000
+Remove countFolders method
+
+editor/extensions/filesystem/joomla.php
+
+Thu Feb 19 13:43:57 2015 +0000
+Use correct path variable!
+
+editor/libraries/classes/browser.php
+
+Thu Feb 19 13:43:48 2015 +0000
+Move decodeURIComponent outside of condition
+
+editor/extensions/popups/jcemediabox/js/jcemediabox.js
+
+Thu Feb 19 13:42:57 2015 +0000
+Remove countFolders method
+
+editor/libraries/classes/extensions/filesystem.php
+
+Thu Feb 19 13:42:45 2015 +0000
+Fix dev check
+
+editor/libraries/js/editor.js
+
+Thu Feb 19 13:42:37 2015 +0000
+Include tree stylesheet
+
+editor/libraries/classes/extensions/link.php
+
+Wed Feb 4 16:22:59 2015 +0000
+Add utility functions
+
+editor/tiny_mce/plugins/style/js/style.js
+
+Wed Feb 4 16:22:39 2015 +0000
+Remove $total
+
+editor/extensions/filesystem/joomla.php
+
+Wed Feb 4 16:22:21 2015 +0000
+Replace static call
+
+editor/libraries/classes/browser.php
+
+Thu Jan 29 18:01:58 2015 +0000
+Optimize!
+
+editor/libraries/img/broken.png
+editor/libraries/img/cloud_upload.png
+editor/libraries/img/drag.png
+editor/libraries/img/icons.png
+editor/libraries/img/marker.png
+editor/libraries/img/mask.png
+editor/libraries/img/sample.jpg
+editor/libraries/img/wheel.png
+editor/tiny_mce/themes/advanced/img/icons.png
+editor/tiny_mce/themes/advanced/skins/classic/img/layout.png
+editor/tiny_mce/themes/advanced/skins/default/img/button_bg.png
+editor/tiny_mce/themes/advanced/skins/o2k7/img/button_bg_black.png
+
+Thu Jan 29 18:01:46 2015 +0000
+Changes in support of asset concat
+
+editor/libraries/classes/extensions/link.php
+editor/libraries/classes/plugin.php
+editor/libraries/css/browser.css
+editor/libraries/css/colorpicker.css
+editor/libraries/css/dialog.css
+editor/libraries/css/files.css
+editor/libraries/css/lib/bootstrap.min.css
+editor/libraries/css/lib/colorpicker.css
+editor/libraries/css/lib/dialog.css
+editor/libraries/css/lib/files.css
+editor/libraries/css/lib/manager.css
+editor/libraries/css/lib/reset.css
+editor/libraries/css/lib/select.css
+editor/libraries/css/lib/tips.css
+editor/libraries/css/lib/tree.css
+editor/libraries/css/lib/upload.css
+editor/libraries/css/manager.css
+editor/libraries/css/reset.css
+editor/libraries/css/select.css
+editor/libraries/css/tips.css
+editor/libraries/css/tree.css
+editor/libraries/css/upload.css
+editor/libraries/img/glyphicons-halflings-white.png
+editor/libraries/img/glyphicons-halflings.png
+editor/libraries/js/editor.js
+editor/libraries/js/lib/validate.js
+editor/libraries/js/plugin.full.js
+editor/tiny_mce/plugins/browser/classes/browser.php
+editor/tiny_mce/plugins/fontselect/editor_plugin.js
+editor/tiny_mce/plugins/styleselect/editor_plugin.js
+editor/tiny_mce/tiny_mce_popup.js
+
+Thu Jan 29 18:01:02 2015 +0000
+Fix encoding of parameters
+
+editor/extensions/popups/jcemediabox/js/jcemediabox.js
+
+Thu Jan 29 18:00:44 2015 +0000
+Add limits on total file size and count
+
+editor/extensions/filesystem/joomla.php
+editor/libraries/classes/browser.php
+editor/libraries/classes/extensions/filesystem.php
+editor/libraries/classes/manager.php
+editor/libraries/css/help.css
+editor/libraries/css/lib/help.css
+editor/libraries/css/lib/plugin.css
+editor/libraries/css/plugin.css
+editor/libraries/xml/config/profiles.xml
+
+Thu Jan 29 18:00:00 2015 +0000
+Namespace Mobile_Detect class
+
+editor/libraries/classes/editor.php
+editor/libraries/classes/mobile.php
+editor/libraries/css/manager.css
+
+Sat Jan 24 17:56:17 2015 +0000
+CSS file concat
+
+editor/libraries/css/help.css
+editor/libraries/css/lib/plugin.css
+editor/tiny_mce/plugins/fullpage/fullpage.php
+
+Sat Jan 24 17:56:07 2015 +0000
+Javascript file concat
+
+editor/libraries/jquery/js/jquery-ui.min.js
+editor/libraries/jquery/js/jquery.min.js
+editor/libraries/js/link.full.js
+editor/libraries/js/manager.full.js
+editor/libraries/js/plugin.full.js
+
+Sat Jan 24 17:55:46 2015 +0000
+Delete old and unused files
+
+editor/libraries/jquery/js/jquery-1.10.2.min.js
+editor/libraries/jquery/js/jquery-ui-1.10.3.custom.min.js
+editor/libraries/jquery/js/jquery.ui.touch-punch.min.js
+editor/libraries/js/tiny_mce_utils.js
+
+Sat Jan 24 17:55:27 2015 +0000
+Delete Fullpage plugin
+
+editor/tiny_mce/plugins/fullpage/classes/config.php
+editor/tiny_mce/plugins/fullpage/classes/fullpage.php
+editor/tiny_mce/plugins/fullpage/css/fullpage.css
+editor/tiny_mce/plugins/fullpage/editor_plugin.js
+editor/tiny_mce/plugins/fullpage/fullpage.xml
+editor/tiny_mce/plugins/fullpage/js/fullpage.js
+editor/tiny_mce/plugins/fullpage/tmpl/appearance.php
+editor/tiny_mce/plugins/fullpage/tmpl/default.php
+editor/tiny_mce/plugins/fullpage/tmpl/meta.php
+
+Sat Jan 24 17:54:53 2015 +0000
+Update copyright year
+
+editor/elements/filesystem.php
+editor/elements/linksearch.php
+editor/elements/mediaplayer.php
+editor/elements/popups.php
+editor/extensions/aggregator/googlemaps.php
+editor/extensions/aggregator/googlemaps/js/googlemaps.js
+editor/extensions/aggregator/googlemaps/tmpl/default.php
+editor/extensions/aggregator/vimeo.php
+editor/extensions/aggregator/vimeo/js/vimeo.js
+editor/extensions/aggregator/vimeo/tmpl/default.php
+editor/extensions/aggregator/vine.php
+editor/extensions/aggregator/vine/js/vine.js
+editor/extensions/aggregator/vine/tmpl/default.php
+editor/extensions/aggregator/youtube.php
+editor/extensions/aggregator/youtube/js/youtube.js
+editor/extensions/aggregator/youtube/tmpl/default.php
+editor/extensions/filesystem/joomla.php
+editor/extensions/links/joomlalinks.php
+editor/extensions/links/joomlalinks/contact.php
+editor/extensions/links/joomlalinks/content.php
+editor/extensions/links/joomlalinks/css/joomlalinks.css
+editor/extensions/links/joomlalinks/menu.php
+editor/extensions/links/joomlalinks/weblinks.php
+editor/extensions/mediaplayer/jceplayer.php
+editor/extensions/mediaplayer/jceplayer/css/jceplayer.css
+editor/extensions/mediaplayer/jceplayer/js/jceplayer.js
+editor/extensions/mediaplayer/jceplayer/tmpl/default.php
+editor/extensions/popups/jcemediabox.php
+editor/extensions/popups/jcemediabox/css/jcemediabox.css
+editor/extensions/popups/jcemediabox/js/jcemediabox.js
+editor/extensions/popups/jcemediabox/tmpl/default.php
+editor/extensions/popups/window.php
+editor/extensions/popups/window/css/window.css
+editor/extensions/popups/window/js/window.js
+editor/extensions/popups/window/tmpl/default.php
+editor/extensions/search/css/link.css
+editor/extensions/search/js/link.js
+editor/extensions/search/link.php
+editor/libraries/classes/browser.php
+editor/libraries/classes/document.php
+editor/libraries/classes/editor.php
+editor/libraries/classes/extensions.php
+editor/libraries/classes/extensions/aggregator.php
+editor/libraries/classes/extensions/filesystem.php
+editor/libraries/classes/extensions/link.php
+editor/libraries/classes/extensions/mediaplayer.php
+editor/libraries/classes/extensions/popups.php
+editor/libraries/classes/extensions/search.php
+editor/libraries/classes/language.php
+editor/libraries/classes/manager.php
+editor/libraries/classes/mime.php
+editor/libraries/classes/plugin.php
+editor/libraries/classes/request.php
+editor/libraries/classes/tabs.php
+editor/libraries/classes/token.php
+editor/libraries/classes/utility.php
+editor/libraries/classes/view.php
+editor/libraries/css/bootstrap.min.css
+editor/libraries/css/colorpicker.css
+editor/libraries/css/dialog.css
+editor/libraries/css/editor.css
+editor/libraries/css/files.css
+editor/libraries/css/help.css
+editor/libraries/css/lib/bootstrap.min.css
+editor/libraries/css/lib/colorpicker.css
+editor/libraries/css/lib/dialog.css
+editor/libraries/css/lib/files.css
+editor/libraries/css/lib/help.css
+editor/libraries/css/lib/manager.css
+editor/libraries/css/lib/reset.css
+editor/libraries/css/lib/select.css
+editor/libraries/css/lib/tips.css
+editor/libraries/css/lib/tree.css
+editor/libraries/css/lib/upload.css
+editor/libraries/css/manager.css
+editor/libraries/css/plugin.css
+editor/libraries/css/reset.css
+editor/libraries/css/select.css
+editor/libraries/css/tips.css
+editor/libraries/css/tree.css
+editor/libraries/css/upload.css
+editor/libraries/jquery/css/jquery-ui.css
+editor/libraries/jquery/css/jquery-ui.custom.css
+editor/libraries/js/browser.js
+editor/libraries/js/colorpicker.js
+editor/libraries/js/editor.js
+editor/libraries/js/extensions.js
+editor/libraries/js/extensions/aggregator.js
+editor/libraries/js/extensions/mediaplayer.js
+editor/libraries/js/extensions/popups.js
+editor/libraries/js/filter.js
+editor/libraries/js/help.js
+editor/libraries/js/html5.js
+editor/libraries/js/lib/aggregator.js
+editor/libraries/js/lib/browser.js
+editor/libraries/js/lib/colorpicker.js
+editor/libraries/js/lib/extensions.js
+editor/libraries/js/lib/filter.js
+editor/libraries/js/lib/html5.js
+editor/libraries/js/lib/link.js
+editor/libraries/js/lib/manager.js
+editor/libraries/js/lib/mediaplayer.js
+editor/libraries/js/lib/plugin.js
+editor/libraries/js/lib/popups.js
+editor/libraries/js/lib/select.js
+editor/libraries/js/lib/sort.js
+editor/libraries/js/lib/tips.js
+editor/libraries/js/lib/tree.js
+editor/libraries/js/lib/upload.js
+editor/libraries/js/link.js
+editor/libraries/js/manager.js
+editor/libraries/js/plugin.js
+editor/libraries/js/select.js
+editor/libraries/js/sort.js
+editor/libraries/js/tips.js
+editor/libraries/js/tree.js
+editor/libraries/js/upload.js
+editor/libraries/views/browser/tmpl/file.php
+editor/libraries/views/links/tmpl/links.php
+editor/libraries/views/plugin/index.php
+editor/libraries/views/plugin/tmpl/manager.php
+editor/libraries/views/popups/tmpl/popups.php
+editor/libraries/views/search/tmpl/search.php
+editor/tiny_mce/plugins/advlist/classes/config.php
+editor/tiny_mce/plugins/anchor/editor_plugin.js
+editor/tiny_mce/plugins/article/classes/config.php
+editor/tiny_mce/plugins/article/editor_plugin.js
+editor/tiny_mce/plugins/browser/browser.php
+editor/tiny_mce/plugins/browser/classes/browser.php
+editor/tiny_mce/plugins/browser/classes/config.php
+editor/tiny_mce/plugins/browser/editor_plugin.js
+editor/tiny_mce/plugins/browser/js/browser.js
+editor/tiny_mce/plugins/charmap/charmap.php
+editor/tiny_mce/plugins/charmap/classes/charmap.php
+editor/tiny_mce/plugins/charmap/editor_plugin.js
+editor/tiny_mce/plugins/charmap/js/charmap.js
+editor/tiny_mce/plugins/charmap/tmpl/default.php
+editor/tiny_mce/plugins/cleanup/classes/config.php
+editor/tiny_mce/plugins/cleanup/editor_plugin.js
+editor/tiny_mce/plugins/clipboard/classes/clipboard.php
+editor/tiny_mce/plugins/clipboard/classes/config.php
+editor/tiny_mce/plugins/clipboard/clipboard.php
+editor/tiny_mce/plugins/clipboard/editor_plugin.js
+editor/tiny_mce/plugins/clipboard/tmpl/default.php
+editor/tiny_mce/plugins/code/classes/config.php
+editor/tiny_mce/plugins/colorpicker/classes/colorpicker.php
+editor/tiny_mce/plugins/colorpicker/classes/config.php
+editor/tiny_mce/plugins/colorpicker/colorpicker.php
+editor/tiny_mce/plugins/colorpicker/editor_plugin.js
+editor/tiny_mce/plugins/colorpicker/tmpl/default.php
+editor/tiny_mce/plugins/core/editor_plugin.js
+editor/tiny_mce/plugins/fontcolor/editor_plugin.js
+editor/tiny_mce/plugins/fontselect/classes/config.php
+editor/tiny_mce/plugins/fontselect/editor_plugin.js
+editor/tiny_mce/plugins/fontsizeselect/classes/config.php
+editor/tiny_mce/plugins/fontsizeselect/editor_plugin.js
+editor/tiny_mce/plugins/format/classes/config.php
+editor/tiny_mce/plugins/format/editor_plugin.js
+editor/tiny_mce/plugins/formatselect/classes/config.php
+editor/tiny_mce/plugins/formatselect/editor_plugin.js
+editor/tiny_mce/plugins/fullscreen/editor_plugin.js
+editor/tiny_mce/plugins/imgmanager/classes/config.php
+editor/tiny_mce/plugins/imgmanager/classes/imgmanager.php
+editor/tiny_mce/plugins/imgmanager/editor_plugin.js
+editor/tiny_mce/plugins/imgmanager/imgmanager.php
+editor/tiny_mce/plugins/imgmanager/js/imgmanager.js
+editor/tiny_mce/plugins/imgmanager/tmpl/advanced.php
+editor/tiny_mce/plugins/imgmanager/tmpl/image.php
+editor/tiny_mce/plugins/imgmanager/tmpl/rollover.php
+editor/tiny_mce/plugins/importcss/editor_plugin.js
+editor/tiny_mce/plugins/inlinepopups/classes/config.php
+editor/tiny_mce/plugins/inlinepopups/css/dialog.css
+editor/tiny_mce/plugins/inlinepopups/editor_plugin.js
+editor/tiny_mce/plugins/kitchensink/editor_plugin.js
+editor/tiny_mce/plugins/link/classes/link.php
+editor/tiny_mce/plugins/link/editor_plugin.js
+editor/tiny_mce/plugins/link/js/link.js
+editor/tiny_mce/plugins/link/link.php
+editor/tiny_mce/plugins/link/tmpl/advanced.php
+editor/tiny_mce/plugins/link/tmpl/default.php
+editor/tiny_mce/plugins/link/tmpl/link.php
+editor/tiny_mce/plugins/media/classes/config.php
+editor/tiny_mce/plugins/media/editor_plugin.js
+editor/tiny_mce/plugins/preview/classes/preview.php
+editor/tiny_mce/plugins/preview/preview.php
+editor/tiny_mce/plugins/searchreplace/classes/searchreplace.php
+editor/tiny_mce/plugins/searchreplace/js/searchreplace.js
+editor/tiny_mce/plugins/searchreplace/searchreplace.php
+editor/tiny_mce/plugins/searchreplace/tmpl/default.php
+editor/tiny_mce/plugins/searchreplace/tmpl/find.php
+editor/tiny_mce/plugins/searchreplace/tmpl/replace.php
+editor/tiny_mce/plugins/source/classes/config.php
+editor/tiny_mce/plugins/source/classes/source.php
+editor/tiny_mce/plugins/source/source.php
+editor/tiny_mce/plugins/source/tmpl/default.php
+editor/tiny_mce/plugins/spellchecker/classes/config.php
+editor/tiny_mce/plugins/spellchecker/classes/enchantspell.php
+editor/tiny_mce/plugins/spellchecker/classes/spellchecker.php
+editor/tiny_mce/plugins/spellchecker/editor_plugin.js
+editor/tiny_mce/plugins/spellchecker/spellchecker.php
+editor/tiny_mce/plugins/style/classes/style.php
+editor/tiny_mce/plugins/style/style.php
+editor/tiny_mce/plugins/style/tmpl/background.php
+editor/tiny_mce/plugins/style/tmpl/block.php
+editor/tiny_mce/plugins/style/tmpl/border.php
+editor/tiny_mce/plugins/style/tmpl/box.php
+editor/tiny_mce/plugins/style/tmpl/default.php
+editor/tiny_mce/plugins/style/tmpl/list.php
+editor/tiny_mce/plugins/style/tmpl/positioning.php
+editor/tiny_mce/plugins/style/tmpl/text.php
+editor/tiny_mce/plugins/styleselect/classes/config.php
+editor/tiny_mce/plugins/styleselect/editor_plugin.js
+editor/tiny_mce/plugins/tabfocus/classes/config.php
+editor/tiny_mce/plugins/table/classes/config.php
+editor/tiny_mce/plugins/table/classes/table.php
+editor/tiny_mce/plugins/table/js/table.js
+editor/tiny_mce/plugins/table/table.php
+editor/tiny_mce/plugins/table/tmpl/advanced.php
+editor/tiny_mce/plugins/table/tmpl/default.php
+editor/tiny_mce/plugins/table/tmpl/general.php
+editor/tiny_mce/plugins/table/tmpl/general_cell.php
+editor/tiny_mce/plugins/table/tmpl/general_row.php
+editor/tiny_mce/plugins/table/tmpl/general_table.php
+editor/tiny_mce/plugins/table/tmpl/merge.php
+editor/tiny_mce/plugins/textcase/editor_plugin.js
+editor/tiny_mce/plugins/upload/editor_plugin.js
+editor/tiny_mce/plugins/visualblocks/classes/config.php
+editor/tiny_mce/plugins/visualchars/classes/config.php
+editor/tiny_mce/plugins/xhtmlxtras/classes/xhtmlxtras.php
+editor/tiny_mce/plugins/xhtmlxtras/js/xhtmlxtras.js
+editor/tiny_mce/plugins/xhtmlxtras/tmpl/default.php
+editor/tiny_mce/plugins/xhtmlxtras/tmpl/events.php
+editor/tiny_mce/plugins/xhtmlxtras/tmpl/standard.php
+editor/tiny_mce/plugins/xhtmlxtras/tmpl/standard_datetime.php
+editor/tiny_mce/plugins/xhtmlxtras/tmpl/standard_html5.php
+editor/tiny_mce/plugins/xhtmlxtras/xhtmlxtras.php
+editor/tiny_mce/themes/advanced/editor_template.js
+editor/tiny_mce/themes/advanced/tmpl/charmap.php
+editor/tiny_mce/themes/advanced/tmpl/colorpicker.php
+editor/tiny_mce/themes/advanced/tmpl/shortcuts.php
+editor/tiny_mce/tiny_mce_popup.js
+jce.php
+media/js/popup.js
+views/popup/tmpl/default.php
+views/popup/view.html.php

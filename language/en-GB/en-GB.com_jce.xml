@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="2.0" type="language" core="1" client="both" method="upgrade">
+	<name>English(United Kingdom)</name>
+	<tag>en-GB</tag>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>info@joomlacontenteditor.net</authorEmail>
+	<authorUrl>www.joomlacontenteditor.net</authorUrl>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<description>English(United Kingdom) language pack for JCE 2.x</description>
+	<site folder="language/en-GB">
+		<file>en-GB.com_jce.ini</file>	
+		<!-- // Pro language files // -->
+		<file>en-GB.com_jce_pro.ini</file> 
+	</site>
+	<administration folder="administrator/language/en-GB">
+		<file>en-GB.com_jce.ini</file>
+        <file>en-GB.com_jce.menu.ini</file>
+        <file>en-GB.com_jce.sys.ini</file>
+        <file>en-GB.plg_editors_jce.ini</file>
+        <file>en-GB.plg_editors_jce.sys.ini</file>
+        <file>en-GB.plg_system_jce.ini</file>
+        <file>en-GB.plg_system_jce.sys.ini</file>
+        <file>en-GB.plg_installer_jce.ini</file>
+        <file>en-GB.plg_installer_jce.sys.ini</file>
+        <file>en-GB.plg_extension_jce.ini</file>
+        <file>en-GB.plg_extension_jce.sys.ini</file>
+        <file>en-GB.plg_quickicon_jcefilebrowser.ini</file>
+        <file>en-GB.plg_quickicon_jcefilebrowser.sys.ini</file>
+	</administration>
+</install>

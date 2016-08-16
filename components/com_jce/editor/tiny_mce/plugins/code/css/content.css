@@ -1,0 +1,31 @@
+.mceItemPhp, .mcePhp, .mceItemScript, .mceItemStyle {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url(../../../../libraries/img/ext.png);
+    background-repeat: no-repeat;
+    -webkit-user-select:all; -webkit-user-modify:read-only; -moz-user-select:all; -moz-user-modify:read-only; 
+    cursor: pointer;
+    font-size : 0;
+    line-height : 0;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-indent : -9999px;
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+}
+.mceItemPhp, .mcePhp {
+    background-position: 0 -100px;
+}
+.mceItemScript {
+    background-position: 0 -220px;
+}
+.mceItemStyle {
+    background-position: 0 -420px;
+}
+
+.mceItemScript.mceItemSelected, .mceItemStyle.mceItemSelected, .mceItemPhp.mceItemSelected, .mcePhp.mceItemSelected {
+    background-color: #b4d4ff;
+    border : 0 none;
+}

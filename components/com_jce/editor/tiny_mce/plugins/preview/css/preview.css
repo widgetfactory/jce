@@ -1,0 +1,12 @@
+/**
+ * @version		$Id: preview.css 221 2011-06-11 17:30:33Z happy_noodle_boy $
+ * @package		JCE
+ * @copyright	Copyright (C) 2009 Ryan Demmer. All rights reserved.
+ * @license		GNU/GPL
+ * This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+html{height:100%;}
+body {background:#FFF;margin:5px;color:#000; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:10px;height:100%;min-width:99%;width:auto;overflow-y:auto;}

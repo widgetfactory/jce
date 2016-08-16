@@ -1,0 +1,78 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+div#upload-body {
+	height: 100%;
+	position: static !important;
+	z-index: 10;
+}
+
+div#upload-queue-block {
+	clear: both;
+	height: 240px;
+	overflow: auto;
+	box-sizing: border-box;
+	padding: 5px;
+	margin: 0;
+}
+
+.queue-item-loading .queue-item-name .ui-icon:before {
+	content: "";
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	margin-top: -3px;
+	background: url(../img/load.gif) no-repeat center left;
+}
+
+.ui-progress {margin: 5px 0; box-shadow: inherit; background-color: transparent; display: none;}
+.queue-item-loading .ui-progress {display: block;}
+.ui-alert {white-space: normal;margin: 5px 0;}
+
+.queue-item-size {
+		vertical-align: middle;
+		line-height: 28px;
+}
+
+.queue-item .queue-item-name .queue-item-extension {
+	padding: 0;
+	font-size: inherit;
+	cursor: inherit;
+	vertical-align: middle;
+	line-height: 28px;
+	height: inherit;
+	margin: 0;
+	top: 0;
+	right: 5px;
+}
+
+.wf-uploader-container {
+	display: inline-block;
+	position: relative;
+	overflow: inherit;
+}
+.wf-uploader-button {}
+.wf-uploader-element {
+	font-size: 999px;
+	opacity: 0;
+	-ms-filter: "alpha(opacity=0)";
+	position: absolute;
+	right: 0;
+	top: 0;
+	cursor: pointer;
+	z-index: 10;
+	width: 100%;
+	height: 100%;
+}
+
+::-ms-clear {display: none;}
+
+.wf-upload-dragover > div {
+	border-width: 2px !important;
+}

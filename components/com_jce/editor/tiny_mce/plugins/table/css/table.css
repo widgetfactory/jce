@@ -1,0 +1,14 @@
+/* CSS file for table dialog in the table plugin */
+/*[data-context="row"] .ui-switcher, [data-context="cell"] .ui-switcher {height: 74%;}
+
+:root [data-context="row"] .ui-switcher, :root [data-context="cell"] .ui-switcher {
+	height: calc(100% - 125px);
+}*/
+
+#merge_tab {}
+#merge_tab .ui-width-3-10 {width: 30% !important;}
+#merge_tab .ui-width-7-10 {width: 70% !important;}
+
+.ui-grid > * {margin-bottom: 5px;}
+
+#numcols, #numrows {width: 50px;}

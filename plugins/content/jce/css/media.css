@@ -1,0 +1,3 @@
+.field-media-wrapper .modal {height: 90vh;}
+.field-media-wrapper .modal .modal-body {max-height: 100% !important;}
+.field-media-wrapper .modal .modal-body iframe {height: calc(90vh - 120px) !important;}

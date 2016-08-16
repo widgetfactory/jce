@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<install version="1.5" type="extension" extension="window" folder="popups" core="1">
+	<name>WF_POPUPS_WINDOW_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<description>WF_POPUPS_WINDOW_DESC</description>
+	<files>
+		<filename>window.php</filename>
+		<folder>window</folder>
+	</files>
+	<params group="window"></params>
+  <plugins>link,imgmanager_ext</plugins>
+	<media></media>
+	<languages></languages>
+</install>

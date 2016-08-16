@@ -1,0 +1,71 @@
+.o2k7SkinSilver .mceLayout {
+    border-left: 1px solid #bbb;
+    border-right: 1px solid #bbb;
+}
+.o2k7SkinSilver .mceIframeContainer {
+    border-top: 1px solid #bbb;
+    border-bottom: 1px solid #bbb
+}
+.o2k7SkinSilver .mceToolbar {
+    background: #eee
+}
+.o2k7SkinSilver .mceStatusbar {
+    background: #eee
+}
+.o2k7SkinSilver.mceListBoxMenu .mceMenu {
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceButton {
+    border-color: #bbb;
+    background: #eee;
+    border-right-color: #E0E9F6;
+}
+
+.o2k7SkinSilver .mceButton, .o2k7SkinSilver .mceSplitButton {
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(51%, rgba(221,221,221,1)), color-stop(100%, rgba(255,255,255,1)));
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+}
+
+.o2k7SkinSilver .mceButtonEnabled:hover, .o2k7SkinSilver .mceButtonEnabled:active, .o2k7SkinSilver .mceButtonActive, .o2k7SkinSilver .mceButtonSelected {
+    border-color: #FFD24E;
+    border-right-color: #FFD24E;
+}
+
+.o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton, .o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton:hover {
+    border-right-width: 1px;
+    border-radius: 0 2px 2px 0;
+    border-right-color: #bbb;
+}
+.o2k7SkinSilver .mceToolbarRow .mceToolBarItemEnd .mceButton,
+.o2k7SkinSilver .mceToolbarRow .mceToolBarItemEnd .mceSplitButton .mceOpen a {
+  border-right-color: #bbb;
+}
+
+.o2k7SkinSilver .mceToolbarRow .mceToolBarItemStart .mceButton,
+.o2k7SkinSilver .mceToolbarRow .mceToolBarItemStart .mceSplitButton .mceText a {
+  border-left-color: #bbb;
+}
+.o2k7SkinSilver .mceSeparator, .o2k7SkinSilver .mceToolbarStart, .o2k7SkinSilver .mceToolbarEnd {
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceSplitButton .mceText a, .o2k7SkinSilver .mceSplitButton .mceOpen a {
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceListBox .mceText a, .o2k7SkinSilver .mceListBox .mceOpen a {
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceSplitButtonMenu {
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceButtonDialog {
+    background-color: #eee;
+    border-color: #bbb;
+}
+.o2k7SkinSilver .mceButtonDialog::before {
+    background-color: #eee;
+    border-color: #bbb;
+}

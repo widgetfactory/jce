@@ -1,0 +1,68 @@
+.ui-jce ul.adminformlist li div.blockformats {
+    margin-left: 220px;
+    clear: none;
+    position: relative;
+}
+
+.ui-jce ul.adminformlist li div.blockformats ul {
+    display: block;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce div.blockformats ul li,
+.ui-jce div.blockformats ul li.blockformat-highlight {
+    border: 1px solid #CCCCCC;
+    padding: 5px;
+    margin : 2px 0;
+    max-width : 400px;
+    position: relative;
+    background-color: #fff;
+}
+
+.ui-jce div.blockformats ul li {
+    cursor: move;
+    line-height: 30px;
+}
+
+.ui-jce div.blockformats ul li span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ui-jce div.blockformats ul li.blockformat-highlight {
+    border-style: dashed;
+    min-height : 20px;
+    margin : 5px 0;
+    background-color: #F7F7F7;
+}
+
+/* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+.ui-jce div.blockformats ul li span.blockformat-code,
+.ui-jce div.blockformats ul li span.blockformat-samp {
+    font-family: monospace
+}
+
+.ui-jce div.blockformats ul li span.blockformat-strong {font-weight: bolder}
+
+.ui-jce div.blockformats ul li span.blockformat-em {font-style: italic}
+
+.ui-jce div.blockformats ul li span.blockformat-sub {vertical-align: sub}
+
+.ui-jce div.blockformats ul li span.blockformat-sup {vertical-align: super}
+
+.ui-jce div.blockformats ul li span.blockformat-h1 {font-size: 2em}
+
+.ui-jce div.blockformats ul li span.blockformat-h2 {font-size: 1.5em}
+
+.ui-jce div.blockformats ul li span.blockformat-h3 {font-size: 1.17em}
+
+.ui-jce div.blockformats ul li span.blockformat-h4 {}
+
+.ui-jce div.blockformats ul li span.blockformat-h5 {font-size: .83em}
+
+.ui-jce div.blockformats ul li span.blockformat-h6 {font-size: .75em}
+
+.ui-jce div.blockformats ul li span.blockformat-span {float: none;margin: 0; display: inline;}

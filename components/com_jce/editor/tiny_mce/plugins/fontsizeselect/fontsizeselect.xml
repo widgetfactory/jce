@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<install version="2.0" type="plugin" plugin="fontsizeselect" core="1" editable="1">
+    <name>WF_FONTSIZESELECT_TITLE</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>info@joomlacontenteditor.net</authorEmail>
+    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <copyright>Ryan Demmer</copyright>
+    <license>@@licence@@</license>
+    <description>WF_FONTSIZESELECT_DESC</description>
+    <icon>fontselect</icon>
+    <params group="standard">
+        <param name="font_sizes" type="text" size="100" default="" placeholder="eg: 8pt,10pt,12pt,14pt,18pt,24pt,36pt" label="WF_PARAM_FONT_SIZES" description="WF_PARAM_FONT_SIZES_DESC" />
+    </params>
+    <help></help>
+    <languages></languages>
+</install>

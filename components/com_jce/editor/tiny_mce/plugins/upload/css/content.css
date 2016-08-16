@@ -1,0 +1,37 @@
+.mceItemUpload {
+    border:1px dashed #bbb !important;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#fafafa;
+
+    background-image:url(../img/upload.gif);
+
+    display: inline-block;
+    vertical-align: middle;
+    text-align : center;
+
+    min-width: 320px;
+}
+
+.mceItemUpload span.upload-progress {
+    position: relative;
+    display: inline-block;
+    top: 50%;
+    line-height: 10px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 7pt;
+    vertical-align: baseline;
+    margin: -5px 0 0 0;
+    text-align: center;
+    width: 32px;
+    -moz-user-select : none;
+    -webkit-user-select: none;
+    -ms-user-select : none;
+}
+
+.mceItemUploadMarker {
+    background-image: url("../img/picture.png");
+}
+.mceItemUploadMarker.loading {
+    background-image: url("../img/upload.gif");
+}

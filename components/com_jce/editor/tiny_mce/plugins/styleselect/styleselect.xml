@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<install version="2.0" type="plugin" plugin="styleselect" core="1" editable="1">
+    <name>WF_STYLESELECT_TITLE</name>
+    <version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>info@joomlacontenteditor.net</authorEmail>
+    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <copyright>Ryan Demmer</copyright>
+    <license>@@licence@@</license>
+    <description>WF_STYLESELECT_DESC</description>
+    <icon>styleselect</icon>
+    <params group="standard">
+        <param name="styles" type="list" class="checklist" multiple="multiple" default="stylesheet,custom" label="WF_STYLESELECT_STYLES" description="WF_STYLESELECT_STYLES_DESC">
+            <option value="stylesheet">WF_STYLESELECT_STYLESHEET</option>
+            <option value="custom">WF_STYLESELECT_CUSTOM</option>
+        </param>
+        <param name="custom_classes" type="text" default="" placeholder="eg: class1,class2,class3" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
+        <param name="custom_styles" type="styleformat" default="" label="WF_STYLESELECT_CUSTOM" description="WF_STYLESELECT_CUSTOM_DESC" parent="styles[custom]" />
+    </params>
+    <help></help>
+    <languages></languages>
+</install>

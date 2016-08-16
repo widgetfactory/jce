@@ -1,0 +1,17 @@
+JCE Editor Component
+============================
+This is the site part of the JCE Editor Component
+
+Requirements
+------------
+
+* PHP 5.2.4+
+* IE 8/9, Firefox 3.6+, Chrome 10+, Opera 10+, Safari 5+
+
+
+Download
+---------
+
+Get the source code from GIT:
+
+git clone git://github.com/widgetfactory/jce-editor.git

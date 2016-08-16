@@ -1,0 +1,91 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.ui-tree a {
+    display: inline-block;
+    width: calc(100% - 24px);
+}
+.ui-tree a, .ui-tree a:hover, .ui-tree a:active {
+    text-decoration: none;
+    color: inherit;
+}
+.ui-tree-toggle {
+    cursor: pointer;
+}
+.ui-tree-toggle, .ui-tree-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 20px;
+}
+.ui-tree-toggle .ui-icon, .ui-tree-icon .ui-icon {
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    line-height: 20px;
+}
+.ui-icon-minus-square-o {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-plus-square-o {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-minus-square-o {
+    display: inline-block;
+}
+.ui-icon-folder-open {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder {
+    display: none;
+}
+.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder-open {
+    display: inline-block;
+}
+.ui-tree-loading> .ui-tree-row> .ui-tree-toggle .ui-icon {
+    display: none !important;
+}
+.ui-tree-loading> .ui-tree-row> .ui-tree-toggle {
+    background: url('../img/load.gif') no-repeat center;
+}
+.ui-tree, .ui-tree ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+.ui-tree li {
+    line-height: 28px;
+    vertical-align: middle;
+    margin: 0;
+}
+.ui-tree-node li {
+    padding: 0 0 0 23px;
+}
+.ui-tree-row .ui-tree-text {
+    display: inline-block;
+    line-height: 20px;
+    vertical-align: middle;
+}
+.ui-tree-node li:empty {
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+}
+.ui-tree-row:hover {
+    background-color: #d9edf7;
+}
+.ui-tree-hide {
+    display: none;
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<install type="component" version="1.5.0" method="upgrade">
+    <name>JCE</name>
+    <author>Ryan Demmer</author>
+    <creationDate>@@date@@</creationDate>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
+    <authorEmail>@@e-mail@@</authorEmail>
+    <authorUrl>www.joomlacontenteditor.net</authorUrl>
+    <version>@@version@@</version>
+    <description>WF_ADMIN_DESC</description>
+    <installfile>install.script.php</installfile>
+    <uninstallfile>install.script.php</uninstallfile>
+	
+    <files folder="components/com_jce">
+        <folder>editor</folder>
+        <folder>media</folder>
+        <folder>views</folder>
+        <file>index.html</file>
+        <file>jce.php</file>
+        <file>licence.txt</file>
+    </files>
+	
+	<!-- Media Player -->
+    <media folder="components/com_jce/editor/libraries" destination="jce">
+        <folder>mediaplayer</folder>
+    </media>
+	
+    <languages folder="language/en-GB">
+        <language tag="en-GB">en-GB.com_jce.xml</language>
+        <language tag="en-GB">en-GB.com_jce.ini</language>
+    </languages>
+	
+	<!-- SQL query files to execute on installation (MySQL only) -->
+    <install>
+        <sql>
+            <file charset="utf8" driver="mysqli">sql/mysql.sql</file>
+        </sql>
+    </install>
+	
+    <administration>
+        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">JCE</menu>
+		
+        <submenu>
+            <menu view="cpanel" img="components/com_jce/media/img/menu/jce-cpanel.png" link="option=com_jce">WF_MENU_CPANEL</menu>
+            <menu view="config" img="components/com_jce/media/img/menu/jce-config.png" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
+            <menu view="profiles" img="components/com_jce/media/img/menu/jce-profiles.png" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
+            <menu view="installer" img="components/com_jce/media/img/menu/jce-install.png" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
+        </submenu>
+		
+        <files folder="administrator/components/com_jce">
+            <folder>adapters</folder>
+            <folder>classes</folder>
+            <folder>controller</folder>
+            <folder>elements</folder>
+            <folder>helpers</folder>
+            <folder>includes</folder>
+            <folder>media</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+            <file>access.xml</file>
+            <file>controller.php</file>
+            <file>config.xml</file>
+            <file>index.html</file>
+            <file>install.php</file>
+            <file>install.script.php</file>
+            <file>jce.php</file>
+            <file>jce.xml</file>
+            <file>licence.txt</file>
+        </files>
+		
+        <languages folder="administrator/language/en-GB">
+            <language tag="en-GB">en-GB.com_jce.ini</language>
+            <language tag="en-GB">en-GB.com_jce.menu.ini</language>
+            <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
+        </languages>		
+    </administration>
+</install>

@@ -1,0 +1,68 @@
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../fonts/fontawesome-webfont.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.ie8 .ui-icon {
+    font-family: FontAwesome;
+    display: inline-block;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+}
+
+.ie8 .actionPanel .ui-button {
+  margin: 0 5px;
+}
+.ie8.ui-form-horizontal .ui-form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 700;
+  float: left;
+}
+.ie8.ui-form-horizontal .ui-form-controls {
+  float: left;
+}
+input.type-number {
+  padding: 4px 6px;
+  line-height: 22px;
+}
+.ie8 .ui-icon-clock-o {
+  background: url('../img/icons.png') no-repeat 0 -1020px;
+  width: 20px;
+  margin: -10px 5px;
+}
+.ie8 .ui-icon-clock-o:before {
+  content: "";
+}
+.ie8 #browser-list-actions .ui-flex-item-auto {
+  width: 69%;
+}
+.ie8 .ui-tree-hidden #browser-list-actions .ui-flex-item-auto {
+  width: 39%
+}
+
+.ie8 .ui-form-horizontal .ui-datalist input[type="text"] {
+    width: 92%;
+    border-right-width: inherit;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+.ie8 .ui-button {
+  border: 1px solid #ccc;
+  margin-left: 5px;
+}
+.ie8 .ui-modal-footer .ui-button {
+  background-color: #fff;
+}
+.ie8 .ui-modal-footer .ui-button-primary {
+  background-color: #337ab7;
+  border: 1px solid #2e6da4;
+}
+.ie8 .ui-modal-footer .ui-button-danger {
+  background-color: #d9534f;
+  border: 1px solid #d43f3a;
+}
