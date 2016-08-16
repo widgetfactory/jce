@@ -16,8 +16,8 @@
         var o = {
             'handler': 'iframe',
             'size': {
-                x: width,
-                y: height
+                x: Math.min($(window).width()   - 50, width),
+                y: Math.min($(window).height()  - 60, height)
             },
             'url': url,
             onOpen: function () {
