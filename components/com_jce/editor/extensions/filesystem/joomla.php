@@ -347,9 +347,9 @@ class WFJoomlaFileSystem extends WFFileSystem {
             'modified' => $date
         );
 
-        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file)) {
-            $data['preview'] = WFUtility::cleanPath($url, '/');
+        $data['preview'] = WFUtility::cleanPath($url, '/');
 
+        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file)) {
             $image = array();
 
             if ($count <= 100) {
