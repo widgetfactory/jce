@@ -97,7 +97,7 @@ class WFViewCpanel extends WFView {
                     continue;
                 }
 
-                $attribs        = array('target="_blank"', 'class="browser"', 'onclick="Joomla.modal(this, \'' . $link . '\', 1024, 768);return false;"');
+                $attribs        = array('target="_blank"', 'class="browser"', 'onclick="Joomla.modal(this, \'' . $link . '\', 974, 708);return false;"');
 
                 $title          = 'WF_' . strtoupper($view) . '_TITLE';
                 $description    = 'WF_CPANEL_' . strtoupper($view);
