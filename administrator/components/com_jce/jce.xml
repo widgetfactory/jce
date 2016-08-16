@@ -88,8 +88,8 @@
             <language tag="en-GB">en-GB.plg_installer_jce.sys.ini</language>
             <language tag="en-GB">en-GB.plg_extension_jce.ini</language>
             <language tag="en-GB">en-GB.plg_extension_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_quickicon_jcefilebrowser.ini</language>
-            <language tag="en-GB">en-GB.plg_quickicon_jcefilebrowser.sys.ini</language>
+            <language tag="en-GB">en-GB.plg_quickicon_jce.ini</language>
+            <language tag="en-GB">en-GB.plg_quickicon_jce.sys.ini</language>
         </languages>
 
     </administration>
