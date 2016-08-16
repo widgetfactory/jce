@@ -11,5 +11,6 @@
   <description>PLG_CONTENT_JCE_XML_DESCRIPTION</description>
   <files>
     <file plugin="jce">jce.php</file>
+    <folder>css</folder>
   </files>
 </extension>
