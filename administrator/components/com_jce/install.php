@@ -122,7 +122,7 @@ abstract class WFInstall {
                 self::legacyCleanup();
             }
 
-            $message = '<div class="ui-jce"><style type="text/css" scoped="scoped">' . file_get_contents(dirname(__FILE__) . '/media/css/install.css') . '</style>';
+            $message = '<div class="ui-jce"><style type="text/css" scoped="scoped">' . file_get_contents(__DIR__ . '/media/css/install.css') . '</style>';
 
             $message .= '<h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
             $message .= '<ul class="install">';
@@ -142,7 +142,7 @@ abstract class WFInstall {
             $installer->set('message', $message);
 
             // post-install
-            self::addIndexfiles(array(dirname(__FILE__), JPATH_SITE . '/components/com_jce', JPATH_PLUGINS . '/jce'));
+            self::addIndexfiles(array(__DIR__, JPATH_SITE . '/components/com_jce', JPATH_PLUGINS . '/jce'));
         } else {
             $installer->abort();
 
