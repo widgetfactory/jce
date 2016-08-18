@@ -56,7 +56,13 @@ class com_jceInstallerScript {
     }
 
     public function postflight($type, $parent) {
+      $plugin = JTable::getInstance('extension');
+      $plugin->find(array('type' => 'plugin', 'folder' => 'quickicon', 'element' => 'jcefilebrowser'));
 
+      if ($plugin) {
+        $installer = new JInstaller();
+        $installer->uninstall('plugin', $plugin->id);
+      }
     }
 
     /**
@@ -125,7 +131,7 @@ class com_jceInstallerScript {
         jimport('joomla.installer.installer');
 
         $plugins = array(
-          'editor'    => array('jce'),
+          'editors'    => array('jce'),
           'system'    => array('jce'),
           'content'   => array('jce'),
           'installer' => array('jce'),
@@ -181,24 +187,8 @@ class com_jceInstallerScript {
             );
         }
 
-        // check JSON is installed
-        if (function_exists('json_encode') === false || function_exists('json_decode') === false) {
-            $requirements[] = array(
-                'name' => 'JSON',
-                'info' => 'JCE requires the <a href="http://php.net/manual/en/book.json.php" target="_blank">PHP JSON</a> extension which is not available on this server.'
-            );
-        }
-
-        // check SimpleXML
-        if (function_exists('simplexml_load_string') === false || function_exists('simplexml_load_file') === false || class_exists('SimpleXMLElement') === false) {
-            $requirements[] = array(
-                'name' => 'SimpleXML',
-                'info' => 'JCE requires the <a href="http://php.net/manual/en/book.simplexml.php" target="_blank">PHP SimpleXML</a> library which is not available on this server.'
-            );
-        }
-
         if (!empty($requirements)) {
-            $message = '<div id="jce"><style type="text/css" scoped="scoped">' . file_get_contents(dirname(__FILE__) . '/media/css/install.css') . '</style>';
+            $message = '<div id="jce"><style type="text/css" scoped="scoped">' . file_get_contents(__DIR__ . '/media/css/install.css') . '</style>';
 
             $message .= '<h2>' . JText::_('WF_ADMIN_TITLE') . ' - Install Failed</h2>';
             $message .= '<h3>JCE could not be installed as this site does not meet <a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" target="_blank">technical requirements</a> (see below)</h3>';
