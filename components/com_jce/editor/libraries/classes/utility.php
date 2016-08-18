@@ -93,6 +93,14 @@ abstract class WFUtility
 
     private static function utf8_latin_to_ascii($subject)
     {
+        if (is_array($subject)) {
+            array_walk($subject, function(&$string) {
+              $string = WFUtility::utf8_latin_to_ascii($string);
+            });
+
+            return $subject;
+        }
+
         return transliterator_transliterate('Any-Latin; Latin-ASCII;', $subject);
     }
 
@@ -103,9 +111,9 @@ abstract class WFUtility
         }
 
         if (is_array($string)) {
-            foreach ($string as $value) {
-                $value = self::changeCase($value, $case);
-            }
+          array_walk($string, function(&$value, $key, $case) {
+            $value = WFUtility::changeCase($value, $case);
+          }, $case);
         } else {
             switch ($case) {
                 case 'lowercase':
