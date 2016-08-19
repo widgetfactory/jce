@@ -129,8 +129,8 @@ defined('_WF_EXT') or die('RESTRICTED');
                       </div>
                   </div>
                   <div class="ui-form-controls ui-width-1-10 ui-margin-small-left">
-                    <button type="button" class="ui-button ui-repeatable-create"><i class="ui-icon-plus"></i></button>
-                    <button type="button" class="ui-button ui-repeatable-delete"><i class="ui-icon-trash"></i></button>
+                    <button type="button" class="ui-button ui-button-link ui-repeatable-create"><i class="ui-icon-plus"></i></button>
+                    <button type="button" class="ui-button ui-button-link ui-repeatable-delete"><i class="ui-icon-trash"></i></button>
                   </div>
           </div>
         </div>
