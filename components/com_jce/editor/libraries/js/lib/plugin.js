@@ -761,31 +761,7 @@
             }
             return s;
         },
-        /*
-         * Replace diacritic with nearest ascii equivalent.
-         * Based on cleanName function in plupload.js - https://github.com/moxiecode/plupload/blob/master/src/plupload.js
-         * Copyright 2013, Moxiecode Systems AB
-         */
-        replaceDiacritic: function (s) {
-            var i, lookup;
 
-            // Replace diacritics
-            lookup = [
-                /[\300-\306]/g, 'A', /[\340-\346]/g, 'a',
-                /\307/g, 'C', /\347/g, 'c',
-                /[\310-\313]/g, 'E', /[\350-\353]/g, 'e',
-                /[\314-\317]/g, 'I', /[\354-\357]/g, 'i',
-                /\321/g, 'N', /\361/g, 'n',
-                /[\322-\330]/g, 'O', /[\362-\370]/g, 'o',
-                /[\331-\334]/g, 'U', /[\371-\374]/g, 'u'
-            ];
-
-            for (i = 0; i < lookup.length; i += 2) {
-                s = s.replace(lookup[i], lookup[i + 1]);
-            }
-
-            return s;
-        },
         _toUnicode: function (s) {
             var c = s.toString(16).toUpperCase();
 
@@ -803,29 +779,24 @@
                 s = s.replace(/[\s ]/g, '_');
             }
 
-            if (mode == 'ascii') {
-                s = this.replaceDiacritic(s);
-                s = s.replace(/[^\w\.\-~\s ]/gi, '');
-            } else {
-                // remove some common characters
-                s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
-                var r = '';
+            // remove some common characters
+            s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
+            var r = '';
 
-                for (var i = 0, ln = s.length; i < ln; i++) {
-                    var ch = s[i];
-                    // only process on possible restricted characters or utf-8 letters/numbers
-                    if (/[^\w\.\-~\s ]/.test(ch)) {
-                        // skip any character less than 127, eg: &?@* etc.
-                        if (this._toUnicode(ch.charCodeAt(0)) < '\\u007F') {
-                            continue;
-                        }
+            for (var i = 0, ln = s.length; i < ln; i++) {
+                var ch = s[i];
+                // only process on possible restricted characters or utf-8 letters/numbers
+                if (/[^\w\.\-~\s ]/.test(ch)) {
+                    // skip any character less than 127, eg: &?@* etc.
+                    if (this._toUnicode(ch.charCodeAt(0)) < '\\u007F') {
+                        continue;
                     }
-
-                    r += ch;
                 }
 
-                s = r;
+                r += ch;
             }
+
+            s = r;
 
             // remove multiple period characters
             s = s.replace(/(\.){2,}/g, '');
