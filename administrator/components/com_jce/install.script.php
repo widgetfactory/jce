@@ -13,17 +13,6 @@ defined('_JEXEC') or die('RESTRICTED');
 
 class com_jceInstallerScript {
 
-    public function preflight($type, $parent) {
-        $requirements = self::checkRequirements();
-
-        if ($requirements !== true) {
-            echo $requirements;
-            return false;
-        }
-
-        return true;
-    }
-
     public function install($parent) {
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/install.php');
 
@@ -175,38 +164,6 @@ class com_jceInstallerScript {
             }
         }
     }
-
-    public static function checkRequirements() {
-        $requirements = array();
-
-        // check PHP version
-        if (version_compare(PHP_VERSION, '5.6', '<')) {
-            $requirements[] = array(
-                'name' => 'PHP Version',
-                'info' => 'JCE Requires PHP version 5.6 or later. Your version is : ' . PHP_VERSION
-            );
-        }
-
-        if (!empty($requirements)) {
-            $message = '<div id="jce"><style type="text/css" scoped="scoped">' . file_get_contents(__DIR__ . '/media/css/install.css') . '</style>';
-
-            $message .= '<h2>' . JText::_('WF_ADMIN_TITLE') . ' - Install Failed</h2>';
-            $message .= '<h3>JCE could not be installed as this site does not meet <a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" target="_blank">technical requirements</a> (see below)</h3>';
-            $message .= '<ul class="install">';
-
-            foreach ($requirements as $requirement) {
-                $message .= '<li class="error">' . $requirement['name'] . ' : ' . $requirement['info'] . '<li>';
-            }
-
-            $message .= '</ul>';
-            $message .= '</div>';
-
-            return $message;
-        }
-
-        return true;
-    }
-
 }
 
 /**
@@ -218,20 +175,7 @@ function com_install() {
     if (!defined('JPATH_PLATFORM')) {
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/install.php');
 
-        $installer      = JInstaller::getInstance();
-        $requirements   = com_jceInstallerScript::checkRequirements();
-
-        if ($requirements !== true) {
-            $installer->set('message', $requirements);
-
-            $installer->abort();
-
-            WFInstall::cleanupInstall();
-
-            return false;
-        }
-
-
+        $installer = JInstaller::getInstance();
         return WFInstall::install($installer);
     }
 
