@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
  * @copyright   Copyright 2009, Moxiecode Systems AB
  * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
