@@ -15,14 +15,14 @@ defined('_WF_EXT') or die('RESTRICTED');
     <div class="ui-form-row">
         <label for="jcemediabox_popup_title" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE'); ?></label>
         <div class="ui-form-controls ui-width-4-5">
-          <input id="jcemediabox_popup_title" name="jcemediabox_popup_title[]" type="text" class="text" value="" />
+          <input id="jcemediabox_popup_title" class="ui-input-multiple" type="text" class="text" value="" />
         </div>
     </div>
 
     <div class="ui-form-row">
         <label for="jcemediabox_popup_caption" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION'); ?></label>
         <div class="ui-form-controls ui-width-4-5">
-          <input id="jcemediabox_popup_caption" name="jcemediabox_popup_caption[]" type="text" class="text" value="" />
+          <input id="jcemediabox_popup_caption" class="ui-input-multiple" type="text" class="text" value="" />
         </div>
     </div>
 
