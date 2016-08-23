@@ -69,28 +69,25 @@ final class WFTabs extends JObject {
      * @param object $layout Layout (panel) name
      * @return panel JView object
      */
-    private function loadPanel($panel, $state) {
+    private function loadPanel($panel) {
         $view = new WFView(array(
-                    'name' => $panel,
-                    'layout' => $panel
-                ));
+          'name'    => $panel,
+          'layout'  => $panel
+        ));
 
         // add tab paths
         foreach ($this->_paths as $path) {
             $view->addTemplatePath($path);
         }
 
-        // assign panel state to view
-        $view->assign('state', (int) $state);
-
         return $view;
     }
-    
+
     public function getPanel($panel) {
         if (array_key_exists($panel, $this->_panels)) {
             return $this->_panels[$panel];
         }
-        
+
         return false;
     }
 
@@ -102,16 +99,18 @@ final class WFTabs extends JObject {
      * @param array $values An array of values to assign to panel view
      */
     public function addTab($tab, $state = 1, $values = array()) {
-        if (!array_key_exists($tab, $this->_tabs)) {
-            if ($state) {
-                $this->_tabs[$tab] = $tab;
-            }
+        // backwards compatability as $state has been removed
+        if (!$state) {
+            return false;
+        }
 
-            $panel = $this->addPanel($tab, $state);
+        if (!array_key_exists($tab, $this->_tabs)) {
+            $this->_tabs[$tab] = $tab;
+            $panel = $this->addPanel($tab);
 
             // array is not empty and is associative
             if (!empty($values) && array_values($values) !== $values) {
-               $panel->assign($values); 
+               $panel->assign($values);
             }
         }
     }
@@ -121,10 +120,10 @@ final class WFTabs extends JObject {
      * @access	public
      * @param 	object $panel Panel name
      */
-    public function addPanel($tab, $state = 1) {
+    public function addPanel($tab) {
         if (!array_key_exists($tab, $this->_panels)) {
-            $this->_panels[$tab] = $this->loadPanel($tab, $state);
-            
+            $this->_panels[$tab] = $this->loadPanel($tab);
+
             return $this->_panels[$tab];
         }
     }
@@ -179,7 +178,7 @@ final class WFTabs extends JObject {
 
             foreach ($this->_panels as $key => $panel) {
                 $class = "";
-                //$state = $panel->state ? '' : ' style="display:none;"';
+
                 if (!empty($this->_tabs)) {
 
                     if ($x === 0) {

@@ -83,7 +83,7 @@ class WFPopupsExtension extends WFExtension {
 
         // Add popup tab and assign popups reference to document
         if (count($this->getPopups())) {
-            $tabs->addTab('popups', 1);
+            $tabs->addTab('popups');
             $tabs->getPanel('popups')->assign('popups', $this);
         }
     }
