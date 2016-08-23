@@ -330,10 +330,12 @@ class WFFileBrowser extends JObject {
     }
 
     protected function checkPathAccess($path) {
-      if (!empty($this->get('filter'))) {
+      $filter = $this->get('filter');
+
+      if (!empty($filter)) {
         $path = ltrim($path, '/');
 
-        return !in_array($path, (array) $this->get('filter'));
+        return !in_array($path, (array) $filter);
       }
 
       return true;
@@ -366,13 +368,15 @@ class WFFileBrowser extends JObject {
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFolders($relative, $filter);
 
+        $filter = $this->get('filter');
+
         // remove filtered items
-        if (!empty($this->get('filter'))) {
+        if (!empty($filter)) {
           $list = array_filter($list, function($item) {
             // remmove leading slash
             $id = ltrim($item['id'], '/');
 
-            return !in_array($id, (array) $this->get('filter'));
+            return !in_array($id, (array) $filter);
           });
         }
 
@@ -503,19 +507,8 @@ class WFFileBrowser extends JObject {
      * @param string $string
      */
     private function escape($string) {
-        return preg_replace(array(
-            '/%2F/',
-            '/%3F/',
-            '/%40/',
-            '/%2A/',
-            '/%2B/'
-                ), array(
-            '/',
-            '?',
-            '@',
-            '*',
-            '+'
-                ), rawurlencode($string));
+      $revert = array('%2A' => '*', '%2B' => '+', '%2F'=> "/", '%3F' => '?', '%40' => '@');
+      return strtr(rawurlencode($string), $revert);
     }
 
     /**
