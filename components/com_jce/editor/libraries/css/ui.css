@@ -55,6 +55,16 @@
   display: none;
 }
 
+.ui-repeatable .ui-repeatable-hidden-first {
+    display: none;
+}
+
+.ui-repeatable  + .ui-repeatable .ui-repeatable-hidden-first {
+    display: block;
+}
+
+.ui-repeatable.ui-placeholder {padding: 10px;}
+
 input.color, input.colour {
     width: 100px;
 }
@@ -164,3 +174,5 @@ input.color, input.colour {
     width: 100%;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
+
+.ui-isdirty {color: inherit !important}
