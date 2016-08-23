@@ -38,9 +38,9 @@ defined('_JEXEC') or die('RESTRICTED');
                 <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
             </label>
             <div class="ui-form-controls ui-width-4-5">
-                <input type="text" id="width" value="" />
+                <input type="text" id="width" value="" class="ui-text-muted" />
                 <strong class="ui-margin-left ui-margin-right ui-vertical-align-middle">&times;</strong>
-                <input type="text" id="height" />
+                <input type="text" id="height" class="ui-text-muted" />
 
                 <input class="ui-constrain-checkbox" type="checkbox" checked />
             </div>

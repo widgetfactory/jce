@@ -61,17 +61,29 @@
 				}));
 
 				// Width & Height
-				var w = $.Plugin.getAttrib(n, 'width'),
-					h = $.Plugin.getAttrib(n, 'height');
+				var w = $.Plugin.getAttrib(n, 'width'), h = $.Plugin.getAttrib(n, 'height');
 
-					if (w || h) {
-							$('#width, #height').addClass('ui-edited');
-					} else {
-							w = n.width, h = n.height;
+				$('#width').val(function() {
+					if (w) {
+							$(this).addClass('ui-isdirty');
+							return w;
 					}
+					// if height is not set, return actual width
+					if (!h) {
+							return n.width;
+					}
+				});
 
-					$('#width').val(w);
-					$('#height').val(h);
+				$('#height').val(function() {
+					if (h) {
+							$(this).addClass('ui-isdirty');
+							return h;
+					}
+					// if width is not set, return actual height
+					if (!w) {
+							return n.height;
+					}
+				});
 
 				$('#alt').val(ed.dom.getAttrib(n, 'alt'));
 				$('#title').val(ed.dom.getAttrib(n, 'title'));
@@ -156,10 +168,8 @@
 
 			// update constrain after applying values
 			$('.ui-constrain-checkbox').on('constrain:change', function(e, elms) {
-				$(elms).removeClass('ui-text-muted').addClass('ui-edited');
+				$(elms).addClass('ui-isdirty');
 			}).trigger('constrain:update');
-
-			$('#width, #height').addClass('ui-text-muted');
 		},
 		insert: function() {
 			var ed = tinyMCEPopup.editor,
@@ -218,7 +228,7 @@
 					if (self.settings.always_include_dimensions) {
 						v = $('#' + k).val();
 					} else {
-						v = $('#' + k + '.edited').val() || '';
+						v = $('#' + k + '.ui-isdirty').val() || '';
 					}
 				}
 
