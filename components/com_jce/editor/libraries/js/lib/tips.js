@@ -61,6 +61,8 @@
 			}
 
 			$(element).click(function(e) {
+				e.preventDefault();
+
 				if (options.trigger == 'click' && $(this).is(options.disabled)) {
 					return;
 				}
