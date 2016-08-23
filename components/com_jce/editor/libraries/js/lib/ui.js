@@ -120,18 +120,21 @@
 
         $(this).data('ui-repeatable', 1);
 
+        function clone() {
+          // clone element
+          var el = $(self).clone(true, true);
+
+          // clear inputs
+          $(el).find('input').val('');
+
+          $(self).trigger('repeatable:create', [self, $(el).get(0)]);
+
+          // add new element
+          $(el).insertAfter($(self).siblings('.ui-repeatable').add(self).last());
+        }
+
         $('.ui-repeatable-create', this).click(function(e) {
-            // clone element
-            var el = $(self).clone(true, true);
-
-            // clear inputs
-            $(el).find('input').val('');
-
-            $(self).trigger('repeatable:create', [self, $(el).get(0)]);
-
-            // add new element
-            $(el).insertAfter($(self).siblings('.ui-repeatable').add(self).last());
-
+            clone();
             e.preventDefault();
         });
 
@@ -139,6 +142,12 @@
           $(this).parent().parent().remove();
 
           e.preventDefault();
+        });
+
+        $(self).on('repeatable:clone', function(e, count) {
+          for (var i = 0; i < count; i++) {
+            clone();
+          }
         });
       });
     };
