@@ -175,13 +175,13 @@
   border-radius: 2px;
 }
 .defaultSkin .mceButtonEnabled:hover {
-  border: 1px solid #99baca;
-  background-color: #ebf7fd;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
 }
 .defaultSkin .mceButtonEnabled:hover .mceIcon {}
 .defaultSkin .mceButtonActive, .defaultSkin .mceButtonSelected {
-  border: 1px solid #99baca;
-  background-color: #ebf7fd;
+  border: 1px solid #ccc;
+  background-color: #ddd;
 }
 .defaultSkin .mceButtonActive .mceIcon, .defaultSkin .mceButtonSelected .mceIcon {
 }
@@ -246,12 +246,12 @@
 }
 
 .defaultSkin .mceListBox:hover .mceOpen a {
-  border-color: #99baca;
-  background-color: #ebf7fd;
+  border-color: #ccc;
+  background-color: #fafafa;
 }
 
 .defaultSkin .mceListBox:hover .mceText a {
-  border-color: #99baca;
+  border-color: #ccc;
 }
 
 .defaultSkin .mceListBox .mceOpen a:after {
@@ -262,14 +262,14 @@
   color: #444;
 }
  .defaultSkin table.mceListBoxEnabled:hover .mceText a,  .defaultSkin .mceListBoxHover .mceText a, .defaultSkin  .mceListBoxSelected .mceText a {
-  border: 1px solid #99baca;
+  border: 1px solid #ccc;
   border-right: 0;
   background: #fff
 }
 
  table.mceListBoxEnabled:hover .mceOpen a,  .defaultSkin .mceListBoxHover .mceOpen a,  .defaultSkin .mceListBoxSelected .mceOpen a {
   background-color: #fff;
-  border: 1px solid #99baca;
+  border: 1px solid #ccc;
 }
 .defaultSkin .mceListBoxDisabled .mceOpen a:after {
   color: gray;
@@ -360,18 +360,18 @@
   display: none
 }
  table.mceSplitButtonEnabled:hover .mceText a,  .defaultSkin .mceSplitButtonHover .mceText a,  .defaultSkin .mceSplitButtonSelected .mceAction a {
-  border-color: #99baca;
+  border-color: #ccc;
   border-right: 0;
-  background-color: #f5fbfe;
+  background-color: #fafafa;
 }
  table.mceSplitButtonEnabled:hover .mceOpen a,  .defaultSkin .mceSplitButtonHover .mceOpen a,  .defaultSkin .mceSplitButtonSelected .mceOpen a, .defaultSkin .mceSplitButtonSelected .mceText a {
-  background-color: #f5fbfe;
-  border-color: #99baca;
+  background-color: #fafafa;
+  border-color: #ccc;
 }
 
 .defaultSkin .mceSplitButtonEnabled:hover .mceText a, .defaultSkin .mceSplitButtonEnabled:hover .mceOpen a {
-  border-color: #99baca;
-  background-color: #ebf7fd;
+  border-color: #ccc;
+  background-color: #fafafa;
 }
 
 .defaultSkin .mceSplitButtonDisabled .mceAction,  .defaultSkin .mceSplitButtonDisabled span.mceOpen {
@@ -381,8 +381,8 @@
 }
 
 .defaultSkin .mceSplitButtonActive .mceText a {
-  border: 1px solid #99baca;
-  background-color: #f5fbfe;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
 }
 .defaultSkin .mceSplitButtonActive .mceOpen a {
   border-left: 0;
@@ -433,15 +433,15 @@
   border: 1px solid #FFF
 }
 .defaultSkin .mceColorSplitMenu a.mceMoreColors:hover {
-  border: 1px solid #99baca;
-  background-color: #f5fbfe;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
 }
 .defaultSkin .mceColorPreview {
   margin-left: 2px;
   width: 16px;
   height: 4px;
   overflow: hidden;
-  background: #f5fbfe;
+  background: #fafafa;
 }
 .defaultSkin .mce_forecolor span.mceAction, .defaultSkin .mce_backcolor span.mceAction {
   overflow: hidden;
@@ -475,8 +475,8 @@
 .defaultSkin .mceTableSplitMenu td a {width: 20px; height: 20px; display: block; border: 1px solid #ddd; padding: 0;}
 
 .defaultSkin .mceTableSplitMenu .selected a {
-  background-color: #f5fbfe;
-  border-color: #99baca;
+  background-color: #337ab7;
+  border-color: #2e6da4;
 }
 .defaultSkin .mceTableSplitMenu .mceTableGridCount {
   background-color: #fff;
@@ -542,7 +542,7 @@
   width: 22px;
 }
 .defaultSkin .mceMenu .mceMenuItemEnabled a:hover, .defaultSkin .mceMenu .mceMenuItemActive {
-  background-color: #dbecf3
+  background-color: #eee
 }
 
 .defaultSkin .mceMenu .mceMenuItemEnabled .mceTableSplitMenu a:hover {background-color: transparent;}
@@ -593,11 +593,11 @@
   box-sizing: border-box;
 }
 .defaultSkin .mceButtonDialogActive .mceButtonDialog {
-  border-color: #99baca;
+  border-color: #ccc;
   background-color: #f5fbfe;
 }
 .defaultSkin .mceButtonDialogActive .mceButtonDialog:before {
-  border-color: #99baca;
+  border-color: #ccc;
 }
 .defaultSkin .mceButtonDialog h4 {
   font-size: 14px;
@@ -622,7 +622,7 @@
   box-shadow: inherit;
 }
 .defaultSkin .mceButtonDialog input[type="text"]:focus {
-  border-color: #99baca;
+  border-color: #66afe9;
   outline: 0;
   color: #444;
   box-shadow: inherit;
