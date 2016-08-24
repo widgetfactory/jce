@@ -112,7 +112,7 @@ class WFViewCpanel extends WFView {
               $link = 'index.php?option=com_installer';
             }
 
-            $icons[] = '<li class="cpanel-icon wf-tooltip" title="' . WFText::_($title) . '::' . WFText::_($description) . '"><a id="wf-browser-link" href="' . $link . '"' . implode(' ', $attribs) . '><span class="' . $view . '"></span>' . WFText::_($title) . '</a></li>';
+            $icons[] = '<li class="span2"><a id="wf-browser-link" class="thumbnail" title="' . WFText::_($description) . '" href="' . $link . '"' . implode(' ', $attribs) . '><i class="icon-' . $map[$view] . '"></i><h6 class="thumbnail-title text-center">' . WFText::_($title) . '</h6></a></li>';
         }
 
         $this->assign('icons', $icons);

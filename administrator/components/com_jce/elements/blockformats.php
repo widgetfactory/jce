@@ -33,12 +33,12 @@ class WFElementBlockformats extends WFElement {
      * @param array $insert_array
      */
     protected static function array_insert(&$array, $position, $insert_array) {
-        $first_array = array_splice($array, 0, $position);       
+        $first_array = array_splice($array, 0, $position);
         $array = array_merge($first_array, $insert_array, $array);
     }
 
     public function fetchElement($name, $value, &$node, $control_name) {
-        
+
         if (empty($value)) {
             $data = array_keys(self::$formats);
             $value = array();
@@ -49,15 +49,15 @@ class WFElementBlockformats extends WFElement {
 
         $output = array();
 
-        $output[] = '<div class="blockformats">';
-        $output[] = '<ul>';
+        $output[] = '<div class="blockformats controls">';
+        $output[] = '<ul class="unstyled">';
 
         // create default font structure
         foreach ($data as $format) {
             if (array_key_exists($format, self::$formats) === false) {
                 continue;
             }
-            
+
             if (empty($value) || in_array($format, $value)) {
                 $output[] = '<li><input type="checkbox" value="' . $format . '" checked="checked" /><span class="blockformat-' . $format . '">' . self::$formats[$format] . '</span></li>';
             } else {

@@ -24,7 +24,7 @@
 
                     // create element
                     var li = document.createElement('li');
-                    li.innerHTML = '<input type="hidden" name="users[]" value="' + v + '" /><label><span class="users-list-delete"></span>' + h + '</label>';
+                    li.innerHTML = '<span>' + h + '</span><button class="btn btn-link users-list-delete"><i class="icon-trash"></i></button><input type="hidden" name="users[]" value="' + v + '" />';
 
                     // add to list
                     s.appendChild(li);

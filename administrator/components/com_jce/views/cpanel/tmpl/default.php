@@ -12,10 +12,9 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div class="ui-jce">
-    <ul id="cpanel">
-        <?php echo implode("\n", $this->icons); ?>
+    <ul id="cpanel" class="thumbnails">
+      <?php echo implode("\n", $this->icons); ?>
     </ul>
-    <br style="clear:both;" />
     <ul class="adminformlist">
         <li>
             <span class="wf-tooltip" title="<?php echo WFText::_('WF_CPANEL_SUPPORT') . '::' . WFText::_('WF_CPANEL_SUPPORT_DESC'); ?>">

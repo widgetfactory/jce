@@ -18,7 +18,7 @@ class WFElementStyleFormat extends WFElement {
 
     protected $wrapper = array();
     protected $merge = array();
-    
+
     protected $sections     = array('section','nav','article','aside','h1', 'h2', 'h3', 'h4', 'h5', 'h6','header','footer','address','main');
     protected $grouping     = array('p','pre','blockquote','figure','figcaption','div');
     protected $textlevel    = array('em','strong','small','s','cite','q','dfn','abbr','data','time','code','var','samp','kbd','sub','i','b','u','mark','ruby','rt','rp','bdi','bdo','span','wbr');
@@ -35,26 +35,26 @@ class WFElementStyleFormat extends WFElement {
         $wf = WFEditor::getInstance();
 
         $output = array();
-        
+
         // default item list (remove "attributes" for now)
         $default = array('title' => '', 'element' => '', 'selector' => '', 'classes' => '', 'styles' => '', 'attributes' => '');
-        
+
         // pass to items
         $items = json_decode($value, true);
 
         /* Convert legacy styles */
         $theme_advanced_styles = $wf->getParam('editor.theme_advanced_styles', '');
-        
+
         if (!empty($theme_advanced_styles)) {
             foreach(explode(',', $theme_advanced_styles) as $styles) {
-                $style = json_decode("{" . preg_replace('#([^=]+)=([^=]+)#', '"title":"$1","classes":"$2"', $styles) . "}", true);  
-                
+                $style = json_decode("{" . preg_replace('#([^=]+)=([^=]+)#', '"title":"$1","classes":"$2"', $styles) . "}", true);
+
                 if ($style) {
                     $items[] = $style;
                 }
             }
         }
-        
+
         // create default array if no items
         if (empty($items)) {
             $items = array($default);
@@ -64,34 +64,34 @@ class WFElementStyleFormat extends WFElement {
         // store element options
         $this->elements = $this->getElementOptions();
 
-        $html = '<div class="styleformat-list"';
-        
+        $html = '<div class="styleformat-list controls"';
+
         // pattern data attribute for editable select input box
         if ((string) $node->attributes()->parent) {
             $prefix = preg_replace(array('#^params#', '#([^\w]+)#'), '', $control_name);
-            
+
             $parents = array();
-            
+
             foreach(explode(';', (string) $node->attributes()->parent) as $item) {
                 $parents[] = $prefix . $item;
             }
-            
+
             $html .= ' data-parent="' . implode(';', $parents) . '"';
         }
-        
+
         $html .= '>';
-        
+
         $output[] = $html;
 
-        foreach ($items as $item) {            
+        foreach ($items as $item) {
             $elements = array('<div class="styleformat">');
 
             foreach ($default as $k => $v) {
-                
+
                 if (array_key_exists($k, $item)) {
                     $v = $item[$k];
                 }
-                
+
                 $elements[] = '<div class="styleformat-item-' . $k . '">' . $this->getField($k, $v) . '</div>';
             }
             // handle
@@ -100,21 +100,21 @@ class WFElementStyleFormat extends WFElement {
             $elements[] = '<a href="#" class="close">&times;</a>';
             // collapse
             $elements[] = '<a href="#" class="close collapse icon-chevron-up"></a>';
-            
+
             $elements[] = '</div>';
 
             $output[] = implode('', $elements);
         }
-        
+
         $output[] = '<a href="#" class="close plus"><span>' . WFText::_('WF_STYLEFORMAT_NEW') . '</span><span>&plus;</span></a>';
-        
+
         // hidden field
         $output[] = '<input type="hidden" name="' . $control_name . '[' . $name . ']" value="" />';
-        
+
         if (!empty($theme_advanced_styles)) {
             $output[] = '<input type="hidden" name="params[editor][theme_advanced_styles]" value="" class="isdirty" />';
         }
-        
+
         $output[] = '</div>';
         return implode("\n", $output);
     }
@@ -124,49 +124,49 @@ class WFElementStyleFormat extends WFElement {
         $options = array(
             JHTML::_('select.option', '', WFText::_('WF_OPTION_SELECTED_ELEMENT'))
         );
-        
+
         $options[] = JHTML::_('select.option',  '<OPTGROUP>', WFText::_('WF_OPTION_SECTION_ELEMENTS'));
 
         foreach ($this->sections as $item) {
             $options[] = JHTML::_('select.option', $item, $item);
         }
-        
+
         $options[] = JHTML::_('select.option',  '</OPTGROUP>');
-        
+
         $options[] = JHTML::_('select.option',  '<OPTGROUP>', WFText::_('WF_OPTION_GROUPING_ELEMENTS'));
 
         foreach ($this->grouping as $item) {
             $options[] = JHTML::_('select.option', $item, $item);
         }
-        
+
         $options[] = JHTML::_('select.option',  '</OPTGROUP>');
-        
+
         $options[] = JHTML::_('select.option',  '<OPTGROUP>', WFText::_('WF_OPTION_TEXT_LEVEL_ELEMENTS'));
 
         foreach ($this->textlevel as $item) {
             $options[] = JHTML::_('select.option', $item, $item);
         }
-        
+
         $options[] = JHTML::_('select.option',  '</OPTGROUP>');
-        
+
         $options[] = JHTML::_('select.option',  '<OPTGROUP>', WFText::_('WF_OPTION_FORM_ELEMENTS', 'Form Elements'));
 
         foreach ($this->form as $item) {
             $options[] = JHTML::_('select.option', $item, $item);
         }
-        
+
         $options[] = JHTML::_('select.option',  '</OPTGROUP>');
-        
+
         return $options;
     }
 
     protected function getField($key, $value) {
         $item = array();
-        
+
         if ($key !== "title") {
             $item[] = '<label for="' . $key . '">' . WFText::_('WF_STYLEFORMAT_' . strtoupper($key)) . '</label>';
         }
-        
+
         // encode value
         $value = htmlspecialchars($value);
 
@@ -174,9 +174,9 @@ class WFElementStyleFormat extends WFElement {
             case 'inline':
             case 'block':
             case 'element':
-                
+
                 $class = "";
-                
+
                 // make element editable
                 /*if ($key === "element") {
                     $class = ' class="editable"';

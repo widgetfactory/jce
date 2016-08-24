@@ -51,10 +51,10 @@ if (strpos($theme, '.') === false) {
         <?php endforeach; ?>
     </div>
 
-    <ul class="adminformlist" id="profileLayoutTable">
+    <div class="adminformlist" id="profileLayoutTable">
         <!-- Active Editor Layout -->
-        <li>
-            <label class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
+        <div class="controls-group">
+            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
 
             <div class="profileLayoutContainer profileLayoutContainerCurrent">
               <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
@@ -104,10 +104,10 @@ if (strpos($theme, '.') === false) {
                 </div>
             </div>
           </div>
-        </li>
+        </div>
         <!-- Available Buttons -->
-        <li>
-            <label class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
+        <div class="controls-group">
+            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
             <div class="profileLayoutContainer profileLayoutContainerToolbar" style="width:<?php echo $width;?>">
                 <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
 
@@ -133,36 +133,44 @@ if (strpos($theme, '.') === false) {
                   </div>
                 </div>
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
     <input type="hidden" name="rows" value="<?php echo $this->profile->rows; ?>" />
     <input type="hidden" name="plugins" value="<?php echo $this->profile->plugins; ?>" />
 </fieldset>
 <fieldset>
     <legend><?php echo WFText::_('WF_PROFILES_FEATURES_ADDITIONAL'); ?></legend>
-    <ul id="profileAdditionalFeatures" class="adminformlist">
+    <div id="profileAdditionalFeatures" class="adminformlist">
         <?php
         $i = 0;
         foreach ($this->plugins as $plugin) :
             if (!$plugin->icon) :
                 if ($plugin->editable) :
                     ?>
-                    <li class="editable">
-                        <label valign="top" class="key"><?php echo WFText::_($plugin->title); ?></label>
-                        <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                        <span><?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?></span>
-                    </li>
+                    <div class="control-group editable">
+                        <label class="control-label"><?php echo WFText::_($plugin->title); ?></label>
+                        <div class="controls">
+                          <label class="checkbox">
+                            <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
+                            <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                          </label>
+                        </div>
+                    </div>
                 <?php else : ?>
-                    <li>
-                        <label><?php echo WFText::_($plugin->title); ?></label>
-                        <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                        <span><?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?></span>
-                    </li>
+                    <div class="control-group">
+                        <label class="control-label"><?php echo WFText::_($plugin->title); ?></label>
+                        <div class="controls">
+                          <label class="checkbox">
+                            <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
+                            <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                          </label>
+                        </div>
+                    </div>
                 <?php
                 endif;
             endif;
             $i++;
         endforeach;
         ?>
-    </ul>
+    </div>
 </fieldset>

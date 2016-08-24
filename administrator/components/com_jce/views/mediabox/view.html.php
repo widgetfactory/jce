@@ -26,7 +26,7 @@ class WFViewMediabox extends WFView {
 
             $params = new WFParameter($data, $xml, '', array('control' => 'config:fields:fieldset'));
             $params->addElementPath(JPATH_PLUGINS . '/system/jcemediabox/elements');
-            
+
             $groups = array();
             $array  = array();
 
@@ -39,7 +39,7 @@ class WFViewMediabox extends WFView {
             }
 
             return $array;
-            
+
         } else {
             // get params definitions
             $params = new JParameter($data, JPATH_PLUGINS . '/system/jcemediabox.xml');
@@ -66,7 +66,7 @@ class WFViewMediabox extends WFView {
 
         $this->assign('params', $params);
         $this->assign('client', $client);
-        
+
         wfimport('admin.models.editor');
 
         $options = array(

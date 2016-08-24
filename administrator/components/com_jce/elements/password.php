@@ -39,7 +39,7 @@ class WFElementPassword extends WFElement
 	{
 
 		$size   = ((string) $node->attributes()->size     ? 'size="' . (string) $node->attributes()->size . '"' : '');
-		$class  = ((string) $node->attributes()->class    ? 'class="' . (string) $node->attributes()->class . '"' : 'class="text_area"');
+		$class  = ((string) $node->attributes()->class    ? 'class="' . (string) $node->attributes()->class . '"' : '');
 
 		return '<input type="password" name="' . $control_name . '[' . $name . ']" id="' . $control_name . $name . '" value="' . $value . '" '
 			. $class . ' ' . $size . ' />';

@@ -68,7 +68,7 @@
             $("select.editable, select.combobox").datalist();
 
             // Color Picker
-            $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '.ui-jce'}));
+            $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '.ui-jce'})).next('.colorpicker_widget').wrap('<span class="add-on" />');
 
             // Extension Mapper
             $('.extensions > input[type="text"][name]').extensionmapper();
@@ -204,12 +204,10 @@
             });
 
             // add onclick for user list item delete
-            $('#users').click(function(e) {
-                var n = e.target;
+            $('#users').on('click', '.users-list-delete', function(e) {
+                e.preventDefault();
 
-                if ($(n).is('span.users-list-delete')) {
-                    $(n).parent().parent().remove();
-                }
+                $(this).parent().remove();
             });
 
             // add "edited" class to each input on change

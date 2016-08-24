@@ -41,19 +41,19 @@ class WFElementRadio extends WFElement {
             $text = (string) $option;
             $options[] = JHtml::_('select.option', $val, $text);
         }
-        
+
         $attribs = array();
 
         // pattern data attribute for editable select input box
         if ((string) $node->attributes()->parent) {
             $prefix = preg_replace(array('#^params#', '#([^\w]+)#'), '', $control_name);
-            
+
             $items = array();
-            
+
             foreach(explode(';', (string) $node->attributes()->parent) as $item) {
                 $items[] = $prefix . $item;
             }
-            
+
             $attribs[] =  'data-parent="' . implode(';', $items) . '"';
         }
 

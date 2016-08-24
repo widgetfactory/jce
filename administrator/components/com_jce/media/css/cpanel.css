@@ -108,3 +108,37 @@ ul#table_status {
         margin: 5px 15px 5px;
     }
 }
+
+.ui-jce .thumbnails [class^="icon-"], .ui-jce .thumbnails [class*=" icon-"] {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  font-size: 4em;
+  text-align: center;
+  line-height: 1.5em;
+}
+
+.ui-jce .thumbnails .thumbnail {
+  color: inherit;
+  padding: 10px;
+  box-shadow: inherit;
+  -webkit-box-shadow: inherit;
+  -moz-box-shadow: inherit;
+}
+
+.ui-jce .thumbnails .thumbnail:hover, .ui-jce .thumbnails .thumbnail:active {
+  text-decoration: none;
+}
+
+.ui-jce .thumbnails .thumbnail-title {
+  margin: 0;
+  height: 28px;
+}
+
+.ui-jce .thumbnails > li {
+  width: 150px;
+}
+.ui-jce .thumbnails > li {
+  margin-left: 15px;
+}

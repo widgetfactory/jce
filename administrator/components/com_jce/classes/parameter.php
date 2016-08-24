@@ -514,10 +514,12 @@ class WFParameter {
         $html = '';
 
         if (!empty($params)) {
-            $html .= '<ul class="adminformlist">';
+            //$html .= '<ul class="adminformlist">';
 
             foreach ($params as $item) {
-                //if (is_a($item, 'WFParameter')) {
+
+                $html .= '<div class="control-group">';
+
                 if ($item instanceof WFParameter) {
                     foreach ($item->getGroups() as $group) {
                         $label = $group;
@@ -539,11 +541,11 @@ class WFParameter {
                     $label    = preg_replace_callback('#(for|id)="([^"]+)"#', array($this, 'cleanAttribute'), $item[0]);
                     $element  = preg_replace_callback('#(id)="([^"]+)"#', array($this, 'cleanAttribute'), $item[1]);
 
-                    $html .= '<li>' . $label . $element;
+                    $html .= $label . $element;
                 }
-            }
 
-            $html .= '</li></ul>';
+                $html .= '</div>';
+            }
         }
 
         return $html;

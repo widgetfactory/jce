@@ -51,6 +51,7 @@
 
             $('input[size="100"]').addClass('input-xlarge');
             $('input[size="50"]').addClass('input-large');
+            $('input[size="10"]').addClass('input-small');
             $('input[size="5"]').addClass('input-mini');
 
             // dialogs
@@ -85,7 +86,7 @@
                 $('th input[type="checkbox"]', $('#profiles-list, #users-list')).prop('checked', bc == n);
             });
 
-            //$('label.radio').addClass('inline');
+            $('.radio, .checkbox').addClass('inline');
 
             // Sortable Profiles list
             $('#profiles-list tbody').sortable({
@@ -261,7 +262,7 @@
             $('[data-parent]').each(function () {
                 var el = this, data = $(this).data('parent') || '';
 
-                var p = $(this).parents('li:first');
+                var p = $(this).parent('.control-group');
 
                 // hide the element by default
                 $(p).hide();

@@ -13,18 +13,15 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<form action="index.php" method="post" name="adminForm" id="adminForm">
+<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
     <div class="ui-jce">
     	<fieldset class="adminform panelform">
 			 <legend><?php echo JText :: _('WF_MEDIABOX_PARAMETERS');?></legend>
-		    <ul class="adminformlist">
-			<?php
-				foreach ($this->params as $param) {
-					echo '<li>' . $param[0] . $param[1] . '</li>';
-				}
-		    ?>
-			</ul>
-		</fieldset>
+       <?php foreach ($this->params as $param): ?>
+          <div class="control-group">
+            <?php echo $param[0] . $param[1]; ?>
+          </div>
+      <?php endforeach; ?>
     </div>
     <input type="hidden" name="option" value="com_jce" />
     <input type="hidden" name="client" value="<?php echo $this->client; ?>" />

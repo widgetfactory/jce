@@ -41,7 +41,7 @@ class WFElementBrowser extends WFElement {
          * htmlspecialchars_decode is not compatible with PHP 4
          */
         $value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES), ENT_QUOTES);
-        $attributes['class'] = ((string) $node->attributes()->class ? (string) $node->attributes()->class . ' text_area' : 'text_area' );
+        $attributes['class'] = ((string) $node->attributes()->class ? (string) $node->attributes()->class : '' );
 
         $control = $control_name . '[' . $name . ']';
 
@@ -67,6 +67,7 @@ class WFElementBrowser extends WFElement {
 
         $filter = isset($attributes['data-filter']) ? $attributes['data-filter'] : '';
 
+        $html .= '<div class="input-append">';
         $html .= '<input';
 
         foreach ($attributes as $k => $v) {
@@ -93,7 +94,9 @@ class WFElementBrowser extends WFElement {
             return $html;
         }
 
-        $html .= '<a href="' . $link . '" id="' . $attributes['id'] . '_browser' . '" class="btn btn-link browser" target="_blank" onclick="Joomla.modal(this, \'' . $link . '\', '. $width .', '. $height .');return false;" title="' . WFText::_('WF_BROWSER_TITLE') . '"><span class="icon-picture"></span></a>';
+        $html .= '<span class="add-on"><a href="' . $link . '" id="' . $attributes['id'] . '_browser' . '" class="browser" target="_blank" onclick="Joomla.modal(this, \'' . $link . '\', '. $width .', '. $height .');return false;" title="' . WFText::_('WF_BROWSER_TITLE') . '"><i class="icon-picture"></i></a></span>';
+
+        $html .= '</div>';
 
         return $html;
     }

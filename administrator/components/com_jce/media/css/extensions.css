@@ -7,12 +7,8 @@
  * is derivative of works ddcensed under the GNU General Pubddc ddcense or
  * other free or open source software ddcenses.
  */
-.ui-jce .extensions > input[type="text"] {
-  padding-right: 30px;
-  width: 220px;
-  box-sizing: border-box;
-  height: 30px;
-}
+
+.ui-jce .extensions> input[type="text"] {}
 .ui-jce .extensions dl {
     display: none;
     list-style: none;
@@ -22,10 +18,9 @@
     box-sizing: border-box;
     position: relative;
 }
-
 .ui-jce .extensions dl dd {
     border: 1px dashed #ccc;
-    padding: 0;
+    padding: 5px;
     margin: 2px 0;
     position: relative;
     background-color: #fff;
@@ -36,13 +31,22 @@
     height: 20px;
     display: inline-block;
     vertical-align: middle;
+    margin: 0 5px;
+}
+.ui-jce .extensions dl dd.extension-custom .file {
+    margin: 5px;
 }
 .ui-jce .extensions dl dd label {
-    padding: 0 0 0 10px;
+    padding: 0;
+    margin: 0;
 }
 .ui-jce .extensions dl input[type="text"] {
-    width: 100px;
+    width: 120px;
     margin-left: 10px;
+    border-radius: 4px;
+}
+.ui-jce .extensions dl dd input[type="checkbox"] {
+    margin: 5px;
 }
 .ui-jce .extensions dl .extension-custom .extension-remove {
     display: none;
@@ -53,26 +57,21 @@
 .ui-jce .extensions dl .extension-custom+ .extension-custom .extension-remove {
     display: inline-block;
 }
-
-.ui-jce .extensions dl .extension-custom input + .extension-remove {display: inline-block;}
-
-.ui-jce .extensions dl .extension-custom {
-    padding-left: 33px;
+.ui-jce .extensions dl .extension-custom input+ .extension-remove {
+    display: inline-block;
 }
+.ui-jce .extensions dl .extension-custom {}
 .ui-jce .extensions dl .btn {
-    padding: 0.5em;
-    margin: 0 5px;
     color: #ccc;
-    float: right;
 }
-
 .ui-jce .extensions .btn {
-  padding: 2px;
-  margin-left: -26px;
+    margin: 0;
 }
 .ui-jce .extensions dt {
-  line-height: 30px;
-  background-color: #eee;
-  text-align: center;
+    line-height: 30px;
+    background-color: #eee;
+    text-align: center;
 }
-.ui-jce .extensions .ui-sortable-handle {cursor: move;}
+.ui-jce .extensions .ui-sortable-handle {
+    cursor: move;
+}

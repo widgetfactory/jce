@@ -15,16 +15,14 @@ defined('_JEXEC') or die('RESTRICTED');
         <div class="progress progress-striped active">
             <div class="bar" style="width: 100%;"><?php echo JText :: _('WF_MESSAGE_LOAD');?></div>
         </div>
-        <div>
 <?php foreach ($this->params->getGroups() as $group): ?>
-                <fieldset class="adminform panelform">
-                    <legend><?php echo WFText::_('WF_CONFIG_' . strtoupper($group)); ?></legend>
+        <fieldset class="adminform panelform">
+          <legend><?php echo WFText::_('WF_CONFIG_' . strtoupper($group)); ?></legend>
     <?php
     echo $this->params->render('params', $group)
     ?>
                 </fieldset>
                 <?php endforeach; ?>
-        </div>
     </div>
     <input type="hidden" name="option" value="com_jce" />
     <input type="hidden" name="client" value="<?php echo $this->client; ?>" />

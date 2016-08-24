@@ -86,8 +86,8 @@ class WFElementExtension extends WFElement
 
         $output   = array();
 
-        $output[] = '<div class="extensions">';
-        $output[] = '<input type="text" name="'.$control_name.'['.$name.']" id="'.$control_name.$name.'" value="'.$value.'" '.$class.' /><button class="btn btn-link extension_edit"><span class="icon-edit icon-apply"></span></button>';
+        $output[] = '<div class="extensions input-append">';
+        $output[] = '<input type="text" name="'.$control_name.'['.$name.']" id="'.$control_name.$name.'" value="'.$value.'" '.$class.' /><button class="btn btn-link extension_edit"><i class="icon-edit icon-apply"></i></button>';
 
         foreach ($data as $group => $items) {
             $custom = array();
@@ -112,7 +112,7 @@ class WFElementExtension extends WFElement
                     $checked = ' checked="checked"';
                 }
 
-                $output[] = '<dd><input type="checkbox" value="'.$mod.'"'.$checked.' /><span class="file '.$mod.'"></span><label>'.$mod.'</label>';
+                $output[] = '<dd><label><input type="checkbox" value="'.$mod.'"'.$checked.' /><span class="file '.$mod.'"></span>&nbsp;'.$mod.'</label>';
 
                 if (!$is_default) {
                     $output[] = '<button class="btn btn-link extension-remove"><span class="icon-trash"></span></button>';

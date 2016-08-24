@@ -11,18 +11,73 @@
 .ui-jce {
     font-size: 12px;
     padding: 10px;
-    background-color: #FFFFFF;
+    background-color: #fff;
     position: relative;
+    font-size: 1em;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #444;
 }
+
+.ui-jce .btn-link, .ui-jce .input-append .add-on a {color: inherit;}
+
 .ui-jce ul.nav.nav-tabs {
     padding: 0;
 }
+.ui-jce .ui-sortable-handle {
+  position: relative;
+}
+.ui-jce .ui-sortable-handle:after {
+  content: "::";
+  width: 1em;
+  height: 1em;
+  font-size: 20px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  color: #ccc;
+  font-weight: bold;
+  top: 50%;
+  margin-top: -0.5em;
+  vertical-align: middle;
+  line-height: 1em;
+}
+
+.form-horizontal .ui-jce .controls {
+  margin-left: 200px;
+  margin-bottom: 5px;
+}
+
+.form-horizontal .ui-jce .radio input[type="radio"], .form-horizontal .ui-jce .checkbox input[type="checkbox"] {
+  margin-right: 10px;
+  margin-left: 0;
+}
+
+.ui-jce .radio, .ui-jce .checkbox {
+  padding-left: 0;
+}
+
+.ui-jce .help-block-inline {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.form-horizontal .ui-jce .control-label {
+  box-sizing: border-box;
+  min-width: 200px;
+}
+
+.form-horizontal .ui-jce .control-group .radio,
+.form-horizontal .ui-jce .control-group .checkbox {
+  display: inline-block;
+}
+
+.form-horizontal .ui-jce .control-group .checkbox + .checkbox,
+.form-horizontal .ui-jce .control-group .radio + .radio {padding-left: 10px;}
+
 .icon-48-logo {
     background-image: url("../img/logo.png");
 }
-form[name="adminForm"] .ui-jce {
-    border-radius: 10px;
-}
+
 .ui-jce.loading:after {
     content: "";
     border-radius: 10px 10px 10px 10px;
@@ -43,39 +98,9 @@ form[name="adminForm"] .ui-jce {
     z-index: 1000;
     background: #FFF url('../../../../../components/com_jce/editor/tiny_mce/themes/advanced/skins/default/img/progress.gif') no-repeat center;
 }
-.ui-jce .ui-addselect {
-    background-color: #DDD;
-}
-.ui-jce textarea, .ui-jce fieldset textarea {
-    padding: 2px;
-    width: 300px;
-}
-.ui-jce select.inputbox.levels, select.inputbox.users {
-    width: 200px;
-}
-.ui-jce select {
-    min-width: 50px;
-}
+
 .ui-jce select[multiple] {
     height: auto !important;
-}
-.ui-jce label.radio input[type="radio"], .ui-jce label.checkbox input[type="checkbox"], .ui-jce label input[type="text"] {
-    margin: 4px 10px 0 0;
-}
-
-/* Parameters */
-
-.ui-jce fieldset.adminform {
-    color: #000000;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 1em;
-    margin: 5px;
-    clear: none;
-    border: 0;
-}
-.ui-jce ul.adminformlist {
-    display: inline-block;
-    width: 100%;
 }
 
 /* Mission Control resets */
@@ -602,16 +627,22 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     border: 1px dashed #ccc;
     height: 60px;
 }
-span.colorpicker_widget {
-    width: 22px;
-    height: 22px;
+
+.ui-jce .input-append input.color + .add-on {
+  padding: 2px;
+  width: 24px;
+  height: 24px;
+}
+
+.colorpicker_widget {
+    width: 100%;
+    height: 100%;
     cursor: pointer;
     vertical-align: middle;
     display: inline-block;
-    margin: -26px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    margin: 0;
     box-sizing: border-box;
+    border-radius: 0 3px 3px 0;
 }
 .ui-jce .tooltip {
     min-width: 200px

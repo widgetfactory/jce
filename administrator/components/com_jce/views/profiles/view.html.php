@@ -344,7 +344,7 @@ class WFViewProfiles extends WFView {
                 $disabled = (!$row->components) ? ' disabled="disabled"' : '';
 
                 // components list
-                $lists['components'] = '<ul id="components" class="checkbox-list">';
+                $lists['components'] = '<ul id="components" class="checkbox-list span4">';
 
                 foreach ($options as $option) {
                     $checked = in_array($option->value, explode(',', $row->components)) ? ' checked="checked"' : '';
@@ -374,7 +374,7 @@ class WFViewProfiles extends WFView {
                         }
                     }
 
-                    $lists['components-select'] .= '<label class="radio inline"><input type="radio" id="components-select-' . $value . '" name="components-select" value="' . $value . '"' . $checked . ' />' . $text . '</label>';
+                    $lists['components-select'] .= '<label class="radio"><input type="radio" id="components-select-' . $value . '" name="components-select" value="' . $value . '"' . $checked . ' />' . $text . '</label>';
                 }
 
                 // area
@@ -392,7 +392,7 @@ class WFViewProfiles extends WFView {
                         $checked = ' checked="checked"';
                     }
 
-                    $lists['area'] .= '<label class="checkbox inline"><input type="checkbox" name="area[]" value="' . $value . '"'. $checked .' />' . $text . '</label>';
+                    $lists['area'] .= '<label class="checkbox"><input type="checkbox" name="area[]" value="' . $value . '"'. $checked .' />' . $text . '</label>';
                 }
 
                 // device
@@ -473,7 +473,7 @@ class WFViewProfiles extends WFView {
                     }
                 }
 
-                $lists['usergroups'] = '<ul id="user-groups" class="checkbox-list">';
+                $lists['usergroups'] = '<ul id="user-groups" class="checkbox-list span4">';
 
                 foreach ($options as $option) {
                     $checked = in_array($option->value, explode(',', $row->types)) ? ' checked="checked"' : '';
@@ -505,7 +505,7 @@ class WFViewProfiles extends WFView {
                         }
                     }
                 }
-                $lists['users'] = '<ul id="users" class="users-list">';
+                $lists['users'] = '<ul id="users" class="unstyled users-list span4">';
 
                 foreach ($options as $option) {
                     $lists['users'] .= '<li><input type="hidden" name="users[]" value="' . $option->value . '" /><label><span class="users-list-delete"></span>' . $option->text . '</label></li>';

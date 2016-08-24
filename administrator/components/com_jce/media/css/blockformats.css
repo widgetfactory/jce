@@ -14,10 +14,10 @@
 
 .ui-jce div.blockformats ul li,
 .ui-jce div.blockformats ul li.blockformat-highlight {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #ccc;
     padding: 5px;
     margin : 2px 0;
-    max-width : 400px;
+    max-width : 300px;
     position: relative;
     background-color: #fff;
 }
@@ -27,16 +27,23 @@
     line-height: 30px;
 }
 
+.ui-jce div.blockformats ul li i {
+    margin: 10px 0;
+    color: #ccc;
+}
+
 .ui-jce div.blockformats ul li span {
   display: inline-block;
   vertical-align: middle;
 }
 
+.ui-jce div.blockformats ul li input {margin: 5px 10px;}
+
 .ui-jce div.blockformats ul li.blockformat-highlight {
     border-style: dashed;
     min-height : 20px;
     margin : 5px 0;
-    background-color: #F7F7F7;
+    background-color: #f5f5f5;
 }
 
 /* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */

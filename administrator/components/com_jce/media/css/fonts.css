@@ -1,10 +1,8 @@
-.ui-jce ul.adminformlist li div.fontlist {
-    margin-left: 220px;
-    clear: none;
+.ui-jce .fontlist {
     position: relative;
 }
 
-.ui-jce ul.adminformlist li div.fontlist ul {
+.ui-jce .fontlist ul {
     display: block;
     list-style: none outside none;
     margin: 0 !important;
@@ -12,12 +10,16 @@
     padding: 0;
 }
 
-.ui-jce div.fontlist a.close {
-    line-height: 35px;
-    vertical-align: middle;
-} 
+.ui-jce .fontlist li input[type="checkbox"] {
+  margin: 5px 10px;
+}
 
-.ui-jce div.fontlist a.plus {
+.ui-jce .fontlist a.close {
+    line-height: 1.4em;
+    vertical-align: middle;
+}
+
+.ui-jce .fontlist a.plus {
     background: none;
     border: 1px dashed #000000;
     display: block;
@@ -29,19 +31,19 @@
     width: 100%;
 }
 
-.ui-jce div.fontlist a.plus span {
+.ui-jce .fontlist a.plus span {
     width : 100%;
     max-width : 380px;
     display: inline-block;
 }
 
-.ui-jce div.fontlist a.plus span + span {
+.ui-jce .fontlist a.plus span + span {
     width : 20px;
     text-align : center;
 }
 
-.ui-jce div.fontlist ul li,
-.ui-jce div.fontlist ul li.fontlist-highlight {
+.ui-jce .fontlist ul li,
+.ui-jce .fontlist ul li.fontlist-highlight {
     border: 1px solid #CCCCCC;
     padding: 5px;
     margin : 2px 0;
@@ -50,11 +52,11 @@
     background-color: #fff;
 }
 
-.ui-jce div.fontlist ul li.fontlist-highlight {
+.ui-jce .fontlist ul li.fontlist-highlight {
     border-style: dashed;
     min-height : 30px;
     margin : 5px 0;
-    background-color: #F7F7F7;
+    background-color: #f5f5f5;
 }
 
 .ui-jce div.fontlist ul li {
@@ -63,11 +65,10 @@
 
 .ui-jce div.fontlist ul li.font-item input {
     width : 100px;
-    margin-right : 2px;
+    margin: 0 2px 0 0;
     float : none;
 }
 
 .ui-jce div.fontlist ul li.font-item input + input {
     width : 250px;
 }
-

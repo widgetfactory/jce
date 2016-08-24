@@ -47,11 +47,9 @@ class WFElementText extends WFElement {
             $attributes['max'] = $uploadsize;
         }
 
-        $attributes['class'] = ($class ? $class . ' text_area' : 'text_area' );
+        $attributes['class'] = ($class ? $class : '');
 
         $control = $control_name . '[' . $name . ']';
-
-        $html = '';
 
         $attributes['type']   = 'text';
         $attributes['name']   = $control;
@@ -78,12 +76,16 @@ class WFElementText extends WFElement {
 
         $html = '';
 
+        if (strpos($class, 'color') !== false) {
+            $html .= '<div class="input-append">';
+        }
+
         foreach($values as $value) {
           $attributes['value'] = $value;
 
           if ((string) $node->attributes()->repeatable) {
               $control  .= '[]';
-              $html     .= '<div class="ui-repeatable">';
+              $html     .= '<div class="ui-repeatable form-inline controls"><div class="input-append">';
           }
 
           $html .= '<input';
@@ -97,13 +99,17 @@ class WFElementText extends WFElement {
           $html .= ' />';
 
           if ((string) $node->attributes()->repeatable) {
-              $html .= '  <button type="button" class="btn btn-link ui-repeatable-create"><i class="icon-plus"></i></button>';
-              $html .= '  <button type="button" class="btn btn-link ui-repeatable-delete"><i class="icon-trash"></i></button>';
-              $html .= '</div>';
+              $html .= '<button type="button" class="btn btn-link ui-repeatable-create"><i class="icon-plus"></i></button>';
+              $html .= '<button type="button" class="btn btn-link ui-repeatable-delete"><i class="icon-trash"></i></button>';
+              $html .= '</div></div>';
           }
 
           if (strpos($name, 'max_size') !== false) {
               $html .= $this->uploadSize();
+          }
+
+          if (strpos($class, 'color') !== false) {
+              $html .= '</div>';
           }
         }
 
@@ -111,7 +117,7 @@ class WFElementText extends WFElement {
     }
 
     function uploadSize() {
-        return '&nbsp;' . WFText::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . $this->getUploadValue();
+        return '<span class="help-block help-block-inline">' . WFText::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . $this->getUploadValue() . '</span>';
     }
 
     function getUploadValue() {

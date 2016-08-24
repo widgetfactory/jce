@@ -13,92 +13,99 @@ defined('_JEXEC') or die('RESTRICTED');
 ?>
 <fieldset>
     <legend><?php echo WFText::_('WF_PROFILES_DETAILS'); ?></legend>
-    <ul class="adminformlist">
-        <li>
-            <label for="profile_name" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_NAME') . '::' . WFText::_('WF_PROFILES_NAME_DESC'); ?>">
-                <?php echo WFText::_('WF_PROFILES_NAME'); ?>
-            </label>
-            <input class="text_area required" type="text" name="name" id="profile_name" value="<?php echo $this->profile->name; ?>" />
-        </li>
-        <li>
-            <label for="profile_description" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_DESCRIPTION') . '::' . WFText::_('WF_PROFILES_DESCRIPTION_DESC'); ?>">
+    <div class="control-group">
+      <label for="profile_name" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_NAME') . '::' . WFText::_('WF_PROFILES_NAME_DESC'); ?>">
+          <?php echo WFText::_('WF_PROFILES_NAME'); ?>
+      </label>
+      <div class="controls">
+        <input class="text_area required" type="text" name="name" id="profile_name" value="<?php echo $this->profile->name; ?>" />
+      </div>
+    </div>
+        <div class="control-group">
+            <label for="profile_description" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_DESCRIPTION') . '::' . WFText::_('WF_PROFILES_DESCRIPTION_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_DESCRIPTION'); ?>
             </label>
-            <input class="text_area" type="text" name="description" id="profile_description" value="<?php echo $this->profile->description; ?>" />
-        </li>
-        <li>
-            <label for="profile_published" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_ENABLED') . '::' . WFText::_('WF_PROFILES_ENABLED_DESC'); ?>">
+            <div class="controls">
+              <input class="text_area" type="text" name="description" id="profile_description" value="<?php echo $this->profile->description; ?>" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="profile_published" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_ENABLED') . '::' . WFText::_('WF_PROFILES_ENABLED_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_ENABLED'); ?>
             </label>
-            <?php echo $this->lists['published']; ?>
-        </li>
-        <li>
-            <label for="ordering" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_ORDERING') . '::' . WFText::_('WF_PROFILES_ORDERING_DESC'); ?>">
+            <div class="controls">
+              <?php echo $this->lists['published']; ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ordering" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_ORDERING') . '::' . WFText::_('WF_PROFILES_ORDERING_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_ORDERING'); ?>
             </label>
-            <?php echo $this->lists['ordering']; ?>
-        </li>
-    </ul>
+            <div class="controls">
+              <?php echo $this->lists['ordering']; ?>
+            </div>
+        </div>
 </fieldset>
 <fieldset>
     <legend><?php echo WFText::_('WF_PROFILES_ASSIGNMENT'); ?></legend>
-    <ul class="adminformlist">
-        <li>
-            <label for="ordering" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_AREA') . '::' . WFText::_('WF_PROFILES_AREA_DESC'); ?>">
+        <div class="control-group">
+            <label for="ordering" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_AREA') . '::' . WFText::_('WF_PROFILES_AREA_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_AREA'); ?>
             </label>
-            <?php echo $this->lists['area']; ?>
-        </li>
-        <li>
-            <label for="ordering" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_DEVICE') . '::' . WFText::_('WF_PROFILES_DEVICE_DESC'); ?>">
+            <div class="controls">
+              <?php echo $this->lists['area']; ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ordering" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_DEVICE') . '::' . WFText::_('WF_PROFILES_DEVICE_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_DEVICE'); ?>
             </label>
-            <?php echo $this->lists['device']; ?>
-        </li>
-        <li>
-            <label for="components" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_COMPONENTS') . '::' . WFText::_('WF_PROFILES_COMPONENTS_DESC'); ?>">
+            <div class="controls">
+              <?php echo $this->lists['device']; ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="components" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_COMPONENTS') . '::' . WFText::_('WF_PROFILES_COMPONENTS_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_COMPONENTS'); ?>
             </label>
-            <span class="list">
-                <div>
-                    <?php echo $this->lists['components-select']; ?>
-                </div>
-                <div>
-                    <?php echo $this->lists['components']; ?>
-                    <input type="hidden" name="components[]" value="" />
-                </div>
-            </span>
-        </li>
-        <li>
-            <label for="usergroups" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_GROUPS') . '::' . WFText::_('WF_PROFILES_GROUPS_DESC'); ?>">
+            <div class="controls">
+              <?php echo $this->lists['components-select']; ?>
+            </div>
+            <div class="controls">
+              <?php echo $this->lists['components']; ?>
+              <input type="hidden" name="components[]" value="" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="usergroups" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_GROUPS') . '::' . WFText::_('WF_PROFILES_GROUPS_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_GROUPS'); ?>
             </label>
-            <span class="list">
-                <div><label class="checkbox"><input class="checkbox-list-toggle-all" type="checkbox" />&nbsp;<?php echo WFText::_('WF_PROFILES_TOGGLE_ALL'); ?></label></div>
-                <?php echo $this->lists['usergroups']; ?>
-            </span>
-        </li>
-        <li>
-            <label for="users" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_USERS') . '::' . WFText::_('WF_PROFILES_USERS_DESC'); ?>">
+            <div class="controls">
+                <label class="checkbox"><input class="checkbox-list-toggle-all" type="checkbox" />&nbsp;<?php echo WFText::_('WF_PROFILES_TOGGLE_ALL'); ?></label>
+            </div>
+            <div class="controls">
+              <?php echo $this->lists['usergroups']; ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="users" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_USERS') . '::' . WFText::_('WF_PROFILES_USERS_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_USERS'); ?>
             </label>
-            <span class="list">
+            <div class="controls clearfix">
                 <?php echo $this->lists['users']; ?>
-                <div>
-                    <a class="modal btn" id="users-add" rel="{'handler':'iframe','size':{x:760,y:540}}" title="<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>" href="index.php?option=com_jce&tmpl=component&view=users">
-                        <i class="icon-user"></i>&nbsp;<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>
-                    </a>
-                    <!--a id="users-remove" href="javascript:;"><?php echo WFText::_('WF_PROFILES_REMOVE_USERS'); ?></a-->
-                </div>
-            </span>
-        </li>
+            </div>
+            <div class="controls clearfix span4 text-right">
+              <a class="modal btn" id="users-add" rel="{'handler':'iframe','size':{x:760,y:540}}" title="<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>" href="index.php?option=com_jce&tmpl=component&view=users">
+                <i class="icon-user"></i>&nbsp;<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>
+              </a>
+            </div>
+        </div>
         <!--li>
-            <label for="custom" class="wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_CUSTOM') . '::' . WFText::_('WF_PROFILES_CUSTOM_DESC'); ?>">
+            <label for="custom" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_CUSTOM') . '::' . WFText::_('WF_PROFILES_CUSTOM_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_CUSTOM'); ?>
             </label>
             <input class="text_area" type="text" name="custom[]" value="" />
             =
             <input class="text_area" type="text" name="custom[]" value="" />
         </li-->
-    </ul>
 </fieldset>

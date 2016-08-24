@@ -28,7 +28,7 @@ class WFElementFonts extends WFElement {
 
     public function fetchElement($name, $value, &$node, $control_name) {
         $default = self::$fonts;
-        
+
         if (empty($value)) {
             $data = self::$fonts;
         } else {
@@ -37,24 +37,24 @@ class WFElementFonts extends WFElement {
 
         $output     = array();
 
-        $output[] = '<div class="fontlist">';
-        $output[] = '<ul>';
+        $output[] = '<div class="fontlist controls">';
+        $output[] = '<ul class="unstyled">';
 
         foreach($data as $title => $fonts) {
             if (in_array($title, array_keys(self::$fonts))) {
                 $output[] = '<li><input type="checkbox" value="' . $title . '=' . $fonts . '" checked="checked" /><span style="font-family:'. $fonts .'">' . $title . '</span></li>';
-            
+
                 unset($default[$title]);
-                
+
             } else {
                 $output[] = '<li class="font-item"><input type="text" value="' . $title . '" placeholder="' . WFText::_('WF_LABEL_NAME') . '"><input type="text" value="' . $fonts . '" placeholder="' . WFText::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /><a href="#" class="close">&times;</a></li>';
             }
         }
-        
+
         foreach($default as $title => $fonts) {
             $output[] = '<li><input type="checkbox" value="' . $title . '=' . $fonts . '" /><span style="font-family:'. $fonts .'">' . $title . '</span></li>';
         }
-        
+
         $output[] = '<li class="font-item hide"><input type="text" value="" placeholder="' . WFText::_('WF_LABEL_NAME') . '"><input type="text" value="" placeholder="' . WFText::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /><a href="#" class="close">&times;</a></li>';
 
         $output[] = '</ul>';
