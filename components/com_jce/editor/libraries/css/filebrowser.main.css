@@ -25,6 +25,8 @@
   height: 28px;
   margin: 0 auto;
 }
+.ui-navbar-content input[type="checkbox"] {margin-top: 0;}
+
 nav.ui-navbar {
   background-color: transparent;
   border-width: 0;
