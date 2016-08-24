@@ -10,7 +10,7 @@
 
 (function() {
     var cookie = tinymce.util.Cookie;
-    
+
     tinymce.create('tinymce.plugins.VisualBlocks', {
         init : function(ed, url) {
             var cssId;
@@ -19,18 +19,18 @@
             if (!window.NodeList) {
                 return;
             }
-            
+
             // get state from cookie
             var state = cookie.get('wf_visualblocks_state');
-            
+
             if (state && tinymce.is(state, 'string')) {
                 if (state == 'null') {
                     state = 0;
                 }
-                
+
                 state = parseFloat(state);
             }
-            
+
             state = ed.getParam('visualblocks_default_state', state);
 
             ed.addCommand('mceVisualBlocks', function() {
@@ -51,7 +51,7 @@
                 }
 
                 ed.controlManager.setActive('visualblocks', !linkElm.disabled);
-                
+
                 if (linkElm.disabled) {
                     cookie.set('wf_visualblocks_state', 0);
                 } else {
@@ -61,24 +61,22 @@
 
             ed.onSetContent.add(function() {
                 var dom = ed.dom, linkElm;
-                
+
                 if (cssId) {
                     linkElm = dom.get(cssId);
                     ed.controlManager.setActive('visualblocks', !linkElm.disabled);
                 }
-                
+
             });
 
             ed.addButton('visualblocks', {
-                title : 'visualblocks.desc', 
+                title : 'visualblocks.desc',
                 cmd : 'mceVisualBlocks'
             });
 
             ed.onInit.add(function() {
                 if (state) {
-                    ed.execCommand('mceVisualBlocks', false, null, {
-                        skip_focus : true
-                    });
+                    ed.execCommand('mceVisualBlocks', false, null);
                 }
             });
         },
@@ -93,35 +91,6 @@
             };
         }
     });
-    
-    /*
-       Useful little script for creating images 
-        var canvas = document.createElement('canvas');
-        var ctx = canvas.getContext("2d");
-
-        canvas.width = 10;
-        canvas.height = 8;
-
-        $('<div id="output"/ >').appendTo('body');
-
-        $.each(['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HGROUP', 'ASIDE', 'DIV', 'SECTION', 'ARTICLE', 'BLOCKQUOTE', 'ADDRESS', 'PRE', 'FIGURE', 'UL', 'OL', 'DL', 'DT', 'DD'], function(i, s) {
-            var metrics = ctx.measureText(s);
-            canvas.width = metrics.width;
-
-            ctx.fillStyle = '#999999';
-            ctx.font = 'bold 7pt Helvetica';
-            ctx.textBaseline = "bottom";
-            ctx.fillText(s, 0, 10);
-
-            var text = $('#output').text();
-
-            $('<p><img src="' + canvas.toDataURL('image/png') + '" />').insertBefore('#output');
-
-            $('#output').text(text + '\n\r' + s.toLowerCase() + ' {background-image: url(' + canvas.toDataURL('image/png') + ');}');
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        });​
-     */
 
     // Register plugin
     tinymce.PluginManager.add('visualblocks', tinymce.plugins.VisualBlocks);
