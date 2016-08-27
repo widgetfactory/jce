@@ -13,19 +13,20 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-    <div class="ui-jce">
-    	<fieldset class="adminform panelform">
-			 <legend><?php echo JText :: _('WF_MEDIABOX_PARAMETERS');?></legend>
-       <?php foreach ($this->params as $param): ?>
-          <div class="control-group">
-            <?php echo $param[0] . $param[1]; ?>
-          </div>
+<div class="ui-jce">
+  <form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
+    <fieldset class="adminform panelform">
+  	   <legend><?php echo JText :: _('WF_MEDIABOX_PARAMETERS');?></legend>
+      <?php foreach ($this->params as $param): ?>
+        <div class="control-group">
+          <?php echo $param['label'] . $param['element']; ?>
+        </div>
       <?php endforeach; ?>
-    </div>
+    </fieldset>  
     <input type="hidden" name="option" value="com_jce" />
     <input type="hidden" name="client" value="<?php echo $this->client; ?>" />
     <input type="hidden" name="view" value="mediabox" />
     <input type="hidden" name="task" value="" />
     <?php echo JHTML::_( 'form.token' ); ?>
-</form>
+  </form>
+</div>

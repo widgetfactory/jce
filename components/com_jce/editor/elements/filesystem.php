@@ -95,7 +95,7 @@ class WFElementFilesystem extends WFElement {
         $html .= JHTML::_('select.genericlist', $options, $name, implode(' ', $attribs), 'value', 'text', $value, $id);
 
         foreach($params as $filesystem => $item) {
-          $html .= '<div data-parameter-nested-item="' . $filesystem . '">';
+          $html .= '<div data-parameter-nested-item="' . $filesystem . '" class="well well-small">';
           $html .= $item->render($name, $filesystem);
           $html .= '</div>';
         }

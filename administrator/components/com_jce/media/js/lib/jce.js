@@ -262,7 +262,7 @@
             $('[data-parent]').each(function () {
                 var el = this, data = $(this).data('parent') || '';
 
-                var p = $(this).parent('.control-group');
+                var p = $(this).parents('.control-group');
 
                 // hide the element by default
                 $(p).hide();

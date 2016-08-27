@@ -59,14 +59,14 @@ class WFViewCpanel extends WFView {
 
         WFToolbarHelper::help('cpanel.about');
 
-        $views = array('config', 'profiles', 'installer', 'browser', 'mediabox');
+        $views = array('config', 'profiles', 'browser', 'mediabox');
 
         $icons = array();
 
         $map = array(
           "profiles"  => "users",
           "config"    => "equalizer",
-          "installer" => "upload",
+          "installer" => "puzzle",
           "browser"   => "picture",
           "mediabox"  => "pictures"
         );

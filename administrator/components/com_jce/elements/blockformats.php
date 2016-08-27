@@ -49,7 +49,7 @@ class WFElementBlockformats extends WFElement {
 
         $output = array();
 
-        $output[] = '<div class="blockformats controls">';
+        $output[] = '<div class="blockformats">';
         $output[] = '<ul class="unstyled">';
 
         // create default font structure

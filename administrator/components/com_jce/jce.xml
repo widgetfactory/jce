@@ -47,10 +47,10 @@
         <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">JCE</menu>
 
         <submenu>
-            <menu view="cpanel" img="components/com_jce/media/img/menu/jce-cpanel.png" link="option=com_jce">WF_MENU_CPANEL</menu>
-            <menu view="config" img="components/com_jce/media/img/menu/jce-config.png" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
-            <menu view="profiles" img="components/com_jce/media/img/menu/jce-profiles.png" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
-            <menu view="installer" img="components/com_jce/media/img/menu/jce-install.png" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
+            <menu view="cpanel" link="option=com_jce">WF_MENU_CPANEL</menu>
+            <menu view="config" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
+            <menu view="profiles" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
+            <menu view="installer" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
         </submenu>
 
         <files folder="administrator/components/com_jce">

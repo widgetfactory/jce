@@ -85,7 +85,7 @@ class WFElementText extends WFElement {
 
           if ((string) $node->attributes()->repeatable) {
               $control  .= '[]';
-              $html     .= '<div class="ui-repeatable form-inline controls"><div class="input-append">';
+              $html     .= '<div class="ui-repeatable form-inline"><div class="input-append">';
           }
 
           $html .= '<input';

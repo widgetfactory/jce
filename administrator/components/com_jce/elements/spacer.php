@@ -26,24 +26,18 @@ class WFElementSpacer extends WFElement
 	protected $_name = 'Spacer';
 
 	function fetchTooltip($label, $description, &$node, $control_name = '', $name = '') {
-		return '&nbsp;';
+		$html = "";
+		if ($label) {
+			$html .= '<h3>' . WFText::_($label) . '</h3>';
+		}
+
+		$html .= "<hr />";
+
+		return $html;
 	}
 
 	function fetchElement($name, $value, &$node, $control_name)
 	{
-		$html = "";
-
-		if ($node->attributes()->label) {
-			$label = (string) $node->attributes()->label;
-			$html .= '<h3>' . WFText::_($label) . '</h3>';
-		}
-
-		if ($value) {
-			$html .= WFText::_($value);
-		} else {
-			$html .= "<hr />";
-		}
-
-		return $html;
+		return "";
 	}
 }

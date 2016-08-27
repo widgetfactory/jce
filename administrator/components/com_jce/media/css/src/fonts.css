@@ -17,6 +17,7 @@
 .ui-jce .fontlist a.close {
     line-height: 1.4em;
     vertical-align: middle;
+    margin-right: 20px;
 }
 
 .ui-jce .fontlist a.plus {
@@ -70,5 +71,5 @@
 }
 
 .ui-jce div.fontlist ul li.font-item input + input {
-    width : 250px;
+    width : 230px;
 }

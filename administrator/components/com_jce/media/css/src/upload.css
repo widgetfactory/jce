@@ -56,7 +56,7 @@
     cursor: pointer;
     display: inline-block;
     line-height: inherit;
-    margin: 4px 0 0;
+    margin: 3px 0 0;
     position: absolute;
     right: 6px;
 }
@@ -93,7 +93,7 @@ html[dir="rtl"] .ui-jce label[for="import"] {
     display: inline-block;
     overflow: hidden;
     width: 100%;
-    
+
     left: -1px;
     top: 0;
     cursor : pointer;
@@ -109,7 +109,7 @@ html[dir="rtl"] .ui-jce div.upload_button_container > span {
 
 /* Mobile stuff */
 @media (max-width: 767px) {
-    
+
     .ui-jce input.upload_text {
         width : 200px;
     }

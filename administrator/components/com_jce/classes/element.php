@@ -78,18 +78,24 @@ class WFElement extends JObject
 	 */
 	public function render(&$xmlElement, $value, $control_name = 'params')
 	{
-		$name   = (string) $xmlElement->attributes()->name;
-		$label  = (string) $xmlElement->attributes()->label;
-		$descr  = (string) $xmlElement->attributes()->description;
+		$name   			= (string) $xmlElement->attributes()->name;
+		$label  			= (string) $xmlElement->attributes()->label;
+		$description  = (string) $xmlElement->attributes()->description;
 
 		//make sure we have a valid label
 		$label = $label ? $label : $name;
-		$result[0] = $this->fetchTooltip($label, $descr, $xmlElement, $control_name, $name);
-		$result[1] = $this->fetchElement($name, $value, $xmlElement, $control_name);
-		$result[2] = $descr;
-		$result[3] = $label;
-		$result[4] = $value;
-		$result[5] = $name;
+
+		$element = $this->fetchElement($name, $value, $xmlElement, $control_name);
+
+		// fix for "<div class="controls">" added to radiolist in Joomla 3+
+		if (!empty($element) && strpos($element, '<div class="controls">') !== 0) {
+				$element = '<div class="controls">' . $element . '</div>';
+		}
+
+		$result = array(
+			"label" 	=> $this->fetchTooltip($label, $description, $xmlElement, $control_name, $name),
+			"element"	=> $element
+		);
 
 		return $result;
 	}
@@ -107,7 +113,9 @@ class WFElement extends JObject
 	 */
 	public function fetchTooltip($label, $description, &$xmlElement, $control_name = '', $name = '')
 	{
-		$output = '<label class="control-label" id="' . $control_name . $name . '-lbl" for="' . $control_name . $name . '"';
+		$id = preg_replace('#[\w]+#', '', $control_name . $name);
+
+		$output = '<label class="control-label" id="' . $id . '-lbl" for="' . $id . '"';
 		$label  = WFText::_($label);
 
     if ($description) {

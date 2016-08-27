@@ -38,8 +38,7 @@ class WFController extends WFControllerBase {
 
         $subMenus = array(
             'WF_CONFIGURATION' => 'config',
-            'WF_PROFILES' => 'profiles',
-            'WF_INSTALLER' => 'installer'
+            'WF_PROFILES' => 'profiles'
         );
 
         if (JPluginHelper::isEnabled('system', 'jcemediabox')) {

@@ -9,11 +9,10 @@
  */
 
 .ui-jce {
-    font-size: 12px;
+    font-size: 1em;
     padding: 10px;
     background-color: #fff;
     position: relative;
-    font-size: 1em;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #444;
 }
@@ -26,7 +25,9 @@
 .ui-jce .ui-sortable-handle {
   position: relative;
 }
-.ui-jce .ui-sortable-handle:after {
+.ui-jce .blockformats .ui-sortable-handle:after,
+.ui-jce .fontlist .ui-sortable-handle:after,
+.ui-jce .widget-checklist .ui-sortable-handle:after {
   content: "::";
   width: 1em;
   height: 1em;
@@ -37,42 +38,49 @@
   color: #ccc;
   font-weight: bold;
   top: 50%;
-  margin-top: -0.5em;
+  margin-top: -11px;
   vertical-align: middle;
   line-height: 1em;
 }
 
-.form-horizontal .ui-jce .controls {
+.ui-jce textarea {width: 250px;}
+
+.ui-jce [data-parameter-nested-item] {
+  max-width:500px;
+  margin-top: 10px;
+}
+
+.ui-jce .form-horizontal .controls {
   margin-left: 200px;
   margin-bottom: 5px;
 }
 
-.form-horizontal .ui-jce .radio input[type="radio"], .form-horizontal .ui-jce .checkbox input[type="checkbox"] {
+.ui-jce .form-horizontal .radio input[type="radio"], .ui-jce .form-horizontal .checkbox input[type="checkbox"] {
   margin-right: 10px;
   margin-left: 0;
 }
 
-.ui-jce .radio, .ui-jce .checkbox {
+.ui-jce .form-horizontal .controls .radio, .ui-jce .form-horizontal .controls .checkbox {
   padding-left: 0;
 }
 
-.ui-jce .help-block-inline {
+.ui-jce .help-block.help-block-inline {
   display: inline-block;
   margin-left: 10px;
 }
 
-.form-horizontal .ui-jce .control-label {
+.ui-jce .form-horizontal .control-label {
   box-sizing: border-box;
   min-width: 200px;
 }
 
-.form-horizontal .ui-jce .control-group .radio,
-.form-horizontal .ui-jce .control-group .checkbox {
+.ui-jce .form-horizontal .control-group .radio,
+.ui-jce .form-horizontal .control-group .checkbox {
   display: inline-block;
 }
 
-.form-horizontal .ui-jce .control-group .checkbox + .checkbox,
-.form-horizontal .ui-jce .control-group .radio + .radio {padding-left: 10px;}
+.ui-jce .form-horizontal .control-group .checkbox + .checkbox,
+.ui-jce .form-horizontal .control-group .radio + .radio {padding-left: 10px;}
 
 .icon-48-logo {
     background-image: url("../img/logo.png");
@@ -88,15 +96,6 @@
     z-index: 1000;
     background: #FFF none;
     margin: -10px;
-}
-#loader {
-    border-radius: 10px 10px 10px 10px;
-    height: 100%;
-    margin: -10px;
-    position: absolute;
-    width: 100%;
-    z-index: 1000;
-    background: #FFF url('../../../../../components/com_jce/editor/tiny_mce/themes/advanced/skins/default/img/progress.gif') no-repeat center;
 }
 
 .ui-jce select[multiple] {
@@ -515,6 +514,9 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 .ui-jce input {
     margin: 0;
 }
+.ui-jce input[type="checkbox"], .ui-jce input[type="radio"] {
+    margin: 2px 0 0;
+}
 .ui-jce #tabs> ul> li {
     padding: 0 2px;
 }
@@ -630,8 +632,8 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 
 .ui-jce .input-append input.color + .add-on {
   padding: 2px;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
 .colorpicker_widget {
@@ -805,3 +807,5 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 .ui-repeatable  + .ui-repeatable .ui-repeatable-create {
   display: none;
 }
+
+.ui-repeatable {margin-bottom: 10px;}

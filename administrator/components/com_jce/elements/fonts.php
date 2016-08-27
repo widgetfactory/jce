@@ -37,7 +37,7 @@ class WFElementFonts extends WFElement {
 
         $output     = array();
 
-        $output[] = '<div class="fontlist controls">';
+        $output[] = '<div class="fontlist">';
         $output[] = '<ul class="unstyled">';
 
         foreach($data as $title => $fonts) {

@@ -1,3 +1,378 @@
+@import url("../../../../../components/com_jce/editor/libraries/css/files.css");
+
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @ddcense   	GNU/GPL 2 or later - http://www.gnu.org/ddcenses/old-ddcenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Pubddc ddcense, and as distributed it includes or
+ * is derivative of works ddcensed under the GNU General Pubddc ddcense or
+ * other free or open source software ddcenses.
+ */
+
+.ui-jce .extensions> input[type="text"] {}
+.ui-jce .extensions dl {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    width: 220px;
+    box-sizing: border-box;
+    position: relative;
+}
+.ui-jce .extensions dl dd {
+    border: 1px dashed #ccc;
+    padding: 5px;
+    margin: 2px 0;
+    position: relative;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+.ui-jce .extensions dl dd .file {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px;
+}
+.ui-jce .extensions dl dd.extension-custom .file {
+    margin: 5px;
+}
+.ui-jce .extensions dl dd label {
+    padding: 0;
+    margin: 0;
+}
+.ui-jce .extensions dl input[type="text"] {
+    width: 120px;
+    margin-left: 10px;
+    border-radius: 4px;
+}
+.ui-jce .extensions dl dd input[type="checkbox"] {
+    margin: 5px;
+}
+.ui-jce .extensions dl .extension-custom .extension-remove {
+    display: none;
+}
+.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-add {
+    display: none;
+}
+.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-remove {
+    display: inline-block;
+}
+.ui-jce .extensions dl .extension-custom input+ .extension-remove {
+    display: inline-block;
+}
+.ui-jce .extensions dl .extension-custom {}
+.ui-jce .extensions dl .btn {
+    color: #ccc;
+}
+.ui-jce .extensions .btn {
+    margin: 0;
+}
+.ui-jce .extensions dt {
+    line-height: 30px;
+    background-color: #eee;
+    text-align: center;
+}
+.ui-jce .extensions .ui-sortable-handle {
+    cursor: move;
+}
+
+.ui-jce ul.adminformlist li div.styleformat-list {
+    margin-left: 220px;
+    clear: none;
+    position: relative;
+}
+
+.ui-jce div.styleformat-list a.plus {
+    background: none repeat scroll 0 0 white;
+    border: 1px dashed #000;
+    display: block;
+    margin: 5px 0;
+    max-width: 390px;
+    padding: 10px;
+    width: 100%;
+    float : none;
+}
+
+.ui-jce div.styleformat-list a.plus span {
+    width : 100%;
+    max-width : 370px;
+    display: inline-block;
+}
+
+.ui-jce div.styleformat-list a.plus span + span {
+    width : 20px;
+    text-align : center;
+}
+
+.ui-jce div.styleformat-list div.styleformat a.close {
+    display: inline-block;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.ui-jce div.styleformat-list div.styleformat a.close.handle {
+    left: 5px;
+    top: 5px;
+    cursor: move;
+    width : 100%;
+    max-width : 370px;
+    line-height: 20px;
+}
+
+.ui-jce div.styleformat-list div.styleformat a.close.collapse {
+    right: 12px;
+    top: 45px;
+    font-size: 14pt;
+    height: 20px;
+}
+/* fix duplicate icon in Joomla 3 */
+.ui-jce div.styleformat-list div.styleformat a.close.collapse:before {
+    content : "";
+}
+
+.ui-jce div.styleformat-list div.styleformat,
+.ui-jce div.styleformat-list div.styleformat-highlight {
+    border: 1px solid #CCCCCC;
+    padding: 25px 5px 5px;
+    max-width : 400px;
+    position: relative;
+    background-color: #fff;
+}
+
+.ui-jce div.styleformat-list div.styleformat-highlight {
+    border-style: dashed;
+    min-height : 46px;
+    margin : 10px 0;
+    background-color: #F7F7F7;
+}
+
+.ui-jce div.styleformat-list div.styleformat div {
+    margin : 5px 0;
+    padding : 5px 10px 5px 5px;
+    position: relative;
+}
+
+.ui-jce div.styleformat-list div.styleformat + div {
+    margin-top : 10px;
+}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title {
+    background-color: #eee;
+}
+
+.ui-jce div.styleformat-list div.styleformat div input,
+.ui-jce div.styleformat-list div.styleformat div select {
+    width : 350px;
+}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input {
+    font-size: inherit;
+    color : inherit;
+    float : none;
+}
+/* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.code,
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.samp {
+    font-family: monospace
+}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.strong {font-weight: bolder}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.em {font-style: italic}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.sub {vertical-align: sub}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.sup {vertical-align: super}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h1 {font-size: 2em; margin: .67em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h2 {font-size: 1.5em; margin: .75em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h3 {font-size: 1.17em; margin: .83em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h4 {margin: 1.12em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h5 {font-size: .83em; margin: 1.5em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h6 {font-size: .75em; margin: 1.67em 0}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-element {clear: left}
+
+.ui-jce div.styleformat label {
+    display: block;
+    min-width : 100px;
+}
+
+.ui-jce div.styleformat label + input,
+.ui-jce div.styleformat label + select {
+    margin : 0;
+    width : 300px;
+}
+
+.ui-jce div.styleformat span.help-block {
+    font-size : 0.9em;
+    max-width: 320px;
+    margin-top : 5px;
+}
+
+.ui-jce div.styleformat-list div.styleformat div.styleformat-item-element option:first-child {
+    margin : 5px 0;
+}
+.ui-jce .fontlist {
+    position: relative;
+}
+
+.ui-jce .fontlist ul {
+    display: block;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce .fontlist li input[type="checkbox"] {
+  margin: 5px 10px;
+}
+
+.ui-jce .fontlist a.close {
+    line-height: 1.4em;
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+.ui-jce .fontlist a.plus {
+    background: none;
+    border: 1px dashed #000000;
+    display: block;
+    float: left;
+    margin: 5px 0;
+    max-width: 400px;
+    padding: 5px;
+    position: relative;
+    width: 100%;
+}
+
+.ui-jce .fontlist a.plus span {
+    width : 100%;
+    max-width : 380px;
+    display: inline-block;
+}
+
+.ui-jce .fontlist a.plus span + span {
+    width : 20px;
+    text-align : center;
+}
+
+.ui-jce .fontlist ul li,
+.ui-jce .fontlist ul li.fontlist-highlight {
+    border: 1px solid #CCCCCC;
+    padding: 5px;
+    margin : 2px 0;
+    max-width : 400px;
+    position: relative;
+    background-color: #fff;
+}
+
+.ui-jce .fontlist ul li.fontlist-highlight {
+    border-style: dashed;
+    min-height : 30px;
+    margin : 5px 0;
+    background-color: #f5f5f5;
+}
+
+.ui-jce div.fontlist ul li {
+    cursor: move;
+}
+
+.ui-jce div.fontlist ul li.font-item input {
+    width : 100px;
+    margin: 0 2px 0 0;
+    float : none;
+}
+
+.ui-jce div.fontlist ul li.font-item input + input {
+    width : 230px;
+}
+
+.ui-jce ul.adminformlist li div.blockformats {
+    margin-left: 220px;
+    clear: none;
+    position: relative;
+}
+
+.ui-jce ul.adminformlist li div.blockformats ul {
+    display: block;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce div.blockformats ul li,
+.ui-jce div.blockformats ul li.blockformat-highlight {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin : 2px 0;
+    max-width : 300px;
+    position: relative;
+    background-color: #fff;
+}
+
+.ui-jce div.blockformats ul li {
+    cursor: move;
+    line-height: 30px;
+}
+
+.ui-jce div.blockformats ul li i {
+    margin: 10px 0;
+    color: #ccc;
+}
+
+.ui-jce div.blockformats ul li span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.ui-jce div.blockformats ul li input {margin: 5px 10px;}
+
+.ui-jce div.blockformats ul li.blockformat-highlight {
+    border-style: dashed;
+    min-height : 20px;
+    margin : 5px 0;
+    background-color: #f5f5f5;
+}
+
+/* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+.ui-jce div.blockformats ul li span.blockformat-code,
+.ui-jce div.blockformats ul li span.blockformat-samp {
+    font-family: monospace
+}
+
+.ui-jce div.blockformats ul li span.blockformat-strong {font-weight: bolder}
+
+.ui-jce div.blockformats ul li span.blockformat-em {font-style: italic}
+
+.ui-jce div.blockformats ul li span.blockformat-sub {vertical-align: sub}
+
+.ui-jce div.blockformats ul li span.blockformat-sup {vertical-align: super}
+
+.ui-jce div.blockformats ul li span.blockformat-h1 {font-size: 2em}
+
+.ui-jce div.blockformats ul li span.blockformat-h2 {font-size: 1.5em}
+
+.ui-jce div.blockformats ul li span.blockformat-h3 {font-size: 1.17em}
+
+.ui-jce div.blockformats ul li span.blockformat-h4 {}
+
+.ui-jce div.blockformats ul li span.blockformat-h5 {font-size: .83em}
+
+.ui-jce div.blockformats ul li span.blockformat-h6 {font-size: .75em}
+
+.ui-jce div.blockformats ul li span.blockformat-span {float: none;margin: 0; display: inline;}
+
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
@@ -7,10 +382,403 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-@import url("files.css?@@etag@@");
-@import url("extensions.css?@@etag@@");
-@import url("styleformat.css?@@etag@@");
-@import url("fonts.css?@@etag@@");
-@import url("blockformats.css?@@etag@@");
-@import url("layout.css?@@etag@@");
-@import url("profile.css?@@etag@@");
+
+html {
+  overflow-y: visible !important;
+}
+#profileLayoutTable {
+  position: relative;
+}
+ul#profileLayoutTable > li {
+  margin-bottom: 10px;
+}
+#profileLayoutTable .sortableList {
+  position: relative;
+}
+#profileLayoutTable .profileLayoutContainer {
+  display: inline-block;
+  position: relative;
+  margin-top: 35px;
+  margin-left: 0 !important;
+}
+
+#profileLayoutTable .profileLayoutContainerEditor p {
+  line-height: 16px;
+  margin: 2px 5px;
+  white-space: normal;
+}
+#profileLayoutTable .profileLayoutContainerStatusBar {
+  margin: 0 20px 1px 0;
+}
+#profileLayoutTable .profileLayoutContainerStatusBar .mceStatusbar {
+  padding: 0 3px 0 0;
+}
+#profileLayoutTable .profileLayoutContainerStatusBar .mceStatusbar > div {
+  padding: 0 2px;
+  float: left;
+  display: inline-block;
+}
+#profileLayoutTable .profileLayoutContainerToolbar + .profileLayoutContainerEditor {
+  margin: 0 0 1px 0;
+}
+#profileLayoutTable .profileLayoutContainerStatusBar .mcePathLabel {
+  padding: 3px 2px 2px 0;
+}
+#profileLayoutTable .profileLayoutContainerStatusBar .mceResize {
+  cursor: default;
+  float: right;
+  margin: 0 -3px 0 0;
+}
+#editor_toggle {
+  padding: 5px;
+  line-height: 20px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+.widthMarker {
+  border: 1px dashed #999;
+  border-bottom-width: 0;
+  display: block;
+  left: 0;
+  padding: 40px 0 0 0;
+  position: absolute;
+  text-align: center;
+  top: -15px;
+  box-sizing: border-box;
+}
+.widthMarker span {
+  background: none repeat scroll 0 0 #FFFFFF;
+  display: inline-block;
+  left: 50%;
+  line-height: 20px;
+  margin: 0 0 0 -25px;
+  position: absolute;
+  top: -10px;
+  width: 50px;
+  text-align: center;
+}
+.sortableList.group {
+  margin: 20px 0px 0px 0px;
+}
+.sortableList .sortableListItem {
+  position: relative;
+  width: 100%;
+}
+
+.ui-jce.ie8 .sortableList .sortableListItem .sortableRow .sortableRowItem {
+  float: left;
+}
+
+.sortableList .sortableListItem .sortableRow .sortableRowItem img {
+  border: 0;
+  padding: 0;
+  margin: 0
+}
+
+/* Sortable Highlight */
+
+.sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight, .sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+  border: 1px dashed #9FBBDD;
+  background: none;
+  box-sizing: border-box;
+}
+
+.sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
+  height: 30px;
+}
+
+.sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+  height: 26px;
+}
+
+.mceToolbar .sortableRowHandle {
+  height: 32px;
+  border: 1px solid #ddd;
+  cursor: move;
+  background-color: #f5f5f5;
+  text-align: center;
+  position: absolute;
+  display: block;
+  box-sizing: border-box;
+  top: 0;
+  right: -20px;
+}
+.mceToolbar .sortableRowHandle span {
+  margin: 9px 0;
+  background: none;
+  padding: 0 1px;
+  vertical-align: middle;
+}
+.sortableContainerHandle {
+  border: 1px solid #CCC;
+  cursor: move;
+  background-color: #F0F0EE;
+  text-align: center;
+  margin: 0 0 0 -20px;
+  position: relative;
+  display: block;
+  float: left;
+  height: 20px;
+}
+.sortableContainerHandle .ui-icon {
+  margin: 2px 0 0;
+}
+.sortableHandle img {
+  margin-top: 5px;
+}
+.profileLayoutContainer .sortableOption {
+  width: 20px;
+  height: 30px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: -44px;
+  cursor: pointer;
+}
+html[dir="rtl"] .profileLayoutContainer .sortableOption {
+  left: -20px;
+  right: auto;
+}
+
+.profileLayoutContainer .sortableOption span {
+  margin: 9px 0;
+  vertical-align: middle;
+  display: none;
+  background: none;
+  padding: 0 1px;
+}
+
+.profileLayoutContainer .sortableOption:hover span {display: inline-block;}
+.profileLayoutContainer .sortableOption:hover span:first-child {display: none;}
+
+.profileLayoutContainerCurrent .sortableOption span + span {display: none;}
+.profileLayoutContainerCurrent .sortableOption:hover span:first-child {display: inline-block;}
+.profileLayoutContainerCurrent .sortableOption:hover span + span {display: none;}
+
+.sortableRemove.hidden {
+  visibility: hidden;
+}
+
+.checkbox-list-toggle-all {margin-left: -15px;}
+
+.ui-jce input[type="radio"] + label {
+    display: inline;
+}
+
+#plugin_params .mceIcon {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px 0 0;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
+    border-width: 0 0 0 1px;
+    float: right;
+    padding: 0 0.2em 0 0.1em;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
+    padding-left: 0.1em;
+    border-right-width: 1px;
+    margin-right: -1px;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li {
+    margin: 0 1px 0.2em 0;
+    border-left: 0 none;
+}
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
+    margin: 0 13em 0 0;
+}
+
+.ui-jce #tabs-setup ul li .list {
+    width : 300px;
+    display: inline-block;
+}
+
+.ui-jce #tabs-setup ul li .list div {
+    margin : 5px 0;
+}
+
+.ui-jce #tabs-setup ul li .list > div > label {
+    margin-left : 6px;
+}
+
+.ui-jce input.checkbox-list-toggle-all {
+    /*margin : 2px 6px;*/
+}
+.ui-jce input.checkbox-list-toggle-all + label {
+    /*margin : 0 5px;*/
+}
+
+.ui-jce #tabs-setup input.checkbox-list-toggle-all, .ui-jce #tabs-setup input#components-select-all {
+}
+
+.ui-jce ul.checkbox-list {
+    border: 1px solid #EEEEEE;
+    height: 200px;
+    overflow: auto;
+    padding: 2px 5px;
+    white-space: nowrap;
+    word-wrap: normal;
+    margin : 0;
+    list-style : none;
+    min-width : 250px;
+}
+
+.ui-jce ul.checkbox-list li {
+    padding : 5px 0;
+}
+
+.ui-jce ul.users-list {
+    border: 1px solid #EEEEEE;
+    height: 200px;
+    overflow: auto;
+    padding: 2px 5px;
+    white-space: nowrap;
+    word-wrap: normal;
+    margin : 0;
+    list-style : none;
+    min-width : 200px;
+}
+
+.ui-jce .users-list li {
+    margin : 5px 0 0 0;
+    padding-left: 10px;
+    border: 1px solid #eee;
+}
+
+.ui-jce .users-list li button {margin: 0}
+
+.ui-jce .checkbox-list li input[type="checkbox"] {
+    margin: 5px 5px 5px 0;
+}
+
+.ui-jce ul.checkbox-list li span {
+    margin : 0 0 0 10px;
+    display: inline-block;
+
+    -ms-user-select : none;
+    -moz-user-select : none;
+    -webkit-user-select: none;
+    user-select : none;
+}
+
+.ui-jce ul.users-list li span {
+    width: 90%;
+    width: calc(100% - 45px);
+    display: inline-block;
+
+    -ms-user-select : none;
+    -moz-user-select : none;
+    -webkit-user-select: none;
+    user-select : none;
+}
+
+.ui-jce #users-add i.icon-add {
+    background: none;
+}
+
+.ui-jce #users-add i.icon-add:before {
+    content : "";
+}
+
+.ui-jce .buttonlist .mceIcon {
+    cursor: default;
+}
+
+.ui-jce .buttonlist .mceButton, .ui-jce .buttonlist .mceSplitButton {
+    margin : 0 10px 0 0;
+    vertical-align: middle;
+}
+
+.ui-jce ul.adminformlist li div.buttonlist {
+    display: inline-block;
+    margin: 5px 0 0;
+    vertical-align: middle;
+}
+.ui-jce div.tabs-plugin-parameters {
+    margin : 0;
+}
+
+.ui-jce .ui-tabs-vertical .ui-tabs-panel {
+    margin: 0;
+}
+
+.ui-jce .tabs-plugin-parameters h3 + p, .ui-jce .tabs-plugin-parameters h3 + p + ul {
+    margin-left : 20px;
+}
+
+.ui-jce .tabs-plugin-parameters p {
+    font-size : 1em;
+    margin : 5px 7px;
+    padding: 10px 5px;
+}
+
+.ui-jce .tabs-plugin-parameters input[type="checkbox"], .ui-jce .tabs-plugin-parameters .ui-checkbox {
+    background-color: #fff;
+}
+
+.ui-jce .tabs-plugin-parameters a[href^="http"] {
+    cursor: pointer;
+}
+
+.ui-jce table td.order input[type="text"] {
+    max-width : 30px;
+    margin : 0 10px;
+}
+
+.ui-jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
+    max-width: 100px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    white-space: pre-wrap;
+    cursor: pointer;
+
+    background-color : #F5F5F5;
+    border-color : #eee #ddd #eee #eee;
+
+    -webkit-box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+    box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+}
+
+.ui-jce div.tab-pane.tabbable.tabs-left ul li.active > a {
+    background-color : #fff;
+    border-color : #eee #fff #eee #eee;
+
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+.ui-jce #tabs ul li span.tabs-label {
+    margin : 5px 0;
+    display : block;
+}
+
+input#profile_description {
+    width : 500px;
+}
+
+/* Mobile stuff */
+@media (max-width: 767px) {
+    input[type="text"] {
+        max-width : 250px;
+    }
+}
+
+.ui-jce a.btn.browser {
+  margin: 0;
+  margin-left: -2.5em;
+  padding: 0.5em;
+}
+
+ul#profileAdditionalFeatures li input[type="checkbox"] {margin: 0px 10px 2px 0px}
+ul#profileAdditionalFeatures li span {line-height: 30px;display: inline-block;}
+
+.buttonlist .widget-checklist .mceToolBarItem {
+  display: inline-block;
+  line-height: 30px;
+  vertical-align: middle;
+  margin: 0px 5px;
+}
+

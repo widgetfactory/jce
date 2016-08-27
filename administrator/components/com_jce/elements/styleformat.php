@@ -64,7 +64,7 @@ class WFElementStyleFormat extends WFElement {
         // store element options
         $this->elements = $this->getElementOptions();
 
-        $html = '<div class="styleformat-list controls"';
+        $html = '<div class="styleformat-list"';
 
         // pattern data attribute for editable select input box
         if ((string) $node->attributes()->parent) {

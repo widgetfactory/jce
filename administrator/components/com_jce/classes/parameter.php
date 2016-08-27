@@ -505,17 +505,11 @@ class WFParameter {
         return $element->render($node, $value, $control_name);
     }
 
-    private function cleanAttribute($matches) {
-        return $matches[1] . '="' . preg_replace('#([^\w]+)#i', '', $matches[2]) . '"';
-    }
-
     public function render($name = 'params', $group = '_default', $exclude = array()) {
         $params = $this->getParams($name, $group, $exclude);
         $html = '';
 
         if (!empty($params)) {
-            //$html .= '<ul class="adminformlist">';
-
             foreach ($params as $item) {
 
                 $html .= '<div class="control-group">';
@@ -538,10 +532,7 @@ class WFParameter {
                         $html .= '</div>';
                     }
                 } else {
-                    $label    = preg_replace_callback('#(for|id)="([^"]+)"#', array($this, 'cleanAttribute'), $item[0]);
-                    $element  = preg_replace_callback('#(id)="([^"]+)"#', array($this, 'cleanAttribute'), $item[1]);
-
-                    $html .= $label . $element;
+                    $html .= $item['label'] . $item['element'];
                 }
 
                 $html .= '</div>';

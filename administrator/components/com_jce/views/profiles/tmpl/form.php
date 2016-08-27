@@ -12,8 +12,8 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-    <div class="ui-jce loading">
+<div class="ui-jce loading">
+  <form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
         <div class="progress progress-striped active">
             <div class="bar" style="width: 100%;"><?php echo JText :: _('WF_MESSAGE_LOAD');?></div>
         </div>
@@ -68,12 +68,12 @@ defined('_JEXEC') or die('RESTRICTED');
                 </div>
             </div>
         </div>
-    </div>
     <input type="hidden" name="users[]" value="" />
     <input type="hidden" name="option" value="com_jce" />
     <input type="hidden" name="id" value="<?php echo $this->profile->id; ?>" />
     <input type="hidden" name="cid[]" value="<?php echo $this->profile->id; ?>" />
     <input type="hidden" name="view" value="profiles" />
     <input type="hidden" name="task" value="" />
-<?php echo JHTML::_('form.token'); ?>
+    <?php echo JHTML::_('form.token'); ?>
 </form>
+</div>

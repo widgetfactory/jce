@@ -1,9 +1,5 @@
 .checkbox-list-toggle-all {margin-left: -15px;}
 
-
-.ui-jce span.profiles-enable.loading,  .ui-jce span.profiles-disable.loading {
-    background : url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat center;
-}
 .ui-jce input[type="radio"] + label {
     display: inline;
 }
@@ -12,29 +8,6 @@
     display: inline-block;
     vertical-align: middle;
     margin: 0 2px 0 0;
-}
-
-#plugin_params fieldset {
-    margin-left: 0;
-}
-div#plugin_params h2 {
-    font-size: 1.5em;
-    padding: 0 0.1em
-}
-
-.ui-jce #tabs h2 {
-    margin: 0 0 .8em 8px;
-    font-size: 2em;
-}
-
-.ui-jce span.browser {
-    width: 20px;
-    height: 20px;
-    background: transparent url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -960px;
-    cursor: pointer;
-    display: inline-block;
-    vertical-align:middle;
-    margin: 0 0 0 -25px;
 }
 
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
@@ -167,10 +140,6 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 
 .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0;
-}
-
-.ui-jce .tabs-plugin-parameters h3 {
-    margin : 0 7px;
 }
 
 .ui-jce .tabs-plugin-parameters h3 + p, .ui-jce .tabs-plugin-parameters h3 + p + ul {
