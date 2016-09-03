@@ -4,12 +4,15 @@
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
-    <authorEmail>@@e-mail@@</authorEmail>
+    <authorEmail>@@email@@</authorEmail>
     <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
-    <copyright>2006-2010 Ryan Demmer</copyright>
-    <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
-    <description>WF_EDITOR_PLUGIN_DESC</description>    
-    <files>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
+    <description>WF_EDITOR_PLUGIN_DESC</description>
+    <files folder="plugins/editors/jce">
         <file plugin="jce">jce.php</file>
     </files>
+    <languages folder="administrator/language/en-GB">
+        <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
+    </languages>
 </install>

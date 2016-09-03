@@ -4,12 +4,16 @@
   <version>@@version@@</version>
   <creationDate>@@date@@</creationDate>
   <author>Ryan Demmer</author>
-  <authorEmail>@@e-mail@@</authorEmail>
+  <authorEmail>@@email@@</authorEmail>
   <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
   <copyright>@@copyright@@</copyright>
-  <license>GNU/GPL Version 2 - http://www.gnu.org/licenses/gpl-2.0.html</license>
+  <license>@@licence@@</license>
   <description>PLG_SYSTEM_JCE_XML_DESCRIPTION</description>
-  <files>
+  <files folder="plugins/system/jce">
     <file plugin="jce">jce.php</file>
   </files>
+  <languages folder="administrator/language/en-GB">
+      <language tag="en-GB">en-GB.plg_system_jce.ini</language>
+      <language tag="en-GB">en-GB.plg_system_jce.sys.ini</language>
+  </languages>
 </extension>

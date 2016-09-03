@@ -32,7 +32,7 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
 $language = JFactory::getLanguage();
 
-$language->load('com_jce', JPATH_ADMINISTRATOR);
+$language->load('mod_jce_quickicon', JPATH_ADMINISTRATOR);
 
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_jce/media/css/module.css');
@@ -64,7 +64,7 @@ if (empty($link)) {
         <div class="icon">
             <a class="modal" rel="{handler: 'iframe', size: {x: <?php echo $width; ?>, y: <?php echo $height; ?>}}" href="<?php echo $link; ?>">
                 <span class="jce-file-browser"></span>
-                <span><?php echo JText::_('WF_QUICKICON_BROWSER'); ?></span>
+                <span><?php echo JText::_('MOD_QUICKICON_JCE_TITLE'); ?></span>
             </a>
         </div>
     </div>

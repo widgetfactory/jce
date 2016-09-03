@@ -8,9 +8,7 @@
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>WF_ADMIN_DESC</description>
-
-    <scriptfile>install.script.php</scriptfile>
+    <description>WF_DESC</description>
 
     <files folder="components/com_jce">
         <folder>editor</folder>
@@ -27,8 +25,8 @@
     </media>
 
     <languages folder="language/en-GB">
-        <language tag="en-GB">en-GB.com_jce.xml</language>
         <language tag="en-GB">en-GB.com_jce.ini</language>
+        @@pro-language@@
     </languages>
 
 	<!-- SQL query files to execute on installation -->
@@ -39,7 +37,7 @@
             <file charset="utf8" driver="sqlsrv">sql/sqlsrv.sql</file>
             <file charset="utf8" driver="sqlzure">sql/sqlsrv.sql</file>
             <file charset="utf8" driver="sqlazure">sql/sqlsrv.sql</file>
-            <!--file charset="utf8" driver="postgresql">sql/postgresql.sql</file-->
+            <file charset="utf8" driver="postgresql">sql/postgresql.sql</file>
         </sql>
     </install>
 
@@ -50,7 +48,6 @@
             <menu view="cpanel" link="option=com_jce">WF_MENU_CPANEL</menu>
             <menu view="config" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
             <menu view="profiles" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
-            <menu view="installer" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
         </submenu>
 
         <files folder="administrator/components/com_jce">
@@ -70,7 +67,6 @@
             <file>config.xml</file>
             <file>index.html</file>
             <file>install.php</file>
-            <file>install.script.php</file>
             <file>jce.php</file>
             <file>licence.txt</file>
         </files>
@@ -78,18 +74,6 @@
         <languages folder="administrator/language/en-GB">
             <language tag="en-GB">en-GB.com_jce.ini</language>
             <language tag="en-GB">en-GB.com_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_content_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_content_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_editors_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_system_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_system_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_installer_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_installer_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_extension_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_extension_jce.sys.ini</language>
-            <language tag="en-GB">en-GB.plg_quickicon_jce.ini</language>
-            <language tag="en-GB">en-GB.plg_quickicon_jce.sys.ini</language>
         </languages>
 
     </administration>
