@@ -76,7 +76,7 @@
                 $('input.browser').removeClass('browser');
             }
 
-            $.Plugin.init();
+            Wf.init();
 
             if (context == 'merge') {
                 return this.initMerge();
@@ -292,7 +292,7 @@
 
                 $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
             } else {
-                $.Plugin.setDefaults(this.settings.defaults);
+                Wf.setDefaults(this.settings.defaults);
             }
 
             // Resize some elements
@@ -1182,7 +1182,7 @@
             }
         },
         setClasses: function (v) {
-            //$.Plugin.setClasses(v);
+            //Wf.setClasses(v);
         },
         setActionforRowType: function () {
             var rowtype = $('#rowtype').val();

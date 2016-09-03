@@ -182,13 +182,13 @@
             });
 
             // Set list limit selection
-            $(dialog.limit + '-select').val($.Cookie.get('wf_' + $.Plugin.getName() + '_limit') || this.options.listlimit);
+            $(dialog.limit + '-select').val(Wf.Cookie.get('wf_' + Wf.getName() + '_limit') || this.options.listlimit);
 
             $(dialog.limit + '-select').change(function () {
                 self._limitcount = 0;
 
                 if (self.options.use_cookies) {
-                    $.Cookie.set('wf_' + $.Plugin.getName() + '_limit', $(this).val());
+                    Wf.Cookie.set('wf_' + Wf.getName() + '_limit', $(this).val());
                 }
 
                 self.refresh();
@@ -407,7 +407,7 @@
          * @param {String} Default value
          */
         _translate: function (s, ds) {
-            return $.Plugin.translate(s, ds);
+            return Wf.translate(s, ds);
         },
         /**
          * Setup sortables for item list
@@ -456,7 +456,7 @@
             }
 
             // contains .. or is not local
-            if (/\.{2,}/.test(s) || (/:\/\//.test(s) && s.indexOf($.Plugin.getURI(true)) == -1)) {
+            if (/\.{2,}/.test(s) || (/:\/\//.test(s) && s.indexOf(Wf.getURI(true)) == -1)) {
                 return false;
             }
 
@@ -493,7 +493,7 @@
 
                 // get dir if file (relative to site url)
                 if (/\.([a-z0-9]{2,}$)/i.test(path)) {
-                    path = $.String.dirname(path);
+                    path = Wf.String.dirname(path);
                     path = path.replace(new RegExp(this.options.dir), '').replace(/^[\/\\]+/, '');
                 }
             }
@@ -535,7 +535,7 @@
 
             // get directory from cookie
             if (!src) {
-                dir = $.Cookie.get('wf_' + $.Plugin.getName() + '_dir') || '';
+                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir') || '';
             }
 
             if (!this._validatePath(dir)) {
@@ -543,7 +543,7 @@
             }
 
             // store directory
-            this._dir = $.String.encodeURI(dir);
+            this._dir = Wf.String.encodeURI(dir);
 
             // make sure its relative
             if (src && /:\/\//.test(src)) {
@@ -579,7 +579,7 @@
          */
         _isWebSafe: function (name) {
             // get websafe name
-            var safe = $.String.safe(name, this.options.websafe_mode, this.options.websafe_spaces, this.options.websafe_textcase);
+            var safe = Wf.String.safe(name, this.options.websafe_mode, this.options.websafe_spaces, this.options.websafe_textcase);
             // only check lowercase as both upper and lower are websafe
             return name.toLowerCase() === safe.toLowerCase();
         },
@@ -628,7 +628,7 @@
 
                     h += '<li class="folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                             data.join(' ') +
-                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -665,9 +665,9 @@
                         classes.push(e.classes);
                     }
 
-                    h += '<li class="file ' + $.String.getExt(e.name) + ' ' + classes.join(' ') + '" title="' + e.name + '"' +
+                    h += '<li class="file ' + Wf.String.getExt(e.name) + ' ' + classes.join(' ') + '" title="' + e.name + '"' +
                             data.join(' ') +
-                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + $.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="size" aria-hidden="true">' + $.String.formatSize(e.properties.size) + '</span></li>';
+                            '><span class="checkbox" role="checkbox" aria-checked="false"></span><a href="javascript:;">' + e.name + '</a><span class="date" aria-hidden="true">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="size" aria-hidden="true">' + Wf.String.formatSize(e.properties.size) + '</span></li>';
                 });
 
             } else {
@@ -703,7 +703,7 @@
 
             $(dialog.tree).tree({
                 onInit: function (e, callback) {
-                    $.JSON.request('getTree', path, function (o) {
+                    Wf.JSON.request('getTree', path, function (o) {
                         // Set default tree
                         $(dialog.tree).html(o);
 
@@ -726,7 +726,7 @@
                 onNodeLoad: function (e, node) {
                     $(dialog.tree).tree('toggleLoader', node);
 
-                    $.JSON.request('getTreeItem', $(node).attr('id'), function (o) {
+                    Wf.JSON.request('getTreeItem', $(node).attr('id'), function (o) {
                         if (o) {
                             if (!o.error) {
                                 $('ul:first', node).remove();
@@ -874,7 +874,7 @@
             var s = '';
 
             for (var i = 0; i < dirs.length - 1; i++) {
-                s = $.String.path(s, dirs[i]);
+                s = Wf.String.path(s, dirs[i]);
             }
 
             return s;
@@ -896,10 +896,10 @@
          */
         _returnFile: function (file) {
             this._addReturnedItem({
-                name: $.String.basename(file)
+                name: Wf.String.basename(file)
             });
 
-            this._changeDir($.String.dirname(file));
+            this._changeDir(Wf.String.dirname(file));
         },
         /**
          * Set the current directory
@@ -955,7 +955,7 @@
 
             // store directory in cookie
             if ((src || this._dir === '') && this.options.use_cookies) {
-                $.Cookie.set("wf_" + $.Plugin.getName() + '_dir', this._cleanPath(path));
+                Wf.Cookie.set("wf_" + Wf.getName() + '_dir', this._cleanPath(path));
             }
 
             // show loading message
@@ -968,7 +968,7 @@
             this._limit = $('#browser-list-limit-select').val() || this.options.listlimit;
 
             // send request
-            $.JSON.request('getItems', [path, this._limit, this._limitcount, filter || ''], this._loadList, this);
+            Wf.JSON.request('getItems', [path, this._limit, this._limitcount, filter || ''], this._loadList, this);
         },
         /**
          * Refresh the file list
@@ -1058,9 +1058,9 @@
             }
 
             if (o.folders.length) {
-                this._dir = $.String.encodeURI($.String.dirname(o.folders[0].id) || '/', true);
+                this._dir = Wf.String.encodeURI(Wf.String.dirname(o.folders[0].id) || '/', true);
             } else if (o.files.length) {
-                this._dir = $.String.encodeURI($.String.dirname(o.files[0].id) || '/', true);
+                this._dir = Wf.String.encodeURI(Wf.String.dirname(o.files[0].id) || '/', true);
             }
 
             // Add folder-up button
@@ -1142,11 +1142,11 @@
 
             var list = this._serializeSelectedItems();
 
-            var site = $.Plugin.getURI(true);
+            var site = Wf.getURI(true);
 
             switch (name) {
                 case 'help':
-                    $.Plugin.help();
+                    Wf.help();
                     break;
                 case 'insert':
                     this._trigger('onFileInsert', null, $('li.selected', '#item-list').get(0));
@@ -1154,20 +1154,20 @@
                 case 'view':
                     var $item = $('li.selected.active:first', '#item-list');
                     var url = $item.data('url');
-                    url = /http(s)?:\/\//.test(url) ? url : $.String.path(site, url);
+                    url = /http(s)?:\/\//.test(url) ? url : Wf.String.path(site, url);
 
                     // use preview url if available
                     if ($item.data('preview')) {
                         url = $item.data('preview');
                     }
 
-                    var name = $.String.basename($item.attr('title'));
+                    var name = Wf.String.basename($item.attr('title'));
 
                     if (this._isViewable(name)) {
                         if (/\.(jpeg|jpg|gif|png|avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mp3|mp4|m4v|mpeg|ogg|ogv|webm|swf|flv|f4v|xml|dcr|rm|ra|ram|divx|pdf)/i.test(name)) {
-                            $.Dialog.media(name, url);
+                            Wf.Dialog.media(name, url);
                         } else {
-                            $.Dialog.iframe(name, url, {
+                            Wf.Dialog.iframe(name, url, {
                                 onFrameLoad: function (e) {
                                     var iframe = $('div.iframe-preview iframe').get(0);
                                     var h = iframe.contentWindow.document.body.innerHTML;
@@ -1184,7 +1184,7 @@
                                         var s = toRelative($(this).attr('src'));
 
                                         if (!/http(s)?:\/\//.test(s)) {
-                                            s = $.String.path(site, s);
+                                            s = Wf.String.path(site, s);
                                         }
                                         $(this).attr('src', s);
                                     });
@@ -1193,7 +1193,7 @@
                                         var s = toRelative($(this).attr('href'));
 
                                         if (!/http(s)?:\/\//.test(s)) {
-                                            s = $.String.path(site, s);
+                                            s = Wf.String.path(site, s);
                                         }
                                         $(this).attr('href', s);
                                     });
@@ -1217,7 +1217,7 @@
                     }
                     break;
                 case 'upload':
-                    this._dialog['upload'] = $.Dialog.upload($.extend({
+                    this._dialog['upload'] = Wf.Dialog.upload($.extend({
                         elements: this._getDialogOptions('upload'),
                         onOpen: function () {
                             // hide upload options if empty
@@ -1244,7 +1244,7 @@
                              */
                             function _checkName(file) {
                                 var found = false, msg = self._translate('file_exists_alert', 'A file with the same name exists in the target folder.');
-                                var name = $.String.safe(file.name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
+                                var name = Wf.String.safe(file.name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
                                 $('li', 'file-list').each(function () {
                                     if (name == $(this).attr('title')) {
@@ -1349,20 +1349,20 @@
                 case 'folder_new':
                     var elements = this._getDialogOptions('folder_new');
 
-                    this._dialog['folder_new'] = $.Dialog.prompt(self._translate('folder_new', 'New Folder'), {
+                    this._dialog['folder_new'] = Wf.Dialog.prompt(self._translate('folder_new', 'New Folder'), {
                         text: self._translate('name', 'Name'),
                         elements: elements,
                         height: elements ? 200 : 150,
                         confirm: function (v) {
                             if (v) {
                                 self._setLoader();
-                                var args = [dir, $.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase)];
+                                var args = [dir, Wf.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase)];
 
                                 $(':input:not(input[name="prompt"])', $(self._dialog['folder_new']).dialog('widget')).each(function () {
                                     args.push($(this).val());
                                 });
 
-                                $.JSON.request('folderNew', args, function (o) {
+                                Wf.JSON.request('folderNew', args, function (o) {
                                     if (o) {
                                         self._trigger('onFolderNew');
                                         $(self._dialog['folder_new']).dialog('close');
@@ -1393,7 +1393,7 @@
 
                     var items = this._pasteitems;
 
-                    $.JSON.request(fn, [items, dir], function (o) {
+                    Wf.JSON.request(fn, [items, dir], function (o) {
                         if (o) {
                             if (o.folders.length) {
                                 // remove from tree
@@ -1418,10 +1418,10 @@
                 case 'delete':
                     var msg = self._translate('delete_item_alert', 'Delete Selected Item(s)');
 
-                    this._dialog['confirm'] = $.Dialog.confirm(msg, function (state) {
+                    this._dialog['confirm'] = Wf.Dialog.confirm(msg, function (state) {
                         if (state) {
                             self._setLoader();
-                            $.JSON.request('deleteItem', list, function (o) {
+                            Wf.JSON.request('deleteItem', list, function (o) {
                                 if (o) {
 
                                     if (o.folders.length) {
@@ -1451,25 +1451,25 @@
                     // Rename a file or folder
                 case 'rename':
                     var s = this.getSelectedItems(0);
-                    var v = $.String.basename(list);
+                    var v = Wf.String.basename(list);
 
                     if ($(s).hasClass('file')) {
-                        v = $.String.basename($.String.stripExt(list));
+                        v = Wf.String.basename(Wf.String.stripExt(list));
                     }
 
-                    this._dialog['rename'] = $.Dialog.prompt(self._translate('rename', 'Rename Item'), {
+                    this._dialog['rename'] = Wf.Dialog.prompt(self._translate('rename', 'Rename Item'), {
                         text: self._translate('name', 'Name'),
                         value: v,
                         elements: this._getDialogOptions('rename'),
                         confirm: function (name) {
-                            name = $.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
+                            name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
                             if (v == name) {
-                                $.Dialog.alert(self._translate('rename_item_name_new', 'Please specify a new name for the item'));
+                                Wf.Dialog.alert(self._translate('rename_item_name_new', 'Please specify a new name for the item'));
                                 return false;
                             }
 
-                            self._dialog['confirm'] = $.Dialog.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function (state) {
+                            self._dialog['confirm'] = Wf.Dialog.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function (state) {
                                 if (state) {
                                     self._setLoader();
 
@@ -1482,10 +1482,10 @@
                                     // close dialog
                                     $(self._dialog['rename']).dialog('close');
 
-                                    $.JSON.request('renameItem', args, function (o) {
+                                    Wf.JSON.request('renameItem', args, function (o) {
                                         if (o) {
                                             self._reset();
-                                            var item = $.String.path(self._dir, name);
+                                            var item = Wf.String.path(self._dir, name);
 
                                             // folder rename successful
                                             if (o.folders.length) {
@@ -1541,7 +1541,7 @@
                     break;
             }
 
-            this._dialog['alert'] = $.Dialog.alert(err, {
+            this._dialog['alert'] = Wf.Dialog.alert(err, {
                 close: function () {
                     self.refresh();
                 }
@@ -1584,7 +1584,7 @@
                 }).addClass(name).append('<span id="' + name + '_label" aria-hidden="true">' + o.title + '</span>');
 
                 if (o.icon) {
-                    $(action).css('background-image', $.String.path($.Plugin.getPath(), o.icon));
+                    $(action).css('background-image', Wf.String.path(Wf.getPath(), o.icon));
                 }
 
                 if (o.name) {
@@ -1669,7 +1669,7 @@
                 }).append('<span id="' + o.name + '_label" aria-hidden="true">' + o.title + '</span>');
 
                 if (o.icon) {
-                    $(button).css('background-image', $.String.path($.Plugin.getPath(this.options.plugin), o.icon));
+                    $(button).css('background-image', Wf.String.path(Wf.getPath(this.options.plugin), o.icon));
                 }
 
                 if (o.name) {
@@ -2079,7 +2079,7 @@
                         var item = [];
 
                         // find item from name, id or data-url
-                        item = $('li.' + type + '[title="' + $.String.basename(name) + '"], li.' + type + '[data-url="' + $.String.path(base, name) + '"]', $list);
+                        item = $('li.' + type + '[title="' + Wf.String.basename(name) + '"], li.' + type + '[data-url="' + Wf.String.path(base, name) + '"]', $list);
 
                         if (item.length) {
                             if (file.insert) {
@@ -2116,7 +2116,7 @@
             var self = this;
 
             return $('li.selected', '#item-list').map(function () {
-                return $.String.path(self._dir, $(this).attr('title'));
+                return Wf.String.path(self._dir, $(this).attr('title'));
             }).get().join(',');
 
         },
@@ -2161,7 +2161,7 @@
         },
         _getDimensions: function (file) {
             var img = new Image();
-            var src = $.String.path($.Plugin.getURI(), $(file).data('url'));
+            var src = Wf.String.path(Wf.getURI(), $(file).data('url'));
 
             $(file).addClass('loading disabled').children('span.checkbox').addClass('disabled');
 
@@ -2187,12 +2187,12 @@
         _getItemDetails: function () {
             var self = this, dialog = this.options.dialog;
             var item = $('li.selected.active', '#item-list');
-            var title = $.String.basename($(item).attr('title'));
+            var title = Wf.String.basename($(item).attr('title'));
             var type = $(item).hasClass('folder') ? 'folder' : 'file';
 
             $(dialog.info).empty().addClass('loader');
 
-            var path = $.String.path(this._dir, $.String.encodeURI(title));
+            var path = Wf.String.path(this._dir, Wf.String.encodeURI(title));
 
             var callback = function () {
                 var name = title, ext = '';
@@ -2200,13 +2200,13 @@
                 $(self.element).next('span.loader').remove();
 
                 if (type == 'file') {
-                    name = $.String.stripExt(title);
-                    ext = $.String.getExt(title) + ' ';
+                    name = Wf.String.stripExt(title);
+                    ext = Wf.String.getExt(title) + ' ';
                 }
 
                 // create properties list
                 var info = document.createElement('dl');
-                $(info).append('<dt>' + name + '</dt><dd>' + ext + self._translate(type, $.String.ucfirst(type)) + '</dd><dd id="info-properties"><dl></dl></dd>');
+                $(info).append('<dt>' + name + '</dt><dd>' + ext + self._translate(type, Wf.String.ucfirst(type)) + '</dd><dd id="info-properties"><dl></dl></dd>');
 
                 // additional data for file items
                 if ($(item).data('preview')) {
@@ -2256,11 +2256,11 @@
                     }
 
                     if (k == 'size') {
-                        v = $.String.formatSize(v);
+                        v = Wf.String.formatSize(v);
                     }
 
                     if (k == 'modified') {
-                        v = $.String.formatDate(v, self.options.date_format);
+                        v = Wf.String.formatDate(v, self.options.date_format);
                     }
 
                     $('#info-properties dl').append('<dd id="info-' + k.toLowerCase() + '">' + self._translate('' + k, k) + ': ' + v + '</dd>');
@@ -2302,7 +2302,7 @@
 
                         } else {
                             // size img
-                            var dim = $.Plugin.sizeToFit(img, {
+                            var dim = Wf.sizeToFit(img, {
                                 width: 100,
                                 height: 80
                             });
@@ -2317,7 +2317,7 @@
                         $('dd', $('#info-preview')).removeClass('loader').addClass('preview-error');
                     };
 
-                    src = /:\/\//.test(src) ? src : $.String.encodeURI(src) + '?' + new Date().getTime();
+                    src = /:\/\//.test(src) ? src : Wf.String.encodeURI(src) + '?' + new Date().getTime();
 
                     img.src = src;
                 }
@@ -2336,7 +2336,7 @@
             if (!$(item).data('url') && type === "file") {
                 $(this.element).after('<span class="loader" />');
 
-                $.JSON.request('getFileDetails', [path], function(o) {
+                Wf.JSON.request('getFileDetails', [path], function(o) {
                     if ($.isPlainObject(o)) {
                         $(item).data('url', o.url || '').data('preview', o.preview || o.url || '');
                     }

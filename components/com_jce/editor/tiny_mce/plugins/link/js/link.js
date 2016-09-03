@@ -45,7 +45,7 @@
                         v = $(node).attr('id');
                     }
 
-                    self.insertLink($.String.decode(v));
+                    self.insertLink(Wf.String.decode(v));
                 }
 
                 if ($(node).hasClass('folder')) {
@@ -57,9 +57,9 @@
 
                 $(this).trigger('tree:toggleloader', node);
 
-                var query = $.String.query($.String.unescape($(node).attr('id')));
+                var query = Wf.String.query(Wf.String.unescape($(node).attr('id')));
 
-                $.JSON.request('getLinks', {
+                Wf.JSON.request('getLinks', {
                     'json': query
                 }, function(o) {
                     if (o) {
@@ -76,7 +76,7 @@
 
                             $(self).trigger('tree:togglenodestate', [node, true]);
                         } else {
-                            $.Modal.alert(o.error);
+                            Wf.Modal.alert(o.error);
                         }
                     }
                     $(self).trigger('tree:toggleloader', node);
@@ -185,7 +185,7 @@
                 setText(state, v);
             }
 
-            $.Plugin.init();
+            Wf.init();
 
             // Enable / disable attributes
             $.each(this.settings.attributes, function(k, v) {
@@ -238,7 +238,7 @@
                 });
 
             } else {
-                $.Plugin.setDefaults(this.settings.defaults);
+                Wf.setDefaults(this.settings.defaults);
             }
 
             // hide HTML4 only attributes
@@ -280,7 +280,7 @@
         checkPrefix: function(n) {
             var v = $(n).val();
             if (/@/.test(v) && !/^\s*mailto:/i.test(v)) {
-                $.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
+                Wf.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
                     if (state) {
                         $(n).val('mailto:' + v);
                     }
@@ -288,7 +288,7 @@
                 });
 
             } else if (/^\s*www./i.test(v)) {
-                $.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function(state) {
+                Wf.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function(state) {
                     if (state) {
                         $(n).val('http://' + v);
                     }
@@ -306,7 +306,7 @@
                 se = ed.selection;
 
             if ($('#href').val() == '') {
-                $.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'));
+                Wf.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'));
 
                 $('#href').focus();
 
@@ -314,7 +314,7 @@
             }
 
             if (se.isCollapsed() && $('#text').not(':disabled').val() == '') {
-                $.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'));
+                Wf.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'));
 
                 $('#text').focus();
 
@@ -342,7 +342,7 @@
 
                 if (k == 'href') {
                     // prepare URL
-                    v = $.String.buildURI(v);
+                    v = Wf.String.buildURI(v);
                 }
 
                 if (k == 'class') {
@@ -427,7 +427,7 @@
             tinyMCEPopup.close();
         },
         setClasses: function(v) {
-            $.Plugin.setClasses(v);
+            Wf.setClasses(v);
         },
         setTargetList: function(v) {
             $('#target').val(v);
@@ -448,7 +448,7 @@
 
             fields += '</div>';
 
-            $.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), {
+            Wf.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), {
                 width: 300,
                 buttons: [{
                     text: ed.getLang('dlg.create', 'Create'),
@@ -463,7 +463,7 @@
                                 $.each(v.split(','), function(i, o) {
                                     if (s !== 'subject') {
                                         if (!/@/.test(o)) {
-                                            $.Modal.alert(s + ed.getLang('link_dlg.invalid_email', ' is not a valid e-mail address!'));
+                                            Wf.Modal.alert(s + ed.getLang('link_dlg.invalid_email', ' is not a valid e-mail address!'));
                                             errors++;
                                         }
                                     }
@@ -491,7 +491,7 @@
             }, fields);
         },
         openHelp: function() {
-            $.Plugin.help('link');
+            Wf.help('link');
         },
 
         _search: function() {
@@ -510,7 +510,7 @@
             // clean query
             query = $.trim(query.replace(/[\///<>#]/g, ''));
 
-            $.JSON.request('doSearch', {
+            Wf.JSON.request('doSearch', {
                 'json': [query]
             }, function(o) {
                 if (o) {
@@ -523,7 +523,7 @@
                                 var $dl = $('<dl class="ui-margin-small" />').appendTo('#search-result');
 
                                 $('<dt class="link ui-margin-small" />').text(n.title).click(function() {
-                                    self.insertLink($.String.decode(n.link));
+                                    self.insertLink(Wf.String.decode(n.link));
                                 }).prepend('<i class="ui-icon ui-icon-file-text-o ui-margin-small-right" />').appendTo($dl);
 
                                 $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
@@ -531,7 +531,7 @@
                                 if (n.anchors) {
                                     $.each(n.anchors, function(i, a) {
                                         $('<dd class="anchor" />').text(a).click(function() {
-                                            self.insertLink($.String.decode(n.link + '#' + a));
+                                            self.insertLink(Wf.String.decode(n.link + '#' + a));
                                         }).appendTo($dl);
                                     });
                                 }
@@ -545,7 +545,7 @@
                         $('#search-options-button').trigger('close');
                         $('#search-result').height($p.parent().height() - $p.outerHeight() - 5).show();
                     } else {
-                        $.Modal.alert(o.error);
+                        Wf.Modal.alert(o.error);
                     }
                 }
                 $('#search-browser').removeClass('loading');

@@ -44,7 +44,7 @@
 				$(this).addClass('focus');
 			});
 
-			$.Plugin.init();
+			Wf.init();
 
 			if (n && n.nodeName == 'IMG') {
 				// set button
@@ -55,13 +55,13 @@
 				// set preview
 				$('#sample').attr({
 					'src': n.src
-				}).attr($.Plugin.sizeToFit(n, {
+				}).attr(Wf.sizeToFit(n, {
 					width: 80,
 					height: 60
 				}));
 
 				// Width & Height
-				var w = $.Plugin.getAttrib(n, 'width'), h = $.Plugin.getAttrib(n, 'height');
+				var w = Wf.getAttrib(n, 'width'), h = Wf.getAttrib(n, 'height');
 
 				$('#width').val(function() {
 					if (w) {
@@ -89,12 +89,12 @@
 				$('#title').val(ed.dom.getAttrib(n, 'title'));
 				// Margin
 				$.each(['top', 'right', 'bottom', 'left'], function() {
-					$('#margin_' + this).val($.Plugin.getAttrib(n, 'margin-' + this));
+					$('#margin_' + this).val(Wf.getAttrib(n, 'margin-' + this));
 				});
 
 				// Border
 				$('#border_width').val(function() {
-					var v = $.Plugin.getAttrib(n, 'border-width');
+					var v = Wf.getAttrib(n, 'border-width');
 
 					if ($('option[value="' + v + '"]', this).length == 0) {
 						$(this).append(new Option(v, v));
@@ -103,8 +103,8 @@
 					return v;
 				});
 
-				$('#border_style').val($.Plugin.getAttrib(n, 'border-style'));
-				$('#border_color').val($.Plugin.getAttrib(n, 'border-color')).change();
+				$('#border_style').val(Wf.getAttrib(n, 'border-style'));
+				$('#border_color').val(Wf.getAttrib(n, 'border-color')).change();
 
 				// if no border values set, set defaults
 				if (!$('#border').is(':checked')) {
@@ -113,7 +113,7 @@
 					});
 				}
 
-				$('#align').val($.Plugin.getAttrib(n, 'align'));
+				$('#align').val(Wf.getAttrib(n, 'align'));
 
 				// Class
 				$('#classes').val(ed.dom.getAttrib(n, 'class'));
@@ -147,11 +147,11 @@
 					$('#clear').val(br.style.clear);
 				}
 			} else {
-				$.Plugin.setDefaults(this.settings.defaults);
+				Wf.setDefaults(this.settings.defaults);
 			}
 
 			if (ed.settings.filebrowser_position === "external") {
-				$.Plugin.createBrowsers($('#src'), function(files) {
+				Wf.createBrowsers($('#src'), function(files) {
 					var file = files.shift();
 					self.selectFile(file);
 				}, 'images');
@@ -164,7 +164,7 @@
 			}
 
 			// Setup Styles
-			$.Plugin.updateStyles();
+			Wf.updateStyles();
 
 			// update constrain after applying values
 			$('.ui-constrain-checkbox').on('constrain:change', function(e, elms) {
@@ -176,11 +176,11 @@
 				self = this;
 
 			if ($('#src').val() === '') {
-				$.Modal.alert(tinyMCEPopup.getLang('imgmanager_dlg.no_src', 'Please enter a url for the image'));
+				Wf.Modal.alert(tinyMCEPopup.getLang('imgmanager_dlg.no_src', 'Please enter a url for the image'));
 				return false;
 			}
 			if ($('#alt').val() === '') {
-				$.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function(state) {
+				Wf.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function(state) {
 					if (state) {
 						self.insertAndClose();
 					}
@@ -198,7 +198,7 @@
 				v, args = {},
 				el, br = '';
 
-			$.Plugin.updateStyles();
+			Wf.updateStyles();
 
 			tinyMCEPopup.restoreSelection();
 
@@ -221,7 +221,7 @@
 
 				if (k == 'src') {
 					// prepare URL
-					v = $.String.buildURI(v);
+					v = Wf.String.buildURI(v);
 				}
 
 				if (k == 'width' || k == 'height') {
@@ -297,7 +297,7 @@
 			if ($('#rollover_tab').hasClass('ui-active')) {
 				$('input.focus', '#rollover_tab').val(src);
 			} else {
-				name = $.String.stripExt(name);
+				name = Wf.String.stripExt(name);
 				name = name.replace(/[-_]+/g, ' ');
 
 				$('#alt').val(name);
@@ -322,7 +322,7 @@
 					});
 				}
 
-				var dim = $.Plugin.sizeToFit({
+				var dim = Wf.sizeToFit({
 					width: data.width,
 					height: data.height
 				}, {

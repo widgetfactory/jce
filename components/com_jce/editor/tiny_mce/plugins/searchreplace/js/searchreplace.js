@@ -14,7 +14,7 @@ var SearchReplaceDialog = {
     init: function(ed) {
         var self = this;
 
-        $.Plugin.init();
+        Wf.init();
 
         $('#next').button({
             icons: {

@@ -11,9 +11,9 @@
 /*
  * Depends: jquery.ui.core.js jquery.ui.widget.js
  */
-(function ($) {
+(function($, Wf) {
 
-    var Tree = function (element, options) {
+    var Tree = function(element, options) {
         this.element = element;
 
         this.options = $.extend({
@@ -31,10 +31,10 @@
          * @param {Mixed} args Arguments
          * @returns {void}
          */
-        _trigger: function (ev, args) {
+        _trigger: function(ev, args) {
             $(this.element).trigger('tree:' + ev, args);
         },
-        _init: function () {
+        _init: function() {
             var self = this;
 
             if (!this.element) {
@@ -44,7 +44,7 @@
             self._nodeEvents();
 
             this._trigger('init', function() {
-              self._nodeEvents();
+                self._nodeEvents();
             });
         },
         /**
@@ -52,7 +52,7 @@
          * @param {objec} parent object
          * @returns {void}
          */
-        _nodeEvents: function (parent) {
+        _nodeEvents: function(parent) {
             var self = this;
 
             if (!parent) {
@@ -60,17 +60,18 @@
             }
 
             // Add ARIA role and tabindex to root and ARIA level to children
-            $('ul:first', parent).attr({'role': 'tree'}).addClass('ui-tree').children('li').attr('aria-level', 1);
+            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('ui-tree').children('li').attr('aria-level', 1);
 
             // Add ARIA role and tabindex to tree items
-            $('li', parent).attr({'role': 'treeitem'}).attr('aria-expanded', function () {
+            $('li', parent).attr({ 'role': 'treeitem' }).attr('aria-expanded', function() {
                 return $(this).hasClass('ui-tree-open') ? true : false;
-            }).attr('aria-level', function (i, v) {
+            }).attr('aria-level', function(i, v) {
                 if (!v) {
                     return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
                 }
             }).click(function(e) {
-                var n = e.target, p = $(n).parents('li').get(0);
+                var n = e.target,
+                    p = $(n).parents('li').get(0);
 
                 e.preventDefault();
                 e.stopPropagation();
@@ -99,7 +100,7 @@
          *            The parent
          * @return {Boolean}.
          */
-        _hasNodes: function (parent) {
+        _hasNodes: function(parent) {
             if ($.type(parent) == 'string') {
                 parent = this._findParent(parent);
             }
@@ -115,7 +116,7 @@
          *            or Element} The parent node
          * @return {Boolean}.
          */
-        _isNode: function (id, parent) {
+        _isNode: function(id, parent) {
             var n = this._findNode(id, parent);
 
             return n.length ? true : false;
@@ -127,7 +128,7 @@
          *            or Element} The parent node
          * @return {Boolean}.
          */
-        _getNode: function (parent) {
+        _getNode: function(parent) {
             if ($.type(parent) === "string") {
                 parent = this._findParent(parent);
             }
@@ -137,7 +138,7 @@
         /**
          * Reset all nodes. Set to closed
          */
-        _resetNodes: function () {
+        _resetNodes: function() {
             $('li', this.element).removeClass('ui-tree-open');
         },
         /**
@@ -148,8 +149,8 @@
          * @param {String}
          *            The new title
          */
-        renameNode: function (id, name) {
-            var parent = $.String.dirname(id);
+        renameNode: function(id, name) {
+            var parent = Wf.String.dirname(id);
 
             var node = this._findNode(id, parent);
 
@@ -157,10 +158,10 @@
             $(node).attr('id', name);
 
             // Rename the span
-            $('a:first', node).html($.String.basename(name));
+            $('a:first', node).html(Wf.String.basename(name));
 
             // Rename each of the child nodes
-            $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
+            $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function(n) {
                 var nt = $(n).attr('id');
                 $(n).attr('id', nt.replace(id, name));
             });
@@ -172,8 +173,8 @@
          * @param {String}
          *            The node title
          */
-        removeNode: function (id) {
-            var parent = $.String.dirname(id);
+        removeNode: function(id) {
+            var parent = Wf.String.dirname(id);
 
             var node = this._findNode(id, parent);
             var ul = $(node).parent('ul');
@@ -192,7 +193,7 @@
          * @param {Stringor Element} The parent node
          * @return {Array} An array of nodes to create.
          */
-        createNode: function (nodes, parent) {
+        createNode: function(nodes, parent) {
             var self = this;
             var e, p, h, l, np, i;
 
@@ -203,7 +204,7 @@
 
             // If parent is not an element, find the parent element
             if (!parent) {
-                parent = $.String.dirname($(nodes[0]).attr('id'));
+                parent = Wf.String.dirname($(nodes[0]).attr('id'));
             }
 
             if ($.type(parent) == 'string') {
@@ -221,19 +222,19 @@
                 // Create it if it doesn't exist
                 if (!ul.length) {
                     ul = document.createElement('ul');
-                    $(ul).attr({'role': 'group'}).addClass('ui-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
+                    $(ul).attr({ 'role': 'group' }).addClass('ui-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
 
                     $(parent).append(ul);
                 }
 
                 // Iterate through nodes array
-                $.each(nodes, function (i, node) {
+                $.each(nodes, function(i, node) {
 
                     if (!self._isNode(node.id, parent)) {
                         // title and link html
                         var title = node.name || node.id;
                         // decode
-                        title = $.String.decode(title);
+                        title = Wf.String.decode(title);
                         name = title;
                         len = self.options.charLength;
 
@@ -243,7 +244,7 @@
                         }
 
                         var url = node.url || '#';
-                        var li  = document.createElement('li');
+                        var li = document.createElement('li');
 
                         if (!node['class']) {
                             node['class'] = 'folder';
@@ -254,10 +255,7 @@
                         var html = '<div class="ui-tree-row">';
 
                         if (node['class'].indexOf('folder') >= 0) {
-                            html += '<span class="ui-tree-toggle" role="presentation">'
-                            + ' <i class="ui-icon ui-icon-plus-square-o"></i>'
-                            + ' <i class="ui-icon ui-icon-minus-square-o"></i>'
-                            + '</span>';
+                            html += '<span class="ui-tree-toggle" role="presentation">' + ' <i class="ui-icon ui-icon-plus-square-o"></i>' + ' <i class="ui-icon ui-icon-minus-square-o"></i>' + '</span>';
                         }
 
                         html += '<a href="' + url + '" title="' + title + '"><span class="ui-tree-icon">';
@@ -273,7 +271,7 @@
                         html += '<span class="ui-tree-text ui-margin-small-left">' + name + '</span>';
                         html += '</a></div>';
 
-                        $(li).attr({'id': self._escape(encodeURI(node.id))}).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
+                        $(li).attr({ 'id': self._escape(encodeURI(node.id)) }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
 
                         $(ul).append(li);
 
@@ -314,7 +312,7 @@
          *            The child node id
          * @return {Element} The parent node.
          */
-        _findParent: function (el) {
+        _findParent: function(el) {
             if ($.type(el) === "string") {
                 return $('li[id="' + this._encode(el) + '"]:first', this.element);
             } else {
@@ -330,7 +328,7 @@
          *            Element} The parent node
          * @return {Element} The node.
          */
-        _findNode: function (id, parent) {
+        _findNode: function(id, parent) {
             if (!parent || parent === "/") {
                 parent = this.element;
             }
@@ -347,7 +345,7 @@
          * @param {Element}
          *            The target node
          */
-        toggleLoader: function (node) {
+        toggleLoader: function(node) {
             $(node).toggleClass('ui-tree-loading');
         },
         /**
@@ -356,7 +354,7 @@
          * @param {Element}
          *            The excluded node
          */
-        _collapseNodes: function (ex) {
+        _collapseNodes: function(ex) {
             var self = this;
 
             if (!ex) {
@@ -365,15 +363,15 @@
 
             var parent = $(ex).parent();
 
-            $('li', parent).each(function () {
+            $('li', parent).each(function() {
                 var el = this;
 
                 if (el !== ex && $(el).parent() !== parent) {
-                  self.toggleNodeState(el, 0);
+                    self.toggleNodeState(el, 0);
 
-                  var child = self._getNode(el);
-                  // hide if found
-                  $(child).addClass('ui-tree-hide');
+                    var child = self._getNode(el);
+                    // hide if found
+                    $(child).addClass('ui-tree-hide');
                 }
             });
         },
@@ -383,7 +381,7 @@
          * @param {Element}
          * The node
          */
-        toggleNodeState: function (node, state) {
+        toggleNodeState: function(node, state) {
             if (state) {
                 $(node).addClass('ui-tree-open').attr('aria-expanded', true);
             } else {
@@ -410,7 +408,7 @@
          * @param {Element}
          *            The node
          */
-        toggleNode: function (e, node) {
+        toggleNode: function(e, node) {
             // Force reload
             if (e.shiftKey) {
                 return this._trigger('nodeload', node);
@@ -425,7 +423,7 @@
                 } else {
                     this._trigger('nodeload', node);
                 }
-            // Hide children, toggle node
+                // Hide children, toggle node
             } else {
                 $(child).toggleClass('ui-tree-hide');
                 this.toggleNodeState(node, !$(child).hasClass('ui-tree-hide'));
@@ -436,7 +434,7 @@
                 this._collapseNodes(node);
             }
         },
-        _encode: function (s) {
+        _encode: function(s) {
             // decode first in case already encoded
             s = decodeURIComponent(s);
             // encode but decode backspace
@@ -449,31 +447,31 @@
          *            The string
          * @return {String} The escaped string
          */
-        _escape: function (s) {
+        _escape: function(s) {
             return s.replace(/'/, '%27');
         }
     };
 
     // jQuery hook
-    $.fn.tree = function (options) {
+    $.fn.tree = function(options) {
         var inst = new Tree(this, options);
 
-        $(this).on('tree:createnode', function (e, items, node) {
+        $(this).on('tree:createnode', function(e, items, node) {
             inst.createNode(items, node);
         });
 
-        $(this).on('tree:togglenode', function (e, ev, node) {
+        $(this).on('tree:togglenode', function(e, ev, node) {
             inst.toggleNode(ev, node);
         });
 
-        $(this).on('tree:togglenodestate', function (e, node, state) {
+        $(this).on('tree:togglenodestate', function(e, node, state) {
             inst.toggleNodeState(node, state);
         });
 
-        $(this).on('tree:toggleloader', function (e, node) {
+        $(this).on('tree:toggleloader', function(e, node) {
             inst.toggleLoader(node);
         });
 
         return this;
     };
-})(jQuery);
+})(jQuery, Wf);

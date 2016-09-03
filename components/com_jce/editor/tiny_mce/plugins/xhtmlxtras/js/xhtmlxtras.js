@@ -22,7 +22,7 @@
 				n = ed.dom.getParent(n, element);
 			}
 
-			$.Plugin.init();
+			Wf.init();
 
 			if (n) {
 				var text = n.textContent || n.innerText || '';

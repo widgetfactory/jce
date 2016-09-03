@@ -76,7 +76,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
         // clean query
         query = $.trim(query.replace(/[\///<>#]/g, ''));
 
-        $.JSON.request('doSearch', {
+        Wf.JSON.request('doSearch', {
             'json' : [query]
         }, function(o) {
             if (o) {
@@ -90,7 +90,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                             
                             $('<dt class="link ui-margin-small" />').text(n.title).click(function() {
                                 if ($.isFunction(self.options.onClick)) {
-                                    self.options.onClick.call(this, $.String.decode(n.link));
+                                    self.options.onClick.call(this, Wf.String.decode(n.link));
                                 }
                             }).prepend('<i class="ui-icon ui-icon-file-text-o ui-margin-small-right" />').appendTo($dl);
                             
@@ -99,7 +99,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                             if (n.anchors) {
                                 $.each(n.anchors, function(i, a) {
                                     $('<dd class="anchor" />').text(a).click(function() {
-                                        self.options.onClick.call(this, $.String.decode(n.link + '#' + a));
+                                        self.options.onClick.call(this, Wf.String.decode(n.link + '#' + a));
                                     }).appendTo($dl);
                                 });
                             }
@@ -113,7 +113,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                     $('#search-options-button').trigger('close');
                     $('#search-result').height($p.parent().height() - $p.outerHeight() - 5).show();
                 } else {
-                    $.Dialog.alert(o.error);
+                    Wf.Dialog.alert(o.error);
                 }
             }
             $('#search-browser').removeClass('loading');

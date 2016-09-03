@@ -60,7 +60,7 @@ WFAggregator.add('youtube', {
 
         if (u.query) {
             // split query
-            query = $.String.query(u.query);
+            query = Wf.String.query(u.query);
         }
 
         // extend args with query data
@@ -165,14 +165,14 @@ WFAggregator.add('youtube', {
             return data;
         }
 
-        //$.JSON.request('oEmbedWrapper', ['youtube', encodeURIComponent(src)], function(o) {});
+        //Wf.JSON.request('oEmbedWrapper', ['youtube', encodeURIComponent(src)], function(o) {});
 
         // parse URI
         var u = this.parseURL(src);
 
         if (u.query) {
             // split query
-            query = $.String.query(u.query);
+            query = Wf.String.query(u.query);
         }
 
         $.extend(data, query);

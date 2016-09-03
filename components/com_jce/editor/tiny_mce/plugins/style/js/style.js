@@ -198,7 +198,7 @@
             this.setupFormData();
             this.showDisabledControls();
 
-            $.Plugin.init();
+            Wf.init();
         },
         setupFormData: function () {
             var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), s, b, i;

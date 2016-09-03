@@ -63,7 +63,7 @@
 
             if (/[a-z0-9_\.-]/i.test(s)) {
                 $(this.options.items).each(function() {
-                    var n = $.String.basename($(this).attr('title'));
+                    var n = Wf.String.basename($(this).attr('title'));
 
                     if (s.charAt(0) == '.') {
                         v = s.substr(1);

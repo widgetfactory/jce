@@ -48,7 +48,7 @@ WFAggregator.add('vine', {
     getValues : function(src) {
         var self = this, data = {}, args = {}, type = this.getType(), id = '';
 
-        $.extend(args, $.String.query(src));
+        $.extend(args, Wf.String.query(src));
 
         $('input, select', '#vine_options').each( function() {
             var k = $(this).attr('id'), v = $(this).val();

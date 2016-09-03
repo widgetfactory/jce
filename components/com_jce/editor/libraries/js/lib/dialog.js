@@ -1,17 +1,17 @@
 (function($) {
     $.fn.borderWidget = function() {
-      $(this).on('click change', function() {
-        var state = this.checked;
+        $(this).on('click change', function() {
+            var state = this.checked;
 
-        $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').prop('disabled', !state).toggleClass('ui-text-muted', !state);
+            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').prop('disabled', !state).toggleClass('ui-text-muted', !state);
 
-        $(this).trigger('border:change');
-      }).change();
+            $(this).trigger('border:change');
+        }).change();
 
-      return this;
+        return this;
     };
 
-    $.extend($.Plugin, {
+    $.extend(Wf, {
         /**
          * Get common attribute types
          * @param e Element
@@ -19,7 +19,8 @@
          * @returns {String|Integer}
          */
         getAttrib: function(e, at) {
-            var ed = tinyMCEPopup.editor, v, v2;
+            var ed = tinyMCEPopup.editor,
+                v, v2;
 
             switch (at) {
                 case 'width':
@@ -93,7 +94,7 @@
                     }
 
                     if (at == 'border-color') {
-                        v = $.String.toHex(v);
+                        v = Wf.String.toHex(v);
                     }
 
                     if (at == 'border-width') {
@@ -125,7 +126,9 @@
          * Set / update styles on a sample image, eg: <img src="image.jpg" id="sample" />
          */
         setStyles: function() {
-            var self = this, ed = tinyMCEPopup.editor, $img = $('#sample');
+            var self = this,
+                ed = tinyMCEPopup.editor,
+                $img = $('#sample');
 
             // apply styles to image
             $img.attr('style', $('#style').val());
@@ -175,7 +178,7 @@
                 }
 
                 if (k == 'color' && v) {
-                    v = $.String.toHex(v);
+                    v = Wf.String.toHex(v);
 
                     if (v.charAt(0) === "#") {
                         v = v.substr(1);
@@ -214,7 +217,9 @@
          * Update styles field with style values from a sample image
          */
         updateStyles: function() {
-            var ed = tinyMCEPopup.editor, st, v, br, img = $('#sample'), k;
+            var ed = tinyMCEPopup.editor,
+                st, v, br, img = $('#sample'),
+                k;
 
             // no sample image...
             if (!img.length) {
@@ -230,7 +235,7 @@
             v = $('#align').val();
 
             if (v == 'center') {
-                $(img).css({'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto'});
+                $(img).css({ 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' });
 
                 $('#clear').attr('disabled', true);
 
@@ -344,7 +349,7 @@
             // Merge
             $('#style').val(ed.dom.serializeStyle(styles));
         },
-        setDefaults: function (s) {
+        setDefaults: function(s) {
             var n, v;
 
             for (n in s) {

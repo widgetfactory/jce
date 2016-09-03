@@ -62,7 +62,7 @@ WFAggregator.add('vimeo', {
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {
-            $.extend(args, $.String.query(src));
+            $.extend(args, Wf.String.query(src));
         }
 
         $('input, select', '#vimeo_options').not('#vimeo_embed').each( function() {
@@ -154,7 +154,7 @@ WFAggregator.add('vimeo', {
             return data;
         }
 
-        var query = $.String.query(src);
+        var query = Wf.String.query(src);
 
         // add extracted values to data
         $.extend(data, query);

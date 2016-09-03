@@ -26,7 +26,7 @@
       var win = tinyMCEPopup.window;
       var src = tinyMCEPopup.getWindowArg('value');
 
-      $.Plugin.init();
+      Wf.init();
 
       if (/(:\/\/|www|index.php(.*)\?option)/gi.test(src)) {
         src = '';

@@ -7,7 +7,7 @@ var ClipboardDialog = {
 	init : function() {
 		var self = this, ed = tinyMCEPopup.editor,  el = document.getElementById('container'), title = document.getElementById('title'), ifr, doc, css, cssHTML = '';
 
-		$.Plugin.init();
+		Wf.init();
 		
 		$('#insert').click(function(e) {
 			self.insert();

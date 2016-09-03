@@ -14,7 +14,7 @@ var JCEWindowPopup = {
      * @param {String} h Height
      */
     setDimensions : function(w, h) {
-        $.Plugin.setDimensions(w, h, 'window_popup_');
+        Wf.setDimensions(w, h, 'window_popup_');
     }
 
 };
@@ -59,7 +59,7 @@ WFPopups.addPopup('window', {
         var parts 		= data.split(",'");
 
         var src 		= parts[0];
-        var query 		= $.String.query(src);
+        var query 		= Wf.String.query(src);
         var title		= (parts[1] || '').replace("'", "");
         var features	= (parts[2] || '').replace(/'$/, "");
 
@@ -72,7 +72,7 @@ WFPopups.addPopup('window', {
         $('#window_popup_title').val(title);
 
         // parse features
-        features 	= $.String.query(features.replace(/,/g, '&'));
+        features 	= Wf.String.query(features.replace(/,/g, '&'));
 
         $.each(features, function(k, v) {            
             switch(k) {
