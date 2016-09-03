@@ -148,7 +148,7 @@ class WFController extends WFControllerBase {
                     )
                 );
 
-                $view->addScriptDeclaration('jQuery.jce.options = ' . json_encode($options) . ';');
+                $view->addScriptDeclaration('Wf.options = ' . json_encode($options) . ';');
 
                 $view->addHelperPath(dirname(__FILE__) . '/helpers');
                 $this->addModelPath(dirname(__FILE__) . '/models');

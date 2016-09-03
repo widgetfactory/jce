@@ -544,7 +544,7 @@ class WFViewProfiles extends WFView {
                 // get options for various widgets
                 $options = $this->getOptions($params);
 
-                $this->addScriptDeclaration('jQuery.jce.Profiles.options = ' . json_encode($options) . ';');
+                $this->addScriptDeclaration('Wf.profiles.options = ' . json_encode($options) . ';');
 
                 // set toolbar
                 if ($row->id) {
