@@ -7,8 +7,8 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    $.jce.Update = {
+(function($, Wf) {
+    Wf.update = {
         updates: {},
         options: {
             language: {
@@ -189,9 +189,9 @@
                                         $('button#install-button').attr('disabled', '').prop('disabled', false);
 
                                         if (len == $('.body .item input[type="checkbox"]', list).length) {
-                                        	$('.header div:first-child input[type="checkbox"]', list).prop('checked', true);
+                                            $('.header div:first-child input[type="checkbox"]', list).prop('checked', true);
                                         } else {
-                                        	$('.header div:first-child input[type="checkbox"]', list).prop('checked', false);
+                                            $('.header div:first-child input[type="checkbox"]', list).prop('checked', false);
                                         }
 
                                     } else {
@@ -226,7 +226,8 @@
          * @param {Object} btn Button element
          */
         download: function(btn) {
-            var t = this, n = 1;
+            var t = this,
+                n = 1;
 
             // get all checked updates
             var s = $('#updates-list .body .item input:checked');
@@ -243,7 +244,8 @@
             });
 
             $.each(s, function() {
-                var el = this, uid = $(this).data('uid');
+                var el = this,
+                    uid = $(this).data('uid');
 
                 $(el).parents('.item').removeClass('alert alert-error').addClass('loading');
 
@@ -281,7 +283,8 @@
          * @param {Object} btn Button element
          */
         install: function(btn) {
-            var t = this, n = 0;
+            var t = this,
+                n = 0;
             var s = $('.body .item.downloaded input:checked');
 
             /**
@@ -294,7 +297,9 @@
 
                 // any left?
                 if (updates.length) {
-                    var file = updates[0], id = file.id, el = $('input[data-uid=' + id + ']');
+                    var file = updates[0],
+                        id = file.id,
+                        el = $('input[data-uid=' + id + ']');
 
                     // double check to see it is a downloaded file
                     if ($(el).parents('.item').hasClass('downloaded')) {
@@ -343,6 +348,5 @@
                 $('button#update-button').prop('disabled', false);
             }
         }
-
     };
-})(jQuery);
+})(jQuery, Wf);

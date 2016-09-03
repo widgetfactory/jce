@@ -42,7 +42,7 @@ class WFViewUpdates extends WFView {
 
         $options = json_encode($options);
 
-        $this->addScriptDeclaration('jQuery(document).ready(function($){$.jce.Update.init(' . $options . ');});');
+        $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.update.init(' . $options . ');});');
 
         // load styles
         $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/updates.css');

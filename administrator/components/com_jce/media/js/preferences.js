@@ -7,9 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    $.jce.Preferences = {
-        init : function() {
+(function($, Wf) {
+    Wf.preferences = {
+        init: function() {
             var self = this;
 
             $('#tabs, #tabs-access-permissions').tabs().find('.nav-tabs > li:first-child, .tab-content > .tab-pane:first-child').addClass('active');
@@ -30,7 +30,7 @@
                 var win = window.parent;
 
                 // try squeezebox
-                if( typeof win.SqueezeBox !== 'undefined') {
+                if (typeof win.SqueezeBox !== 'undefined') {
                     return win.SqueezeBox.close();
                 } else {
                     this.close();
@@ -39,12 +39,12 @@
             });
         },
 
-        close : function() {
+        close: function() {
             this.init();
 
-            window.setTimeout(function(){
-                window.parent.document.location.href="index.php?option=com_jce&view=cpanel";
+            window.setTimeout(function() {
+                window.parent.document.location.href = "index.php?option=com_jce&view=cpanel";
             }, 1000);
         }
     };
-})(jQuery);
+})(jQuery, Wf);

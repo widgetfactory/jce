@@ -51,9 +51,9 @@ class WFViewPreferences extends WFView {
         $this->addScript('components/com_jce/media/js/preferences.js');
 
         if (JRequest::getInt('close') == 1) {
-            $this->addScriptDeclaration('jQuery(document).ready(function($){$.jce.Preferences.close();});');
+            $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.preferences.close();});');
         } else {
-            $this->addScriptDeclaration('jQuery(document).ready(function($){$.jce.Preferences.init();});');
+            $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.preferences.init();});');
         }
 
         parent::display($tpl);

@@ -7,19 +7,19 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    $.jce.Cpanel = {
-        options : {
-            labels : {
-                feed    : 'Feed',
-                updates : 'Updates',
-                updates_available : 'Updates Available'
+(function($, Wf) {
+    Wf.cpanel = {
+        options: {
+            labels: {
+                feed: 'Feed',
+                updates: 'Updates',
+                updates_available: 'Updates Available'
             },
-            feed    : true,
-            updates : true
+            feed: true,
+            updates: true
         },
 
-        init : function(options) {
+        init: function(options) {
 
             $.extend(this.options, options || {});
 
@@ -56,17 +56,17 @@
                         if (r.length) {
                             var $list = $('.ui-jce ul.adminformlist').append('<li><span>' + o.labels.updates + '</span><span class="label label-info"><i class="icon-info-sign icon-info icon-white"></i>&nbsp;<a title="' + o.labels.updates + '" class="updates" href="#">' + o.labels.updates_available + '</a></span></li>');
 
-                            $('a.updates', $list).click( function(e) {
+                            $('a.updates', $list).click(function(e) {
                                 // trigger Joomla! 3.0 button
                                 $('#toolbar-updates button').click();
 
                                 // trigger toolbar button
-                                $('#toolbar-updates a.updates').each( function() {
+                                $('#toolbar-updates a.updates').each(function() {
                                     $.jce.createDialog(this, {
-                                        src 	: $(this).attr('href'),
-                                        options : {
-                                            'width'   : 780,
-                                            'height'  : 560
+                                        src: $(this).attr('href'),
+                                        options: {
+                                            'width': 780,
+                                            'height': 560
                                         }
                                     });
                                     e.preventDefault();
@@ -85,10 +85,10 @@
                 // trigger toolbar button
                 $('#toolbar-popup-options a.modal, #toolbar-config a.preferences').each(function() {
                     $.jce.createDialog(this, {
-                        src 	: $(this).attr('href'),
-                        options : {
-                            'width'   : 780,
-                            'height'  : 560
+                        src: $(this).attr('href'),
+                        options: {
+                            'width': 780,
+                            'height': 560
                         }
                     });
                 });
@@ -99,7 +99,7 @@
     };
 
     // run init when the doc is ready
-    $(document).ready(function()  {
-        $.jce.Cpanel.init();
+    $(document).ready(function() {
+        Wf.cpanel.init();
     });
-})(jQuery);
+})(jQuery, Wf);

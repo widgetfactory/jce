@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
+(function($, Wf) {
 
     Joomla.submitbutton = submitbutton = function(button) {
         // Cancel button
@@ -20,14 +20,12 @@
 
             return;
         }
-        // shortcut
-        var $profiles = $jce.Profiles;
 
         // validate form
-        if ($profiles.validate()) {
+        if (Wf.profiles.validate()) {
 
             // trigger onSubmit callback
-            $profiles.onSubmit();
+            Wf.profiles.onSubmit();
 
             try {
                 Joomla.submitform(button);
@@ -38,20 +36,21 @@
     };
 
     // Create Profiles object
-    $.jce.Profiles = {
+    Wf.profiles = {
         options: {},
         init: function() {
-            var self = this, init = true;
+            var self = this,
+                init = true;
 
             var dir = $('body').css('direction') == 'rtl' ? 'right' : 'left';
 
             // handle basic tabs
             $('#tabs, #tabs-editor').tabs().on('tabs:activate', function(e, tab) {
-              $(tab).addClass('active').siblings().removeClass('active');
+                $(tab).addClass('active').siblings().removeClass('active');
             });
 
             $("#tabs-plugins").tabs().on('tabs:activate', function(e, tab) {
-              $(tab).addClass('active').siblings().removeClass('active');
+                $(tab).addClass('active').siblings().removeClass('active');
             }).find('ul.ui-tabs-nav > li.ui-state-default').not('.tab-disabled').first().addClass('active').children('a.ui-tabs-anchor').click();
 
             $('input.checkbox-list-toggle-all').click(function() {
@@ -68,7 +67,7 @@
             $("select.editable, select.combobox").datalist();
 
             // Color Picker
-            $('input.color').colorpicker($.extend(this.options.colorpicker, {parent: '.ui-jce'})).next('.colorpicker_widget').wrap('<span class="add-on" />');
+            $('input.color').colorpicker($.extend(this.options.colorpicker, { parent: '.ui-jce' })).next('.colorpicker_widget').wrap('<span class="add-on" />');
 
             // Extension Mapper
             $('.extensions > input[type="text"][name]').extensionmapper();
@@ -84,7 +83,8 @@
             });
 
             $('#paramseditorwidth').change(function() {
-                var v = $(this).val() || 800, s = v + 'px';
+                var v = $(this).val() || 800,
+                    s = v + 'px';
 
                 if (/%/.test(v)) {
                     s = v, v = 800;
@@ -224,7 +224,9 @@
 
             // create proxy input[type="hidden"] for styled plugin enable checkbox
             $('input.plugins-enable-checkbox').on('click', function() {
-                var s = this.checked, name = $(this).data('name'), proxy = $(this).next('input[type="hidden"]');
+                var s = this.checked,
+                    name = $(this).data('name'),
+                    proxy = $(this).next('input[type="hidden"]');
 
                 // check for proxy...
                 if ($(proxy).length == 0) {
@@ -362,7 +364,8 @@
          * @param {Object} state
          */
         setPlugins: function() {
-            var self = this, plugins = [];
+            var self = this,
+                plugins = [];
 
             $('.sortableRow .plugin', '.profileLayoutContainerCurrent').each(function() {
                 plugins.push($(this).data('name'));
@@ -398,7 +401,7 @@
 
     // run init when the doc is ready
     $(document).ready(function() {
-        $.jce.Profiles.init();
+        Wf.profiles.init();
     });
-// End Profiles
-})(jQuery);
+    // End Profiles
+})(jQuery, Wf);
