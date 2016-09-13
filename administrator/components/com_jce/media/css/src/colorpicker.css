@@ -7,4 +7,5 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-@import url('../../../../../components/com_jce/editor/libraries/css/colorpicker.css?@@etag@@');
+
+@import url('../../../../../components/com_jce/editor/libraries/css/colorpicker.css');

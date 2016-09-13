@@ -1,4 +1,6 @@
-.checkbox-list-toggle-all {margin-left: -15px;}
+.checkbox-list-toggle-all {
+    margin-left: -15px;
+}
 
 .ui-jce input[type="radio"] + label {
     display: inline;
@@ -15,40 +17,33 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
     float: right;
     padding: 0 0.2em 0 0.1em;
 }
+
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
     padding-left: 0.1em;
     border-right-width: 1px;
     margin-right: -1px;
 }
+
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li {
     margin: 0 1px 0.2em 0;
     border-left: 0 none;
 }
+
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0 13em 0 0;
 }
 
 .ui-jce #tabs-setup ul li .list {
-    width : 300px;
+    width: 300px;
     display: inline-block;
 }
 
 .ui-jce #tabs-setup ul li .list div {
-    margin : 5px 0;
+    margin: 5px 0;
 }
 
 .ui-jce #tabs-setup ul li .list > div > label {
-    margin-left : 6px;
-}
-
-.ui-jce input.checkbox-list-toggle-all {
-    /*margin : 2px 6px;*/
-}
-.ui-jce input.checkbox-list-toggle-all + label {
-    /*margin : 0 5px;*/
-}
-
-.ui-jce #tabs-setup input.checkbox-list-toggle-all, .ui-jce #tabs-setup input#components-select-all {
+    margin-left: 6px;
 }
 
 .ui-jce ul.checkbox-list {
@@ -58,13 +53,13 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     padding: 2px 5px;
     white-space: nowrap;
     word-wrap: normal;
-    margin : 0;
-    list-style : none;
-    min-width : 250px;
+    margin: 0;
+    list-style: none;
+    min-width: 250px;
 }
 
 .ui-jce ul.checkbox-list li {
-    padding : 5px 0;
+    padding: 5px 0;
 }
 
 .ui-jce ul.users-list {
@@ -74,42 +69,42 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     padding: 2px 5px;
     white-space: nowrap;
     word-wrap: normal;
-    margin : 0;
-    list-style : none;
-    min-width : 200px;
+    margin: 0;
+    list-style: none;
+    min-width: 200px;
 }
 
 .ui-jce .users-list li {
-    margin : 5px 0 0 0;
+    margin: 5px 0 0 0;
     padding-left: 10px;
     border: 1px solid #eee;
 }
 
-.ui-jce .users-list li button {margin: 0}
+.ui-jce .users-list li button {
+    margin: 0
+}
 
 .ui-jce .checkbox-list li input[type="checkbox"] {
     margin: 5px 5px 5px 0;
 }
 
 .ui-jce ul.checkbox-list li span {
-    margin : 0 0 0 10px;
+    margin: 0 0 0 10px;
     display: inline-block;
-
-    -ms-user-select : none;
-    -moz-user-select : none;
+    -ms-user-select: none;
+    -moz-user-select: none;
     -webkit-user-select: none;
-    user-select : none;
+    user-select: none;
 }
 
 .ui-jce ul.users-list li span {
     width: 90%;
     width: calc(100% - 45px);
     display: inline-block;
-
-    -ms-user-select : none;
-    -moz-user-select : none;
+    -ms-user-select: none;
+    -moz-user-select: none;
     -webkit-user-select: none;
-    user-select : none;
+    user-select: none;
 }
 
 .ui-jce #users-add i.icon-add {
@@ -117,15 +112,16 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 .ui-jce #users-add i.icon-add:before {
-    content : "";
+    content: "";
 }
 
 .ui-jce .buttonlist .mceIcon {
     cursor: default;
 }
 
-.ui-jce .buttonlist .mceButton, .ui-jce .buttonlist .mceSplitButton {
-    margin : 0 10px 0 0;
+.ui-jce .buttonlist .mceButton,
+.ui-jce .buttonlist .mceSplitButton {
+    margin: 0 10px 0 0;
     vertical-align: middle;
 }
 
@@ -134,25 +130,28 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 5px 0 0;
     vertical-align: middle;
 }
+
 .ui-jce div.tabs-plugin-parameters {
-    margin : 0;
+    margin: 0;
 }
 
 .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0;
 }
 
-.ui-jce .tabs-plugin-parameters h3 + p, .ui-jce .tabs-plugin-parameters h3 + p + ul {
-    margin-left : 20px;
+.ui-jce .tabs-plugin-parameters h3 + p,
+.ui-jce .tabs-plugin-parameters h3 + p + ul {
+    margin-left: 20px;
 }
 
 .ui-jce .tabs-plugin-parameters p {
-    font-size : 1em;
-    margin : 5px 7px;
+    font-size: 1em;
+    margin: 5px 7px;
     padding: 10px 5px;
 }
 
-.ui-jce .tabs-plugin-parameters input[type="checkbox"], .ui-jce .tabs-plugin-parameters .ui-checkbox {
+.ui-jce .tabs-plugin-parameters input[type="checkbox"],
+.ui-jce .tabs-plugin-parameters .ui-checkbox {
     background-color: #fff;
 }
 
@@ -161,8 +160,8 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 }
 
 .ui-jce table td.order input[type="text"] {
-    max-width : 30px;
-    margin : 0 10px;
+    max-width: 30px;
+    margin: 0 10px;
 }
 
 .ui-jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
@@ -171,50 +170,55 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     padding-top: 20px;
     white-space: pre-wrap;
     cursor: pointer;
-
-    background-color : #F5F5F5;
-    border-color : #eee #ddd #eee #eee;
-
+    background-color: #F5F5F5;
+    border-color: #eee #ddd #eee #eee;
     -webkit-box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
     box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
 }
 
 .ui-jce div.tab-pane.tabbable.tabs-left ul li.active > a {
-    background-color : #fff;
-    border-color : #eee #fff #eee #eee;
-
+    background-color: #fff;
+    border-color: #eee #fff #eee #eee;
     box-shadow: none;
     -webkit-box-shadow: none;
 }
 
 .ui-jce #tabs ul li span.tabs-label {
-    margin : 5px 0;
-    display : block;
+    margin: 5px 0;
+    display: block;
 }
 
 input#profile_description {
-    width : 500px;
+    width: 500px;
 }
 
+
 /* Mobile stuff */
+
 @media (max-width: 767px) {
     input[type="text"] {
-        max-width : 250px;
+        max-width: 250px;
     }
 }
 
 .ui-jce a.btn.browser {
-  margin: 0;
-  margin-left: -2.5em;
-  padding: 0.5em;
+    margin: 0;
+    margin-left: -2.5em;
+    padding: 0.5em;
 }
 
-ul#profileAdditionalFeatures li input[type="checkbox"] {margin: 0px 10px 2px 0px}
-ul#profileAdditionalFeatures li span {line-height: 30px;display: inline-block;}
+ul#profileAdditionalFeatures li input[type="checkbox"] {
+    margin: 0px 10px 2px 0px
+}
+
+ul#profileAdditionalFeatures li span {
+    line-height: 30px;
+    display: inline-block;
+}
 
 .buttonlist .widget-checklist .mceToolBarItem {
-  display: inline-block;
-  line-height: 30px;
-  vertical-align: middle;
-  margin: 0px 5px;
+    display: inline-block;
+    line-height: 30px;
+    vertical-align: middle;
+    margin: 0px 5px;
 }
