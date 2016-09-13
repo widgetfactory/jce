@@ -500,7 +500,7 @@
   direction: ltr;
   background-color: #fff;
   border-radius: 2px;
-  min-width: 148px; /* DropMenu button length + 2 buttons */
+  min-width: 188px; /* DropMenu button length x 2 */
 }
 .defaultSkin .mceNoIcons span.mceIcon {
   width: 0;
