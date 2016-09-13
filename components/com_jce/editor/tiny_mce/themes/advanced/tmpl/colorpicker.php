@@ -28,9 +28,9 @@ defined('_JEXEC') or die('RESTRICTED');
     </div>
     <div id="colorpicker_preview">
         <div id="colorpicker_preview_text">
-            <input type="text" id="colorpicker_color" size="8" maxlength="8" value="#000000" class="ui-corner-all" aria-required="true" />
+            <input type="text" id="colorpicker_color" size="8" maxlength="8" value="#000000" aria-required="true" />
         </div>
-        <div id="colorpicker_preview_color" style="background-color: rgb(0, 0, 0);" class="ui-widget-content ui-corner-all"></div>
+        <div id="colorpicker_preview_color" style="background-color: rgb(0, 0, 0);"></div>
     </div>
 </div>
 <input type="hidden" id="tmp_color" />	
