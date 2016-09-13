@@ -7,138 +7,66 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
 .ui-jce {
     border-radius: 10px 10px 10px 10px;
 }
 
-ul#cpanel {
-    list-style: none outside none;
-    margin: 0;
-    padding: 0;
+
+/* legacy */
+
+.m .ui-jce dl {
+    margin: 0 0 10px 10px;
 }
-ul#cpanel li.cpanel-icon {
-    margin: 5px;
-    text-align:center;
-    font-size: 8.5pt;
-    border:1px solid #F0F0F0;
-    width:100px;
-    height:100px;
+
+.ui-jce .dl-horizontal dt {
+    line-height: 2em;
+    text-align: left;
+}
+
+.ui-jce .dl-horizontal dd {
+    line-height: 2em;
+    margin-bottom: 5px;
+}
+
+.ui-jce .newsfeed li {
+    line-height: 2em;
+}
+
+.ui-jce .thumbnails [class^="icon-"],
+.ui-jce .thumbnails [class*=" icon-"] {
     display: block;
-    float: left;
-    text-shadow: 0 1px 0 #FFFFFF;
-    -moz-box-shadow: 0.5pt 0.5pt 0.8pt #cccccc;
-    -webkit-box-shadow: 1px 1px 1px #cccccc;
-    box-shadow: 1px 1px 1px #cccccc;
-    padding: 5px;
-}
-html[dir="rtl"] ul#cpanel li.cpanel-icon {
-    float: right;
-}
-
-ul#cpanel li.cpanel-icon span {
-    background: url('../img/cpanel.png') no-repeat 0 0;
-    display: block;
-    height: 48px;
-    margin: 15px 25px 5px;
-    line-height: 48px;
-    font-size: 32px;
-}
-ul#cpanel li.cpanel-icon span.config {
-    background-position: 0 0;
-}
-ul#cpanel li.cpanel-icon span.profiles {
-    background-position: 0 -48px;
-}
-ul#cpanel li.cpanel-icon span.installer {
-    background-position: 0 -96px;
-}
-ul#cpanel li.cpanel-icon span.mediabox {
-    background-position: 0 -144px;
-}
-ul#cpanel li.cpanel-icon span.browser {
-    background-position: 0 -192px;
-}
-ul#cpanel li.cpanel-icon a {
-    color:#666666;
-    text-decoration:none;
-    vertical-align:middle;
-    display: block;
-}
-ul.newsfeed {
-    list-style: none !important;
-    margin: 0;
-    padding: 0;
-}
-ul.newsfeed li {
-    margin: 0;
-    padding: 0px 0px 0px 25px;
-    background: url("../../../../../components/com_jce/editor/libraries/img/icons.png") no-repeat 0 -400px;
-    line-height: 20px;
-}
-ul.newsfeed.loading li {
-    background : url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat 0 0;
-}
-ul#table_status {
-}
-.ui-jce ul.adminformlist {
-    margin: 5px 5px 5px 0;
-    display: inline-block;
-}
-.ui-jce ul.adminformlist li a.updates {
-   color : #fff;
-   font-size : 11px;
-   line-height: 16px;
-   vertical-align: middle;
-}
-
-.ui-jce ul.adminformlist li span.label {
-    padding : 5px;
-    margin: 5px 0;
-}
-
-/* Mobile stuff */
-@media (max-width: 767px) {
-    ul#cpanel li.cpanel-icon {
-        width : 80px;
-        height : 80px;
-        font-size: 8pt;
-        line-height: 11px;
-    }
-    ul#cpanel li.cpanel-icon span {
-        margin: 5px 15px 5px;
-    }
-}
-
-.ui-jce .thumbnails [class^="icon-"], .ui-jce .thumbnails [class*=" icon-"] {
-  display: block;
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  font-size: 4em;
-  text-align: center;
-  line-height: 1.5em;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    font-size: 4em;
+    text-align: center;
+    line-height: 1.5em;
 }
 
 .ui-jce .thumbnails .thumbnail {
-  color: inherit;
-  padding: 10px;
-  box-shadow: inherit;
-  -webkit-box-shadow: inherit;
-  -moz-box-shadow: inherit;
+    color: inherit;
+    padding: 10px;
+    box-shadow: inherit;
+    -webkit-box-shadow: inherit;
+    -moz-box-shadow: inherit;
 }
 
-.ui-jce .thumbnails .thumbnail:hover, .ui-jce .thumbnails .thumbnail:active {
-  text-decoration: none;
+.ui-jce .thumbnails .thumbnail:hover,
+.ui-jce .thumbnails .thumbnail:active {
+    text-decoration: none;
 }
 
 .ui-jce .thumbnails .thumbnail-title {
-  margin: 0;
-  height: 28px;
+    margin: 0;
+    height: 3.5em;
 }
 
-.ui-jce .thumbnails > li {
-  width: 150px;
+.ui-jce .thumbnails>li {
+    width: 150px;
 }
-.ui-jce .thumbnails > li {
-  margin-left: 15px;
+
+.ui-jce .thumbnails>li {
+    margin-left: 0;
+    margin-right: 10px;
 }
