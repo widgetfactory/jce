@@ -87,6 +87,7 @@ class WFViewMediabox extends WFView {
 
         WFToolbarHelper::apply();
         WFToolbarHelper::save();
+        WFToolbarHelper::cancel();
         WFToolbarHelper::help('mediabox.config');
 
         parent::display($tpl);
