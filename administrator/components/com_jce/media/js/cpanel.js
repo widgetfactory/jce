@@ -49,27 +49,28 @@
                         }
 
                         if (r.error) {
-                            var $list = $('.ui-jce ul.adminformlist').append('<li><span>' + o.labels.updates + '</span><span class="label label-important"><i class="icon-exclamation-sign icon-warning icon-white"></i>&nbsp;' + r.error + '</span></li>');
+                            var $list = $('.ui-jce dl').append('<dt>' + o.labels.updates + '</dt><dd class="label label-important"><i class="icon-exclamation-sign icon-warning icon-white"></i>&nbsp;' + r.error + '</dd>');
                             return false;
                         }
 
                         if (r.length) {
-                            var $list = $('.ui-jce ul.adminformlist').append('<li><span>' + o.labels.updates + '</span><span class="label label-info"><i class="icon-info-sign icon-info icon-white"></i>&nbsp;<a title="' + o.labels.updates + '" class="updates" href="#">' + o.labels.updates_available + '</a></span></li>');
+                            var $list = $('.ui-jce dl').append('<dt>' + o.labels.updates + '</dt><dd><a title="' + o.labels.updates + '" class="btn btn-small btn-info updates" href="#"><i class="icon-info-sign icon-info icon-white"></i>&nbsp;' + o.labels.updates_available + '</a></dd>');
 
                             $('a.updates', $list).click(function(e) {
+                                e.preventDefault();
+
                                 // trigger Joomla! 3.0 button
                                 $('#toolbar-updates button').click();
 
                                 // trigger toolbar button
                                 $('#toolbar-updates a.updates').each(function() {
-                                    $.jce.createDialog(this, {
+                                    Wf.core.createDialog(this, {
                                         src: $(this).attr('href'),
                                         options: {
                                             'width': 780,
                                             'height': 560
                                         }
                                     });
-                                    e.preventDefault();
                                 });
                             });
                         }
@@ -84,7 +85,7 @@
 
                 // trigger toolbar button
                 $('#toolbar-popup-options a.modal, #toolbar-config a.preferences').each(function() {
-                    $.jce.createDialog(this, {
+                    Wf.core.createDialog(this, {
                         src: $(this).attr('href'),
                         options: {
                             'width': 780,
