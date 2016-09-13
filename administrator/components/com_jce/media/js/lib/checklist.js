@@ -34,8 +34,8 @@
             if (el.nodeName == 'SELECT') {
                 $('option', el).each(function() {
                     elms.push({
-                        name    : $(this).html(),
-                        value   : $(this).val(),
+                        name: $(this).html(),
+                        value: $(this).val(),
                         selected: $(this).prop('selected'),
                         disabled: $(this).prop('disabled')
                     });
@@ -76,15 +76,19 @@
         },
         createElement: function(el, ul, n) {
             // Create elements
-            var self = this, d = document, li = d.createElement('li'), plugin, button, toolbar;
+            var self = this,
+                d = document,
+                li = d.createElement('li'),
+                plugin, button, toolbar;
 
             $(li).attr({
                 title: n.value
-            }).addClass('ui-widget-content ui-corner-all').appendTo(ul);
+            }).appendTo(ul);
 
             if ($(el).hasClass('buttonlist')) {
                 // get the plugin name
-                var name = el.name, s = name.split(/[^\w]+/);
+                var name = el.name,
+                    s = name.split(/[^\w]+/);
 
                 if (s && s.length > 1) {
                     plugin = s[1];
