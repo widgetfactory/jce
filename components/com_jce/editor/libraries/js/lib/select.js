@@ -20,7 +20,7 @@
 
 			$(this).removeClass('mceEditableSelect').addClass('editable');
 
-			$('<i role="button" class="editable-edit ui-button ui-icon ui-icon-pencil" title="' + options.label + '"></i>').insertAfter(this).click(function(e) {
+			$('<i role="button" class="editable-edit uk-button uk-icon uk-icon-pencil" title="' + options.label + '"></i>').insertAfter(this).click(function(e) {
 				if ($(this).hasClass('disabled'))
 					return;
 

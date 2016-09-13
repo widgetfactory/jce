@@ -8,18 +8,18 @@
  * other free or open source software licenses.
  */
 
-.ui-tree a {
+.uk-tree a {
     display: inline-block;
     width: calc(100% - 24px);
 }
-.ui-tree a, .ui-tree a:hover, .ui-tree a:active {
+.uk-tree a, .uk-tree a:hover, .uk-tree a:active {
     text-decoration: none;
     color: inherit;
 }
-.ui-tree-toggle {
+.uk-tree-toggle {
     cursor: pointer;
 }
-.ui-tree-toggle, .ui-tree-icon {
+.uk-tree-toggle, .uk-tree-icon {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -27,37 +27,37 @@
     vertical-align: middle;
     line-height: 20px;
 }
-.ui-tree-toggle .ui-icon, .ui-tree-icon .ui-icon {
+.uk-tree-toggle .uk-icon, .uk-tree-icon .uk-icon {
     height: 20px;
     width: 20px;
     vertical-align: middle;
     line-height: 20px;
 }
-.ui-icon-minus-square-o {
+.uk-icon-minus-square-o {
     display: none;
 }
-.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-plus-square-o {
+.uk-tree-open> .uk-tree-row> .uk-tree-toggle .uk-icon-plus-square-o {
     display: none;
 }
-.ui-tree-open> .ui-tree-row> .ui-tree-toggle .ui-icon-minus-square-o {
+.uk-tree-open> .uk-tree-row> .uk-tree-toggle .uk-icon-minus-square-o {
     display: inline-block;
 }
-.ui-icon-folder-open {
+.uk-icon-folder-open {
     display: none;
 }
-.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder {
+.uk-tree-open> .uk-tree-row> .uk-tree-icon .uk-icon-folder {
     display: none;
 }
-.ui-tree-open> .ui-tree-row> .ui-tree-icon .ui-icon-folder-open {
+.uk-tree-open> .uk-tree-row> .uk-tree-icon .uk-icon-folder-open {
     display: inline-block;
 }
-.ui-tree-loading> .ui-tree-row> .ui-tree-toggle .ui-icon {
+.uk-tree-loading> .uk-tree-row> .uk-tree-toggle .uk-icon {
     display: none !important;
 }
-.ui-tree-loading> .ui-tree-row> .ui-tree-toggle {
+.uk-tree-loading> .uk-tree-row> .uk-tree-toggle {
     background: url('../img/load.gif') no-repeat center;
 }
-.ui-tree, .ui-tree ul {
+.uk-tree, .uk-tree ul {
     padding: 0;
     margin: 0;
     list-style: none;
@@ -65,27 +65,27 @@
     -moz-user-select: none;
     user-select: none;
 }
-.ui-tree li {
+.uk-tree li {
     line-height: 28px;
     vertical-align: middle;
     margin: 0;
 }
-.ui-tree-node li {
+.uk-tree-node li {
     padding: 0 0 0 23px;
 }
-.ui-tree-row .ui-tree-text {
+.uk-tree-row .uk-tree-text {
     display: inline-block;
     line-height: 20px;
     vertical-align: middle;
 }
-.ui-tree-node li:empty {
+.uk-tree-node li:empty {
     padding: 0;
     margin: 0;
     visibility: hidden;
 }
-.ui-tree-row:hover {
+.uk-tree-row:hover {
     background-color: #d9edf7;
 }
-.ui-tree-hide {
+.uk-tree-hide {
     display: none;
 }

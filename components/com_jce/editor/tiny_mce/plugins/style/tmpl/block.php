@@ -12,60 +12,60 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_wordspacing" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WORDSPACING');?></label>
-            <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_wordspacing" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WORDSPACING');?></label>
+            <div class="uk-form-controls uk-width-5-10 uk-datalist">
               <select id="block_wordspacing"></select>
             </div>
-            <div class="ui-form-controls ui-width-3-10">
+            <div class="uk-form-controls uk-width-3-10">
               <select id="block_wordspacing_measurement" ></select>
             </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_letterspacing" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_LETTERSPACING');?></label>
-            <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_letterspacing" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_LETTERSPACING');?></label>
+            <div class="uk-form-controls uk-width-5-10 uk-datalist">
               <select id="block_letterspacing"></select>
             </div>
-            <div class="ui-form-controls ui-width-3-10">
+            <div class="uk-form-controls uk-width-3-10">
               <select id="block_letterspacing_measurement"></select>
             </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_vertical_alignment" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_VERTICAL_ALIGNMENT');?></label>
-        <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_vertical_alignment" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_VERTICAL_ALIGNMENT');?></label>
+        <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_vertical_alignment"></select>
         </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_text_align" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_ALIGN');?></label>
-        <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_text_align" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_ALIGN');?></label>
+        <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_text_align"></select>
         </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_text_indent" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_INDENT');?></label>
-            <div class="ui-form-controls ui-width-2-10">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_text_indent" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_INDENT');?></label>
+            <div class="uk-form-controls uk-width-2-10">
               <input type="number" id="block_text_indent" />
             </div>
-            <div class="ui-form-controls ui-width-2-10">
+            <div class="uk-form-controls uk-width-2-10">
               <select id="block_text_indent_measurement"></select>
             </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_whitespace" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WHITESPACE');?></label>
-        <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_whitespace" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WHITESPACE');?></label>
+        <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_whitespace"></select>
         </div>
       </div>
 
-      <div class="ui-form-row ui-grid ui-grid-small">
-        <label for="block_display" class="ui-form-label ui-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_DISPLAY');?></label>
-        <div class="ui-form-controls ui-width-5-10 ui-datalist">
+      <div class="uk-form-row uk-grid uk-grid-small">
+        <label for="block_display" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_DISPLAY');?></label>
+        <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_display"></select>
         </div>
       </div>

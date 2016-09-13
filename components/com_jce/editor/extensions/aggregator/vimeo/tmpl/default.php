@@ -12,27 +12,27 @@
 
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
+<div class="uk-form-row">
     <label for="vimeo_color" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_COLOR_DESC') ?>"
-           class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_COLOR') ?></label>
+           class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_COLOR') ?></label>
 
-    <div class="ui-form-controls ui-width-1-5">
+    <div class="uk-form-controls uk-width-1-5">
         <input type="text" id="vimeo_color" class="color"/>
     </div>
 </div>
 
-<div class="ui-form-row">
+<div class="uk-form-row">
 
     <label for="vimeo_intro" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTRO_DESC') ?>"
-           class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTRO') ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+           class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTRO') ?></label>
+    <div class="uk-form-controls uk-width-4-5">
         <input type="checkbox" id="vimeo_portrait" checked="checked"/>
         <label for="vimeo_portrait" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_PORTRAIT_DESC') ?>"
-               class="tooltip ui-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_PORTRAIT') ?></label>
+               class="tooltip uk-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_PORTRAIT') ?></label>
 
         <input type="checkbox" id="vimeo_title" checked="checked"/>
         <label for="vimeo_title" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTROTITLE_DESC') ?>"
-               class="tooltip ui-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTROTITLE') ?></label>
+               class="tooltip uk-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_INTROTITLE') ?></label>
 
         <input type="checkbox" id="vimeo_byline" checked="checked"/>
         <label for="vimeo_byline" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_BYLINE_DESC') ?>"
@@ -40,18 +40,18 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="ui-form-row">
+<div class="uk-form-row">
     <label for="vimeo_special"
-           class="ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_SPECIAL') ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+           class="uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_SPECIAL') ?></label>
+    <div class="uk-form-controls uk-width-4-5">
 
     <input type="checkbox" id="vimeo_autoplay"/>
     <label for="vimeo_autoplay" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_AUTOPLAY_DESC') ?>"
-           class="tooltip ui-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_AUTOPLAY') ?></label>
+           class="tooltip uk-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_AUTOPLAY') ?></label>
 
     <input type="checkbox" id="vimeo_loop"/>
     <label for="vimeo_loop" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_LOOP_DESC') ?>"
-           class="tooltip ui-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_LOOP') ?></label>
+           class="tooltip uk-margin-right"><?php echo WFText::_('WF_AGGREGATOR_VIMEO_LOOP') ?></label>
 
     <input type="checkbox" id="vimeo_fullscreen" checked="checked"/>
     <label for="vimeo_fullscreen" title="<?php echo WFText::_('WF_AGGREGATOR_VIMEO_FULLSCREEN_DESC') ?>"

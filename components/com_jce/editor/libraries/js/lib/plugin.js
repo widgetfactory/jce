@@ -54,7 +54,7 @@
             $.extend(this.options, options);
 
             // add footer class
-            $('.mceActionPanel, .actionPanel').addClass('ui-modal-footer');
+            $('.mceActionPanel, .actionPanel').addClass('uk-modal-footer');
 
             // ie flag
             if (/MSIE/.test(navigator.userAgent) || navigator.userAgent.indexOf('Edge/') !== -1) {
@@ -71,20 +71,20 @@
             // create buttons
             $('button#insert, input#insert, button#update, input#update').button({
                 icons: {
-                    primary: 'ui-icon-check'
+                    primary: 'uk-icon-check'
                 }
-            }).addClass('ui-button-primary');
+            }).addClass('uk-button-primary');
 
             $('button#refresh, input#refresh').button({
                 icons: {
-                    primary: 'ui-icon-refresh'
+                    primary: 'uk-icon-refresh'
                 }
             });
 
             // add button actions
             $('#cancel').button({
                 icons: {
-                    primary: 'ui-icon-close'
+                    primary: 'uk-icon-close'
                 }
             });
 
@@ -97,13 +97,13 @@
 
             $('#apply').button({
                 icons: {
-                    primary: 'ui-icon-plus'
+                    primary: 'uk-icon-plus'
                 }
             });
 
             $('#help').button({
                 icons: {
-                    primary: 'ui-icon-question'
+                    primary: 'uk-icon-question'
                 }
             }).click(function(e) {
                 e.preventDefault();
@@ -128,7 +128,7 @@
             this.createBrowsers();
 
             // set up datalist
-            $('.ui-datalist select').datalist();
+            $('.uk-datalist select').datalist();
 
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
@@ -158,10 +158,10 @@
             });
 
             // create constrainables around constrain checkbox
-            $('.ui-constrain-checkbox').constrain();
+            $('.uk-constrain-checkbox').constrain();
 
             // equalize input values
-            $('.ui-equalize-checkbox').equalize();
+            $('.uk-equalize-checkbox').equalize();
 
             // hide HTML4 only attributes
             if (tinyMCEPopup.editor.settings.schema === 'html5-strict' && tinyMCEPopup.editor.settings.validate) {
@@ -169,8 +169,8 @@
             }
 
             // flexbox
-            /*$('.ui-flex-item-auto').width(function() {
-                var p = $(this).parent('.ui-flex');
+            /*$('.uk-flex-item-auto').width(function() {
+                var p = $(this).parent('.uk-flex');
                 var w = 0;
 
                 $(this).siblings().each(function() {
@@ -181,7 +181,7 @@
             });*/
 
             // initialise repeatable elements
-            $('.ui-repeatable').repeatable();
+            $('.uk-repeatable').repeatable();
         },
         /**
          * Get the name of the plugin
@@ -245,9 +245,9 @@
                     $(this).wrap('<span />');
                 }
 
-                $(this).parent('.ui-form-controls, td, span').addClass('ui-form-icon ui-form-icon-both').prepend('<i class="ui-icon-hashtag" />');
+                $(this).parent('.uk-form-controls, td, span').addClass('uk-form-icon uk-form-icon-both').prepend('<i class="uk-icon-hashtag" />');
 
-                var $picker = $('<button class="ui-button-link ui-icon-none ui-icon-colorpicker" title="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
+                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
 
                 $(this).on('colorpicker:pick', function() {
                     var v = this.value;
@@ -256,7 +256,7 @@
                         v = '#' + v;
                     }
 
-                    $(this).next('.ui-icon-colorpicker').css('background-color', v);
+                    $(this).next('.uk-icon-colorpicker').css('background-color', v);
                 });
 
                 $(this).change(function(e) {
@@ -329,7 +329,7 @@
                     return 'files';
                 })(this);
 
-                $(this).parent('td, .ui-form-controls').addClass('ui-form-icon ui-form-icon-flip');
+                $(this).parent('td, .uk-form-controls').addClass('uk-form-icon uk-form-icon-flip');
 
                 var map = {
                     'images': 'picture-o',
@@ -338,7 +338,7 @@
                     'media': 'film'
                 };
 
-                $('<span role="button" class="ui-icon ui-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function(e) {
+                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function(e) {
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,

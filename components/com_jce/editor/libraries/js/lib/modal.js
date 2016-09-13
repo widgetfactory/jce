@@ -8,7 +8,7 @@
 
         cw = Math.min(cw, Math.floor(cw * scale));
 
-        $('.ui-modal-dialog', n).css('max-width', cw + 'px');
+        $('.uk-modal-dialog', n).css('max-width', cw + 'px');
     }
 
     /**
@@ -54,10 +54,10 @@
             }
 
             // add classes to div
-            $(div).addClass('ui-modal');
+            $(div).addClass('uk-modal');
 
             // create modal
-            var modal = $('<div class="ui-modal-dialog" />').appendTo(div);
+            var modal = $('<div class="uk-modal-dialog" />').appendTo(div);
 
             // add classes to modal
             $(modal).addClass(options.classes);
@@ -71,22 +71,22 @@
             }
 
             // add close
-            $(modal).append('<button type="button" class="ui-modal-close ui-close"></button>');
+            $(modal).append('<button type="button" class="uk-modal-close uk-close"></button>');
 
             if (options.header) {
                 // add header
-                $(modal).append('<div class="ui-modal-header"><h3>' + title + '</h3></div>');
+                $(modal).append('<div class="uk-modal-header"><h3>' + title + '</h3></div>');
             }
 
             // add body and data
-            $('<div class="ui-modal-body ui-overflow-container" id="' + options.id + '" />').appendTo(modal).append(data);
+            $('<div class="uk-modal-body uk-overflow-container" id="' + options.id + '" />').appendTo(modal).append(data);
 
             // add buttons
             if (options.buttons) {
-                footer = $('<div class="ui-modal-footer ui-text-right" />');
+                footer = $('<div class="uk-modal-footer uk-text-right" />');
 
                 $.each(options.buttons, function(i, o) {
-                    var btn = $('<button class="ui-button" />').click(function(e) {
+                    var btn = $('<button class="uk-button" />').click(function(e) {
                         e.preventDefault();
 
                         if ($.isFunction(o.click)) {
@@ -99,16 +99,16 @@
                     }
 
                     if (i > 0) {
-                        $(btn).addClass('ui-margin-small-left');
+                        $(btn).addClass('uk-margin-small-left');
                     }
 
                     // add text
                     if (o.text) {
-                        $(btn).append('<span class="ui-text">' + o.text + '</span>');
+                        $(btn).append('<span class="uk-text">' + o.text + '</span>');
                     }
                     // add icon
                     if (o.icon) {
-                        $(btn).prepend('<i class="ui-button-' + o.icon + ' ' + o.icon + '" />&nbsp;');
+                        $(btn).prepend('<i class="uk-button-' + o.icon + ' ' + o.icon + '" />&nbsp;');
                     }
                     // add classes
                     if (o.classes) {
@@ -132,7 +132,7 @@
             }).on('modal.close', function(e, ev) {
                 options.beforeclose.call(this, ev);
 
-                $(div).off('modal.open modal.close keyup.modal').removeClass('ui-open');
+                $(div).off('modal.open modal.close keyup.modal').removeClass('uk-open');
 
                 $(window).off('keyup.modal');
 
@@ -144,7 +144,7 @@
             });
 
             // create click handler
-            $('.ui-modal-close', div).click(function(e) {
+            $('.uk-modal-close', div).click(function(e) {
                 // hide
                 $(div).trigger('modal.close', e);
                 // cancel default behaviour
@@ -178,7 +178,7 @@
             // show modal
             $(div).show().scrollTop(0);
 
-            $(div).addClass('ui-open').trigger('modal.open').attr('aria-hidden', false);
+            $(div).addClass('uk-open').trigger('modal.open').attr('aria-hidden', false);
 
             $(div).on('modal.asset-loaded', function() {
                 $(modal).css('top', ($(div).height() - $(modal).outerHeight()) / 2);
@@ -203,19 +203,19 @@
             }, options);
 
             options = $.extend(true, {
-                'classes': 'ui-modal-confirm',
+                'classes': 'uk-modal-confirm',
                 buttons: [{
                     type: 'submit',
                     text: options.label.confirm,
-                    icon: 'ui-icon-check',
-                    classes: 'ui-button-primary ui-modal-close',
+                    icon: 'uk-icon-check',
+                    classes: 'uk-button-primary uk-modal-close',
                     click: function(e) {
                         cb.call(this, true);
                     }
                 }, {
                     text: options.label.cancel,
-                    icon: 'ui-icon-close',
-                    classes: 'ui-modal-close',
+                    icon: 'uk-icon-close',
+                    classes: 'uk-modal-close',
                     click: function() {
                         cb.call(this, false);
                     }
@@ -233,11 +233,11 @@
             options = $.extend({ 'label': { 'confirm': Wf.translate('ok', 'Ok') } }, options);
 
             options = $.extend({
-                'classes': 'ui-modal-alert',
+                'classes': 'uk-modal-alert',
                 buttons: [{
                     type: 'submit',
                     text: options.label.confirm,
-                    classes: 'ui-modal-close'
+                    classes: 'uk-modal-close'
                 }]
             }, options || {});
 
@@ -247,7 +247,7 @@
          * Prompt Dialog
          */
         prompt: function(title, options) {
-            var html = '<div class="ui-form-row">';
+            var html = '<div class="uk-form-row">';
 
             options = $.extend(true, {
                 'id': 'dialog-prompt',
@@ -262,9 +262,9 @@
             }, options);
 
             if (options.text) {
-                html += '<label class="ui-form-label ui-width-3-10" for="' + options.id + '">' + options.text + '</label><div class="ui-form-controls ui-width-7-10 ui-margin-remove">';
+                html += '<label class="uk-form-label uk-width-3-10" for="' + options.id + '">' + options.text + '</label><div class="uk-form-controls uk-width-7-10 uk-margin-remove">';
             } else {
-                html += '<div class="ui-form-controls ui-width-1-1 ui-margin-remove">';
+                html += '<div class="uk-form-controls uk-width-1-1 uk-margin-remove">';
             }
 
             if (options.multiline) {
@@ -281,12 +281,12 @@
             }
 
             options = $.extend(true, {
-                'classes': 'ui-modal-prompt',
+                'classes': 'uk-modal-prompt',
                 buttons: [{
                     type: 'submit',
                     text: options.label.confirm,
-                    icon: 'ui-icon-check',
-                    classes: 'ui-button-primary',
+                    icon: 'uk-icon-check',
+                    classes: 'uk-button-primary',
                     click: function(e) {
                         if ($.isFunction(options.confirm)) {
                             var args = [],
@@ -303,7 +303,7 @@
                         }
 
                         if (options.close_on_confirm !== false) {
-                            $(e.target).parents('.ui-modal').trigger('modal.close');
+                            $(e.target).parents('.uk-modal').trigger('modal.close');
                         }
                     }
                 }],
@@ -333,11 +333,11 @@
          */
         upload: function(options) {
             var div = $('<div />').attr('id', 'upload-body').append(
-                '<div id="upload-queue-block" class="ui-placeholder">' +
+                '<div id="upload-queue-block" class="uk-placeholder">' +
                 '   <div id="upload-queue"></div>' +
                 '   <input type="file" size="40" />' +
                 '</div>' +
-                '<div id="upload-options" class="ui-placeholder"></div>'
+                '<div id="upload-options" class="uk-placeholder"></div>'
             );
 
             // add optional fields
@@ -347,25 +347,25 @@
             options.upload = options.upload || $.noop;
 
             options = $.extend({
-                'classes': 'ui-modal-dialog-large ui-modal-upload',
+                'classes': 'uk-modal-dialog-large uk-modal-upload',
                 resizable: false,
                 buttons: [{
                     text: Wf.translate('browse', 'Add Files'),
                     id: 'upload-browse',
-                    icon: 'ui-icon-search',
-                    classes: 'ui-button-success'
+                    icon: 'uk-icon-search',
+                    classes: 'uk-button-success'
                 }, {
                     text: Wf.translate('upload', 'Upload'),
                     click: function() {
                         return options.upload.call();
                     },
                     id: 'upload-start',
-                    icon: 'ui-icon-cloud-upload',
-                    classes: 'ui-button-primary'
+                    icon: 'uk-icon-cloud-upload',
+                    classes: 'uk-button-primary'
                 }, {
                     text: Wf.translate('close', 'Close'),
-                    icon: 'ui-icon-close',
-                    classes: 'ui-modal-close ui-hidden-small',
+                    icon: 'uk-icon-close',
+                    classes: 'uk-modal-close uk-hidden-small',
                 }]
             }, options);
 
@@ -378,31 +378,31 @@
             var div = document.createElement('div');
 
             function calculateWidth(n) {
-                var ph = $('.ui-modal-dialog', n).outerHeight(),
+                var ph = $('.uk-modal-dialog', n).outerHeight(),
                     wh = $(n).height();
 
                 // content width
-                var cw = $('.ui-modal-body', n).width();
+                var cw = $('.uk-modal-body', n).width();
 
                 // content height
-                var ch = $('.ui-modal-body', n).height();
+                var ch = $('.uk-modal-body', n).height();
 
                 // calculate height of popup container without content
-                var mh = ph - $('.ui-modal-body', n).height();
+                var mh = ph - $('.uk-modal-body', n).height();
 
                 // get popup height with content included
                 ph = mh + ch;
 
                 cw = Math.min(cw, Math.floor(cw * Math.min(wh / ph, 1)));
 
-                $('.ui-modal-dialog', n).css('max-width', cw - 20 + 'px');
+                $('.uk-modal-dialog', n).css('max-width', cw - 20 + 'px');
             }
 
             var w = options.width,
                 h = options.height;
 
             options = $.extend({
-                'classes': 'ui-modal-dialog-large ui-modal-preview',
+                'classes': 'uk-modal-dialog-large uk-modal-preview',
                 open: function(e) {
                     var iframe = document.createElement('iframe');
 
@@ -442,7 +442,7 @@
             var div = document.createElement('div');
 
             $.extend(options, {
-                'classes': 'ui-modal-dialog-large ui-modal-preview',
+                'classes': 'uk-modal-dialog-large uk-modal-preview',
                 open: function(e) {
                     // image
                     if (/\.(jpg|jpeg|gif|png)/i.test(url)) {
@@ -468,7 +468,7 @@
                                 $(e.target).trigger('modal.close', e);
                             });
 
-                            $('.ui-modal').trigger('modal.asset-loaded');
+                            $('.uk-modal').trigger('modal.asset-loaded');
                         };
 
                         img.src = url + (/\?/.test(url) ? '&' : '?') + new Date().getTime();
@@ -486,7 +486,7 @@
                         $('iframe, object', div).on('load', function() {
                             calculateWidth(e.target, w, h);
 
-                            $('.ui-modal').trigger('modal.asset-loaded');
+                            $('.uk-modal').trigger('modal.asset-loaded');
                         });
                     } else {
                         $(div).addClass('media-preview loading');
@@ -657,7 +657,7 @@
 
                                 calculateWidth(e.target, w, h);
 
-                                $('.ui-modal').trigger('modal.asset-loaded');
+                                $('.uk-modal').trigger('modal.asset-loaded');
                             });
                         }
                     }

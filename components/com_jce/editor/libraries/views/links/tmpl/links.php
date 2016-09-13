@@ -12,5 +12,5 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div id="link-browser" class="tree">
-    <ul class="ui-tree-root"><?php echo $this->list; ?></ul>
+    <ul class="uk-tree-root"><?php echo $this->list; ?></ul>
 </div>

@@ -10,10 +10,10 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
+<div class="uk-form-row">
     <label title="<?php echo WFText::_('WF_AGGREGATOR_VINE_TYPE_DESC') ?>"
-           class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VINE_TYPE') ?></label>
-    <div class="ui-form-controls ui-width-2-5">
+           class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VINE_TYPE') ?></label>
+    <div class="uk-form-controls uk-width-2-5">
         <select id="vine_type">
             <option value="simple"><?php echo WFText::_('WF_AGGREGATOR_VINE_SIMPLE') ?></option>
             <option value="postcard"><?php echo WFText::_('WF_AGGREGATOR_VINE_POSTCARD') ?></option>
@@ -21,10 +21,10 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="ui-form-row">
+<div class="uk-form-row">
     <label title="<?php echo WFText::_('WF_AGGREGATOR_VINE_SIZE_DESC') ?>"
-           class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VINE_SIZE') ?></label>
-    <div class="ui-form-controls ui-width-2-5">
+           class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_VINE_SIZE') ?></label>
+    <div class="uk-form-controls uk-width-2-5">
         <select id="vine_size">
             <option value="600">600px</option>
             <option value="480">480px</option>
@@ -33,10 +33,10 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="ui-form-row">
-    <label for="vine_audio" class="ui-form-label ui-width-1-5"
+<div class="uk-form-row">
+    <label for="vine_audio" class="uk-form-label uk-width-1-5"
            title="<?php echo JText::_('WF_AGGREGATOR_VINE_AUDIO_DESC'); ?>"><?php echo WFText::_('WF_AGGREGATOR_VINE_AUDIO'); ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+    <div class="uk-form-controls uk-width-4-5">
         <input type="checkbox" id="vine_audio" value="0" />
     </div>
 </div>

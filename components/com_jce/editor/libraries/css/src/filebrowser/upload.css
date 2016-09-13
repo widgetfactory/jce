@@ -22,7 +22,7 @@ div#upload-queue-block {
 	margin: 0;
 }
 
-.queue-item-loading .queue-item-name .ui-icon:before {
+.queue-item-loading .queue-item-name .uk-icon:before {
 	content: "";
 	width: 20px;
 	height: 20px;
@@ -31,9 +31,9 @@ div#upload-queue-block {
 	background: url(../img/load.gif) no-repeat center left;
 }
 
-.ui-progress {margin: 5px 0; box-shadow: inherit; background-color: transparent; display: none;}
-.queue-item-loading .ui-progress {display: block;}
-.ui-alert {white-space: normal;margin: 5px 0;}
+.uk-progress {margin: 5px 0; box-shadow: inherit; background-color: transparent; display: none;}
+.queue-item-loading .uk-progress {display: block;}
+.uk-alert {white-space: normal;margin: 5px 0;}
 
 .queue-item-size {
 		vertical-align: middle;

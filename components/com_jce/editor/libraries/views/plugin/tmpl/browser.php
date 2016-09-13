@@ -12,13 +12,13 @@
 
 defined( 'WF_EDITOR' ) or die('RESTRICTED');
 ?>
-<div class="ui-position-cover ui-browser ui-browser-external">
+<div class="uk-position-cover uk-browser uk-browser-external">
 	<?php $this->filebrowser->render(); ?>
 
 	<input type="hidden" id="src" value="" class="filebrowser" />
 </div>
-<div class="actionPanel ui-modal-footer">
-	<button class="ui-button" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
-	<button class="ui-button confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
-	<button class="ui-button cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
+<div class="actionPanel uk-modal-footer">
+	<button class="uk-button" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
+	<button class="uk-button confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
+	<button class="uk-button cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
 </div>

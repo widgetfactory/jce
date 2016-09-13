@@ -15,33 +15,33 @@ $search = $this->plugin->getSearch('link');
 $links = $this->plugin->getLinks();
 
 ?>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-1-5" for="href" class="hastip" title="<?php echo WFText::_('WF_LABEL_URL_DESC'); ?>"><?php echo WFText::_('WF_LABEL_URL'); ?></label>
-    <div class="ui-form-controls ui-form-icon ui-form-icon-flip ui-width-4-5">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-1-5" for="href" class="hastip" title="<?php echo WFText::_('WF_LABEL_URL_DESC'); ?>"><?php echo WFText::_('WF_LABEL_URL'); ?></label>
+    <div class="uk-form-controls uk-form-icon uk-form-icon-flip uk-width-4-5">
         <input id="href" type="text" value="" required class="browser" />
-        <span class="email ui-icon ui-icon-envelope-o" title="<?php echo WFText::_('WF_LABEL_EMAIL'); ?>"></span>
+        <span class="email uk-icon uk-icon-envelope-o" title="<?php echo WFText::_('WF_LABEL_EMAIL'); ?>"></span>
     </div>
 </div>
-<div class="ui-form-row">
-    <label for="text" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_LINK_LINK_TEXT_DESC'); ?>"><?php echo WFText::_('WF_LINK_LINK_TEXT'); ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+<div class="uk-form-row">
+    <label for="text" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_LINK_LINK_TEXT_DESC'); ?>"><?php echo WFText::_('WF_LINK_LINK_TEXT'); ?></label>
+    <div class="uk-form-controls uk-width-4-5">
         <input id="text" type="text" value="" required />
     </div>
 </div>
 <?php if ($search->isEnabled() || count($links->getLists())) : ?>
-    <div id="link-options" class="ui-placeholder">
+    <div id="link-options" class="uk-placeholder">
         <?php echo $search->render(); ?>
         <?php echo $links->render(); ?>
     </div>
 <?php endif; ?>
-<div class="ui-form-row" id="attributes-anchor">
-    <label for="anchor" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_LABEL_ANCHORS_DESC'); ?>"><?php echo WFText::_('WF_LABEL_ANCHORS'); ?></label>
-    <div class="ui-form-controls ui-width-4-5" id="anchor_container"></div>
+<div class="uk-form-row" id="attributes-anchor">
+    <label for="anchor" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_LABEL_ANCHORS_DESC'); ?>"><?php echo WFText::_('WF_LABEL_ANCHORS'); ?></label>
+    <div class="uk-form-controls uk-width-4-5" id="anchor_container"></div>
 </div>
 
-<div class="ui-form-row" id="attributes-target">
-    <label for="target" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_LABEL_TARGET_DESC'); ?>"><?php echo WFText::_('WF_LABEL_TARGET'); ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+<div class="uk-form-row" id="attributes-target">
+    <label for="target" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_LABEL_TARGET_DESC'); ?>"><?php echo WFText::_('WF_LABEL_TARGET'); ?></label>
+    <div class="uk-form-controls uk-width-4-5">
         <select id="target">
             <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="_self"><?php echo WFText::_('WF_OPTION_TARGET_SELF'); ?></option>
@@ -52,9 +52,9 @@ $links = $this->plugin->getLinks();
     </div>
 </div>
 
-<div class="ui-form-row" id="attributes-title">
-    <label class="ui-form-label ui-width-1-5" for="title" class="hastip" title="<?php echo WFText::_('WF_LABEL_TITLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_TITLE'); ?></label>
-    <div class="ui-form-controls ui-width-4-5">
+<div class="uk-form-row" id="attributes-title">
+    <label class="uk-form-label uk-width-1-5" for="title" class="hastip" title="<?php echo WFText::_('WF_LABEL_TITLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_TITLE'); ?></label>
+    <div class="uk-form-controls uk-width-4-5">
         <input id="title" type="text" value="" />
     </div>
 </div>

@@ -12,7 +12,7 @@
 
 defined( 'WF_EDITOR' ) or die('RESTRICTED');
 ?>
-<div class="ui-position-cover ui-browser ui-browser-<?php echo $this->filebrowser->get('position');?>">
+<div class="uk-position-cover uk-browser uk-browser-<?php echo $this->filebrowser->get('position');?>">
 <?php
 	// render tabs and panels
 	WFTabs::getInstance()->render();
@@ -22,8 +22,8 @@ defined( 'WF_EDITOR' ) or die('RESTRICTED');
 	}
 ?>
 </div>
-<div class="actionPanel ui-modal-footer">
-	<button class="ui-button ui-button-refresh" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
-	<button class="ui-button ui-button-confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
-	<button class="ui-button ui-button-cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
+<div class="actionPanel uk-modal-footer">
+	<button class="uk-button uk-button-refresh" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
+	<button class="uk-button uk-button-confirm" id="insert"><?php echo WFText::_('WF_LABEL_INSERT')?></button>
+	<button class="uk-button uk-button-cancel" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL')?></button>
 </div>

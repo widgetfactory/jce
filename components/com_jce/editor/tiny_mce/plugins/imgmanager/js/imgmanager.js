@@ -48,7 +48,7 @@
 
 			if (n && n.nodeName == 'IMG') {
 				// set button
-				$('.ui-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
+				$('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
 
 				$('#src').val(src);
 
@@ -65,7 +65,7 @@
 
 				$('#width').val(function() {
 					if (w) {
-							$(this).addClass('ui-isdirty');
+							$(this).addClass('uk-isdirty');
 							return w;
 					}
 					// if height is not set, return actual width
@@ -76,7 +76,7 @@
 
 				$('#height').val(function() {
 					if (h) {
-							$(this).addClass('ui-isdirty');
+							$(this).addClass('uk-isdirty');
 							return h;
 					}
 					// if width is not set, return actual height
@@ -167,8 +167,8 @@
 			Wf.updateStyles();
 
 			// update constrain after applying values
-			$('.ui-constrain-checkbox').on('constrain:change', function(e, elms) {
-				$(elms).addClass('ui-isdirty');
+			$('.uk-constrain-checkbox').on('constrain:change', function(e, elms) {
+				$(elms).addClass('uk-isdirty');
 			}).trigger('constrain:update');
 		},
 		insert: function() {
@@ -228,7 +228,7 @@
 					if (self.settings.always_include_dimensions) {
 						v = $('#' + k).val();
 					} else {
-						v = $('#' + k + '.ui-isdirty').val() || '';
+						v = $('#' + k + '.uk-isdirty').val() || '';
 					}
 				}
 
@@ -294,7 +294,7 @@
 				name = data.title,
 				src = data.url;
 
-			if ($('#rollover_tab').hasClass('ui-active')) {
+			if ($('#rollover_tab').hasClass('uk-active')) {
 				$('input.focus', '#rollover_tab').val(src);
 			} else {
 				name = Wf.String.stripExt(name);
@@ -309,7 +309,7 @@
 
 					img.onload = function() {
 						$.each(['width', 'height'], function(i, k) {
-							$('#' + k).val(img[k]).data('tmp', img[k]).removeClass('ui-edited').addClass('ui-text-muted');
+							$('#' + k).val(img[k]).data('tmp', img[k]).removeClass('uk-edited').addClass('uk-text-muted');
 						});
 
 					};
@@ -318,7 +318,7 @@
 				} else {
 					$.each(['width', 'height'], function(i, k) {
 						var v = data[k] || "";
-						$('#' + k).val(v).data('tmp', v).removeClass('ui-edited').addClass('ui-text-muted');
+						$('#' + k).val(v).data('tmp', v).removeClass('uk-edited').addClass('uk-text-muted');
 					});
 				}
 

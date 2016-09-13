@@ -4,15 +4,15 @@
       return this.each(function() {
         var self = this;
 
-        if ($(this).hasClass('ui-form-constrain')) {
+        if ($(this).hasClass('uk-form-constrain')) {
           return this;
         }
 
-        $(this).wrap('<i class="ui-checkbox" />').click(function() {
-            $(this).parent().toggleClass('ui-icon-check', this.checked);
+        $(this).wrap('<i class="uk-checkbox" />').click(function() {
+            $(this).parent().toggleClass('uk-icon-check', this.checked);
         }).on('checkbox:check', function() {
-          $(this).parent().toggleClass('ui-icon-check', self.checked);
-        }).parent().toggleClass('ui-icon-check', self.checked).css('margin-top', $(self).parent().height() / 2);
+          $(this).parent().toggleClass('uk-icon-check', self.checked);
+        }).parent().toggleClass('uk-icon-check', self.checked).css('margin-top', $(self).parent().height() / 2);
       });
     };
 
@@ -35,15 +35,15 @@
           // check
           $(this).prop('checked', state);
 
-          $elms.slice(1).prop('disabled', state).prev('label').toggleClass('ui-text-muted', state);
+          $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
 
           // add icon and click
-          $(self).addClass('ui-form-equalize').wrap('<i class="ui-equalize ui-icon-lock" />').click(function() {
+          $(self).addClass('uk-form-equalize').wrap('<i class="uk-equalize uk-icon-lock" />').click(function() {
               var state = this.checked;
 
-              $(this).parent().toggleClass('ui-icon-unlock-alt', !state);
+              $(this).parent().toggleClass('uk-icon-unlock-alt', !state);
 
-              $elms.slice(1).prop('disabled', state).prev('label').toggleClass('ui-text-muted', state);
+              $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
 
               if (state) {
                   var value = $elms.first().val();
@@ -52,7 +52,7 @@
 
                   $(cb).trigger('equalize:change', [$(this).parent().find('input[type="text"]').andSelf()]);
               }
-          }).parent().toggleClass('ui-icon-unlock-alt', !state);
+          }).parent().toggleClass('uk-icon-unlock-alt', !state);
 
           $elms.first().change(function () {
               var state = $(self).prop('checked');
@@ -76,14 +76,14 @@
             });
 
             // add icon and click
-            $(cb).addClass('ui-form-constrain').wrap('<i class="ui-constrain ui-icon-lock" />').click(function() {
-                $(this).parent().toggleClass('ui-icon-unlock-alt', !this.checked);
+            $(cb).addClass('uk-form-constrain').wrap('<i class="uk-constrain uk-icon-lock" />').click(function() {
+                $(this).parent().toggleClass('uk-icon-unlock-alt', !this.checked);
             });
 
             var icon = $(this).parent();
 
             // update icon
-            $(icon).toggleClass('ui-icon-unlock-alt', !this.checked);
+            $(icon).toggleClass('uk-icon-unlock-alt', !this.checked);
 
             // set tmp values
             $elms.each(function() {
@@ -114,11 +114,11 @@
       return this.each(function() {
         var self = this;
 
-        if ($(this).data('ui-repeatable')) {
+        if ($(this).data('uk-repeatable')) {
             return this;
         }
 
-        $(this).data('ui-repeatable', 1);
+        $(this).data('uk-repeatable', 1);
 
         function clone() {
           // clone element
@@ -130,15 +130,15 @@
           $(self).trigger('repeatable:create', [self, $(el).get(0)]);
 
           // add new element
-          $(el).insertAfter($(self).siblings('.ui-repeatable').add(self).last());
+          $(el).insertAfter($(self).siblings('.uk-repeatable').add(self).last());
         }
 
-        $('.ui-repeatable-create', this).click(function(e) {
+        $('.uk-repeatable-create', this).click(function(e) {
             clone();
             e.preventDefault();
         });
 
-        $('.ui-repeatable-delete', this).click(function(e) {
+        $('.uk-repeatable-delete', this).click(function(e) {
           $(this).parent().parent().remove();
 
           e.preventDefault();
@@ -156,11 +156,11 @@
         options = options || {};
 
         var map = {
-            "ui-icon-circle-arrow-w" : "ui-icon-refresh",
-            "ui-icon-arrowreturnthick-1-w" : "ui-icon-undo",
-            "ui-icon-circle-check" : "ui-icon-check",
-            "ui-icon-check" : "ui-icon-check",
-            "ui-icon-closethick" : "ui-icon-close"
+            "uk-icon-circle-arrow-w" : "uk-icon-refresh",
+            "uk-icon-arrowreturnthick-1-w" : "uk-icon-undo",
+            "uk-icon-circle-check" : "uk-icon-check",
+            "uk-icon-check" : "uk-icon-check",
+            "uk-icon-closethick" : "uk-icon-close"
         };
 
         return this.each(function() {
@@ -168,7 +168,7 @@
             if (typeof options === "string") {
               if (options === "option" && key && value) {
                   if (key === "label") {
-                      $('.ui-button-text', this).text(value);
+                      $('.uk-button-text', this).text(value);
                   }
               }
 
@@ -184,14 +184,14 @@
               return this;
             }
             // add button classes
-            $(this).addClass('ui-button').addClass(options.classes || "");
+            $(this).addClass('uk-button').addClass(options.classes || "");
             // add icon
-            $(this).html('<span class="ui-button-text">' + $(this).text() + '</span>');
+            $(this).html('<span class="uk-button-text">' + $(this).text() + '</span>');
 
             if (options.icons && options.icons.primary) {
                 var icon = map[options.icons.primary] || options.icons.primary || "";
 
-                $('<i />').addClass('ui-margin-small-right ui-icon ' + icon).prependTo(this);
+                $('<i />').addClass('uk-margin-small-right uk-icon ' + icon).prependTo(this);
             }
         });
     };
@@ -211,46 +211,46 @@
               return this;
           }
 
-          $(this).addClass('ui-tabs');
+          $(this).addClass('uk-tabs');
 
-          $(this).children('ul').addClass('ui-tab');
+          $(this).children('ul').addClass('uk-tab');
 
-          if ($(this).children('.ui-switcher').length === 0) {
-              $('<div class="ui-switcher" />').append($(this).children('div')).appendTo(this);
+          if ($(this).children('.uk-switcher').length === 0) {
+              $('<div class="uk-switcher" />').append($(this).children('div')).appendTo(this);
           }
 
-          $(this).children('.ui-switcher').addClass('ui-tabs-panel').children().first().addClass('ui-active');
+          $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active');
 
-          $('.ui-tab li', el).click(function (e) {
+          $('.uk-tab li', el).click(function (e) {
               e.preventDefault();
 
               // legacy
-              $(el).children('.ui-switcher').children().addClass('ui-tabs-hide');
+              $(el).children('.uk-switcher').children().addClass('uk-tabs-hide');
 
               // get current active panel
-              var panel = $(el).children('.ui-switcher').children('.ui-active').get(0);
+              var panel = $(el).children('.uk-switcher').children('.uk-active').get(0);
 
               // get current active tab
-              var tab = $(el).children('.ui-tab').children('.ui-active').get(0);
+              var tab = $(el).children('.uk-tab').children('.uk-active').get(0);
 
               // trigger tab event
               $(el).trigger('tabs.beforeactivate', [tab, panel]);
 
               // toggle all tabs and panels
-              $(el).children('.ui-tab, .ui-switcher').children().removeClass('ui-active');
+              $(el).children('.uk-tab, .uk-switcher').children().removeClass('uk-active');
 
               // activate tab
-              $(this).addClass('ui-active');
+              $(this).addClass('uk-active');
 
               // activate new panel
-              var panel = $(el).children('.ui-switcher').children().eq($(this).index()).addClass('ui-active').removeClass('ui-tabs-hide').get(0);
+              var panel = $(el).children('.uk-switcher').children().eq($(this).index()).addClass('uk-active').removeClass('uk-tabs-hide').get(0);
 
               // trigger tab event
               $(el).trigger('tabs.activate', [this, panel]);
 
               // kill default events
               e.preventDefault();
-          }).first().addClass('ui-active');
+          }).first().addClass('uk-active');
 
           $(this).data('tabs', true);
         });
@@ -262,7 +262,7 @@
         // jQuery UI legacy
         if (typeof options === "string") {
           if (options === "activate" && typeof key !== "undefined") {
-            $('.ui-accordion-title', this).click();
+            $('.uk-accordion-title', this).click();
           }
           // end here so as not to re-create the button
           return this;
@@ -270,19 +270,19 @@
 
         //options = $.extend({index: 0}, options || {});
 
-        $(this).children('h3').addClass('ui-accordion-title').next('div').addClass('ui-accordion-content').css(hidden);
+        $(this).children('h3').addClass('uk-accordion-title').next('div').addClass('uk-accordion-content').css(hidden);
 
-        $('.ui-accordion-title', this).click(function(e) {
+        $('.uk-accordion-title', this).click(function(e) {
             e.preventDefault();
 
             var tab = this;
 
             // collapse all content
-            $('.ui-accordion-content', el).height(0);
+            $('.uk-accordion-content', el).height(0);
             // deactivate title
-            $('.ui-accordion-title', el).removeClass('ui-active');
+            $('.uk-accordion-title', el).removeClass('uk-active');
 
-            $(this).addClass('ui-active').next('div').css('height', function(i, v) {
+            $(this).addClass('uk-active').next('div').css('height', function(i, v) {
                 if (parseInt(v) === 0) {
                     $(el).trigger('accordion.activate', [tab, this]);
                     return 'auto';
@@ -316,10 +316,10 @@
 
           $(this).attr('id', id + '-select');
 
-          $(this).parent('.ui-form-controls').addClass('ui-datalist');
+          $(this).parent('.uk-form-controls').addClass('uk-datalist');
 
-          if (!$(this).parent().hasClass('ui-datalist')) {
-              $(this).wrap('<span class="ui-datalist" />');
+          if (!$(this).parent().hasClass('uk-datalist')) {
+              $(this).wrap('<span class="uk-datalist" />');
           }
           var value = $(this).val();
           var input = $(this).siblings('input[type="text"]');

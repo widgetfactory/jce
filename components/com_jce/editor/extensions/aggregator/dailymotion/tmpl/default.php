@@ -10,26 +10,26 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
+<div class="uk-form-row">
     <label for="dailymotion_autoPlay" title="<?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_AUTOPLAY_DESC') ?>"
-           class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_AUTOPLAY') ?></label>
-    <div class="ui-width-4-5">
-        <div class="ui-form-controls ui-width-1-5">
+           class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_AUTOPLAY') ?></label>
+    <div class="uk-width-4-5">
+        <div class="uk-form-controls uk-width-1-5">
             <input type="checkbox" id="dailymotion_autoPlay" />
         </div>
 
         <label for="dailymotion_start" title="<?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_START_DESC') ?>"
-               class="tooltip ui-form-label ui-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_START') ?></label>
-        <div class="ui-form-controls ui-width-1-5">
+               class="tooltip uk-form-label uk-width-1-5"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_START') ?></label>
+        <div class="uk-form-controls uk-width-1-5">
             <input id="dailymotion_start" type="number" value="" />
         </div>
     </div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-1-5"
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-1-5"
            title="<?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_SIZE'); ?>"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_SIZE'); ?></label>
 
-    <div class="ui-form-controls ui-width-4-5">
+    <div class="uk-form-controls uk-width-4-5">
         <select id="dailymotion_player_size">
             <option value="320"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_SIZE_SMALL'); ?></option>
             <option value="480"><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_SIZE_MEDIUM'); ?></option>
@@ -37,6 +37,6 @@ defined('_WF_EXT') or die('RESTRICTED');
             <option value=""><?php echo WFText::_('WF_AGGREGATOR_DAILYMOTION_SIZE_CUSTOM'); ?></option>
         </select>
 
-        <input type="number" id="dailymotion_player_size_custom" class="ui-hidden ui-margin-small-left" />
+        <input type="number" id="dailymotion_player_size_custom" class="uk-hidden uk-margin-small-left" />
     </div>
 </div>

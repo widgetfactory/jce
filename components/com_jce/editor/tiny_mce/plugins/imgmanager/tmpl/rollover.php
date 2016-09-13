@@ -12,19 +12,19 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
-	<label for="onmouseover" class="hastip ui-form-label ui-width-3-10" title="<?php echo WFText::_('WF_LABEL_MOUSEOVER_DESC');?>">
+<div class="uk-form-row">
+	<label for="onmouseover" class="hastip uk-form-label uk-width-3-10" title="<?php echo WFText::_('WF_LABEL_MOUSEOVER_DESC');?>">
 		<?php echo WFText::_('WF_LABEL_MOUSEOVER');?>
 	</label>
-	<div class="ui-form-controls ui-width-7-10">
+	<div class="uk-form-controls uk-width-7-10">
 		<input id="onmouseover" type="text" value="" class="focus" />
 	</div>
 </div>
-<div class="ui-form-row">
-	<label for="onmouseout" class="hastip ui-form-label ui-width-3-10" title="<?php echo WFText::_('WF_LABEL_MOUSEOUT_DESC');?>">
+<div class="uk-form-row">
+	<label for="onmouseout" class="hastip uk-form-label uk-width-3-10" title="<?php echo WFText::_('WF_LABEL_MOUSEOUT_DESC');?>">
 		<?php echo WFText::_('WF_LABEL_MOUSEOUT');?>
 	</label>
-	<div class="ui-form-controls ui-width-7-10">
+	<div class="uk-form-controls uk-width-7-10">
 		<input id="onmouseout" type="text" value="" />
 	</div>
 </div>

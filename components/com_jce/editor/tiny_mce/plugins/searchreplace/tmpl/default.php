@@ -12,21 +12,21 @@ defined('WF_EDITOR') or die('RESTRICTED');
 
 ?>
 	<div>
-<div class="ui-form-row">
-	<label class="ui-form-label ui-width-3-10" for="searchstring"><?php echo WFText::_('WF_SEARCHREPLACE_FINDWHAT');?></label>
-	<div class="ui-form-controls ui-width-7-10">
+<div class="uk-form-row">
+	<label class="uk-form-label uk-width-3-10" for="searchstring"><?php echo WFText::_('WF_SEARCHREPLACE_FINDWHAT');?></label>
+	<div class="uk-form-controls uk-width-7-10">
 		<input type="text" id="searchstring" />
 	</div>
 </div>
-<div class="ui-form-row">
-		<label class="ui-form-label ui-width-3-10" for="replacestring"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEWITH');?></label>
-	<div class="ui-form-controls ui-width-7-10">
+<div class="uk-form-row">
+		<label class="uk-form-label uk-width-3-10" for="replacestring"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEWITH');?></label>
+	<div class="uk-form-controls uk-width-7-10">
 		<input type="text" id="replacestring" />
 	</div>
 </div>
-<div class="ui-form-row">
-		<label class="ui-form-label ui-width-3-10"><?php echo WFText::_('WF_SEARCHREPLACE_DIRECTION');?></label>
-	<div class="ui-form-controls ui-width-7-10">
+<div class="uk-form-row">
+		<label class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_SEARCHREPLACE_DIRECTION');?></label>
+	<div class="uk-form-controls uk-width-7-10">
 		<input id="backwardsu" type="radio" />
 		<label for="backwardsu"><?php echo WFText::_('WF_SEARCHREPLACE_UP');?></label>
 
@@ -34,7 +34,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 		<label for="backwardsd"><?php echo WFText::_('WF_SEARCHREPLACE_DOWN');?></label>
 	</div>
 </div>
-<div class="ui-form-row">
+<div class="uk-form-row">
 	<input id="casesensitivebox" type="checkbox" />
 	<label for="casesensitivebox"><?php echo WFText::_('WF_SEARCHREPLACE_MCASE');?></label>
 </div>
@@ -43,5 +43,5 @@ defined('WF_EDITOR') or die('RESTRICTED');
 	<button type="submit" id="next" name="insert"><?php echo WFText::_('WF_SEARCHREPLACE_FINDNEXT');?></button>
 	<button type="button" class="button" id="replaceBtn" name="replaceBtn"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACE');?></button>
 	<button type="button" class="button" id="replaceAllBtn" name="replaceAllBtn"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEALL');?></button>
-	<button type="button" id="cancel" name="cancel" class="ui-hidden-mini" onclick="tinyMCEPopup.close();"><?php echo WFText::_('WF_LABEL_CANCEL');?></button>
+	<button type="button" id="cancel" name="cancel" class="uk-hidden-mini" onclick="tinyMCEPopup.close();"><?php echo WFText::_('WF_LABEL_CANCEL');?></button>
 </div>

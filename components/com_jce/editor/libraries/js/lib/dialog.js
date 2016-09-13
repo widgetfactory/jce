@@ -3,7 +3,7 @@
         $(this).on('click change', function() {
             var state = this.checked;
 
-            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').prop('disabled', !state).toggleClass('ui-text-muted', !state);
+            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').prop('disabled', !state).toggleClass('uk-text-muted', !state);
 
             $(this).trigger('border:change');
         }).change();
@@ -189,7 +189,7 @@
                     $('#border').attr('checked', 'checked');
                     $('#border_' + k).val(v);
 
-                    $('#border~:input, #border~span, #border~label').attr('disabled', false).toggleClass('ui-text-muted', false);
+                    $('#border~:input, #border~span, #border~label').attr('disabled', false).toggleClass('uk-text-muted', false);
 
                     // update pick
                     if (k == 'color') {

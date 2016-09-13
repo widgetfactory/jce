@@ -12,20 +12,20 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="rowtype">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="rowtype">
         <?php echo WFText::_('WF_TABLE_ROWTYPE'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <select id="rowtype">
             <option value="thead"><?php echo WFText::_('WF_TABLE_THEAD'); ?></option>
             <option value="tbody"><?php echo WFText::_('WF_TABLE_TBODY'); ?></option>
             <option value="tfoot"><?php echo WFText::_('WF_TABLE_TFOOT'); ?></option>
         </select></div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="align">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="align">
         <?php echo WFText::_('WF_TABLE_ALIGN'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <select id="align">
             <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="center"><?php echo WFText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
@@ -33,10 +33,10 @@ defined('_JEXEC') or die('RESTRICTED');
             <option value="right"><?php echo WFText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select></div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="valign">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="valign">
         <?php echo WFText::_('WF_TABLE_VALIGN'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <select id="valign">
             <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="top"><?php echo WFText::_('WF_TABLE_ALIGN_TOP'); ?></option>
@@ -44,10 +44,10 @@ defined('_JEXEC') or die('RESTRICTED');
             <option value="bottom"><?php echo WFText::_('WF_TABLE_ALIGN_BOTTOM'); ?></option>
         </select></div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="height">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="height">
         <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <input type="text" id="height" value="" onchange="TableDialog.changedSize();"/>
     </div>
 </div>

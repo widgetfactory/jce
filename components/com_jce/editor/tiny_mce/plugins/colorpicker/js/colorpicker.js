@@ -31,7 +31,7 @@ var ColorPicker = {
 
 		$('button#insert').button({
 			icons: {
-				primary: 'ui-icon-check'
+				primary: 'uk-icon-check'
 			}
 		});
 

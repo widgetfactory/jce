@@ -12,9 +12,9 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<div class="ui-form-row">
-    <label for="classlist" class="ui-form-label ui-width-3-10 hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
-    <div class="ui-form-controls ui-width-7-10 ui-datalist">
+<div class="uk-form-row">
+    <label for="classlist" class="uk-form-label uk-width-3-10 hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
+    <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <input type="text" id="classes" />
         <select id="classlist">
           <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
@@ -22,39 +22,39 @@ defined('_JEXEC') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="id">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="id">
         <?php echo WFText::_('WF_TABLE_ID'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <input id="id" type="text" value=""/>
     </div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="summary">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="summary">
         <?php echo WFText::_('WF_TABLE_SUMMARY'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <input id="summary" type="text" value=""/>
     </div>
 </div>
-<div class="ui-form-row">
-    <label class="ui-form-label ui-width-3-10" for="style">
+<div class="uk-form-row">
+    <label class="uk-form-label uk-width-3-10" for="style">
             <?php echo WFText::_('WF_TABLE_STYLE'); ?></label>
-        <div class="ui-form-controls ui-width-7-10">
+        <div class="uk-form-controls uk-width-7-10">
             <input type="text" id="style" value=""
                    onchange="TableDialog.changedStyle();"/>
         </div>
     </div>
-    <div class="ui-form-row">
-        <label class="ui-form-label ui-width-3-10" id="langlabel" for="lang">
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" id="langlabel" for="lang">
             <?php echo WFText::_('WF_TABLE_LANGCODE'); ?></label>
-        <div class="ui-form-controls ui-width-7-10">
-            <input id="lang" type="text" value="" class="ui-form-width-small" />
+        <div class="uk-form-controls uk-width-7-10">
+            <input id="lang" type="text" value="" class="uk-form-width-small" />
         </div>
     </div>
-    <div class="ui-form-row">
-        <label class="ui-form-label ui-width-3-10" for="backgroundimage">
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" for="backgroundimage">
             <?php echo WFText::_('WF_TABLE_BGIMAGE'); ?></label>
-        <div class="ui-form-controls ui-width-7-10">
+        <div class="uk-form-controls uk-width-7-10">
             <input id="backgroundimage" type="text"
                    value="" class="browser"
                    onchange="TableDialog.changedBackgroundImage();"/>
@@ -62,10 +62,10 @@ defined('_JEXEC') or die('RESTRICTED');
     </div>
     <?php if ($this->plugin->getContext() == 'table') :
         ?>
-        <div class="ui-form-row">
-            <label class="ui-form-label ui-width-3-10" for="tframe">
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-width-3-10" for="tframe">
                 <?php echo WFText::_('WF_TABLE_FRAME'); ?></label>
-            <div class="ui-form-controls ui-width-7-10">
+            <div class="uk-form-controls uk-width-7-10">
                 <select id="tframe">
                     <option value="">{#not_set}</option>
                     <option value="void"><?php echo WFText::_('WF_TABLE_RULES_VOID'); ?></option>
@@ -79,10 +79,10 @@ defined('_JEXEC') or die('RESTRICTED');
                     <option value="border"><?php echo WFText::_('WF_TABLE_RULES_BORDER'); ?></option>
                 </select></div>
         </div>
-        <div class="ui-form-row">
-            <label class="ui-form-label ui-width-3-10" for="rules">
+        <div class="uk-form-row">
+            <label class="uk-form-label uk-width-3-10" for="rules">
                 <?php echo WFText::_('WF_TABLE_RULES'); ?></label>
-            <div class="ui-form-controls ui-width-7-10">
+            <div class="uk-form-controls uk-width-7-10">
                 <select id="rules">
                     <option value="">{#not_set}</option>
                     <option value="none"><?php echo WFText::_('WF_TABLE_FRAME_NONE'); ?></option>
@@ -93,29 +93,29 @@ defined('_JEXEC') or die('RESTRICTED');
                 </select></div>
         </div>
     <?php endif; ?>
-    <div class="ui-form-row">
-        <label class="ui-form-label ui-width-3-10" for="dir">
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" for="dir">
             <?php echo WFText::_('WF_TABLE_LANGDIR'); ?></label>
-        <div class="ui-form-controls ui-width-7-10">
+        <div class="uk-form-controls uk-width-7-10">
             <select id="dir">
                 <option value="">{#not_set}</option>
                 <option value="ltr"><?php echo WFText::_('WF_TABLE_LTR'); ?></option>
                 <option value="rtl"><?php echo WFText::_('WF_TABLE_RTL'); ?></option>
             </select></div>
     </div>
-    <div class="ui-form-row">
-        <label class="ui-form-label ui-width-3-10" for="bordercolor">
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" for="bordercolor">
             <?php echo WFText::_('WF_TABLE_BORDERCOLOR'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="bordercolor" type="text" value=""
-                   size="9" class="color ui-form-width-small" onchange="TableDialog.changedColor();"/>
+                   size="9" class="color uk-form-width-small" onchange="TableDialog.changedColor();"/>
         </div>
     </div>
-    <div class="ui-form-row">
-        <label class="ui-form-label ui-width-3-10" for="bgcolor">
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" for="bgcolor">
             <?php echo WFText::_('WF_TABLE_BGCOLOR'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="bgcolor" type="text" value="" size="9"
-                   class="color ui-form-width-small" onchange="TableDialog.changedColor();"/>
+                   class="color uk-form-width-small" onchange="TableDialog.changedColor();"/>
         </div>
     </div>

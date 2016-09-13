@@ -13,11 +13,11 @@
 defined( '_JEXEC' ) or die('RESTRICTED');
 $tabs = WFTabs::getInstance();
 ?>
-<form onsubmit="return false;" class="ui-form ui-form-horizontal" data-context="<?php echo $this->plugin->getContext();?>">
+<form onsubmit="return false;" class="uk-form uk-form-horizontal" data-context="<?php echo $this->plugin->getContext();?>">
 	<?php echo $tabs->render(); ?>
 	<div class="mceActionPanel">
 	<?php if ($this->plugin->getContext() == 'cell') : ?>
-		<div class="ui-form-row ui-float-left">
+		<div class="uk-form-row uk-float-left">
 			<select id="action" name="action">
 				<option value="cell"><?php echo WFText::_('WF_TABLE_CELL_CELL');?></option>
 				<option value="row"><?php echo WFText::_('WF_TABLE_CELL_ROW');?></option>
@@ -26,7 +26,7 @@ $tabs = WFTabs::getInstance();
 		</div>
 	<?php endif;
 	if ($this->plugin->getContext() == 'row') : ?>
-		<div class="ui-form-row ui-float-left">
+		<div class="uk-form-row uk-float-left">
 			<select id="action" name="action">
 				<option value="row"><?php echo WFText::_('WF_TABLE_ROW_ROW');?></option>
 				<option value="odd"><?php echo WFText::_('WF_TABLE_ROW_ODD');?></option>

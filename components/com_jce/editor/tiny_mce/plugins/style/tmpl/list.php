@@ -11,21 +11,21 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 
-<div class="ui-form-row">
-  <label class="ui-form-label ui-width-2-10" for="list_type"><?php echo WFText::_('WF_STYLES_LIST_TYPE');?></label>
-  <div class="ui-form-controls ui-width-4-10 ui-datalist">
+<div class="uk-form-row">
+  <label class="uk-form-label uk-width-2-10" for="list_type"><?php echo WFText::_('WF_STYLES_LIST_TYPE');?></label>
+  <div class="uk-form-controls uk-width-4-10 uk-datalist">
     <select id="list_type" name="list_type"></select>
   </div>
 </div>
-<div class="ui-form-row">
-  <label class="ui-form-label ui-width-2-10" for="list_position"><?php echo WFText::_('WF_STYLES_POSITION');?></label>
-  <div class="ui-form-controls ui-width-4-10 ui-datalist">
+<div class="uk-form-row">
+  <label class="uk-form-label uk-width-2-10" for="list_position"><?php echo WFText::_('WF_STYLES_POSITION');?></label>
+  <div class="uk-form-controls uk-width-4-10 uk-datalist">
     <select id="list_position" name="list_position"></select>
   </div>
 </div>
-<div class="ui-form-row">
-  <label class="ui-form-label ui-width-2-10" for="list_bullet_image"><?php echo WFText::_('WF_STYLES_BULLET_IMAGE');?></label>
-  <div class="ui-form-controls ui-width-8-10">
+<div class="uk-form-row">
+  <label class="uk-form-label uk-width-2-10" for="list_bullet_image"><?php echo WFText::_('WF_STYLES_BULLET_IMAGE');?></label>
+  <div class="uk-form-controls uk-width-8-10">
     <input id="list_bullet_image" name="list_bullet_image" type="text" class="browser image" />
   </div>
 </div>

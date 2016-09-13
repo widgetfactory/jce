@@ -1,9 +1,9 @@
-.ui-datalist {
+.uk-datalist {
     position: relative;
     display: inline-block;
 }
 
-.ui-form-horizontal .ui-datalist input[type="text"] {
+.uk-form-horizontal .uk-datalist input[type="text"] {
     z-index: 1;
     position: relative;
     width: 92.5%;
@@ -11,59 +11,59 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
-.ui-datalist input:focus + select {
+.uk-datalist input:focus + select {
     border-color: #66afe9
 }
-.ui-datalist select:focus ~ input {
+.uk-datalist select:focus ~ input {
     border-color: #66afe9
 }
-:root .ui-form-horizontal .ui-datalist input[type="text"] {
+:root .uk-form-horizontal .uk-datalist input[type="text"] {
     border-right-width: 0;
 }
-.ui-form-horizontal .ui-datalist select {
+.uk-form-horizontal .uk-datalist select {
     z-index: 0;
     position: absolute;
     left: 0;
 }
-.ui-form-horizontal .ui-grid-small .ui-datalist select {
+.uk-form-horizontal .uk-grid-small .uk-datalist select {
   left: 10px;
   width: 95%;
   width: calc(100% - 10px);
 }
 
-.ui-form-icon input.color {
+.uk-form-icon input.color {
     padding-left: 24px !important
 }
 
-.ui-form-icon input.color:disabled ~ span {
+.uk-form-icon input.color:disabled ~ span {
   opacity: 0.5;
 }
 
-.ui-icon-colorpicker {height: 22px;}
+.uk-icon-colorpicker {height: 22px;}
 
 /* Repeatable */
-.ui-repeatable .ui-repeatable-create, .ui-repeatable .ui-repeatable-delete {
+.uk-repeatable .uk-repeatable-create, .uk-repeatable .uk-repeatable-delete {
     display: none;
 }
-.ui-repeatable .ui-repeatable-create:first-child {
+.uk-repeatable .uk-repeatable-create:first-child {
     display: block;
 }
-.ui-repeatable  + .ui-repeatable .ui-repeatable-delete {
+.uk-repeatable  + .uk-repeatable .uk-repeatable-delete {
     display: block;
 }
-.ui-repeatable  + .ui-repeatable .ui-repeatable-create {
+.uk-repeatable  + .uk-repeatable .uk-repeatable-create {
   display: none;
 }
 
-.ui-repeatable .ui-repeatable-hidden-first {
+.uk-repeatable .uk-repeatable-hidden-first {
     display: none;
 }
 
-.ui-repeatable  + .ui-repeatable .ui-repeatable-hidden-first {
+.uk-repeatable  + .uk-repeatable .uk-repeatable-hidden-first {
     display: block;
 }
 
-.ui-repeatable.ui-placeholder {padding: 10px;}
+.uk-repeatable.uk-placeholder {padding: 10px;}
 
 input.color, input.colour {
     width: 100px;
@@ -83,7 +83,7 @@ input.color, input.colour {
     bottom: 100%;
     right: inherit;
 }
-.wf-colorpicker .ui-tabs {
+.wf-colorpicker .uk-tabs {
   height: 85%;
   height: calc(100% - 49px);
   position: relative;
@@ -96,27 +96,27 @@ input.color, input.colour {
   height: 100%;
   position: relative;
 }
-.wf-colorpicker.ui-tooltip-left:after {
+.wf-colorpicker.uk-tooltip-left:after {
     border-left-color: #fff
 }
-.wf-colorpicker.ui-tooltip-right:after {
+.wf-colorpicker.uk-tooltip-right:after {
     border-right-color: #fff
 }
-.wf-colorpicker.ui-tooltip-left.ui-tooltip-bottom:after,
-.wf-colorpicker.ui-tooltip-right.ui-tooltip-bottom:after,
-.wf-colorpicker.ui-tooltip-left.ui-tooltip-top:after,
-.wf-colorpicker.ui-tooltip-right.ui-tooltip-top:after {
+.wf-colorpicker.uk-tooltip-left.uk-tooltip-bottom:after,
+.wf-colorpicker.uk-tooltip-right.uk-tooltip-bottom:after,
+.wf-colorpicker.uk-tooltip-left.uk-tooltip-top:after,
+.wf-colorpicker.uk-tooltip-right.uk-tooltip-top:after {
   display: none;
 }
 
-.wf-colorpicker .ui-modal-footer {
+.wf-colorpicker .uk-modal-footer {
   position: relative;
   margin: 5px -8px 0;
   height: 49px;
   box-sizing: border-box;
 }
 .wf-colorpicker #colorpicker_insert {margin: 0;}
-.wf-colorpicker .ui-switcher {
+.wf-colorpicker .uk-switcher {
     padding: 0 1px;
 }
 .wf-colorpicker #colorpicker {
@@ -126,16 +126,16 @@ input.color, input.colour {
   right: inherit;
   bottom: inherit;
 }
-.wf-colorpicker #colorpicker_tabs .ui-switcher {
+.wf-colorpicker #colorpicker_tabs .uk-switcher {
   padding: 0;
 }
 
-.ui-tooltip {
+.uk-tooltip {
     text-shadow: inherit;
     right: inherit;
     bottom: inherit;
 }
-.ui-tooltip .ui-icon-close {
+.uk-tooltip .uk-icon-close {
     position: absolute;
     right: 3px;
     cursor: pointer;
@@ -144,16 +144,16 @@ input.color, input.colour {
     top: 0;
     font-size: 0;
 }
-.ui-tooltip .ui-icon-close:before {
+.uk-tooltip .uk-icon-close:before {
     font-size: 14px;
 }
-.ui-tooltip h4, .ui-tooltip p {
+.uk-tooltip h4, .uk-tooltip p {
     margin: 0;
     color: #fff;
 }
-.ui-tooltip .tooltip-arrow {display: none;}
+.uk-tooltip .tooltip-arrow {display: none;}
 
-.ui-constrain, .ui-equalize {
+.uk-constrain, .uk-equalize {
     position: relative;
     vertical-align: middle;
     width: 2em;
@@ -163,7 +163,7 @@ input.color, input.colour {
     margin: 0;
     padding: 0;
 }
-.ui-form .ui-constrain input, .ui-form .ui-equalize input {
+.uk-form .uk-constrain input, .uk-form .uk-equalize input {
     opacity: 0;
     position: absolute;
     left: 0;
@@ -175,4 +175,4 @@ input.color, input.colour {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
-.ui-isdirty {color: inherit !important}
+.uk-isdirty {color: inherit !important}

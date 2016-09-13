@@ -12,48 +12,48 @@ defined('_JEXEC') or die('RESTRICTED');
 
 ?>
 
-<div class="ui-grid ui-grid-small">
-    <div class="ui-width-4-5">
+<div class="uk-grid uk-grid-small">
+    <div class="uk-width-4-5">
 
-        <div class="ui-form-row ui-grid ui-grid-small">
-            <label for="src" class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_URL_DESC'); ?>">
+        <div class="uk-form-row uk-grid uk-grid-small">
+            <label for="src" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_URL_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_URL'); ?>
             </label>
-            <div class="ui-form-controls ui-width-4-5">
+            <div class="uk-form-controls uk-width-4-5">
                 <input type="text" id="src" value="" class="filebrowser" required />
             </div>
         </div>
 
-        <div class="ui-form-row ui-grid ui-grid-small">
-            <label for="alt" class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_ALT_DESC'); ?>">
+        <div class="uk-form-row uk-grid uk-grid-small">
+            <label for="alt" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_ALT_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_ALT'); ?>
             </label>
-            <div class="ui-form-controls ui-width-4-5">
+            <div class="uk-form-controls uk-width-4-5">
                 <input type="text" id="alt" value="" />
             </div>
         </div>
 
-        <div class="ui-form-row ui-grid ui-grid-small" id="attributes-dimensions">
-            <label class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
+        <div class="uk-form-row uk-grid uk-grid-small" id="attributes-dimensions">
+            <label class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
             </label>
-            <div class="ui-form-controls ui-width-4-5">
-                <input type="text" id="width" value="" class="ui-text-muted" />
-                <strong class="ui-margin-left ui-margin-right ui-vertical-align-middle">&times;</strong>
-                <input type="text" id="height" class="ui-text-muted" />
+            <div class="uk-form-controls uk-width-4-5">
+                <input type="text" id="width" value="" class="uk-text-muted" />
+                <strong class="uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
+                <input type="text" id="height" class="uk-text-muted" />
 
-                <input class="ui-constrain-checkbox" type="checkbox" checked />
+                <input class="uk-constrain-checkbox" type="checkbox" checked />
             </div>
         </div>
 
-        <div class="ui-form-row ui-grid ui-grid-small" id="attributes-align">
-            <label for="align" class="hastip ui-form-label ui-width-1-5"
+        <div class="uk-form-row uk-grid uk-grid-small" id="attributes-align">
+            <label for="align" class="hastip uk-form-label uk-width-1-5"
                    title="<?php echo JText::_('WF_LABEL_ALIGN_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALIGN'); ?>
             </label>
 
-            <div class="ui-width-2-5">
-                <div class="ui-form-controls ui-width-9-10">
+            <div class="uk-width-2-5">
+                <div class="uk-form-controls uk-width-9-10">
                     <select id="align">
                         <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                         <optgroup label="------------">
@@ -69,12 +69,12 @@ defined('_JEXEC') or die('RESTRICTED');
                     </select>
                 </div>
             </div>
-            <div class="ui-width-2-5">
-                <label for="clear" class="hastip ui-form-label ui-width-3-10"
+            <div class="uk-width-2-5">
+                <label for="clear" class="hastip uk-form-label uk-width-3-10"
                        title="<?php echo JText::_('WF_LABEL_CLEAR_DESC'); ?>">
                     <?php echo JText::_('WF_LABEL_CLEAR'); ?>
                 </label>
-                <div class="ui-form-controls ui-width-7-10">
+                <div class="uk-form-controls uk-width-7-10">
                     <select id="clear" disabled>
                         <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="none"><?php echo WFText::_('WF_OPTION_CLEAR_NONE'); ?></option>
@@ -86,56 +86,56 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="ui-form-row ui-hidden-mini ui-grid ui-grid-small" id="attributes-margin">
-            <label for="margin" class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_MARGIN_DESC'); ?>">
+        <div class="uk-form-row uk-hidden-mini uk-grid uk-grid-small" id="attributes-margin">
+            <label for="margin" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_MARGIN_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_MARGIN'); ?>
             </label>
-            <div class="ui-form-controls ui-width-4-5 ui-grid ui-grid-small">
+            <div class="uk-form-controls uk-width-4-5 uk-grid uk-grid-small">
 
-              <label for="margin_top" class="ui-form-label">
+              <label for="margin_top" class="uk-form-label">
                   <?php echo WFText::_('WF_OPTION_TOP'); ?>
               </label>
-              <div class="ui-form-controls">
+              <div class="uk-form-controls">
                   <input type="text" id="margin_top" value="" />
               </div>
 
-                    <label for="margin_right" class="ui-form-label">
+                    <label for="margin_right" class="uk-form-label">
                         <?php echo WFText::_('WF_OPTION_RIGHT'); ?>
                     </label>
-                    <div class="ui-form-controls">
+                    <div class="uk-form-controls">
                         <input type="text" id="margin_right" value="" />
                     </div>
 
-                    <label for="margin_bottom" class="ui-form-label">
+                    <label for="margin_bottom" class="uk-form-label">
                         <?php echo WFText::_('WF_OPTION_BOTTOM'); ?>
                     </label>
-                    <div class="ui-form-controls">
+                    <div class="uk-form-controls">
                         <input type="text" id="margin_bottom" value="" />
                     </div>
 
-                    <label for="margin_left" class="ui-form-label">
+                    <label for="margin_left" class="uk-form-label">
                         <?php echo WFText::_('WF_OPTION_LEFT'); ?>
                     </label>
-                    <div class="ui-form-controls">
+                    <div class="uk-form-controls">
                         <input type="text" id="margin_left" value="" />
                     </div>
-                    <input type="checkbox" id="margin_check" class="ui-equalize-checkbox" />
+                    <input type="checkbox" id="margin_check" class="uk-equalize-checkbox" />
             </div>
         </div>
 
-        <div class="ui-form-row ui-hidden-mini ui-grid ui-grid-small" id="attributes-border">
-            <label for="border" class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_BORDER_DESC'); ?>">
+        <div class="uk-form-row uk-hidden-mini uk-grid uk-grid-small" id="attributes-border">
+            <label for="border" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_BORDER_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_BORDER'); ?>
             </label>
 
-            <div class="ui-form-controls ui-width-4-5">
-                <div class="ui-form-controls ui-width-0-3 ui-margin-small-top">
+            <div class="uk-form-controls uk-width-4-5">
+                <div class="uk-form-controls uk-width-0-3 uk-margin-small-top">
                     <input type="checkbox" id="border" />
                 </div>
 
-                <label for="border_width" class="hastip ui-form-label ui-width-1-10 ui-margin-small-left"
+                <label for="border_width" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo WFText::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo WFText::_('WF_LABEL_WIDTH'); ?></label>
-                <div class="ui-form-controls ui-width-2-10 ui-datalist">
+                <div class="uk-form-controls uk-width-2-10 uk-datalist">
                     <select pattern="[0-9]+" id="border_width">
                         <option value="inherit"><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="0">0</option>
@@ -154,9 +154,9 @@ defined('_JEXEC') or die('RESTRICTED');
                     </select>
                 </div>
 
-                <label for="border_style" class="hastip ui-form-label ui-width-1-10 ui-margin-small-left"
+                <label for="border_style" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo WFText::_('WF_LABEL_BORDER_STYLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_STYLE'); ?></label>
-                <div class="ui-form-controls ui-width-2-10">
+                <div class="uk-form-controls uk-width-2-10">
                     <select id="border_style">
                         <option value="inherit"><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="none"><?php echo WFText::_('WF_OPTION_BORDER_NONE'); ?></option>
@@ -171,15 +171,15 @@ defined('_JEXEC') or die('RESTRICTED');
                     </select>
                 </div>
 
-                <label for="border_color" class="hastip ui-form-label ui-width-1-10 ui-margin-small-left"
+                <label for="border_color" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo WFText::_('WF_LABEL_BORDER_COLOR_DESC'); ?>"><?php echo WFText::_('WF_LABEL_COLOR'); ?></label>
-                <div class="ui-form-controls ui-width-2-10">
+                <div class="uk-form-controls uk-width-2-10">
                     <input id="border_color" class="color" type="text" value="#000000" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="ui-width-1-5">
+    <div class="uk-width-1-5">
         <div class="preview">
             <img id="sample" src="<?php echo $this->plugin->image('sample.jpg', 'libraries'); ?>" alt="sample.jpg"/>
             <?php echo WFText::_('WF_LOREM_IPSUM'); ?>

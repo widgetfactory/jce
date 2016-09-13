@@ -27,13 +27,13 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
             e.preventDefault();
         }).button({
             icons: {
-                primary: 'ui-icon-search'
+                primary: 'uk-icon-search'
             }
         });
 
         $('#search-clear').click(function(e) {
-            if($(this).hasClass('ui-active')) {
-                $(this).removeClass('ui-active');
+            if($(this).hasClass('uk-active')) {
+                $(this).removeClass('uk-active');
 
                 $(el).val('');
                 $('#search-result').empty().hide();
@@ -43,21 +43,21 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
         $('#search-options-button').click(function(e) {
             e.preventDefault();
 
-            $(this).addClass('ui-active');
+            $(this).addClass('uk-active');
             
             var $p = $('#search-options').parent();
             
             $('#search-options').height($p.parent().height() - $p.outerHeight() - 15).toggle();
 
         }).on('close', function() {
-            $(this).removeClass('ui-active');
+            $(this).removeClass('uk-active');
             $('#search-options').hide();
         });
 
         $(el).on('change keyup', function() {
             if (this.value === "") {
                 $('#search-result').empty().hide();
-                $('#search-clear').removeClass('ui-active');
+                $('#search-clear').removeClass('uk-active');
             }
         });
     },
@@ -70,7 +70,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
         if (!query || $(el).hasClass('placeholder')) {
             return;
         }
-        $('#search-clear').removeClass('ui-active');
+        $('#search-clear').removeClass('uk-active');
         $('#search-browser').addClass('loading');
         
         // clean query
@@ -86,13 +86,13 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                     
                     if (o.length) {                        
                         $.each(o, function(i, n) {                        
-                            var $dl = $('<dl class="ui-margin-small" />').appendTo('#search-result');
+                            var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
                             
-                            $('<dt class="link ui-margin-small" />').text(n.title).click(function() {
+                            $('<dt class="link uk-margin-small" />').text(n.title).click(function() {
                                 if ($.isFunction(self.options.onClick)) {
                                     self.options.onClick.call(this, Wf.String.decode(n.link));
                                 }
-                            }).prepend('<i class="ui-icon ui-icon-file-text-o ui-margin-small-right" />').appendTo($dl);
+                            }).prepend('<i class="uk-icon uk-icon-file-text-o uk-margin-small-right" />').appendTo($dl);
                             
                             $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
 
@@ -117,7 +117,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                 }
             }
             $('#search-browser').removeClass('loading');
-            $('#search-clear').addClass('ui-active');
+            $('#search-clear').addClass('uk-active');
         }, self);
     }
 });

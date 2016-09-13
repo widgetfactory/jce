@@ -13,17 +13,17 @@
 defined( '_JEXEC' ) or die('RESTRICTED');
 
 ?>
-<div class="ui-form-row ui-margin-small-bottom">
-<label for="popup_list" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUP_TYPE_DESC');?>"><?php echo WFText::_('WF_POPUP_TYPE');?></label>
-	<div class="ui-form-controls ui-width-2-5">
+<div class="uk-form-row uk-margin-small-bottom">
+<label for="popup_list" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUP_TYPE_DESC');?>"><?php echo WFText::_('WF_POPUP_TYPE');?></label>
+	<div class="uk-form-controls uk-width-2-5">
 		<?php echo $this->popups->getPopupList();?>
 	</div>
 </div>
 
-<div class="ui-form-row ui-margin-small-bottom" style="display:<?php echo ($this->popups->get('text') === false) ? 'none' : ''?>;">
-	<label for="popup_text" class="hastip ui-form-label ui-width-1-5"
+<div class="uk-form-row uk-margin-small-bottom" style="display:<?php echo ($this->popups->get('text') === false) ? 'none' : ''?>;">
+	<label for="popup_text" class="hastip uk-form-label uk-width-1-5"
 			title="<?php echo WFText::_('WF_POPUP_TEXT_DESC');?>"><?php echo WFText::_('WF_POPUP_TEXT');?></label>
-		<div class="ui-form-controls ui-width-4-5">
+		<div class="uk-form-controls uk-width-4-5">
 			<input id="popup_text" type="text" value="" />
 		</div>
 </div>

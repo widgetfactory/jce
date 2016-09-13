@@ -15,7 +15,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 $tabs = WFTabs::getInstance();
 
 ?>
-<form action="#" class="ui-form ui-form-horizontal">
+<form action="#" class="uk-form uk-form-horizontal">
 	<!-- Render Tabs -->
 	<?php $tabs->render();?>
 	<!-- Token -->	

@@ -25,7 +25,7 @@ WFAggregator.add('dailymotion', {
 
         $('#dailymotion_player_size').change(function() {
             var v = parseInt(this.value);
-            $('#dailymotion_player_size_custom').toggleClass('ui-hidden', !!this.value);
+            $('#dailymotion_player_size_custom').toggleClass('uk-hidden', !!this.value);
 
             if (v) {
               $('#width').val(v);

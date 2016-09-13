@@ -11,37 +11,37 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-    <div class="ui-form-row ui-grid">
-        <label class="ui-form-label ui-width-2-10" for="cols">
+    <div class="uk-form-row uk-grid">
+        <label class="uk-form-label uk-width-2-10" for="cols">
             <?php echo WFText::_('WF_TABLE_COLS'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="cols" type="number" min="1" value="" required />
         </div>
 
-        <label class="ui-form-label ui-width-2-10" for="rows">
+        <label class="uk-form-label uk-width-2-10" for="rows">
             <?php echo WFText::_('WF_TABLE_ROWS'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="rows" type="number" value="" required />
         </div>
     </div>
 
-<div class="ui-form-row ui-grid">
-    <label class="ui-form-label ui-width-2-10" for="cellpadding">
+<div class="uk-form-row uk-grid">
+    <label class="uk-form-label uk-width-2-10" for="cellpadding">
         <?php echo WFText::_('WF_TABLE_CELLPADDING'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <input id="cellpadding" type="number" value="" />
     </div>
 
-    <label class="ui-form-label ui-width-2-10" for="cellspacing">
+    <label class="uk-form-label uk-width-2-10" for="cellspacing">
         <?php echo WFText::_('WF_TABLE_CELLSPACING'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <input id="cellspacing" type="number" value="" />
     </div>
 </div>
-<div class="ui-form-row ui-grid">
-    <label class="ui-form-label ui-width-2-10" for="align">
+<div class="uk-form-row uk-grid">
+    <label class="uk-form-label uk-width-2-10" for="align">
         <?php echo WFText::_('WF_TABLE_ALIGN'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <select id="align">
             <option value="">{#not_set}</option>
             <option value="center"><?php echo WFText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
@@ -50,28 +50,28 @@ defined('_JEXEC') or die('RESTRICTED');
         </select>
     </div>
 
-    <label class="ui-form-label ui-width-2-10" for="border">
+    <label class="uk-form-label uk-width-2-10" for="border">
         <?php echo WFText::_('WF_TABLE_BORDER'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <input id="border" type="number" value="" onchange="TableDialog.changedBorder();" />
     </div>
 </div>
-<div class="ui-form-row ui-grid">
-    <label class="ui-form-label ui-width-2-10" for="width">
+<div class="uk-form-row uk-grid">
+    <label class="uk-form-label uk-width-2-10" for="width">
         <?php echo WFText::_('WF_TABLE_WIDTH'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <input type="text" id="width" value=""
                onchange="TableDialog.changedSize();" />
     </div>
 
-    <label class="ui-form-label ui-width-2-10" for="height">
+    <label class="uk-form-label uk-width-2-10" for="height">
         <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
-    <div class="ui-form-controls ui-width-3-10">
+    <div class="uk-form-controls uk-width-3-10">
         <input type="text" id="height" value=""
                onchange="TableDialog.changedSize();" />
     </div>
 </div>
-<div class="ui-form-row">
+<div class="uk-form-row">
     <input id="caption" type="checkbox" />
     <label for="caption">
         <?php echo WFText::_('WF_TABLE_CAPTION'); ?></label>

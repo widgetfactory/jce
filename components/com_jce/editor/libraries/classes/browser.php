@@ -548,13 +548,13 @@ class WFFileBrowser extends JObject {
             $treedir = $dir;
             if ($root) {
                 $result = '<ul>'
-                . '<li id="/" class="ui-tree-open ui-tree-root ui-padding-remove">'
-                . ' <div class="ui-tree-row">'
+                . '<li id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
+                . ' <div class="uk-tree-row">'
                 . '   <a href="#">'
-                . '     <span class="ui-tree-icon" role="presentation">'
-                . '       <i class="ui-icon ui-icon-home"></i>'
+                . '     <span class="uk-tree-icon" role="presentation">'
+                . '       <i class="uk-icon uk-icon-home"></i>'
                 . '     </span>'
-                . '     <span class="ui-tree-text">' . WFText::_('WF_LABEL_HOME', 'Home') . '</span>'
+                . '     <span class="uk-tree-text">' . WFText::_('WF_LABEL_HOME', 'Home') . '</span>'
                 . '   </a>'
                 .' </div>';
 
@@ -564,15 +564,15 @@ class WFFileBrowser extends JObject {
         $folders = $this->getFolders($dir);
 
         if ($folders) {
-            $result .= '<ul class="ui-tree-node">';
+            $result .= '<ul class="uk-tree-node">';
             foreach ($folders as $folder) {
                 $open = strpos($treedir, ltrim($folder['id'], '/')) === 0;
 
-                $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . ($open ? 'ui-tree-open' : '') . '">'
-                . ' <div class="ui-tree-row">'
+                $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
+                . ' <div class="uk-tree-row">'
                 . '   <a href="#">'
-                . '     <span class="ui-tree-icon" role="presentation"></span>'
-                . '     <span class="ui-tree-text">' . $folder['name'] . '</span>'
+                . '     <span class="uk-tree-icon" role="presentation"></span>'
+                . '     <span class="uk-tree-text">' . $folder['name'] . '</span>'
                 . '   </a>'
                 .' </div>';
 

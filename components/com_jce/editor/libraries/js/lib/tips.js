@@ -73,14 +73,14 @@
 				}
 
 				if (options.trigger == 'click') {
-					if ($('.ui-tooltip').is(':visible')) {
+					if ($('.uk-tooltip').is(':visible')) {
 						return end();
 					}
 
 					start(e, element);
 				}
 
-				if ($('.ui-tooltip').hasClass('ui-tooltip-sticky')) {
+				if ($('.uk-tooltip').hasClass('uk-tooltip-sticky')) {
 					unpin();
 				} else {
 					pin(element);
@@ -94,13 +94,13 @@
 			if (options.trigger == 'hover') {
 				$(element).hover(
 					function(e) {
-						if ($('.ui-tooltip').hasClass('ui-tooltip-sticky') || $(this).hasClass('ui-tooltip-nohover')) {
+						if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
 							return;
 						}
 						return start(e, element);
 					},
 					function(e) {
-						if ($('.ui-tooltip').hasClass('ui-tooltip-sticky') || $(this).hasClass('ui-tooltip-nohover')) {
+						if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
 							return;
 						}
 						return end(element);
@@ -113,16 +113,16 @@
 		 * Create the tooltip div
 		 */
 		function createTips() {
-			var $tips = $('.ui-tooltip');
+			var $tips = $('.uk-tooltip');
 
 			if (!$tips.get(0)) {
-				$tips = $('<div class="tooltip ui-tooltip" role="tooltip" aria-hidden="true">' +
-					'<span class="close ui-icon ui-icon-close" title="Close">&times;</span>' +
+				$tips = $('<div class="tooltip uk-tooltip" role="tooltip" aria-hidden="true">' +
+					'<span class="close uk-icon uk-icon-close" title="Close">&times;</span>' +
 					'<div class="tooltip-arrow"></div>' +
-					'<div class="tooltip-inner ui-tooltip-inner"></div>' +
+					'<div class="tooltip-inner uk-tooltip-inner"></div>' +
 					'</div>').appendTo(options.parent);
 
-				$('.ui-icon-close', $tips).click(function() {
+				$('.uk-icon-close', $tips).click(function() {
 					end();
 				}).hide();
 			}
@@ -139,7 +139,7 @@
 			// Create tooltip if it doesn't exist
 			createTips();
 
-			var $tips = $('.ui-tooltip');
+			var $tips = $('.uk-tooltip');
 			// store element
 			$tips.data('source', element);
 
@@ -159,7 +159,7 @@
 				// Store original title and remove
 				$(element).data('title', $(element).attr('title')).attr('title', '');
 				// add aria description
-				$(element).attr('aria-describedby', 'ui-tooltip');
+				$(element).attr('aria-describedby', 'uk-tooltip');
 
 				var h = '';
 				// Set tooltip title html
@@ -173,7 +173,7 @@
 			}
 
 			// Set tooltip html
-			$('.ui-tooltip-inner', $tips).html(h);
+			$('.uk-tooltip-inner', $tips).html(h);
 
 			// Set visible
 			$tips.show().addClass('in').attr('aria-hidden', 'false');
@@ -197,7 +197,7 @@
 		 * @param {Object} el Element
 		 */
 		function end(element) {
-			var $tips = $('.ui-tooltip'),
+			var $tips = $('.uk-tooltip'),
 				element = $tips.data('source') || element;
 
 			if ($(element).data('title')) {
@@ -211,9 +211,9 @@
 			$tips.css('visibility', 'hidden').attr('aria-hidden', 'true').hide();
 
 			// reset classes
-			$('.ui-tooltip').attr('class', 'ui-tooltip').removeClass('in');
+			$('.uk-tooltip').attr('class', 'uk-tooltip').removeClass('in');
 			// empty tooltip
-			$('.ui-tooltip-inner').empty();
+			$('.uk-tooltip-inner').empty();
 
 			$(element).trigger('tooltip:hide');
 
@@ -238,27 +238,27 @@
 		}
 
 		function pin(element) {
-			$('.ui-tooltip').addClass('ui-tooltip-sticky');
-			$('.ui-icon-close', '.ui-tooltip').show();
+			$('.uk-tooltip').addClass('uk-tooltip-sticky');
+			$('.uk-icon-close', '.uk-tooltip').show();
 
 			// add blur handler
 			$(window).on('click.tooltip-blur', function(e) {
 				var el = $(element).get(0),
 					n = e.target;
 
-				if (n == el || (el.nodeName == 'LABEL' && $(el).attr('for') && n == $('#' + $(el).attr('for')).get(0)) || n == $('.ui-tooltip').get(0)) {
+				if (n == el || (el.nodeName == 'LABEL' && $(el).attr('for') && n == $('#' + $(el).attr('for')).get(0)) || n == $('.uk-tooltip').get(0)) {
 					return;
 				}
 
-				if ($(n).parents('.ui-tooltip').length === 0) {
+				if ($(n).parents('.uk-tooltip').length === 0) {
 					end();
 				}
 			});
 		}
 
 		function unpin() {
-			$('.ui-tooltip').removeClass('ui-tooltip-sticky');
-			$('.ui-icon-close', '.ui-tooltip').hide();
+			$('.uk-tooltip').removeClass('uk-tooltip-sticky');
+			$('.uk-icon-close', '.uk-tooltip').hide();
 
 			$(window).off('click.tooltip-blur');
 		}
@@ -270,7 +270,7 @@
 		function locate(e, element) {
 			createTips();
 
-			var $tips = $('.ui-tooltip');
+			var $tips = $('.uk-tooltip');
 			var o = options.offsets;
 
 			var pos = $(e.target).offset();
@@ -334,7 +334,7 @@
 			};
 
 			$.each(position.split(' '), function(i, s) {
-					$tips.addClass(s).addClass('ui-tooltip-' + s);
+					$tips.addClass(s).addClass('uk-tooltip-' + s);
 			});
 
 			$tips.css(style[position]);

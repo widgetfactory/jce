@@ -11,10 +11,10 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-    <div class="ui-form-row ui-grid">
-        <label class="ui-form-label ui-width-2-10" for="align">
+    <div class="uk-form-row uk-grid">
+        <label class="uk-form-label uk-width-2-10" for="align">
                 <?php echo WFText::_('WF_TABLE_ALIGN'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <select id="align">
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="center"><?php echo WFText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
@@ -23,9 +23,9 @@ defined('_JEXEC') or die('RESTRICTED');
             </select>
         </div>
 
-        <label class="ui-form-label ui-width-2-10" for="celltype">
+        <label class="uk-form-label uk-width-2-10" for="celltype">
                 <?php echo WFText::_('WF_TABLE_CELL_TYPE'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <select id="celltype" >
                 <option value="td"><?php echo WFText::_('WF_TABLE_TD'); ?></option>
                 <option value="th"><?php echo WFText::_('WF_TABLE_TH'); ?></option>
@@ -33,10 +33,10 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
     </div>
     
-    <div class="ui-form-row ui-grid">
-        <label class="ui-form-label ui-width-2-10" for="valign">
+    <div class="uk-form-row uk-grid">
+        <label class="uk-form-label uk-width-2-10" for="valign">
                 <?php echo WFText::_('WF_TABLE_VALIGN'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <select id="valign" >
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="top"><?php echo WFText::_('WF_TABLE_ALIGN_TOP'); ?></option>
@@ -45,9 +45,9 @@ defined('_JEXEC') or die('RESTRICTED');
             </select>
         </div>
 
-        <label class="ui-form-label ui-width-2-10" for="scope">
+        <label class="uk-form-label uk-width-2-10" for="scope">
                 <?php echo WFText::_('WF_TABLE_SCOPE'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <select id="scope" >
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="col"><?php echo WFText::_('WF_TABEL_COL'); ?></option>
@@ -58,16 +58,16 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
     </div>
 
-    <div class="ui-form-row ui-grid">
-        <label class="ui-form-label ui-width-2-10" for="width">
+    <div class="uk-form-row uk-grid">
+        <label class="uk-form-label uk-width-2-10" for="width">
                 <?php echo WFText::_('WF_TABLE_WIDTH'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="width" type="text" value="" onchange="TableDialog.changedSize();" />
         </div>
 
-        <label class="ui-form-label ui-width-2-10" for="height">
+        <label class="uk-form-label uk-width-2-10" for="height">
                 <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
-        <div class="ui-form-controls ui-width-3-10">
+        <div class="uk-form-controls uk-width-3-10">
             <input id="height" type="text" value="" onchange="TableDialog.changedSize();" />
         </div>
     </div>

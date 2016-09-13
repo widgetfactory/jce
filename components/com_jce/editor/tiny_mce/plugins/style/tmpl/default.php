@@ -16,7 +16,7 @@ $tabs = WFTabs::getInstance();
 <form>
     <?php $tabs->render(); ?>
     <div class="mceActionPanel">
-      <div class="ui-form-row ui-float-left">
+      <div class="uk-form-row uk-float-left">
           <input type="checkbox" id="toggle_insert_span" onclick="StyleDialog.toggleApplyAction();" />
           <label for="toggle_insert_span"><?php echo WFText::_('WF_STYLES_TOGGLE_INSERT_SPAN');?></label>
       </div>

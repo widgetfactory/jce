@@ -14,9 +14,9 @@ defined( '_JEXEC' ) or die('RESTRICTED');
 ?>
 
 <form onsubmit="return false;" action="#">
-	<div id="charmap" role="presentation" class="ui-grid ui-grid-small">
-		<div id="charmapView" class="ui-width-5-6"><!-- Chars will be rendered here --></div>
-		<div id="charmapDescription" class="ui-width-1-6">
+	<div id="charmap" role="presentation" class="uk-grid uk-grid-small">
+		<div id="charmapView" class="uk-width-5-6"><!-- Chars will be rendered here --></div>
+		<div id="charmapDescription" class="uk-width-1-6">
 			<div id="codeV"></div>
 			<div id="codeN"></div>
 			<div class="box">

@@ -240,8 +240,8 @@
             }
 
             if (error.code < 600) {
-                $('.ui-progress', file.element).hide();
-                $('<div class="ui-alert ui-alert-danger ui-width-1-1 ui-text-center" />').html(message).appendTo(file.element);
+                $('.uk-progress', file.element).hide();
+                $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center" />').html(message).appendTo(file.element);
             } else {
                 Wf.Modal.alert(message);
             }
@@ -277,7 +277,7 @@
             this._trigger('uploadcomplete', this.getErrorCount());
         },
         _setProgress: function(el, percent) {
-            $('.ui-progress-bar', el).css('width', percent + '%').attr('aria-valuenow', percent + '%').text(percent + '%');
+            $('.uk-progress-bar', el).css('width', percent + '%').attr('aria-valuenow', percent + '%').text(percent + '%');
         },
         _onProgress: function(file) {
             if (!file.size) {
@@ -343,8 +343,8 @@
                     this.errors++;
 
                     if (s.message) {
-                        $('.ui-progress', file.element).hide();
-                        $('<div class="ui-alert ui-alert-danger ui-width-1-1 ui-text-center" />').html(s.message).appendTo(file.element);
+                        $('.uk-progress', file.element).hide();
+                        $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center" />').html(s.message).appendTo(file.element);
                     }
                 }
             }
@@ -357,7 +357,7 @@
             $('#upload-queue').empty();
 
             if ($.support.dragdrop) {
-                $('<div id="upload-queue-drag" class="ui-block ui-block-large ui-text-center ui-text-large"><i class="ui-icon-cloud-upload ui-icon-medium ui-margin-right ui-text-muted"></i>' + Wf.translate('upload_drop', 'Drop files here') + '</div>').appendTo('#upload-queue-block').show()
+                $('<div id="upload-queue-drag" class="uk-block uk-block-large uk-text-center uk-text-large"><i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted"></i>' + Wf.translate('upload_drop', 'Drop files here') + '</div>').appendTo('#upload-queue-block').show()
             }
         },
         /**
@@ -417,7 +417,7 @@
             file.element = document.createElement('div');
 
             // status / delete
-            var remove = $('<button class="ui-button ui-button-link" />').attr({
+            var remove = $('<button class="uk-button uk-button-link" />').attr({
                 'title': Wf.translate('delete', 'Delete')
             }).addClass('queue-item-action').click(function(e) {
                 e.preventDefault();
@@ -427,19 +427,19 @@
                 }
 
                 return self._removeFile(file);
-            }).append('<i class="ui-icon ui-icon-trash" />');
+            }).append('<i class="uk-icon uk-icon-trash" />');
 
             // extension
             var ext = file.extension.toLowerCase();
             // input
-            var input = $('<i class="ui-icon ui-icon-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="ui-width-1-1" /><span class="queue-item-extension ui-text-muted ui-icon-none">.' + file.extension + '</span>');
-            var name = $('<div class="queue-item-name ui-width-4-5 ui-form-icon ui-form-icon-both" />').append(input);
+            var input = $('<i class="uk-icon uk-icon-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
+            var name = $('<div class="queue-item-name uk-width-4-5 uk-form-icon uk-form-icon-both" />').append(input);
 
             var buttons = [remove];
 
             // add optional buttons
             $.each(self.options.buttons, function(name, props) {
-                var btn = $('<button class="ui-button ui-button-link" title="' + props.title || name + '" />').addClass(props['class']).click(function(e) {
+                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).click(function(e) {
                     if ($(this).hasClass('disabled')) {
                         e.preventDefault();
                         return;
@@ -458,14 +458,14 @@
 
             if (file.size) {
                 // size
-                size = $('<div class="queue-item-size ui-flex-item-auto ui-text-center" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
+                size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
             }
 
             // create actions container
-            var actions = $('<div class="queue-item-actions ui-grid ui-grid-collapse ui-width-1-5 ui-text-right" />').appendTo(file.element).append(size).append(buttons);
-            var progress = $('<div class="ui-progress ui-width-1-1"><div class="ui-progress-bar"></div></div>');
+            var actions = $('<div class="queue-item-actions uk-grid uk-grid-collapse uk-width-1-5 uk-text-right" />').appendTo(file.element).append(size).append(buttons);
+            var progress = $('<div class="uk-progress uk-width-1-1"><div class="uk-progress-bar"></div></div>');
 
-            $(file.element).addClass('queue-item ui-width-1-1 ui-grid ui-grid-collapse').appendTo($(self.element)).append([name, actions, progress]);
+            $(file.element).addClass('queue-item uk-width-1-1 uk-grid uk-grid-collapse').appendTo($(self.element)).append([name, actions, progress]);
 
             $('input[type="text"]', file.element).on('change keyup', function(e) {
                 var v = this.value;

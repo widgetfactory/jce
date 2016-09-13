@@ -34,7 +34,7 @@
 
       if (src) {
         src = tinyMCEPopup.editor.convertURL(src);
-        $('.ui-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
+        $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
       }
 
       $('#src').val(src).filebrowser().on('filebrowser:onfileclick', function(e, file) {

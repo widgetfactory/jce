@@ -12,39 +12,39 @@
 defined('_WF_EXT') or die('RESTRICTED');
 
 ?>
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_title" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE'); ?></label>
-        <div class="ui-form-controls ui-width-4-5">
-          <input id="jcemediabox_popup_title" class="ui-input-multiple" type="text" class="text" value="" />
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_title" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_OPTION_TITLE'); ?></label>
+        <div class="uk-form-controls uk-width-4-5">
+          <input id="jcemediabox_popup_title" class="uk-input-multiple" type="text" class="text" value="" />
         </div>
     </div>
 
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_caption" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION'); ?></label>
-        <div class="ui-form-controls ui-width-4-5">
-          <input id="jcemediabox_popup_caption" class="ui-input-multiple" type="text" class="text" value="" />
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_caption" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_CAPTION'); ?></label>
+        <div class="uk-form-controls uk-width-4-5">
+          <input id="jcemediabox_popup_caption" class="uk-input-multiple" type="text" class="text" value="" />
         </div>
     </div>
 
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_group" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_GROUP_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_GROUP'); ?></label>
-        <div class="ui-form-controls ui-width-4-5">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_group" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_GROUP_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_GROUP'); ?></label>
+        <div class="uk-form-controls uk-width-4-5">
           <input id="jcemediabox_popup_group" type="text" class="text" value="" />
         </div>
     </div>
 
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_icon" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON'); ?></label>
-        <div class="ui-form-controls ui-width-4-5 ui-grid ui-grid-small">
-            <div class="ui-width-1-5">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_icon" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON'); ?></label>
+        <div class="uk-form-controls uk-width-4-5 uk-grid uk-grid-small">
+            <div class="uk-width-1-5">
               <select id="jcemediabox_popup_icon">
                   <option value="0"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
                   <option value="1" selected="selected"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
               </select>
             </div>
-            <div class="ui-width-4-5">
-              <label for="jcemediabox_popup_icon_position" class="ui-form-label ui-width-2-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_POSITION_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_POSITION'); ?></label>
-              <div class="ui-form-controls ui-width-2-5">
+            <div class="uk-width-4-5">
+              <label for="jcemediabox_popup_icon_position" class="uk-form-label uk-width-2-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_POSITION_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_ICON_POSITION'); ?></label>
+              <div class="uk-form-controls uk-width-2-5">
                 <select id="jcemediabox_popup_icon_position">
                     <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                     <option value="zoom-left"><?php echo WFText::_('WF_OPTION_LEFT'); ?></option>
@@ -59,21 +59,21 @@ defined('_WF_EXT') or die('RESTRICTED');
         </div>
     </div>
 
-    <div class="ui-form-row">
-        <label class="hastip ui-form-label ui-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
+    <div class="uk-form-row">
+        <label class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
             <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
         </label>
-        <div class="ui-form-controls ui-width-4-5">
+        <div class="uk-form-controls uk-width-4-5">
             <input type="text" id="jcemediabox_popup_width" value="" />
-            <strong class="ui-margin-left ui-margin-right ui-vertical-align-middle">&times;</strong>
+            <strong class="uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
             <input type="text" id="jcemediabox_popup_height" />
 
-            <input class="ui-constrain-checkbox" type="checkbox" checked />
+            <input class="uk-constrain-checkbox" type="checkbox" checked />
         </div>
     </div>
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_autopopup" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO'); ?></label>
-        <div class="ui-form-controls ui-width-1-5">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_autopopup" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO'); ?></label>
+        <div class="uk-form-controls uk-width-1-5">
             <select id="jcemediabox_popup_autopopup">
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="autopopup-single"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO_SINGLE'); ?></option>
@@ -82,18 +82,18 @@ defined('_WF_EXT') or die('RESTRICTED');
         </div>
     </div>
 
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_hide" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_HIDE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_HIDE'); ?></label>
-        <div class="ui-form-controls ui-width-1-10">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_hide" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_HIDE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_HIDE'); ?></label>
+        <div class="uk-form-controls uk-width-1-10">
           <select id="jcemediabox_popup_hide">
                 <option value="0"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
                 <option value="1"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
           </select>
         </div>
     </div>
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_mediatype" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_MEDIATYPE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_MEDIATYPE'); ?></label>
-        <div class="ui-form-controls ui-width-2-5">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_mediatype" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_MEDIATYPE_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_MEDIATYPE'); ?></label>
+        <div class="uk-form-controls uk-width-2-5">
           <select id="jcemediabox_popup_mediatype">
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="text/html"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_INTERNAL'); ?></option>
@@ -114,23 +114,23 @@ defined('_WF_EXT') or die('RESTRICTED');
             </select>
         </div>
     </div>
-    <div class="ui-form-row">
-        <label for="jcemediabox_popup_params" class="ui-form-label ui-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_PARAMS_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_PARAMS'); ?></label>
-        <div class="ui-width-4-5" id="jcemediabox_popup_params">
-          <div class="ui-form-row ui-repeatable">
-                  <div class="ui-form-controls ui-grid ui-grid-small ui-width-9-10">
-                      <label class="ui-form-label ui-width-1-10"><?php echo WFText::_('WF_LABEL_NAME'); ?></label>
-                      <div class="ui-form-controls ui-width-4-10">
+    <div class="uk-form-row">
+        <label for="jcemediabox_popup_params" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_PARAMS_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_PARAMS'); ?></label>
+        <div class="uk-width-4-5" id="jcemediabox_popup_params">
+          <div class="uk-form-row uk-repeatable">
+                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
+                      <label class="uk-form-label uk-width-1-10"><?php echo WFText::_('WF_LABEL_NAME'); ?></label>
+                      <div class="uk-form-controls uk-width-4-10">
                         <input type="text" name="jcemediabox_popup_params_name[]" />
                       </div>
-                      <label class="ui-form-label ui-width-1-10"><?php echo WFText::_('WF_LABEL_VALUE'); ?></label>
-                      <div class="ui-form-controls ui-width-4-10">
+                      <label class="uk-form-label uk-width-1-10"><?php echo WFText::_('WF_LABEL_VALUE'); ?></label>
+                      <div class="uk-form-controls uk-width-4-10">
                         <input type="text" name="jcemediabox_popup_params_value[]" />
                       </div>
                   </div>
-                  <div class="ui-form-controls ui-width-1-10 ui-margin-small-left">
-                    <button type="button" class="ui-button ui-button-link ui-repeatable-create"><i class="ui-icon-plus"></i></button>
-                    <button type="button" class="ui-button ui-button-link ui-repeatable-delete"><i class="ui-icon-trash"></i></button>
+                  <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
+                    <button type="button" class="uk-button uk-button-link uk-repeatable-create"><i class="uk-icon-plus"></i></button>
+                    <button type="button" class="uk-button uk-button-link uk-repeatable-delete"><i class="uk-icon-trash"></i></button>
                   </div>
           </div>
         </div>

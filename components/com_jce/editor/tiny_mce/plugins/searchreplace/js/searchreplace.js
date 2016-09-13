@@ -18,9 +18,9 @@ var SearchReplaceDialog = {
 
         $('#next').button({
             icons: {
-                primary: 'ui-icon-arrow-right'
+                primary: 'uk-icon-arrow-right'
             },
-            classes: 'ui-button-primary'
+            classes: 'uk-button-primary'
         }).click(function(e) {
             self.searchNext('none');
             e.preventDefault();
@@ -28,9 +28,9 @@ var SearchReplaceDialog = {
 
         $('#replaceBtn').button({
             icons: {
-                primary: 'ui-icon-reply'
+                primary: 'uk-icon-reply'
             },
-            classes: 'ui-button-danger'
+            classes: 'uk-button-danger'
         }).click(function(e) {
             self.searchNext('current');
             e.preventDefault();
@@ -38,9 +38,9 @@ var SearchReplaceDialog = {
 
         $('#replaceAllBtn').button({
             icons: {
-                primary: 'ui-icon-refresh'
+                primary: 'uk-icon-refresh'
             },
-            classes: 'ui-button-danger'
+            classes: 'uk-button-danger'
         }).click(function(e) {
             self.searchNext('all');
             e.preventDefault();

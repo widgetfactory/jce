@@ -12,36 +12,36 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div class="ui-form-row">
-    <label for="style" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="style" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_STYLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_STYLE'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="style" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="style" type="text" value=""/></div>
 </div>
-<div class="ui-form-row">
-    <label for="classlist" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="classlist" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
-    <div class="ui-form-controls ui-width-7-10 ui-datalist">
+    <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <input id="classes" type="text" value=""/>
         <select id="classlist">
           <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
         </select>
     </div>
 </div>
-<div class="ui-form-row">
-    <label for="title" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="title" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_TITLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_TITLE'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="title" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="title" type="text" value=""/></div>
 </div>
-<div class="ui-form-row">
-    <label for="id" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="id" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_ID_DESC'); ?>"><?php echo WFText::_('WF_LABEL_ID'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="id" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="id" type="text" value=""/></div>
 </div>
 
-<div class="ui-form-row">
-    <label for="dir" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="dir" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_DIR_DESC'); ?>"><?php echo WFText::_('WF_LABEL_DIR'); ?></label>
-    <div class="ui-form-controls ui-width-7-10">
+    <div class="uk-form-controls uk-width-7-10">
         <select id="dir">
             <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="ltr"><?php echo WFText::_('WF_OPTION_LTR'); ?></option>
@@ -50,20 +50,20 @@ defined('_JEXEC') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="ui-form-row">
-    <label for="lang" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="lang" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_LANG_DESC'); ?>"><?php echo WFText::_('WF_LABEL_LANG'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="lang" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="lang" type="text" value=""/></div>
 </div>
 
-<div class="ui-form-row">
-    <label for="usemap" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row">
+    <label for="usemap" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_USEMAP_DESC'); ?>"><?php echo WFText::_('WF_LABEL_USEMAP'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="usemap" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="usemap" type="text" value=""/></div>
 </div>
 
-<div class="ui-form-row html4">
-    <label for="longdesc" class="hastip ui-form-label ui-width-3-10"
+<div class="uk-form-row html4">
+    <label for="longdesc" class="hastip uk-form-label uk-width-3-10"
            title="<?php echo WFText::_('WF_LABEL_LONGDESC_DESC'); ?>"><?php echo WFText::_('WF_LABEL_LONGDESC'); ?></label>
-    <div class="ui-form-controls ui-width-7-10"><input id="longdesc" type="text" value="" class="browser html" /></div>
+    <div class="uk-form-controls uk-width-7-10"><input id="longdesc" type="text" value="" class="browser html" /></div>
 </div>

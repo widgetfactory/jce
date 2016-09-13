@@ -60,11 +60,11 @@
             }
 
             // Add ARIA role and tabindex to root and ARIA level to children
-            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('ui-tree').children('li').attr('aria-level', 1);
+            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
             // Add ARIA role and tabindex to tree items
             $('li', parent).attr({ 'role': 'treeitem' }).attr('aria-expanded', function() {
-                return $(this).hasClass('ui-tree-open') ? true : false;
+                return $(this).hasClass('uk-tree-open') ? true : false;
             }).attr('aria-level', function(i, v) {
                 if (!v) {
                     return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
@@ -80,7 +80,7 @@
                     n = n.parentNode;
                 }
 
-                if ($(n).hasClass('ui-tree-toggle')) {
+                if ($(n).hasClass('uk-tree-toggle')) {
                     self.toggleNode(e, p);
                 } else {
                     self._trigger('nodeclick', p);
@@ -88,10 +88,10 @@
             });
 
             // add toggle icons
-            $('li', parent).find('.ui-tree-row').attr('role', 'presentation').prepend('<span class="ui-tree-toggle" role="presentation"><i class="ui-icon ui-icon-plus-square-o"></i><i class="ui-icon ui-icon-minus-square-o"></i></span>');
+            $('li', parent).find('.uk-tree-row').attr('role', 'presentation').prepend('<span class="uk-tree-toggle" role="presentation"><i class="uk-icon uk-icon-plus-square-o"></i><i class="uk-icon uk-icon-minus-square-o"></i></span>');
 
             // add icons
-            $('li', parent).not('.ui-tree-root').find('.ui-tree-icon').attr('role', 'presentation').append('<i class="ui-icon ui-icon-folder"></i><i class="ui-icon ui-icon-folder-open"></i>');
+            $('li', parent).not('.uk-tree-root').find('.uk-tree-icon').attr('role', 'presentation').append('<i class="uk-icon uk-icon-folder"></i><i class="uk-icon uk-icon-folder-open"></i>');
         },
         /**
          * Does a parent (ul) have childnodes
@@ -133,13 +133,13 @@
                 parent = this._findParent(parent);
             }
 
-            return $('.ui-tree-node', parent);
+            return $('.uk-tree-node', parent);
         },
         /**
          * Reset all nodes. Set to closed
          */
         _resetNodes: function() {
-            $('li', this.element).removeClass('ui-tree-open');
+            $('li', this.element).removeClass('uk-tree-open');
         },
         /**
          * Rename a node
@@ -217,12 +217,12 @@
              */
             if (nodes && nodes.length) {
                 // Get parent ul
-                var ul = $('.ui-tree-node:first', parent) || null;
+                var ul = $('.uk-tree-node:first', parent) || null;
 
                 // Create it if it doesn't exist
                 if (!ul.length) {
                     ul = document.createElement('ul');
-                    $(ul).attr({ 'role': 'group' }).addClass('ui-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
+                    $(ul).attr({ 'role': 'group' }).addClass('uk-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
 
                     $(parent).append(ul);
                 }
@@ -252,23 +252,23 @@
 
                         $(li).addClass(node['class']);
 
-                        var html = '<div class="ui-tree-row">';
+                        var html = '<div class="uk-tree-row">';
 
                         if (node['class'].indexOf('folder') >= 0) {
-                            html += '<span class="ui-tree-toggle" role="presentation">' + ' <i class="ui-icon ui-icon-plus-square-o"></i>' + ' <i class="ui-icon ui-icon-minus-square-o"></i>' + '</span>';
+                            html += '<span class="uk-tree-toggle" role="presentation">' + ' <i class="uk-icon uk-icon-plus-square-o"></i>' + ' <i class="uk-icon uk-icon-minus-square-o"></i>' + '</span>';
                         }
 
-                        html += '<a href="' + url + '" title="' + title + '"><span class="ui-tree-icon">';
+                        html += '<a href="' + url + '" title="' + title + '"><span class="uk-tree-icon">';
 
                         if (node['class'].indexOf('folder') >= 0) {
-                            html += '<i role="presentation" class="ui-icon ui-icon-folder"></i><i role="presentation" class="ui-icon ui-icon-folder-open"></i>';
+                            html += '<i role="presentation" class="uk-icon uk-icon-folder"></i><i role="presentation" class="uk-icon uk-icon-folder-open"></i>';
                         } else {
-                            html += '<i role="presentation" class="ui-icon ui-icon-file-text-o"></i>';
+                            html += '<i role="presentation" class="uk-icon uk-icon-file-text-o"></i>';
                         }
 
                         html += '</span>';
 
-                        html += '<span class="ui-tree-text ui-margin-small-left">' + name + '</span>';
+                        html += '<span class="uk-tree-text uk-margin-small-left">' + name + '</span>';
                         html += '</a></div>';
 
                         $(li).attr({ 'id': self._escape(encodeURI(node.id)) }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
@@ -285,7 +285,7 @@
                                 n = n.parentNode;
                             }
 
-                            if ($(n).hasClass('ui-tree-toggle')) {
+                            if ($(n).hasClass('uk-tree-toggle')) {
                                 self.toggleNode(e, this);
                             } else {
                                 self._trigger('nodeclick', this);
@@ -346,7 +346,7 @@
          *            The target node
          */
         toggleLoader: function(node) {
-            $(node).toggleClass('ui-tree-loading');
+            $(node).toggleClass('uk-tree-loading');
         },
         /**
          * Collapse all tree nodes except one excluded
@@ -371,7 +371,7 @@
 
                     var child = self._getNode(el);
                     // hide if found
-                    $(child).addClass('ui-tree-hide');
+                    $(child).addClass('uk-tree-hide');
                 }
             });
         },
@@ -383,22 +383,22 @@
          */
         toggleNodeState: function(node, state) {
             if (state) {
-                $(node).addClass('ui-tree-open').attr('aria-expanded', true);
+                $(node).addClass('uk-tree-open').attr('aria-expanded', true);
             } else {
-                $(node).removeClass('ui-tree-open').attr('aria-expanded', false);
+                $(node).removeClass('uk-tree-open').attr('aria-expanded', false);
             }
 
             if (state) {
-                if ($(node).hasClass('ui-tree-root')) {
+                if ($(node).hasClass('uk-tree-root')) {
                     return;
                 }
 
-                var c = $('.ui-tree-node', node);
+                var c = $('.uk-tree-node', node);
 
-                if ($(node).hasClass('ui-tree-open')) {
-                    $(c).removeClass('ui-tree-hide');
+                if ($(node).hasClass('uk-tree-open')) {
+                    $(c).removeClass('uk-tree-hide');
                 } else {
-                    $(c).addClass('ui-tree-hide');
+                    $(c).addClass('uk-tree-hide');
                 }
             }
         },
@@ -418,15 +418,15 @@
 
             // No children load or close
             if (!child.length) {
-                if ($(node).hasClass('ui-tree-open')) {
+                if ($(node).hasClass('uk-tree-open')) {
                     this.toggleNodeState(node, 0);
                 } else {
                     this._trigger('nodeload', node);
                 }
                 // Hide children, toggle node
             } else {
-                $(child).toggleClass('ui-tree-hide');
-                this.toggleNodeState(node, !$(child).hasClass('ui-tree-hide'));
+                $(child).toggleClass('uk-tree-hide');
+                this.toggleNodeState(node, !$(child).hasClass('uk-tree-hide'));
             }
 
             // Collpase the all other tree nodes

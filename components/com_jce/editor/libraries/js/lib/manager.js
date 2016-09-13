@@ -1678,7 +1678,7 @@
                     $(button).click(function () {
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
-                                $(button).toggleClass('ui-state-active');
+                                $(button).toggleClass('uk-state-active');
                             }
 
                             if ($.type(fn) == 'function') {
@@ -2351,9 +2351,5 @@
             $.Widget.prototype.destroy.apply(this, arguments);
         }
 
-    });
-
-    $.extend($.ui.MediaManager, {
-        version: "@@version@@"
     });
 })(jQuery);

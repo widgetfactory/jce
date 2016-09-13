@@ -50,7 +50,7 @@
 
 			$('#remove').button({
 				icons: {
-					primary: 'ui-icon-minus-circle'
+					primary: 'uk-icon-minus-circle'
 				}
 			}).toggle(!!element);
 

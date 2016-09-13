@@ -1,35 +1,35 @@
 /* CSS file for Manager plugin */
 
-.ui-browser-top .ui-form, .ui-browser-bottom .ui-tabs + .ui-form {
+.uk-browser-top .uk-form, .uk-browser-bottom .uk-tabs + .uk-form {
     height: 55%;
 }
-.ui-browser .ui-tabs {
+.uk-browser .uk-tabs {
   min-height: 45%;
   position: relative;
 }
-.ui-browser-external .ui-tabs {
+.uk-browser-external .uk-tabs {
   height: 100%;
 }
-.ui-browser-top .ui-form {
+.uk-browser-top .uk-form {
   top: -45%;
   position: relative;
 }
-.ui-browser-top .ui-tabs {
+.uk-browser-top .uk-tabs {
   top: 55%;
   position: relative;
 }
-.ui-browser-top .ui-tabs .ui-switcher {
+.uk-browser-top .uk-tabs .uk-switcher {
   height: 100%;
 }
-.ui-browser-external + .ui-modal-footer .ui-button-refresh {
+.uk-browser-external + .uk-modal-footer .uk-button-refresh {
   display: none;
 }
-.ui-browser-external .ui-tabs .ui-tab + .ui-switcher {
+.uk-browser-external .uk-tabs .uk-tab + .uk-switcher {
   height: calc(100% - 33px);
   height: 89%;
 }
 
-.ui-browser-external .ui-form-row + .ui-form-row {
+.uk-browser-external .uk-form-row + .uk-form-row {
     margin-top: 15px;
 }
 

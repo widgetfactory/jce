@@ -182,7 +182,7 @@
                     p = n.parentNode;
 
                 // move to parent if target is span or i (size, date, thumbnail)
-                if ($(n).is('.ui-icon, span, a')) {
+                if ($(n).is('.uk-icon, span, a')) {
                     n = $(n).parents('li').get(0);
                     p = n.parentNode;
 
@@ -190,7 +190,7 @@
                 }
 
                 // checkbox
-                if ($(n).hasClass('ui-item-checkbox')) {
+                if ($(n).hasClass('uk-item-checkbox')) {
                     n = n.firstChild;
                 }
 
@@ -344,40 +344,40 @@
             $('#show-details').toggle(this._treeLoaded());
 
             $('#show-search').click(function() {
-                $('#searchbox').toggleClass('ui-hidden').attr('aria-hidden', function() {
-                    return $(this).hasClass('ui-hidden');
+                $('#searchbox').toggleClass('uk-hidden').attr('aria-hidden', function() {
+                    return $(this).hasClass('uk-hidden');
                 });
 
-                $(this).toggleClass('ui-active');
+                $(this).toggleClass('uk-active');
 
-                if ($(this).hasClass('ui-active')) {
+                if ($(this).hasClass('uk-active')) {
                     $('#search').focus();
                 }
             });
 
-            $('#search + .ui-icon').click(function() {
+            $('#search + .uk-icon').click(function() {
                 $('#search').focus();
             });
 
             $('body').click(function(e) {
-                if ($('#searchbox').hasClass('ui-hidden')) {
+                if ($('#searchbox').hasClass('uk-hidden')) {
                     return;
                 }
 
-                if ($(e.target).is('#searchbox, #search, #show-search, #show-search .ui-icon-search, #search + .ui-icon')) {
+                if ($(e.target).is('#searchbox, #search, #show-search, #show-search .uk-icon-search, #search + .uk-icon')) {
                     return;
                 }
 
-                $('#show-search').removeClass('ui-active');
+                $('#show-search').removeClass('uk-active');
 
-                $('#searchbox').addClass('ui-hidden').attr('aria-hidden', true);
+                $('#searchbox').addClass('uk-hidden').attr('aria-hidden', true);
             });
 
             // Searchables
             $('#search').listfilter({
                 list: '#item-list',
                 selector: 'li',
-                clear: '#search + .ui-icon'
+                clear: '#search + .uk-icon'
             }).on('listfilter:find', function(ev, s) {
                 var el = this;
                 // if we are not showing all items, get filtered list from server
@@ -417,8 +417,8 @@
 
             // Details button
             $('#show-details:visible').click(function(e) {
-                $(this).toggleClass('ui-active');
-                $('main').toggleClass('ui-tree-hidden');
+                $(this).toggleClass('uk-active');
+                $('main').toggleClass('uk-tree-hidden');
             });
 
             // get the interface height at loading
@@ -688,7 +688,7 @@
             $('#item-list').empty();
 
             if (!this._isRoot()) {
-                h += '<li class="folder folder-up" title="Up"><span class="ui-width-0-10"></span><i class="ui-width-1-10 ui-icon ui-icon-arrow-circle-left ui-icon-folder-up"></i><a class="ui-flex-item-auto" href="#">...</a></li>';
+                h += '<li class="folder folder-up" title="Up"><span class="uk-width-0-10"></span><i class="uk-width-1-10 uk-icon uk-icon-arrow-circle-left uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></li>';
             }
 
             if (o.folders.length) {
@@ -715,9 +715,9 @@
                         classes.push(e.classes);
                     }
 
-                    h += '<li class="ui-grid ui-grid-collapse ui-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                         data.join(' ') +
-                        '><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-folder folder"></i><a class="ui-flex-item-auto" href="#">' + e.name + '</a><span class="ui-width-5-10 ui-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-flex-item-auto" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -759,7 +759,7 @@
                     var name = Wf.String.stripExt(e.name);
                     var icon = ext.toLowerCase();
 
-                    h += '<li class="ui-grid ui-grid-collapse ui-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="ui-width-0-10 ui-item-checkbox"><input type="checkbox" /></label><i class="ui-width-1-10 ui-icon ui-icon-file-o ui-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i><a class="ui-flex-item-auto" href="#"><span class="ui-item-text">' + name + '</span><span class="ui-item-extension">.' + ext + '</span></a><span class="ui-width-2-10 ui-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="ui-width-3-10 ui-item-size">' + Wf.String.formatSize(e.properties.size) + '</span></li>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-file-o uk-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i><a class="uk-flex-item-auto" href="#"><span class="uk-item-text">' + name + '</span><span class="uk-item-extension">.' + ext + '</span></a><span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="uk-width-3-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span></li>';
                 });
 
             }
@@ -836,7 +836,7 @@
             // uncheck all checkboxes
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
 
-            $('li', '#browser-details-nav').addClass('ui-hidden').attr('aria-hidden', true).filter('.details-nav-text').empty();
+            $('li', '#browser-details-nav').addClass('uk-hidden').attr('aria-hidden', true).filter('.details-nav-text').empty();
         },
         /**
          * Clear the Paste action
@@ -899,7 +899,7 @@
                 state: ''
             });
 
-            var $pathway = $('.ui-breadcrumb.pathway', $status);
+            var $pathway = $('.uk-breadcrumb.pathway', $status);
             // remove all but "home"
             $('li', $pathway).not(':first').remove();
 
@@ -1123,15 +1123,15 @@
             var count = this._limitcount + o.folders.length + o.files.length;
 
             if (count < (o.total.folders + o.total.files)) {
-                $('.limit-right li', '#browser-list-limit').removeClass('ui-hidden').attr('aria-hidden', false);
+                $('.limit-right li', '#browser-list-limit').removeClass('uk-hidden').attr('aria-hidden', false);
             } else {
-                $('.limit-right li', '#browser-list-limit').addClass('ui-hidden').attr('aria-hidden', true);
+                $('.limit-right li', '#browser-list-limit').addClass('uk-hidden').attr('aria-hidden', true);
             }
 
             if ((count - this._limit) > 0) {
-                $('.limit-left li', '#browser-list-limit').removeClass('ui-hidden').attr('aria-hidden', false);
+                $('.limit-left li', '#browser-list-limit').removeClass('uk-hidden').attr('aria-hidden', false);
             } else {
-                $('.limit-left li', '#browser-list-limit').addClass('ui-hidden').attr('aria-hidden', true);
+                $('.limit-left li', '#browser-list-limit').addClass('uk-hidden').attr('aria-hidden', true);
             }
 
             if (o.folders.length) {
@@ -1184,7 +1184,7 @@
                 if ($.isPlainObject(options.elements)) {
                     $.each(options.elements, function(k, v) {
                         if (v.options) {
-                            elements += '<div class="ui-form-row">';
+                            elements += '<div class="uk-form-row">';
                             elements += '<label for="' + k + '">' + (v.label || k) + '</label>';
                             elements += '<select id="' + k + '" name="' + k + '">';
 
@@ -1195,7 +1195,7 @@
                             elements += '</select>';
                             elements += '</div>';
                         } else {
-                            elements += '<div class="ui-form-row"><label for="' + k + '">' + v.label || k + '</label><input id="' + k + '" type="text" name="' + k + '" value="' + v.value || '' + '" /></div>';
+                            elements += '<div class="uk-form-row"><label for="' + k + '">' + v.label || k + '</label><input id="' + k + '" type="text" name="' + k + '" value="' + v.value || '' + '" /></div>';
                         }
                     });
 
@@ -1622,25 +1622,25 @@
             // create button element
             var action = document.createElement('button');
 
-            $(action).addClass('action ui-button');
+            $(action).addClass('action uk-button');
 
             if (name) {
                 $(action).attr({
                     'id': name,
                     'title': o.title,
                     'labelledby': name + '_label'
-                }).addClass(cls).append('<span id="' + name + '_label" class="ui-hidden-mini">&nbsp;' + o.title + '</span>');
+                }).addClass(cls).append('<span id="' + name + '_label" class="uk-hidden-mini">&nbsp;' + o.title + '</span>');
 
                 var icon = (map[name] || name);
 
                 $.each(icon.split(' '), function(i, k) {
-                    $(action).prepend('<i class="ui-icon ui-icon-medium ui-icon-' + cls + ' ui-icon-' + k + '" />');
+                    $(action).prepend('<i class="uk-icon uk-icon-medium uk-icon-' + cls + ' uk-icon-' + k + '" />');
                 });
 
                 // stack icons
                 if (icon.indexOf(' ') >= 0) {
-                    $('.ui-icon', action).first().addClass('ui-icon-stack ui-text-contrast').removeClass('ui-icon-medium');
-                    $('<span class="ui-stack ui-stack-medium" />').prependTo(action).append($('.ui-icon', action));
+                    $('.uk-icon', action).first().addClass('uk-icon-stack uk-text-contrast').removeClass('uk-icon-medium');
+                    $('<span class="uk-stack uk-stack-medium" />').prependTo(action).append($('.uk-icon', action));
                 }
 
                 if (o.name) {
@@ -1734,21 +1734,21 @@
                     var icons = o.icon.split(' ');
 
                     $.each(icons, function(i, icon) {
-                        $(button).append('<i class="ui-icon ui-icon-' + (map[icon] || icon) + '" />');
+                        $(button).append('<i class="uk-icon uk-icon-' + (map[icon] || icon) + '" />');
                     });
 
                     if (icons.length > 1) {
-                        $('<span class="ui-stack" />').append($('.ui-icon', button)).appendTo(button);
+                        $('<span class="uk-stack" />').append($('.uk-icon', button)).appendTo(button);
                     }
                 } else {
-                    $(button).prepend('<i class="ui-icon ui-icon-' + (map[name] || name) + '" />');
+                    $(button).prepend('<i class="uk-icon uk-icon-' + (map[name] || name) + '" />');
                 }
 
                 if (name) {
                     $(button).click(function() {
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
-                                $(button).toggleClass('ui-active');
+                                $(button).toggleClass('uk-active');
                             }
 
                             if ($.type(fn) == 'function') {
@@ -1762,7 +1762,7 @@
                 }
 
                 $('#browser-buttons').append(button);
-                $(button).addClass('ui-button ui-button-link button ' + o.name + ' ui-hidden');
+                $(button).addClass('uk-button uk-button-link button ' + o.name + ' uk-hidden');
             }
 
             this._buttons[type][o.name] = {
@@ -1803,7 +1803,7 @@
          * @param {String} button The button to hide
          */
         _hideButton: function(button) {
-            $(button).addClass('ui-hidden').attr('aria-hidden', true);
+            $(button).addClass('uk-hidden').attr('aria-hidden', true);
         },
         /**
          * Show all buttons
@@ -1889,7 +1889,7 @@
                     }
                 }
 
-                $(button).toggleClass('ui-hidden', !show); //.toggleClass('show', !show);
+                $(button).toggleClass('uk-hidden', !show); //.toggleClass('show', !show);
 
                 if (!show) {
                     $(button).attr('aria-hidden', false);
@@ -1930,7 +1930,7 @@
             $('#browser-details-text, #browser-details-comment').empty();
 
             $.each(['#browser-details-nav-left', '#browser-details-nav-right', '#browser-details-nav-text'], function(i, el) {
-                $(el).addClass('ui-hidden').attr('aria-hidden', true);
+                $(el).addClass('uk-hidden').attr('aria-hidden', true);
             });
 
             this._hideAllButtons();
@@ -2215,24 +2215,24 @@
                 var index = $items.index($items.filter('.active'));
 
                 if (index) {
-                    $('.details-nav-left', $nav).removeClass('ui-invisible').attr('aria-hidden', false);
+                    $('.details-nav-left', $nav).removeClass('uk-invisible').attr('aria-hidden', false);
                 } else {
-                    $('.details-nav-left', $nav).addClass('ui-invisible').attr('aria-hidden', true);
+                    $('.details-nav-left', $nav).addClass('uk-invisible').attr('aria-hidden', true);
                 }
 
                 if (index + 1 < n) {
-                    $('.details-nav-right', $nav).removeClass('ui-invisible').attr('aria-hidden', false);
+                    $('.details-nav-right', $nav).removeClass('uk-invisible').attr('aria-hidden', false);
                 } else {
-                    $('.details-nav-right', $nav).addClass('ui-invisible').attr('aria-hidden', true);
+                    $('.details-nav-right', $nav).addClass('uk-invisible').attr('aria-hidden', true);
                 }
 
-                $('.details-nav-text', $nav).removeClass('ui-invisible').html(function() {
+                $('.details-nav-text', $nav).removeClass('uk-invisible').html(function() {
                     return self._translate('one_of_many', '%o of %m').replace('%o', index + 1).replace('%m', n);
                 });
 
                 // hide navigation buttons
             } else {
-                $('li', $nav).addClass('ui-invisible').attr('aria-hidden', true);
+                $('li', $nav).addClass('uk-invisible').attr('aria-hidden', true);
             }
 
             // show relevant buttons
@@ -2364,7 +2364,7 @@
             var callback = function() {
                 // Dimensions (will only apply to file items)
                 if ($(item).data('width') && $(item).data('height')) {
-                    $('.ui-comment-header', info).append('<div class="ui-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + $(item).data('width') + ' x ' + $(item).data('height') + '</div>');
+                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + $(item).data('width') + ' x ' + $(item).data('height') + '</div>');
 
                     // create thumbnail preview
                     if (mime && mime === "image") {
@@ -2379,7 +2379,7 @@
 
                 // Duration (will only apply to file items)
                 if ($(item).data('duration')) {
-                    $('.ui-comment-header', info).append('<div class="ui-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + $(item).data('duration') + '</div>');
+                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + $(item).data('duration') + '</div>');
                 }
 
                 var o = {
@@ -2406,11 +2406,11 @@
 
             // create properties list
             var info = document.createElement('div');
-            $(info).addClass('ui-comment').append('<div class="ui-comment-header"><h5 class="ui-margin-remove ui-text-bold">' + name + '</h5><div class="ui-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="ui-comment-meta" id="info-properties"><div></div>');
+            $(info).addClass('uk-comment').append('<div class="uk-comment-header"><h5 class="uk-margin-remove uk-text-bold">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
 
             // additional data for file items
             if ($(item).data('preview')) {
-                $(info).append('<div class="ui-comment-body ui-width-1-1 ui-text-center" id="info-preview"></div>');
+                $(info).append('<div class="uk-comment-body uk-width-1-1 uk-text-center" id="info-preview"></div>');
             }
 
             // remove the loader and append info
@@ -2449,12 +2449,12 @@
 
             // Size
             if ($(item).data('size')) {
-                $('.ui-comment-header', info).append('<div class="ui-comment-meta" id="info-size">' + tinyMCEPopup.getLang('dlg.size', 'Size') + ': ' + Wf.String.formatSize($(item).data('size')) + '</div>');
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-size">' + tinyMCEPopup.getLang('dlg.size', 'Size') + ': ' + Wf.String.formatSize($(item).data('size')) + '</div>');
             }
 
             // Modified
             if ($(item).data('modified')) {
-                $('.ui-comment-header', info).append('<div class="ui-comment-meta" id="info-modified">' + tinyMCEPopup.getLang('dlg.modified', 'Modified') + ': ' + Wf.String.formatDate($(item).data('modified'), self.options.date_format) + '</div>');
+                $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-modified">' + tinyMCEPopup.getLang('dlg.modified', 'Modified') + ': ' + Wf.String.formatDate($(item).data('modified'), self.options.date_format) + '</div>');
             }
 
             if (comments) {
