@@ -82,32 +82,21 @@ abstract class WFInstall {
         }
 
         if ($state) {
-            $message = '<div class="ui-jce"><style type="text/css" scoped="scoped">' . file_get_contents(__DIR__ . '/media/css/install.css') . '</style>';
-
-            $message .= '<h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
-            $message .= '<ul class="install">';
-            $message .= '<li class="success">' . JText::_('WF_ADMIN_DESC') . '<li>';
+            $message  = '<div class="ui-jce">';
+            $message .= '   <h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
+            $message .= '   <div>' . JText::_('WF_ADMIN_DESC') . '</div>';
 
             // install additional packages for Joomla 1.5
             if (!defined('JPATH_PLATFORM')) {
                 // install packages
-                $packages = $installer->getPath('source') . '/packages';
+                $manifest = $installer->getPath('manifest');
+                $packages = dirname($manifest) . '/packages';
                 
                 if (is_dir($packages)) {
-                    $message .= self::installPackages($packages);
-                }
-            } else {
-                foreach(array('content', 'editors', 'extension', 'installer', 'system', 'quickicon') as $folder) {
-                    $plugin = JPluginHelper::isEnabled($folder, 'jce');
-
-                    $language->load('plg_' . $folder . '_jce', JPATH_ADMINISTRATOR);
-                    $language->load('plg_' . $folder . '_jce.sys', JPATH_ADMINISTRATOR);
-
-                    $message .= '<li class="' . ($plugin ? 'success' : 'error') . '">' . JText::_('PLG_' . strtoupper($folder) . '_JCE') . '</li>';
+                    self::installPackages($packages);
                 }
             }
-
-            $message .= '</ul>';
+            
             $message .= '</div>';
 
             $installer->set('message', $message);
@@ -634,16 +623,12 @@ abstract class WFInstall {
 
         $db = JFactory::getDBO();
 
-        $result = '';
-
         JTable::addIncludePath(JPATH_LIBRARIES . '/joomla/database/table');
 
         $packages = array(
             'editors'   => array('jce'),
             'module'    => array('mod_jce_quickicon')
         );
-
-        $version = new JVersion;
 
         foreach ($packages as $folder => $element) {
             $installer = new JInstaller();
@@ -665,8 +650,6 @@ abstract class WFInstall {
                     $module->ordering = 100;
                     $module->published = 1;
                     $module->store();
-
-                    $language->load('mod_jce_quickicon.ini', JPATH_ADMINISTRATOR);
                 }
 
                 // rename editor manifest
@@ -677,19 +660,7 @@ abstract class WFInstall {
                         // rename legacy.xml to jce.xml
                         JFile::move($installer->getPath('extension_root') . '/' . basename($manifest), $installer->getPath('extension_root') . '/jce.xml');
                     }
-
-                    $language->load('plg_jce_editors.ini', JPATH_ADMINISTRATOR);
-
-                    // add index files
-                    self::addIndexfiles(array($installer->getPath('extension_root') . '/jce'));
                 }
-
-                if ($installer->message) {
-                    $result .= '<li class="success">' . JText::_($installer->message, $installer->message) . '</li>';
-                }
-
-            } else {
-                $result .= '<li class="error">' . JText::_($installer->message, $installer->message) . '</li>';
             }
         }
 
