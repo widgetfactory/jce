@@ -21,15 +21,11 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
  * @since	1.5
  */
 class WFEditor extends JObject {
-
-    // Editor version
-    protected $_version = '@@version@@';
-
     // Editor instance
     protected static $instance;
 
     // Editor Profile
-    protected static $profile;
+    protected static $profile = array();
 
     // Editor Params
     protected static $params = array();
@@ -65,7 +61,63 @@ class WFEditor extends JObject {
      * @return string
      */
     public function getVersion() {
-        return preg_replace('#[^a-z0-9]+#i', '', $this->get('_version'));
+        $manifest = WF_ADMINISTRATOR . '/jce.xml';
+
+        $version = md5_file($manifest);
+
+        return $version;
+    }
+
+    private function getProfileVars($plugin = "") {
+	     $app 		= JFactory::getApplication();
+       $user 	  = JFactory::getUser();
+       $option 	= $this->getComponentOption();
+
+        if ($option == 'com_jce') {
+            $component_id = JRequest::getInt('component_id');
+
+            if ($component_id) {
+                $component = WFExtensionHelper::getComponent($component_id);
+                $option = isset($component->element) ? $component->element : $component->option;
+            }
+        }
+
+      // get the Joomla! area (admin or site)
+      $area = $app->isAdmin() ? 2 : 1;
+
+      if (!class_exists('Wf_Mobile_Detect')) {
+          // load mobile detect class
+          require_once(dirname(__FILE__) . '/mobile.php');
+      }
+
+      $mobile = new Wf_Mobile_Detect();
+
+      // desktop - default
+      $device = 'desktop';
+
+      // phone
+      if ($mobile->isMobile()) {
+          $device = 'phone';
+      }
+
+      if ($mobile->isTablet()) {
+          $device = 'tablet';
+      }
+
+      // Joomla! 1.6+
+      if (method_exists('JUser', 'getAuthorisedGroups')) {
+          $keys = $user->getAuthorisedGroups();
+      } else {
+          $keys = array($user->gid);
+      }
+
+      return array(
+        "option"  => $option,
+        "area"    => $area,
+        "device"  => $device,
+        "keys"    => $keys,
+        "plugin"  => $plugin
+      );
     }
 
     /**
@@ -73,24 +125,16 @@ class WFEditor extends JObject {
      * @access public
      * @return $profile Object
      */
-    public function getProfile($plugin = null) {
-        if (!isset(self::$profile)) {
-            $app = JFactory::getApplication();
+    public function getProfile($plugin = "") {
+        $options    = $this->getProfileVars($plugin);
+        $signature  = serialize($options);
 
+        if (!isset(self::$profile[$signature])) {
             $db = JFactory::getDBO();
-            $user = JFactory::getUser();
-            $option = $this->getComponentOption();
 
             $profile_id = 0;
 
-            if ($option == 'com_jce') {
-                $component_id = JRequest::getInt('component_id');
-
-                if ($component_id) {
-                    $component = WFExtensionHelper::getComponent($component_id);
-                    $option = isset($component->element) ? $component->element : $component->option;
-                }
-
+            if ($options["option"] == 'com_jce') {
                 $profile_id = JRequest::getInt('profile_id');
             }
 
@@ -116,32 +160,6 @@ class WFEditor extends JObject {
             $db->setQuery($query);
             $profiles = $db->loadObjectList();
 
-            // get the Joomla! area (admin or site)
-            $area = $app->isAdmin() ? 2 : 1;
-
-            if (!class_exists('Wf_Mobile_Detect')) {
-                // load mobile detect class
-                require_once(dirname(__FILE__) . '/mobile.php');
-            }
-
-            $mobile = new Wf_Mobile_Detect();
-
-            // set device values
-            if ($mobile->isMobile()) {
-                $device = 'phone';
-            } else if ($mobile->isTablet()) {
-                $device = 'tablet';
-            } else {
-                $device = 'desktop';
-            }
-
-            // Joomla! 1.6+
-            if (method_exists('JUser', 'getAuthorisedGroups')) {
-                $keys = $user->getAuthorisedGroups();
-            } else {
-                $keys = array($user->gid);
-            }
-
             foreach ($profiles as $item) {
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
@@ -149,7 +167,7 @@ class WFEditor extends JObject {
                 }
 
                 // check user groups - a value should always be set
-                $groups = array_intersect($keys, explode(',', $item->types));
+                $groups = array_intersect($options["keys"], explode(',', $item->types));
 
                 // user not in the current group...
                 if (empty($groups)) {
@@ -160,34 +178,27 @@ class WFEditor extends JObject {
                 }
 
                 // check component
-                if ($option !== 'com_jce' && $item->components && in_array($option, explode(',', $item->components)) === false) {
+                if ($options["option"] !== 'com_jce' && $item->components && in_array($options["option"], explode(',', $item->components)) === false) {
                     continue;
                 }
 
                 // set device default as 'desktop,tablet,mobile'
-                if (!isset($item->device) || empty($item->device)) {
+                if (empty($item->device)) {
                     $item->device = 'desktop,tablet,phone';
                 }
 
                 // check device
-                if (in_array($device, explode(',', $item->device)) === false) {
+                if (in_array($options["device"], explode(',', $item->device)) === false) {
                     continue;
                 }
 
                 // check area
-                if (!empty($item->area) && (int) $item->area != $area) {
+                if (!empty($item->area) && (int) $item->area != $options["area"]) {
                     continue;
                 }
 
-                // check for individual plugin - use Editor Model as it adds "core" plugins to profile set
-                if ($plugin) {
-                    wfimport('admin.models.editor');
-                    $model      = new WFModelEditor();
-                    $plugins    = (array) $model->getPlugins();
-
-                    if (in_array($plugin, $plugins['core']) === false && in_array($plugin, $plugins['external']) === false) {
-                        continue;
-                    }
+                if ($options["plugin"] && in_array($options["plugin"], explode(",", $item->plugins)) === false) {
+                    continue;
                 }
 
                 // check custom fields
@@ -210,16 +221,16 @@ class WFEditor extends JObject {
                 }
 
                 // assign item to profile
-                self::$profile = $item;
+                self::$profile[$signature] = $item;
 
                 // return
-                return self::$profile;
+                return self::$profile[$signature];
             }
 
             return null;
         }
 
-        return self::$profile;
+        return self::$profile[$signature];
     }
 
     /**
