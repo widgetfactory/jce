@@ -147,8 +147,4 @@
 
     });
 
-    $.extend($.ui.listsort, {
-        version: "@@version@@"
-    });
-
 })(jQuery);

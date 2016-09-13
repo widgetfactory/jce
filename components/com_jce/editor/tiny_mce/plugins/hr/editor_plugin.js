@@ -7,17 +7,20 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function () {
+(function() {
     var blocks = 'H1,H2,H3,H4,H5,H6,P,DIV,ADDRESS,PRE,FORM,TABLE,OL,UL,CAPTION,BLOCKQUOTE,CENTER,DL,DIR,FIELDSET,NOSCRIPT,NOFRAMES,MENU,ISINDEX,SAMP,SECTION,ARTICLE,HGROUP,ASIDE,FIGURE';
-    var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
+    var VK = tinymce.VK,
+        BACKSPACE = VK.BACKSPACE,
+        DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.HorizontalRulePlugin', {
-        init: function (ed, url) {
+        init: function(ed, url) {
             var self = this;
             this.editor = ed;
 
             ed.addCommand('InsertHorizontalRule', function(ui, v) {
-                var se = ed.selection, n = se.getNode();
+                var se = ed.selection,
+                    n = se.getNode();
 
                 // split pragraphs and headings
                 if (/^(H[1-6]|P)$/.test(n.nodeName)) {
@@ -27,7 +30,8 @@
                         skip_undo: 1
                     });
 
-                    var marker = ed.dom.get('mce_hr_marker'), hr = ed.dom.create('hr');
+                    var marker = ed.dom.get('mce_hr_marker'),
+                        hr = ed.dom.create('hr');
 
                     // get the marker parent
                     var p = ed.dom.getParent(marker, blocks, 'BODY');
@@ -86,7 +90,8 @@
 
             ed.onKeyDown.add(function(ed, e) {
                 if (e.keyCode == BACKSPACE || e.keyCode == DELETE) {
-                    var s = ed.selection, n = s.getNode();
+                    var s = ed.selection,
+                        n = s.getNode();
 
                     if (isHR(n)) {
                         var sib = n.previousSibling;
@@ -109,16 +114,6 @@
                     }
                 }
             });
-        },
-
-        getInfo: function () {
-            return {
-                longname: 'HR',
-                author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
     });
 

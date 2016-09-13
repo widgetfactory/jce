@@ -10,8 +10,13 @@
  * other free or open source software licenses.
  */
 (function() {
-    var each = tinymce.each, JSON = tinymce.util.JSON, Node = tinymce.html.Node, Entities = tinymce.html.Entities;
-    var VK = tinymce.VK, BACKSPACE = VK.BACKSPACE, DELETE = VK.DELETE;
+    var each = tinymce.each,
+        JSON = tinymce.util.JSON,
+        Node = tinymce.html.Node,
+        Entities = tinymce.html.Entities;
+    var VK = tinymce.VK,
+        BACKSPACE = VK.BACKSPACE,
+        DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function(ed, url) {
@@ -215,7 +220,9 @@
 
         },
         _removeCode: function(e) {
-            var ed = this.editor, s = ed.selection, n = s.getNode();
+            var ed = this.editor,
+                s = ed.selection,
+                n = s.getNode();
 
             if (ed.dom.is(n, '.mceItemScript, .mceItemStyle, .mceItemPhp, .mcePhp')) {
                 ed.undoManager.add();
@@ -235,7 +242,9 @@
             content = content.replace(/\{([^\}]+)\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}</span>');
         },
         _buildScript: function(n) {
-            var self = this, ed = this.editor, v, node, text, p;
+            var self = this,
+                ed = this.editor,
+                v, node, text, p;
 
             if (!n.parent)
                 return;
@@ -285,7 +294,9 @@
             return true;
         },
         _buildStyle: function(n) {
-            var self = this, ed = this.editor, v, node, text, p;
+            var self = this,
+                ed = this.editor,
+                v, node, text, p;
 
             if (!n.parent)
                 return;
@@ -342,7 +353,9 @@
             return true;
         },
         _buildNoScript: function(n) {
-            var self = this, ed = this.editor, p, node;
+            var self = this,
+                ed = this.editor,
+                p, node;
 
             if (!n.parent)
                 return;
@@ -361,7 +374,10 @@
             return true;
         },
         _serializeSpan: function(n) {
-            var self = this, ed = this.editor, dom = ed.dom, v, k, p = {};
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                v, k, p = {};
 
             if (!n.parent)
                 return;
@@ -392,7 +408,10 @@
             n.replace(span);
         },
         _serializeNoScript: function(n) {
-            var self = this, ed = this.editor, dom = ed.dom, v, k, p = {};
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                v, k, p = {};
 
             if (!n.parent)
                 return;
@@ -425,17 +444,7 @@
             s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
 
             return s;
-        },
-        getInfo: function() {
-            return {
-                longname: 'Code',
-                author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
-
     });
     // Register plugin
     tinymce.PluginManager.add('code', tinymce.plugins.CodePlugin);

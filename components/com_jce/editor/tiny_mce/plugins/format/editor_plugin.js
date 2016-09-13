@@ -8,7 +8,9 @@
  * other free or open source software licenses.
  */
 (function() {
-    var VK = tinymce.VK, each = tinymce.each, map = tinymce.map;
+    var VK = tinymce.VK,
+        each = tinymce.each,
+        map = tinymce.map;
     var blocks = [];
 
     tinymce.create('tinymce.plugins.FormatPlugin', {
@@ -20,44 +22,42 @@
                 return ed.dom.isBlock(n);
             }
 
-            ed.onPreInit.add(function(ed) {                
+            ed.onPreInit.add(function(ed) {
                 each(ed.schema.getBlockElements(), function(v, k) {
                     blocks.push(k.toLowerCase());
                 });
 
                 // Register default block formats
                 each('aside figure'.split(/\s/), function(name) {
-                    ed.formatter.register(name, {block: name, remove: 'all', wrapper: true});
+                    ed.formatter.register(name, { block: name, remove: 'all', wrapper: true });
                 });
 
                 // div container
-                ed.formatter.register('div_container', {block: 'div', remove: 'all', wrapper: true});
+                ed.formatter.register('div_container', { block: 'div', remove: 'all', wrapper: true });
                 // span
-                ed.formatter.register('span', {inline: 'span', remove: 'all'});
+                ed.formatter.register('span', { inline: 'span', remove: 'all' });
                 // section
-                ed.formatter.register('section', {block: 'section', remove: 'all', wrapper: true, merge_siblings: false});
+                ed.formatter.register('section', { block: 'section', remove: 'all', wrapper: true, merge_siblings: false });
                 // article
-                ed.formatter.register('article', {block: 'article', remove: 'all', wrapper: true, merge_siblings: false});
+                ed.formatter.register('article', { block: 'article', remove: 'all', wrapper: true, merge_siblings: false });
                 // code
-                ed.formatter.register('code', {inline: 'code', remove: 'all'});
+                ed.formatter.register('code', { inline: 'code', remove: 'all' });
                 // samp
-                ed.formatter.register('samp', {inline: 'samp', remove: 'all'});
+                ed.formatter.register('samp', { inline: 'samp', remove: 'all' });
 
                 // blockquote - remove wrapper?
-                ed.formatter.register('blockquote', {block: 'blockquote', wrapper: 1, remove: 'all', merge_siblings: false});
+                ed.formatter.register('blockquote', { block: 'blockquote', wrapper: 1, remove: 'all', merge_siblings: false });
             });
 
             // update with HMTL5 tags
-            ed.settings.removeformat = [
-                {
-                    selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q',
-                    remove: 'all',
-                    split: true,
-                    expand: false,
-                    block_expand: true,
-                    deep: true
-                }
-            ];
+            ed.settings.removeformat = [{
+                selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q',
+                remove: 'all',
+                split: true,
+                expand: false,
+                block_expand: true,
+                deep: true
+            }];
 
             ed.onKeyDown.add(function(ed, e) {
                 if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP) && e.altKey) {
@@ -81,7 +81,9 @@
 
             // Format Block fix
             ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
-                var se = ed.selection, n = se.getNode(), p;
+                var se = ed.selection,
+                    n = se.getNode(),
+                    p;
 
                 switch (cmd) {
                     case 'FormatBlock':
@@ -165,7 +167,8 @@
             });
 
             ed.onExecCommand.add(function(ed, cmd, ui, v, o) {
-                var se = ed.selection, n = se.getNode();
+                var se = ed.selection,
+                    n = se.getNode();
                 // remove empty Definition List
                 switch (cmd) {
                     case 'mceToggleFormat':
@@ -224,7 +227,7 @@
             if (p && p.length > 1) {
                 // set defualt content and get the element to use
                 var tag = ed.getParam('forced_root_block', 'p');
-                
+
                 if (!tag) {
                     tag = ed.getParam('force_p_newlines') ? 'p' : 'br';
                 }
@@ -257,15 +260,6 @@
             }
 
             // execute normal enter/up behaviour
-        },
-        getInfo: function() {
-            return {
-                longname: 'Format',
-                author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
     });
 

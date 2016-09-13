@@ -281,15 +281,6 @@
             }
 
             return null;
-        },
-        getInfo: function() {
-            return {
-                longname: 'Anchor',
-                author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
     });
 

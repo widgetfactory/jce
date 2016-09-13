@@ -7,8 +7,10 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function () {
-    var each = tinymce.each, extend = tinymce.extend, Node = tinymce.html.Node;
+(function() {
+    var each = tinymce.each,
+        extend = tinymce.extend,
+        Node = tinymce.html.Node;
 
     function split(str, delim) {
         return str.split(delim || ',');
@@ -20,7 +22,7 @@
     var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
 
     tinymce.create('tinymce.plugins.CleanupPlugin', {
-        init: function (ed, url) {
+        init: function(ed, url) {
             var self = this;
             this.editor = ed;
 
@@ -29,7 +31,7 @@
                 ed.settings.validate = false;
             }
 
-            ed.onPreInit.add(function () {
+            ed.onPreInit.add(function() {
 
                 if (ed.settings.validate) {
                     // add support for "bootstrap" icons
@@ -56,7 +58,8 @@
 
                     if (invalidAttribValue) {
                         function replaceAttributeValue(nodes, name, re) {
-                            var i = nodes.length, node;
+                            var i = nodes.length,
+                                node;
 
                             while (i--) {
                                 node = nodes[i];
@@ -77,39 +80,42 @@
                             }
                         }
 
-                        each(tinymce.explode(invalidAttribValue), function (item) {
+                        each(tinymce.explode(invalidAttribValue), function(item) {
                             var re, matches = /([a-z\*]+)\[([a-z]+)([\^\$~]?=)["']([^"']+)["']\]/i.exec(item);
 
                             if (matches && matches.length == 5) {
-                                var tag = matches[1], attrib = matches[2], expr = matches[3], value = matches[4];
+                                var tag = matches[1],
+                                    attrib = matches[2],
+                                    expr = matches[3],
+                                    value = matches[4];
 
                                 switch (expr) {
                                     default:
-                                    case '=':
+                                        case '=':
                                         re = '(' + value + ')';
-                                        break;
+                                    break;
                                     case '!=':
-                                        re = '(^' + value + ')';
+                                            re = '(^' + value + ')';
                                         break;
                                     case '^=':
-                                        re = '^(' + value + ')';
+                                            re = '^(' + value + ')';
                                         break;
                                     case '$=':
-                                        re = '(' + value + ')$';
+                                            re = '(' + value + ')$';
                                         break;
                                     case '~=':
-                                        re = value;
+                                            re = value;
                                         break;
                                 }
                                 if (re) {
                                     // all tags
                                     if (tag == '*') {
-                                        ed.parser.addAttributeFilter(attrib, function (nodes, name) {
+                                        ed.parser.addAttributeFilter(attrib, function(nodes, name) {
                                             replaceAttributeValue(nodes, name, re);
                                         });
                                         // specific tag
                                     } else {
-                                        ed.parser.addNodeFilter(tag, function (nodes, name) {
+                                        ed.parser.addNodeFilter(tag, function(nodes, name) {
                                             replaceAttributeValue(nodes, attrib, re);
                                         });
                                     }
@@ -118,8 +124,9 @@
                         });
                     }
                 } else {
-                    ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-                        var i = nodes.length, node;
+                    ed.serializer.addNodeFilter(ed.settings.invalid_elements, function(nodes, name) {
+                        var i = nodes.length,
+                            node;
 
                         if (ed.schema.isValidChild('body', name)) {
                             while (i--) {
@@ -129,8 +136,9 @@
                         }
                     });
 
-                    ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-                        var i = nodes.length, node;
+                    ed.parser.addNodeFilter(ed.settings.invalid_elements, function(nodes, name) {
+                        var i = nodes.length,
+                            node;
 
                         if (ed.schema.isValidChild('body', name)) {
                             while (i--) {
@@ -148,8 +156,9 @@
                 }
 
                 // try and keep empty a tags that are not anchors, process bootstrap icons
-                ed.parser.addNodeFilter('a,i,span', function (nodes, name) {
-                    var i = nodes.length, node, cls;
+                ed.parser.addNodeFilter('a,i,span', function(nodes, name) {
+                    var i = nodes.length,
+                        node, cls;
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
@@ -161,8 +170,9 @@
                     }
                 });
                 // cleanup padded "bootstrap" tags
-                ed.serializer.addAttributeFilter('data-mce-bootstrap', function (nodes, name) {
-                    var i = nodes.length, node, fc;
+                ed.serializer.addAttributeFilter('data-mce-bootstrap', function(nodes, name) {
+                    var i = nodes.length,
+                        node, fc;
 
                     while (i--) {
                         node = nodes[i], fc = node.firstChild;
@@ -175,8 +185,9 @@
                 });
 
                 // disable onclick etc.
-                ed.parser.addAttributeFilter('onclick,ondblclick', function (nodes, name) {
-                    var i = nodes.length, node;
+                ed.parser.addAttributeFilter('onclick,ondblclick', function(nodes, name) {
+                    var i = nodes.length,
+                        node;
 
                     while (i--) {
                         node = nodes[i];
@@ -186,8 +197,9 @@
                     }
                 });
 
-                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick', function (nodes, name) {
-                    var i = nodes.length, node, k;
+                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick', function(nodes, name) {
+                    var i = nodes.length,
+                        node, k;
 
                     while (i--) {
                         node = nodes[i], k = name.replace('data-mce-', '');
@@ -197,8 +209,9 @@
                     }
                 });
 
-                ed.serializer.addNodeFilter('br', function (nodes, name) {
-                    var i = nodes.length, node, k;
+                ed.serializer.addNodeFilter('br', function(nodes, name) {
+                    var i = nodes.length,
+                        node, k;
 
                     if (i) {
                         while (i--) {
@@ -213,8 +226,9 @@
                 });
 
                 // remove br in Gecko
-                ed.parser.addNodeFilter('br', function (nodes, name) {
-                    var i = nodes.length, node, k;
+                ed.parser.addNodeFilter('br', function(nodes, name) {
+                    var i = nodes.length,
+                        node, k;
 
                     if (i) {
                         while (i--) {
@@ -230,8 +244,10 @@
             });
             // run cleanup with default settings
             if (ed.settings.validate === false && ed.settings.verify_html === false) {
-                ed.addCommand('mceCleanup', function () {
-                    var s = ed.settings, se = ed.selection, bm;
+                ed.addCommand('mceCleanup', function() {
+                    var s = ed.settings,
+                        se = ed.selection,
+                        bm;
                     bm = se.getBookmark();
 
                     var content = ed.getContent({
@@ -261,7 +277,7 @@
             }
 
             // Cleanup callback
-            ed.onBeforeSetContent.add(function (ed, o) {
+            ed.onBeforeSetContent.add(function(ed, o) {
                 // remove br tag added by Firefox
                 o.content = o.content.replace(/^<br>/, '');
 
@@ -286,7 +302,7 @@
             });
 
             // Cleanup callback
-            ed.onPostProcess.add(function (ed, o) {
+            ed.onPostProcess.add(function(ed, o) {
                 if (o.set) {
                     // Geshi
                     o.content = self.convertFromGeshi(o.content);
@@ -334,7 +350,7 @@
                 }
             });
 
-            ed.onSaveContent.add(function (ed, o) {
+            ed.onSaveContent.add(function(ed, o) {
                 // Convert entities to characters
                 if (ed.getParam('cleanup_pluginmode')) {
 
@@ -345,7 +361,7 @@
                         '&apos;': "'"
                     };
 
-                    o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
+                    o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function(a) {
                         return entities[a];
                     });
                 }
@@ -357,8 +373,8 @@
                 cmd: 'mceCleanup'
             });
         },
-        convertFromGeshi: function (h) {
-            h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
+        convertFromGeshi: function(h) {
+            h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function(a, b, c, d) {
                 var attr = '';
 
                 if (c && /\w/.test(c)) {
@@ -370,8 +386,8 @@
 
             return h;
         },
-        convertToGeshi: function (h) {
-            h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
+        convertToGeshi: function(h) {
+            h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function(a, b, c, d, e) {
                 var s = b + d;
                 s = s.replace(/data-geshi-/gi, '').replace(/\s+/g, ' ').replace(/\s$/, '');
 
@@ -379,15 +395,6 @@
             });
 
             return h;
-        },
-        getInfo: function () {
-            return {
-                longname: 'Cleanup',
-                author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
     });
 

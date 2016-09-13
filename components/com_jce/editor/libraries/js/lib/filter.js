@@ -151,9 +151,4 @@
             $.Widget.prototype.destroy.apply(this, arguments);
         }
     });
-
-    $.extend($.ui.searchables, {
-        version: "@@version@@"
-    });
-
 })(jQuery);
