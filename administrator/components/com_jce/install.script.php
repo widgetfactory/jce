@@ -16,6 +16,7 @@ defined('_JEXEC') or die('RESTRICTED');
  * @return
  */
 function com_install() {
+    $db = JFactory::getDBO();
 
     // Remove old module
     $query = 'SELECT id FROM #__modules WHERE module = ' . $db->quote('mod_jcefilebrowser');
@@ -31,8 +32,6 @@ function com_install() {
     require_once(JPATH_ADMINISTRATOR . '/components/com_jce/install.php');
 
     $installer  = JInstaller::getInstance();
-    $parent     = $installer->getParent();
-
     $manifest   = JPATH_PLUGINS . '/editors/jce.xml';
     $version    = 0;
 
@@ -41,9 +40,9 @@ function com_install() {
         $version = isset($data['version']) ? (string) $data['version'] : 0;
     }
 
-    $parent->set('current_version', $version);
+    $installer->set('current_version', $version);
 
-    return WFInstall::install($parent);
+    return WFInstall::install($installer);
 }
 
 /**
