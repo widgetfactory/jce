@@ -16,21 +16,6 @@ require_once(dirname(__FILE__) . '/model.php');
 
 class WFModelCpanel extends WFModel {
 
-    public function iconButton($link, $image, $text, $description = '', $disabled = false) {
-        $lang = JFactory::getLanguage();
-
-        if ($disabled) {
-            $link = '#';
-        }
-
-        $description = $description ? $text . '::' . $description : $text;
-        ?>
-        <li class="cpanel-icon tooltip" title="<?php echo $description; ?>">
-            <a href="<?php echo $link; ?>"><?php echo JHTML::_('image.site', $image, '/components/com_jce/media/img/cpanel/', NULL, NULL, $text); ?><?php echo $text; ?></a>
-        </li>
-        <?php
-    }
-
     public function getVersion() {
         $xml = WFXMLHelper::parseInstallManifest(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml');
 
