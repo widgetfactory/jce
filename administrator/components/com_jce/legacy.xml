@@ -8,11 +8,11 @@
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>WF_DESC</description>
+    <description>WF_ADMIN_DESC</description>
     <installfile>install.script.php</installfile>
     <uninstallfile>install.script.php</uninstallfile>
 
-    <files folder="component/components/com_jce">
+    <files folder="components/com_jce">
         <folder>editor</folder>
         <folder>media</folder>
         <folder>views</folder>
@@ -22,12 +22,13 @@
     </files>
 
 	<!-- Media Player -->
-    <media folder="component/components/com_jce/editor/libraries" destination="jce">
+    <media folder="components/com_jce/editor/libraries" destination="jce">
         <folder>mediaplayer</folder>
     </media>
 
-    <languages folder="component/language/en-GB">
+    <languages folder="language/en-GB">
         <language tag="en-GB">en-GB.com_jce.ini</language>
+        @@language-pro@@
     </languages>
 
 	<!-- SQL query files to execute on installation (MySQL only) -->
@@ -44,10 +45,9 @@
             <menu view="cpanel" link="option=com_jce">WF_MENU_CPANEL</menu>
             <menu view="config" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
             <menu view="profiles" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
-            <menu view="installer" link="option=com_jce&amp;view=installer">WF_MENU_INSTALL</menu>
         </submenu>
 
-        <files folder="component/administrator/components/com_jce">
+        <files folder="administrator/components/com_jce">
             <folder>adapters</folder>
             <folder>classes</folder>
             <folder>controller</folder>
@@ -70,7 +70,7 @@
             <file>licence.txt</file>
         </files>
 
-        <languages folder="component/administrator/language/en-GB">
+        <languages folder="administrator/language/en-GB">
             <language tag="en-GB">en-GB.com_jce.ini</language>
             <language tag="en-GB">en-GB.com_jce.menu.ini</language>
             <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
