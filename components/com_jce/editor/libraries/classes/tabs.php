@@ -152,7 +152,7 @@ final class WFTabs extends JObject {
 
         // add tabs
         if (count($this->_tabs) > 1) {
-            $output .= '<ul class="ui-tab">' . "\n";
+            $output .= '<ul class="uk-tab">' . "\n";
 
             $x = 0;
 
@@ -160,7 +160,7 @@ final class WFTabs extends JObject {
                 $class = "";
 
                 if ($x === 0) {
-                    $class .= " ui-active";
+                    $class .= " uk-active";
                 }
 
                 $output .= "\t" . '<li class="' . $class . '"><a href="#' . $tab . '_tab">' . WFText::_('WF_TAB_' . strtoupper($tab)) . '</a></li>' . "\n";
@@ -174,7 +174,7 @@ final class WFTabs extends JObject {
         if (!empty($this->_panels)) {
             $x = 0;
 
-            $output .= '<div class="ui-switcher">';
+            $output .= '<div class="uk-switcher">';
 
             foreach ($this->_panels as $key => $panel) {
                 $class = "";
@@ -182,9 +182,9 @@ final class WFTabs extends JObject {
                 if (!empty($this->_tabs)) {
 
                     if ($x === 0) {
-                        $class .= " ui-active";
+                        $class .= " uk-active";
                     } else {
-                        $class .= " ui-tabs-hide";
+                        $class .= " uk-tabs-hide";
                     }
 
                     $output .= '<div id="' . $key . '_tab" class="' . $class . '">';
