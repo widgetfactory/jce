@@ -9,12 +9,16 @@
  */
 
 (function() {
-    var DOM = tinymce.DOM, Element = tinymce.dom.Element, Event = tinymce.dom.Event, each = tinymce.each, is = tinymce.is;
+    var DOM = tinymce.DOM,
+        Element = tinymce.dom.Element,
+        Event = tinymce.dom.Event,
+        each = tinymce.each,
+        is = tinymce.is;
 
     tinymce.create('tinymce.plugins.InlinePopups', {
-        init : function(ed, url) {
+        init: function(ed, url) {
             // Replace window manager
-            ed.onBeforeRenderUI.add( function() {
+            ed.onBeforeRenderUI.add(function() {
                 ed.windowManager = new tinymce.InlineWindowManager(ed);
 
                 if (!ed.settings.compress.css) {
@@ -26,11 +30,11 @@
     });
 
     function ucfirst(s) {
-      return s.substring(0, 1).toUpperCase() + s.substring(1);
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
     tinymce.create('tinymce.InlineWindowManager:tinymce.WindowManager', {
-        InlineWindowManager : function(ed) {
+        InlineWindowManager: function(ed) {
             var self = this;
 
             self.parent(ed);
@@ -39,8 +43,13 @@
             self.windows = {};
         },
 
-        open : function(f, p) {
-            var self = this, id, opt = '', ed = self.editor, dw = 0, dh = 0, vp, po, mdf, clf, we, w, u, parentWindow;
+        open: function(f, p) {
+            var self = this,
+                id, opt = '',
+                ed = self.editor,
+                dw = 0,
+                dh = 0,
+                vp, po, mdf, clf, rsf, we, w, u, parentWindow;
 
             f = f || {};
             p = p || {};
@@ -65,26 +74,23 @@
 
             vp = DOM.getViewPort();
 
-            f.width  = parseInt(f.width);
-      			f.height = parseInt(f.height) + (tinymce.isIE ? 8 : 0);
+            f.width = parseInt(f.width);
+            f.height = parseInt(f.height) + (tinymce.isIE ? 8 : 0);
 
-            f.left = f.left || Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (f.width / 2.0)));
-      			f.top  = f.top || Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (f.height / 2.0)));
-
-            p.mce_inline    = true;
+            p.mce_inline = true;
             p.mce_window_id = id;
 
             //p.mce_width     = f.width;
-          //  p.mce_height    = f.height;
+            //  p.mce_height    = f.height;
 
-            self.features   = f;
-            self.params     = p;
+            self.features = f;
+            self.params = p;
 
             self.onOpen.dispatch(self, f, p);
 
             // modal html
             var html = '<div class="mceModalBody" id="' + id + '">' +
-            	'   <div class="mceModalContainer">' +
+                '   <div class="mceModalContainer">' +
                 '       <div class="mceModalHeader mceModalMove" id="' + id + '_header">' +
                 '           <button class="mceModalClose" type="button"></button>' +
                 '           <h3 class="mceModalTitle" id="' + id + '_title">' + (f.title || "") + '</h3>' +
@@ -98,14 +104,14 @@
 
             // create modal
             if (!modal.length) {
-                modal = DOM.add(DOM.doc.body, 'div', {'class' : 'mceModal', role: 'dialog'}, '');
+                modal = DOM.add(DOM.doc.body, 'div', { 'class': 'mceModal', role: 'dialog' }, '');
 
                 if (f.overlay !== false) {
-                  DOM.add(modal, 'div', {'class' : 'mceModalOverlay'});
+                    DOM.add(modal, 'div', { 'class': 'mceModalOverlay' });
                 }
             }
 
-            DOM.add(modal, 'div', {'class' : 'mceModalFrame', id: id + '_frame'}, html);
+            DOM.add(modal, 'div', { 'class': 'mceModalFrame', id: id + '_frame' }, html);
 
             u = f.url || f.file;
 
@@ -121,11 +127,11 @@
                 // add loader
                 DOM.addClass(id, 'mceLoading');
 
-                var iframe = DOM.add(id + '_content', 'iframe', {id : id + '_ifr', src : 'javascript:""', frameBorder : 0});
+                var iframe = DOM.add(id + '_content', 'iframe', { id: id + '_ifr', src: 'javascript:""', frameBorder: 0 });
 
                 try {
                     iframe.style.minHeight = f.height + 'px';
-                } catch(e) {}
+                } catch (e) {}
 
                 DOM.setAttrib(iframe, 'src', u);
 
@@ -139,14 +145,14 @@
                 DOM.addClass(id, 'mceModal' + ucfirst(f.type));
 
                 // add footer
-                DOM.add(DOM.select('.mceModalContainer', id), 'div', {'class': 'mceModalFooter', id: id + '_footer'});
+                DOM.add(DOM.select('.mceModalContainer', id), 'div', { 'class': 'mceModalFooter', id: id + '_footer' });
 
                 // add buttons
-                DOM.add(id + '_footer', 'button', {id : id + '_ok', 'class' : 'mceButton mceOk', type : 'button'}, f.type == 'confirm' ? 'Yes' : 'Ok');
+                DOM.add(id + '_footer', 'button', { id: id + '_ok', 'class': 'mceButton mceOk', type: 'button' }, f.type == 'confirm' ? 'Yes' : 'Ok');
 
                 if (f.type == 'confirm') {
                     DOM.add(id + '_footer', 'button', {
-                        'type' : 'button',
+                        'type': 'button',
                         'class': 'mceButton mceCancel'
                     }, 'No');
                 }
@@ -187,18 +193,19 @@
                 DOM.addClass(id, f.size);
             } else {
                 // Resize window
-                DOM.setStyles(id, {width : f.width + dw, height : f.height + dh});
+                DOM.setStyles(id, { width: f.width + dw, height: f.height + dh });
             }
 
-            Event.add(window, 'resize', function() {
-                vp = DOM.getViewPort();
-
-                DOM.setStyles(id, {'left' : vp.x, 'top': vp.y});
+            rsf = Event.add(DOM.win, 'resize orientationchange', function() {
+                if (DOM.get(id)) {
+                  self.position(id);
+                }
             });
 
             // Register events
             mdf = Event.add(id, 'mousedown', function(e) {
-                var n = e.target, w, vp;
+                var n = e.target,
+                    w, vp;
 
                 w = self.windows[id];
                 self.focus(id);
@@ -233,20 +240,21 @@
                 }
             });
 
-            // position modal
-            DOM.setStyles(id, {'left' : vp.x, 'top': vp.y});
-
             // Add window
             w = self.windows[id] = {
-                id : id,
-                mousedown_func : mdf,
-                click_func : clf,
-                element : new Element(id),
-                iframeElement : new Element(id + '_ifr'),
-                features : f,
-                deltaWidth : dw,
-                deltaHeight : dh
+                id: id,
+                mousedown_func: mdf,
+                click_func: clf,
+                resize_func: rsf,
+                element: new Element(id),
+                iframeElement: new Element(id + '_ifr'),
+                features: f,
+                deltaWidth: dw,
+                deltaHeight: dh
             };
+
+            // position modal
+            this.position(id);
 
             w.iframeElement.on('focus', function() {
                 self.focus(id);
@@ -266,8 +274,19 @@
             return w;
         },
 
-        focus : function(id) {
-            var self = this, w;
+        position: function(id) {
+            var p = DOM.getRect(id),
+                vp = DOM.getViewPort();
+
+            var left = Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (p.w / 2.0)));
+            var top = Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (p.h / 2.0)));
+
+            DOM.setStyles(id, { 'left': left, 'top': top });
+        },
+
+        focus: function(id) {
+            var self = this,
+                w;
 
             if (w = self.windows[id]) {
                 w.zIndex = this.zIndex++;
@@ -289,36 +308,39 @@
             }
         },
 
-        _startDrag : function(id, se, ac) {
-            var self = this, mu, mm, d = DOM.doc, w = self.windows[id], p, cp, vp, sx, sy, dx, dy;
+        _startDrag: function(id, se, ac) {
+            var self = this,
+                mu, mm, d = DOM.doc,
+                w = self.windows[id],
+                sx, sy;
 
             if (DOM.hasClass(id, 'dragging')) {
-              end();
-              return Event.cancel(se);
+                end();
+                return Event.cancel(se);
             }
-
-            DOM.addClass(id, 'dragging');
 
             p = DOM.getRect(id);
             vp = DOM.getViewPort();
 
-            //DOM.setStyles(id, {'left' : p.x - vp.x, 'top': p.y - vp.y});
+            DOM.setStyles(id, { 'left': p.x - vp.x, 'top': p.y - vp.y });
 
             // Get positons and sizes
-            cp = {x : 0, y : 0};
+            cp = { x: 0, y: 0 };
 
             // Reduce viewport size to avoid scrollbars while dragging
             vp.w -= 2;
             vp.h -= 2;
 
+            DOM.addClass(id, 'dragging');
+
             sx = se.screenX;
             sy = se.screenY;
 
             function end() {
-              Event.remove(d, 'mouseup', mu);
-              Event.remove(d, 'mousemove', mm);
+                Event.remove(d, 'mouseup', mu);
+                Event.remove(d, 'mousemove', mm);
 
-              DOM.removeClass(id, 'dragging');
+                DOM.removeClass(id, 'dragging');
             }
 
             // Handle mouse up
@@ -338,7 +360,7 @@
                 dx = Math.max(p.x + x, 10);
                 dy = Math.max(p.y + y, 10);
 
-                DOM.setStyles(id, {'left' : x + vp.x, 'top': y + vp.y});
+                DOM.setStyles(id, { 'left': dx, 'top': dy });
 
                 return Event.cancel(e);
             });
@@ -346,8 +368,10 @@
             return Event.cancel(se);
         },
 
-        close : function(win, id) {
-            var self = this, w, d = DOM.doc, fw, id;
+        close: function(win, id) {
+            var self = this,
+                w, d = DOM.doc,
+                fw, id;
 
             id = self._findId(id || win);
 
@@ -361,8 +385,10 @@
 
             if (w = self.windows[id]) {
                 self.onClose.dispatch(self);
-                Event.remove(d, 'mousedown', w.mousedownFunc);
-                Event.remove(d, 'click', w.clickFunc);
+                Event.remove(d, 'mousedown', w.mousedown_func);
+                Event.remove(d, 'click', w.click_func);
+                Event.remove(win, 'resize orientationchange', w.resize_func);
+
                 Event.clear(id);
                 Event.clear(id + '_ifr');
 
@@ -389,10 +415,10 @@
         },
 
         // Find front most window
-        _frontWindow : function() {
+        _frontWindow: function() {
             var fw, ix = 0;
             // Find front most window and focus that
-            each (this.windows, function(w) {
+            each(this.windows, function(w) {
                 if (w.zIndex > ix) {
                     fw = w;
                     ix = w.zIndex;
@@ -401,7 +427,7 @@
             return fw;
         },
 
-        setTitle : function(w, ti) {
+        setTitle: function(w, ti) {
             var e;
 
             w = this._findId(w);
@@ -411,54 +437,56 @@
             }
         },
 
-        alert : function(txt, cb, s) {
-            var self = this, w;
+        alert: function(txt, cb, s) {
+            var self = this,
+                w;
 
             w = self.open({
-                title : self,
-                type : 'alert',
-                button_func : function(s) {
+                title: self,
+                type: 'alert',
+                button_func: function(s) {
                     if (cb) {
                         cb.call(s || self, s);
                     }
                     self.close(null, w.id);
                 },
-                content : DOM.encode(self.editor.getLang(txt, txt)),
-                inline : 1,
+                content: DOM.encode(self.editor.getLang(txt, txt)),
+                inline: 1,
                 height: 160
             });
         },
 
-        confirm : function(txt, cb, s) {
-            var self = this, w;
+        confirm: function(txt, cb, s) {
+            var self = this,
+                w;
 
             w = self.open({
-                title   : self,
-                type    : 'confirm',
-                button_func : function(s) {
+                title: self,
+                type: 'confirm',
+                button_func: function(s) {
                     if (cb) {
                         cb.call(s || self, s);
                     }
                     self.close(null, w.id);
                 },
-                content : DOM.encode(self.editor.getLang(txt, txt)),
-                inline : 1,
+                content: DOM.encode(self.editor.getLang(txt, txt)),
+                inline: 1,
                 height: 160
             });
         },
 
-        resizeBy : function(dw, dh, id) {
-    			var w = this.windows[id];
+        resizeBy: function(dw, dh, id) {
+            var w = this.windows[id];
 
-    			if (w) {
-    				w.element.resizeBy(dw, dh);
-    				w.iframeElement.resizeBy(dw, dh);
-    			}
-    		},
+            if (w) {
+                w.element.resizeBy(dw, dh);
+                w.iframeElement.resizeBy(dw, dh);
+            }
+        },
 
         // Internal functions
 
-        _findId : function(w) {
+        _findId: function(w) {
             var self = this;
 
             if (typeof(w) == 'string') {
