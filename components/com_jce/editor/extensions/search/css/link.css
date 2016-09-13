@@ -11,32 +11,40 @@
 #search-browser {
     position: relative;
 }
+
 #searchbox {
     position: relative;
 }
-div#search-browser input[type="checkbox"], div#search-browser input[type="radio"] {
+
+div#search-browser input[type="checkbox"],
+div#search-browser input[type="radio"] {
     vertical-align: middle;
 }
+
 .phrases-box input[type="radio"] {
     margin: -3px 5px 0 0;
 }
-div#search-browser button {}
+
 #searchbox {
     z-index: 1
 }
+
 #searchbox input {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     margin: 0;
 }
+
 #searchbox+ div {
     margin-left: -1px;
     padding: 0;
 }
+
 #search-button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
 
 /*div#search-browser span#searchbox input#search-input {
     height: 28px;
@@ -54,20 +62,24 @@ div#search-browser button {}
 #search-clear {
     display: none;
 }
-#search-clear.ui-active {
+
+#search-clear.uk-active {
     display: block;
 }
-#search-browser .ui-icon-spinner {
+
+#search-browser .uk-icon-spinner {
     display: none;
     width: 20px;
     height: 20px;
     right: 5px;
-    top: 10px;
+    top: 5px;
 }
-#search-browser.loading .ui-icon-spinner {
+
+#search-browser.loading .uk-icon-spinner {
     display: block;
     opacity: 1;
 }
+
 #search-result {
     width: 100%;
     height: 100%;
@@ -77,10 +89,12 @@ div#search-browser button {}
     overflow-x: hidden;
     margin: 2px 0;
 }
+
 #search-result dl {
     margin: 5px 0;
     padding: 10px;
 }
+
 #search-result dl dt {
     cursor: pointer;
     font-weight: bold;
@@ -88,39 +102,49 @@ div#search-browser button {}
     overflow: hidden;
     white-space: pre;
 }
+
 div#search-browser div#search-result dl.odd {
     background-color: #F5F5F5;
 }
+
 div#search-browser div#search-result dl dd.anchor {
     background: #fff url("../../../libraries/img/icons.png") no-repeat 0 -1280px;
     line-height: 20px;
     padding: 0 0 0 22px;
     cursor: pointer;
 }
+
 div#search-browser #search-options {
     width: 100%;
     padding: 5px;
     margin: 2px 0 0 0;
 }
+
 div#search-browser #search-options fieldset {
     margin: 0;
     padding: 0;
 }
+
 div#search-browser #search-options fieldset div {
     margin: 5px 0;
 }
+
 div#search-browser #search-options label {
     min-width: 40px;
 }
+
 #search-options-button {}
+
 #search-options .search_only ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 #search-options .search_only ul li {
     display: inline-block;
 }
+
 @media (max-width: 375px) {
     #search-button span {
         display: none;
