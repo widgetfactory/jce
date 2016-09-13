@@ -111,16 +111,18 @@ class WFController extends WFControllerBase {
 
         $scripts = array();
 
+        $view->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/core.min.js');
+
+        if (!$version->isCompatible('3.0')) {
+            $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/legacy.min.css');
+        }
+
         switch ($name) {
             case 'help':
                 $view->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/js/help.min.js');
                 break;
             default:
                 $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/global.min.css');
-
-                if (!$version->isCompatible('3.0')) {
-                  $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/legacy.min.css');
-                }
 
                 // load Joomla! core javascript
                 if (method_exists('JHtml', 'core')) {
@@ -133,8 +135,6 @@ class WFController extends WFControllerBase {
 
                 $params = WFParameterHelper::getComponentParams();
                 $theme = $params->get('preferences.theme', 'jce');
-
-                $view->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/core.min.js');
 
                 $options = array(
                     'labels' => array(
