@@ -190,7 +190,7 @@ class WFViewProfiles extends WFView {
                 $this->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/profile.min.js');
 
                 // load styles
-                $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/profiles.min.css');
+                $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/profile.min.css');
 
                 $cid = JRequest::getVar('cid', array(0), '', 'array');
                 JArrayHelper::toInteger($cid, array(0));
