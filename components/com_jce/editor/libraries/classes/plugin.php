@@ -131,7 +131,7 @@ class WFEditorPlugin extends JObject {
         return $wf->getVersion();
     }
 
-    protected function getProfile($plugin = null) {
+    protected function getProfile($plugin = "") {
         $wf = WFEditor::getInstance();
 
         return $wf->getProfile($plugin);
@@ -143,15 +143,7 @@ class WFEditorPlugin extends JObject {
         $version = '';
 
         if (is_file($manifest)) {
-            $xml = WFXMLHelper::parseInstallManifest($manifest);
-
-            if ($xml && isset($xml['version'])) {
-                $version = $xml['version'];
-            }
-        }
-
-        if ($version) {
-            $version = preg_replace('#[^a-z0-9]+#i', '', $version);
+            $version = md5_file($manifest);
         }
 
         return $version;
@@ -187,7 +179,7 @@ class WFEditorPlugin extends JObject {
 
         // add plugin version
         if ($plugin_version && $plugin_version != $version) {
-            $version .= '-' . $plugin_version;
+            $version .= $plugin_version;
         }
 
         // create the document

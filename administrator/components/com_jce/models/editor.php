@@ -385,14 +385,9 @@ class WFModelEditor extends WFModelBase {
      */
     private static function getVersion() {
         if (!isset(self::$version)) {
-            $xml = WFXMLHelper::parseInstallManifest(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml');
-
-            // return cleaned version number or date
-            self::$version = preg_replace('/[^0-9a-z]/i', '', $xml['version']);
-
-            if (!self::$version) {
-                self::$version = date('Y-m-d', strtotime('today'));
-            }
+            $manifest = JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml';
+            // md5 hash of file
+            self::$version = md5_file($manifest);
         }
 
         return self::$version;
@@ -631,7 +626,7 @@ class WFModelEditor extends WFModelBase {
                   // create plugins array
                   $plugins = array('core' => $items, 'external' => array());
 
-                  // get installed plugins, eg: Media Manager
+                  // get installed plugins
                   $installed = JPluginHelper::getPlugin('jce');
 
                   // check installed plugins are valid
@@ -1093,21 +1088,14 @@ class WFModelEditor extends WFModelBase {
                 $files[] = WF_EDITOR . "/tiny_mce/tiny_mce" . $suffix . ".js";
 
                 // Add themes in dev mode
-                if (!self::$version) {
-                    foreach ($themes as $theme) {
-                        $files[] = WF_EDITOR . "/tiny_mce/themes/" . $theme . "/editor_template" . $suffix . ".js";
-                    }
+                foreach ($themes as $theme) {
+                    $files[] = WF_EDITOR . "/tiny_mce/themes/" . $theme . "/editor_template" . $suffix . ".js";
                 }
 
                 $core = array('autolink', 'cleanup', 'core', 'code', 'colorpicker', 'upload', 'format');
 
                 // Add core plugins
                 foreach ($plugins['core'] as $plugin) {
-                    // skip core plugins in production mode
-                    if (self::$version && in_array($plugin, $core)) {
-                        continue;
-                    }
-
                     $files[] = WF_EDITOR_PLUGINS . "/" . $plugin . "/editor_plugin" . $suffix . ".js";
                 }
 

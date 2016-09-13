@@ -454,8 +454,6 @@ class WFDocument extends JObject {
     }
 
     public function getQueryString($query = array()) {
-        // get version
-        //$version = $this->get('version', '000000');
         // get layout
         $layout = JRequest::getWord('layout');
 
@@ -488,11 +486,6 @@ class WFDocument extends JObject {
         $token = WFToken::getToken();
         // set token
         $query[$token] = 1;
-
-        /*if (preg_match('/\d+/', $version)) {
-            // set version
-            $query['v'] = preg_replace('#[^a-z0-9]#i', '', $version);
-        }*/
 
         $output = array();
 
