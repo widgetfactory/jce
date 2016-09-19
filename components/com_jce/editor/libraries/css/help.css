@@ -12,32 +12,40 @@ html {
     background: #fff none;
     overflow: hidden;
 }
-.uk-jce {
+
+.ui-jce {
     position: absolute;
     top: 5px;
     left: 5px;
     right: 5px;
     bottom: 5px;
 }
-.uk-jce> div {
+
+.ui-jce>div {
     background-color: #fff;
     width: 100%;
     height: 100%;
     position: relative;
     display: table;
 }
-.uk-jce .row-fluid:before, .uk-jce .row-fluid:after {
+
+.ui-jce .row-fluid:before,
+.ui-jce .row-fluid:after {
     content: "";
     display: table;
     line-height: 0;
 }
-.uk-jce .row-fluid:after {
+
+.ui-jce .row-fluid:after {
     clear: both;
 }
-.uk-jce .row-fluid {
+
+.ui-jce .row-fluid {
     width: 100%;
 }
-.lhs, .rhs {
+
+.lhs,
+.rhs {
     box-sizing: border-box;
     height: 100%;
     position: absolute;
@@ -46,9 +54,11 @@ html {
     right: 0;
     bottom: 0;
 }
-.uk-jce div {
+
+.ui-jce div {
     height: 100%;
 }
+
 .lhs {
     width: 250px;
     background-color: #fafafa;
@@ -57,30 +67,40 @@ html {
     left: 0;
     right: auto;
 }
+
 .rhs {
     width: calc(100% - 264px);
     left: auto;
     right: 0;
 }
+
 #help-menu {
     height: 100%;
     width: 100%;
     overflow: auto;
     white-space: pre;
 }
-#help-menu dl, #help-menu dt, #help-menu dd {
+
+#help-menu dl,
+#help-menu dt,
+#help-menu dd {
     margin: 0;
     padding: 0;
 }
+
 #help-menu dd.loading {
     background: url("../img/load.gif") no-repeat 16px center;
 }
-#help-menu dd.loading i {visibility: hidden;}
+
+#help-menu dd.loading i {
+    visibility: hidden;
+}
 
 #help-menu dl {
     margin: 0px;
     padding: 0px;
 }
+
 #help-menu dt {
     margin: 0px 0px 5px 0px;
     line-height: inherit;
@@ -93,59 +113,75 @@ html {
     overflow: hidden;
     cursor: pointer;
 }
+
 html[dir="rtl"] #help-menu dd {
     padding: 0px 20px 0px 0;
 }
 
-#help-menu dd i  {display: none;}
-
-#help-menu dd i + i {display: inline-block;}
-
-#help-menu dd.subtopics i {display: inline-block;}
-
-#help-menu dd.subtopics i + i {display: none;}
-
-html[dir="rtl"] #help-menu dd.subtopics {
+#help-menu dd i {
+    display: none;
 }
+
+#help-menu dd i+i {
+    display: inline-block;
+}
+
+#help-menu dd.subtopics i {
+    display: inline-block;
+}
+
+#help-menu dd.subtopics i+i {
+    display: none;
+}
+
 #help-menu dl.hidden {
     display: none;
 }
+
 #help-menu dl dl {
     padding: 0 0 0 15px;
 }
+
 #help-table {
     background-color: #efefef;
     height: 100%;
 }
+
 #help-table td {
     background-color: #fff;
     border: 1px solid #ccc;
 }
+
 #help-frame {
     height: 100%;
     overflow: hidden;
 }
+
 #help-frame iframe {
     width: 100%;
     height: 100%;
 }
-.uk-jce #help-menu-toggle, .uk-jce #help-menu-toggle-clone {
-  margin: 0 2px;
-  height: 100%;
-  background: #eee;
-  float: left;
-  position: absolute;
-  left: 250px;
-  width: 10px;
-  box-sizing: border-box;
+
+.ui-jce #help-menu-toggle,
+.ui-jce #help-menu-toggle-clone {
+    margin: 0 2px;
+    height: 100%;
+    background: #eee;
+    float: left;
+    position: absolute;
+    left: 250px;
+    width: 10px;
+    box-sizing: border-box;
 }
-.uk-jce #help-menu-toggle-clone {
+
+.ui-jce #help-menu-toggle-clone {
     margin: 0;
     width: 10px;
     top: 10px;
     background: #ccc;
 }
-.uk-jce iv#help-menu-toggle .resize-handle {
+
+.ui-jce iv#help-menu-toggle .resize-handle {
     cursor: ew-resize;
     width: 10px;
     height: 50px;
@@ -154,17 +190,18 @@ html[dir="rtl"] #help-menu dd.subtopics {
     position: relative;
     margin-top: -25px;
 }
-.uk-jce #help-menu-toggle .resize-handle i {
+
+.ui-jce #help-menu-toggle .resize-handle i {
     width: 10px;
     text-align: center;
     margin: -5px 0 0 0;
     opacity: 0.6;
     top: 50%;
     position: absolute;
-    left: 0;
+    left: -1px;
 }
 
-.uk-jce #help-menu-toggle .toggle-handle {
+.ui-jce #help-menu-toggle .toggle-handle {
     cursor: pointer;
     width: 10px;
     height: 14px;
@@ -174,22 +211,27 @@ html[dir="rtl"] #help-menu dd.subtopics {
     vertical-align: middle;
     line-height: 14px;
 }
-.uk-jce #help-menu-toggle .toggle-handle i {
+
+.ui-jce #help-menu-toggle .toggle-handle i {
     display: none;
     font-size: 10px;
     opacity: 0.6;
     width: 10px;
     margin: 0;
 }
-.uk-jce #help-menu-toggle .toggle-handle i + i {
+
+.ui-jce #help-menu-toggle .toggle-handle i+i {
     display: inline-block;
 }
-.uk-jce #help-menu-toggle .toggle-handle.collapsed i {
+
+.ui-jce #help-menu-toggle .toggle-handle.collapsed i {
     display: inline-block;
 }
-.uk-jce #help-menu-toggle .toggle-handle.collapsed i + i {
+
+.ui-jce #help-menu-toggle .toggle-handle.collapsed i+i {
     display: none;
 }
-.uk-jce #help-menu-toggle+ div {
+
+.ui-jce #help-menu-toggle+div {
     margin-left: 0;
 }
