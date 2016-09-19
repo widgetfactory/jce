@@ -198,7 +198,7 @@
 
             rsf = Event.add(DOM.win, 'resize orientationchange', function() {
                 if (DOM.get(id)) {
-                  self.position(id);
+                    self.position(id);
                 }
             });
 
@@ -278,8 +278,8 @@
             var p = DOM.getRect(id),
                 vp = DOM.getViewPort();
 
-            var left = Math.round(Math.max(vp.x, vp.x + (vp.w / 2.0) - (p.w / 2.0)));
-            var top = Math.round(Math.max(vp.y, vp.y + (vp.h / 2.0) - (p.h / 2.0)));
+            var left = Math.round(Math.max(vp.x, (vp.w / 2.0) - (p.w / 2.0)));
+            var top = Math.round(Math.max(vp.y, (vp.h / 2.0) - (p.h / 2.0)));
 
             DOM.setStyles(id, { 'left': left, 'top': top });
         },
@@ -354,8 +354,8 @@
             mm = Event.add(d, 'mousemove', function(e) {
                 var x, y, v;
 
-                x = e.screenX - sx;
-                y = e.screenY - sy;
+                x = e.screenX - sx - vp.x;
+                y = e.screenY - sy - vp.y;
 
                 dx = Math.max(p.x + x, 10);
                 dy = Math.max(p.y + y, 10);
