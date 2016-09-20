@@ -142,7 +142,7 @@
             }).change();
 
             // Additional Features
-            $('ul#profileAdditionalFeatures input:checkbox').click(function() {
+            $('#profileAdditionalFeatures input:checkbox').click(function() {
                 self.setPlugins();
             });
 
