@@ -278,8 +278,8 @@
             var p = DOM.getRect(id),
                 vp = DOM.getViewPort();
 
-            var left = Math.round(Math.max(vp.x, (vp.w / 2.0) - (p.w / 2.0)));
-            var top = Math.round(Math.max(vp.y, (vp.h / 2.0) - (p.h / 2.0)));
+            var left = Math.round(Math.max(vp.x, (vp.w / 2.0) - (p.w / 2.0) - vp.x));
+            var top = Math.round(Math.max(vp.y, (vp.h / 2.0) - (p.h / 2.0) - vp.y));
 
             DOM.setStyles(id, { 'left': left, 'top': top });
         },
