@@ -2,7 +2,7 @@
     margin-left: -15px;
 }
 
-.ui-jce input[type="radio"] + label {
+.ui-jce input[type="radio"]+label {
     display: inline;
 }
 
@@ -42,7 +42,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 5px 0;
 }
 
-.ui-jce #tabs-setup ul li .list > div > label {
+.ui-jce #tabs-setup ul li .list>div>label {
     margin-left: 6px;
 }
 
@@ -139,20 +139,20 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0;
 }
 
-.ui-jce .tabs-plugin-parameters h3 + p,
-.ui-jce .tabs-plugin-parameters h3 + p + ul {
+.ui-jce .tabs-plugin-parameters h3+p,
+.ui-jce .tabs-plugin-parameters h3+p+ul {
     margin-left: 20px;
 }
 
 .ui-jce .tabs-plugin-parameters p {
     font-size: 1em;
-    margin: 5px 7px;
-    padding: 10px 5px;
+    padding: 10px 0;
 }
 
 .ui-jce .tabs-plugin-parameters input[type="checkbox"],
 .ui-jce .tabs-plugin-parameters .ui-checkbox {
     background-color: #fff;
+    margin: 6px 10px 10px 0;
 }
 
 .ui-jce .tabs-plugin-parameters a[href^="http"] {
@@ -164,7 +164,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0 10px;
 }
 
-.ui-jce div.tab-pane.tabbable.tabs-left ul li > a:first-child {
+.ui-jce div.tab-pane.tabbable.tabs-left ul li>a:first-child {
     max-width: 100px;
     padding-bottom: 20px;
     padding-top: 20px;
@@ -176,7 +176,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
 }
 
-.ui-jce div.tab-pane.tabbable.tabs-left ul li.active > a {
+.ui-jce div.tab-pane.tabbable.tabs-left ul li.active>a {
     background-color: #fff;
     border-color: #eee #fff #eee #eee;
     box-shadow: none;
