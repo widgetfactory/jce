@@ -84,19 +84,7 @@ abstract class WFInstall {
         if ($state) {
             $message  = '<div class="ui-jce">';
             $message .= '   <h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
-            $message .= '   <div>' . JText::_('WF_ADMIN_DESC') . '</div>';
-
-            // install additional packages for Joomla 1.5
-            if (!defined('JPATH_PLATFORM')) {
-                // install packages
-                $manifest = $installer->getPath('manifest');
-                $packages = dirname($manifest) . '/packages';
-                
-                if (is_dir($packages)) {
-                    self::installPackages($packages);
-                }
-            }
-            
+            $message .= '   <div>' . JText::_('WF_ADMIN_DESC') . '</div>';            
             $message .= '</div>';
 
             $installer->set('message', $message);
@@ -606,60 +594,6 @@ abstract class WFInstall {
         }
 
         return false;
-    }
-
-    /**
-     * Install additional packages
-     * @return Array or false
-     * @param object $path[optional] Path to package folder
-     */
-    private static function installPackages($source) {
-        jimport('joomla.installer.installer');
-
-        $db = JFactory::getDBO();
-
-        JTable::addIncludePath(JPATH_LIBRARIES . '/joomla/database/table');
-
-        $packages = array(
-            'editors'   => array('jce'),
-            'module'    => array('mod_jce_quickicon')
-        );
-
-        foreach ($packages as $folder => $element) {
-            $installer = new JInstaller();
-            $installer->setOverwrite(true);
-
-            $language = JFactory::getLanguage();
-
-            if ($installer->install($source . '/' . $folder)) {
-                // enable module
-                if ($folder == 'module') {
-                    $module = JTable::getInstance('module');
-
-                    $query = 'SELECT id FROM #__modules' . ' WHERE module = ' . $db->Quote($folder);
-                    $db->setQuery($query);
-                    $id = $db->loadResult();
-
-                    $module->load($id);
-                    $module->position = 'icon';
-                    $module->ordering = 100;
-                    $module->published = 1;
-                    $module->store();
-                }
-
-                // rename editor manifest
-                if ($folder == 'editor') {
-                    $manifest = $installer->getPath('manifest');
-
-                    if (basename($manifest) == 'legacy.xml') {
-                        // rename legacy.xml to jce.xml
-                        JFile::move($installer->getPath('extension_root') . '/' . basename($manifest), $installer->getPath('extension_root') . '/jce.xml');
-                    }
-                }
-            }
-        }
-
-        return $result;
     }
 
     private static function addIndexfiles($paths) {
