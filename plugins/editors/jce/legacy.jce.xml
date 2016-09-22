@@ -8,8 +8,8 @@
     <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
-    <description>WF_EDITOR_PLUGIN_DESC</description>
-    <files folder="plugins/editors/jce">
+    <description>PLG_EDITORS_JCE_XML_DESCRIPTION</description>
+    <files folder="plugins/editors">
         <file plugin="jce">jce.php</file>
     </files>
     <languages folder="administrator/language/en-GB">
