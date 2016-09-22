@@ -19,36 +19,30 @@ class WFViewMediabox extends WFView {
 
         jimport('joomla.form.form');
 
+        $xml = JPATH_PLUGINS . '/system/jcemediabox/jcemediabox.xml';
+
         if (class_exists('JForm')) {
-            //JForm::addFormPath(JPATH_PLUGINS . '/system/jcemediabox');
-
-            $xml = JPATH_PLUGINS . '/system/jcemediabox/jcemediabox.xml';
-
-            $params = new WFParameter($data, $xml, '', array('control' => 'config:fields:fieldset'));
-            $params->addElementPath(JPATH_PLUGINS . '/system/jcemediabox/elements');
-
-            $groups = array();
-            $array  = array();
-
-            foreach ($params->getGroups() as $group) {
-                $groups[] = $params->getParams('params', $group);
-            }
-
-            foreach ($groups as $group) {
-                $array = array_merge($array, $group);
-            }
-
-            return $array;
-
+            $control = 'config:fields:fieldset';
         } else {
-            // get params definitions
-            $params = new JParameter($data, JPATH_PLUGINS . '/system/jcemediabox.xml');
-
-            $xml = JPATH_PLUGINS . '/system/jcemediabox.xml';
-            $params->loadSetupFile($xml);
-
-            return $params->getParams();
+            $control = 'params';
+             $xml = JPATH_PLUGINS . '/system/jcemediabox.xml';
         }
+
+        $params = new WFParameter($data, $xml, '', array('control' => $control));
+        $params->addElementPath(JPATH_PLUGINS . '/system/jcemediabox/elements');
+
+        $groups = array();
+        $array  = array();
+
+        foreach ($params->getGroups() as $group) {
+            $groups[] = $params->getParams('params', $group);
+        }
+
+        foreach ($groups as $group) {
+            $array = array_merge($array, $group);
+        }
+
+        return $array;
     }
 
     function display($tpl = null) {
