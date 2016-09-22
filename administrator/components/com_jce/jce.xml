@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <extension type="component" version="2.5" method="upgrade" pro="@@pro@@">
-    <name>JCE</name>
+    <name>COM_JCE</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
     <copyright>@@copyright@@</copyright>
@@ -8,7 +8,7 @@
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>WF_DESC</description>
+    <description>COM_JCE_XML_DESCRIPTION</description>
 
     <files folder="components/com_jce">
         <folder>editor</folder>
@@ -42,12 +42,12 @@
     </install>
 
     <administration>
-        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">JCE</menu>
+        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">COM_JCE</menu>
 
         <submenu>
-            <menu view="cpanel" link="option=com_jce">WF_MENU_CPANEL</menu>
-            <menu view="config" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
-            <menu view="profiles" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
+            <menu view="cpanel" link="option=com_jce">COM_JCE_MENU_CPANEL</menu>
+            <menu view="config" link="option=com_jce&amp;view=config">COM_JCE_MENU_CONFIG</menu>
+            <menu view="profiles" link="option=com_jce&amp;view=profiles">COM_JCE_MENU_PROFILES</menu>
         </submenu>
 
         <files folder="administrator/components/com_jce">

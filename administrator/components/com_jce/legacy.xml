@@ -8,7 +8,7 @@
     <authorEmail>@@e-mail@@</authorEmail>
     <authorUrl>www.joomlacontenteditor.net</authorUrl>
     <version>@@version@@</version>
-    <description>WF_ADMIN_DESC</description>
+    <description>COM_JCE_XML_DESCRIPTION</description>
     <installfile>install.script.php</installfile>
     <uninstallfile>install.script.php</uninstallfile>
 
@@ -39,12 +39,12 @@
     </install>
 
     <administration>
-        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">JCE</menu>
+        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">COM_JCE</menu>
 
         <submenu>
-            <menu view="cpanel" link="option=com_jce">WF_MENU_CPANEL</menu>
-            <menu view="config" link="option=com_jce&amp;view=config">WF_MENU_CONFIG</menu>
-            <menu view="profiles" link="option=com_jce&amp;view=profiles">WF_MENU_PROFILES</menu>
+            <menu view="cpanel" link="option=com_jce">COM_JCE_MENU_CPANEL</menu>
+            <menu view="config" link="option=com_jce&amp;view=config">COM_JCE_MENU_CONFIG</menu>
+            <menu view="profiles" link="option=com_jce&amp;view=profiles">COM_JCE_MENU_PROFILES</menu>
         </submenu>
 
         <files folder="administrator/components/com_jce">
@@ -61,7 +61,6 @@
             <folder>views</folder>
             <file>access.xml</file>
             <file>controller.php</file>
-            <file>config.xml</file>
             <file>index.html</file>
             <file>install.php</file>
             <file>install.script.php</file>
@@ -73,7 +72,6 @@
         <languages folder="administrator/language/en-GB">
             <language tag="en-GB">en-GB.com_jce.ini</language>
             <language tag="en-GB">en-GB.com_jce.menu.ini</language>
-            <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
         </languages>
     </administration>
 </install>
