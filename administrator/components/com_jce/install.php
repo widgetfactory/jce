@@ -26,13 +26,8 @@ abstract class WFInstall {
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
         // get manifest
-        $manifest = $installer->getManifest();
-        $new_version = (string) $manifest->version;
-
-        // Joomla! 1.5
-        if (!defined('JPATH_PLATFORM') && !$new_version) {
-            $new_version = (string) $manifest->document->getElementByPath('version')->data();
-        }
+        $manifest       = $installer->getManifest();
+        $new_version    = (string) $manifest->version;
 
         $state = false;
 
@@ -83,8 +78,8 @@ abstract class WFInstall {
 
         if ($state) {
             $message  = '<div class="ui-jce">';
-            $message .= '   <h2>' . JText::_('WF_ADMIN_TITLE') . ' ' . $new_version . '</h2>';
-            $message .= '   <div>' . JText::_('WF_ADMIN_DESC') . '</div>';            
+            $message .= '   <h2>' . JText::_('COM_JCE') . ' ' . $new_version . '</h2>';
+            $message .= '   <div>' . JText::_('COM_JCE_XML_DESCRIPTION') . '</div>';            
             $message .= '</div>';
 
             $installer->set('message', $message);
