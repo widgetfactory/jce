@@ -30,9 +30,14 @@ function com_install()
         $installer->uninstall('module', $id);
     }
     
-    require_once(JPATH_ADMINISTRATOR . '/components/com_jce/install.php');
-    
-    $installer  = JInstaller::getInstance();
+    $instance   = JInstaller::getInstance();
+
+    if (!is_file($instance->getPath('extension_administrator') . '/install.php')) {
+        return false;
+    }
+
+    require_once($instance->getPath('extension_administrator') . '/install.php');
+
     $manifest   = JPATH_PLUGINS . '/editors/jce.xml';
     $version    = 0;
     
@@ -41,26 +46,23 @@ function com_install()
         $version = isset($data['version']) ? (string) $data['version'] : 0;
     }
     
-    $installer->set('current_version', $version);
+    $instance->set('current_version', $version);
     
-    $packages = array('plugins' => 'editors', 'modules' => '');
+    $packages = array('plugin', 'module');
 
     // install packages
-    $manifest   = $installer->getPath('manifest');
-    $source     = $installer->getPath('source');
+    $source = $instance->getPath('source');
     
-    foreach ($packages as $folder => $type) {
-        $inst = new JInstaller();
-        $inst->setOverwrite(true);
-        
-        $language = JFactory::getLanguage();
+    foreach ($packages as $folder) {
+        $installer = new JInstaller();
+        $installer->setOverwrite(true);
         
         // create path
-        $path = trim('/', implode('/', array($source, $folder, $type)));
+        $path = $source . '/' . $folder;
         
-        if ($inst->install($path)) {
+        if ($installer->install($path)) {
             // enable module
-            if ($folder == 'modules') {
+            if ($folder === "modules") {
                 $module = JTable::getInstance('module');
                 
                 $query = 'SELECT id FROM #__modules' . ' WHERE module = ' . $db->Quote($folder);
@@ -76,7 +78,7 @@ function com_install()
         }
     }
     
-    return WFInstall::install($installer);
+    return WFInstall::install($instance);
 }
 
 /**
