@@ -7,50 +7,55 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
 html {
     overflow: auto;
 }
+
 body {
-    height : 500px;
-    padding : 0;
+    height: 500px;
+    padding: 0;
+}
+
+.ui-jce .container {
+    width: 100%;
 }
 
 .ui-jce #users-list th:first-child {
-    width : 20px;
+    width: 20px;
     text-align: center;
 }
 
 .ui-jce #users-list td:first-child {
     text-align: center;
-    width : 20px;
+    width: 20px;
 }
 
-.ui-jce #users-list th:first-child + th, .ui-jce #users-list td:first-child + td {
-    width : 300px;
+.ui-jce th:first-child+th,
+.ui-jce td:first-child+td {
+    width: 40%;
 }
 
-.ui-jce #users-list th:first-child + th + th, .ui-jce #users-list td:first-child + td + td {
-    width : 230px;
+.ui-jce th:first-child+th+th,
+.ui-jce td:first-child+td+td {
+    width: 30%;
 }
 
-.ui-jce #users-list th:first-child + th + th + th, .ui-jce #users-list td:first-child + td + td + td {
-    width : 125px;
+.ui-jce th:first-child+th+th+th,
+.ui-jce td:first-child+td+td+td {
+    width: 20%;
 }
 
-.ui-jce > div.container + div.btn-group {
-    position : absolute;
-    right : 10px;
+.ui-jce>div.container+div.btn-group {
+    position: absolute;
+    right: 10px;
 }
 
-.ui-jce > div.container {
-    height : 420px;
+.ui-jce>div.container {
+    height: 420px;
 }
 
-.ui-jce > div.container thead, tbody {
-    display: block;
-}
-
-.ui-jce > div.container tbody {
+.ui-jce>div.container tbody {
     max-height: 340px;
     overflow-x: hidden;
     overflow-y: auto;

@@ -7,33 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    function select() {
-        var u = [],
-            v, o, h, s = window.parent.document.getElementById('users');
-
-        $('input:checkbox:checked').each(function() {
-            v = $(this).val();
-
-            if (u = document.getElementById('username_' + v)) {
-                h = $.trim(u.innerHTML);
-
-                if ($.jce.Users.check(s, v)) {
-                    return;
-                }
-
-                // create element
-                var li = document.createElement('li');
-                li.innerHTML = '<span>' + h + '</span><button class="btn btn-link users-list-delete"><i class="icon-trash"></i></button><input type="hidden" name="users[]" value="' + v + '" />';
-
-                // add to list
-                s.appendChild(li);
-            }
-        });
-
-        close();
-    }
-
+(function($, Wf) {
     function check(s, v) {
         $.each(s.childNodes, function(i, n) {
             var input = n.firstChild;
@@ -54,6 +28,32 @@
             win.SqueezeBox.close();
         }
     }
+    
+    function select() {
+        var u = [],
+            v, o, h, s = window.parent.document.getElementById('users');
+
+        $('input:checkbox:checked').each(function() {
+            v = $(this).val();
+
+            if (u = document.getElementById('username_' + v)) {
+                h = $.trim(u.innerHTML);
+
+                if (check(s, v)) {
+                    return;
+                }
+
+                // create element
+                var li = document.createElement('li');
+                li.innerHTML = '<span>' + h + '</span><button class="btn btn-link users-list-delete"><i class="icon-trash"></i></button><input type="hidden" name="users[]" value="' + v + '" />';
+
+                // add to list
+                s.appendChild(li);
+            }
+        });
+
+        close();
+    }
 
     $(document).ready(function() {
         $('#cancel').click(function(e) {
@@ -66,4 +66,4 @@
             e.preventDefault();
         });
     });
-})(jQuery);
+})(jQuery, Wf);
