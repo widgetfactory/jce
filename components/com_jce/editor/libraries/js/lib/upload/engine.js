@@ -8,18 +8,18 @@
  * other free or open source software licenses.
  */
 
-(function ($, window, undef) {
+(function($, window, undef) {
 
     var counter = 0;
 
     var mime = {
-        "jpeg"  : "image/jpeg",
-        "jpg"   : "image/jpeg",
-        "png"   : "image/png",
-        "gif"   : "image/gif",
-        "tif"   : "image/tiff",
-        "tiff"  : "image/tiff",
-        "webp"  : "image/webp"
+        "jpeg": "image/jpeg",
+        "jpg": "image/jpeg",
+        "png": "image/png",
+        "gif": "image/gif",
+        "tif": "image/tiff",
+        "tiff": "image/tiff",
+        "webp": "image/webp"
     };
 
     /**
@@ -28,7 +28,8 @@
      @return {String} Virtually unique id.
      */
     function uid() {
-        var guid = new Date().getTime().toString(32), i;
+        var guid = new Date().getTime().toString(32),
+            i;
 
         for (i = 0; i < 5; i++) {
             guid += Math.floor(Math.random() * 65535).toString(32);
@@ -38,8 +39,10 @@
     }
 
     // browser sniffer
-    var Env = (function () {
-        var nav = navigator, ua = nav.userAgent, o = {};
+    var Env = (function() {
+        var nav = navigator,
+            ua = nav.userAgent,
+            o = {};
 
         // old opera (not webkit)
         o.opera = !!(window.opera && window.opera.buildNumber);
@@ -70,7 +73,7 @@
     }
 
     Transport.prototype = {
-        upload: function (file) {
+        upload: function(file) {
             // store current file
             this.file = file;
 
@@ -85,18 +88,18 @@
                 this.iframe();
             }
         },
-        error: function (status, text) {
+        error: function(status, text) {
             var callback = this.options.callback;
 
             var error = {
-                message : text || 'The server returned an invalid JSON response.',
-                file    : this.file,
-                code    : status || 500
+                message: text || 'The server returned an invalid JSON response.',
+                file: this.file,
+                code: status || 500
             };
 
             callback('error', error);
         },
-        response: function (data) {
+        response: function(data) {
             var callback = this.options.callback;
 
             if (data) {
@@ -104,7 +107,7 @@
                 // parse JSON data if valid
                 try {
                     r = $.parseJSON(data);
-                } catch(e) {
+                } catch (e) {
                     // malformed JSON
                     if (data.indexOf('{') !== -1) {
                         data = 'The server returned an invalid JSON response.';
@@ -133,15 +136,19 @@
                 this.error();
             }
         },
-        xhr: function () {
-            var self = this, xhr = this.transport, o = this.options, callback = o.callback, formData = new FormData();
+        xhr: function() {
+            var self = this,
+                xhr = this.transport,
+                o = this.options,
+                callback = o.callback,
+                formData = new FormData();
 
             // get file object
             var file = this.file;
 
             // progress
             if (xhr.upload) {
-                xhr.upload.onprogress = function (e) {
+                xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
                         file.loaded = Math.min(file.size, e.loaded);
                         callback('progress', file);
@@ -149,7 +156,7 @@
                 };
             }
 
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     // success
                     if (xhr.status === 200) {
@@ -174,7 +181,7 @@
             xhr.open("post", o.url, true);
 
             // Set custom headers
-            $.each(o.headers, function (name, value) {
+            $.each(o.headers, function(name, value) {
                 xhr.setRequestHeader(name, value);
             });
 
@@ -182,7 +189,7 @@
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             // Add multipart params
-            $.each(o.multipart, function (name, value) {
+            $.each(o.multipart, function(name, value) {
                 if ($.type(value) === "object") {
                     formData.append(value.name, value.value);
                 } else {
@@ -192,13 +199,13 @@
 
             // add file specific data
             if (file.data) {
-              $.each(file.data, function (name, value) {
-                  if ($.type(value) === "object") {
-                      formData.append(value.name, value.value);
-                  } else {
-                      formData.append(name, value);
-                  }
-              });
+                $.each(file.data, function(name, value) {
+                    if ($.type(value) === "object") {
+                        formData.append(value.name, value.value);
+                    } else {
+                        formData.append(name, value);
+                    }
+                });
             }
 
             // add method
@@ -213,7 +220,7 @@
 
             return;
         },
-        cleanup: function () {
+        cleanup: function() {
             var file = this.file;
 
             if (file && file.input) {
@@ -223,11 +230,18 @@
 
             return false;
         },
-        iframe: function () {
-            var self = this, ifr = this.transport, o = this.options, callback = o.callback, form = o.form, inputs = [], _uid = uid();
+        iframe: function() {
+            var self = this,
+                ifr = this.transport,
+                o = this.options,
+                callback = o.callback,
+                form = o.form,
+                inputs = [],
+                _uid = uid();
 
             // get file object and element
-            var file = this.file, input = file.input;
+            var file = this.file,
+                input = file.input;
 
             // add input name and create form
             var form = $(input).wrap('<form method="post" target="' + _uid + '_iframe" encoding="multipart/form-data" enctype="multipart/form-data" />').parent('form');
@@ -235,7 +249,7 @@
             input.setAttribute('name', o.data_name);
 
             // add other input data
-            $.each(o.multipart, function (name, value) {
+            $.each(o.multipart, function(name, value) {
                 if (name === o.data_name) {
                     return;
                 }
@@ -261,7 +275,7 @@
 
             this.transport = ifr;
 
-            $(ifr).on('load', function (e) {
+            $(ifr).on('load', function(e) {
                 var el;
 
                 try {
@@ -304,7 +318,7 @@
 
             $(form).attr('action', o.url).submit();
         },
-        abort: function () {
+        abort: function() {
             if (this.transport instanceof XMLHttpRequest) {
                 this.transport.abort();
 
@@ -325,7 +339,7 @@
                             ifr.src = "about:blank";
                         }
                     }
-                } catch(ex) {}
+                } catch (ex) {}
 
                 this.transport = null;
                 this.cleanup();
@@ -352,6 +366,8 @@
             max_size: 1024,
             data: {}
         }, options);
+
+        this.files = [];
 
         // create element
         this.input = $('<input type="file" />');
@@ -380,7 +396,7 @@
          * @param {function} fct Event callback
          * @returns {void}
          */
-        on: function (event, fn) {
+        on: function(event, fn) {
             $(document).on('upload:' + event, fn);
 
             this._events.push(event);
@@ -392,7 +408,7 @@
          * @param {string} ev Event name
          * @returns {void}
          */
-        fire: function (event) {
+        fire: function(event) {
             $(document).trigger('upload:' + event, Array.prototype.slice.call(arguments, 1));
 
             return this;
@@ -401,15 +417,16 @@
          * Initialize Uploader
          * @returns {void}
          */
-        init: function () {
+        init: function() {
             // create empty files array
-            var self = this, o = this.options;
+            var self = this,
+                o = this.options;
 
             // if a drop target is specified, add drop events
             if (o.drop_target && $.support.dragdrop) {
 
                 // Block browser default dragover dragenter, but fire event
-                $(o.drop_target).on('dragover', function (e) {
+                $(o.drop_target).on('dragover', function(e) {
                     var dataTransfer = e.originalEvent.dataTransfer;
 
                     self.fire('dragover');
@@ -420,21 +437,21 @@
                 });
 
                 // fire off other drag events
-                $(o.drop_target).on('dragstart dragenter dragleave dragend', function (e) {
+                $(o.drop_target).on('dragstart dragenter dragleave dragend', function(e) {
                     self.fire(e.type);
 
                     cancel(e);
                 });
 
                 // Attach drop handler and grab files
-                $(o.drop_target).on('drop', function (e) {
+                $(o.drop_target).on('drop', function(e) {
                     var dataTransfer = e.originalEvent.dataTransfer;
 
                     self.fire('drop');
 
                     // Add dropped files
                     if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                        $.each(dataTransfer.files, function (i, file) {
+                        $.each(dataTransfer.files, function(i, file) {
                             self.addFile(file);
                         });
                         cancel(e);
@@ -461,15 +478,15 @@
                 $(btn).addClass('wf-uploader-button').wrap('<div class="wf-uploader-container" />');
 
                 // add change event to input
-                $(this.input).on('change', function () {
+                $(this.input).on('change', function() {
                     if (this.files && $.support.xhr2) {
-                        $.each(this.files, function (i, file) {
+                        $.each(this.files, function(i, file) {
                             self.addFile(file);
                         });
                     } else {
                         var name = this.value.replace(/\\/g, '/').replace(/\/(.+)$/, '$1');
                         // add file with name and element
-                        self.addFile({name: name, input: this});
+                        self.addFile({ name: name, input: this });
 
                         // clone input and append
                         $(this).hide().clone(true).insertAfter(this).show();
@@ -494,7 +511,7 @@
          * @param {object} file
          * @returns {void}
          */
-        addFile: function (file) {
+        addFile: function(file) {
             if (file && file.name) {
                 // shortcut for file.name
                 var name = file.name;
@@ -503,7 +520,7 @@
 
                 // check for extension in file name, eg. image.php.jpg
                 if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
-                    this.fire('error', {"code": 800, "message": 'Invalid file type', "file" : file});
+                    this.fire('error', { "code": 800, "message": 'Invalid file type', "file": file });
                     return false;
                 }
 
@@ -514,14 +531,14 @@
 
                     // check against allowed types
                     if (rx.test(ext) === false) {
-                        this.fire('error', {"code": 601, "message": 'File type not supported', "file" : file});
+                        this.fire('error', { "code": 601, "message": 'File type not supported', "file": file });
                         return false;
                     }
                 }
 
                 // check file size
                 if (file.size && parseInt(file.size) > parseInt(this.options.max_size) * 1024) {
-                    this.fire('error', {"code": 600, "message": 'File size exceeds the maximum allowed size', "file" : file});
+                    this.fire('error', { "code": 600, "message": 'File size exceeds the maximum allowed size', "file": file });
                     return false;
                 }
 
@@ -546,7 +563,7 @@
                 this.fire('fileadded', file);
 
                 if (this.fileExists(file)) {
-                    this.fire('error', {"code": 700, "message": 'A file with this name is already in the queue', "file": file});
+                    this.fire('error', { "code": 700, "message": 'A file with this name is already in the queue', "file": file });
                     return false;
                 }
 
@@ -554,7 +571,7 @@
                 this.files.push(file);
             }
         },
-        removeFile: function (file) {
+        removeFile: function(file) {
             // dispatch event
             this.fire('fileremoved', file);
 
@@ -568,7 +585,8 @@
             return this;
         },
         getFileIndex: function(file) {
-            var i, files = this.files, len = files.length;
+            var i, files = this.files,
+                len = files.length;
 
             for (i = 0; i < len; i++) {
                 if (files[i] && files[i].id === file.id) {
@@ -579,7 +597,8 @@
             return -1;
         },
         fileExists: function(file) {
-            var i, files = this.files, len = files.length;
+            var i, files = this.files,
+                len = files.length;
 
             for (i = 0; i < len; i++) {
                 if (files[i] && files[i].filename === file.filename) {
@@ -589,11 +608,12 @@
 
             return false;
         },
-        updateFile: function (file, property) {
-            var self = this, i = this.getFileIndex(file);
+        updateFile: function(file, property) {
+            var self = this,
+                i = this.getFileIndex(file);
 
             if (i !== -1) {
-                $.each(property, function (name, value) {
+                $.each(property, function(name, value) {
                     if (/^(size|type|element)$/.test(name) === false) {
                         self.files[i][name] = value;
                     }
@@ -602,19 +622,21 @@
 
             return this;
         },
-        renameFile: function (file, name) {
-            return this.updateFile(file, {'filename': name});
+        renameFile: function(file, name) {
+            return this.updateFile(file, { 'filename': name });
         },
 
-        upload: function (file) {
-            var self = this, o = this.options, data;
+        upload: function(file) {
+            var self = this,
+                o = this.options,
+                data;
 
             if ($.type(o.data) === "object") {
-                data = $.extend({"name" : file.filename || ""}, o.data);
+                data = $.extend({ "name": file.filename || "" }, o.data);
             }
 
             if ($.type(o.data) === "array") {
-                data = $.merge([{"name" : "name", "value" : file.filename || ""}], o.data);
+                data = $.merge([{ "name": "name", "value": file.filename || "" }], o.data);
             }
 
             // create upload arguments
@@ -622,7 +644,7 @@
                 url: o.url,
                 data_name: o.input_name,
                 multipart: data,
-                callback: function (ev, args) {
+                callback: function(ev, args) {
                     // fire event
                     self.fire(ev, args);
 
@@ -647,10 +669,10 @@
 
             return this;
         },
-        start: function () {
+        start: function() {
             var self = this;
 
-            $.each(this.files, function (i, file) {
+            $.each(this.files, function(i, file) {
                 // begin upload
                 self.fire('uploadstart', file);
 
@@ -659,14 +681,15 @@
 
             return this;
         },
-        clear: function () {
+        clear: function() {
             this.files = [];
+
             // clear input and remove all siblings
             $(this.element).val("").siblings('.wf-uploader-element').remove();
 
             return this;
         },
-        stop: function () {
+        stop: function() {
             if (this.transport) {
                 this.transport.abort();
 
@@ -675,7 +698,7 @@
 
             return this;
         },
-        destroy: function () {
+        destroy: function() {
             if (this.transport) {
                 this.transport.cleanup();
 

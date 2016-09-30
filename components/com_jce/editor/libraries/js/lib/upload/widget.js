@@ -117,7 +117,6 @@
                 $(this.element).addClass('wf-uploader-html4');
             }
 
-            //try {
             this.uploader = new Uploader(this.options);
 
             // on Uploader init
@@ -155,6 +154,10 @@
 
             this.uploader.on('drop', function(e, o) {
                 $(self.options.drop_target).removeClass('wf-upload-dragover');
+            });
+
+            this.uploader.on('close', function(e, o) {
+                self.close();
             });
 
             /**
