@@ -256,33 +256,11 @@
             init = false;
         },
         validate: function() {
-            var required = [];
-
-            $(':input.required').each(function() {
-                if ($(this).val() === '') {
-                    var parent = $(this).parents('div.tab-pane').get(0);
-
-                    required.push("\n" + $('#tabs ul li a[href=#' + parent.id + ']').html() + ' - ' + $.trim($('label[for="' + this.id + '"]').html()));
-                }
-            });
-
-            if (required.length) {
-                var msg = $.jce.options.labels.required;
-                msg += required.join(',');
-
-                alert(msg);
-
-                return false;
-            }
-
             return true;
         },
         onSubmit: function() {
-            // disable placeholder inputs
-            $('div#tabs-editor, div#tabs-plugins').find(':input[name].placeholder').prop('disabled', true);
-
             // disable inputs not changed
-            $('#tabs-features :input[name], #tabs-editor :input[name], #tabs-plugins :input[name]').not('.isdirty').prop('disabled', true).parents('.ui-radio, .ui-checkbox').addClass('disabled');
+            $('#tabs-features :input[name], #tabs-editor :input[name], #tabs-plugins :input[name]').not('.isdirty').prop('disabled', true);
         },
         _fixLayout: function() {
             $('.mceToolBarItem').removeClass('mceToolBarItemEnd mceToolBarItemStart');
@@ -371,7 +349,7 @@
                 plugins.push($(this).data('name'));
             });
 
-            $('ul#profileAdditionalFeatures input:checkbox:checked').each(function() {
+            $('#profileAdditionalFeatures input:checkbox:checked').each(function() {
                 plugins.push($(this).val());
             });
 
