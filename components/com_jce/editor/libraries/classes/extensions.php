@@ -199,8 +199,8 @@ class WFExtension extends JObject {
                 if ($name) {
                     $root = $path . '/' . basename($path) . '.php';
 
-                    // legacy
-                    if (dirname($path) === WF_EDITOR_EXTENSIONS) {
+                    // legacy - clean defined path for Windows!!
+                    if (dirname($path) === WFUtility::cleanPath(WF_EDITOR_EXTENSIONS)) {
                         $root = $path . '/' . $name . '.php';
                     }
 
