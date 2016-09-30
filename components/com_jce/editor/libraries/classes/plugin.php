@@ -230,7 +230,6 @@ class WFEditorPlugin extends JObject {
         $document->addScript(array('jquery.min'), 'jquery');
 
         $document->addScript(array('jquery-ui.min'), 'jquery');
-        $document->addStyleSheet(array('jquery-ui.css'), 'jquery');
 
         $document->addScript(array('plugin.min.js'));
         $document->addStyleSheet(array('plugin.min.css'), 'libraries');
