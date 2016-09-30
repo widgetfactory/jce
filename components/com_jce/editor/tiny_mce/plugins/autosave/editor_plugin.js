@@ -15,17 +15,18 @@
 // a reference to editor in closue scope
 /*eslint no-func-assign:0 */
 
-(function (tinymce) {
-    var Dispatcher = tinymce.util.Dispatcher, Storage = window.sessionStorage;
-    
+(function(tinymce) {
+    var Dispatcher = tinymce.util.Dispatcher,
+        Storage = window.sessionStorage;
+
     if (!Storage) {
         return;
     }
-    
-    tinymce._beforeUnloadHandler = function () {
+
+    tinymce._beforeUnloadHandler = function() {
         var msg;
 
-        tinymce.each(tinymce.editors, function (editor) {
+        tinymce.each(tinymce.editors, function(editor) {
             // Store a draft for each editor instance
             if (editor.plugins.autosave) {
                 editor.plugins.autosave.storeDraft();
@@ -41,8 +42,10 @@
     };
 
     tinymce.create('tinymce.plugins.AutosavePlugin', {
-        init: function (ed) {
-            var self = this, settings = ed.settings, prefix, started;
+        init: function(ed) {
+            var self = this,
+                settings = ed.settings,
+                prefix, started;
 
             /**
              * This event gets fired when a draft is stored to local storage.
@@ -88,7 +91,7 @@
             }
 
             function hasDraft() {
-                var time = parseInt(localStorage.getItem(prefix + "time"), 10) || 0;
+                var time = parseInt(Storage.getItem(prefix + "time"), 10) || 0;
 
                 if (new Date().getTime() - time > settings.autosave_retention) {
                     removeDraft(false);
@@ -114,7 +117,7 @@
 
             function storeDraft() {
                 if (!isEmpty() && ed.isDirty()) {
-                    var content = ed.getContent({format: 'raw', no_events: true});
+                    var content = ed.getContent({ format: 'raw', no_events: true });
                     var expires = new Date().getTime();
 
                     Storage.setItem(prefix + "draft", content);
@@ -131,7 +134,7 @@
                 if (hasDraft()) {
                     var content = Storage.getItem(prefix + "draft");
 
-                    ed.setContent(content, {format: 'raw'});
+                    ed.setContent(content, { format: 'raw' });
 
                     self.onRestoreDraft.dispatch(self, {
                         content: content
@@ -141,7 +144,7 @@
 
             function startStoreDraft() {
                 if (!started) {
-                    setInterval(function () {
+                    setInterval(function() {
                         if (!ed.removed) {
                             storeDraft();
                         }
@@ -151,7 +154,7 @@
                 }
             }
 
-            settings.autosave_interval  = parseTime(settings.autosave_interval, '30s');
+            settings.autosave_interval = parseTime(settings.autosave_interval, '30s');
             settings.autosave_retention = parseTime(settings.autosave_retention, '20m');
 
             function restoreLastDraft() {
@@ -167,7 +170,7 @@
             });
 
             // Enable/disable restoredraft button depending on if there is a draft stored or not
-            ed.onNodeChange.add(function () {
+            ed.onNodeChange.add(function() {
                 var controlManager = ed.controlManager;
 
                 if (controlManager.get('autosave')) {
@@ -175,7 +178,7 @@
                 }
             });
 
-            ed.onInit.add(function () {
+            ed.onInit.add(function() {
                 // Check if the user added the restore button, then setup auto storage logic
                 if (ed.controlManager.get('autosave')) {
                     startStoreDraft();
@@ -188,22 +191,22 @@
                 html = tinymce.trim(typeof html == "undefined" ? ed.getBody().innerHTML : html);
 
                 return html === '' || new RegExp(
-                        '^<' + forcedRootBlockName + '[^>]*>((\u00a0|&nbsp;|[ \t]|<br[^>]*>)+?|)<\/' + forcedRootBlockName + '>|<br>$', 'i'
-                        ).test(html);
+                    '^<' + forcedRootBlockName + '[^>]*>((\u00a0|&nbsp;|[ \t]|<br[^>]*>)+?|)<\/' + forcedRootBlockName + '>|<br>$', 'i'
+                ).test(html);
             }
 
             if (ed.settings.autosave_restore_when_empty !== false) {
-                ed.onInit.add(function () {
+                ed.onInit.add(function() {
                     if (hasDraft() && isEmpty()) {
                         restoreDraft();
                     }
                 });
 
-                ed.onSaveContent.add(function () {
+                ed.onSaveContent.add(function() {
                     removeDraft();
                 });
             }
-            
+
             self.storeDraft = storeDraft;
 
             window.onbeforeunload = tinymce._beforeUnloadHandler;
