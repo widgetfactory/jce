@@ -11,10 +11,14 @@
  * * Based on plupload - http://www.plupload.com
  */
 
-(function () {
-    var each = tinymce.each, extend = tinymce.extend, JSON = tinymce.util.JSON;
-    var isWin = navigator.platform.indexOf('Win') !== -1, isSafari = tinymce.isWebKit && navigator.vendor.indexOf('Apple') !== -1;
-    var Node = tinymce.html.Node, RangeUtils = tinymce.dom.RangeUtils;
+(function() {
+    var each = tinymce.each,
+        extend = tinymce.extend,
+        JSON = tinymce.util.JSON;
+    var isWin = navigator.platform.indexOf('Win') !== -1,
+        isSafari = tinymce.isWebKit && navigator.vendor.indexOf('Apple') !== -1;
+    var Node = tinymce.html.Node,
+        RangeUtils = tinymce.dom.RangeUtils;
 
     var supportDragDrop = !!(window.ProgressEvent && window.FileReader && window.FormData) && !tinymce.isOpera;
 
@@ -25,8 +29,9 @@
     }
 
     // Parses the default mime types string into a mimes lookup map (from plupload.js)
-    (function (mime_data) {
-        var items = mime_data.split(/,/), i, y, ext;
+    (function(mime_data) {
+        var items = mime_data.split(/,/),
+            i, y, ext;
 
         for (i = 0; i < items.length; i += 2) {
             ext = items[i + 1].split(/ /);
@@ -36,50 +41,50 @@
             }
         }
     })(
-            "application/msword,doc dot," +
-            "application/pdf,pdf," +
-            "application/pgp-signature,pgp," +
-            "application/postscript,ps ai eps," +
-            "application/rtf,rtf," +
-            "application/vnd.ms-excel,xls xlb," +
-            "application/vnd.ms-powerpoint,ppt pps pot," +
-            "application/zip,zip," +
-            "application/x-shockwave-flash,swf swfl," +
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document,docx," +
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.template,dotx," +
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,xlsx," +
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation,pptx," +
-            "application/vnd.openxmlformats-officedocument.presentationml.template,potx," +
-            "application/vnd.openxmlformats-officedocument.presentationml.slideshow,ppsx," +
-            "application/x-javascript,js," +
-            "application/json,json," +
-            "audio/mpeg,mpga mpega mp2 mp3," +
-            "audio/x-wav,wav," +
-            "audio/mp4,m4a," +
-            "image/bmp,bmp," +
-            "image/gif,gif," +
-            "image/jpeg,jpeg jpg jpe," +
-            "image/photoshop,psd," +
-            "image/png,png," +
-            "image/svg+xml,svg svgz," +
-            "image/tiff,tiff tif," +
-            "text/plain,asc txt text diff log," +
-            "text/html,htm html xhtml," +
-            "text/css,css," +
-            "text/csv,csv," +
-            "text/rtf,rtf," +
-            "video/mpeg,mpeg mpg mpe," +
-            "video/quicktime,qt mov," +
-            "video/mp4,mp4," +
-            "video/x-m4v,m4v," +
-            "video/x-flv,flv," +
-            "video/x-ms-wmv,wmv," +
-            "video/avi,avi," +
-            "video/webm,webm," +
-            "video/vnd.rn-realvideo,rv," +
-            "application/vnd.oasis.opendocument.formula-template,otf," +
-            "application/octet-stream,exe"
-            );
+        "application/msword,doc dot," +
+        "application/pdf,pdf," +
+        "application/pgp-signature,pgp," +
+        "application/postscript,ps ai eps," +
+        "application/rtf,rtf," +
+        "application/vnd.ms-excel,xls xlb," +
+        "application/vnd.ms-powerpoint,ppt pps pot," +
+        "application/zip,zip," +
+        "application/x-shockwave-flash,swf swfl," +
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document,docx," +
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template,dotx," +
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,xlsx," +
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation,pptx," +
+        "application/vnd.openxmlformats-officedocument.presentationml.template,potx," +
+        "application/vnd.openxmlformats-officedocument.presentationml.slideshow,ppsx," +
+        "application/x-javascript,js," +
+        "application/json,json," +
+        "audio/mpeg,mpga mpega mp2 mp3," +
+        "audio/x-wav,wav," +
+        "audio/mp4,m4a," +
+        "image/bmp,bmp," +
+        "image/gif,gif," +
+        "image/jpeg,jpeg jpg jpe," +
+        "image/photoshop,psd," +
+        "image/png,png," +
+        "image/svg+xml,svg svgz," +
+        "image/tiff,tiff tif," +
+        "text/plain,asc txt text diff log," +
+        "text/html,htm html xhtml," +
+        "text/css,css," +
+        "text/csv,csv," +
+        "text/rtf,rtf," +
+        "video/mpeg,mpeg mpg mpe," +
+        "video/quicktime,qt mov," +
+        "video/mp4,mp4," +
+        "video/x-m4v,m4v," +
+        "video/x-flv,flv," +
+        "video/x-ms-wmv,wmv," +
+        "video/avi,avi," +
+        "video/webm,webm," +
+        "video/vnd.rn-realvideo,rv," +
+        "application/vnd.oasis.opendocument.formula-template,otf," +
+        "application/octet-stream,exe"
+    );
 
     var state = {
         /**
@@ -159,10 +164,10 @@
     tinymce.create('tinymce.plugins.Upload', {
         files: [],
         plugins: [],
-        init: function (ed, url) {
+        init: function(ed, url) {
             function cancel() {
                 // Block browser default drag over
-                ed.dom.bind(ed.getBody(), 'dragover', function (e) {
+                ed.dom.bind(ed.getBody(), 'dragover', function(e) {
                     var dataTransfer = e.dataTransfer;
 
                     // cancel dropped files
@@ -171,7 +176,7 @@
                     }
                 });
 
-                ed.dom.bind(ed.getBody(), 'drop', function (e) {
+                ed.dom.bind(ed.getBody(), 'drop', function(e) {
                     var dataTransfer = e.dataTransfer;
 
                     // cancel dropped files
@@ -185,9 +190,9 @@
             self.editor = ed;
             self.plugin_url = url;
 
-            ed.onPreInit.add(function () {
+            ed.onPreInit.add(function() {
                 // get list of supported plugins
-                each(ed.plugins, function (o, k) {
+                each(ed.plugins, function(o, k) {
                     if (ed.getParam(k + '_upload') && tinymce.is(o.getUploadURL, 'function') && tinymce.is(o.insertUploadedFile, 'function')) {
                         self.plugins.push(o);
                     }
@@ -197,8 +202,9 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
                 // find and convert upload markers
-                ed.parser.addNodeFilter('img', function (nodes) {
-                    var i = nodes.length, node, cls, data;
+                ed.parser.addNodeFilter('img', function(nodes) {
+                    var i = nodes.length,
+                        node, cls, data;
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class'), data = node.attr('data-mce-upload-marker');
@@ -214,8 +220,9 @@
                     }
                 });
                 // remove upload markers
-                ed.serializer.addNodeFilter('img', function (nodes) {
-                    var i = nodes.length, node, cls;
+                ed.serializer.addNodeFilter('img', function(nodes) {
+                    var i = nodes.length,
+                        node, cls;
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
@@ -234,7 +241,7 @@
                 });
             });
 
-            ed.onInit.add(function () {
+            ed.onInit.add(function() {
                 // check for support
                 if (!supportDragDrop) {
                     cancel();
@@ -248,7 +255,7 @@
                 }
 
                 function bindUploadEvents(ed) {
-                    each(ed.dom.select('img.mceItemUploadMarker', ed.getBody()), function (n) {
+                    each(ed.dom.select('img.mceItemUploadMarker', ed.getBody()), function(n) {
                         if (self.plugins.length == 0) {
                             ed.dom.remove(n);
                         } else {
@@ -258,17 +265,17 @@
                 }
 
                 // update events when content is inserted
-                ed.selection.onSetContent.add(function () {
+                ed.selection.onSetContent.add(function() {
                     bindUploadEvents(ed);
                 });
                 // update events when content is set
-                ed.onSetContent.add(function () {
+                ed.onSetContent.add(function() {
                     bindUploadEvents(ed);
                 });
 
                 // update events when fullscreen is activated
                 if (ed.onFullScreen) {
-                    ed.onFullScreen.add(function (editor) {
+                    ed.onFullScreen.add(function(editor) {
                         bindUploadEvents(editor);
                     });
                 }
@@ -284,12 +291,12 @@
                 });
 
                 // Attach drop handler and grab files
-                ed.dom.bind(ed.getBody(), 'drop', function (e) {
+                ed.dom.bind(ed.getBody(), 'drop', function(e) {
                     var dataTransfer = e.dataTransfer;
 
                     // Add dropped files
                     if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                        each(dataTransfer.files, function (file) {
+                        each(dataTransfer.files, function(file) {
                             var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
                             if (rng) {
                                 ed.selection.setRng(rng);
@@ -304,7 +311,7 @@
 
                     // upload...
                     if (self.files.length) {
-                        each(self.files, function (file) {
+                        each(self.files, function(file) {
                             self.upload(file);
                         });
                     }
@@ -329,8 +336,9 @@
                 filters: []
             };
 
-            self.FileUploaded.add(function (file, o) {
-                var n = file.marker, s, w, h;
+            self.FileUploaded.add(function(file, o) {
+                var n = file.marker,
+                    s, w, h;
 
                 function showError(error) {
                     ed.windowManager.alert(error || ed.getLang('upload.response_error', 'Invalid Upload Response'));
@@ -400,7 +408,7 @@
                 }
             });
 
-            self.UploadError.add(function (o) {
+            self.UploadError.add(function(o) {
                 ed.windowManager.alert(o.code + ' : ' + o.message);
 
                 if (o.file && o.file.marker) {
@@ -413,8 +421,9 @@
          * Bind events to upload marker and create upload input
          * @param marker Marker / Placeholder element
          */
-        _bindUploadMarkerEvents: function (ed, marker) {
-            var self = this, dom = tinymce.DOM;
+        _bindUploadMarkerEvents: function(ed, marker) {
+            var self = this,
+                dom = tinymce.DOM;
 
             function removeUpload() {
                 dom.setStyles('wf_upload_button', {
@@ -446,7 +455,7 @@
             }
 
             // add upload on mouseover
-            ed.dom.bind(marker, 'mouseover', function (e) {
+            ed.dom.bind(marker, 'mouseover', function(e) {
 
                 if (ed.dom.getAttrib(marker, 'data-mce-selected')) {
                     return;
@@ -477,7 +486,7 @@
                     'zIndex': zIndex + 1
                 });
 
-                input.onchange = function () {
+                input.onchange = function() {
                     if (input.files) {
                         var file = input.files[0];
 
@@ -496,7 +505,7 @@
             });
 
             // remove upload on mouseout
-            ed.dom.bind(marker, 'mouseout', function (e) {
+            ed.dom.bind(marker, 'mouseout', function(e) {
                 // don't remove if over upload input
                 if (!e.relatedTarget && e.clientY > 0) {
                     return;
@@ -505,8 +514,12 @@
                 removeUpload();
             });
         },
-        _createUploadMarker: function (n) {
-            var self = this, ed = this.editor, src = n.attr('src') || '', style = {}, styles, cls = [];
+        _createUploadMarker: function(n) {
+            var self = this,
+                ed = this.editor,
+                src = n.attr('src') || '',
+                style = {},
+                styles, cls = [];
 
             // get alt from src if not base64 encoded
             if (!n.attr('alt') && !/data:image/.test(src)) {
@@ -563,10 +576,10 @@
          * @param {Object} items Name/value object to serialize as a querystring.
          * @return {String} String with url + serialized query string items.
          */
-        buildUrl: function (url, items) {
+        buildUrl: function(url, items) {
             var query = '';
 
-            each(items, function (value, name) {
+            each(items, function(value, name) {
                 query += (query ? '&' : '') + encodeURIComponent(name) + '=' + encodeURIComponent(value);
             });
 
@@ -576,8 +589,11 @@
 
             return url;
         },
-        addFile: function (file) {
-            var ed = this.editor, self = this, fileNames = {}, url;
+        addFile: function(file) {
+            var ed = this.editor,
+                self = this,
+                fileNames = {},
+                url;
 
             // check for extension in file name, eg. image.php.jpg
             if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
@@ -586,7 +602,7 @@
             }
 
             // get first url for the file type
-            each(self.plugins, function (o, k) {
+            each(self.plugins, function(o, k) {
                 if (!file.upload_url) {
                     if (url = o.getUploadURL(file)) {
                         file.upload_url = url;
@@ -623,7 +639,8 @@
                 self.FilesAdded.dispatch(file);
 
                 if (!file.marker) {
-                    var w = 300, h = 300;
+                    var w = 300,
+                        h = 300;
 
                     ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" class="mceItemUpload" />', {
                         skip_undo: 1
@@ -655,11 +672,10 @@
                 ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
                 return false;
             }
-
-            return false;
         },
-        upload: function (file) {
-            var self = this, ed = this.editor;
+        upload: function(file) {
+            var self = this,
+                ed = this.editor;
 
             var args = {
                 'action': 'upload',
@@ -673,11 +689,12 @@
             var url = file.upload_url;
 
             function sendFile(bin) {
-                var xhr = new XMLHttpRequest, formData = new FormData();
+                var xhr = new XMLHttpRequest,
+                    formData = new FormData();
 
                 // progress
                 if (xhr.upload) {
-                    xhr.upload.onprogress = function (e) {
+                    xhr.upload.onprogress = function(e) {
                         if (e.lengthComputable) {
                             file.loaded = Math.min(file.size, e.loaded);
                             self.UploadProgress.dispatch(file);
@@ -685,7 +702,7 @@
                     };
                 }
 
-                xhr.onreadystatechange = function () {
+                xhr.onreadystatechange = function() {
                     var httpStatus;
 
                     if (xhr.readyState == 4 && self.state !== state.STOPPED) {
@@ -733,12 +750,12 @@
                 xhr.open("post", url, true);
 
                 // Set custom headers
-                each(self.settings.headers, function (value, name) {
+                each(self.settings.headers, function(value, name) {
                     xhr.setRequestHeader(name, value);
                 });
 
                 // Add multipart params
-                each(extend(args, self.settings.multipart_params), function (value, name) {
+                each(extend(args, self.settings.multipart_params), function(value, name) {
                     formData.append(name, value);
                 });
 
@@ -765,7 +782,7 @@
             // send the file object
             sendFile(file);
         },
-        getInfo: function () {
+        getInfo: function() {
             return {
                 longname: 'Drag & Drop and Placeholder Upload',
                 author: 'Ryan Demmer',
