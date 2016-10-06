@@ -74,8 +74,8 @@
 
             vp = DOM.getViewPort();
 
-            f.width = parseInt(f.width);
-            f.height = parseInt(f.height) + (tinymce.isIE ? 8 : 0);
+            f.width = parseInt(f.width || 0);
+            f.height = parseInt(f.height || 0) + (tinymce.isIE ? 8 : 0);
 
             p.mce_inline = true;
             p.mce_window_id = id;
@@ -192,9 +192,25 @@
             if (f.size) {
                 DOM.addClass(id, f.size);
             } else {
-                // Resize window
-                DOM.setStyles(id, { width: f.width + dw, height: f.height + dh });
+                if (f.width) {
+                    DOM.setStyle(id, 'width', f.width + dw);
+                }
+
+                if (f.height) {
+                    DOM.setStyle(id, 'height', f.height + dh);
+                }
             }
+
+            /*if (tinymce.isIE8) {
+                var p = DOM.getRect(id),
+                    m = 41;
+
+                if (DOM.get(id + '_footer')) {
+                    m = 90;
+                }
+
+                DOM.setStyle(id + '_content', 'height', p.h - m);
+            }*/
 
             rsf = Event.add(DOM.win, 'resize orientationchange', function() {
                 if (DOM.get(id)) {
@@ -246,8 +262,6 @@
                 mousedown_func: mdf,
                 click_func: clf,
                 resize_func: rsf,
-                element: new Element(id),
-                iframeElement: new Element(id + '_ifr'),
                 features: f,
                 deltaWidth: dw,
                 deltaHeight: dh
@@ -256,7 +270,7 @@
             // position modal
             this.position(id);
 
-            w.iframeElement.on('focus', function() {
+            Event.add(id + '_ifr', 'focus', function() {
                 self.focus(id);
             });
 
@@ -290,17 +304,15 @@
 
             if (w = self.windows[id]) {
                 w.zIndex = this.zIndex++;
-                w.element.setStyle('zIndex', w.zIndex);
-                w.element.update();
+
+                DOM.setStyle(id, 'z-index', w.zIndex);
 
                 DOM.removeClass(self.lastId, 'mceFocus');
                 DOM.addClass(id, 'mceFocus');
 
                 self.lastId = id;
 
-                if (w.focussedElement) {
-                    w.focussedElement.focus();
-                } else if (DOM.get(id + '_ok')) {
+                if (DOM.get(id + '_ok')) {
                     DOM.get(w.id + '_ok').focus();
                 } else if (DOM.get(w.id + '_ifr')) {
                     DOM.get(w.id + '_ifr').focus();
@@ -393,10 +405,10 @@
                 Event.clear(id + '_ifr');
 
                 DOM.setAttrib(id + '_ifr', 'src', 'javascript:""'); // Prevent leak
-                w.element.remove();
 
                 // remove frame
                 DOM.remove(id + '_frame');
+                DOM.remove(id);
 
                 delete self.windows[id];
 
@@ -477,11 +489,6 @@
 
         resizeBy: function(dw, dh, id) {
             var w = this.windows[id];
-
-            if (w) {
-                w.element.resizeBy(dw, dh);
-                w.iframeElement.resizeBy(dw, dh);
-            }
         },
 
         // Internal functions
