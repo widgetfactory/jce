@@ -42,21 +42,17 @@
             return info;
         },
         path: function(a, b) {
-            a = this.clean(a);
-            b = this.clean(b);
+            if ($.type(a) === "array") {
+                return this.clean(a.join('/'));
+            }
 
-            if (a.substring(a.length - 1) != '/')
-                a += '/';
-
-            if (b.charAt(0) == '/')
-                b = b.substring(1);
-
-            return a + b;
+            return this.clean(a + '/' + b);
         },
         clean: function(s) {
             if (!/:\/\//.test(s)) {
                 return s.replace(/\/+/g, '/');
             }
+
             return s;
         },
 
@@ -261,6 +257,10 @@
             return s.charAt(0).toUpperCase() + s.substring(1);
         },
         formatSize: function(s, int) {
+            if (!s) {
+                return "";
+            }
+
             // MB
             if (s > 1048576) {
                 var n = Math.round((s / 1048576) * 100) / 100;
