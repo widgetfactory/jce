@@ -182,7 +182,7 @@
                     p = n.parentNode;
 
                 // move to parent if target is span or i (size, date, thumbnail)
-                if ($(n).is('.uk-icon, span, a')) {
+                if ($(n).is('.uk-icon, span, a, img')) {
                     n = $(n).parents('li').get(0);
                     p = n.parentNode;
 
@@ -436,6 +436,31 @@
                     $('#browser').toggleClass('full-height');
                     self._trigger($('#browser').hasClass('full-height') ? 'onMaximise' : 'onMinimise');
                 });
+            }
+
+            // fix ie8 layout
+            if (!$.support.cssFloat && document.querySelector) {
+
+                setTimeout(function() {
+                    var ph = $('main', '#browser').height();
+
+                    $('#browser-list, #browser-tree, #browser-details-container', '#browser').each(function() {
+                        var self = this,
+                            m = 0;
+
+                        $(this).siblings().each(function() {
+                            var h = $(this).outerHeight(true);
+                            m += parseInt(h);
+                        });
+
+                        $.each(['top', 'bottom'], function(i, k) {
+                            var v = $(self).css('padding-' + k);
+                            m += parseInt(v);
+                        });
+
+                        $(this).height(ph - m);
+                    });
+                }, 0);
             }
 
             // setup directory
@@ -836,7 +861,7 @@
             // uncheck all checkboxes
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
 
-            $('li', '#browser-details-nav').addClass('uk-hidden').attr('aria-hidden', true).filter('.details-nav-text').empty();
+            $('li', '#browser-details-nav').addClass('uk-invisible').attr('aria-hidden', true).filter('.details-nav-text').empty();
         },
         /**
          * Clear the Paste action
@@ -1123,15 +1148,15 @@
             var count = this._limitcount + o.folders.length + o.files.length;
 
             if (count < (o.total.folders + o.total.files)) {
-                $('.limit-right li', '#browser-list-limit').removeClass('uk-hidden').attr('aria-hidden', false);
+                $('.limit-right li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
             } else {
-                $('.limit-right li', '#browser-list-limit').addClass('uk-hidden').attr('aria-hidden', true);
+                $('.limit-right li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
             }
 
             if ((count - this._limit) > 0) {
-                $('.limit-left li', '#browser-list-limit').removeClass('uk-hidden').attr('aria-hidden', false);
+                $('.limit-left li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
             } else {
-                $('.limit-left li', '#browser-list-limit').addClass('uk-hidden').attr('aria-hidden', true);
+                $('.limit-left li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
             }
 
             if (o.folders.length) {
@@ -1930,7 +1955,7 @@
             $('#browser-details-text, #browser-details-comment').empty();
 
             $.each(['#browser-details-nav-left', '#browser-details-nav-right', '#browser-details-nav-text'], function(i, el) {
-                $(el).addClass('uk-hidden').attr('aria-hidden', true);
+                $(el).addClass('uk-invisible').attr('aria-hidden', true);
             });
 
             this._hideAllButtons();
@@ -2368,12 +2393,7 @@
 
                     // create thumbnail preview
                     if (mime && mime === "image") {
-                        var img = new Image();
-
-                        $('#info-preview').append($(img).attr('alt', self._translate('preview', 'Preview')));
-                        $('#info-preview').removeClass('loading');
-
-                        img.src = $(item).data('preview');
+                        $('#info-preview').append('<img src="' + $(item).data('preview') + '" alt="" />').removeClass('loading');
                     }
                 }
 
