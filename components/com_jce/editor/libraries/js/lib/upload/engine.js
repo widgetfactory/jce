@@ -244,8 +244,9 @@
                 input = file.input;
 
             // add input name and create form
-            var form = $(input).wrap('<form method="post" target="' + _uid + '_iframe" encoding="multipart/form-data" enctype="multipart/form-data" />').parent('form');
+            $(input).wrap('<form method="post" encoding="multipart/form-data" enctype="multipart/form-data" />');
 
+            var form = input.parentNode;
             input.setAttribute('name', o.data_name);
 
             // add other input data
@@ -264,16 +265,14 @@
                 $(form).prepend($('<input type="hidden" name="' + k + '" value="' + v + '" />'));
             });
 
+            // add method
+            $(form).prepend($('<input type="hidden" name="method" value="upload" />'));
             // add rpc id
             $(form).prepend($('<input type="hidden" name="id" value="' + _uid + '" />'));
 
             var tmp = document.createElement('div');
-            tmp.innerHTML = '<iframe id="' + _uid + '_iframe" name="' + _uid + '_iframe" src="javascript:&quot;&quot;" style="display:none" sandbox="allow-forms allow-scripts allow-same-origin"></iframe>';
+            tmp.innerHTML = '<iframe id="' + _uid + '_iframe" name="' + _uid + '_iframe" src="javascript:&quot;&quot;" style="display:none"></iframe>';
             ifr = tmp.firstChild;
-
-            $(form).append(ifr);
-
-            this.transport = ifr;
 
             $(ifr).on('load', function(e) {
                 var el;
@@ -286,7 +285,7 @@
                 }
 
                 // Return on first load
-                if (el.location.href === 'javascript:"";') {
+                if (el.location.href === 'javascript:""') {
                     return false;
                 }
 
@@ -316,7 +315,14 @@
                 self.response(result);
             });
 
-            $(form).attr('action', o.url).submit();
+            $(form).append(ifr);
+
+            form.setAttribute('target', _uid + '_iframe');
+
+            this.transport = ifr;
+
+            form.setAttribute("action", o.url);
+            form.submit();
         },
         abort: function() {
             if (this.transport instanceof XMLHttpRequest) {
@@ -535,6 +541,8 @@
                         return false;
                     }
                 }
+
+                file.size = file.size || "";
 
                 // check file size
                 if (file.size && parseInt(file.size) > parseInt(this.options.max_size) * 1024) {
