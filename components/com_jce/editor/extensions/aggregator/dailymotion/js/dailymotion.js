@@ -20,7 +20,7 @@ WFAggregator.add('dailymotion', {
         autoPlay: 0,
         start: 0
     },
-    setup: function () {
+    setup: function() {
         $('#dailymotion_autoPlay').prop('checked', this.params.autoPlay);
 
         $('#dailymotion_player_size').change(function() {
@@ -28,34 +28,34 @@ WFAggregator.add('dailymotion', {
             $('#dailymotion_player_size_custom').toggleClass('uk-hidden', !!this.value);
 
             if (v) {
-              $('#width').val(v);
-              $('#height').val(Math.round(v * 9/16));
+                $('#width').val(v);
+                $('#height').val(Math.round(v * 9 / 16));
             }
 
-        }).change();
+        });
 
         $('#dailymotion_player_size_custom').change(function() {
             var v = parseInt(this.value);
 
             if (v) {
-              $('#width').val(v);
-              $('#height').val(Math.round(v * 16/9));
+                $('#width').val(v);
+                $('#height').val(Math.round(v * 16 / 9));
             }
         });
     },
-    getTitle: function () {
+    getTitle: function() {
         return this.title || this.name;
     },
     /**
      * Get the Media type
      */
-    getType: function () {
+    getType: function() {
         return 'iframe';
     },
     /**
      * Check whether a media type is supported
      */
-    isSupported: function (v) {
+    isSupported: function(v) {
         if (typeof v == 'object') {
             v = v.src || v.data || '';
         }
@@ -66,16 +66,21 @@ WFAggregator.add('dailymotion', {
 
         return false;
     },
-    getValues: function (src) {
-        var self = this, data = {}, args = {}, type = this.getType(), id = '';
+    getValues: function(src) {
+        var self = this,
+            data = {},
+            args = {},
+            type = this.getType(),
+            id = '';
 
         // get variables from query string
         if (src.indexOf('=') !== -1) {
             $.extend(args, Wf.String.query(src));
         }
 
-        $('input, select', '#dailymotion_options').each(function () {
-            var k = $(this).attr('id'), v = $(this).val();
+        $('input, select', '#dailymotion_options').each(function() {
+            var k = $(this).attr('id'),
+                v = $(this).val();
             // remove dailymotion_ prefix
             k = k.substr(k.indexOf('_') + 1);
 
@@ -120,8 +125,10 @@ WFAggregator.add('dailymotion', {
 
         return data;
     },
-    setValues: function (data) {
-        var self = this, src = data.src || data.data || '', id = '';
+    setValues: function(data) {
+        var self = this,
+            src = data.src || data.data || '',
+            id = '';
 
         if (!src) {
             return data;
@@ -148,12 +155,13 @@ WFAggregator.add('dailymotion', {
 
         return data;
     },
-    getAttributes: function (src) {
-        var args = {}, data = this.setValues({
-            src: src
-        }) || {};
+    getAttributes: function(src) {
+        var args = {},
+            data = this.setValues({
+                src: src
+            }) || {};
 
-        $.each(data, function (k, v) {
+        $.each(data, function(k, v) {
             if (k == 'src') {
                 return;
             }
@@ -168,11 +176,9 @@ WFAggregator.add('dailymotion', {
 
         return args;
     },
-    setAttributes: function () {
+    setAttributes: function() {
 
     },
-    onSelectFile: function () {
-    },
-    onInsert: function () {
-    }
+    onSelectFile: function() {},
+    onInsert: function() {}
 });
