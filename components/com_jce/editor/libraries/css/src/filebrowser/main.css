@@ -151,7 +151,8 @@ main>div:first-child {
 #browser-tree {
     box-sizing: border-box;
     margin: 0;
-    height: calc(100% - 32px);
+    height: 89.6%;
+    height: calc(100% - 29px);
 }
 
 .layout-left .header {
@@ -170,12 +171,11 @@ main>div:first-child {
     margin: 0;
     padding: 5px 1px;
     overflow: auto;
-    position: absolute;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    height: 250px;
-    height: calc(100% - 62px);
+    height: 79.5%;
+    height: calc(100% - 58px);
     width: 100%;
     box-sizing: border-box;
 }
@@ -184,9 +184,7 @@ main>div:first-child {
     margin: 0;
     position: relative;
     border-top-width: 1px;
-    position: absolute;
     width: 100%;
-    bottom: -1px;
 }
 
 #browser-list-limit select {
@@ -222,12 +220,9 @@ main>div:first-child {
     padding: 0 5px;
 }
 
-#browser-buttons {}
-
 #browser-details-container {
-    height: 200px;
+    height: 79%;
     height: calc(100% - 58px);
-    position: absolute;
     width: 100%;
 }
 
@@ -295,7 +290,6 @@ main>div:first-child {
 #browser-message.load .uk-icon-spinner {
     display: inline-block;
     height: 30px;
-    float: left;
 }
 
 #browser-message .uk-icon-spinner:before {
@@ -506,8 +500,6 @@ div#info-comment {
 
 #browser-details-nav {
     border-top-width: 1px;
-    position: absolute;
-    bottom: -1px;
     width: 100%;
 }
 
@@ -752,10 +744,6 @@ ul.item-list li.folder-up {
     margin-top: -33px !important;
     width: 100%;
     height: 100%;
-}
-
-.uk-navbar .uk-pagination li {
-    line-height: 30px;
 }
 
 .thumbnail-preview .uk-icon {

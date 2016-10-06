@@ -24,8 +24,8 @@ body {
     box-sizing: border-box;
 }
 
-body > form > div,
-body > div {
+body>form>div,
+body>div {
     top: 5px;
     left: 5px;
     right: 5px;
@@ -428,13 +428,13 @@ span.uk-slider {
 }
 
 @media (min-width: 375px) {
-    label[for*="margin_"] + input:-ms-input-placeholder {
+    label[for*="margin_"]+input:-ms-input-placeholder {
         opacity: 0 !important;
     }
-    label[for*="margin_"] + input::-moz-placeholder {
+    label[for*="margin_"]+input::-moz-placeholder {
         opacity: 0 !important;
     }
-    label[for*="margin_"] + input::-webkit-input-placeholder {
+    label[for*="margin_"]+input::-webkit-input-placeholder {
         opacity: 0 !important;
     }
 }
@@ -464,17 +464,17 @@ span.uk-slider {
     padding: 0 5px;
 }
 
-.uk-tabs .uk-tab + .uk-switcher {
+.uk-tabs .uk-tab+.uk-switcher {
     top: 35px;
 }
 
-.uk-tabs .uk-tab + .uk-switcher {
-    height: 83%;
+.uk-tabs .uk-tab+.uk-switcher {
+    height: 89%;
     height: calc(100% - 45px);
 }
 
 .uk-browser-top .uk-form,
-.uk-browser-bottom .uk-tabs + .uk-form {
+.uk-browser-bottom .uk-tabs+.uk-form {
     height: 60%;
 }
 

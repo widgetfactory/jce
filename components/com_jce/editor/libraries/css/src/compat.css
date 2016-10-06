@@ -1,68 +1,280 @@
 @font-face {
-  font-family: 'FontAwesome';
-  src: url('../fonts/fontawesome-webfont.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'FontAwesome';
+    src: url('../fonts/fontawesome-webfont.eot');
+    /* IE9 Compat Modes */
+    src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
 }
 
-.ie8 .uk-icon {
+.ie8 .uk-modal {
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
+}
+
+.ie8 .uk-modal-dialog {
+    max-width: 98%;
+}
+
+.ie8 .uk-modal-dialog-large {
+    width: 930px;
+}
+
+.ie8 .uk-modal-header h3 {
+    margin: 0;
+}
+
+.ie8 .uk-navbar {
+    border-color: #eee;
+}
+
+.ie8 .uk-browser-bottom nav.uk-navbar {
+    border-top: 1px solid #eee;
+}
+
+.ie8 .uk-icon,
+.ie8 [class*="uk-icon-"] {
     font-family: FontAwesome;
-    display: inline-block;
     font-weight: normal;
     font-style: normal;
     line-height: 1;
+    vertical-align: middle;
 }
 
 .ie8 .actionPanel .uk-button {
-  margin: 0 5px;
-}
-.ie8.uk-form-horizontal .uk-form-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 700;
-  float: left;
-}
-.ie8.uk-form-horizontal .uk-form-controls {
-  float: left;
-}
-input.type-number {
-  padding: 4px 6px;
-  line-height: 22px;
-}
-.ie8 .uk-icon-clock-o {
-  background: url('../img/icons.png') no-repeat 0 -1020px;
-  width: 20px;
-  margin: -10px 5px;
-}
-.ie8 .uk-icon-clock-o:before {
-  content: "";
-}
-.ie8 #browser-list-actions .uk-flex-item-auto {
-  width: 69%;
-}
-.ie8 .uk-tree-hidden #browser-list-actions .uk-flex-item-auto {
-  width: 39%
+    margin: 0 0 0 2px;
 }
 
-.ie8 .uk-form-horizontal .uk-datalist input[type="text"] {
-    width: 92%;
-    border-right-width: inherit;
-    padding-top: 3px;
-    padding-bottom: 3px;
+.ie8.uk-form-horizontal .uk-form-label {
+    display: block;
+    font-weight: 700;
+    float: left;
 }
+
+.ie8.uk-form-horizontal .uk-form-controls {
+    float: left;
+}
+
+.ie8.uk-form select,
+.ie8.uk-form input[type="text"],
+.ie8.uk-form-horizontal .uk-form-controls input.type-number {
+    padding: 5px 4px;
+    line-height: 16px;
+    border: 1px solid #ddd;
+}
+
+.ie8.uk-form select {
+    padding: 4px;
+}
+
+.ie8.uk-form select:focus,
+.ie8.uk-form input[type="text"]:focus,
+input.type-number:focus {
+    border: 1px solid #66afe9;
+}
+
+.ie8 .uk-icon-clock-o {
+    background: url('../img/icons.png') no-repeat 0 -1020px;
+    width: 20px;
+    margin: -10px 5px;
+}
+
+.ie8 .uk-button-group .uk-button {
+    margin: 0;
+}
+
+.ie8 .uk-button-group .uk-button+.uk-button {
+    border-left: 0;
+}
+
+.ie8 .uk-button .uk-icon {
+    vertical-align: middle;
+}
+
+.ie8 .uk-button-text {
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.ie8 .uk-icon-clock-o:before {
+    content: "";
+}
+
+.ie8 .uk-browser-top .uk-form,
+.ie8 .uk-browser-bottom .uk-tabs+.uk-form {
+    display: table;
+    width: 100%;
+}
+
+.ie8 main {
+    display: table;
+    width: 100%;
+}
+
+.ie8 main .uk-navbar {
+    border-bottom: 1px solid #E7E7E7;
+}
+
+.ie8 #browser-list-limit,
+.ie8 #browser-details-nav {
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid #E7E7E7;
+}
+
+.ie8 .uk-tree-hidden .uk-flex-item-auto {
+    width: 70%;
+}
+
+.ie8 #browser-list-actions .uk-flex-item-auto {
+    width: 29%;
+}
+
+.ie8 #browser-details-container .uk-flex-item-auto {
+    width: 83%;
+    height: 96%;
+}
+
+.ie8 .uk-pagination li a {
+    line-height: 1px;
+}
+
+.ie8 .view-mode-grid .file .uk-thumbnail {
+    margin: 5px auto;
+}
+
+.ie8 .file .uk-thumbnail img {
+    margin: auto;
+    display: block;
+}
+
+.ie8 #browser-buttons {
+    height: 100%;
+}
+
+.ie8 .view-mode-grid .item-list {
+    white-space: pre-wrap;
+}
+
+.ie8 #item-list .uk-flex-item-auto {
+    width: 30%;
+}
+
+.ie8 #item-list li .uk-flex-item-auto {
+    width: 75%;
+}
+
+.ie8 .view-mode-grid #item-list li .uk-flex-item-auto {
+    width: 98%;
+}
+
+.ie8.uk-form-horizontal .uk-datalist input[type="text"] {
+    width: 88%;
+    border-width: 1px 0 1px 1px;
+}
+
+.ie8.uk-form-horizontal .uk-datalist #border_width {
+    width: 70%;
+}
+
+.ie8.uk-form-horizontal .uk-datalist #border_width+select {
+    width: 95%;
+    left: 0;
+}
+
+.ie8 .uk-form-icon-both>input {
+    padding: 5px 2em 5px 2em !important;
+}
+
+.ie8 .uk-form-icon-both .uk-icon-none {
+    position: absolute;
+    right: 3px;
+    top: 9px;
+    height: 21px;
+    width: 21px;
+}
+
 .ie8 .uk-button {
-  border: 1px solid #ccc;
-  margin-left: 5px;
+    border: 1px solid #ccc;
+    margin-left: 5px;
+    cursor: pointer;
 }
+
+.ie8 button {
+    cursor: pointer;
+}
+
+.ie8 .uk-button-link {
+    border: 0;
+}
+
 .ie8 .uk-modal-footer .uk-button {
-  background-color: #fff;
+    background-color: #fff;
 }
+
 .ie8 .uk-modal-footer .uk-button-primary {
-  background-color: #337ab7;
-  border: 1px solid #2e6da4;
+    background-color: #337ab7;
+    border: 1px solid #2e6da4;
 }
+
+.ie8 .uk-modal-footer .uk-button-success {
+    background-color: #5cb85c;
+    border: 1px solid #57ad57;
+}
+
 .ie8 .uk-modal-footer .uk-button-danger {
-  background-color: #d9534f;
-  border: 1px solid #d43f3a;
+    background-color: #d9534f;
+    border: 1px solid #d43f3a;
+}
+
+.ie8 .uk-icon-constrain {
+    margin-bottom: 8px;
+}
+
+.ie8 #width+strong {
+    margin-bottom: 8px;
+}
+
+.ie8.uk-form input[type="radio"],
+.ie8.uk-form input[type="checkbox"] {
+    border: 0;
+}
+
+.ie8 #search-input {
+    padding-top: 6.5px;
+    padding-bottom: 6.5px;
+}
+
+.ie8 #searchbox {
+    top: 0;
+    right: 0;
+}
+
+.ie8 #browser-list-actions #searchbox.uk-flex-item-auto {
+    width: 91%;
+}
+
+.ie8 #searchbox input {
+    padding-left: 4px;
+}
+
+.ie8 #searchbox .uk-icon {
+    top: 14px;
+    cursor: pointer;
+}
+
+.ie8 #searchbox .uk-icon-spinner {
+    top: 12px;
+}
+
+.ie8 #check-all {
+    padding: 0 8px 0 4px;
+}
+
+.ie8 #margin {
+    margin: 0 4px 2px 0;
+}
+
+.ie8 #link-browser {
+    height: 236px;
 }

@@ -11,63 +11,80 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
-.uk-datalist input:focus + select {
+
+.uk-datalist input:focus+select {
+    border: 1px solid #66afe9
+}
+
+.uk-datalist select:focus~input {
     border-color: #66afe9
 }
-.uk-datalist select:focus ~ input {
-    border-color: #66afe9
-}
+
 :root .uk-form-horizontal .uk-datalist input[type="text"] {
     border-right-width: 0;
 }
+
 .uk-form-horizontal .uk-datalist select {
     z-index: 0;
     position: absolute;
     left: 0;
 }
+
 .uk-form-horizontal .uk-grid-small .uk-datalist select {
-  left: 10px;
-  width: 95%;
-  width: calc(100% - 10px);
+    left: 10px;
+    width: 95%;
+    width: calc(100% - 10px);
 }
 
 .uk-form-icon input.color {
     padding-left: 24px !important
 }
 
-.uk-form-icon input.color:disabled ~ span {
-  opacity: 0.5;
+.uk-form-icon input.color:disabled~span {
+    opacity: 0.5;
 }
 
-.uk-icon-colorpicker {height: 22px;}
+.uk-icon-colorpicker {
+    height: 22px;
+}
+
 
 /* Repeatable */
-.uk-repeatable .uk-repeatable-create, .uk-repeatable .uk-repeatable-delete {
+
+.uk-repeatable .uk-repeatable-create,
+.uk-repeatable .uk-repeatable-delete {
     display: none;
 }
+
 .uk-repeatable .uk-repeatable-create:first-child {
     display: block;
 }
-.uk-repeatable  + .uk-repeatable .uk-repeatable-delete {
+
+.uk-repeatable+.uk-repeatable .uk-repeatable-delete {
     display: block;
 }
-.uk-repeatable  + .uk-repeatable .uk-repeatable-create {
-  display: none;
+
+.uk-repeatable+.uk-repeatable .uk-repeatable-create {
+    display: none;
 }
 
 .uk-repeatable .uk-repeatable-hidden-first {
     display: none;
 }
 
-.uk-repeatable  + .uk-repeatable .uk-repeatable-hidden-first {
+.uk-repeatable+.uk-repeatable .uk-repeatable-hidden-first {
     display: block;
 }
 
-.uk-repeatable.uk-placeholder {padding: 10px;}
+.uk-repeatable.uk-placeholder {
+    padding: 10px;
+}
 
-input.color, input.colour {
+input.color,
+input.colour {
     width: 100px;
 }
+
 .wf-colorpicker {
     height: 350px;
     max-height: inherit;
@@ -79,55 +96,67 @@ input.color, input.colour {
     font-size: 12px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
-
     bottom: 100%;
     right: inherit;
 }
+
 .wf-colorpicker .uk-tabs {
-  height: 85%;
-  height: calc(100% - 49px);
-  position: relative;
+    height: 91.6%;
+    height: calc(100% - 49px);
+    position: relative;
 }
-.wf-colorpicker > div {
-  height: calc(100% - 10px);
+
+.wf-colorpicker>div {
+    height: 90%;
+    height: calc(100% - 10px);
 }
-.wf-colorpicker > div > div {
-  width: 100%;
-  height: 100%;
-  position: relative;
+
+.wf-colorpicker>div>div {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
+
 .wf-colorpicker.uk-tooltip-left:after {
     border-left-color: #fff
 }
+
 .wf-colorpicker.uk-tooltip-right:after {
     border-right-color: #fff
 }
+
 .wf-colorpicker.uk-tooltip-left.uk-tooltip-bottom:after,
 .wf-colorpicker.uk-tooltip-right.uk-tooltip-bottom:after,
 .wf-colorpicker.uk-tooltip-left.uk-tooltip-top:after,
 .wf-colorpicker.uk-tooltip-right.uk-tooltip-top:after {
-  display: none;
+    display: none;
 }
 
 .wf-colorpicker .uk-modal-footer {
-  position: relative;
-  margin: 5px -8px 0;
-  height: 49px;
-  box-sizing: border-box;
+    position: relative;
+    margin: 5px -8px 0;
+    height: 49px;
+    box-sizing: border-box;
 }
-.wf-colorpicker #colorpicker_insert {margin: 0;}
+
+.wf-colorpicker #colorpicker_insert {
+    margin: 0;
+}
+
 .wf-colorpicker .uk-switcher {
     padding: 0 1px;
 }
+
 .wf-colorpicker #colorpicker {
-  position: relative;
-  top: inherit;
-  left: inherit;
-  right: inherit;
-  bottom: inherit;
+    position: relative;
+    top: inherit;
+    left: inherit;
+    right: inherit;
+    bottom: inherit;
 }
+
 .wf-colorpicker #colorpicker_tabs .uk-switcher {
-  padding: 0;
+    padding: 0;
 }
 
 .uk-tooltip {
@@ -135,6 +164,7 @@ input.color, input.colour {
     right: inherit;
     bottom: inherit;
 }
+
 .uk-tooltip .uk-icon-close {
     position: absolute;
     right: 3px;
@@ -144,16 +174,23 @@ input.color, input.colour {
     top: 0;
     font-size: 0;
 }
+
 .uk-tooltip .uk-icon-close:before {
     font-size: 14px;
 }
-.uk-tooltip h4, .uk-tooltip p {
+
+.uk-tooltip h4,
+.uk-tooltip p {
     margin: 0;
     color: #fff;
 }
-.uk-tooltip .tooltip-arrow {display: none;}
 
-.uk-constrain, .uk-equalize {
+.uk-tooltip .tooltip-arrow {
+    display: none;
+}
+
+.uk-constrain,
+.uk-equalize {
     position: relative;
     vertical-align: middle;
     width: 2em;
@@ -163,7 +200,9 @@ input.color, input.colour {
     margin: 0;
     padding: 0;
 }
-.uk-form .uk-constrain input, .uk-form .uk-equalize input {
+
+.uk-form .uk-constrain input,
+.uk-form .uk-equalize input {
     opacity: 0;
     position: absolute;
     left: 0;
@@ -175,4 +214,6 @@ input.color, input.colour {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
-.uk-isdirty {color: inherit !important}
+.uk-isdirty {
+    color: inherit !important
+}

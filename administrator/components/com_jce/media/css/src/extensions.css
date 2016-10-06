@@ -22,7 +22,6 @@
     border: 1px dashed #ccc;
     padding: 5px;
     margin: 2px 0;
-    position: relative;
     background-color: #fff;
     box-sizing: border-box;
 }
@@ -58,15 +57,15 @@
     display: none;
 }
 
-.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-add {
+.ui-jce .extensions dl .extension-custom+.extension-custom .extension-add {
     display: none;
 }
 
-.ui-jce .extensions dl .extension-custom+ .extension-custom .extension-remove {
+.ui-jce .extensions dl .extension-custom+.extension-custom .extension-remove {
     display: inline-block;
 }
 
-.ui-jce .extensions dl .extension-custom input+ .extension-remove {
+.ui-jce .extensions dl .extension-custom input+.extension-remove {
     display: inline-block;
 }
 

@@ -632,9 +632,11 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 
 .ui-jce .wf-colorpicker.tooltip.in {
     opacity: 1;
+    filter: alpha(opacity=100);
 }
 
 .wf-colorpicker .uk-tabs {
+    height: 85.3%;
     height: calc(100% - 49px);
 }
 

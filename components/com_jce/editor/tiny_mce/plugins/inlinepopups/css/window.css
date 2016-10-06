@@ -78,14 +78,14 @@
     background: #fff;
     border-radius: 0 0 3px 3px;
     position: relative;
-    height: 92.5%;
+    height: 75%;
     height: calc(100% - 41px);
 }
 
 .mceModalConfirm .mceModalContent,
 .mceModalAlert .mceModalContent {
-    height: 63%;
-    height: calc(100% - 92px);
+    height: 46%;
+    height: calc(100% - 90px);
 }
 
 .mceModalContent iframe {
@@ -120,7 +120,7 @@
     height: 100%;
     line-height: 0;
     border-radius: 3px;
-    /*border: 1px solid #333333;*/
+    border: 1px solid #c8c8c8;
     box-shadow: 0 0 5px rgba(0, 0, 0, .5);
 }
 
@@ -148,7 +148,6 @@
     margin: 0 0 0 1px;
     text-align: center;
     text-decoration: none;
-    vertical-align: middle;
     content: "\00d7";
 }
 
@@ -225,7 +224,7 @@
 }
 
 [class*="mce-modal-landscape-"] .mceModalContent {
-    padding-bottom: 46.72%;
+    padding-bottom: 48%;
     padding-bottom: calc(56.25% - 61px);
     height: 0;
     /* 16:9 */
@@ -279,15 +278,16 @@
 }
 
 .mce-modal-landscape-full {
-    max-width: 90%;
+    max-width: 96%;
     max-width: calc(100% - 40px);
+    height: 96%;
     height: calc(100vh - 20px);
     padding: 0;
 }
 
 .mce-modal-landscape-full .mceModalContent {
     padding: 0;
-    height: 92.5%;
+    height: 95.3%;
     height: calc(100% - 41px);
 }
 
@@ -332,6 +332,6 @@
 }
 
 .mce-modal-square-xlarge .mceModalContent {
-    padding-bottom: 78.5%;
+    padding-bottom: 80%;
     padding-bottom: calc(83.46% - 41px);
 }

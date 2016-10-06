@@ -399,6 +399,11 @@ label {
     z-index: 1010;
 }
 
+.uk-pagination>li>a,
+.uk-pagination>li>span {
+    min-width: 1em;
+}
+
 .uk-invisible {
     visibility: hidden !important;
 }
