@@ -1,7 +1,7 @@
 (function($, Wf) {
     var URL = {
         toAbsolute: function(url) {
-            if (!standalone) {
+            if (typeof tinyMCEPopup !== "undefined") {
                 return tinyMCEPopup.editor.documentBaseURI.toAbsolute(url);
             }
 
@@ -11,7 +11,7 @@
             return Wf.getURI(true) + url.substr(0, url.indexOf('/'));
         },
         toRelative: function(url) {
-            if (!standalone) {
+            if (typeof tinyMCEPopup !== "undefined") {
                 return tinyMCEPopup.editor.documentBaseURI.toRelative(url);
             }
 
