@@ -457,12 +457,8 @@
                 buttons.push(btn);
             });
 
-            var size = null;
-
-            if (file.size) {
-                // size
-                size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
-            }
+            // size
+            var size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
 
             // create actions container
             var actions = $('<div class="queue-item-actions uk-grid uk-grid-collapse uk-width-1-5 uk-text-right" />').appendTo(file.element).append(size).append(buttons);
