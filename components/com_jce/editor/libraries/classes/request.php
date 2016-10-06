@@ -86,9 +86,8 @@ final class WFRequest extends JObject {
      * @return boolean
      */
     private function isRequest() {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') || (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], "multipart") !== false);
     }
-
 
     public function setRequest($request) {
       return $this->register($request);
