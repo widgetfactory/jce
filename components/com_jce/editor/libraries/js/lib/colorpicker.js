@@ -260,10 +260,20 @@
                     color = '#' + color;
                 }
 
-                // remove colour value if placeholder
-                if ($(self.element).hasClass('placeholder')) {
-                    color = '';
-                }
+                $('#colorpicker_color').change(function() {
+                    var v = this.value;
+
+                    if (v.substr(0, 1) === "#") {
+                        v = v.substring(1);
+                    }
+
+                    // set wheel colour
+                    if (self._wheel) {
+                        self._wheel.setColor('#' + v);
+                    }
+
+                    this.value = v;
+                }).change();
 
                 this._createTabs();
 
