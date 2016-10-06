@@ -613,11 +613,11 @@
                                     }
                                     var hasSupport = false;
 
-                                    for (var n in support[type]) {
-                                        if (support[type][n].indexOf(ext) !== -1) {
-                                            hasSupport = $.support[type] && $.support[type][n] !== false;
+                                    $.each(support[type], function(k, v) {
+                                        if ($.inArray(ext, v) !== -1) {
+                                            hasSupport = $.support[type] && $.support[type][k] !== false;
                                         }
-                                    }
+                                    });
 
                                     // HTML5 video
                                     if (hasSupport) {
