@@ -21,7 +21,13 @@
             },
             'url': url,
             onOpen: function() {
-                $('#sbox-window').css({ 'width': 'auto', 'height': 'auto' });
+                var w = 'auto';
+
+                if (!$.support.cssFloat && document.querySelector) {
+                    w = Math.min($(window).width() - 50, width);
+                }
+
+                $('#sbox-window').css({ 'width': w, 'height': 'auto' });
             }
         };
 
