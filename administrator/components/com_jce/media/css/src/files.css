@@ -1,1 +1,184 @@
-@import url("../../../../../components/com_jce/editor/libraries/css/files.css");
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.file,
+.file.default {
+    background: url(../img/ext.png) no-repeat 0 0;
+}
+
+.file.txt {
+    background: url(../img/ext.png) no-repeat 0 -20px;
+}
+
+.file.zip,
+.file.tar,
+.file.gz,
+.file.rar {
+    background: url(../img/ext.png) no-repeat 0 -40px;
+}
+
+.file.html,
+.file.htm {
+    background: url(../img/ext.png) no-repeat 0 -60px;
+}
+
+.file.mp3,
+.file.wav,
+.file.aiff {
+    background: url(../img/ext.png) no-repeat 0 -80px;
+}
+
+.file.php {
+    background: url(../img/ext.png) no-repeat 0 -100px;
+}
+
+.file.sql {
+    background: url(../img/ext.png) no-repeat 0 -120px;
+}
+
+.file.gif {
+    background: url(../img/ext.png) no-repeat 0 -140px;
+}
+
+.file.jpg,
+.file.jpeg {
+    background: url(../img/ext.png) no-repeat 0 -160px;
+}
+
+.file.png {
+    background: url(../img/ext.png) no-repeat 0 -180px;
+}
+
+.file.webm,
+.file.ogg,
+.file.mp4,
+.file.mpeg,
+.file.mpg {
+    background: url(../img/ext.png) no-repeat 0 -200px;
+}
+
+.file.js,
+.file.xml,
+.file.xaml {
+    background: url(../img/ext.png) no-repeat 0 -220px;
+}
+
+.file.css {
+    background: url(../img/ext.png) no-repeat 0 -420px;
+}
+
+.file.rtf {
+    background: url(../img/ext.png) no-repeat 0 -300px;
+}
+
+.file.notwritable,
+dd.file.notwritable,
+.file.duplicate {
+    background: url(../img/icons.png) no-repeat 0 -620px;
+}
+
+.file.notsafe,
+dd.file.notsafe {
+    background: url(../img/icons.png) no-repeat 0 -640px;
+}
+
+
+/* Adobe Flash Player */
+
+.file.swf,
+.file.as,
+.file.fla {
+    background: url(../img/ext.png) no-repeat 0 -340px;
+}
+
+
+/* Adobe Flash Video */
+
+.file.flv,
+.file.f4v,
+.file.f4p,
+.file.f4a,
+.file.f4b {
+    background: url(../img/ext.png) no-repeat 0 -340px;
+}
+
+
+/* Microsoft Word */
+
+.file.doc,
+.file.docx {
+    background: url(../img/ext.png) no-repeat 0 -400px;
+}
+
+
+/* Microsoft Excel */
+
+.file.xls,
+.file.xlsx,
+.file.xlsm {
+    background: url(../img/ext.png) no-repeat 0 -320px;
+}
+
+
+/* Microsoft Powerpoint */
+
+.file.ppt,
+.file.pptx {
+    background: url(../img/ext.png) no-repeat 0 -380px;
+}
+
+
+/* Adobe® Acrobat */
+
+.file.pdf {
+    background: url(../img/ext.png) no-repeat 0 -360px;
+}
+
+
+/** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
+
+
+/* Apple Quicktime */
+
+.file.mov,
+.file.qt,
+.file.m4a {
+    background: url(../img/ext.png) no-repeat 0 -200px;
+}
+
+
+/* RealPlayer */
+
+.file.ra,
+.file.rm,
+.file.ram {
+    background: url(../img/ext.png) no-repeat 0 -200px;
+}
+
+
+/* Adobe Shockwave */
+
+.file.dcr {
+    background: url(../img/ext.png) no-repeat 0 -200px;
+}
+
+
+/* Windows Media Player */
+
+.file.wmv,
+.file.wma,
+.file.wm,
+.file.wmx,
+.file.wvx,
+.file.asf,
+.file.asx,
+.file.avi {
+    background: url(../img/ext.png) no-repeat 0 -200px;
+}

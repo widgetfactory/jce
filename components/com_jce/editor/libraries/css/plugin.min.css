@@ -1494,17 +1494,14 @@ span.editable-edit {
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
 #colorpicker {
   margin: 10px 0 0 0;
   min-width: 250px;
-
   top: 5px;
   right: 5px;
   left: 5px;
   bottom: 56px;
   position: absolute;
-
 }
 body > #colorpicker {
   margin: 0;
@@ -1512,13 +1509,17 @@ body > #colorpicker {
 #colorpicker #colorpicker_tabs ul {
   margin: 0;
 }
-#colorpicker #colorpicker_web ul, #colorpicker #colorpicker_named ul, #colorpicker #colorpicker_template ul {
+#colorpicker #colorpicker_web ul,
+#colorpicker #colorpicker_named ul,
+#colorpicker #colorpicker_template ul {
   list-style: none;
   margin: 0;
   padding: 0;
   line-height: 8px;
 }
-#colorpicker_web ul li, #colorpicker_named ul li, #colorpicker_template ul li {
+#colorpicker_web ul li,
+#colorpicker_named ul li,
+#colorpicker_template ul li {
   display: inline-block;
   margin: 0 1px 1px 0;
   line-height: 10px;
@@ -1582,13 +1583,17 @@ body > #colorpicker {
   box-sizing: border-box;
   z-index: 1;
 }
-#colorpicker_named div, #colorpicker_web div, #colorpicker_template div {
+#colorpicker_named div,
+#colorpicker_web div,
+#colorpicker_template div {
   margin: 10px auto 0 auto;
 }
 #colorpicker_template p {
   margin: 1em auto;
 }
-#colorpicker_named span, #colorpicker_web span, #colorpicker_template span {
+#colorpicker_named span,
+#colorpicker_web span,
+#colorpicker_template span {
   display: block;
   float: left;
   width: 15px;
@@ -1604,7 +1609,6 @@ body > #colorpicker {
   position: absolute;
   width: 100%;
 }
-#colorpicker_template div {}
 #template_tab p {
   margin: auto;
   padding: 0;
@@ -1634,9 +1638,7 @@ iframe.colorpicker_blocker {
   width: 120px;
   border-radius: 3px;
 }
-
 /* Panels */
-
 div.colorpicker_tabs {
   width: 100%;
   margin-right: 20px;
@@ -1649,7 +1651,9 @@ iframe.blocker {
   width: 100%;
   background-color: #FFFFFF;
 }
-#colorpicker_named, #colorpicker_web, #colorpicker_template {
+#colorpicker_named,
+#colorpicker_web,
+#colorpicker_template {
   position: relative;
 }
 div#previewblock {
@@ -1664,9 +1668,8 @@ div#previewblock {
   position: relative;
   width: 200px;
   height: 88%;
-  height: calc(100% - 30px);
+  height: calc(70%);
 }
-
 /**
  * Farbtastic Color Picker 1.2
  * (c) 2008 Steven Wittens
@@ -1685,7 +1688,6 @@ div#previewblock {
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 .colorwheel {
   position: relative;
   margin: 0 auto;
@@ -1698,7 +1700,8 @@ div#previewblock {
   width: 200px;
   height: 200px;
 }
-.colorwheel .color, .colorwheel .overlay {
+.colorwheel .color,
+.colorwheel .overlay {
   top: 47px;
   left: 47px;
   width: 101px;
@@ -1719,10 +1722,7 @@ div#previewblock {
   overflow: hidden;
   background: url("../img/marker.png") no-repeat;
 }
-
 /* Mobile Stuff */
-
-
 /*@media (max-width: 979px) {
     #colorpicker {
         min-width: 410px;
@@ -1746,7 +1746,6 @@ div#previewblock {
         max-width : 420px;
     }
 }*/
-
 @font-face {
     font-family: 'FontAwesome';
     src: url('../fonts/fontawesome-webfont.eot');

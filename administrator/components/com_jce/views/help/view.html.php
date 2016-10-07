@@ -63,7 +63,6 @@ class WFViewHelp extends WFView {
             'pattern' => $pattern
         );
 
-        $this->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/libraries/css/help.css');
         $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.help.init(' . json_encode($options) . ');});');
 
         parent::display($tpl);

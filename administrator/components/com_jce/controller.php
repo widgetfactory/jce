@@ -119,7 +119,8 @@ class WFController extends WFControllerBase {
 
         switch ($name) {
             case 'help':
-                $view->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/js/help.min.js');
+                $view->addScript(JURI::root(true) . '/administrator/components/com_jce/media/js/help.min.js');
+                $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/help.min.css');
                 break;
             default:
                 $view->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/global.min.css');

@@ -263,6 +263,7 @@ abstract class WFInstall {
             $site . '/editor/libraries/js/tiny_mce_utils.js',
             $site . '/editor/libraries/js/tree.js',
             $site . '/editor/libraries/js/upload.js',
+            $site . '/editor/libraries/js/html5.js',
             $site . '/editor/tiny_mce/plugins/article/article.php',
             $site . '/editor/tiny_mce/plugins/article/classes/article.php',
             $site . '/editor/tiny_mce/plugins/article/css/pagebreak.css',
@@ -280,7 +281,11 @@ abstract class WFInstall {
             $site . '/editor/tiny_mce/themes/advanced/skins/default/img/items.gif',
             $site . '/editor/tiny_mce/themes/advanced/theme.php',
             $site . '/editor/tiny_mce/themes/advanced/tmpl/anchor.php',
-            $site . '/popup.php'
+            $site . '/popup.php',
+            $site . '/editor/libraries/js/help.min.js',
+            $site . '/editor/libraries/css/help.css',
+            $site . '/editor/libraries/css/files.css',
+            $site . '/editor/libraries/img/ext.png'
         );
         
         $folders = array(
