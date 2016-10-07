@@ -256,9 +256,7 @@
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
 
-            if (!p.type) {
-                p.type = n.attr('data-mce-type') || 'text/javascript';
-            }
+            p.type = n.attr('data-mce-type') || p.type || 'text/javascript';
 
             node = new Node('script', 1);
 
