@@ -78,6 +78,6 @@
 
     </administration>
     <updateservers>
-        <server type="extension" priority="1" name="JCE Editor Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&id=1&file=extension.xml]]></server>
+        <server type="extension" priority="1" name="JCE Editor Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=pkg_jce.xml]]></server>
     </updateservers>
 </extension>
