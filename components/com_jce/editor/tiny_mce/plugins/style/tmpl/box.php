@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="box_width" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOX_WIDTH');?></label>
 
             <div class="uk-form-controls uk-width-2-10">
@@ -29,7 +29,7 @@ defined('_JEXEC') or die('RESTRICTED');
       </div>
     </div>
 
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="box_height" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOX_HEIGHT');?></label>
 
         <div class="uk-form-controls uk-width-2-10 uk-datalist">
@@ -53,7 +53,7 @@ defined('_JEXEC') or die('RESTRICTED');
           <input type="checkbox" id="box_padding_same" checked="checked" onclick="StyleDialog.toggleSame(this,'box_padding');" />
           <label for="box_padding_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_padding_top" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TOP');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_padding_top" />
@@ -62,7 +62,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_padding_top_measurement"></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_padding_right" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_RIGHT');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_padding_right" disabled="disabled" />
@@ -71,7 +71,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_padding_right_measurement" disabled="disabled"></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_padding_bottom" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOTTOM');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_padding_bottom" disabled="disabled" />
@@ -80,7 +80,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_padding_bottom_measurement" disabled="disabled"></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_padding_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_LEFT');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_padding_left" disabled="disabled" />
@@ -99,7 +99,7 @@ defined('_JEXEC') or die('RESTRICTED');
           <input type="checkbox" id="box_margin_same" checked="checked" onclick="StyleDialog.toggleSame(this,'box_margin');" />
           <label for="box_margin_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_margin_top" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TOP');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_margin_top" />
@@ -108,7 +108,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_margin_top_measurement" ></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_margin_right" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_RIGHT');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_margin_right" disabled="disabled" />
@@ -117,7 +117,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_margin_right_measurement" disabled="disabled"></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_margin_bottom" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOTTOM');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_margin_bottom" disabled="disabled" />
@@ -126,7 +126,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <select id="box_margin_bottom_measurement" disabled="disabled"></select>
               </div>
         </div>
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
           <label for="box_margin_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_LEFT');?></label>
               <div class="uk-form-controls uk-width-4-10">
                 <input type="number" id="box_margin_left" disabled="disabled" />

@@ -15,7 +15,7 @@ defined('_JEXEC') or die('RESTRICTED');
 <div class="uk-grid uk-grid-small">
     <div class="uk-width-4-5">
 
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
             <label for="src" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_URL_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_URL'); ?>
             </label>
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="uk-form-row uk-grid uk-grid-small">
+        <div class="uk-grid uk-grid-small">
             <label for="alt" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_ALT_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_ALT'); ?>
             </label>
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="uk-form-row uk-grid uk-grid-small" id="attributes-dimensions">
+        <div class="uk-grid uk-grid-small" id="attributes-dimensions">
             <label class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
             </label>
@@ -46,7 +46,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="uk-form-row uk-grid uk-grid-small" id="attributes-align">
+        <div class="uk-grid uk-grid-small" id="attributes-align">
             <label for="align" class="hastip uk-form-label uk-width-1-5"
                    title="<?php echo JText::_('WF_LABEL_ALIGN_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALIGN'); ?>
@@ -86,7 +86,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="uk-form-row uk-hidden-mini uk-grid uk-grid-small" id="attributes-margin">
+        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-margin">
             <label for="margin" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_MARGIN_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_MARGIN'); ?>
             </label>
@@ -123,7 +123,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
         </div>
 
-        <div class="uk-form-row uk-hidden-mini uk-grid uk-grid-small" id="attributes-border">
+        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-border">
             <label for="border" class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_BORDER_DESC'); ?>">
                 <?php echo WFText::_('WF_LABEL_BORDER'); ?>
             </label>

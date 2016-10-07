@@ -330,6 +330,7 @@ label {
     padding-top: 0;
 }
 
+.uk-grid+.uk-grid,
 .uk-form-row+.uk-form-row {
     margin-top: 0.5em;
 }

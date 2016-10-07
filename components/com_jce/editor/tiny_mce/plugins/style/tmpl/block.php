@@ -12,7 +12,7 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_wordspacing" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WORDSPACING');?></label>
             <div class="uk-form-controls uk-width-5-10 uk-datalist">
               <select id="block_wordspacing"></select>
@@ -22,7 +22,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_letterspacing" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_LETTERSPACING');?></label>
             <div class="uk-form-controls uk-width-5-10 uk-datalist">
               <select id="block_letterspacing"></select>
@@ -32,21 +32,21 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_vertical_alignment" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_VERTICAL_ALIGNMENT');?></label>
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_vertical_alignment"></select>
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_text_align" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_ALIGN');?></label>
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_text_align"></select>
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_text_indent" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_TEXT_INDENT');?></label>
             <div class="uk-form-controls uk-width-2-10">
               <input type="number" id="block_text_indent" />
@@ -56,14 +56,14 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_whitespace" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_WHITESPACE');?></label>
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_whitespace"></select>
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="block_display" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BLOCK_DISPLAY');?></label>
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="block_display"></select>

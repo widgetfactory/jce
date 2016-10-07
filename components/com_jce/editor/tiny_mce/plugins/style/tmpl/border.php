@@ -20,28 +20,28 @@ defined('_JEXEC') or die('RESTRICTED');
         <input type="checkbox" id="border_style_same" checked="checked" onclick="StyleDialog.toggleSame(this,'border_style');" />
         <label for="border_style_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
       </div>
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="border_style_top" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_STYLES_TOP');?></label>
       <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <select id="border_style_top"></select>
       </div>
     </div>
 
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="border_style_right" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_STYLES_RIGHT');?></label>
       <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <select id="border_style_right"></select>
       </div>
     </div>
 
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="border_style_bottom" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_STYLES_BOTTOM');?></label>
       <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <select id="border_style_bottom"></select>
       </div>
     </div>
 
-    <div class="uk-form-row uk-grid uk-grid-small">
+    <div class="uk-grid uk-grid-small">
       <label for="border_style_left" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_STYLES_LEFT');?></label>
       <div class="uk-form-controls uk-width-7-10 uk-datalist">
         <select id="border_style_left"></select>
@@ -57,7 +57,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <label for="border_width_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="border_width_top"></select>
         </div>
@@ -66,7 +66,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="border_width_right"></select>
         </div>
@@ -75,7 +75,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="border_width_bottom"></select>
         </div>
@@ -84,7 +84,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
       </div>
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10 uk-datalist">
           <select id="border_width_left"></select>
         </div>

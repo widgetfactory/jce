@@ -11,7 +11,7 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-    <div class="uk-form-row uk-grid">
+    <div class="uk-grid">
         <label class="uk-form-label uk-width-2-10" for="align">
                 <?php echo WFText::_('WF_TABLE_ALIGN'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
@@ -33,7 +33,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
     </div>
     
-    <div class="uk-form-row uk-grid">
+    <div class="uk-grid">
         <label class="uk-form-label uk-width-2-10" for="valign">
                 <?php echo WFText::_('WF_TABLE_VALIGN'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
@@ -58,7 +58,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
     </div>
 
-    <div class="uk-form-row uk-grid">
+    <div class="uk-grid">
         <label class="uk-form-label uk-width-2-10" for="width">
                 <?php echo WFText::_('WF_TABLE_WIDTH'); ?></label>
         <div class="uk-form-controls uk-width-3-10">

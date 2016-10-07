@@ -13,7 +13,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 
-  <div class="uk-form-row uk-grid uk-grid-small">
+  <div class="uk-grid uk-grid-small">
     <label for="positioning_type" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_POSITIONING_TYPE');?></label>
     <div class="uk-form-controls uk-width-3-10 uk-datalist">
       <select id="positioning_type"></select>
@@ -24,7 +24,7 @@ defined('_JEXEC') or die('RESTRICTED');
     </div>
   </div>
 
-  <div class="uk-form-row uk-grid uk-grid-small">
+  <div class="uk-grid uk-grid-small">
     <label for="positioning_width" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_WIDTH');?></label>
         <div class="uk-form-controls uk-width-2-10">
           <input type="number" id="positioning_width" onchange="StyleDialog.synch('positioning_width','box_width');" />
@@ -38,7 +38,7 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
   </div>
 
-  <div class="uk-form-row uk-grid uk-grid-small">
+  <div class="uk-grid uk-grid-small">
     <label for="positioning_height" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_HEIGHT');?></label>
         <div class="uk-form-controls uk-width-2-10">
           <input type="number" id="positioning_height" onchange="StyleDialog.synch('positioning_height','box_height');" />
@@ -62,7 +62,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <input type="checkbox" id="positioning_placement_same" checked="checked" onclick="StyleDialog.toggleSame(this,'positioning_placement');" />
         <label for="positioning_placement_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_placement_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TOP');?></label>
 
 
@@ -75,7 +75,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_placement_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_RIGHT');?></label>
 
 
@@ -88,7 +88,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_placement_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOTTOM');?></label>
 
 
@@ -101,7 +101,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_placement_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_LEFT');?></label>
 
 
@@ -127,7 +127,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <input type="checkbox" id="positioning_clip_same" checked="checked" onclick="StyleDialog.toggleSame(this,'positioning_clip');" />
         <label for="positioning_clip_same"><?php echo WFText::_('WF_STYLES_SAME');?></label>
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_clip_top" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TOP');?></label>
 
 
@@ -140,7 +140,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_clip_right" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_RIGHT');?></label>
 
 
@@ -153,7 +153,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_clip_bottom" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_BOTTOM');?></label>
 
 
@@ -166,7 +166,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 
       </div>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-grid uk-grid-small">
         <label for="positioning_clip_left" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_LEFT');?></label>
 
             <div class="uk-form-controls uk-width-4-10">
