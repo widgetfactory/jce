@@ -284,8 +284,7 @@ abstract class WFInstall {
             $site . '/popup.php',
             $site . '/editor/libraries/js/help.min.js',
             $site . '/editor/libraries/css/help.css',
-            $site . '/editor/libraries/css/files.css',
-            $site . '/editor/libraries/img/ext.png'
+            $site . '/editor/libraries/css/files.css'
         );
         
         $folders = array(

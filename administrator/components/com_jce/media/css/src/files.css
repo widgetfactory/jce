@@ -10,50 +10,50 @@
 
 .file,
 .file.default {
-    background: url(../img/ext.png) no-repeat 0 0;
+    background: url(../../../../../components/com_jce/editor/libraries/img/ext.png) no-repeat 0 0;
 }
 
 .file.txt {
-    background: url(../img/ext.png) no-repeat 0 -20px;
+    background-position: 0 -20px;
 }
 
 .file.zip,
 .file.tar,
 .file.gz,
 .file.rar {
-    background: url(../img/ext.png) no-repeat 0 -40px;
+    background-position: 0 -40px;
 }
 
 .file.html,
 .file.htm {
-    background: url(../img/ext.png) no-repeat 0 -60px;
+    background-position: 0 -60px;
 }
 
 .file.mp3,
 .file.wav,
 .file.aiff {
-    background: url(../img/ext.png) no-repeat 0 -80px;
+    background-position: 0 -80px;
 }
 
 .file.php {
-    background: url(../img/ext.png) no-repeat 0 -100px;
+    background-position: 0 -100px;
 }
 
 .file.sql {
-    background: url(../img/ext.png) no-repeat 0 -120px;
+    background-position: 0 -120px;
 }
 
 .file.gif {
-    background: url(../img/ext.png) no-repeat 0 -140px;
+    background-position: 0 -140px;
 }
 
 .file.jpg,
 .file.jpeg {
-    background: url(../img/ext.png) no-repeat 0 -160px;
+    background-position: 0 -160px;
 }
 
 .file.png {
-    background: url(../img/ext.png) no-repeat 0 -180px;
+    background-position: 0 -180px;
 }
 
 .file.webm,
@@ -61,32 +61,32 @@
 .file.mp4,
 .file.mpeg,
 .file.mpg {
-    background: url(../img/ext.png) no-repeat 0 -200px;
+    background-position: 0 -200px;
 }
 
 .file.js,
 .file.xml,
 .file.xaml {
-    background: url(../img/ext.png) no-repeat 0 -220px;
+    background-position: 0 -220px;
 }
 
 .file.css {
-    background: url(../img/ext.png) no-repeat 0 -420px;
+    background-position: 0 -420px;
 }
 
 .file.rtf {
-    background: url(../img/ext.png) no-repeat 0 -300px;
+    background-position: 0 -300px;
 }
 
 .file.notwritable,
 dd.file.notwritable,
 .file.duplicate {
-    background: url(../img/icons.png) no-repeat 0 -620px;
+    background-position: 0 -620px;
 }
 
 .file.notsafe,
 dd.file.notsafe {
-    background: url(../img/icons.png) no-repeat 0 -640px;
+    background-position: 0 -640px;
 }
 
 
@@ -95,7 +95,7 @@ dd.file.notsafe {
 .file.swf,
 .file.as,
 .file.fla {
-    background: url(../img/ext.png) no-repeat 0 -340px;
+    background-position: 0 -340px;
 }
 
 
@@ -106,7 +106,7 @@ dd.file.notsafe {
 .file.f4p,
 .file.f4a,
 .file.f4b {
-    background: url(../img/ext.png) no-repeat 0 -340px;
+    background-position: 0 -340px;
 }
 
 
@@ -114,7 +114,7 @@ dd.file.notsafe {
 
 .file.doc,
 .file.docx {
-    background: url(../img/ext.png) no-repeat 0 -400px;
+    background-position: 0 -400px;
 }
 
 
@@ -123,7 +123,7 @@ dd.file.notsafe {
 .file.xls,
 .file.xlsx,
 .file.xlsm {
-    background: url(../img/ext.png) no-repeat 0 -320px;
+    background-position: 0 -320px;
 }
 
 
@@ -131,14 +131,14 @@ dd.file.notsafe {
 
 .file.ppt,
 .file.pptx {
-    background: url(../img/ext.png) no-repeat 0 -380px;
+    background-position: 0 -380px;
 }
 
 
 /* Adobe® Acrobat */
 
 .file.pdf {
-    background: url(../img/ext.png) no-repeat 0 -360px;
+    background-position: 0 -360px;
 }
 
 
@@ -150,7 +150,7 @@ dd.file.notsafe {
 .file.mov,
 .file.qt,
 .file.m4a {
-    background: url(../img/ext.png) no-repeat 0 -200px;
+    background-position: 0 -200px;
 }
 
 
@@ -159,14 +159,14 @@ dd.file.notsafe {
 .file.ra,
 .file.rm,
 .file.ram {
-    background: url(../img/ext.png) no-repeat 0 -200px;
+    background-position: 0 -200px;
 }
 
 
 /* Adobe Shockwave */
 
 .file.dcr {
-    background: url(../img/ext.png) no-repeat 0 -200px;
+    background-position: 0 -200px;
 }
 
 
@@ -180,5 +180,5 @@ dd.file.notsafe {
 .file.asf,
 .file.asx,
 .file.avi {
-    background: url(../img/ext.png) no-repeat 0 -200px;
+    background-position: 0 -200px;
 }
