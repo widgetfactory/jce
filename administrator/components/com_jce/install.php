@@ -42,40 +42,6 @@ abstract class WFInstall {
             $state = self::upgrade($current_version);
         }
 
-        // Add device column
-        if (self::checkTableColumn('#__wf_profiles', 'device') === false) {
-            $db = JFactory::getDBO();
-
-            switch (strtolower($db->name)) {
-                case 'mysql':
-                case 'mysqli':
-                    $query = 'ALTER TABLE #__wf_profiles CHANGE `description` `description` TEXT';
-                    $db->setQuery($query);
-                    $db->query();
-
-                    // Change types field to TEXT
-                    $query = 'ALTER TABLE #__wf_profiles CHANGE `types` `types` TEXT';
-                    $db->setQuery($query);
-                    $db->query();
-
-                    // Add device field - MySQL
-                    $query = 'ALTER TABLE #__wf_profiles ADD `device` VARCHAR(255) AFTER `area`';
-
-                    break;
-                case 'sqlsrv':
-                case 'sqlazure':
-                case 'sqlzure':
-                    $query = 'ALTER TABLE #__wf_profiles ADD `device` NVARCHAR(250)';
-                    break;
-                case 'postgresql':
-                    $query = 'ALTER TABLE #__wf_profiles ADD "device" character varying(255) NOT NULL';
-                    break;
-            }
-
-            $db->setQuery($query);
-            $db->query();
-        }
-
         if ($state) {
             $message  = '<div class="ui-jce">';
             $message .= '   <h2>' . JText::_('COM_JCE') . ' ' . $new_version . '</h2>';
@@ -191,129 +157,67 @@ abstract class WFInstall {
         JTable::addIncludePath($admin . '/tables');
 
         $files = array(
-            $admin . '/adapters/extension.php',
             $admin . '/adapters/language.php',
-            $admin . '/classes/jsmin.php',
-            $admin . '/classes/jspacker.php',
+            $admin . '/classes/lessc.inc.php',
             $admin . '/controller/installer.php',
-            $admin . '/helpers/system.php',
-            $admin . '/helpers/tools.php',
-            $admin . '/media/css/colorpicker.css',
-            $admin . '/media/css/extensions.css',
+            $admin . '/install.script.php',
             $admin . '/media/css/global.css',
-            $admin . '/media/css/help.css',
-            $admin . '/media/css/icons.css',
+            $admin . '/media/css/install.css',
             $admin . '/media/css/installer.css',
-            $admin . '/media/css/jquery',
-            $admin . '/media/css/layout.css',
-            $admin . '/media/css/legend.css',
             $admin . '/media/css/profiles.css',
-            $admin . '/media/css/select.css',
-            $admin . '/media/css/styles.css',
-            $admin . '/media/css/tips.css',
             $admin . '/media/css/upload.css',
             $admin . '/media/img/cpanel.png',
+            $admin . '/media/img/error.png',
+            $admin . '/media/img/glyphicons-halflings-white.png',
+            $admin . '/media/img/glyphicons-halflings.png',
             $admin . '/media/img/list_label_bg.gif',
             $admin . '/media/img/menu/jce-config.png',
             $admin . '/media/img/menu/jce-cpanel.png',
             $admin . '/media/img/menu/jce-install.png',
             $admin . '/media/img/menu/jce-profiles.png',
-            $admin . '/media/img/toolbar.png',
-            $admin . '/media/img/error.png',
-            $admin . '/media/img/glyphicons-halflings-white.png',
-            $admin . '/media/img/glyphicons-halflings.png',
             $admin . '/media/img/spacer.gif',
             $admin . '/media/img/tick.png',
             $admin . '/media/js/browser.js',
-            $admin . '/media/js/checklist.js',
-            $admin . '/media/js/colorpicker.js',
-            $admin . '/media/js/extensions.js',
-            $admin . '/media/js/help.js',
-            $admin . '/media/js/html5.js',
             $admin . '/media/js/core.js',
             $admin . '/media/js/installer.js',
             $admin . '/media/js/profile.js',
-            $admin . '/media/js/jce.js',
-            $admin . '/media/js/jquery',
-            $admin . '/media/js/legend.js', 
-            $admin . '/media/js/parameter.js',
-            $admin . '/media/js/profiles.js',
-            $admin . '/media/js/select.js',
-            $admin . '/media/js/tips.js',
             $admin . '/media/js/uploads.js',
             $admin . '/models/installer.php',
             $admin . '/models/installer.xml',
-            $admin . '/classes/lessc.inc.php',
 
             $site . '/editor/elements/mediaplayer.php',
-            $site . '/editor/extensions/popups/jcemediabox/css/window.css',
-            $site . '/editor/libraries/css/dialog.css',
+            $site . '/editor/libraries/classes/extensions/mediaplayer.php',
+            $site . '/editor/libraries/css/colorpicker.css',
             $site . '/editor/libraries/css/editor.css',
             $site . '/editor/libraries/css/files.css',
+            $site . '/editor/libraries/css/help.css',
+            $site . '/editor/libraries/css/manager.css',
             $site . '/editor/libraries/css/plugin.css',
             $site . '/editor/libraries/css/popup.css',
-            $site . '/editor/libraries/css/reset.css',
-            $site . '/editor/libraries/css/theme.css',
-            $site . '/editor/libraries/css/tree.css',
-            $site . '/editor/libraries/css/upload.css',
+            $site . '/editor/libraries/img/broken.png',
+            $site . '/editor/libraries/img/cloud_upload.png',
+            $site . '/editor/libraries/img/drag.png',
+            $site . '/editor/libraries/img/icons-24.png',
+            $site . '/editor/libraries/img/icons.png',
+            
+            $site . '/editor/libraries/jquery/css/jquery-ui.css',
             $site . '/editor/libraries/js/editor.js',
-            $site . '/editor/libraries/js/extensions',
-            $site . '/editor/libraries/js/extensions.js',
-            $site . '/editor/libraries/js/plugin.js',
-            $site . '/editor/libraries/js/tiny_mce_utils.js',
-            $site . '/editor/libraries/js/tree.js',
-            $site . '/editor/libraries/js/upload.js',
-            $site . '/editor/libraries/js/html5.js',
-            $site . '/editor/tiny_mce/plugins/article/article.php',
-            $site . '/editor/tiny_mce/plugins/article/classes/article.php',
-            $site . '/editor/tiny_mce/plugins/article/css/pagebreak.css',
+            $site . '/editor/libraries/js/help.js',
+            $site . '/editor/libraries/js/link.full.js',
+            $site . '/editor/libraries/js/manager.full.js',
+            $site . '/editor/libraries/js/plugin.full.js',
+            $site . '/editor/libraries/mediaplayer/license.txt',
             $site . '/editor/tiny_mce/plugins/inlinepopups/css/dialog.css',
-            $site . '/editor/tiny_mce/plugins/searchreplace/tmpl/search.php',
-            $site . '/editor/tiny_mce/plugins/spellchecker/classes/googlespell.php',
-            $site . '/editor/tiny_mce/plugins/spellchecker/classes/pspellshell.php',
-            $site . '/editor/tiny_mce/plugins/xhtmlxtras/tmpl/attributes.php',
-            $site . '/editor/tiny_mce/themes/advanced/img/icons.gif',
-            $site . '/editor/tiny_mce/themes/advanced/img/layout.png',
-            $site . '/editor/tiny_mce/themes/advanced/langs/de.js',
-            $site . '/editor/tiny_mce/themes/advanced/langs/de_dlg.js',
-            $site . '/editor/tiny_mce/themes/advanced/langs/en_dlg.js',
-            $site . '/editor/tiny_mce/themes/advanced/shortcuts.htm',
-            $site . '/editor/tiny_mce/themes/advanced/skins/default/img/items.gif',
-            $site . '/editor/tiny_mce/themes/advanced/theme.php',
-            $site . '/editor/tiny_mce/themes/advanced/tmpl/anchor.php',
-            $site . '/popup.php',
-            $site . '/editor/libraries/js/help.min.js',
-            $site . '/editor/libraries/css/help.css',
-            $site . '/editor/libraries/css/files.css'
+            $site . '/editor/tiny_mce/plugins/media/img/iframe.png',
+            $site . '/editor/tiny_mce/themes/advanced/img/icons.gif'
         );
         
         $folders = array(
-            $admin . '/models/legend.php',
-            $admin . '/plugin',
             $admin . '/views/installer',
-            $admin . '/views/legend',
-
-            $site . '/controller',
-            $site . '/editor/extensions/browser',
-            $site . '/editor/extensions/links/docmanlinks',
-            $site . '/editor/libraries/js/extensions',
+            $site . '/editor/extensions/mediaplayer',
+            $site . '/editor/libraries/jquery/css/images',
             $site . '/editor/libraries/plupload',
-            $site . '/editor/tiny_mce/langs',
-            $site . '/editor/tiny_mce/plugins/article/js',
-            $site . '/editor/tiny_mce/plugins/article/langs',
-            $site . '/editor/tiny_mce/plugins/article/tmpl',
-            $site . '/editor/tiny_mce/plugins/browser/langs',
-            $site . '/editor/tiny_mce/plugins/imgmanager/langs',
-            $site . '/editor/tiny_mce/plugins/link/langs',
-            $site . '/editor/tiny_mce/plugins/paste',
-            $site . '/editor/tiny_mce/plugins/searchreplace/langs',
-            $site . '/editor/tiny_mce/plugins/style/langs',
-            $site . '/editor/tiny_mce/plugins/table/langs',
-            $site . '/editor/tiny_mce/plugins/visualchars/css',
-            $site . '/editor/tiny_mce/plugins/visualchars/img',
-            $site . '/editor/tiny_mce/plugins/xhtmlxtras/langs',
-            $site . '/editor/tiny_mce/themes/advanced/css',
-            $site . '/editor/tiny_mce/themes/advanced/js',
+            $site . '/editor/libraries/views/browser',
             $site . '/editor/tiny_mce/themes/advanced/skins/classic',
             $site . '/editor/tiny_mce/themes/advanced/skins/highcontrast'
         );
@@ -330,223 +234,6 @@ abstract class WFInstall {
             if (JFile::exists($file)) {
                 if (!JFile::delete($file)) {
                   $app->enqueueMessage('Unable to delete file: ' . $file, 'error');
-                }
-            }
-        }
-
-        // 2.1 - Add visualblocks plugin
-        if (version_compare($version, '2.1', '<')) {
-            $profiles = self::getProfiles();
-            $profile = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $profile->load($item->id);
-
-                    if (strpos($profile->rows, 'visualblocks') === false) {
-                        $profile->rows = str_replace('visualchars', 'visualchars,visualblocks', $profile->rows);
-                    }
-                    if (strpos($profile->plugins, 'visualblocks') === false) {
-                        $profile->plugins = str_replace('visualchars', 'visualchars,visualblocks', $profile->plugins);
-                    }
-
-                    $profile->store();
-                }
-            }
-        }
-
-        // 2.1.1 - Add anchor plugin
-        if (version_compare($version, '2.1.1', '<')) {
-            $profiles = self::getProfiles();
-            $profile = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $profile->load($item->id);
-
-                    // add anchor to end of plugins list
-                    if (strpos($profile->rows, 'anchor') !== false) {
-                        $profile->plugins .= ',anchor';
-                    }
-
-                    $profile->store();
-                }
-            }
-        }
-
-        // 2.2.1 - Add "Blogger" profile
-        if (version_compare($version, '2.2.1', '<')) {
-            self::installProfile('Blogger');
-        }
-
-        // 2.2.1 to 2.2.5 - Remove K2Links partial install
-        if (version_compare($version, '2.2.1', '>') && version_compare($version, '2.2.5', '<')) {
-            $path = $site . '/editor/extensions/links';
-
-            if (is_file($path . '/k2links.php') && is_file($path . '/k2links.xml') && !is_dir($path . '/k2links')) {
-                @JFile::delete($path . '/k2links.php');
-                @JFile::delete($path . '/k2links.xml');
-            }
-        }
-
-        // replace some profile row items
-        if (version_compare($version, '2.2.8', '<')) {
-            $profiles = self::getProfiles();
-            $profile = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $profile->load($item->id);
-
-                    $profile->rows = str_replace('paste', 'clipboard', $profile->rows);
-                    $profile->plugins = str_replace('paste', 'clipboard', $profile->plugins);
-
-                    $data = json_decode($profile->params, true);
-
-                    // swap paste data to 'clipboard'
-                    if ($data && array_key_exists('paste', $data)) {
-                        $params = array();
-
-                        // add 'paste_' prefix
-                        foreach ($data['paste'] as $k => $v) {
-                            $params['paste_' . $k] = $v;
-                        }
-
-                        // remove paste parameters
-                        unset($data['paste']);
-
-                        // assign new params to clipboard
-                        $data['clipboard'] = $params;
-                    }
-
-                    $profile->params = json_encode($data);
-
-                    $profile->store();
-                }
-            }
-        }
-
-        if (version_compare($version, '2.3.0beta', '<')) {
-            // add Mobile profile
-            self::installProfile('Mobile');
-        }
-
-        if (version_compare($version, '2.2.9', '<') || version_compare($version, '2.3.0beta3', '<')) {
-            $profiles = self::getProfiles();
-            $profile = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $profile->load($item->id);
-
-                    $buttons = array('buttons' => array());
-
-                    if (strpos($profile->rows, 'numlist') !== false) {
-                        $buttons['buttons'][] = 'numlist';
-
-                        $profile->rows = str_replace('numlist', 'lists', $profile->rows);
-                    }
-
-                    if (strpos($profile->rows, 'bullist') !== false) {
-                        $buttons['buttons'][] = 'bullist';
-
-                        if (strpos($profile->rows, 'lists') === false) {
-                            $profile->rows = str_replace('bullist', 'lists', $profile->rows);
-                        }
-                    }
-                    // remove bullist and numlist
-                    $profile->rows = str_replace(array('bullist', 'numlist'), '', $profile->rows);
-                    // replace multiple commas with a single one
-                    $profile->rows = preg_replace('#,+#', ',', $profile->rows);
-                    // fix rows
-                    $profile->rows = str_replace(',;', ';', $profile->rows);
-
-                    if (!empty($buttons['buttons'])) {
-                        $profile->plugins .= ',lists';
-
-                        $data = json_decode($profile->params, true);
-                        $data['lists'] = $buttons;
-
-                        $profile->params = json_encode($data);
-
-                        $profile->store();
-                    }
-                }
-            }
-        }
-        // transfer charmap to a plugin
-        if (version_compare($version, '2.3.2', '<')) {
-            $profiles = self::getProfiles();
-            $table = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $table->load($item->id);
-
-                    if (strpos($table->rows, 'charmap') !== false) {
-                        $table->plugins .= ',charmap';
-                        $table->store();
-                    }
-                }
-            }
-        }
-
-        // transfer styleselect, fontselect, fontsize etc. to a plugin
-        if (version_compare($version, '2.3.5', '<')) {
-            $profiles = self::getProfiles();
-            $table = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $table->load($item->id);
-
-                    $plugins = explode(',', $table->plugins);
-
-                    if (strpos($table->rows, 'formatselect') !== false) {
-                        $plugins[] = 'formatselect';
-                    }
-
-                    if (strpos($table->rows, 'styleselect') !== false) {
-                        $plugins[] = 'styleselect';
-                    }
-
-                    if (strpos($table->rows, 'fontselect') !== false) {
-                        $plugins[] = 'fontselect';
-                    }
-
-                    if (strpos($table->rows, 'fontsizeselect') !== false) {
-                        $plugins[] = 'fontsizeselect';
-                    }
-
-                    if (strpos($table->rows, 'forecolor') !== false || strpos($table->rows, 'backcolor') !== false) {
-                        $plugins[] = 'fontcolor';
-                    }
-
-                    $table->plugins = implode(',', $plugins);
-
-                    $table->store();
-                }
-            }
-        }
-
-        // transfer hr to a plugin
-        if (version_compare($version, '2.5.8', '<')) {
-            $profiles = self::getProfiles();
-            $table = JTable::getInstance('Profiles', 'WFTable');
-
-            if (!empty($profiles)) {
-                foreach ($profiles as $item) {
-                    $table->load($item->id);
-
-                    $plugins = explode(',', $table->plugins);
-
-                    if (strpos($table->rows, 'hr') !== false) {
-                        $plugins[] = 'hr';
-                    }
-
-                    $table->plugins = implode(',', $plugins);
-
-                    $table->store();
                 }
             }
         }
@@ -616,77 +303,4 @@ abstract class WFInstall {
             }
         }
     }
-
-    private static function checkTable($table) {
-        $db = JFactory::getDBO();
-
-        $tables = $db->getTableList();
-
-        if (!empty($tables)) {
-            // swap array values with keys, convert to lowercase and return array keys as values
-            $tables = array_keys(array_change_key_case(array_flip($tables)));
-            $app = JFactory::getApplication();
-            $match = str_replace('#__', strtolower($app->getCfg('dbprefix', '')), $table);
-
-            return in_array($match, $tables);
-        }
-
-        // try with query
-        $query = $db->getQuery(true);
-
-        if (is_object($query)) {
-            $query->select('COUNT(id)')->from($table);
-        } else {
-            $query = 'SELECT COUNT(id) FROM ' . $table;
-        }
-
-        $db->setQuery($query);
-
-        return $db->query();
-    }
-
-    /**
-     * Check table contents
-     * @return integer
-     * @param string $table Table name
-     */
-    private static function checkTableContents($table) {
-        $db = JFactory::getDBO();
-
-        $query = $db->getQuery(true);
-
-        if (is_object($query)) {
-            $query->select('COUNT(id)')->from($table);
-        } else {
-            $query = 'SELECT COUNT(id) FROM ' . $table;
-        }
-
-        $db->setQuery($query);
-
-        return $db->loadResult();
-    }
-
-    private static function checkTableColumn($table, $column) {
-        $db = JFactory::getDBO();
-
-        // use built in function
-        if (method_exists($db, 'getTableColumns')) {
-            $fields = $db->getTableColumns($table);
-        } else {
-            $db->setQuery('DESCRIBE ' . $table);
-            if (method_exists($db, 'loadColumn')) {
-                $fields = $db->loadColumn();
-            } else {
-                $fields = $db->loadResultArray();
-            }
-
-            // we need to check keys not values
-            $fields = array_flip($fields);
-        }
-
-        return array_key_exists($column, $fields);
-    }
-
 }
-
-?>
