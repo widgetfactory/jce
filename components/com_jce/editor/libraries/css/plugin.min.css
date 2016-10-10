@@ -333,7 +333,9 @@ label {
 }
 
 .uk-grid+.uk-grid,
-.uk-form-row+.uk-form-row {
+.uk-form-row+.uk-form-row,
+.uk-grid+.uk-form-row,
+.uk-form-row + .uk-grid {
     margin-top: 0.5em;
 }
 
