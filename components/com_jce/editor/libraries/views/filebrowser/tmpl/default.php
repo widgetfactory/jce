@@ -73,7 +73,7 @@ defined('_JEXEC') or die('RESTRICTED');
               </div>
 
               <!-- Sort Size -->
-              <div class="uk-width-3-10 uk-button uk-padding-remove uk-text-left" id="sort-size" role="button" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <div class="uk-width-3-10 uk-button uk-text-left" id="sort-size" role="button" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <span id="sort-size-label">&nbsp;<?php echo WFText::_('WF_LABEL_SIZE'); ?></span>
@@ -143,7 +143,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
           </div>
           <div id="browser-details-container" class="uk-grid uk-grid-collapse uk-flex">
-            <div id="browser-details" class="uk-flex-item-auto">
+            <div id="browser-details" class="uk-width-8-10 uk-flex-item-auto">
               <div id="browser-details-text"></div>
               <div id="browser-details-comment"></div>
             </div>

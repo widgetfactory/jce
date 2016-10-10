@@ -20,9 +20,14 @@
 
 .uk-navbar .uk-button {
     border-width: 0;
-    min-height: 28px;
-    line-height: 28px;
+    min-height: 2em;
+    line-height: 2em;
     vertical-align: baseline;
+    font-size: 14px;
+}
+
+.uk-navbar .uk-button span {
+    font-size: 12px;
 }
 
 .uk-navbar-content {
@@ -67,6 +72,16 @@ main>div {
 
 main>div:first-child {
     border-left-width: 1px;
+}
+
+main>div:last-child {
+    max-width: 18rem;
+}
+
+@media (min-width: 960px) {
+    main>div:last-child {
+        max-width: 20rem;
+    }
 }
 
 .uk-tree-hidden>div:first-child {
@@ -449,14 +464,6 @@ div#info-comment {
 
 /*Layout Right*/
 
-#browser-details-text {}
-
-#browser-details-text h5 {
-    text-overflow: ellipsis;
-    width: 100%;
-    overflow: hidden;
-}
-
 #browser-details-comment {
     bottom: 5px;
     position: absolute;
@@ -508,12 +515,6 @@ div#info-comment {
     margin: 0;
 }
 
-.message.info {}
-
-.message.alert {}
-
-.message.error {}
-
 
 /**
  * Item List
@@ -560,22 +561,24 @@ div#info-comment {
 .item-list li.file,
 .item-list li.folder {
     background-image: none !important;
+    margin: 0;
 }
 
 .item-list li>.uk-button {
     padding: 0px 8px 0px 3px;
 }
 
-.item-list li .uk-icon {
-    max-width: 28px;
-}
-
 .item-list li a {
     text-decoration: none;
-    text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 75%;
     color: inherit;
+    position: relative;
+}
+
+.item-list li a .uk-item-text {
+    position: relative;
+    max-width: 85%;
+    float: left;
 }
 
 .item-list li input[type="checkbox"] {
@@ -601,25 +604,14 @@ div#info-comment {
     width: 28px;
 }
 
-
-/*.item-list li .uk-icon.uk-icon-folder-up {
-  background: url('../img/icons.png') no-repeat 0 -200px;
-  margin-left: 30px;
-}
-.item-list li .folder {
-  background: url('../img/icons.png') no-repeat 0 -220px;
-}*/
-
 .item-list li .uk-icon {
     background-color: transparent;
     margin: 0 10px 0 0;
-    height: 28px;
-    line-height: 28px;
+    height: 2em;
+    width: 2em;
+    font-size: 14px;
+    line-height: 2em;
     text-align: center;
-}
-
-.item-list li .uk-icon:before {
-    /*display: none;*/
 }
 
 .item-list .selected {
@@ -643,7 +635,7 @@ div#info-comment {
 }
 
 .item-list li .uk-item-size {
-    padding-left: 15px;
+    padding-left: 26px;
 }
 
 .item-list li .uk-item-date {
@@ -676,40 +668,40 @@ ul.item-list li.folder-up {
 
 #browser-buttons {
     border-left: 1px solid #ddd;
-    min-width: 28px;
+    min-width: 2em;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
 #browser-buttons .button {
     border: 0 none;
-    margin: 1px 0 0 0;
+    margin: 1px auto;
     color: #444;
     background: none;
     text-align: center;
     padding: 0;
     min-height: inherit;
     display: block;
-    line-height: 28px;
+    line-height: 2em;
+    width: 2em;
+    font-size: inherit;
+}
+
+#browser-buttons .button .uk-icon {
+    font-size: inherit;
 }
 
 #browser-buttons .button:hover {
     opacity: 0.6;
 }
 
-@media (min-width: 800px) {
+@media (min-height: 768px) {
     #browser-buttons {
-        min-width: 32px;
-    }
-    #browser-buttons .button {
-        line-height: 32px;
-    }
-    #browser-buttons .button .uk-icon {
         font-size: 16px;
     }
 }
 
 .uk-navbar .uk-button.action {
-    /*border-width: 1px;
-  border-color: #ddd;*/
     background-color: #fff;
     padding: 0 10px;
 }

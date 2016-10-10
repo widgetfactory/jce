@@ -742,7 +742,7 @@
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                         data.join(' ') +
-                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-flex-item-auto" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -784,7 +784,17 @@
                     var name = Wf.String.stripExt(e.name);
                     var icon = ext.toLowerCase();
 
-                    h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-file-o uk-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i><a class="uk-flex-item-auto" href="#"><span class="uk-item-text">' + name + '</span><span class="uk-item-extension">.' + ext + '</span></a><span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span><span class="uk-width-3-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span></li>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
+                    h += '  <label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label>';
+                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-file-o uk-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i>';
+                    h += '  <a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">';
+                    h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
+                    //h += '      <span class="uk-item-text uk-width-1-4 uk-display-inline-block">' + name + '</span>';
+                    h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
+                    h += '  </a>';
+                    h += '  <span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
+                    h += '  <span class="uk-width-3-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
+                    h += '</li>';
                 });
 
             }
@@ -853,10 +863,7 @@
             // Clear returns
             this._returnedItems = [];
 
-            // Close any dialogs
-            $.each(this._modal, function(i, n) {
-                $(n).dialog('close');
-            });
+            $('.uk-modal').trigger('modal.close');
 
             // uncheck all checkboxes
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
@@ -1420,23 +1427,22 @@
                 case 'folder_new':
                     var elements = this._getDialogOptions('folder_new');
 
-                    this._modal['folder_new'] = Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), {
-                        elements: elements,
-                        confirm: function(v, args) {
-                            if (v) {
-                                self._setLoader();
+                    this._modal['folder_new'] = Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function(v, args) {
+                        if (v) {
+                            self._setLoader();
 
-                                v = Wf.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
-                                args = [dir, v].concat(args || []);
+                            v = Wf.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
+                            args = [dir, v].concat(args || []);
 
-                                Wf.JSON.request('folderNew', args, function(o) {
-                                    if (o) {
-                                        self._trigger('onFolderNew');
-                                    }
-                                    self.refresh();
-                                });
-                            }
+                            Wf.JSON.request('folderNew', args, function(o) {
+                                if (o) {
+                                    self._trigger('onFolderNew');
+                                }
+                                self.refresh();
+                            });
                         }
+                    }, {
+                        elements: elements
                     });
                     break;
 
@@ -1522,60 +1528,61 @@
                         v = Wf.String.basename(Wf.String.stripExt(list));
                     }
 
-                    this._modal['rename'] = Wf.Modal.prompt('Rename', {
+                    this._modal['rename'] = Wf.Modal.prompt('Rename', function(name, args) {
+                        name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
+
+                        if (v === name) {
+                            Wf.Modal.alert(self._translate('rename_item_name_new', 'Please specify a new name for the item'));
+                            return false;
+                        }
+
+                        self._modal['confirm'] = Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function(state) {
+                            if (state) {
+                                self._setLoader();
+
+                                args = [list, name].concat(args || []);
+
+                                Wf.JSON.request('renameItem', args, function(o) {
+                                    if (o) {
+                                        self._reset();
+                                        var item = Wf.String.path(self._dir, name);
+
+                                        // folder rename successful
+                                        if (o.folders.length) {
+                                            // rename in tree
+                                            if (self._treeLoaded()) {
+                                                $('#tree-body').trigger('tree:renamenode', [list, item]);
+                                            }
+
+                                            self._trigger('onFolderRename', null, list, item);
+                                        }
+
+                                        // file rename successful
+                                        if (o.files.length) {
+                                            self._trigger('onFileDelete', null, item);
+                                        }
+
+                                        if (item) {
+                                            self._addReturnedItem({
+                                                name: item
+                                            });
+                                        }
+                                    }
+                                    self.refresh();
+                                });
+
+                                // close modal
+                                $(self._modal.rename).trigger('modal.close');
+                            } else {
+                                $(self._modal.rename).trigger('modal.close');
+                            }
+                        });
+                    }, {
                         value: v,
                         header: false,
                         label: { 'confirm': self._translate('rename', 'Rename') },
                         elements: this._getDialogOptions('rename'),
-                        close_on_confirm: false,
-                        confirm: function(name, args) {
-                            name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
-
-                            if (v === name) {
-                                Wf.Modal.alert(self._translate('rename_item_name_new', 'Please specify a new name for the item'));
-                                return false;
-                            }
-
-                            self._modal['confirm'] = Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function(state) {
-                                if (state) {
-                                    self._setLoader();
-
-                                    args = [list, name].concat(args || []);
-
-                                    Wf.JSON.request('renameItem', args, function(o) {
-                                        if (o) {
-                                            self._reset();
-                                            var item = Wf.String.path(self._dir, name);
-
-                                            // folder rename successful
-                                            if (o.folders.length) {
-                                                // rename in tree
-                                                if (self._treeLoaded()) {
-                                                    $('#tree-body').trigger('tree:renamenode', [list, item]);
-                                                }
-
-                                                self._trigger('onFolderRename', null, list, item);
-                                            }
-
-                                            // file rename successful
-                                            if (o.files.length) {
-                                                self._trigger('onFileDelete', null, item);
-                                            }
-
-                                            if (item) {
-                                                self._addReturnedItem({
-                                                    name: item
-                                                });
-                                            }
-                                        }
-                                        self.refresh();
-                                    });
-
-                                    // close modal
-                                    $(self._modal.rename).trigger('modal.close');
-                                }
-                            });
-                        }
+                        close_on_submit: false
                     });
                     break;
             }
@@ -2190,12 +2197,11 @@
             });
 
             if (items.length) {
-                //var pos = $(items[0]).position();
-
-                var top = $(items).get(0).offsetTop - 2;
+                var pos = $(items).first().position();
+                var h = $(items).first().height();
 
                 $('#browser-list').animate({
-                    scrollTop: Math.round(top)
+                    scrollTop: Math.round(pos.top - h)
                 }, 1500);
             }
 
@@ -2426,7 +2432,7 @@
 
             // create properties list
             var info = document.createElement('div');
-            $(info).addClass('uk-comment').append('<div class="uk-comment-header"><h5 class="uk-margin-remove uk-text-bold">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
+            $(info).addClass('uk-comment').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + name + '">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
 
             // additional data for file items
             if ($(item).data('preview')) {
