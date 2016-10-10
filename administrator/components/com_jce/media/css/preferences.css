@@ -7,18 +7,14 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
 .ui-jce .ui-tabs-panel {
     min-height: 390px;
     overflow-y: auto;
     overflow-x: hidden;
-    
     display: none;
 }
 
 .ui-jce .fltrt {
-    float : right;
-}
-
-.ui-jce .tab-pane table {
-    width : auto;
+    float: right;
 }

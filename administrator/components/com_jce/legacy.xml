@@ -48,7 +48,6 @@
         </submenu>
 
         <files folder="administrator/components/com_jce">
-            <folder>adapters</folder>
             <folder>classes</folder>
             <folder>controller</folder>
             <folder>elements</folder>

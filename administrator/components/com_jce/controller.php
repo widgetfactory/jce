@@ -21,8 +21,6 @@ class WFController extends WFControllerBase {
     public function __construct($default = array()) {
         parent::__construct($default);
 
-        // load helpers
-        wfimport('admin.helpers.parameter');
         wfimport('admin.helpers.extension');
         wfimport('admin.helpers.xml');
 
@@ -133,9 +131,6 @@ class WFController extends WFControllerBase {
                 require_once(JPATH_ADMINISTRATOR . '/includes/toolbar.php');
 
                 JToolBarHelper::title(WFText::_('WF_ADMINISTRATION') . ' :: ' . WFText::_('WF_' . strtoupper($name)), 'logo.png');
-
-                $params = WFParameterHelper::getComponentParams();
-                $theme = $params->get('preferences.theme', 'jce');
 
                 $options = array(
                     'labels' => array(

@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div class="ui-jce">
-  <form action="index.php" method="post" name="adminForm">
+  <form action="index.php" method="post" name="adminForm" class="form-horizontal">
     <div class="btn-group pull-right fltrgt">
       <button class="btn" id="apply"><i class="icon-ok"></i>&nbsp;<?php echo WFText::_('WF_LABEL_SAVE');?></button>
       <button class="btn" id="save"><i class="icon-edit"></i>&nbsp;<?php echo WFText::_('WF_LABEL_SAVECLOSE');?></button>
