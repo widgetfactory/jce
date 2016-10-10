@@ -81,12 +81,20 @@
             // add body and data
             $('<div class="uk-modal-body uk-overflow-container" id="' + options.id + '" />').appendTo(modal).append(data);
 
+            var tabindex = 1000;
+
+            $(':input').each(function() {
+                $(this).attr('tabindex', tabindex);
+
+                tabindex++;
+            });
+
             // add buttons
             if (options.buttons) {
                 footer = $('<div class="uk-modal-footer uk-text-right" />');
 
                 $.each(options.buttons, function(i, o) {
-                    var btn = $('<button class="uk-button" />').click(function(e) {
+                    var btn = $('<button class="uk-button uk-margin-small-left" />').click(function(e) {
                         e.preventDefault();
 
                         if ($.isFunction(o.click)) {
@@ -94,32 +102,29 @@
                         }
                     });
 
-                    if (o.type) {
-                        $(btn).attr('type', o.type);
-                    }
+                    $.each(o.attributes, function(k, v) {
+                        if (k === "class") {
+                            $(btn).addClass(v);
+                        } else {
+                            $(btn).attr(k, v);
+                        }
+                    });
 
-                    if (i > 0) {
-                        $(btn).addClass('uk-margin-small-left');
-                    }
+                    $(btn).attr('tabindex', tabindex);
 
                     // add text
                     if (o.text) {
                         $(btn).append('<span class="uk-text">' + o.text + '</span>');
                     }
+
                     // add icon
                     if (o.icon) {
                         $(btn).prepend('<i class="uk-button-' + o.icon + ' ' + o.icon + '" />&nbsp;');
                     }
-                    // add classes
-                    if (o.classes) {
-                        $(btn).addClass(o.classes);
-                    }
-                    // add id
-                    if (o.id) {
-                        $(btn).attr('id', o.id);
-                    }
 
                     $(footer).append(btn);
+
+                    tabindex++;
                 });
             }
 
@@ -129,12 +134,13 @@
             // bind option events
             $(div).on('modal.open', function(ev) {
                 options.open.call(this, ev);
+                $('[autofocus]', div).focus();
             }).on('modal.close', function(e, ev) {
                 options.beforeclose.call(this, ev);
 
-                $(div).off('modal.open modal.close keyup.modal').removeClass('uk-open');
+                $(this).off('modal.open modal.close keyup.modal').removeClass('uk-open');
 
-                $(window).off('keyup.modal');
+                $('body').off('keyup.modal');
 
                 window.setTimeout(function() {
                     $(div).hide().detach();
@@ -152,25 +158,39 @@
             });
 
             // close on ESC
-            $(window).on('keyup.modal', function(e) {
+            $('body').on('keyup.modal', function(e) {
                 if (e.which === 27) {
-                    // hide
+                    // close
                     $(div).trigger('modal.close');
                     // cancel default behaviour
                     e.preventDefault();
+                    // prevent propogation
+                    e.stopPropagation();
                 }
             });
 
             // submit on enter
-            $(window).on('keyup.modal', function(e) {
+            /*$(div).one('keyup.modal', function(e) {
                 if (e.which === 13) {
-                    $('button[type="submit"]', div).click();
-                    // hide
-                    $(div).trigger('modal.close');
                     // cancel default behaviour
                     e.preventDefault();
+                    // prevent propogation
+                    e.stopPropagation();
+
+                    // trigger focused button
+                    if ($('button:focus', this).length) {
+                        $(div).find('.uk-modal-dialog button:focus').triggerHandler("click");
+                    } else {
+                        // "click" submit button
+                        $(div).find('.uk-modal-dialog button[type="submit"]').triggerHandler("click");
+                    }
+
+                    // close
+                    if (options.close_on_submit !== false) {
+                        $(this).trigger('modal.close');
+                    }
                 }
-            });
+            });*/
 
             // create modal
             $(div).appendTo(options.container);
@@ -180,9 +200,9 @@
 
             $(div).addClass('uk-open').trigger('modal.open').attr('aria-hidden', false);
 
-            $(div).on('modal.asset-loaded', function() {
+            $(div).on('modal.assetloaded', function() {
                 $(modal).css('top', ($(div).height() - $(modal).outerHeight()) / 2);
-            }).delay(10).trigger('modal.asset-loaded');
+            }).delay(10).trigger('modal.assetloaded');
 
             // return modal div element
             return div;
@@ -205,19 +225,24 @@
             options = $.extend(true, {
                 'classes': 'uk-modal-confirm',
                 buttons: [{
-                    type: 'submit',
                     text: options.label.confirm,
                     icon: 'uk-icon-check',
-                    classes: 'uk-button-primary uk-modal-close',
                     click: function(e) {
                         cb.call(this, true);
+                    },
+                    attributes: {
+                        "type": "submit",
+                        "class": "uk-button-primary uk-modal-close",
+                        "autofocus": true
                     }
                 }, {
                     text: options.label.cancel,
                     icon: 'uk-icon-close',
-                    classes: 'uk-modal-close',
                     click: function() {
                         cb.call(this, false);
+                    },
+                    attributes: {
+                        "class": "uk-modal-close"
                     }
                 }]
             }, options || {});
@@ -235,9 +260,12 @@
             options = $.extend({
                 'classes': 'uk-modal-alert',
                 buttons: [{
-                    type: 'submit',
                     text: options.label.confirm,
-                    classes: 'uk-modal-close'
+                    attributes: {
+                        "type": "submit",
+                        "class": "uk-modal-close",
+                        "autofocus": true
+                    }
                 }]
             }, options || {});
 
@@ -246,7 +274,7 @@
         /**
          * Prompt Dialog
          */
-        prompt: function(title, options) {
+        prompt: function(title, cb, options) {
             var html = '<div class="uk-form-row">';
 
             options = $.extend(true, {
@@ -283,27 +311,28 @@
             options = $.extend(true, {
                 'classes': 'uk-modal-prompt',
                 buttons: [{
-                    type: 'submit',
+                    attributes: {
+                        "type": "submit",
+                        "class": "uk-button-primary",
+                        "autofocus": true
+                    },
                     text: options.label.confirm,
                     icon: 'uk-icon-check',
-                    classes: 'uk-button-primary',
                     click: function(e) {
-                        if ($.isFunction(options.confirm)) {
-                            var args = [],
-                                $inp = $('#' + options.id + '-input'),
-                                v = $inp.val();
+                        var args = [],
+                            $inp = $('#' + options.id + '-input'),
+                            v = $inp.val();
 
-                            if (options.elements) {
-                                $(':input', '#' + options.id).not($inp).each(function() {
-                                    args.push($(this).val());
-                                });
-                            }
-
-                            options.confirm.call(this, v, args);
+                        if (options.elements) {
+                            $(':input', '#' + options.id).not($inp).each(function() {
+                                args.push($(this).val());
+                            });
                         }
 
-                        if (options.close_on_confirm !== false) {
-                            $(e.target).parents('.uk-modal').trigger('modal.close');
+                        cb.call(this, v, args);
+
+                        if (options.close_on_submit !== false) {
+                            $inp.parents('.uk-modal').trigger('modal.close');
                         }
                     }
                 }],
@@ -351,21 +380,28 @@
                 resizable: false,
                 buttons: [{
                     text: Wf.translate('browse', 'Add Files'),
-                    id: 'upload-browse',
                     icon: 'uk-icon-search',
-                    classes: 'uk-button-success'
+                    attributes: {
+                        "id": "upload-browse",
+                        "class": "uk-button-success",
+                        "autofocus": true
+                    }
                 }, {
                     text: Wf.translate('upload', 'Upload'),
                     click: function() {
                         return options.upload.call();
                     },
-                    id: 'upload-start',
-                    icon: 'uk-icon-cloud-upload',
-                    classes: 'uk-button-primary'
+                    attributes: {
+                        "id": "upload-start",
+                        "class": "uk-button-primary"
+                    },
+                    icon: 'uk-icon-cloud-upload'
                 }, {
                     text: Wf.translate('close', 'Close'),
                     icon: 'uk-icon-close',
-                    classes: 'uk-modal-close uk-hidden-small',
+                    attributes: {
+                        "class": "uk-modal-close uk-hidden-small"
+                    },
                 }]
             }, options);
 
@@ -468,7 +504,9 @@
                                 $(e.target).trigger('modal.close', e);
                             });
 
-                            $('.uk-modal').trigger('modal.asset-loaded');
+                            window.setTimeout(function() {
+                                $('.uk-modal').trigger('modal.assetloaded');
+                            }, 0);
                         };
 
                         img.src = url + (/\?/.test(url) ? '&' : '?') + new Date().getTime();
@@ -486,7 +524,7 @@
                         $('iframe, object', div).on('load', function() {
                             calculateWidth(e.target, w, h);
 
-                            $('.uk-modal').trigger('modal.asset-loaded');
+                            $('.uk-modal').trigger('modal.assetloaded');
                         });
                     } else {
                         $(div).addClass('media-preview loading');
@@ -657,7 +695,7 @@
 
                                 calculateWidth(e.target, w, h);
 
-                                $('.uk-modal').trigger('modal.asset-loaded');
+                                $('.uk-modal').trigger('modal.assetloaded');
                             });
                         }
                     }
