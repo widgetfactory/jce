@@ -1326,7 +1326,7 @@
                     }
                     break;
                 case 'upload':
-                    this._modal['upload'] = Wf.Modal.upload($.extend({
+                    var uploadModal = Wf.Modal.upload($.extend({
                         elements: this._getDialogOptions('upload'),
                         open: function() {
                             /**
@@ -1397,7 +1397,7 @@
                                     self._getList();
 
                                     window.setTimeout(function() {
-                                        $(self._modal.upload).trigger('modal.close');
+                                        $(uploadModal).trigger('modal.close');
                                     }, 1000);
 
                                     self._trigger('onUploadComplete');
@@ -1427,7 +1427,7 @@
                 case 'folder_new':
                     var elements = this._getDialogOptions('folder_new');
 
-                    this._modal['folder_new'] = Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function(v, args) {
+                    Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function(v, args) {
                         if (v) {
                             self._setLoader();
 
@@ -1488,7 +1488,7 @@
                 case 'delete':
                     var msg = self._translate('delete_item_alert', 'Delete Selected Item(s)');
 
-                    this._modal['confirm'] = Wf.Modal.confirm(msg, function(state) {
+                    Wf.Modal.confirm(msg, function(state) {
                         if (state) {
                             self._setLoader();
                             Wf.JSON.request('deleteItem', list, function(o) {
@@ -1528,7 +1528,7 @@
                         v = Wf.String.basename(Wf.String.stripExt(list));
                     }
 
-                    this._modal['rename'] = Wf.Modal.prompt('Rename', function(name, args) {
+                    var rename = Wf.Modal.prompt('Rename', function(name, args) {
                         name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
                         if (v === name) {
@@ -1536,7 +1536,7 @@
                             return false;
                         }
 
-                        self._modal['confirm'] = Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function(state) {
+                        Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function(state) {
                             if (state) {
                                 self._setLoader();
 
@@ -1572,9 +1572,9 @@
                                 });
 
                                 // close modal
-                                $(self._modal.rename).trigger('modal.close');
+                                $(rename).trigger('modal.close');
                             } else {
-                                $(self._modal.rename).trigger('modal.close');
+                                $(rename).trigger('modal.close');
                             }
                         });
                     }, {
@@ -1677,13 +1677,13 @@
 
                 if (o.name) {
                     $(action).click(function(e) {
+                        e.preventDefault();
+
                         if ($.type(fn) == 'function') {
                             return fn.call(self, name);
                         }
-                        e.preventDefault();
                         return self._trigger(fn, name);
                     });
-
                 }
 
                 this._actions[name] = action;
