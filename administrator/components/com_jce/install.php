@@ -213,6 +213,7 @@ abstract class WFInstall {
         );
         
         $folders = array(
+            $admin . '/adapters',
             $admin . '/views/installer',
             $site . '/editor/extensions/mediaplayer',
             $site . '/editor/libraries/jquery/css/images',
