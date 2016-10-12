@@ -12,6 +12,8 @@
     <installfile>install.script.php</installfile>
     <uninstallfile>install.script.php</uninstallfile>
 
+    <variant>@@variant@@</variant>
+
     <files folder="components/com_jce">
         <folder>editor</folder>
         <folder>media</folder>
