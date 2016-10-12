@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<extension type="component" version="2.5" method="upgrade" pro="@@pro@@">
+<extension type="component" version="2.5" method="upgrade">
     <name>COM_JCE</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
@@ -76,7 +76,4 @@
         </languages>
 
     </administration>
-    <updateservers>
-        <server type="extension" priority="1" name="JCE Editor Updates"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=pkg_jce.xml]]></server>
-    </updateservers>
 </extension>
