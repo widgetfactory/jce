@@ -84,38 +84,22 @@ abstract class WFToolbarHelper {
         $bar = JToolBar::getInstance('toolbar');
         // Add a configuration button
         $w = 780; $h = 560;
+
+        if (defined('JPATH_PLATFORM')) {
+            return false;
+        }
         
         $link = 'index.php?option=com_jce&amp;view=updates&amp;tmpl=component';
 
         if ($enabled) {
             JHtml::_('behavior.modal');
 
-            if (class_exists('JHtmlSidebar')) {            
-                $html  = '<button onclick="' . self::createClick($link, $w, $h) . '" class="btn btn-small" title="' . WFText::_('WF_UPDATES') . '"><i class="icon-upload"></i>&nbsp;' . WFText::_('WF_UPDATES') . '</button>';
-            } else {
-                $html  = '<a href="' . $link . '" target="_blank" onclick="' . self::createClick($link, $w, $h) . '" class="updates" title="' . WFText::_('WF_UPDATES') . '">';
-                $html .= '<span class="icon-32-default icon-32-update" title="' . WFText::_('WF_HELP') . '"></span>' . WFText::_('WF_UPDATES') . '</a>';
-            }
+            $html  = '<a href="' . $link . '" target="_blank" onclick="' . self::createClick($link, $w, $h) . '" class="updates" title="' . WFText::_('WF_UPDATES') . '">';
+            $html .= '<span class="icon-32-default icon-32-update" title="' . WFText::_('WF_HELP') . '"></span>' . WFText::_('WF_UPDATES') . '</a>';
             
             $bar->appendButton('Custom', $html, 'updates');
         }    
     }
-
-    /*public static function access() {
-        $bar = JToolBar::getInstance('toolbar');
-
-        $options = array(
-            'width' => 760,
-            'height' => 540,
-            'modal' => true,
-            'buttons' => '{}'
-        );
-
-        $html = '<a href="index.php?option=com_config&amp;view=component&amp;component=com_jce&amp;path=&amp;tmpl=component" target="_blank" data-options="' . str_replace('"', "'", json_encode($options)) . '" rel="{handler:iframe,size:{x:760, y:540}}" class="modal preferences" title="' . WFText::_('WF_PREFERENCES_TITLE') . '">';
-        $html .= '<span class="icon-32-lock" title="' . WFText::_('WF_ACCESS_TITLE') . '"></span>' . WFText::_('WF_ACCESS') . '</a>';
-
-        $bar->appendButton('Custom', $html, 'access');
-    }*/
 
     public static function export() {
         if (class_exists('JHtmlSidebar')) {
