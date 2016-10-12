@@ -45,7 +45,13 @@ class WFModelUpdates extends WFModel {
         $com_xml = JApplicationHelper::parseXMLInstallFile(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml');
 
         // set component version
-        $versions['joomla']['com_jce'] = $com_xml['version'];
+        $component = 'com_jce';
+
+        if (is_dir(JPATH_COMPONENT_SITE . '/editor/libraries/pro')) {
+             $component = 'com_jce_pro'; 
+        }
+
+        $versions['joomla'][$component] = str_replace('pro-', '', $com_xml['version']);
 
         // get mediabox version
         $mediabox_xml_file = JPATH_PLUGINS . '/system/jcemediabox.xml';
@@ -84,7 +90,7 @@ class WFModelUpdates extends WFModel {
         $key = "";
         
         $component = JComponentHelper::getComponent('com_jce');
-        $params = json_decode($compenent->params);
+        $params = json_decode($component->params);
 
         if ($params && isset($params->preferences) && isset($params->preferences->updates_key)) {
             $key = $params->preferences->updates_key;
@@ -133,7 +139,7 @@ class WFModelUpdates extends WFModel {
         $key = "";
         
         $component = JComponentHelper::getComponent('com_jce');
-        $params = json_decode($compenent->params);
+        $params = json_decode($component->params);
 
         if ($params && isset($params->preferences) && isset($params->preferences->updates_key)) {
             $key = $params->preferences->updates_key;
