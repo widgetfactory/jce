@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension type="package" version="2.5" method="upgrade" pro="@@pro@@">
+<extension type="package" version="2.5" method="upgrade">
     <name>PKG_JCE</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
@@ -11,7 +11,7 @@
     <description>PKG_JCE_XML_DESCRIPTION</description>
 
     <updateservers>
-      <server type="collection" priority="1" name="jce"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=pkg_jce.xml]]></server>
+      <server type="collection" priority="1" name="JCE Editor Package"><![CDATA[https://www.joomlacontenteditor.net/index.php?option=com_updates&view=update&format=xml&file=pkg_jce@@pro@@.xml]]></server>
     </updateservers>
 
     <scriptfile>install.pkg.php</scriptfile>
@@ -35,5 +35,5 @@
     <compatibility>
       <version>2</version>
       <version>3</version>
-  </compatibility>
+    </compatibility>
 </extension>
