@@ -186,6 +186,9 @@ abstract class WFInstall {
             $admin . '/models/installer.xml',
 
             $site . '/editor/elements/mediaplayer.php',
+            $site . '/editor/libraries/extensions/imgageeditor/picmonkey.php',
+            $site . '/editor/libraries/extensions/imgageeditor/picmonkey.xml',
+            $site . '/editor/libraries/extensions/imgageeditor/index.html',
             $site . '/editor/libraries/classes/extensions/mediaplayer.php',
             $site . '/editor/libraries/css/colorpicker.css',
             $site . '/editor/libraries/css/editor.css',
@@ -220,7 +223,9 @@ abstract class WFInstall {
             $site . '/editor/libraries/plupload',
             $site . '/editor/libraries/views/browser',
             $site . '/editor/tiny_mce/themes/advanced/skins/classic',
-            $site . '/editor/tiny_mce/themes/advanced/skins/highcontrast'
+            $site . '/editor/tiny_mce/themes/advanced/skins/highcontrast',
+            $site . '/editor/libraries/extensions/imgageeditor',
+            $site . '/editor/libraries/extensions/imgageeditor/picmonkey'
         );
 
         foreach ($folders as $folder) {
