@@ -17,12 +17,6 @@ defined('_JEXEC') or die;
 class plgInstallerJce extends JPlugin
 {
 	/**
-	 * @var    String  your extension identifier, to retrieve its params
-	 * @since  2.5
-	 */
-	private $extension = 'com_jce';
-
-	/**
 	 * Handle adding credentials to package download request
 	 *
 	 * @param   string  $url        url from which package is going to be downloaded
@@ -43,7 +37,7 @@ class plgInstallerJce extends JPlugin
 
 		// Get the download ID
 		JLoader::import('joomla.application.component.helper');
-		$component = JComponentHelper::getComponent($this->extension);
+		$component = JComponentHelper::getComponent('com_jce');
 
 		$key = $component->params->get('updates_key', '');
 		
