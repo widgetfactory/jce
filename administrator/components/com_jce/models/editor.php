@@ -913,6 +913,11 @@ class WFModelEditor extends WFModelBase {
                     $file = $css[0];
                 }
 
+                // check for editor.css file
+                if (JFile::exists($path . '/css/editor.css')) {
+                    $file = 'editor.css';    
+                }
+
                 // check for php version
                 if (JFile::exists($file . '.php')) {
                     $file = $file . '.php';
