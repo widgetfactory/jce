@@ -106,7 +106,7 @@
     cursor: default;
     display: block;
     margin: 0 auto;
-    position: fixed;
+    position: absolute;
     text-align: left;
     width: 100%;
     max-width: 1024px;
