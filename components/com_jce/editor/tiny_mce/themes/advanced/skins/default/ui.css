@@ -1357,11 +1357,31 @@ span.mcePathPath {
     border-color: red;
 }
 
-.mce_emotions ul {
-    list-style: none;
-    margin: 10px;
+.defaultSkin.mce_emotions .mceButtonDialogContent {
+    max-width: 250px;
+    white-space: normal;
+    text-align: center;
 }
 
-.mce_emotions li {
+.defaultSkin .mce_emotions_icon {
     display: inline-block;
+    font-size: 14px;
+    line-height: 2em;
+    width: 2em;
+    height: 2em;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.defaultSkin .mce_emotions_icon img {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.mce_emotions_icon:hover {
+    background: #eee;
+    border-radius: 3px;
 }

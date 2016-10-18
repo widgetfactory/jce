@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<install version="2.0" type="plugin" plugin="emotions" editable="1" core="0" row="4">
+	<name>WF_EMOTIONS_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Moxiecode / Ryan Demmer</author>
+	<authorEmail>@@email@@</authorEmail>
+	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<description>WF_EMOTIONS_DESC</description>
+	<icon>emotions</icon>
+	<files>
+		<file>editor_plugin.js</file>
+		<file>emotions.php</file>
+		<folder>classes</folder>
+		<folder>css</folder>
+		<folder>img</folder>
+		<folder>js</folder>
+		<folder>tmpl</folder>
+	</files>
+	<params group="standard">
+		<param name="url" type="text" placeholder="components/com_jce/editor/tiny_mce/plugins/emotions/img" default="" size="100" label="WF_EMOTIONS_PARAM_URL" description="WF_EMOTIONS_PARAM_URL_DESC" />
+		<param name="smilies" type="text" placeholder="eg: smiley-confused.gif,smiley-cool.gif" default="" size="100" label="WF_EMOTIONS_PARAM_SMILIES" description="WF_EMOTIONS_PARAM_SMILIES_DESC" />
+	</params>
+	<languages>
+		<language tag="en-GB">en-GB.com_jce_emotions.ini</language>
+	</languages>
+	<help></help>
+</install>
+ 
