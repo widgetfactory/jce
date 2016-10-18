@@ -28,20 +28,31 @@ class plgInstallerJce extends JPlugin
 	 */
 	public function onInstallerBeforePackageDownload(&$url, &$headers)
 	{
-		$uri 	= JUri::getInstance($url);
+		$app = JFactory::getApplication();
+
+		$uri = JUri::getInstance($url);
 		$host = $uri->getHost();
 
 		if ($host !== 'www.joomlacontenteditor.net') {
 			return true;
 		}
 
-		// Get the download ID
+		// Get the subscription key
 		JLoader::import('joomla.application.component.helper');
 		$component = JComponentHelper::getComponent('com_jce');
 
 		$key = $component->params->get('updates_key', '');
+
+		if (empty($key)) {
+            $language = JFactory::getLanguage();
+            $language->load('plg_installer_jce', JPATH_ADMINISTRATOR);
+
+            $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
+
+			return true;
+		}
 		
-		// Append the Download ID to the download URL
+		// Append the subscription key to the download URL
 		$uri->setVar('key', $key);
 		$url = $uri->toString();
 
