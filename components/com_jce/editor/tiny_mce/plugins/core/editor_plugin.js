@@ -8,7 +8,11 @@
  * other free or open source software licenses.
  */
 (function(tinymce) {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each, VK = tinymce.VK;
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        is = tinymce.is,
+        each = tinymce.each,
+        VK = tinymce.VK;
 
     tinyMCE.onAddEditor.add(function(mgr, ed) {
         /**
@@ -26,7 +30,9 @@
     });
 
     tinymce.util.PreviewCss = function(ed, fmt) {
-        var name, previewElm, dom = ed.dom, previewCss = '', parentFontSize, previewStylesName;
+        var name, previewElm, dom = ed.dom,
+            previewCss = '',
+            parentFontSize, previewStylesName;
 
         var previewStyles = ed.settings.preview_styles;
 
@@ -155,7 +161,11 @@
          * @method showMenu
          */
         showDialog: function() {
-            var t = this, ed = this.editor, s = this.settings, p1, p2, e = DOM.get(t.id), m;
+            var t = this,
+                ed = this.editor,
+                s = this.settings,
+                p1, p2, e = DOM.get(t.id),
+                m;
 
             if (t.isDisabled())
                 return;
@@ -242,12 +252,14 @@
          * @method renderMenu
          */
         renderDialog: function() {
-            var t = this, m, s = this.settings, w, v, ed = this.editor;
+            var t = this,
+                m, s = this.settings,
+                w, v, ed = this.editor;
 
             s['class'] += ' defaultSkin';
 
             if (ed.getParam('skin') !== "default") {
-              s['class'] += ' ' + ed.getParam('skin') + 'Skin';
+                s['class'] += ' ' + ed.getParam('skin') + 'Skin';
             }
 
             if (v = ed.getParam('skin_variant')) {
@@ -321,7 +333,6 @@
                         }
                     });
                 }
-                ;
             });
 
             if (!s.url) {
@@ -355,8 +366,8 @@
 
             // Prevent double toogles by canceling the mouse click event to the button
             if (e && e.type == "mousedown" && DOM.getParent(e.target, function(e) {
-                return e.id === t.id || e.id === t.id + '_open';
-            }))
+                    return e.id === t.id || e.id === t.id + '_open';
+                }))
                 return;
 
             if (!e || !DOM.getParent(e.target, '.mceDialog')) {
@@ -377,7 +388,9 @@
          * @method postRender
          */
         postRender: function() {
-            var t = this, s = t.settings, bm, ed = this.editor;
+            var t = this,
+                s = t.settings,
+                bm, ed = this.editor;
 
             Event.add(t.id, 'click', function() {
                 if (!t.isDisabled()) {
