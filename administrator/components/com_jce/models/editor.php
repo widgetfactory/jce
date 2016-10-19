@@ -22,13 +22,6 @@ wfimport('editor.libraries.classes.language');
 jimport('joomla.application.component.model');
 
 class WFModelEditor extends WFModelBase {
-
-    /**
-     * Editor version
-     * @var string
-     */
-    public static $version = null;
-
     /**
      * Profile object
      *
@@ -384,13 +377,7 @@ class WFModelEditor extends WFModelBase {
      * @return Version
      */
     private static function getVersion() {
-        if (!isset(self::$version)) {
-            $manifest = JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml';
-            // md5 hash of file
-            self::$version = md5_file($manifest);
-        }
-
-        return self::$version;
+        return WF_VERSION;
     }
 
     /**

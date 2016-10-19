@@ -62,14 +62,6 @@ class WFDocument extends JObject {
     public $title = '';
 
     /**
-     * Document version
-     *
-     * @var	 string
-     * @access  public
-     */
-    public $version = '000000';
-
-    /**
      * Contains the document language setting
      *
      * @var	 string
@@ -498,11 +490,7 @@ class WFDocument extends JObject {
 
     private function getHash($files) {
         $seed = '';
-
         $hash = '';
-
-        // create version / etag hash
-        $version = $this->get('version', '000000');
 
         // cast as array
         $files = (array) $files;
@@ -516,7 +504,7 @@ class WFDocument extends JObject {
         }
 
         if ($seed) {
-            $hash = md5($version . $seed);
+            $hash = md5(WF_VERSION . $seed);
         }
 
         return $hash;
@@ -526,8 +514,6 @@ class WFDocument extends JObject {
      * Render document head data
      */
     private function getHead() {
-        // create version / etag hash
-        $version = $this->get('version', '000000');
         // set title
         $output = '<title>' . $this->getTitle() . '</title>' . "\n";
 
