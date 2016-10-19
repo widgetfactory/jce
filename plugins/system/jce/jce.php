@@ -97,6 +97,8 @@ class PlgSystemJce extends JPlugin {
 
         foreach ($fields as $field) {
             
+            $name = $field->getAttribute('name');
+            
             // avoid processing twice
             if (strpos($form->getFieldAttribute($name, 'class'), 'wf-media-input') !== false) {
                 return;
@@ -116,8 +118,7 @@ class PlgSystemJce extends JPlugin {
                   continue;
                 }
 
-                $name   = $field->getAttribute('name');
-                $group  = (string) $field->group;
+                $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'link', $link, $group);
                 $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
 
