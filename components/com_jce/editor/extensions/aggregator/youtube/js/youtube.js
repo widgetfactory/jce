@@ -18,17 +18,17 @@ WFAggregator.add('youtube', {
     },
     props: {
         rel: 1,
-        autohide: 2,
         autoplay: 0,
         controls: 1,
+        showinfo: 1,
         enablejsapi: 0,
         loop: 0,
         playlist: '',
         start: '',
+        end: '',
         privacy: 0
     },
-    setup: function() {
-    },
+    setup: function() {},
     getTitle: function() {
         return this.title || this.name;
     },
@@ -53,7 +53,11 @@ WFAggregator.add('youtube', {
         return false;
     },
     getValues: function(src) {
-        var self = this, data = {}, args = {}, type = this.getType(), id, query = {};
+        var self = this,
+            data = {},
+            args = {},
+            type = this.getType(),
+            id, query = {};
 
         // parse URI
         var u = this.parseURL(src);
@@ -66,19 +70,17 @@ WFAggregator.add('youtube', {
         // extend args with query data
         $.extend(args, query);
 
-        // protocol / scheme relative url
-        src = src.replace(/^http(s)?:\/\//, '//');
+        // ssl url
+        src = src.replace(/^(http:)?\/\//, 'https://');
 
         $(':input', '#youtube_options').not('#youtube_embed, #youtube_https, #youtube_privacy').each(function() {
-            var k = $(this).attr('id'), v = $(this).val();
+            var k = $(this).attr('id'),
+                v = $(this).val();
             // remove youtube_ prefix
             k = k.substr(k.indexOf('_') + 1);
+
             if ($(this).is(':checkbox')) {
                 v = $(this).is(':checked') ? 1 : 0;
-            }
-
-            if (k == 'autohide') {
-                v = parseInt(v);
             }
 
             if (self.props[k] === v || v === '') {
@@ -159,7 +161,10 @@ WFAggregator.add('youtube', {
         return o;
     },
     setValues: function(data) {
-        var self = this, id = '', src = data.src || data.data || '', query = {};
+        var self = this,
+            id = '',
+            src = data.src || data.data || '',
+            query = {};
 
         if (!src) {
             return data;
@@ -175,18 +180,13 @@ WFAggregator.add('youtube', {
             query = Wf.String.query(u.query);
         }
 
-        $.extend(data, query);
+        data = $.extend(data, query);
 
         // protocol / scheme relative url
-        src = src.replace(/^http(s)?:\/\//, '//');
+        src = src.replace(/^(http:)?\/\//, 'https://');
 
         if (src.indexOf('youtube-nocookie') !== -1) {
-            data['privacy'] = true;
-        }
-
-        // if there is a param object set old embed method
-        if (data.param) {
-            data['embed'] = true;
+            data['youtube_privacy'] = true;
         }
 
         if (query.v) {
@@ -218,7 +218,7 @@ WFAggregator.add('youtube', {
         // add additional parameter fields
         $.each(query, function(k, v) {
             if (typeof self.props[k] == 'undefined') {
-                $('#youtube_options table').append('<tr><td><label for="youtube_' + k + '">' + k + '</label><input type="text" id="youtube_' + k + '" value="' + v + '" /></td></tr>');
+                $('#youtube_options').append('<div class="uk-form-row"><label class="uk-form-label uk-width-2-10" for="youtube_' + k + '">' + k + '</label><div class="uk-form-row uk-width-8-10"><input type="text" id="youtube_' + k + '" value="' + v + '" /></div></div>');
             }
         });
 
@@ -234,11 +234,7 @@ WFAggregator.add('youtube', {
                 args += c;
             }
 
-            if ($('#youtube_embed').is(':checked')) {
-                args += '/v';
-            } else {
-                args += '/embed';
-            }
+            args += '/embed';
 
             args += '/' + id;
 
@@ -260,28 +256,28 @@ WFAggregator.add('youtube', {
         return data;
     },
     getAttributes: function(src) {
-        var args = {}, data = this.setValues({
-            src: src
-        }) || {};
+        var args = {},
+            data = this.setValues({ src: src }) || {};
+
         $.each(data, function(k, v) {
-            if (k == 'src') {
+            if (k === "src") {
                 return;
             }
 
             args['youtube_' + k] = v;
         });
-        $.extend(args, {
+
+        args = $.extend(args, {
             'src': data.src || src,
             'width': this.params.width,
             'height': this.params.height
         });
+
         return args;
     },
     setAttributes: function() {
 
     },
-    onSelectFile: function() {
-    },
-    onInsert: function() {
-    }
+    onSelectFile: function() {},
+    onInsert: function() {}
 });

@@ -1,79 +1,83 @@
 <?php
 /**
- * @package    JCE
- * @copyright    Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
- * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
+* @package    JCE
+* @copyright    Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+* @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+* JCE is free software. This version may have been modified pursuant
+* to the GNU General Public License, and as distributed it includes or
+* is derivative of works licensed under the GNU General Public License or
+* other free or open source software licenses.
+*/
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="uk-form-row">
+  <div class="uk-form-row">
     <div class="uk-width-4-10">
-        <input type="checkbox" id="youtube_embed"/>
-        <label for="youtube_embed" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_EMBED_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_EMBED') ?></label>
+      <input type="checkbox" id="youtube_controls" checked />
+      <label for="youtube_controls" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_CONTROLS_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_CONTROLS') ?>
+      </label>
     </div>
     <div class="uk-width-6-10">
 
-        <input type="checkbox" id="youtube_rel"/>
-        <label for="youtube_rel" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?></label>
+      <input type="checkbox" id="youtube_rel" checked />
+      <label for="youtube_rel" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?>
+      </label>
     </div>
-</div>
-<div class="uk-form-row">
+  </div>
+  <div class="uk-form-row">
     <div class="uk-width-4-10">
-        <input type="checkbox" id="youtube_privacy"/>
-        <label for="youtube_privacy" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?></label>
+      <input type="checkbox" id="youtube_loop" />
+      <label for="youtube_loop" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_LOOP_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_LOOP') ?>
+      </label>
     </div>
     <div class="uk-width-6-10">
-        <input type="checkbox" id="youtube_autoplay"/>
-        <label for="youtube_autoplay" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY') ?></label>
+      <input type="checkbox" id="youtube_autoplay" />
+      <label for="youtube_autoplay" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY') ?>
+      </label>
     </div>
-</div>
-<div class="uk-form-row">
-    <div class="uk-width-1-1">
-
-        <input type="checkbox" id="youtube_loop"/>
-        <label for="youtube_loop" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_LOOP_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_LOOP') ?></label>
+  </div>
+  <div class="uk-form-row">
+    <div class="uk-width-4-10">
+      <input type="checkbox" id="youtube_privacy" />
+      <label for="youtube_privacy" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?>
+      </label>
     </div>
-</div>
-<div class="uk-form-row">
-    <label for="youtube_autohide" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOHIDE_DESC') ?>"
-           class="tooltip uk-form-label uk-width-2-10"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_AUTOHIDE') ?></label>
 
-    <div class="uk-width-2-10">
-
-        <div class="uk-form-controls uk-width-1-2">
-            <select id="youtube_autohide">
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2" selected="selected">2</option>
-            </select>
-        </div>
-        </div>
     <div class="uk-width-6-10">
-
-        <label for="youtube_start" class="uk-form-label uk-width-2-10"
-               title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_START_DESC') ?>"
-               class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_START') ?></label>
-        <div class="uk-form-controls uk-width-2-10">
-            <input type="number" id="youtube_start"/>
-        </div>
-
+      <input type="checkbox" id="youtube_showinfo" checked />
+      <label for="youtube_showinfo" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_SHOWINFO') ?>
+      </label>
     </div>
-</div>
+  </div>
 
-<div class="uk-form-row">
-    <label for="youtube_playlist" class="uk-form-label uk-width-1-5"
-           title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PLAYLIST_DESC') ?>"
-           class="tooltip"><?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PLAYLIST') ?></label>
+  <div class="uk-grid uk-grid-small">
+    <label for="youtube_start" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_START_DESC') ?>" class="tooltip uk-form-label uk-width-2-10">
+      <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_START') ?>
+    </label>
+
+    <div class="uk-form-controls uk-width-2-10">
+      <input type="number" id="youtube_start" />
+    </div>
+    <div class="uk-width-6-10">
+      <label for="youtube_end" class="uk-form-label uk-width-2-10" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_END_DESC') ?>" class="tooltip">
+        <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_END') ?>
+      </label>
+      <div class="uk-form-controls uk-width-3-10">
+        <input type="number" id="youtube_end" />
+      </div>
+    </div>
+  </div>
+
+  <div class="uk-grid uk-grid-small">
+    <label for="youtube_playlist" class="uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PLAYLIST_DESC') ?>" class="tooltip">
+      <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PLAYLIST') ?>
+    </label>
     <div class="uk-form-controls uk-width-4-5">
-        <input type="text" id="youtube_playlist"/>
+      <input type="text" id="youtube_playlist" />
     </div>
-</div>
+  </div>
