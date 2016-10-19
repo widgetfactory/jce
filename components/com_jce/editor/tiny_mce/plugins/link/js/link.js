@@ -278,21 +278,24 @@
             return html;
         },
         checkPrefix: function(n) {
+            var self = this;
+
             var v = $(n).val();
+
             if (/@/.test(v) && !/^\s*mailto:/i.test(v)) {
-                Wf.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
                     if (state) {
                         $(n).val('mailto:' + v);
                     }
-                    LinkDialog.insert();
+                    self.insert();
                 });
 
             } else if (/^\s*www./i.test(v)) {
-                Wf.Dialog.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function(state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function(state) {
                     if (state) {
                         $(n).val('http://' + v);
                     }
-                    LinkDialog.insert();
+                    self.insert();
                 });
 
             } else {
