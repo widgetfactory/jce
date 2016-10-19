@@ -33,7 +33,7 @@ class PlgExtensionJce extends JPlugin
 		}
 
 		foreach (array('type', 'group') as $var) {
-			$$var = $installer->manifest->attributes()->{$var};
+			$$var = (string) $installer->manifest->attributes()->{$var};
 		}
 
 		return $type === "plugin" && $group === "jce";
