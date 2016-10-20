@@ -50,7 +50,7 @@ class WFElementLinkSearch extends WFElement {
             $language->load($extension . '.sys') || $language->load($extension . '.sys', JPATH_ADMINISTRATOR);
 
             $checked = (in_array($plugin->element, $value)) ? ' checked="checked"' : '';
-            $html   .= '<li><input type="checkbox" name="' . $control_name . '[' . $name . '][]" value="' . $plugin->element . '"' . $checked . ' /><label>' . JText::_($plugin->name) . '</label></li>';
+            $html   .= '<li><input type="checkbox" name="' . $control_name . '[' . $name . '][]" value="' . $plugin->element . '"' . $checked . ' /><label class="checkbox inline">' . JText::_($plugin->name) . '</label></li>';
         }
 
         $html .= '</ul></span>';
