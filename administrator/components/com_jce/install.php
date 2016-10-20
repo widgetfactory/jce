@@ -244,6 +244,13 @@ abstract class WFInstall {
             }
         }
 
+        // remove old language files
+        $languages = JFolder::files(JPATH_SITE . '/language/en-GB/', '^en-GB\.com_jce_.*', false, true, array('en-GB.com_jce_pro.ini'));
+
+        if (!empty($languages)) {
+            JFile::delete($languages);
+        }
+
         return true;
     }
 
