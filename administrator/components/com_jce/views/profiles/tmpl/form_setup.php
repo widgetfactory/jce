@@ -94,10 +94,12 @@ defined('_JEXEC') or die('RESTRICTED');
             <div class="controls clearfix">
                 <?php echo $this->lists['users']; ?>
             </div>
-            <div class="controls clearfix span4 text-right">
-              <a class="modal btn" id="users-add" rel="{'handler':'iframe','size':{x:760,y:540}}" title="<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>" href="index.php?option=com_jce&tmpl=component&view=users">
-                <i class="icon-user"></i>&nbsp;<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>
-              </a>
+            <div class="controls clearfix">
+                <div class="span4 text-right">
+                    <a class="modal btn" id="users-add" rel="{'handler':'iframe','size':{x:760,y:540}}" title="<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>" href="index.php?option=com_jce&tmpl=component&view=users">
+                        <i class="icon-user"></i>&nbsp;<?php echo WFText::_('WF_PROFILES_USERS_ADD'); ?>
+                    </a>
+                </div>
             </div>
         </div>
         <!--li>

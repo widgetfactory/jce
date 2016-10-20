@@ -942,6 +942,9 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
 .ui-jce .tabs-plugin-parameters input[type="checkbox"],
 .ui-jce .tabs-plugin-parameters .ui-checkbox {
     background-color: #fff;
+}
+
+.ui-jce .tabs-plugin-parameters .plugins-enable-checkbox {
     margin: 6px 10px 10px 0;
 }
 
