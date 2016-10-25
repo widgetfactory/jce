@@ -127,7 +127,11 @@ class WFElementText extends WFElement {
         $upload = $this->convertValue($upload);
         $post = $this->convertValue($post);
 
-        if (intval($upload) <= intval($post)) {
+        if (intval($post) === 0) {
+            return $upload;
+        }
+
+        if (intval($upload) < intval($post)) {
             return $upload;
         }
 
