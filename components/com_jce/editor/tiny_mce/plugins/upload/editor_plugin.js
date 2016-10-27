@@ -615,12 +615,11 @@
                 if (tinymce.is(file.uploader.getUploadConfig, 'function')) {
                     // check file type and size
                     var config = file.uploader.getUploadConfig();
-                    var type = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1');
+                    /*var type = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1');
 
                     // lowercase
-                    type = type.toLowerCase();
-
-                    if (tinymce.inArray(config.filetypes, type) == -1) {
+                    type = type.toLowerCase();*/
+                    if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
                         ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
                         return false;
                     }
