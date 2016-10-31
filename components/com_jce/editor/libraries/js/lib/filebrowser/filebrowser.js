@@ -2301,58 +2301,40 @@
 
         _getMediaProps: function(file) {
             var deferred = new $.Deferred(),
-                doc = document,
-                body = doc.body;
+                props = {};
 
             if (!file.type) {
                 deferred.reject();
             }
 
             if (file.type === "video" && /\.(mp4|m4v|ogg|ogv|webm)$/i.test(file.preview) && $.support.video) {
-                var video = doc.createElement('video');
-                var props = {};
+                var video = document.createElement('video');
 
-                var i = setInterval(function() {
-                    if (video && video.readyState > 1) {
-                        clearInterval(i);
+                video.onloadedmetadata = function() {
+                    props = {
+                        "duration": parseInt(video.duration / 60, 10) + ':' + parseInt(video.duration % 60, 10),
+                        "width": video.videoWidth,
+                        "height": video.videoHeight
+                    };
 
-                        props.duration = parseInt(video.duration / 60, 10) + ':' + parseInt(video.duration % 60, 10);
-                        props.width = parseInt(video.videoWidth);
-                        props.height = parseInt(video.videoHeight);
-
-                        video = null;
-
-                        deferred.resolve(props);
-                    }
-
-                    if (video && video.readyState === 0) {
-                        clearInterval(i);
-                        deferred.reject();
-                    }
-                }, 200);
+                    video = null;
+                    deferred.resolve(props);
+                };
 
                 video.src = file.preview;
 
             } else if (file.type === "audio" && /\.(mp3|oga|ogg)$/i.test(file.preview) && $.support.audio) {
-                var audio = doc.createElement('audio'),
-                    props = {};
+                var audio = document.createElement('audio');
 
-                var x = setInterval(function() {
-                    if (audio && audio.readyState > 0) {
-                        clearInterval(x);
+                audio.onloadedmetadata = function() {
+                    props.duration = parseInt(audio.duration / 60, 10) + ':' + parseInt(audio.duration % 60, 10);
 
-                        props.duration = parseInt(audio.duration / 60, 10) + ':' + parseInt(audio.duration % 60, 10);
-
-                        audio = null;
-
-                        deferred.resolve(props);
-                    } else {
-                        clearInterval(x);
-                        deferred.reject();
-                    }
-                }, 200);
+                    audio = null;
+                    deferred.resolve(props);
+                };
 
                 audio.src = file.preview;
+
             } else if (file.type === "image") {
                 var image = new Image(),
                     props = {};
