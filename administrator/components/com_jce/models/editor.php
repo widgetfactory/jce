@@ -389,7 +389,11 @@ class WFModelEditor extends WFModelBase {
 
         $wf = WFEditor::getInstance();
 
-        $language = JFactory::getLanguage();
+        $user       = JFactory::getUser();
+        $params     = JComponentHelper::getParams('com_languages');
+        $locale     = $user->getParam('language', $params->get('site', 'en-GB'));
+
+        $language   = JLanguage::getInstance($locale);
 
         $settings = array(
             'token' => WFToken::getToken(),
