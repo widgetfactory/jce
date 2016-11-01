@@ -148,10 +148,17 @@ class WFMediaManagerBase extends WFEditorPlugin {
 
         $ext = JFile::getExt($path);
 
+        $filesize = null;
+
+        // limit filesize for flv and webm
+        if (preg_match('#\.(flv|f4v|webm)$#i', $path)) {
+            $filesize = 128;
+        }
+
         // Initialize getID3 engine
         $id3 = $this->getID3Instance();
         // Get information from the file
-        $fileinfo = @$id3->analyze($path);
+        $fileinfo = @$id3->analyze($path, $filesize);
         getid3_lib::CopyTagsToComments($fileinfo);
 
         // Output results
