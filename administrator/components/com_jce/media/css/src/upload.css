@@ -67,7 +67,7 @@
 html[dir="rtl"] .ui-jce span.upload_clear {
     left: 0;
     right: auto;
-    margin: 7px 0 0 5px;
+    margin: 3px 0 0 5px;
 }
 
 .ui-jce label[for="import"] {
@@ -100,12 +100,26 @@ html[dir="rtl"] .ui-jce label[for="import"] {
     cursor: pointer;
 }
 
-.ui-jce div.upload_button_container > span {
+.ui-jce div.upload_button_container>span {
     left: 0;
 }
 
-html[dir="rtl"] .ui-jce div.upload_button_container > span {
-    right: 2px;
+html[dir="rtl"] .ui-jce div.upload_button_container>span {
+    left: inherit;
+}
+
+html[dir="rtl"] .ui-jce div.upload_button_container .upload-browse {
+    float: left;
+    border-radius: 0;
+}
+
+html[dir="rtl"] .ui-jce div.upload_button_container .upload-import {
+    float: right;
+    border-radius: 0 3px 3px 0;
+}
+
+html[dir="rtl"] .ui-jce div.upload_button_container .upload_text {
+    border-radius: 3px 0 0 3px;
 }
 
 

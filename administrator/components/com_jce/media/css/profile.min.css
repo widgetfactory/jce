@@ -957,7 +957,7 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     margin: 0 10px;
 }
 
-.ui-jce div.tab-pane.tabbable.tabs-left ul li>a:first-child {
+.ui-jce div.tab-pane.tabbable ul li>a:first-child {
     max-width: 100px;
     padding-bottom: 20px;
     padding-top: 20px;
@@ -965,11 +965,16 @@ html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
     cursor: pointer;
     background-color: #F5F5F5;
     border-color: #eee #ddd #eee #eee;
-    -webkit-box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
     box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
 }
 
-.ui-jce div.tab-pane.tabbable.tabs-left ul li.active>a {
+.ui-jce div.tab-pane.tabbable.tabs-right ul li>a:first-child {
+    border-color: #eee #eee #eee #ddd;
+}
+.ui-jce div.tab-pane.tabbable.tabs-right ul li.active>a {
+    border-color: #eee #eee #eee #fff;
+}
+.ui-jce div.tab-pane.tabbable ul li.active>a {
     background-color: #fff;
     border-color: #eee #fff #eee #eee;
     box-shadow: none;

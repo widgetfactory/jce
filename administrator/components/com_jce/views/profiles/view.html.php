@@ -270,7 +270,7 @@ class WFViewProfiles extends WFView {
                 }
 
                 $order = JHTML::_('list.genericordering', $query);
-                $lists['ordering']  = JHTML::_('select.genericlist', $order, 'ordering', 'class="inputbox" size="1"', 'value', 'text', intval($row->ordering));
+                $lists['ordering']  = JHTML::_('select.genericlist', $order, 'ordering', 'class="inputbox"', 'value', 'text', intval($row->ordering));
 
                 $lists['published'] = '';
 

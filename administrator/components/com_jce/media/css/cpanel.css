@@ -24,6 +24,11 @@
     text-align: left;
 }
 
+html[dir="rtl"] .ui-jce .dl-horizontal dt {
+    text-align: right;
+    margin: 0;
+}
+
 .ui-jce .dl-horizontal dd {
     line-height: 2em;
     margin-bottom: 5px;

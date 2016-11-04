@@ -11,6 +11,9 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
+$language   = JFactory::getLanguage();
+$direction  = $language->isRTL() ? 'right' : 'left';
+
 ?>
 <div class="ui-jce loading">
   <form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
@@ -31,7 +34,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <div id="tabs-features" class="tab-pane">
                     <?php echo $this->loadTemplate('features'); ?>
                 </div>
-                <div id="tabs-editor" class="tab-pane tabbable tabs-left">
+                <div id="tabs-editor" class="tab-pane tabbable tabs-<?php echo $direction;?>">
                     <ul class="nav nav-tabs">
                         <?php
                         $x = 0;
@@ -43,7 +46,7 @@ defined('_JEXEC') or die('RESTRICTED');
                     </ul>
                     <?php echo $this->loadTemplate('editor'); ?>
                 </div>
-                <div id="tabs-plugins" class="tab-pane tabbable tabs-left">
+                <div id="tabs-plugins" class="tab-pane tabbable tabs-<?php echo $direction;?>">
                     <ul class="nav nav-tabs">
                         <?php
                         // Build tabs
