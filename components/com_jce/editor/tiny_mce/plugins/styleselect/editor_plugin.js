@@ -8,7 +8,12 @@
  * other free or open source software licenses.
  */
 (function() {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each, Cookie = tinymce.util.Cookie, explode = tinymce.explode;
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        extend = tinymce.extend,
+        each = tinymce.each,
+        Cookie = tinymce.util.Cookie,
+        explode = tinymce.explode;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function(ed, url) {
@@ -16,7 +21,9 @@
             this.editor = ed;
 
             ed.onNodeChange.add(function(ed, cm) {
-                var c = cm.get('styleselect'), formatNames = [], matches;
+                var c = cm.get('styleselect'),
+                    formatNames = [],
+                    matches;
 
                 if (c) {
                     formatNames = [];
@@ -50,13 +57,19 @@
             }
         },
         _createStyleSelect: function(n) {
-            var self = this, ed = this.editor, ctrlMan = ed.controlManager, ctrl, PreviewCss = tinymce.util.PreviewCss;
+            var self = this,
+                ed = this.editor,
+                ctrlMan = ed.controlManager,
+                ctrl, PreviewCss = tinymce.util.PreviewCss;
 
             // Setup style select box
             ctrl = ctrlMan.createListBox('styleselect', {
                 title: 'advanced.style_select',
+                filter: true,
+                max_height: 300,
                 onselect: function(name) {
-                    var matches, formatNames = [], removedFormat;
+                    var matches, formatNames = [],
+                        removedFormat;
 
                     each(ctrl.items, function(item) {
                         formatNames.push(item.value);
@@ -80,7 +93,13 @@
                     });
 
                     if (!removedFormat) {
-                        ed.formatter.apply(name);
+                        // registered style format
+                        if (ed.formatter.get(name)) {
+                            ed.formatter.apply(name);
+                            // custom class 
+                        } else {
+                            ed.formatter.apply('classname', { 'value': name });
+                        }
                     }
 
                     ed.undoManager.add();
@@ -92,7 +111,12 @@
 
             // Handle specified format
             ed.onPreInit.add(function() {
-                var counter = 0, formats = ed.getParam('style_formats'), styles = ed.getParam('styleselect_custom_classes', '', 'hash');
+                var counter = 0,
+                    formats = ed.getParam('style_formats'),
+                    styles = ed.getParam('styleselect_custom_classes', '', 'hash');
+
+                // generic class format
+                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*' });
 
                 if (formats) {
                     each(formats, function(fmt) {
@@ -135,8 +159,8 @@
                             ed.formatter.register(name, fmt);
 
                             if (key) {
-                              // remove leading period if any
-                              key = key.replace(/^\./, '');
+                                // remove leading period if any
+                                key = key.replace(/^\./, '');
                             }
 
                             ctrl.add(ed.translate(key), name, {
