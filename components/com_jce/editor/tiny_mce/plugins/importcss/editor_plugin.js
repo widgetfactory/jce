@@ -303,6 +303,9 @@
                 } catch (e) {}
             }
 
+            // sort alphabetically
+            self.classes.sort();
+
             return self.classes;
         }
     });
