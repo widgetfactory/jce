@@ -11,98 +11,112 @@
     $.fn.extensionmapper = function(options) {
 
         return this.each(function() {
-          var self = this, value = [], $parent = $(self).parent();
+            var self = this,
+                value = [],
+                $parent = $(self).parent();
 
-          // create hidden input
-          var $input = $('<input type="hidden" name="' + $(this).attr('name') + '" />').val(this.value).insertAfter(this);
+            // create hidden input
+            var $input = $('<input type="hidden" name="' + $(this).attr('name') + '" />').val(this.value).insertAfter(this);
 
-          // remove name
-          $(this).removeAttr('name').prop('disabled', true);
+            // remove name
+            $(this).removeAttr('name').prop('disabled', true);
 
-          function serialize() {
-            var list = [];
+            function serialize() {
+                var list = [];
 
-            $(self).parent().find('dl').each(function() {
-              // checkboxes
-              var v1 = $(this).find('input[type="checkbox"]').map(function() {
-                if (!this.checked) {
-                    return "-" + this.value;
-                }
-                return this.value;
-              }).get();
-              // custom values
-              var v2 = $(this).find('.extension-custom input').map(function() {
-                if (this.value !== "") {
-                    return this.value;
-                }
-              }).get();
+                $(self).parent().find('dl').each(function() {
+                    // checkboxes
+                    var v1 = $(this).find('dd input[type="checkbox"]').map(function() {
+                        if (!this.checked) {
+                            return "-" + this.value;
+                        }
+                        return this.value;
+                    }).get();
 
-              var group = $(this).children('dt').data('extension-group') || "";
-              var items = $.merge(v1, v2).join(",");
+                    // custom values
+                    var v2 = $(this).find('.extension-custom input').map(function() {
+                        if (this.value !== "") {
+                            return this.value;
+                        }
+                    }).get();
 
-              if (group) {
-                  list.push(group + "=" + items);
-              } else {
-                  list.push(items);
-              }
+                    var group = $(this).find('dt').data('extension-group');
+
+                    group = $(this).find('dt input[type="checkbox"]').map(function() {
+                        var value = $(this).parents('dt').data('extension-group');
+
+                        if (!this.checked) {
+                            return "-" + value;
+                        }
+
+                        return value;
+                    }).get();
+
+                    var items = $.merge(v1, v2).join(",");
+
+                    if (group) {
+                        list.push(group + "=" + items);
+                    } else {
+                        list.push(items);
+                    }
+                });
+
+                var v = list.join(";");
+
+                // set value to hidden input
+                $input.val(v).addClass('isdirty');
+                // set value to original input
+                $(self).val(v);
+            }
+
+            $(this).siblings('button').click(function(e) {
+                e.preventDefault();
+                $(self).siblings('dl').slideToggle();
             });
 
-            var v = list.join(";");
+            // get all checkboxes
+            $parent.find('input[type="checkbox"]').click(function() {
+                serialize();
+            });
 
-            // set value to hidden input
-            $input.val(v).addClass('isdirty');
-            // set value to original input
-            $(self).val(v);
-          }
+            $parent.on('change', '.extension-custom input', function(e) {
+                e.preventDefault();
+                $(this).siblings('.file').attr("class", "").addClass("file").addClass(this.value);
+                serialize();
+            });
 
-          $(this).siblings('button').click(function(e) {
-            e.preventDefault();
-            $(self).siblings('dl').slideToggle();
-          });
+            $parent.on('click', '.extension-custom .extension-clear', function(e) {
+                e.preventDefault();
+                $(this).siblings('input').val("");
+            });
 
-          // get all checkboxes
-          $parent.find('input[type="checkbox"]').click(function() {
-            serialize();
-          });
+            $parent.find('.extension-add').click(function(e) {
+                e.preventDefault();
 
-          $parent.on('change', '.extension-custom input', function(e) {
-            e.preventDefault();
-            $(this).siblings('.file').attr("class", "").addClass("file").addClass(this.value);
-            serialize();
-          });
+                var $p = $(this).parent();
 
-          $parent.on('click', '.extension-custom .extension-clear', function(e) {
-              e.preventDefault();
-              $(this).siblings('input').val("");
-          });
+                var clone = $p.clone();
+                $(clone).find('input').val("");
+                $(clone).insertAfter($p);
+            });
 
-          $parent.find('.extension-add').click(function(e) {
-              e.preventDefault();
+            $parent.on('click', '.extension-remove', function(e) {
+                e.preventDefault();
 
-              var $p = $(this).parent();
+                $(this).parent().remove();
+                serialize();
+            });
 
-              var clone = $p.clone();
-              $(clone).find('input').val("");
-              $(clone).insertAfter($p);
-          });
-
-          $parent.on('click', '.extension-remove', function(e) {
-              e.preventDefault();
-
-              $(this).parent().remove();
-              serialize();
-          });
-
-          if ($('dt', $parent).length) {
-              $('dl', $parent).sortable({
-                "axis" : "y",
-                "items": "> dd",
-                "connectWith": ".extensions dl",
-                "update": function(event, ui) {
-                  serialize();
-                }
-              });
-          }
+            if ($('dt', $parent).length) {
+                $('dl', $parent).sortable({
+                    "axis": "y",
+                    "items": "> dd",
+                    "connectWith": ".extensions dl",
+                    "update": function(event, ui) {
+                        serialize();
+                    }
+                });
+            }
         });
     };
 })(jQuery);

@@ -95,7 +95,18 @@ class WFElementExtension extends WFElement
             $output[] = '<dl>';
 
             if (is_string($group)) {
-                $output[] = '<dt data-extension-group="'.$group.'">'.$group.'</dt>';
+                $checked = '';
+
+                $is_default = isset($default[$group]);
+
+                if (empty($value) || $is_default || (!$is_default && $group{0} !== "-")) {
+                    $checked = ' checked="checked"';
+                }
+                
+                // clear minus sign
+                $group = str_replace('-', '', $group);
+
+                $output[] = '<dt data-extension-group="'.$group.'"><label><input type="checkbox" value="'.$group.'"'.$checked.' />'.$group.'</label></dt>';
             }
 
             foreach ($items as $item) {

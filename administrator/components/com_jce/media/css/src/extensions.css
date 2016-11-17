@@ -12,7 +12,7 @@
     display: none;
     list-style: none;
     padding: 0;
-    margin: 0 0 10px 0;
+    margin: 5px 0 10px 0;
     width: 220px;
     box-sizing: border-box;
     position: relative;
@@ -38,9 +38,10 @@
     margin: 5px;
 }
 
-.ui-jce .extensions dl dd label {
+.ui-jce .extensions dl label {
     padding: 0;
     margin: 0;
+    display: inline-block;
 }
 
 .ui-jce .extensions dl input[type="text"] {
@@ -78,9 +79,13 @@
 }
 
 .ui-jce .extensions dt {
-    line-height: 30px;
     background-color: #eee;
-    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.ui-jce .extensions dt input[type="checkbox"] {
+    margin: 5px 15px 5px 7px;
 }
 
 .ui-jce .extensions .ui-sortable-handle {
