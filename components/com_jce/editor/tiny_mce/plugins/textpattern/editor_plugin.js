@@ -10,36 +10,11 @@
  */
 
 /*global tinymce:true */
-(function () {
-    var each = tinymce.each, extend = tinymce.extend;
+(function() {
+    var each = tinymce.each,
+        extend = tinymce.extend;
 
-		function cleanURL(src, mode) {
-
-        /*
-         * Replace diacritic with nearest ascii equivalent.
-         * Based on cleanName function in plupload.js - https://github.com/moxiecode/plupload/blob/master/src/plupload.js
-         * Copyright 2013, Moxiecode Systems AB
-         */
-        function replaceDiacritic (s) {
-            // Replace diacritics
-            var lookup = [
-                /[\300-\306]/g, 'A', /[\340-\346]/g, 'a',
-                /\307/g, 'C', /\347/g, 'c',
-                /[\310-\313]/g, 'E', /[\350-\353]/g, 'e',
-                /[\314-\317]/g, 'I', /[\354-\357]/g, 'i',
-                /\321/g, 'N', /\361/g, 'n',
-                /[\322-\330]/g, 'O', /[\362-\370]/g, 'o',
-                /[\331-\334]/g, 'U', /[\371-\374]/g, 'u'
-            ];
-
-            var i, len;
-
-            for (i = 0; len = lookup.length, i < len; i += 2) {
-                s = s.replace(lookup[i], lookup[i + 1]);
-            }
-
-            return s;
-        }
+    function cleanURL(src, mode) {
 
         function toUnicode(s) {
             var c = s.toString(16).toUpperCase();
@@ -48,12 +23,10 @@
                 c = '0' + c;
             }
 
-            return'\\u' + c;
+            return '\\u' + c;
         }
 
-        function clean(s, mode, spaces) {
-            mode = mode || 'utf-8';
-
+        function clean(s, spaces) {
             // replace spaces with underscore
             if (!spaces) {
                 s = s.replace(/[\s ]/g, '_');
@@ -62,30 +35,25 @@
             // replace slashes
             s = s.replace(/[\/\\\\]+/g, '/');
 
-            function cleanChars(s, mode) {
-                if (mode === 'ascii') {
-                    s = replaceDiacritic(s);
-                    s = s.replace(/[^\w\.\-~\s ]/gi, '');
-                } else {
-                    // remove some common characters
-                    s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
-                    var r = '';
+            function cleanChars(s) {
+                // remove some common characters
+                s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
+                var r = '';
 
-                    for (var i = 0, ln = s.length; i < ln; i++) {
-                        var ch = s[i];
-                        // only process on possible restricted characters or utf-8 letters/numbers
-                        if (/[^\w\.\-~\s ]/.test(ch)) {
-                            // skip any character less than 127, eg: &?@* etc.
-                            if (toUnicode(ch.charCodeAt(0)) < '\\u007F') {
-                                continue;
-                            }
+                for (var i = 0, ln = s.length; i < ln; i++) {
+                    var ch = s[i];
+                    // only process on possible restricted characters or utf-8 letters/numbers
+                    if (/[^\w\.\-~\s ]/.test(ch)) {
+                        // skip any character less than 127, eg: &?@* etc.
+                        if (toUnicode(ch.charCodeAt(0)) < '\\u007F') {
+                            continue;
                         }
-
-                        r += ch;
                     }
 
-                    s = r;
+                    r += ch;
                 }
+
+                s = r;
 
                 return s;
             }
@@ -103,93 +71,96 @@
             // remove trailing period
             s = s.replace(/\.$/, '');
 
-						// remove leading / trailing slash
-						s = s.replace(/^\//, '').replace(/\/$/, '');
+            // remove leading / trailing slash
+            s = s.replace(/^\//, '').replace(/\/$/, '');
 
             return s;
         }
 
-        src = clean(src, mode, true);
+        src = clean(src, true);
 
         return src;
     }
 
     tinymce.create('tinymce.plugins.TextPatternPlugin', {
-        init: function (editor, url) {
-            var isPatternsDirty = true, patterns;
+        init: function(editor, url) {
+            var isPatternsDirty = true,
+                patterns;
 
-						editor.addCommand('InsertMarkdownImage', function(ui, node) {
-								var data = node.split(']('), dom = editor.dom;
+            editor.addCommand('InsertMarkdownImage', function(ui, node) {
+                var data = node.split(']('),
+                    dom = editor.dom;
 
-								if (data.length < 2) {
-									return false;
-								}
+                if (data.length < 2) {
+                    return false;
+                }
 
-                var alt = data[0], src = data[1];
+                var alt = data[0],
+                    src = data[1];
 
-								// clean src
-								src = src.substring(0, src.length);
+                // clean src
+                src = src.substring(0, src.length);
 
-								// clean alt
-								alt = alt.substring(1, 1);
+                // clean alt
+                alt = alt.substring(1, 1);
 
-								// clean up url
-								src = cleanURL(src);
+                // clean up url
+                src = cleanURL(src);
 
-								src = editor.convertURL(src);
+                src = editor.convertURL(src);
 
-								// create args object
-								var args = {'alt' : alt, 'src' : src};
+                // create args object
+                var args = { 'alt': alt, 'src': src };
 
-								// empty src, create placeholder
-								if (!src) {
-									args['data-mce-upload-marker'] = 1;
-									args['width'] 	= 320;
-									args['height']	= 240;
-								}
+                // empty src, create placeholder
+                if (!src) {
+                    args['data-mce-upload-marker'] = 1;
+                    args['width'] = 320;
+                    args['height'] = 240;
+                }
 
-								var html = dom.createHTML('img', args);
+                var html = dom.createHTML('img', args);
 
                 editor.execCommand('mceInsertContent', false, html);
 
-								return false;
+                return false;
             });
 
             var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
             editor.addCommand('InsertCustomTextPattern', function(ui, node) {
-              node = node.replace(/\$\$/g, '');
+                node = node.replace(/\$\$/g, '');
 
-              if (custom_patterns[node]) {
-                  var html = custom_patterns[node];
-                  editor.execCommand('mceReplaceContent', false, html);
-              }
+                if (custom_patterns[node]) {
+                    var html = custom_patterns[node];
+                    editor.execCommand('mceReplaceContent', false, html);
+                }
             });
 
             patterns = editor.settings.textpattern_patterns || [
-                    {start: '*', end: '*', format: 'italic'},
-                    {start: '**', end: '**', format: 'bold'},
-                    {start: '~~', end: '~~', format: 'strikethrough'},
-                    {start: '`', end: '`', format: 'code'},
-                    //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
-										{start: '![', end: ')', cmd: 'InsertMarkdownImage', remove: true},
-                    {start: '#', format: 'h1'},
-                    {start: '##', format: 'h2'},
-                    {start: '###', format: 'h3'},
-                    {start: '####', format: 'h4'},
-                    {start: '#####', format: 'h5'},
-                    {start: '######', format: 'h6'},
-                    {start: '>', format: 'blockquote'},
-                    {start: '1. ', cmd: 'InsertOrderedList'},
-                    {start: '* ', cmd: 'InsertUnorderedList'},
-                    {start: '- ', cmd: 'InsertUnorderedList'},
-                    {start: '$$', end: '$$', cmd: 'InsertCustomTextPattern'}
-                ];
+                { start: '*', end: '*', format: 'italic' },
+                { start: '**', end: '**', format: 'bold' },
+                { start: '~~', end: '~~', format: 'strikethrough' },
+                { start: '`', end: '`', format: 'code' },
+                //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
+                { start: '![', end: ')', cmd: 'InsertMarkdownImage', remove: true },
+                { start: '#', format: 'h1' },
+                { start: '##', format: 'h2' },
+                { start: '###', format: 'h3' },
+                { start: '####', format: 'h4' },
+                { start: '#####', format: 'h5' },
+                { start: '######', format: 'h6' },
+                { start: '>', format: 'blockquote' },
+                { start: '1. ', cmd: 'InsertOrderedList' },
+                { start: '* ', cmd: 'InsertUnorderedList' },
+                { start: '- ', cmd: 'InsertUnorderedList' },
+                { start: '$$', end: '$$', cmd: 'InsertCustomTextPattern' }
+            ];
 
             // Returns a sorted patterns list, ordered descending by start length
             function getPatterns() {
                 if (isPatternsDirty) {
-                    patterns.sort(function (a, b) {
+                    patterns.sort(function(a, b) {
                         if (a.start.length > b.start.length) {
                             return -1;
                         }
@@ -381,16 +352,17 @@
                         if (pattern.cmd) {
                             editor.undoManager.add();
 
-														var length = pattern.start.length, data = firstTextNode.data;
+                            var length = pattern.start.length,
+                                data = firstTextNode.data;
 
-														// remove pattern entirely
-														if (pattern.remove) {
-															length = firstTextNode.data.length;
-														}
+                            // remove pattern entirely
+                            if (pattern.remove) {
+                                length = firstTextNode.data.length;
+                            }
 
-														firstTextNode.deleteData(0, length);
+                            firstTextNode.deleteData(0, length);
 
-														// pass to command
+                            // pass to command
                             editor.execCommand(pattern.cmd, false, data);
                         }
                     }
@@ -440,13 +412,13 @@
                 }
             }
 
-            editor.onKeyDown.add(function (ed, e) {
+            editor.onKeyDown.add(function(ed, e) {
                 if (e.keyCode == 13 && !tinymce.VK.modifierPressed(e)) {
                     handleEnter();
                 }
             });
 
-            editor.onKeyUp.add(function (ed, e) {
+            editor.onKeyUp.add(function(ed, e) {
                 if (e.keyCode == 32 && !tinymce.VK.modifierPressed(e)) {
                     handleSpace();
                 }
@@ -454,7 +426,7 @@
 
             this.getPatterns = getPatterns;
 
-            this.setPatterns = function (newPatterns) {
+            this.setPatterns = function(newPatterns) {
                 patterns = newPatterns;
                 isPatternsDirty = true;
             };
