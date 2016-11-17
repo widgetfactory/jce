@@ -109,6 +109,7 @@
     box-sizing: border-box;
     box-shadow: inherit;
     padding: 10px;
+    white-space: pre-wrap;
 }
 
 .mce-fullscreen .wf-no-editor {
