@@ -194,6 +194,8 @@ class WFModelEditor extends WFModelBase {
         } else {
             $debug = $config->getValue('config.debug');
         }
+        
+        $compress = array('javascript' => false, 'css' => false);
 
         // set compression states
         if ((int) $debug === 0) {
