@@ -125,7 +125,7 @@ class plgEditorJCE extends JPlugin {
         $editor .= '  <div class="wf-editor-header"></div>';
         $editor .= '  <textarea spellcheck="false" id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wf-editor" wrap="off">' . $content . '</textarea>';
         $editor .= '</div>';
-        $editor .= $this->_displayButtons($id, $buttons, $asset, $author);
+        $editor .= $this->displayButtons($id, $buttons, $asset, $author);
 
         return $editor;
     }
@@ -134,7 +134,7 @@ class plgEditorJCE extends JPlugin {
 
     }
 
-    private function _displayButtons($name, $buttons, $asset, $author) {
+    private function displayButtons($name, $buttons, $asset, $author) {
         $return = '';
 
         $args = array(
