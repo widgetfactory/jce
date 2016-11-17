@@ -31,7 +31,8 @@ class WFElementTextarea extends WFElement {
         $attribs = ' ';
 
         $attributes = array(
-            'placeholder' => ''
+            'placeholder' => '',
+            'spellcheck'  => ''
         );
 
         foreach ($attributes as $k => $v) {
