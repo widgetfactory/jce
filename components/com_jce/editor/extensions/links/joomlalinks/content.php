@@ -51,7 +51,7 @@ class JoomlalinksContent extends JObject {
         $wf = WFEditorPlugin::getInstance();
 
         if ($wf->checkAccess('links.joomlalinks.content', 1)) {
-            return '<li id="index.php?option=com_content"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon folder content nolink"></span><span class="uk-tree-text">' . WFText::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
+            return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . WFText::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
         }
     }
 
