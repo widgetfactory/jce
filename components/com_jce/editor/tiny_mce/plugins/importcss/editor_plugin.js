@@ -222,7 +222,9 @@
                                     if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v))
                                         return;
 
-                                    self.classes.push(v);
+                                    if (tinymce.inArray(self.classes, v) === -1) {
+                                        self.classes.push(v);
+                                    }
                                 });
                             }
 
