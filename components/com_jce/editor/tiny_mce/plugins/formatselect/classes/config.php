@@ -88,7 +88,7 @@ class WFFormatselectPluginConfig {
             $blocks[] = $key;
 
             // add div container
-            if ($v === 'div') {
+            if ($key === 'div') {
                 $list['div_container'] = 'advanced.div_container';
             }
         }
