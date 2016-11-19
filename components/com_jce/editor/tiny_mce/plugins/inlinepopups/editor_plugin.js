@@ -33,6 +33,17 @@
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
+    function updateWithTouchData(e) {
+        var keys, i;
+
+        if (e.changedTouches) {
+            keys = "screenX screenY pageX pageY clientX clientY".split(' ');
+            for (i = 0; i < keys.length; i++) {
+                e[keys[i]] = e.changedTouches[0][keys[i]];
+            }
+        }
+    }
+
     tinymce.create('tinymce.InlineWindowManager:tinymce.WindowManager', {
         InlineWindowManager: function(ed) {
             var self = this;
@@ -292,8 +303,8 @@
             var p = DOM.getRect(id),
                 vp = DOM.getViewPort();
 
-            var top = Math.max(0, (vp.h - p.h) / 2);
-            var left = Math.max(0, (vp.w - p.w) / 2);
+            var top = Math.max(vp.y + 20, (vp.h - p.h) / 2);
+            var left = Math.max(vp.x + 20, (vp.w - p.w) / 2);
 
             DOM.setStyles(id, { 'left': left, 'top': top });
         },
@@ -331,6 +342,8 @@
                 return Event.cancel(se);
             }
 
+            updateWithTouchData(se);
+
             p = DOM.getRect(id);
             vp = DOM.getViewPort();
 
@@ -349,22 +362,26 @@
             sy = se.screenY;
 
             function end() {
-                Event.remove(d, 'mouseup', mu);
-                Event.remove(d, 'mousemove', mm);
+                Event.remove(d, 'mouseup touchend', mu);
+                Event.remove(d, 'mousemove touchmove', mm);
 
                 DOM.removeClass(id, 'dragging');
             }
 
             // Handle mouse up
-            mu = Event.add(d, 'mouseup', function(e) {
+            mu = Event.add(d, 'mouseup touchend', function(e) {
+                updateWithTouchData(e);
+
                 end();
 
                 return Event.cancel(e);
             });
 
             // Handle mouse move/drag
-            mm = Event.add(d, 'mousemove', function(e) {
+            mm = Event.add(d, 'mousemove touchmove', function(e) {
                 var x, y, v;
+
+                updateWithTouchData(e);
 
                 x = e.screenX - sx - vp.x;
                 y = e.screenY - sy - vp.y;
