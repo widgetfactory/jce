@@ -54,6 +54,8 @@ class WFModelPlugins extends WFModel {
     public function getPlugins() {
         jimport('joomla.filesystem.folder');
 
+        $language = JFactory::getLanguage();
+
         static $plugins;
 
         if (!isset($plugins)) {
@@ -100,6 +102,11 @@ class WFModelPlugins extends WFModel {
             if (strpos($item->name, '-') === false || strpos($item->name, 'editor-') === false) {
                 continue;
             }
+
+            $name = str_replace('editor-', '', $item->name);
+
+            // load language
+            $language->load('plg_jce_' . $name, JPATH_ADMINISTRATOR);
 
             $folders[] = JPATH_PLUGINS . '/jce/' . $item->name;
           }
@@ -148,15 +155,6 @@ class WFModelPlugins extends WFModel {
                     $plugins[$name]->creationdate = (string) $xml->creationDate;
                     $plugins[$name]->authorUrl = (string) $xml->authorUrl;
 
-                    if ($plugins[$name]->core === 0) {
-                      // load language
-                      $language = JFactory::getLanguage();
-                      // new
-                      $language->load('plg_jce_' . $name, JPATH_ADMINISTRATOR);
-                      // legacy
-                      $language->load('com_jce_' . $name, JPATH_SITE);
-                    }
-
                     // relative path
                     $plugins[$name]->path = str_replace(JPATH_SITE, '', $folder);
                     $plugins[$name]->type = 'plugin';
@@ -171,12 +169,13 @@ class WFModelPlugins extends WFModel {
 
     /**
      * Get installed extensions
-     * @param object $plugin
-     * @return
+     * @return array $extensions
      */
     public function getExtensions() {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
+
+        $language = JFactory::getLanguage();
 
         static $extensions;
 
@@ -187,10 +186,6 @@ class WFModelPlugins extends WFModel {
           $files = JFolder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
 
           foreach ($files as $file) {
-              if (strpos($file, 'build.xml') !== false) {
-                  continue;
-              }
-
               $name = basename($file, '.xml');
 
               $object = new StdClass();
@@ -251,6 +246,9 @@ class WFModelPlugins extends WFModel {
                   // set type
                   $p->type = $p->folder;
 
+                  // load language
+                  $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_ADMINISTRATOR);
+
                   $extensions[] = $p;
               }
           }
@@ -291,17 +289,6 @@ class WFModelPlugins extends WFModel {
                 $extension->version = (string) $xml->version;
                 $extension->creationdate = (string) $xml->creationDate;
                 $extension->authorUrl = (string) $xml->authorUrl;
-
-                // load language if non-core extension
-                if ($extension->core === 0) {
-                    // load language
-                    $language = JFactory::getLanguage();
-
-                    // new
-                    $language->load('plg_jce_' . $extension->folder . '_' . $extension->extension, JPATH_ADMINISTRATOR);
-                    // legacy
-                    $language->load('com_jce_' . $extension->folder . '_' . $extension->extension, JPATH_SITE);
-                }
             }
           }
         }
@@ -316,7 +303,7 @@ class WFModelPlugins extends WFModel {
      * Process import data from XML file
      * @param object $file XML file
      * @param boolean $install Can be used by the package installer
-     * @return
+     * @return boolean 
      */
     public function processImport($file, $install = false) {
         return true;

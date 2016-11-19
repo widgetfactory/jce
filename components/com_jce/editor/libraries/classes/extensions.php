@@ -64,6 +64,8 @@ class WFExtension extends JObject {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
+        $language = JFactory::getLanguage();
+
         $extensions = array();
 
         if (!isset($config['base_path'])) {
@@ -109,6 +111,8 @@ class WFExtension extends JObject {
                 if ($extension && $p->extension !== $extension) {
                     continue;
                 }
+
+                $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_SITE);
 
                 // add to array
                 $extensions[$p->extension] = $p;
@@ -170,8 +174,6 @@ class WFExtension extends JObject {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        $language = JFactory::getLanguage();
-
         if (!isset($config['base_path'])) {
             $config['base_path'] = WF_EDITOR;
         }
@@ -207,11 +209,6 @@ class WFExtension extends JObject {
                     if (file_exists($root)) {
                         // Load root extension file
                         require_once($root);
-
-                        // Load Extension language file (legacy)
-                        $language->load('com_jce_' . $type . '_' . $name, JPATH_SITE);
-                        // Joomla plugins
-                        $language->load('plg_jce_' . $type . '_' . $name, JPATH_SITE);
 
                         // Return array of extension names
                         $result[$type][] = $name;
