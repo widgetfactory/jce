@@ -39,7 +39,7 @@ class WFEditorPlugin extends JObject {
      *
      * @access	public
      */
-    function __construct($config = array()) {
+    public function __construct($config = array()) {
         // Call parent
         parent::__construct();
 
@@ -58,8 +58,6 @@ class WFEditorPlugin extends JObject {
 
         // load core language
         WFLanguage::load('com_jce', JPATH_ADMINISTRATOR);
-        // Load Plugin language
-        WFLanguage::load('com_jce_' . trim($plugin));
 
         if (!array_key_exists('base_path', $config)) {
             $config['base_path'] = WF_EDITOR_PLUGINS . '/' . $plugin;
