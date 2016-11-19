@@ -9,7 +9,6 @@
  */
 (function() {
     var each = tinymce.each,
-        PreviewCss = tinymce.util.PreviewCss,
         DOM = tinymce.DOM;
 
     /* Make a css url absolute
@@ -89,7 +88,8 @@
             return format;
         },
         populateStyleSelect: function() {
-            var ed = this.editor;
+            var ed = this.editor,
+                PreviewCss = tinymce.util.PreviewCss;
 
             var self = this,
                 styleselect = ed.controlManager.get('styleselect');
