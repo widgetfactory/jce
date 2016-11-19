@@ -10,8 +10,6 @@
  * other free or open source software licenses.
  */
 abstract class WFLanguage {
-    
-    protected static $instance;
 
     /*
      * Check a lnagueg file exists and is the correct version
@@ -61,19 +59,7 @@ abstract class WFLanguage {
      */
     public static function getTag() {
         $language   = JFactory::getLanguage();
-        $tag        = $language->getTag();
-
-        //static $_language;
-
-        if (!isset(self::$instance)) {            
-            if (self::check($tag)) {
-                self::$instance = $tag;
-            } else {
-                self::$instance = 'en-GB';
-            }
-        }
-
-        return self::$instance;
+        return $language->getTag();
     }
 
     /**
