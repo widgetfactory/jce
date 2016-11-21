@@ -50,15 +50,12 @@
                         }
 
                         ed.dom.insertAfter(ns, marker);
-
-                        // delete created sibling
-                        ed.dom.remove(ns);
-
-                        ns = marker.previousSibling;
                     }
 
-                    // move cursor to the end of block element
-                    ed.selection.setCursorLocation(ns, ns.childNodes.length);
+                    if (ns) {
+                        // move cursor to the end of block element
+                        ed.selection.setCursorLocation(ns, ns.childNodes.length);
+                    }
 
                     ed.dom.replace(hr, marker);
                 } else {
