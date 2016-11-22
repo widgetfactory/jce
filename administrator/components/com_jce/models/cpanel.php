@@ -33,7 +33,7 @@ class WFModelCpanel extends WFModel {
 
         $feeds = array();
         $options = array(
-            'rssUrl' => 'https://www.joomlacontenteditor.net/news/feed/rss/latest-news?format=feed',
+            'rssUrl' => 'https://www.joomlacontenteditor.net/news?format=feed',
             'cache_time' => $params->get('feed_cachetime', 86400)
         );
 
