@@ -218,7 +218,7 @@
             options = $.extend(true, {
                 'label': {
                     'confirm': Wf.translate('yes', 'Yes'),
-                    'cancel': Wf.translate('cancel', 'Cancel')
+                    'cancel': Wf.translate('no', 'No')
                 }
             }, options);
 
