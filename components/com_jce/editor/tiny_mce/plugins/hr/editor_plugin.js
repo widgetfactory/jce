@@ -25,6 +25,8 @@
                 // split pragraphs and headings
                 if (/^(H[1-6]|P)$/.test(n.nodeName)) {
 
+                    ed.undoManager.add();
+
                     // create hr marker
                     ed.execCommand('mceInsertContent', false, '<span id="mce_hr_marker" data-mce-type="bookmark">\uFEFF</span>', {
                         skip_undo: 1
@@ -61,6 +63,8 @@
                 } else {
                     ed.execCommand('mceInsertContent', false, '<hr />');
                 }
+
+                ed.undoManager.add();
             });
 
             // Register buttons
