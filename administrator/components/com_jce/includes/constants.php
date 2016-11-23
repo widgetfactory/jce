@@ -41,6 +41,8 @@ define('WF_EDITOR_CLASSES',    WF_EDITOR_LIBRARIES . '/classes');
 // JCE Editor Extensions
 define('WF_EDITOR_EXTENSIONS', WF_EDITOR . '/extensions');
 
+define('WF_EDITOR_PRO', '@@is_pro@@');
+
 // required for some plugins
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
