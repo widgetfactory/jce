@@ -86,17 +86,19 @@ class WFElementFilesystem extends WFElement {
 
         // if a group is specified, setup to be an object
         if ((string) $node->attributes()->group) {
-            $name = $control_name . '[filesystem][' . $name . ']';
+            $ctrl = $control_name . '[filesystem][' . $name . ']';
         } else {
-            $name = $control_name . '[filesystem]';
+            $ctrl = $control_name . '[filesystem]';
         }
 
         $html  = "";
-        $html .= JHTML::_('select.genericlist', $options, $name, implode(' ', $attribs), 'value', 'text', $value, $id);
+        $html .= JHTML::_('select.genericlist', $options, $ctrl, implode(' ', $attribs), 'value', 'text', $value, $id);
 
         foreach($params as $filesystem => $item) {
+          $ctrl = $control_name . '[filesystem][' . $filesystem . ']';
+          
           $html .= '<div data-parameter-nested-item="' . $filesystem . '" class="well well-small">';
-          $html .= $item->render($name, $filesystem);
+          $html .= $item->render($ctrl, $filesystem);
           $html .= '</div>';
         }
 
