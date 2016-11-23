@@ -145,10 +145,7 @@ class WFFileBrowser extends JObject {
 
     /**
      * Upload form action url
-     *
-     * @access	public
-     * @param	string 	The target action file eg: upload.php
-     * @return	Joomla! component url
+     * @return	string URL
      * @since	1.5
      */
     protected function getFormAction() {
