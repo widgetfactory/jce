@@ -20,7 +20,7 @@
 }
 
 .ui-jce .dl-horizontal dt {
-    line-height: 2em;
+    line-height: 2.5em;
     text-align: left;
 }
 
@@ -30,12 +30,12 @@ html[dir="rtl"] .ui-jce .dl-horizontal dt {
 }
 
 .ui-jce .dl-horizontal dd {
-    line-height: 2em;
+    line-height: 2.5em;
     margin-bottom: 5px;
 }
 
 .ui-jce .newsfeed li {
-    line-height: 2em;
+    line-height: 2.5em;
 }
 
 .ui-jce .thumbnails [class^="icon-"],
@@ -72,6 +72,17 @@ html[dir="rtl"] .ui-jce .dl-horizontal dt {
 }
 
 .ui-jce .thumbnails>li {
-    margin-left: 0;
-    margin-right: 10px;
+    margin: 0 10px 0 0;
+}
+
+.ui-jce .alert .btn {
+    background-image: inherit;
+    filter: inherit;
+    -ms-filter: inherit;
+    box-shadow: inherit;
+    margin-left: 15px;
+}
+
+.ui-jce .alert h4 {
+    line-height: 28px;
 }

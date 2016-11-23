@@ -15,7 +15,7 @@ defined('_JEXEC') or die('RESTRICTED');
     <ul id="cpanel" class="unstyled thumbnails">
       <?php echo implode("\n", $this->icons); ?>
     </ul>
-    <dl class="dl-horizontal">
+    <dl class="dl-horizontal placeholder">
         <dt class="wf-tooltip" title="<?php echo WFText::_('WF_CPANEL_SUPPORT') . '::' . WFText::_('WF_CPANEL_SUPPORT_DESC'); ?>">
             <?php echo WFText::_('WF_CPANEL_SUPPORT'); ?>
         </dt>
@@ -43,4 +43,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </dd>
         <?php endif; ?>
     </dl>
+    <?php if (!WF_EDITOR_PRO):
+        echo $this->loadTemplate('pro_footer');
+    endif;?>
 </div>

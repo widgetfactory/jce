@@ -1033,6 +1033,14 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 .ui-jce .ui-repeatable {
     margin-bottom: 10px;
 }
+
+.ui-jce .placeholder {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px dashed #E5E5E5;
+    background: #fafafa;
+    color: #666;
+}
 .ui-jce .tooltip {
     position: absolute;
     z-index: 1030;

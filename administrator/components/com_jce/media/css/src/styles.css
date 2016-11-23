@@ -772,3 +772,10 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 .ui-jce .ui-repeatable {
     margin-bottom: 10px;
 }
+
+.ui-jce .placeholder {
+    padding: 8px 14px;
+    border: 1px dashed #E5E5E5;
+    background: #fafafa;
+    color: #666;
+}

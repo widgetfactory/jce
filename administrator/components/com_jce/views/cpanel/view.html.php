@@ -119,6 +119,10 @@ class WFViewCpanel extends WFView {
         $this->assign('model', $model);
         $this->assign('params', $params);
 
+        if (WF_EDITOR_PRO) {
+            $version = '<span class="label label-info">Pro</span> ' . $version;
+        }
+
         $this->assign('version', $version);
 
         parent::display($tpl);
