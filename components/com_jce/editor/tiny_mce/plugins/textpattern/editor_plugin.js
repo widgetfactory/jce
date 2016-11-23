@@ -87,6 +87,27 @@
             var isPatternsDirty = true,
                 patterns;
 
+            editor.onPreInit.add(function(ed) {
+                ed.formatter.register('markdownlink', {
+                    inline: 'a',
+                    selector: 'a',
+                    remove: 'all',
+                    split: true,
+                    deep: true,
+                    onmatch: function() {
+                        return true;
+                    },
+
+                    onformat: function(elm, fmt, vars) {
+                        console.log(elm, fmt, vars);
+
+                        tinymce.each(vars, function(value, key) {
+                            ed.dom.setAttrib(elm, key, value);
+                        });
+                    }
+                });
+            });
+
             editor.addCommand('InsertMarkdownImage', function(ui, node) {
                 var data = node.split(']('),
                     dom = editor.dom;
@@ -144,6 +165,7 @@
                 { start: '`', end: '`', format: 'code' },
                 //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
                 { start: '![', end: ')', cmd: 'InsertMarkdownImage', remove: true },
+                //{ start: '[', end: ')', format: 'markdownlink' },
                 { start: '#', format: 'h1' },
                 { start: '##', format: 'h2' },
                 { start: '###', format: 'h3' },
