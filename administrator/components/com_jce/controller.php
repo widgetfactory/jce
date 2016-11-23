@@ -202,7 +202,6 @@ class WFController extends WFControllerBase {
 
     /**
      * Display View
-     * @return
      */
     public function display($cachable = false, $params = false) {
         $view = $this->getView();
@@ -211,7 +210,6 @@ class WFController extends WFControllerBase {
 
     /**
      * Generic cancel method
-     * @return
      */
     public function cancel() {
         // Check for request forgeries
