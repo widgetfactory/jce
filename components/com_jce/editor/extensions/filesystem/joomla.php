@@ -74,19 +74,26 @@ class WFJoomlaFileSystem extends WFFileSystem {
             $default = 'administrator,cache,components,includes,language,libraries,logs,media,modules,plugins,templates,xmlrpc';
 
             // list of restricted directories
-            $restricted = explode(',', $wf->getParam('filesystem.joomla.restrict_dir', $default));
+            $restricted = strtolower($wf->getParam('filesystem.joomla.restrict_dir', $default));
+            // explode to array
+            $restricted = explode(',', $restricted);
+
+            // is root allowed?
             $allowroot  = $wf->getParam('filesystem.joomla.allow_root', 0);
 
             // Revert to default if empty
             if (empty($root) && !$allowroot) {
                 $root = 'images';
             }
-            // Force default if directory is a joomla directory
-            $parts = explode('/', $root);
 
-            // check if directory is allowed if root access is allowed
-            if ($allowroot && in_array(strtolower($parts[0]), $allowed)) {
-                $root = 'images';
+            // Force default if directory is a joomla directory
+            if (!empty($root) && $allowroot) {
+                $parts = explode('/', $root);
+
+                // check if directory is allowed if root access is allowed
+                if (in_array(strtolower($parts[0]), $restricted)) {
+                    $root = 'images';
+                }
             }
 
             if (!empty($root)) {
