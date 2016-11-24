@@ -127,8 +127,6 @@ class WFEditor extends JObject
     
     /**
     * Get an appropriate editor profile
-    * @access public
-    * @return $profile Object
     */
     public function getProfile($plugin = "")
     {
