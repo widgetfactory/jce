@@ -323,6 +323,12 @@
                             $inp = $('#' + options.id + '-input'),
                             v = $inp.val();
 
+                        if (v === "") {
+                            $inp.focus();
+
+                            return false;
+                        }
+
                         if (options.elements) {
                             $(':input', '#' + options.id).not($inp).each(function() {
                                 args.push($(this).val());
