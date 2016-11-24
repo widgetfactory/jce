@@ -19,6 +19,10 @@
     margin: 0 0 10px 10px;
 }
 
+.m .ui-jce .placeholder {
+    margin: 0;
+}
+
 .ui-jce .dl-horizontal dt {
     line-height: 2.5em;
     text-align: left;
