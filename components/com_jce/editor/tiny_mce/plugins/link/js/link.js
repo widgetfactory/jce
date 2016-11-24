@@ -308,17 +308,21 @@
                 se = ed.selection;
 
             if ($('#href').val() == '') {
-                Wf.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'));
-
-                $('#href').focus();
+                Wf.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'), {
+                    "close": function() {
+                        $('#href').focus();
+                    }
+                });
 
                 return false;
             }
 
             if (se.isCollapsed() && $('#text').not(':disabled').val() == '') {
-                Wf.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'));
-
-                $('#text').focus();
+                Wf.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'), {
+                    "close": function() {
+                        $('#text').focus();
+                    }
+                });
 
                 return false;
             }
