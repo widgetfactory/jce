@@ -303,8 +303,8 @@
             var p = DOM.getRect(id),
                 vp = DOM.getViewPort();
 
-            var top = Math.max(vp.y + 20, (vp.h - p.h) / 2);
-            var left = Math.max(vp.x + 20, (vp.w - p.w) / 2);
+            var top = Math.round(Math.max(vp.y + 20, vp.y + (vp.h / 2.0) - (p.h / 2.0)));
+            var left = Math.round(Math.max(vp.x + 20, vp.x + (vp.w / 2.0) - (p.w / 2.0)));
 
             DOM.setStyles(id, { 'left': left, 'top': top });
         },
@@ -335,7 +335,7 @@
             var self = this,
                 mu, mm, d = DOM.doc,
                 w = self.windows[id],
-                sx, sy;
+                sx, sy, cp;
 
             if (DOM.hasClass(id, 'dragging')) {
                 end();
@@ -347,7 +347,7 @@
             p = DOM.getRect(id);
             vp = DOM.getViewPort();
 
-            DOM.setStyles(id, { 'left': p.x - vp.x, 'top': p.y - vp.y });
+            //DOM.setStyles(id, { 'left': p.x - vp.x, 'top': p.y - vp.y });
 
             // Get positons and sizes
             cp = { x: 0, y: 0 };
@@ -383,8 +383,8 @@
 
                 updateWithTouchData(e);
 
-                x = e.screenX - sx - vp.x;
-                y = e.screenY - sy - vp.y;
+                x = e.screenX - sx; // - vp.x;
+                y = e.screenY - sy; // - vp.y;
 
                 dx = Math.max(p.x + x, 10);
                 dy = Math.max(p.y + y, 10);
