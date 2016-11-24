@@ -430,16 +430,12 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         $.each(['group', 'width', 'height', 'title', 'caption'], function(i, k) {
-            var v;
+            var v = args[k] || "";
 
             if (k == 'title' || k == 'caption') {
                 v = $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val();
             } else {
                 v = $('#jcemediabox_popup_' + k).val();
-            }
-
-            if (v == null || typeof v === 'undefined') {
-                v = args[k] || "";
             }
 
             data[k] = v;
