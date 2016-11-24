@@ -86,3 +86,7 @@ html[dir="rtl"] .ui-jce .dl-horizontal dt {
 .ui-jce .alert h4 {
     line-height: 28px;
 }
+
+.ui-jce dl .label {
+    margin-right: 10px;
+}
