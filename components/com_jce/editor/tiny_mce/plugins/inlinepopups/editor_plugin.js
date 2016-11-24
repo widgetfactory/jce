@@ -462,7 +462,9 @@
             w = this._findId(w);
 
             if (e = DOM.get(w + '_title')) {
-                e.innerHTML = DOM.encode(ti);
+                if (!e.innerHTML) {
+                    e.innerHTML = DOM.encode(ti);
+                }
             }
         },
 
