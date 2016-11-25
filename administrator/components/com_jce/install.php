@@ -189,7 +189,6 @@ abstract class WFInstall {
             $site . '/editor/libraries/extensions/imgageeditor/picmonkey.php',
             $site . '/editor/libraries/extensions/imgageeditor/picmonkey.xml',
             $site . '/editor/libraries/extensions/imgageeditor/index.html',
-            $site . '/editor/libraries/classes/extensions/mediaplayer.php',
             $site . '/editor/libraries/css/colorpicker.css',
             $site . '/editor/libraries/css/editor.css',
             $site . '/editor/libraries/css/files.css',
@@ -243,12 +242,18 @@ abstract class WFInstall {
                 }
             }
         }
+        // pro cleanup
+        if (is_dir($site . '/libraries/pro')) {
+            // remove old language files
+            $languages = JFolder::files(JPATH_SITE . '/language/en-GB/', '^en-GB\.com_jce_[caption|iframe|filemanager|imgmanager_ext|mediamanager|templatemanager|microdata|emotions|fullpage].*', false, true);
 
-        // remove old language files
-        $languages = JFolder::files(JPATH_SITE . '/language/en-GB/', '^en-GB\.com_jce_[caption|iframe|filemanager|imgmanager_ext|mediamanager|templatemanager|microdata|emotions|fullpage].*', false, true);
+            if (!empty($languages)) {
+                JFile::delete($languages);
+            }
 
-        if (!empty($languages)) {
-            JFile::delete($languages);
+            if (JFile::exists($site . '/editor/libraries/classes/extensions/mediaplayer.php')) {
+                JFile::delete($site . '/editor/libraries/classes/extensions/mediaplayer.php');
+            }
         }
 
         return true;

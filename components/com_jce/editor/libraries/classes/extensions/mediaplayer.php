@@ -48,7 +48,10 @@ class WFMediaPlayerExtension extends WFExtension {
 
             if ($name && $name != 'none') {
                 $player = parent::loadExtensions('mediaplayer', $name);
-                $classname = 'WFMediaPlayerExtension_' . ucfirst($player);
+
+                if ($player) {
+                    $classname = 'WFMediaPlayerExtension_' . ucfirst($player);
+                }
             }
 
             if ($classname && class_exists($classname)) {

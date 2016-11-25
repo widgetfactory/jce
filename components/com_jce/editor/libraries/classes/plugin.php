@@ -236,9 +236,10 @@ class WFEditorPlugin extends JObject {
         $document->addScript(array('plugin.min.js'));
         $document->addStyleSheet(array('plugin.min.css'), 'libraries');
 
-        // legacy stylesheet if jcepro is not available TODO: remove in stable
-        if (!is_dir(WF_EDITOR_LIBRARIES . '/pro')) {
+        // legacy stylesheet if jcepro is not available TODO: remove by 2.6.5
+        if (!WF_EDITOR_PRO) {
           $document->addStyleSheet(array('legacy.min.css'), 'libraries');
+          $document->addScript(array('legacy.min.js'));
         }
 
         // add custom plugin.css if exists
