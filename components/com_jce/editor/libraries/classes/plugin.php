@@ -150,6 +150,10 @@ class WFEditorPlugin extends JObject {
     public function execute() {
         WFToken::checkToken() or die('Access to this resource is restricted');
 
+        if (!WF_EDITOR_PRO) {
+        	WFLanguage::load('com_jce_' . trim($this->getName()));
+        }
+
         // process requests if any - method will end here
         WFRequest::getInstance()->process();
 
