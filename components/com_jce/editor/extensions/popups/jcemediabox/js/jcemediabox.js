@@ -430,12 +430,14 @@ WFPopups.addPopup('jcemediabox', {
         }
 
         $.each(['group', 'width', 'height', 'title', 'caption'], function(i, k) {
-            var v = args[k] || "";
+            var v = $('#jcemediabox_popup_' + k).val() || args[k] || "";
 
             if (k == 'title' || k == 'caption') {
-                v = $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val();
-            } else {
-                v = $('#jcemediabox_popup_' + k).val();
+                var mv = $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val();
+                
+                if (typeof mv !== "undefined") {
+                	v = mv;
+                }
             }
 
             data[k] = v;
@@ -544,5 +546,4 @@ WFPopups.addPopup('jcemediabox', {
         });
 
     }
-
 });
