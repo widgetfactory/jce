@@ -352,10 +352,10 @@ WFPopups.addPopup('jcemediabox', {
 
                 v = tinymce.DOM.decode(v);
 
+                $('#jcemediabox_popup_' + k).val(v);
+
                 if (k == 'title' || k == 'caption') {
                     $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val(v);
-                } else {
-                    $('#jcemediabox_popup_' + k).val(v);
                 }
 
                 // remove from object
@@ -434,7 +434,7 @@ WFPopups.addPopup('jcemediabox', {
 
             if (k == 'title' || k == 'caption') {
                 var mv = $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val();
-                
+
                 if (typeof mv !== "undefined") {
                 	v = mv;
                 }
