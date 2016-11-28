@@ -360,9 +360,9 @@
                 }
 
                 if ($('#' + n).is(':checkbox')) {
-                    $('#' + n).prop('checked', parseFloat(v)).change();
+                    $('#' + n).prop('checked', parseFloat(v));//.change();
                 } else {
-                    $('#' + n).val(v).change();
+                    $('#' + n).val(v);//.change();
                 }
             }
         }
