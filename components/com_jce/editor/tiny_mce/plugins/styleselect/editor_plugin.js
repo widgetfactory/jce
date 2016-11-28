@@ -96,7 +96,7 @@
                         // registered style format
                         if (ed.formatter.get(name)) {
                             ed.formatter.apply(name);
-                            // custom class 
+                            // custom class
                         } else {
                             ed.formatter.apply('classname', { 'value': name });
                         }
@@ -119,6 +119,13 @@
                 ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*' });
 
                 if (formats) {
+                    if (typeof formats === "string") {
+                        try {
+                          formats = JSON.parse(formats);
+                        } catch(e) {
+                          formats = [];
+                        }
+                    }
                     each(formats, function(fmt) {
                         var name, keys = 0;
 
