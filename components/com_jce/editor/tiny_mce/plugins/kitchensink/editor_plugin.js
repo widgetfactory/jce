@@ -17,13 +17,13 @@
             var self = this, state = false, h = 0, el = ed.getElement(), s = ed.settings;
 
             function toggle() {
-                var row = DOM.getParents(ed.id + '_kitchensink', 'table.mceToolbar');
+                var row = DOM.getParents(ed.id + '_kitchensink', '.mceToolbarRow');
 
                 if (!row) {
                     return;
                 }
 
-                var n = DOM.getNext(row[0], 'table.mceToolbar');
+                var n = DOM.getNext(row[0], '.mceToolbarRow');
 
                 while (n) {
                     if (DOM.isHidden(n)) {
@@ -35,12 +35,12 @@
                         state = false;
                     }
 
-                    n = DOM.getNext(n, 'table.mceToolbar');
+                    n = DOM.getNext(n, '.mceToolbarRow');
                 }
-                
+
                 // get height of container
                 h = s.height || el.style.height || el.offsetHeight;
-                
+
                 if (h) {
                     DOM.setStyle(ed.id + '_ifr', 'height', h);
                 }
@@ -54,7 +54,7 @@
                 title: 'kitchensink.desc',
                 cmd: 'mceKitchenSink'
             });
-            
+
             ed.onPostRender.add(function(ed, cm) {
                 if (DOM.get('mce_fullscreen')) {
                     state = true;
