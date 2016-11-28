@@ -363,10 +363,11 @@
                     $('#' + n).prop('checked', parseFloat(v));//.change();
                 } else {
                     $('#' + n).val(v);//.change();
-                }
-                // update colour
-                v.charAt(0) === "#" {
-                    $('#' + n).change();
+
+                    // update colour
+                    if (typeof v === "string" && v.charAt(0) === "#") {
+                        $('#' + n).change();
+                    }
                 }
             }
         }
