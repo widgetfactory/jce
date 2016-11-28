@@ -364,6 +364,10 @@
                 } else {
                     $('#' + n).val(v);//.change();
                 }
+                // update colour
+                v.charAt(0) === "#" {
+                    $('#' + n).change();
+                }
             }
         }
     });
