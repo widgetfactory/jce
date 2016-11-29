@@ -9,7 +9,7 @@
 	<copyright>Ryan Demmer</copyright>
 	<license>@@licence@@</license>
 	<description>WF_TEXTPATTERN_DESC</description>
-	<icon>textcase</icon>
+	<icon></icon>
 	<params></params>
 	<help>
 		<topic key="textpattern.about" title="WF_TEXTPATTERN_HELP_ABOUT" />

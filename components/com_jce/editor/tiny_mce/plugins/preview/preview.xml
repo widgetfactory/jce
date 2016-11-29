@@ -9,7 +9,7 @@
 	<copyright>Ryan Demmer</copyright>
 	<license>@@licence@@</license>
 	<description>WF_PREVIEW_DESC</description>
-	<icon>preview</icon>
+	<icon></icon>
 	<params group="standard">
 		<param name="process_content" type="radio" default="1" label="WF_PREVIEW_PARAM_PROCESS_CONTENT" description="WF_PREVIEW_PARAM_PROCESS_CONTENT_DESC">
 				<option value="1">WF_OPTION_YES</option>
