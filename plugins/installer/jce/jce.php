@@ -43,15 +43,15 @@ class plgInstallerJce extends JPlugin
 
 		$key = $component->params->get('updates_key', '');
 
-		if (empty($key)) {
-            $language = JFactory::getLanguage();
-            $language->load('plg_installer_jce', JPATH_ADMINISTRATOR);
+		if (empty($key) && strpos($url, 'pkg_jce_pro.xml') !== false) {
+        $language = JFactory::getLanguage();
+        $language->load('plg_installer_jce', JPATH_ADMINISTRATOR);
 
-            $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
+        $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
 
 			return true;
 		}
-		
+
 		// Append the subscription key to the download URL
 		$uri->setVar('key', $key);
 		$url = $uri->toString();
