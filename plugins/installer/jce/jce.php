@@ -43,7 +43,7 @@ class plgInstallerJce extends JPlugin
 
 		$key = $component->params->get('updates_key', '');
 
-		if (empty($key) && strpos($url, 'pkg_jce_pro.xml') !== false) {
+		if (empty($key) && strpos($url, 'pkg_jce_pro') !== false) {
         $language = JFactory::getLanguage();
         $language->load('plg_installer_jce', JPATH_ADMINISTRATOR);
 
