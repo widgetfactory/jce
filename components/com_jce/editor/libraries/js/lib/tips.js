@@ -300,36 +300,36 @@
 
 			var style = {
 				"top center" : {
-					"top" : pos.top - tip.height - o.y,
+					"top" : Math.max(pos.top - tip.height - o.y, 10),
 					"left": Math.max(pos.left + pos.width / 2 - tip.width / 2, 5)
 				},
 				"bottom center"	: {
-					"top" : pos.top + pos.height + o.y,
+					"top" : Math.max(pos.top + pos.height + o.y, 10),
 					"left": Math.max(pos.left + pos.width / 2 - tip.width / 2, 5)
 				},
 				"center right"	: {
 					"top" : Math.max(pos.top - tip.height / 2 + pos.height / 2, 5),
-					"left": pos.left + pos.width
+					"left":  Math.max(pos.left + pos.width, 10)
 				},
 				"center left"	: {
 					"top" : Math.max(pos.top - tip.height / 2 + pos.height / 2, 5),
-					"left": pos.left - tip.width
+					"left":  Math.max(pos.left - tip.width, 10)
 				},
 				"bottom right"	: {
 					"top" : Math.max(pos.top - tip.height + o.y, 5),
-					"left": pos.left + pos.width
+					"left": Math.max(pos.left + pos.width, 10)
 				},
 				"bottom left"	: {
 					"top" : Math.max(pos.top - tip.height + pos.height + o.y, 5),
-					"left": pos.left - tip.width
+					"left": Math.max(pos.left - tip.width, 10)
 				},
 				"top right"	: {
-					"top" : pos.top - tip.height - o.y,
-					"left": pos.left + pos.width
+					"top" : Math.max(pos.top - tip.height - o.y, 10),
+					"left": Math.max(pos.left + pos.width, 10)
 				},
 				"top left"	: {
-					"top" : pos.top - tip.height - o.y,
-					"left": pos.left - tip.width
+					"top" : Math.max(pos.top - tip.height - o.y, 10),
+					"left": Math.max(pos.left - tip.width, 10)
 				}
 			};
 
