@@ -269,7 +269,7 @@ dd.file.notsafe {
 }
 
 .ui-jce .extensions dt input[type="checkbox"] {
-    margin: 5px 15px 5px 5px;
+    margin: 5px 15px 5px 7px;
 }
 
 .ui-jce .extensions .ui-sortable-handle {
@@ -584,9 +584,7 @@ html {
     overflow-y: visible !important;
 }
 
-#profileLayoutTable {
-    position: relative;
-}
+#profileLayoutTable {}
 
 ul#profileLayoutTable>li {
     margin-bottom: 10px;
@@ -793,6 +791,7 @@ html[dir="rtl"] .profileLayoutContainer .sortableOption {
 .sortableRemove.hidden {
     visibility: hidden;
 }
+
 .checkbox-list-toggle-all {
     margin-left: -15px;
 }

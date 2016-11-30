@@ -12,9 +12,7 @@ html {
     overflow-y: visible !important;
 }
 
-#profileLayoutTable {
-    position: relative;
-}
+#profileLayoutTable {}
 
 ul#profileLayoutTable>li {
     margin-bottom: 10px;
