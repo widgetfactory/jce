@@ -241,6 +241,9 @@ class WFLanguageParser extends JObject {
                         // key to lowercase
                         $k = strtolower($k);
 
+                        // remove WF_
+                        $k = str_replace('wf_', '', $k);
+
                         // get position of the section name in the key if any
                         $pos = strpos($k, $key . '_');
 
