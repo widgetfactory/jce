@@ -439,6 +439,7 @@ div#wf_upload_button input[type="file"] {
 
 .wf-editor-container .wf-editor-tabs {
     margin-bottom: 5px;
+    height: 37px;
 }
 
 .wf-editor-container.mce-fullscreen .wf-editor-tabs {
