@@ -45,17 +45,17 @@ abstract class WFInstall {
         if ($state) {
             $message  = '<div class="ui-jce">';
             $message .= '   <h2>' . JText::_('COM_JCE') . ' ' . $new_version . '</h2>';
-            $message .= '   <div>' . JText::_('COM_JCE_XML_DESCRIPTION') . '</div>';            
+            $message .= '   <div>' . JText::_('COM_JCE_XML_DESCRIPTION') . '</div>';
             $message .= '</div>';
 
             $installer->set('message', $message);
 
             // post-install
             self::addIndexfiles(array(
-                __DIR__, 
-                JPATH_SITE . '/components/com_jce', 
-                JPATH_PLUGINS . '/content/jce', 
-                JPATH_PLUGINS . '/editors/jce', 
+                __DIR__,
+                JPATH_SITE . '/components/com_jce',
+                JPATH_PLUGINS . '/content/jce',
+                JPATH_PLUGINS . '/editors/jce',
                 JPATH_PLUGINS . '/extension/jce',
                 JPATH_PLUGINS . '/installer/jce',
                 JPATH_PLUGINS . '/quickicon/jce',
@@ -201,7 +201,7 @@ abstract class WFInstall {
             $site . '/editor/libraries/img/drag.png',
             $site . '/editor/libraries/img/icons-24.png',
             $site . '/editor/libraries/img/icons.png',
-            
+
             $site . '/editor/libraries/jquery/css/jquery-ui.css',
             $site . '/editor/libraries/js/editor.js',
             $site . '/editor/libraries/js/help.js',
@@ -213,7 +213,7 @@ abstract class WFInstall {
             $site . '/editor/tiny_mce/plugins/media/img/iframe.png',
             $site . '/editor/tiny_mce/themes/advanced/img/icons.gif'
         );
-        
+
         $folders = array(
             $admin . '/adapters',
             $admin . '/views/installer',
@@ -253,6 +253,20 @@ abstract class WFInstall {
 
             if (JFile::exists($site . '/editor/libraries/classes/extensions/mediaplayer.php')) {
                 JFile::delete($site . '/editor/libraries/classes/extensions/mediaplayer.php');
+            }
+        }
+
+        // clean up links extension folder
+        $files = JFolder::files($site . '/editor/extensions/links', '^joomlalinks.*', false, true);
+
+        foreach($files as $file) {
+            JFile::delete($file);
+            
+            $name = pathinfo($file, PATHINFO_FILENAME);
+            $path = dirname($file);
+
+            if(is_dir($path .'/' . $name)) {
+                JFolder::delete($path .'/' . $name);
             }
         }
 
