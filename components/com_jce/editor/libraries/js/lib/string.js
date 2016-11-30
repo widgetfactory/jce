@@ -49,11 +49,14 @@
             return this.clean(a + '/' + b);
         },
         clean: function(s) {
-            if (!/:\/\//.test(s)) {
-                return s.replace(/\/+/g, '/');
+            if (s.indexOf('://') !== -1) {
+              var parts = s.split('://');
+
+              parts[1] = parts[1].replace(/\/+/g, '/');
+              return parts.join('://');
             }
 
-            return s;
+            return s.replace(/\/+/g, '/');
         },
 
         _toUnicode: function(s) {
