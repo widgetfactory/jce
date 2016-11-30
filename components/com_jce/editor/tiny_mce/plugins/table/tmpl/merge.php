@@ -12,13 +12,11 @@
 
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div class="uk-form-row">
+<div class="uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-7-10"><?php echo WFText::_('WF_TABLE_COLS'); ?>:</label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="number" min="1" id="numcols" value=""/>
     </div>
-</div>
-<div class="uk-form-row">
     <label class="uk-form-label uk-width-7-10"><?php echo WFText::_('WF_TABLE_ROWS'); ?>:</label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="number" min="1" id="numrows" value=""/>

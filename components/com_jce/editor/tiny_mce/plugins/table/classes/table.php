@@ -40,8 +40,13 @@ class WFTablesPlugin extends WFEditorPlugin {
 
         $tabs = WFTabs::getInstance(array('base_path' => WF_EDITOR_PLUGIN));
 
-        $tabs->addTab('general', 1,   array('plugin' => $this));
-        $tabs->addTab('advanced', 1,  array('plugin' => $this));
+        if ($this->getContext() == 'merge') {
+            // Add tabs
+            $tabs->addTab('merge');
+        } else {
+            $tabs->addTab('general', 1, array('plugin' => $this));
+            $tabs->addTab('advanced', 1, array('plugin' => $this));
+        }
     }
 
     public function getSettings($settings = array()) {
