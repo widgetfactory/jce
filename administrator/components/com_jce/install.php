@@ -257,12 +257,17 @@ abstract class WFInstall {
         }
 
         // clean up links extension folder
-        $files = JFolder::files($site . '/editor/extensions/links', '^joomlalinks.*', false, true);
+        $files = JFolder::files($site . '/editor/extensions/links', '.', false, true);
 
         foreach($files as $file) {
-            JFile::delete($file);
-            
             $name = pathinfo($file, PATHINFO_FILENAME);
+            // leave this...
+            if ($name === "joomlalinks") {
+                continue;
+            }
+            // delete others
+            JFile::delete($file);
+
             $path = dirname($file);
 
             if(is_dir($path .'/' . $name)) {
