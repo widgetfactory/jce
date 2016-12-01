@@ -24,6 +24,6 @@
 
     };
 
-    Wf.URL = URL;
+    Wf.URL = $.URL = URL;
 
 })(jQuery, Wf);
