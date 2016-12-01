@@ -12,6 +12,10 @@
     border-bottom-right-radius: 0;
 }
 
+.ie .uk-form-horizontal .uk-datalist input[type="text"] {
+    width: calc(100% - 24px);
+}
+
 .uk-datalist input:focus+select {
     border: 1px solid #66afe9
 }

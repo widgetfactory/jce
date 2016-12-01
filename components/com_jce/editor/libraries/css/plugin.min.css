@@ -682,6 +682,10 @@ input[type="range"]::-ms-thumb {
     border-bottom-right-radius: 0;
 }
 
+.ie .uk-form-horizontal .uk-datalist input[type="text"] {
+    width: calc(100% - 24px);
+}
+
 .uk-datalist input:focus+select {
     border: 1px solid #66afe9
 }
@@ -887,6 +891,7 @@ input.colour {
 .uk-isdirty {
     color: inherit !important
 }
+
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.

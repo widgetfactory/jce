@@ -57,7 +57,7 @@
             $('.mceActionPanel, .actionPanel').addClass('uk-modal-footer');
 
             // ie flag
-            if (/MSIE/.test(navigator.userAgent) || navigator.userAgent.indexOf('Edge/') !== -1) {
+            if (/MSIE/.test(navigator.userAgent) || navigator.userAgent.indexOf('Trident/') !== -1 || navigator.userAgent.indexOf('Edge/') !== -1) {
                 $('#jce').addClass('ie');
             }
 
