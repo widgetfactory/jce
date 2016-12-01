@@ -10,7 +10,7 @@ body {
     height: initial !important;
 }
 
-body {
+body, td, pre {
     font-size: 1em;
 }
 
