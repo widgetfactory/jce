@@ -578,7 +578,7 @@
 
             // make relative if an absolute local file
             if (/:\/\//.test(s)) {
-                s = $.URL.toRelative(s);
+                s = Wf.URL.toRelative(s);
             }
 
             // contains non-standard characters
@@ -601,7 +601,7 @@
             if (path) {
                 // make relative
                 if (new RegExp(':\/\/').test(path)) {
-                    path = $.URL.toRelative(path);
+                    path = Wf.URL.toRelative(path);
                 }
 
                 // remove leading slash
@@ -659,7 +659,7 @@
 
             // make sure its relative
             if (src && /:\/\//.test(src)) {
-                src = $.URL.toRelative(src);
+                src = Wf.URL.toRelative(src);
             }
 
             // set loading status
@@ -1285,7 +1285,7 @@
                                     $(tmpDiv).html(h);
 
                                     function toRelative(s) {
-                                        s = $.URL.toRelative(s);
+                                        s = Wf.URL.toRelative(s);
                                         return s.replace(/^administrator\//, '');
                                     }
 
