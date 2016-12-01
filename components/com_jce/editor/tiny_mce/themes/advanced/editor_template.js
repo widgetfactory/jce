@@ -547,6 +547,12 @@
                 DOM.add(n, 'span', {}, '&#160;');
             }
 
+            ed.onPostRender.add(function () {
+              t.resizeTo(s.width, s.height, false);
+
+              DOM.setStyle(ed.id + '_tbl', 'width', '');
+            });
+
             if (s.theme_advanced_resizing) {
                 DOM.add(td, 'a', {
                     id: ed.id + '_resize',
@@ -564,7 +570,7 @@
                             return;
                         }
 
-                        t.resizeTo(o.cw, o.ch);
+                        t.resizeTo(o.cw, o.ch, false);
                     });
                 }
 

@@ -110,6 +110,13 @@
             }
 
             DOM.setStyle(element, 'height', height);
+
+            // get width from setting or session data or editor textarea
+            var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+
+            if (!DOM.hasClass(container, 'mce-fullscreen')) {
+                DOM.setStyle(element, 'width', width);
+            }
         }
     });
 
