@@ -16,6 +16,8 @@
                 se = ed.selection,
                 n, el;
 
+            tinyMCEPopup.restoreSelection();    
+
             $('button#insert').click(function(e) {
                 self.insert();
                 e.preventDefault();
