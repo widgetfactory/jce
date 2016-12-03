@@ -185,6 +185,14 @@ class WFModelEditor extends WFModelBase {
             $settings['toggle'] = $wf->getParam('editor.toggle', 1, 1);
             $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', '[Toggle Editor]', '[Toggle Editor]'));
             $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
+
+            // Get all optional plugin configuration options
+            $this->getPluginConfig($settings);
+
+            // clean up invalid_elements
+            if (!empty($settings['invalid_elements'])) {
+                $settings['invalid_elements'] = array_values($settings['invalid_elements']);
+            }
         }// end profile
         // check for joomla debug mode
         $config = JFactory::getConfig();
@@ -224,9 +232,6 @@ class WFModelEditor extends WFModelBase {
             }
         }
 
-        // Get all optional plugin configuration options
-        $this->getPluginConfig($settings);
-
         // remove 'rows' key from $settings
         unset($settings['rows']);
 
@@ -246,8 +251,6 @@ class WFModelEditor extends WFModelBase {
 
         // check for language files
         $this->checkLanguages($settings);
-
-        $settings['invalid_elements'] = array_values($settings['invalid_elements']);
 
         // process settings
         array_walk($settings, function (&$value) {
