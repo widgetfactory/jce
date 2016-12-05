@@ -395,6 +395,7 @@ label {
     top: 0.24em;
     border-radius: 2px;
     margin-right: 3px;
+    border: 1px solid #ddd;
 }
 
 .uk-dropdown {
