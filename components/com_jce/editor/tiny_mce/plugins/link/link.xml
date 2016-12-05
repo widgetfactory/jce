@@ -24,7 +24,7 @@
         <param type="text" name="id" default="" size="50" label="WF_LABEL_ID" description="WF_LABEL_ID_DESC" />
         <param type="text" name="style" default="" size="50" label="WF_LABEL_STYLE" description="WF_LABEL_STYLE_DESC" />
         <param type="text" name="classes" default="" size="50" label="WF_LABEL_CLASSES" description="WF_LABEL_CLASSES_DESC" />
-        <param type="list" name="language_dir" default="" label="WF_LABEL_DIR" description="WF_LABEL_DIR_DESC">
+        <param type="list" name="direction" default="" label="WF_LABEL_DIR" description="WF_LABEL_DIR_DESC">
             <option value="">WF_OPTION_NOT_SET</option>
             <option value="ltr">WF_OPTION_LTR</option>
             <option value="rtl">WF_OPTION_RTL</option>
