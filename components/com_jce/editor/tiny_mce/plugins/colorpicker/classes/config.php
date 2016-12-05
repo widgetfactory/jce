@@ -19,6 +19,8 @@ class WFColorpickerPluginConfig {
         if (empty($colours)) {
             $colours =  $wf->getParam('editor.custom_colors', '');
         }
+
+        $colours = array_map("trim", explode(',', $colours));
         
         $settings['colorpicker_custom_colors'] = $colours;
     }
