@@ -23,23 +23,6 @@
                 $elms = $(this).parent().find('input[type="text"]'),
                 self = this;
 
-            // get first value
-            var value = $elms.first().val();
-
-            $elms.each(function() {
-                if ($(this).val() === value) {
-                    x++;
-                }
-            });
-
-            // state
-            var state = (x === $elms.length);
-
-            // check
-            $(this).prop('checked', state);
-
-            $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
-
             // add icon and click
             $(self).addClass('uk-form-equalize').wrap('<i class="uk-equalize uk-icon-lock" />').click(function() {
                 var state = this.checked;
@@ -55,15 +38,36 @@
 
                     $(cb).trigger('equalize:change', [$(this).parent().find('input[type="text"]').andSelf()]);
                 }
-            }).parent().toggleClass('uk-icon-unlock-alt', !state);
+            });
 
             $elms.first().change(function() {
                 var state = $(self).prop('checked');
 
-                $elms.not(this).val(this.value).change();
+                if (state) {
+                    $elms.not(this).val(this.value).change();
+                }
 
                 // trigger event
                 $(cb).trigger('equalize:change', [$(this).parent().find('input[type="text"]').andSelf()]);
+            });
+
+            $(this).on('equalize:update', function() {
+                // get first value
+                var value = $elms.first().val();
+
+                $elms.each(function() {
+                    if ($(this).val() === value) {
+                        x++;
+                    }
+                });
+
+                // state
+                var state = (x === $elms.length);
+
+                $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
+
+                // check
+                $(this).prop('checked', state).parent().toggleClass('uk-icon-unlock-alt', !state);
             });
         });
     };

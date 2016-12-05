@@ -9,338 +9,343 @@
  */
 (function($) {
 
-	var ImageManagerDialog = {
-		settings: {},
-		init: function() {
-			var ed = tinyMCEPopup.editor,
-				n = ed.selection.getNode(),
-				self = this,
-				br, el;
+    var ImageManagerDialog = {
+        settings: {},
+        init: function() {
+            var ed = tinyMCEPopup.editor,
+                n = ed.selection.getNode(),
+                self = this,
+                br, el;
 
-			// add insert button action
-			$('#insert').click(function(e) {
-				self.insert();
-				e.preventDefault();
-			});
+            // add insert button action
+            $('#insert').click(function(e) {
+                self.insert();
+                e.preventDefault();
+            });
 
-			tinyMCEPopup.restoreSelection();
+            tinyMCEPopup.restoreSelection();
 
-			// Get src and decode
-			var src = decodeURIComponent(ed.dom.getAttrib(n, 'src'));
+            // Get src and decode
+            var src = decodeURIComponent(ed.dom.getAttrib(n, 'src'));
 
-			// convert to relative
-			src = ed.convertURL(src);
+            // convert to relative
+            src = ed.convertURL(src);
 
-			// Show / hide attributes
-			$.each(this.settings.attributes, function(k, v) {
-				if (!parseFloat(v)) {
-					$('#attributes-' + k).hide();
-				}
-			});
+            // Show / hide attributes
+            $.each(this.settings.attributes, function(k, v) {
+                if (!parseFloat(v)) {
+                    $('#attributes-' + k).hide();
+                }
+            });
 
-			// add focus behaviour to onmoueover / onmouseout
-			$('#onmouseover, #onmouseout').focus(function() {
-				$('#onmouseover, #onmouseout').removeClass('focus');
-				$(this).addClass('focus');
-			});
+            // add focus behaviour to onmoueover / onmouseout
+            $('#onmouseover, #onmouseout').focus(function() {
+                $('#onmouseover, #onmouseout').removeClass('focus');
+                $(this).addClass('focus');
+            });
 
-			Wf.init();
+            Wf.init();
 
-			if (n && n.nodeName == 'IMG') {
-				// set button
-				$('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
+            if (n && n.nodeName == 'IMG') {
+                // set button
+                $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
 
-				$('#src').val(src);
+                $('#src').val(src);
 
-				// set preview
-				$('#sample').attr({
-					'src': n.src
-				}).attr(Wf.sizeToFit(n, {
-					width: 80,
-					height: 60
-				}));
+                // set preview
+                $('#sample').attr({
+                    'src': n.src
+                }).attr(Wf.sizeToFit(n, {
+                    width: 80,
+                    height: 60
+                }));
 
-				// Width & Height
-				var w = Wf.getAttrib(n, 'width'), h = Wf.getAttrib(n, 'height');
+                // Width & Height
+                var w = Wf.getAttrib(n, 'width'),
+                    h = Wf.getAttrib(n, 'height');
 
-				$('#width').val(function() {
-					if (w) {
-							$(this).addClass('uk-isdirty');
-							return w;
-					}
-					// if height is not set, return actual width
-					if (!h) {
-							return n.width;
-					}
-				});
+                $('#width').val(function() {
+                    if (w) {
+                        $(this).addClass('uk-isdirty');
+                        return w;
+                    }
+                    // if height is not set, return actual width
+                    if (!h) {
+                        return n.width;
+                    }
+                });
 
-				$('#height').val(function() {
-					if (h) {
-							$(this).addClass('uk-isdirty');
-							return h;
-					}
-					// if width is not set, return actual height
-					if (!w) {
-							return n.height;
-					}
-				});
+                $('#height').val(function() {
+                    if (h) {
+                        $(this).addClass('uk-isdirty');
+                        return h;
+                    }
+                    // if width is not set, return actual height
+                    if (!w) {
+                        return n.height;
+                    }
+                });
 
-				$('#alt').val(ed.dom.getAttrib(n, 'alt'));
-				$('#title').val(ed.dom.getAttrib(n, 'title'));
-				// Margin
-				$.each(['top', 'right', 'bottom', 'left'], function() {
-					$('#margin_' + this).val(Wf.getAttrib(n, 'margin-' + this));
-				});
+                $('#alt').val(ed.dom.getAttrib(n, 'alt'));
+                $('#title').val(ed.dom.getAttrib(n, 'title'));
+                // Margin
+                $.each(['top', 'right', 'bottom', 'left'], function() {
+                    $('#margin_' + this).val(Wf.getAttrib(n, 'margin-' + this));
+                });
 
-				// Border
-				$('#border_width').val(function() {
-					var v = Wf.getAttrib(n, 'border-width');
+                // Border
+                $('#border_width').val(function() {
+                    var v = Wf.getAttrib(n, 'border-width');
 
-					if ($('option[value="' + v + '"]', this).length == 0) {
-						$(this).append(new Option(v, v));
-					}
+                    if ($('option[value="' + v + '"]', this).length == 0) {
+                        $(this).append(new Option(v, v));
+                    }
 
-					return v;
-				});
+                    return v;
+                });
 
-				$('#border_style').val(Wf.getAttrib(n, 'border-style'));
-				$('#border_color').val(Wf.getAttrib(n, 'border-color')).change();
+                $('#border_style').val(Wf.getAttrib(n, 'border-style'));
+                $('#border_color').val(Wf.getAttrib(n, 'border-color')).change();
 
-				// if no border values set, set defaults
-				if (!$('#border').is(':checked')) {
-					$.each(['border_width', 'border_style', 'border_color'], function(i, k) {
-						$('#' + k).val(self.settings.defaults[k]).change();
-					});
-				}
+                // if no border values set, set defaults
+                if (!$('#border').is(':checked')) {
+                    $.each(['border_width', 'border_style', 'border_color'], function(i, k) {
+                        $('#' + k).val(self.settings.defaults[k]).change();
+                    });
+                }
 
-				$('#align').val(Wf.getAttrib(n, 'align'));
+                $('#align').val(Wf.getAttrib(n, 'align'));
 
-				// Class
-				$('#classes').val(ed.dom.getAttrib(n, 'class'));
-				//$('#classlist').val(ed.dom.getAttrib(n, 'class'));
+                // Class
+                $('#classes').val(ed.dom.getAttrib(n, 'class'));
+                //$('#classlist').val(ed.dom.getAttrib(n, 'class'));
 
-				$('#style').val(ed.dom.getAttrib(n, 'style'));
-				$('#id').val(ed.dom.getAttrib(n, 'id'));
-				$('#dir').val(ed.dom.getAttrib(n, 'dir'));
-				$('#lang').val(ed.dom.getAttrib(n, 'lang'));
-				$('#usemap').val(ed.dom.getAttrib(n, 'usemap'));
+                $('#style').val(ed.dom.getAttrib(n, 'style'));
+                $('#id').val(ed.dom.getAttrib(n, 'id'));
+                $('#dir').val(ed.dom.getAttrib(n, 'dir'));
+                $('#lang').val(ed.dom.getAttrib(n, 'lang'));
+                $('#usemap').val(ed.dom.getAttrib(n, 'usemap'));
 
-				$('#insert').button('option', 'label', ed.getLang('update', 'Update'));
+                $('#insert').button('option', 'label', ed.getLang('update', 'Update'));
 
-				// Longdesc may contain absolute url too
-				$('#longdesc').val(ed.convertURL(ed.dom.getAttrib(n, 'longdesc')));
+                // Longdesc may contain absolute url too
+                $('#longdesc').val(ed.convertURL(ed.dom.getAttrib(n, 'longdesc')));
 
-				// onmouseover / onmouseout
-				$('#onmouseout').val(src);
+                // onmouseover / onmouseout
+                $('#onmouseout').val(src);
 
-				$.each(['onmouseover', 'onmouseout'], function() {
-					v = ed.dom.getAttrib(n, this);
-					v = $.trim(v);
-					v = v.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
-					v = ed.convertURL(v);
-					$('#' + this).val(v);
-				});
+                $.each(['onmouseover', 'onmouseout'], function() {
+                    v = ed.dom.getAttrib(n, this);
+                    v = $.trim(v);
+                    v = v.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
+                    v = ed.convertURL(v);
+                    $('#' + this).val(v);
+                });
 
-				br = n.nextSibling;
+                br = n.nextSibling;
 
-				if (br && br.nodeName == 'BR' && br.style.clear) {
-					$('#clear').val(br.style.clear);
-				}
-			} else {
-				Wf.setDefaults(this.settings.defaults);
-			}
+                if (br && br.nodeName == 'BR' && br.style.clear) {
+                    $('#clear').val(br.style.clear);
+                }
+            } else {
+                Wf.setDefaults(this.settings.defaults);
+            }
 
-			if (ed.settings.filebrowser_position === "external") {
-				Wf.createBrowsers($('#src'), function(files) {
-					var file = files.shift();
-					self.selectFile(file);
-				}, 'images');
-			} else {
-				$('#src').filebrowser().on('filebrowser:onfileclick', function(e, file, data) {
-					self.selectFile(file, data);
-				}).on('filebrowser:onfileinsert', function(e, file, data) {
-					self.selectFile(file, data);
-				});
-			}
+            if (ed.settings.filebrowser_position === "external") {
+                Wf.createBrowsers($('#src'), function(files) {
+                    var file = files.shift();
+                    self.selectFile(file);
+                }, 'images');
+            } else {
+                $('#src').filebrowser().on('filebrowser:onfileclick', function(e, file, data) {
+                    self.selectFile(file, data);
+                }).on('filebrowser:onfileinsert', function(e, file, data) {
+                    self.selectFile(file, data);
+                });
+            }
 
-			// Setup Styles
-			Wf.updateStyles();
+            // Setup Styles
+            Wf.updateStyles();
 
-			// update constrain after applying values
-			$('.uk-constrain-checkbox').on('constrain:change', function(e, elms) {
-				$(elms).addClass('uk-isdirty');
-			}).trigger('constrain:update');
-		},
-		insert: function() {
-			var ed = tinyMCEPopup.editor,
-				self = this;
+            // update constrain after applying values
+            $('.uk-constrain-checkbox').on('constrain:change', function(e, elms) {
+                $(elms).addClass('uk-isdirty');
+            }).trigger('constrain:update');
 
-			if ($('#src').val() === '') {
-				Wf.Modal.alert(tinyMCEPopup.getLang('imgmanager_dlg.no_src', 'Please enter a url for the image'));
-				return false;
-			}
-			if ($('#alt').val() === '') {
-				Wf.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function(state) {
-					if (state) {
-						self.insertAndClose();
-					}
-				}, {
-					width: 300,
-					height: 200
-				});
-			} else {
-				this.insertAndClose();
-			}
-		},
-		insertAndClose: function() {
-			var ed = tinyMCEPopup.editor,
-				self = this,
-				v, args = {},
-				el, br = '';
+            // update equalize
+            $('.uk-equalize-checkbox').trigger('equalize:update');
 
-			Wf.updateStyles();
+        },
+        insert: function() {
+            var ed = tinyMCEPopup.editor,
+                self = this;
 
-			tinyMCEPopup.restoreSelection();
+            if ($('#src').val() === '') {
+                Wf.Modal.alert(tinyMCEPopup.getLang('imgmanager_dlg.no_src', 'Please enter a url for the image'));
+                return false;
+            }
+            if ($('#alt').val() === '') {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function(state) {
+                    if (state) {
+                        self.insertAndClose();
+                    }
+                }, {
+                    width: 300,
+                    height: 200
+                });
+            } else {
+                this.insertAndClose();
+            }
+        },
+        insertAndClose: function() {
+            var ed = tinyMCEPopup.editor,
+                self = this,
+                v, args = {},
+                el, br = '';
 
-			// Fixes crash in Safari
-			if (tinymce.isWebKit) {
-				ed.getWin().focus();
-			}
+            Wf.updateStyles();
 
-			// Remove deprecated values
-			args = {
-				vspace: '',
-				hspace: '',
-				border: '',
-				align: ''
-			};
+            tinyMCEPopup.restoreSelection();
 
-			// set attributes
-			$.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc'], function(i, k) {
-				v = $('#' + k + ':enabled').val();
+            // Fixes crash in Safari
+            if (tinymce.isWebKit) {
+                ed.getWin().focus();
+            }
 
-				if (k == 'src') {
-					// prepare URL
-					v = Wf.String.buildURI(v);
-				}
+            // Remove deprecated values
+            args = {
+                vspace: '',
+                hspace: '',
+                border: '',
+                align: ''
+            };
 
-				if (k == 'width' || k == 'height') {
-					if (self.settings.always_include_dimensions) {
-						v = $('#' + k).val();
-					} else {
-						v = $('#' + k + '.uk-isdirty').val() || '';
-					}
-				}
+            // set attributes
+            $.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc'], function(i, k) {
+                v = $('#' + k + ':enabled').val();
 
-				if (k == 'classes')
-					k = 'class';
+                if (k == 'src') {
+                    // prepare URL
+                    v = Wf.String.buildURI(v);
+                }
 
-				args[k] = v;
-			});
+                if (k == 'width' || k == 'height') {
+                    if (self.settings.always_include_dimensions) {
+                        v = $('#' + k).val();
+                    } else {
+                        v = $('#' + k + '.uk-isdirty').val() || '';
+                    }
+                }
 
-			args.onmouseover = args.onmouseout = '';
+                if (k == 'classes')
+                    k = 'class';
 
-			// mouseover / mouseout on single files only
-			var over = $('#onmouseover').val(),
-				out = $('#onmouseout').val();
+                args[k] = v;
+            });
 
-			if (over && out) {
-				args.onmouseover = "this.src='" + ed.convertURL(over) + "';";
-				args.onmouseout = "this.src='" + ed.convertURL(out) + "';";
-			}
+            args.onmouseover = args.onmouseout = '';
 
-			el = ed.selection.getNode();
-			br = el.nextSibling;
+            // mouseover / mouseout on single files only
+            var over = $('#onmouseover').val(),
+                out = $('#onmouseout').val();
 
-			if (el && el.nodeName == 'IMG') {
-				ed.dom.setAttribs(el, args);
-				// BR clear
-				if (br && br.nodeName == 'BR') {
-					if ($('#clear').is(':disabled') || $('#clear').val() === '') {
-						ed.dom.remove(br);
-					}
-					if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
-						ed.dom.setStyle(br, 'clear', $('#clear').val());
-					}
-				} else {
-					if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
-						br = ed.dom.create('br');
-						ed.dom.setStyle(br, 'clear', $('#clear').val());
-						ed.dom.insertAfter(br, el);
-					}
-				}
-			} else {
-				ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
-					skip_undo: 1
-				});
-				el = ed.dom.get('__mce_tmp');
+            if (over && out) {
+                args.onmouseover = "this.src='" + ed.convertURL(over) + "';";
+                args.onmouseout = "this.src='" + ed.convertURL(out) + "';";
+            }
 
-				if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
-					br = ed.dom.create('br');
-					ed.dom.setStyle(br, 'clear', $('#clear').val());
-					ed.dom.insertAfter(br, el);
-				}
+            el = ed.selection.getNode();
+            br = el.nextSibling;
 
-				ed.dom.setAttribs('__mce_tmp', args);
-				ed.dom.setAttrib('__mce_tmp', 'id', '');
-				ed.undoManager.add();
-			}
+            if (el && el.nodeName == 'IMG') {
+                ed.dom.setAttribs(el, args);
+                // BR clear
+                if (br && br.nodeName == 'BR') {
+                    if ($('#clear').is(':disabled') || $('#clear').val() === '') {
+                        ed.dom.remove(br);
+                    }
+                    if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
+                        ed.dom.setStyle(br, 'clear', $('#clear').val());
+                    }
+                } else {
+                    if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
+                        br = ed.dom.create('br');
+                        ed.dom.setStyle(br, 'clear', $('#clear').val());
+                        ed.dom.insertAfter(br, el);
+                    }
+                }
+            } else {
+                ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
+                    skip_undo: 1
+                });
+                el = ed.dom.get('__mce_tmp');
 
-			tinyMCEPopup.close();
-		},
+                if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
+                    br = ed.dom.create('br');
+                    ed.dom.setStyle(br, 'clear', $('#clear').val());
+                    ed.dom.insertAfter(br, el);
+                }
 
-		selectFile: function(file, data) {
-			var self = this,
-				name = data.title,
-				src = data.url;
+                ed.dom.setAttribs('__mce_tmp', args);
+                ed.dom.setAttrib('__mce_tmp', 'id', '');
+                ed.undoManager.add();
+            }
 
-			if ($('#rollover_tab').hasClass('uk-active')) {
-				$('input.focus', '#rollover_tab').val(src);
-			} else {
-				name = Wf.String.stripExt(name);
-				name = name.replace(/[-_]+/g, ' ');
+            tinyMCEPopup.close();
+        },
 
-				$('#alt').val(name);
-				$('#onmouseout').val(src);
-				$('#src').val(src);
+        selectFile: function(file, data) {
+            var self = this,
+                name = data.title,
+                src = data.url;
 
-				if (!data.width || !data.height) {
-					var img = new Image();
+            if ($('#rollover_tab').hasClass('uk-active')) {
+                $('input.focus', '#rollover_tab').val(src);
+            } else {
+                name = Wf.String.stripExt(name);
+                name = name.replace(/[-_]+/g, ' ');
 
-					img.onload = function() {
-						$.each(['width', 'height'], function(i, k) {
-							$('#' + k).val(img[k]).data('tmp', img[k]).removeClass('uk-edited').addClass('uk-text-muted');
-						});
+                $('#alt').val(name);
+                $('#onmouseout').val(src);
+                $('#src').val(src);
 
-					};
+                if (!data.width || !data.height) {
+                    var img = new Image();
 
-					img.src = src;
-				} else {
-					$.each(['width', 'height'], function(i, k) {
-						var v = data[k] || "";
-						$('#' + k).val(v).data('tmp', v).removeClass('uk-edited').addClass('uk-text-muted');
-					});
-				}
+                    img.onload = function() {
+                        $.each(['width', 'height'], function(i, k) {
+                            $('#' + k).val(img[k]).data('tmp', img[k]).removeClass('uk-edited').addClass('uk-text-muted');
+                        });
 
-				var dim = Wf.sizeToFit({
-					width: data.width,
-					height: data.height
-				}, {
-					width: 80,
-					height: 60
-				});
+                    };
 
-				// set preview
-				$('#sample').attr({
-					'src': data.preview
-				}).attr(dim);
-			}
-		}
+                    img.src = src;
+                } else {
+                    $.each(['width', 'height'], function(i, k) {
+                        var v = data[k] || "";
+                        $('#' + k).val(v).data('tmp', v).removeClass('uk-edited').addClass('uk-text-muted');
+                    });
+                }
 
-	};
-	window.ImageManagerDialog = ImageManagerDialog;
+                var dim = Wf.sizeToFit({
+                    width: data.width,
+                    height: data.height
+                }, {
+                    width: 80,
+                    height: 60
+                });
 
-	$(document).ready(function() {
-		ImageManagerDialog.init();
-	});
+                // set preview
+                $('#sample').attr({
+                    'src': data.preview
+                }).attr(dim);
+            }
+        }
+
+    };
+    window.ImageManagerDialog = ImageManagerDialog;
+
+    $(document).ready(function() {
+        ImageManagerDialog.init();
+    });
 })(jQuery);
