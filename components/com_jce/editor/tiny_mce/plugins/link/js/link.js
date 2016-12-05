@@ -239,10 +239,6 @@
                 });
 
             } else {
-                if (this.settings.defaults['langauge_dir']) {
-                    this.settings.defaults['dir'] = this.settings.defaults['langauge_dir'];
-                }
-
                 Wf.setDefaults(this.settings.defaults);
             }
 
