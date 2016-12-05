@@ -25,7 +25,7 @@ $links = $this->plugin->getLinks();
 <div class="uk-form-row">
     <label for="text" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_LINK_LINK_TEXT_DESC'); ?>"><?php echo WFText::_('WF_LINK_LINK_TEXT'); ?></label>
     <div class="uk-form-controls uk-width-4-5">
-        <input id="text" type="text" value="" required />
+        <input id="text" type="text" value="" required placeholder="<?php echo WFText::_('WF_ELEMENT_SELECTION'); ?>" />
     </div>
 </div>
 <?php if ($search->isEnabled() || count($links->getLists())) : ?>

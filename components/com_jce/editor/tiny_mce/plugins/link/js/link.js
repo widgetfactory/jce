@@ -16,7 +16,7 @@
                 se = ed.selection,
                 n, el;
 
-            tinyMCEPopup.restoreSelection();    
+            tinyMCEPopup.restoreSelection();
 
             $('button#insert').click(function(e) {
                 self.insert();
@@ -239,6 +239,10 @@
                 });
 
             } else {
+                if (this.settings.defaults['langauge_dir']) {
+                    this.settings.defaults['dir'] = this.settings.defaults['langauge_dir'];
+                }
+
                 Wf.setDefaults(this.settings.defaults);
             }
 
@@ -409,7 +413,17 @@
                     }
 
                     if (txt) {
-                        ed.dom.setHTML(elm, txt);
+                        var html = elm.innerHTML;
+
+                        if (html.charAt(0) === "<") {
+                            elm = elm.firstChild;
+                        }
+
+                        if ("innerText" in elm) {
+                            elm.innerText = txt;
+                        } else {
+                            elm.textContent = txt;
+                        }
                     }
                 });
 

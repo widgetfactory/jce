@@ -24,3 +24,27 @@
     height: 240px;
     margin-top: 5px;
 }
+
+#text::-moz-placeholder {
+    color: transparent !important;
+}
+
+#text::-webkit-input-placeholder {
+    color: transparent !important;
+}
+
+#text:-ms-input-placeholder {
+    color: transparent !important;
+}
+
+#text[disabled]::-moz-placeholder {
+    color: inherit !important;
+}
+
+#text[disabled]::-webkit-input-placeholder {
+    color: inherit !important;
+}
+
+#text[disabled]::-moz-placeholder {
+    color: inherit !important;
+}
