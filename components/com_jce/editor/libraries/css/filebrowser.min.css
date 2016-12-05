@@ -12,14 +12,20 @@
     display: inline-block;
     width: calc(100% - 24px);
 }
-.uk-tree a, .uk-tree a:hover, .uk-tree a:active {
+
+.uk-tree a,
+.uk-tree a:hover,
+.uk-tree a:active {
     text-decoration: none;
     color: inherit;
 }
+
 .uk-tree-toggle {
     cursor: pointer;
 }
-.uk-tree-toggle, .uk-tree-icon {
+
+.uk-tree-toggle,
+.uk-tree-icon {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -27,37 +33,49 @@
     vertical-align: middle;
     line-height: 20px;
 }
-.uk-tree-toggle .uk-icon, .uk-tree-icon .uk-icon {
+
+.uk-tree-toggle .uk-icon,
+.uk-tree-icon .uk-icon {
     height: 20px;
     width: 20px;
     vertical-align: middle;
     line-height: 20px;
 }
+
 .uk-icon-minus-square-o {
     display: none;
 }
-.uk-tree-open> .uk-tree-row> .uk-tree-toggle .uk-icon-plus-square-o {
+
+.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-plus-square-o {
     display: none;
 }
-.uk-tree-open> .uk-tree-row> .uk-tree-toggle .uk-icon-minus-square-o {
+
+.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-minus-square-o {
     display: inline-block;
 }
+
 .uk-icon-folder-open {
     display: none;
 }
-.uk-tree-open> .uk-tree-row> .uk-tree-icon .uk-icon-folder {
+
+.uk-tree-open>.uk-tree-row .uk-tree-icon .uk-icon-folder {
     display: none;
 }
-.uk-tree-open> .uk-tree-row> .uk-tree-icon .uk-icon-folder-open {
+
+.uk-tree-open>.uk-tree-row .uk-tree-icon .uk-icon-folder-open {
     display: inline-block;
 }
-.uk-tree-loading> .uk-tree-row> .uk-tree-toggle .uk-icon {
+
+.uk-tree-loading>.uk-tree-row>.uk-tree-toggle .uk-icon {
     display: none !important;
 }
-.uk-tree-loading> .uk-tree-row> .uk-tree-toggle {
+
+.uk-tree-loading>.uk-tree-row>.uk-tree-toggle {
     background: url('../img/load.gif') no-repeat center;
 }
-.uk-tree, .uk-tree ul {
+
+.uk-tree,
+.uk-tree ul {
     padding: 0;
     margin: 0;
     list-style: none;
@@ -65,31 +83,36 @@
     -moz-user-select: none;
     user-select: none;
 }
+
 .uk-tree li {
     line-height: 28px;
     vertical-align: middle;
     margin: 0;
 }
+
 .uk-tree-node li {
     padding: 0 0 0 23px;
 }
+
 .uk-tree-row .uk-tree-text {
     display: inline-block;
     line-height: 20px;
     vertical-align: middle;
 }
+
 .uk-tree-node li:empty {
     padding: 0;
     margin: 0;
     visibility: hidden;
 }
+
 .uk-tree-row:hover {
     background-color: #d9edf7;
 }
+
 .uk-tree-hide {
     display: none;
 }
-
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
