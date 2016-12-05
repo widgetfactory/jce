@@ -355,14 +355,18 @@
             for (n in s) {
                 v = s[n];
 
-                if (v == 'default') {
+                if (n === "direction") {
+                    n = "dir";
+                }
+
+                if (v === "default") {
                     v = '';
                 }
 
                 if ($('#' + n).is(':checkbox')) {
-                    $('#' + n).prop('checked', parseFloat(v));//.change();
+                    $('#' + n).prop('checked', parseFloat(v)); //.change();
                 } else {
-                    $('#' + n).val(v);//.change();
+                    $('#' + n).val(v); //.change();
 
                     // update colour
                     if (typeof v === "string" && v.charAt(0) === "#") {
