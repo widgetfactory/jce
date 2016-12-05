@@ -96,8 +96,13 @@ class WFMediaManagerBase extends WFEditorPlugin {
         $browser->display();
         $view->assign('filebrowser', $browser);
 
+        $options = $browser->getProperties();
+
+        // map processed root directory
+        $options['dir'] = $browser->getFileSystem()->getRootDir();
+
         // set global options
-        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($browser->getProperties()) . ';');
+        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
     }
 
     public function getFileTypes() {
