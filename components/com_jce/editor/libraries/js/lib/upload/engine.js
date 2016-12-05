@@ -120,7 +120,7 @@
 
                 if (r.error) {
                     // return error
-                    this.error(r.error.code, r.error.text);
+                    this.error(r.error.code, r.error.message);
 
                     return false;
                 }

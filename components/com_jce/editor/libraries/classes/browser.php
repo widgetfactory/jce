@@ -300,7 +300,7 @@ class WFFileBrowser extends JObject {
             } else {
                 $this->_result[$key] = $value;
             }
-        } else {
+        } else {            
             $this->_result = $value;
         }
     }
@@ -1044,8 +1044,8 @@ class WFFileBrowser extends JObject {
 
                 $event = $this->fireEvent('onUpload', array($result->path, $result->url));
 
-                if (!empty($result)) {
-                  $this->setResult($event);
+                if (!empty($event)) {
+                    $this->setResult($event);
                 }
 
                 $this->setResult($name, 'files');
@@ -1054,7 +1054,7 @@ class WFFileBrowser extends JObject {
             }
         }
 
-        return $result;
+        return $this->getResult();
     }
 
     /**

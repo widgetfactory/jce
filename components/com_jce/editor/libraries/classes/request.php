@@ -215,6 +215,15 @@ final class WFRequest extends JObject {
 
             try {
                 $result = call_user_func_array($callback, (array) $args);
+
+                if (is_array($result) && !empty($result['error'])) {
+                    if (is_array($result['error'])) {
+                        $result['error'] = implode("\n", $result['error']);    
+                    }
+                    
+                    $response->setError(array('message' => $result['error']))->send();
+                }
+
             } catch (Exception $e) {
                 $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
             }
