@@ -13,8 +13,14 @@ class WFColorpickerPluginConfig {
 
     public static function getConfig(&$settings) {
         $wf = WFEditor::getInstance();
+
+        $colours = $wf->getParam('colorpicker.custom_colors', '');
+
+        if (empty($colours)) {
+            $colours =  $wf->getParam('editor.custom_colors', '');
+        }
         
-        $settings['colorpicker_custom_colors'] = $wf->getParam('colorpicker.custom_colors', $wf->getParam('editor.custom_colors'));
+        $settings['colorpicker_custom_colors'] = $colours;
     }
 }
 
