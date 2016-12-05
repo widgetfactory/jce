@@ -42,7 +42,7 @@ class WFPreviewPlugin extends WFEditorPlugin {
         $language = JFactory::getLanguage();
 
         // reset document type
-        $document = &JFactory::getDocument();
+        $document = JFactory::getDocument();
         $document->setType('html');
         // required by module loadposition
         jimport('joomla.application.module.helper');
