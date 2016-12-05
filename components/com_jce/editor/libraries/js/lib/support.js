@@ -8,13 +8,7 @@
     var canvas = document.createElement('canvas');
 
     // check for canvas
-    $.support.canvas = !!canvas.getContext;
-    // check for webgl
-    try {
-        $.support.webgl = !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
-    } catch (e) {
-        $.support.webgl = false;
-    }
+    $.support.canvas = canvas.getContext;
 
     // check for background size
     $.support.backgroundSize = (function() {
