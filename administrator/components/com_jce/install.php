@@ -250,10 +250,6 @@ abstract class WFInstall {
             if (!empty($languages)) {
                 JFile::delete($languages);
             }
-
-            if (JFile::exists($site . '/editor/libraries/classes/extensions/mediaplayer.php')) {
-                JFile::delete($site . '/editor/libraries/classes/extensions/mediaplayer.php');
-            }
         }
 
         // clean up links extension folder
