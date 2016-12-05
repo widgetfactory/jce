@@ -521,10 +521,14 @@ class WFFileBrowser extends JObject {
 
         WFUtility::checkPath($path);
 
-        // get source dir from path eg: images/stories/fruit.jpg = images/stories
+        // get source dir from path eg: images/stories/fruit.jpg = /stories
         $dir = $filesystem->getSourceDir($path);
 
+        // remove leading slash
+        $dir = ltrim($dir, "/");
+
         $result = $this->getTreeItems($dir);
+
         return $result;
     }
 
@@ -563,7 +567,9 @@ class WFFileBrowser extends JObject {
         if ($folders) {
             $result .= '<ul class="uk-tree-node">';
             foreach ($folders as $folder) {
-                $open = strpos($treedir, ltrim($folder['id'], '/')) === 0;
+                $name = ltrim($folder['id'], '/');
+ 
+                $open = preg_match('#' . $name . '\b#', $treedir);
 
                 $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
                 . ' <div class="uk-tree-row">'
