@@ -92,7 +92,7 @@
             p.mce_window_id = id;
 
             //p.mce_width     = f.width;
-            //  p.mce_height    = f.height;
+            //p.mce_height    = f.height;
 
             self.features = f;
             self.params = p;
@@ -141,7 +141,7 @@
                 var iframe = DOM.add(id + '_content', 'iframe', { id: id + '_ifr', src: 'javascript:""', frameBorder: 0 });
 
                 try {
-                    iframe.style.minHeight = f.height + 'px';
+                    //iframe.style.minHeight = f.height + 'px';
                 } catch (e) {}
 
                 DOM.setAttrib(iframe, 'src', u);
