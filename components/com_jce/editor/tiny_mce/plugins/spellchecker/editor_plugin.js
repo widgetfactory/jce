@@ -10,7 +10,9 @@
  */
 
 (function() {
-    var JSON = tinymce.util.JSON, each = tinymce.each, DOM = tinymce.DOM;
+    var JSON = tinymce.util.JSON,
+        each = tinymce.each,
+        DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.SpellcheckerPlugin', {
         getInfo: function() {
@@ -23,11 +25,12 @@
             };
         },
         init: function(ed, url) {
-            var t = this, cm;
+            var t = this,
+                cm;
 
             t.url = url;
             t.editor = ed;
-            t.rpcUrl = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=spellchecker'//ed.getParam("spellchecker_rpc_url", "");
+            t.rpcUrl = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=spellchecker' //ed.getParam("spellchecker_rpc_url", "");
 
             t.native_spellchecker = (t.rpcUrl == '' || ed.getParam("spellchecker_engine", "browser") == 'browser');
 
@@ -130,12 +133,14 @@
             // Turn spellchecker on if required
             ed.onInit.add(function() {
                 if (t.native_spellchecker && ed.getParam('spellchecker_browser_state', 0)) {
-                    ed.execCommand('mceSpellCheck', false);
+                    var body = ed.getBody();
+                    body.spellcheck = t.active = !t.active;
                 }
             });
         },
         createControl: function(n, cm) {
-            var t = this, c, ed = t.editor;
+            var t = this,
+                c, ed = t.editor;
 
             if (n == 'spellchecker') {
                 // Use basic button if we use the native spellchecker
@@ -165,8 +170,9 @@
                     t.menuItems = {};
                     each(t.languages, function(v, k) {
                         var o = {
-                            icon: 1
-                        }, mi;
+                                icon: 1
+                            },
+                            mi;
 
                         o.onclick = function() {
                             if (v == t.selectedLang) {
@@ -198,8 +204,8 @@
             }
 
             if (tinymce.grep(t.languages, function(v) {
-                return v === lang;
-            }).length === 0) {
+                    return v === lang;
+                }).length === 0) {
                 throw "Unknown language: " + lang;
             }
 
@@ -224,7 +230,8 @@
             this.selectedItem = mi;
         },
         _walk: function(n, f) {
-            var d = this.editor.getDoc(), w;
+            var d = this.editor.getDoc(),
+                w;
 
             if (d.createTreeWalker) {
                 w = d.createTreeWalker(n, NodeFilter.SHOW_TEXT, null, false);
@@ -235,7 +242,8 @@
                 tinymce.walk(n, f, 'childNodes');
         },
         _getSeparators: function() {
-            var re = '', i, str = this.editor.getParam('spellchecker_word_separator_chars', '\\s!"#$%&()*+,-./:;<=>?@[\]^_{|}ß©´Æ±∂∑∏ªºΩæø◊˜§\u201d\u201c');
+            var re = '',
+                i, str = this.editor.getParam('spellchecker_word_separator_chars', '\\s!"#$%&()*+,-./:;<=>?@[\]^_{|}ß©´Æ±∂∑∏ªºΩæø◊˜§\u201d\u201c');
 
             // Build word separator regexp
             for (i = 0; i < str.length; i++)
@@ -244,7 +252,11 @@
             return re;
         },
         _getWords: function() {
-            var ed = this.editor, wl = [], tx = '', lo = {}, rawWords = [];
+            var ed = this.editor,
+                wl = [],
+                tx = '',
+                lo = {},
+                rawWords = [];
 
             // Get area text
             this._walk(ed.getBody(), function(n) {
@@ -274,7 +286,10 @@
             return wl;
         },
         _removeWords: function(w) {
-            var ed = this.editor, dom = ed.dom, se = ed.selection, r = se.getRng(true);
+            var ed = this.editor,
+                dom = ed.dom,
+                se = ed.selection,
+                r = se.getRng(true);
 
             each(dom.select('span').reverse(), function(n) {
                 if (n && (dom.hasClass(n, 'mceItemHiddenSpellWord') || dom.hasClass(n, 'mceItemHidden'))) {
@@ -286,8 +301,15 @@
             se.setRng(r);
         },
         _markWords: function(wl) {
-            var ed = this.editor, dom = ed.dom, doc = ed.getDoc(), se = ed.selection, r = se.getRng(true), nl = [],
-                    w = wl.join('|'), re = this._getSeparators(), rx = new RegExp('(^|[' + re + '])(' + w + ')(?=[' + re + ']|$)', 'g');
+            var ed = this.editor,
+                dom = ed.dom,
+                doc = ed.getDoc(),
+                se = ed.selection,
+                r = se.getRng(true),
+                nl = [],
+                w = wl.join('|'),
+                re = this._getSeparators(),
+                rx = new RegExp('(^|[' + re + '])(' + w + ')(?=[' + re + ']|$)', 'g');
 
             // Collect all text nodes
             this._walk(ed.getBody(), function(n) {
@@ -351,7 +373,12 @@
             se.setRng(r);
         },
         _showMenu: function(ed, e) {
-            var t = this, ed = t.editor, m = t._menu, p1, dom = ed.dom, vp = dom.getViewPort(ed.getWin()), wordSpan = e.target;
+            var t = this,
+                ed = t.editor,
+                m = t._menu,
+                p1, dom = ed.dom,
+                vp = dom.getViewPort(ed.getWin()),
+                wordSpan = e.target;
 
             e = 0; // Fixes IE memory leak
 
@@ -468,7 +495,10 @@
                 m.hideMenu();
         },
         _checkDone: function() {
-            var t = this, ed = t.editor, dom = ed.dom, o;
+            var t = this,
+                ed = t.editor,
+                dom = ed.dom,
+                o;
 
             each(dom.select('span'), function(n) {
                 if (n && dom.hasClass(n, 'mceItemHiddenSpellWord')) {
@@ -481,7 +511,8 @@
                 t._done();
         },
         _done: function() {
-            var t = this, la = t.active;
+            var t = this,
+                la = t.active;
 
             if (t.active) {
                 t.active = !!t.native_spellchecker;
@@ -495,11 +526,13 @@
             }
         },
         _sendRPC: function(m, p, cb) {
-            var t = this, ed = t.editor;
+            var t = this,
+                ed = t.editor;
 
-            var query = '', args = {
-                'format': 'raw'
-            };
+            var query = '',
+                args = {
+                    'format': 'raw'
+                };
 
             // set token
             args[ed.settings.token] = 1;
@@ -519,7 +552,7 @@
                 success: function(o) {
                     var c = JSON.parse(o);
 
-                    if (typeof (c) == 'undefined') {
+                    if (typeof(c) == 'undefined') {
                         c = {
                             error: 'JSON Parse error.'
                         };
