@@ -410,9 +410,8 @@
                     }
 
                     if (txt) {
-                        var html = elm.innerHTML;
-
-                        if (html.charAt(0) === "<") {
+                        // get textNode if HTML tag
+                        if (elm.nodeType === 1) {
                             elm = elm.firstChild;
                         }
 
