@@ -266,7 +266,7 @@
         <title>WF_SOURCE_TITLE</title>
         <description>WF_SOURCE_DESC</description>
         <icon></icon>
-        <editable>0</editable>
+        <editable>1</editable>
         <row>4</row>
         <core>1</core>
     </plugin>
