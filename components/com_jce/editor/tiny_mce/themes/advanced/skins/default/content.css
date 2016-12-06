@@ -10,7 +10,9 @@ body {
     height: initial !important;
 }
 
-body, td, pre {
+body,
+td,
+pre {
     font-size: 1em;
 }
 
@@ -33,6 +35,7 @@ body {
 body.mceContentReset {
     background: #FFFFFF none !important;
     color: #000000 !important;
+    font-size: 1em !important;
 }
 
 body[dir="ltr"].mceContentReset {
