@@ -19,8 +19,8 @@
         <file>licence.txt</file>
     </files>
 
-	<!-- Media Player -->
-    <media folder="components/com_jce/editor/libraries" destination="jce">
+	<!-- Media -->
+    <media folder="media/jce" destination="jce">
         <folder>mediaplayer</folder>
         <folder>icons</folder>
     </media>
