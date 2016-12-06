@@ -14,6 +14,22 @@
     var each = tinymce.each,
         extend = tinymce.extend;
 
+    function toHtml(s) {
+        s = tinymce.trim(s);
+
+        if (typeof marked !== "undefined") {
+            return marked(s);
+        }
+
+        return s;
+    }
+
+    function htmlTo(s) {
+        s = tinymce.trim(s);
+
+        return s;
+    }
+
     function cleanURL(src, mode) {
 
         function toUnicode(s) {
@@ -87,6 +103,20 @@
             var isPatternsDirty = true,
                 patterns;
 
+            // load "marked"
+            if (editor.settings.textpattern_use_markdown) {
+                var scriptLoader = new tinymce.dom.ScriptLoader();
+                scriptLoader.add(url + '/js/marked.min.js');
+                scriptLoader.loadQueue(function() {
+                    if (typeof marked !== "undefined") {
+                        marked.setOptions({
+                            renderer: new marked.Renderer(),
+                            gfm: true
+                        });
+                    }
+                });
+            }
+
             editor.onPreInit.add(function(ed) {
                 ed.formatter.register('markdownlink', {
                     inline: 'a',
@@ -106,6 +136,18 @@
                         });
                     }
                 });
+            });
+
+            editor.onBeforeSetContent.add(function(ed, o) {
+                if (editor.settings.textpattern_use_markdown) {
+                    o.content = toHtml(o.content);
+                }
+            });
+
+            editor.onPostProcess.add(function(ed, o) {
+                if (editor.settings.textpattern_use_markdown) {
+                    o.content = toHtml(o.content);
+                }
             });
 
             editor.addCommand('InsertMarkdownImage', function(ui, node) {
