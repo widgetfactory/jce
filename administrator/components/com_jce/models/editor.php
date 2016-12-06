@@ -806,12 +806,12 @@ class WFModelEditor extends WFModelBase {
             $layouts = $warp['config']->get('layouts');
             $style = $layouts['default']['style'];
 
-            if (!empty($style)) {
-                return "templates/" . $template . "/styles/" . $style . "/css";
+            if (!empty($style) && is_dir(JPATH_SITE . '/templates/' . $template . '/' . $style)) {
+                return 'templates/' . $template . '/' . $style . '/css';
             }
         }
 
-        return "templates/" . $template . "/css";
+        return 'templates/' . $template . '/css';
     }
 
     private static function getStyleSheetsList($absolute = false) {
