@@ -242,13 +242,23 @@ abstract class WFInstall {
                 }
             }
         }
+
+        $plugins = array('caption','iframe','filemanager','imgmanager_ext','mediamanager','templatemanager','microdata');
+
         // pro cleanup
         if (is_dir($site . '/libraries/pro')) {
             // remove old language files
-            $languages = JFolder::files(JPATH_SITE . '/language/en-GB/', '^en-GB\.com_jce_[caption|iframe|filemanager|imgmanager_ext|mediamanager|templatemanager|microdata|emotions|fullpage].*', false, true);
+            $languages = JFolder::files(JPATH_SITE . '/language/en-GB/', '^en-GB\.com_jce_[' . implode('|', $plugins) . '|emotions|fullpage].*', false, true);
 
             if (!empty($languages)) {
                 JFile::delete($languages);
+            }
+        // remove old plugins in core    
+        } else {
+            foreach($plugins as $plugin) {
+                if (is_dir($site . '/tiny_mce/plugins/' . $plugin)) {
+                    JFolder::delete($site . '/tiny_mce/plugins/' . $plugin);
+                }    
             }
         }
 
