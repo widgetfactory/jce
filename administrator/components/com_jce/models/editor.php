@@ -1149,14 +1149,6 @@ class WFModelEditor extends WFModelBase {
                           $files[] = $content;
                       }
                     }
-
-                    // load content styles dor each plugin if they exist
-                    foreach ($plugins as $plugin) {
-                        $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
-                        if (JFile::exists($content)) {
-                            $files[] = $content;
-                        }
-                    }
                 } else if ($context == 'preview') {
                     $files = array();
                     $files[] = WF_EDITOR_PLUGINS . '/preview/css/preview.css';
