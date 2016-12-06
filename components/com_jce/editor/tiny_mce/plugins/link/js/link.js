@@ -279,16 +279,17 @@
             return html;
         },
         checkPrefix: function(n) {
-            var self = this;
+            var self = this,
+                ex = /([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)/;
 
             var v = $(n).val();
 
-            if (/@/.test(v) && !/^\s*mailto:/i.test(v)) {
+            if (ex.test(v) && !/^\s*mailto:/i.test(v)) {
                 Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
                     if (state) {
                         $(n).val('mailto:' + v);
                     }
-                    self.insert();
+                    self.insertAndClose();
                 });
 
             } else if (/^\s*www./i.test(v)) {
@@ -296,7 +297,7 @@
                     if (state) {
                         $(n).val('http://' + v);
                     }
-                    self.insert();
+                    self.insertAndClose();
                 });
 
             } else {
