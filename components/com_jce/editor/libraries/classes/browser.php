@@ -81,6 +81,7 @@ class WFFileBrowser extends JObject {
     public function __construct($config = array()) {
         // set file browser config
         $this->setConfig($config);
+
         // add actions
         $this->addDefaultActions();
         // add buttons
@@ -1418,8 +1419,7 @@ class WFFileBrowser extends JObject {
 
     private function getUploadDefaults() {
         $filesystem = $this->getFileSystem();
-        $features = $filesystem->get('upload');
-        $elements = isset($features['elements']) ? $features['elements'] : array();
+        $features   = $filesystem->get('upload');
 
         $upload_max = $this->getUploadValue();
 
@@ -1440,17 +1440,20 @@ class WFFileBrowser extends JObject {
             }        
         }
 
-        $defaults = array(
+        $upload = array_merge($upload, array(
             'max_size'  => $size,
-            'filetypes' => $this->listFileTypes(),
-            'elements'  => $elements
-        );
+            'filetypes' => $this->listFileTypes()
+        ));
 
-        if (isset($features['dialog'])) {
-            $defaults['dialog'] = $features['dialog'];
+        if (isset($features['elements'])) {
+            $upload['elements'] = $features['elements'];
         }
 
-        return $defaults;
+        if (isset($features['dialog'])) {
+            $upload['dialog'] = $features['dialog'];
+        }
+
+        return $upload;
     }
 
     public function getDimensions($file) {
