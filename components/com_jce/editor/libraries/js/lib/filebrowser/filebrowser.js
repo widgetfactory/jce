@@ -970,7 +970,7 @@
                     // add item width
                     w += $item.outerWidth(true);
 
-                    if (w > (sw - bw)) {
+                    if (w > sw) {
                         $('li', $pathway).eq(x++).html('...');
                     }
                 });
