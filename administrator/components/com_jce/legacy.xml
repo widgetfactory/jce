@@ -24,8 +24,8 @@
     </files>
 
 	<!-- Media Player -->
-    <media folder="components/com_jce/editor/libraries" destination="jce">
-        <folder>mediaplayer</folder>
+    <media folder="media/jce" destination="jce">
+        <folder>icons</folder>
     </media>
 
     <languages folder="language/en-GB">
