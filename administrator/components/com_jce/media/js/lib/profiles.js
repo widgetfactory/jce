@@ -21,17 +21,13 @@
             return;
         }
 
-        // validate form
-        if (Wf.profiles.validate()) {
+        // trigger onSubmit callback
+        Wf.profiles.onSubmit();
 
-            // trigger onSubmit callback
-            Wf.profiles.onSubmit();
-
-            try {
-                Joomla.submitform(button);
-            } catch (e) {
-                submitform(button);
-            }
+        try {
+            Joomla.submitform(button);
+        } catch (e) {
+            submitform(button);
         }
     };
 
