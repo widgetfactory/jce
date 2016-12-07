@@ -91,6 +91,9 @@ class WFModelPlugins extends WFModel {
 
           unset($xml);
 
+          // legacy plugins that are not supported in core
+          $legacy = array('caption','iframe','filemanager','imgmanager_ext','mediamanager','templatemanager','microdata');
+
           // get all core plugins
           $folders = JFolder::folders(WF_EDITOR_PLUGINS, '.', false, true, array_merge(array('.svn', 'CVS'), array_keys($plugins)));
 
@@ -113,6 +116,11 @@ class WFModelPlugins extends WFModel {
 
           foreach ($folders as $folder) {
               $name = basename($folder);
+
+              if (in_array($name, $legacy) && !WF_EDITOR_PRO) {
+                continue;    
+              }
+
               $file = $folder . '/' . $name . '.xml';
 
               if (is_file($file)) {
