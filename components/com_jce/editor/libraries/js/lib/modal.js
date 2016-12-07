@@ -372,11 +372,8 @@
                 '   <div id="upload-queue"></div>' +
                 '   <input type="file" size="40" />' +
                 '</div>' +
-                '<div id="upload-options" class="uk-placeholder"></div>'
+                '<div id="upload-options" class="uk-placeholder">' + (options.elements || '') + '</div>'
             );
-
-            // add optional fields
-            $('#upload-options').append(options.elements);
 
             // create backup function
             options.upload = options.upload || $.noop;
