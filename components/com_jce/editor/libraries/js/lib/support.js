@@ -5,10 +5,8 @@
 
     var $tmp = document.createElement('div');
 
-    var canvas = document.createElement('canvas');
-
     // check for canvas
-    $.support.canvas = canvas.getContext;
+    $.support.canvas = !!document.createElement('canvas').getContext;
 
     // check for background size
     $.support.backgroundSize = (function() {
