@@ -89,7 +89,7 @@ class WFElement extends JObject
 
 		// fix for "<div class="controls">" added to radiolist in Joomla 3+
 		if (!empty($element) && strpos($element, '<div class="controls">') !== 0) {
-				$element = '<div class="controls">' . $element . '</div>';
+			$element = '<div class="controls">' . $element . '</div>';
 		}
 
 		$result = array(
@@ -147,5 +147,6 @@ class WFElement extends JObject
 	 */
 	public function fetchElement($name, $value, &$xmlElement, $control_name)
 	{
+		return "";
 	}
 }

@@ -440,7 +440,14 @@ class WFParameter {
                 continue;
             }
 
-            $results[] = $this->getParam($param, $name, $group, $parent);
+            $result = $this->getParam($param, $name, $group, $parent);
+            
+            if (!isset($result['element'])) {
+            	$result['element'] = '';
+            	$result['label'] = '<em>Element not defined for type &quot;' . (string) $param->attributes()->type . '&quot;</em>';
+            }
+            
+            $results[] = $result;
 
             // get sub-parameters
             $parameters = (string) $param->attributes()->parameters;
