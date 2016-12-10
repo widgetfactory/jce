@@ -97,6 +97,9 @@
             self.features = f;
             self.params = p;
 
+            // don't translate
+            f.translate_i18n = false;
+
             self.onOpen.dispatch(self, f, p);
 
             // modal html
