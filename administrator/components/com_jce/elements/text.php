@@ -51,7 +51,7 @@ class WFElementText extends WFElement {
 
         $control = $control_name . '[' . $name . ']';
 
-        $attributes['type']   = 'text';
+        $attributes['type']   = strtolower($this->_name);
         $attributes['name']   = $control;
         $attributes['id']     = preg_replace('#[^a-z0-9_-]#i', '', $control_name . $name);
 
