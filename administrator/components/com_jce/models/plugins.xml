@@ -310,7 +310,7 @@
         <name>table</name>
         <title>WF_TABLE_TITLE</title>
         <description>WF_TABLE_DESC</description>
-        <icon>table_insert</icon>
+        <icon>table_insert,delete_table,row_props,cell_props,row_before,row_after,delete_row,col_before,col_after,delete_col,split_cells,merge_cells</icon>
         <editable>1</editable>
         <row>3</row>
         <core>1</core>

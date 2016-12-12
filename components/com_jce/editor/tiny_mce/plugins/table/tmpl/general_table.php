@@ -43,7 +43,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <?php echo WFText::_('WF_TABLE_ALIGN'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <select id="align">
-            <option value="">{#not_set}</option>
+            <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="center"><?php echo WFText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
             <option value="left"><?php echo WFText::_('WF_TABLE_ALIGN_LEFT'); ?></option>
             <option value="right"><?php echo WFText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>

@@ -67,7 +67,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <?php echo WFText::_('WF_TABLE_FRAME'); ?></label>
             <div class="uk-form-controls uk-width-7-10">
                 <select id="tframe">
-                    <option value="">{#not_set}</option>
+                    <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                     <option value="void"><?php echo WFText::_('WF_TABLE_RULES_VOID'); ?></option>
                     <option value="above"><?php echo WFText::_('WF_TABLE_RULES_ABOVE'); ?></option>
                     <option value="below"><?php echo WFText::_('WF_TABLE_RULES_BELOW'); ?></option>
@@ -84,7 +84,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 <?php echo WFText::_('WF_TABLE_RULES'); ?></label>
             <div class="uk-form-controls uk-width-7-10">
                 <select id="rules">
-                    <option value="">{#not_set}</option>
+                    <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                     <option value="none"><?php echo WFText::_('WF_TABLE_FRAME_NONE'); ?></option>
                     <option value="groups"><?php echo WFText::_('WF_TABLE_FRAME_GROUPS'); ?></option>
                     <option value="rows"><?php echo WFText::_('WF_TABLE_FRAME_ROWS'); ?></option>
@@ -98,7 +98,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_LANGDIR'); ?></label>
         <div class="uk-form-controls uk-width-7-10">
             <select id="dir">
-                <option value="">{#not_set}</option>
+                <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="ltr"><?php echo WFText::_('WF_TABLE_LTR'); ?></option>
                 <option value="rtl"><?php echo WFText::_('WF_TABLE_RTL'); ?></option>
             </select></div>
