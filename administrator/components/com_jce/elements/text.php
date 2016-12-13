@@ -51,6 +51,11 @@ class WFElementText extends WFElement {
 
         $control = $control_name . '[' . $name . ']';
 
+        // create array id repeatable
+        if ((string) $node->attributes()->repeatable) {
+            $control .= '[]';    
+        }
+
         $attributes['type']   = strtolower($this->_name);
         $attributes['name']   = $control;
         $attributes['id']     = preg_replace('#[^a-z0-9_-]#i', '', $control_name . $name);
@@ -84,8 +89,7 @@ class WFElementText extends WFElement {
           $attributes['value'] = $value;
 
           if ((string) $node->attributes()->repeatable) {
-              $control  .= '[]';
-              $html     .= '<div class="ui-repeatable form-inline"><div class="input-append">';
+              $html .= '<div class="ui-repeatable form-inline"><div class="input-append">';
           }
 
           $html .= '<input';
