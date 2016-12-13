@@ -1,19 +1,7 @@
-html {
-    color: #000;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 12px;
-}
-
 html,
 body {
     overflow: initial !important;
     height: initial !important;
-}
-
-body,
-td,
-pre {
-    font-size: 1em;
 }
 
 .mceContentBody {
@@ -25,6 +13,9 @@ pre {
 body,
 td,
 pre {
+    color: #000;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
     margin: 8px;
 }
 
@@ -35,7 +26,7 @@ body {
 body.mceContentReset {
     background: #FFFFFF none !important;
     color: #000000 !important;
-    font-size: 1em !important;
+    font-size: 12px !important;
 }
 
 body[dir="ltr"].mceContentReset {
