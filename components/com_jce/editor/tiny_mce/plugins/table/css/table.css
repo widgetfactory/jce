@@ -1,14 +1,18 @@
 /* CSS file for table dialog in the table plugin */
-/*[data-context="row"] .uk-switcher, [data-context="cell"] .uk-switcher {height: 74%;}
 
-:root [data-context="row"] .uk-switcher, :root [data-context="cell"] .uk-switcher {
-	height: calc(100% - 125px);
-}*/
+#merge_tab .uk-width-3-10 {
+    width: 30% !important;
+}
 
-#merge_tab {}
-#merge_tab .uk-width-3-10 {width: 30% !important;}
-#merge_tab .uk-width-7-10 {width: 70% !important;}
+#merge_tab .uk-width-7-10 {
+    width: 70% !important;
+}
 
-.uk-grid > * {margin-bottom: 5px;}
+.uk-grid>* {
+    margin-bottom: 5px;
+}
 
-#numcols, #numrows {width: 50px;}
+#numcols,
+#numrows {
+    width: 50px;
+}
