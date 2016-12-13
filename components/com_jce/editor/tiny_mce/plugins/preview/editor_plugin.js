@@ -66,36 +66,6 @@
                     id: ed.id + '_editor_preview_iframe',
                     sandbox: 'allow-same-origin allow-scripts'
                 });
-
-                var html = '<!DOCTYPE html>';
-                html += '<head xmlns="http://www.w3.org/1999/xhtml">';
-                html += '<base href="' + s.document_base_url + '" />';
-                html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
-                html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-
-                // insert css
-                html += '';
-
-                var css = [self.url + '/css/preview.css'];
-
-                if (ed.settings.compress.css) {
-                    css = [s.site_url + 'index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&context=preview&component_id=' + s.component_id + '&' + s.token + '=1'];
-                } else {
-                    css = tinymce.explode(ed.settings.content_css);
-                }
-
-                tinymce.each(css, function(url) {
-                    html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
-                });
-
-                html += '</head><body style="margin:5px;">';
-                html += '</body></html>';
-
-                var doc = iframe.contentWindow.document;
-
-                doc.open();
-                doc.write(html);
-                doc.close();
             }
 
             // get height from setting or session data or editor textarea
@@ -136,7 +106,6 @@
             }
 
             function update(text) {
-                DOM.removeClass(container, 'mce-loading');
                 var doc = iframe.contentWindow.document;
 
                 // find sctips in content
@@ -144,22 +113,41 @@
 
                 // remove script tags
                 text = text.replace(/<script[^>]+>[\s\S]*<\/script>/gi, '');
-                doc.body.innerHTML = text;
+
+                var html = '<!DOCTYPE html>';
+                html += '<head xmlns="http://www.w3.org/1999/xhtml">';
+                html += '<base href="' + s.document_base_url + '" />';
+                html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
+                html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
+
+                var css = [self.url + '/css/preview.css'];
+
+                if (ed.settings.compress.css) {
+                    css = [s.site_url + 'index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&context=preview&component_id=' + s.component_id + '&' + s.token + '=1'];
+                } else {
+                    css = tinymce.explode(ed.settings.content_css);
+                }
+
+                tinymce.each(css, function(url) {
+                    html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
+                });
 
                 // append found scripts to body
                 if (scripts) {
-                    tinymce.each(scripts, function(s) {
-                        var div = doc.createElement('div');
-                        div.innerHTML = s;
-                        var n = div.firstChild;
-
-                        var script = doc.createElement('script');
-                        script.src = n.src;
-                        script.type = s.type || 'text/javascript';
-
-                        doc.body.appendChild(script);
+                    tinymce.each(scripts, function(script) {
+                        html += '' + script + '';
                     });
                 }
+
+                html += '</head><body style="margin:5px;">';
+                html += '' + text + '';
+                html += '</body></html>';
+
+                doc.open();
+                doc.write(html);
+                doc.close();
+
+                DOM.removeClass(container, 'mce-loading');
             }
 
             // load preview data
