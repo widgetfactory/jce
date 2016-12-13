@@ -15,6 +15,7 @@ wfimport('admin.classes.model');
 wfimport('admin.classes.text');
 wfimport('admin.helpers.xml');
 wfimport('admin.helpers.extension');
+wfimport('admin.models.plugins');
 wfimport('editor.libraries.classes.token');
 wfimport('editor.libraries.classes.editor');
 wfimport('editor.libraries.classes.language');
@@ -423,9 +424,6 @@ class WFModelEditor extends WFModelBase {
      * @return The row array
      */
     private function getToolbar() {
-        wfimport('admin.models.plugins');
-        $model = new WFModelPlugins();
-
         $wf = WFEditor::getInstance();
         $rows = array('theme_advanced_buttons1' => '', 'theme_advanced_buttons2' => '', 'theme_advanced_buttons3' => '');
 
@@ -435,9 +433,9 @@ class WFModelEditor extends WFModelBase {
         }
 
         // get plugins
-        $plugins = $model->getPlugins();
+        $plugins = WFModelPlugins::getPlugins();
         // get core commands
-        $commands = $model->getCommands();
+        $commands = WFModelPlugins::getCommands();
 
         // merge plugins and commands
         $icons = array_merge($commands, $plugins);
@@ -589,6 +587,14 @@ class WFModelEditor extends WFModelBase {
                   // get plugin items from profile
                   $items = explode(',', $this->profile->plugins);
 
+                  // get core and installed plugins list
+                  $list = WFModelPlugins::getPlugins();
+
+                  // check that the plugin is available
+                  $items = array_filter($items, function($item) use ($list) {
+                      return in_array($item, array_keys($list));
+                  });
+
                   // core plugins
                   $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload');
 
@@ -601,11 +607,6 @@ class WFModelEditor extends WFModelBase {
                   if ($wf->getParam('editor.path', 1)) {
                       $items[] = 'wordcount';
                   }
-
-                  // remove invalid items
-                  $items = array_filter($items, function($item) {
-                      return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
-                  });
 
                   // reset index
                   $items = array_values($items);
@@ -620,41 +621,35 @@ class WFModelEditor extends WFModelBase {
                   $items = array_unique(array_filter($items));
 
                   // create plugins array
-                  $plugins = array('core' => $items, 'external' => array());
-
-                  // get installed plugins
-                  $installed = JPluginHelper::getPlugin('jce');
+                  $plugins = array('core' => array(), 'external' => array());
 
                   // check installed plugins are valid
-                  foreach ($installed as $item) {
-                      // check for delimiter, only load "extensions"
-                      if (strpos($item->name, 'editor-') === false) {
+                  foreach ($list as $name => $attribs) {
+                      // skip core plugins
+                      if ($attribs->core) {
                           continue;
                       }
 
-                      $name = str_replace('editor-', '', $item->name);
+                      // find plugin key in plugins list
+                      $pos = array_search($name, $items);
 
                       // check it is in profile plugin list
-                      if (!in_array($name, $items)) {
+                      if ($pos === false) {
                           continue;
                       }
 
-                      // set path
-                      $item->path = JPATH_PLUGINS . '/jce/' . $item->name;
-                      // get plugin name
-                      $name = str_replace('editor-', '', $item->name);
+                      // remove from items array
+                      unset($items[$pos]);
 
-                      // get plugin relative path
-                      $path = str_replace(JPATH_SITE, JURI::root(true), $item->path);
+                      // reset index
+                      $items = array_values($items);
 
-                      // get plugin file (uncompressed)
-                      $file = $item->path . '/editor_plugin.js';
-
-                      // check file exists, add to array
-                      if (is_file($file)) {
-                          $plugins['external'][$name] = $path . '/editor_plugin.js';
-                      }
+                      // add to array
+                      $plugins['external'][$name] = JURI::root(true) . $attribs->path . '/editor_plugin.js';
                   }
+                  
+                  // update core plugins
+                  $plugins['core'] = $items;
               }
           }
 
