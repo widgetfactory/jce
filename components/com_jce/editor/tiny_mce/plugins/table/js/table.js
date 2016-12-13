@@ -87,7 +87,7 @@
             if (this.html5) {
                 // hide HTML4 only attributes (tframe = frame)
                 $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function() {
-                    $(this).add('label[for="' + this.id + '"]').parent().hide();
+                    $(this).add('label[for="' + this.id + '"]').hide();
                 });
 
                 function styles(v) {
@@ -628,7 +628,7 @@
 
             html += this.makeAttrib('width', width);
             html += this.makeAttrib('height', height);
-            
+
             html += this.makeAttrib('align', align);
             html += this.makeAttrib('frame', frame);
             html += this.makeAttrib('rules', rules);
