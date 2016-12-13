@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--schema-->
 <commands>
-    <command>
+    <command name="help">
         <name>help</name>
         <title>WF_HELP_TITLE</title>
         <description>WF_HELP_DESC</description>
@@ -10,7 +10,7 @@
         <row>1</row>
         <core>1</core>
     </command>
-    <command>
+    <command name="undo">
         <title>WF_UNDO_TITLE</title>
         <description>WF_UNDO_DESC</description>
         <name>undo</name>
@@ -19,7 +19,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="redo">
         <title>WF_REDO_TITLE</title>
         <description>WF_REDO_DESC</description>
         <name>redo</name>
@@ -28,7 +28,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="bold">
         <title>WF_BOLD_TITLE</title>
         <description>WF_BOLD_DESC</description>
         <name>bold</name>
@@ -37,7 +37,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="">
         <title>WF_ITALIC_TITLE</title>
         <description>WF_ITALIC_DESC</description>
         <name>italic</name>
@@ -46,7 +46,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="underline">
         <title>WF_UNDERLINE_TITLE</title>
         <description>WF_UNDERLINE_DESC</description>
         <name>underline</name>
@@ -55,34 +55,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <!--command>
-        <title>WF_FONTSELECT_TITLE</title>
-        <description>WF_FONTSELECT_DESC</description>
-        <name>fontselect</name>
-        <core>1</core>
-        <icon>fontselect</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command>
-    <command>
-        <title>WF_FONTSIZESELECT_TITLE</title>
-        <description>WF_FONTSIZESELECT_DESC</description>
-        <name>fontsizeselect</name>
-        <core>1</core>
-        <icon>fontsizeselect</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command-->
-    <!--command>
-        <title>WF_STYLESELECT_TITLE</title>
-        <description>WF_STYLESELECT_DESC</description>
-        <name>styleselect</name>
-        <core>1</core>
-        <icon>styleselect</icon>
-        <row>1</row>
-        <editable>0</editable>
-    </command-->
-    <command>
+    <command name="strikethrough">
         <title>WF_STRIKETHROUGH_TITLE</title>
         <description>WF_STRIKETHROUGH_DESC</description>
         <name>strikethrough</name>
@@ -91,7 +64,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="justifyfull">
         <title>WF_JUSTIFYFULL_TITLE</title>
         <description>WF_JUSTIFYFULL_DESC</description>
         <name>justifyfull</name>
@@ -100,7 +73,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="justifycenter">
         <title>WF_JUSTIFYCENTER_TITLE</title>
         <description>WF_JUSTIFYCENTER_DESC</description>
         <name>justifycenter</name>
@@ -109,7 +82,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="justifyleft">
         <title>WF_JUSTIFYLEFT_TITLE</title>
         <description>WF_JUSTIFYLEFT_DESC</description>
         <name>justifyleft</name>
@@ -118,7 +91,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="justifyright">
         <title>WF_JUSTIFYRIGHT_TITLE</title>
         <description>WF_JUSTIFYRIGHT_DESC</description>
         <name>justifyright</name>
@@ -127,7 +100,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="formatselect">
         <title>WF_FORMATSELECT_TITLE</title>
         <description>WF_FORMATSELECT_DESC</description>
         <name>formatselect</name>
@@ -136,7 +109,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="newdocument">
         <title>WF_NEWDOCUMENT_TITLE</title>
         <description>WF_NEWDOCUMENT_DESC</description>
         <name>newdocument</name>
@@ -145,25 +118,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <!--command>
-        <title>WF_FORECOLOR_TITLE</title>
-        <description>WF_FORECOLOR_DESC</description>
-        <name>forecolor</name>
-        <core>1</core>
-        <icon>forecolor</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command>
-    <command>
-        <title>WF_BACKCOLOR_TITLE</title>
-        <description>WF_BACKCOLOR_DESC</description>
-        <name>backcolor</name>
-        <core>1</core>
-        <icon>backcolor</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command-->
-    <command>
+    <command name="unlink">
         <title>WF_UNLINK_TITLE</title>
         <description>WF_UNLINK_DESC</description>
         <name>unlink</name>
@@ -172,7 +127,7 @@
         <row>4</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="indent">
         <title>WF_INDENT_TITLE</title>
         <description>WF_INDENT_DESC</description>
         <name>indent</name>
@@ -181,7 +136,7 @@
         <row>2</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="outdent">
         <title>WF_OUTDENT_TITLE</title>
         <description>WF_OUTDENT_DESC</description>
         <name>outdent</name>
@@ -190,7 +145,7 @@
         <row>2</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="blockquote">
         <title>WF_BLOCKQUOTE_TITLE</title>
         <description>WF_BLOCKQUOTE_DESC</description>
         <name>blockquote</name>
@@ -199,52 +154,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <!--command>
-        <title>WF_NUMLIST_TITLE</title>
-        <description>WF_NUMLIST_DESC</description>
-        <name>numlist</name>
-        <core>1</core>
-        <icon>numlist</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command>
-    <command>
-        <title>WF_BULLIST_TITLE</title>
-        <description>WF_BULLIST_DESC</description>
-        <name>bullist</name>
-        <core>1</core>
-        <icon>bullist</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command-->
-    <!--command>
-          		<title>WF_ANCHOR_TITLE</title>
-          		<description>WF_ANCHOR_DESC</description>
-          		<name>anchor</name>
-          		<core>1</core>
-          		<icon>anchor</icon>
-          		<row>4</row>
-          		<editable>0</editable>
-   	</command-->
-    <!--command name="cleanup">
-   	<title>WF_CLEANUP_TITLE</title>
-   	<description>WF_CLEANUP_DESC</description>
-   	<name>cleanup</name>
-   	<core>1</core>
-   	<icon>cleanup</icon>
-   	<row>1</row>
-   	<editable>0</editable>>
-   	</command-->
-    <!--command>
-        <title>WF_CHARMAP_TITLE</title>
-        <description>WF_CHARMAP_DESC</description>
-        <name>charmap</name>
-        <core>1</core>
-        <icon>charmap</icon>
-        <row>2</row>
-        <editable>0</editable>
-    </command-->
-    <command>
+    <command name="removeformat">
         <title>WF_REMOVEFORMAT_TITLE</title>
         <description>WF_REMOVEFORMAT_DESC</description>
         <name>removeformat</name>
@@ -253,16 +163,7 @@
         <row>1</row>
         <editable>0</editable>
     </command>
-    <!--command>
-        <title>WF_HR_TITLE</title>
-        <description>WF_HR_DESC</description>
-        <name>hr</name>
-        <core>1</core>
-        <icon>hr</icon>
-        <row>3</row>
-        <editable>0</editable>
-    </command-->
-    <command>
+    <command name="sub">
         <title>WF_SUB_TITLE</title>
         <description>WF_SUB_DESC</description>
         <name>sub</name>
@@ -271,7 +172,7 @@
         <row>2</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="sup">
         <title>WF_SUP_TITLE</title>
         <description>WF_SUP_DESC</description>
         <name>sup</name>
@@ -280,7 +181,7 @@
         <row>2</row>
         <editable>0</editable>
     </command>
-    <command>
+    <command name="">
         <title>WF_VISUALAID_TITLE</title>
         <description>WF_VISUALAID_DESC</description>
         <name>visualaid</name>
@@ -290,4 +191,3 @@
         <editable>0</editable>
     </command>
 </commands>
-<!--/schema-->
