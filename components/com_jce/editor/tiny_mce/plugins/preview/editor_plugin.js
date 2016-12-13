@@ -26,7 +26,7 @@
         },
 
         hide: function() {
-          DOM.hide(this.editor.id + '_editor_preview');
+            DOM.hide(this.editor.id + '_editor_preview');
         },
 
         toggle: function() {
@@ -35,15 +35,15 @@
             var self = this,
                 s = ed.settings;
 
-            var element   = ed.getElement();
+            var element = ed.getElement();
             var container = element.parentNode;
             // get tabs header
             var header = DOM.getPrev(element, '.wf-editor-header');
 
             // get editor iframe height
             var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
-            var preview   = DOM.get(ed.id + '_editor_preview');
-            var iframe    = DOM.get(ed.id + '_editor_preview_iframe');
+            var preview = DOM.get(ed.id + '_editor_preview');
+            var iframe = DOM.get(ed.id + '_editor_preview_iframe');
 
             var o = tinymce.util.Cookie.getHash("TinyMCE_" + ed.id + "_size");
 
@@ -63,7 +63,8 @@
                 iframe = DOM.add(preview, 'iframe', {
                     frameborder: 0,
                     src: 'javascript:""',
-                    id: ed.id + '_editor_preview_iframe'
+                    id: ed.id + '_editor_preview_iframe',
+                    sandbox: 'allow-same-origin allow-scripts'
                 });
 
                 var html = '<!DOCTYPE html>';
@@ -101,8 +102,8 @@
             var height = ed.settings.container_height || sessionStorage.getItem('wf-editor-container-height') || ifrHeight;
 
             if (DOM.hasClass(container, 'mce-fullscreen')) {
-              var vp = DOM.getViewPort();
-              height = vp.h - header.offsetHeight;
+                var vp = DOM.getViewPort();
+                height = vp.h - header.offsetHeight;
             }
 
             DOM.setStyle(preview, 'height', height);
@@ -136,7 +137,29 @@
 
             function update(text) {
                 DOM.removeClass(container, 'mce-loading');
-                iframe.contentWindow.document.body.innerHTML = text;
+                var doc = iframe.contentWindow.document;
+
+                // find sctips in content
+                var scripts = /<script[^>]+>[\s\S]*<\/script>/.exec(text);
+
+                // remove script tags
+                text = text.replace(/<script[^>]+>[\s\S]*<\/script>/gi, '');
+                doc.body.innerHTML = text;
+
+                // append found scripts to body
+                if (scripts) {
+                    tinymce.each(scripts, function(s) {
+                        var div = doc.createElement('div');
+                        div.innerHTML = s;
+                        var n = div.firstChild;
+
+                        var script = doc.createElement('script');
+                        script.src = n.src;
+                        script.type = s.type || 'text/javascript';
+
+                        doc.body.appendChild(script);
+                    });
+                }
             }
 
             // load preview data
@@ -170,7 +193,6 @@
                 }
             });
         }
-
     });
 
     // Register plugin
