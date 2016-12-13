@@ -370,7 +370,7 @@ class WFFileBrowser extends JObject {
 
         // remove filtered items
         if (!empty($filter)) {
-          $list = array_filter($list, function($item) {
+          $list = array_filter($list, function($item) use ($filter) {            
             // remmove leading slash
             $id = ltrim($item['id'], '/');
 
