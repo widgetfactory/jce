@@ -68,7 +68,7 @@ class WFEditorPlugin extends JObject {
         }
 
         if (!array_key_exists('view_path', $config)) {
-            $config['view_path'] = WF_EDITOR_PLUGINS . '/' . $plugin;
+            $config['view_path'] = WF_EDITOR_PLUGIN;
         }
 
         if (!array_key_exists('layout', $config)) {

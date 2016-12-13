@@ -12,7 +12,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
 $count = 0;
 
-foreach ($this->plugins as $plugin) :
+foreach ($this->plugins as $name => $plugin) :
 
     if ($plugin->type === "plugin") :
         $path = JPATH_SITE . $plugin->path;
@@ -23,8 +23,7 @@ foreach ($this->plugins as $plugin) :
             jimport('joomla.filesystem.folder');
             jimport('joomla.filesystem.file');
 
-            $name   = trim($plugin->name);
-            $params = new WFParameter($this->profile->params, $plugin->manifest, $plugin->name);
+            $params = new WFParameter($this->profile->params, $plugin->manifest, $name);
 
             // set element paths
             $params->addElementPath(array(
@@ -42,12 +41,12 @@ foreach ($this->plugins as $plugin) :
             if (count($groups)) :
                 $count++;
                 ?>
-                <div id="tabs-plugin-<?php echo $plugin->name; ?>" data-name="<?php echo $plugin->name; ?>" class="tab-pane <?php echo $class; ?>">
+                <div id="tabs-plugin-<?php echo $name; ?>" data-name="<?php echo $name; ?>" class="tab-pane <?php echo $class; ?>">
                     <h3><?php echo WFText::_($plugin->title); ?></h3>
                     <?php
                     // Draw parameters
                     foreach ($groups as $group) :
-                        $data = $params->render('params[' . $plugin->name . ']', $group);
+                        $data = $params->render('params[' . $name . ']', $group);
                         if (!empty($data)) :
                             echo '<div class="adminform panelform">';
                             echo '<h4>' . WFText::_('WF_PROFILES_PLUGINS_' . strtoupper($group)) . '</h4>';
@@ -67,7 +66,7 @@ foreach ($this->plugins as $plugin) :
                         $file = WF_EDITOR_LIBRARIES . '/xml/config/' . $type . '.xml';
 
                         if (is_file($file)) {
-                            $params = new WFParameter($this->profile->params, $file, $plugin->name . '.' . $type);
+                            $params = new WFParameter($this->profile->params, $file, $name . '.' . $type);
 
                             // add element paths
                             $params->addElementPath(array(
@@ -75,7 +74,7 @@ foreach ($this->plugins as $plugin) :
                             ));
 
                             foreach ($params->getGroups() as $group) :
-                                $html .= $params->render('params[' . $plugin->name . '][' . $type . ']', $group);
+                                $html .= $params->render('params[' . $name . '][' . $type . ']', $group);
                             endforeach;
                         }
 
@@ -85,7 +84,7 @@ foreach ($this->plugins as $plugin) :
 
                             if (JFile::exists($manifest)) :
                                 // get params for plugin
-                                $key    = $plugin->name . '.' . $extension->id;
+                                $key    = $name . '.' . $extension->id;
                                 $params = new WFParameter($this->profile->params, $manifest, $key);
 
                                 // add element paths

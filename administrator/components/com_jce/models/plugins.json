@@ -1,6 +1,5 @@
 {
     "article": {
-        "name": "article",
         "title": "WF_ARTICLE_TITLE",
         "description": "WF_ARTICLE_DESC",
         "icon": "readmore,pagebreak",
@@ -11,14 +10,12 @@
     "anchor": {
         "title": "WF_ANCHOR_TITLE",
         "description": "WF_ANCHOR_DESC",
-        "name": "anchor",
         "core": "1",
         "icon": "anchor",
         "row": "4",
         "editable": "0"
     },
     "autosave": {
-        "name": "autosave",
         "title": "WF_AUTOSAVE_TITLE",
         "description": "WF_AUTOSAVE_DESC",
         "icon": "autosave",
@@ -27,7 +24,6 @@
         "core": "1"
     },
     "browser": {
-        "name": "browser",
         "title": "WF_BROWSER_TITLE",
         "description": "WF_BROWSER_DESC",
         "icon": "",
@@ -36,7 +32,6 @@
         "core": "1"
     },
     "charmap": {
-        "name": "charmap",
         "title": "WF_CHARMAP_TITLE",
         "description": "WF_CHARMAP_DESC",
         "icon": "charmap",
@@ -45,7 +40,6 @@
         "core": "1"
     },
     "cleanup": {
-        "name": "cleanup",
         "title": "WF_CLEANUP_TITLE",
         "description": "WF_CLEANUP_DESC",
         "icon": "cleanup",
@@ -54,7 +48,6 @@
         "core": "1"
     },
     "clipboard": {
-        "name": "clipboard",
         "title": "WF_CLIPBOARD_TITLE",
         "description": "WF_CLIPBOARD_DESC",
         "icon": "cut,copy,paste,pastetext",
@@ -63,7 +56,6 @@
         "core": "1"
     },
     "code": {
-        "name": "code",
         "title": "WF_CODE_TITLE",
         "description": "WF_CODE_DESC",
         "icon": "",
@@ -72,7 +64,6 @@
         "core": "1"
     },
     "colorpicker": {
-        "name": "colorpicker",
         "title": "WF_COLORPICKER_TITLE",
         "description": "WF_COLORPICKER_DESC",
         "icon": "",
@@ -81,7 +72,6 @@
         "core": "1"
     },
     "contextmenu": {
-        "name": "contextmenu",
         "title": "WF_CONTEXTMENU_TITLE",
         "description": "WF_CONTEXTMENU_DESC",
         "icon": "",
@@ -90,7 +80,6 @@
         "core": "1"
     },
     "directionality": {
-        "name": "directionality",
         "title": "WF_DIRECTIONALITY_TITLE",
         "description": "WF_DIRECTIONALITY_DESC",
         "icon": "ltr,rtl",
@@ -99,7 +88,6 @@
         "core": "1"
     },
     "format": {
-        "name": "format",
         "title": "WF_FORMAT_TITLE",
         "description": "WF_FORMAT_DESC",
         "icon": "",
@@ -110,7 +98,6 @@
     "formatselect": {
         "title": "WF_FORMATSELECT_TITLE",
         "description": "WF_FORMATSELECT_DESC",
-        "name": "formatselect",
         "core": "1",
         "icon": "formatselect",
         "row": "1",
@@ -119,7 +106,6 @@
     "fontcolor": {
         "title": "WF_FONTCOLOR_TITLE",
         "description": "WF_FONTCOLOR_DESC",
-        "name": "fontcolor",
         "core": "1",
         "icon": "forecolor,backcolor",
         "row": "2",
@@ -128,7 +114,6 @@
     "fontselect": {
         "title": "WF_FONTSELECT_TITLE",
         "description": "WF_FONTSELECT_DESC",
-        "name": "fontselect",
         "core": "1",
         "icon": "fontselect",
         "row": "2",
@@ -137,14 +122,12 @@
     "fontsizeselect": {
         "title": "WF_FONTSIZESELECT_TITLE",
         "description": "WF_FONTSIZESELECT_DESC",
-        "name": "fontsizeselect",
         "core": "1",
         "icon": "fontsizeselect",
         "row": "2",
         "editable": "1"
     },
     "fullpage": {
-        "name": "fullpage",
         "title": "WF_FULLPAGE_TITLE",
         "description": "WF_FULLPAGE_DESC",
         "icon": "fullpage",
@@ -153,7 +136,6 @@
         "core": "1"
     },
     "fullscreen": {
-        "name": "fullscreen",
         "title": "WF_FULLSCREEN_TITLE",
         "description": "WF_FULLSCREEN_DESC",
         "icon": "fullscreen",
@@ -162,7 +144,6 @@
         "core": "1"
     },
     "imgmanager": {
-        "name": "imgmanager",
         "title": "WF_IMGMANAGER_TITLE",
         "description": "WF_IMGMANAGER_DESC",
         "icon": "imgmanager",
@@ -171,7 +152,6 @@
         "core": "1"
     },
     "inlinepopups": {
-        "name": "inlinepopups",
         "title": "WF_INLINEPOPUPS_TITLE",
         "description": "WF_INLINEPOPUPS_DESC",
         "icon": "",
@@ -180,7 +160,6 @@
         "core": "1"
     },
     "layer": {
-        "name": "layer",
         "title": "WF_LAYER_TITLE",
         "description": "WF_LAYER_DESC",
         "icon": "insertlayer,moveforward,movebackward,absolute",
@@ -189,7 +168,6 @@
         "core": "1"
     },
     "link": {
-        "name": "link",
         "title": "WF_LINK_TITLE",
         "description": "WF_LINK_DESC",
         "icon": "link",
@@ -198,7 +176,6 @@
         "core": "1"
     },
     "lists": {
-        "name": "lists",
         "title": "WF_LISTS_TITLE",
         "description": "WF_LISTS_DESC",
         "icon": "numlist,bullist",
@@ -207,7 +184,6 @@
         "core": "1"
     },
     "media": {
-        "name": "media",
         "title": "WF_MEDIA_TITLE",
         "description": "WF_MEDIA_DESC",
         "icon": "",
@@ -216,7 +192,6 @@
         "core": "1"
     },
     "nonbreaking": {
-        "name": "nonbreaking",
         "title": "WF_NONBREAKING_TITLE",
         "description": "WF_NONBREAKING_DESC",
         "icon": "nonbreaking",
@@ -225,7 +200,6 @@
         "core": "1"
     },
     "preview": {
-        "name": "preview",
         "title": "WF_PREVIEW_TITLE",
         "description": "WF_PREVIEW_DESC",
         "icon": "",
@@ -234,7 +208,6 @@
         "core": "1"
     },
     "print": {
-        "name": "print",
         "title": "WF_PRINT_TITLE",
         "description": "WF_PRINT_DESC",
         "icon": "print",
@@ -243,7 +216,6 @@
         "core": "1"
     },
     "searchreplace": {
-        "name": "searchreplace",
         "title": "WF_SEARCHREPLACE_TITLE",
         "description": "WF_SEARCHREPLACE_DESC",
         "icon": "search,replace",
@@ -252,7 +224,6 @@
         "core": "1"
     },
     "source": {
-        "name": "source",
         "title": "WF_SOURCE_TITLE",
         "description": "WF_SOURCE_DESC",
         "icon": "",
@@ -261,7 +232,6 @@
         "core": "1"
     },
     "spellchecker": {
-        "name": "spellchecker",
         "title": "WF_SPELLCHECKER_TITLE",
         "description": "WF_SPELLCHECKER_DESC",
         "icon": "spellchecker",
@@ -270,7 +240,6 @@
         "core": "1"
     },
     "style": {
-        "name": "style",
         "title": "WF_STYLE_TITLE",
         "description": "WF_STYLE_DESC",
         "icon": "style",
@@ -281,14 +250,12 @@
     "styleselect": {
         "title": "WF_STYLESELECT_TITLE",
         "description": "WF_STYLESELECT_DESC",
-        "name": "styleselect",
         "core": "1",
         "icon": "styleselect",
         "row": "1",
         "editable": "1"
     },
     "tabfocus": {
-        "name": "tabfocus",
         "title": "WF_TABFOCUS_TITLE",
         "description": "WF_TABFOCUS_DESC",
         "icon": "",
@@ -297,7 +264,6 @@
         "core": "1"
     },
     "table": {
-        "name": "table",
         "title": "WF_TABLE_TITLE",
         "description": "WF_TABLE_DESC",
         "icon": "table_insert,delete_table,row_props,cell_props,row_before,row_after,delete_row,col_before,col_after,delete_col,split_cells,merge_cells",
@@ -306,7 +272,6 @@
         "core": "1"
     },
     "textcase": {
-        "name": "textcase",
         "title": "WF_TEXTCASE_TITLE",
         "description": "WF_TEXTCASE_DESC",
         "icon": "textcase",
@@ -315,7 +280,6 @@
         "core": "1"
     },
     "textpattern": {
-        "name": "textpattern",
         "title": "WF_TEXTPATTERN_TITLE",
         "description": "WF_TEXTPATTERN_DESC",
         "icon": "",
@@ -324,7 +288,6 @@
         "core": "1"
     },
     "visualchars": {
-        "name": "visualchars",
         "title": "WF_VISUALCHARS_TITLE",
         "description": "WF_VISUALCHARS_DESC",
         "icon": "visualchars",
@@ -333,7 +296,6 @@
         "core": "1"
     },
     "wordcount": {
-        "name": "wordcount",
         "title": "WF_WORDCOUNT_TITLE",
         "description": "WF_WORDCOUNT_DESC",
         "icon": "",
@@ -342,7 +304,6 @@
         "core": "1"
     },
     "xhtmlxtras": {
-        "name": "xhtmlxtras",
         "title": "WF_XHTMLXTRAS_TITLE",
         "description": "WF_XHTMLXTRAS_DESC",
         "icon": "cite,abbr,acronym,del,ins,attribs",
@@ -353,7 +314,6 @@
     "kitchensink": {
         "title": "WF_KITCHENSINK_TITLE",
         "description": "WF_KITCHENSINK_DESC",
-        "name": "kitchensink",
         "core": "1",
         "icon": "kitchensink",
         "row": "1",
@@ -362,10 +322,25 @@
     "hr": {
         "title": "WF_HR_TITLE",
         "description": "WF_HR_DESC",
-        "name": "hr",
         "core": "1",
         "icon": "hr",
         "row": "3",
         "editable": "0"
+    },
+    "visualblocks": {
+        "title": "WF_VISUALBLOCKS_TITLE",
+        "description": "WF_VISUALBLOCKS_DESC",
+        "core": "1",
+        "icon": "visualblocks",
+        "row": "4",
+        "editable": "1"
+    },
+    "emotions": {
+        "title": "WF_EMOTIONS_TITLE",
+        "description": "WF_EMOTIONS_DESC",
+        "core": "1",
+        "icon": "emotions",
+        "row": "4",
+        "editable": "1"
     }
 }

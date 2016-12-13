@@ -73,9 +73,9 @@ if (strpos($theme, '.') === false) {
                                               <?php if ($icon == 'spacer') : ?>
                                                   <div class="mceToolBarItem sortableRowItem spacer" data-name="spacer"><div class="mceSeparator"></div></div>
                                               <?php endif;
-                                              foreach ($this->plugins as $plugin) :
-                                                  if ($plugin->icon && $plugin->name == $icon) : ?>
-                                                      <div data-name="<?php echo $plugin->name; ?>" class="mceToolBarItem sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title);?>::<?php echo WFText::_($plugin->description);?>"><?php echo $this->model->getIcon($plugin); ?></div>
+                                              foreach ($this->plugins as $name => $plugin) :
+                                                  if ($plugin->icon && $name == $icon) : ?>
+                                                      <div data-name="<?php echo $name; ?>" class="mceToolBarItem sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title);?>::<?php echo WFText::_($plugin->description);?>"><?php echo $this->model->getIcon($plugin); ?></div>
                                                   <?php
                                                   endif;
                                               endforeach;
@@ -116,10 +116,10 @@ if (strpos($theme, '.') === false) {
                           <?php for ($i = 1; $i <= 5; $i++) :?>
                               <div class="sortableListItem">
                               <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled" role="toolbar" tabindex="-1">
-                                <?php foreach ($this->plugins as $plugin) :
-                                    if (!in_array($plugin->name, explode(',', implode(',', $this->rows)))) :
+                                <?php foreach ($this->plugins as $name => $plugin) :
+                                    if (!in_array($name, explode(',', implode(',', $this->rows)))) :
                                         if ($plugin->icon && (int)$plugin->row == $i) :
-                                            echo '<div class="mceToolBarItem sortableRowItem ' . $plugin->type . ' wf-tooltip wf-tooltip-cancel-ondrag" data-name="' . $plugin->name . '" title="' . WFText::_($plugin->title) . '::' . WFText::_($plugin->description) . '">' . $this->model->getIcon($plugin) . '</div>';
+                                            echo '<div class="mceToolBarItem sortableRowItem ' . $plugin->type . ' wf-tooltip wf-tooltip-cancel-ondrag" data-name="' . $name . '" title="' . WFText::_($plugin->title) . '::' . WFText::_($plugin->description) . '">' . $this->model->getIcon($plugin) . '</div>';
                                         endif;
                                     endif;
                                 endforeach;

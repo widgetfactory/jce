@@ -14,6 +14,8 @@ defined('_JEXEC') or die('RESTRICTED');
 // load base model
 require_once(dirname(__FILE__) . '/model.php');
 
+wfimport('admin.models.plugins');
+
 /**
  * Profiles Model
  *
@@ -83,20 +85,16 @@ class WFModelProfiles extends WFModel {
     }
 
     public function getPlugins($plugins = array()) {
-        wfimport('admin.models.plugins');
-
-        $model = new WFModelplugins();
-
         $commands = array();
 
         if (empty($plugins)) {
-            $commands = $model->getCommands();
+            $commands = WFModelplugins::getCommands();
         }
 
         // only need plugins with xml files
-        foreach ($model->getPlugins() as $plugin) {
+        foreach (WFModelplugins::getPlugins() as $name => $plugin) {
             if (is_file($plugin->manifest)) {
-                $plugins[$plugin->name] = $plugin;
+                $plugins[$name] = $plugin;
             }
         }
 

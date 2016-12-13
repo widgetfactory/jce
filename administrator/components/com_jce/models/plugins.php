@@ -16,44 +16,23 @@ require_once (dirname(__FILE__) . '/model.php');
 
 class WFModelPlugins extends WFModel {
 
-    public function getCommands() {
-        //$xml  = JFactory::getXMLParser('Simple');
-        $file = dirname(__FILE__) . '/commands.xml';
-        $xml = WFXMLElement::load($file);
+    public static function getCommands() {
+        $data = file_get_contents(__DIR__ . '/commands.json');
+        $json = json_decode($data);
 
         $commands = array();
 
-        if ($xml) {
-            //$elements = WFXMLHelper::getElements($xml, 'commands');
-
-            foreach ($xml->children() as $command) {
-                $name = (string) $command->name;
-
-                if ($name) {
-                    $commands[$name] = new StdClass();
-
-                    foreach ($command->children() as $item) {
-                        $key = $item->getName();
-                        $value = (string) $item;
-
-                        if (is_numeric($value)) {
-                            $value = (int) $value;
-                        }
-
-                        $commands[$name]->$key = $value;
-                    }
-
-                    $commands[$name]->type = 'command';
-                }
+        if ($json) {
+            foreach ($json as $name => $attribs) {
+                $attribs->type = "command";
+                $commands[$name] = $attribs;
             }
         }
 
         return $commands;
     }
 
-    public function getPlugins() {
-        jimport('joomla.filesystem.folder');
-
+    public static function getPlugins() {
         $language = JFactory::getLanguage();
 
         static $plugins;
@@ -61,86 +40,85 @@ class WFModelPlugins extends WFModel {
         if (!isset($plugins)) {
           $plugins = array();
 
-          // get core xml
-          $xml = WFXMLElement::load(dirname(__FILE__) . '/plugins.xml');
+          // get core json
+          $core = file_get_contents(__DIR__ . '/plugins.json');
+          // decode to object
+          $data = json_decode($core);
 
-          if ($xml) {
-              foreach ($xml->children() as $plugin) {
-                  $name = (string) $plugin->name;
-
-                  if ($name) {
-                      $plugins[$name] = new StdClass();
-
-                      foreach ($plugin->children() as $item) {
-                          $key = $item->getName();
-                          $value = (string) $item;
-
-                          if (is_numeric($value)) {
-                              $value = (int) $value;
-                          }
-
-                          $plugins[$name]->$key = $value;
-                      }
-
-                      $plugins[$name]->type     = 'plugin';
-                      $plugins[$name]->path     = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
-                      $plugins[$name]->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
-                  }
+          if ($data) {
+              foreach ($data as $name => $attribs) {
+                  // update attributes
+                  $attribs->type = "plugin";
+                  $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                  $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+                  // compatability
+                  $attribs->name = $name;
+                  // pass to array
+                  $plugins[$name] = $attribs;   
               }
           }
+          // get pro json
+          if (is_file(__DIR__ . '/pro.json')) {
+              $pro = @file_get_contents(__DIR__ . '/pro.json');
+                // decode to object
+                if ($pro) {
+                    $data = json_decode($pro);
 
-          unset($xml);
-
-          // legacy plugins that are not supported in core
-          $legacy = array('caption','iframe','filemanager','imgmanager_ext','mediamanager','templatemanager','microdata');
-
-          // get all core plugins
-          $folders = JFolder::folders(WF_EDITOR_PLUGINS, '.', false, true, array_merge(array('.svn', 'CVS'), array_keys($plugins)));
-
+                    if ($data) {
+                        foreach ($data as $name => $attribs) {
+                            // update attributes
+                            $attribs->type = "plugin";
+                            $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                            $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+                            // compatability
+                            $attribs->name = $name;
+                            // pass to array
+                            $plugins[$name] = $attribs;   
+                        }
+                    }
+                }
+          }
+          
           // get all installed plugins
           $installed = JPluginHelper::getPlugin('jce');
 
           foreach($installed as $item) {
-            // check for delimiter, only load "extensions"
-            if (strpos($item->name, '-') === false || strpos($item->name, 'editor-') === false) {
+            // check for delimiter, only load editor plugins
+            if (strpos($item->name, 'editor-') === false) {
                 continue;
             }
 
-            $name = str_replace('editor-', '', $item->name);
-
             // load language
-            $language->load('plg_jce_' . $name, JPATH_ADMINISTRATOR);
+            $language->load('plg_jce_' . $item->name, JPATH_ADMINISTRATOR);
 
-            $folders[] = JPATH_PLUGINS . '/jce/' . $item->name;
-          }
+            // create path
+            $path = JPATH_PLUGINS . '/jce/' . $item->name;
 
-          foreach ($folders as $folder) {
-              $name = basename($folder);
+            // get xml file
+            $file = $path . '/' . $item->name . '.xml';
 
-              if (in_array($name, $legacy) && !WF_EDITOR_PRO) {
-                continue;    
-              }
+            if (is_file($file)) {
+                // load xml data
+                $xml = WFXMLElement::load($file);
 
-              $file = $folder . '/' . $name . '.xml';
-
-              if (is_file($file)) {
-                  $plugins[$name] = new StdClass();
-                  $plugins[$name]->name = str_replace('editor-', '', $name);
-                  $plugins[$name]->manifest = $file;
-
-                  $xml = WFXMLElement::load($file);
-
-                  if ($xml) {
+                if ($xml) {
                     // check xml file is valid
                     if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
                         continue;
                     }
 
-                    $params = $xml->params;
+                    // check for editor_plugins.js file
+                    if (!is_file($path . '/editor_plugin.js')) {
+                        continue;    
+                    }
+
+                    $name = str_replace('editor-', '', $item->name);
 
                     $plugins[$name] = new StdClass();
+                    $plugins[$name]->name = $name;
+                    $plugins[$name]->manifest = $file;
 
-                    $plugins[$name]->name = str_replace('editor-', '', $name);
+                    $params = $xml->params;
 
                     $plugins[$name]->title    = (string) $xml->name;
                     $plugins[$name]->icon     = (string) $xml->icon;
@@ -155,18 +133,11 @@ class WFModelPlugins extends WFModel {
 
                     $plugins[$name]->row = $row ? $row : 4;
                     $plugins[$name]->description = (string) $xml->description;
-                    $plugins[$name]->core = (int) $xml->attributes()->core ? 1 : 0;
-
-                    // installer stuff
-                    $plugins[$name]->author = (string) $xml->author;
-                    $plugins[$name]->version = (string) $xml->version;
-                    $plugins[$name]->creationdate = (string) $xml->creationDate;
-                    $plugins[$name]->authorUrl = (string) $xml->authorUrl;
+                    $plugins[$name]->core = 0;
 
                     // relative path
-                    $plugins[$name]->path = str_replace(JPATH_SITE, '', $folder);
+                    $plugins[$name]->path = str_replace(JPATH_SITE, '', $path);
                     $plugins[$name]->type = 'plugin';
-                    $plugins[$name]->manifest = $file;
                   }
               }
           }
