@@ -50,17 +50,17 @@ $direction  = $language->isRTL() ? 'right' : 'left';
                     <ul class="nav nav-tabs">
                         <?php
                         // Build tabs
-                        foreach ($this->plugins as $plugin) :
-                            if ($plugin->editable && is_file(JPATH_SITE . '/' . $plugin->path . '/' . $plugin->name . '.xml')) :
+                        foreach ($this->plugins as $name => $plugin) :
+                            if ($plugin->editable) :
                                 $icon   = '';
                                 $class  = '';
                                 if ($plugin->icon) :
                                     $icon = $this->model->getIcon($plugin);
                                 endif;
 
-                                $class = in_array($plugin->name, explode(',', $this->profile->plugins)) ? '' : 'tab-disabled';
+                                $class = in_array($name, explode(',', $this->profile->plugins)) ? '' : 'tab-disabled';
 
-                                echo '<li class="defaultSkin ' . $class . '" data-name="' . $plugin->name . '"><a href="#tabs-plugin-' . $plugin->name . '" class="mceToolBarItem">' . $icon . '<span class="tabs-label">' . WFText::_($plugin->title) . '</span></a></li>';
+                                echo '<li class="defaultSkin ' . $class . '" data-name="' . $name . '"><a href="#tabs-plugin-' . $name . '" class="mceToolBarItem">' . $icon . '<span class="tabs-label">' . WFText::_($plugin->title) . '</span></a></li>';
                             endif;
                         endforeach;
                         ?>
