@@ -77,11 +77,12 @@
             }
 
             DOM.setStyle(preview, 'height', height);
+            DOM.setStyle(preview, 'max-width', '100%');
 
             var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
 
             if (width && !DOM.hasClass(container, 'mce-fullscreen')) {
-                DOM.setStyle(preview, 'width', width);
+                DOM.setStyle(preview, 'max-width', width);
             }
 
             // show preview
