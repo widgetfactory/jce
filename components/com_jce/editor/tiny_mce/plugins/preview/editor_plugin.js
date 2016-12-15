@@ -63,8 +63,7 @@
                 iframe = DOM.add(preview, 'iframe', {
                     frameborder: 0,
                     src: 'javascript:""',
-                    id: ed.id + '_editor_preview_iframe',
-                    sandbox: 'allow-same-origin allow-scripts'
+                    id: ed.id + '_editor_preview_iframe'
                 });
             }
 
@@ -109,7 +108,7 @@
             function update(text) {
                 var doc = iframe.contentWindow.document;
 
-                // find sctips in content
+                // find scripts in content
                 var scripts = /<script[^>]+>[\s\S]*<\/script>/.exec(text);
 
                 // remove script tags
