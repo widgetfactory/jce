@@ -380,22 +380,9 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     width: 20px;
 }
 
-.ui-jce #profiles-list th:first-child+th+th+th {
-    width: 5%;
-    text-align: center;
-}
-
-.ui-jce #profiles-list td:first-child+td+td+td {
-    text-align: center;
-}
-
 .ui-jce #profiles-list th:first-child+th+th+th+th {
     width: 150px;
     text-align: center;
-}
-
-.ui-jce #profiles-list th:first-child+th+th+th+th+th {
-    width: 1%;
 }
 
 .ui-jce #profiles-list tr:first-child span.order-up,
@@ -439,7 +426,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 }
 
 .ui-jce #profiles-list th:first-child+th+th+th {
-    width: 5%;
+    width: 10%;
     text-align: center;
 }
 
@@ -748,6 +735,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
 .com_jce .ui-jce [class^="icon-"],
 .com_jce .ui-jce [class*=" icon-"] {
     background: none;
+    margin-right: 0;
 }
 
 

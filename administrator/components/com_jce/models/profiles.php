@@ -608,8 +608,9 @@ class WFModelProfiles extends WFModel {
                         break;
                     }
                 }
-                if (!$found)
+                if (!$found) {
                     $conditions[] = array($row->id, $condition);
+                }
             }
         }
 

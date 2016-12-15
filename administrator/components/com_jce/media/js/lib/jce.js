@@ -181,6 +181,15 @@
                 e.preventDefault();
             });
 
+            $('a.saveorder', '#profiles-list').click(function(e) {
+                $('thead th input[type="checkbox"]', '#profiles-list').click();
+                $('input[name="task"]').val('saveorder');
+
+                $('#adminForm').submit();
+
+                e.preventDefault();
+            });
+
             // nested parameter sets
             $('[data-parameter-nested-item]').on('hide', function() {
                 $(this).hide().find(':input').prop('disabled', true);

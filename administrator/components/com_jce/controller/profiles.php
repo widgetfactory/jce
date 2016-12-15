@@ -277,7 +277,7 @@ class WFControllerProfiles extends WFController {
 
     public function saveorder() {
         // Check for request forgeries
-        JRequest::checkToken() or jexit('RESTRICTED');
+        JRequest::checkToken() or jexit('Invalid Token');
 
         $cid = JRequest::getVar('cid', array(0), 'post', 'array');
         $order = JRequest::getVar('order', array(0), 'post', 'array');
