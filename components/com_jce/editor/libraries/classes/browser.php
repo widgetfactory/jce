@@ -366,15 +366,28 @@ class WFFileBrowser extends JObject {
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFolders($relative, $filter);
 
-        $filter = $this->get('filter');
+        $filters = $this->get('filter');
 
         // remove filtered items
-        if (!empty($filter)) {
-          $list = array_filter($list, function($item) use ($filter) {            
+        if (!empty($filters)) {
+          $list = array_filter($list, function($item) use ($filters) {            
             // remmove leading slash
             $id = ltrim($item['id'], '/');
 
-            return !in_array($id, (array) $filter);
+            return !in_array($id, $filters);
+
+            /*foreach($filters as $filter) {
+                // show this folder
+                if ($filter{0} === "+") {
+                    return substr($filter, 1) === $id;
+                }
+                // hide this folder
+                if ($filter{0} === "-") {
+                    $filter = substr($filter, 1);
+                }
+
+                return $filter !== $id;
+            }*/
           });
         }
 
