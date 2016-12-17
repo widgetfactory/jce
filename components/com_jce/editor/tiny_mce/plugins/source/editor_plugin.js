@@ -33,13 +33,23 @@
 
             ed.onInit.add(function(ed) {
                 // get the stored active tab
-                var activeTab = sessionStorage.getItem('wf-editor-tabs');
+                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id);
 
                 if (activeTab === "wf-editor-source") {
                     // hide editor
                     ed.hide();
                     // show textarea
                     DOM.show(ed.getElement());
+
+                    var element = ed.getElement(),
+                        container = element.parentNode;
+
+                    // get width from setting or session data or editor textarea
+                    var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+
+                    if (!DOM.hasClass(container, 'mce-fullscreen')) {
+                        DOM.setStyle(element, 'width', width);
+                    }
                 }
             });
         },
