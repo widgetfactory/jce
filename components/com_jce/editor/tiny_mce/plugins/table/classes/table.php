@@ -29,10 +29,17 @@ class WFTablesPlugin extends WFEditorPlugin {
     public function display() {
         parent::display();
 
+        $context = $this->getContext();
+
         $document = WFDocument::getInstance();
 
         $document->addScript(array('table'), 'plugins');
         $document->addStyleSheet(array('table'), 'plugins');
+
+        // update title
+        if ($context !== "table") {
+            $document->setTitle(WFText::_('WF_TABLE_' . strtoupper($context) . '_TITLE'));
+        }
 
         $settings = $this->getSettings();
 
@@ -40,7 +47,7 @@ class WFTablesPlugin extends WFEditorPlugin {
 
         $tabs = WFTabs::getInstance(array('base_path' => WF_EDITOR_PLUGIN));
 
-        if ($this->getContext() == 'merge') {
+        if ($context == 'merge') {
             // Add tabs
             $tabs->addTab('merge');
         } else {
