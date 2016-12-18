@@ -233,12 +233,16 @@ class WFMediaManagerBase extends WFEditorPlugin {
         if (!empty($textcase) && is_array($textcase)) {
             $textcase = count($textcase) > 1 ? 'any' : array_shift($textcase);
         }
+        
+        $filter = $this->getParam('dir_filter', array());
+        // remove empty values
+        $filter = array_filter($filter);
 
         $base = array(
             'dir' => $this->getParam('dir', '', '', 'string', false),
             'filesystem'  => $this->getFileSystem(),
             'filetypes'   => $filetypes,
-            'filter'      => $this->getParam('dir_filter', array()),
+            'filter'      => $filter,
             'upload' => array(
                 'max_size'          => $this->getParam('max_size', 1024, '', 'string', false),
                 'validate_mimetype' => (int) $this->getParam('editor.validate_mimetype', 1),
