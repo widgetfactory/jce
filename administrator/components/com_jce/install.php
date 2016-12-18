@@ -184,6 +184,8 @@ abstract class WFInstall {
             $admin . '/media/js/uploads.js',
             $admin . '/models/installer.php',
             $admin . '/models/installer.xml',
+            $admin . '/models/plugins.xml',
+            $admin . '/models/commands.xml',
 
             $site . '/editor/elements/mediaplayer.php',
             $site . '/editor/libraries/extensions/imgageeditor/picmonkey.php',
