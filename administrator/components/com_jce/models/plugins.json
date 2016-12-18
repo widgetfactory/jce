@@ -227,8 +227,8 @@
         "title": "WF_SOURCE_TITLE",
         "description": "WF_SOURCE_DESC",
         "icon": "",
-        "editable": "1",
-        "row": "4",
+        "editable": "0",
+        "row": "0",
         "core": "1"
     },
     "spellchecker": {
