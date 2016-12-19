@@ -145,39 +145,51 @@ class WFElementText extends WFElement {
     function convertValue($value) {
         $unit = 'KB';
 
-        // GB
-        if ($value > 1073741824)
-            $unit = 'GB';
+        $prefix = '';
 
-        // MB
-        if ($value > 1048576)
-            $unit = 'MB';
+        preg_match('#([0-9]+)\s?([a-z]+)#i', $value, $matches);
+
+        // get unit
+        if (isset($matches[2])) {
+            $prefix = $matches[2];    
+        }
+        // get value
+        if (isset($matches[1])) {
+            $value = (int) $matches[1];
+        }
 
         // Convert to bytes
-        switch (strtolower($value{strlen($value) - 1})) {
+        switch (strtolower($prefix)) {
             case 'g':
+            case 'gb':
                 $value *= 1073741824;
                 break;
             case 'm':
+            case 'mb':
                 $value *= 1048576;
                 break;
             case 'k':
+            case 'kb':
                 $value *= 1024;
                 break;
         }
+
         // Convert to unit value
-        switch (strtolower($unit{0})) {
+        switch (strtolower($unit)) {
             case 'g':
+            case 'gb':
                 $value /= 1073741824;
                 break;
             case 'm':
+            case 'mb':
                 $value /= 1048576;
                 break;
             case 'k':
+            case 'kb':
                 $value /= 1024;
                 break;
         }
-        return preg_replace('/[^0-9]/', '', $value) . ' ' . $unit;
+        return (int) $value . ' KB';
     }
 }
 
