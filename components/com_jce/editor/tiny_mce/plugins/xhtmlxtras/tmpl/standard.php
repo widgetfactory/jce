@@ -36,7 +36,7 @@ endif;
     <div class="uk-form-row">
         <label class="uk-form-label uk-width-3-10" for="dir"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label>
         <div class="uk-form-controls uk-width-7-10"><select id="dir">
-                <option value="">{#not_set}</option>
+                <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="ltr"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_LTR'); ?></option>
                 <option value="rtl"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_RTL'); ?></option>
             </select></div>
