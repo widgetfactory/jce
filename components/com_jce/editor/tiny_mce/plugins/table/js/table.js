@@ -89,7 +89,9 @@
                 $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function() {
                     $(this).add('label[for="' + this.id + '"]').hide();
                 });
+            }
 
+            if (ed.settings.schema !== "html4") {
                 function styles(v) {
                     if (typeof v === "undefined") {
                         return tinyMCEPopup.dom.parseStyle($('#style').val());
