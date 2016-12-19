@@ -27,7 +27,7 @@ abstract class WFUtility
 
     public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
     {
-        $path = trim(urldecode($path));
+        $path = trim(rawurldecode($path));
 
         // check for UNC path on IIS and set prefix
         if ($ds == '\\' && $path[0] == '\\' && $path[1] == '\\') {
