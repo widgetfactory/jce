@@ -25,7 +25,12 @@
             switch (at) {
                 case 'width':
                 case 'height':
-                    return ed.dom.getAttrib(e, at) || ed.dom.getStyle(e, at) || '';
+                    v = ed.dom.getAttrib(e, at) || ed.dom.getStyle(e, at) || '';
+
+                    if (v.indexOf('px') !== -1) {
+                        v = parseInt(v);
+                    }
+
                     break;
                 case 'align':
                     if (v = ed.dom.getAttrib(e, 'align')) {
