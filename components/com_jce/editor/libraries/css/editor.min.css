@@ -144,13 +144,13 @@
     display: block;
     float: left;
     margin-top: 5px;
-    padding: 4px 24px;
+    padding: 4px 24px 4px 32px;
     margin-bottom: 0;
-    font-size: 0;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 22px;
     text-align: center;
     cursor: pointer;
-    background: url("../img/power.png") no-repeat center;
+    background: url("../img/power.png") no-repeat 10px center;
     opacity: 0.6;
     min-height: 24px;
 }

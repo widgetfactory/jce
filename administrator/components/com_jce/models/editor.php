@@ -184,7 +184,7 @@ class WFModelEditor extends WFModelBase {
 
             // Editor Toggle
             $settings['toggle'] = $wf->getParam('editor.toggle', 1, 1);
-            $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', '[Toggle Editor]', '[Toggle Editor]'));
+            $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
             $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
 
             // Get all optional plugin configuration options
