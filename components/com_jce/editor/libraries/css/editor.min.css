@@ -151,8 +151,12 @@
     text-align: center;
     cursor: pointer;
     background: url("../img/power.png") no-repeat center;
-    opacity: 0.7;
+    opacity: 0.6;
     min-height: 24px;
+}
+
+.wf-editor-toggle:hover {
+    opacity: 0.9;
 }
 
 .mce-fullscreen .wf-editor-toggle {
