@@ -36,6 +36,7 @@
                     if (v = ed.dom.getAttrib(e, 'align')) {
                         return v;
                     }
+
                     if (v = ed.dom.getStyle(e, 'float')) {
                         return v;
                     }
@@ -56,6 +57,7 @@
                         }
                         return parseInt(v.replace(/[^-0-9]/g, ''));
                     }
+
                     if (v = ed.dom.getAttrib(e, 'vspace')) {
                         return parseInt(v.replace(/[^-0-9]/g, ''));
                     }
@@ -66,8 +68,10 @@
                         if (/auto|inherit/.test(v)) {
                             return v;
                         }
+
                         return parseInt(v.replace(/[^-0-9]/g, ''));
                     }
+
                     if (v = ed.dom.getAttrib(e, 'hspace')) {
                         return parseInt(v.replace(/[^-0-9]/g, ''));
                     }
@@ -108,9 +112,10 @@
                         }
                     }
 
-                    return v;
                     break;
             }
+
+            return v;
         },
 
         /**
@@ -241,6 +246,9 @@
 
             if (v == 'center') {
                 $(img).css({ 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' });
+
+                // remove float and vertical-align
+                $(img).css({ 'float': '', 'vertical-align': '' });
 
                 $('#clear').attr('disabled', true);
 
