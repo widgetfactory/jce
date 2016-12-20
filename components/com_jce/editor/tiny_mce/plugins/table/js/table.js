@@ -767,7 +767,7 @@
 
                     if (ed.getParam("accessibility_warnings", 1)) {
                         if (celltype == "th" && scope == "") {
-                            tinyMCEPopup.confirm(ed.getLang('table_dlg.missing_scope', '', true), doUpdate);
+                            tinyMCEPopup.confirm(ed.getLang('table_dlg.missing_scope', 'Missing Scope', true), doUpdate);
                         } else {
                             doUpdate(1);
                         }
