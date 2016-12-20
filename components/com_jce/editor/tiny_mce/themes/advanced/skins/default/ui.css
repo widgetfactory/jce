@@ -726,9 +726,10 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     color: #888
 }
 
-.defaultSkin .mceMenuItemSelected .mceIcon {
+
+/*.defaultSkin .mceMenuItemSelected .mceIcon {
     background: url(img/menu_check.gif)
-}
+}*/
 
 .defaultSkin .mceNoIcons .mceMenuItemSelected a {
     background: url(img/menu_arrow.gif) no-repeat -6px center
