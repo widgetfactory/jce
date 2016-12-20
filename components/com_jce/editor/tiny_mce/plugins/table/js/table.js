@@ -307,7 +307,7 @@
                 this.orgTableWidth = $('#width').val();
                 this.orgTableHeight = $('#height').val();
 
-                $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
+                $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 Wf.setDefaults(this.settings.defaults);
             }
@@ -371,7 +371,7 @@
                     $('#backgroundimage').width(180);
                 }
 
-                $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
+                $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 $('#action').hide();
             }
@@ -425,7 +425,7 @@
                     $('#backgroundimage').width(180);
                 }
 
-                $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
+                $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 $('#action').hide();
             }
@@ -739,7 +739,6 @@
                 tinymce.each(ed.dom.select('td.mceSelected,th.mceSelected'), function(td) {
                     self.updateCell(td);
                 });
-
 
                 ed.addVisual();
                 ed.nodeChanged();
@@ -1116,15 +1115,23 @@
 
             $('#style').val(tinyMCEPopup.dom.serializeStyle(st));
         },
-        changedColor: function() {
+        changedColor: function(e) {
             var dom = tinyMCEPopup.editor.dom;
 
-            var st = dom.parseStyle($('#style').val());
+            var v = e.value,
+                id = e.id,
+                st = dom.parseStyle($('#style').val());
 
-            st['background-color'] = $('#bgcolor').val();
+            if (v && v.charAt(0) !== '#') {
+                v = '#' + v;
+            }
 
-            if ($('#bordercolor').val() != "") {
-                st['border-color'] = $('#bordercolor').val();
+            if (id === 'bgcolor') {
+                st['background-color'] = v;
+            }
+
+            if (id === 'bordercolor' && v !== '') {
+                st['border-color'] = v;
 
                 // Add border-width if it's missing
                 if (!st['border-width']) {
