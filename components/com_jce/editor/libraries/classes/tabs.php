@@ -69,7 +69,7 @@ final class WFTabs extends JObject {
      * @param object $layout Layout (panel) name
      * @return panel JView object
      */
-    private function loadPanel($panel) {
+    private function loadPanel($panel, $state) {
         $view = new WFView(array(
           'name'    => $panel,
           'layout'  => $panel
@@ -79,6 +79,9 @@ final class WFTabs extends JObject {
         foreach ($this->_paths as $path) {
             $view->addTemplatePath($path);
         }
+
+        // assign panel state to view
+        $view->assign('state', (int) $state);
 
         return $view;
     }
@@ -99,14 +102,13 @@ final class WFTabs extends JObject {
      * @param array $values An array of values to assign to panel view
      */
     public function addTab($tab, $state = 1, $values = array()) {
-        // backwards compatability as $state has been removed
-        if (!$state) {
-            return false;
-        }
-
         if (!array_key_exists($tab, $this->_tabs)) {
-            $this->_tabs[$tab] = $tab;
-            $panel = $this->addPanel($tab);
+
+            if ((int) $state === 1) {
+                $this->_tabs[$tab] = $tab;
+            }
+
+            $panel = $this->addPanel($tab, $state);
 
             // array is not empty and is associative
             if (!empty($values) && array_values($values) !== $values) {
@@ -120,9 +122,9 @@ final class WFTabs extends JObject {
      * @access	public
      * @param 	object $panel Panel name
      */
-    public function addPanel($tab) {
+    public function addPanel($tab, $state) {
         if (!array_key_exists($tab, $this->_panels)) {
-            $this->_panels[$tab] = $this->loadPanel($tab);
+            $this->_panels[$tab] = $this->loadPanel($tab, $state);
 
             return $this->_panels[$tab];
         }
@@ -178,6 +180,10 @@ final class WFTabs extends JObject {
 
             foreach ($this->_panels as $key => $panel) {
                 $class = "";
+
+                if ($panel->state === 0) {
+                    $class .= " uk-hidden";
+                }
 
                 if (!empty($this->_tabs)) {
 
