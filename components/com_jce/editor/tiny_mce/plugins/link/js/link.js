@@ -8,6 +8,9 @@
  * other free or open source software licenses.
  */
 (function($, tinyMCEPopup) {
+    // http://stackoverflow.com/a/46181
+    var emailRex = /(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})/;
+
     var LinkDialog = {
         settings: {},
         init: function() {
@@ -279,12 +282,11 @@
             return html;
         },
         checkPrefix: function(n) {
-            var self = this,
-                ex = /([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)/;
+            var self = this;
 
             var v = $(n).val();
 
-            if (ex.test(v) && !/^\s*mailto:/i.test(v)) {
+            if (emailRex.test(v) && !/^\s*mailto:/i.test(v)) {
                 Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
                     if (state) {
                         $(n).val('mailto:' + v);
@@ -468,6 +470,27 @@
 
             Wf.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), {
                 width: 300,
+                open: function() {
+                    var v = $('#href').val();
+
+                    if (!v || !emailRex.test(v)) {
+                        return;
+                    }
+
+                    // split at first & to create email address and arguments
+                    var parts = v.replace(/\?/, '&').replace(/\&amp;/g, '&').split('&');
+                    var address = parts.shift();
+
+                    $('#email_mailto').val(address.replace(/^mailto\:/, ''));
+
+                    $.each(parts, function(i, s) {
+                        var k = s.split('=');
+
+                        if (k.length === 2) {
+                            $('#email_' + k[0]).val(k[1]);
+                        }
+                    });
+                },
                 buttons: [{
                     text: ed.getLang('dlg.create', 'Create'),
                     click: function() {
