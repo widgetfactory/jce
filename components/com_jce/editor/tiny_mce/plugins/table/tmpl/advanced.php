@@ -108,7 +108,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_BORDERCOLOR'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="bordercolor" type="text" value=""
-                   size="9" class="color uk-form-width-small" onchange="TableDialog.changedColor();"/>
+                   size="9" class="color uk-form-width-small" onchange="TableDialog.changedColor(this);"/>
         </div>
     </div>
     <div class="uk-form-row">
@@ -116,6 +116,6 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_BGCOLOR'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="bgcolor" type="text" value="" size="9"
-                   class="color uk-form-width-small" onchange="TableDialog.changedColor();"/>
+                   class="color uk-form-width-small" onchange="TableDialog.changedColor(this);"/>
         </div>
     </div>
