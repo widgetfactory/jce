@@ -74,7 +74,7 @@ class WFElementFilesystem extends WFElement {
             // legacy
             $language->load('com_jce_filesystem_' . $filename, JPATH_SITE);
             // new
-            $language->load('plg_jce_filesystem_' . $filename, JPATH_ADMINISTRATOR);
+            $language->load('plg_jce_filesystem-' . $filename, JPATH_ADMINISTRATOR);
 
             $instance   = new WFParameter($parent->getData(), $file);
 
