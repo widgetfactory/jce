@@ -485,8 +485,7 @@
                     self.close(null, w.id);
                 },
                 content: DOM.encode(self.editor.getLang(txt, txt)),
-                inline: 1,
-                height: 160
+                inline: 1
             });
         },
 
@@ -504,8 +503,7 @@
                     self.close(null, w.id);
                 },
                 content: DOM.encode(self.editor.getLang(txt, txt)),
-                inline: 1,
-                height: 160
+                inline: 1
             });
         },
 

@@ -223,6 +223,11 @@
     border-color: #CDCDCD;
 }
 
+.mceModalConfirm,
+.mceModalAlert {
+    min-height: 160px;
+}
+
 [class*="mce-modal-landscape-"] .mceModalContent {
     padding-bottom: 48%;
     padding-bottom: calc(56.25% - 61px);
