@@ -508,7 +508,7 @@ class WFViewProfiles extends WFView {
                 $lists['users'] = '<ul id="users" class="unstyled users-list span4">';
 
                 foreach ($options as $option) {
-                    $lists['users'] .= '<li><input type="hidden" name="users[]" value="' . $option->value . '" /><label><span class="users-list-delete"></span>' . $option->text . '</label></li>';
+                    $lists['users'] .= '<li><span>' . $option->text . '</span><button class="btn btn-link users-list-delete"><i class="icon-trash"></i></button><input name="users[]" value="' . $option->value . '" type="hidden"></li>';
                 }
 
                 $lists['users'] .= '</ul>';
