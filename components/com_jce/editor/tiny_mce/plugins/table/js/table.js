@@ -192,6 +192,8 @@
                     }
                 }
 
+                var style = ed.dom.parseStyle(ed.dom.getAttrib(elm, "style"));
+
                 // Update form
                 $('#align').val(function() {
                     var v = ed.dom.getAttrib(elm, 'align') || ed.dom.getStyle(elm, 'float');
@@ -201,6 +203,9 @@
                     }
 
                     if (ed.dom.getStyle(elm, 'margin-left') === "auto" && ed.dom.getStyle(elm, 'margin-right') === "auto") {
+                        style['margin-left'] = "";
+                        style['margin-right'] = "";
+
                         return "center";
                     }
 
@@ -243,8 +248,6 @@
                 $('#width').val(trimSize(getStyle(elm, 'width', 'width')));
                 $('#height').val(trimSize(getStyle(elm, 'height', 'height')));
 
-                var style = ed.dom.parseStyle(ed.dom.getAttrib(elm, "style"));
-
                 // remove width and height 
                 style.width = "";
                 style.height = "";
@@ -281,8 +284,7 @@
 
             // Get table row data
             var rowtype = trElm.parentNode.nodeName.toLowerCase();
-            var align = dom.getAttrib(trElm, 'align');
-            var valign = dom.getAttrib(trElm, 'valign') || getStyle(trElm, 'vertical-align');
+            var align = getStyle(trElm, 'align', 'text-align');
             var height = trimSize(getStyle(trElm, 'height', 'height'));
             var className = dom.getAttrib(trElm, 'class');
             var bgcolor = convertRGBToHex(getStyle(trElm, 'bgcolor', 'backgroundColor'));
@@ -304,8 +306,10 @@
                 $('#id').val(id);
                 $('#lang').val(lang);
 
+                // remove align
+                style['text-align'] = "";
+
                 $('#align').val(align);
-                $('#valign').val(valign);
 
                 // remove height 
                 style.height = "";
@@ -334,8 +338,8 @@
 
             // Get table cell data
             var celltype = tdElm.nodeName.toLowerCase();
-            var align = dom.getAttrib(tdElm, 'align');
-            var valign = dom.getAttrib(tdElm, 'valign') || getStyle(tdElm, 'vertical-align');
+            var align = getStyle(tdElm, 'align', 'text-align');
+            var valign = getStyle(tdElm, 'valign', 'vertical-align');
             var width = trimSize(getStyle(tdElm, 'width', 'width'));
             var height = trimSize(getStyle(tdElm, 'height', 'height'));
             var bordercolor = convertRGBToHex(getStyle(tdElm, 'bordercolor', 'borderLeftColor'));
@@ -355,6 +359,10 @@
                 $('#height').val(height);
                 $('#id').val(id);
                 $('#lang').val(lang);
+
+                // remove alignment
+                style['vertical-align'] = "";
+                style['text-align'] = "";
 
                 $('#align').val(align);
                 $('#valign').val(valign);
@@ -480,8 +488,12 @@
                     width = "";
                     height = "";
                 }
-
+                // set or remove align
                 dom.setAttrib(elm, 'align', align);
+
+                // set or remove width & height
+                dom.setAttribs({ "width": width, "height": height });
+
                 dom.setAttrib(elm, 'frame', frame);
                 dom.setAttrib(elm, 'rules', rules);
                 dom.setAttrib(elm, 'class', className);
@@ -510,9 +522,6 @@
                 dom.setStyle(elm, 'width', getCSSSize($('#width').val()));
                 // set height
                 dom.setStyle(elm, 'height', getCSSSize($('#height').val()));
-
-                // remove width and height attributes
-                dom.setAttribs(elm, { 'width': '', 'height': '' });
 
                 if ($('#align').val()) {
                     ed.formatter.apply('align' + $('#align').val(), {}, elm);
@@ -798,14 +807,8 @@
                 ed.formatter.apply('align' + $('#align').val(), {}, tr_elm);
             }
 
-            // Set styles
-            /*tr_elm.style.height = getCSSSize($('#height').val());
-            tr_elm.style.backgroundColor = $('#bgcolor').val();
-
-            if ($('#backgroundimage').val() != "") {
-                tr_elm.style.backgroundImage = "url('" + $('#backgroundimage').val() + "')";
-            } else {
-                tr_elm.style.backgroundImage = '';
+            /*if ($('#valign').val()) {
+                ed.formatter.apply('valign' + $('#valign').val(), {}, tr_elm);
             }*/
 
             // Setup new rowtype
@@ -990,26 +993,6 @@
             if ($('#valign').val()) {
                 ed.formatter.apply('valign' + $('#valign').val(), {}, td);
             }
-
-            // Set styles
-            /*td.style.width = getCSSSize($('#width').val());
-            td.style.height = getCSSSize($('#height').val());
-
-            if ($('#bordercolor').val() != "") {
-                td.style.borderColor = $('#bordercolor').val();
-                td.style.borderStyle = td.style.borderStyle == "" ? "solid" : td.style.borderStyle;
-                td.style.borderWidth = td.style.borderWidth == "" ? "1px" : td.style.borderWidth;
-            } else {
-                td.style.borderColor = '';
-            }
-
-            td.style.backgroundColor = $('#bgcolor').val();
-
-            if ($('#backgroundimage').val() != "") {
-                td.style.backgroundImage = "url('" + $('#backgroundimage').val() + "')";
-            } else {
-                td.style.backgroundImage = '';
-            }*/
 
             if (curCellType != celltype) {
                 // changing to a different node type
