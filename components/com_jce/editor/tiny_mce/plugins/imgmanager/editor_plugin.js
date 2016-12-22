@@ -68,7 +68,8 @@
              });*/
         },
         insertUploadedFile: function(o) {
-            var ed = this.editor, data = this.getUploadConfig();
+            var ed = this.editor,
+                data = this.getUploadConfig();
 
             if (data && data.filetypes) {
                 if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(o.file)) {
@@ -116,7 +117,8 @@
             return false;
         },
         getUploadURL: function(file) {
-            var ed = this.editor, data = this.getUploadConfig();
+            var ed = this.editor,
+                data = this.getUploadConfig();
 
             if (data && data.filetypes) {
                 if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
@@ -127,7 +129,8 @@
             return false;
         },
         getUploadConfig: function() {
-            var ed = this.editor, data = ed.getParam('imgmanager_upload');
+            var ed = this.editor,
+                data = ed.getParam('imgmanager_upload');
 
             return data;
         },
@@ -141,6 +144,6 @@
             };
         }
     });
-// Register plugin
+    // Register plugin
     tinymce.PluginManager.add('imgmanager', tinymce.plugins.ImageManager);
 })();
