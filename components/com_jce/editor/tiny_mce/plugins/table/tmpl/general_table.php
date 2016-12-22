@@ -53,22 +53,20 @@ defined('_JEXEC') or die('RESTRICTED');
     <label class="uk-form-label uk-width-2-10" for="border">
         <?php echo WFText::_('WF_TABLE_BORDER'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
-        <input id="border" type="number" value="" onchange="TableDialog.changedBorder();" />
+        <input id="border" type="number" value="" />
     </div>
 </div>
 <div class="uk-grid">
     <label class="uk-form-label uk-width-2-10" for="width">
         <?php echo WFText::_('WF_TABLE_WIDTH'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
-        <input type="text" id="width" value=""
-               onchange="TableDialog.changedSize();" />
+        <input type="text" id="width" value="" />
     </div>
 
     <label class="uk-form-label uk-width-2-10" for="height">
         <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
-        <input type="text" id="height" value=""
-               onchange="TableDialog.changedSize();" />
+        <input type="text" id="height" value="" />
     </div>
 </div>
 <div class="uk-form-row">

@@ -56,8 +56,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_BGIMAGE'); ?></label>
         <div class="uk-form-controls uk-width-7-10">
             <input id="backgroundimage" type="text"
-                   value="" class="browser"
-                   onchange="TableDialog.changedBackgroundImage();"/>
+                   value="" class="browser" />
         </div>
     </div>
     <?php if ($this->plugin->getContext() == 'table') :
@@ -108,7 +107,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_BORDERCOLOR'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="bordercolor" type="text" value=""
-                   size="9" class="color uk-form-width-small" onchange="TableDialog.changedColor(this);"/>
+                   size="9" class="color uk-form-width-small" />
         </div>
     </div>
     <div class="uk-form-row">
@@ -116,6 +115,6 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php echo WFText::_('WF_TABLE_BGCOLOR'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="bgcolor" type="text" value="" size="9"
-                   class="color uk-form-width-small" onchange="TableDialog.changedColor(this);"/>
+                   class="color uk-form-width-small" />
         </div>
     </div>

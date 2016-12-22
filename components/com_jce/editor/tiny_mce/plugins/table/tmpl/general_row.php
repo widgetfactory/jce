@@ -48,6 +48,6 @@ defined('_JEXEC') or die('RESTRICTED');
     <label class="uk-form-label uk-width-3-10" for="height">
         <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
-        <input type="text" id="height" value="" onchange="TableDialog.changedSize();"/>
+        <input type="text" id="height" value="" />
     </div>
 </div>

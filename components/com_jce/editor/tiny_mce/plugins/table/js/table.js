@@ -34,17 +34,20 @@
     }
 
     function trimSize(size) {
-        return size.replace(/([0-9\.]+)(px|%|in|cm|mm|em|ex|pt|pc)/i, '$1$2');
+        size = size.replace(/([0-9\.]+)(px|%|in|cm|mm|em|ex|pt|pc)/i, '$1$2');
+        return size ? size.replace(/px$/, '') : "";
     }
 
     function getStyle(elm, attrib, style) {
         var val = tinyMCEPopup.editor.dom.getAttrib(elm, attrib);
 
-        if (val != '')
+        if (val != '') {
             return '' + val;
+        }
 
-        if (typeof(style) == 'undefined')
+        if (typeof(style) == 'undefined') {
             style = attrib;
+        }
 
         return tinyMCEPopup.editor.dom.getStyle(elm, style);
     }
@@ -92,81 +95,22 @@
             }
 
             if (ed.settings.schema !== "html4") {
-                function styles(v) {
-                    if (typeof v === "undefined") {
-                        return tinyMCEPopup.dom.parseStyle($('#style').val());
-                    }
-
-                    $('#style').val(tinyMCEPopup.dom.serializeStyle(v));
-                }
-
-                /*$('#cellspacing').change(function() {
-                 var st = styles();
-
-                 var v = this.value;
-
-                 if (v !== '') {
-                 if (v == 0) {
-                 st['border-collapse'] = 'collapse';
-                 } else {
-                 st['border-collapse'] = 'separate';
-                 st['border-spacing'] = self.cssSize(v);
-                 }
-                 }
-
-                 styles(st);
-                 });*/
-
-                /*$('#cellpadding').change(function() {
-                 var st = styles();
-
-                 var v = this.value;
-
-                 console.log(v);
-
-                 if (v !== '') {
-                 st['padding'] = self.cssSize(v);
-                 }
-
-                 styles(st);
-                 });*/
-
-                /*$('#valign').change(function() {
-                    var st = styles();
-
-                    st['vertical-align'] = $(this).val();
-
-                    styles(st);
-                });
-
-                $('#align').change(function() {
-                    var st = styles(),
-                        v = $(this).val();
-
-                    if (v === "center") {
-                        st.float = "";
-                        st['margin-left'] = st['margin-right'] = "auto";
-                    } else {
-                        st['float'] = v;
-                        st['margin-left'] = st['margin-right'] = "";
-                    }
-
-                    styles(st);
-                });
-
-                $('#width, #height').change(function() {
-                    var st = styles(),
-                        k = this.id,
-                        v = this.value;
-
-                    st[k] = self.cssSize(v);
-
-                    styles(st);
-                });*/
-
                 // replace border field with checkbox
                 $('#border').replaceWith('<input type="checkbox" id="border" />');
             }
+
+            // trigger colour changes
+            $('#bgcolor, #borderColor').change(function() {
+                self.changedColor(this);
+            });
+            // background-image change
+            $('#backgroundimage').change(function() {
+                self.changedBackgroundImage(this);
+            });
+            // border
+            $('#border').change(function() {
+                self.changedBorder(this);
+            });
 
             switch (context) {
                 case 'table':
@@ -291,13 +235,23 @@
 
                 $('#cellpadding').val(ed.dom.getAttrib(elm, 'cellpadding', ""));
                 $('#cellspacing').val(ed.dom.getAttrib(elm, 'cellspacing', ""));
-                $('#width').val(trimSize(getStyle(elm, 'width', 'width')));
-                $('#height').val(trimSize(getStyle(elm, 'height', 'height')));
                 $('#bordercolor').val(convertRGBToHex(getStyle(elm, 'bordercolor', 'borderLeftColor'))).change();
                 $('#bgcolor').val(convertRGBToHex(getStyle(elm, 'bgcolor', 'backgroundColor'))).change();
                 $('#id').val(ed.dom.getAttrib(elm, 'id'));
                 $('#summary').val(ed.dom.getAttrib(elm, 'summary'));
-                $('#style').val(ed.dom.serializeStyle(ed.dom.parseStyle(ed.dom.getAttrib(elm, "style"))));
+
+                $('#width').val(trimSize(getStyle(elm, 'width', 'width')));
+                $('#height').val(trimSize(getStyle(elm, 'height', 'height')));
+
+                var style = ed.dom.parseStyle(ed.dom.getAttrib(elm, "style"));
+
+                // remove width and height 
+                style.width = "";
+                style.height = "";
+
+                // update style field
+                $('#style').val(ed.dom.serializeStyle(style));
+
                 $('#dir').val(ed.dom.getAttrib(elm, 'dir'));
                 $('#lang').val(ed.dom.getAttrib(elm, 'lang'));
                 $('#backgroundimage').val(getStyle(elm, 'background', 'backgroundImage').replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1"));
@@ -312,11 +266,6 @@
                 Wf.setDefaults(this.settings.defaults);
             }
 
-            // Resize some elements
-            if ($('#backgroundimagebrowser').is(':visible')) {
-                $('#backgroundimage').width(180);
-            }
-
             // Disable some fields in update mode
             if (action == "update") {
                 $('#cols, #rows').prop('disabled', true);
@@ -328,7 +277,7 @@
                 dom = tinyMCEPopup.dom;
 
             var trElm = dom.getParent(ed.selection.getStart(), "tr");
-            var st = dom.parseStyle(dom.getAttrib(trElm, "style"));
+            var style = ed.dom.parseStyle(ed.dom.getAttrib(trElm, "style"));
 
             // Get table row data
             var rowtype = trElm.parentNode.nodeName.toLowerCase();
@@ -354,10 +303,15 @@
                 $('#height').val(height);
                 $('#id').val(id);
                 $('#lang').val(lang);
-                $('#style').val(dom.serializeStyle(st));
 
                 $('#align').val(align);
                 $('#valign').val(valign);
+
+                // remove height 
+                style.height = "";
+
+                // update style field
+                $('#style').val(dom.serializeStyle(style));
 
                 className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -365,11 +319,6 @@
                 this.updateClassList(className);
 
                 $('#dir').val(dir);
-
-                // Resize some elements
-                if ($('#backgroundimagebrowser').is(':visible')) {
-                    $('#backgroundimage').width(180);
-                }
 
                 $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
@@ -381,7 +330,7 @@
                 dom = ed.dom;
 
             var tdElm = dom.getParent(ed.selection.getStart(), "td,th");
-            var st = dom.parseStyle(dom.getAttrib(tdElm, "style"));
+            var style = dom.parseStyle(dom.getAttrib(tdElm, "style"));
 
             // Get table cell data
             var celltype = tdElm.nodeName.toLowerCase();
@@ -406,10 +355,16 @@
                 $('#height').val(height);
                 $('#id').val(id);
                 $('#lang').val(lang);
-                $('#style').val(dom.serializeStyle(st));
 
                 $('#align').val(align);
                 $('#valign').val(valign);
+
+                // remove width and height 
+                style.width = "";
+                style.height = "";
+
+                // update style field
+                $('#style').val(dom.serializeStyle(style));
 
                 className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -492,21 +447,6 @@
             lang = $('#lang').val();
             background = $('#backgroundimage').val();
             caption = $('#caption').is(':checked');
-            /*cellLimit = tinyMCEPopup.getParam('table_cell_limit', false);
-             rowLimit = tinyMCEPopup.getParam('table_row_limit', false);
-             colLimit = tinyMCEPopup.getParam('table_col_limit', false);
-
-             // Validate table size
-             if (colLimit && cols > colLimit) {
-             tinyMCEPopup.alert(ed.getLang('table_dlg.col_limit').replace(/\{\$cols\}/g, colLimit));
-             return false;
-             } else if (rowLimit && rows > rowLimit) {
-             tinyMCEPopup.alert(ed.getLang('table_dlg.row_limit').replace(/\{\$rows\}/g, rowLimit));
-             return false;
-             } else if (cellLimit && cols * rows > cellLimit) {
-             tinyMCEPopup.alert(ed.getLang('table_dlg.cell_limit').replace(/\{\$cells\}/g, cellLimit));
-             return false;
-             }*/
 
             // reset border if checkbox (html5)
             if ($('#border').is(':checkbox')) {
@@ -566,32 +506,22 @@
                     elm.insertBefore(capEl, elm.firstChild);
                 }
 
-                dom.setAttrib(elm, 'width', width, true);
-                dom.setAttrib(elm, 'height', height, true);
+                // set width
+                dom.setStyle(elm, 'width', getCSSSize($('#width').val()));
+                // set height
+                dom.setStyle(elm, 'height', getCSSSize($('#height').val()));
+
+                // remove width and height attributes
+                dom.setAttribs(elm, { 'width': '', 'height': '' });
+
+                if ($('#align').val()) {
+                    ed.formatter.apply('align' + $('#align').val(), {}, elm);
+                }
 
                 // Remove these since they are not valid XHTML
                 dom.setAttrib(elm, 'borderColor', '');
                 dom.setAttrib(elm, 'bgColor', '');
                 dom.setAttrib(elm, 'background', '');
-
-                /*if (background != '') {
-                    elm.style.backgroundImage = "url('" + background + "')";
-                } else {
-                    elm.style.backgroundImage = '';
-                }
-
-                if (bordercolor != "") {
-                    elm.style.borderColor = bordercolor;
-                    elm.style.borderStyle = elm.style.borderStyle == "" ? "solid" : elm.style.borderStyle;
-                    elm.style.borderWidth = this.cssSize(border);
-
-                    dom.setAttrib(elm, 'border', '');
-
-                } else {
-                    elm.style.borderColor = '';
-                }
-
-                elm.style.backgroundColor = bgcolor;*/
 
                 ed.addVisual();
 
