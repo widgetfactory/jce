@@ -244,13 +244,8 @@ class WFLanguageParser extends JObject {
                         // remove WF_
                         $k = str_replace('wf_', '', $k);
 
-                        // get position of the section name in the key if any
-                        $pos = strpos($k, $key . '_');
-
                         // remove the section name
-                        if ($pos === 0) {
-                            $k = substr($k, strlen($key) + 1);
-                        }
+                        $k = preg_replace('#' . $key . '(_dlg)?_#', '', $k);
 
                         // hex colours to uppercase and remove marker
                         if (strpos($k, 'hex_') !== false) {
@@ -306,10 +301,16 @@ class WFLanguageParser extends JObject {
             // non-english language
             if ($tag != 'en-GB') {
                 if (is_dir($path)) {
-                    $file = $path . '/' . $tag . '.com_jce.ini';
+                    $core   = $path . '/' . $tag . '.com_jce.ini';
+                    $pro    = $path . '/' . $tag . '.com_jce_pro.ini';
 
-                    if (is_file($file)) {
-                        $files[] = $file;
+                    if (is_file($core)) {
+                        $files[] = $core;
+                        
+                        if (is_file($pro)) {
+                        	$files[] = $pro;
+                    	}	
+                        
                     } else {
                         $tag = 'en-GB';
                     }
@@ -321,7 +322,7 @@ class WFLanguageParser extends JObject {
             $plugins = $this->get('plugins');
 
             if (!empty($plugins)) {
-                foreach ($plugins['core'] as $plugin) {
+                /*foreach ($plugins['core'] as $plugin) {
                     // add English file
                     $ini = JPATH_SITE . '/language/en-GB/en-GB.com_jce_' . $plugin . '.ini';
 
@@ -337,7 +338,7 @@ class WFLanguageParser extends JObject {
                             $files[] = $ini;
                         }
                     }
-                }
+                }*/
 
                 foreach ($plugins['external'] as $plugin) {
                     // add English file
