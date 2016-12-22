@@ -192,15 +192,12 @@ final class WFTabs extends JObject {
                     } else {
                         $class .= " uk-tabs-hide";
                     }
-
-                    $output .= '<div id="' . $key . '_tab" class="' . $class . '">';
-                    $output .= $panel->loadTemplate();
-                    $output .= '</div>';
-                } else {
-                    $output .= '<div id="' . $key . '">';
-                    $output .= $panel->loadTemplate();
-                    $output .= '</div>';
                 }
+
+                $output .= '<div id="' . $key . '_tab" class="' . $class . '">';
+                $output .= $panel->loadTemplate();
+                $output .= '</div>';
+
                 $x++;
             }
 
