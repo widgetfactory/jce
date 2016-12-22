@@ -1,33 +1,42 @@
 /* CSS file for Manager plugin */
 
-.uk-browser-top .uk-form, .uk-browser-bottom .uk-tabs + .uk-form {
-    height: 55%;
-}
-.uk-browser .uk-tabs {
-  min-height: 45%;
-  position: relative;
-}
-.uk-browser-external .uk-tabs {
-  height: 100%;
-}
-.uk-browser-top .uk-form {
-  top: -45%;
-  position: relative;
-}
-.uk-browser-top .uk-tabs {
-  top: 56%;
-  position: relative;
-}
-.uk-browser-external + .uk-modal-footer .uk-button-refresh {
-  display: none;
-}
-.uk-browser-external .uk-tabs .uk-tab + .uk-switcher {
-  height: calc(100% - 33px);
-  height: 89%;
+.uk-browser-top .uk-form,
+.uk-browser-bottom .uk-tabs+.uk-form {
+    height: 57%;
 }
 
-.uk-browser-external .uk-form-row + .uk-form-row {
+.uk-browser .uk-tabs {
+    min-height: 43%;
+    position: relative;
+}
+
+.uk-browser-top .uk-form {
+    top: -43%;
+    position: relative;
+}
+
+.uk-browser-top .uk-tabs {
+    top: 58%;
+    position: relative;
+}
+
+.uk-browser-external .uk-tabs {
+    height: 100%;
+}
+
+.uk-browser-external+.uk-modal-footer .uk-button-refresh {
+    display: none;
+}
+
+.uk-browser-external .uk-tabs .uk-tab+.uk-switcher {
+    height: calc(100% - 33px);
+    height: 89%;
+}
+
+.uk-browser-external .uk-form-row+.uk-form-row {
     margin-top: 15px;
 }
 
-#margin_check {margin: 8px 5px;}
+#margin_check {
+    margin: 8px 5px;
+}
