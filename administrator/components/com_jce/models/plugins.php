@@ -47,6 +47,10 @@ class WFModelPlugins extends WFModel {
 
           if ($data) {
               foreach ($data as $name => $attribs) {
+                  // skip if the plugin file is missing
+                  if (!is_file(WF_EDITOR_PLUGINS . '/' . $name . '/editor_plugin.js')) {
+                      continue;
+                  }
                   // update attributes
                   $attribs->type = "plugin";
                   $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
@@ -54,7 +58,7 @@ class WFModelPlugins extends WFModel {
                   // compatability
                   $attribs->name = $name;
                   // pass to array
-                  $plugins[$name] = $attribs;   
+                  $plugins[$name] = $attribs; 
               }
           }
           // get pro json
@@ -66,6 +70,10 @@ class WFModelPlugins extends WFModel {
 
                     if ($data) {
                         foreach ($data as $name => $attribs) {
+                            // skip if the plugin file is missing
+                            if (!is_file(WF_EDITOR_PLUGINS . '/' . $name . '/editor_plugin.js')) {
+                                continue;
+                            }
                             // update attributes
                             $attribs->type = "plugin";
                             $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
