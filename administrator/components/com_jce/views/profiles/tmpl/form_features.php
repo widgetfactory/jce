@@ -143,7 +143,7 @@ if (strpos($theme, '.') === false) {
     <div id="profileAdditionalFeatures" class="adminformlist">
         <?php
         $i = 0;
-        foreach ($this->plugins as $plugin) :
+        foreach ($this->plugins as $name => $plugin) :
             if (!$plugin->icon) :
                 if ($plugin->editable) :
                     ?>
@@ -151,8 +151,8 @@ if (strpos($theme, '.') === false) {
                         <label class="control-label"><?php echo WFText::_($plugin->title); ?></label>
                         <div class="controls">
                           <label class="checkbox">
-                            <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                            <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                            <input type="checkbox" value="<?php echo $name; ?>" <?php echo in_array($name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
+                            <?php echo WFText::_('WF_' . strtoupper($name) . '_DESC'); ?>
                           </label>
                         </div>
                     </div>
@@ -161,8 +161,8 @@ if (strpos($theme, '.') === false) {
                         <label class="control-label"><?php echo WFText::_($plugin->title); ?></label>
                         <div class="controls">
                           <label class="checkbox">
-                            <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                            <?php echo WFText::_('WF_' . strtoupper($plugin->name) . '_DESC'); ?>
+                            <input type="checkbox" value="<?php echo $name; ?>" <?php echo in_array($name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
+                            <?php echo WFText::_('WF_' . strtoupper($name) . '_DESC'); ?>
                           </label>
                         </div>
                     </div>
