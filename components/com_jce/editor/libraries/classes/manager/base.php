@@ -234,7 +234,8 @@ class WFMediaManagerBase extends WFEditorPlugin {
             $textcase = count($textcase) > 1 ? 'any' : array_shift($textcase);
         }
         
-        $filter = $this->getParam('dir_filter', array());
+        $filter = (array) $this->getParam('editor.dir_filter', array());
+
         // remove empty values
         $filter = array_filter($filter);
 
