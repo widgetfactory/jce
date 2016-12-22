@@ -12,7 +12,7 @@
         "description": "WF_IFRAME_DESC",
         "icon": "iframe",
         "editable": 1,
-        "row": 0,
+        "row": 4,
         "core": 1
     },
     "filemanager": {
@@ -59,16 +59,16 @@
         "title": "WF_SOURCE_TITLE",
         "description": "WF_SOURCE_DESC",
         "icon": "",
-        "editable": "1",
-        "row": "0",
-        "core": "1"
+        "editable": 1,
+        "row": 0,
+        "core": 1
     },
     "textpattern": {
         "title": "WF_TEXTPATTERN_TITLE",
         "description": "WF_TEXTPATTERN_DESC",
         "icon": "",
-        "editable": "0",
-        "row": "4",
-        "core": "1"
+        "editable": 0,
+        "row": 4,
+        "core": 1
     }
 }
