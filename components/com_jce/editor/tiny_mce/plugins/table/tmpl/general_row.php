@@ -33,7 +33,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <option value="right"><?php echo WFText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select></div>
 </div>
-<div class="uk-form-row">
+<!--div class="uk-form-row">
     <label class="uk-form-label uk-width-3-10" for="valign">
         <?php echo WFText::_('WF_TABLE_VALIGN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
@@ -43,7 +43,7 @@ defined('_JEXEC') or die('RESTRICTED');
             <option value="middle"><?php echo WFText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
             <option value="bottom"><?php echo WFText::_('WF_TABLE_ALIGN_BOTTOM'); ?></option>
         </select></div>
-</div>
+</div-->
 <div class="uk-form-row">
     <label class="uk-form-label uk-width-3-10" for="height">
         <?php echo WFText::_('WF_TABLE_HEIGHT'); ?></label>
