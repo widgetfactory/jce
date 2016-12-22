@@ -127,14 +127,6 @@
         "row": "2",
         "editable": "1"
     },
-    "fullpage": {
-        "title": "WF_FULLPAGE_TITLE",
-        "description": "WF_FULLPAGE_DESC",
-        "icon": "fullpage",
-        "editable": "1",
-        "row": "4",
-        "core": "1"
-    },
     "fullscreen": {
         "title": "WF_FULLSCREEN_TITLE",
         "description": "WF_FULLSCREEN_DESC",
@@ -275,14 +267,6 @@
         "title": "WF_TEXTCASE_TITLE",
         "description": "WF_TEXTCASE_DESC",
         "icon": "textcase",
-        "editable": "0",
-        "row": "4",
-        "core": "1"
-    },
-    "textpattern": {
-        "title": "WF_TEXTPATTERN_TITLE",
-        "description": "WF_TEXTPATTERN_DESC",
-        "icon": "",
         "editable": "0",
         "row": "4",
         "core": "1"
