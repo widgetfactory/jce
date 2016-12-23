@@ -67,9 +67,7 @@ class pkg_jceInstallerScript {
 		$installer->set('current_version', $version);
 	}
 	
-	public function postflight($type, $parent) {
-		$db = JFactory::getDBO();
-		
+	public function postflight($type, $parent) {		
 		$extension = JTable::getInstance('extension');
 		
 		// remove "jcefilebrowser" quickicon
@@ -78,39 +76,6 @@ class pkg_jceInstallerScript {
 		if ($id) {
 			$installer = new JInstaller();
 			$installer->uninstall('plugin', $id);
-		}
-
-		// clean up updates for pro 
-		if (is_dir(JPATH_SITE . '/components/com_jce/editor/libraries/pro')) {
-			$id = $extension->find(array('type' => 'package', 'folder' => '', 'element' => 'pkg_jce'));
-
-			if ($id) {
-				// remove non-pro update site
-				$query = $db->getQuery(true)
-					->select('update_site_id')
-					->from('#__update_sites')
-					->where('update_site_id = ' . (int) $id)
-					->where('location  LIKE ' . $db->quote('%file=pkg_jce.xml'));
-				$db->setQuery($query);
-				
-				$uid = (int) $db->loadResult();
-
-				if ($uid) {
-					// delete update_sites
-					$query = $db->getQuery(true)
-					->delete($db->quoteName('#__update_sites'))
-					->where($db->quoteName('update_site_id') . ' = ' . $uid);
-					$db->setQuery($query);
-					$db->execute();
-
-					// delete update_site_extension
-					$query = $db->getQuery(true)
-					->delete($db->quoteName('#__update_sites_extensions'))
-					->where($db->quoteName('update_site_id') . ' = ' . $uid);
-					$db->setQuery($query);
-					$db->execute();
-				}
-			}
 		}
 	}
 }
