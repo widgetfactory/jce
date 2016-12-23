@@ -82,7 +82,12 @@ class JoomlalinksMenu extends JObject {
                     $class = array();
 
                     if (defined('JPATH_PLATFORM')) {
-                        $params = new JRegistry($menu->params);
+                        // bypass errors in menu parameters syntax
+                        try {
+                            $params = new JRegistry($menu->params);
+                        } catch (Exception $e) {
+                            $params = new JRegistry();
+                        }
                     } else {
                         $params = new JParameter($menu->params);
                     }
@@ -172,6 +177,7 @@ class JoomlalinksMenu extends JObject {
                 }
                 break;
         }
+
         return $items;
     }
 
@@ -197,7 +203,7 @@ class JoomlalinksMenu extends JObject {
         return $link;
     }
 
-    private static function _resolveLink($menu, $secure) {
+    private static function _resolveLink($menu) {
         $wf = WFEditorPlugin::getInstance();
 
         // get link from menu object
