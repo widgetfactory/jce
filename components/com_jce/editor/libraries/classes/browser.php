@@ -527,7 +527,7 @@ class WFFileBrowser extends JObject {
      * @param string $dir The relative path of the folder to search
      * @return Tree html string
      */
-    public function getTree($path) {
+    public function getTree($path = "") {
         $filesystem = $this->getFileSystem();
 
         // decode path
