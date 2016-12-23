@@ -765,6 +765,10 @@
             var tableElm = dom.getParent(ed.selection.getStart(), "table");
             var rows = tableElm.rows;
 
+            if (!rows.length) {
+                rows.push(tr_elm);
+            }
+
             function setAttrib(elm, name, value) {
                 if (rows.length === 1 || value) {
                     dom.setAttrib(elm, name, value);
@@ -849,8 +853,6 @@
                 // set tr_elm to the new node
                 tr_elm = newRow;
             }
-
-            dom.setAttrib(tr_elm, 'style', dom.serializeStyle(dom.parseStyle(tr_elm.style.cssText)));
         },
         makeAttrib: function(attrib, value) {
             if (typeof(value) == "undefined" || value == null) {
@@ -892,7 +894,6 @@
                         }
                     }
                 });
-
 
                 ed.addVisual();
                 ed.nodeChanged();
@@ -945,6 +946,10 @@
             var celltype = $('#celltype').val();
 
             var cells = ed.dom.select('td.mceSelected,th.mceSelected');
+
+            if (!cells.length) {
+                cells.push(td);
+            }
 
             function setAttrib(elm, name, value) {
                 if (cells.length === 1 || value) {
@@ -1007,8 +1012,6 @@
                 td.parentNode.replaceChild(newCell, td);
                 td = newCell;
             }
-
-            dom.setAttrib(td, 'style', dom.serializeStyle(dom.parseStyle(td.style.cssText)));
 
             return td;
         },
