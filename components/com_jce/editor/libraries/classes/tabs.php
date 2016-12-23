@@ -104,9 +104,7 @@ final class WFTabs extends JObject {
     public function addTab($tab, $state = 1, $values = array()) {
         if (!array_key_exists($tab, $this->_tabs)) {
 
-            if ((int) $state === 1) {
-                $this->_tabs[$tab] = $tab;
-            }
+            $this->_tabs[$tab] = (int) $state === 1 ? $tab : "";
 
             $panel = $this->addPanel($tab, $state);
 
@@ -158,14 +156,18 @@ final class WFTabs extends JObject {
 
             $x = 0;
 
-            foreach ($this->_tabs as $tab) {
+            foreach ($this->_tabs as $name => $tab) {
                 $class = "";
 
                 if ($x === 0) {
                     $class .= " uk-active";
                 }
 
-                $output .= "\t" . '<li class="' . $class . '"><a href="#' . $tab . '_tab">' . WFText::_('WF_TAB_' . strtoupper($tab)) . '</a></li>' . "\n";
+                if (!$tab) {
+                    $class .= " uk-hidden";
+                }
+
+                $output .= "\t" . '<li class="' . $class . '"><a href="#' . $name . '_tab">' . WFText::_('WF_TAB_' . strtoupper($name)) . '</a></li>' . "\n";
                 $x++;
             }
 
