@@ -100,7 +100,7 @@
             }
 
             // trigger colour changes
-            $('#bgcolor, #borderColor').change(function() {
+            $('#bgcolor, #bordercolor').change(function() {
                 self.changedColor(this);
             });
             // background-image change
@@ -1089,11 +1089,6 @@
 
             if (id === 'bordercolor' && v !== '') {
                 st['border-color'] = v;
-
-                // Add border-width if it's missing
-                if (!st['border-width']) {
-                    st['border-width'] = this.cssSize($('#border').val(), 1);
-                }
             }
 
             $('#style').val(dom.serializeStyle(st));
