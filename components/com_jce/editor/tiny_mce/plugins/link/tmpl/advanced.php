@@ -57,6 +57,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <div class="uk-form-controls uk-width-7-10 uk-datalist">
           <input type="text" id="rel" />
           <select>
+                <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="nofollow">No Follow</option>
                 <option value="alternate">Alternate</option>
                 <option value="designates">Designates</option>
