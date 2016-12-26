@@ -29,7 +29,7 @@ class WFFileBrowserPlugin extends WFMediaManager {
         parent::__construct($config);
 
         // get the plugin that opened the file browser
-        $caller     = JRequest::getWord('caller', 'browser');
+        $caller     = $this->get('caller', 'browser');
         $filter     = JRequest::getVar('filter', 'files');
 
         // clean filter value
