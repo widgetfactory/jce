@@ -190,9 +190,9 @@
                 }
 
                 // checkbox
-                if ($(n).hasClass('uk-item-checkbox')) {
+                /*if ($(n).hasClass('uk-item-checkbox')) {
                     n = n.firstChild;
-                }
+                }*/
 
                 if (n.nodeName === "LI") {
                     if ($(n).hasClass('folder')) {
