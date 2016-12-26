@@ -789,7 +789,6 @@
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-file-o uk-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i>';
                     h += '  <a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
-                    //h += '      <span class="uk-item-text uk-width-1-4 uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
                     h += '  </a>';
                     h += '  <span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
