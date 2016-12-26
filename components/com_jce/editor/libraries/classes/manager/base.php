@@ -56,7 +56,13 @@ class WFMediaManagerBase extends WFEditorPlugin {
      * @return object WFBrowserExtension
      */
     protected function getFileBrowser() {
-        $name = $this->getName();
+        $name   = $this->getName();
+        $caller = $this->get('caller'); 
+
+        // add caller if set
+        if ($caller) {
+            $name .= '.' . $caller;    
+        }
 
         if (!isset(self::$browser[$name])) {
             self::$browser[$name] = new WFFileBrowser($this->getFileBrowserConfig());
