@@ -52,7 +52,8 @@ class WFControllerEditor extends WFControllerBase {
 
                 case 'plugin':
                     if (strpos($plugin, '.') !== false) {
-                      list($plugin, $caller) = explode('.', $plugin);
+                        $parts = explode('.', $plugin);
+                        $plugin = $parts[0];
                     }
 
                     $path = WF_EDITOR_PLUGINS . '/' . $plugin;
