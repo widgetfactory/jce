@@ -246,7 +246,7 @@ class WFMediaManagerBase extends WFEditorPlugin {
         $filter = array_filter($filter);
 
         $base = array(
-            'dir' => $this->getParam('dir', '', '', 'string', false),
+            'dir' => $this->getParam('dir'),
             'filesystem'  => $this->getFileSystem(),
             'filetypes'   => $filetypes,
             'filter'      => $filter,
