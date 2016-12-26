@@ -78,14 +78,17 @@ class pkg_jceInstallerScript {
 			$installer->uninstall('plugin', $id);
 		}
 
-		if (JPluginHelper::getPlugin('extension', 'joomla')) {
-			$plugin = new PlgExtensionJoomla();
+		$plugin = JPluginHelper::getPlugin('extension', 'joomla');
+
+		if ($plugin) {
+			$dispatcher = JEventDispatcher::getInstance();
+			$plg_extension_joomla = new PlgExtensionJoomla($dispatcher, (array) $plugin);
 
 			// find and remove package
 			$component_id = $extension->find(array('type' => 'component', 'element' => 'com_jce'));
 
 			if ($component_id) {
-				$plugin->onExtensionAfterUninstall($parent, $component_id, true);
+				$plg_extension_joomla->onExtensionAfterUninstall($parent, $component_id, true);
 			}
 
 			// find and remove package
@@ -93,9 +96,9 @@ class pkg_jceInstallerScript {
 
 			if ($package_id) {
 				// remove
-				$plugin->onExtensionAfterUninstall($parent, $package_id, true);
+				$plg_extension_joomla->onExtensionAfterUninstall($parent, $package_id, true);
 				// install
-				$plugin->onExtensionAfterInstall($parent, $package_id);
+				$plg_extension_joomla->onExtensionAfterInstall($parent, $package_id);
 			}
 		}
 	}
