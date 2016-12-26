@@ -423,12 +423,11 @@ class WFEditorPlugin extends JObject {
             // no root key set, treat as shared param
         } else {
             // get fallback param from editor key
-            $fallback = $wf->getParam('editor.' . $key, $fallback, $allowempty);
+            $fallback = $wf->getParam('editor.' . $key, $fallback, $default, $type, $allowempty);
 
             if ($caller) {
                 // get fallback from plugin (with editor parameter as fallback)
                 $fallback = $wf->getParam($name . '.' . $key, $fallback, $default, $type, $allowempty);
-                // set name to caller
                 $name = $caller;
             }
 
