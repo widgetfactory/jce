@@ -742,7 +742,7 @@
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                         data.join(' ') +
-                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }

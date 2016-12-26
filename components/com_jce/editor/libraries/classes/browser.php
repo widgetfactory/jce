@@ -589,7 +589,7 @@ class WFFileBrowser extends JObject {
                 . ' <div class="uk-tree-row">'
                 . '   <a href="#">'
                 . '     <span class="uk-tree-icon" role="presentation"></span>'
-                . '     <span class="uk-tree-text">' . $folder['name'] . '</span>'
+                . '     <span class="uk-tree-text uk-width-4-5 uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>'
                 . '   </a>'
                 .' </div>';
 

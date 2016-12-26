@@ -11,6 +11,7 @@
 .uk-tree a {
     display: inline-block;
     width: calc(100% - 24px);
+    white-space: nowrap;
 }
 
 .uk-tree a,

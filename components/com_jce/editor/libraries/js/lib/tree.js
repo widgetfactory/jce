@@ -268,7 +268,7 @@
 
                         html += '</span>';
 
-                        html += '<span class="uk-tree-text uk-margin-small-left">' + name + '</span>';
+                        html += '<span class="uk-tree-text uk-width-4-5 uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
                         html += '</a></div>';
 
                         $(li).attr({ 'id': self._escape(encodeURI(node.id)) }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
