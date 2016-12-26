@@ -77,5 +77,26 @@ class pkg_jceInstallerScript {
 			$installer = new JInstaller();
 			$installer->uninstall('plugin', $id);
 		}
+
+		if (JPluginHelper::getPlugin('extension', 'joomla')) {
+			$plugin = new PlgExtensionJoomla();
+
+			// find and remove package
+			$component_id = $extension->find(array('type' => 'component', 'element' => 'com_jce'));
+
+			if ($component_id) {
+				$plugin->onExtensionAfterUninstall($parent, $component_id, true);
+			}
+
+			// find and remove package
+			$package_id = $extension->find(array('type' => 'package', 'element' => 'pkg_jce'));
+
+			if ($package_id) {
+				// remove
+				$plugin->onExtensionAfterUninstall($parent, $package_id, true);
+				// install
+				$plugin->onExtensionAfterInstall($parent, $package_id);
+			}
+		}
 	}
 }
