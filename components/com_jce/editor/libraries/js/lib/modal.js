@@ -599,6 +599,7 @@
                         })("application/x-director,dcr," + "application/x-mplayer2,wmv wma avi," + "video/divx,divx," + "application/x-shockwave-flash,swf swfl," + "audio/mpeg,mpga mpega mp2 mp3," + "audio/ogg,ogg spx oga," + "audio/x-wav,wav," + "video/mpeg,mpeg mpg mpe," + "video/mp4,mp4 m4v," + "video/ogg,ogg ogv," + "video/webm,webm," + "video/quicktime,qt mov," + "video/x-flv,flv," + "video/vnd.rn-realvideo,rv," + "video/3gpp,3gp," + "video/x-matroska,mkv");
 
                         var ext = Wf.String.getExt(url);
+                        ext = ext.toLowerCase();
                         var mt = mimes[ext];
                         var type, props;
 
@@ -665,7 +666,7 @@
                                         if (type == 'video') {
                                             $(div).append('<video autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></video>');
                                         } else {
-                                            $(div).append('<audio autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></audio>');
+                                            $(div).addClass('media-preview-audio').append('<audio autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></audio>');
                                         }
                                     } else if (/^m(p3|p4|4v)$/i.test(ext)) {
                                         url = Wf.URL.toAbsolute(url);
