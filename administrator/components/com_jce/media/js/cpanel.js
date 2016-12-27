@@ -49,7 +49,7 @@
                         }
 
                         if (r.error) {
-                            var $list = $('.ui-jce dl').append('<dt>' + o.labels.updates + '</dt><dd class="label label-important"><i class="icon-exclamation-sign icon-warning icon-white"></i>&nbsp;' + r.error + '</dd>');
+                            var $list = $('.ui-jce dl').append('<dt>' + o.labels.updates + '</dt><dd><span class="label label-important"><i class="icon-exclamation-sign icon-warning icon-white"></i>&nbsp;' + r.error + '</span></dd>');
                             return false;
                         }
 
