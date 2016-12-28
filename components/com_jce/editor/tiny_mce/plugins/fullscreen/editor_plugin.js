@@ -115,6 +115,9 @@
 
                         // set textarea height
                         DOM.setStyle(element, 'height', vp.h - header.offsetHeight - 10);
+
+                        // set textarea width
+                        DOM.setStyle(element, 'width', '100%');
                     }, 0);
 
                     // restore bookmark
