@@ -170,7 +170,7 @@
             });
 
             // submit on enter
-            /*$(div).one('keyup.modal', function(e) {
+            $(div).one('keyup.modal', function(e) {
                 if (e.which === 13) {
                     // cancel default behaviour
                     e.preventDefault();
@@ -190,7 +190,7 @@
                         $(this).trigger('modal.close');
                     }
                 }
-            });*/
+            });
 
             // create modal
             $(div).appendTo(options.container);
