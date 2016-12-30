@@ -15,7 +15,15 @@ defined('_JEXEC') or die('RESTRICTED');
 class pkg_jceInstallerScript {
 	
 	private function isPro() {
-		require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/constants.php');
+		$file = JPATH_ADMINISTRATOR . '/components/com_jce/includes/constants.php';
+
+		// new install so not pro
+		if (!is_file($file)) {
+			return false;
+		}
+		
+		include_once($file);
+
 		return defined('WF_EDITOR_PRO') && WF_EDITOR_PRO;
 	}
 
