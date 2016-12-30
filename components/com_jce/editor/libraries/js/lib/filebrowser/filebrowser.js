@@ -1650,13 +1650,14 @@
             // normalise class name
             var cls = name.replace(/_/g, '-');
 
-            // create button element
-            var action = document.createElement('button');
+            // create anchor element
+            var action = document.createElement('a');
 
             $(action).addClass('action uk-button');
 
             if (name) {
                 $(action).attr({
+                    'role': 'button',
                     'id': name,
                     'title': o.title,
                     'labelledby': name + '_label'
@@ -1748,10 +1749,10 @@
             };
 
             // only create button type once
-            var button = $('div.' + o.name, $('#browser-buttons'));
+            var button = $('a.' + o.name, $('#browser-buttons'));
 
             if (!button.length) {
-                button = document.createElement('div');
+                button = document.createElement('a');
 
                 $(button).attr({
                     'title': o.title,
