@@ -1,11 +1,15 @@
 html,
 body {
     overflow: initial !important;
-    height: initial !important;
+}
+
+html {
+    height: 100%
 }
 
 .mceContentBody {
-    height: auto !important;
+    height: 100%;
+    height: calc(100% - 10px);
     min-width: 90%;
     padding: 5px;
 }
@@ -14,8 +18,8 @@ body {
     color: #000;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
-    margin: 8px;
     background: #FFF;
+    margin: initial;
 }
 
 body.mceContentReset {
