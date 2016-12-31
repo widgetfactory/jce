@@ -2,7 +2,7 @@
 
 /**
 * @package   	JCE
-* @copyright 	Copyright (c) 2009-2016 Ryan Demmer. All rights reserved.
+* @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 * JCE is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -30,7 +30,7 @@ function com_install()
         $installer->uninstall('module', $id);
     }
     
-    $instance   = JInstaller::getInstance();
+    $instance = JInstaller::getInstance();
 
     if (!is_file($instance->getPath('extension_administrator') . '/install.php')) {
         return false;
@@ -78,7 +78,20 @@ function com_install()
         }
     }
     
-    return WFInstall::install($instance);
+    $state = WFInstall::install($instance);
+
+	if ($state) {        
+        if (!is_dir($instance->getPath('extension_site') . '/editor/libraries/pro')) {
+            $message  = '<div class="ui-jce"><style type="text/css" scoped="scoped">.ui-jce .alert{padding:15px;margin:5px 0 0;border:1px solid #bce8f1;color:#3a87ad;background-color:#d9edf7;}.ui-jce .alert h4 {font-size:1.2em;margin:0;line-height: 26px;}.ui-jce .btn{padding:6px 12px;color:#fff;background-color:#006dcc;border-radius:4px;margin-left:10px;}</style>';
+            $message .= $instance->get('message');
+            $message .= file_get_contents(JPATH_ADMINISTRATOR . '/components/com_jce/views/cpanel/tmpl/default_pro_footer.php');
+            $message .= '</div>';
+			
+			$instance->set('message', $message);
+        }
+	}
+
+    return $state;
 }
 
 /**
