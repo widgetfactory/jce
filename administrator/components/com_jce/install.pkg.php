@@ -55,12 +55,23 @@ class pkg_jceInstallerScript {
                 $plugin->store();    
             }
         }
+		
+		// get installer reference
+		$installer = method_exists($parent, 'getParent') ? $parent->getParent() : $parent->parent;
 
 		require_once(JPATH_ADMINISTRATOR . '/components/com_jce/install.php');
-		
-		$installer = method_exists($parent, 'getParent') ? $parent->getParent() : $parent->parent;
-		
-		return WFInstall::install($installer);
+
+		$state = WFInstall::install($installer);
+
+		if ($state) {
+			if ((string) $installer->manifest->variant !== "pro") {
+                $message  = $installer->get('message');
+				$message .= file_get_contents(JPATH_ADMINISTRATOR . '/components/com_jce/views/cpanel/tmpl/default_pro_footer.php');
+				$installer->set('message', $message);
+            }
+		}
+
+		return $state;
 	}
 	
 	public function uninstall() {
