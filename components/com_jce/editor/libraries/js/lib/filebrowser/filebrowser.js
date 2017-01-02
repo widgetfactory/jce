@@ -1940,7 +1940,7 @@
          * Show the paste button
          */
         _showPasteButton: function() {
-            this._showButton($('div.paste', '#browser-buttons'), true, true);
+            this._showButton($('a.paste', '#browser-buttons'), true, true);
         },
         /**
          * Determine whether an item is selected
