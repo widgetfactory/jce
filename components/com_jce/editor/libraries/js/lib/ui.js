@@ -313,6 +313,14 @@
             }
         }
 
+        // reset
+        $(this).on('accordion:reset', function(e) {
+            // collapse all content
+            $('.uk-accordion-content', el).height(0);
+            // deactivate title
+            $('.uk-accordion-title', el).removeClass('uk-active');
+        });
+
         return this;
     };
 
