@@ -95,10 +95,6 @@ label {
     border-color: #ddd;
 }
 
-.uk-form input[type="range"] {
-    height: 28px;
-}
-
 
 /* modal */
 
@@ -417,7 +413,6 @@ input[type=range] {
     -webkit-appearance: none;
     max-width: 100%;
     border-radius: 0;
-    height: 3px;
     border: 0 none;
     background-color: #fff;
 }
@@ -428,22 +423,22 @@ input[type='range']::-webkit-slider-thumb {
     border: 1px solid #bdc3c7;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
+    border-radius: 0;
     cursor: pointer;
-    margin-top: -4px;
+    margin-top: -1px;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     border-radius: 0;
-    height: 3px;
+    height: 10px;
     border: 1px solid #bdc3c7;
     background-color: #fff;
 }
 
 input[type=range]::-moz-range-track {
     border-radius: 0;
-    height: 3px;
+    height: 10px;
     border: 1px solid #bdc3c7;
     background-color: #fff;
 }
@@ -453,7 +448,7 @@ input[type=range]::-moz-range-thumb {
     border: 1px solid #bdc3c7;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
+    border-radius: 0;
     cursor: pointer;
 }
 
@@ -464,7 +459,7 @@ input[type="range"]::-ms-fill-upper {
 
 input[type="range"]::-ms-track {
     border-radius: 0;
-    height: 3px;
+    height: 10px;
     border: 1px solid #bdc3c7;
     background-color: #fff;
 }
@@ -474,7 +469,7 @@ input[type="range"]::-ms-thumb {
     border: 1px solid #bdc3c7;
     width: 10px;
     height: 10px;
-    border-radius: 50%;
+    border-radius: 0;
     cursor: pointer;
 }
 
