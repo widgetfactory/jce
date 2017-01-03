@@ -1813,7 +1813,7 @@
         _hideAllButtons: function() {
             var self = this;
 
-            $('div.button').each(function() {
+            $('a.button', '#browser-buttons').each(function() {
                 self._hideButton(this);
             });
 
