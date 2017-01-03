@@ -112,7 +112,7 @@ class WFMediaManagerBase extends WFEditorPlugin {
     }
 
     public function getFileTypes() {
-        return $this->getFileBrowser()->getFileTypes();
+        return $this->getFileBrowser()->getFileTypes("array");
     }
 
     protected function setFileTypes($filetypes) {
