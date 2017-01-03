@@ -383,11 +383,6 @@
                 $('#celltype').val(celltype);
                 $('#scope').val(scope);
 
-                // Resize some elements
-                if ($('#backgroundimagebrowser').is(':visible')) {
-                    $('#backgroundimage').width(180);
-                }
-
                 $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 $('#action').hide();
@@ -1087,7 +1082,7 @@
                 st['background-color'] = v;
             }
 
-            if (id === 'bordercolor' && v !== '') {
+            if (id === 'bordercolor') {
                 st['border-color'] = v;
             }
 
