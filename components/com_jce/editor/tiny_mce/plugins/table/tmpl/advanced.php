@@ -40,8 +40,7 @@ defined('_JEXEC') or die('RESTRICTED');
     <label class="uk-form-label uk-width-3-10" for="style">
             <?php echo WFText::_('WF_TABLE_STYLE'); ?></label>
         <div class="uk-form-controls uk-width-7-10">
-            <input type="text" id="style" value=""
-                   onchange="TableDialog.changedStyle();"/>
+            <input type="text" id="style" value="" />
         </div>
     </div>
     <div class="uk-form-row">
