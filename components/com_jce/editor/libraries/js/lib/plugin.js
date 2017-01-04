@@ -269,6 +269,11 @@
                         $(this).val(v.substr(1));
                     }
 
+                    // default to black
+                    if (v === "") {
+                        v = "000000";
+                    }
+
                     $(this).trigger('colorpicker:pick', '#' + v);
                 }).change();
 
