@@ -111,6 +111,10 @@
             $('#border').change(function() {
                 self.changedBorder(this);
             });
+            // style
+            $('#style').change(function() {
+                self.changedStyle(this);
+            });
 
             switch (context) {
                 case 'table':
@@ -1097,19 +1101,13 @@
             } else {
                 $('#backgroundimage').val('');
             }
+
             if (st['width']) {
                 $('#width').val(trimSize(st['width']));
             }
 
             if (st['height']) {
                 $('#height').val(trimSize(st['height']));
-            }
-            if (st['background-color']) {
-                $('#bgcolor').val(st['background-color']).change();
-            }
-
-            if (st['border-color']) {
-                $('#bordercolor').val(st['border-color']).change();
             }
 
             if (st['border-spacing']) {
@@ -1123,6 +1121,13 @@
             if (st['vertical-align']) {
                 $('#valign').val(st['vertical-align']);
             }
+
+            // allow these values to be reset
+            var bgcolor = st['background-color'] || "";
+            var bordercolor = st['border-color'] || "";
+
+            $('#bgcolor').val(bgcolor).change();
+            $('#bordercolor').val(bordercolor).change();
         },
         setClasses: function(v) {
             //Wf.setClasses(v);
