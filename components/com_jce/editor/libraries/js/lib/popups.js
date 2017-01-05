@@ -26,7 +26,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {String} n Extension name
      * @param {Object} o Extension object
      */
-    addPopup: function (n, o) {
+    addPopup: function(n, o) {
         this.popups[n] = o;
 
         WFExtensions.addExtension('popups', n, o);
@@ -34,21 +34,25 @@ var WFPopups = WFExtensions.add('Popups', {
     /**
      * Get all popups
      */
-    getPopups: function () {
+    getPopups: function() {
         return this.popups;
     },
-    setup: function () {
-        var self = this, ed = tinyMCEPopup.editor, s = ed.selection, n;
+    setup: function() {
+        var self = this,
+            ed = tinyMCEPopup.editor,
+            s = ed.selection,
+            n;
 
         // setup and trigger change
-        $('#popup_list').change(function () {
+        $('#popup_list').change(function() {
             self.selectPopup(this.value);
         }).change();
 
         if (!s.isCollapsed()) {
             n = s.getNode();
 
-            var state = true, v;
+            var state = true,
+                v;
 
             function setText(state, v) {
                 if (state && v) {
@@ -66,7 +70,7 @@ var WFPopups = WFExtensions.add('Popups', {
             });
 
             if (n) {
-                var children = tinymce.grep(n.childNodes, function (node) {
+                var children = tinymce.grep(n.childNodes, function(node) {
                     return ed.dom.is(node, 'br[data-mce-bogus]') == false;
                 });
 
@@ -77,7 +81,7 @@ var WFPopups = WFExtensions.add('Popups', {
             setText(state, v);
         }
 
-        $.each(this.popups, function (k, v) {
+        $.each(this.popups, function(k, v) {
             self._call('setup', '', v);
         });
 
@@ -87,21 +91,23 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {Object} n Node
      * @param {Object} v Popup type
      */
-    isPopup: function (n, v) {
+    isPopup: function(n, v) {
         return n && n.nodeName == 'A' && this._call('check', n, v);
     },
     /**
      * Get the assigned popup if any from the selected node
      * @param {Object} n Anchor Element / Node
      */
-    getPopup: function (n, index) {
-        var self = this, ed = tinyMCEPopup.editor, popup, popups = this.getPopups();
+    getPopup: function(n, index) {
+        var self = this,
+            ed = tinyMCEPopup.editor,
+            popup, popups = this.getPopups();
 
         if (n.nodeName != 'A') {
             n = ed.dom.getParent(n, 'a');
         }
 
-        $.each(this.popups, function (k, v) {
+        $.each(this.popups, function(k, v) {
             if (self.isPopup(n, k)) {
                 self.popup = k;
             }
@@ -121,14 +127,14 @@ var WFPopups = WFExtensions.add('Popups', {
      * Set the currently selected popup
      * @param {String} s popup name eg: jcemediabox
      */
-    setPopup: function (s) {
+    setPopup: function(s) {
         this.popup = s;
     },
     /**
      * Set Global Configuration
      * @param {Object} config Configuration object
      */
-    setConfig: function (config) {
+    setConfig: function(config) {
         $.extend(this.config, config);
     },
     /**
@@ -136,7 +142,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {String} n Popup type
      * @param {Object} p Parameters object
      */
-    setParams: function (n, p) {
+    setParams: function(n, p) {
         var popup = this.popups[n];
 
         if (popup) {
@@ -150,7 +156,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * Get parameters for a popup type
      * @param {String} n Popup Type
      */
-    getParams: function (n) {
+    getParams: function(n) {
         return this.popups[n].params || {};
     },
     /**
@@ -158,7 +164,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {String} n Popup type
      * @param {String} p Paremeter
      */
-    getParam: function (n, p) {
+    getParam: function(n, p) {
         var params = this.getParams(n);
         return params[p] || null;
     },
@@ -166,14 +172,14 @@ var WFPopups = WFExtensions.add('Popups', {
      * Selects a popup from the popup list
      * @param {Object} s Select element
      */
-    selectPopup: function (v) {
+    selectPopup: function(v) {
         var self = this;
 
         // set as selected popup
         self.popup = v;
 
         // select item
-        $('#popup_list').val(v).children('option').each(function () {
+        $('#popup_list').val(v).children('option').each(function() {
             if (this.value) {
                 // hide all popups
                 $('#popup_extension_' + this.value).hide();
@@ -191,12 +197,12 @@ var WFPopups = WFExtensions.add('Popups', {
      * Set popup extension parameter values to current node
      * @param {Object} n Popup / Link node
      */
-    setAttributes: function (n, args, index) {
+    setAttributes: function(n, args, index) {
         var ed = tinyMCEPopup.editor;
 
         // map values
         if (this.config['map']) {
-            $.each(this.config['map'], function (to, from) {
+            $.each(this.config['map'], function(to, from) {
                 var v = args[from] || $('#' + from).val();
                 ed.dom.setAttrib(n, to, v);
 
@@ -212,8 +218,9 @@ var WFPopups = WFExtensions.add('Popups', {
      * Apply currently selected popup attributes to link element
      * @param {Object} n Link element / node
      */
-    getAttributes: function (n, index) {
-        var ed = tinyMCEPopup.editor, k, v, at, data;
+    getAttributes: function(n, index) {
+        var ed = tinyMCEPopup.editor,
+            k, v, at, data;
 
         if (n || n.nodeName != 'A') {
             n = ed.dom.getParent(n, 'a');
@@ -228,7 +235,7 @@ var WFPopups = WFExtensions.add('Popups', {
     /**
      * Check if popups are enabled (checkbox checked and popup type selected)
      */
-    isEnabled: function () {
+    isEnabled: function() {
         return this.popup;
     },
     /**
@@ -236,13 +243,14 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {Object} n
      * @param {Object} args
      */
-    createPopup: function (n, args, index) {
-        var self = this, ed = tinyMCEPopup.editor, o, el;
+    createPopup: function(n, args, index) {
+        var self = this,
+            ed = tinyMCEPopup.editor,
+            o, el;
         args = args || {};
 
         // Popup option is enabled
         if (this.isEnabled()) {
-
             if (n && (n.nodeName == 'A' || ed.dom.getParent(n, 'A'))) {
                 // get parent node
                 if (n.nodeName != 'A') {
@@ -251,10 +259,12 @@ var WFPopups = WFExtensions.add('Popups', {
 
                 // remove all popups
                 this.removePopups(n);
+
                 // set popup attributes
                 this.setAttributes(n, args, index);
             } else {
-                var se = ed.selection, marker;
+                var se = ed.selection,
+                    marker;
 
                 // no selection
                 if (se.isCollapsed()) {
@@ -265,7 +275,7 @@ var WFPopups = WFExtensions.add('Popups', {
                 } else {
                     var n = n || se.getNode();
 
-                    ed.execCommand('mceInsertLink', false, {'href': '#', 'id': '__mce_tmp'}, {
+                    ed.execCommand('mceInsertLink', false, { 'href': '#', 'id': '__mce_tmp' }, {
                         skip_undo: 1
                     });
 
@@ -284,27 +294,19 @@ var WFPopups = WFExtensions.add('Popups', {
                 }
             }
         } else {
-            var s = false;
-            // is a popup and option not checked - remove
-            $.each(this.popups, function (k, v) {
-                if (self.isPopup(n, v)) {
-                    s = true;
-                }
-            });
-
-            if (s) {
-                ed.dom.remove(n, true);
-            }
+            n = ed.dom.getParent(n, 'A');
+            // remove link
+            ed.dom.remove(n, true);
         }
     },
     /**
      * Remove all popups from the current link node
      */
-    removePopups: function (n) {
+    removePopups: function(n) {
         var self = this;
 
-        $.each(this.popups, function (k, v) {
-            self._call('remove', n, v);
+        $.each(this.popups, function(k, v) {
+            self._call('remove', n, k);
         });
 
     },
@@ -312,7 +314,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * Function called when a file is selected
      * @param {Object} args Arguments object eg: {src : url, width : 640, height : 480}
      */
-    onSelectFile: function (args) {
+    onSelectFile: function(args) {
         this._call('onSelectFile', args);
     },
     /**
@@ -321,7 +323,7 @@ var WFPopups = WFExtensions.add('Popups', {
      * @param {Array} args Array of arguments
      * @param {String} popup popup type to call function on
      */
-    _call: function (fn, args, popup) {
+    _call: function(fn, args, popup) {
         if (!popup) {
             popup = this.popup;
         }
@@ -329,10 +331,11 @@ var WFPopups = WFExtensions.add('Popups', {
         if (typeof popup == 'string') {
             popup = this.popups[popup] || {};
         }
+
         fn = popup[fn];
 
-        if (fn) {
-            if (typeof args == 'object' && args instanceof Array) {
+        if (typeof fn === "function") {
+            if ($.type(args) === "array") {
                 return fn.apply(popup, args);
             } else {
                 return fn.call(popup, args);
