@@ -14,8 +14,8 @@ defined('_JEXEC') or die('RESTRICTED');
 $position = 'mce' . ucfirst($this->profile->layout_params->get('toolbar_align', 'left'));
 
 // width and height
-$width  = $this->profile->layout_params->get('editor_width', 800);
-$height = $this->profile->layout_params->get('editor_height', 'auto');
+$width  = $this->profile->layout_params->get('width', 800);
+$height = $this->profile->layout_params->get('height', 'auto');
 
 if (is_numeric($width) || strpos('%', $width) === false) {
     $width .= 'px';
