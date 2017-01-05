@@ -27,6 +27,22 @@ body.mceContentReset {
     color: #000000 !important;
 }
 
+
+/* https://www.w3.org/TR/html5/rendering.html#phrasing-content-0 */
+
+body.mceContentReset a,
+body.mceContentReset a:link {
+    color: #0000EE;
+}
+
+body.mceContentReset a:visited {
+    color: #551A8B;
+}
+
+body.mceContentReset a:active {
+    color: #EE0000;
+}
+
 body[dir="ltr"].mceContentReset {
     text-align: left !important;
 }
