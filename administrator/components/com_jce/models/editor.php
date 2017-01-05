@@ -146,10 +146,6 @@ class WFModelEditor extends WFModelBase {
                 $settings['theme_advanced_' . $k] = $wf->getParam('editor.' . $k, $v[0], $v[1], $v[2]);
             }
 
-            if (!$wf->getParam('editor.use_cookies', 1)) {
-                $settings['theme_advanced_resizing_use_cookie'] = false;
-            }
-
             $settings['width'] = $wf->getParam('editor.width');
             $settings['height'] = $wf->getParam('editor.height');
 

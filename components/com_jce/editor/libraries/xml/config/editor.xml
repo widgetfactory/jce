@@ -66,10 +66,6 @@
 		</param>
 	</params>
 	<params group="advanced">
-		<param name="use_cookies" type="radio" default="1" label="WF_PARAM_USE_COOKIES" description="WF_PARAM_USE_COOKIES_DESC">
-			<option value="1">WF_OPTION_YES</option>
-			<option value="0">WF_OPTION_NO</option>
-		</param>
 		<param name="custom_config" type="textarea" rows="5" cols="50" default="" spellcheck="false" label="WF_PARAM_CUSTOM_CONFIG" description="WF_PARAM_CUSTOM_CONFIG_DESC" />
 		<param name="callback_file" type="text" default="" size="50" label="WF_PARAM_CALLBACK" description="WF_PARAM_CALLBACK_DESC" />
 	</params>
