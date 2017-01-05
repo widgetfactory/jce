@@ -9,8 +9,13 @@
  * other free or open source software licenses.
  */
 
-(function (tinymce) {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each, Cookie = tinymce.util.Cookie, lastExtID, explode = tinymce.explode;
+(function(tinymce) {
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        extend = tinymce.extend,
+        each = tinymce.each,
+        Cookie = tinymce.util.Cookie,
+        lastExtID, explode = tinymce.explode;
 
     // Tell it to load theme specific language pack(s)
     tinymce.ThemeManager.requireLangPack('advanced');
@@ -58,8 +63,9 @@
         },
         stateControls: ['bold', 'italic', 'underline', 'strikethrough', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'sub', 'sup', 'blockquote'],
 
-        init: function (ed, url) {
-            var t = this, s, v, o;
+        init: function(ed, url) {
+            var t = this,
+                s, v, o;
 
             t.editor = ed;
             t.url = url;
@@ -109,22 +115,40 @@
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
 
             // Init editor
-            ed.onInit.add(function () {
+            ed.onInit.add(function() {
                 if (!ed.settings.readonly) {
                     ed.onNodeChange.add(t._nodeChanged, t);
                     ed.onKeyUp.add(t._updateUndoStatus, t);
                     ed.onMouseUp.add(t._updateUndoStatus, t);
-                    ed.dom.bind(ed.dom.getRoot(), 'dragend', function () {
+                    ed.dom.bind(ed.dom.getRoot(), 'dragend', function() {
                         t._updateUndoStatus(ed);
                     });
                 }
             });
 
-            ed.onSetProgressState.add(function (ed, b, ti) {
-                var co, id = ed.id, tb;
+            ed.onPostRender.add(function() {
+                DOM.setStyle(ed.id + '_tbl', 'width', '');
+
+                var e = DOM.get(ed.id + '_parent'),
+                    ifr = DOM.get(ed.id + '_ifr');
+
+                // Resize iframe and container
+                if (s.height) {
+                    DOM.setStyle(ifr, 'height', s.height);
+                }
+                // Resize iframe and container
+                if (s.width) {
+                    DOM.setStyle(e.parentNode, 'max-width', s.width + 'px');
+                    DOM.setStyle(ifr, 'max-width', s.width + 'px');
+                }
+            });
+
+            ed.onSetProgressState.add(function(ed, b, ti) {
+                var co, id = ed.id,
+                    tb;
 
                 if (b) {
-                    t.progressTimer = setTimeout(function () {
+                    t.progressTimer = setTimeout(function() {
                         co = ed.getContainer();
                         co = co.insertBefore(DOM.create('DIV', {
                             style: 'position:relative'
@@ -164,7 +188,7 @@
                 }
             }
         },
-        _isHighContrast: function () {
+        _isHighContrast: function() {
             var actualColor, div = DOM.add(DOM.getRoot(), 'div', {
                 'style': 'background-color: rgb(171,239,86);'
             });
@@ -174,7 +198,7 @@
 
             return actualColor != 'rgb(171,239,86)' && actualColor != '#abef56';
         },
-        createControl: function (n, cf) {
+        createControl: function(n, cf) {
             var cd, c;
 
             if (c = cf.createControl(n))
@@ -188,7 +212,7 @@
                     value: cd[3]
                 });
         },
-        execCommand: function (cmd, ui, val) {
+        execCommand: function(cmd, ui, val) {
             var f = this['_' + cmd];
 
             if (f) {
@@ -199,8 +223,11 @@
             return false;
         },
 
-        renderUI: function (o) {
-            var n, ic, tb, t = this, ed = t.editor, s = t.settings, sc, p, nl;
+        renderUI: function(o) {
+            var n, ic, tb, t = this,
+                ed = t.editor,
+                s = t.settings,
+                sc, p, nl;
 
             if (ed.settings) {
                 ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
@@ -209,11 +236,11 @@
             var skin = "defaultSkin";
 
             if (ed.settings.skin !== "default") {
-              skin += ' ' + ed.settings.skin + 'Skin';
+                skin += ' ' + ed.settings.skin + 'Skin';
 
-              if (s.skin_variant) {
-                skin += ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant);
-              }
+                if (s.skin_variant) {
+                    skin += ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant);
+                }
             }
 
             n = p = DOM.create('div', {
@@ -244,7 +271,7 @@
 
             DOM.insertAfter(p, n);
 
-            Event.add(ed.id + '_path_row', 'click', function (e) {
+            Event.add(ed.id + '_path_row', 'click', function(e) {
                 e = e.target;
 
                 if (e.nodeName == 'A') {
@@ -257,7 +284,7 @@
             if (!ed.getParam('accessibility_focus')) {
                 Event.add(DOM.add(p, 'a', {
                     href: '#'
-                }, '<!-- IE -->'), 'focus', function () {
+                }, '<!-- IE -->'), 'focus', function() {
                     tinyMCE.get(ed.id).focus();
                 });
             }
@@ -269,8 +296,9 @@
             t.deltaHeight = o.deltaHeight;
             o.targetNode = null;
 
-            ed.onKeyDown.add(function (ed, evt) {
-                var DOM_VK_F10 = 121, DOM_VK_F11 = 122;
+            ed.onKeyDown.add(function(ed, evt) {
+                var DOM_VK_F10 = 121,
+                    DOM_VK_F11 = 122;
 
                 if (evt.altKey) {
                     if (evt.keyCode === DOM_VK_F10) {
@@ -294,13 +322,13 @@
              }*/
 
             return {
-                iframeContainer : ic,
-                editorContainer : ed.id + '_parent',
-                sizeContainer   : sc,
-                deltaHeight     : o.deltaHeight
+                iframeContainer: ic,
+                editorContainer: ed.id + '_parent',
+                sizeContainer: sc,
+                deltaHeight: o.deltaHeight
             };
         },
-        getInfo: function () {
+        getInfo: function() {
             return {
                 longname: 'Advanced theme',
                 author: 'Moxiecode Systems AB',
@@ -308,13 +336,16 @@
                 version: tinymce.majorVersion + "." + tinymce.minorVersion
             };
         },
-        resizeBy: function (dw, dh) {
+        resizeBy: function(dw, dh) {
             var e = DOM.get(this.editor.id + '_ifr');
 
             this.resizeTo(e.clientWidth + dw, e.clientHeight + dh);
         },
-        resizeTo: function (w, h, store) {
-            var ed = this.editor, s = this.settings, e = DOM.get(ed.id + '_parent'), ifr = DOM.get(ed.id + '_ifr');
+        resizeTo: function(w, h, store) {
+            var ed = this.editor,
+                s = this.settings,
+                e = DOM.get(ed.id + '_parent'),
+                ifr = DOM.get(ed.id + '_ifr');
 
             // Boundery fix box
             w = Math.max(s.theme_advanced_resizing_min_width || 100, w);
@@ -341,7 +372,7 @@
             // dispatch
             this.onResize.dispatch();
         },
-        destroy: function () {
+        destroy: function() {
             var id = this.editor.id;
 
             Event.clear(id + '_resize');
@@ -350,8 +381,12 @@
         },
         // Internal functions
 
-        _createLayout: function (s, tb, o, p) {
-            var t = this, ed = t.editor, lo = s.theme_advanced_toolbar_location, sl = s.theme_advanced_statusbar_location, n, ic, etb, c;
+        _createLayout: function(s, tb, o, p) {
+            var t = this,
+                ed = t.editor,
+                lo = s.theme_advanced_toolbar_location,
+                sl = s.theme_advanced_statusbar_location,
+                n, ic, etb, c;
 
             if (s.readonly) {
                 ic = DOM.add(tb, 'div', {
@@ -390,13 +425,13 @@
 
                 t._addToolbars(n, o);
 
-                ed.onMouseUp.add(function () {
+                ed.onMouseUp.add(function() {
                     var e = DOM.get(ed.id + '_external');
                     DOM.show(e);
 
                     DOM.hide(lastExtID);
 
-                    var f = Event.add(ed.id + '_external_close', 'click', function () {
+                    var f = Event.add(ed.id + '_external_close', 'click', function() {
                         DOM.hide(ed.id + '_external');
                         Event.remove(ed.id + '_external_close', 'click', f);
 
@@ -438,13 +473,16 @@
             return ic;
         },
 
-        _addControls: function (v, tb) {
-            var t = this, s = t.settings, ed = t.editor, di, cf = t.editor.controlManager;
+        _addControls: function(v, tb) {
+            var t = this,
+                s = t.settings,
+                ed = t.editor,
+                di, cf = t.editor.controlManager;
 
             if (s.theme_advanced_disable && !t._disabled) {
                 di = {};
 
-                each(explode(s.theme_advanced_disable), function (v) {
+                each(explode(s.theme_advanced_disable), function(v) {
                     di[v] = 1;
                 });
 
@@ -453,7 +491,7 @@
                 di = t._disabled;
             }
 
-            each(explode(v), function (n) {
+            each(explode(v), function(n) {
                 var c;
 
                 if (di && di[n]) {
@@ -467,8 +505,13 @@
                 }
             });
         },
-        _addToolbars: function (c, o) {
-            var t = this, i, tb, ed = t.editor, s = t.settings, v, cf = ed.controlManager, di, n, h = [], a, toolbarGroup, toolbarsExist = false;
+        _addToolbars: function(c, o) {
+            var t = this,
+                i, tb, ed = t.editor,
+                s = t.settings,
+                v, cf = ed.controlManager,
+                di, n, h = [],
+                a, toolbarGroup, toolbarsExist = false;
 
             toolbarGroup = cf.createToolbarGroup('toolbargroup', {
                 'name': ed.getLang('advanced.toolbar'),
@@ -486,7 +529,8 @@
             });
 
             // Create toolbar and add the controls
-            for (i = 1; (v = s['theme_advanced_buttons' + i]); i++) {
+            for (i = 1;
+                (v = s['theme_advanced_buttons' + i]); i++) {
                 toolbarsExist = true;
 
                 tb = cf.createToolbar("toolbar" + i, {
@@ -524,8 +568,11 @@
 
             DOM.setHTML(n, h.join(''));
         },
-        _addStatusBar: function (tb, o) {
-            var n, t = this, ed = t.editor, s = t.settings, r, mf, me, td;
+        _addStatusBar: function(tb, o) {
+            var n, t = this,
+                ed = t.editor,
+                s = t.settings,
+                r, mf, me, td;
 
             n = td = DOM.add(tb, 'div', {
                 'class': 'mceStatusbar'
@@ -547,12 +594,6 @@
                 DOM.add(n, 'span', {}, '&#160;');
             }
 
-            ed.onPostRender.add(function () {
-              t.resizeTo(s.width, s.height, false);
-
-              DOM.setStyle(ed.id + '_tbl', 'width', '');
-            });
-
             if (s.theme_advanced_resizing) {
                 DOM.add(td, 'a', {
                     id: ed.id + '_resize',
@@ -563,8 +604,9 @@
                 });
 
                 if (s.theme_advanced_resizing_use_cookie) {
-                    ed.onPostRender.add(function () {
-                        var o = Cookie.getHash("TinyMCE_" + ed.id + "_size"), c = DOM.get(ed.id + '_tbl');
+                    ed.onPostRender.add(function() {
+                        var o = Cookie.getHash("TinyMCE_" + ed.id + "_size"),
+                            c = DOM.get(ed.id + '_tbl');
 
                         if (!o) {
                             return;
@@ -574,12 +616,12 @@
                     });
                 }
 
-                ed.onPostRender.add(function () {
-                    Event.add(ed.id + '_resize', 'click', function (e) {
+                ed.onPostRender.add(function() {
+                    Event.add(ed.id + '_resize', 'click', function(e) {
                         e.preventDefault();
                     });
 
-                    Event.add(ed.id + '_resize', 'mousedown', function (e) {
+                    Event.add(ed.id + '_resize', 'mousedown', function(e) {
                         var mouseMoveHandler1, mouseMoveHandler2,
                             mouseUpHandler1, mouseUpHandler2,
                             startX, startY, startWidth, startHeight, width, height, ifrElm;
@@ -628,24 +670,29 @@
             o.deltaHeight -= 21;
             n = tb = null;
         },
-        _updateUndoStatus: function (ed) {
-            var cm = ed.controlManager, um = ed.undoManager;
+        _updateUndoStatus: function(ed) {
+            var cm = ed.controlManager,
+                um = ed.undoManager;
 
             cm.setDisabled('undo', !um.hasUndo() && !um.typing);
             cm.setDisabled('redo', !um.hasRedo());
         },
-        _nodeChanged: function (ed, cm, n, co, ob) {
-            var t = this, p, de = 0, v, c, s = t.settings, cl, fz, fn, fc, bc, formatNames, matches;
+        _nodeChanged: function(ed, cm, n, co, ob) {
+            var t = this,
+                p, de = 0,
+                v, c, s = t.settings,
+                cl, fz, fn, fc, bc, formatNames, matches;
 
-            tinymce.each(t.stateControls, function (c) {
+            tinymce.each(t.stateControls, function(c) {
                 cm.setActive(c, ed.queryCommandState(t.controls[c][1]));
             });
 
             function getParent(name) {
-                var i, parents = ob.parents, func = name;
+                var i, parents = ob.parents,
+                    func = name;
 
                 if (typeof(name) == 'string') {
-                    func = function (node) {
+                    func = function(node) {
                         return node.nodeName == name;
                     };
                 }
@@ -674,9 +721,9 @@
 
             if (s.theme_advanced_path && s.theme_advanced_statusbar_location) {
                 p = DOM.get(ed.id + '_path') || DOM.add(ed.id + '_path_row', 'span', {
-                        id: ed.id + '_path',
-                        'class': 'mcePathPath'
-                    });
+                    id: ed.id + '_path',
+                    'class': 'mcePathPath'
+                });
 
                 if (t.statusKeyboardNavigation) {
                     t.statusKeyboardNavigation.destroy();
@@ -685,8 +732,9 @@
 
                 DOM.setHTML(p, '');
 
-                getParent(function (n) {
-                    var na = n.nodeName.toLowerCase(), u, pi, ti = '';
+                getParent(function(n) {
+                    var na = n.nodeName.toLowerCase(),
+                        u, pi, ti = '';
 
                     // Ignore non element and bogus/hidden elements
                     if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved') || DOM.hasClass(n, 'mceItemShim'))
@@ -705,9 +753,9 @@
                             na = 'strong';
                             break;
 
-                        /*case 'i':
-                         na = 'em';
-                         break;*/
+                            /*case 'i':
+                             na = 'em';
+                             break;*/
 
                         case 'img':
                             if (v = DOM.getAttrib(n, 'src'))
@@ -790,7 +838,7 @@
                         root: ed.id + "_path_row",
                         items: DOM.select('a', p),
                         excludeFromTabOrder: true,
-                        onCancel: function () {
+                        onCancel: function() {
                             ed.focus();
                         }
                     }, DOM);
@@ -799,13 +847,13 @@
         },
         // Commands gets called by execCommand
 
-        _sel: function (v) {
+        _sel: function(v) {
             this.editor.execCommand('mceSelectNodeDepth', false, v);
         },
         /**
          * WF Editor Custom Help Command
          */
-        _mceHelp: function () {
+        _mceHelp: function() {
             var ed = this.editor;
 
             ed.windowManager.open({
@@ -818,17 +866,17 @@
             });
         },
 
-        _mceNewDocument: function () {
+        _mceNewDocument: function() {
             var ed = this.editor;
 
-            ed.windowManager.confirm('advanced.newdocument', function (s) {
+            ed.windowManager.confirm('advanced.newdocument', function(s) {
                 if (s) {
                     ed.execCommand('mceSetContent', false, '');
                 }
             });
         },
 
-        _ufirst: function (s) {
+        _ufirst: function(s) {
             return s.substring(0, 1).toUpperCase() + s.substring(1);
         }
     });
