@@ -60,7 +60,7 @@ if (strpos($theme, '.') === false) {
               <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
 
                 <span id="editor_toggle"></span>
-                <span class="widthMarker" style="width:<?php echo $width; ?>;"><span><?php echo $width; ?></span></span>
+                <span class="widthMarker"><span><?php echo $width; ?></span></span>
 
                 <div class="mceLayout" role="presentation" style="max-width:<?php echo $width;?>">
                     <div role="toolbar" class="sortableList mceToolbar <?php echo $position;?> mceFirst">

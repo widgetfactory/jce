@@ -654,6 +654,7 @@ ul#profileLayoutTable>li {
     text-align: center;
     top: -15px;
     box-sizing: border-box;
+    width: 100%;
 }
 
 .widthMarker span {
@@ -791,7 +792,6 @@ html[dir="rtl"] .profileLayoutContainer .sortableOption {
 .sortableRemove.hidden {
     visibility: hidden;
 }
-
 .checkbox-list-toggle-all {
     margin-left: -15px;
 }

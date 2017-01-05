@@ -89,7 +89,7 @@
                 }
 
                 $('.widthMarker span', '#profileLayoutTable').html(s);
-                $('.widthMarker, .mceEditor', '.profileLayoutContainerCurrent').width(v);
+                $('.mceLayout').css('max-width', v);
             });
 
             $('#paramseditorheight').change(function() {
