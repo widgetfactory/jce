@@ -331,9 +331,9 @@
                             // set function when element is toggled itself
                         }).on('visibility:toggle', function(e, state) {
                             if (state) {
-                                $(el).parent().show();
+                                $(el).parents('.control-group').show();
                             } else {
-                                $(el).parent().hide();
+                                $(el).parents('.control-group').hide();
                             }
                         }).trigger(event);
                     }
