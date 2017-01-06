@@ -584,8 +584,6 @@ html {
     overflow-y: visible !important;
 }
 
-#profileLayoutTable {}
-
 ul#profileLayoutTable>li {
     margin-bottom: 10px;
 }
@@ -599,6 +597,7 @@ ul#profileLayoutTable>li {
     position: relative;
     margin-top: 35px;
     margin-left: 0 !important;
+    margin-right: 60px;
 }
 
 #profileLayoutTable .profileLayoutContainerEditor p {
@@ -619,6 +618,11 @@ ul#profileLayoutTable>li {
     padding: 0 2px;
     float: left;
     display: inline-block;
+}
+
+#profileLayoutTable .profileLayoutContainerToolbar {
+    width: calc(100% - 260px);
+    /* label width + right margin */
 }
 
 #profileLayoutTable .profileLayoutContainerToolbar+.profileLayoutContainerEditor {
@@ -652,7 +656,7 @@ ul#profileLayoutTable>li {
     padding: 40px 0 0 0;
     position: absolute;
     text-align: center;
-    top: -15px;
+    top: -24px;
     box-sizing: border-box;
     width: 100%;
 }

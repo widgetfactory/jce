@@ -79,11 +79,15 @@
             });
 
             $('#paramseditorwidth').change(function() {
-                var v = $(this).val() || 800,
-                    s = v + 'px';
+                var v = $(this).val() || '100%';
 
                 if (/%/.test(v)) {
-                    s = v, v = 800;
+                    v = Math.min(parseInt(v), 100);
+                    v = v + '%';
+                    s = v;
+
+                    $('.widthMarker').css('max-width', v);
+
                 } else {
                     v = parseInt(v), s = v + 'px';
                 }
