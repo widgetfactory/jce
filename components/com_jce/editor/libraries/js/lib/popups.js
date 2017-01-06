@@ -295,8 +295,15 @@ var WFPopups = WFExtensions.add('Popups', {
             }
         } else {
             n = ed.dom.getParent(n, 'A');
-            // remove link
-            ed.dom.remove(n, true);
+
+            $.each(this.popups, function(k, v) {
+                if (self.isPopup(n, k)) {
+                    // remove link
+                    ed.dom.remove(n, true);
+
+                    return false;
+                }
+            });
         }
     },
     /**
