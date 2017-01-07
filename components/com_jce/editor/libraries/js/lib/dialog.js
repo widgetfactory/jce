@@ -140,6 +140,10 @@
                 ed = tinyMCEPopup.editor,
                 $img = $('#sample');
 
+            if (!$img.length) {
+                return;
+            }
+
             // apply styles to image
             $img.attr('style', $('#style').val());
 
