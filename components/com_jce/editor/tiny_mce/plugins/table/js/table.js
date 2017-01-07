@@ -1,4 +1,3 @@
-//tinyMCEPopup.requireLangPack();
 (function(tinymce, tinyMCEPopup, $) {
     function convertRGBToHex(col) {
         var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
@@ -68,6 +67,120 @@
         return size;
     }
 
+    /* Override setStyles function for tables */
+    Wf.setStyles = function() {
+        var ed = tinyMCEPopup.editor;
+        // create proxy element to extract styles from
+        var $proxy = $('<div />');
+        // update with table styles
+        $proxy.attr('style', $('#style').val());
+
+        var map = {
+            "background-image": "backgroundimage",
+            "border-spacing": "cellspacing",
+            "border-collapse": "cellspacing",
+            "vertical-align": "valign",
+            "background-color": "bgcolor",
+            "float": "align"
+        };
+
+        $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'float'], function(i, k) {
+            var v = ed.dom.getStyle($proxy.get(0), k);
+
+            // delete all values
+            $proxy.css(k, "");
+
+            if (k === "width" || k === "height") {
+                v = trimSize(v);
+            }
+
+            if (k === "background-image") {
+                v = v.replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
+            }
+
+            if (k === "background-color") {
+                v = convertRGBToHex(v);
+            }
+
+            if (k === "border-spacing") {
+                v = trimSize(v);
+            }
+
+            if (k === "border-collapse" && v === "collapse") {
+                v = 0;
+            }
+
+            // get mapped attribute name
+            k = map[k] || k;
+
+            // update form
+            $('#' + k).val(v).change();
+        });
+
+        var border = false;
+
+        // Handle border
+        $.each(['width', 'color', 'style'], function(i, k) {
+            var v = ed.dom.getStyle($proxy.get(0), 'border-' + k);
+
+            if (v === "") {
+                $.each(['top', 'right', 'bottom', 'left'], function(i, n) {
+                    var sv = ed.dom.getStyle($proxy.get(0), 'border-' + n + '-' + k);
+
+                    // False or not the same as prev
+                    if (sv !== '' || (sv != v && v !== '')) {
+                        v = '';
+                    }
+                    if (sv) {
+                        v = sv;
+                    }
+                });
+            } else {
+                border = true;
+                // remove style
+                $proxy.css('border-' + k, "");
+            }
+
+            if (k == 'width') {
+                v = /[0-9][a-z]/.test(v) ? parseInt(v) : v;
+            }
+
+            if (k == 'color' && v) {
+                v = Wf.String.toHex(v);
+
+                if (v.charAt(0) === "#") {
+                    v = v.substr(1);
+                }
+            }
+
+            if (border) {
+                $('#border').attr('checked', 'checked').change();
+
+                // add new option for border width
+                if (k === "width") {
+                    if ($('option[value="' + v + '"]', '#border_width').length == 0) {
+                        $('#border_width').append(new Option(v, v));
+                    }
+                }
+
+                // set border value and trigger change
+                $('#border_' + k).val(v).change();
+            }
+        });
+
+        var styles = ed.dom.parseStyle($proxy.attr('style'));
+
+        // remove -moz and -webkit styles
+        for (k in styles) {
+            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0) {
+                delete styles[k];
+            }
+        }
+
+        // Merge
+        $('#style').val(ed.dom.serializeStyle(styles));
+    };
+
     var TableDialog = {
         settings: {},
         init: function() {
@@ -93,28 +206,6 @@
                     $(this).add('label[for="' + this.id + '"]').hide();
                 });
             }
-
-            if (ed.settings.schema !== "html4") {
-                // replace border field with checkbox
-                $('#border').replaceWith('<input type="checkbox" id="border" />');
-            }
-
-            // trigger colour changes
-            $('#bgcolor, #bordercolor').change(function() {
-                self.changedColor(this);
-            });
-            // background-image change
-            $('#backgroundimage').change(function() {
-                self.changedBackgroundImage(this);
-            });
-            // border
-            $('#border').change(function() {
-                self.changedBorder(this);
-            });
-            // style
-            $('#style').change(function() {
-                self.changedStyle(this);
-            });
 
             switch (context) {
                 case 'table':
@@ -177,7 +268,8 @@
             }).change();
         },
         initTable: function() {
-            var ed = tinyMCEPopup.editor;
+            var self = this,
+                ed = tinyMCEPopup.editor;
 
             var elm = ed.dom.getParent(ed.selection.getNode(), "table");
             var action = tinyMCEPopup.getWindowArg('action');
@@ -196,74 +288,32 @@
                     }
                 }
 
-                var style = ed.dom.parseStyle(ed.dom.getAttrib(elm, "style"));
-
-                // Update form
-                $('#align').val(function() {
-                    var v = ed.dom.getAttrib(elm, 'align') || ed.dom.getStyle(elm, 'float');
-
-                    if (v) {
-                        return v;
-                    }
-
-                    if (ed.dom.getStyle(elm, 'margin-left') === "auto" && ed.dom.getStyle(elm, 'margin-right') === "auto") {
-                        style['margin-left'] = "";
-                        style['margin-right'] = "";
-
-                        return "center";
-                    }
-
-                    return "";
-                });
-
-                $('#tframe').val(ed.dom.getAttrib(elm, 'frame'));
-                $('#rules').val(ed.dom.getAttrib(elm, 'rules'));
-
-                var cls = ed.dom.getAttrib(elm, 'class');
-
-                cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
-
-                this.updateClassList(cls);
-
-                $('#classes').val(cls);
-
                 $('#cols').val(cols);
                 $('#rows').val(rowsAr.length);
 
-                var border = trimSize(getStyle(elm, 'border', 'borderWidth'));
+                $('#caption').prop('checked', elm.getElementsByTagName('caption').length > 0);
 
-                // clean border
-                border = border.replace(/[\D]/g, '');
+                $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'frame', 'rules'], function(i, k) {
+                    var v = ed.dom.getAttrib(elm, k);
 
-                // set border
-                if ($('#border').is(':checkbox')) {
-                    $('#border').prop('checked', border == 1);
-                } else {
-                    $('#border').val(border);
-                }
+                    if (k === "background" && v !== "") {
+                        v = v.replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
+                    }
 
-                $('#cellpadding').val(ed.dom.getAttrib(elm, 'cellpadding', ""));
-                $('#cellspacing').val(ed.dom.getAttrib(elm, 'cellspacing', ""));
-                $('#bordercolor').val(convertRGBToHex(getStyle(elm, 'bordercolor', 'borderLeftColor'))).change();
-                $('#bgcolor').val(convertRGBToHex(getStyle(elm, 'bgcolor', 'backgroundColor'))).change();
-                $('#id').val(ed.dom.getAttrib(elm, 'id'));
-                $('#summary').val(ed.dom.getAttrib(elm, 'summary'));
+                    $('#' + k).val(v);
+                });
 
-                $('#width').val(trimSize(getStyle(elm, 'width', 'width')));
-                $('#height').val(trimSize(getStyle(elm, 'height', 'height')));
+                $('#classes').val(function() {
+                    var cls = ed.dom.getAttrib(elm, 'class');
+                    cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
-                // remove width and height 
-                style.width = "";
-                style.height = "";
+                    self.updateClassList(cls);
+
+                    return cls;
+                });
 
                 // update style field
-                $('#style').val(ed.dom.serializeStyle(style));
-
-                $('#dir').val(ed.dom.getAttrib(elm, 'dir'));
-                $('#lang').val(ed.dom.getAttrib(elm, 'lang'));
-                $('#backgroundimage').val(getStyle(elm, 'background', 'backgroundImage').replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1"));
-
-                $('#caption').prop('checked', elm.getElementsByTagName('caption').length > 0);
+                $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
 
                 this.orgTableWidth = $('#width').val();
                 this.orgTableHeight = $('#height').val();
@@ -283,109 +333,96 @@
                 ed = tinyMCEPopup.editor,
                 dom = tinyMCEPopup.dom;
 
-            var trElm = dom.getParent(ed.selection.getStart(), "tr");
-            var style = ed.dom.parseStyle(ed.dom.getAttrib(trElm, "style"));
+            var elm = dom.getParent(ed.selection.getStart(), "tr");
+            var selected = dom.select('td.mceSelected,th.mceSelected', elm);
 
             // Get table row data
-            var rowtype = trElm.parentNode.nodeName.toLowerCase();
-            var align = getStyle(trElm, 'align', 'text-align');
-            var height = trimSize(getStyle(trElm, 'height', 'height'));
-            var className = dom.getAttrib(trElm, 'class');
-            var bgcolor = convertRGBToHex(getStyle(trElm, 'bgcolor', 'backgroundColor'));
-            var backgroundimage = getStyle(trElm, 'background', 'backgroundImage').replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
-            var id = dom.getAttrib(trElm, 'id');
-            var lang = dom.getAttrib(trElm, 'lang');
-            var dir = dom.getAttrib(trElm, 'dir');
+            var rowtype = elm.parentNode.nodeName.toLowerCase();
+
+            // update style field
+            $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
+
+            // update form values
+            $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background'], function(i, k) {
+                var v = ed.dom.getAttrib(elm, k),
+                    dv = $('#' + k).val();
+
+                if (k === "background" && v !== "") {
+                    v = v.replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
+                }
+
+                // value already set by style
+                if (dv !== "") {
+                    v = dv;
+                }
+
+                // only allow some values
+                if (selected.length && $.inArray(k, ['bgcolor', 'background', 'height', 'id', 'lang', 'align']) !== -1) {
+                    v = "";
+                }
+
+                $('#' + k).val(v);
+            });
+
+            $('#classes').val(function() {
+                var cls = ed.dom.getAttrib(elm, 'class');
+                cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+
+                self.updateClassList(cls);
+
+                return cls;
+            });
 
             $('#rowtype').change(function() {
                 self.setActionforRowType();
             }).val(rowtype).change();
 
-            // Any cells selected
-            if (dom.select('td.mceSelected,th.mceSelected', trElm).length == 0) {
-
-                $('#bgcolor').val(bgcolor).change();
-                $('#backgroundimage').val(backgroundimage);
-                $('#height').val(height);
-                $('#id').val(id);
-                $('#lang').val(lang);
-
-                // remove align
-                style['text-align'] = "";
-
-                $('#align').val(align);
-
-                // remove height 
-                style.height = "";
-
-                // update style field
-                $('#style').val(dom.serializeStyle(style));
-
-                className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
-
-                // update class list
-                this.updateClassList(className);
-
-                $('#dir').val(dir);
-
+            // single cell update only
+            if (selected.length === 0) {
                 $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
                 $('#action').hide();
             }
         },
         initCell: function() {
-            var ed = tinyMCEPopup.editor,
+            var self = this,
+                ed = tinyMCEPopup.editor,
                 dom = ed.dom;
 
-            var tdElm = dom.getParent(ed.selection.getStart(), "td,th");
-            var style = dom.parseStyle(dom.getAttrib(tdElm, "style"));
+            var elm = dom.getParent(ed.selection.getStart(), "td,th");
 
-            // Get table cell data
-            var celltype = tdElm.nodeName.toLowerCase();
-            var align = getStyle(tdElm, 'align', 'text-align');
-            var valign = getStyle(tdElm, 'valign', 'vertical-align');
-            var width = trimSize(getStyle(tdElm, 'width', 'width'));
-            var height = trimSize(getStyle(tdElm, 'height', 'height'));
-            var bordercolor = convertRGBToHex(getStyle(tdElm, 'bordercolor', 'borderLeftColor'));
-            var bgcolor = convertRGBToHex(getStyle(tdElm, 'bgcolor', 'backgroundColor'));
-            var className = dom.getAttrib(tdElm, 'class');
-            var backgroundimage = getStyle(tdElm, 'background', 'backgroundImage').replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
-            var id = dom.getAttrib(tdElm, 'id');
-            var lang = dom.getAttrib(tdElm, 'lang');
-            var dir = dom.getAttrib(tdElm, 'dir');
-            var scope = dom.getAttrib(tdElm, 'scope');
-
-            if (!dom.hasClass(tdElm, 'mceSelected')) {
-                $('#bordercolor').val(bordercolor).change();
-                $('#bgcolor').val(bgcolor).change();
-                $('#backgroundimage').val(backgroundimage);
-                $('#width').val(width);
-                $('#height').val(height);
-                $('#id').val(id);
-                $('#lang').val(lang);
-
-                // remove alignment
-                style['vertical-align'] = "";
-                style['text-align'] = "";
-
-                $('#align').val(align);
-                $('#valign').val(valign);
-
-                // remove width and height 
-                style.width = "";
-                style.height = "";
-
+            // only update single cells
+            if (!dom.hasClass(elm, 'mceSelected')) {
                 // update style field
-                $('#style').val(dom.serializeStyle(style));
+                $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
 
-                className = className.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+                // update form values
+                $.each(['align', 'valign', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'scope'], function(i, k) {
+                    var v = ed.dom.getAttrib(elm, k),
+                        dv = $('#' + k).val();
 
-                // update class list
-                this.updateClassList(className);
+                    if (k === "background" && v !== "") {
+                        v = v.replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
+                    }
 
-                $('#dir').val(dir);
-                $('#celltype').val(celltype);
-                $('#scope').val(scope);
+                    // value already set by style
+                    if (dv !== "") {
+                        v = dv;
+                    }
+
+                    $('#' + k).val(v);
+                });
+
+                $('#classes').val(function() {
+                    var cls = ed.dom.getAttrib(elm, 'class');
+                    cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+
+                    self.updateClassList(cls);
+
+                    return cls;
+                });
+
+                $('#celltype').val(elm.nodeName.toLowerCase());
 
                 $('#insert .uk-button-text').text(tinyMCEPopup.getLang('update', 'Update', true));
             } else {
@@ -436,29 +473,17 @@
             // Get form data
             cols = $('#cols').val();
             rows = $('#rows').val();
-            border = $('#border').val() != "" ? $('#border').val() : 0;
-            cellpadding = $('#cellpadding').val() != "" ? $('#cellpadding').val() : "";
-            cellspacing = $('#cellspacing').val() != "" ? $('#cellspacing').val() : "";
-            align = $("#align").val();
+            cellpadding = $('#cellpadding').val();
+            cellspacing = $('#cellspacing').val();
             frame = $("#tframe").val();
             rules = $("#rules").val();
-            width = $('#width').val();
-            height = $('#height').val();
-            bordercolor = $('#bordercolor').val();
-            bgcolor = $('#bgcolor').val();
             className = $("#classes").val();
             id = $('#id').val();
             summary = $('#summary').val();
             style = $('#style').val();
             dir = $('#dir').val();
             lang = $('#lang').val();
-            background = $('#backgroundimage').val();
             caption = $('#caption').is(':checked');
-
-            // reset border if checkbox (html5)
-            if ($('#border').is(':checkbox')) {
-                border = $('#border').is(':checked') ? '1' : '';
-            }
 
             // Update table
             if (action == "update") {
@@ -469,29 +494,16 @@
                     dom.setAttrib(elm, 'cellSpacing', cellspacing, true);
                 }
 
-                if (!this.isCssSize(border)) {
-                    dom.setAttrib(elm, 'border', border);
-                } else {
-                    dom.setAttrib(elm, 'border', '');
-                }
-
-                if (border == '') {
-                    dom.setStyle(elm, 'border-width', '');
-                    dom.setStyle(elm, 'border', '');
-                    dom.setAttrib(elm, 'border', '');
-                }
-
                 // remove values for html5
                 if (ed.settings.schema !== "html4") {
                     align = "";
                     width = "";
                     height = "";
+                    border = "";
                 }
-                // set or remove align
-                dom.setAttrib(elm, 'align', align);
 
-                // set or remove width & height
-                dom.setAttribs({ "width": width, "height": height });
+                // set or remove width, height, align, border
+                dom.setAttribs(elm, { "width": width, "height": height, "align": align, "border": border, "borderColor": "", "bgColor": "", "background": "" });
 
                 dom.setAttrib(elm, 'frame', frame);
                 dom.setAttrib(elm, 'rules', rules);
@@ -501,6 +513,51 @@
                 dom.setAttrib(elm, 'summary', summary);
                 dom.setAttrib(elm, 'dir', dir);
                 dom.setAttrib(elm, 'lang', lang);
+
+                var styles = {
+                    "vertical-align": "",
+                    "float": ""
+                };
+
+                // values as styles
+                $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
+                    var v = $('#' + k).val();
+
+                    if (k === "backgroundimage") {
+                        if (v !== "") {
+                            v = 'url("' + v + '")';
+                        }
+
+                        k = 'background-image';
+                    }
+
+                    if (k === "bgcolor") {
+                        k = 'background-color';
+                        v = v.charAt(0) === "#" ? v : '#' + v;
+                    }
+
+                    if (k === "border" && $('#border').is(':checked')) {
+                        $.each(['width', 'style', 'color'], function(i, n) {
+                            var s = $('#border_' + n).val();
+
+                            if (n === "width" && !/\D/.test(s)) {
+                                s = parseInt(s) + 'px';
+                            }
+
+                            if (n === "color" && s.charAt(0) !== "#") {
+                                s = '#' + s;
+                            }
+
+                            styles['border-' + n] = s;
+                        });
+                    } else {
+                        styles[k] = v;
+                    }
+                });
+
+                // update styles on table
+                dom.setStyles(elm, dom.parseStyle(dom.serializeStyle(styles)));
+
                 capEl = ed.dom.select('caption', elm)[0];
 
                 if (capEl && !caption) {
@@ -517,34 +574,20 @@
                     elm.insertBefore(capEl, elm.firstChild);
                 }
 
-                // set width
-                dom.setStyle(elm, 'width', getCSSSize($('#width').val()));
-                // set height
-                dom.setStyle(elm, 'height', getCSSSize($('#height').val()));
-
+                // set align by format
                 if ($('#align').val()) {
                     ed.formatter.apply('align' + $('#align').val(), {}, elm);
                 }
 
-                // Remove these since they are not valid XHTML
-                dom.setAttrib(elm, 'borderColor', '');
-                dom.setAttrib(elm, 'bgColor', '');
-                dom.setAttrib(elm, 'background', '');
-
                 ed.addVisual();
-
-                // Fix for stange MSIE align bug
-                //elm.outerHTML = elm.outerHTML;
 
                 ed.nodeChanged();
                 ed.execCommand('mceEndUndoLevel', false, {}, {
                     skip_undo: true
                 });
 
-                // Repaint if dimensions changed
-                if ($('#width').val() != this.orgTableWidth || $('#height').val() != this.orgTableHeight) {
-                    ed.execCommand('mceRepaint');
-                }
+                // Repaint
+                ed.execCommand('mceRepaint');
 
                 tinyMCEPopup.close();
                 return true;
@@ -553,9 +596,7 @@
             // Create new table
             html += '<table';
             html += this.makeAttrib('id', id);
-            if (!this.isCssSize(border)) {
-                html += this.makeAttrib('border', border);
-            }
+
             html += this.makeAttrib('cellpadding', cellpadding);
             html += this.makeAttrib('cellspacing', cellspacing);
             html += this.makeAttrib('data-mce-new', '1');
@@ -581,7 +622,7 @@
 
             if (caption) {
                 if (!tinymce.isIE || tinymce.isIE11) {
-                    html += '<caption><br data-mce-bogus="1"/></caption>';
+                    html += '<caption><br data-mce-bogus="1" /></caption>';
                 } else {
                     html += '<caption></caption>';
                 }
@@ -592,7 +633,7 @@
 
                 for (var x = 0; x < cols; x++) {
                     if (!tinymce.isIE || tinymce.isIE11) {
-                        html += '<td><br data-mce-bogus="1"/></td>';
+                        html += '<td><br data-mce-bogus="1" /></td>';
                     } else {
                         html += '<td></td>';
                     }
@@ -651,13 +692,129 @@
                 dom.setAttrib(node, 'data-mce-new', '');
             });
 
-
             ed.addVisual();
             ed.execCommand('mceEndUndoLevel', false, {}, {
                 skip_undo: true
             });
 
             tinyMCEPopup.close();
+        },
+        updateCell: function(td, skip_id) {
+            var self = this,
+                ed = tinyMCEPopup.editor,
+                dom = ed.dom,
+                doc = ed.getDoc(),
+                v;
+
+            var curCellType = td.nodeName.toLowerCase();
+            var celltype = $('#celltype').val();
+
+            var cells = ed.dom.select('td.mceSelected,th.mceSelected');
+
+            if (!cells.length) {
+                cells.push(td);
+            }
+
+            function setAttrib(elm, name, value) {
+                if (cells.length === 1 || value) {
+                    dom.setAttrib(elm, name, value);
+                }
+            }
+
+            function setStyle(elm, name, value) {
+                if (cells.length === 1 || value) {
+                    dom.setStyle(elm, name, value);
+                }
+            }
+
+            // remove some values
+            dom.setAttribs(td, { "width": "", "height": "", "borderColor": "", "bgColor": "", "background": "" });
+
+            var styles = {
+                "vertical-align": "",
+                "float": ""
+            };
+
+            // values as styles
+            $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
+                var v = $('#' + k).val();
+
+                if (k === "backgroundimage") {
+                    if (v !== "") {
+                        v = 'url("' + v + '")';
+                    }
+
+                    k = 'background-image';
+                }
+
+                if (k === "bgcolor") {
+                    k = 'background-color';
+                    v = v.charAt(0) === "#" ? v : '#' + v;
+                }
+
+                if (k === "border" && $('#border').is(':checked')) {
+                    $.each(['width', 'style', 'color'], function(i, n) {
+                        var s = $('#border_' + n).val();
+
+                        if (n === "width" && !/\D/.test(s)) {
+                            s = parseInt(s) + 'px';
+                        }
+
+                        if (n === "color" && s.charAt(0) !== "#") {
+                            s = '#' + s;
+                        }
+
+                        styles['border-' + n] = s;
+                    });
+                } else {
+                    styles[k] = v;
+                }
+            });
+
+            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
+                v = $('#' + k).val();
+
+                if (k === "id" && skip_id) {
+                    return true;
+                }
+
+                // update styles with values created above
+                if (k === "style") {
+                    v = dom.serializeStyle($.extend(dom.parseStyle(v), styles));
+                    // serialize again to compress
+                    v = dom.serializeStyle(dom.parseStyle(v));
+                }
+
+                if (k === "classes") {
+                    k = 'class';
+                }
+
+                setAttrib(td, k, v);
+            });
+
+            if ($('#align').val()) {
+                ed.formatter.apply('align' + $('#align').val(), {}, td);
+            }
+
+            if ($('#valign').val()) {
+                ed.formatter.apply('valign' + $('#valign').val(), {}, td);
+            }
+
+            if (curCellType != celltype) {
+                // changing to a different node type
+                var newCell = doc.createElement(celltype);
+
+                for (var c = 0; c < td.childNodes.length; c++)
+                    newCell.appendChild(td.childNodes[c].cloneNode(1));
+
+                for (var a = 0; a < td.attributes.length; a++)
+                    ed.dom.setAttrib(newCell, td.attributes[a].name, ed.dom.getAttrib(td, td.attributes[a].name));
+
+                td.parentNode.replaceChild(newCell, td);
+                td = newCell;
+            }
+
+            return td;
         },
         updateCells: function() {
             var self = this,
@@ -752,20 +909,20 @@
             inst.execCommand('mceEndUndoLevel');
             tinyMCEPopup.close();
         },
-        updateRow: function(tr_elm, skip_id, skip_parent) {
+        updateRow: function(tr, skip_id, skip_parent) {
             var ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
                 v;
 
-            var curRowType = tr_elm.parentNode.nodeName.toLowerCase();
+            var curRowType = tr.parentNode.nodeName.toLowerCase();
             var rowtype = $('#rowtype').val();
 
             var tableElm = dom.getParent(ed.selection.getStart(), "table");
             var rows = tableElm.rows;
 
             if (!rows.length) {
-                rows.push(tr_elm);
+                rows.push(tr);
             }
 
             function setAttrib(elm, name, value) {
@@ -780,39 +937,74 @@
                 }
             }
 
+            // remove some values
+            dom.setAttribs(tr, { "height": "", "bgColor": "", "background": "" });
+
+            var styles = {
+                "vertical-align": "",
+                "float": ""
+            };
+
+            // values as styles
+            $.each(['height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
+                var v = $('#' + k).val();
+
+                if (k === "backgroundimage") {
+                    if (v !== "") {
+                        v = 'url("' + v + '")';
+                    }
+
+                    k = 'background-image';
+                }
+
+                if (k === "bgcolor") {
+                    k = 'background-color';
+                    v = v.charAt(0) === "#" ? v : '#' + v;
+                }
+
+                if (k === "border" && $('#border').is(':checked')) {
+                    $.each(['width', 'style', 'color'], function(i, n) {
+                        var s = $('#border_' + n).val();
+
+                        if (n === "width" && !/\D/.test(s)) {
+                            s = parseInt(s) + 'px';
+                        }
+
+                        if (n === "color" && s.charAt(0) !== "#") {
+                            s = '#' + s;
+                        }
+
+                        styles['border-' + n] = s;
+                    });
+                } else {
+                    styles[k] = v;
+                }
+            });
+
             $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
                 v = $('#' + k).val();
 
-                if (k == 'id' && skip_id) {
-                    return;
+                if (k === "id" && skip_id) {
+                    return true;
                 }
 
-                if (k == 'style') {
+                // update styles with values created above
+                if (k === "style") {
+                    v = dom.serializeStyle($.extend(dom.parseStyle(v), styles));
+                    // serialize again to compress
                     v = dom.serializeStyle(dom.parseStyle(v));
                 }
 
-                if (k == 'classes') {
+                if (k === "classes") {
                     k = 'class';
                 }
 
-                setAttrib(tr_elm, k, v);
+                setAttrib(tr, k, v);
             });
-
-            // Clear deprecated attributes
-            $.each(['height', 'bgColor', 'background'], function(i, k) {
-                ed.dom.setAttrib(tr_elm, k, null);
-            });
-
-            // set height
-            setStyle(tr_elm, 'height', getCSSSize($('#height').val()));
 
             if ($('#align').val()) {
-                ed.formatter.apply('align' + $('#align').val(), {}, tr_elm);
+                ed.formatter.apply('align' + $('#align').val(), {}, tr);
             }
-
-            /*if ($('#valign').val()) {
-                ed.formatter.apply('valign' + $('#valign').val(), {}, tr_elm);
-            }*/
 
             // Setup new rowtype
             if (curRowType != rowtype && !skip_parent) {
@@ -853,23 +1045,7 @@
                 tr_elm = newRow;
             }
         },
-        makeAttrib: function(attrib, value) {
-            if (typeof(value) == "undefined" || value == null) {
-                value = $('#' + attrib).val();
-            }
 
-            if (value == "") {
-                return "";
-            }
-
-            // XML encode it
-            value = value.replace(/&/g, '&amp;');
-            value = value.replace(/\"/g, '&quot;');
-            value = value.replace(/</g, '&lt;');
-            value = value.replace(/>/g, '&gt;');
-
-            return ' ' + attrib + '="' + value + '"';
-        },
         updateRows: function() {
             var self = this,
                 ed = tinyMCEPopup.editor,
@@ -934,86 +1110,25 @@
             ed.execCommand('mceEndUndoLevel');
             tinyMCEPopup.close();
         },
-        updateCell: function(td, skip_id) {
-            var self = this,
-                ed = tinyMCEPopup.editor,
-                dom = ed.dom,
-                doc = ed.getDoc(),
-                v;
 
-            var curCellType = td.nodeName.toLowerCase();
-            var celltype = $('#celltype').val();
-
-            var cells = ed.dom.select('td.mceSelected,th.mceSelected');
-
-            if (!cells.length) {
-                cells.push(td);
+        makeAttrib: function(attrib, value) {
+            if (typeof(value) == "undefined" || value == null) {
+                value = $('#' + attrib).val();
             }
 
-            function setAttrib(elm, name, value) {
-                if (cells.length === 1 || value) {
-                    dom.setAttrib(elm, name, value);
-                }
+            if (value == "") {
+                return "";
             }
 
-            function setStyle(elm, name, value) {
-                if (cells.length === 1 || value) {
-                    dom.setStyle(elm, name, value);
-                }
-            }
+            // XML encode it
+            value = value.replace(/&/g, '&amp;');
+            value = value.replace(/\"/g, '&quot;');
+            value = value.replace(/</g, '&lt;');
+            value = value.replace(/>/g, '&gt;');
 
-            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
-                v = $('#' + k).val();
-
-                if (k == 'id' && skip_id) {
-                    return;
-                }
-
-                if (k == 'style') {
-                    v = dom.serializeStyle(dom.parseStyle(v));
-                }
-
-                if (k == 'classes') {
-                    k = 'class';
-                }
-
-                setAttrib(td, k, v);
-            });
-
-            // Clear deprecated attributes
-            $.each(['width', 'height', 'bgColor', 'borderColor', 'background'], function(i, k) {
-                ed.dom.setAttrib(td, k, null);
-            });
-
-            // set width
-            setStyle(td, 'width', getCSSSize($('#width').val()));
-            // set height
-            setStyle(td, 'height', getCSSSize($('#height').val()));
-
-            if ($('#align').val()) {
-                ed.formatter.apply('align' + $('#align').val(), {}, td);
-            }
-
-            if ($('#valign').val()) {
-                ed.formatter.apply('valign' + $('#valign').val(), {}, td);
-            }
-
-            if (curCellType != celltype) {
-                // changing to a different node type
-                var newCell = doc.createElement(celltype);
-
-                for (var c = 0; c < td.childNodes.length; c++)
-                    newCell.appendChild(td.childNodes[c].cloneNode(1));
-
-                for (var a = 0; a < td.attributes.length; a++)
-                    ed.dom.setAttrib(newCell, td.attributes[a].name, ed.dom.getAttrib(td, td.attributes[a].name));
-
-                td.parentNode.replaceChild(newCell, td);
-                td = newCell;
-            }
-
-            return td;
+            return ' ' + attrib + '="' + value + '"';
         },
+
         nextCell: function(elm) {
             while ((elm = elm.nextSibling) != null) {
                 if (elm.nodeName == "TD" || elm.nodeName == "TH") {
@@ -1023,29 +1138,11 @@
 
             return null;
         },
-        changedSize: function() {
-            var st = tinyMCEPopup.dom.parseStyle($('#style').val());
 
-            var height = $('#height').val();
-
-            if (height != "") {
-                st['height'] = this.cssSize(height);
-            } else {
-                st['height'] = "";
-            }
-
-            $('#style').val(tinyMCEPopup.dom.serializeStyle(st));
-        },
-        changedBackgroundImage: function() {
-            var st = tinyMCEPopup.dom.parseStyle($('#style').val());
-
-            st['background-image'] = "url('" + $('#backgroundimage').val() + "')";
-
-            $('#style').val(tinyMCEPopup.dom.serializeStyle(st));
-        },
         isCssSize: function(value) {
             return /^[0-9.]+(%|in|cm|mm|em|ex|pt|pc|px)$/.test(value);
         },
+
         cssSize: function(value, def) {
             value = tinymce.trim(value || def);
 
@@ -1055,83 +1152,7 @@
 
             return value;
         },
-        changedBorder: function() {
-            var st = tinyMCEPopup.dom.parseStyle($('#style').val());
 
-            var bw = $('#border').val();
-
-            if (bw != "" && (this.isCssSize(bw) || $('#bordercolor').val() != ""))
-                st['border-width'] = this.cssSize(bw);
-            else {
-                if (!bw) {
-                    st['border'] = '';
-                    st['border-width'] = '';
-                }
-            }
-
-            $('#style').val(tinyMCEPopup.dom.serializeStyle(st));
-        },
-        changedColor: function(e) {
-            var dom = tinyMCEPopup.editor.dom;
-
-            var v = e.value,
-                id = e.id,
-                st = dom.parseStyle($('#style').val());
-
-            if (v && v.charAt(0) !== '#') {
-                v = '#' + v;
-            }
-
-            if (id === 'bgcolor') {
-                st['background-color'] = v;
-            }
-
-            if (id === 'bordercolor') {
-                st['border-color'] = v;
-            }
-
-            $('#style').val(dom.serializeStyle(st));
-        },
-        changedStyle: function() {
-            var dom = tinyMCEPopup.dom;
-            var st = dom.parseStyle($('#style').val());
-
-            if (st['background-image']) {
-                $('#backgroundimage').val(st['background-image'].replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1"));
-            } else {
-                $('#backgroundimage').val('');
-            }
-
-            if (st['width']) {
-                $('#width').val(trimSize(st['width']));
-            }
-
-            if (st['height']) {
-                $('#height').val(trimSize(st['height']));
-            }
-
-            if (st['border-spacing']) {
-                $('#cellspacing').val(trimSize(st['border-spacing']));
-            }
-
-            if (st['border-collapse'] && st['border-collapse'] == 'collapse') {
-                $('#cellspacing').val(0);
-            }
-
-            if (st['vertical-align']) {
-                $('#valign').val(st['vertical-align']);
-            }
-
-            // allow these values to be reset
-            var bgcolor = st['background-color'] || "";
-            var bordercolor = st['border-color'] || "";
-
-            $('#bgcolor').val(bgcolor).change();
-            $('#bordercolor').val(bordercolor).change();
-        },
-        setClasses: function(v) {
-            //Wf.setClasses(v);
-        },
         setActionforRowType: function() {
             var rowtype = $('#rowtype').val();
 

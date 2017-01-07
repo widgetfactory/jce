@@ -49,12 +49,6 @@ defined('_JEXEC') or die('RESTRICTED');
             <option value="right"><?php echo WFText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select>
     </div>
-
-    <label class="uk-form-label uk-width-2-10" for="border">
-        <?php echo WFText::_('WF_TABLE_BORDER'); ?></label>
-    <div class="uk-form-controls uk-width-3-10">
-        <input id="border" type="number" value="" />
-    </div>
 </div>
 <div class="uk-grid">
     <label class="uk-form-label uk-width-2-10" for="width">

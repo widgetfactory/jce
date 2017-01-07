@@ -1442,8 +1442,8 @@
                 mceInsertTable: function(val) {
                     winMan.open({
                         url: url,
-                        width: 440 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 480 + parseInt(ed.getLang('table.table_delta_height', 0)),
+                        width: 640 + parseInt(ed.getLang('table.table_delta_width', 0)),
+                        height: 360 + parseInt(ed.getLang('table.table_delta_height', 0)),
                         inline: 1
                     }, {
                         plugin_url: url,
@@ -1454,8 +1454,8 @@
                 mceTableRowProps: function() {
                     winMan.open({
                         url: url + '&context=row',
-                        width: 440 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 470 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
+                        width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
+                        height: 360 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
                         inline: 1
                     }, {
                         plugin_url: url,
@@ -1465,8 +1465,8 @@
                 mceTableCellProps: function() {
                     winMan.open({
                         url: url + '&context=cell',
-                        width: 440 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 470 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
+                        width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
+                        height: 360 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
                         inline: 1
                     }, {
                         plugin_url: url,
