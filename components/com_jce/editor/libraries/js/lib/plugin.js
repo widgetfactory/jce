@@ -151,6 +151,8 @@
             // update styles on border change
             $('#border_width, #border_style, #border_color').change(function() {
                 self.updateStyles();
+            }).on('datalist:change', function() {
+                self.updateStyles();
             });
 
             $('#style').change(function() {
