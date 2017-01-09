@@ -99,7 +99,7 @@ class WFModel extends WFModelBase {
         }
     }
 
-    public static function getBrowserLink($element = null, $filter = '') {
+    public static function getBrowserLink($element = null, $filter = '', $callback = '') {
         // load base classes
         require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
 
@@ -123,6 +123,10 @@ class WFModel extends WFModelBase {
 
             if ($filter) {
                 $url .= '&filter=' . $filter;
+            }
+
+            if ($callback) {
+                $url .= '&callback=' . $callback;
             }
         }
 

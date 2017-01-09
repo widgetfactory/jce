@@ -69,7 +69,8 @@ class WFFileBrowserPlugin extends WFMediaManager {
           if (JRequest::getCmd('dialog', 'browser') === "browser") {
               $document->addScript(array('window.min'), 'plugins');
 
-              $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
+              $element  = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
+              $callback = JRequest::getCmd('callback', '');
 
               $settings = array(
                 'site_url'  => JURI::base(true) . '/',
@@ -77,6 +78,10 @@ class WFFileBrowserPlugin extends WFMediaManager {
                 'element'   => $element,
                 'token'     => WFToken::getToken()
               );
+
+              if ($callback) {
+                  $settings['callback'] = $callback;
+              }
 
               $document->addScriptDeclaration('tinymce.settings=' . json_encode($settings) . ';');
           }
