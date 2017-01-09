@@ -2197,11 +2197,12 @@
             });
 
             if (items.length) {
-                var pos = $(items).first().position();
-                var h = $(items).first().height();
+
+                var h = $(items).first().outerHeight() + 2;
+                var top = $(items).get(0).offsetTop - h;
 
                 $('#browser-list').animate({
-                    scrollTop: Math.round(pos.top - h)
+                    scrollTop: Math.round(top)
                 }, 1500);
             }
 
