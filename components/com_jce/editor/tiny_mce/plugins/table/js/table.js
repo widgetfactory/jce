@@ -278,6 +278,15 @@
                 action = elm ? "update" : "insert";
             }
 
+            if (ed.settings.schema !== "html4") {
+                // replace border field with checkbox
+                $('#table_border').replaceWith('<input type="checkbox" id="table_border" value="" />');
+
+                $('#table_border').click(function() {
+                    this.value = this.checked ? 1 : '';
+                });
+            }
+
             if (elm && action != "insert") {
                 var rowsAr = elm.rows;
                 var cols = 0;
@@ -293,11 +302,26 @@
 
                 $('#caption').prop('checked', elm.getElementsByTagName('caption').length > 0);
 
-                $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'frame', 'rules'], function(i, k) {
+                $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'frame', 'rules', 'border'], function(i, k) {
                     var v = ed.dom.getAttrib(elm, k);
 
                     if (k === "background" && v !== "") {
                         v = v.replace(new RegExp("url\\(['\"]?([^'\"]*)['\"]?\\)", 'gi'), "$1");
+                    }
+
+                    // legacy border
+                    if (k === "border" && v !== "") {
+                        $('#table_border').val(function() {
+                            v = parseInt(v);
+
+                            if (this.type === "checkbox") {
+                                this.checked = !!v;
+                            }
+
+                            return v;
+                        });
+
+                        return true;
                     }
 
                     $('#' + k).val(v);
@@ -442,6 +466,73 @@
 
             tinyMCEPopup.close();
         },
+
+        getStyles: function() {
+            var dom = tinyMCEPopup.editor.dom;
+
+            var style = style = $('#style').val();
+
+            var styles = {
+                "vertical-align": "",
+                "float": ""
+            };
+
+            // values as styles
+            $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
+                var v = $('#' + k).val();
+
+                if (k === "backgroundimage") {
+                    if (v !== "") {
+                        v = 'url("' + v + '")';
+                    }
+
+                    k = 'background-image';
+                }
+
+                if (k === "bgcolor" && v) {
+                    if (v !== "") {
+                        v = v.charAt(0) === "#" ? v : '#' + v;
+                    }
+
+                    k = 'background-color';
+                }
+
+                if (k === "width" || k === "height") {
+                    if (v && !/\D/.test(v)) {
+                        v = parseInt(v) + 'px';
+                    }
+                }
+
+                if (k === "border") {
+                    if ($('#border').is(':checked')) {
+                        $.each(['width', 'style', 'color'], function(i, n) {
+                            var s = $('#border_' + n).val();
+
+                            if (n === "width" && !/\D/.test(s)) {
+                                s = parseInt(s) + 'px';
+                            }
+
+                            if (n === "color" && s.charAt(0) !== "#") {
+                                s = '#' + s;
+                            }
+
+                            styles['border-' + n] = s;
+                        });
+                    }
+                    return true;
+                }
+
+                styles[k] = v;
+            });
+
+            // combine styles
+            style = dom.serializeStyle($.extend(dom.parseStyle(style), styles));
+            // serialize again to compress
+            style = dom.serializeStyle(dom.parseStyle(style));
+
+            return style;
+        },
+
         insertTable: function() {
             var ed = tinyMCEPopup.editor,
                 dom = ed.dom;
@@ -480,10 +571,20 @@
             className = $("#classes").val();
             id = $('#id').val();
             summary = $('#summary').val();
-            style = $('#style').val();
             dir = $('#dir').val();
             lang = $('#lang').val();
             caption = $('#caption').is(':checked');
+
+            // get compile styles attribute value
+            style = this.getStyles();
+
+            // get border attribute
+            border = $('#table_border').val();
+
+            // get checkbox state, checked=1, otherwise no border
+            if ($('#table_border').is(':checkbox')) {
+                border = $('#table_border').is(':checked') ? '1' : '';
+            }
 
             // Update table
             if (action == "update") {
@@ -513,50 +614,6 @@
                 dom.setAttrib(elm, 'summary', summary);
                 dom.setAttrib(elm, 'dir', dir);
                 dom.setAttrib(elm, 'lang', lang);
-
-                var styles = {
-                    "vertical-align": "",
-                    "float": ""
-                };
-
-                // values as styles
-                $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
-                    var v = $('#' + k).val();
-
-                    if (k === "backgroundimage") {
-                        if (v !== "") {
-                            v = 'url("' + v + '")';
-                        }
-
-                        k = 'background-image';
-                    }
-
-                    if (k === "bgcolor") {
-                        k = 'background-color';
-                        v = v.charAt(0) === "#" ? v : '#' + v;
-                    }
-
-                    if (k === "border" && $('#border').is(':checked')) {
-                        $.each(['width', 'style', 'color'], function(i, n) {
-                            var s = $('#border_' + n).val();
-
-                            if (n === "width" && !/\D/.test(s)) {
-                                s = parseInt(s) + 'px';
-                            }
-
-                            if (n === "color" && s.charAt(0) !== "#") {
-                                s = '#' + s;
-                            }
-
-                            styles['border-' + n] = s;
-                        });
-                    } else {
-                        styles[k] = v;
-                    }
-                });
-
-                // update styles on table
-                dom.setStyles(elm, dom.parseStyle(dom.serializeStyle(styles)));
 
                 capEl = ed.dom.select('caption', elm)[0];
 
@@ -596,6 +653,11 @@
             // Create new table
             html += '<table';
             html += this.makeAttrib('id', id);
+
+            // add border attribute
+            if (border) {
+                html += this.makeAttrib('border', border);
+            }
 
             html += this.makeAttrib('cellpadding', cellpadding);
             html += this.makeAttrib('cellspacing', cellspacing);
@@ -730,47 +792,6 @@
             // remove some values
             dom.setAttribs(td, { "width": "", "height": "", "borderColor": "", "bgColor": "", "background": "" });
 
-            var styles = {
-                "vertical-align": "",
-                "float": ""
-            };
-
-            // values as styles
-            $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
-                var v = $('#' + k).val();
-
-                if (k === "backgroundimage") {
-                    if (v !== "") {
-                        v = 'url("' + v + '")';
-                    }
-
-                    k = 'background-image';
-                }
-
-                if (k === "bgcolor") {
-                    k = 'background-color';
-                    v = v.charAt(0) === "#" ? v : '#' + v;
-                }
-
-                if (k === "border" && $('#border').is(':checked')) {
-                    $.each(['width', 'style', 'color'], function(i, n) {
-                        var s = $('#border_' + n).val();
-
-                        if (n === "width" && !/\D/.test(s)) {
-                            s = parseInt(s) + 'px';
-                        }
-
-                        if (n === "color" && s.charAt(0) !== "#") {
-                            s = '#' + s;
-                        }
-
-                        styles['border-' + n] = s;
-                    });
-                } else {
-                    styles[k] = v;
-                }
-            });
-
             $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
                 v = $('#' + k).val();
 
@@ -778,11 +799,9 @@
                     return true;
                 }
 
-                // update styles with values created above
+                // get compile styles attribute value
                 if (k === "style") {
-                    v = dom.serializeStyle($.extend(dom.parseStyle(v), styles));
-                    // serialize again to compress
-                    v = dom.serializeStyle(dom.parseStyle(v));
+                    v = self.getStyles();
                 }
 
                 if (k === "classes") {
@@ -940,47 +959,6 @@
             // remove some values
             dom.setAttribs(tr, { "height": "", "bgColor": "", "background": "" });
 
-            var styles = {
-                "vertical-align": "",
-                "float": ""
-            };
-
-            // values as styles
-            $.each(['height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
-                var v = $('#' + k).val();
-
-                if (k === "backgroundimage") {
-                    if (v !== "") {
-                        v = 'url("' + v + '")';
-                    }
-
-                    k = 'background-image';
-                }
-
-                if (k === "bgcolor") {
-                    k = 'background-color';
-                    v = v.charAt(0) === "#" ? v : '#' + v;
-                }
-
-                if (k === "border" && $('#border').is(':checked')) {
-                    $.each(['width', 'style', 'color'], function(i, n) {
-                        var s = $('#border_' + n).val();
-
-                        if (n === "width" && !/\D/.test(s)) {
-                            s = parseInt(s) + 'px';
-                        }
-
-                        if (n === "color" && s.charAt(0) !== "#") {
-                            s = '#' + s;
-                        }
-
-                        styles['border-' + n] = s;
-                    });
-                } else {
-                    styles[k] = v;
-                }
-            });
-
             $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
                 v = $('#' + k).val();
 
@@ -988,11 +966,9 @@
                     return true;
                 }
 
-                // update styles with values created above
+                // get compile styles attribute value
                 if (k === "style") {
-                    v = dom.serializeStyle($.extend(dom.parseStyle(v), styles));
-                    // serialize again to compress
-                    v = dom.serializeStyle(dom.parseStyle(v));
+                    v = self.getStyles();
                 }
 
                 if (k === "classes") {
