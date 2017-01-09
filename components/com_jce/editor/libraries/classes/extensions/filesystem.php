@@ -48,12 +48,13 @@ class WFFileSystem extends WFExtension {
 
         if (!is_object($instance)) {
             $fs = parent::loadExtensions('filesystem', $type);
-
+            
+            // get the first filesystem extension only
             if (is_array($fs)) {
                 $fs = array_shift($fs);
             }
 
-            $classname = 'WF' . ucfirst($fs) . 'FileSystem';
+            $classname = 'WF' . ucfirst($fs->name) . 'FileSystem';
 
             if (class_exists($classname)) {
                 $instance = new $classname($config);

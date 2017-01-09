@@ -59,7 +59,7 @@ class WFAggregatorExtension extends WFExtension {
         }
     }
 
-    public function & getAggregators() {
+    public function getAggregators() {
         static $aggregators;
 
         if (!isset($aggregators)) {
@@ -106,9 +106,8 @@ class WFAggregatorExtension extends WFExtension {
     }
 
     /**
-     *
      * @param object $player
-     * @return
+     * @return string
      */
     public function loadTemplate($name, $tpl = '') {
         $path = WF_EDITOR_EXTENSIONS . '/aggregator/' . $name;

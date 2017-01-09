@@ -50,7 +50,7 @@ class WFMediaPlayerExtension extends WFExtension {
                 $player = parent::loadExtensions('mediaplayer', $name);
 
                 if ($player) {
-                    $classname = 'WFMediaPlayerExtension_' . ucfirst($player);
+                    $classname = 'WFMediaPlayerExtension_' . ucfirst($player->name);
                 }
             }
 
@@ -105,9 +105,8 @@ class WFMediaPlayerExtension extends WFExtension {
     }
 
     /**
-     * 
      * @param object $player
-     * @return 
+     * @return string 
      */
     public function loadTemplate($tpl = '') {
         $output = '';

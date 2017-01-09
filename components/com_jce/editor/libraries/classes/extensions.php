@@ -112,7 +112,7 @@ class WFExtension extends JObject {
                     continue;
                 }
 
-                $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_SITE);
+                $language->load('plg_jce_' . $p->name, JPATH_ADMINISTRATOR);
 
                 // add to array
                 $extensions[$p->extension] = $p;
@@ -201,9 +201,14 @@ class WFExtension extends JObject {
                 if ($name) {
                     $root = $path . '/' . basename($path) . '.php';
 
+                    // store name in item object
+                    $item->name = $name;
+
                     // legacy - clean defined path for Windows!!
                     if (dirname($path) === WFUtility::cleanPath(WF_EDITOR_EXTENSIONS)) {
                         $root = $path . '/' . $name . '.php';
+                        // redefine path
+                        $item->path = $path . '/' . $name;
                     }
 
                     if (file_exists($root)) {
@@ -211,11 +216,11 @@ class WFExtension extends JObject {
                         require_once($root);
 
                         // Return array of extension names
-                        $result[$type][] = $name;
+                        $result[$type][] = $item;
 
                         // if we only want a named extension
                         if ($extension && $extension == $name) {
-                            return $name;
+                            return $item;
                         }
                     }
                 }

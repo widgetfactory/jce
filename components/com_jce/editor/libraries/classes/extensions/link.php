@@ -34,7 +34,7 @@ class WFLinkExtension extends WFExtension {
 
         // Load all link extensions
         foreach ($extensions as $link) {
-            $this->extensions[] = $this->getLinkExtension($link);
+            $this->extensions[] = $this->getLinkExtension($link->name);
         }
 
         $request = WFRequest::getInstance();
