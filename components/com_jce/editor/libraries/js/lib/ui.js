@@ -77,6 +77,9 @@
             var cb = this,
                 $elms = $(this).parent().find('input[type="text"], input[type="number"]');
 
+            // marker
+            $(this).parent().addClass('uk-constrain-container');
+
             $(this).on('constrain:update', function() {
                 $(this).parent().parent().find('input[type="text"], input[type="number"]').each(function() {
                     $(this).data('tmp', this.value);

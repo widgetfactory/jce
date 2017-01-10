@@ -892,6 +892,10 @@ input.colour {
     color: inherit !important
 }
 
+.uk-form .uk-constrain-container input[type="text"],
+.uk-form .uk-constrain-container input[type="number"] {
+    width: 65px;
+}
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
