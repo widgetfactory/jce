@@ -508,7 +508,7 @@
                         $.each(['width', 'style', 'color'], function(i, n) {
                             var s = $('#border_' + n).val();
 
-                            if (n === "width" && !/\D/.test(s)) {
+                            if (n === "width" && s !== "" && !/\D/.test(s)) {
                                 s = parseInt(s) + 'px';
                             }
 
@@ -600,7 +600,6 @@
                     align = "";
                     width = "";
                     height = "";
-                    border = "";
                 }
 
                 // set or remove width, height, align, border

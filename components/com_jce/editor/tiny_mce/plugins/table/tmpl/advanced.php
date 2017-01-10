@@ -115,8 +115,8 @@ defined('_JEXEC') or die('RESTRICTED');
                 <label for="border_width" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo WFText::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo WFText::_('WF_LABEL_WIDTH'); ?></label>
                 <div class="uk-form-controls uk-width-2-10 uk-datalist">
-                    <select pattern="[0-9]+" id="border_width">
-                        <option value="inherit"><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+                    <select id="border_width">
+                        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -127,6 +127,7 @@ defined('_JEXEC') or die('RESTRICTED');
                         <option value="7">7</option>
                         <option value="8">8</option>
                         <option value="9">9</option>
+                        <option value="inherit"><?php echo WFText::_('WF_OPTION_INHERIT'); ?></option>
                         <option value="thin"><?php echo WFText::_('WF_OPTION_BORDER_THIN'); ?></option>
                         <option value="medium"><?php echo WFText::_('WF_OPTION_BORDER_MEDIUM'); ?></option>
                         <option value="thick"><?php echo WFText::_('WF_OPTION_BORDER_THICK'); ?></option>
@@ -137,7 +138,8 @@ defined('_JEXEC') or die('RESTRICTED');
                        title="<?php echo WFText::_('WF_LABEL_BORDER_STYLE_DESC'); ?>"><?php echo WFText::_('WF_LABEL_STYLE'); ?></label>
                 <div class="uk-form-controls uk-width-2-10">
                     <select id="border_style">
-                        <option value="inherit"><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+                        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+                        <option value="inherit"><?php echo WFText::_('WF_OPTION_INHERIT'); ?></option>
                         <option value="none"><?php echo WFText::_('WF_OPTION_BORDER_NONE'); ?></option>
                         <option value="solid"><?php echo WFText::_('WF_OPTION_BORDER_SOLID'); ?></option>
                         <option value="dashed"><?php echo WFText::_('WF_OPTION_BORDER_DASHED'); ?></option>
