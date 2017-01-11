@@ -1495,6 +1495,9 @@
                                             self._clearPaste();
                                             self.refresh();
                                         }
+                                    }, {
+                                        label: { 'confirm': self._translate('replace', 'Replace'), 'cancel': self._translate('cancel', 'Cancel') },
+                                        header: false
                                     });
                                 } else {
                                     callback(o);
