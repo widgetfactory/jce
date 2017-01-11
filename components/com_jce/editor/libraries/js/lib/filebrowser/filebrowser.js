@@ -1462,23 +1462,42 @@
 
                     var items = this._pasteitems;
 
-                    Wf.JSON.request(fn, [items, dir], function(o) {
-                        if (o) {
-                            if (o.folders.length) {
-                                // remove from tree
-                                if (self._treeLoaded()) {
-                                    $.each(items.split(','), function(i, item) {
-                                        if (fn == 'moveItem') {
-                                            $('#tree-body').trigger('tree:removenode', [item]);
-                                        }
-                                    });
+                    function callback(o) {
+                        if (o.folders.length) {
+                            // remove from tree
+                            if (self._treeLoaded()) {
+                                $.each(items.split(','), function(i, item) {
+                                    if (fn == 'moveItem') {
+                                        $('#tree-body').trigger('tree:removenode', [item]);
+                                    }
+                                });
 
-                                }
                             }
-                            self._trigger('onPaste');
                         }
+                        self._trigger('onPaste');
+
                         self._clearPaste();
                         self.refresh();
+                    }
+
+                    Wf.JSON.request(fn, [items, dir], function(o) {
+                        if (o) {
+                            if (o.confirm) {
+                                Wf.Modal.confirm(self._translate('paste_item_confirm', 'Items with the same name already exist in this folder. Do you want to replace them with the ones you’re pasting?'), function(state) {
+                                    if (state) {
+                                        self._setLoader();
+                                        Wf.JSON.request(fn, [items, dir, true], function(o) {
+                                            callback(o);
+                                        });
+                                    } else {
+                                        self._clearPaste();
+                                        self.refresh();
+                                    }
+                                });
+                            } else {
+                                callback(o);
+                            }
+                        }
                     });
 
                     break;

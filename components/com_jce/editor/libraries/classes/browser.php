@@ -1219,7 +1219,7 @@ class WFFileBrowser extends JObject {
      * @param string $dest The relative path of the destination dir
      * @return string $error on failure
      */
-    public function copyItem($items, $destination) {
+    public function copyItem($items, $destination, $overwrite = false) {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
@@ -1261,6 +1261,11 @@ class WFFileBrowser extends JObject {
                     JError::raiseError(403, 'Access to this resource is restricted');
                 }
 
+                if ($overwrite === false) {
+                    $this->setResult(basename($item), 'confirm');
+                    return $this->getResult();
+                }
+
                 $path = dirname($item);
 
             } elseif ($filesystem->is_dir($item)) {
@@ -1300,7 +1305,7 @@ class WFFileBrowser extends JObject {
      * @param string $dest The relative path of the destination dir
      * @return string $error on failure
      */
-    public function moveItem($items, $destination) {
+    public function moveItem($items, $destination, $overwrite = false) {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
             JError::raiseError(403, 'Access to this resource is restricted');
@@ -1339,6 +1344,11 @@ class WFFileBrowser extends JObject {
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
                     JError::raiseError(403, 'Access to this resource is restricted');
+                }
+
+                if ($overwrite === false) {
+                    $this->setResult($item, 'confirm');
+                    return $this->getResult();
                 }
 
             } elseif ($filesystem->is_dir($item)) {
