@@ -193,8 +193,8 @@ input.colour {
     display: none;
 }
 
-.uk-constrain,
-.uk-equalize {
+.uk-constrain-icon,
+.uk-equalize-icon {
     position: relative;
     vertical-align: middle;
     width: 2em;
@@ -203,10 +203,11 @@ input.colour {
     line-height: 2em;
     margin: 0;
     padding: 0;
+    float: left;
 }
 
-.uk-form .uk-constrain input,
-.uk-form .uk-equalize input {
+.uk-form .uk-constrain-icon input,
+.uk-form .uk-equalize-icon input {
     opacity: 0;
     position: absolute;
     left: 0;

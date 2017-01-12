@@ -87,17 +87,11 @@
                 });
             });
 
-            // add icon and click
-            /*if ($(cb).parent('label').length === 0) {
-                $(cb).addClass('uk-form-constrain').wrap('<i class="uk-constrain uk-icon-lock" />').click(function() {
-                    $(this).parent().toggleClass('uk-icon-unlock-alt', !this.checked);
-                });
-            }
+            $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
 
-            var icon = $(this).parent('.uk-icon-lock');
-
-            // update icon
-            $(icon).toggleClass('uk-icon-unlock-alt', !this.checked);*/
+            $(cb).click(function() {
+                $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
+            });
 
             // set tmp values
             $elms.each(function() {
