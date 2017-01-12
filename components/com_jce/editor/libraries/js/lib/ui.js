@@ -20,14 +20,14 @@
         return this.each(function() {
             var x = 0,
                 cb = this,
-                $elms = $(this).parent().find('input[type="text"]'),
+                $elms = $(this).parents('.uk-form-equalize').find('input[type="text"]'),
                 self = this;
 
             // add icon and click
-            $(self).addClass('uk-form-equalize').wrap('<i class="uk-equalize uk-icon-lock" />').click(function() {
+            $(self).click(function() {
                 var state = this.checked;
 
-                $(this).parent().toggleClass('uk-icon-unlock-alt', !state);
+                //$(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !state);
 
                 $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
 
@@ -36,9 +36,13 @@
 
                     $elms.slice(1).val(value).change();
 
-                    $(cb).trigger('equalize:change', [$(this).parent().find('input[type="text"]').andSelf()]);
+                    $(cb).trigger('equalize:change', [$elms.andSelf()]);
                 }
             });
+
+            /*if ($(self).parent('label').length === 0) {
+                $(self).wrap('<i class="uk-equalize uk-icon-lock" />');
+            }*/
 
             $elms.first().change(function() {
                 var state = $(self).prop('checked');
@@ -48,7 +52,7 @@
                 }
 
                 // trigger event
-                $(cb).trigger('equalize:change', [$(this).parent().find('input[type="text"]').andSelf()]);
+                $(cb).trigger('equalize:change', [$elms.andSelf()]);
             });
 
             $(this).on('equalize:update', function() {
@@ -67,7 +71,7 @@
                 $elms.slice(1).prop('disabled', state).prev('label').toggleClass('uk-text-muted', state);
 
                 // check
-                $(this).prop('checked', state).parent().toggleClass('uk-icon-unlock-alt', !state);
+                $(this).prop('checked', state); //.parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !state);
             });
         });
     };
@@ -75,26 +79,25 @@
     $.fn.constrain = function() {
         return this.each(function() {
             var cb = this,
-                $elms = $(this).parent().find('input[type="text"], input[type="number"]');
-
-            // marker
-            $(this).parent().addClass('uk-constrain-container');
+                $elms = $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]');
 
             $(this).on('constrain:update', function() {
-                $(this).parent().parent().find('input[type="text"], input[type="number"]').each(function() {
+                $elms.each(function() {
                     $(this).data('tmp', this.value);
                 });
             });
 
             // add icon and click
-            $(cb).addClass('uk-form-constrain').wrap('<i class="uk-constrain uk-icon-lock" />').click(function() {
-                $(this).parent().toggleClass('uk-icon-unlock-alt', !this.checked);
-            });
+            /*if ($(cb).parent('label').length === 0) {
+                $(cb).addClass('uk-form-constrain').wrap('<i class="uk-constrain uk-icon-lock" />').click(function() {
+                    $(this).parent().toggleClass('uk-icon-unlock-alt', !this.checked);
+                });
+            }
 
-            var icon = $(this).parent();
+            var icon = $(this).parent('.uk-icon-lock');
 
             // update icon
-            $(icon).toggleClass('uk-icon-unlock-alt', !this.checked);
+            $(icon).toggleClass('uk-icon-unlock-alt', !this.checked);*/
 
             // set tmp values
             $elms.each(function() {
@@ -103,7 +106,7 @@
                 e.stopPropagation();
 
                 var a = this,
-                    b = $(icon).parent().find('input[type="text"], input[type="number"]').not(this);
+                    b = $elms.not(this);
 
                 var w = $(a).val(),
                     h = $(b).val(),
@@ -117,7 +120,7 @@
                     }
                 }
 
-                $(cb).trigger('constrain:change', [$(icon).parent().find('input[type="text"], input[type="number"]').add(cb)]);
+                $(cb).trigger('constrain:change', [$elms.add(cb)]);
 
                 $(a).data('tmp', w);
             });

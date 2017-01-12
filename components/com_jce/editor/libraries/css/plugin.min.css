@@ -896,6 +896,10 @@ input.colour {
 .uk-form .uk-constrain-container input[type="number"] {
     width: 65px;
 }
+
+.uk-constrain-container {
+    padding-left: 10px;
+}
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.

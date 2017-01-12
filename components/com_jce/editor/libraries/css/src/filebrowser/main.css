@@ -278,8 +278,7 @@ main>div:last-child {
 */
 
 #browser-message {
-    padding-left: 5px;
-    margin-left: -1px
+    padding-left: 0;
 }
 
 .ie8 div#browser-message {
@@ -349,6 +348,10 @@ main>div:last-child {
     margin: 0;
     cursor: default;
     text-decoration: none;
+}
+
+.uk-breadcrumb>li:nth-child(n+2)::before {
+    margin: 0 5px;
 }
 
 div#browser-message span {

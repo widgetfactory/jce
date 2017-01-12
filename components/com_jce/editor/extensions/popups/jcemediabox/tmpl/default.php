@@ -61,15 +61,27 @@ defined('_WF_EXT') or die('RESTRICTED');
 
     <div class="uk-form-row">
         <label class="hastip uk-form-label uk-width-1-5" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
-            <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
-        </label>
-        <div class="uk-form-controls uk-width-4-5">
-            <input type="text" id="jcemediabox_popup_width" value="" />
-            <strong class="uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
-            <input type="text" id="jcemediabox_popup_height" />
+                <?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?>
+            </label>
+            <div class="uk-form-controls uk-width-4-5 uk-form-constrain">
 
-            <input class="uk-constrain-checkbox" type="checkbox" checked />
-        </div>
+                <div class="uk-form-controls">
+                    <input type="text" id="jcemediabox_popup_width" value="" class="uk-text-muted" />
+                </div>
+
+                <div class="uk-form-controls">
+                    <strong class="uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
+                </div>
+
+                <div class="uk-form-controls">
+                    <input type="text" id="jcemediabox_popup_height" value="" class="uk-text-muted" />
+                </div>
+
+                <label class="uk-form-label uk-margin-left">
+                    <input class="uk-constrain-checkbox" type="checkbox" checked />
+                    <?php echo WFText::_('WF_LABEL_PROPORTIONAL');?>
+                </label>
+            </div>
     </div>
     <div class="uk-form-row">
         <label for="jcemediabox_popup_autopopup" class="uk-form-label uk-width-1-5 hastip" title="<?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO_DESC'); ?>"><?php echo WFText::_('WF_POPUPS_JCEMEDIABOX_AUTO'); ?></label>
