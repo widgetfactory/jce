@@ -52,7 +52,7 @@ class WFFileBrowserPlugin extends WFMediaManager
         }
 
         // get filetypes from params
-        $filetypes = $this->getParam($caller . '.extensions', $filetypes);
+        $filetypes = $this->getParam('extensions');
 
         // set filetypes
         $this->setFileTypes($filetypes);
