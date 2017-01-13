@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @package       JCE
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,12 +11,14 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-class WFControllerProfiles extends WFController {
+class WFControllerProfiles extends WFController
+{
 
     /**
      * Custom Constructor
      */
-    public function __construct($default = array()) {
+    public function __construct($default = array())
+    {
         parent::__construct();
 
         $this->registerTask('apply', 'save');
@@ -27,7 +29,8 @@ class WFControllerProfiles extends WFController {
         $this->registerTask('orderdown', 'order');
     }
 
-    public function remove() {
+    public function remove()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
 
@@ -43,7 +46,7 @@ class WFControllerProfiles extends WFController {
         $cids = implode(',', $cid);
 
         $query = 'DELETE FROM #__wf_profiles'
-                . ' WHERE id IN ( ' . $cids . ' )'
+            . ' WHERE id IN ( ' . $cids . ' )'
         ;
         $db->setQuery($query);
         if (!$db->query()) {
@@ -54,7 +57,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
     }
 
-    public function copy() {
+    public function copy()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
 
@@ -90,7 +94,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
     }
 
-    public function save() {
+    public function save()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
 
@@ -128,8 +133,8 @@ class WFControllerProfiles extends WFController {
                     $value = implode(',', $this->cleanInput($value));
                     break;
                 case 'usergroups':
-                    $key    = 'types';
-                    $value  = implode(',', $this->cleanInput(array_filter($value), 'int'));
+                    $key = 'types';
+                    $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
                     break;
                 case 'users':
                     $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
@@ -142,6 +147,26 @@ class WFControllerProfiles extends WFController {
                     }
                     break;
                 case 'custom':
+                    $data = array();
+
+                    if (!empty($value)) {
+                        $keys = empty($value['key']) ? array() : $value['key'];
+                        $values = empty($value['value']) ? array() : $value['value'];
+                        
+                        // number of keys must match number of values, and must be greater than 0!
+                        if (count($keys) === count($values) > 0) {
+                            foreach ($keys as $index => $name) {
+                                // key does not yet exist, create array
+                                if (!array_key_exists($name, $data)) {
+                                    $data[$name] = array();
+                                }
+                                // push value to array
+                                $data[$name][] = $values[$index];
+                            }
+                        }
+                    }
+
+                    $value = json_encode($data);
                     break;
                 case 'plugins':
                     $value = preg_replace('#[^\w,]+#', '', $value);
@@ -207,9 +232,10 @@ class WFControllerProfiles extends WFController {
 
     /**
      * Generic publish method
-     * @return
+     * @return void
      */
-    public function publish() {
+    public function publish()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('Invalid Token');
 
@@ -240,8 +266,8 @@ class WFControllerProfiles extends WFController {
         $cids = implode(',', $cid);
 
         $query = 'UPDATE #__wf_profiles SET published = ' . (int) $publish
-                . ' WHERE id IN ( ' . $cids . ' )'
-                . ' AND ( checked_out = 0 OR ( checked_out = ' . (int) $user->get('id') . ' ))'
+        . ' WHERE id IN ( ' . $cids . ' )'
+        . ' AND ( checked_out = 0 OR ( checked_out = ' . (int) $user->get('id') . ' ))'
         ;
         $db->setQuery($query);
 
@@ -256,7 +282,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect('index.php?option=com_jce&view=profiles');
     }
 
-    public function order() {
+    public function order()
+    {
         // Check for request forgeries
         JRequest::checkToken() or jexit('Invalid Token');
 
@@ -266,7 +293,7 @@ class WFControllerProfiles extends WFController {
         JArrayHelper::toInteger($cid, array(0));
 
         $uid = $cid[0];
-        $inc = ( $this->getTask() == 'orderup' ? -1 : 1 );
+        $inc = ($this->getTask() == 'orderup' ? -1 : 1);
 
         $row = JTable::getInstance('profiles', 'WFTable');
         $row->load($uid);
@@ -275,7 +302,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect('index.php?option=com_jce&view=profiles');
     }
 
-    public function saveorder() {
+    public function saveorder()
+    {
         // Check for request forgeries
         JRequest::checkToken() or jexit('Invalid Token');
 
@@ -297,7 +325,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
     }
 
-    public function cancelEdit() {
+    public function cancelEdit()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
 
@@ -311,7 +340,8 @@ class WFControllerProfiles extends WFController {
         $this->setRedirect(JRoute::_('index.php?option=com_jce&view=' . $view, false));
     }
 
-    public function export() {
+    public function export()
+    {
         wfimport('admin.helpers.encrypt');
 
         $mainframe = JFactory::getApplication();
@@ -399,7 +429,7 @@ class WFControllerProfiles extends WFController {
         header("Content-Transfer-Encoding: binary");
         header("Content-Type: text/xml");
         header('Content-Disposition: attachment;'
-                . ' filename="' . $name . '";'
+            . ' filename="' . $name . '";'
         );
 
         echo $buffer;
@@ -412,7 +442,8 @@ class WFControllerProfiles extends WFController {
      * @param object $xml
      * @return boolean
      */
-    public function import() {
+    public function import()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
 
@@ -474,7 +505,8 @@ class WFControllerProfiles extends WFController {
      * @param object $param
      * @return CDATA encoded parameter or parameter
      */
-    private function encodeData($data) {
+    private function encodeData($data)
+    {
         if (preg_match('/[<>&]/', $data)) {
             $data = '<![CDATA[' . $data . ']]>';
         }
@@ -485,5 +517,3 @@ class WFControllerProfiles extends WFController {
     }
 
 }
-
-?>

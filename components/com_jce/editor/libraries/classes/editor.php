@@ -1,25 +1,25 @@
 <?php
 
 /**
-* @package   	JCE
-* @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
-* @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-* JCE is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses.
-*/
+ * @package       JCE
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
 defined('_JEXEC') or die('RESTRICTED');
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
-* JCE class
-*
-* @static
-* @package		JCE
-* @since	1.5
-*/
+ * JCE class
+ *
+ * @static
+ * @package        JCE
+ * @since    1.5
+ */
 class WFEditor extends JObject
 {
     // Editor instance
@@ -32,24 +32,24 @@ class WFEditor extends JObject
     protected static $params = array();
 
     /**
-    * Constructor activating the default information of the class
-    *
-    * @access	protected
-    */
+     * Constructor activating the default information of the class
+     *
+     * @access    protected
+     */
     public function __construct($config = array())
     {
         $this->setProperties($config);
     }
 
     /**
-    * Returns a reference to a editor object
-    *
-    * This method must be invoked as:
-    * 		<pre>  $browser =JContentEditor::getInstance();</pre>
-    *
-    * @access	public
-    * @return	JCE  The editor object.
-    */
+     * Returns a reference to a editor object
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
+     *
+     * @access    public
+     * @return    JCE  The editor object.
+     */
     public static function getInstance($config = array())
     {
         if (!isset(self::$instance)) {
@@ -59,10 +59,10 @@ class WFEditor extends JObject
     }
 
     /**
-    * Get the current version
-    * @access protected
-    * @return string
-    */
+     * Get the current version
+     * @access protected
+     * @return string
+     */
     public function getVersion()
     {
         $manifest = WF_ADMINISTRATOR . '/jce.xml';
@@ -74,9 +74,9 @@ class WFEditor extends JObject
 
     private function getProfileVars($plugin = "")
     {
-        $app        = JFactory::getApplication();
-        $user      = JFactory::getUser();
-        $option    = $this->getComponentOption();
+        $app = JFactory::getApplication();
+        $user = JFactory::getUser();
+        $option = $this->getComponentOption();
 
         if ($option == 'com_jce') {
             $component_id = JRequest::getInt('component_id');
@@ -92,7 +92,7 @@ class WFEditor extends JObject
 
         if (!class_exists('Wf_Mobile_Detect')) {
             // load mobile detect class
-            require_once(dirname(__FILE__) . '/mobile.php');
+            require_once dirname(__FILE__) . '/mobile.php';
         }
 
         $mobile = new Wf_Mobile_Detect();
@@ -117,25 +117,26 @@ class WFEditor extends JObject
         }
 
         return array(
-        "option"  => $option,
-        "area"    => $area,
-        "device"  => $device,
-        "groups"  => $groups,
-        "plugin"  => $plugin
+            "option" => $option,
+            "area" => $area,
+            "device" => $device,
+            "groups" => $groups,
+            "plugin" => $plugin,
         );
     }
 
     /**
-    * Get an appropriate editor profile
-    */
+     * Get an appropriate editor profile
+     */
     public function getProfile($plugin = "")
     {
-        $options    = $this->getProfileVars($plugin);
-        $signature  = serialize($options);
+        $options = $this->getProfileVars($plugin);
+        $signature = serialize($options);
 
         if (!isset(self::$profile[$signature])) {
             $db = JFactory::getDBO();
             $user = JFactory::getUser();
+            $app = JFactory::getApplication();
 
             $profile_id = 0;
 
@@ -206,17 +207,30 @@ class WFEditor extends JObject
                 }
 
                 // check custom fields
-                /*if (!empty($item->custom)) {
-                list($key, $value) = $item->custom;
+                if (!empty($item->custom)) {
+                    $customs = json_decode($item->custom);
 
-                // get from request, default to 'wf_editor_profile_custom' xml field
-                $input = JRequest::getVar($key, $app->get('wf_editor_profile_custom'));
+                    // set match flag to allow profile thorough
+                    $match = true;
 
-                // no match
-                if (empty($input) || $input !== $value) {
-                continue;
+                    foreach($customs as $key => $values) {                        
+                        // get from key from request
+                        $input = JRequest::getVar($key);
+
+                        // key passed and matches associated value
+                        $match = !is_null($input) && in_array($input, (array) $values);
+
+                        // conditions met, so bail
+                        if ($match === true) {
+                            break;
+                        }
+                    }
+
+                    // this is not the profile you are looking for...
+                    if ($match === false) {
+                        continue;
+                    }
                 }
-                }*/
 
                 // decrypt params
                 if (!empty($item->params)) {
@@ -238,10 +252,10 @@ class WFEditor extends JObject
     }
 
     /**
-    * Get the component option
-    * @access private
-    * @return string
-    */
+     * Get the component option
+     * @access private
+     * @return string
+     */
     private function getComponentOption()
     {
         $option = JRequest::getCmd('option', '');
@@ -255,20 +269,20 @@ class WFEditor extends JObject
 
                 if ($section) {
                     $option = $section;
-            }
+                }
 
-            break;
+                break;
         }
 
         return $option;
     }
 
     /**
-    * Get editor parameters
-    * @access  public
-    * @param 	array $options
-    * @return 	object
-    */
+     * Get editor parameters
+     * @access  public
+     * @param     array $options
+     * @return     object
+     */
     public function getParams($options = array())
     {
         if (!isset(self::$params)) {
@@ -286,16 +300,16 @@ class WFEditor extends JObject
 
         // get plugin name
         $plugin = JRequest::getCmd('plugin');
-        
+
         // optional caller, eg: Link
         $caller = "";
 
         // get name and caller from plugin name
         if (strpos($plugin, '.') !== false) {
-            list ($plugin, $caller) = explode('.', $plugin);
+            list($plugin, $caller) = explode('.', $plugin);
 
             if ($caller) {
-              $options['caller'] = $caller;
+                $options['caller'] = $caller;
             }
         }
 
@@ -314,8 +328,8 @@ class WFEditor extends JObject
             // get params data for this profile
             $profile = $this->getProfile($plugin);
 
-            $profile_params  = array();
-            $editor_params   = array();
+            $profile_params = array();
+            $editor_params = array();
 
             // get params from editor plugin
             if ($editor_plugin->params && $editor_plugin->params !== "{}") {
@@ -358,11 +372,11 @@ class WFEditor extends JObject
     }
 
     /**
-    * Get a parameter by key
-    * @param $key Parameter key eg: editor.width
-    * @param $fallback Fallback value
-    * @param $default Default value
-    */
+     * Get a parameter by key
+     * @param $key Parameter key eg: editor.width
+     * @param $fallback Fallback value
+     * @param $default Default value
+     */
     public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
     {
         // get all keys

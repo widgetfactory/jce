@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @package       JCE
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -13,9 +13,11 @@ defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('admin.classes.view');
 
-class WFViewProfiles extends WFView {
+class WFViewProfiles extends WFView
+{
 
-    private function getOptions($params) {
+    private function getOptions($params)
+    {
         wfimport('admin.models.editor');
 
         $options = array(
@@ -30,18 +32,19 @@ class WFViewProfiles extends WFView {
                     'custom' => WFText::_('WF_COLORPICKER_CUSTOM'),
                     'color' => WFText::_('WF_COLORPICKER_COLOR'),
                     'apply' => WFText::_('WF_COLORPICKER_APPLY'),
-                    'name' => WFText::_('WF_COLORPICKER_NAME')
-                )
+                    'name' => WFText::_('WF_COLORPICKER_NAME'),
+                ),
             ),
             'browser' => array(
-                'title' => WFText::_('WF_BROWSER_TITLE')
-            )
+                'title' => WFText::_('WF_BROWSER_TITLE'),
+            ),
         );
 
         return $options;
     }
 
-    public function display($tpl = null) {
+    public function display($tpl = null)
+    {
         $app = JFactory::getApplication();
 
         $db = JFactory::getDBO();
@@ -104,8 +107,8 @@ class WFViewProfiles extends WFView {
 
                 } else {
                     $query = 'SELECT COUNT(p.id)'
-                    . ' FROM #__wf_profiles AS p'
-                    . (count($where) ? ' WHERE ' . implode(' AND ', $where) : '');
+                        . ' FROM #__wf_profiles AS p'
+                        . (count($where) ? ' WHERE ' . implode(' AND ', $where) : '');
                 }
 
                 $db->setQuery($query);
@@ -173,8 +176,8 @@ class WFViewProfiles extends WFView {
                     'task' => 'import',
                     'labels' => array(
                         'browse' => WFText::_('WF_LABEL_BROWSE'),
-                        'alert' => WFText::_('WF_PROFILES_IMPORT_BROWSE_ERROR')
-                    )
+                        'alert' => WFText::_('WF_PROFILES_IMPORT_BROWSE_ERROR'),
+                    ),
                 );
 
                 $this->addScriptDeclaration('jQuery(document).ready(function($){$(\'input[type="file"]\').upload(' . json_encode($options) . ')});');
@@ -242,6 +245,8 @@ class WFViewProfiles extends WFView {
                         $row->types = '';
                         $row->components = '';
                         $row->area = 0;
+                        $row->device = array();
+                        $row->custom = '';
                         $row->types = '';
                         $row->rows = '';
                         $row->plugins = '';
@@ -251,6 +256,25 @@ class WFViewProfiles extends WFView {
                     }
 
                     $row->params = json_decode($row->params . ',' . $component->params);
+                }
+                // decode string
+                $row->custom = json_decode($row->custom, true);
+
+                // set default json string
+                if (empty($row->custom)) {
+                    $row->custom = array(array("key" => "", "value" => ""));
+                } else {
+                    $custom = array();
+
+                    foreach($row->custom as $key => $values) {
+                        $values = (array) $values;
+
+                        foreach($values as $value) {
+                            $custom[] = array("key" => $key, "value" => $value);
+                        }
+                    }
+                    // pass back
+                    $row->custom = $custom;
                 }
 
                 $row->area = (isset($row->area)) ? $row->area : 0;
@@ -270,16 +294,16 @@ class WFViewProfiles extends WFView {
                 }
 
                 $order = JHTML::_('list.genericordering', $query);
-                $lists['ordering']  = JHTML::_('select.genericlist', $order, 'ordering', 'class="inputbox"', 'value', 'text', intval($row->ordering));
+                $lists['ordering'] = JHTML::_('select.genericlist', $order, 'ordering', 'class="inputbox"', 'value', 'text', intval($row->ordering));
 
                 $lists['published'] = '';
 
                 $options = array(
                     1 => WFText::_('WF_OPTION_YES'),
-                    0 => WFTEXT::_('WF_OPTION_NO')
+                    0 => WFTEXT::_('WF_OPTION_NO'),
                 );
 
-                foreach($options as $value => $text) {
+                foreach ($options as $value => $text) {
                     $checked = '';
 
                     if ($value == $row->published) {
@@ -312,7 +336,7 @@ class WFViewProfiles extends WFView {
                     'com_wrapper',
                     'com_search',
                     'com_user',
-                    'com_updates'
+                    'com_updates',
                 );
 
                 $query = $db->getQuery(true);
@@ -321,10 +345,10 @@ class WFViewProfiles extends WFView {
                     $query->select('element AS value, name AS text')->from('#__extensions')->where(array('type = ' . $db->Quote('component'), 'enabled = 1'))->order('name');
                 } else {
                     $query = "SELECT `option` AS value, name AS text"
-                    . " FROM #__components"
-                    . " WHERE parent = 0"
-                    . " AND enabled = 1"
-                    . " ORDER BY name";
+                        . " FROM #__components"
+                        . " WHERE parent = 0"
+                        . " AND enabled = 1"
+                        . " ORDER BY name";
                 }
 
                 $db->setQuery($query);
@@ -355,13 +379,13 @@ class WFViewProfiles extends WFView {
 
                 // components select
                 $options = array(
-                    'all'       => WFText::_('WF_PROFILES_COMPONENTS_ALL'),
-                    'select'    => WFText::_('WF_PROFILES_COMPONENTS_SELECT')
+                    'all' => WFText::_('WF_PROFILES_COMPONENTS_ALL'),
+                    'select' => WFText::_('WF_PROFILES_COMPONENTS_SELECT'),
                 );
 
                 $lists['components-select'] = '';
 
-                foreach($options as $value => $text) {
+                foreach ($options as $value => $text) {
                     $checked = '';
 
                     if ($row->components) {
@@ -380,38 +404,38 @@ class WFViewProfiles extends WFView {
                 // area
                 $options = array(
                     1 => WFText::_('WF_PROFILES_AREA_FRONTEND'),
-                    2 => WFText::_('WF_PROFILES_AREA_BACKEND')
+                    2 => WFText::_('WF_PROFILES_AREA_BACKEND'),
                 );
 
                 $lists['area'] = '';
 
-                foreach($options as $value => $text) {
+                foreach ($options as $value => $text) {
                     $checked = '';
 
                     if (!isset($row->area) || empty($row->area) || in_array($value, explode(',', $row->area))) {
                         $checked = ' checked="checked"';
                     }
 
-                    $lists['area'] .= '<label class="checkbox"><input type="checkbox" name="area[]" value="' . $value . '"'. $checked .' />' . $text . '</label>';
+                    $lists['area'] .= '<label class="checkbox"><input type="checkbox" name="area[]" value="' . $value . '"' . $checked . ' />' . $text . '</label>';
                 }
 
                 // device
                 $options = array(
-                    'desktop'   => WFText::_('WF_PROFILES_DEVICE_DESKTOP'),
-                    'tablet'    => WFText::_('WF_PROFILES_DEVICE_TABLET'),
-                    'phone'    => WFText::_('WF_PROFILES_DEVICE_PHONE')
+                    'desktop' => WFText::_('WF_PROFILES_DEVICE_DESKTOP'),
+                    'tablet' => WFText::_('WF_PROFILES_DEVICE_TABLET'),
+                    'phone' => WFText::_('WF_PROFILES_DEVICE_PHONE'),
                 );
 
                 $lists['device'] = '';
 
-                foreach($options as $value => $text) {
+                foreach ($options as $value => $text) {
                     $checked = '';
 
                     if (!isset($row->device) || empty($row->device) || in_array($value, explode(',', $row->device))) {
                         $checked = ' checked="checked"';
                     }
 
-                    $lists['device'] .= '<label class="checkbox inline"><input type="checkbox" name="device[]" value="' . $value . '"'. $checked .' />' . $text . '</label>';
+                    $lists['device'] .= '<label class="checkbox inline"><input type="checkbox" name="device[]" value="' . $value . '"' . $checked . ' />' . $text . '</label>';
                 }
 
                 // user types from profile
@@ -426,7 +450,7 @@ class WFViewProfiles extends WFView {
                     $query = 'SELECT types'
                     . ' FROM #__wf_profiles'
                     // Exclude ROOT, USERS, Super Administrator, Public Frontend, Public Backend
-                    . ' WHERE id NOT IN (17,28,29,30)';
+                     . ' WHERE id NOT IN (17,28,29,30)';
 
                     $db->setQuery($query);
                     $types = $db->loadResultArray();
@@ -458,13 +482,13 @@ class WFViewProfiles extends WFView {
                     $query = 'SELECT id AS value, name AS text'
                     . ' FROM #__core_acl_aro_groups'
                     // Exclude ROOT, USERS, Super Administrator, Public Frontend, Public Backend
-                    . ' WHERE id NOT IN (17,28,29,30)';
+                     . ' WHERE id NOT IN (17,28,29,30)';
                     $db->setQuery($query);
                     $types = $db->loadObjectList();
 
                     $i = '-';
                     $options = array(
-                        JHTML::_('select.option', '0', WFText::_('Guest'))
+                        JHTML::_('select.option', '0', WFText::_('Guest')),
                     );
 
                     foreach ($types as $type) {

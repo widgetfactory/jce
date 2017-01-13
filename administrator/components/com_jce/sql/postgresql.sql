@@ -7,6 +7,7 @@ CREATE TABLE "#__wf_profiles" (
     "components" text NOT NULL,
     "area" smallint NOT NULL,
     "device" character varying(255) NOT NULL,
+    "custom" text NOT NULL,
     "rows" text NOT NULL,
     "plugins" text NOT NULL,
     "published" smallint NOT NULL,

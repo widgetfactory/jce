@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @package       JCE
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -14,8 +14,10 @@ defined('_JEXEC') or die('RESTRICTED');
 // try to set time limit
 @set_time_limit(0);
 
-abstract class WFInstall {
-    public static function install($installer) {
+abstract class WFInstall
+{
+    public static function install($installer)
+    {
         error_reporting(E_ERROR | E_WARNING);
 
         $app = JFactory::getApplication();
@@ -26,13 +28,37 @@ abstract class WFInstall {
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
         // get manifest
-        $manifest       = $installer->getManifest();
-        $new_version    = (string) $manifest->version;
+        $manifest = $installer->getManifest();
+        $new_version = (string) $manifest->version;
 
         $state = false;
 
         // the current version
         $current_version = $installer->get('current_version');
+
+        // Add device column
+        if (self::checkTableColumn('#__wf_profiles', 'custom') === false) {
+            $db = JFactory::getDBO();
+
+            switch (strtolower($db->name)) {
+                case 'mysql':
+                case 'mysqli':
+                    // Add "custom" field - MySQL
+                    $query = 'ALTER TABLE #__wf_profiles ADD `custom` TEXT AFTER `device`';
+                    break;
+                case 'sqlsrv':
+                case 'sqlazure':
+                case 'sqlzure':
+                    $query = 'ALTER TABLE #__wf_profiles ADD `custom` TEXT';
+                    break;
+                case 'postgresql':
+                    $query = 'ALTER TABLE #__wf_profiles ADD "custom" character text NOT NULL';
+                    break;
+            }
+
+            $db->setQuery($query);
+            $db->query();
+        }
 
         // install profiles etc.
         $state = self::installProfiles();
@@ -43,7 +69,7 @@ abstract class WFInstall {
         }
 
         if ($state) {
-            $message  = '<div class="ui-jce">';
+            $message = '<div class="ui-jce">';
             $message .= '   <h2>' . JText::_('COM_JCE') . ' ' . $new_version . '</h2>';
             $message .= '   <div>' . JText::_('COM_JCE_XML_DESCRIPTION') . '</div>';
             $message .= '</div>';
@@ -59,7 +85,7 @@ abstract class WFInstall {
                 JPATH_PLUGINS . '/extension/jce',
                 JPATH_PLUGINS . '/installer/jce',
                 JPATH_PLUGINS . '/quickicon/jce',
-                JPATH_PLUGINS . '/system/jce'
+                JPATH_PLUGINS . '/system/jce',
             ));
         } else {
             $installer->abort();
@@ -69,7 +95,8 @@ abstract class WFInstall {
         return $state;
     }
 
-    private static function loadXMLFile($file) {
+    private static function loadXMLFile($file)
+    {
         $xml = null;
 
         // Disable libxml errors and allow to fetch error information as needed
@@ -83,7 +110,8 @@ abstract class WFInstall {
         return $xml;
     }
 
-    private static function installProfile($name) {
+    private static function installProfile($name)
+    {
         $db = JFactory::getDBO();
 
         $query = $db->getQuery(true);
@@ -108,7 +136,7 @@ abstract class WFInstall {
                     if ((string) $profile->attributes()->name == $name) {
                         $row = JTable::getInstance('profiles', 'WFTable');
 
-                        require_once(JPATH_ADMINISTRATOR . '/components/com_jce/models/profiles.php');
+                        require_once JPATH_ADMINISTRATOR . '/components/com_jce/models/profiles.php';
                         $groups = WFModelProfiles::getUserGroups((int) $profile->children('area'));
 
                         foreach ($profile->children() as $item) {
@@ -143,7 +171,8 @@ abstract class WFInstall {
      * Upgrade database tables and remove legacy folders
      * @return Boolean
      */
-    private static function upgrade($version) {
+    private static function upgrade($version)
+    {
         $app = JFactory::getApplication();
         $db = JFactory::getDBO();
 
@@ -213,7 +242,7 @@ abstract class WFInstall {
             $site . '/editor/libraries/mediaplayer/license.txt',
             $site . '/editor/tiny_mce/plugins/inlinepopups/css/dialog.css',
             $site . '/editor/tiny_mce/plugins/media/img/iframe.png',
-            $site . '/editor/tiny_mce/themes/advanced/img/icons.gif'
+            $site . '/editor/tiny_mce/themes/advanced/img/icons.gif',
         );
 
         $folders = array(
@@ -226,21 +255,21 @@ abstract class WFInstall {
             $site . '/editor/tiny_mce/themes/advanced/skins/classic',
             $site . '/editor/tiny_mce/themes/advanced/skins/highcontrast',
             $site . '/editor/libraries/extensions/imgageeditor',
-            $site . '/editor/libraries/extensions/imgageeditor/picmonkey'
+            $site . '/editor/libraries/extensions/imgageeditor/picmonkey',
         );
 
         foreach ($folders as $folder) {
             if (JFolder::exists($folder)) {
-              if (!JFolder::delete($folder)) {
-                  $app->enqueueMessage('Unable to delete folder: ' . $folder, 'error');
-              }
+                if (!JFolder::delete($folder)) {
+                    $app->enqueueMessage('Unable to delete folder: ' . $folder, 'error');
+                }
             }
         }
 
         foreach ($files as $file) {
             if (JFile::exists($file)) {
                 if (!JFile::delete($file)) {
-                  $app->enqueueMessage('Unable to delete file: ' . $file, 'error');
+                    $app->enqueueMessage('Unable to delete file: ' . $file, 'error');
                 }
             }
         }
@@ -252,13 +281,13 @@ abstract class WFInstall {
 
             if (!empty($languages)) {
                 JFile::delete($languages);
-            }  
+            }
         }
 
         // clean up links extension folder
         $files = JFolder::files($site . '/editor/extensions/links', '.', false, true);
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $name = pathinfo($file, PATHINFO_FILENAME);
             // leave this...
             if ($name === "joomlalinks") {
@@ -269,15 +298,16 @@ abstract class WFInstall {
 
             $path = dirname($file);
 
-            if(is_dir($path .'/' . $name)) {
-                JFolder::delete($path .'/' . $name);
+            if (is_dir($path . '/' . $name)) {
+                JFolder::delete($path . '/' . $name);
             }
         }
 
         return true;
     }
 
-    private static function getProfiles() {
+    private static function getProfiles()
+    {
         $db = JFactory::getDBO();
 
         $query = $db->getQuery(true);
@@ -292,9 +322,10 @@ abstract class WFInstall {
         return $db->loadObjectList();
     }
 
-    private static function createProfilesTable() {
-        include_once (dirname(__FILE__) . '/includes/base.php');
-        include_once (dirname(__FILE__) . '/models/profiles.php');
+    private static function createProfilesTable()
+    {
+        include_once dirname(__FILE__) . '/includes/base.php';
+        include_once dirname(__FILE__) . '/models/profiles.php';
 
         $profiles = new WFModelProfiles();
 
@@ -305,9 +336,10 @@ abstract class WFInstall {
         return false;
     }
 
-    private static function installProfiles() {
-        include_once (dirname(__FILE__) . '/includes/base.php');
-        include_once (dirname(__FILE__) . '/models/profiles.php');
+    private static function installProfiles()
+    {
+        include_once dirname(__FILE__) . '/includes/base.php';
+        include_once dirname(__FILE__) . '/models/profiles.php';
 
         $profiles = new WFModelProfiles();
 
@@ -318,7 +350,8 @@ abstract class WFInstall {
         return false;
     }
 
-    private static function addIndexfiles($paths) {
+    private static function addIndexfiles($paths)
+    {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
@@ -338,5 +371,27 @@ abstract class WFInstall {
                 }
             }
         }
+    }
+
+    private static function checkTableColumn($table, $column)
+    {
+        $db = JFactory::getDBO();
+
+        // use built in function
+        if (method_exists($db, 'getTableColumns')) {
+            $fields = $db->getTableColumns($table);
+        } else {
+            $db->setQuery('DESCRIBE ' . $table);
+            if (method_exists($db, 'loadColumn')) {
+                $fields = $db->loadColumn();
+            } else {
+                $fields = $db->loadResultArray();
+            }
+
+            // we need to check keys not values
+            $fields = array_flip($fields);
+        }
+
+        return array_key_exists($column, $fields);
     }
 }
