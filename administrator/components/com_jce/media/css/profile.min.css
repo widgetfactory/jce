@@ -1034,3 +1034,8 @@ ul#profileAdditionalFeatures li span {
 }
 
 .ui-repeatable input + input {margin-left: 5px;}
+
+.ui-jce .input-append .add-on + input {
+    border-radius: 0 3px 3px 0;
+    margin-left: -1px;
+}
