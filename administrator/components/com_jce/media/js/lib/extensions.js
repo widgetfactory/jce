@@ -7,10 +7,10 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    $.fn.extensionmapper = function(options) {
+(function ($) {
+    $.fn.extensionmapper = function (options) {
 
-        return this.each(function() {
+        return this.each(function () {
             var self = this,
                 value = [],
                 $parent = $(self).parent();
@@ -24,9 +24,9 @@
             function serialize() {
                 var list = [];
 
-                $(self).parent().find('dl').each(function() {
+                $(self).parent().find('dl').each(function () {
                     // checkboxes
-                    var v1 = $(this).find('dd input[type="checkbox"]').map(function() {
+                    var v1 = $(this).find('dd input[type="checkbox"]').map(function () {
                         if (!this.checked) {
                             return "-" + this.value;
                         }
@@ -34,7 +34,7 @@
                     }).get();
 
                     // custom values
-                    var v2 = $(this).find('.extension-custom input').map(function() {
+                    var v2 = $(this).find('.extension-custom input').map(function () {
                         if (this.value !== "") {
                             return this.value;
                         }
@@ -42,14 +42,16 @@
 
                     var group = $(this).find('dt').data('extension-group');
 
-                    group = $(this).find('dt input[type="checkbox"]').map(function() {
+                    group = $(this).find('dt input[type="checkbox"]').map(function () {
                         var value = $(this).parents('dt').data('extension-group');
 
-                        if (!this.checked) {
-                            return "-" + value;
-                        }
+                        if (value) {
+                            if (!this.checked) {
+                                return "-" + value;
+                            }
 
-                        return value;
+                            return value;
+                        }
                     }).get();
 
                     var items = $.merge(v1, v2).join(",");
@@ -69,28 +71,28 @@
                 $(self).val(v);
             }
 
-            $(this).siblings('button').click(function(e) {
+            $(this).siblings('button').click(function (e) {
                 e.preventDefault();
                 $(self).siblings('dl').slideToggle();
             });
 
             // get all checkboxes
-            $parent.find('input[type="checkbox"]').click(function() {
+            $parent.find('input[type="checkbox"]').click(function () {
                 serialize();
             });
 
-            $parent.on('change', '.extension-custom input', function(e) {
+            $parent.on('change', '.extension-custom input', function (e) {
                 e.preventDefault();
                 $(this).siblings('.file').attr("class", "").addClass("file").addClass(this.value);
                 serialize();
             });
 
-            $parent.on('click', '.extension-custom .extension-clear', function(e) {
+            $parent.on('click', '.extension-custom .extension-clear', function (e) {
                 e.preventDefault();
                 $(this).siblings('input').val("");
             });
 
-            $parent.find('.extension-add').click(function(e) {
+            $parent.find('.extension-add').click(function (e) {
                 e.preventDefault();
 
                 var $p = $(this).parent();
@@ -100,7 +102,7 @@
                 $(clone).insertAfter($p);
             });
 
-            $parent.on('click', '.extension-remove', function(e) {
+            $parent.on('click', '.extension-remove', function (e) {
                 e.preventDefault();
 
                 $(this).parent().remove();
@@ -112,7 +114,7 @@
                     "axis": "y",
                     "items": "> dd",
                     "connectWith": ".extensions dl",
-                    "update": function(event, ui) {
+                    "update": function (event, ui) {
                         serialize();
                     }
                 });

@@ -232,3 +232,5 @@ ul#profileAdditionalFeatures li span {
     vertical-align: middle;
     margin: 0px 5px;
 }
+
+.ui-repeatable input + input {margin-left: 5px;}

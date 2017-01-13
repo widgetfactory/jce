@@ -40,8 +40,10 @@
 
 .ui-jce .extensions dl label {
     padding: 0;
-    margin: 0;
+    margin: 0 -34px 0 0;
     display: inline-block;
+    width: 100%;
+    line-height: 28px;
 }
 
 .ui-jce .extensions dl input[type="text"] {

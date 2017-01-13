@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -18,13 +18,14 @@ class WFElementExtension extends WFElement
     /*
      * Element name
      *
-     * @access	protected
-     * @var		string
+     * @access    protected
+     * @var        string
      */
     public $_name = 'Extension';
 
-    private static function array_flatten($array, $return) {
-        foreach($array as $key => $value) {
+    private static function array_flatten($array, $return)
+    {
+        foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $return = self::array_flatten($value, $return);
             } else {
@@ -39,20 +40,21 @@ class WFElementExtension extends WFElement
     {
         $data = array();
 
+        // no grouping
         if (strpos($value, '=') === false) {
             return array(explode(',', $value));
         }
 
         foreach (explode(';', $value) as $group) {
-            $items  = explode('=', $group);
-            $name   = $items[0];
+            $items = explode('=', $group);
+            $name = $items[0];
             $values = explode(",", $items[1]);
 
-            array_walk($values, function(&$item, $name) {
+            array_walk($values, function (&$item, $name) {
 
-              if ($name{0} === "-") {
-                  $item = '-' . $item;
-              }
+                if ($name{0} === "-") {
+                    $item = '-' . $item;
+                }
             }, $name);
 
             $data[$name] = $values;
@@ -61,33 +63,39 @@ class WFElementExtension extends WFElement
         return $data;
     }
 
-    private function cleanValue($value) {
-      $data = $this->mapValue($value);
-      // get array values only
-      $values = self::array_flatten($data, array());
-      // convert to string
-      $string = implode(',', $values);
-      // return single array
-      return explode(',', $string);
+    private function cleanValue($value)
+    {
+        $data = $this->mapValue($value);
+        // get array values only
+        $values = self::array_flatten($data, array());
+        // convert to string
+        $string = implode(',', $values);
+        // return single array
+        return explode(',', $string);
     }
 
-    public function fetchElement($name, $value, &$node, $control_name) {
+    public function fetchElement($name, $value, &$node, $control_name)
+    {
         $value = htmlspecialchars_decode($value, ENT_QUOTES);
-        $class = ((string) $node->attributes()->class ? 'class="'.(string) $node->attributes()->class.'"' : '');
+        $class = ((string) $node->attributes()->class ? 'class="' . (string) $node->attributes()->class . '"' : '');
 
         // default extensions list
         $default = (string) $node->attributes()->default;
         // create default array
         $default = $this->mapValue($default);
 
+        if ($value && $value{0} === "=") {
+            $value = substr($value, 1);
+        }
+
         if (!empty($value)) {
             $data = $this->mapValue($value);
         }
 
-        $output   = array();
+        $output = array();
 
         $output[] = '<div class="extensions input-append">';
-        $output[] = '<input type="text" name="'.$control_name.'['.$name.']" id="'.$control_name.$name.'" value="'.$value.'" '.$class.' /><button class="btn btn-link extension_edit"><i class="icon-edit icon-apply"></i></button>';
+        $output[] = '<input type="text" name="' . $control_name . '[' . $name . ']" id="' . $control_name . $name . '" value="' . $value . '" ' . $class . ' /><button class="btn btn-link extension_edit"><i class="icon-edit icon-apply"></i></button>';
 
         foreach ($data as $group => $items) {
             $custom = array();
@@ -102,11 +110,11 @@ class WFElementExtension extends WFElement
                 if (empty($value) || $is_default || (!$is_default && $group{0} !== "-")) {
                     $checked = ' checked="checked"';
                 }
-                
+
                 // clear minus sign
                 $group = str_replace('-', '', $group);
 
-                $output[] = '<dt data-extension-group="'.$group.'"><label><input type="checkbox" value="'.$group.'"'.$checked.' />'.$group.'</label></dt>';
+                $output[] = '<dt data-extension-group="' . $group . '"><label><input type="checkbox" value="' . $group . '"' . $checked . ' />' . $group . '</label></dt>';
             }
 
             foreach ($items as $item) {
@@ -123,7 +131,7 @@ class WFElementExtension extends WFElement
                     $checked = ' checked="checked"';
                 }
 
-                $output[] = '<dd><label><input type="checkbox" value="'.$mod.'"'.$checked.' /><span class="file '.$mod.'"></span>&nbsp;'.$mod.'</label>';
+                $output[] = '<dd><label><input type="checkbox" value="' . $mod . '"' . $checked . ' /><span class="file ' . $mod . '"></span>&nbsp;' . $mod . '</label>';
 
                 if (!$is_default) {
                     $output[] = '<button class="btn btn-link extension-remove"><span class="icon-trash"></span></button>';
@@ -132,7 +140,7 @@ class WFElementExtension extends WFElement
                 $output[] = '</dd>';
             }
 
-            $output[] = '<dd class="extension-custom"><span class="file"></span><input type="text" value="" pattern="[a-zA-Z0-9]{2,4}" placeholder="'.WFText::_('WF_EXTENSION_MAPPER_TYPE_NEW', 'Add new type...').'" /><button class="btn btn-link extension-add"><span class="icon-plus"></span></button><button class="btn btn-link extension-remove"><span class="icon-trash"></span></button></dd>';
+            $output[] = '<dd class="extension-custom"><span class="file"></span><input type="text" value="" pattern="[a-zA-Z0-9]{2,4}" placeholder="' . WFText::_('WF_EXTENSION_MAPPER_TYPE_NEW', 'Add new type...') . '" /><button class="btn btn-link extension-add"><span class="icon-plus"></span></button><button class="btn btn-link extension-remove"><span class="icon-trash"></span></button></dd>';
 
             $output[] = '</dl>';
         }
