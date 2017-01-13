@@ -97,6 +97,10 @@ class PlgSystemJce extends JPlugin {
 
         foreach ($fields as $field) {
             
+            if (method_exists($field, 'getAttribute') === false) {
+                continue;
+            }
+            
             $name = $field->getAttribute('name');
             
             // avoid processing twice
