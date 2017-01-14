@@ -36,8 +36,6 @@ class WFFormatselectPluginConfig {
     );
 
     public static function getConfig(&$settings) {
-        wfimport('admin.models.editor');
-        $model = new WFModelEditor();
         $wf = WFEditor::getInstance();
 
         // html5 block elements

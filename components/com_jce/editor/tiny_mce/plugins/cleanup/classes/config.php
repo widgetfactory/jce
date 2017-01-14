@@ -15,8 +15,6 @@ class WFCleanupPluginConfig {
 
     public static function getConfig(&$settings) {
         $wf = WFEditor::getInstance();
-        wfimport('admin.models.editor');
-        $model = new WFModelEditor();
         
         // Encoding
         $settings['entity_encoding'] = $wf->getParam('editor.entity_encoding');
@@ -51,7 +49,7 @@ class WFCleanupPluginConfig {
         $settings['invalid_elements'] = explode(',', preg_replace('#\s+#', '', $wf->getParam('editor.invalid_elements', '', '')));
 
         // Add elements to invalid list (removed by plugin)
-        $model->addKeys($settings['invalid_elements'], self::$invalid_elements);
+        $settings['invalid_elements'] = array_unique(array_merge($settings['invalid_elements'], self::$invalid_elements));
 
         // process extended_valid_elements
         if ($settings['extended_valid_elements']) {

@@ -12,8 +12,6 @@
 class WFFormatPluginConfig {
 
     public static function getConfig(&$settings) {
-        wfimport('admin.models.editor');
-        $model = new WFModelEditor();
         $wf = WFEditor::getInstance();
 
         $settings['inline_styles'] = $wf->getParam('editor.inline_styles', 1, 1);
