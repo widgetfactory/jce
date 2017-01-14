@@ -158,17 +158,14 @@ class WFFileBrowser extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
 
-        $component_id = JRequest::getInt('component_id');
+        $context = JRequest::getVar('context', '', 'ALNUM');
 
         $query = '';
 
         $args = array(
-            'plugin' => $wf->getName(),
+            'plugin'    => $wf->getName(),
+            'context'   => $context
         );
-
-        if ($component_id) {
-            $args['component_id'] = $component_id;
-        }
 
         foreach ($args as $k => $v) {
             $query .= '&' . $k . '=' . $v;

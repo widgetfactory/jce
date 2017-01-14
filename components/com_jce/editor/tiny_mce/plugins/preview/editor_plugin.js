@@ -123,7 +123,7 @@
                 var css = [self.url + '/css/preview.css'];
 
                 if (ed.settings.compress.css) {
-                    css = [s.site_url + 'index.php?option=com_jce&view=editor&layout=editor&task=pack&type=css&context=preview&component_id=' + s.component_id + '&' + s.token + '=1'];
+                    css = [s.site_url + 'index.php?option=com_jce&view=editor&task=pack&type=css&layout=preview&context=' + s.context + '&' + s.token + '=1'];
                 } else {
                     css = tinymce.explode(ed.settings.content_css);
                 }
@@ -152,7 +152,7 @@
 
             // load preview data
             tinymce.util.XHR.send({
-                url: s['site_url'] + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=preview&component_id=' + s['component_id'],
+                url: s['site_url'] + 'index.php?option=com_jce&view=editor&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
                 data: 'json=' + JSON.stringify({
                     'method': 'showPreview'
                 }) + '&' + query,

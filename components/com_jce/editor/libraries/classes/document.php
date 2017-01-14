@@ -467,11 +467,12 @@ class WFDocument extends JObject {
             $query['standalone'] = 1;
         }
 
-        // get component id
-        $component_id = JRequest::getInt('component_id');
+        // get context hash
+        $context = JRequest::getInt('context');
+
         // set component id
-        if ($component_id) {
-            $query['component_id'] = $component_id;
+        if ($context) {
+            $query['context'] = $context;
         }
 
         // get token

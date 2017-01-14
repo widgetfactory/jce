@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @package       JCE
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,11 +11,13 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-require_once(dirname(dirname(__FILE__)) . '/classes/model.php');
+require_once dirname(dirname(__FILE__)) . '/classes/model.php';
 
-class WFModel extends WFModelBase {
+class WFModel extends WFModelBase
+{
 
-    public static function authorize($task) {
+    public static function authorize($task)
+    {
         $user = JFactory::getUser();
 
         // Joomla! 1.7+
@@ -50,7 +52,8 @@ class WFModel extends WFModelBase {
      * Get the current version
      * @return Version
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         $xml = WFXMLHelper::parseInstallManifest(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml');
 
         // return cleaned version number or date
@@ -61,7 +64,8 @@ class WFModel extends WFModelBase {
         return $version;
     }
 
-    public function getStyles() {
+    public function getStyles()
+    {
         $view = JRequest::getCmd('view');
 
         $params = JComponentHelper::getParams('com_jce');
@@ -91,7 +95,8 @@ class WFModel extends WFModelBase {
         return $styles;
     }
 
-    public function loadStyles() {
+    public function loadStyles()
+    {
         $styles = $this->getStyles();
 
         foreach ($styles as $style) {
@@ -99,23 +104,32 @@ class WFModel extends WFModelBase {
         }
     }
 
-    public static function getBrowserLink($element = null, $filter = '', $callback = '') {
+    public static function getBrowserLink($element = null, $filter = '', $callback = '')
+    {
         // load base classes
-        require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
+        require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
         // set $url as empty string
         $url = '';
 
         wfimport('editor.libraries.classes.editor');
         wfimport('editor.libraries.classes.token');
-        
+
         $wf = WFEditor::getInstance();
+        $app = JFactory::getApplication();
+
+        $profile = $wf->getProfile('browser');
 
         // check the current user is in a profile
-        if ($wf->getProfile('browser')) {
+        if ($profile) {
+            // get token
             $token = WFToken::getToken();
+            // create context hash
+            $context = md5($token . serialize($profile));
+            // assign profile id to user session
+            $app->setUserState($context, $profile->id);
 
-            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1';
+            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1&context=' . $context;
 
             if ($element) {
                 $url .= '&element=' . $element;
@@ -134,5 +148,3 @@ class WFModel extends WFModelBase {
     }
 
 }
-
-?>

@@ -78,15 +78,6 @@ class WFEditor extends JObject
         $user = JFactory::getUser();
         $option = $this->getComponentOption();
 
-        if ($option == 'com_jce') {
-            $component_id = JRequest::getInt('component_id');
-
-            if ($component_id) {
-                $component = WFExtensionHelper::getComponent($component_id);
-                $option = isset($component->element) ? $component->element : $component->option;
-            }
-        }
-
         // get the Joomla! area (admin or site)
         $area = $app->isAdmin() ? 2 : 1;
 
@@ -130,7 +121,9 @@ class WFEditor extends JObject
      */
     public function getProfile($plugin = "")
     {
+        // get the profile variables for the current context
         $options = $this->getProfileVars($plugin);
+        // create a signature to store
         $signature = serialize($options);
 
         if (!isset(self::$profile[$signature])) {
@@ -138,10 +131,15 @@ class WFEditor extends JObject
             $user = JFactory::getUser();
             $app = JFactory::getApplication();
 
-            $profile_id = 0;
+            // default $id
+            $id = 0;
 
-            if ($options["option"] == 'com_jce') {
-                $profile_id = JRequest::getInt('profile_id');
+            // get profile hash
+            $hash = JRequest::getVar('context', '', 'ALNUM');
+
+            // look for profile id in session using profile hash
+            if ($hash) {
+                $id = $app->getUserState($hash);
             }
 
             $query = $db->getQuery(true);
@@ -149,14 +147,14 @@ class WFEditor extends JObject
             if (is_object($query)) {
                 $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
 
-                if ($profile_id) {
-                    $query->where('id = ' . (int) $profile_id);
+                if ($id) {
+                    $query->where('id = ' . (int) $id);
                 }
             } else {
                 $query = 'SELECT * FROM #__wf_profiles WHERE published = 1';
 
-                if ($profile_id) {
-                    $query .= ' AND id = ' . (int) $profile_id;
+                if ($id) {
+                    $query .= ' AND id = ' . (int) $id;
                 }
 
                 $query .= ' ORDER BY ordering ASC';
@@ -164,6 +162,14 @@ class WFEditor extends JObject
 
             $db->setQuery($query);
             $profiles = $db->loadObjectList();
+
+            if ($id && !empty($profiles)) {
+                // assign profile
+                self::$profile[$signature] = (object) $profiles[0];
+
+                // return
+                return self::$profile[$signature];
+            }
 
             foreach ($profiles as $item) {
                 // at least one user group or user must be set
@@ -210,8 +216,8 @@ class WFEditor extends JObject
                 if (!empty($item->custom)) {
                     $customs = json_decode($item->custom);
 
-                    // set match flag to allow profile thorough
-                    $match = true;
+                    // set match flag to skip profile
+                    $match = false;
 
                     foreach($customs as $key => $values) {                        
                         // get from key from request
@@ -239,7 +245,7 @@ class WFEditor extends JObject
                 }
 
                 // assign item to profile
-                self::$profile[$signature] = $item;
+                self::$profile[$signature] = (object) $item;
 
                 // return
                 return self::$profile[$signature];
@@ -256,7 +262,7 @@ class WFEditor extends JObject
      * @access private
      * @return string
      */
-    private function getComponentOption()
+    public function getComponentOption()
     {
         $option = JRequest::getCmd('option', '');
 
