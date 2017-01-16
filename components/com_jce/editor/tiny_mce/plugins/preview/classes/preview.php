@@ -51,17 +51,14 @@ class WFPreviewPlugin extends WFEditorPlugin {
 
         wfimport('admin.helpers.extension');
 
-        // Get variables
-        $context = JRequest::getVar('context', '', 'ALNUM');
         // get post data
         $data = JRequest::getVar('data', '', 'POST', 'STRING', JREQUEST_ALLOWRAW);
 
         // cleanup data
         $data = preg_replace(array('#<!DOCTYPE([^>]+)>#i', '#<(head|title|meta)([^>]*)>([\w\W]+)<\/1>#i', '#<\/?(html|body)([^>]*)>#i'), '', rawurldecode($data));
 
-        $extension_id = JRequest::getInt('extension_id');
-
-        $extension = WFExtensionHelper::getComponent($extension_id);
+        $extension_id   = JRequest::getInt('extension_id');
+        $extension      = WFExtensionHelper::getComponent($extension_id);
 
         // create params registry object
         $params = new JRegistry();

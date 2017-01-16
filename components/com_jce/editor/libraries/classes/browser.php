@@ -158,7 +158,7 @@ class WFFileBrowser extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
 
-        $context = JRequest::getVar('context', '', 'ALNUM');
+        $context = JRequest::getInt('context');
 
         $query = '';
 

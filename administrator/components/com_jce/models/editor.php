@@ -96,14 +96,33 @@ class WFModelEditor extends WFModelBase
         // set profile
         $this->profile = $wf->getProfile();
 
-        if ($this->profile) {
+        $this->context = self::getContext();
+    }
+
+    public static function getContext() {
+        /*if ($this->profile) {
             // get token
             $token = WFToken::getToken();
             // create context hash
             $this->context = md5($token . serialize($this->profile));
             // assign profile id to user session
             $app->setUserState($this->context, $this->profile->id);
+        }*/ 
+        
+        $option     = JRequest::getCmd('option');
+        $extension  = WFExtensionHelper::getComponent(null, $option);
+
+        $extension_id = 0;
+
+        if (isset($extension->extension_id)) {
+            return $extension->extension_id;
         }
+
+        if (isset($extension->id)) {
+            return $extension->id;
+        }
+
+        return 0;
     }
 
     public function buildEditor()
@@ -116,10 +135,6 @@ class WFModelEditor extends WFModelBase
 
         // create token
         $token = WFToken::getToken();
-
-        // get current component
-        $option = JRequest::getCmd('option');
-        $component = WFExtensionHelper::getComponent(null, $option);
 
         // get default settings
         $settings = $this->getEditorSettings();

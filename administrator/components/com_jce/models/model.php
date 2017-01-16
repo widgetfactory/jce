@@ -124,12 +124,8 @@ class WFModel extends WFModelBase
         if ($profile) {
             // get token
             $token = WFToken::getToken();
-            // create context hash
-            $context = md5($token . serialize($profile));
-            // assign profile id to user session
-            $app->setUserState($context, $profile->id);
 
-            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1&context=' . $context;
+            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1';
 
             if ($element) {
                 $url .= '&element=' . $element;

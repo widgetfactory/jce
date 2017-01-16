@@ -134,14 +134,6 @@ class WFEditor extends JObject
             // default $id
             $id = 0;
 
-            // get profile hash
-            $hash = JRequest::getVar('context', '', 'ALNUM');
-
-            // look for profile id in session using profile hash
-            if ($hash) {
-                $id = $app->getUserState($hash);
-            }
-
             $query = $db->getQuery(true);
 
             if (is_object($query)) {
@@ -210,32 +202,6 @@ class WFEditor extends JObject
 
                 if ($options["plugin"] && in_array($options["plugin"], explode(",", $item->plugins)) === false) {
                     continue;
-                }
-
-                // check custom fields
-                if (!empty($item->custom)) {
-                    $customs = json_decode($item->custom);
-
-                    // set match flag to skip profile
-                    $match = false;
-
-                    foreach($customs as $key => $values) {                        
-                        // get from key from request
-                        $input = JRequest::getVar($key);
-
-                        // key passed and matches associated value
-                        $match = !is_null($input) && in_array($input, (array) $values);
-
-                        // conditions met, so bail
-                        if ($match === true) {
-                            break;
-                        }
-                    }
-
-                    // this is not the profile you are looking for...
-                    if ($match === false) {
-                        continue;
-                    }
                 }
 
                 // decrypt params
