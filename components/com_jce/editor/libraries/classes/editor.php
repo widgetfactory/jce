@@ -72,6 +72,32 @@ class WFEditor extends JObject
         return $version;
     }
 
+    public function getContext() {
+        /*if ($this->profile) {
+            // get token
+            $token = WFToken::getToken();
+            // create context hash
+            $this->context = md5($token . serialize($this->profile));
+            // assign profile id to user session
+            $app->setUserState($this->context, $this->profile->id);
+        }*/ 
+        
+        $option     = JRequest::getCmd('option');
+        $extension  = WFExtensionHelper::getComponent(null, $option);
+
+        $extension_id = 0;
+
+        if (isset($extension->extension_id)) {
+            return $extension->extension_id;
+        }
+
+        if (isset($extension->id)) {
+            return $extension->id;
+        }
+
+        return 0;
+    }
+
     private function getProfileVars($plugin = "")
     {
         $app = JFactory::getApplication();

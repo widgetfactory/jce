@@ -11,7 +11,8 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-require_once dirname(dirname(__FILE__)) . '/classes/model.php';
+require_once dirname(__DIR__) . '/classes/model.php';
+require_once dirname(__DIR__) . '/helpers/extension.php';
 
 class WFModel extends WFModelBase
 {
@@ -124,8 +125,9 @@ class WFModel extends WFModelBase
         if ($profile) {
             // get token
             $token = WFToken::getToken();
+            $context = $wf->getContext();
 
-            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1';
+            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1&context=' . $context;
 
             if ($element) {
                 $url .= '&element=' . $element;
