@@ -60,7 +60,7 @@
             }
 
             // Add ARIA role and tabindex to root and ARIA level to children
-            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('uk-tree uk-flex').children('li').attr('aria-level', 1);
+            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
             // Add ARIA role and tabindex to tree items
             $('li', parent).attr({ 'role': 'treeitem' }).attr('aria-expanded', function() {

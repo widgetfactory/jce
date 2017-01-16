@@ -89,9 +89,6 @@
     line-height: 28px;
     vertical-align: middle;
     margin: 0;
-    -ms-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
 }
 
 .uk-tree-node li {
@@ -304,6 +301,18 @@ main>div:last-child {
 #sort-date,
 #sort-size {
     display: none;
+}
+
+.uk-tree {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.uk-tree li {
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
 }
 
 .uk-tree-hidden #sort-date,

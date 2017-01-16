@@ -108,6 +108,18 @@ main>div:last-child {
     display: none;
 }
 
+.uk-tree {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.uk-tree li {
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+}
+
 .uk-tree-hidden #sort-date,
 .uk-tree-hidden #sort-size {
     display: inline-block;

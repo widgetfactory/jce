@@ -25,12 +25,6 @@
     margin-top: 5px;
 }
 
-#link-browser ul.uk-flex {
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-}
-
 #text::-moz-placeholder {
     color: transparent !important;
 }

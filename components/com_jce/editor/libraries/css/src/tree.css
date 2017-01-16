@@ -89,9 +89,6 @@
     line-height: 28px;
     vertical-align: middle;
     margin: 0;
-    -ms-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
 }
 
 .uk-tree-node li {
