@@ -40,7 +40,7 @@ class WFTablePluginConfig {
 
         $settings['table_classes'] = $wf->getParam('table.classes', "", "");
 
-        $settings['table_buttons'] = $wf->getParam('table.show_buttons', 0);
+        $settings['table_buttons'] = $wf->getParam('table.show_buttons', 1, 1);
     }
 
 }

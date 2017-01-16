@@ -29,7 +29,7 @@
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param>
-        <param name="show_buttons" type="list" default="0" label="WF_TABLE_SHOW_BUTTONS" description="WF_TABLE_SHOW_BUTTONS_DESC">
+        <param name="show_buttons" type="list" default="1" label="WF_TABLE_SHOW_BUTTONS" description="WF_TABLE_SHOW_BUTTONS_DESC">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param>

@@ -848,7 +848,7 @@
             // Register buttons
             ed.addButton('table', 'table.desc', 'mceInsertTable', true);
 
-            if (ed.settings.table_buttons) {
+            if (ed.getParam('table_buttons', 1)) {
                 each([
                     ['table', 'table.desc', 'mceInsertTable', true],
                     ['delete_table', 'table.del', 'mceTableDelete'],
@@ -914,7 +914,7 @@
                     p = 0;
                 }
 
-                if (ed.settings.table_buttons) {
+                if (ed.getParam('table_buttons', 1)) {
                     cm.setDisabled('delete_table', !p);
                     cm.setDisabled('delete_col', !p);
                     cm.setDisabled('delete_table', !p);
@@ -1685,7 +1685,7 @@
                 c.onRenderMenu.add(function(c, m) {
                     var sb, tm, sm;
 
-                    if (!ed.settings.table_buttons) {
+                    if (!ed.getParam('table_buttons', 1)) {
                         tm = m.addMenu({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable' });
                         sb = tm.add({ "onmouseover": menuGridMouseOver, "onclick": menuGridClick, html: createMenuGrid(8, 8) });
                     } else {
@@ -1714,7 +1714,7 @@
                         }, 'items', m);
                     });
 
-                    if (!ed.settings.table_buttons) {
+                    if (!ed.getParam('table_buttons', 1)) {
 
                         m.add({ title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete' });
 
