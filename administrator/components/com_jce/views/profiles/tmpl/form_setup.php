@@ -102,23 +102,4 @@ defined('_JEXEC') or die('RESTRICTED');
                 </div>
             </div>
         </div>
-        <!--div class="control-group">
-            <label for="custom" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_CUSTOM') . '::' . WFText::_('WF_PROFILES_CUSTOM_DESC'); ?>">
-                <?php echo WFText::_('WF_PROFILES_CUSTOM'); ?>
-            </label>
-
-            <div class="controls">
-                <?php foreach ($this->profile->custom as $custom) : ?>
-                <div class="ui-repeatable form-inline">
-                    <div class="input-append">
-                            <input type="text" name="custom[key][]" value="<?php echo $custom['key']; ?>" placeholder="<?php echo WFText::_('WF_PROFILES_CUSTOM_KEY'); ?>" />
-                            <span class="add-on">=</span>
-                            <input type="text" name="custom[value][]" value="<?php echo $custom['value']; ?>" placeholder="<?php echo WFText::_('WF_PROFILES_CUSTOM_VALUE'); ?>" />
-                            <button type="button" class="btn btn-link ui-repeatable-create"><i class="icon-plus"></i></button>
-                            <button type="button" class="btn btn-link ui-repeatable-delete"><i class="icon-trash"></i></button>
-                    </div>
-                </div>
-                <?php endforeach;?>
-            </div>
-        </div-->
 </fieldset>

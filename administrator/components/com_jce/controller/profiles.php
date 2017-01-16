@@ -146,36 +146,6 @@ class WFControllerProfiles extends WFController
                         $value = $value[0];
                     }
                     break;
-                case 'custom':
-                    if (!empty($value)) {
-                        $data = array();
-                        
-                        $keys = empty($value['key']) ? array() : $value['key'];
-                        $values = empty($value['value']) ? array() : $value['value'];
-                        
-                        // number of keys must match number of values, and must be greater than 0!
-                        if (count($keys) === count($values)) {
-                            foreach ($keys as $index => $name) {
-                                if (empty($name)) {
-                                    continue;
-                                }
-                                
-                                // key does not yet exist, create array
-                                if (!array_key_exists($name, $data)) {
-                                    $data[$name] = array();
-                                }
-                                // push value to array
-                                $data[$name][] = $values[$index];
-                            }
-                        }
-
-                        if (!empty($data)) {
-                            $value = json_encode($data);
-                        } else {
-                            $value = "";
-                        }
-                    }
-                    break;
                 case 'plugins':
                     $value = preg_replace('#[^\w,]+#', '', $value);
                     break;

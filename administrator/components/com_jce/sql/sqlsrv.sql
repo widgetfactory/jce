@@ -9,7 +9,6 @@ CREATE TABLE [#__wf_profiles](
 	[components] [nvarchar](max) NOT NULL,
 	[area] [smallint] NOT NULL,
     [device] [nvarchar](250) NOT NULL,
-	[custom] [text] NOT NULL,
 	[rows] [nvarchar](max) NOT NULL,
 	[plugins] [nvarchar](max) NOT NULL,
 	[published] [smallint] NOT NULL,

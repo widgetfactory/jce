@@ -246,7 +246,6 @@ class WFViewProfiles extends WFView
                         $row->components = '';
                         $row->area = 0;
                         $row->device = array();
-                        $row->custom = '';
                         $row->types = '';
                         $row->rows = '';
                         $row->plugins = '';
@@ -256,25 +255,6 @@ class WFViewProfiles extends WFView
                     }
 
                     $row->params = json_decode($row->params . ',' . $component->params);
-                }
-                // decode string
-                $row->custom = json_decode($row->custom, true);
-
-                // set default json string
-                if (empty($row->custom)) {
-                    $row->custom = array(array("key" => "", "value" => ""));
-                } else {
-                    $custom = array();
-
-                    foreach($row->custom as $key => $values) {
-                        $values = (array) $values;
-
-                        foreach($values as $value) {
-                            $custom[] = array("key" => $key, "value" => $value);
-                        }
-                    }
-                    // pass back
-                    $row->custom = $custom;
                 }
 
                 $row->area = (isset($row->area)) ? $row->area : 0;

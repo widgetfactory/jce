@@ -36,30 +36,6 @@ abstract class WFInstall
         // the current version
         $current_version = $installer->get('current_version');
 
-        // Add 'custom' column
-        if (self::checkTableColumn('#__wf_profiles', 'custom') === false) {
-            $db = JFactory::getDBO();
-
-            switch (strtolower($db->name)) {
-                case 'mysql':
-                case 'mysqli':
-                    // Add "custom" field - MySQL
-                    $query = 'ALTER TABLE #__wf_profiles ADD `custom` TEXT AFTER `device`';
-                    break;
-                case 'sqlsrv':
-                case 'sqlazure':
-                case 'sqlzure':
-                    $query = 'ALTER TABLE #__wf_profiles ADD `custom` TEXT';
-                    break;
-                case 'postgresql':
-                    $query = 'ALTER TABLE #__wf_profiles ADD "custom" character text NOT NULL';
-                    break;
-            }
-
-            $db->setQuery($query);
-            $db->query();
-        }
-
         // install profiles etc.
         $state = self::installProfiles();
 
