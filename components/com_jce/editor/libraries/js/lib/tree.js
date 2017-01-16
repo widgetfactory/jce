@@ -85,7 +85,7 @@
                 } else {
                     self._trigger('nodeclick', p);
                 }
-            }).addClass('uk-flex-item-1');
+            });
 
             // add toggle icons
             $('li', parent).find('.uk-tree-row').attr('role', 'presentation').prepend('<span class="uk-tree-toggle" role="presentation"><i class="uk-icon uk-icon-plus-square-o"></i><i class="uk-icon uk-icon-minus-square-o"></i></span>');
