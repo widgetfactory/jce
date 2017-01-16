@@ -119,6 +119,6 @@ defined('_JEXEC') or die('RESTRICTED');
                     </div>
                 </div>
                 <?php endforeach;?>
-            </div-->
-        </div>
+            </div>
+        </div-->
 </fieldset>
