@@ -36,8 +36,8 @@ abstract class WFInstall
         // the current version
         $current_version = $installer->get('current_version');
 
-        // Add device column
-        if (self::checkTableColumn('#__wf_profiles', 'custom') === false) {
+        // Add 'custom' column
+        /*if (self::checkTableColumn('#__wf_profiles', 'custom') === false) {
             $db = JFactory::getDBO();
 
             switch (strtolower($db->name)) {
@@ -58,7 +58,7 @@ abstract class WFInstall
 
             $db->setQuery($query);
             $db->query();
-        }
+        }*/
 
         // install profiles etc.
         $state = self::installProfiles();
