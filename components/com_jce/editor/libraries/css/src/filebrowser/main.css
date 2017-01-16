@@ -115,9 +115,9 @@ main>div:last-child {
 }
 
 .uk-tree li {
-    -ms-flex: 1 1 inherit;
-    -webkit-flex: 1 1 inherit;
-    flex: 1 1 inherit;
+    -ms-flex: 1 1 0;
+    -webkit-flex: 1 1 0;
+    flex: 1 1 0;
 }
 
 .uk-tree-hidden #sort-date,
