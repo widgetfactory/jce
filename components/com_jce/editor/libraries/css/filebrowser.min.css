@@ -310,9 +310,9 @@ main>div:last-child {
 }
 
 .uk-tree li {
-    -ms-flex: 1 1 0;
-    -webkit-flex: 1 1 0;
-    flex: 1 1 0;
+    -ms-flex: 1 1 auto;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
 }
 
 .uk-tree-hidden #sort-date,
