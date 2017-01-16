@@ -964,13 +964,13 @@
 
                     var $item = $('<li title="' + s + '" />').click(function(e) {
                         self._changeDir(path);
-                    }).html(s).insertBefore($count);
+                    }).append('<a>' + s + '</a>').insertBefore($count);
 
                     // add item width
                     w += $item.outerWidth(true);
 
                     if (w > sw) {
-                        $('li', $pathway).eq(x++).html('...');
+                        $('li', $pathway).eq(x++).addClass('uk-breadcrumb-truncate');
                     }
                 });
             }

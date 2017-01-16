@@ -332,17 +332,7 @@ main>div:last-child {
 }
 
 .pathway li {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    width: auto;
-    line-height: 28px;
     vertical-align: middle;
-}
-
-.pathway li {
-    text-decoration: underline;
 }
 
 .pathway li.count {
@@ -353,6 +343,16 @@ main>div:last-child {
 
 .uk-breadcrumb>li:nth-child(n+2)::before {
     margin: 0 5px;
+}
+
+.uk-breadcrumb .uk-breadcrumb-truncate a {
+    display: none;
+}
+
+.uk-breadcrumb .uk-breadcrumb-truncate::after {
+    content: "...";
+    text-decoration: none;
+    cursor: pointer;
 }
 
 div#browser-message span {
