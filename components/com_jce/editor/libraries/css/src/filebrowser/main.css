@@ -279,6 +279,7 @@ main>div:last-child {
 
 #browser-message {
     padding-left: 0;
+    white-space: nowrap;
 }
 
 .ie8 div#browser-message {
