@@ -102,7 +102,7 @@ defined('_JEXEC') or die('RESTRICTED');
                 </div>
             </div>
         </div>
-        <div class="control-group">
+        <!--div class="control-group">
             <label for="custom" class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_CUSTOM') . '::' . WFText::_('WF_PROFILES_CUSTOM_DESC'); ?>">
                 <?php echo WFText::_('WF_PROFILES_CUSTOM'); ?>
             </label>
@@ -119,6 +119,6 @@ defined('_JEXEC') or die('RESTRICTED');
                     </div>
                 </div>
                 <?php endforeach;?>
-            </div>
+            </div-->
         </div>
 </fieldset>
