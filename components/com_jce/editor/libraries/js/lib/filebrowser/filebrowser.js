@@ -832,6 +832,8 @@
 
                     typeof callback === "function" && callback();
 
+                    $('#tree-body').trigger('tree:scroll', "/" + path);
+
                     // Load folder / file list
                     self._getList(src);
                 });

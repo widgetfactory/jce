@@ -337,7 +337,7 @@
                 parent = this._findParent(parent);
             }
 
-            return $('li[id="' + this._escape(this._encode(id)) + '"]:first', parent);
+            return $(parent).find('li[id="' + this._escape(this._encode(id)) + '"]:first');
         },
         /**
          * Toggle the loader class on the node span element
@@ -449,6 +449,26 @@
          */
         _escape: function(s) {
             return s.replace(/'/, '%27');
+        },
+
+        /**
+         * Scroll to a node
+         *
+         * @param {String}
+         *            The node id
+         * @return void
+         */
+        scrollTo: function (id) {
+            var node = this._findNode(id);
+            
+            var left = $(node).get(0).offsetLeft;
+            var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
+
+            $(this.element).animate({
+                scrollLeft: Math.round(left),
+            }, 500).animate({
+                scrollTop: Math.round(top)
+            }, 1500);
         }
     };
 
@@ -470,6 +490,10 @@
 
         $(this).on('tree:toggleloader', function(e, node) {
             inst.toggleLoader(node);
+        });
+
+        $(this).on('tree:scroll', function (e, id) {
+            inst.scrollTo(id);
         });
 
         return this;
