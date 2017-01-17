@@ -461,7 +461,7 @@
         scrollTo: function (id) {
             var node = this._findNode(id);
             
-            var left = $(node).get(0).offsetLeft;
+            var left = $(node).get(0).offsetLeft - parseInt($(node).css('padding-left'));
             var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
 
             $(this.element).animate({
