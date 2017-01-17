@@ -1516,8 +1516,13 @@ span.editable-edit {
     visibility: hidden;
 }
 
+.uk-tree-active > .uk-tree-row,
 .uk-tree-row:hover {
     background-color: #d9edf7;
+}
+
+.uk-tree-active > .uk-tree-row .uk-tree-text {
+    font-weight: bold;
 }
 
 .uk-tree-hide {

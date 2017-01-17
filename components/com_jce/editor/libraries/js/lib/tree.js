@@ -85,6 +85,12 @@
                 } else {
                     self._trigger('nodeclick', p);
                 }
+
+                // remove all active classes from other tree nodes
+                $(self.element).find('.uk-tree-active').removeClass('uk-tree-active');
+
+                // add active class to tree node
+                $(p).addClass('uk-tree-active');
             });
 
             // add toggle icons
@@ -290,6 +296,12 @@
                             } else {
                                 self._trigger('nodeclick', this);
                             }
+
+                            // remove all active classes from other tree nodes
+                            $(self.element).find('.uk-tree-active').removeClass('uk-tree-active');
+                
+                            // add active class to tree node
+                            $(li).addClass('uk-tree-active');
                         });
 
                         self.toggleNodeState(parent, 1);
@@ -469,6 +481,9 @@
             }, 500).animate({
                 scrollTop: Math.round(top)
             }, 1500);
+
+            // mark as active
+            $(node).addClass('uk-tree-active');
         }
     };
 
