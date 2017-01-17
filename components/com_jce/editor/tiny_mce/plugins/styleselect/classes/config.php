@@ -83,6 +83,8 @@ class WFStyleselectPluginConfig
         if (in_array('stylesheet', $include) === false) {
             $settings['styleselect_stylesheet'] = false;
         }
+
+        $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
     }
 
     protected static function cleanJSON($string, $delim1 = ";", $delim2 = ":")

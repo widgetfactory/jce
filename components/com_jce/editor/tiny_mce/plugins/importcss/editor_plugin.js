@@ -306,7 +306,9 @@
             }
 
             // sort alphabetically
-            self.classes.sort();
+            if (ed.getParam('styleselect_sort', 1)) {
+                self.classes.sort();
+            }
 
             return self.classes;
         }
