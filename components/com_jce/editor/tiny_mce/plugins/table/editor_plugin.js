@@ -1386,7 +1386,7 @@
                                 grid.merge(cell, data.cols, data.rows);
                             },
                             plugin_url: url,
-                            context: "merge"
+                            layout: "merge"
                         });
                     } else {
                         grid.merge();
@@ -1448,7 +1448,7 @@
                     }, {
                         plugin_url: url,
                         action: val ? val.action : 0,
-                        context: "table"
+                        layout: "table"
                     });
                 },
                 mceTableRowProps: function() {
@@ -1459,7 +1459,7 @@
                         inline: 1
                     }, {
                         plugin_url: url,
-                        context: "row"
+                        layout: "row"
                     });
                 },
                 mceTableCellProps: function() {
@@ -1470,7 +1470,7 @@
                         inline: 1
                     }, {
                         plugin_url: url,
-                        context: "cell"
+                        layout: "cell"
                     });
                 }
 

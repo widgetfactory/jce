@@ -30,7 +30,6 @@ class WFTablesPlugin extends WFEditorPlugin {
         parent::display();
 
         $layout = $this->getLayout();
-
         $document = WFDocument::getInstance();
 
         $document->addScript(array('table'), 'plugins');

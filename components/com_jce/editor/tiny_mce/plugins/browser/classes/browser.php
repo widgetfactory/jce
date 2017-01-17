@@ -67,9 +67,10 @@ class WFFileBrowserPlugin extends WFMediaManager
         parent::display();
 
         $document = WFDocument::getInstance();
+        $layout = JRequest::getCmd('layout', 'plugin');
 
         if ($document->get('standalone') == 1) {
-            if (JRequest::getCmd('dialog', 'browser') === "browser") {
+            if ($layout === "plugin") {
                 $document->addScript(array('window.min'), 'plugins');
 
                 $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
@@ -93,7 +94,7 @@ class WFFileBrowserPlugin extends WFMediaManager
             $document->addStyleSheet(array('browser.min'), 'plugins');
         }
 
-        if (JRequest::getCmd('dialog', 'browser') === "browser") {
+        if ($layout === "plugin") {
             $document->addScript(array('browser'), 'plugins');
         }
     }

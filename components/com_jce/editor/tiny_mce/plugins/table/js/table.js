@@ -186,7 +186,7 @@
         init: function() {
             var self = this,
                 ed = tinyMCEPopup.editor,
-                context = tinyMCEPopup.getWindowArg('context', 'table');
+                layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
             this.html5 = ed.settings.schema === "html5-strict";
 
@@ -196,7 +196,7 @@
 
             Wf.init();
 
-            if (context == 'merge') {
+            if (layout == 'merge') {
                 return this.initMerge();
             }
 
@@ -207,7 +207,7 @@
                 });
             }
 
-            switch (context) {
+            switch (layout) {
                 case 'table':
                     this.initTable();
                     break;
@@ -220,9 +220,9 @@
             }
         },
         insert: function() {
-            var context = tinyMCEPopup.getWindowArg('context', 'table');
+            var layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
-            switch (context) {
+            switch (layout) {
                 case 'table':
                     this.insertTable();
                     break;

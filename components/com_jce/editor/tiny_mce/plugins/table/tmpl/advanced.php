@@ -58,7 +58,7 @@ defined('_JEXEC') or die('RESTRICTED');
                    value="" class="browser" />
         </div>
     </div>
-    <?php if ($this->plugin->getContext() == 'table'):
+    <?php if ($this->plugin->getLayout() == 'table'):
 ?>
         <div class="uk-form-row">
             <label class="uk-form-label uk-width-1-5" for="tframe">
