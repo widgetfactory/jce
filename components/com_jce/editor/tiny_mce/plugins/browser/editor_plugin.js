@@ -24,7 +24,7 @@
             var ed = this.ed;
 
             ed.windowManager.open({
-                file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser' + (args.caller ? '.' + args.caller : '') + (args.filter ? '&filter=' + args.filter : ''),
+                file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=browser' + (args.caller ? '.' + args.caller : '') + (args.filter ? '&filter=' + args.filter : ''),
                 inline: "yes",
                 close_previous: "no",
                 size: 'mce-modal-square-xlarge',

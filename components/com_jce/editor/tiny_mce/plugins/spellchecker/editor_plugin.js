@@ -30,7 +30,7 @@
 
             t.url = url;
             t.editor = ed;
-            t.rpcUrl = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=spellchecker' //ed.getParam("spellchecker_rpc_url", "");
+            t.rpcUrl = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=spellchecker' //ed.getParam("spellchecker_rpc_url", "");
 
             t.native_spellchecker = (t.rpcUrl == '' || ed.getParam("spellchecker_engine", "browser") == 'browser');
 

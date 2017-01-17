@@ -509,7 +509,7 @@
             var ed = this.editor;
 
             ed.windowManager.open({
-                file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=clipboard&cmd=' + cmd,
+                file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=clipboard&cmd=' + cmd,
                 width: parseInt(ed.getParam("clipboard_paste_dialog_width", "450")),
                 height: parseInt(ed.getParam("clipboard_paste_dialog_height", "400")),
                 inline: 1,

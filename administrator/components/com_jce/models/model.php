@@ -127,7 +127,7 @@ class WFModel extends WFModelBase
             $token = WFToken::getToken();
             $context = $wf->getContext();
 
-            $url = 'index.php?option=com_jce&view=editor&layout=plugin&plugin=browser&standalone=1&' . $token . '=1&context=' . $context;
+            $url = 'index.php?option=com_jce&view=editor&plugin=browser&standalone=1&' . $token . '=1&context=' . $context;
 
             if ($element) {
                 $url .= '&element=' . $element;
