@@ -13,4 +13,4 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 ?>
-<?php echo $this->loadTemplate($this->plugin->getContext()); ?>
+<?php echo $this->loadTemplate($this->plugin->getLayout()); ?>

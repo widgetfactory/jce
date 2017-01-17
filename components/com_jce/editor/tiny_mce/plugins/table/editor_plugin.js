@@ -1357,7 +1357,7 @@
                 ed.startContent = ed.getContent({ format: 'raw' });
             });
 
-            var url = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&layout=plugin&plugin=table';
+            var url = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=table';
 
             // Register action commands
             each({
@@ -1375,7 +1375,7 @@
 
                     if (!ed.dom.select('td.mceSelected,th.mceSelected').length) {
                         winMan.open({
-                            url: url + '&context=merge',
+                            url: url + '&layout=merge',
                             width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0)),
                             height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0)),
                             inline: 1
@@ -1453,7 +1453,7 @@
                 },
                 mceTableRowProps: function() {
                     winMan.open({
-                        url: url + '&context=row',
+                        url: url + '&layout=row',
                         width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
                         height: 360 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
                         inline: 1
@@ -1464,7 +1464,7 @@
                 },
                 mceTableCellProps: function() {
                     winMan.open({
-                        url: url + '&context=cell',
+                        url: url + '&layout=cell',
                         width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
                         height: 360 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
                         inline: 1

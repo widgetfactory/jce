@@ -19,8 +19,8 @@ class WFTablesPlugin extends WFEditorPlugin {
         parent::__construct(array('colorpicker' => true));
     }
 
-    public function getContext() {
-        return JRequest::getWord('context', 'table');
+    public function getLayout() {
+        return JRequest::getWord('layout', 'table');
     }
 
     /**
@@ -29,7 +29,7 @@ class WFTablesPlugin extends WFEditorPlugin {
     public function display() {
         parent::display();
 
-        $context = $this->getContext();
+        $layout = $this->getLayout();
 
         $document = WFDocument::getInstance();
 
@@ -37,8 +37,8 @@ class WFTablesPlugin extends WFEditorPlugin {
         $document->addStyleSheet(array('table'), 'plugins');
 
         // update title
-        if ($context !== "table") {
-            $document->setTitle(WFText::_('WF_TABLE_' . strtoupper($context) . '_TITLE'));
+        if ($layout !== "table") {
+            $document->setTitle(WFText::_('WF_TABLE_' . strtoupper($layout) . '_TITLE'));
         }
 
         $settings = $this->getSettings();
@@ -47,7 +47,7 @@ class WFTablesPlugin extends WFEditorPlugin {
 
         $tabs = WFTabs::getInstance(array('base_path' => WF_EDITOR_PLUGIN));
 
-        if ($context == 'merge') {
+        if ($layout == 'merge') {
             // Add tabs
             $tabs->addTab('merge');
         } else {
