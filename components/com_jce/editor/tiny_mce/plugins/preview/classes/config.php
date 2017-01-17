@@ -15,10 +15,7 @@ class WFPreviewPluginConfig
     public static function getConfig(&$settings)
     {
         $wf = WFEditor::getInstance();
-        $option = $wf->getComponentOption();
-
-        $extension = WFExtensionHelper::getComponent(null, $option);
-
-        $settings['extension_id'] = isset($extension->extension_id) ? $extension->extension_id : $extension->id;
+        $context = $wf->getContext();
+        $settings['extension_id'] = $context;
     }
 }
