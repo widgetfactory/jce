@@ -23,6 +23,10 @@ class WFModelUpdates extends WFModel {
 
     public static function canUpdate() {
 
+        if (defined('JPATH_PLATFORM')) {
+            return false;
+        }
+        
         if (UpdatesHelper::hasCURL() === false) {
             return UpdatesHelper::hasFOPEN();
         }
