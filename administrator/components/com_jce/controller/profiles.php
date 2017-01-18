@@ -94,6 +94,25 @@ class WFControllerProfiles extends WFController
         $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
     }
 
+    private static function cleanParamData($data)
+    {
+        // clean up link plugin parameters
+        if (isset($data['link'])) {
+            $params = $data['link'];
+
+            if (isset($params['dir'])) {
+                if (!empty($params['dir']) && empty($params['direction'])) {
+                    $params['direction'] = $params['dir'];
+                }
+                unset($params['dir']);
+            }
+
+            $data['link'] = $params;
+        }
+
+        return $data;
+    }
+
     public function save()
     {
         // Check for request forgeries
@@ -158,6 +177,9 @@ class WFControllerProfiles extends WFController
                     $params = isset($row->params) ? $row->params : '';
                     // convert params to json data array
                     $data = (array) json_decode($params, true);
+
+                    // clean up data
+                    $data = self::cleanParamData($data);
 
                     // assign editor data
                     if (array_key_exists('editor', $value)) {
