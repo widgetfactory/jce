@@ -446,20 +446,16 @@ class WFDocument extends JObject {
     }
 
     public function getQueryString($query = array()) {
-        // get layout
-        $layout = JRequest::getWord('layout');
+        // get plugin
+        $plugin = JRequest::getWord('plugin');
 
-        // set layout and item, eg: &layout=plugin&plugin=link
-        $query['layout']  = $layout;
-        $query[$layout]   = JRequest::getWord($layout);
-
-        if ($layout === "plugin") {
+        if ($plugin) {
             $query['plugin'] = $this->get('name');
         }
 
-        // set dialog
-        if (JRequest::getWord('dialog')) {
-            $query['dialog'] = JRequest::getWord('dialog');
+        // set layout
+        if (JRequest::getWord('layout')) {
+            $query['layout'] = JRequest::getWord('layout');
         }
 
         // set standalone mode (for File Browser etc)
