@@ -11,9 +11,9 @@
 /*
  * Depends: jquery.ui.core.js jquery.ui.widget.js
  */
-(function($, Wf) {
+(function ($, Wf) {
 
-    var Tree = function(element, options) {
+    var Tree = function (element, options) {
         this.element = element;
 
         this.options = $.extend({
@@ -31,10 +31,10 @@
          * @param {Mixed} args Arguments
          * @returns {void}
          */
-        _trigger: function(ev, args) {
+        _trigger: function (ev, args) {
             $(this.element).trigger('tree:' + ev, args);
         },
-        _init: function() {
+        _init: function () {
             var self = this;
 
             if (!this.element) {
@@ -43,7 +43,7 @@
 
             self._nodeEvents();
 
-            this._trigger('init', function() {
+            this._trigger('init', function () {
                 self._nodeEvents();
             });
         },
@@ -52,7 +52,7 @@
          * @param {objec} parent object
          * @returns {void}
          */
-        _nodeEvents: function(parent) {
+        _nodeEvents: function (parent) {
             var self = this;
 
             if (!parent) {
@@ -60,16 +60,20 @@
             }
 
             // Add ARIA role and tabindex to root and ARIA level to children
-            $('ul:first', parent).attr({ 'role': 'tree' }).addClass('uk-tree').children('li').attr('aria-level', 1);
+            $('ul:first', parent).attr({
+                'role': 'tree'
+            }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
             // Add ARIA role and tabindex to tree items
-            $('li', parent).attr({ 'role': 'treeitem' }).attr('aria-expanded', function() {
+            $('li', parent).attr({
+                'role': 'treeitem'
+            }).attr('aria-expanded', function () {
                 return $(this).hasClass('uk-tree-open') ? true : false;
-            }).attr('aria-level', function(i, v) {
+            }).attr('aria-level', function (i, v) {
                 if (!v) {
                     return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
                 }
-            }).click(function(e) {
+            }).click(function (e) {
                 var n = e.target,
                     p = $(n).parents('li').get(0);
 
@@ -106,7 +110,7 @@
          *            The parent
          * @return {Boolean}.
          */
-        _hasNodes: function(parent) {
+        _hasNodes: function (parent) {
             if ($.type(parent) == 'string') {
                 parent = this._findParent(parent);
             }
@@ -122,7 +126,7 @@
          *            or Element} The parent node
          * @return {Boolean}.
          */
-        _isNode: function(id, parent) {
+        _isNode: function (id, parent) {
             var n = this._findNode(id, parent);
 
             return n.length ? true : false;
@@ -134,7 +138,7 @@
          *            or Element} The parent node
          * @return {Boolean}.
          */
-        _getNode: function(parent) {
+        _getNode: function (parent) {
             if ($.type(parent) === "string") {
                 parent = this._findParent(parent);
             }
@@ -144,7 +148,7 @@
         /**
          * Reset all nodes. Set to closed
          */
-        _resetNodes: function() {
+        _resetNodes: function () {
             $('li', this.element).removeClass('uk-tree-open');
         },
         /**
@@ -155,7 +159,7 @@
          * @param {String}
          *            The new title
          */
-        renameNode: function(id, name) {
+        renameNode: function (id, name) {
             var parent = Wf.String.dirname(id);
 
             var node = this._findNode(id, parent);
@@ -167,7 +171,7 @@
             $('a:first', node).html(Wf.String.basename(name));
 
             // Rename each of the child nodes
-            $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function(n) {
+            $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
                 var nt = $(n).attr('id');
                 $(n).attr('id', nt.replace(id, name));
             });
@@ -179,7 +183,7 @@
          * @param {String}
          *            The node title
          */
-        removeNode: function(id) {
+        removeNode: function (id) {
             var parent = Wf.String.dirname(id);
 
             var node = this._findNode(id, parent);
@@ -199,7 +203,7 @@
          * @param {Stringor Element} The parent node
          * @return {Array} An array of nodes to create.
          */
-        createNode: function(nodes, parent) {
+        createNode: function (nodes, parent) {
             var self = this;
             var e, p, h, l, np, i;
 
@@ -228,13 +232,15 @@
                 // Create it if it doesn't exist
                 if (!ul.length) {
                     ul = document.createElement('ul');
-                    $(ul).attr({ 'role': 'group' }).addClass('uk-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
+                    $(ul).attr({
+                        'role': 'group'
+                    }).addClass('uk-tree-node').append('<li role="treeitem" aria-expanded="false"></li>');
 
                     $(parent).append(ul);
                 }
 
                 // Iterate through nodes array
-                $.each(nodes, function(i, node) {
+                $.each(nodes, function (i, node) {
 
                     if (!self._isNode(node.id, parent)) {
                         // title and link html
@@ -277,11 +283,13 @@
                         html += '<span class="uk-tree-text uk-width-4-5 uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
                         html += '</a></div>';
 
-                        $(li).attr({ 'id': self._escape(encodeURI(node.id)) }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
+                        $(li).attr({
+                            'id': self._escape(encodeURI(node.id))
+                        }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
 
                         $(ul).append(li);
 
-                        $(li).click(function(e) {
+                        $(li).click(function (e) {
                             var n = e.target;
 
                             e.preventDefault();
@@ -299,7 +307,7 @@
 
                             // remove all active classes from other tree nodes
                             $(self.element).find('.uk-tree-active').removeClass('uk-tree-active');
-                
+
                             // add active class to tree node
                             $(li).addClass('uk-tree-active');
                         });
@@ -324,7 +332,7 @@
          *            The child node id
          * @return {Element} The parent node.
          */
-        _findParent: function(el) {
+        _findParent: function (el) {
             if ($.type(el) === "string") {
                 return $('li[id="' + this._encode(el) + '"]:first', this.element);
             } else {
@@ -340,7 +348,7 @@
          *            Element} The parent node
          * @return {Element} The node.
          */
-        _findNode: function(id, parent) {
+        _findNode: function (id, parent) {
             if (!parent || parent === "/") {
                 parent = this.element;
             }
@@ -357,7 +365,7 @@
          * @param {Element}
          *            The target node
          */
-        toggleLoader: function(node) {
+        toggleLoader: function (node) {
             $(node).toggleClass('uk-tree-loading');
         },
         /**
@@ -366,7 +374,7 @@
          * @param {Element}
          *            The excluded node
          */
-        _collapseNodes: function(ex) {
+        _collapseNodes: function (ex) {
             var self = this;
 
             if (!ex) {
@@ -375,7 +383,7 @@
 
             var parent = $(ex).parent();
 
-            $('li', parent).each(function() {
+            $('li', parent).each(function () {
                 var el = this;
 
                 if (el !== ex && $(el).parent() !== parent) {
@@ -393,7 +401,7 @@
          * @param {Element}
          * The node
          */
-        toggleNodeState: function(node, state) {
+        toggleNodeState: function (node, state) {
             if (state) {
                 $(node).addClass('uk-tree-open').attr('aria-expanded', true);
             } else {
@@ -420,7 +428,7 @@
          * @param {Element}
          *            The node
          */
-        toggleNode: function(e, node) {
+        toggleNode: function (e, node) {
             // Force reload
             if (e.shiftKey) {
                 return this._trigger('nodeload', node);
@@ -446,7 +454,7 @@
                 this._collapseNodes(node);
             }
         },
-        _encode: function(s) {
+        _encode: function (s) {
             // decode first in case already encoded
             s = decodeURIComponent(s);
             // encode but decode backspace
@@ -459,7 +467,7 @@
          *            The string
          * @return {String} The escaped string
          */
-        _escape: function(s) {
+        _escape: function (s) {
             return s.replace(/'/, '%27');
         },
 
@@ -472,38 +480,40 @@
          */
         scrollTo: function (id) {
             var node = this._findNode(id);
-            
-            var left = $(node).get(0).offsetLeft - parseInt($(node).css('padding-left'));
-            var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
 
-            $(this.element).animate({
-                scrollLeft: Math.round(left),
-            }, 500).animate({
-                scrollTop: Math.round(top)
-            }, 1500);
+            if ($(node).length) {
+                var left = $(node).get(0).offsetLeft - parseInt($(node).css('padding-left'));
+                var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
 
-            // mark as active
-            $(node).addClass('uk-tree-active');
+                $(this.element).animate({
+                    scrollLeft: Math.round(left),
+                }, 500).animate({
+                    scrollTop: Math.round(top)
+                }, 1500);
+
+                // mark as active
+                $(node).addClass('uk-tree-active');
+            }
         }
     };
 
     // jQuery hook
-    $.fn.tree = function(options) {
+    $.fn.tree = function (options) {
         var inst = new Tree(this, options);
 
-        $(this).on('tree:createnode', function(e, items, node) {
+        $(this).on('tree:createnode', function (e, items, node) {
             inst.createNode(items, node);
         });
 
-        $(this).on('tree:togglenode', function(e, ev, node) {
+        $(this).on('tree:togglenode', function (e, ev, node) {
             inst.toggleNode(ev, node);
         });
 
-        $(this).on('tree:togglenodestate', function(e, node, state) {
+        $(this).on('tree:togglenodestate', function (e, node, state) {
             inst.toggleNodeState(node, state);
         });
 
-        $(this).on('tree:toggleloader', function(e, node) {
+        $(this).on('tree:toggleloader', function (e, node) {
             inst.toggleLoader(node);
         });
 

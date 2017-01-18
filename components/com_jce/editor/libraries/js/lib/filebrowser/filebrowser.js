@@ -814,6 +814,11 @@
         _treeLoaded: function() {
             return this.options.folder_tree && typeof $.fn.tree === "function";
         },
+
+        _trimPath: function(path) {
+            return path.replace(/^\//, '').replace(/\/$/, '');     
+        },
+
         /**
          * Initialize the Tree
          * @param {String} src Optional src url eg: images/stories/fruit.jpg
@@ -832,7 +837,7 @@
 
                     typeof callback === "function" && callback();
 
-                    if (path) {
+                    if (path && path !== self._trimPath(self.options.dir)) {
                         $('#tree-body').trigger('tree:scroll', "/" + path);
                     }
 
