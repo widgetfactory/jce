@@ -1115,6 +1115,9 @@
                             el = se.getNode() || ed.getBody();
 
                         if (ed.dom.getParent(e, 'td') || ed.dom.getParent(e, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
+                            // get existing items
+                            var items = m.items;
+                            // remove all
                             m.removeAll();
 
                             m.add({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable', value: { action: 'insert' } });
@@ -1145,6 +1148,12 @@
                             sm.add({ title: 'table.col_before_desc', icon: 'col_before', cmd: 'mceTableInsertColBefore' });
                             sm.add({ title: 'table.col_after_desc', icon: 'col_after', cmd: 'mceTableInsertColAfter' });
                             sm.add({ title: 'table.delete_col_desc', icon: 'delete_col', cmd: 'mceTableDeleteCol' });
+
+                            // add back existing items
+                            each(items, function(item) {
+                                m.add(item);
+                            });
+
                         } else
                             m.add({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable' });
                     });
