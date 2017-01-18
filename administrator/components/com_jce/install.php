@@ -278,30 +278,6 @@ abstract class WFInstall
                 JFolder::delete($path . '/' . $name);
             }
         }
-
-        $profiles = self::getProfiles();
-
-        $row = JTable::getInstance('profiles', 'WFTable');
-
-        foreach ($profiles as $profile) {
-            $row->load($profile->id);
-
-            $data = json_decode($data->params);
-
-            if (isset($data->link) && isset($data->link->dir)) {
-                // pass any value set to $data->link->direction
-                if (!empty($data->link->dir) && !isset($data->link->direction)) {
-                    $data->link->direction = $data->link->dir;
-                }
-                // unset $data->link->dir
-                unset($data->link->dir);
-            }
-
-            $row->params = json_encode($data->params);
-
-            $row->store();
-        }
-
         return true;
     }
 
