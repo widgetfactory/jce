@@ -12,6 +12,8 @@
     var ImageManagerDialog = {
         settings: {},
         init: function() {
+            tinyMCEPopup.restoreSelection();
+            
             var ed = tinyMCEPopup.editor,
                 n = ed.selection.getNode(),
                 self = this,
@@ -22,8 +24,6 @@
                 self.insert();
                 e.preventDefault();
             });
-
-            tinyMCEPopup.restoreSelection();
 
             // Get src and decode
             var src = decodeURIComponent(ed.dom.getAttrib(n, 'src'));
