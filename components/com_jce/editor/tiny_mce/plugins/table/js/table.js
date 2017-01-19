@@ -928,7 +928,7 @@
             tinyMCEPopup.close();
         },
         updateRow: function(tr, skip_id, skip_parent) {
-            var ed = tinyMCEPopup.editor,
+            var self = this, ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
                 v;
