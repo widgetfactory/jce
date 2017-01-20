@@ -44,7 +44,7 @@
         "description": "WF_CLEANUP_DESC",
         "icon": "cleanup",
         "editable": "0",
-        "row": "0",
+        "row": "1",
         "core": "1"
     },
     "clipboard": {
