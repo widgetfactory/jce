@@ -17,7 +17,7 @@
             function open(m) {
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=searchreplace',
-                    width 	: 420 + parseInt(ed.getLang('searchreplace.delta_width', 0)),
+                    width 	: 440 + parseInt(ed.getLang('searchreplace.delta_width', 0)),
                     height 	: 200 + parseInt(ed.getLang('searchreplace.delta_height', 0)),
                     inline 	: 1,
                     overlay : false
@@ -141,10 +141,10 @@
                     title : 'searchreplace.search_desc',
                     cmd : 'mceSearch'
                 });
-                ed.addButton('replace', {
+                /*ed.addButton('replace', {
                     title : 'searchreplace.replace_desc',
                     cmd : 'mceReplace'
-                });
+                });*/
             }
 
             ed.addShortcut('ctrl+f', 'searchreplace.search_desc', function() {
