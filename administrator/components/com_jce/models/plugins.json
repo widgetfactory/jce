@@ -210,7 +210,7 @@
     "searchreplace": {
         "title": "WF_SEARCHREPLACE_TITLE",
         "description": "WF_SEARCHREPLACE_DESC",
-        "icon": "search,replace",
+        "icon": "search",
         "editable": "0",
         "row": "2",
         "core": "1"
