@@ -82,7 +82,7 @@
                 $elms = $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]');
 
             $(this).on('constrain:update', function() {
-                $elms.each(function() {
+                $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]').each(function() {
                     $(this).data('tmp', this.value);
                 });
             });
@@ -99,8 +99,8 @@
             }).change(function(e) {
                 e.stopPropagation();
 
-                var a = this,
-                    b = $elms.not(this);
+                var a = this, $elms = $(this).parents('.uk-form-constrain').find('input'),
+                    b = $elms.not(':checkbox').not(this), cb = $elms.filter(':checkbox');
 
                 var w = $(a).val(),
                     h = $(b).val(),
@@ -114,7 +114,7 @@
                     }
                 }
 
-                $(cb).trigger('constrain:change', [$elms.add(cb)]);
+                $(cb).trigger('constrain:change', [$elms]);
 
                 $(a).data('tmp', w);
             });

@@ -889,6 +889,11 @@ input.colour {
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
+.uk-form .uk-form-constrain .uk-constrain-checkbox,
+.uk-form .uk-form-equalize .uk-equalize-checkbox {
+    margin: 5px;
+}
+
 .uk-isdirty {
     color: inherit !important
 }
