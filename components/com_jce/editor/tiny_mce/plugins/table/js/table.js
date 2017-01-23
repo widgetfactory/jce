@@ -71,7 +71,7 @@
     Wf.setStyles = function() {
         var ed = tinyMCEPopup.editor;
         // create proxy element to extract styles from
-        var $proxy = $('<div />');
+        var $proxy = $('<div />'), proxy = $proxy.get(0);
         // update with table styles
         $proxy.attr('style', $('#style').val());
 
@@ -81,11 +81,12 @@
             "border-collapse": "cellspacing",
             "vertical-align": "valign",
             "background-color": "bgcolor",
-            "float": "align"
+            "float": "align",
+            "text-align": "align"
         };
 
-        $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'float'], function(i, k) {
-            var v = ed.dom.getStyle($proxy.get(0), k);
+        $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'text-align', 'float'], function(i, k) {
+            var v = ed.dom.getStyle(proxy, k);
 
             // delete all values
             $proxy.css(k, "");
@@ -110,12 +111,24 @@
                 v = 0;
             }
 
+            // align already set
+            if (k === "float" && $('#align').val() !== "") {
+                return true;
+            }
+
             // get mapped attribute name
             k = map[k] || k;
 
             // update form
             $('#' + k).val(v).change();
         });
+
+        // table center-align
+        if (proxy.style.marginLeft === "auto" && proxy.style.marginRight === "auto" && $('#align').val() === "") {
+            $('#align').val('center');
+
+            $proxy.css({"margin-left": "", "margin-right": ""});
+        }
 
         var border = false;
 
