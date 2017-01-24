@@ -490,10 +490,20 @@ input[type="range"]::-ms-thumb {
 /* fix layout in upload dialog */
 
 @media (min-width: 960px) {
+    .uk-form-horizontal .uk-width-1-10 {
+        width: 10%;
+    }
     .uk-form-horizontal .uk-width-2-10,
     .uk-form-horizontal .uk-width-1-5 {
         width: 20%;
     }
+   /*.uk-form-horizontal .uk-width-3-10 {
+        width: 30%;
+    }
+    .uk-form-horizontal .uk-width-4-10,
+    .uk-form-horizontal .uk-width-2-5 {
+        width: 40%;
+    }*/
     .uk-form-horizontal .uk-form-controls {
         margin-left: inherit;
     }
@@ -666,3 +676,6 @@ input[type="range"]::-ms-thumb {
     height: 93%;
     height: calc(100% - 41px);
 }
+
+.uk-margin-left-remove {margin-left: 0 !important;}
+.uk-margin-right-remove {margin-right: 0 !important;}
