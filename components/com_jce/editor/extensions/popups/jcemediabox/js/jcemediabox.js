@@ -324,7 +324,7 @@ WFPopups.addPopup('jcemediabox', {
 
         if ($.isEmptyObject(data)) {
             $.each(ed.dom.getAttribs(n), function(i, at) {
-                var name = at.name;
+                var name = at.name || at.nodeName;
 
                 if (name && name.indexOf('data-mediabox-') !== -1) {
                     var k = name.replace('data-mediabox-', '');
