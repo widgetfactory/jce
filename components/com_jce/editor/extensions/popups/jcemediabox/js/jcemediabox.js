@@ -499,7 +499,7 @@ WFPopups.addPopup('jcemediabox', {
 
         // set data to data-mediabox attributes
         $.each(data, function(k, v) {
-            ed.dom.setAttrib(n, 'data-mediabox-' + k, ed.dom.encode(v));
+            ed.dom.setAttrib(n, 'data-mediabox-' + k, v);
         });
 
         // set data to rel attribute
