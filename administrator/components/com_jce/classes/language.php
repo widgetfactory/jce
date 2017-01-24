@@ -244,6 +244,9 @@ class WFLanguageParser extends JObject {
                         // remove WF_
                         $k = str_replace('wf_', '', $k);
 
+                        // remove "_dlg"
+                        $key = preg_replace('#_dlg$#', '', $key);
+
                         // remove the section name
                         $k = preg_replace('#' . $key . '(_dlg)?_#', '', $k);
 
