@@ -443,6 +443,8 @@
             // Create or remove popup
             WFPopups.createPopup(el);
 
+            ed.undoManager.add();
+
             // close dialog
             tinyMCEPopup.close();
         },
