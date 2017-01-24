@@ -27,10 +27,10 @@ defined('WF_EDITOR') or die('RESTRICTED');
 <div class="uk-form-row">
 		<label class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_SEARCHREPLACE_DIRECTION');?></label>
 	<div class="uk-form-controls uk-width-7-10">
-		<input id="backwardsu" type="radio" />
+		<input id="backwardsu" name="backwards" type="radio" />
 		<label for="backwardsu"><?php echo WFText::_('WF_SEARCHREPLACE_UP');?></label>
 
-		<input id="backwardsd" type="radio" checked />
+		<input id="backwardsd" name="backwards" type="radio" checked />
 		<label for="backwardsd"><?php echo WFText::_('WF_SEARCHREPLACE_DOWN');?></label>
 	</div>
 </div>
