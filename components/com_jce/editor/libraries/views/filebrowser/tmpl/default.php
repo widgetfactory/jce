@@ -34,7 +34,7 @@ defined('_JEXEC') or die('RESTRICTED');
       <main class="uk-grid uk-grid-collapse uk-width-1-1 uk-position-cover uk-flex">
         <div class="uk-width-3-10">
           <div class="uk-navbar">
-            <div class="uk-navbar-content uk-navbar-center">
+            <div class="uk-navbar-content uk-width-1-1 uk-text-center">
               <?php echo WFText::_('WF_LABEL_FOLDERS'); ?>
             </div>
           </div>
@@ -138,7 +138,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
         <div class="uk-width-3-10 uk-position-relative">
           <div class="uk-navbar">
-            <div class="uk-navbar-content uk-navbar-center">
+            <div class="uk-navbar-content uk-width-1-1 uk-text-center">
               <?php echo WFText::_('WF_LABEL_DETAILS'); ?>
             </div>
           </div>
