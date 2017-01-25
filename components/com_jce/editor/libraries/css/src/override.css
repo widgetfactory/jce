@@ -461,6 +461,7 @@ input[type="range"]::-ms-track {
     height: 10px;
     border: 1px solid #bdc3c7;
     background-color: #fff;
+    color: transparent;
 }
 
 input[type="range"]::-ms-thumb {
