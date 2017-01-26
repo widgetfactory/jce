@@ -1,6 +1,5 @@
 /**
- * Copyright 2009, Moxiecode Systems AB
- * Copyright 2009, Ryan Demmer
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  * Released under LGPL License.
  *
  * License: http://www.tinymce.com/license
