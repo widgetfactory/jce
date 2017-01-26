@@ -27,6 +27,7 @@ body.mceContentReset {
     color: #000000 !important;
 }
 
+
 /* https://www.w3.org/TR/html5/rendering.html#phrasing-content-0 */
 
 body.mceContentReset a,
@@ -80,10 +81,11 @@ h6 {
     border-spacing: 1px;
 }
 
-span.mceItemNbsp {
-    background: #DDD url('img/middot.gif') repeat-x center;
+span.mce-item-nbsp,
+span.mce-item-shy {
     font-family: inherit;
     font-size: inherit;
+    background: #ddd url('img/middot.gif') repeat-x center;
 }
 
 td.mceSelected,
