@@ -455,7 +455,7 @@
                         }
 
                         // if paste command not supported open window
-                        if (self.canPaste === false) {
+                        if (self.canPaste === false) {                            
                             return self._openWin(cmd);
                         }
                     }
@@ -1231,13 +1231,13 @@
                 });
 
                 // cleanup table cells
-                each(dom.select('td', o.node), function(el) {
+                /*each(dom.select('td', o.node), function(el) {
                     var p = dom.select('p', el);
 
                     if (p.length === 1) {
                         dom.remove(p[0], true);
                     }
-                });
+                });*/
             } // end word content
 
             // Remove all styles
