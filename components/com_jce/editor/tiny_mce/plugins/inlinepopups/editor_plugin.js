@@ -60,7 +60,7 @@
                 ed = self.editor,
                 dw = 0,
                 dh = 0,
-                vp, po, mdf, clf, rsf, we, w, u, parentWindow;
+                vp, po, mdf, clf, rsf, we, w, u;
 
             f = f || {};
             p = p || {};
@@ -68,12 +68,6 @@
             // Run native windows
             if (!f.inline) {
                 return self.parent(f, p);
-            }
-
-            parentWindow = self._frontWindow();
-
-            if (parentWindow && DOM.get(parentWindow.id + '_ifr')) {
-                parentWindow.focussedElement = DOM.get(parentWindow.id + '_ifr').contentWindow.document.activeElement;
             }
 
             // Only store selection if the type is a normal window
@@ -290,8 +284,6 @@
 
             DOM.setAttrib(id, 'aria-hidden', 'false');
 
-            self.focus(id);
-
             // Focus ok button
             if (DOM.get(id + '_ok')) {
                 DOM.get(id + '_ok').focus();
@@ -313,25 +305,22 @@
         },
 
         focus: function(id) {
-            var self = this,
-                w;
+            var self = this, w;
 
-            if (w = self.windows[id]) {
-                w.zIndex = this.zIndex++;
+			if (w = self.windows[id]) {
+				id = id + '_wrapper';
+				DOM.removeClass(self.lastId, 'mceFocus');
+				DOM.addClass(id, 'mceFocus');
+				self.lastId = id;
 
-                DOM.setStyle(id, 'z-index', w.zIndex);
-
-                DOM.removeClass(self.lastId, 'mceFocus');
-                DOM.addClass(id, 'mceFocus');
-
-                self.lastId = id;
-
-                if (DOM.get(id + '_ok')) {
-                    DOM.get(w.id + '_ok').focus();
-                } else if (DOM.get(w.id + '_ifr')) {
-                    DOM.get(w.id + '_ifr').focus();
-                }
-            }
+				if (w.focussedElement) {
+					w.focussedElement.focus();
+				} else if (DOM.get(id + '_ok')) {
+					DOM.get(w.id + '_ok').focus();
+				} else if (DOM.get(w.id + '_ifr')) {
+					DOM.get(w.id + '_ifr').focus();
+				}
+			}
         },
 
         _startDrag: function(id, se, ac) {
