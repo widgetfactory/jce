@@ -361,7 +361,7 @@
                 var value = this.value;
 
                 // special case for class list
-                if (this.id.indexOf('classlist-select') !== -1) {
+                if (value && this.id.indexOf('classlist-select') !== -1) {
                     var $tmp = $('<span/>').addClass($(input).val()).addClass(this.value);
                     value = $tmp.attr('class');
                 }
