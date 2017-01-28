@@ -121,7 +121,7 @@ class plgEditorJCE extends JPlugin {
         if (empty($id)) {
             $id = $name;
         }
-        $editor  = '<div class="wf-editor-container">';
+        $editor  = '<div class="editor wf-editor-container">';
         $editor .= '  <div class="wf-editor-header"></div>';
         $editor .= '  <textarea spellcheck="false" id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wf-editor" wrap="off">' . $content . '</textarea>';
         $editor .= '</div>';
