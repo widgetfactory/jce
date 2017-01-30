@@ -104,6 +104,15 @@ class WFEditor extends JObject
         $user = JFactory::getUser();
         $option = $this->getComponentOption();
 
+        if ($option == 'com_jce') {
+            $context = JRequest::getInt('context');
+            
+            if ($context) {
+                $component = WFExtensionHelper::getComponent($context);
+                $option = isset($component->element) ? $component->element : $component->option;
+            }
+        }
+
         // get the Joomla! area (admin or site)
         $area = $app->isAdmin() ? 2 : 1;
 
