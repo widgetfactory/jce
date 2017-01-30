@@ -19,49 +19,53 @@
                 var s = ed.settings, c;
 
                 function updateColor(controlId, color) {
-                    if (c = cm.get(controlId)) {
+                    if (c = cm.get(controlId)) {                                                
                         if (!color)
-                            color = s.default_color;
+                            color = c.settings.default_color;
                         if (color !== c.value) {
                             c.displayColor(color);
                         }
                     }
                 }
 
-                if (s.theme_advanced_show_current_color) {
-
-                    updateColor('forecolor', n.style.color);
-                    updateColor('backcolor', n.style.backgroundColor);
-                }
+                updateColor('forecolor', n.style.color);
+                updateColor('backcolor', n.style.backgroundColor);
             });
         },
         createControl: function(n, cf) {
-            switch (n) {
-                case "forecolor":
-                    return this._createForeColorMenu();
-                    break;
-                case "backcolor":
-                    return this._createBackColorMenu();
-                    break;
+            if (n === "forecolor") {
+                return this._createForeColorMenu();
+            }
+
+            if (n === "backcolor") {
+                return this._createBackColorMenu();
             }
         },
         _createForeColorMenu: function() {
             var c, self = this, ed = self.editor, s = ed.settings, o = {}, v;
 
             o.more_colors_func = function() {
-                    ed.execCommand('mceColorPicker', false, {color: c.value, func: function(co) {
-                            c.setColor(co);
-                        }});
-                };
+                ed.execCommand('mceColorPicker', false, {color: c.value, func: function(co) {
+                    c.setColor(co);
+                }});
+            };
 
-            if (v = s.theme_advanced_text_colors)
+            if (v = s.theme_advanced_text_colors) {
                 o.colors = v;
+            }
 
-            //if (s.theme_advanced_default_foreground_color)
             o.default_color = s.fontcolor_foreground_color || '#000000';
 
             o.title = 'advanced.forecolor_desc';
-            o.cmd = 'ForeColor';
+            o.onselect = function(v) {
+
+                if (!v) {
+                    return ed.formatter.remove('forecolor');
+                }
+
+                ed.formatter.apply('forecolor', {'value' : v});
+            };
+
             o.scope = this;
 
             c = ed.controlManager.createColorSplitButton('forecolor', o);
@@ -77,14 +81,21 @@
                         }});
                 };
 
-            if (v = s.theme_advanced_background_colors)
+            if (v = s.theme_advanced_background_colors) {
                 o.colors = v;
+            }
 
-            //if (s.theme_advanced_default_background_color)
             o.default_color = s.fontcolor_background_color || '#FFFF00';
 
             o.title = 'advanced.backcolor_desc';
-            o.cmd = 'HiliteColor';
+            o.onselect = function(v) {
+
+                if (!v) {
+                    return ed.formatter.remove('hilitecolor');
+                }
+
+                ed.formatter.apply('hilitecolor', {'value' : v});
+            };
             o.scope = this;
 
             c = ed.controlManager.createColorSplitButton('backcolor', o);

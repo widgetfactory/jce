@@ -510,10 +510,25 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     overflow: hidden;
     border: 1px solid #ddd;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .defaultSkin .mceColorSplitMenu td.mceMoreColors {
     padding: 1px;
+}
+
+.defaultSkin .mceColorSplitMenu td.mceRemoveColor a:after {
+    color: #444;
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 18px;
+    text-align: center;
+    text-decoration: none;
+    content: "\00d7";
+    cursor: pointer;
+    margin-left: 1px;
 }
 
 .defaultSkin .mceColorSplitMenu a.mceMoreColors {
@@ -781,6 +796,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     font-size: 12px;
     padding: 5px;
 }
+
 .defaultSkin .mceButtonDialog .mceButtonDialogContent label {
     display: block;
 }
