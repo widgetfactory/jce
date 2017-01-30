@@ -781,6 +781,9 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     font-size: 12px;
     padding: 5px;
 }
+.defaultSkin .mceButtonDialog .mceButtonDialogContent label {
+    display: block;
+}
 
 .defaultSkin .mceButtonDialog input[type="text"],
 .defaultSkin .mceListBoxMenu input[type="text"] {
