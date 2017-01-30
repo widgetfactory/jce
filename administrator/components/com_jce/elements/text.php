@@ -58,7 +58,7 @@ class WFElementText extends WFElement {
 
         $attributes['type']   = strtolower($this->_name);
         $attributes['name']   = $control;
-        $attributes['id']     = preg_replace('#[^a-z0-9_-]#i', '', $control_name . $name);
+        $attributes['id']     = preg_replace('#\W+#', '_', $control_name . $name);
 
         // pattern data attribute for editable select input box
         if ((string) $node->attributes()->parent) {

@@ -113,9 +113,9 @@ class WFElement extends JObject
 	 */
 	public function fetchTooltip($label, $description, &$xmlElement, $control_name = '', $name = '')
 	{
-		$id = preg_replace('#[\W]+#', '', $control_name . $name);
+		$id = preg_replace('#\W+#', '_', $control_name . $name);
 
-		$output = '<label id="' . $id . '-lbl" for="' . $id . '" class="control-label' . ($description ? ' wf-tooltip' : '') . '"';
+		$output = '<label id="' . $id . '_lbl" for="' . $id . '" class="control-label' . ($description ? ' wf-tooltip' : '') . '"';
 		$label  = WFText::_($label);
 
     	if ($description) {
