@@ -347,7 +347,7 @@
                     self.updateClassList(cls);
 
                     return cls;
-                });
+                }).change();
 
                 // update style field
                 $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
@@ -408,7 +408,7 @@
                 self.updateClassList(cls);
 
                 return cls;
-            });
+            }).change();
 
             $('#rowtype').change(function() {
                 self.setActionforRowType();
@@ -457,7 +457,7 @@
                     self.updateClassList(cls);
 
                     return cls;
-                });
+                }).change();
 
                 $('#celltype').val(elm.nodeName.toLowerCase());
 
