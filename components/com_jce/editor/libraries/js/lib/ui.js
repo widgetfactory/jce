@@ -328,7 +328,9 @@
         return this;
     };
 
-    $.fn.datalist = function() {
+    $.fn.datalist = function(options) {
+        options = $.extend({"seperator" : " "}, options);
+        
         return this.each(function() {
             var self = this;
 
@@ -352,8 +354,10 @@
 
             // add external event
             $(input).change(function() {
+                // get first value if multiple (eg: classlist)
+                var v = this.value, v = v.split(options.seperator)[0];
                 // pass value to select and trigger change
-                $(self).val(this.value);
+                $(self).val(v);
                 $(self).trigger('datalist:change');
             });
 
@@ -363,8 +367,13 @@
                 // special case for class list
                 if (value && this.id.indexOf('classlist-select') !== -1) {
                     var $tmp = $('<span/>').addClass($(input).val()).addClass(this.value);
-                    value = $tmp.attr('class');
+
+                    // only if passing through a value, ie: Not Set will remove classes
+                    if (value !== "") {
+                        value = $tmp.attr('class');
+                    }
                 }
+
                 // pass value to input and trigger change
                 $(input).val(value);
                 $(self).trigger('datalist:change');
