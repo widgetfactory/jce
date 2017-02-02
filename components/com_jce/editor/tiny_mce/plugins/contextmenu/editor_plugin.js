@@ -8,8 +8,10 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
-    var Event = tinymce.dom.Event, each = tinymce.each, DOM = tinymce.DOM;
+(function () {
+    var Event = tinymce.dom.Event,
+        each = tinymce.each,
+        DOM = tinymce.DOM;
 
     /**
      * This plugin a context menu to TinyMCE editor instances.
@@ -26,12 +28,21 @@
          * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
          * @param {string} url Absolute URL to where the plugin is located.
          */
-        init: function(ed) {
-            var t = this, showMenu, contextmenuNeverUseNative, realCtrlKey, hideMenu;
+        init: function (ed) {
+            var t = this,
+                showMenu, contextmenuNeverUseNative, realCtrlKey, hideMenu;
 
             t.editor = ed;
 
             contextmenuNeverUseNative = ed.settings.contextmenu_never_use_native;
+
+            var isNativeOverrideKeyEvent = function (e) {
+                return e.ctrlKey && !contextmenuNeverUseNative;
+            };
+
+            var isMacWebKit = function () {
+		        return tinymce.isMac && tinymce.isWebKit;
+	        };
 
             /**
              * This event gets fired when the context menu is shown.
@@ -42,29 +53,44 @@
              */
             t.onContextMenu = new tinymce.util.Dispatcher(this);
 
-            hideMenu = function(e) {
+            hideMenu = function (e) {
                 hide(ed, e);
             };
 
-            showMenu = ed.onContextMenu.add(function(ed, e) {
+            showMenu = ed.onContextMenu.add(function (ed, e) {
                 // Block TinyMCE menu on ctrlKey and work around Safari issue
-                if ((realCtrlKey !== 0 ? realCtrlKey : e.ctrlKey) && !contextmenuNeverUseNative)
+                if ((realCtrlKey !== 0 ? realCtrlKey : e.ctrlKey) && !contextmenuNeverUseNative) {
                     return;
+                }
 
                 Event.cancel(e);
+
+                /**
+                 * This takes care of a os x native issue where it expands the selection
+                 * to the word at the caret position to do "lookups". Since we are overriding
+                 * the context menu we also need to override this expanding so the behavior becomes
+                 * normalized. Firefox on os x doesn't expand to the word when using the context menu.
+                 */
+                if (isMacWebKit() && e.button === 2 && !isNativeOverrideKeyEvent(e)) {
+                    if (ed.selection.isCollapsed()) {
+                        ed.selection.placeCaretAt(e.clientX, e.clientY);
+                    }
+                }
 
                 // Select the image if it's clicked. WebKit would other wise expand the selection
                 if (e.target.nodeName == 'IMG') {
                     ed.selection.select(e.target);
                 }
+
                 // fix weird cell selection in Webkit 
                 if (e.target.nodeName == 'TD' || e.target.nodeName == 'TH') {
                     if (tinymce.isWebKit) {
-                        var n = e.target, rng = ed.selection.getRng();
+                        var n = e.target,
+                            rng = ed.selection.getRng();
 
                         // Get the very last node inside the table cell
                         var end = n.lastChild;
-                        
+
                         while (end.lastChild) {
                             end = end.lastChild;
                         }
@@ -83,7 +109,7 @@
                 ed.nodeChanged();
             });
 
-            ed.onRemove.add(function() {
+            ed.onRemove.add(function () {
                 if (t._menu)
                     t._menu.removeAll();
             });
@@ -105,11 +131,10 @@
                     t._menu = null;
                 }
             }
-            ;
 
             ed.onMouseDown.add(hide);
             ed.onKeyDown.add(hide);
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if (e.shiftKey && !e.ctrlKey && !e.altKey && e.keyCode === 121) {
                     Event.cancel(e);
                     showMenu(ed, e);
@@ -123,7 +148,7 @@
          * @method getInfo
          * @return {Object} Name/value array containing information about the plugin.
          */
-        getInfo: function() {
+        getInfo: function () {
             return {
                 longname: 'Contextmenu',
                 author: 'Moxiecode Systems AB',
@@ -132,8 +157,13 @@
                 version: tinymce.majorVersion + "." + tinymce.minorVersion
             };
         },
-        _getMenu: function(ed) {
-            var t = this, m = t._menu, se = ed.selection, col = se.isCollapsed(), el = se.getNode() || ed.getBody(), am, p;
+        _getMenu: function (ed) {
+            var t = this,
+                m = t._menu,
+                se = ed.selection,
+                col = se.isCollapsed(),
+                el = se.getNode() || ed.getBody(),
+                am, p;
 
             if (m) {
                 m.removeAll();
@@ -167,11 +197,29 @@
              */
 
             m.addSeparator();
-            am = m.addMenu({title: 'contextmenu.align'});
-            am.add({title: 'contextmenu.left', icon: 'justifyleft', cmd: 'JustifyLeft'});
-            am.add({title: 'contextmenu.center', icon: 'justifycenter', cmd: 'JustifyCenter'});
-            am.add({title: 'contextmenu.right', icon: 'justifyright', cmd: 'JustifyRight'});
-            am.add({title: 'contextmenu.full', icon: 'justifyfull', cmd: 'JustifyFull'});
+            am = m.addMenu({
+                title: 'contextmenu.align'
+            });
+            am.add({
+                title: 'contextmenu.left',
+                icon: 'justifyleft',
+                cmd: 'JustifyLeft'
+            });
+            am.add({
+                title: 'contextmenu.center',
+                icon: 'justifycenter',
+                cmd: 'JustifyCenter'
+            });
+            am.add({
+                title: 'contextmenu.right',
+                icon: 'justifyright',
+                cmd: 'JustifyRight'
+            });
+            am.add({
+                title: 'contextmenu.full',
+                icon: 'justifyfull',
+                cmd: 'JustifyFull'
+            });
 
             t.onContextMenu.dispatch(t, m, el, col);
 
