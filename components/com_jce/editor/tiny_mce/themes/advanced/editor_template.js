@@ -412,7 +412,6 @@
                 });
                 DOM.add(n, 'a', {
                     id: ed.id + '_external_close',
-                    href: 'javascript:;',
                     'class': 'mceExternalClose'
                 });
                 n = DOM.add(n, 'div', {
@@ -597,7 +596,6 @@
             if (s.theme_advanced_resizing) {
                 DOM.add(td, 'a', {
                     id: ed.id + '_resize',
-                    href: 'javascript:;',
                     onclick: "return false;",
                     'class': 'mceResize',
                     tabIndex: "-1"
