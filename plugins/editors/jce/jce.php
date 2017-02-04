@@ -123,7 +123,7 @@ class plgEditorJCE extends JPlugin {
         }
         $editor  = '<div class="editor wf-editor-container">';
         $editor .= '  <div class="wf-editor-header"></div>';
-        $editor .= '  <textarea spellcheck="false" id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wf-editor" wrap="off">' . $content . '</textarea>';
+        $editor .= '  <textarea spellcheck="false" id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wf-editor mce_editable" wrap="off">' . $content . '</textarea>';
         $editor .= '</div>';
         $editor .= $this->displayButtons($id, $buttons, $asset, $author);
 
