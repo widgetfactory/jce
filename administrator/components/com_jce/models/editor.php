@@ -803,24 +803,6 @@ class WFModelEditor extends WFModelBase
         return $assigned;
     }
 
-    private static function getYoothemePath($template)
-    {
-        $warp7 = JPATH_SITE . '/templates/' . $template . '/warp.php';
-
-        if (is_file($warp7)) {
-            // get warp
-            $warp = require $warp7;
-            $layouts = $warp['config']->get('layouts');
-            $style = $layouts['default']['style'];
-
-            if (!empty($style) && is_dir(JPATH_SITE . '/templates/' . $template . '/' . $style)) {
-                return 'templates/' . $template . '/' . $style . '/css';
-            }
-        }
-
-        return 'templates/' . $template . '/css';
-    }
-
     private static function getStyleSheetsList($absolute = false)
     {
         jimport('joomla.filesystem.folder');
@@ -849,13 +831,8 @@ class WFModelEditor extends WFModelBase
                 // assign template
                 $template = $item;
 
-                if (substr($template, 0, 4) === "yoo_") {
-                    $url = self::getYoothemePath($template);
-                    $path = JPATH_SITE . '/' . $url;
-                } else {
-                    // assign url
-                    $url = "templates/" . $template . "/css";
-                }
+                // assign url
+                $url = "templates/" . $template . "/css";
 
                 break;
             }
