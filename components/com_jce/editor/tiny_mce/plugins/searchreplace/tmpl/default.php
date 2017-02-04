@@ -15,33 +15,35 @@ defined('WF_EDITOR') or die('RESTRICTED');
 <div class="uk-form-row">
 	<label class="uk-form-label uk-width-3-10" for="searchstring"><?php echo WFText::_('WF_SEARCHREPLACE_FINDWHAT');?></label>
 	<div class="uk-form-controls uk-width-7-10">
-		<input type="text" id="searchstring" />
+		<input type="text" id="search_string" />
 	</div>
 </div>
 <div class="uk-form-row">
 		<label class="uk-form-label uk-width-3-10" for="replacestring"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEWITH');?></label>
 	<div class="uk-form-controls uk-width-7-10">
-		<input type="text" id="replacestring" />
+		<input type="text" id="replace_string" />
 	</div>
 </div>
-<div class="uk-form-row">
-		<label class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_SEARCHREPLACE_DIRECTION');?></label>
-	<div class="uk-form-controls uk-width-7-10">
-		<input id="backwardsu" name="backwards" type="radio" />
-		<label for="backwardsu"><?php echo WFText::_('WF_SEARCHREPLACE_UP');?></label>
 
-		<input id="backwardsd" name="backwards" type="radio" checked />
-		<label for="backwardsd"><?php echo WFText::_('WF_SEARCHREPLACE_DOWN');?></label>
-	</div>
+<div class="uk-form-row">
+	<input id="matchcase" type="checkbox" />
+	<label for="matchcase"><?php echo WFText::_('WF_SEARCHREPLACE_MCASE');?></label>
 </div>
 <div class="uk-form-row">
-	<input id="casesensitivebox" type="checkbox" />
-	<label for="casesensitivebox"><?php echo WFText::_('WF_SEARCHREPLACE_MCASE');?></label>
+	<input id="wholewords" type="checkbox" />
+	<label for="wholewords"><?php echo WFText::_('WF_SEARCHREPLACE_WHOLEWORDS');?></label>
 </div>
 </div>
 <div class="mceActionPanel">
-	<button type="submit" id="next" name="insert"><?php echo WFText::_('WF_SEARCHREPLACE_FINDNEXT');?></button>
-	<button type="button" class="button" id="replaceBtn" name="replaceBtn"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACE');?></button>
-	<button type="button" class="button" id="replaceAllBtn" name="replaceAllBtn"><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEALL');?></button>
-	<button type="button" id="cancel" name="cancel" class="uk-hidden-mini" onclick="tinyMCEPopup.close();"><?php echo WFText::_('WF_LABEL_CANCEL');?></button>
+	<div class="uk-float-left">
+		<button type="submit" id="find"><?php echo WFText::_('WF_SEARCHREPLACE_FIND', 'Find');?></button>
+		<button type="button" class="button" id="replace" disabled><?php echo WFText::_('WF_SEARCHREPLACE_REPLACE', 'Replace');?></button>
+		<button type="button" class="button" id="replaceAll" disabled><?php echo WFText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All');?></button>
+
+		<button type="button" id="prev" disabled><?php echo WFText::_('WF_SEARCHREPLACE_PREV', 'Previous');?></button>
+		<button type="button" id="next" disabled><?php echo WFText::_('WF_SEARCHREPLACE_NEXT', 'Next');?></button>
+	</div>
+	<div class="uk-float-right">
+		<button type="button" id="cancel" class="uk-hidden-mini"><?php echo WFText::_('WF_LABEL_CANCEL');?></button>
+	</div>
 </div>

@@ -167,3 +167,13 @@ pre.mcePreformatted {
 [_moz_editor_bogus_node] {
     display: none;
 }
+
+.mce-match-marker {
+    background: #aaa;
+    color: #fff
+}
+
+.mce-match-marker-selected {
+    background: #39f;
+    color: #fff
+}
