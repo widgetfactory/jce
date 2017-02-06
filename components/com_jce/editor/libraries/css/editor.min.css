@@ -48,6 +48,7 @@
 .wf-editor-container {
     position: relative;
     padding: 5px;
+    width: 100%;
 }
 
 .wf-editor-container.mce-fullscreen {
