@@ -321,6 +321,9 @@
                     return;
                 }
 
+                var next = findSpansByIndex(currentIndex + 1).length;
+                var prev = findSpansByIndex(currentIndex - 1).length;
+
                 if (last.text == text && last.caseState == caseState && last.wholeWord == wholeWord) {
                     if (findSpansByIndex(currentIndex + 1).length === 0) {
                         notFoundAlert();
@@ -330,8 +333,8 @@
                     self.next();
 
                     editor.updateSearchButtonStates.dispatch({
-                        "next": !findSpansByIndex(currentIndex + 1).length,
-                        "prev": !findSpansByIndex(currentIndex - 1).length
+                        "next": !next,
+                        "prev": !prev
                     });
 
                     return;
@@ -346,8 +349,8 @@
                 editor.updateSearchButtonStates.dispatch({
                     "replace" : count === 0,
                     "replaceAll" : count === 0,
-                    "next": !findSpansByIndex(currentIndex + 1).length,
-                    "prev": !findSpansByIndex(currentIndex - 1).length
+                    "next": !next,
+                    "prev": !prev
                 });
 
                 last = {
