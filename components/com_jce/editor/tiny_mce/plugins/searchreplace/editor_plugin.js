@@ -309,6 +309,15 @@
                 });
             }
 
+            function resetButtonStates() {
+                editor.updateSearchButtonStates.dispatch({
+                    "replace": true,
+                    "replaceAll": true,
+                    "next": true,
+                    "prev": true
+                });
+            }
+
             editor.addCommand('mceSearch', function (ui, e) {
                 var count, text = e.text,
                     caseState = e.case,
@@ -318,12 +327,7 @@
                     self.done(false);
 
                     // disable all
-                    editor.updateSearchButtonStates.dispatch({
-                        "replace": true,
-                        "replaceAll": true,
-                        "next": true,
-                        "prev": true
-                    });
+                    resetButtonStates();
 
                     return;
                 }
@@ -363,25 +367,18 @@
 
             editor.addCommand('mceSearchNext', function () {
                 self.next();
-
                 updateButtonStates();
             });
 
             editor.addCommand('mceSearchPrev', function () {
                 self.prev();
-
                 updateButtonStates();
             });
 
             editor.addCommand('mceReplace', function (ui, text) {
                 if (!self.replace(text)) {
-                    currentIndex = -1;
-                    last = {};
-                }
-            });
-
-            editor.addCommand('mceReplace', function (ui, text) {
-                if (!self.replace(text)) {
+                    resetButtonStates();
+                    
                     currentIndex = -1;
                     last = {};
                 }
@@ -389,6 +386,8 @@
 
             editor.addCommand('mceReplaceAll', function (ui, text) {
                 if (!self.replace(text, true, true)) {
+                    resetButtonStates();
+                    
                     last = {};
                 }
             });
