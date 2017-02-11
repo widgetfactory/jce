@@ -105,7 +105,7 @@ WFPopups.addPopup('jcemediabox', {
      * @param {Object} n Element
      */
     check: function(n) {
-        return /jce(popup|_popup|lightbox)/.test(n.className);
+        return /jce(popup|_popup|lightbox)/.test(n.className) || n.getAttribute('data-mediabox');
     },
     /**
      * Get the MIME Type from a media type value
@@ -246,6 +246,8 @@ WFPopups.addPopup('jcemediabox', {
 
             return $.parseJSON('{' + trim(s) + '}');*/
         }
+
+        return {};
     },
     /**
      * Get popup parameters
@@ -413,6 +415,9 @@ WFPopups.addPopup('jcemediabox', {
 
         // Add jcepopup class
         ed.dom.addClass(n, 'jcepopup');
+
+        // add data attribite
+        ed.dom.setAttrib(n, 'data-mediabox', 1);
 
         // Autopopup
         var auto = $('#jcemediabox_popup_autopopup').val();
