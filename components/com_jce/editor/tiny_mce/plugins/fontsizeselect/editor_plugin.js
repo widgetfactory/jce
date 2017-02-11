@@ -7,24 +7,29 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each, Cookie = tinymce.util.Cookie, explode = tinymce.explode;
+(function () {
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        extend = tinymce.extend,
+        each = tinymce.each,
+        Cookie = tinymce.util.Cookie,
+        explode = tinymce.explode;
 
     tinymce.create('tinymce.plugins.FontSizeSelectPlugin', {
         // default font sizes
         sizes: [8, 10, 12, 14, 18, 24, 36],
-        
-        init: function(ed, url) {
+
+        init: function (ed, url) {
             var self = this;
             this.editor = ed;
-            
+
             var s = ed.settings;
-            
+
             // Setup default font_size_style_values
             if (!s.font_size_style_values) {
                 s.font_size_style_values = "8pt,10pt,12pt,14pt,18pt,24pt,36pt";
             }
-            
+
             s.theme_advanced_font_sizes = ed.getParam('fontsizeselect_font_sizes', '8pt,10pt,12pt,14pt,18pt,24pt,36pt');
 
             if (tinymce.is(s.theme_advanced_font_sizes, 'string')) {
@@ -34,7 +39,7 @@
                 // Parse string value
                 var o = {};
                 ed.settings.theme_advanced_font_sizes = s.theme_advanced_font_sizes;
-                each(ed.getParam('theme_advanced_font_sizes', '', 'hash'), function(v, k) {
+                each(ed.getParam('theme_advanced_font_sizes', '', 'hash'), function (v, k) {
                     var cl;
 
                     if (k == v && v >= 1 && v <= 7) {
@@ -56,40 +61,48 @@
                 s.theme_advanced_font_sizes = o;
             }
 
-            ed.onNodeChange.add(function(ed, cm, n) {
-                var c = cm.get('fontsizeselect'), fn, s = ed.settings;
+            ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
+                var c = cm.get('fontsizeselect'), fv;
 
-                if (c && n.style) {
-                    var fz = n.style.fontSize, cl = n.className;
+                if (c && n) {
+                    each(o.parents, function (n) {                                                
+                        if (n.style) {
+                            fv = n.style.fontSize || ed.dom.getStyle(n, 'fontSize'),
+                                cl = n.className;
 
-                    // Use computed style
-                    if (s.theme_advanced_runtime_fontsize && !fz && !cl)
-                        fz = ed.dom.getStyle(n, 'fontSize', true);
+                            c.select(function (v) {
+                                if (v.fontSize && v.fontSize === fv) {                                    
+                                    return true;
+                                }
 
-                    c.select(function(v) {
-                        if (v.fontSize && v.fontSize === fz)
-                            return true;
+                                if (v['class'] && v['class'] === cl) {
+                                    return true;
+                                }
+                            });
 
-                        if (v['class'] && v['class'] === cl)
-                            return true;
+                            if (fv) {
+                                return false;
+                            }
+                        }
                     });
                 }
             });
         },
-        createControl: function(n, cf) {
-            switch (n) {
-                case "fontsizeselect":
-                    return this._createSizeFontSelect();
-                    break;
+        createControl: function (n, cf) {
+            if (n === "fontsizeselect") {
+                return this._createSizeFontSelect();
             }
         },
-        
-        _createSizeFontSelect: function() {
-            var self = this, ed = self.editor, c, i = 0, cl = [];
+
+        _createSizeFontSelect: function () {
+            var self = this,
+                ed = self.editor,
+                c, i = 0,
+                cl = [];
 
             c = ed.controlManager.createListBox('fontsizeselect', {
                 title: 'advanced.font_size',
-                onselect: function(v) {
+                onselect: function (v) {
                     var cur = c.items[c.selectedIndex];
 
                     if (!v && cur) {
@@ -120,7 +133,7 @@
                         ed.execCommand('FontSize', false, v.fontSize);
 
                     // Fake selection, execCommand will fire a nodeChange and update the selection
-                    c.select(function(sv) {
+                    c.select(function (sv) {
                         return v == sv;
                     });
 
@@ -133,7 +146,7 @@
             });
 
             if (c) {
-                each(ed.settings.theme_advanced_font_sizes, function(v, k) {
+                each(ed.settings.theme_advanced_font_sizes, function (v, k) {
                     var fz = v.fontSize;
 
                     if (fz >= 1 && fz <= 7)

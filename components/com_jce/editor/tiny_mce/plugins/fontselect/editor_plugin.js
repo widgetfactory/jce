@@ -18,17 +18,24 @@
             var self = this;
             this.editor = ed;
 
-            ed.onNodeChange.add(function(ed, cm, n) {
-                var c = cm.get('fontselect'), fn;
+            ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
+                var c = cm.get('fontselect'), fv;
 
-                // select font
-                if (c && n.style) {
-                    if (!fn && n.style.fontFamily) {
-                        fn = n.style.fontFamily.replace(/[\"\']+/g, '').replace(/^([^,]+).*/, '$1').toLowerCase();
-                    }
+                if (c && n) {
+                    each(o.parents, function (n) {                                                
+                        if (n.style) {
+                            fv = n.style.fontFamily || ed.dom.getStyle(n, 'fontFamily');
 
-                    c.select(function(v) {
-                        return v.replace(/^([^,]+).*/, '$1').toLowerCase() == fn;
+                            fv = fv.replace(/[\"\']+/g, '').replace(/^([^,]+).*/, '$1').toLowerCase();
+
+                            c.select(function(v) {                                
+                                return v.replace(/^([^,]+).*/, '$1').toLowerCase() === fv;
+                            });
+
+                            if (fv) {
+                                return false;
+                            }
+                        }
                     });
                 }
             });
@@ -36,12 +43,8 @@
         createControl: function(n, cf) {
             var ed = this.editor;
 
-            switch (n) {
-                case "fontselect":
-
-                    return this._createFontSelect();
-
-                    break;
+            if (n === "fontselect") {
+                return this._createFontSelect();
             }
         },
         _createFontSelect: function() {
