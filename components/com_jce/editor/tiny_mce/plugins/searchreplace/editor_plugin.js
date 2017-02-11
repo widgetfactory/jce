@@ -276,8 +276,8 @@
 
     tinymce.create('tinymce.plugins.SearchReplacePlugin', {
         init: function (editor, url) {
-            var self = this, last = {},
-                currentIndex = -1;
+            var self = this,
+                last, currentIndex = -1;
 
             function notFoundAlert() {
                 editor.windowManager.alert(editor.getLang('searchreplace_dlg.notfound', 'The search has been completed. The search string could not be found.'));
@@ -286,6 +286,8 @@
             editor.updateSearchButtonStates = new tinymce.util.Dispatcher(this);
 
             editor.addCommand('mceSearchReplace', function () {
+                last = {};
+
                 editor.windowManager.open({
                     file: editor.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=searchreplace',
                     width: 560 + parseInt(editor.getLang('searchreplace.delta_width', 0)),
@@ -298,9 +300,14 @@
                     }),
                     plugin_url: url
                 });
-
-                last = {};
             });
+
+            function updateButtonStates() {
+                editor.updateSearchButtonStates.dispatch({
+                    "next": !findSpansByIndex(currentIndex + 1).length,
+                    "prev": !findSpansByIndex(currentIndex - 1).length
+                });
+            }
 
             editor.addCommand('mceSearch', function (ui, e) {
                 var count, text = e.text,
@@ -312,17 +319,14 @@
 
                     // disable all
                     editor.updateSearchButtonStates.dispatch({
-                        "replace" : true,
-                        "replaceAll" : true,
+                        "replace": true,
+                        "replaceAll": true,
                         "next": true,
                         "prev": true
                     });
 
                     return;
                 }
-
-                var next = findSpansByIndex(currentIndex + 1).length;
-                var prev = findSpansByIndex(currentIndex - 1).length;
 
                 if (last.text == text && last.caseState == caseState && last.wholeWord == wholeWord) {
                     if (findSpansByIndex(currentIndex + 1).length === 0) {
@@ -332,10 +336,7 @@
 
                     self.next();
 
-                    editor.updateSearchButtonStates.dispatch({
-                        "next": !next,
-                        "prev": !prev
-                    });
+                    updateButtonStates();
 
                     return;
                 }
@@ -346,11 +347,11 @@
                     notFoundAlert();
                 }
 
+                updateButtonStates();
+
                 editor.updateSearchButtonStates.dispatch({
-                    "replace" : count === 0,
-                    "replaceAll" : count === 0,
-                    "next": !next,
-                    "prev": !prev
+                    "replace": !count,
+                    "replaceAll": !count
                 });
 
                 last = {
@@ -362,10 +363,14 @@
 
             editor.addCommand('mceSearchNext', function () {
                 self.next();
+
+                updateButtonStates();
             });
 
             editor.addCommand('mceSearchPrev', function () {
                 self.prev();
+
+                updateButtonStates();
             });
 
             editor.addCommand('mceReplace', function (ui, text) {
@@ -473,6 +478,7 @@
                 dom.removeClass(findSpansByIndex(currentIndex), 'mce-match-marker-selected');
 
                 var spans = findSpansByIndex(testIndex);
+
                 if (spans.length) {
                     dom.addClass(findSpansByIndex(testIndex), 'mce-match-marker-selected');
                     editor.selection.scrollIntoView(spans[0]);
