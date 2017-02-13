@@ -8,7 +8,7 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function(tinymce) {
+(function (tinymce) {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         is = tinymce.is,
@@ -61,13 +61,13 @@
             grid = [];
             gridWidth = 0;
 
-            each(['thead', 'tbody', 'tfoot'], function(part) {
+            each(['thead', 'tbody', 'tfoot'], function (part) {
                 var rows = dom.select('> ' + part + ' tr', table);
 
-                each(rows, function(tr, y) {
+                each(rows, function (tr, y) {
                     y += startY;
 
-                    each(dom.select('> td, > th', tr), function(td, x) {
+                    each(dom.select('> td, > th', tr), function (td, x) {
                         var x2, y2, rowspan, colspan;
 
                         // Skip over existing cells produced by rowspan
@@ -130,8 +130,8 @@
         function getSelectedRows() {
             var rows = [];
 
-            each(table.rows, function(row) {
-                each(row.cells, function(cell) {
+            each(table.rows, function (row) {
+                each(row.cells, function (cell) {
                     if (dom.hasClass(cell, 'mceSelected') || cell == selectedCell.elm) {
                         rows.push(row);
                         return false;
@@ -161,11 +161,11 @@
             }
 
             // Clone formats
-            tinymce.walk(cell, function(node) {
+            tinymce.walk(cell, function (node) {
                 var curNode;
 
                 if (node.nodeType == 3) {
-                    each(dom.getParents(node.parentNode, null, cell).reverse(), function(node) {
+                    each(dom.getParents(node.parentNode, null, cell).reverse(), function (node) {
                         if (!cloneFormats[node.nodeName]) {
                             return;
                         }
@@ -206,7 +206,7 @@
             var rng = dom.createRng();
 
             // Empty rows
-            each(dom.select('tr', table), function(tr) {
+            each(dom.select('tr', table), function (tr) {
                 if (tr.cells.length == 0)
                     dom.remove(tr);
             });
@@ -221,7 +221,7 @@
             }
 
             // Empty header/body/footer
-            each(dom.select('thead,tbody,tfoot', table), function(part) {
+            each(dom.select('thead,tbody,tfoot', table), function (part) {
                 if (part.rows.length == 0)
                     dom.remove(part);
             });
@@ -268,8 +268,8 @@
         }
 
         function split() {
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     var colSpan, rowSpan, newCell, i;
 
                     if (isCellSelected(cell)) {
@@ -306,14 +306,20 @@
                 startPos = endPos = null;
 
                 // Calculate start/end pos by checking for selected cells in grid works better with context menu
-                each(grid, function(row, y) {
-                    each(row, function(cell, x) {
+                each(grid, function (row, y) {
+                    each(row, function (cell, x) {
                         if (isCellSelected(cell)) {
                             if (!startPos) {
-                                startPos = { x: x, y: y };
+                                startPos = {
+                                    x: x,
+                                    y: y
+                                };
                             }
 
-                            endPos = { x: x, y: y };
+                            endPos = {
+                                x: x,
+                                y: y
+                            };
                         }
                     });
                 });
@@ -351,7 +357,7 @@
                         if (cell != startCell) {
                             // Move children to startCell
                             children = tinymce.grep(cell.childNodes);
-                            each(children, function(node) {
+                            each(children, function (node) {
                                 startCell.appendChild(node);
                             });
 
@@ -359,7 +365,7 @@
                             if (children.length) {
                                 children = tinymce.grep(startCell.childNodes);
                                 count = 0;
-                                each(children, function(node) {
+                                each(children, function (node) {
                                     if (node.nodeName == 'BR' && dom.getAttrib(node, 'data-mce-bogus') && count++ < children.length - 1)
                                         startCell.removeChild(node);
                                 });
@@ -380,8 +386,8 @@
             var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
 
             // Find first/last row
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         cell = cell.elm;
                         rowElm = cell.parentNode;
@@ -445,8 +451,8 @@
             var posX, lastCell;
 
             // Find first/last column
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         posX = x;
 
@@ -459,7 +465,7 @@
                     return !posX;
             });
 
-            each(grid, function(row, y) {
+            each(grid, function (row, y) {
                 var cell, rowSpan, colSpan;
 
                 if (!row[posX])
@@ -490,10 +496,10 @@
             var cols = [];
 
             // Get selected column indexes
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     if (isCellSelected(cell) && tinymce.inArray(cols, x) === -1) {
-                        each(grid, function(row) {
+                        each(grid, function (row) {
                             var cell = row[x].elm,
                                 colSpan;
 
@@ -522,7 +528,7 @@
                 nextTr = dom.getNext(tr, 'tr');
 
                 // Move down row spanned cells
-                each(tr.cells, function(cell) {
+                each(tr.cells, function (cell) {
                     var rowSpan = getSpanVal(cell, 'rowSpan');
 
                     if (rowSpan > 1) {
@@ -534,7 +540,7 @@
 
                 // Delete cells
                 pos = getPos(tr.cells[0]);
-                each(grid[pos.y], function(cell) {
+                each(grid[pos.y], function (cell) {
                     var rowSpan;
 
                     cell = cell.elm;
@@ -556,7 +562,7 @@
             rows = getSelectedRows();
 
             // Delete all selected rows
-            each(rows.reverse(), function(tr) {
+            each(rows.reverse(), function (tr) {
                 deleteRow(tr);
             });
 
@@ -575,7 +581,7 @@
         function copyRows() {
             var rows = getSelectedRows();
 
-            each(rows, function(row, i) {
+            each(rows, function (row, i) {
                 rows[i] = cloneNode(row, true);
             });
 
@@ -592,11 +598,11 @@
                 targetCellCount = targetRow.cells.length;
 
             // Calc target cell count
-            each(grid, function(row) {
+            each(grid, function (row) {
                 var match;
 
                 targetCellCount = 0;
-                each(row, function(cell, x) {
+                each(row, function (cell, x) {
                     if (cell.real)
                         targetCellCount += cell.colspan;
 
@@ -611,7 +617,7 @@
             if (!before)
                 rows.reverse();
 
-            each(rows, function(row) {
+            each(rows, function (row) {
                 var cellCount = row.cells.length,
                     cell;
 
@@ -644,10 +650,13 @@
         function getPos(target) {
             var pos;
 
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     if (cell.elm == target) {
-                        pos = { x: x, y: y };
+                        pos = {
+                            x: x,
+                            y: y
+                        };
                         return false;
                     }
                 });
@@ -667,8 +676,8 @@
 
             maxX = maxY = 0;
 
-            each(grid, function(row, y) {
-                each(row, function(cell, x) {
+            each(grid, function (row, y) {
+                each(row, function (cell, x) {
                     var colSpan, rowSpan;
 
                     if (isCellSelected(cell)) {
@@ -698,7 +707,10 @@
                 });
             });
 
-            return { x: maxX, y: maxY };
+            return {
+                x: maxX,
+                y: maxY
+            };
         }
 
         function setEndCell(cell) {
@@ -821,7 +833,7 @@
     }
 
     tinymce.create('tinymce.plugins.TablePlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var winMan, clipboardRows, hasCellSelection = true; // Might be selected cells on reload
 
             // store editor
@@ -862,14 +874,18 @@
                     ['cell_props', 'table.cell_desc', 'mceTableCellProps', true],
                     ['split_cells', 'table.split_cells_desc', 'mceTableSplitCells', true],
                     ['merge_cells', 'table.merge_cells_desc', 'mceTableMergeCells', true]
-                ], function(c) {
-                    ed.addButton(c[0], { title: c[1], cmd: c[2], ui: c[3] });
+                ], function (c) {
+                    ed.addButton(c[0], {
+                        title: c[1],
+                        cmd: c[2],
+                        ui: c[3]
+                    });
                 });
             }
 
             // Select whole table is a table border is clicked
             if (!tinymce.isIE) {
-                ed.onClick.add(function(ed, e) {
+                ed.onClick.add(function (ed, e) {
                     e = e.target;
 
                     if (e.nodeName === 'TABLE') {
@@ -879,9 +895,13 @@
                 });
             }
 
-            ed.onPreProcess.add(function(ed, args) {
+            ed.onPreProcess.add(function (ed, args) {
                 var nodes, i, node, dom = ed.dom,
                     value;
+
+                if (ed.settings.schema === "html4" && ed.settings.inline_styles === false) {
+                    return;
+                }
 
                 nodes = dom.select('table', args.node);
                 i = nodes.length;
@@ -902,7 +922,7 @@
             });
 
             // Handle node change updates
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function (ed, cm, n) {
                 var p;
 
                 n = ed.selection.getStart();
@@ -932,14 +952,14 @@
                 }
             });
 
-            ed.onInit.add(function(ed) {
+            ed.onInit.add(function (ed) {
                 var startTable, startCell, dom = ed.dom,
                     tableGrid;
 
                 winMan = ed.windowManager;
 
                 // Add cell selection logic
-                ed.onMouseDown.add(function(ed, e) {
+                ed.onMouseDown.add(function (ed, e) {
                     if (e.button != 2) {
                         cleanup();
 
@@ -948,7 +968,7 @@
                     }
                 });
 
-                dom.bind(ed.getDoc(), 'mouseover', function(e) {
+                dom.bind(ed.getDoc(), 'mouseover', function (e) {
                     var sel, table, target = e.target;
 
                     if (startCell && (tableGrid || target != startCell) && (target.nodeName == 'TD' || target.nodeName == 'TH')) {
@@ -981,7 +1001,7 @@
                     }
                 });
 
-                ed.onMouseUp.add(function(ed, e) {
+                ed.onMouseUp.add(function (ed, e) {
                     var rng, sel = ed.selection,
                         selectedCells, nativeSel = sel.getSel(),
                         walker, node, lastNode, endNode;
@@ -1048,15 +1068,15 @@
                     }
                 });
 
-                ed.onKeyUp.add(function(ed, e) {
+                ed.onKeyUp.add(function (ed, e) {
                     cleanup();
                 });
 
-                ed.onKeyDown.add(function(ed, e) {
+                ed.onKeyDown.add(function (ed, e) {
                     fixTableCellSelection(ed);
                 });
 
-                ed.onMouseDown.add(function(ed, e) {
+                ed.onMouseDown.add(function (ed, e) {
                     if (e.button != 2) {
                         fixTableCellSelection(ed);
                     }
@@ -1110,7 +1130,7 @@
 
                 // Add context menu
                 if (ed && ed.plugins.contextmenu) {
-                    ed.plugins.contextmenu.onContextMenu.add(function(th, m, e) {
+                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
                         var sm, se = ed.selection,
                             el = se.getNode() || ed.getBody();
 
@@ -1120,42 +1140,123 @@
                             // remove all
                             m.removeAll();
 
-                            m.add({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable', value: { action: 'insert' } });
-                            m.add({ title: 'table.props_desc', icon: 'table_props', cmd: 'mceInsertTable' });
-                            m.add({ title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete' });
+                            m.add({
+                                title: 'table.desc',
+                                icon: 'table',
+                                cmd: 'mceInsertTable',
+                                value: {
+                                    action: 'insert'
+                                }
+                            });
+                            m.add({
+                                title: 'table.props_desc',
+                                icon: 'table_props',
+                                cmd: 'mceInsertTable'
+                            });
+                            m.add({
+                                title: 'table.del',
+                                icon: 'delete_table',
+                                cmd: 'mceTableDelete'
+                            });
                             m.addSeparator();
 
                             // Cell menu
-                            sm = m.addMenu({ title: 'table.cell' });
-                            sm.add({ title: 'table.cell_desc', icon: 'cell_props', cmd: 'mceTableCellProps' });
-                            sm.add({ title: 'table.split_cells_desc', icon: 'split_cells', cmd: 'mceTableSplitCells' });
-                            sm.add({ title: 'table.merge_cells_desc', icon: 'merge_cells', cmd: 'mceTableMergeCells' });
+                            sm = m.addMenu({
+                                title: 'table.cell'
+                            });
+                            sm.add({
+                                title: 'table.cell_desc',
+                                icon: 'cell_props',
+                                cmd: 'mceTableCellProps'
+                            });
+                            sm.add({
+                                title: 'table.split_cells_desc',
+                                icon: 'split_cells',
+                                cmd: 'mceTableSplitCells'
+                            });
+                            sm.add({
+                                title: 'table.merge_cells_desc',
+                                icon: 'merge_cells',
+                                cmd: 'mceTableMergeCells'
+                            });
 
                             // Row menu
-                            sm = m.addMenu({ title: 'table.row' });
-                            sm.add({ title: 'table.row_desc', icon: 'row_props', cmd: 'mceTableRowProps' });
-                            sm.add({ title: 'table.row_before_desc', icon: 'row_before', cmd: 'mceTableInsertRowBefore' });
-                            sm.add({ title: 'table.row_after_desc', icon: 'row_after', cmd: 'mceTableInsertRowAfter' });
-                            sm.add({ title: 'table.delete_row_desc', icon: 'delete_row', cmd: 'mceTableDeleteRow' });
+                            sm = m.addMenu({
+                                title: 'table.row'
+                            });
+                            sm.add({
+                                title: 'table.row_desc',
+                                icon: 'row_props',
+                                cmd: 'mceTableRowProps'
+                            });
+                            sm.add({
+                                title: 'table.row_before_desc',
+                                icon: 'row_before',
+                                cmd: 'mceTableInsertRowBefore'
+                            });
+                            sm.add({
+                                title: 'table.row_after_desc',
+                                icon: 'row_after',
+                                cmd: 'mceTableInsertRowAfter'
+                            });
+                            sm.add({
+                                title: 'table.delete_row_desc',
+                                icon: 'delete_row',
+                                cmd: 'mceTableDeleteRow'
+                            });
                             sm.addSeparator();
-                            sm.add({ title: 'table.cut_row_desc', icon: 'cut', cmd: 'mceTableCutRow' });
-                            sm.add({ title: 'table.copy_row_desc', icon: 'copy', cmd: 'mceTableCopyRow' });
-                            sm.add({ title: 'table.paste_row_before_desc', icon: 'paste', cmd: 'mceTablePasteRowBefore' }).setDisabled(!clipboardRows);
-                            sm.add({ title: 'table.paste_row_after_desc', icon: 'paste', cmd: 'mceTablePasteRowAfter' }).setDisabled(!clipboardRows);
+                            sm.add({
+                                title: 'table.cut_row_desc',
+                                icon: 'cut',
+                                cmd: 'mceTableCutRow'
+                            });
+                            sm.add({
+                                title: 'table.copy_row_desc',
+                                icon: 'copy',
+                                cmd: 'mceTableCopyRow'
+                            });
+                            sm.add({
+                                title: 'table.paste_row_before_desc',
+                                icon: 'paste',
+                                cmd: 'mceTablePasteRowBefore'
+                            }).setDisabled(!clipboardRows);
+                            sm.add({
+                                title: 'table.paste_row_after_desc',
+                                icon: 'paste',
+                                cmd: 'mceTablePasteRowAfter'
+                            }).setDisabled(!clipboardRows);
 
                             // Column menu
-                            sm = m.addMenu({ title: 'table.col' });
-                            sm.add({ title: 'table.col_before_desc', icon: 'col_before', cmd: 'mceTableInsertColBefore' });
-                            sm.add({ title: 'table.col_after_desc', icon: 'col_after', cmd: 'mceTableInsertColAfter' });
-                            sm.add({ title: 'table.delete_col_desc', icon: 'delete_col', cmd: 'mceTableDeleteCol' });
+                            sm = m.addMenu({
+                                title: 'table.col'
+                            });
+                            sm.add({
+                                title: 'table.col_before_desc',
+                                icon: 'col_before',
+                                cmd: 'mceTableInsertColBefore'
+                            });
+                            sm.add({
+                                title: 'table.col_after_desc',
+                                icon: 'col_after',
+                                cmd: 'mceTableInsertColAfter'
+                            });
+                            sm.add({
+                                title: 'table.delete_col_desc',
+                                icon: 'delete_col',
+                                cmd: 'mceTableDeleteCol'
+                            });
 
                             // add back existing items
-                            each(items, function(item) {
+                            each(items, function (item) {
                                 m.add(item);
                             });
 
                         } else
-                            m.add({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable' });
+                            m.add({
+                                title: 'table.desc',
+                                icon: 'table',
+                                cmd: 'mceInsertTable'
+                            });
                     });
                 }
 
@@ -1264,7 +1365,7 @@
                         function findColumn(rowElement, columnIndex) {
                             var c = 0;
                             var r = 0;
-                            each(rowElement.children, function(cell, i) {
+                            each(rowElement.children, function (cell, i) {
                                 c = c + getSpanVal(cell, "colspan");
                                 r = i;
                                 if (c > columnIndex)
@@ -1294,7 +1395,7 @@
 
                         if (isVerticalMovement() && isInTable(ed)) {
                             var preBrowserNode = ed.selection.getNode();
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 if (shouldFixCaret(preBrowserNode)) {
                                     handle(!e.shiftKey && key === VK.UP, preBrowserNode, e);
                                 }
@@ -1318,7 +1419,9 @@
                         if (ed.settings.forced_root_block)
                             ed.dom.add(ed.getBody(), ed.settings.forced_root_block, null, tinymce.isIE && !tinymce.isIE11 ? '&nbsp;' : '<br data-mce-bogus="1" />');
                         else
-                            ed.dom.add(ed.getBody(), 'br', { 'data-mce-bogus': '1' });
+                            ed.dom.add(ed.getBody(), 'br', {
+                                'data-mce-bogus': '1'
+                            });
                     }
                 }
 
@@ -1326,7 +1429,7 @@
                 // this fix solves it by detecting when the caret is at the beginning of such a table
                 // and then manually moves the caret infront of the table
                 if (tinymce.isGecko) {
-                    ed.onKeyDown.add(function(ed, e) {
+                    ed.onKeyDown.add(function (ed, e) {
                         var rng, table, dom = ed.dom;
 
                         // On gecko it's not possible to place the caret before a table
@@ -1354,7 +1457,7 @@
                 ed.onSetContent.add(fixTableCaretPos);
                 ed.onVisualAid.add(fixTableCaretPos);
 
-                ed.onPreProcess.add(function(ed, o) {
+                ed.onPreProcess.add(function (ed, o) {
                     var last = o.node.lastChild;
 
                     if (last && (last.nodeName == "BR" || (last.childNodes.length == 1 && (last.firstChild.nodeName == 'BR' || last.firstChild.nodeValue == '\u00a0'))) && last.previousSibling && last.previousSibling.nodeName == "TABLE") {
@@ -1363,17 +1466,19 @@
                 });
 
                 fixTableCaretPos();
-                ed.startContent = ed.getContent({ format: 'raw' });
+                ed.startContent = ed.getContent({
+                    format: 'raw'
+                });
             });
 
             var url = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=table';
 
             // Register action commands
             each({
-                mceTableSplitCells: function(grid) {
+                mceTableSplitCells: function (grid) {
                     grid.split();
                 },
-                mceTableMergeCells: function(grid) {
+                mceTableMergeCells: function (grid) {
                     var rowSpan, colSpan, cell;
 
                     cell = ed.dom.getParent(ed.selection.getNode(), 'th,td');
@@ -1391,7 +1496,7 @@
                         }, {
                             rows: rowSpan,
                             cols: colSpan,
-                            onaction: function(data) {
+                            onaction: function (data) {
                                 grid.merge(cell, data.cols, data.rows);
                             },
                             plugin_url: url,
@@ -1401,41 +1506,41 @@
                         grid.merge();
                     }
                 },
-                mceTableInsertRowBefore: function(grid) {
+                mceTableInsertRowBefore: function (grid) {
                     grid.insertRow(true);
                 },
-                mceTableInsertRowAfter: function(grid) {
+                mceTableInsertRowAfter: function (grid) {
                     grid.insertRow();
                 },
-                mceTableInsertColBefore: function(grid) {
+                mceTableInsertColBefore: function (grid) {
                     grid.insertCol(true);
                 },
-                mceTableInsertColAfter: function(grid) {
+                mceTableInsertColAfter: function (grid) {
                     grid.insertCol();
                 },
-                mceTableDeleteCol: function(grid) {
+                mceTableDeleteCol: function (grid) {
                     grid.deleteCols();
                 },
-                mceTableDeleteRow: function(grid) {
+                mceTableDeleteRow: function (grid) {
                     grid.deleteRows();
                 },
-                mceTableCutRow: function(grid) {
+                mceTableCutRow: function (grid) {
                     clipboardRows = grid.cutRows();
                 },
-                mceTableCopyRow: function(grid) {
+                mceTableCopyRow: function (grid) {
                     clipboardRows = grid.copyRows();
                 },
-                mceTablePasteRowBefore: function(grid) {
+                mceTablePasteRowBefore: function (grid) {
                     grid.pasteRows(clipboardRows, true);
                 },
-                mceTablePasteRowAfter: function(grid) {
+                mceTablePasteRowAfter: function (grid) {
                     grid.pasteRows(clipboardRows);
                 },
-                mceTableDelete: function(grid) {
+                mceTableDelete: function (grid) {
                     grid.deleteTable();
                 }
-            }, function(func, name) {
-                ed.addCommand(name, function() {
+            }, function (func, name) {
+                ed.addCommand(name, function () {
                     var grid = createTableGrid();
 
                     if (grid) {
@@ -1448,7 +1553,7 @@
 
             // Register dialog commands
             each({
-                mceInsertTable: function(val) {
+                mceInsertTable: function (val) {
                     winMan.open({
                         url: url,
                         width: 640 + parseInt(ed.getLang('table.table_delta_width', 0)),
@@ -1460,7 +1565,7 @@
                         layout: "table"
                     });
                 },
-                mceTableRowProps: function() {
+                mceTableRowProps: function () {
                     winMan.open({
                         url: url + '&layout=row',
                         width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
@@ -1471,7 +1576,7 @@
                         layout: "row"
                     });
                 },
-                mceTableCellProps: function() {
+                mceTableCellProps: function () {
                     winMan.open({
                         url: url + '&layout=cell',
                         width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
@@ -1483,8 +1588,8 @@
                     });
                 }
 
-            }, function(func, name) {
-                ed.addCommand(name, function(ui, val) {
+            }, function (func, name) {
+                ed.addCommand(name, function (ui, val) {
                     func(val);
                 });
 
@@ -1492,7 +1597,7 @@
 
             // Enable tab key cell navigation
             if (ed.settings.table_tab_navigation !== false) {
-                ed.onKeyDown.add(function(ed, e) {
+                ed.onKeyDown.add(function (ed, e) {
                     var cellElm, grid, delta;
 
                     if (e.keyCode == 9) {
@@ -1516,7 +1621,7 @@
                 });
             }
         },
-        createControl: function(n, cm) {
+        createControl: function (n, cm) {
             var t = this,
                 ed = t.editor;
 
@@ -1653,7 +1758,7 @@
                 }
                 html += '>';
 
-                var rows = tinymce.grep(DOM.select('tr', table), function(row) {
+                var rows = tinymce.grep(DOM.select('tr', table), function (row) {
                     return DOM.select('td.selected', row).length;
                 });
 
@@ -1691,17 +1796,29 @@
                     'class': 'mce_table'
                 });
 
-                c.onRenderMenu.add(function(c, m) {
+                c.onRenderMenu.add(function (c, m) {
                     var sb, tm, sm;
 
                     if (!ed.getParam('table_buttons', 1)) {
-                        tm = m.addMenu({ title: 'table.desc', icon: 'table', cmd: 'mceInsertTable' });
-                        sb = tm.add({ "onmouseover": menuGridMouseOver, "onclick": menuGridClick, html: createMenuGrid(8, 8) });
+                        tm = m.addMenu({
+                            title: 'table.desc',
+                            icon: 'table',
+                            cmd: 'mceInsertTable'
+                        });
+                        sb = tm.add({
+                            "onmouseover": menuGridMouseOver,
+                            "onclick": menuGridClick,
+                            html: createMenuGrid(8, 8)
+                        });
                     } else {
-                        sb = m.add({ "onmouseover": menuGridMouseOver, "onclick": menuGridClick, html: createMenuGrid(8, 8) });
+                        sb = m.add({
+                            "onmouseover": menuGridMouseOver,
+                            "onclick": menuGridClick,
+                            html: createMenuGrid(8, 8)
+                        });
                     }
 
-                    m.onShowMenu.add(function() {
+                    m.onShowMenu.add(function () {
                         if (n = DOM.get(sb.id)) {
                             DOM.removeClass(DOM.select('.mceTableSplitMenu td', n), 'selected');
                             DOM.setHTML(DOM.select('.mceTableSplitMenu .mceTableGridCount', n), '&nbsp;');
@@ -1711,7 +1828,7 @@
                             el = se.getNode(),
                             n, p = DOM.getParent(el, 'table')
 
-                        tinymce.walk(m, function(o) {
+                        tinymce.walk(m, function (o) {
                             if (o === sb || o === tm) {
                                 return false;
                             }
@@ -1725,35 +1842,101 @@
 
                     if (!ed.getParam('table_buttons', 1)) {
 
-                        m.add({ title: 'table.del', icon: 'delete_table', cmd: 'mceTableDelete' });
+                        m.add({
+                            title: 'table.del',
+                            icon: 'delete_table',
+                            cmd: 'mceTableDelete'
+                        });
 
                         m.addSeparator();
 
                         // Cell menu
-                        sm = m.addMenu({ title: 'table.cell' });
-                        sm.add({ title: 'table.cell_desc', icon: 'cell_props', cmd: 'mceTableCellProps' });
-                        sm.add({ title: 'table.split_cells_desc', icon: 'split_cells', cmd: 'mceTableSplitCells' });
-                        sm.add({ title: 'table.merge_cells_desc', icon: 'merge_cells', cmd: 'mceTableMergeCells' });
+                        sm = m.addMenu({
+                            title: 'table.cell'
+                        });
+                        sm.add({
+                            title: 'table.cell_desc',
+                            icon: 'cell_props',
+                            cmd: 'mceTableCellProps'
+                        });
+                        sm.add({
+                            title: 'table.split_cells_desc',
+                            icon: 'split_cells',
+                            cmd: 'mceTableSplitCells'
+                        });
+                        sm.add({
+                            title: 'table.merge_cells_desc',
+                            icon: 'merge_cells',
+                            cmd: 'mceTableMergeCells'
+                        });
 
                         // Row menu
-                        sm = m.addMenu({ title: 'table.row' });
-                        sm.add({ title: 'table.row_desc', icon: 'row_props', cmd: 'mceTableRowProps' });
-                        sm.add({ title: 'table.row_before_desc', icon: 'row_before', cmd: 'mceTableInsertRowBefore' });
-                        sm.add({ title: 'table.row_after_desc', icon: 'row_after', cmd: 'mceTableInsertRowAfter' });
-                        sm.add({ title: 'table.delete_row_desc', icon: 'delete_row', cmd: 'mceTableDeleteRow' });
+                        sm = m.addMenu({
+                            title: 'table.row'
+                        });
+                        sm.add({
+                            title: 'table.row_desc',
+                            icon: 'row_props',
+                            cmd: 'mceTableRowProps'
+                        });
+                        sm.add({
+                            title: 'table.row_before_desc',
+                            icon: 'row_before',
+                            cmd: 'mceTableInsertRowBefore'
+                        });
+                        sm.add({
+                            title: 'table.row_after_desc',
+                            icon: 'row_after',
+                            cmd: 'mceTableInsertRowAfter'
+                        });
+                        sm.add({
+                            title: 'table.delete_row_desc',
+                            icon: 'delete_row',
+                            cmd: 'mceTableDeleteRow'
+                        });
 
                         sm.addSeparator();
 
-                        sm.add({ title: 'table.cut_row_desc', icon: 'cut', cmd: 'mceTableCutRow' });
-                        sm.add({ title: 'table.copy_row_desc', icon: 'copy', cmd: 'mceTableCopyRow' });
-                        sm.add({ title: 'table.paste_row_before_desc', icon: 'paste', cmd: 'mceTablePasteRowBefore' });
-                        sm.add({ title: 'table.paste_row_after_desc', icon: 'paste', cmd: 'mceTablePasteRowAfter' });
+                        sm.add({
+                            title: 'table.cut_row_desc',
+                            icon: 'cut',
+                            cmd: 'mceTableCutRow'
+                        });
+                        sm.add({
+                            title: 'table.copy_row_desc',
+                            icon: 'copy',
+                            cmd: 'mceTableCopyRow'
+                        });
+                        sm.add({
+                            title: 'table.paste_row_before_desc',
+                            icon: 'paste',
+                            cmd: 'mceTablePasteRowBefore'
+                        });
+                        sm.add({
+                            title: 'table.paste_row_after_desc',
+                            icon: 'paste',
+                            cmd: 'mceTablePasteRowAfter'
+                        });
 
                         // Column menu
-                        sm = m.addMenu({ title: 'table.col' });
-                        sm.add({ title: 'table.col_before_desc', icon: 'col_before', cmd: 'mceTableInsertColBefore' });
-                        sm.add({ title: 'table.col_after_desc', icon: 'col_after', cmd: 'mceTableInsertColAfter' });
-                        sm.add({ title: 'table.delete_col_desc', icon: 'delete_col', cmd: 'mceTableDeleteCol' });
+                        sm = m.addMenu({
+                            title: 'table.col'
+                        });
+                        sm.add({
+                            title: 'table.col_before_desc',
+                            icon: 'col_before',
+                            cmd: 'mceTableInsertColBefore'
+                        });
+                        sm.add({
+                            title: 'table.col_after_desc',
+                            icon: 'col_after',
+                            cmd: 'mceTableInsertColAfter'
+                        });
+                        sm.add({
+                            title: 'table.delete_col_desc',
+                            icon: 'delete_col',
+                            cmd: 'mceTableDeleteCol'
+                        });
 
                     }
                 });

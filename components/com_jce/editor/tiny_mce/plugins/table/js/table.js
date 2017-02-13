@@ -1,4 +1,4 @@
-(function(tinymce, tinyMCEPopup, $) {
+(function (tinymce, tinyMCEPopup, $) {
     function convertRGBToHex(col) {
         var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
 
@@ -44,7 +44,7 @@
             return '' + val;
         }
 
-        if (typeof(style) == 'undefined') {
+        if (typeof (style) == 'undefined') {
             style = attrib;
         }
 
@@ -68,10 +68,11 @@
     }
 
     /* Override setStyles function for tables */
-    Wf.setStyles = function() {
+    Wf.setStyles = function () {
         var ed = tinyMCEPopup.editor;
         // create proxy element to extract styles from
-        var $proxy = $('<div />'), proxy = $proxy.get(0);
+        var $proxy = $('<div />'),
+            proxy = $proxy.get(0);
         // update with table styles
         $proxy.attr('style', $('#style').val());
 
@@ -85,7 +86,9 @@
             "text-align": "align"
         };
 
-        $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'text-align', 'float'], function(i, k) {
+        var legacy = ['width', 'height', 'align', 'bgcolor', 'valign'];
+
+        $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'text-align', 'float'], function (i, k) {
             var v = ed.dom.getStyle(proxy, k);
 
             // delete all values
@@ -119,6 +122,10 @@
             // get mapped attribute name
             k = map[k] || k;
 
+            if ($.inArray(k, legacy) !== -1) {
+                return true;
+            }
+
             // update form
             $('#' + k).val(v).change();
         });
@@ -127,17 +134,20 @@
         if (proxy.style.marginLeft === "auto" && proxy.style.marginRight === "auto" && $('#align').val() === "") {
             $('#align').val('center');
 
-            $proxy.css({"margin-left": "", "margin-right": ""});
+            $proxy.css({
+                "margin-left": "",
+                "margin-right": ""
+            });
         }
 
         var border = false;
 
         // Handle border
-        $.each(['width', 'color', 'style'], function(i, k) {
+        $.each(['width', 'color', 'style'], function (i, k) {
             var v = ed.dom.getStyle($proxy.get(0), 'border-' + k);
 
             if (v === "") {
-                $.each(['top', 'right', 'bottom', 'left'], function(i, n) {
+                $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
                     var sv = ed.dom.getStyle($proxy.get(0), 'border-' + n + '-' + k);
 
                     // False or not the same as prev
@@ -194,9 +204,12 @@
         $('#style').val(ed.dom.serializeStyle(styles));
     };
 
+    var ed = tinyMCEPopup.editor;
+    var legacyOutput = ed.settings.inline_styles === false && ed.settings.schema === "html4";
+
     var TableDialog = {
         settings: {},
-        init: function() {
+        init: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 layout = tinyMCEPopup.getWindowArg('layout', 'table');
@@ -215,7 +228,7 @@
 
             if (this.html5) {
                 // hide HTML4 only attributes (tframe = frame)
-                $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function() {
+                $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function () {
                     $(this).add('label[for="' + this.id + '"]').hide();
                 });
             }
@@ -232,7 +245,7 @@
                     break;
             }
         },
-        insert: function() {
+        insert: function () {
             var layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
             switch (layout) {
@@ -250,23 +263,23 @@
                     break;
             }
         },
-        initMerge: function() {
+        initMerge: function () {
             $('#numcols').val(tinyMCEPopup.getWindowArg('cols', 1));
             $('#numrows').val(tinyMCEPopup.getWindowArg('rows', 1));
 
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
-        updateClassList: function(cls) {
+        updateClassList: function (cls) {
             if (!cls) {
                 return;
             }
 
-            $('#classlist').val(function() {
+            $('#classlist').val(function () {
                 var n = this,
                     a = cls.split(' '),
                     r = [];
 
-                $.each(a, function(i, v) {
+                $.each(a, function (i, v) {
                     if (v.indexOf('mceItem') == -1) {
                         if ($('option[value="' + v + '"]', n).length == 0) {
                             $(n).append(new Option(v, v));
@@ -280,7 +293,7 @@
 
             }).change();
         },
-        initTable: function() {
+        initTable: function () {
             var self = this,
                 ed = tinyMCEPopup.editor;
 
@@ -295,7 +308,7 @@
                 // replace border field with checkbox
                 $('#table_border').replaceWith('<input type="checkbox" id="table_border" value="" />');
 
-                $('#table_border').click(function() {
+                $('#table_border').click(function () {
                     this.value = this.checked ? 1 : '';
                 });
             }
@@ -315,7 +328,7 @@
 
                 $('#caption').prop('checked', elm.getElementsByTagName('caption').length > 0);
 
-                $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'frame', 'rules', 'border'], function(i, k) {
+                $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'frame', 'rules', 'border'], function (i, k) {
                     var v = ed.dom.getAttrib(elm, k);
 
                     if (k === "background" && v !== "") {
@@ -324,7 +337,7 @@
 
                     // legacy border
                     if (k === "border" && v !== "") {
-                        $('#table_border').val(function() {
+                        $('#table_border').val(function () {
                             v = parseInt(v);
 
                             if (this.type === "checkbox") {
@@ -340,7 +353,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function() {
+                $('#classes').val(function () {
                     var cls = ed.dom.getAttrib(elm, 'class');
                     cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -365,7 +378,7 @@
                 $('#cols, #rows').prop('disabled', true);
             }
         },
-        initRow: function() {
+        initRow: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 dom = tinyMCEPopup.dom;
@@ -380,7 +393,7 @@
             $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
 
             // update form values
-            $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background'], function(i, k) {
+            $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background'], function (i, k) {
                 var v = ed.dom.getAttrib(elm, k),
                     dv = $('#' + k).val();
 
@@ -395,13 +408,13 @@
 
                 // only allow some values
                 if (selected.length && $.inArray(k, ['bgcolor', 'background', 'height', 'id', 'lang', 'align']) !== -1) {
-                    v = "";
+                    v = legacyOutput ? v : "";
                 }
 
                 $('#' + k).val(v);
             });
 
-            $('#classes').val(function() {
+            $('#classes').val(function () {
                 var cls = ed.dom.getAttrib(elm, 'class');
                 cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -410,7 +423,7 @@
                 return cls;
             }).change();
 
-            $('#rowtype').change(function() {
+            $('#rowtype').change(function () {
                 self.setActionforRowType();
             }).val(rowtype).change();
 
@@ -421,7 +434,7 @@
                 $('#action').hide();
             }
         },
-        initCell: function() {
+        initCell: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom;
@@ -434,7 +447,7 @@
                 $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
 
                 // update form values
-                $.each(['align', 'valign', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'scope'], function(i, k) {
+                $.each(['align', 'valign', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'scope'], function (i, k) {
                     var v = ed.dom.getAttrib(elm, k),
                         dv = $('#' + k).val();
 
@@ -450,7 +463,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function() {
+                $('#classes').val(function () {
                     var cls = ed.dom.getAttrib(elm, 'class');
                     cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
 
@@ -466,7 +479,7 @@
                 $('#action').hide();
             }
         },
-        merge: function() {
+        merge: function () {
             var func;
 
             tinyMCEPopup.restoreSelection();
@@ -480,10 +493,14 @@
             tinyMCEPopup.close();
         },
 
-        getStyles: function() {
+        getStyles: function () {
             var dom = tinyMCEPopup.editor.dom;
 
-            var style = style = $('#style').val();
+            var style = $('#style').val();
+
+            if (legacyOutput) {
+                return style;
+            }
 
             var styles = {
                 "vertical-align": "",
@@ -491,7 +508,7 @@
             };
 
             // values as styles
-            $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function(i, k) {
+            $.each(['width', 'height', 'backgroundimage', 'border', 'bgcolor'], function (i, k) {
                 var v = $('#' + k).val();
 
                 if (k === "backgroundimage") {
@@ -518,7 +535,7 @@
 
                 if (k === "border") {
                     if ($('#border').is(':checked')) {
-                        $.each(['width', 'style', 'color'], function(i, n) {
+                        $.each(['width', 'style', 'color'], function (i, n) {
                             var s = $('#border_' + n).val();
 
                             if (n === "width" && s !== "" && !/\D/.test(s)) {
@@ -546,7 +563,7 @@
             return style;
         },
 
-        insertTable: function() {
+        insertTable: function () {
             var ed = tinyMCEPopup.editor,
                 dom = ed.dom;
 
@@ -575,6 +592,8 @@
             }
 
             // Get form data
+            width = $('#width').val();
+            height = $('#height').val();
             cols = $('#cols').val();
             rows = $('#rows').val();
             cellpadding = $('#cellpadding').val();
@@ -588,6 +607,10 @@
             lang = $('#lang').val();
             caption = $('#caption').is(':checked');
 
+            borderColor = $('#border_color').val();
+            bgColor = $('#bgcolor').val();
+            background = $('#backgroundimage').val();
+
             // get compile styles attribute value
             style = this.getStyles();
 
@@ -599,6 +622,14 @@
                 border = $('#table_border').is(':checked') ? '1' : '';
             }
 
+            // remove values for html5
+            if (ed.settings.schema !== "html4") {
+                align = "";
+                width = "";
+                height = "";
+                bgColor = "";
+            }
+
             // Update table
             if (action == "update") {
                 ed.execCommand('mceBeginUndoLevel');
@@ -608,15 +639,14 @@
                     dom.setAttrib(elm, 'cellSpacing', cellspacing, true);
                 }
 
-                // remove values for html5
-                if (ed.settings.schema !== "html4") {
-                    align = "";
-                    width = "";
-                    height = "";
-                }
-
                 // set or remove width, height, align, border
-                dom.setAttribs(elm, { "width": width, "height": height, "align": align, "border": border, "borderColor": "", "bgColor": "", "background": "" });
+                dom.setAttribs(elm, {
+                    "width": width,
+                    "height": height,
+                    "align": align,
+                    "border": border,
+                    "bgColor": bgColor
+                });
 
                 dom.setAttrib(elm, 'frame', frame);
                 dom.setAttrib(elm, 'rules', rules);
@@ -644,8 +674,10 @@
                 }
 
                 // set align by format
-                if ($('#align').val()) {
-                    ed.formatter.apply('align' + $('#align').val(), {}, elm);
+                if (!legacyOutput) {
+                    if ($('#align').val()) {
+                        ed.formatter.apply('align' + $('#align').val(), {}, elm);
+                    }
                 }
 
                 ed.addVisual();
@@ -675,12 +707,6 @@
             html += this.makeAttrib('cellspacing', cellspacing);
             html += this.makeAttrib('data-mce-new', '1');
 
-            if (ed.settings.schema !== "html4") {
-                width = "";
-                height = "";
-                align = "";
-            }
-
             html += this.makeAttrib('width', width);
             html += this.makeAttrib('height', height);
 
@@ -692,6 +718,9 @@
             html += this.makeAttrib('summary', summary);
             html += this.makeAttrib('dir', dir);
             html += this.makeAttrib('lang', lang);
+
+            html += this.makeAttrib('bgcolor', bgColor);
+
             html += '>';
 
             if (caption) {
@@ -725,7 +754,7 @@
                 ed.focus();
                 ed.selection.setContent('<br class="_mce_marker" />');
 
-                tinymce.each('h1,h2,h3,h4,h5,h6,p'.split(','), function(n) {
+                tinymce.each('h1,h2,h3,h4,h5,h6,p'.split(','), function (n) {
                     if (patt) {
                         patt += ',';
                     }
@@ -733,7 +762,7 @@
                 });
 
 
-                tinymce.each(ed.dom.select(patt), function(n) {
+                tinymce.each(ed.dom.select(patt), function (n) {
                     ed.dom.split(ed.dom.getParent(n, 'h1,h2,h3,h4,h5,h6,p'), n);
                 });
 
@@ -743,7 +772,7 @@
                 ed.execCommand('mceInsertContent', false, html);
             }
 
-            tinymce.each(dom.select('table[data-mce-new]'), function(node) {
+            tinymce.each(dom.select('table[data-mce-new]'), function (node) {
                 var tdorth = dom.select('td,th', node);
 
                 // Fixes a bug in IE where the caret cannot be placed after the table if the table is at the end of the document
@@ -773,7 +802,7 @@
 
             tinyMCEPopup.close();
         },
-        updateCell: function(td, skip_id) {
+        updateCell: function (td, skip_id) {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom,
@@ -801,10 +830,32 @@
                 }
             }
 
-            // remove some values
-            dom.setAttribs(td, { "width": "", "height": "", "borderColor": "", "bgColor": "", "background": "" });
+            // Get form data
+            width = $('#width').val();
+            height = $('#height').val();
+            align = $('#align').val();
+            valign = $('#valign').val();
+            bgColor = $('#bgcolor').val();
 
-            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
+            // remove values for html5
+            if (ed.settings.schema !== "html4") {
+                align = "";
+                valign = "";
+                width = "";
+                height = "";
+                bgColor = "";
+            }
+
+            // update values
+            dom.setAttribs(td, {
+                "width": width,
+                "height": height,
+                "bgColor": bgColor,
+                "align": align,
+                "valign": valign
+            });
+
+            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function (i, k) {
                 v = $('#' + k).val();
 
                 if (k === "id" && skip_id) {
@@ -823,12 +874,14 @@
                 setAttrib(td, k, v);
             });
 
-            if ($('#align').val()) {
-                ed.formatter.apply('align' + $('#align').val(), {}, td);
-            }
+            if (!legacyOutput) {
+                if ($('#align').val()) {
+                    ed.formatter.apply('align' + $('#align').val(), {}, td);
+                }
 
-            if ($('#valign').val()) {
-                ed.formatter.apply('valign' + $('#valign').val(), {}, td);
+                if ($('#valign').val()) {
+                    ed.formatter.apply('valign' + $('#valign').val(), {}, td);
+                }
             }
 
             if (curCellType != celltype) {
@@ -847,7 +900,7 @@
 
             return td;
         },
-        updateCells: function() {
+        updateCells: function () {
             var self = this,
                 el, ed = tinyMCEPopup.editor,
                 inst = ed,
@@ -862,7 +915,7 @@
             // Cell is selected
             if (ed.dom.hasClass(tdElm, 'mceSelected')) {
                 // Update all selected sells
-                tinymce.each(ed.dom.select('td.mceSelected,th.mceSelected'), function(td) {
+                tinymce.each(ed.dom.select('td.mceSelected,th.mceSelected'), function (td) {
                     self.updateCell(td);
                 });
 
@@ -940,8 +993,9 @@
             inst.execCommand('mceEndUndoLevel');
             tinyMCEPopup.close();
         },
-        updateRow: function(tr, skip_id, skip_parent) {
-            var self = this, ed = tinyMCEPopup.editor,
+        updateRow: function (tr, skip_id, skip_parent) {
+            var self = this,
+                ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
                 v;
@@ -968,10 +1022,29 @@
                 }
             }
 
-            // remove some values
-            dom.setAttribs(tr, { "height": "", "bgColor": "", "background": "" });
+            // Get form data
+            height = $('#height').val();
+            align = $('#align').val();
+            valign = $('#valign').val();
+            bgColor = $('#bgcolor').val();
 
-            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function(i, k) {
+            // remove values for html5
+            if (ed.settings.schema !== "html4") {
+                height = "";
+                bgColor = "";
+                align = "";
+                valign = "";
+            }
+
+            // update values
+            dom.setAttribs(tr, {
+                "height": "",
+                "align": "",
+                "valign": "",
+                "bgColor": ""
+            });
+
+            $.each(['id', 'lang', 'dir', 'classes', 'scope', 'style'], function (i, k) {
                 v = $('#' + k).val();
 
                 if (k === "id" && skip_id) {
@@ -990,8 +1063,10 @@
                 setAttrib(tr, k, v);
             });
 
-            if ($('#align').val()) {
-                ed.formatter.apply('align' + $('#align').val(), {}, tr);
+            if (!legacyOutput) {
+                if ($('#align').val()) {
+                    ed.formatter.apply('align' + $('#align').val(), {}, tr);
+                }
             }
 
             // Setup new rowtype
@@ -1034,7 +1109,7 @@
             }
         },
 
-        updateRows: function() {
+        updateRows: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom,
@@ -1047,7 +1122,7 @@
 
             // Update all selected rows
             if (dom.select('td.mceSelected,th.mceSelected', trElm).length > 0) {
-                tinymce.each(tableElm.rows, function(tr) {
+                tinymce.each(tableElm.rows, function (tr) {
                     var i;
 
                     for (i = 0; i < tr.cells.length; i++) {
@@ -1099,8 +1174,8 @@
             tinyMCEPopup.close();
         },
 
-        makeAttrib: function(attrib, value) {
-            if (typeof(value) == "undefined" || value == null) {
+        makeAttrib: function (attrib, value) {
+            if (typeof (value) == "undefined" || value == null) {
                 value = $('#' + attrib).val();
             }
 
@@ -1117,7 +1192,7 @@
             return ' ' + attrib + '="' + value + '"';
         },
 
-        nextCell: function(elm) {
+        nextCell: function (elm) {
             while ((elm = elm.nextSibling) != null) {
                 if (elm.nodeName == "TD" || elm.nodeName == "TH") {
                     return elm;
@@ -1127,11 +1202,11 @@
             return null;
         },
 
-        isCssSize: function(value) {
+        isCssSize: function (value) {
             return /^[0-9.]+(%|in|cm|mm|em|ex|pt|pc|px)$/.test(value);
         },
 
-        cssSize: function(value, def) {
+        cssSize: function (value, def) {
             value = tinymce.trim(value || def);
 
             if (!this.isCssSize(value)) {
@@ -1141,7 +1216,7 @@
             return value;
         },
 
-        setActionforRowType: function() {
+        setActionforRowType: function () {
             var rowtype = $('#rowtype').val();
 
             if (rowtype === "tbody") {
