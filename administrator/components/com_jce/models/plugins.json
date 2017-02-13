@@ -326,13 +326,5 @@
         "icon": "emotions",
         "row": "4",
         "editable": "1"
-    },
-    "legacyoutput": {
-        "title": "WF_LEGACYOUTPUT_TITLE",
-        "description": "WF_LEGACYOUTPUT_DESC",
-        "core": "1",
-        "icon": "",
-        "row": "4",
-        "editable": "0"
     }
 }
