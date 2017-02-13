@@ -899,7 +899,36 @@
                 var nodes, i, node, dom = ed.dom,
                     value;
 
-                if (ed.settings.schema === "html4" && ed.settings.inline_styles === false) {
+                if (ed.settings.schema === "html4") {
+                    nodes = dom.select('table,td,th,tr', args.node);
+
+                    i = nodes.length;
+
+                    while (i--) {
+                        node = nodes[i];
+                        dom.setAttrib(node, 'data-mce-style', '');
+                        // convert margin to aligh center
+                        if (dom.getStyle(node, 'margin-left') === "auto" && dom.getStyle(node, 'margin-right') === "auto") {
+                            dom.setAttrib(node, 'align', 'center');
+                            dom.setStyles(node, {'margin-left': '', 'margin-right': ''});
+                        }
+                        // convert float to align
+                        var flt = dom.getStyle(node, 'float');
+
+                        if (flt === "left" || flt === "right") {
+                            dom.setAttrib(node, 'align', flt);
+                            dom.setStyle(node, 'float', '');
+                        }
+
+                        // convert float to align
+                        var textAlign = dom.getStyle(node, 'text-align');
+
+                        if (textAlign) {
+                            dom.setAttrib(node, 'align', textAlign);
+                            dom.setStyle(node, 'text-align', '');
+                        }
+                    }
+
                     return;
                 }
 
@@ -957,6 +986,25 @@
                     tableGrid;
 
                 winMan = ed.windowManager;
+
+                if (ed.settings.schema === "html4") {
+                    // Remove all other alignments first
+                    tinymce.each('left,center,right,full'.split(','), function(name) {
+                        var fmts = ed.formatter.get('align' + name);
+
+                        tinymce.each(fmts, function(fmt) {
+                            fmt.onformat = function(elm, fmt) {
+                                if (/^(TABLE|TH|TD|TR)$/.test(elm.nodeName)) {
+                                    if (name === "full") {
+                                        name = "justify";
+                                    }
+                                    
+                                    ed.dom.setAttrib(elm, 'align', name);
+                                }
+                            };
+                        });        
+                    });
+                }
 
                 // Add cell selection logic
                 ed.onMouseDown.add(function (ed, e) {
