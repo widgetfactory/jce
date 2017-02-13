@@ -928,8 +928,6 @@
                             dom.setStyle(node, 'text-align', '');
                         }
                     }
-
-                    return;
                 }
 
                 nodes = dom.select('table', args.node);
