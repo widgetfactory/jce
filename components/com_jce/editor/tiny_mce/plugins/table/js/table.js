@@ -204,8 +204,8 @@
         $('#style').val(ed.dom.serializeStyle(styles));
     };
 
-    var ed = tinyMCEPopup.editor;
-    var legacyOutput = ed.settings.inline_styles === false && ed.settings.schema === "html4";
+    var isHTML4 = tinyMCEPopup.editor.settings.schema === "html4";
+    var isHTML5 = tinyMCEPopup.editor.settings.schema === "html5-strict";
 
     var TableDialog = {
         settings: {},
@@ -213,8 +213,6 @@
             var self = this,
                 ed = tinyMCEPopup.editor,
                 layout = tinyMCEPopup.getWindowArg('layout', 'table');
-
-            this.html5 = ed.settings.schema === "html5-strict";
 
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
@@ -226,7 +224,7 @@
                 return this.initMerge();
             }
 
-            if (this.html5) {
+            if (isHTML5) {
                 // hide HTML4 only attributes (tframe = frame)
                 $('#axis, #abbr, #scope, #summary, #char, #charoff, #tframe, #nowrap, #rules, #cellpadding, #cellspacing').each(function () {
                     $(this).add('label[for="' + this.id + '"]').hide();
@@ -304,7 +302,7 @@
                 action = elm ? "update" : "insert";
             }
 
-            if (ed.settings.schema !== "html4") {
+            if (isHTML4) {
                 // replace border field with checkbox
                 $('#table_border').replaceWith('<input type="checkbox" id="table_border" value="" />');
 
@@ -408,7 +406,7 @@
 
                 // only allow some values
                 if (selected.length && $.inArray(k, ['bgcolor', 'background', 'height', 'id', 'lang', 'align']) !== -1) {
-                    v = legacyOutput ? v : "";
+                    v = isHTML4 ? v : "";
                 }
 
                 $('#' + k).val(v);
@@ -498,7 +496,7 @@
 
             var style = $('#style').val();
 
-            if (legacyOutput) {
+            if (isHTML4) {
                 return style;
             }
 
@@ -594,6 +592,7 @@
             // Get form data
             width = $('#width').val();
             height = $('#height').val();
+            align = $('#align').val();
             cols = $('#cols').val();
             rows = $('#rows').val();
             cellpadding = $('#cellpadding').val();
@@ -623,7 +622,7 @@
             }
 
             // remove values for html5
-            if (ed.settings.schema !== "html4") {
+            if (!isHTML4) {
                 align = "";
                 width = "";
                 height = "";
@@ -634,7 +633,7 @@
             if (action == "update") {
                 ed.execCommand('mceBeginUndoLevel');
 
-                if (!this.html5) {
+                if (!isHTML5) {
                     dom.setAttrib(elm, 'cellPadding', cellpadding, true);
                     dom.setAttrib(elm, 'cellSpacing', cellspacing, true);
                 }
@@ -674,7 +673,7 @@
                 }
 
                 // set align by format
-                if (!legacyOutput) {
+                if (!isHTML4) {
                     if ($('#align').val()) {
                         ed.formatter.apply('align' + $('#align').val(), {}, elm);
                     }
@@ -838,7 +837,7 @@
             bgColor = $('#bgcolor').val();
 
             // remove values for html5
-            if (ed.settings.schema !== "html4") {
+            if (!isHTML4) {
                 align = "";
                 valign = "";
                 width = "";
@@ -874,7 +873,7 @@
                 setAttrib(td, k, v);
             });
 
-            if (!legacyOutput) {
+            if (!isHTML4) {
                 if ($('#align').val()) {
                     ed.formatter.apply('align' + $('#align').val(), {}, td);
                 }
@@ -1029,7 +1028,7 @@
             bgColor = $('#bgcolor').val();
 
             // remove values for html5
-            if (ed.settings.schema !== "html4") {
+            if (!isHTML4) {
                 height = "";
                 bgColor = "";
                 align = "";
@@ -1063,7 +1062,7 @@
                 setAttrib(tr, k, v);
             });
 
-            if (!legacyOutput) {
+            if (!isHTML4) {
                 if ($('#align').val()) {
                     ed.formatter.apply('align' + $('#align').val(), {}, tr);
                 }
