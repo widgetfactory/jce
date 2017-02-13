@@ -86,7 +86,7 @@
             "text-align": "align"
         };
 
-        var legacy = ['width', 'height', 'align', 'bgcolor', 'valign'];
+        var legacy = ['align', 'valign'];
 
         $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'text-align', 'float'], function (i, k) {
             var v = ed.dom.getStyle(proxy, k);
@@ -122,7 +122,7 @@
             // get mapped attribute name
             k = map[k] || k;
 
-            if ($.inArray(k, legacy) !== -1) {
+            if (isHTML4 && $.inArray(k, legacy) !== -1) {
                 return true;
             }
 
