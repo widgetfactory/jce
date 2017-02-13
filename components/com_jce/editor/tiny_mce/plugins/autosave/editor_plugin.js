@@ -17,7 +17,7 @@
 
 (function(tinymce) {
     var Dispatcher = tinymce.util.Dispatcher,
-        Storage = window.sessionStorage;
+        Storage = window.localStorage;
 
     if (!Storage) {
         return;
