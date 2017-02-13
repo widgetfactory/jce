@@ -49,6 +49,11 @@
                     ed.schema.addValidChildren('+body[style]');
                 }
 
+                // allow script URLS, eg: href="javascript:;"
+                if (ed.getParam('code_script')) {
+                    ed.settings.allow_script_urls = true;
+                }
+
                 // Convert script elements to span placeholder
                 ed.parser.addNodeFilter('script,style', function(nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
