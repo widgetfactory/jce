@@ -119,13 +119,17 @@ class WFJoomlaFileSystem extends WFFileSystem {
     }
 
     function toRelative($path, $isabsolute = true) {
+        // path is absolute
+        $base = $this->getBaseDir();
+        
         // path is relative to Joomla! root, eg: images/folder
         if ($isabsolute === false) {
-            return rtrim($path, $this->getRootDir());
+            $base = $this->getRootDir();
         }
 
-        // path is absolute
-        return rtrim($path, $this->getBaseDir());
+        $path = mb_substr($path, mb_strlen($base));
+
+        return ltrim($path, "/");
     }
 
     /**
@@ -219,8 +223,13 @@ class WFJoomlaFileSystem extends WFFileSystem {
             foreach ($list as $item) {
                 $item = WFUtility::isUTF8($item) ? $item : utf8_encode($item);
 
+                $id = WFUtility::makePath($relative, $item, '/');
+
+                // trim leading slash
+                $id = ltrim($id, '/');
+
                 $data = array(
-                    'id' => WFUtility::makePath($relative, $item, '/'),
+                    'id' => $id,
                     'name' => $item,
                     'writable' => is_writable(WFUtility::makePath($path, $item)) || $this->isFtp(),
                     'type' => 'folders'
@@ -314,12 +323,12 @@ class WFJoomlaFileSystem extends WFFileSystem {
 
         // directory path relative to site root
         if (is_dir(WFUtility::makePath(JPATH_SITE, $path))) {                        
-            return substr($path, strlen($this->getRootDir()));
+            return mb_substr($path, mb_strlen($this->getRootDir()));
         }
 
         // file url relative to site root
         if (is_file(WFUtility::makePath(JPATH_SITE, $path))) {
-            return substr(dirname($path), strlen($this->getRootDir()));
+            return mb_substr(dirname($path), mb_strlen($this->getRootDir()));
         }
 
         return '';

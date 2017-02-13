@@ -838,7 +838,7 @@
                     typeof callback === "function" && callback();
 
                     if (path && path !== self._trimPath(self.options.dir)) {
-                        $('#tree-body').trigger('tree:scroll', "/" + path);
+                        $('#tree-body').trigger('tree:scroll', path);
                     }
 
                     // Load folder / file list
@@ -1187,6 +1187,8 @@
 
             if (this._treeLoaded()) {
                 $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
+
+                $('#tree-body').trigger('tree:scroll', this._dir);
             }
 
             // Alternate loadList function
@@ -1444,6 +1446,7 @@
 
                             Wf.JSON.request('folderNew', args, function(o) {
                                 if (o) {
+                                    $('#tree-body').trigger('tree:createnode', [o.folders, dir]);
                                     self._trigger('onFolderNew');
                                 }
                                 self.refresh();
@@ -1471,16 +1474,23 @@
 
                     var items = this._pasteitems.split(',');
 
-                    function callback(o) {
+                    function callback(o, dir) {
                         if (o.folders.length) {
                             // remove from tree
                             if (self._treeLoaded()) {
-                                $.each(items.split(','), function(i, item) {
+                                // remove existing items
+                                $.each(items, function(i, item) {
                                     if (fn == 'moveItem') {
                                         $('#tree-body').trigger('tree:removenode', [item]);
                                     }
                                 });
 
+                                var folders = $.map(o.folders, function(item, i) {                                    
+                                    return {"id" : item, "name" : Wf.String.basename(item)};
+                                });
+
+                                // create new items
+                                $('#tree-body').trigger('tree:createnode', [folders, dir]);
                             }
                         }
                         self._trigger('onPaste');
@@ -1496,7 +1506,7 @@
                                         if (state) {
                                             self._setLoader();
                                             Wf.JSON.request(fn, [item, dir, true], function(o) {
-                                                callback(o);
+                                                callback(o, dir);
                                             });
                                         }
 
@@ -1509,7 +1519,7 @@
                                         header: false
                                     });
                                 } else {
-                                    callback(o);
+                                    callback(o, dir);
 
                                     if (complete) {
                                         self._clearPaste();
@@ -1531,14 +1541,12 @@
                             self._setLoader();
                             Wf.JSON.request('deleteItem', list, function(o) {
                                 if (o) {
-
                                     if (o.folders.length) {
                                         // remove from tree
                                         if (self._treeLoaded()) {
-                                            $.each(list.split(','), function(i, item) {
+                                            $.each(o.folders, function(i, item) {
                                                 $('#tree-body').trigger('tree:removenode', [item]);
                                             });
-
                                         }
                                         self._trigger('onFolderDelete', null, o.folders);
                                     }

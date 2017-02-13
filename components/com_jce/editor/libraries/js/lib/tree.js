@@ -168,7 +168,7 @@
             $(node).attr('id', name);
 
             // Rename the span
-            $('a:first', node).html(Wf.String.basename(name));
+            $('a:first .uk-tree-text', node).text(Wf.String.basename(name));
 
             // Rename each of the child nodes
             $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
@@ -187,6 +187,7 @@
             var parent = Wf.String.dirname(id);
 
             var node = this._findNode(id, parent);
+
             var ul = $(node).parent('ul');
 
             // Remove the node
@@ -221,6 +222,9 @@
                 parent = this._findParent(parent);
             }
 
+            // remove active states
+            $(this.element).find('.uk-tree-active').removeClass('uk-tree-active');
+
             /*
              * Create the nodes from the array <li><div class="tree-row"><div
              * class="tree-image"></div><span><a>node</a></span><div></li>
@@ -241,7 +245,6 @@
 
                 // Iterate through nodes array
                 $.each(nodes, function (i, node) {
-
                     if (!self._isNode(node.id, parent)) {
                         // title and link html
                         var title = node.name || node.id;
@@ -448,6 +451,10 @@
                 this._collapseNodes(node);
             }
         },
+        refreshNode: function(node) {
+            var parent = this._findParent(node);
+            return this._trigger('nodeload', parent);
+        },
         _encode: function (s) {
             // decode first in case already encoded
             s = decodeURIComponent(s);
@@ -476,8 +483,13 @@
             var node = this._findNode(id);
 
             if ($(node).length) {
-                var left = $(node).get(0).offsetLeft - parseInt($(node).css('padding-left'));
-                var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
+                var padding = parseInt($(node).css('padding-left')) + parseInt($(this.element).css('padding-left'));
+                
+                var left    = $(node).get(0).offsetLeft - padding;
+                var top     = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
+
+                // remove active states
+                $(this.element).find('.uk-tree-active').removeClass('uk-tree-active');
 
                 $(this.element).animate({
                     scrollLeft: Math.round(left),
@@ -495,8 +507,20 @@
     $.fn.tree = function (options) {
         var inst = new Tree(this, options);
 
-        $(this).on('tree:createnode', function (e, items, node) {
-            inst.createNode(items, node);
+        $(this).on('tree:createnode', function (e, node, parent) {
+            if (typeof node === "string") {
+                node = [node];
+            }
+            
+            inst.createNode(node, parent);
+        });
+
+        $(this).on('tree:removenode', function (e, node) {            
+            inst.removeNode(node);
+        });
+
+        $(this).on('tree:renamenode', function (e, node, name) {
+            inst.renameNode(node, name);
         });
 
         $(this).on('tree:togglenode', function (e, ev, node) {
@@ -509,6 +533,10 @@
 
         $(this).on('tree:toggleloader', function (e, node) {
             inst.toggleLoader(node);
+        });
+
+        $(this).on('tree:refreshnode', function (e, node) {
+            inst.refreshNode(node);
         });
 
         $(this).on('tree:scroll', function (e, id) {

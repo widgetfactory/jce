@@ -391,7 +391,7 @@ class WFFileBrowser extends JObject
         // remove filtered items
         if (!empty($filters)) {
             $list = array_filter($list, function ($item) use ($filters) {
-                // remmove leading slash
+                // remove leading slash
                 $id = ltrim($item['id'], '/');
 
                 return !in_array($id, $filters);
@@ -610,7 +610,7 @@ class WFFileBrowser extends JObject
 
                 $open = preg_match('#' . $name . '\b#', $treedir);
 
-                $result .= '<li id="' . $this->escape($folder['id']) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
+                $result .= '<li id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
                     . ' <div class="uk-tree-row">'
                     . '   <a href="#">'
                     . '     <span class="uk-tree-icon" role="presentation"></span>'
@@ -1337,7 +1337,8 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Copy', array($item)));
-                    $this->setResult(basename($result->path), $result->type);
+                    $path = $filesystem->toRelative($result->path);
+                    $this->setResult($path, $result->type);
                 }
             }
         }
@@ -1413,7 +1414,8 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Move', array($item)));
-                    $this->setResult(basename($result->path), $result->type);
+                    $path = $filesystem->toRelative($result->path);
+                    $this->setResult($path, $result->type);
                 }
             }
         }
