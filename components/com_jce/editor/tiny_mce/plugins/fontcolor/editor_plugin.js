@@ -15,7 +15,7 @@
             var self = this;
             this.editor = ed;
 
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function(ed, cm, n, collapsed, o) {
                 var s = ed.settings, c;
 
                 function updateColor(controlId, color) {
@@ -28,8 +28,27 @@
                     }
                 }
 
-                updateColor('forecolor', n.style.color);
-                updateColor('backcolor', n.style.backgroundColor);
+                var fc, bc;
+
+                each(o.parents, function(n) {
+                    if (n.style) {
+
+                        if (n.style.color) {
+                            updateColor('forecolor', n.style.color);
+                            fc = true;
+                        }
+
+                        if (n.style.backgroundColor) {
+                            updateColor('backcolor', n.style.backgroundColor);
+                            bc = true;
+                        }
+
+                        // break when complete
+                        if (fc && bc) {
+                            return false;
+                        }
+                    }
+                });
             });
         },
         createControl: function(n, cf) {
