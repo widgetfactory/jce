@@ -22,12 +22,7 @@ var SearchReplaceDialog = {
             });
         });
 
-        $('#find').button({
-            icons: {
-                primary: 'uk-icon-search'
-            },
-            classes: 'uk-button-primary'
-        }).click(function (e) {
+        $('#find').click(function (e) {
             e.preventDefault();
 
             ed.execCommand('mceSearch', false, {
@@ -37,46 +32,26 @@ var SearchReplaceDialog = {
             });
         });
 
-        $('#next').button({
-            icons: {
-                primary: 'uk-icon-arrow-right'
-            },
-            classes: 'uk-button-primary'
-        }).click(function (e) {
+        $('#next').click(function (e) {
             e.preventDefault();
 
             ed.execCommand('mceSearchNext', false);
         });
 
-        $('#prev').button({
-            icons: {
-                primary: 'uk-icon-arrow-left'
-            },
-            classes: 'uk-button-primary'
-        }).click(function (e) {
+        $('#prev').click(function (e) {
             e.preventDefault();
 
             ed.execCommand('mceSearchPrev', false);
         });
 
-        $('#replace').button({
-            icons: {
-                primary: 'uk-icon-reply'
-            },
-            classes: 'uk-button-danger'
-        }).click(function (e) {
+        $('#replace').click(function (e) {
             e.preventDefault();
 
             var value = $('#replace_string').val();
             ed.execCommand('mceReplace', false, value);
         });
 
-        $('#replaceAll').button({
-            icons: {
-                primary: 'uk-icon-refresh'
-            },
-            classes: 'uk-button-danger'
-        }).click(function (e) {
+        $('#replaceAll').click(function (e) {
             e.preventDefault();
 
             var value = $('#replace_string').val();
