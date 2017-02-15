@@ -1181,11 +1181,6 @@
                             el = se.getNode() || ed.getBody();
 
                         if (ed.dom.getParent(e, 'td') || ed.dom.getParent(e, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
-                            // get existing items
-                            var items = m.items;
-                            // remove all
-                            m.removeAll();
-
                             m.add({
                                 title: 'table.desc',
                                 icon: 'table',
@@ -1276,6 +1271,7 @@
                             sm = m.addMenu({
                                 title: 'table.col'
                             });
+
                             sm.add({
                                 title: 'table.col_before_desc',
                                 icon: 'col_before',
@@ -1290,11 +1286,6 @@
                                 title: 'table.delete_col_desc',
                                 icon: 'delete_col',
                                 cmd: 'mceTableDeleteCol'
-                            });
-
-                            // add back existing items
-                            each(items, function (item) {
-                                m.add(item);
                             });
 
                         } else
