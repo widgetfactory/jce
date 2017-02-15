@@ -520,9 +520,6 @@ WFPopups.addPopup('jcemediabox', {
         if ($('#jcemediabox_popup_hide').val() == 1) {
             ed.dom.addClass(n, 'noshow');
         }
-
-        // Set target
-        ed.dom.setAttrib(n, 'target', '_blank');
     },
     /**
      * Set the poup icon option
