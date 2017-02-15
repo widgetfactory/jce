@@ -149,11 +149,14 @@
                 each(ed.settings.theme_advanced_font_sizes, function (v, k) {
                     var fz = v.fontSize;
 
-                    if (fz >= 1 && fz <= 7)
+                    if (fz >= 1 && fz <= 7) {
                         fz = self.sizes[parseInt(fz) - 1] + 'pt';
+                    }
+
+                    var lh = Math.max(12, parseInt(fz));
 
                     c.add(k, v, {
-                        'style': 'font-size:' + fz,
+                        'style': 'font-size:' + fz + ';line-height:' + lh + 'pt',
                         'class': 'mceFontSize' + (i++) + (' ' + (v['class'] || ''))
                     });
                 });
