@@ -162,6 +162,7 @@
                 restoreDraft();
                 removeDraft();
                 ed.undoManager.add();
+                ed.nodeChanged();
             }
 
             ed.addButton('autosave', {
