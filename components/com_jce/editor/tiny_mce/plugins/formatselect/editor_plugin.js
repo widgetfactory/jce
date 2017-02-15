@@ -24,19 +24,15 @@
 
                     if (p) {
                         c.select(p.nodeName.toLowerCase());
+                    } else {
+                        c.select("");
                     }
                 }
             });
         },
         createControl: function(n, cf) {
-            var ed = this.editor;
-
-            switch (n) {
-                case "formatselect":
-
-                    return this._createBlockFormats();
-
-                    break;
+            if (n === "formatselect") {
+                return this._createBlockFormats();
             }
         },
         _createBlockFormats: function() {
