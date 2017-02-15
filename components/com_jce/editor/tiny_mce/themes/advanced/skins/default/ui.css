@@ -649,7 +649,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 }
 
 .defaultSkin .mceNoIcons a .mceText {
-    padding-left: 10px
+    padding-left: 20px
 }
 
 .defaultSkin .mceMenu div {
@@ -747,7 +747,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 }*/
 
 .defaultSkin .mceNoIcons .mceMenuItemSelected a {
-    background: url(img/menu_arrow.gif) no-repeat -6px center
+    background: url(img/menu_arrow.gif) no-repeat left center
 }
 
 .defaultSkin .mceMenu span.mceMenuLine {
