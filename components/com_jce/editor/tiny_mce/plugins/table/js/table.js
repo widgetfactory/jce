@@ -96,6 +96,10 @@
 
             if (k === "width" || k === "height") {
                 v = trimSize(v);
+
+                if (!v) {
+                    return true;
+                }
             }
 
             if (k === "background-image") {
