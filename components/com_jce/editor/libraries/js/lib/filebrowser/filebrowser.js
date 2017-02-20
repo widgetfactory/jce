@@ -2154,7 +2154,7 @@
                 if (shift) {
                     if (selected.length) {
                         // selected item index
-                        var si = $(el, selected).index();
+                        var si = $(selected).index();
                         // click item index
                         var ci = $(el, items).index();
                         var selection = [];
