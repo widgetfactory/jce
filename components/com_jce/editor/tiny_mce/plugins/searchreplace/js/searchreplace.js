@@ -7,18 +7,16 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-//tinyMCEPopup.requireLangPack();
 
-var SearchReplaceDialog = {
-    settings: {},
-    init: function () {
+(function (tinyMCEPopup, Wf, $) {
+    function init() {
         var ed = tinyMCEPopup.editor;
 
         Wf.init();
 
-        ed.updateSearchButtonStates.add(function(o) {
-            $.each(o, function(k, v) {
-                $('#' + k).prop('disabled', !!v);    
+        ed.updateSearchButtonStates.add(function (o) {
+            $.each(o, function (k, v) {
+                $('#' + k).prop('disabled', !!v);
             });
         });
 
@@ -26,9 +24,9 @@ var SearchReplaceDialog = {
             e.preventDefault();
 
             ed.execCommand('mceSearch', false, {
-                "case"      : $('#matchcase').is(':checked'),
-                "text"      : $('#search_string').val(),
-                "wholeword" : $('#wholewords').is(':checked')
+                "case": $('#matchcase').is(':checked'),
+                "text": $('#search_string').val(),
+                "wholeword": $('#wholewords').is(':checked')
             });
         });
 
@@ -58,12 +56,12 @@ var SearchReplaceDialog = {
             ed.execCommand('mceReplaceAll', false, value);
         });
 
-        $('#cancel').click(function(e) {
+        $('#cancel').click(function (e) {
             e.preventDefault();
             tinyMCEPopup.close();
         });
 
-        ed.windowManager.onClose.add(function() {
+        ed.windowManager.onClose.add(function () {
             ed.execCommand('mceSearchDone', false);
         });
 
@@ -72,5 +70,6 @@ var SearchReplaceDialog = {
         // Focus input field
         $('#search_string').focus();
     }
-};
-tinyMCEPopup.onInit.add(SearchReplaceDialog.init, SearchReplaceDialog);
+
+    $(window).ready(init);
+})(tinyMCEPopup, Wf, jQuery);

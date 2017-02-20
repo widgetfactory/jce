@@ -27,10 +27,6 @@ class WFSearchReplacePlugin extends WFEditorPlugin
 
         $document->addScript(array('searchreplace'), 'plugins');
 
-        $settings = $this->getSettings();
-
-        $document->addScriptDeclaration('SearchReplaceDialog.settings=' . json_encode($settings) . ';');
-
         $tabs = WFTabs::getInstance(array(
             'base_path' => WF_EDITOR_PLUGIN,
         ));
