@@ -42,7 +42,6 @@
     top: 0;
     width: 100%;
     padding: 10px;
-    z-index: 500000;
 }
 
 .mceModalFrame:after {

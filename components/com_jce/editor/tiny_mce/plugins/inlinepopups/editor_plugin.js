@@ -275,6 +275,8 @@
                 deltaHeight: dh
             };
 
+            DOM.setAttrib(id, 'aria-hidden', 'false');
+
             // position modal
             this.position(id);
 
@@ -282,7 +284,7 @@
                 self.focus(id);
             });
 
-            DOM.setAttrib(id, 'aria-hidden', 'false');
+            //self.focus(id);
 
             // Focus ok button
             if (DOM.get(id + '_ok')) {
@@ -308,7 +310,10 @@
             var self = this, w;
 
 			if (w = self.windows[id]) {
-				id = id + '_wrapper';
+				w.zIndex = this.zIndex++;
+				DOM.setStyle(id, 'zIndex', w.zIndex);
+                
+                id = id + '_wrapper';
 				DOM.removeClass(self.lastId, 'mceFocus');
 				DOM.addClass(id, 'mceFocus');
 				self.lastId = id;
