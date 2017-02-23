@@ -7,13 +7,13 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($, tinyMCEPopup) {
+(function ($, tinyMCEPopup) {
     // http://stackoverflow.com/a/46181
     var emailRex = /(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})/;
 
     var LinkDialog = {
         settings: {},
-        init: function() {
+        init: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 se = ed.selection,
@@ -21,7 +21,7 @@
 
             tinyMCEPopup.restoreSelection();
 
-            $('button#insert').click(function(e) {
+            $('button#insert').click(function (e) {
                 self.insert();
                 e.preventDefault();
             });
@@ -30,7 +30,7 @@
                 $('#href').removeClass('browser');
             }
 
-            $('.email').click(function() {
+            $('.email').click(function () {
                 LinkDialog.createEmail();
             });
 
@@ -40,7 +40,7 @@
             $('#link-browser').tree({
                 collapseTree: true,
                 charLength: 50
-            }).on('tree:nodeclick', function(e, node) {
+            }).on('tree:nodeclick', function (e, node) {
                 var v;
 
                 if ($(node).hasClass('folder')) {
@@ -56,7 +56,7 @@
 
                     self.insertLink(Wf.String.decode(v));
                 }
-            }).on('tree:nodeload', function(e, node) {
+            }).on('tree:nodeload', function (e, node) {
                 var self = this;
 
                 $(this).trigger('tree:toggleloader', node);
@@ -65,7 +65,7 @@
 
                 Wf.JSON.request('getLinks', {
                     'json': query
-                }, function(o) {
+                }, function (o) {
                     if (o) {
                         if (!o.error) {
                             var ul = $('ul:first', node);
@@ -88,7 +88,7 @@
             });
 
             /* Search */
-            $('#search-button').click(function(e) {
+            $('#search-button').click(function (e) {
                 self._search();
                 e.preventDefault();
             }).button({
@@ -97,7 +97,7 @@
                 }
             });
 
-            $('#search-clear').click(function(e) {
+            $('#search-clear').click(function (e) {
                 if ($(this).hasClass('uk-active')) {
                     $(this).removeClass('uk-active');
 
@@ -106,7 +106,7 @@
                 }
             });
 
-            $('#search-options-button').click(function(e) {
+            $('#search-options-button').click(function (e) {
                 e.preventDefault();
 
                 $(this).addClass('uk-active');
@@ -115,12 +115,12 @@
 
                 $('#search-options').height($p.parent().height() - $p.outerHeight() - 15).toggle();
 
-            }).on('close', function() {
+            }).on('close', function () {
                 $(this).removeClass('uk-active');
                 $('#search-options').hide();
             });
 
-            $(el).on('change keyup', function() {
+            $(el).on('change keyup', function () {
                 if (this.value === "") {
                     $('#search-result').empty().hide();
                     $('#search-clear').removeClass('uk-active');
@@ -192,7 +192,7 @@
             Wf.init();
 
             // Enable / disable attributes
-            $.each(this.settings.attributes, function(k, v) {
+            $.each(this.settings.attributes, function (k, v) {
                 if (parseInt(v) === 0) {
                     $('#attributes-' + k).hide();
                 }
@@ -206,7 +206,7 @@
                 // Setup form data
                 $('#href').val(href);
                 // attributes
-                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function(i, k) {
+                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function (i, k) {
                     $('#' + k).val(ed.dom.getAttrib(n, k));
                 });
 
@@ -224,7 +224,7 @@
                 var data = WFPopups.getPopup(n) || {};
 
                 // process rel after popups as it is used by MediaBox
-                $('#rel').val(function() {
+                $('#rel').val(function () {
                     var v = data.rel;
 
                     if ($.type(v) !== "string") {
@@ -252,7 +252,7 @@
 
             window.focus();
         },
-        getAnchorListHTML: function(id, target) {
+        getAnchorListHTML: function (id, target) {
             var ed = tinyMCEPopup.editor,
                 name;
             var nodes = ed.dom.select('.mceItemAnchor');
@@ -263,7 +263,7 @@
             html += 'this.options[this.selectedIndex].value;">';
             html += '<option value="">---</option>';
 
-            $.each(nodes, function(i, n) {
+            $.each(nodes, function (i, n) {
                 if (n.nodeName == 'SPAN') {
                     name = ed.dom.getAttrib(n, 'data-mce-name') || ed.dom.getAttrib(n, 'id');
                 } else {
@@ -281,13 +281,38 @@
 
             return html;
         },
-        checkPrefix: function(n) {
+        /**
+         * From tinymce/plugins/link/plugin.js
+         *
+         * Released under LGPL License.
+         * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+         * License: http://www.tinymce.com/license
+         */
+        toggleTargetRules: function (rel, isUnsafe) {
+            var rules = 'noopener noreferrer';
+
+            function addTargetRules(rel) {
+                rel = removeTargetRules(rel);
+                return rel ? [rel, rules].join(' ') : rules;
+            }
+
+            function removeTargetRules(rel) {
+                var regExp = new RegExp('(' + rules.replace(' ', '|') + ')', 'g');
+                if (rel) {
+                    rel = tinymce.trim(rel.replace(regExp, ''));
+                }
+                return rel ? rel : null;
+            }
+
+            return isUnsafe ? addTargetRules(rel) : removeTargetRules(rel);
+        },
+        checkPrefix: function (n) {
             var self = this;
 
             var v = $(n).val();
 
             if (emailRex.test(v) && !/^\s*mailto:/i.test(v)) {
-                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function(state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_email', 'The URL you entered seems to be an email address, do you want to add the required mailto: prefix?'), function (state) {
                     if (state) {
                         $(n).val('mailto:' + v);
                     }
@@ -295,7 +320,7 @@
                 });
 
             } else if (/^\s*www./i.test(v)) {
-                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function(state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function (state) {
                     if (state) {
                         $(n).val('http://' + v);
                     }
@@ -306,7 +331,7 @@
                 this.insertAndClose();
             }
         },
-        insert: function() {
+        insert: function () {
             tinyMCEPopup.restoreSelection();
 
             var ed = tinyMCEPopup.editor,
@@ -314,7 +339,7 @@
 
             if ($('#href').val() == '') {
                 Wf.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'), {
-                    "close": function() {
+                    "close": function () {
                         $('#href').focus();
                     }
                 });
@@ -324,7 +349,7 @@
 
             if (se.isCollapsed() && $('#text').not(':disabled').val() == '') {
                 Wf.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'), {
-                    "close": function() {
+                    "close": function () {
                         $('#text').focus();
                     }
                 });
@@ -334,10 +359,10 @@
 
             return this.checkPrefix($('#href'));
         },
-        insertAndClose: function() {
+        insertAndClose: function () {
             tinyMCEPopup.restoreSelection();
 
-            var ed = tinyMCEPopup.editor,
+            var self = ed = tinyMCEPopup.editor,
                 se = ed.selection,
                 n = se.getNode(),
                 args = {},
@@ -345,7 +370,7 @@
 
             var attribs = ['href', 'title', 'target', 'id', 'style', 'class', 'rel', 'rev', 'charset', 'hreflang', 'dir', 'lang', 'tabindex', 'accesskey', 'type'];
 
-            tinymce.each(attribs, function(k) {
+            tinymce.each(attribs, function (k) {
                 var v = $('#' + k).val();
 
                 // trim value
@@ -362,6 +387,10 @@
 
                 args[k] = v;
             });
+
+            if (!ed.settings.allow_unsafe_link_target) {
+			    args.rel = this.toggleTargetRules(args.rel, args.target == '_blank');
+			}
 
             var txt = $('#text').val();
 
@@ -402,7 +431,7 @@
                 // set to null to remove
                 args['data-mce-tmp'] = null;
 
-                tinymce.each(elms, function(elm, i) {
+                tinymce.each(elms, function (elm, i) {
                     // set attributes
                     ed.dom.setAttribs(elm, args);
 
@@ -446,23 +475,23 @@
             // close dialog
             tinyMCEPopup.close();
         },
-        setClasses: function(v) {
+        setClasses: function (v) {
             Wf.setClasses(v);
         },
-        setTargetList: function(v) {
+        setTargetList: function (v) {
             $('#target').val(v);
         },
-        setClassList: function(v) {
+        setClassList: function (v) {
             $('#classlist').val(v);
         },
-        insertLink: function(v) {
+        insertLink: function (v) {
             $('#href').val(tinyMCEPopup.editor.documentBaseURI.toRelative(v));
         },
-        createEmail: function() {
+        createEmail: function () {
             var ed = tinyMCEPopup.editor,
                 fields = '<div class="uk-form-horizontal">';
 
-            $.each(['mailto', 'cc', 'bcc', 'subject'], function(i, k) {
+            $.each(['mailto', 'cc', 'bcc', 'subject'], function (i, k) {
                 fields += '<div class="uk-form-row"><label class="uk-form-label uk-width-3-10" for="email_' + k + '">' + ed.getLang('link_dlg.' + k, k) + '</label><div class="uk-form-controls uk-width-7-10"><textarea id="email_' + k + '"></textarea></div></div>';
             });
 
@@ -470,7 +499,7 @@
 
             Wf.Modal.open(ed.getLang('link_dlg.email', 'Create E-Mail Address'), {
                 width: 300,
-                open: function() {
+                open: function () {
                     var v = $('#href').val();
 
                     if (!v || !emailRex.test(v)) {
@@ -483,7 +512,7 @@
 
                     $('#email_mailto').val(address.replace(/^mailto\:/, ''));
 
-                    $.each(parts, function(i, s) {
+                    $.each(parts, function (i, s) {
                         var k = s.split('=');
 
                         if (k.length === 2) {
@@ -493,15 +522,15 @@
                 },
                 buttons: [{
                     text: ed.getLang('dlg.create', 'Create'),
-                    click: function() {
+                    click: function () {
                         var args = [],
                             errors = 0;
-                        $.each(['mailto', 'cc', 'bcc', 'subject'], function(i, s) {
+                        $.each(['mailto', 'cc', 'bcc', 'subject'], function (i, s) {
                             var v = $('#email_' + s).val();
                             if (v) {
                                 v = v.replace(/\n\r/g, '');
 
-                                $.each(v.split(','), function(i, o) {
+                                $.each(v.split(','), function (i, o) {
                                     if (s !== 'subject') {
                                         if (!/@/.test(o)) {
                                             Wf.Modal.alert(s + ed.getLang('link_dlg.invalid_email', ' is not a valid e-mail address!'));
@@ -531,11 +560,11 @@
                 }]
             }, fields);
         },
-        openHelp: function() {
+        openHelp: function () {
             Wf.help('link');
         },
 
-        _search: function() {
+        _search: function () {
             var self = this,
                 $p = $('#search-result').parent();
 
@@ -553,24 +582,24 @@
 
             Wf.JSON.request('doSearch', {
                 'json': [query]
-            }, function(o) {
+            }, function (o) {
                 if (o && !o.error) {
 
                     $('#search-result').empty();
 
                     if (o.length) {
-                        $.each(o, function(i, n) {
+                        $.each(o, function (i, n) {
                             var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
 
-                            $('<dt class="link uk-margin-small" />').text(n.title).click(function() {
+                            $('<dt class="link uk-margin-small" />').text(n.title).click(function () {
                                 self.insertLink(Wf.String.decode(n.link));
                             }).prepend('<i class="uk-icon uk-icon-file-text-o uk-margin-small-right" />').appendTo($dl);
 
                             $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
 
                             if (n.anchors) {
-                                $.each(n.anchors, function(i, a) {
-                                    $('<dd class="anchor" />').text(a).click(function() {
+                                $.each(n.anchors, function (i, a) {
+                                    $('<dd class="anchor" />').text(a).click(function () {
                                         self.insertLink(Wf.String.decode(n.link + '#' + a));
                                     }).appendTo($dl);
                                 });
@@ -590,7 +619,7 @@
             }, self);
         }
     };
-    $(document).ready(function() {
+    $(document).ready(function () {
         LinkDialog.init();
     });
 
