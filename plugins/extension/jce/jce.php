@@ -83,23 +83,23 @@ class PlgExtensionJce extends JPlugin
             $model = new WFModelPlugins();
             $model->postInstall('install', $plugin, $installer);
 
-						if ($plugin->type == "extension") {
-							jimport('joomla.filesystem.folder');
-							jimport('joomla.filesystem.file');
+            if ($plugin->type == 'extension') {
+                jimport('joomla.filesystem.folder');
+                jimport('joomla.filesystem.file');
 
-              $path = JPATH_SITE . '/components/com_jce/editor/extensions/' . $type;
+                $path = JPATH_SITE.'/components/com_jce/editor/extensions/'.$type;
 
               // delete manifest
-              if (is_file($path . '/' . $plugin->name . '.xml')) {
-                  JFile::delete($path . '/' . $plugin->name . '.xml');
+              if (is_file($path.'/'.$plugin->name.'.xml')) {
+                  JFile::delete($path.'/'.$plugin->name.'.xml');
               }
               // delete file
-              if (is_file($path . '/' . $plugin->name . '.php')) {
-                  JFile::delete($path . '/' . $plugin->name . '.php');
+              if (is_file($path.'/'.$plugin->name.'.php')) {
+                  JFile::delete($path.'/'.$plugin->name.'.php');
               }
               // delete folder
-              if (is_dir($path . '/' . $plugin->name)) {
-                  JFolder::delete($path . '/' . $plugin->name);
+              if (is_dir($path.'/'.$plugin->name)) {
+                  JFolder::delete($path.'/'.$plugin->name);
               }
             }
         }

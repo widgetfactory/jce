@@ -1,12 +1,11 @@
 <?php
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
@@ -14,8 +13,8 @@ $count = 0;
 
 foreach ($this->plugins as $name => $plugin) :
 
-    if ($plugin->type === "plugin") :
-        $path = JPATH_SITE . $plugin->path;
+    if ($plugin->type === 'plugin') :
+        $path = JPATH_SITE.$plugin->path;
 
         // only for editable plugins
         if ($plugin->editable) :
@@ -27,15 +26,15 @@ foreach ($this->plugins as $name => $plugin) :
 
             // set element paths
             $params->addElementPath(array(
-                WF_EDITOR . '/elements'
+                WF_EDITOR.'/elements',
             ));
 
             // set plugin specific elements
-            if (JFolder::exists($path . '/elements')) {
-                $params->addElementPath($path . '/elements');
+            if (JFolder::exists($path.'/elements')) {
+                $params->addElementPath($path.'/elements');
             }
 
-            $class  = in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'tabs-plugin-parameters' : '';
+            $class = in_array($plugin->name, explode(',', $this->profile->plugins)) ? 'tabs-plugin-parameters' : '';
             $groups = $params->getGroups();
 
             if (count($groups)) :
@@ -46,10 +45,10 @@ foreach ($this->plugins as $name => $plugin) :
                     <?php
                     // Draw parameters
                     foreach ($groups as $group) :
-                        $data = $params->render('params[' . $name . ']', $group);
+                        $data = $params->render('params['.$name.']', $group);
                         if (!empty($data)) :
                             echo '<div class="adminform panelform">';
-                            echo '<h4>' . WFText::_('WF_PROFILES_PLUGINS_' . strtoupper($group)) . '</h4>';
+                            echo '<h4>'.WFText::_('WF_PROFILES_PLUGINS_'.strtoupper($group)).'</h4>';
                             echo '<hr />';
                             echo $data;
                             echo '</div>';
@@ -63,18 +62,18 @@ foreach ($this->plugins as $name => $plugin) :
                         $html = '';
 
                         // get extension type specific parameters
-                        $file = WF_EDITOR_LIBRARIES . '/xml/config/' . $type . '.xml';
+                        $file = WF_EDITOR_LIBRARIES.'/xml/config/'.$type.'.xml';
 
                         if (is_file($file)) {
-                            $params = new WFParameter($this->profile->params, $file, $name . '.' . $type);
+                            $params = new WFParameter($this->profile->params, $file, $name.'.'.$type);
 
                             // add element paths
                             $params->addElementPath(array(
-                                WF_EDITOR . '/elements'
+                                WF_EDITOR.'/elements',
                             ));
 
                             foreach ($params->getGroups() as $group) :
-                                $html .= $params->render('params[' . $name . '][' . $type . ']', $group);
+                                $html .= $params->render('params['.$name.']['.$type.']', $group);
                             endforeach;
                         }
 
@@ -84,33 +83,33 @@ foreach ($this->plugins as $name => $plugin) :
 
                             if (JFile::exists($manifest)) :
                                 // get params for plugin
-                                $key    = $name . '.' . $extension->id;
+                                $key = $name.'.'.$extension->id;
                                 $params = new WFParameter($this->profile->params, $manifest, $key);
 
                                 // add element paths
                                 $params->addElementPath(array(
-                                    WF_EDITOR . '/elements'
+                                    WF_EDITOR.'/elements',
                                 ));
 
                                 // render params
                                 if (!$params->hasParent()) :
                                     // explode key to array
-                                    $key      = explode(".", $key);
+                                    $key = explode('.', $key);
 
-                                    $enabled  = (int) $params->get('enable', 1);
-                                    $checked  = $enabled ? ' checked="checked"' : '';
+                                    $enabled = (int) $params->get('enable', 1);
+                                    $checked = $enabled ? ' checked="checked"' : '';
 
-                                    $html .= '<h4><input type="checkbox" id="params' . implode('', $key) . 'enable" data-name="' . $extension->extension . '" name="params[' . implode('][', $key) . '][enable]" class="plugins-enable-checkbox" value="' . $enabled . '"' . $checked . ' />' . WFText::_($extension->title) . '</h4>';
-                                    $html .= '<p>' . WFText::_($extension->description) . '</p>';
+                                    $html .= '<h4><input type="checkbox" id="params'.implode('', $key).'enable" data-name="'.$extension->extension.'" name="params['.implode('][', $key).'][enable]" class="plugins-enable-checkbox" value="'.$enabled.'"'.$checked.' />'.WFText::_($extension->title).'</h4>';
+                                    $html .= '<p>'.WFText::_($extension->description).'</p>';
                                     foreach ($params->getGroups() as $group) :
-                                        $html .= $params->render('params[' . implode('][', $key) . ']', $group, array('enable'));
+                                        $html .= $params->render('params['.implode('][', $key).']', $group, array('enable'));
                                     endforeach;
                                 endif;
                             endif;
                         endforeach;
 
                         if ($html) :
-                            echo '<div class="adminform panelform"><h3>' . WFText::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE') . '</h3><hr />';
+                            echo '<div class="adminform panelform"><h3>'.WFText::_('WF_EXTENSIONS_'.strtoupper($type).'_TITLE').'</h3><hr />';
                             echo $html;
                             echo '</div>';
                         endif;

@@ -1,31 +1,35 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 jimport('joomla.application.component.view');
 
 if (!class_exists('WFViewBase')) {
     if (interface_exists('JView')) {
-        abstract class WFViewBase extends JViewLegacy {}
+        abstract class WFViewBase extends JViewLegacy
+        {
+        }
     } else {
-        abstract class WFViewBase extends JView {}
+        abstract class WFViewBase extends JView
+        {
+        }
     }
 }
 
-class WFViewPopup extends WFViewBase {
-
-    public function display($tpl = null) {
+class WFViewPopup extends WFViewBase
+{
+    public function display($tpl = null)
+    {
         $app = JFactory::getApplication();
 
-        $this->document->addScript(JURI::root(true) . '/components/com_jce/media/js/popup.js');
-        $this->document->addStylesheet(JURI::root(true) . '/components/com_jce/media/css/popup.css');
+        $this->document->addScript(JURI::root(true).'/components/com_jce/media/js/popup.js');
+        $this->document->addStylesheet(JURI::root(true).'/components/com_jce/media/css/popup.css');
 
         // Get variables
         $img = JRequest::getVar('img');
@@ -37,7 +41,7 @@ class WFViewPopup extends WFViewBase {
         $dim = array('', '');
 
         if (strpos('http', $img) === false) {
-            $path = JPATH_SITE . '/' . trim(str_replace(JURI::root(), '', $img), '/');
+            $path = JPATH_SITE.'/'.trim(str_replace(JURI::root(), '', $img), '/');
             if (is_file($path)) {
                 $dim = @getimagesize($path);
             }
@@ -68,10 +72,10 @@ class WFViewPopup extends WFViewBase {
                 'click' => $click,
                 'print' => $print,
                 'width' => $width,
-                'height' => $height
+                'height' => $height,
             );
-            
-            $this->document->addScriptDeclaration('(function(){WFWindowPopup.init(' . $width . ', ' . $height . ', ' . $click . ');})();');
+
+            $this->document->addScriptDeclaration('(function(){WFWindowPopup.init('.$width.', '.$height.', '.$click.');})();');
 
             $this->assign('features', $features);
         } else {
@@ -80,7 +84,4 @@ class WFViewPopup extends WFViewBase {
 
         parent::display($tpl);
     }
-
 }
-
-?>

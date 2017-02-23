@@ -1,56 +1,56 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="contenteditable"><?php echo WFText::_('WF_LABEL_CONTENTEDITBALE');?></label>
+    <label class="uk-form-label uk-width-3-10" for="contenteditable"><?php echo WFText::_('WF_LABEL_CONTENTEDITBALE'); ?></label>
     <div class="uk-form-controls uk-width-7-10"><select id="contenteditable">
-            <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET');?></option>
-            <option value="true"><?php echo WFText::_('WF_OPTION_YES');?></option>
-            <option value="false"><?php echo WFText::_('WF_OPTION_NO');?></option>
-            <option value="inherit"><?php echo WFText::_('WF_OPTION_INHERIT');?></option>
+            <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+            <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
+            <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
+            <option value="inherit"><?php echo WFText::_('WF_OPTION_INHERIT'); ?></option>
         </select>
     </div>
 </div>
 
 <div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="draggable"><?php echo WFText::_('WF_LABEL_DRAGGABLE');?></label>
+    <label class="uk-form-label uk-width-3-10" for="draggable"><?php echo WFText::_('WF_LABEL_DRAGGABLE'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
       <select id="draggable">
-          <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET');?></option>
-          <option value="true"><?php echo WFText::_('WF_OPTION_YES');?></option>
-          <option value="false"><?php echo WFText::_('WF_OPTION_NO');?></option>
-          <option value="auto"><?php echo WFText::_('WF_OPTION_AUTO');?></option>
+          <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+          <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
+          <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
+          <option value="auto"><?php echo WFText::_('WF_OPTION_AUTO'); ?></option>
         </select>
     </div>
 </div>
 
 <div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="hidden"><?php echo WFText::_('WF_LABEL_HIDDEN');?></label>
+    <label class="uk-form-label uk-width-3-10" for="hidden"><?php echo WFText::_('WF_LABEL_HIDDEN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
       <select id="hidden">
-        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET');?></option>
-        <option value=""><?php echo WFText::_('WF_OPTION_NO');?></option>
-        <option value="hidden"><?php echo WFText::_('WF_OPTION_YES');?></option>
+        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+        <option value=""><?php echo WFText::_('WF_OPTION_NO'); ?></option>
+        <option value="hidden"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
       </select>
     </div>
 </div>
 
 <div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="spellcheck"><?php echo WFText::_('WF_LABEL_SPELLCHECK');?></label>
+    <label class="uk-form-label uk-width-3-10" for="spellcheck"><?php echo WFText::_('WF_LABEL_SPELLCHECK'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
       <select id="spellcheck">
-        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET');?></option>
-        <option value="true"><?php echo WFText::_('WF_OPTION_YES');?></option>
-        <option value="false"><?php echo WFText::_('WF_OPTION_NO');?></option>
+        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
+        <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
+        <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
       </select>
     </div>
 </div>

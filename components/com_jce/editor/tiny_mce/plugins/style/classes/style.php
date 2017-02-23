@@ -1,28 +1,29 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-require_once( WF_EDITOR_LIBRARIES . '/classes/plugin.php' );
+require_once WF_EDITOR_LIBRARIES.'/classes/plugin.php';
 
-class WFStylePlugin extends WFEditorPlugin {
-
-    public function __construct() {
+class WFStylePlugin extends WFEditorPlugin
+{
+    public function __construct()
+    {
         parent::__construct(array('colorpicker' => true));
     }
 
     /**
-     * Display the plugin
+     * Display the plugin.
      */
-    public function display() {
+    public function display()
+    {
         parent::display();
 
         $document = WFDocument::getInstance();
@@ -32,10 +33,10 @@ class WFStylePlugin extends WFEditorPlugin {
 
         $settings = $this->getSettings();
 
-        $document->addScriptDeclaration('StyleDialog.settings=' . json_encode($settings) . ';');
+        $document->addScriptDeclaration('StyleDialog.settings='.json_encode($settings).';');
 
         $tabs = WFTabs::getInstance(array(
-                    'base_path' => WF_EDITOR_PLUGIN
+                    'base_path' => WF_EDITOR_PLUGIN,
                 ));
 
         // Add tabs
@@ -48,7 +49,8 @@ class WFStylePlugin extends WFEditorPlugin {
         $tabs->addTab('positioning');
     }
 
-    public function getSettings($settings = array()) {
+    public function getSettings($settings = array())
+    {
         $profile = $this->getProfile();
 
         $settings = array(
@@ -57,7 +59,4 @@ class WFStylePlugin extends WFEditorPlugin {
 
         return parent::getSettings($settings);
     }
-
 }
-
-?>

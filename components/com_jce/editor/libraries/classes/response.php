@@ -1,35 +1,36 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-final class WFResponse {
+final class WFResponse
+{
+    private $content = null;
 
-  private $content = null;
+    private $id = null;
 
-  private $id = null;
+    private $error = null;
 
-  private $error = null;
-
-  private $headers = array(
+    private $headers = array(
       'Content-Type' => 'text/json;charset=UTF-8',
   );
 
   /**
-   * Constructor
+   * Constructor.
+   *
    * @param $id Request id
    * @param null $content Response content
    * @param array $headers Optional headers
    */
-  public function __construct($id, $content = null, $headers = array()) {
+  public function __construct($id, $content = null, $headers = array())
+  {
       // et response content
       $this->setContent($content);
 
@@ -42,33 +43,33 @@ final class WFResponse {
       return $this;
   }
 
-
   /**
-   * Send response
+   * Send response.
+   *
    * @param array $data
    */
-  public function send($data = array()) {
-
+  public function send($data = array())
+  {
       $data = array_merge($data, array(
-          "jsonrpc"   => "2.0",
-          "id"        => $this->id,
-          "result"    => $this->getContent(),
-          "error"     => $this->getError()
+          'jsonrpc' => '2.0',
+          'id' => $this->id,
+          'result' => $this->getContent(),
+          'error' => $this->getError(),
       ));
 
       ob_start();
 
       // set custom headers
-      foreach($this->headers as $key => $value) {
-          header($key . ': ' . $value);
+      foreach ($this->headers as $key => $value) {
+          header($key.': '.$value);
       }
 
       // set output headers
-      header("Expires: Mon, 4 April 1984 05:00:00 GMT");
-      header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-      header("Cache-Control: no-store, no-cache, must-revalidate");
-      header("Cache-Control: post-check=0, pre-check=0", false);
-      header("Pragma: no-cache");
+      header('Expires: Mon, 4 April 1984 05:00:00 GMT');
+      header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+      header('Cache-Control: no-store, no-cache, must-revalidate');
+      header('Cache-Control: post-check=0, pre-check=0', false);
+      header('Pragma: no-cache');
 
       // only echo response if an id is set
       if (!empty($this->id)) {
@@ -78,41 +79,44 @@ final class WFResponse {
       exit(ob_get_clean());
   }
 
-  public function getHeader() {
-      return $this->headers;
-  }
+    public function getHeader()
+    {
+        return $this->headers;
+    }
 
-  public function setHeaders($headers) {
-      foreach($headers as $key => $value) {
-          $this->headers[$key] = $value;
-      }
+    public function setHeaders($headers)
+    {
+        foreach ($headers as $key => $value) {
+            $this->headers[$key] = $value;
+        }
 
-      return $this;
-  }
+        return $this;
+    }
 
   /**
    * @param array $error
    */
-  public function setError($error = array('code' => -32603, 'message' => 'Internal error')) {
+  public function setError($error = array('code' => -32603, 'message' => 'Internal error'))
+  {
       $this->error = $error;
 
       return $this;
   }
 
-  public function getError() {
-      return $this->error;
-  }
+    public function getError()
+    {
+        return $this->error;
+    }
 
-  public function getContent() {
-      return $this->content;
-  }
+    public function getContent()
+    {
+        return $this->content;
+    }
 
-  public function setContent($content) {
-      $this->content = $content;
+    public function setContent($content)
+    {
+        $this->content = $content;
 
-      return $this;
-  }
-
+        return $this;
+    }
 }
-
-?>

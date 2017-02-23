@@ -1,65 +1,64 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('editor.libraries.classes.extensions');
 
-class WFFileSystem extends WFExtension {
-
+class WFFileSystem extends WFExtension
+{
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access  protected
+     * Constructor activating the default information of the class.
      */
-    public function __construct($config = array()) {
+    public function __construct($config = array())
+    {
         parent::__construct($config);
 
         $this->setProperties(array_merge($config, array(
-            'local'     => true,
-            'upload'    => array(
-                'stream'    => false,
-                'chunking'  => false,
-                'unique_filenames' => false
-            )
+            'local' => true,
+            'upload' => array(
+                'stream' => false,
+                'chunking' => false,
+                'unique_filenames' => false,
+            ),
         )));
     }
 
     /**
-     * Returns a reference to a plugin object
+     * Returns a reference to a plugin object.
      *
      * This method must be invoked as:
      *    <pre>  $advlink =AdvLink::getInstance();</pre>
      *
-     * @access  public
-     * @return  JCE  The editor object.
+     * @return JCE The editor object
+     *
      * @since 1.5
      */
-    public static function getInstance($type = 'joomla', $config = array()) {
+    public static function getInstance($type = 'joomla', $config = array())
+    {
         static $instance;
 
         if (!is_object($instance)) {
             $fs = parent::loadExtensions('filesystem', $type);
-            
+
             // get the first filesystem extension only
             if (is_array($fs)) {
                 $fs = array_shift($fs);
             }
 
-            $classname = 'WF' . ucfirst($fs->name) . 'FileSystem';
+            $classname = 'WF'.ucfirst($fs->name).'FileSystem';
 
             if (class_exists($classname)) {
                 $instance = new $classname($config);
             } else {
-                $instance = new WFFileSystem($config);
+                $instance = new self($config);
             }
         }
 
@@ -68,28 +67,33 @@ class WFFileSystem extends WFExtension {
 
     /**
      * Get the base directory.
+     *
      * @return string base dir
      */
-    public function getBaseDir() {
+    public function getBaseDir()
+    {
         return WFUtility::makePath(JPATH_SITE, $this->getRootDir());
     }
 
     /**
-     * Get the full base url
+     * Get the full base url.
+     *
      * @return string base url
      */
-    public function getBaseURL() {
+    public function getBaseURL()
+    {
         return WFUtility::makePath(JURI::root(true), $this->getRootDir());
     }
 
     /**
-     * Return the full user directory path. Create if required
+     * Return the full user directory path. Create if required.
      *
      * @param string  The base path
-     * @access public
+     *
      * @return Full path to folder
      */
-    public function getRootDir() {
+    public function getRootDir()
+    {
         static $root;
 
         if (!isset($root)) {
@@ -123,7 +127,7 @@ class WFFileSystem extends WFExtension {
 
                     // get the first group
                     $group_id = array_shift($groups);
-                    
+
                     // Joomla! 2.5?
                     if (is_int($group_id)) {
                         // usergroup table
@@ -163,74 +167,90 @@ class WFFileSystem extends WFExtension {
         return $root;
     }
 
-    public function toAbsolute($path) {
+    public function toAbsolute($path)
+    {
         return $path;
     }
 
-    public function toRelative($path) {
+    public function toRelative($path)
+    {
         return $path;
     }
 
-    public function getTotalSize($path, $recurse = true) {
+    public function getTotalSize($path, $recurse = true)
+    {
         return 0;
     }
 
-    public function countFiles($path, $recurse = false) {
+    public function countFiles($path, $recurse = false)
+    {
         return 0;
     }
 
-    public function getFiles($path, $filter) {
+    public function getFiles($path, $filter)
+    {
         return array();
     }
 
-    public function getFolders($path, $filter) {
+    public function getFolders($path, $filter)
+    {
         return array();
     }
 
-    public function getSourceDir($path) {
+    public function getSourceDir($path)
+    {
         return $path;
     }
 
-    public function isMatch($needle, $haystack) {
+    public function isMatch($needle, $haystack)
+    {
         return $needle == $haystack;
     }
 
-    public function pathinfo($path) {
+    public function pathinfo($path)
+    {
         return pathinfo($path);
     }
 
-    public function delete($path) {
+    public function delete($path)
+    {
         return true;
     }
 
-    public function createFolder($path, $new) {
+    public function createFolder($path, $new)
+    {
         return true;
     }
 
-    public function rename($src, $dest) {
+    public function rename($src, $dest)
+    {
         return true;
     }
 
-    public function copy($src, $dest) {
+    public function copy($src, $dest)
+    {
         return true;
     }
 
-    public function move($src, $dest) {
+    public function move($src, $dest)
+    {
         return true;
     }
 
-    public function getFolderDetails($path) {
+    public function getFolderDetails($path)
+    {
         return array(
-            'properties' => array('modified' => '')
+            'properties' => array('modified' => ''),
         );
     }
 
-    public function getFileDetails($path) {
+    public function getFileDetails($path)
+    {
         $data = array(
             'properties' => array(
                 'size' => '',
-                'modified' => ''
-            )
+                'modified' => '',
+            ),
         );
 
         if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $path)) {
@@ -238,8 +258,8 @@ class WFFileSystem extends WFExtension {
                 'properties' => array(
                     'width' => 0,
                     'height' => 0,
-                    'preview' => ''
-                )
+                    'preview' => '',
+                ),
             );
 
             return array_merge_recursive($data, $image);
@@ -248,47 +268,55 @@ class WFFileSystem extends WFExtension {
         return $data;
     }
 
-    public function getDimensions($path) {
+    public function getDimensions($path)
+    {
         return array(
             'width' => '',
-            'height' => ''
+            'height' => '',
         );
     }
 
-    public function upload($method, $src, $dir, $name, $chunks = 0, $chunk = 0) {
+    public function upload($method, $src, $dir, $name, $chunks = 0, $chunk = 0)
+    {
         return true;
     }
 
-    public function exists($path) {
+    public function exists($path)
+    {
         return true;
     }
 
-    public function read($path) {
+    public function read($path)
+    {
         return '';
     }
 
-    public function write($path, $content) {
+    public function write($path, $content)
+    {
         return true;
     }
 
-    public function isLocal() {
+    public function isLocal()
+    {
         return $this->get('local') === true;
     }
 
-    public function is_file($path) {
+    public function is_file($path)
+    {
         return true;
     }
 
-    public function is_dir($path) {
+    public function is_dir($path)
+    {
         return true;
     }
-
 }
 
 /**
- * Filesystem Error class
+ * Filesystem Error class.
  */
-final class WFFileSystemResult {
+final class WFFileSystemResult
+{
     /*
      * @var Object type eg: file / folder
      */
@@ -315,8 +343,7 @@ final class WFFileSystemResult {
      */
     public $url = null;
 
-    function __construct() {
-
+    public function __construct()
+    {
     }
-
 }

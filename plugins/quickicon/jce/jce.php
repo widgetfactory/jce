@@ -1,26 +1,24 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die;
 
 /**
- * JCE File Browser Quick Icon plugin
+ * JCE File Browser Quick Icon plugin.
  *
- * @package		JCE
- * @subpackage	Quickicon.JCE
  * @since		2.1
  */
-class plgQuickiconJce extends JPlugin {
-
-    public function __construct(& $subject, $config) {
+class plgQuickiconJce extends JPlugin
+{
+    public function __construct(&$subject, $config)
+    {
         parent::__construct($subject, $config);
 
         $app = JFactory::getApplication();
@@ -33,8 +31,9 @@ class plgQuickiconJce extends JPlugin {
         $this->loadLanguage();
     }
 
-    public function onGetIcons($context) {
-        @include_once(JPATH_ADMINISTRATOR . '/components/com_jce/models/model.php');
+    public function onGetIcons($context)
+    {
+        @include_once JPATH_ADMINISTRATOR.'/components/com_jce/models/model.php';
 
         // check for class to prevent fatal errors
         if (!class_exists('WFModel')) {
@@ -59,14 +58,14 @@ class plgQuickiconJce extends JPlugin {
         $document->addScriptDeclaration("
     		window.addEvent('domready', function() {
     			SqueezeBox.assign($$('#plg_quickicon_jce a'), {
-    				handler: 'iframe', size: {x: " . $width . ", y: " . $height . "}
+    				handler: 'iframe', size: {x: " .$width.', y: '.$height.'}
     			});
-    		});"
+    		});'
         );
 
-        require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
+        require_once JPATH_ADMINISTRATOR.'/components/com_jce/helpers/browser.php';
 
-        $version = new JVersion;
+        $version = new JVersion();
         $icon = $version->isCompatible('3.0') ? 'pictures' : 'header/icon-48-media.png';
 
         $link = WFBrowserHelper::getBrowserLink('', $filter);
@@ -78,11 +77,10 @@ class plgQuickiconJce extends JPlugin {
                 'icon' => 'pictures',
                 'access' => array('jce.browser', 'com_jce'),
                 'text' => JText::_('PLG_QUICKICON_JCE_TITLE'),
-                'id' => 'plg_quickicon_jce'
+                'id' => 'plg_quickicon_jce',
             ));
         }
 
         return array();
     }
-
 }

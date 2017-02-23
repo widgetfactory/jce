@@ -1,9 +1,8 @@
 <?php
 
 /**
- * @package    JCE
  * @copyright  Copyright (c) 2010-2013 Nicholas K. Dionysopoulos / AkeebaBackup.com
- * @copyright  Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright  Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license    GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
  *
  * Based on the LiveUpdateDownloadHelper class from Akeeba LiveUpdate
@@ -11,12 +10,13 @@
 defined('_JEXEC') or die();
 
 /**
- * Check for and download updates from a remote server
+ * Check for and download updates from a remote server.
  */
-class UpdatesHelper {
-
-    private static function applyCACert(&$ch) {
-        $cacert = dirname(__FILE__) . '/cacert.pem';
+class UpdatesHelper
+{
+    private static function applyCACert(&$ch)
+    {
+        $cacert = dirname(__FILE__).'/cacert.pem';
 
         if (file_exists($cacert)) {
             @curl_setopt($ch, CURLOPT_CAINFO, $cacert);
@@ -28,13 +28,15 @@ class UpdatesHelper {
     }
 
     /**
-     * Fetches update information from the server using cURL or fopen
-     * @param   string $url     The URL to check
-     * @param   string $data    Data to send via POST
+     * Fetches update information from the server using cURL or fopen.
      *
-     * @return  mixed  Result string on success, false on failure
+     * @param string $url  The URL to check
+     * @param string $data Data to send via POST
+     *
+     * @return mixed Result string on success, false on failure
      */
-    public function check($url, $data) {
+    public function check($url, $data)
+    {
         $result = false;
 
         if (self::hasCURL()) {
@@ -64,20 +66,20 @@ class UpdatesHelper {
 
             // file download
             if ($result === false) {
-                $error  = curl_error($ch);
-                $num    = (int) curl_errno($ch);
+                $error = curl_error($ch);
+                $num = (int) curl_errno($ch);
 
                 if (!$error && $num === 7) {
-                  $error = 'Failed to connect() to host or proxy';
+                    $error = 'Failed to connect() to host or proxy';
                 }
 
                 curl_close($ch);
 
-                return array('error' => 'CURL ERROR : ' . $num . ' - ' . $error);
+                return array('error' => 'CURL ERROR : '.$num.' - '.$error);
             }
 
             curl_close($ch);
-        } else if (self::hasFOPEN()) {
+        } elseif (self::hasFOPEN()) {
             $options = array('http' => array('method' => 'POST', 'timeout' => 10, 'content' => $data));
 
             $context = stream_context_create($options);
@@ -92,18 +94,19 @@ class UpdatesHelper {
     }
 
     /**
-     * Downloads from a URL and saves the result as a local file
+     * Downloads from a URL and saves the result as a local file.
      *
-     * @param   string  $url     The URL to fetch
-     * @param   string  $target  Where to save the file
+     * @param string $url    The URL to fetch
+     * @param string $target Where to save the file
      *
-     * @return  boolean  True on success
+     * @return bool True on success
      */
-    public static function download($url, $target) {
+    public static function download($url, $target)
+    {
         // Import Joomla! libraries
         JLoader::import('joomla.filesystem.file');
 
-        /** @var bool Did we try to force permissions? */
+        /* @var bool Did we try to force permissions? */
         $hackPermissions = false;
 
         // Make sure the target does not exist
@@ -136,7 +139,7 @@ class UpdatesHelper {
 
             while (!empty($adapters) && ($result === false)) {
                 // Run the current download method
-                $method = 'get' . strtoupper(array_shift($adapters));
+                $method = 'get'.strtoupper(array_shift($adapters));
                 $result = self::$method($url, $fp);
 
                 // Check if we have a download
@@ -176,19 +179,20 @@ class UpdatesHelper {
     }
 
     /**
-     * Downloads from a URL and returns the result as a string
+     * Downloads from a URL and returns the result as a string.
      *
-     * @param   string  $url  The URL to download from
+     * @param string $url The URL to download from
      *
-     * @return  mixed  Result string on success, false on failure
+     * @return mixed Result string on success, false on failure
      */
-    public static function downloadAndReturn($url) {
+    public static function downloadAndReturn($url)
+    {
         $adapters = self::getAdapters();
         $result = false;
 
         while (!empty($adapters) && ($result === false)) {
             // Run the current download method
-            $method = 'get' . strtoupper(array_shift($adapters));
+            $method = 'get'.strtoupper(array_shift($adapters));
             $result = self::$method($url, null);
         }
 
@@ -198,16 +202,17 @@ class UpdatesHelper {
     /**
      * Does the server support PHP's cURL extension?
      *
-     * @return   boolean  True if it is supported
+     * @return bool True if it is supported
      */
-    public static function hasCURL() {
+    public static function hasCURL()
+    {
         static $result = null;
 
         if (is_null($result)) {
             $result = function_exists('curl_init');
 
             if ($result) {
-                $cacert = dirname(__FILE__) . '/cacert.pem';
+                $cacert = dirname(__FILE__).'/cacert.pem';
 
                 // check for SSL support
                 $version = curl_version();
@@ -222,14 +227,15 @@ class UpdatesHelper {
 
     /**
      * Downloads the contents of a URL and writes them to disk (if $fp is not null)
-     * or returns them as a string (if $fp is null) using cURL
+     * or returns them as a string (if $fp is null) using cURL.
      *
-     * @param   string    $url  The URL to download from
-     * @param   resource  $fp   The file pointer to download to. Omit to return the contents.
+     * @param string   $url The URL to download from
+     * @param resource $fp  The file pointer to download to. Omit to return the contents
      *
-     * @return  boolean|string  False on failure, true on success ($fp not null) or the URL contents (if $fp is null)
+     * @return bool|string False on failure, true on success ($fp not null) or the URL contents (if $fp is null)
      */
-    private static function &getCURL($url, $fp = null, $nofollow = false) {
+    private static function &getCURL($url, $fp = null, $nofollow = false)
+    {
         $result = false;
 
         $ch = curl_init($url);
@@ -257,7 +263,7 @@ class UpdatesHelper {
             $lines = explode("\n", $data);
 
             foreach ($lines as $line) {
-                if (substr($line, 0, 9) == "Location:") {
+                if (substr($line, 0, 9) == 'Location:') {
                     $newURL = trim(substr($line, 9));
                 }
             }
@@ -294,9 +300,10 @@ class UpdatesHelper {
     /**
      * Does the server support URL fopen() wrappers?
      *
-     * @return  boolean
+     * @return bool
      */
-    public static function hasFOPEN() {
+    public static function hasFOPEN()
+    {
         static $result = null;
 
         if (is_null($result)) {
@@ -317,14 +324,15 @@ class UpdatesHelper {
 
     /**
      * Downloads the contents of a URL and writes them to disk (if $fp is not null)
-     * or returns them as a string (if $fp is null) using fopen() URL wrappers
+     * or returns them as a string (if $fp is null) using fopen() URL wrappers.
      *
-     * @param   string    $url  The URL to download from
-     * @param   resource  $fp   The file pointer to download to. Omit to return the contents.
+     * @param string   $url The URL to download from
+     * @param resource $fp  The file pointer to download to. Omit to return the contents
      *
-     * @return  boolean|string  False on failure, true on success ($fp not null) or the URL contents (if $fp is null)
+     * @return bool|string False on failure, true on success ($fp not null) or the URL contents (if $fp is null)
      */
-    private static function &getFOPEN($url, $fp = null) {
+    private static function &getFOPEN($url, $fp = null)
+    {
         $result = false;
 
         // Track errors
@@ -363,6 +371,7 @@ class UpdatesHelper {
             if ($contents === false) {
                 @fclose($ih);
                 $result = false;
+
                 return $result;
             } else {
                 $bytes += strlen($contents);
@@ -387,33 +396,39 @@ class UpdatesHelper {
     }
 
     /**
-     * Detect and return available download methods
+     * Detect and return available download methods.
      *
-     * @return  array
+     * @return array
      */
-    private static function getAdapters() {
+    private static function getAdapters()
+    {
         // Detect available adapters
         $adapters = array();
-        if (self::hasCURL())
+        if (self::hasCURL()) {
             $adapters[] = 'curl';
-        if (self::hasFOPEN())
+        }
+        if (self::hasFOPEN()) {
             $adapters[] = 'fopen';
+        }
+
         return $adapters;
     }
 
     /**
-     * Change the permissions of a file, optionally using FTP
+     * Change the permissions of a file, optionally using FTP.
      *
-     * @param   string  $file  Absolute path to file
-     * @param   int     $mode  Permissions, e.g. 0755
+     * @param string $file Absolute path to file
+     * @param int    $mode Permissions, e.g. 0755
      *
-     * @return  boolean  Ture if successful
+     * @return bool Ture if successful
      */
-    private static function chmod($path, $mode) {
+    private static function chmod($path, $mode)
+    {
         if (is_string($mode)) {
             $mode = octdec($mode);
-            if (($mode < 0600) || ($mode > 0777))
+            if (($mode < 0600) || ($mode > 0777)) {
                 $mode = 0755;
+            }
         }
 
         // Initialize variables
@@ -455,5 +470,4 @@ class UpdatesHelper {
             return false;
         }
     }
-
 }

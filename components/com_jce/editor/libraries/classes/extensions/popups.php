@@ -1,13 +1,12 @@
 <?php
 
 /**
- * @package       JCE
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
@@ -15,16 +14,13 @@ wfimport('editor.libraries.classes.extensions');
 
 class WFPopupsExtension extends WFExtension
 {
-
     protected static $instance;
 
     private $_popups = array();
     private $_templates = array();
 
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access  protected
+     * Constructor activating the default information of the class.
      */
     public function __construct($config = array())
     {
@@ -34,19 +30,19 @@ class WFPopupsExtension extends WFExtension
     }
 
     /**
-     * Returns a reference to a plugin object
+     * Returns a reference to a plugin object.
      *
      * This method must be invoked as:
      *    <pre>  $advlink =AdvLink::getInstance();</pre>
      *
-     * @access  public
-     * @return  JCE  The editor object.
+     * @return JCE The editor object
+     *
      * @since 1.5
      */
     public static function getInstance($config = array())
     {
         if (!isset(self::$instance)) {
-            self::$instance = new WFPopupsExtension($config);
+            self::$instance = new self($config);
         }
 
         return self::$instance;
@@ -65,7 +61,7 @@ class WFPopupsExtension extends WFExtension
 
         if ($config) {
             // Create global config
-            $document->addScriptDeclaration('WFExtensions.Popups.setConfig(' . json_encode($config) . ');');
+            $document->addScriptDeclaration('WFExtensions.Popups.setConfig('.json_encode($config).');');
         }
 
         // Create an instance of each popup and check if enabled
@@ -78,7 +74,7 @@ class WFPopupsExtension extends WFExtension
                 $params = $popup->getParams();
 
                 if (!empty($params)) {
-                    $document->addScriptDeclaration('WFExtensions.Popups.setParams("' . $item->name . '",' . json_encode($params) . ');');
+                    $document->addScriptDeclaration('WFExtensions.Popups.setParams("'.$item->name.'",'.json_encode($params).');');
                 }
             }
         }
@@ -117,7 +113,7 @@ class WFPopupsExtension extends WFExtension
         static $popups = array();
 
         if (!isset($popups[$name])) {
-            $classname = 'WFPopupsExtension_' . ucfirst($name);
+            $classname = 'WFPopupsExtension_'.ucfirst($name);
             $popups[$name] = new $classname();
         }
 
@@ -128,10 +124,10 @@ class WFPopupsExtension extends WFExtension
     {
         $options = array();
 
-        $options[] = JHTML::_('select.option', '', '-- ' . WFText::_('WF_POPUP_TYPE_SELECT') . ' --');
+        $options[] = JHTML::_('select.option', '', '-- '.WFText::_('WF_POPUP_TYPE_SELECT').' --');
 
         foreach ($this->getPopups() as $popup) {
-            $options[] = JHTML::_('select.option', $popup->name, WFText::_('WF_POPUPS_' . strtoupper($popup->name) . '_TITLE'));
+            $options[] = JHTML::_('select.option', $popup->name, WFText::_('WF_POPUPS_'.strtoupper($popup->name).'_TITLE'));
         }
 
         return JHTML::_('select.genericlist', $options, 'popup_list', '', 'value', 'text', $this->get('default'));
@@ -148,20 +144,20 @@ class WFPopupsExtension extends WFExtension
             $output .= $view->loadTemplate($template);
         }
 
-        foreach ($this->getPopups() as $popup) {            
+        foreach ($this->getPopups() as $popup) {
             $view = new WFView(array(
                 'name' => $popup->name,
                 'base_path' => $popup->path,
-                'template_path' => $popup->path . '/tmpl',
+                'template_path' => $popup->path.'/tmpl',
             ));
 
             $instance = $this->getPopupExtension($popup->name);
             $view->assign('popup', $instance);
 
-            if (file_exists($popup->path . '/tmpl/default.php')) {
+            if (file_exists($popup->path.'/tmpl/default.php')) {
                 ob_start();
 
-                $output .= '<div id="popup_extension_' . $popup->name . '" style="display:none;">';
+                $output .= '<div id="popup_extension_'.$popup->name.'" style="display:none;">';
 
                 $view->display();
 
@@ -173,5 +169,4 @@ class WFPopupsExtension extends WFExtension
 
         return $output;
     }
-
 }

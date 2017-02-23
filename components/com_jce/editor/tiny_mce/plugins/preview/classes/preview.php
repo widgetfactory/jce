@@ -1,27 +1,25 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 // Load class dependencies
-require_once(WF_EDITOR_LIBRARIES . '/classes/plugin.php');
+require_once WF_EDITOR_LIBRARIES.'/classes/plugin.php';
 
-class WFPreviewPlugin extends WFEditorPlugin {
-
+class WFPreviewPlugin extends WFEditorPlugin
+{
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access	protected
+     * Constructor activating the default information of the class.
      */
-    function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $request = WFRequest::getInstance();
@@ -32,10 +30,10 @@ class WFPreviewPlugin extends WFEditorPlugin {
     }
 
     /**
-     * Display Preview content
-     * @return void
+     * Display Preview content.
      */
-    public function showPreview() {
+    public function showPreview()
+    {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
         $dispatcher = JDispatcher::getInstance();
@@ -57,8 +55,8 @@ class WFPreviewPlugin extends WFEditorPlugin {
         // cleanup data
         $data = preg_replace(array('#<!DOCTYPE([^>]+)>#i', '#<(head|title|meta)([^>]*)>([\w\W]+)<\/1>#i', '#<\/?(html|body)([^>]*)>#i'), '', rawurldecode($data));
 
-        $extension_id   = JRequest::getInt('extension_id');
-        $extension      = WFExtensionHelper::getComponent($extension_id);
+        $extension_id = JRequest::getInt('extension_id');
+        $extension = WFExtensionHelper::getComponent($extension_id);
 
         // create params registry object
         $params = new JRegistry();
@@ -88,57 +86,58 @@ class WFPreviewPlugin extends WFEditorPlugin {
 
         // allow this to be skipped as some plugins can cause FATAL errors.
         if ((bool) $this->getParam('process_content', 1)) {
-          $limitstart = 0;
-          JPluginHelper::importPlugin('content');
+            $limitstart = 0;
+            JPluginHelper::importPlugin('content');
 
-          require_once(JPATH_SITE . '/components/com_content/helpers/route.php');
+            require_once JPATH_SITE.'/components/com_content/helpers/route.php';
 
           // set error reporting off to produce empty string on Fatal error
           error_reporting(0);
 
-          $dispatcher->trigger('onPrepareContent', array(& $article, & $params, $limitstart));
+            $dispatcher->trigger('onPrepareContent', array(&$article, &$params, $limitstart));
         }
 
         $this->processURLS($article);
+
         return $article->text;
     }
 
     /**
-     * Convert URLs
+     * Convert URLs.
+     *
      * @param object $article Article object
-     * @return void
      */
-    private function processURLS(&$article) {
-        $base = JURI::root(true) . '/';
+    private function processURLS(&$article)
+    {
+        $base = JURI::root(true).'/';
         $buffer = $article->text;
 
         $protocols = '[a-zA-Z0-9]+:'; //To check for all unknown protocals (a protocol must contain at least one alpahnumeric fillowed by :
-        $regex = '#(src|href|poster)="(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
+        $regex = '#(src|href|poster)="(?!/|'.$protocols.'|\#|\')([^"]*)"#m';
         $buffer = preg_replace($regex, "$1=\"$base\$2\"", $buffer);
-        $regex = '#(onclick="window.open\(\')(?!/|' . $protocols . '|\#)([^/]+[^\']*?\')#m';
-        $buffer = preg_replace($regex, '$1' . $base . '$2', $buffer);
+        $regex = '#(onclick="window.open\(\')(?!/|'.$protocols.'|\#)([^/]+[^\']*?\')#m';
+        $buffer = preg_replace($regex, '$1'.$base.'$2', $buffer);
 
         // ONMOUSEOVER / ONMOUSEOUT
-        $regex = '#(onmouseover|onmouseout)="this.src=([\']+)(?!/|' . $protocols . '|\#|\')([^"]+)"#m';
-        $buffer = preg_replace($regex, '$1="this.src=$2' . $base . '$3$4"', $buffer);
+        $regex = '#(onmouseover|onmouseout)="this.src=([\']+)(?!/|'.$protocols.'|\#|\')([^"]+)"#m';
+        $buffer = preg_replace($regex, '$1="this.src=$2'.$base.'$3$4"', $buffer);
 
         // Background image
-        $regex = '#style\s*=\s*[\'\"](.*):\s*url\s*\([\'\"]?(?!/|' . $protocols . '|\#)([^\)\'\"]+)[\'\"]?\)#m';
-        $buffer = preg_replace($regex, 'style="$1: url(\'' . $base . '$2$3\')', $buffer);
+        $regex = '#style\s*=\s*[\'\"](.*):\s*url\s*\([\'\"]?(?!/|'.$protocols.'|\#)([^\)\'\"]+)[\'\"]?\)#m';
+        $buffer = preg_replace($regex, 'style="$1: url(\''.$base.'$2$3\')', $buffer);
 
         // OBJECT <param name="xx", value="yy"> -- fix it only inside the <param> tag
-        $regex = '#(<param\s+)name\s*=\s*"(movie|src|url)"[^>]\s*value\s*=\s*"(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
-        $buffer = preg_replace($regex, '$1name="$2" value="' . $base . '$3"', $buffer);
+        $regex = '#(<param\s+)name\s*=\s*"(movie|src|url)"[^>]\s*value\s*=\s*"(?!/|'.$protocols.'|\#|\')([^"]*)"#m';
+        $buffer = preg_replace($regex, '$1name="$2" value="'.$base.'$3"', $buffer);
 
         // OBJECT <param value="xx", name="yy"> -- fix it only inside the <param> tag
-        $regex = '#(<param\s+[^>]*)value\s*=\s*"(?!/|' . $protocols . '|\#|\')([^"]*)"\s*name\s*=\s*"(movie|src|url)"#m';
-        $buffer = preg_replace($regex, '<param value="' . $base . '$2" name="$3"', $buffer);
+        $regex = '#(<param\s+[^>]*)value\s*=\s*"(?!/|'.$protocols.'|\#|\')([^"]*)"\s*name\s*=\s*"(movie|src|url)"#m';
+        $buffer = preg_replace($regex, '<param value="'.$base.'$2" name="$3"', $buffer);
 
         // OBJECT data="xx" attribute -- fix it only in the object tag
-        $regex = '#(<object\s+[^>]*)data\s*=\s*"(?!/|' . $protocols . '|\#|\')([^"]*)"#m';
-        $buffer = preg_replace($regex, '$1data="' . $base . '$2"$3', $buffer);
+        $regex = '#(<object\s+[^>]*)data\s*=\s*"(?!/|'.$protocols.'|\#|\')([^"]*)"#m';
+        $buffer = preg_replace($regex, '$1data="'.$base.'$2"$3', $buffer);
 
         $article->text = $buffer;
     }
-
 }

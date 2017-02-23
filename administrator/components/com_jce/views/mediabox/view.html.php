@@ -1,38 +1,37 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('admin.classes.view');
 
-class WFViewMediabox extends WFView {
-
-    function getParams($data) {
-
+class WFViewMediabox extends WFView
+{
+    public function getParams($data)
+    {
         jimport('joomla.form.form');
 
-        $xml = JPATH_PLUGINS . '/system/jcemediabox/jcemediabox.xml';
+        $xml = JPATH_PLUGINS.'/system/jcemediabox/jcemediabox.xml';
 
         if (class_exists('JForm')) {
             $control = 'config:fields:fieldset';
         } else {
             $control = 'params';
-             $xml = JPATH_PLUGINS . '/system/jcemediabox.xml';
+            $xml = JPATH_PLUGINS.'/system/jcemediabox.xml';
         }
 
         $params = new WFParameter($data, $xml, '', array('control' => $control));
-        $params->addElementPath(JPATH_PLUGINS . '/system/jcemediabox/elements');
+        $params->addElementPath(JPATH_PLUGINS.'/system/jcemediabox/elements');
 
         $groups = array();
-        $array  = array();
+        $array = array();
 
         foreach ($params->getGroups() as $group) {
             $groups[] = $params->getParams('params', $group);
@@ -45,7 +44,8 @@ class WFViewMediabox extends WFView {
         return $array;
     }
 
-    function display($tpl = null) {
+    public function display($tpl = null)
+    {
         $db = JFactory::getDBO();
 
         $lang = JFactory::getLanguage();
@@ -72,12 +72,12 @@ class WFViewMediabox extends WFView {
                 'template' => WFText::_('WF_COLORPICKER_TEMPLATE'),
                 'color' => WFText::_('WF_COLORPICKER_COLOR'),
                 'apply' => WFText::_('WF_COLORPICKER_APPLY'),
-                'name' => WFText::_('WF_COLORPICKER_NAME')
+                'name' => WFText::_('WF_COLORPICKER_NAME'),
             ),
-            'parent' => '.ui-jce'
+            'parent' => '.ui-jce',
         );
 
-        $this->addScriptDeclaration('jQuery(document).ready(function($){$("input.color").colorpicker(' . json_encode($options) . ');});');
+        $this->addScriptDeclaration('jQuery(document).ready(function($){$("input.color").colorpicker('.json_encode($options).');});');
 
         WFToolbarHelper::apply();
         WFToolbarHelper::save();
@@ -86,5 +86,4 @@ class WFViewMediabox extends WFView {
 
         parent::display($tpl);
     }
-
 }

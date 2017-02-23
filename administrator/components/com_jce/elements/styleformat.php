@@ -1,37 +1,37 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('JPATH_BASE') or die('RESTRICTED');
 
 /**
- * Renders a select element
+ * Renders a select element.
  */
-class WFElementStyleFormat extends WFElement {
-
+class WFElementStyleFormat extends WFElement
+{
     protected $wrapper = array();
     protected $merge = array();
 
-    protected $sections     = array('section','nav','article','aside','h1', 'h2', 'h3', 'h4', 'h5', 'h6','header','footer','address','main');
-    protected $grouping     = array('p','pre','blockquote','figure','figcaption','div');
-    protected $textlevel    = array('em','strong','small','s','cite','q','dfn','abbr','data','time','code','var','samp','kbd','sub','i','b','u','mark','ruby','rt','rp','bdi','bdo','span','wbr');
-    protected $form         = array('form', 'input', 'button', 'fieldset', 'legend');
-    /**
+    protected $sections = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main');
+    protected $grouping = array('p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
+    protected $textlevel = array('em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data', 'time', 'code', 'var', 'samp', 'kbd', 'sub', 'i', 'b', 'u', 'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'wbr');
+    protected $form = array('form', 'input', 'button', 'fieldset', 'legend');
+    /*
      * Element type
      *
      * @access	protected
      * @var		string
      */
-    var $_name = 'StyleFormat';
+    public $_name = 'StyleFormat';
 
-    public function fetchElement($name, $value, &$node, $control_name) {
+    public function fetchElement($name, $value, &$node, $control_name)
+    {
         $wf = WFEditor::getInstance();
 
         $output = array();
@@ -46,8 +46,8 @@ class WFElementStyleFormat extends WFElement {
         $theme_advanced_styles = $wf->getParam('editor.theme_advanced_styles', '');
 
         if (!empty($theme_advanced_styles)) {
-            foreach(explode(',', $theme_advanced_styles) as $styles) {
-                $style = json_decode("{" . preg_replace('#([^=]+)=([^=]+)#', '"title":"$1","classes":"$2"', $styles) . "}", true);
+            foreach (explode(',', $theme_advanced_styles) as $styles) {
+                $style = json_decode('{'.preg_replace('#([^=]+)=([^=]+)#', '"title":"$1","classes":"$2"', $styles).'}', true);
 
                 if ($style) {
                     $items[] = $style;
@@ -72,11 +72,11 @@ class WFElementStyleFormat extends WFElement {
 
             $parents = array();
 
-            foreach(explode(';', (string) $node->attributes()->parent) as $item) {
-                $parents[] = $prefix . $item;
+            foreach (explode(';', (string) $node->attributes()->parent) as $item) {
+                $parents[] = $prefix.$item;
             }
 
-            $html .= ' data-parent="' . implode(';', $parents) . '"';
+            $html .= ' data-parent="'.implode(';', $parents).'"';
         }
 
         $html .= '>';
@@ -87,12 +87,11 @@ class WFElementStyleFormat extends WFElement {
             $elements = array('<div class="styleformat">');
 
             foreach ($default as $k => $v) {
-
                 if (array_key_exists($k, $item)) {
                     $v = $item[$k];
                 }
 
-                $elements[] = '<div class="styleformat-item-' . $k . '">' . $this->getField($k, $v) . '</div>';
+                $elements[] = '<div class="styleformat-item-'.$k.'">'.$this->getField($k, $v).'</div>';
             }
             // handle
             $elements[] = '<a href="#" class="close handle">&nbsp;</a>';
@@ -106,23 +105,25 @@ class WFElementStyleFormat extends WFElement {
             $output[] = implode('', $elements);
         }
 
-        $output[] = '<a href="#" class="close plus"><span>' . WFText::_('WF_STYLEFORMAT_NEW') . '</span><span>&plus;</span></a>';
+        $output[] = '<a href="#" class="close plus"><span>'.WFText::_('WF_STYLEFORMAT_NEW').'</span><span>&plus;</span></a>';
 
         // hidden field
-        $output[] = '<input type="hidden" name="' . $control_name . '[' . $name . ']" value="" />';
+        $output[] = '<input type="hidden" name="'.$control_name.'['.$name.']" value="" />';
 
         if (!empty($theme_advanced_styles)) {
             $output[] = '<input type="hidden" name="params[editor][theme_advanced_styles]" value="" class="isdirty" />';
         }
 
         $output[] = '</div>';
+
         return implode("\n", $output);
     }
 
-    protected function getElementOptions() {
+    protected function getElementOptions()
+    {
         // create elements list
         $options = array(
-            JHTML::_('select.option', '', WFText::_('WF_OPTION_SELECTED_ELEMENT'))
+            JHTML::_('select.option', '', WFText::_('WF_OPTION_SELECTED_ELEMENT')),
         );
 
         $options[] = JHTML::_('select.option',  '<OPTGROUP>', WFText::_('WF_OPTION_SECTION_ELEMENTS'));
@@ -160,11 +161,12 @@ class WFElementStyleFormat extends WFElement {
         return $options;
     }
 
-    protected function getField($key, $value) {
+    protected function getField($key, $value)
+    {
         $item = array();
 
-        if ($key !== "title") {
-            $item[] = '<label for="' . $key . '">' . WFText::_('WF_STYLEFORMAT_' . strtoupper($key)) . '</label>';
+        if ($key !== 'title') {
+            $item[] = '<label for="'.$key.'">'.WFText::_('WF_STYLEFORMAT_'.strtoupper($key)).'</label>';
         }
 
         // encode value
@@ -175,34 +177,32 @@ class WFElementStyleFormat extends WFElement {
             case 'block':
             case 'element':
 
-                $class = "";
+                $class = '';
 
                 // make element editable
                 /*if ($key === "element") {
                     $class = ' class="editable"';
                 }*/
 
-                $item[] = JHTML::_('select.genericlist', $this->elements, null, 'data-key="' . $key . '"' . $class, 'value', 'text', $value);
+                $item[] = JHTML::_('select.genericlist', $this->elements, null, 'data-key="'.$key.'"'.$class, 'value', 'text', $value);
 
                 break;
             case 'title':
-                $item[] = '<input type="text" placeholder="' . WFText::_('WF_STYLEFORMAT_' . strtoupper($key)) . '" data-key="' . $key . '" value="' . $value . '" />';
+                $item[] = '<input type="text" placeholder="'.WFText::_('WF_STYLEFORMAT_'.strtoupper($key)).'" data-key="'.$key.'" value="'.$value.'" />';
                 break;
             case 'styles':
             case 'attributes':
             case 'selector':
             case 'classes':
 
-                $item[] = '<input type="text" data-key="' . $key . '" value="' . $value . '" />';
+                $item[] = '<input type="text" data-key="'.$key.'" value="'.$value.'" />';
 
                 break;
         }
-        if ($key !== "title") {
-            $item[] = '<span class="help-block">' . WFText::_('WF_STYLEFORMAT_' . strtoupper($key) . '_DESC') . '</span>';
+        if ($key !== 'title') {
+            $item[] = '<span class="help-block">'.WFText::_('WF_STYLEFORMAT_'.strtoupper($key).'_DESC').'</span>';
         }
+
         return implode('', $item);
     }
-
 }
-
-?>

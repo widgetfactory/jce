@@ -1,32 +1,33 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-class WFControllerMediabox extends WFController {
-
-    function __construct($default = array()) {
+class WFControllerMediabox extends WFController
+{
+    public function __construct($default = array())
+    {
         parent::__construct();
-        
+
         $this->registerTask('apply', 'save');
     }
 
-    public function save() {
+    public function save()
+    {
         // Check for request forgeries
         JRequest::checkToken() or die('RESTRICTED');
-        
-        $row    = WFExtensionHelper::getPlugin(null, 'jcemediabox', 'system');
 
-        $task   = $this->getTask();
-        
+        $row = WFExtensionHelper::getPlugin(null, 'jcemediabox', 'system');
+
+        $task = $this->getTask();
+
         // remove id for Joomla! 2.5+
         if ($row->extension_id) {
             unset($row->id);
@@ -57,7 +58,4 @@ class WFControllerMediabox extends WFController {
                 break;
         }
     }
-
 }
-
-?>

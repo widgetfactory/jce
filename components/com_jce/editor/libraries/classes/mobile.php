@@ -1,7 +1,7 @@
 <?php
 /**
  * Mobile Detect Library
- * =====================
+ * =====================.
  *
  * Motto: "Every business should have a mobile detection script to detect mobile readers"
  *
@@ -12,7 +12,6 @@
  *                               Nick Ilyin <nick.ilyin@gmail.com>
  *
  *              Original author: Victor Stanciu <vic.stanciu@gmail.com>
- *
  * @license     Code and contributions have 'MIT License'
  *              More details: https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
  *
@@ -24,7 +23,6 @@
  *
  * @version     2.8.24
  */
-
 class Wf_Mobile_Detect
 {
     /**
@@ -79,25 +77,29 @@ class Wf_Mobile_Detect
     const VERSION_TYPE_FLOAT = 'float';
 
     /**
-     * A cache for resolved matches
+     * A cache for resolved matches.
+     *
      * @var array
      */
     protected $cache = array();
 
     /**
      * The User-Agent HTTP header is stored in here.
+     *
      * @var string
      */
     protected $userAgent = null;
 
     /**
      * HTTP headers in the PHP-flavor. So HTTP_USER_AGENT and SERVER_SOFTWARE.
+     *
      * @var array
      */
     protected $httpHeaders = array();
 
     /**
      * CloudFront headers. E.g. CloudFront-Is-Desktop-Viewer, CloudFront-Is-Mobile-Viewer & CloudFront-Is-Tablet-Viewer.
+     *
      * @var array
      */
     protected $cloudfrontHeaders = array();
@@ -105,6 +107,7 @@ class Wf_Mobile_Detect
     /**
      * The matching Regex.
      * This is good for debug.
+     *
      * @var string
      */
     protected $matchingRegex = null;
@@ -112,6 +115,7 @@ class Wf_Mobile_Detect
     /**
      * The matches extracted from the regex expression.
      * This is good for debug.
+     *
      * @var string
      */
     protected $matchesArray = null;
@@ -668,9 +672,9 @@ class Wf_Mobile_Detect
      * Construct an instance of this class.
      *
      * @param array  $headers   Specify the headers as injection. Should be PHP _SERVER flavored.
-     *                          If left empty, will use the global _SERVER['HTTP_*'] vars instead.
+     *                          If left empty, will use the global _SERVER['HTTP_*'] vars instead
      * @param string $userAgent Inject the User-Agent header. If null, will use HTTP_USER_AGENT
-     *                          from the $headers array instead.
+     *                          from the $headers array instead
      */
     public function __construct(
         array $headers = null,
@@ -686,7 +690,7 @@ class Wf_Mobile_Detect
      * so people can check on what version they are testing
      * for mobile devices.
      *
-     * @return string The version number in semantic version format.
+     * @return string The version number in semantic version format
      */
     public static function getScriptVersion()
     {
@@ -697,7 +701,7 @@ class Wf_Mobile_Detect
      * Set the HTTP Headers. Must be PHP-flavored. This method will reset existing headers.
      *
      * @param array $httpHeaders The headers to set. If null, then using PHP's _SERVER to extract
-     *                           the headers. The default null is left for backwards compatibility.
+     *                           the headers. The default null is left for backwards compatibility
      */
     public function setHttpHeaders($httpHeaders = null)
     {
@@ -737,9 +741,9 @@ class Wf_Mobile_Detect
      *
      * @param string $header The name of the header to retrieve. Can be HTTP compliant such as
      *                       "User-Agent" or "X-Device-User-Agent" or can be php-esque with the
-     *                       all-caps, HTTP_ prefixed, underscore seperated awesomeness.
+     *                       all-caps, HTTP_ prefixed, underscore seperated awesomeness
      *
-     * @return string|null The value of the header.
+     * @return string|null The value of the header
      */
     public function getHttpHeader($header)
     {
@@ -750,7 +754,7 @@ class Wf_Mobile_Detect
         }
 
         // test the alternate, too
-        $altHeader = 'HTTP_' . $header;
+        $altHeader = 'HTTP_'.$header;
 
         //Test both the regular and the HTTP_ prefix
         if (isset($this->httpHeaders[$header])) {
@@ -771,7 +775,7 @@ class Wf_Mobile_Detect
      * Get all possible HTTP headers that
      * can contain the User-Agent string.
      *
-     * @return array List of HTTP headers.
+     * @return array List of HTTP headers
      */
     public function getUaHttpHeaders()
     {
@@ -780,11 +784,11 @@ class Wf_Mobile_Detect
 
     /**
      * Set CloudFront headers
-     * http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-device
+     * http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html#header-caching-web-device.
      *
      * @param array $cfHeaders List of HTTP headers
      *
-     * @return  boolean If there were CloudFront headers to be set
+     * @return bool If there were CloudFront headers to be set
      */
     public function setCfHeaders($cfHeaders = null)
     {
@@ -822,7 +826,7 @@ class Wf_Mobile_Detect
     /**
      * Set the User-Agent to be used.
      *
-     * @param string $userAgent The user agent string to set.
+     * @param string $userAgent The user agent string to set
      *
      * @return string|null
      */
@@ -837,7 +841,7 @@ class Wf_Mobile_Detect
             $this->userAgent = null;
             foreach ($this->getUaHttpHeaders() as $altHeader) {
                 if (false === empty($this->httpHeaders[$altHeader])) { // @todo: should use getHttpHeader(), but it would be slow. (Serban)
-                    $this->userAgent .= $this->httpHeaders[$altHeader] . " ";
+                    $this->userAgent .= $this->httpHeaders[$altHeader].' ';
                 }
             }
 
@@ -849,13 +853,14 @@ class Wf_Mobile_Detect
         if (count($this->getCfHeaders()) > 0) {
             return $this->userAgent = 'Amazon CloudFront';
         }
+
         return $this->userAgent = null;
     }
 
     /**
      * Retrieve the User-Agent.
      *
-     * @return string|null The user agent if it's set.
+     * @return string|null The user agent if it's set
      */
     public function getUserAgent()
     {
@@ -869,7 +874,7 @@ class Wf_Mobile_Detect
      * @deprecated since version 2.6.9
      *
      * @param string $type The type. Must be a self::DETECTION_TYPE_* constant. The default
-     *                     parameter is null which will default to self::DETECTION_TYPE_MOBILE.
+     *                     parameter is null which will default to self::DETECTION_TYPE_MOBILE
      */
     public function setDetectionType($type = null)
     {
@@ -897,7 +902,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the list of known phone devices.
      *
-     * @return array List of phone devices.
+     * @return array List of phone devices
      */
     public static function getPhoneDevices()
     {
@@ -907,7 +912,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the list of known tablet devices.
      *
-     * @return array List of tablet devices.
+     * @return array List of tablet devices
      */
     public static function getTabletDevices()
     {
@@ -917,7 +922,7 @@ class Wf_Mobile_Detect
     /**
      * Alias for getBrowsers() method.
      *
-     * @return array List of user agents.
+     * @return array List of user agents
      */
     public static function getUserAgents()
     {
@@ -927,7 +932,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the list of known browsers. Specifically, the user agents.
      *
-     * @return array List of browsers / user agents.
+     * @return array List of browsers / user agents
      */
     public static function getBrowsers()
     {
@@ -937,7 +942,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the list of known utilities.
      *
-     * @return array List of utilities.
+     * @return array List of utilities
      */
     public static function getUtilities()
     {
@@ -949,7 +954,7 @@ class Wf_Mobile_Detect
      *
      * @deprecated since version 2.6.9
      *
-     * @return array All the rules (but not extended).
+     * @return array All the rules (but not extended)
      */
     public static function getMobileDetectionRules()
     {
@@ -965,7 +970,6 @@ class Wf_Mobile_Detect
         }
 
         return $rules;
-
     }
 
     /**
@@ -976,7 +980,7 @@ class Wf_Mobile_Detect
      *
      * @deprecated since version 2.6.9
      *
-     * @return array All the rules + extended.
+     * @return array All the rules + extended
      */
     public function getMobileDetectionRulesExtended()
     {
@@ -1015,7 +1019,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the list of mobile operating systems.
      *
-     * @return array The list of mobile operating systems.
+     * @return array The list of mobile operating systems
      */
     public static function getOperatingSystems()
     {
@@ -1031,7 +1035,6 @@ class Wf_Mobile_Detect
      */
     public function checkHttpHeadersForMobile()
     {
-
         foreach ($this->getMobileHeaders() as $mobileHeader => $matchType) {
             if (isset($this->httpHeaders[$mobileHeader])) {
                 if (is_array($matchType['matches'])) {
@@ -1049,16 +1052,18 @@ class Wf_Mobile_Detect
         }
 
         return false;
-
     }
 
     /**
      * Magic overloading method.
      *
-     * @method boolean is[...]()
-     * @param  string                 $name
-     * @param  array                  $arguments
+     * @method bool is[...]()
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
      * @return mixed
+     *
      * @throws BadMethodCallException when the method doesn't exist and doesn't start with 'is'
      */
     public function __call($name, $arguments)
@@ -1078,8 +1083,9 @@ class Wf_Mobile_Detect
     /**
      * Find a detection rule that matches the current User-agent.
      *
-     * @param  null    $userAgent deprecated
-     * @return boolean
+     * @param null $userAgent deprecated
+     *
+     * @return bool
      */
     protected function matchDetectionRulesAgainstUA($userAgent = null)
     {
@@ -1104,7 +1110,7 @@ class Wf_Mobile_Detect
      *
      * @param string $key
      *
-     * @return boolean
+     * @return bool
      */
     protected function matchUAAgainstKey($key)
     {
@@ -1129,14 +1135,15 @@ class Wf_Mobile_Detect
 
     /**
      * Check if the device is mobile.
-     * Returns true if any type of mobile device detected, including special ones
-     * @param  null $userAgent   deprecated
-     * @param  null $httpHeaders deprecated
+     * Returns true if any type of mobile device detected, including special ones.
+     *
+     * @param null $userAgent   deprecated
+     * @param null $httpHeaders deprecated
+     *
      * @return bool
      */
     public function isMobile($userAgent = null, $httpHeaders = null)
     {
-
         if ($httpHeaders) {
             $this->setHttpHeaders($httpHeaders);
         }
@@ -1160,15 +1167,15 @@ class Wf_Mobile_Detect
         } else {
             return $this->matchDetectionRulesAgainstUA();
         }
-
     }
 
     /**
      * Check if the device is a tablet.
      * Return true if any type of tablet device is detected.
      *
-     * @param  string $userAgent   deprecated
-     * @param  array  $httpHeaders deprecated
+     * @param string $userAgent   deprecated
+     * @param array  $httpHeaders deprecated
+     *
      * @return bool
      */
     public function isTablet($userAgent = null, $httpHeaders = null)
@@ -1195,11 +1202,13 @@ class Wf_Mobile_Detect
     /**
      * This method checks for a certain property in the
      * userAgent.
+     *
      * @todo: The httpHeaders part is not yet used.
      *
-     * @param  string        $key
-     * @param  string        $userAgent   deprecated
-     * @param  string        $httpHeaders deprecated
+     * @param string $key
+     * @param string $userAgent   deprecated
+     * @param string $httpHeaders deprecated
+     *
      * @return bool|int|null
      */
     public function is($key, $userAgent = null, $httpHeaders = null)
@@ -1228,7 +1237,8 @@ class Wf_Mobile_Detect
      * the User-Agent string.
      *
      * @param $regex
-     * @param  string $userAgent
+     * @param string $userAgent
+     *
      * @return bool
      *
      * @todo: search in the HTTP headers too.
@@ -1258,7 +1268,7 @@ class Wf_Mobile_Detect
     /**
      * Prepare the version number.
      *
-     * @todo Remove the error supression from str_replace() call.
+     * @todo Remove the error supression from str_replace() call
      *
      * @param string $ver The string version, like "2.6.21.2152";
      *
@@ -1278,16 +1288,16 @@ class Wf_Mobile_Detect
 
     /**
      * Check the version of the given property in the User-Agent.
-     * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31)
+     * Will return a float number. (eg. 2_0 will return 2.0, 4.3.1 will return 4.31).
      *
      * @param string $propertyName The name of the property. See self::getProperties() array
-     *                             keys for all possible properties.
+     *                             keys for all possible properties
      * @param string $type         Either self::VERSION_TYPE_STRING to get a string value or
      *                             self::VERSION_TYPE_FLOAT indicating a float value. This parameter
      *                             is optional and defaults to self::VERSION_TYPE_STRING. Passing an
-     *                             invalid parameter will default to the this type as well.
+     *                             invalid parameter will default to the this type as well
      *
-     * @return string|float The version of the property we are trying to extract.
+     * @return string|float The version of the property we are trying to extract
      */
     public function version($propertyName, $type = self::VERSION_TYPE_STRING)
     {
@@ -1310,7 +1320,6 @@ class Wf_Mobile_Detect
             $properties[$propertyName] = (array) $properties[$propertyName];
 
             foreach ($properties[$propertyName] as $propertyMatchString) {
-
                 $propertyPattern = str_replace('[VER]', self::VER, $propertyMatchString);
 
                 // Identify and extract the version.
@@ -1321,9 +1330,7 @@ class Wf_Mobile_Detect
 
                     return $version;
                 }
-
             }
-
         }
 
         return false;
@@ -1332,7 +1339,7 @@ class Wf_Mobile_Detect
     /**
      * Retrieve the mobile grading, using self::MOBILE_GRADE_* constants.
      *
-     * @return string One of the self::MOBILE_GRADE_* constants.
+     * @return string One of the self::MOBILE_GRADE_* constants
      */
     public function mobileGrade()
     {

@@ -1,21 +1,20 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
-abstract class WFExtensionHelper {
-
+abstract class WFExtensionHelper
+{
     protected static $component = array();
     protected static $plugin = array();
 
-    public static function getComponent($id = null, $option = 'com_jce') {
-
+    public static function getComponent($id = null, $option = 'com_jce')
+    {
         if (!isset(self::$component)) {
             self::$component = array();
         }
@@ -55,8 +54,8 @@ abstract class WFExtensionHelper {
         return self::$component[$signature];
     }
 
-    public static function getPlugin($id = null, $element = 'jce', $folder = 'editors') {
-
+    public static function getPlugin($id = null, $element = 'jce', $folder = 'editors')
+    {
         if (!isset(self::$plugin)) {
             self::$plugin = array();
         }
@@ -70,7 +69,6 @@ abstract class WFExtensionHelper {
         $signature = serialize($options);
 
         if (!isset(self::$plugin[$signature])) {
-
             if (defined('JPATH_PLATFORM')) {
                 // get component table
                 $plugin = JTable::getInstance('extension');
@@ -90,10 +88,10 @@ abstract class WFExtensionHelper {
 
                 if (!$id) {
                     $db = JFactory::getDBO();
-                    $query = 'SELECT id FROM #__plugins' . ' WHERE folder = ' . $db->Quote($folder);
+                    $query = 'SELECT id FROM #__plugins'.' WHERE folder = '.$db->Quote($folder);
 
                     if ($element) {
-                        $query .= ' AND element = ' . $db->Quote($element);
+                        $query .= ' AND element = '.$db->Quote($element);
                     }
 
                     $db->setQuery($query);
@@ -109,5 +107,4 @@ abstract class WFExtensionHelper {
 
         return self::$plugin[$signature];
     }
-
 }

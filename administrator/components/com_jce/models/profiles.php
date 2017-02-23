@@ -1,33 +1,30 @@
 <?php
 
 /**
- * @package       JCE
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 // load base model
-require_once dirname(__FILE__) . '/model.php';
+require_once dirname(__FILE__).'/model.php';
 
 wfimport('admin.models.plugins');
 
 /**
- * Profiles Model
- *
- * @package    JCE
- * @subpackage Components
+ * Profiles Model.
  */
 class WFModelProfiles extends WFModel
 {
-
     /**
-     * Convert row string into array
+     * Convert row string into array.
+     *
      * @param object $rows
+     *
      * @return array $rows
      */
     public function getRowArray($rows)
@@ -37,14 +34,17 @@ class WFModelProfiles extends WFModel
         $i = 1;
         foreach ($rows as $row) {
             $out[$i] = $row;
-            $i++;
+            ++$i;
         }
+
         return $out;
     }
 
     /**
-     * Get a plugin's extensions
+     * Get a plugin's extensions.
+     *
      * @param object $plugin
+     *
      * @return array extensions
      */
     public function getExtensions($plugin)
@@ -178,8 +178,9 @@ class WFModelProfiles extends WFModel
     }
 
     /**
-     * Create the Profiles table
-     * @return boolean
+     * Create the Profiles table.
+     *
+     * @return bool
      */
     public function createProfilesTable()
     {
@@ -206,7 +207,7 @@ class WFModelProfiles extends WFModel
                 break;
         }
 
-        $file = dirname(dirname(__FILE__)) . '/sql/' . $driver . '.sql';
+        $file = dirname(dirname(__FILE__)).'/sql/'.$driver.'.sql';
         $error = null;
 
         if (is_file($file)) {
@@ -228,13 +229,14 @@ class WFModelProfiles extends WFModel
                         RETURN true;
                     END; $$
                     LANGUAGE plpgsql;
-                    SELECT create_table_if_not_exists ('" . $query . "');";
+                    SELECT create_table_if_not_exists ('" .$query."');";
                 }
                 // set query
                 $db->setQuery(trim($query));
 
                 if (!$db->query()) {
-                    $mainframe->enqueueMessage(WFText::_('WF_INSTALL_TABLE_PROFILES_ERROR') . $db->stdErr(), 'error');
+                    $mainframe->enqueueMessage(WFText::_('WF_INSTALL_TABLE_PROFILES_ERROR').$db->stdErr(), 'error');
+
                     return false;
                 } else {
                     return true;
@@ -246,13 +248,16 @@ class WFModelProfiles extends WFModel
             $error = 'SQL FILE MISSING';
         }
 
-        $mainframe->enqueueMessage(WFText::_('WF_INSTALL_TABLE_PROFILES_ERROR') . !is_null($error) ? ' - ' . $error : '', 'error');
+        $mainframe->enqueueMessage(WFText::_('WF_INSTALL_TABLE_PROFILES_ERROR').!is_null($error) ? ' - '.$error : '', 'error');
+
         return false;
     }
 
     /**
-     * Install Profiles
-     * @return boolean
+     * Install Profiles.
+     *
+     * @return bool
+     *
      * @param object $install[optional]
      */
     public function installProfiles()
@@ -267,7 +272,7 @@ class WFModelProfiles extends WFModel
 
             // No Profiles table data
             if (!$db->loadResult()) {
-                $xml = dirname(__FILE__) . '/profiles.xml';
+                $xml = dirname(__FILE__).'/profiles.xml';
 
                 if (is_file($xml)) {
                     if (!$this->processImport($xml)) {
@@ -299,13 +304,13 @@ class WFModelProfiles extends WFModel
             $query->select('COUNT(id)')->from('#__wf_profiles');
 
             if ($name) {
-                $query->where('name = ' . $db->Quote($name));
+                $query->where('name = '.$db->Quote($name));
             }
         } else {
             $query = 'SELECT COUNT(id) FROM #__wf_profiles';
 
             if ($name) {
-                $query .= ' WHERE name = ' . $db->Quote($name);
+                $query .= ' WHERE name = '.$db->Quote($name);
             }
         }
 
@@ -313,10 +318,12 @@ class WFModelProfiles extends WFModel
     }
 
     /**
-     * Process import data from XML file
-     * @param object $file XML file
-     * @param boolean $install Can be used by the package installer
-     * @return boolean
+     * Process import data from XML file.
+     *
+     * @param object $file    XML file
+     * @param bool   $install Can be used by the package installer
+     *
+     * @return bool
      */
     public function processImport($file)
     {
@@ -327,7 +334,7 @@ class WFModelProfiles extends WFModel
         $language = JFactory::getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        JTable::addIncludePath(dirname(dirname(__FILE__)) . '/tables');
+        JTable::addIncludePath(dirname(dirname(__FILE__)).'/tables');
 
         $xml = WFXMLElement::load($file);
 
@@ -413,23 +420,26 @@ class WFModelProfiles extends WFModel
 
                 if (!$row->store()) {
                     $app->enqueueMessage(WFText::_('WF_PROFILES_IMPORT_ERROR'), $row->getError(), 'error');
+
                     return false;
                 } else {
-                    $n++;
+                    ++$n;
                 }
             }
+
             return true;
         }
     }
 
     /**
-     * Get default profile data
+     * Get default profile data.
+     *
      * @return object Profile table object
      */
     public function getDefaultProfile()
     {
         $mainframe = JFactory::getApplication();
-        $file = JPATH_COMPONENT . '/models/profiles.xml';
+        $file = JPATH_COMPONENT.'/models/profiles.xml';
 
         $xml = WFXMLElement::load($file);
 
@@ -461,18 +471,19 @@ class WFModelProfiles extends WFModel
                 }
             }
         }
+
         return null;
     }
 
     public function getEditorParams(&$row)
     {
         // get params definitions
-        $xml = WF_EDITOR_LIBRARIES . '/xml/config/profiles.xml';
+        $xml = WF_EDITOR_LIBRARIES.'/xml/config/profiles.xml';
 
         // get editor params
         $params = new WFParameter($row->params, $xml, 'editor');
-        $params->addElementPath(JPATH_COMPONENT . '/elements');
-        $params->addElementPath(WF_EDITOR . '/elements');
+        $params->addElementPath(JPATH_COMPONENT.'/elements');
+        $params->addElementPath(WF_EDITOR.'/elements');
 
         $groups = $params->getGroups();
 
@@ -483,12 +494,12 @@ class WFModelProfiles extends WFModel
     public function getLayoutParams(&$row)
     {
         // get params definitions
-        $xml = WF_EDITOR_LIBRARIES . '/xml/config/layout.xml';
+        $xml = WF_EDITOR_LIBRARIES.'/xml/config/layout.xml';
 
         // get editor params
         $params = new WFParameter($row->params, $xml, 'editor');
-        $params->addElementPath(JPATH_COMPONENT . '/elements');
-        $params->addElementPath(WF_EDITOR . '/elements');
+        $params->addElementPath(JPATH_COMPONENT.'/elements');
+        $params->addElementPath(WF_EDITOR.'/elements');
 
         $groups = $params->getGroups();
 
@@ -498,20 +509,21 @@ class WFModelProfiles extends WFModel
 
     public function getPluginParameters()
     {
-
     }
 
     public function getThemes()
     {
         jimport('joomla.filesystem.folder');
-        $path = WF_EDITOR_THEMES . '/advanced/skins';
+        $path = WF_EDITOR_THEMES.'/advanced/skins';
 
         return JFolder::folders($path, '.', false, true);
     }
 
     /**
-     * Check whether a table exists
-     * @return boolean
+     * Check whether a table exists.
+     *
+     * @return bool
+     *
      * @param string $table Table name
      */
     public static function checkTable()
@@ -536,8 +548,10 @@ class WFModelProfiles extends WFModel
     }
 
     /**
-     * Check table contents
-     * @return integer
+     * Check table contents.
+     *
+     * @return int
+     *
      * @param string $table Table name
      */
     public static function checkTableContents()
@@ -570,9 +584,9 @@ class WFModelProfiles extends WFModel
             $base = 'components/com_jce/editor/tiny_mce/themes/advanced/img';
         } else {
             if (isset($plugin->path)) {
-                $base = $plugin->path . '/img/';
+                $base = $plugin->path.'/img/';
             } else {
-                $base = 'components/com_jce/editor/tiny_mce/plugins/' . $plugin->name . '/img';
+                $base = 'components/com_jce/editor/tiny_mce/plugins/'.$plugin->name.'/img';
             }
         }
         // convert backslashes
@@ -586,13 +600,13 @@ class WFModelProfiles extends WFModel
             if ($icon == '|' || $icon == 'spacer') {
                 continue;
             } else {
-                $path = $base . $icon . '.png';
+                $path = $base.$icon.'.png';
 
-                if (JFile::exists(JPATH_SITE . '/' . $path)) {
-                    $img = '<img src="' . JURI::root(true) . $path . '" alt="' . WFText::_($plugin->title) . '" />';
+                if (JFile::exists(JPATH_SITE.'/'.$path)) {
+                    $img = '<img src="'.JURI::root(true).$path.'" alt="'.WFText::_($plugin->title).'" />';
                 }
 
-                $span .= '<div data-button="' . preg_replace('/[^\w]/i', '', $icon) . '" class="' . self::getIconType($icon) . '"><span class="mceIcon mce_' . preg_replace('/[^\w]/i', '', $icon) . '">' . $img . '</span></div>';
+                $span .= '<div data-button="'.preg_replace('/[^\w]/i', '', $icon).'" class="'.self::getIconType($icon).'"><span class="mceIcon mce_'.preg_replace('/[^\w]/i', '', $icon).'">'.$img.'</span></div>';
             }
         }
 
@@ -611,7 +625,7 @@ class WFModelProfiles extends WFModel
         $conditions = array();
 
         // update ordering values
-        for ($i = 0; $i < $total; $i++) {
+        for ($i = 0; $i < $total; ++$i) {
             $row->load((int) $cid[$i]);
             if ($row->ordering != $order[$i]) {
                 $row->ordering = $order[$i];
@@ -641,5 +655,4 @@ class WFModelProfiles extends WFModel
 
         return true;
     }
-
 }

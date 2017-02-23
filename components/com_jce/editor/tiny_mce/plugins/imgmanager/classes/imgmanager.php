@@ -1,27 +1,24 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 // Load class dependencies
 wfimport('editor.libraries.classes.manager');
 
-class WFImageManagerPlugin extends WFMediaManager {
-
+class WFImageManagerPlugin extends WFMediaManager
+{
     public $_filetypes = 'jpg,jpeg,png,gif';
 
-    /**
-     * @access	protected
-     */
-    public function __construct($config = array()) {
+    public function __construct($config = array())
+    {
         $config['colorpicker'] = true;
 
         parent::__construct($config);
@@ -30,17 +27,17 @@ class WFImageManagerPlugin extends WFMediaManager {
     }
 
     /**
-     * Display the plugin
-     * @access public
+     * Display the plugin.
      */
-    public function display() {
+    public function display()
+    {
         parent::display();
 
         $document = WFDocument::getInstance();
 
         // create new tabs instance
         $tabs = WFTabs::getInstance(array(
-          'base_path' => WF_EDITOR_PLUGINS . '/imgmanager'
+          'base_path' => WF_EDITOR_PLUGINS.'/imgmanager',
         ));
 
         // Add tabs
@@ -52,23 +49,24 @@ class WFImageManagerPlugin extends WFMediaManager {
         $document->addScript(array('imgmanager'), 'plugins');
         $document->addStyleSheet(array('imgmanager'), 'plugins');
 
-        $document->addScriptDeclaration('ImageManagerDialog.settings=' . json_encode($this->getSettings()) . ';');
+        $document->addScriptDeclaration('ImageManagerDialog.settings='.json_encode($this->getSettings()).';');
     }
 
-    public function onUpload($file, $relative = '') {
+    public function onUpload($file, $relative = '')
+    {
         // inline upload
         if (JRequest::getInt('inline', 0) === 1) {
             $result = array(
                 'file' => $relative,
-                'name' => basename($relative)
+                'name' => basename($relative),
             );
 
             if ($this->getParam('always_include_dimensions', 1)) {
                 $dim = @getimagesize($file);
 
                 if ($dim) {
-                    $result['width']    = $dim[0];
-                    $result['height']   = $dim[1];
+                    $result['width'] = $dim[0];
+                    $result['height'] = $dim[1];
                 }
             }
 
@@ -158,7 +156,8 @@ class WFImageManagerPlugin extends WFMediaManager {
         return array();
     }
 
-    public function getSettings($settings = array()) {
+    public function getSettings($settings = array())
+    {
         $params = $this->getParams(array('key' => 'imgmanager'));
 
         $settings = array(
@@ -166,9 +165,9 @@ class WFImageManagerPlugin extends WFMediaManager {
                 'dimensions' => $params->get('attributes_dimensions', 1),
                 'align' => $params->get('attributes_align', 1),
                 'margin' => $params->get('attributes_margin', 1),
-                'border' => $params->get('attributes_border', 1)
+                'border' => $params->get('attributes_border', 1),
             ),
-            'always_include_dimensions' => $params->get('always_include_dimensions', 0)
+            'always_include_dimensions' => $params->get('always_include_dimensions', 0),
         );
 
         return parent::getSettings($settings);

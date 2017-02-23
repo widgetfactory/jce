@@ -1,18 +1,17 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 // load base classes
-require_once(dirname(__FILE__) . '/includes/base.php');
+require_once dirname(__FILE__).'/includes/base.php';
 
 // get the view
 $view = JRequest::getCmd('view');
@@ -20,7 +19,7 @@ $view = JRequest::getCmd('view');
 $task = JRequest::getCmd('task');
 
 // Die on invalid variable combination
-if (empty($view) && $task === "plugin") {
+if (empty($view) && $task === 'plugin') {
     die('RESTRICTED');
 }
 
@@ -35,22 +34,22 @@ jimport('joomla.application.component.helper');
 jimport('joomla.application.component.controller');
 
 // Require the base controller
-require_once (WF_ADMINISTRATOR . '/controller.php');
+require_once WF_ADMINISTRATOR.'/controller.php';
 
 // Load controller
-$controllerPath = WF_ADMINISTRATOR . '/controller/' . $view . '.php';
+$controllerPath = WF_ADMINISTRATOR.'/controller/'.$view.'.php';
 
 if (file_exists($controllerPath)) {
-    require_once ($controllerPath);
+    require_once $controllerPath;
 
-    $controllerClass = 'WFController' . ucfirst($view);
+    $controllerClass = 'WFController'.ucfirst($view);
     $controller = new $controllerClass(array(
-        'base_path' => WF_ADMINISTRATOR
+        'base_path' => WF_ADMINISTRATOR,
     ));
 // load default controller
 } else {
     $controller = new WFController(array(
-        'base_path' => WF_ADMINISTRATOR
+        'base_path' => WF_ADMINISTRATOR,
     ));
 }
 
@@ -77,4 +76,3 @@ switch ($view) {
 // Perform the Request task
 $controller->execute($task);
 $controller->redirect();
-?>

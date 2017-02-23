@@ -1,20 +1,19 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div class="ui-jce loading">
   <form enctype="multipart/form-data" action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
     <div class="progress progress-striped active">
-        <div class="bar" style="width: 100%;"><?php echo JText :: _('WF_MESSAGE_LOAD');?></div>
+        <div class="bar" style="width: 100%;"><?php echo JText :: _('WF_MESSAGE_LOAD'); ?></div>
     </div>
     <fieldset id="filter-bar" class="btn-toolbar">
         <div class="filter-search btn-group pull-left fltlft">
@@ -69,21 +68,20 @@ defined('_JEXEC') or die('RESTRICTED');
             <?php
             $rows = $this->rows;
             $k = 0;
-            for ($i = 0, $n = count($rows); $i < $n; $i++) {
+            for ($i = 0, $n = count($rows); $i < $n; ++$i) {
                 $row = $rows[$i];
 
                 $profile = JTable::getInstance('profiles', 'WFTable');
                 $profile->bind($row);
                 $profile->editor = null;
 
-                $link = JRoute::_('index.php?option=com_jce&view=profiles&task=edit&cid[]=' . $row->id);
+                $link = JRoute::_('index.php?option=com_jce&view=profiles&task=edit&cid[]='.$row->id);
 
                 // state
-                $state      = JHTML::_('grid.published', $profile, $i);
+                $state = JHTML::_('grid.published', $profile, $i);
 
                 // checked out
-                $checked    = JHTML::_('grid.checkedout', $profile, $i);
-                ?>
+                $checked = JHTML::_('grid.checkedout', $profile, $i); ?>
                 <tr>
                     <td class="order nowrap center hidden-phone">
                         <span class="sortable-handle">
@@ -102,7 +100,8 @@ defined('_JEXEC') or die('RESTRICTED');
                             <span class="editlinktip" title="<?php echo WFText::_('WF_PROFILES_EDIT'); ?>::<?php echo $row->name; ?>">
                                 <a href="<?php echo $link; ?>">
                                     <?php echo $row->name; ?></a></span>
-                        <?php } ?>
+                        <?php 
+                        } ?>
                         <p class="smallsub"><?php echo $row->description; ?></p>
                     </td>
                     <td align="center">
@@ -110,10 +109,10 @@ defined('_JEXEC') or die('RESTRICTED');
                     </td>
                     <td class="order" align="center">
                         <span class="order-up">
-                            <a title="<?php echo WFText::_('WF_PROFILES_MOVE_UP');?>" href="#" class="btn btn-micro jgrid"><i class="icon-uparrow icon-chevron-up"></i></a>
+                            <a title="<?php echo WFText::_('WF_PROFILES_MOVE_UP'); ?>" href="#" class="btn btn-micro jgrid"><i class="icon-uparrow icon-chevron-up"></i></a>
                         </span>
                         <span class="order-down">
-                            <a title="<?php echo WFText::_('WF_PROFILES_MOVE_DOWN');?>" href="#" class="btn btn-micro jgrid"><i class="icon-downarrow icon-chevron-down"></i></a>
+                            <a title="<?php echo WFText::_('WF_PROFILES_MOVE_DOWN'); ?>" href="#" class="btn btn-micro jgrid"><i class="icon-downarrow icon-chevron-down"></i></a>
                         </span>
                         <?php $disabled = $n > 1 ? '' : 'disabled="disabled"'; ?>
                         <input type="text" name="order[]" size="5" value="<?php echo $row->ordering; ?>" <?php echo $disabled ?> class="text_area" style="text-align: center" />

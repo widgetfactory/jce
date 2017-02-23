@@ -1,18 +1,17 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-class WFPacker extends JObject {
-
+class WFPacker extends JObject
+{
     const IMPORT_RX = '#@import([^;]+);#i';
 
     protected $files = array();
@@ -23,55 +22,65 @@ class WFPacker extends JObject {
     protected static $imports = array();
 
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access	protected
+     * Constructor activating the default information of the class.
      */
-    function __construct($config = array()) {
+    public function __construct($config = array())
+    {
         $this->setProperties($config);
     }
 
-    public function setFiles($files = array()) {
+    public function setFiles($files = array())
+    {
         $this->files = $files;
     }
 
-    public function getFiles() {
+    public function getFiles()
+    {
         return $this->files;
     }
 
-    public function setText($text = '') {
+    public function setText($text = '')
+    {
         $this->text = $text;
     }
 
-    public function setContentStart($start = '') {
+    public function setContentStart($start = '')
+    {
         $this->start = $start;
     }
 
-    public function getContentStart() {
+    public function getContentStart()
+    {
         return $this->start;
     }
 
-    public function setContentEnd($end = '') {
+    public function setContentEnd($end = '')
+    {
         $this->end = $end;
     }
 
-    public function getContentEnd() {
+    public function getContentEnd()
+    {
         return $this->end;
     }
 
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
     /**
-     * Get encoding
-     * @copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+     * Get encoding.
+     *
+     * @copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved
      */
-    private static function getEncoding() {
+    private static function getEncoding()
+    {
         if (!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) {
             return false;
         }
@@ -90,30 +99,32 @@ class WFPacker extends JObject {
     }
 
     /**
-     * Pack and output content based on type
-     * @param bool|true $minify
+     * Pack and output content based on type.
+     *
+     * @param bool|true  $minify
      * @param bool|false $gzip
-     * Contains some code from libraries/joomla/cache/controller/page.php - Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+     *                           Contains some code from libraries/joomla/cache/controller/page.php - Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved
      */
-    public function pack($minify = true, $gzip = false) {
+    public function pack($minify = true, $gzip = false)
+    {
         $type = $this->getType();
 
         ob_start();
 
         // Headers
         if ($type == 'javascript') {
-            header("Content-type: application/javascript; charset: UTF-8");
+            header('Content-type: application/javascript; charset: UTF-8');
         }
 
         if ($type == 'css') {
-            header("Content-type: text/css; charset: UTF-8");
+            header('Content-type: text/css; charset: UTF-8');
         }
 
         // encoding
-        header("Vary: Accept-Encoding");
+        header('Vary: Accept-Encoding');
 
         // cache control
-        header("Cache-Control: max-age=0,no-cache");
+        header('Cache-Control: max-age=0,no-cache');
 
         $files = $this->getFiles();
 
@@ -136,7 +147,7 @@ class WFPacker extends JObject {
             // move external import rules to top
             foreach (array_unique(self::$imports) as $import) {
                 if (strpos($import, '//') !== false) {
-                    $content = '@import url("' . $import . '");' . $content;
+                    $content = '@import url("'.$import.'");'.$content;
                 }
             }
         }
@@ -147,7 +158,7 @@ class WFPacker extends JObject {
         $content = trim($content);
 
         // get content hash
-        $hash = md5(implode(" ", array_map('basename', $files)) . $content);
+        $hash = md5(implode(' ', array_map('basename', $files)).$content);
 
         // check for sent etag against hash
         if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
@@ -160,11 +171,11 @@ class WFPacker extends JObject {
         }
 
         // set etag header
-        header("ETag: " . $hash);
+        header('ETag: '.$hash);
 
         // Generate GZIP'd content
         if ($gzip) {
-            header("Content-Encoding: " . $encoding);
+            header('Content-Encoding: '.$encoding);
             $content = gzencode($content, 4, FORCE_GZIP);
         }
 
@@ -174,17 +185,20 @@ class WFPacker extends JObject {
         exit(ob_get_clean());
     }
 
-    protected function jsmin($data) {
+    protected function jsmin($data)
+    {
         // remove header comments
         return preg_replace('#^\/\*[\s\S]+?\*\/#', '', $data);
     }
 
     /**
      * Simple CSS Minifier
-     * https://github.com/GaryJones/Simple-PHP-CSS-Minification
+     * https://github.com/GaryJones/Simple-PHP-CSS-Minification.
+     *
      * @param $data Data string to minify
      */
-    protected function cssmin($css) {
+    protected function cssmin($css)
+    {
         // Normalize whitespace
         //$css = preg_replace('/\s+/', ' ', $css);
         // Remove comment blocks, everything between /* and */, unless
@@ -203,7 +217,7 @@ class WFPacker extends JObject {
         // Shortern 6-character hex color codes to 3-character where possible
         //$css = preg_replace('/#([a-f0-9])\\1([a-f0-9])\\2([a-f0-9])\\3/i', '#\1\2\3', $css);
 
-        require_once(dirname(__FILE__) . '/cssmin.php');
+        require_once dirname(__FILE__).'/cssmin.php';
         $min = new CSSmin(false);
         $css = $min->run($css);
 
@@ -211,13 +225,14 @@ class WFPacker extends JObject {
     }
 
     /**
-     * Import CSS from a file
+     * Import CSS from a file.
+     *
      * @param file File path where data comes from
      * @param $data Data from file
      */
-    protected function importCss($data, $file) {
+    protected function importCss($data, $file)
+    {
         if (preg_match_all(self::IMPORT_RX, $data, $matches)) {
-
             $data = '';
 
             foreach ($matches[1] as $match) {
@@ -244,7 +259,7 @@ class WFPacker extends JObject {
                     }
 
                     // get full path
-                    $path = realpath($this->get('_cssbase') . '/' . $match);
+                    $path = realpath($this->get('_cssbase').'/'.$match);
 
                     // already import, don't repeat!
                     if (in_array($path, self::$imports)) {
@@ -262,27 +277,28 @@ class WFPacker extends JObject {
         return '';
     }
 
-    protected function compileLess($string, $path) {
-        require_once(WF_ADMINISTRATOR . '/classes/lessc.inc.php');
+    protected function compileLess($string, $path)
+    {
+        require_once WF_ADMINISTRATOR.'/classes/lessc.inc.php';
 
-        $less = new lessc;
+        $less = new lessc();
         // add file directory
         $less->addImportDir($path);
         // add joomla media folder
-        $less->addImportDir(JPATH_SITE . 'media');
+        $less->addImportDir(JPATH_SITE.'media');
 
         try {
             return $less->compile($string);
         } catch (Exception $e) {
-            return "/* LESS file could not be compiled due to error - " . $e->getMessage() . " */";
+            return '/* LESS file could not be compiled due to error - '.$e->getMessage().' */';
         }
     }
 
-    protected function getText($file = null, $minify = true) {
-
+    protected function getText($file = null, $minify = true)
+    {
         if ($file && is_file($file)) {
             $text = file_get_contents($file);
-            
+
             if ($text) {
                 // process css files
                 if ($this->getType() == 'css') {
@@ -304,7 +320,7 @@ class WFPacker extends JObject {
                         $this->set('_cssbase', dirname($file));
 
                         // process import rules
-                        $text = $this->importCss($text, $file) . preg_replace(self::IMPORT_RX, '', $text);
+                        $text = $this->importCss($text, $file).preg_replace(self::IMPORT_RX, '', $text);
                     }
 
                     // store the base path of the current file
@@ -315,7 +331,7 @@ class WFPacker extends JObject {
                 }
                 // make sure text ends in a semi-colon;
                 if ($this->getType() == 'javascript') {
-                    $text = rtrim(trim($text), ';') . ';';
+                    $text = rtrim(trim($text), ';').';';
 
                     if ($minify) {
                         $text = $this->jsmin($text);
@@ -329,25 +345,22 @@ class WFPacker extends JObject {
         return $this->text;
     }
 
-    protected function processPaths($data) {
-
+    protected function processPaths($data)
+    {
         if (isset($data[1])) {
             if (strpos($data[1], '//') === false) {
-                $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase') . '/' . $data[1]));
+                $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase').'/'.$data[1]));
 
                 if ($path) {
-                    return "url('" . JURI::root(true) . str_replace('\\', '/', $path) . "')";
+                    return "url('".JURI::root(true).str_replace('\\', '/', $path)."')";
                 }
 
-                return "url('" . $data[1] . "')";
+                return "url('".$data[1]."')";
             }
 
             return $data[1];
         }
 
-        return "";
+        return '';
     }
-
 }
-
-?>

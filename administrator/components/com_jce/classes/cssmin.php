@@ -20,7 +20,7 @@
  * by Yahoo! Inc. under the BSD (revised) open source license.
  */
 
-class CSSmin
+class cssmin
 {
     const NL = '___YUICSSMIN_PRESERVED_NL___';
     const TOKEN = '___YUICSSMIN_PRESERVED_TOKEN_';
@@ -38,26 +38,28 @@ class CSSmin
 
     /**
      * @param bool|int $raise_php_limits
-     * If true, PHP settings will be raised if needed
+     *                                   If true, PHP settings will be raised if needed
      */
-    public function __construct($raise_php_limits = TRUE)
+    public function __construct($raise_php_limits = true)
     {
         // Set suggested PHP limits
         $this->memory_limit = 128 * 1048576; // 128MB in bytes
         $this->max_execution_time = 60; // 1 min
         $this->pcre_backtrack_limit = 1000 * 1000;
-        $this->pcre_recursion_limit =  500 * 1000;
+        $this->pcre_recursion_limit = 500 * 1000;
 
         $this->raise_php_limits = (bool) $raise_php_limits;
     }
 
     /**
-     * Minify a string of CSS
-     * @param string $css
+     * Minify a string of CSS.
+     *
+     * @param string   $css
      * @param int|bool $linebreak_pos
+     *
      * @return string
      */
-    public function run($css = '', $linebreak_pos = FALSE)
+    public function run($css = '', $linebreak_pos = false)
     {
         if (empty($css)) {
             return '';
@@ -83,8 +85,8 @@ class CSSmin
             }
             $comment_found = $this->str_slice($css, $start_index + 2, $end_index);
             $this->comments[] = $comment_found;
-            $comment_preserve_string = self::COMMENT . (count($this->comments) - 1) . '___';
-            $css = $this->str_slice($css, 0, $start_index + 2) . $comment_preserve_string . $this->str_slice($css, $end_index);
+            $comment_preserve_string = self::COMMENT.(count($this->comments) - 1).'___';
+            $css = $this->str_slice($css, 0, $start_index + 2).$comment_preserve_string.$this->str_slice($css, $end_index);
             // Set correct start_index: Fixes issue #2528130
             $start_index = $end_index + 2 + strlen($comment_preserve_string) - strlen($comment_found);
         }
@@ -105,7 +107,6 @@ class CSSmin
         $start_index = 0;
         $i = $css_chunk_length; // save initial iterations
         $l = strlen($css);
-
 
         // if the number of characters is 25000 or less, do not chunk
         if ($l <= $css_chunk_length) {
@@ -133,24 +134,25 @@ class CSSmin
         }
 
         // Minify each chunk
-        for ($i = 0, $n = count($css_chunks); $i < $n; $i++) {
+        for ($i = 0, $n = count($css_chunks); $i < $n; ++$i) {
             $css_chunks[$i] = $this->minify($css_chunks[$i], $linebreak_pos);
             // Keep the first @charset at-rule found
             if (empty($charset) && preg_match($charset_regexp, $css_chunks[$i], $matches)) {
-                $charset = strtolower($matches[1]) . $matches[2];
+                $charset = strtolower($matches[1]).$matches[2];
             }
             // Delete all @charset at-rules
             $css_chunks[$i] = preg_replace($charset_regexp, '', $css_chunks[$i]);
         }
 
         // Update the first chunk and push the charset to the top of the file.
-        $css_chunks[0] = $charset . $css_chunks[0];
+        $css_chunks[0] = $charset.$css_chunks[0];
 
         return implode('', $css_chunks);
     }
 
     /**
-     * Sets the memory limit for this script
+     * Sets the memory limit for this script.
+     *
      * @param int|string $limit
      */
     public function set_memory_limit($limit)
@@ -159,7 +161,8 @@ class CSSmin
     }
 
     /**
-     * Sets the maximum execution time for this script
+     * Sets the maximum execution time for this script.
+     *
      * @param int|string $seconds
      */
     public function set_max_execution_time($seconds)
@@ -168,7 +171,8 @@ class CSSmin
     }
 
     /**
-     * Sets the PCRE backtrack limit for this script
+     * Sets the PCRE backtrack limit for this script.
+     *
      * @param int $limit
      */
     public function set_pcre_backtrack_limit($limit)
@@ -177,7 +181,8 @@ class CSSmin
     }
 
     /**
-     * Sets the PCRE recursion limit for this script
+     * Sets the PCRE recursion limit for this script.
+     *
      * @param int $limit
      */
     public function set_pcre_recursion_limit($limit)
@@ -186,7 +191,7 @@ class CSSmin
     }
 
     /**
-     * Try to configure PHP to use at least the suggested minimum settings
+     * Try to configure PHP to use at least the suggested minimum settings.
      */
     private function do_raise_php_limits()
     {
@@ -194,7 +199,7 @@ class CSSmin
             'memory_limit' => $this->memory_limit,
             'max_execution_time' => $this->max_execution_time,
             'pcre.backtrack_limit' => $this->pcre_backtrack_limit,
-            'pcre.recursion_limit' =>  $this->pcre_recursion_limit
+            'pcre.recursion_limit' => $this->pcre_recursion_limit,
         );
 
         // If current settings are higher respect them.
@@ -208,28 +213,29 @@ class CSSmin
     }
 
     /**
-     * Does bulk of the minification
-     * @param string $css
+     * Does bulk of the minification.
+     *
+     * @param string   $css
      * @param int|bool $linebreak_pos
+     *
      * @return string
      */
     private function minify($css, $linebreak_pos)
     {
         // strings are safe, now wrestle the comments
-        for ($i = 0, $max = count($this->comments); $i < $max; $i++) {
-
+        for ($i = 0, $max = count($this->comments); $i < $max; ++$i) {
             $token = $this->comments[$i];
-            $placeholder = '/' . self::COMMENT . $i . '___/';
+            $placeholder = '/'.self::COMMENT.$i.'___/';
 
             // ! in the first position of the comment means preserve
             // so push to the preserved tokens keeping the !
             if (substr($token, 0, 1) === '!') {
                 $this->preserved_tokens[] = $token;
-                $token_tring = self::TOKEN . (count($this->preserved_tokens) - 1) . '___';
+                $token_tring = self::TOKEN.(count($this->preserved_tokens) - 1).'___';
                 $css = preg_replace($placeholder, $token_tring, $css, 1);
                 // Preserve new lines for /*! important comments
-                $css = preg_replace('/\s*[\n\r\f]+\s*(\/\*'. $token_tring .')/S', self::NL.'$1', $css);
-                $css = preg_replace('/('. $token_tring .'\*\/)\s*[\n\r\f]+\s*/', '$1'.self::NL, $css);
+                $css = preg_replace('/\s*[\n\r\f]+\s*(\/\*'.$token_tring.')/S', self::NL.'$1', $css);
+                $css = preg_replace('/('.$token_tring.'\*\/)\s*[\n\r\f]+\s*/', '$1'.self::NL, $css);
                 continue;
             }
 
@@ -237,10 +243,10 @@ class CSSmin
             // shorten that to /*\*/ and the next one to /**/
             if (substr($token, (strlen($token) - 1), 1) === '\\') {
                 $this->preserved_tokens[] = '\\';
-                $css = preg_replace($placeholder,  self::TOKEN . (count($this->preserved_tokens) - 1) . '___', $css, 1);
+                $css = preg_replace($placeholder, self::TOKEN.(count($this->preserved_tokens) - 1).'___', $css, 1);
                 $i = $i + 1; // attn: advancing the loop
                 $this->preserved_tokens[] = '';
-                $css = preg_replace('/' . self::COMMENT . $i . '___/',  self::TOKEN . (count($this->preserved_tokens) - 1) . '___', $css, 1);
+                $css = preg_replace('/'.self::COMMENT.$i.'___/', self::TOKEN.(count($this->preserved_tokens) - 1).'___', $css, 1);
                 continue;
             }
 
@@ -251,21 +257,20 @@ class CSSmin
                 if ($start_index > 2) {
                     if (substr($css, $start_index - 3, 1) === '>') {
                         $this->preserved_tokens[] = '';
-                        $css = preg_replace($placeholder,  self::TOKEN . (count($this->preserved_tokens) - 1) . '___', $css, 1);
+                        $css = preg_replace($placeholder, self::TOKEN.(count($this->preserved_tokens) - 1).'___', $css, 1);
                     }
                 }
             }
 
             // in all other cases kill the comment
-            $css = preg_replace('/\/\*' . $this->str_slice($placeholder, 1, -1) . '\*\//', '', $css, 1);
+            $css = preg_replace('/\/\*'.$this->str_slice($placeholder, 1, -1).'\*\//', '', $css, 1);
         }
-
 
         // Normalize all whitespace strings to single spaces. Easier to work with that way.
         $css = preg_replace('/\s+/', ' ', $css);
 
-		// Fix IE7 issue on matrix filters which browser accept whitespaces between Matrix parameters
-		$css = preg_replace_callback('/\s*filter\:\s*progid:DXImageTransform\.Microsoft\.Matrix\(([^\)]+)\)/', array($this, 'preserve_old_IE_specific_matrix_definition'), $css);
+        // Fix IE7 issue on matrix filters which browser accept whitespaces between Matrix parameters
+        $css = preg_replace_callback('/\s*filter\:\s*progid:DXImageTransform\.Microsoft\.Matrix\(([^\)]+)\)/', array($this, 'preserve_old_IE_specific_matrix_definition'), $css);
 
         // Shorten & preserve calculations calc(...) since spaces are important
         $css = preg_replace_callback('/calc(\(((?:[^\(\)]+|(?1))*)\))/i', array($this, 'replace_calc'), $css);
@@ -300,7 +305,7 @@ class CSSmin
         $css = preg_replace('/\!important/i', ' !important', $css);
 
         // bring back the colon
-        $css = preg_replace('/' . self::CLASSCOLON . '/', ':', $css);
+        $css = preg_replace('/'.self::CLASSCOLON.'/', ':', $css);
 
         // retain space for special IE6 cases
         $css = preg_replace_callback('/\:first\-(line|letter)(\{|,)/i', array($this, 'lowercase_pseudo_first'), $css);
@@ -339,8 +344,8 @@ class CSSmin
         // Replace 0 length units 0(px,em,%) with 0.
         $css = preg_replace('/(^|[^0-9])(?:0?\.)?0(?:em|ex|ch|rem|vw|vh|vm|vmin|cm|mm|in|px|pt|pc|%|deg|g?rad|m?s|k?hz)/iS', '${1}0', $css);
 
-		// 0% step in a keyframe? restore the % unit
-		$css = preg_replace_callback('/(@[a-z\-]*?keyframes[^\{]*?\{)(.*?\}\s*\})/iS', array($this, 'replace_keyframe_zero'), $css);
+        // 0% step in a keyframe? restore the % unit
+        $css = preg_replace_callback('/(@[a-z\-]*?keyframes[^\{]*?\{)(.*?\}\s*\})/iS', array($this, 'replace_keyframe_zero'), $css);
 
         // Replace 0 0; or 0 0 0; or 0 0 0 0; with 0.
         $css = preg_replace('/\:0(?: 0){1,3}(;|\}| \!)/', ':0$1', $css);
@@ -371,20 +376,20 @@ class CSSmin
 
         // Find a fraction that is used for Opera's -o-device-pixel-ratio query
         // Add token to add the "\" back in later
-        $css = preg_replace('/\(([a-z\-]+):([0-9]+)\/([0-9]+)\)/i', '($1:$2'. self::QUERY_FRACTION .'$3)', $css);
+        $css = preg_replace('/\(([a-z\-]+):([0-9]+)\/([0-9]+)\)/i', '($1:$2'.self::QUERY_FRACTION.'$3)', $css);
 
         // Remove empty rules.
         $css = preg_replace('/[^\};\{\/]+\{\}/S', '', $css);
 
         // Add "/" back to fix Opera -o-device-pixel-ratio query
-        $css = preg_replace('/'. self::QUERY_FRACTION .'/', '/', $css);
+        $css = preg_replace('/'.self::QUERY_FRACTION.'/', '/', $css);
 
-		// Replace multiple semi-colons in a row by a single one
+        // Replace multiple semi-colons in a row by a single one
         // See SF bug #1980989
         $css = preg_replace('/;;+/', ';', $css);
 
         // Restore new lines for /*! important comments
-        $css = preg_replace('/'. self::NL .'/', "\n", $css);
+        $css = preg_replace('/'.self::NL.'/', "\n", $css);
 
         // Lowercase all uppercase properties
         $css = preg_replace_callback('/(\{|\;)([A-Z\-]+)(\:)/', array($this, 'lowercase_properties'), $css);
@@ -392,21 +397,21 @@ class CSSmin
         // Some source control tools don't like it when files containing lines longer
         // than, say 8000 characters, are checked in. The linebreak option is used in
         // that case to split long lines after a specific column.
-        if ($linebreak_pos !== FALSE && (int) $linebreak_pos >= 0) {
+        if ($linebreak_pos !== false && (int) $linebreak_pos >= 0) {
             $linebreak_pos = (int) $linebreak_pos;
             $start_index = $i = 0;
             while ($i < strlen($css)) {
-                $i++;
+                ++$i;
                 if ($css[$i - 1] === '}' && $i - $start_index > $linebreak_pos) {
-                    $css = $this->str_slice($css, 0, $i) . "\n" . $this->str_slice($css, $i);
+                    $css = $this->str_slice($css, 0, $i)."\n".$this->str_slice($css, $i);
                     $start_index = $i;
                 }
             }
         }
 
         // restore preserved comments and strings in reverse order
-        for ($i = count($this->preserved_tokens) - 1; $i >= 0; $i--) {
-            $css = preg_replace('/' . self::TOKEN . $i . '___/', $this->preserved_tokens[$i], $css, 1);
+        for ($i = count($this->preserved_tokens) - 1; $i >= 0; --$i) {
+            $css = preg_replace('/'.self::TOKEN.$i.'___/', $this->preserved_tokens[$i], $css, 1);
         }
 
         // Trim the final string (for any leading or trailing white spaces)
@@ -419,6 +424,7 @@ class CSSmin
      * regexes against large strings chunks.
      *
      * @param string $css
+     *
      * @return string
      */
     private function extract_data_urls($css)
@@ -440,18 +446,18 @@ class CSSmin
             $start_index = $index + 4; // "url(".length()
             $end_index = $last_index - 1;
             $terminator = $m[1]; // ', " or empty (not quoted)
-            $found_terminator = FALSE;
+            $found_terminator = false;
 
             if (strlen($terminator) === 0) {
                 $terminator = ')';
             }
 
-            while ($found_terminator === FALSE && $end_index+1 <= $max_index) {
+            while ($found_terminator === false && $end_index + 1 <= $max_index) {
                 $end_index = $this->index_of($css, $terminator, $end_index + 1);
 
                 // endIndex == 0 doesn't really apply here
                 if ($end_index > 0 && substr($css, $end_index - 1, 1) !== '\\') {
-                    $found_terminator = TRUE;
+                    $found_terminator = true;
                     if (')' != $terminator) {
                         $end_index = $this->index_of($css, ')', $end_index);
                     }
@@ -466,7 +472,7 @@ class CSSmin
                 $token = preg_replace('/\s+/', '', $token);
                 $this->preserved_tokens[] = $token;
 
-                $preserver = 'url(' . self::TOKEN . (count($this->preserved_tokens) - 1) . '___)';
+                $preserver = 'url('.self::TOKEN.(count($this->preserved_tokens) - 1).'___)';
                 $sb[] = $preserver;
 
                 $append_index = $end_index + 1;
@@ -497,6 +503,7 @@ class CSSmin
      * e.g. background-color: #aabbccdd
      *
      * @param string $css
+     *
      * @return string
      */
     private function compress_hex_colors($css)
@@ -516,7 +523,7 @@ class CSSmin
             '#800080' => 'purple',
             '#c0c0c0' => 'silver',
             '#008080' => 'teal',
-            '#f00' => 'red'
+            '#f00' => 'red',
         );
 
         while (preg_match($pattern, $css, $m, 0, $offset)) {
@@ -528,16 +535,16 @@ class CSSmin
 
             if ($is_filter) {
                 // Restore, maintain case, otherwise filter will break
-                $sb[] = $m[1] . '#' . $m[2] . $m[3] . $m[4] . $m[5] . $m[6] . $m[7];
+                $sb[] = $m[1].'#'.$m[2].$m[3].$m[4].$m[5].$m[6].$m[7];
             } else {
                 if (strtolower($m[2]) == strtolower($m[3]) &&
                     strtolower($m[4]) == strtolower($m[5]) &&
                     strtolower($m[6]) == strtolower($m[7])) {
                     // Compress.
-                    $hex = '#' . strtolower($m[3] . $m[5] . $m[7]);
+                    $hex = '#'.strtolower($m[3].$m[5].$m[7]);
                 } else {
                     // Non compressible color, restore but lower case.
-                    $hex = '#' . strtolower($m[2] . $m[3] . $m[4] . $m[5] . $m[6] . $m[7]);
+                    $hex = '#'.strtolower($m[2].$m[3].$m[4].$m[5].$m[6].$m[7]);
                 }
                 // replace Hex colors to short safe color names
                 $sb[] = array_key_exists($hex, $short_safe) ? $short_safe[$hex] : $hex;
@@ -565,8 +572,8 @@ class CSSmin
         // maybe the string contains a comment-like substring?
         // one, maybe more? put'em back then
         if (($pos = $this->index_of($match, self::COMMENT)) >= 0) {
-            for ($i = 0, $max = count($this->comments); $i < $max; $i++) {
-                $match = preg_replace('/' . self::COMMENT . $i . '___/', $this->comments[$i], $match, 1);
+            for ($i = 0, $max = count($this->comments); $i < $max; ++$i) {
+                $match = preg_replace('/'.self::COMMENT.$i.'___/', $this->comments[$i], $match, 1);
             }
         }
 
@@ -574,7 +581,8 @@ class CSSmin
         $match = preg_replace('/progid\:DXImageTransform\.Microsoft\.Alpha\(Opacity\=/i', 'alpha(opacity=', $match);
 
         $this->preserved_tokens[] = $match;
-        return $quote . self::TOKEN . (count($this->preserved_tokens) - 1) . '___' . $quote;
+
+        return $quote.self::TOKEN.(count($this->preserved_tokens) - 1).'___'.$quote;
     }
 
     private function replace_colon($matches)
@@ -585,26 +593,28 @@ class CSSmin
     private function replace_calc($matches)
     {
         $this->preserved_tokens[] = trim(preg_replace('/\s*([\*\/\(\),])\s*/', '$1', $matches[2]));
-        return 'calc('. self::TOKEN . (count($this->preserved_tokens) - 1) . '___' . ')';
+
+        return 'calc('.self::TOKEN.(count($this->preserved_tokens) - 1).'___'.')';
     }
 
-	private function preserve_old_IE_specific_matrix_definition($matches)
-	{
-		$this->preserved_tokens[] = $matches[1];
-		return 'filter:progid:DXImageTransform.Microsoft.Matrix(' . self::TOKEN . (count($this->preserved_tokens) - 1) . '___' . ')';
-    }
-
-	private function replace_keyframe_zero($matches)
+    private function preserve_old_IE_specific_matrix_definition($matches)
     {
-        return $matches[1] . preg_replace('/0\s*,/', '0%,', preg_replace('/\s*0\s*\{/', '0%{', $matches[2]));
+        $this->preserved_tokens[] = $matches[1];
+
+        return 'filter:progid:DXImageTransform.Microsoft.Matrix('.self::TOKEN.(count($this->preserved_tokens) - 1).'___'.')';
+    }
+
+    private function replace_keyframe_zero($matches)
+    {
+        return $matches[1].preg_replace('/0\s*,/', '0%,', preg_replace('/\s*0\s*\{/', '0%{', $matches[2]));
     }
 
     private function rgb_to_hex($matches)
     {
         // Support for percentage values rgb(100%, 0%, 45%);
-        if ($this->index_of($matches[1], '%') >= 0){
+        if ($this->index_of($matches[1], '%') >= 0) {
             $rgbcolors = explode(',', str_replace('%', '', $matches[1]));
-            for ($i = 0; $i < count($rgbcolors); $i++) {
+            for ($i = 0; $i < count($rgbcolors); ++$i) {
                 $rgbcolors[$i] = $this->round_number(floatval($rgbcolors[$i]) * 2.55);
             }
         } else {
@@ -612,17 +622,17 @@ class CSSmin
         }
 
         // Values outside the sRGB color space should be clipped (0-255)
-        for ($i = 0; $i < count($rgbcolors); $i++) {
+        for ($i = 0; $i < count($rgbcolors); ++$i) {
             $rgbcolors[$i] = $this->clamp_number(intval($rgbcolors[$i], 10), 0, 255);
-            $rgbcolors[$i] = sprintf("%02x", $rgbcolors[$i]);
+            $rgbcolors[$i] = sprintf('%02x', $rgbcolors[$i]);
         }
 
         // Fix for issue #2528093
-        if (!preg_match('/[\s\,\);\}]/', $matches[2])){
-            $matches[2] = ' ' . $matches[2];
+        if (!preg_match('/[\s\,\);\}]/', $matches[2])) {
+            $matches[2] = ' '.$matches[2];
         }
 
-        return '#' . implode('', $rgbcolors) . $matches[2];
+        return '#'.implode('', $rgbcolors).$matches[2];
     }
 
     private function hsl_to_hex($matches)
@@ -642,9 +652,9 @@ class CSSmin
         } else {
             $v2 = $l < 0.5 ? $l * (1 + $s) : ($l + $s) - ($s * $l);
             $v1 = (2 * $l) - $v2;
-            $r = $this->round_number(255 * $this->hue_to_rgb($v1, $v2, $h + (1/3)));
+            $r = $this->round_number(255 * $this->hue_to_rgb($v1, $v2, $h + (1 / 3)));
             $g = $this->round_number(255 * $this->hue_to_rgb($v1, $v2, $h));
-            $b = $this->round_number(255 * $this->hue_to_rgb($v1, $v2, $h - (1/3)));
+            $b = $this->round_number(255 * $this->hue_to_rgb($v1, $v2, $h - (1 / 3)));
         }
 
         return $this->rgb_to_hex(array('', $r.','.$g.','.$b, $matches[2]));
@@ -652,27 +662,27 @@ class CSSmin
 
     private function lowercase_pseudo_first($matches)
     {
-        return ':first-'. strtolower($matches[1]) .' '. $matches[2];
+        return ':first-'.strtolower($matches[1]).' '.$matches[2];
     }
 
     private function lowercase_directives($matches)
     {
-        return '@'. strtolower($matches[1]);
+        return '@'.strtolower($matches[1]);
     }
 
     private function lowercase_pseudo_elements($matches)
     {
-        return ':'. strtolower($matches[1]);
+        return ':'.strtolower($matches[1]);
     }
 
     private function lowercase_common_functions($matches)
     {
-        return ':'. strtolower($matches[1]) .'(';
+        return ':'.strtolower($matches[1]).'(';
     }
 
     private function lowercase_common_functions_values($matches)
     {
-        return $matches[1] . strtolower($matches[2]);
+        return $matches[1].strtolower($matches[2]);
     }
 
     private function lowercase_properties($matches)
@@ -687,9 +697,18 @@ class CSSmin
     private function hue_to_rgb($v1, $v2, $vh)
     {
         $vh = $vh < 0 ? $vh + 1 : ($vh > 1 ? $vh - 1 : $vh);
-        if ($vh * 6 < 1) return $v1 + ($v2 - $v1) * 6 * $vh;
-        if ($vh * 2 < 1) return $v2;
-        if ($vh * 3 < 2) return $v1 + ($v2 - $v1) * ((2/3) - $vh) * 6;
+        if ($vh * 6 < 1) {
+            return $v1 + ($v2 - $v1) * 6 * $vh;
+        }
+
+        if ($vh * 2 < 1) {
+            return $v2;
+        }
+
+        if ($vh * 3 < 2) {
+            return $v1 + ($v2 - $v1) * ((2 / 3) - $vh) * 6;
+        }
+
         return $v1;
     }
 
@@ -705,33 +724,35 @@ class CSSmin
 
     /**
      * PHP port of Javascript's "indexOf" function for strings only
-     * Author: Tubal Martin http://blog.margenn.com
+     * Author: Tubal Martin http://blog.margenn.com.
      *
      * @param string $haystack
      * @param string $needle
-     * @param int    $offset index (optional)
+     * @param int    $offset   index (optional)
+     *
      * @return int
      */
     private function index_of($haystack, $needle, $offset = 0)
     {
         $index = strpos($haystack, $needle, $offset);
 
-        return ($index !== FALSE) ? $index : -1;
+        return ($index !== false) ? $index : -1;
     }
 
     /**
      * PHP port of Javascript's "slice" function for strings only
      * Author: Tubal Martin http://blog.margenn.com
-     * Tests: http://margenn.com/tubal/str_slice/
+     * Tests: http://margenn.com/tubal/str_slice/.
      *
      * @param string   $str
      * @param int      $start index
-     * @param int|bool $end index (optional)
+     * @param int|bool $end   index (optional)
+     *
      * @return string
      */
-    private function str_slice($str, $start = 0, $end = FALSE)
+    private function str_slice($str, $start = 0, $end = false)
     {
-        if ($end !== FALSE && ($start < 0 || $end <= 0)) {
+        if ($end !== false && ($start < 0 || $end <= 0)) {
             $max = strlen($str);
 
             if ($start < 0) {
@@ -751,22 +772,25 @@ class CSSmin
             }
         }
 
-        $slice = ($end === FALSE) ? substr($str, $start) : substr($str, $start, $end - $start);
-        return ($slice === FALSE) ? '' : $slice;
+        $slice = ($end === false) ? substr($str, $start) : substr($str, $start, $end - $start);
+
+        return ($slice === false) ? '' : $slice;
     }
 
     /**
-     * Convert strings like "64M" or "30" to int values
+     * Convert strings like "64M" or "30" to int values.
+     *
      * @param mixed $size
+     *
      * @return int
      */
     private function normalize_int($size)
     {
         if (is_string($size)) {
             switch (substr($size, -1)) {
-                case 'M': case 'm': return $size * 1048576;
-                case 'K': case 'k': return $size * 1024;
-                case 'G': case 'g': return $size * 1073741824;
+                case 'M':case 'm':return $size * 1048576;
+                case 'K':case 'k':return $size * 1024;
+                case 'G':case 'g':return $size * 1073741824;
             }
         }
 

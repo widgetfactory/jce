@@ -1,20 +1,19 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-$position = 'mce' . ucfirst($this->profile->layout_params->get('toolbar_align', 'left'));
+$position = 'mce'.ucfirst($this->profile->layout_params->get('toolbar_align', 'left'));
 
 // width and height
-$width  = $this->profile->layout_params->get('width');
+$width = $this->profile->layout_params->get('width');
 $height = $this->profile->layout_params->get('height');
 
 if (!empty($width)) {
@@ -61,7 +60,7 @@ if (strpos($theme, '.') === false) {
     <div class="adminformlist" id="profileLayoutTable">
         <!-- Active Editor Layout -->
         <div class="controls-group">
-            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
+            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR').'::'.WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
 
             <div class="profileLayoutContainer profileLayoutContainerCurrent">
               <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
@@ -69,12 +68,12 @@ if (strpos($theme, '.') === false) {
                 <span id="editor_toggle"></span>
                 <span class="widthMarker"><span><?php echo $width; ?></span></span>
 
-                <div class="mceLayout" role="presentation" style="max-width:<?php echo $width;?>">
-                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position;?> mceFirst">
-                          <?php for ($i = 1; $i <= count($this->rows); $i++) : ?>
+                <div class="mceLayout" role="presentation" style="max-width:<?php echo $width; ?>">
+                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position; ?> mceFirst">
+                          <?php for ($i = 1; $i <= count($this->rows); ++$i) : ?>
                               <div class="sortableListItem">
-                                <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled" role="toolbar" tabindex="-1">
-                                  <?php for ($x = 1; $x <= count($this->rows); $x++) : ?>
+                                <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i; ?> Enabled" role="toolbar" tabindex="-1">
+                                  <?php for ($x = 1; $x <= count($this->rows); ++$x) : ?>
                                       <?php if ($i == $x) : ?>
                                           <?php foreach (explode(',', $this->rows[$x]) as $icon) : ?>
                                               <?php if ($icon == 'spacer') : ?>
@@ -82,7 +81,7 @@ if (strpos($theme, '.') === false) {
                                               <?php endif;
                                               foreach ($this->plugins as $name => $plugin) :
                                                   if ($plugin->icon && $name == $icon) : ?>
-                                                      <div data-name="<?php echo $name; ?>" class="mceToolBarItem sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title);?>::<?php echo WFText::_($plugin->description);?>"><?php echo $this->model->getIcon($plugin); ?></div>
+                                                      <div data-name="<?php echo $name; ?>" class="mceToolBarItem sortableRowItem <?php echo $plugin->type; ?> wf-tooltip wf-tooltip-cancel-ondrag" title="<?php echo WFText::_($plugin->title); ?>::<?php echo WFText::_($plugin->description); ?>"><?php echo $this->model->getIcon($plugin); ?></div>
                                                   <?php
                                                   endif;
                                               endforeach;
@@ -114,19 +113,19 @@ if (strpos($theme, '.') === false) {
         </div>
         <!-- Available Buttons -->
         <div class="controls-group">
-            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE') . '::' . WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
+            <label class="control-label wf-tooltip" title="<?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE').'::'.WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo WFText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
             <div class="profileLayoutContainer profileLayoutContainerToolbar">
                 <div class="mceEditor defaultSkin <?php echo $theme; ?>" role="application">
 
                   <div class="mceLayout" role="presentation">
-                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position;?> mceFirst mceLast">
-                          <?php for ($i = 1; $i <= 5; $i++) :?>
+                    <div role="toolbar" class="sortableList mceToolbar <?php echo $position; ?> mceFirst mceLast">
+                          <?php for ($i = 1; $i <= 5; ++$i) :?>
                               <div class="sortableListItem">
-                              <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled" role="toolbar" tabindex="-1">
+                              <div class="sortableRow mceToolbarRow mceToolbarRow<?php echo $i; ?> Enabled" role="toolbar" tabindex="-1">
                                 <?php foreach ($this->plugins as $name => $plugin) :
                                     if (!in_array($name, explode(',', implode(',', $this->rows)))) :
-                                        if ($plugin->icon && (int)$plugin->row == $i) :
-                                            echo '<div class="mceToolBarItem sortableRowItem ' . $plugin->type . ' wf-tooltip wf-tooltip-cancel-ondrag" data-name="' . $name . '" title="' . WFText::_($plugin->title) . '::' . WFText::_($plugin->description) . '">' . $this->model->getIcon($plugin) . '</div>';
+                                        if ($plugin->icon && (int) $plugin->row == $i) :
+                                            echo '<div class="mceToolBarItem sortableRowItem '.$plugin->type.' wf-tooltip wf-tooltip-cancel-ondrag" data-name="'.$name.'" title="'.WFText::_($plugin->title).'::'.WFText::_($plugin->description).'">'.$this->model->getIcon($plugin).'</div>';
                                         endif;
                                     endif;
                                 endforeach;
@@ -159,7 +158,7 @@ if (strpos($theme, '.') === false) {
                         <div class="controls">
                           <label class="checkbox">
                             <input type="checkbox" value="<?php echo $name; ?>" <?php echo in_array($name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                            <?php echo WFText::_('WF_' . strtoupper($name) . '_DESC'); ?>
+                            <?php echo WFText::_('WF_'.strtoupper($name).'_DESC'); ?>
                           </label>
                         </div>
                     </div>
@@ -169,14 +168,14 @@ if (strpos($theme, '.') === false) {
                         <div class="controls">
                           <label class="checkbox">
                             <input type="checkbox" value="<?php echo $name; ?>" <?php echo in_array($name, explode(',', $this->profile->plugins)) ? 'checked="checked"' : ''; ?>/>
-                            <?php echo WFText::_('WF_' . strtoupper($name) . '_DESC'); ?>
+                            <?php echo WFText::_('WF_'.strtoupper($name).'_DESC'); ?>
                           </label>
                         </div>
                     </div>
                 <?php
                 endif;
             endif;
-            $i++;
+            ++$i;
         endforeach;
         ?>
     </div>

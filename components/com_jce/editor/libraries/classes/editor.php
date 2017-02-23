@@ -1,23 +1,22 @@
 <?php
 
 /**
- * @package       JCE
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
-require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
+require_once JPATH_ADMINISTRATOR.'/components/com_jce/includes/base.php';
 
 /**
- * JCE class
+ * JCE class.
  *
  * @static
- * @package        JCE
+ *
  * @since    1.5
  */
 class WFEditor extends JObject
@@ -32,9 +31,7 @@ class WFEditor extends JObject
     protected static $params = array();
 
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access    protected
+     * Constructor activating the default information of the class.
      */
     public function __construct($config = array())
     {
@@ -42,37 +39,38 @@ class WFEditor extends JObject
     }
 
     /**
-     * Returns a reference to a editor object
+     * Returns a reference to a editor object.
      *
      * This method must be invoked as:
      *         <pre>  $browser =JContentEditor::getInstance();</pre>
      *
-     * @access    public
-     * @return    JCE  The editor object.
+     * @return JCE The editor object
      */
     public static function getInstance($config = array())
     {
         if (!isset(self::$instance)) {
-            self::$instance = new WFEditor($config);
+            self::$instance = new self($config);
         }
+
         return self::$instance;
     }
 
     /**
-     * Get the current version
-     * @access protected
+     * Get the current version.
+     *
      * @return string
      */
     public function getVersion()
     {
-        $manifest = WF_ADMINISTRATOR . '/jce.xml';
+        $manifest = WF_ADMINISTRATOR.'/jce.xml';
 
         $version = md5_file($manifest);
 
         return $version;
     }
 
-    public function getContext() {
+    public function getContext()
+    {
         /*if ($this->profile) {
             // get token
             $token = WFToken::getToken();
@@ -80,10 +78,10 @@ class WFEditor extends JObject
             $this->context = md5($token . serialize($this->profile));
             // assign profile id to user session
             $app->setUserState($this->context, $this->profile->id);
-        }*/ 
-        
-        $option     = JRequest::getCmd('option');
-        $extension  = WFExtensionHelper::getComponent(null, $option);
+        }*/
+
+        $option = JRequest::getCmd('option');
+        $extension = WFExtensionHelper::getComponent(null, $option);
 
         $extension_id = 0;
 
@@ -98,7 +96,7 @@ class WFEditor extends JObject
         return 0;
     }
 
-    private function getProfileVars($plugin = "")
+    private function getProfileVars($plugin = '')
     {
         $app = JFactory::getApplication();
         $user = JFactory::getUser();
@@ -106,7 +104,7 @@ class WFEditor extends JObject
 
         if ($option == 'com_jce') {
             $context = JRequest::getInt('context');
-            
+
             if ($context) {
                 $component = WFExtensionHelper::getComponent($context);
                 $option = isset($component->element) ? $component->element : $component->option;
@@ -118,7 +116,7 @@ class WFEditor extends JObject
 
         if (!class_exists('Wf_Mobile_Detect')) {
             // load mobile detect class
-            require_once dirname(__FILE__) . '/mobile.php';
+            require_once dirname(__FILE__).'/mobile.php';
         }
 
         $mobile = new Wf_Mobile_Detect();
@@ -143,18 +141,18 @@ class WFEditor extends JObject
         }
 
         return array(
-            "option" => $option,
-            "area" => $area,
-            "device" => $device,
-            "groups" => $groups,
-            "plugin" => $plugin,
+            'option' => $option,
+            'area' => $area,
+            'device' => $device,
+            'groups' => $groups,
+            'plugin' => $plugin,
         );
     }
 
     /**
-     * Get an appropriate editor profile
+     * Get an appropriate editor profile.
      */
-    public function getProfile($plugin = "")
+    public function getProfile($plugin = '')
     {
         // get the profile variables for the current context
         $options = $this->getProfileVars($plugin);
@@ -175,13 +173,13 @@ class WFEditor extends JObject
                 $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
 
                 if ($id) {
-                    $query->where('id = ' . (int) $id);
+                    $query->where('id = '.(int) $id);
                 }
             } else {
                 $query = 'SELECT * FROM #__wf_profiles WHERE published = 1';
 
                 if ($id) {
-                    $query .= ' AND id = ' . (int) $id;
+                    $query .= ' AND id = '.(int) $id;
                 }
 
                 $query .= ' ORDER BY ordering ASC';
@@ -205,7 +203,7 @@ class WFEditor extends JObject
                 }
 
                 // check user groups - a value should always be set
-                $groups = array_intersect($options["groups"], explode(',', $item->types));
+                $groups = array_intersect($options['groups'], explode(',', $item->types));
 
                 // user not in the current group...
                 if (empty($groups)) {
@@ -216,7 +214,7 @@ class WFEditor extends JObject
                 }
 
                 // check component
-                if ($options["option"] !== 'com_jce' && $item->components && in_array($options["option"], explode(',', $item->components)) === false) {
+                if ($options['option'] !== 'com_jce' && $item->components && in_array($options['option'], explode(',', $item->components)) === false) {
                     continue;
                 }
 
@@ -226,16 +224,16 @@ class WFEditor extends JObject
                 }
 
                 // check device
-                if (in_array($options["device"], explode(',', $item->device)) === false) {
+                if (in_array($options['device'], explode(',', $item->device)) === false) {
                     continue;
                 }
 
                 // check area
-                if (!empty($item->area) && (int) $item->area != $options["area"]) {
+                if (!empty($item->area) && (int) $item->area != $options['area']) {
                     continue;
                 }
 
-                if ($options["plugin"] && in_array($options["plugin"], explode(",", $item->plugins)) === false) {
+                if ($options['plugin'] && in_array($options['plugin'], explode(',', $item->plugins)) === false) {
                     continue;
                 }
 
@@ -259,8 +257,8 @@ class WFEditor extends JObject
     }
 
     /**
-     * Get the component option
-     * @access private
+     * Get the component option.
+     *
      * @return string
      */
     public function getComponentOption()
@@ -285,10 +283,11 @@ class WFEditor extends JObject
     }
 
     /**
-     * Get editor parameters
-     * @access  public
-     * @param     array $options
-     * @return     object
+     * Get editor parameters.
+     *
+     * @param array $options
+     *
+     * @return object
      */
     public function getParams($options = array())
     {
@@ -309,7 +308,7 @@ class WFEditor extends JObject
         $plugin = JRequest::getCmd('plugin');
 
         // optional caller, eg: Link
-        $caller = "";
+        $caller = '';
 
         // get name and caller from plugin name
         if (strpos($plugin, '.') !== false) {
@@ -339,14 +338,14 @@ class WFEditor extends JObject
             $editor_params = array();
 
             // get params from editor plugin
-            if ($editor_plugin->params && $editor_plugin->params !== "{}") {
+            if ($editor_plugin->params && $editor_plugin->params !== '{}') {
                 $editor_params['editor'] = json_decode($editor_plugin->params, true);
             } else {
                 // get component
                 $component = WFExtensionHelper::getComponent();
 
                 // get params from component "params" field (legacy)
-                if ($component->params && $component->params !== "{}") {
+                if ($component->params && $component->params !== '{}') {
                     $data = json_decode($component->params, true);
 
                     if (isset($data['editor'])) {
@@ -379,7 +378,8 @@ class WFEditor extends JObject
     }
 
     /**
-     * Get a parameter by key
+     * Get a parameter by key.
+     *
      * @param $key Parameter key eg: editor.width
      * @param $fallback Fallback value
      * @param $default Default value

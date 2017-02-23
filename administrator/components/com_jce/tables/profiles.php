@@ -1,142 +1,143 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('JPATH_BASE') or die('RESTRICTED');
 
-require_once(dirname(dirname(__FILE__)) . '/helpers/extension.php');
-require_once(dirname(dirname(__FILE__)) . '/helpers/encrypt.php');
+require_once dirname(dirname(__FILE__)).'/helpers/extension.php';
+require_once dirname(dirname(__FILE__)).'/helpers/encrypt.php';
 
-class WFTableProfiles extends JTable {
-
-    /**
+class WFTableProfiles extends JTable
+{
+    /*
      * Primary Key
      *
      *  @var int
      */
-    var $id = null;
+    public $id = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $name = null;
+    public $name = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $description = null;
+    public $description = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $components = null;
+    public $components = null;
 
-    /**
+    /*
      *
      *
      * @var int
      */
-    var $area = null;
+    public $area = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $device = null;
+    public $device = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $users = null;
+    public $users = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $types = null;
+    public $types = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $rows = null;
+    public $rows = null;
 
-    /**
+    /*
      *
      *
      * @var varchar
      */
-    var $plugins = null;
+    public $plugins = null;
 
-    /**
+    /*
      *
      *
      * @var tinyint
      */
-    var $published = 0;
+    public $published = 0;
 
-    /**
+    /*
      *
      *
      * @var tinyint
      */
-    var $ordering = 1;
+    public $ordering = 1;
 
-    /**
+    /*
      *
      *
      * @var int unsigned
      */
-    var $checked_out = 0;
+    public $checked_out = 0;
 
-    /**
+    /*
      *
      *
      * @var datetime
      */
-    var $checked_out_time = "";
+    public $checked_out_time = '';
 
-    /**
+    /*
      *
      *
      * @var text
      */
-    var $params = null;
+    public $params = null;
 
-    public function __construct(& $db) {
+    public function __construct(&$db)
+    {
         parent::__construct('#__wf_profiles', 'id', $db);
     }
 
     /**
-     * Overridden JTable::load to decrypt parameters
+     * Overridden JTable::load to decrypt parameters.
      *
-     * @param   integer  $id  An optional profile id.
-     * @param   boolean  $reset   False if row not found or on error
-     * (internal error state set in that case).
+     * @param int  $id    An optional profile id
+     * @param bool $reset False if row not found or on error
+     *                    (internal error state set in that case)
      *
-     * @return  boolean  True on success, false on failure.
+     * @return bool True on success, false on failure
      *
      * @since   2.4
      */
-    public function load($id = null, $reset = true) {
+    public function load($id = null, $reset = true)
+    {
         $return = parent::load($id, $reset);
 
         if ($return !== false && !empty($this->params)) {
@@ -147,16 +148,16 @@ class WFTableProfiles extends JTable {
     }
 
     /**
-     * Overridden JTable::store to encrypt parameters
+     * Overridden JTable::store to encrypt parameters.
      *
-     * @param   boolean  $updateNulls  True to update fields even if they are null.
+     * @param bool $updateNulls True to update fields even if they are null
      *
-     * @return  boolean  True on success.
+     * @return bool True on success
      *
      * @since   2.4
      */
-    public function store($updateNulls = false) {
-
+    public function store($updateNulls = false)
+    {
         if ($this->id && $this->params) {
             $component = WFExtensionHelper::getComponent();
 
@@ -170,7 +171,4 @@ class WFTableProfiles extends JTable {
 
         return parent::store($updateNulls);
     }
-
 }
-
-?>

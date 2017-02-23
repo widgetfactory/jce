@@ -1,13 +1,12 @@
 <?php
 
 /**
- * @package       JCE
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
@@ -17,14 +16,10 @@ wfimport('editor.libraries.classes.browser');
 
 class WFMediaManagerBase extends WFEditorPlugin
 {
-
     protected $_filetypes = 'jpg,jpeg,png,gif';
 
     private static $browser = array();
 
-    /**
-     * @access  public
-     */
     public function __construct($config = array())
     {
         // use the full "manager" layout by default
@@ -33,11 +28,11 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         if (!array_key_exists('view_path', $config)) {
-            $config['view_path'] = WF_EDITOR_LIBRARIES . '/views/plugin';
+            $config['view_path'] = WF_EDITOR_LIBRARIES.'/views/plugin';
         }
 
         if (!array_key_exists('template_path', $config)) {
-            $config['template_path'] = WF_EDITOR_LIBRARIES . '/views/plugin/tmpl';
+            $config['template_path'] = WF_EDITOR_LIBRARIES.'/views/plugin/tmpl';
         }
 
         // Call parent
@@ -53,8 +48,8 @@ class WFMediaManagerBase extends WFEditorPlugin
     }
 
     /**
-     * Get the File Browser instance
-     * @access public
+     * Get the File Browser instance.
+     *
      * @return object WFBrowserExtension
      */
     protected function getFileBrowser()
@@ -64,7 +59,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // add caller if set
         if ($caller) {
-            $name .= '.' . $caller;
+            $name .= '.'.$caller;
         }
 
         if (!isset(self::$browser[$name])) {
@@ -79,7 +74,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $this->getFileBrowser()->addAction($name, $options);
     }
 
-    protected function addFileBrowserButton($type = 'file', $name, $options = array())
+    protected function addFileBrowserButton($type, $name, $options = array())
     {
         $this->getFileBrowser()->addButton($type, $name, $options);
     }
@@ -95,8 +90,7 @@ class WFMediaManagerBase extends WFEditorPlugin
     }
 
     /**
-     * Display the plugin
-     * @access public
+     * Display the plugin.
      */
     public function display()
     {
@@ -117,12 +111,12 @@ class WFMediaManagerBase extends WFEditorPlugin
         $options['dir'] = $browser->getFileSystem()->getRootDir();
 
         // set global options
-        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
+        $document->addScriptDeclaration('FileBrowser.options='.json_encode($options).';');
     }
 
     public function getFileTypes()
     {
-        return $this->getFileBrowser()->getFileTypes("array");
+        return $this->getFileBrowser()->getFileTypes('array');
     }
 
     protected function setFileTypes($filetypes)
@@ -156,11 +150,12 @@ class WFMediaManagerBase extends WFEditorPlugin
                 // set tmp directory
                 define('GETID3_TEMP_DIR', $app->getCfg('tmp_path'));
 
-                require_once WF_EDITOR_LIBRARIES . '/classes/vendor/getid3/getid3/getid3.php';
+                require_once WF_EDITOR_LIBRARIES.'/classes/vendor/getid3/getid3/getid3.php';
             }
 
             $id3 = new getID3();
         }
+
         return $id3;
     }
 
@@ -243,8 +238,8 @@ class WFMediaManagerBase extends WFEditorPlugin
     }
 
     /**
-     * Get the Media Manager configuration
-     * @access private
+     * Get the Media Manager configuration.
+     *
      * @return array
      */
     protected function getFileBrowserConfig($config = array())
@@ -267,7 +262,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         // fix Link plugin legacy "direction" conflict
         if ($this->get('caller') === 'link') {
             $fallback = $this->getParam('editor.dir');
-            $dir = $this->getParam($this->getName() . '.dir', $fallback);
+            $dir = $this->getParam($this->getName().'.dir', $fallback);
         }
 
         $base = array(

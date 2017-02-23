@@ -1,21 +1,21 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('admin.classes.view');
 
-class WFViewHelp extends WFView {
-
-    function display($tpl = null) {
+class WFViewHelp extends WFView
+{
+    public function display($tpl = null)
+    {
         $model = $this->getModel();
         $language = $model->getLanguage();
         $lang = JFactory::getLanguage();
@@ -26,7 +26,7 @@ class WFViewHelp extends WFView {
 
         $component = JComponentHelper::getComponent('com_jce');
 
-        require_once(WF_ADMINISTRATOR . '/classes/parameter.php');
+        require_once WF_ADMINISTRATOR.'/classes/parameter.php';
 
         $params = new WFParameter($component->params);
         $url = $params->get('preferences.help.url', 'https://www.joomlacontenteditor.net');
@@ -36,7 +36,7 @@ class WFViewHelp extends WFView {
         switch ($method) {
             default:
             case 'reference':
-                $url .= '/index.php?option=com_content&view=article&tmpl=component&print=1&mode=inline&task=findkey&lang=' . $language . '&keyref=';
+                $url .= '/index.php?option=com_content&view=article&tmpl=component&print=1&mode=inline&task=findkey&lang='.$language.'&keyref=';
                 break;
             case 'xml':
                 break;
@@ -60,12 +60,11 @@ class WFViewHelp extends WFView {
         $options = array(
             'url' => $url,
             'key' => $key,
-            'pattern' => $pattern
+            'pattern' => $pattern,
         );
 
-        $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.help.init(' . json_encode($options) . ');});');
+        $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.help.init('.json_encode($options).');});');
 
         parent::display($tpl);
     }
-
 }

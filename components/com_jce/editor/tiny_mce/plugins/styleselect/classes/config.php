@@ -1,17 +1,15 @@
 <?php
 
 /**
- * @package       JCE
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 class WFStyleselectPluginConfig
 {
-
     public static function getConfig(&$settings)
     {
         $wf = WFEditor::getInstance();
@@ -31,10 +29,10 @@ class WFStyleselectPluginConfig
 
             // add legacy to custom_style_classes
             if (!empty($theme_advanced_styles)) {
-                $list1 = explode(",", $custom_classes);
-                $list2 = explode(",", $theme_advanced_styles);
+                $list1 = explode(',', $custom_classes);
+                $list2 = explode(',', $theme_advanced_styles);
 
-                $settings['styleselect_custom_classes'] = implode(",", array_merge($list1, $list2));
+                $settings['styleselect_custom_classes'] = implode(',', array_merge($list1, $list2));
             }
 
             $custom_styles = json_decode($wf->getParam('styleselect.custom_styles', $wf->getParam('editor.custom_styles', '')));
@@ -50,7 +48,7 @@ class WFStyleselectPluginConfig
                     }
 
                     if (isset($style->attributes)) {
-                        $style->attributes = self::cleanJSON($style->attributes, " ", "=");
+                        $style->attributes = self::cleanJSON($style->attributes, ' ', '=');
                     }
 
                     // set block or inline element
@@ -64,7 +62,7 @@ class WFStyleselectPluginConfig
                         unset($style->element);
 
                         // remove element
-                        $style->remove = "all";
+                        $style->remove = 'all';
                     }
 
                     // match all if not set
@@ -76,7 +74,7 @@ class WFStyleselectPluginConfig
                 }
 
                 if (!empty($styles)) {
-                    $settings['style_formats'] = htmlentities(json_encode($styles, JSON_UNESCAPED_SLASHES), ENT_NOQUOTES, "UTF-8");
+                    $settings['style_formats'] = htmlentities(json_encode($styles, JSON_UNESCAPED_SLASHES), ENT_NOQUOTES, 'UTF-8');
                 }
             }
         }
@@ -89,7 +87,7 @@ class WFStyleselectPluginConfig
         $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
     }
 
-    protected static function cleanJSON($string, $delim1 = ";", $delim2 = ":")
+    protected static function cleanJSON($string, $delim1 = ';', $delim2 = ':')
     {
         $ret = array();
 
@@ -114,10 +112,11 @@ class WFStyleselectPluginConfig
     }
 
     /**
-     * Get a list of editor font families
+     * Get a list of editor font families.
      *
      * @return string font family list
-     * @param string $add Font family to add
+     *
+     * @param string $add    Font family to add
      * @param string $remove Font family to remove
      */
     protected static function getFonts()
@@ -131,7 +130,7 @@ class WFStyleselectPluginConfig
         $fonts = self::$fonts;
 
         if (empty($remove) && empty($add)) {
-            return "";
+            return '';
         }
 
         $remove = preg_split('/[;,]+/', $remove);
@@ -139,14 +138,14 @@ class WFStyleselectPluginConfig
         if (count($remove)) {
             foreach ($fonts as $key => $value) {
                 foreach ($remove as $gone) {
-                    if ($gone && preg_match('/^' . $gone . '=/i', $value)) {
+                    if ($gone && preg_match('/^'.$gone.'=/i', $value)) {
                         // Remove family
                         unset($fonts[$key]);
                     }
                 }
             }
         }
-        foreach (explode(";", $add) as $new) {
+        foreach (explode(';', $add) as $new) {
             // Add new font family
             if (preg_match('/([^\=]+)(\=)([^\=]+)/', trim($new)) && !in_array($new, $fonts)) {
                 $fonts[] = $new;
@@ -154,7 +153,7 @@ class WFStyleselectPluginConfig
         }
 
         natcasesort($fonts);
+
         return implode(';', $fonts);
     }
-
 }

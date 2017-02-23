@@ -1,21 +1,21 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('admin.classes.view');
 
-class WFViewUsers extends WFView {
-
-    public function display($tpl = null) {
+class WFViewUsers extends WFView
+{
+    public function display($tpl = null)
+    {
         $app = JFactory::getApplication();
         $option = JRequest::getCmd('option');
 
@@ -43,28 +43,28 @@ class WFViewUsers extends WFView {
 
         if (!empty($search)) {
             if (defined('JPATH_PLATFORM')) {
-                $quoted = $db->quote('%' . $search . '%', false);
+                $quoted = $db->quote('%'.$search.'%', false);
             } else {
-                $quoted = $db->Quote('%' . $search . '%', false);
+                $quoted = $db->Quote('%'.$search.'%', false);
             }
 
-            $where[] = 'a.username LIKE ' . $quoted . ' OR a.email LIKE ' . $quoted . ' OR a.name LIKE ' . $quoted;
+            $where[] = 'a.username LIKE '.$quoted.' OR a.email LIKE '.$quoted.' OR a.name LIKE '.$quoted;
         }
 
         if (defined('JPATH_PLATFORM')) {
             if ($filter_type) {
-                $where[] = 'map.group_id = LOWER(' . $db->Quote($filter_type) . ') ';
+                $where[] = 'map.group_id = LOWER('.$db->Quote($filter_type).') ';
             }
         } else {
             if ($filter_type) {
-                $where[] = 'a.gid =' . (int) $filter_type;
+                $where[] = 'a.gid ='.(int) $filter_type;
             }
             // exclude any child group id's for this user
             $pgids = $acl->get_group_children($currentUser->get('gid'), 'ARO', 'RECURSE');
 
             if (is_array($pgids) && count($pgids) > 0) {
                 JArrayHelper::toInteger($pgids);
-                $where[] = 'a.gid NOT IN (' . implode(',', $pgids) . ')';
+                $where[] = 'a.gid NOT IN ('.implode(',', $pgids).')';
             }
 
             // Exclude ROOT, USERS, Super Administrator, Public Frontend, Public Backend
@@ -107,21 +107,21 @@ class WFViewUsers extends WFView {
             $query->order(trim(implode(' ', $orderby)));
         } else {
             $query = 'SELECT COUNT(a.id)'
-                    . ' FROM #__users AS a'
-                    . $where
+                    .' FROM #__users AS a'
+                    .$where
             ;
             $db->setQuery($query);
             $total = $db->loadResult();
             $pagination = new JPagination($total, $limitstart, $limit);
 
             $query = 'SELECT a.id, a.name, a.username, g.name AS groupname'
-                    . ' FROM #__users AS a'
-                    . ' INNER JOIN #__core_acl_aro AS aro ON aro.value = a.id'
-                    . ' INNER JOIN #__core_acl_groups_aro_map AS gm ON gm.aro_id = aro.id'
-                    . ' INNER JOIN #__core_acl_aro_groups AS g ON g.id = gm.group_id'
-                    . ( count($where) ? ' WHERE (' . implode(') AND (', $where) . ')' : '' )
-                    . ' GROUP BY a.id, a.name, a.username, g.name'
-                    . ' ORDER BY ' . trim(implode(' ', $orderby))
+                    .' FROM #__users AS a'
+                    .' INNER JOIN #__core_acl_aro AS aro ON aro.value = a.id'
+                    .' INNER JOIN #__core_acl_groups_aro_map AS gm ON gm.aro_id = aro.id'
+                    .' INNER JOIN #__core_acl_aro_groups AS g ON g.id = gm.group_id'
+                    .(count($where) ? ' WHERE ('.implode(') AND (', $where).')' : '')
+                    .' GROUP BY a.id, a.name, a.username, g.name'
+                    .' ORDER BY '.trim(implode(' ', $orderby))
             ;
         }
 
@@ -129,7 +129,7 @@ class WFViewUsers extends WFView {
         $rows = $db->loadObjectList();
 
         $options = array(
-            JHTML::_('select.option', '', '- ' . WFText::_('WF_USERS_GROUP_SELECT') . ' -')
+            JHTML::_('select.option', '', '- '.WFText::_('WF_USERS_GROUP_SELECT').' -'),
         );
 
         if (defined('JPATH_PLATFORM')) {
@@ -148,15 +148,15 @@ class WFViewUsers extends WFView {
             $items = $db->loadObjectList() or die($db->stdErr());
 
             // Pad the option text with spaces using depth level as a multiplier.
-            for ($i = 0, $n = count($items); $i < $n; $i++) {
-                $options[] = JHTML::_('select.option', $items[$i]->value, str_repeat('- ', $items[$i]->level) . $items[$i]->text);
+            for ($i = 0, $n = count($items); $i < $n; ++$i) {
+                $options[] = JHTML::_('select.option', $items[$i]->value, str_repeat('- ', $items[$i]->level).$items[$i]->text);
             }
         } else {
             // get list of Groups for dropdown filter
             $query = 'SELECT id AS value, name AS text'
-                    . ' FROM #__core_acl_aro_groups'
+                    .' FROM #__core_acl_aro_groups'
                     // Exclude ROOT, USERS, Super Administrator, Public Frontend, Public Backend
-                    . ' WHERE id NOT IN (17,28,29,30)';
+                    .' WHERE id NOT IN (17,28,29,30)';
             $db->setQuery($query);
             $items = $db->loadObjectList();
 
@@ -165,7 +165,7 @@ class WFViewUsers extends WFView {
             //$options[] = JHTML::_('select.option', '0', WFText::_('Guest'));
 
             foreach ($items as $item) {
-                $options[] = JHTML::_('select.option', $item->value, $i . WFText::_($item->text));
+                $options[] = JHTML::_('select.option', $item->value, $i.WFText::_($item->text));
                 $i .= '-';
             }
         }
@@ -184,9 +184,8 @@ class WFViewUsers extends WFView {
         $this->assign('items', $rows);
         $this->assign('pagination', $pagination);
 
-        $this->addStyleSheet(JURI::root(true) . '/administrator/components/com_jce/media/css/users.css');
+        $this->addStyleSheet(JURI::root(true).'/administrator/components/com_jce/media/css/users.css');
 
         parent::display($tpl);
     }
-
 }

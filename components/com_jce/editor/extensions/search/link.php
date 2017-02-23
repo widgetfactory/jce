@@ -1,26 +1,24 @@
 <?php
 
 /**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
+ * other free or open source software licenses
  */
 defined('_JEXEC') or die('RESTRICTED');
 
 wfimport('editor.libraries.classes.extensions');
 
-class WFLinkSearchExtension extends WFSearchExtension {
-
+class WFLinkSearchExtension extends WFSearchExtension
+{
     /**
-     * Constructor activating the default information of the class
-     *
-     * @access	protected
+     * Constructor activating the default information of the class.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $request = WFRequest::getInstance();
@@ -43,7 +41,8 @@ class WFLinkSearchExtension extends WFSearchExtension {
         }
     }
 
-    public function display() {
+    public function display()
+    {
         parent::display();
 
         $document = WFDocument::getInstance();
@@ -51,15 +50,18 @@ class WFLinkSearchExtension extends WFSearchExtension {
         $document->addStylesheet(array('link'), 'extensions.search.css');
     }
 
-    public function isEnabled() {
+    public function isEnabled()
+    {
         $wf = WFEditorPlugin::getInstance();
+
         return (bool) $wf->getParam('search.link.enable', 1);
     }
 
     /**
-     * Method to get the search areas
+     * Method to get the search areas.
      */
-    public function getAreas() {
+    public function getAreas()
+    {
         $app = JFactory::getApplication('site');
 
         $areas = array();
@@ -88,7 +90,8 @@ class WFLinkSearchExtension extends WFSearchExtension {
      * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
      */
 
-    public function render() {
+    public function render()
+    {
         // built select lists
         $orders = array();
         $orders[] = JHtml::_('select.option', 'newest', JText::_('WF_SEARCH_NEWEST_FIRST'));
@@ -106,7 +109,6 @@ class WFLinkSearchExtension extends WFSearchExtension {
         $searchphrases[] = JHtml::_('select.option', 'exact', JText::_('WF_SEARCH_EXACT_PHRASE'));
         $lists['searchphrase'] = JHtml::_('select.radiolist', $searchphrases, 'searchphrase', '', 'value', 'text', 'all');
 
-
         $view = $this->getView(array('name' => 'search', 'layout' => 'search'));
 
         $view->assign('searchareas', self::getAreas());
@@ -115,27 +117,31 @@ class WFLinkSearchExtension extends WFSearchExtension {
     }
 
     /**
-     * Process search
+     * Process search.
+     *
      * @param type $query Search query
+     *
      * @return array Rerach Results
      *
      * This method uses portions of SearchController::search from components/com_search/controller.php
-     * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
+     *
+     * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved
      */
-    public function doSearch($query) {
-        $wf     = WFEditorPlugin::getInstance();
+    public function doSearch($query)
+    {
+        $wf = WFEditorPlugin::getInstance();
         $filter = JFilterInput::getInstance();
 
         if (!class_exists('JSite')) {
             // Load JSite class
-            JLoader::register('JSite', JPATH_SITE . '/includes/application.php');
+            JLoader::register('JSite', JPATH_SITE.'/includes/application.php');
         }
 
-        $app    = JApplication::getInstance('site');
+        $app = JApplication::getInstance('site');
         $router = $app->getRouter('site');
 
         // get SearchHelper
-        require_once(JPATH_ADMINISTRATOR . '/components/com_search/helpers/search.php');
+        require_once JPATH_ADMINISTRATOR.'/components/com_search/helpers/search.php';
 
         // get router mode
         $sef = (int) $wf->getParam('search.link.sef_url', 0);
@@ -172,7 +178,7 @@ class WFLinkSearchExtension extends WFSearchExtension {
             $searchword,
             $searchphrase,
             $ordering,
-            $areas
+            $areas,
         ));
 
         $results = array();
@@ -182,7 +188,7 @@ class WFLinkSearchExtension extends WFSearchExtension {
             $rows = array_merge((array) $rows, (array) $search);
         }
 
-        for ($i = 0, $count = count($rows); $i < $count; $i++) {
+        for ($i = 0, $count = count($rows); $i < $count; ++$i) {
             $row = &$rows[$i];
 
             $result = new StdClass();
@@ -216,7 +222,7 @@ class WFLinkSearchExtension extends WFSearchExtension {
             foreach ($searchwords as $k => $hlword) {
                 $searchRegex .= ($x == 0 ? '' : '|');
                 $searchRegex .= preg_quote($hlword, '#');
-                $x++;
+                ++$x;
             }
             $searchRegex .= ')#iu';
 
@@ -229,24 +235,24 @@ class WFLinkSearchExtension extends WFSearchExtension {
 
             // remove the alias from a link
             if ((int) $wf->getParam('search.link.remove_alias', 0) && strpos($row->href, ':') !== false) {
-              $row->href = preg_replace('#\:[\w-]+#ui', '', $row->href);
+                $row->href = preg_replace('#\:[\w-]+#ui', '', $row->href);
             }
 
             // convert to SEF
             if ($router && $sef) {
                 $router->setMode(1);
 
-                $url        = str_replace('&amp;', '&', $row->href);
+                $url = str_replace('&amp;', '&', $row->href);
 
-                $uri        = $router->build($url);
-                $url        = $uri->toString();
+                $uri = $router->build($url);
+                $url = $uri->toString();
 
-                $row->href  = str_replace('/administrator/', '/', $url);
+                $row->href = str_replace('/administrator/', '/', $url);
             }
 
-            $result->title  = $row->title;
-            $result->text   = $row->text;
-            $result->link   = $row->href;
+            $result->title = $row->title;
+            $result->text = $row->text;
+            $result->link = $row->href;
 
             $results[] = $result;
         }
@@ -254,7 +260,8 @@ class WFLinkSearchExtension extends WFSearchExtension {
         return $results;
     }
 
-    private static function getAnchors($content) {
+    private static function getAnchors($content)
+    {
         preg_match_all('#<a([^>]+)(name|id)="([a-z]+[\w\-\:\.]*)"([^>]*)>#i', $content, $matches, PREG_SET_ORDER);
 
         $anchors = array();
