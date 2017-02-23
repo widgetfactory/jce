@@ -53,28 +53,30 @@ class WFStyleselectPluginConfig
                         $style->attributes = self::cleanJSON($style->attributes, " ", "=");
                     }
 
-                    if (!isset($style->element)) {
-                        $style->element = 'span';
-
-                        if (!isset($style->selector)) {
-                            $style->selector = '*';
+                    // set block or inline element
+                    if (isset($style->element)) {
+                        if (in_array($style->element, $blocks)) {
+                            $style->block = $style->element;
+                        } else {
+                            $style->inline = $style->element;
                         }
+                        // remove element
+                        unset($style->element);
+
+                        // remove element
+                        $style->remove = "all";
                     }
 
-                    if (in_array($style->element, $blocks)) {
-                        $style->block = $style->element;
-                    } else {
-                        $style->inline = $style->element;
+                    // match all if not set
+                    if (!isset($style->selector)) {
+                        $style->selector = '*';
                     }
-
-                    // remove
-                    $style->remove = "all";
 
                     $styles[] = $style;
                 }
 
                 if (!empty($styles)) {
-                    $settings['style_formats'] = htmlentities(json_encode($styles), ENT_NOQUOTES, "UTF-8");
+                    $settings['style_formats'] = htmlentities(json_encode($styles, JSON_UNESCAPED_SLASHES), ENT_NOQUOTES, "UTF-8");
                 }
             }
         }
