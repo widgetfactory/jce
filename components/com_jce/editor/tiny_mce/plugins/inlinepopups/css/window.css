@@ -130,6 +130,8 @@
     right: 15px;
     top: 10px;
     z-index: 1;
+    width: auto;
+    height: auto;
 }
 
 .mceModalClose:hover {
