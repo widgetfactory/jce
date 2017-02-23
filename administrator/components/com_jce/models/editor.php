@@ -262,10 +262,18 @@ class WFModelEditor extends WFModelBase
             if (is_array($value) && $value === array_values($value)) {
                 $value = implode(',', $value);
             }
+
             // convert json strings to objects to prevent encoding
-            if (is_string($value) && strpos($value, "{") === 0) {
-                $value = json_decode($value);
+            if (is_string($value)) {
+                // decode string
+                $val = json_decode($value);
+
+                // valid json
+                if ($val) {
+                    $value = $val;
+                }
             }
+
             // convert stringified booleans to booleans
             if ($value === "true") {$value = true;}
             if ($value === "false") {$value = false;}
