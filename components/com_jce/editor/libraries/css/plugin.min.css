@@ -2,7 +2,7 @@
 @import url('../jquery/css/jquery-ui.min.css');
 @font-face {
     font-family: 'FontAwesome';
-    src: url('../fonts/fontawesome-webfont.eot');
+    src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
     src: url('../fonts/fontawesome-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
@@ -1811,15 +1811,6 @@ div#previewblock {
         max-width : 420px;
     }
 }*/
-@font-face {
-    font-family: 'FontAwesome';
-    src: url('../fonts/fontawesome-webfont.eot');
-    /* IE9 Compat Modes */
-    src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 .ie8 .uk-modal {
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";
 }
