@@ -16,78 +16,29 @@
         VK = tinymce.VK,
         TreeWalker = tinymce.dom.TreeWalker;
 
-    var setSpanVal = function (name) {
-        return function (td, val) {
-            if (td) {
-                val = parseInt(val, 10);
-
-                if (val === 1 || val === 0) {
-                    td.removeAttribute(name, 1);
-                } else {
-                    td.setAttribute(name, val, 1);
-                }
-            }
-        };
-    };
-
-    var getSpanVal = function (name) {
-        return function (td) {
-            return parseInt(td.getAttribute(name) || 1, 10);
-        };
-    };
-
-    function paddCell(cell) {
-        if (!tinymce.ieIE || (tinymce.ieIE > 9 || tinymce.ieIE12)) {
-            if (!cell.hasChildNodes()) {
-                cell.innerHTML = '<br data-mce-bogus="1" />';
-            }
-        }
-    }
-
-    function setColSpan() {
-        return setSpanVal('colSpan');
-    }
-
-    function setRowSpan() {
-        return setSpanVal('rowspan');
-    }
-
-    function getColSpan() {
-        return getSpanVal('colSpan');
-    }
-
-    function getRowSpan() {
-        return getSpanVal('rowSpan');
+    function getSpanVal(td, name) {
+        return parseInt(td.getAttribute(name) || 1);
     }
 
     /**
      * Table Grid class.
      */
-    function TableGrid(editor, table, selectedCell) {
-        var grid, gridWidth, startPos, endPos, selection = editor.selection,
-            dom = selection.dom;
+    function TableGrid(table, dom, selection, settings) {
+        var grid, startPos, endPos, selectedCell, gridWidth;
 
-        function removeCellSelection() {
-            //editor.dom.removeAttrib(editor.dom.select('td[data-mce-selected],th[data-mce-selected]'), 'data-mce-selected');
-            editor.dom.removeClass(editor.dom.select('td.mceSelected,th.mceSelected'), 'mceSelected');
+        buildGrid();
+        selectedCell = dom.getParent(selection.getStart(), 'th,td');
+        if (selectedCell) {
+            startPos = getPos(selectedCell);
+            endPos = findEndPos();
+            selectedCell = getCell(startPos.x, startPos.y);
         }
 
-        function isEditorBody(node) {
-            return node === editor.getBody();
-        }
+        function cloneNode(node, children) {
+            node = node.cloneNode(children);
+            node.removeAttribute('id');
 
-        function getChildrenByName(node, names) {
-            if (!node) {
-                return [];
-            }
-
-            names = tinymce.map(names.split(','), function (name) {
-                return name.toLowerCase();
-            });
-
-            return tinymce.grep(node.childNodes, function (node) {
-                return tinymce.inArray(names, node.nodeName.toLowerCase()) !== -1;
-            });
+            return node;
         }
 
         function buildGrid() {
@@ -97,20 +48,18 @@
             gridWidth = 0;
 
             each(['thead', 'tbody', 'tfoot'], function (part) {
-                var partElm = getChildrenByName(table, part)[0];
-                var rows = getChildrenByName(partElm, 'tr');
+                var rows = dom.select('> ' + part + ' tr', table);
 
                 each(rows, function (tr, y) {
                     y += startY;
 
-                    each(getChildrenByName(tr, 'td,th'), function (td, x) {
+                    each(dom.select('> td, > th', tr), function (td, x) {
                         var x2, y2, rowspan, colspan;
 
                         // Skip over existing cells produced by rowspan
                         if (grid[y]) {
-                            while (grid[y][x]) {
+                            while (grid[y][x])
                                 x++;
-                            }
                         }
 
                         // Get col/rowspan from cell
@@ -119,9 +68,8 @@
 
                         // Fill out rowspan/colspan right and down
                         for (y2 = y; y2 < y + rowspan; y2++) {
-                            if (!grid[y2]) {
+                            if (!grid[y2])
                                 grid[y2] = [];
-                            }
 
                             for (x2 = x; x2 < x + colspan; x2++) {
                                 grid[y2][x2] = {
@@ -142,55 +90,27 @@
             });
         }
 
-        function fireNewRow(node) {
-            /*editor.fire('newrow', {
-                node: node
-            });*/
-
-            return node;
-        }
-
-        function fireNewCell(node) {
-            /*editor.fire('newcell', {
-                node: node
-            });*/
-
-            return node;
-        }
-
-        function cloneNode(node, children) {
-            node = node.cloneNode(children);
-            node.removeAttribute('id');
-
-            return node;
-        }
-
         function getCell(x, y) {
             var row;
 
             row = grid[y];
-            if (row) {
+            if (row)
                 return row[x];
-            }
         }
 
-        function getRow(grid, y) {
-            return grid[y] ? grid[y] : null;
-        }
+        function setSpanVal(td, name, val) {
+            if (td) {
+                val = parseInt(val);
 
-        function getColumn(grid, x) {
-            var out = [];
-
-            for (var y = 0; y < grid.length; y++) {
-                out.push(getCell(x, y));
+                if (val === 1)
+                    td.removeAttribute(name, 1);
+                else
+                    td.setAttribute(name, val, 1);
             }
-
-            return out;
         }
 
         function isCellSelected(cell) {
-            //return cell && (!!dom.getAttrib(cell.elm, 'data-mce-selected') || cell == selectedCell);
-            return cell && (!!dom.hasClass(cell.elm, 'mceSelected') || cell == selectedCell);
+            return cell && (dom.hasClass(cell.elm, 'mceSelected') || cell == selectedCell);
         }
 
         function getSelectedRows() {
@@ -198,8 +118,7 @@
 
             each(table.rows, function (row) {
                 each(row.cells, function (cell) {
-                    //if (dom.getAttrib(cell, 'data-mce-selected') || (selectedCell && cell == selectedCell.elm)) {
-                    if (dom.hasClass(cell, 'mceSelected') || (selectedCell && cell == selectedCell.elm)) {
+                    if (dom.hasClass(cell, 'mceSelected') || cell == selectedCell.elm) {
                         rows.push(row);
                         return false;
                     }
@@ -209,29 +128,8 @@
             return rows;
         }
 
-        function countSelectedCols() {
-            var cols = 0;
-
-            each(grid, function (row) {
-                each(row, function (cell) {
-                    if (isCellSelected(cell)) {
-                        cols++;
-                    }
-                });
-                if (cols) {
-                    return false;
-                }
-            });
-
-            return cols;
-        }
-
         function deleteTable() {
             var rng = dom.createRng();
-
-            if (isEditorBody(table)) {
-                return;
-            }
 
             rng.setStartAfter(table);
             rng.setEndAfter(table);
@@ -244,11 +142,8 @@
         function cloneCell(cell) {
             var formatNode, cloneFormats = {};
 
-            if (editor.settings.table_clone_elements !== false) {
-                cloneFormats = tinymce.makeMap(
-                    (editor.settings.table_clone_elements || 'strong em b i span font h1 h2 h3 h4 h5 h6 p div').toUpperCase(),
-                    /[ ,]/
-                );
+            if (settings.table_clone_elements) {
+                cloneFormats = tinymce.makeMap((settings.table_clone_elements || 'strong em b i span font h1 h2 h3 h4 h5 h6 p div').toUpperCase(), /[ ,]/);
             }
 
             // Clone formats
@@ -263,54 +158,49 @@
 
                         node = cloneNode(node, false);
 
-                        if (!formatNode) {
+                        if (!formatNode)
                             formatNode = curNode = node;
-                        } else if (curNode) {
+                        else if (curNode)
                             curNode.appendChild(node);
-                        }
 
                         curNode = node;
                     });
 
                     // Add something to the inner node
                     if (curNode) {
-                        curNode.innerHTML = Env.ie && Env.ie < 10 ? '&nbsp;' : '<br data-mce-bogus="1" />';
+                        curNode.innerHTML = tinymce.isIE && !tinymce.isIE11 ? '&nbsp;' : '<br data-mce-bogus="1" />';
                     }
-
                     return false;
                 }
             }, 'childNodes');
 
             cell = cloneNode(cell, false);
-            fireNewCell(cell);
-
             setSpanVal(cell, 'rowSpan', 1);
             setSpanVal(cell, 'colSpan', 1);
 
             if (formatNode) {
                 cell.appendChild(formatNode);
             } else {
-                paddCell(cell);
+                if (!tinymce.isIE || tinymce.isIE11)
+                    cell.innerHTML = '<br data-mce-bogus="1" />';
             }
 
             return cell;
         }
 
         function cleanup() {
-            var rng = dom.createRng(),
-                row;
+            var rng = dom.createRng();
 
             // Empty rows
             each(dom.select('tr', table), function (tr) {
-                if (tr.cells.length === 0) {
+                if (tr.cells.length == 0)
                     dom.remove(tr);
-                }
             });
 
             // Empty table
-            if (dom.select('tr', table).length === 0) {
-                rng.setStartBefore(table);
-                rng.setEndBefore(table);
+            if (dom.select('tr', table).length == 0) {
+                rng.setStartAfter(table);
+                rng.setEndAfter(table);
                 selection.setRng(rng);
                 dom.remove(table);
                 return;
@@ -318,22 +208,18 @@
 
             // Empty header/body/footer
             each(dom.select('thead,tbody,tfoot', table), function (part) {
-                if (part.rows.length === 0) {
+                if (part.rows.length == 0)
                     dom.remove(part);
-                }
             });
 
             // Restore selection to start position if it still exists
             buildGrid();
 
-            // If we have a valid startPos object
-            if (startPos) {
-                // Restore the selection to the closest table position
-                row = grid[Math.min(grid.length - 1, startPos.y)];
-                if (row) {
-                    selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
-                    selection.collapse(true);
-                }
+            // Restore the selection to the closest table position
+            row = grid[Math.min(grid.length - 1, startPos.y)];
+            if (row) {
+                selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
+                selection.collapse(true);
             }
         }
 
@@ -351,9 +237,8 @@
 
                         if (cell.parentNode == tr) {
                             // Append clones after
-                            for (c = 1; c <= cols; c++) {
+                            for (c = 1; c <= cols; c++)
                                 dom.insertAfter(cloneCell(cell), cell);
-                            }
 
                             break;
                         }
@@ -361,9 +246,8 @@
 
                     if (x2 == -1) {
                         // Insert nodes before first cell
-                        for (c = 1; c <= cols; c++) {
+                        for (c = 1; c <= cols; c++)
                             tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
-                        }
                     }
                 }
             }
@@ -372,7 +256,7 @@
         function split() {
             each(grid, function (row, y) {
                 each(row, function (cell, x) {
-                    var colSpan, rowSpan, i;
+                    var colSpan, rowSpan, newCell, i;
 
                     if (isCellSelected(cell)) {
                         cell = cell.elm;
@@ -384,9 +268,8 @@
                             setSpanVal(cell, 'colSpan', 1);
 
                             // Insert cells right
-                            for (i = 0; i < colSpan - 1; i++) {
+                            for (i = 0; i < colSpan - 1; i++)
                                 dom.insertAfter(cloneCell(cell), cell);
-                            }
 
                             fillLeftDown(x, y, rowSpan - 1, colSpan);
                         }
@@ -395,85 +278,8 @@
             });
         }
 
-        function findItemsOutsideOfRange(items, start, end) {
-            var out = [];
-
-            for (var i = 0; i < items.length; i++) {
-                if (i < start || i > end) {
-                    out.push(items[i]);
-                }
-            }
-
-            return out;
-        }
-
-        function getFakeCells(cells) {
-            return tinymce.grep(cells, function (cell) {
-                return cell.real === false;
-            });
-        }
-
-        function getUniqueElms(cells) {
-            var elms = [];
-
-            for (var i = 0; i < cells.length; i++) {
-                var elm = cells[i].elm;
-                if (elms[elms.length - 1] !== elm) {
-                    elms.push(elm);
-                }
-            }
-
-            return elms;
-        }
-
-        function reduceRowSpans(grid, startX, startY, endX, endY) {
-            var count = 0;
-
-            if (endY - startY < 1) {
-                return 0;
-            }
-
-            for (var y = startY + 1; y <= endY; y++) {
-                var allCells = findItemsOutsideOfRange(getRow(grid, y), startX, endX);
-                var fakeCells = getFakeCells(allCells);
-
-                if (allCells.length === fakeCells.length) {
-                    tinymce.each(getUniqueElms(fakeCells), function (elm) {
-                        setRowSpan(elm, getRowSpan(elm) - 1);
-                    });
-
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
-        function reduceColSpans(grid, startX, startY, endX, endY) {
-            var count = 0;
-
-            if (endX - startX < 1) {
-                return 0;
-            }
-
-            for (var x = startX + 1; x <= endX; x++) {
-                var allCells = findItemsOutsideOfRange(getColumn(grid, x), startY, endY);
-                var fakeCells = getFakeCells(allCells);
-
-                if (allCells.length === fakeCells.length) {
-                    tinymce.each(getUniqueElms(fakeCells), function (elm) {
-                        setColSpan(elm, getColSpan(elm) - 1);
-                    });
-
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
         function merge(cell, cols, rows) {
-            var pos, startX, startY, endX, endY, x, y, startCell, endCell, children, count, reducedRows, reducedCols;
+            var startX, startY, endX, endY, x, y, startCell, endCell, cell, children, count;
 
             // Use specified cell and cols/rows
             if (cell) {
@@ -504,13 +310,11 @@
                     });
                 });
 
-                // Use selection, but make sure startPos is valid before accessing
-                if (startPos) {
-                    startX = startPos.x;
-                    startY = startPos.y;
-                    endX = endPos.x;
-                    endY = endPos.y;
-                }
+                // Use selection
+                startX = startPos.x;
+                startY = startPos.y;
+                endX = endPos.x;
+                endY = endPos.y;
             }
 
             // Find start/end cells
@@ -523,39 +327,19 @@
                 split();
                 buildGrid();
 
-                reducedRows = reduceRowSpans(grid, startX, startY, endX, endY);
-                reducedCols = reduceColSpans(grid, startX, startY, endX, endY);
-
                 // Set row/col span to start cell
                 startCell = getCell(startX, startY).elm;
-                var colSpan = (endX - startX - reducedCols) + 1;
-                var rowSpan = (endY - startY - reducedRows) + 1;
-
-                // All cells in table selected then just make it a table with one cell
-                if (colSpan === gridWidth && rowSpan === grid.length) {
-                    colSpan = 1;
-                    rowSpan = 1;
-                }
-
-                // Multiple whole rows selected then just make it one rowSpan
-                if (colSpan === gridWidth && rowSpan > 1) {
-                    rowSpan = 1;
-                }
-
-                setSpanVal(startCell, 'colSpan', colSpan);
-                setSpanVal(startCell, 'rowSpan', rowSpan);
+                setSpanVal(startCell, 'colSpan', (endX - startX) + 1);
+                setSpanVal(startCell, 'rowSpan', (endY - startY) + 1);
 
                 // Remove other cells and add it's contents to the start cell
                 for (y = startY; y <= endY; y++) {
                     for (x = startX; x <= endX; x++) {
-                        if (!grid[y] || !grid[y][x]) {
+                        if (!grid[y] || !grid[y][x])
                             continue;
-                        }
 
                         cell = grid[y][x].elm;
 
-                        /*jshint loopfunc:true */
-                        /*eslint no-loop-func:0 */
                         if (cell != startCell) {
                             // Move children to startCell
                             children = tinymce.grep(cell.childNodes);
@@ -568,12 +352,12 @@
                                 children = tinymce.grep(startCell.childNodes);
                                 count = 0;
                                 each(children, function (node) {
-                                    if (node.nodeName == 'BR' && count++ < children.length - 1) {
+                                    if (node.nodeName == 'BR' && dom.getAttrib(node, 'data-mce-bogus') && count++ < children.length - 1)
                                         startCell.removeChild(node);
-                                    }
                                 });
                             }
 
+                            // Remove cell
                             dom.remove(cell);
                         }
                     }
@@ -585,41 +369,32 @@
         }
 
         function insertRow(before) {
-            var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan, spanValue;
+            var posY, cell, lastCell, x, rowElm, newRow, newCell, otherCell, rowSpan;
 
             // Find first/last row
             each(grid, function (row, y) {
-                each(row, function (cell) {
+                each(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         cell = cell.elm;
                         rowElm = cell.parentNode;
-                        newRow = fireNewRow(cloneNode(rowElm, false));
+                        newRow = cloneNode(rowElm, false);
                         posY = y;
 
-                        if (before) {
+                        if (before)
                             return false;
-                        }
                     }
                 });
 
-                if (before) {
-                    return posY === undefined;
-                }
+                if (before)
+                    return !posY;
             });
 
-            // If posY is undefined there is nothing for us to do here...just return to avoid crashing below
-            if (posY === undefined) {
-                return;
-            }
-
-            for (x = 0, spanValue = 0; x < grid[0].length; x += spanValue) {
+            for (x = 0; x < grid[0].length; x++) {
                 // Cell not found could be because of an invalid table structure
-                if (!grid[posY][x]) {
+                if (!grid[posY][x])
                     continue;
-                }
 
                 cell = grid[posY][x].elm;
-                spanValue = getSpanVal(cell, 'colspan');
 
                 if (cell != lastCell) {
                     if (!before) {
@@ -651,18 +426,10 @@
             }
 
             if (newRow.hasChildNodes()) {
-                if (!before) {
+                if (!before)
                     dom.insertAfter(newRow, rowElm);
-                } else {
+                else
                     rowElm.parentNode.insertBefore(newRow, rowElm);
-                }
-            }
-        }
-
-        function insertRows(before, num) {
-            num = num || getSelectedRows().length || 1;
-            for (var i = 0; i < num; i++) {
-                insertRow(before);
             }
         }
 
@@ -670,28 +437,25 @@
             var posX, lastCell;
 
             // Find first/last column
-            each(grid, function (row) {
+            each(grid, function (row, y) {
                 each(row, function (cell, x) {
                     if (isCellSelected(cell)) {
                         posX = x;
 
-                        if (before) {
+                        if (before)
                             return false;
-                        }
                     }
                 });
 
-                if (before) {
-                    return posX === undefined;
-                }
+                if (before)
+                    return !posX;
             });
 
             each(grid, function (row, y) {
                 var cell, rowSpan, colSpan;
 
-                if (!row[posX]) {
+                if (!row[posX])
                     return;
-                }
 
                 cell = row[posX].elm;
                 if (cell != lastCell) {
@@ -706,53 +470,19 @@
                             cell.parentNode.insertBefore(cloneCell(cell), cell);
                             fillLeftDown(posX, y, rowSpan - 1, colSpan);
                         }
-                    } else {
+                    } else
                         setSpanVal(cell, 'colSpan', cell.colSpan + 1);
-                    }
 
                     lastCell = cell;
                 }
             });
         }
 
-        function insertCols(before, num) {
-            num = num || countSelectedCols() || 1;
-            for (var i = 0; i < num; i++) {
-                insertCol(before);
-            }
-        }
-
-        function getSelectedCells(grid) {
-            return tinymce.grep(getAllCells(grid), isCellSelected);
-        }
-
-        function getAllCells(grid) {
-            var cells = [];
-
-            each(grid, function (row) {
-                each(row, function (cell) {
-                    cells.push(cell);
-                });
-            });
-
-            return cells;
-        }
-
         function deleteCols() {
             var cols = [];
 
-            if (isEditorBody(table)) {
-                if (grid[0].length == 1) {
-                    return;
-                }
-
-                if (getSelectedCells(grid).length == getAllCells(grid).length) {
-                    return;
-                }
-            }
-
             // Get selected column indexes
-            each(grid, function (row) {
+            each(grid, function (row, y) {
                 each(row, function (cell, x) {
                     if (isCellSelected(cell) && tinymce.inArray(cols, x) === -1) {
                         each(grid, function (row) {
@@ -761,11 +491,10 @@
 
                             colSpan = getSpanVal(cell, 'colSpan');
 
-                            if (colSpan > 1) {
+                            if (colSpan > 1)
                                 setSpanVal(cell, 'colSpan', colSpan - 1);
-                            } else {
+                            else
                                 dom.remove(cell);
-                            }
                         });
 
                         cols.push(x);
@@ -780,7 +509,9 @@
             var rows;
 
             function deleteRow(tr) {
-                var pos, lastCell;
+                var nextTr, pos, lastCell;
+
+                nextTr = dom.getNext(tr, 'tr');
 
                 // Move down row spanned cells
                 each(tr.cells, function (cell) {
@@ -803,11 +534,10 @@
                     if (cell != lastCell) {
                         rowSpan = getSpanVal(cell, 'rowSpan');
 
-                        if (rowSpan <= 1) {
+                        if (rowSpan <= 1)
                             dom.remove(cell);
-                        } else {
+                        else
                             setSpanVal(cell, 'rowSpan', rowSpan - 1);
-                        }
 
                         lastCell = cell;
                     }
@@ -816,10 +546,6 @@
 
             // Get selected rows and move selection out of scope
             rows = getSelectedRows();
-
-            if (isEditorBody(table) && rows.length == table.rows.length) {
-                return;
-            }
 
             // Delete all selected rows
             each(rows.reverse(), function (tr) {
@@ -831,10 +557,6 @@
 
         function cutRows() {
             var rows = getSelectedRows();
-
-            if (isEditorBody(table) && rows.length == table.rows.length) {
-                return;
-            }
 
             dom.remove(rows);
             cleanup();
@@ -853,59 +575,62 @@
         }
 
         function pasteRows(rows, before) {
-            var splitResult, targetRow, newRows;
-
-            // Nothing to paste
-            if (!rows) {
+            // If we don't have any rows in the clipboard, return immediately
+            if (!rows)
                 return;
-            }
 
-            splitResult = SplitCols.splitAt(grid, startPos.x, startPos.y, before);
-            targetRow = splitResult.row;
-            tinymce.each(splitResult.cells, fireNewCell);
+            var selectedRows = getSelectedRows(),
+                targetRow = selectedRows[before ? 0 : selectedRows.length - 1],
+                targetCellCount = targetRow.cells.length;
 
-            newRows = tinymce.map(rows, function (row) {
-                return row.cloneNode(true);
+            // Calc target cell count
+            each(grid, function (row) {
+                var match;
+
+                targetCellCount = 0;
+                each(row, function (cell, x) {
+                    if (cell.real)
+                        targetCellCount += cell.colspan;
+
+                    if (cell.elm.parentNode == targetRow)
+                        match = 1;
+                });
+
+                if (match)
+                    return false;
             });
 
-            if (!before) {
-                newRows.reverse();
-            }
+            if (!before)
+                rows.reverse();
 
-            each(newRows, function (row) {
-                var i, cellCount = row.cells.length,
+            each(rows, function (row) {
+                var cellCount = row.cells.length,
                     cell;
-
-                fireNewRow(row);
 
                 // Remove col/rowspans
                 for (i = 0; i < cellCount; i++) {
                     cell = row.cells[i];
-
-                    fireNewCell(cell);
                     setSpanVal(cell, 'colSpan', 1);
                     setSpanVal(cell, 'rowSpan', 1);
                 }
 
                 // Needs more cells
-                for (i = cellCount; i < gridWidth; i++) {
-                    row.appendChild(fireNewCell(cloneCell(row.cells[cellCount - 1])));
-                }
+                for (i = cellCount; i < targetCellCount; i++)
+                    row.appendChild(cloneCell(row.cells[cellCount - 1]));
 
                 // Needs less cells
-                for (i = gridWidth; i < cellCount; i++) {
+                for (i = targetCellCount; i < cellCount; i++)
                     dom.remove(row.cells[i]);
-                }
 
                 // Add before/after
-                if (before) {
+                if (before)
                     targetRow.parentNode.insertBefore(row, targetRow);
-                } else {
+                else
                     dom.insertAfter(row, targetRow);
-                }
             });
 
-            removeCellSelection();
+            // Remove current selection
+            dom.removeClass(dom.select('td.mceSelected,th.mceSelected'), 'mceSelected');
         }
 
         function getPos(target) {
@@ -933,7 +658,7 @@
         }
 
         function findEndPos() {
-            var maxX, maxY;
+            var pos, maxX, maxY;
 
             maxX = maxY = 0;
 
@@ -944,28 +669,24 @@
                     if (isCellSelected(cell)) {
                         cell = grid[y][x];
 
-                        if (x > maxX) {
+                        if (x > maxX)
                             maxX = x;
-                        }
 
-                        if (y > maxY) {
+                        if (y > maxY)
                             maxY = y;
-                        }
 
                         if (cell.real) {
                             colSpan = cell.colspan - 1;
                             rowSpan = cell.rowspan - 1;
 
                             if (colSpan) {
-                                if (x + colSpan > maxX) {
+                                if (x + colSpan > maxX)
                                     maxX = x + colSpan;
-                                }
                             }
 
                             if (rowSpan) {
-                                if (y + rowSpan > maxY) {
+                                if (y + rowSpan > maxY)
                                     maxY = y + rowSpan;
-                                }
                             }
                         }
                     }
@@ -979,7 +700,7 @@
         }
 
         function setEndCell(cell) {
-            var startX, startY, endX, endY, maxX, maxY, colSpan, rowSpan, x, y;
+            var startX, startY, endX, endY, maxX, maxY, colSpan, rowSpan;
 
             endPos = getPos(cell);
 
@@ -990,34 +711,29 @@
                 endX = Math.max(startPos.x, endPos.x);
                 endY = Math.max(startPos.y, endPos.y);
 
-                // Expand end position to include spans
+                // Expand end positon to include spans
                 maxX = endX;
                 maxY = endY;
 
-                // This logic tried to expand the selection to always be a rectangle
                 // Expand startX
-                /*for (y = startY; y <= maxY; y++) {
-                	cell = grid[y][startX];
+                for (y = startY; y <= maxY; y++) {
+                    cell = grid[y][startX];
 
-                	if (!cell.real) {
-                		newX = startX - (cell.colspan - 1);
-                		if (newX < startX && newX >= 0) {
-                			startX = newX;
-                		}
-                	}
+                    if (!cell.real) {
+                        if (startX - (cell.colspan - 1) < startX)
+                            startX -= cell.colspan - 1;
+                    }
                 }
 
                 // Expand startY
                 for (x = startX; x <= maxX; x++) {
-                	cell = grid[startY][x];
+                    cell = grid[startY][x];
 
-                	if (!cell.real) {
-                		newY = startY - (cell.rowspan - 1);
-                		if (newY < startY && newY >= 0) {
-                			startY = newY;
-                		}
-                	}
-                }*/
+                    if (!cell.real) {
+                        if (startY - (cell.rowspan - 1) < startY)
+                            startY -= cell.rowspan - 1;
+                    }
+                }
 
                 // Find max X, Y
                 for (y = startY; y <= endY; y++) {
@@ -1029,29 +745,26 @@
                             rowSpan = cell.rowspan - 1;
 
                             if (colSpan) {
-                                if (x + colSpan > maxX) {
+                                if (x + colSpan > maxX)
                                     maxX = x + colSpan;
-                                }
                             }
 
                             if (rowSpan) {
-                                if (y + rowSpan > maxY) {
+                                if (y + rowSpan > maxY)
                                     maxY = y + rowSpan;
-                                }
                             }
                         }
                     }
                 }
 
-                removeCellSelection();
+                // Remove current selection
+                dom.removeClass(dom.select('td.mceSelected,th.mceSelected'), 'mceSelected');
 
                 // Add new selection
                 for (y = startY; y <= maxY; y++) {
                     for (x = startX; x <= maxX; x++) {
-                        if (grid[y][x]) {
-                            //dom.setAttrib(grid[y][x].elm, 'data-mce-selected', '1');
+                        if (grid[y][x])
                             dom.addClass(grid[y][x].elm, 'mceSelected');
-                        }
                     }
                 }
             }
@@ -1085,34 +798,13 @@
             return false;
         }
 
-        function splitCols(before) {
-            if (startPos) {
-                var splitResult = SplitCols.splitAt(grid, startPos.x, startPos.y, before);
-                tinymce.each(splitResult.cells, fireNewCell);
-            }
-        }
-
-        table = table || dom.getParent(selection.getStart(true), 'table');
-
-        buildGrid();
-
-        selectedCell = selectedCell || dom.getParent(selection.getStart(true), 'th,td');
-
-        if (selectedCell) {
-            startPos = getPos(selectedCell);
-            endPos = findEndPos();
-            selectedCell = getCell(startPos.x, startPos.y);
-        }
-
+        // Expose to public
         tinymce.extend(this, {
             deleteTable: deleteTable,
             split: split,
             merge: merge,
             insertRow: insertRow,
-            insertRows: insertRows,
             insertCol: insertCol,
-            insertCols: insertCols,
-            splitCols: splitCols,
             deleteCols: deleteCols,
             deleteRows: deleteRows,
             cutRows: cutRows,
@@ -1363,7 +1055,8 @@
                                 e.preventDefault();
 
                                 if (!tableGrid) {
-                                    tableGrid = new TableGrid(ed, startTable, startCell);
+                                    tableGrid = createTableGrid(startTable);
+                                    tableGrid.setStartCell(startCell);
                                     ed.getBody().style.webkitUserSelect = 'none';
                                 }
 
@@ -1395,7 +1088,7 @@
 
                             do {
                                 // Text node
-                                if (node.nodeType == 3 && tinymce.trim(node.nodeValue).length !== 0) {
+                                if (node.nodeType == 3) {                                    
                                     if (start) {
                                         rng.setStart(node, 0);
                                     } else {
@@ -1789,8 +1482,7 @@
                             if (table) {
                                 tableCells = ed.dom.select('td,th', table);
                                 selectedTableCells = tinymce.grep(tableCells, function (cell) {
-                                    //return !!ed.dom.getAttrib(cell, 'data-mce-selected');
-                                    return !!ed.dom.hasClass(cell, 'mceSelected');
+                                    return !!ed.dom.getAttrib(cell, 'data-mce-selected');
                                 });
 
                                 if (selectedTableCells.length === 0) {
