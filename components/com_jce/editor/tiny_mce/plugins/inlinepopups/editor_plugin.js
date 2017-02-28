@@ -284,7 +284,7 @@
                 self.focus(id);
             });
 
-            //self.focus(id);
+            self.focus(id);
 
             // Focus ok button
             if (DOM.get(id + '_ok')) {
