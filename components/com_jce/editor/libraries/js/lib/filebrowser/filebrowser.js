@@ -1231,7 +1231,13 @@
                             elements += '<div class="uk-form-controls uk-width-4-5"><select id="' + k + '" name="' + k + '">';
 
                             $.each(v.options, function(value, name) {
-                                elements += '<option value="' + value + '">' + name + '</option>';
+                                var selected = "";
+
+                                if (v.default && value === v.default) {
+                                    selected = " selected";
+                                }
+                                
+                                elements += '<option value="' + value + '"' + selected + '>' + name + '</option>';
                             });
 
                             elements += '</select></div>';
