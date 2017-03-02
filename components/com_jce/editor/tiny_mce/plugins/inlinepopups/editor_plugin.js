@@ -49,7 +49,7 @@
             var self = this;
 
             self.parent(ed);
-            self.zIndex = 300000;
+            self.zIndex = 300003;
             self.count = 0;
             self.windows = {};
         },
@@ -409,6 +409,12 @@
 
             self.count--;
 
+			if (self.count === 0) {
+                DOM.remove(DOM.select('.mceModal'));
+                DOM.setAttrib(DOM.doc.body, 'aria-hidden', 'false');
+                self.editor.focus();
+            }
+
             if (w = self.windows[id]) {
                 self.onClose.dispatch(self);
                 Event.remove(d, 'mousedown', w.mousedown_func);
@@ -431,12 +437,6 @@
                 if (fw) {
                     self.focus(fw.id);
                 }
-            }
-
-            if (self.count === 0) {
-                DOM.remove(DOM.select('.mceModal'));
-                DOM.setAttrib(DOM.doc.body, 'aria-hidden', 'false');
-                self.editor.focus();
             }
         },
 

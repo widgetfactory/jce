@@ -33,6 +33,18 @@
     height: 100%;
 }
 
+.mceModalOverlay {
+    position: fixed;
+    cursor: pointer;
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    -ms-filter: 'alpha(opacity=80)';
+    filter: alpha(opacity=80);
+    z-index: 300001;
+}
+
 .mceModalFrame {
     box-sizing: border-box;
     height: 100%;
@@ -42,6 +54,7 @@
     top: 0;
     width: 100%;
     padding: 10px;
+    z-index: 300002;
 }
 
 .mceModalFrame:after {
@@ -154,17 +167,6 @@
 
 .mceModalClose:hover:after {
     color: #888;
-}
-
-.mceModalOverlay {
-    position: fixed;
-    cursor: pointer;
-    background-color: #000;
-    width: 100%;
-    height: 100%;
-    opacity: 0.8;
-    -ms-filter: 'alpha(opacity=80)';
-    filter: alpha(opacity=80);
 }
 
 .mceModalContent>div {
