@@ -948,8 +948,7 @@ body {
     box-sizing: border-box;
 }
 
-body>form>div,
-body>div {
+body>form>div, body > div.uk-form {
     top: 5px;
     left: 5px;
     right: 5px;
