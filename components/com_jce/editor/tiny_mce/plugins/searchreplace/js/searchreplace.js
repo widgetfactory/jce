@@ -56,11 +56,6 @@
             ed.execCommand('mceReplaceAll', false, value);
         });
 
-        $('#cancel').click(function (e) {
-            e.preventDefault();
-            tinyMCEPopup.close();
-        });
-
         ed.windowManager.onClose.add(function () {
             ed.execCommand('mceSearchDone', false);
         });
