@@ -49,6 +49,7 @@
     position: relative;
     padding: 5px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .wf-editor-container.mce-fullscreen {
