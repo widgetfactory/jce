@@ -291,7 +291,7 @@
                 editor.windowManager.open({
                     file: editor.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=searchreplace',
                     width: 560 + parseInt(editor.getLang('searchreplace.delta_width', 0)),
-                    height: 220 + parseInt(editor.getLang('searchreplace.delta_height', 0)),
+                    height: 180 + parseInt(editor.getLang('searchreplace.delta_height', 0)),
                     inline: 1,
                     overlay: false
                 }, {

@@ -26,12 +26,14 @@ defined('WF_EDITOR') or die('RESTRICTED');
 			</div>
 		</div>
 		<div class="uk-form-row">
-			<input id="matchcase" type="checkbox" />
-			<label for="matchcase"><?php echo WFText::_('WF_SEARCHREPLACE_MCASE'); ?></label>
-		</div>
-		<div class="uk-form-row">
-			<input id="wholewords" type="checkbox" />
-			<label for="wholewords"><?php echo WFText::_('WF_SEARCHREPLACE_WHOLEWORDS'); ?></label>
+			<div class="uk-width-3-10">
+				<input id="matchcase" type="checkbox" />
+				<label for="matchcase"><?php echo WFText::_('WF_SEARCHREPLACE_MCASE'); ?></label>
+			</div>
+			<div class="uk-width-7-10">
+				<input id="wholewords" type="checkbox" />
+				<label for="wholewords"><?php echo WFText::_('WF_SEARCHREPLACE_WHOLEWORDS'); ?></label>
+			</div>
 		</div>
 	</div>
 	<div class="mceActionPanel">
