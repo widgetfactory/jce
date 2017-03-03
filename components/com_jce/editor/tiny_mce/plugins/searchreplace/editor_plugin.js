@@ -321,7 +321,7 @@
             editor.addCommand('mceSearch', function (ui, e) {
                 var count, text = e.text,
                     caseState = e.case,
-                    wholeWord = e.wholeWord;
+                    wholeWord = e.wholeword;
 
                 if (!text.length) {
                     self.done(false);
