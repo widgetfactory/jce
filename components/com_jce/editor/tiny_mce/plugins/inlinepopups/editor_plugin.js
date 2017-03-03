@@ -84,6 +84,7 @@
 
             p.mce_inline = true;
             p.mce_window_id = id;
+            f.popup_css = false;
 
             //p.mce_width     = f.width;
             //p.mce_height    = f.height;
