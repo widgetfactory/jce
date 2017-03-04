@@ -361,8 +361,13 @@
                 $(self).trigger('datalist:change');
             });
 
-            $(this).change(function() {
+            $(this).change(function(e) {
                 var value = this.value;
+
+                // only trigger on native handlers, ie: when the select list is actually selected
+                if (e.isTrigger === 3) {
+                    return;
+                }
 
                 // special case for class list
                 if (value && this.id.indexOf('classlist-select') !== -1) {
