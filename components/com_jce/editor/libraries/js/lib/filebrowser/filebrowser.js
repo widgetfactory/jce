@@ -871,7 +871,7 @@
             // Clear returns
             this._returnedItems = [];
 
-            $('.uk-modal').trigger('modal.close');
+            //$('.uk-modal').trigger('modal.close');
 
             // uncheck all checkboxes
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
