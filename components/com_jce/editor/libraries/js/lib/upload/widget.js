@@ -272,8 +272,12 @@
             // add success class
             $(file.element).removeClass('queue-item-loading').addClass('queue-item-complete');
 
+            var item = {
+                name: o.result.files[0] || file.name
+            };
+
             // trigger callback
-            this._trigger('filecomplete', file);
+            this._trigger('filecomplete', [file, item]);
         },
         _onAllComplete: function() {
             this.uploading = false;

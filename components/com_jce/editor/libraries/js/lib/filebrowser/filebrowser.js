@@ -1391,12 +1391,8 @@
                                 websafe_textcase: self.options.websafe_textcase
                             }, self.options.upload)).on('uploadwidget:filerename', function(e, file) {
                                 return _checkName(file);
-                            }).on('uploadwidget:filecomplete', function(e, file) {
-                                var o = {
-                                    name: typeof file === "string" ? file : file.filename || file.name
-                                };
-
-                                self._addReturnedItem(o);
+                            }).on('uploadwidget:filecomplete', function(e, file, item) {
+                                self._addReturnedItem(item);
                                 self._trigger('onUploadFile', null, file);
 
                             }).on('uploadwidget:uploadstart', function(e, file) {
