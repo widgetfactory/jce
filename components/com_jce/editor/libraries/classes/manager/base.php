@@ -280,7 +280,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
             'list_limit' => $this->getParam('editor.list_limit', 'all'),
-            'use_cookies' => $this->getParam('editor.use_cookies', true),
+            //'use_cookies' => $this->getParam('editor.use_cookies', true),
             'features' => array(
                 'upload' => $this->getParam('upload', 1),
                 'folder' => array(
