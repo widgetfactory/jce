@@ -217,6 +217,9 @@ abstract class WFUtility
         // only for utf-8 to avoid PCRE errors - PCRE must be at least version 5
         if ($mode == 'utf-8') {
             try {
+                // set internal encoding to UTF-8
+                mb_internal_encoding('UTF-8');
+                // perform pcre replacement
                 $result = preg_replace($search, '', $subject);
             } catch (Exception $e) {
                 // try ascii
