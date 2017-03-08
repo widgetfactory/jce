@@ -49,7 +49,7 @@
             var self = this;
 
             self.parent(ed);
-            self.zIndex = 300003;
+            self.zIndex = 300002;
             self.count = 0;
             self.windows = {};
         },
@@ -281,9 +281,9 @@
             // position modal
             this.position(id);
 
-            Event.add(id + '_ifr', 'focus', function() {
+            /*Event.add(id + '_ifr', 'focus', function() {
                 self.focus(id);
-            });
+            });*/
 
             self.focus(id);
 
@@ -313,11 +313,11 @@
 			if (w = self.windows[id]) {
 				w.zIndex = this.zIndex++;
 				DOM.setStyle(id, 'zIndex', w.zIndex);
-                
-                id = id + '_wrapper';
+
 				DOM.removeClass(self.lastId, 'mceFocus');
-				DOM.addClass(id, 'mceFocus');
-				self.lastId = id;
+                DOM.addClass(id + '_frame', 'mceFocus');
+				
+                self.lastId = id + '_frame';
 
 				if (w.focussedElement) {
 					w.focussedElement.focus();
@@ -433,11 +433,11 @@
 
                 delete self.windows[id];
 
-                fw = self._frontWindow();
+                /*fw = self._frontWindow();
 
                 if (fw) {
                     self.focus(fw.id);
-                }
+                }*/
             }
         },
 
