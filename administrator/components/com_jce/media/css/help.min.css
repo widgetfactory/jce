@@ -89,7 +89,7 @@ html {
 }
 
 #help-menu dd.loading {
-    background: url("../img/load.gif") no-repeat 16px center;
+    background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat 16px center;
 }
 
 #help-menu dd.loading i {
