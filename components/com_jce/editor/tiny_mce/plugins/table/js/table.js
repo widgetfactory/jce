@@ -1075,10 +1075,10 @@
             // Setup new rowtype
             if (curRowType != rowtype && !skip_parent) {
                 // first, clone the node we are working on
-                var newRow = tr_elm.cloneNode(1);
+                var newRow = tr.cloneNode(1);
 
                 // next, find the parent of its new destination (creating it if necessary)
-                var theTable = dom.getParent(tr_elm, "table");
+                var theTable = dom.getParent(tr, "table");
                 var dest = rowtype;
                 var newParent = null;
                 for (var i = 0; i < theTable.childNodes.length; i++) {
@@ -1105,10 +1105,10 @@
                 newParent.appendChild(newRow);
 
                 // remove the original
-                tr_elm.parentNode.removeChild(tr_elm);
+                tr.parentNode.removeChild(tr);
 
-                // set tr_elm to the new node
-                tr_elm = newRow;
+                // set tr to the new node
+                tr = newRow;
             }
         },
 
