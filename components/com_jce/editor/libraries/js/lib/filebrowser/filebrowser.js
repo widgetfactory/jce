@@ -117,7 +117,6 @@
             dialog: null
         },
         viewable: 'jpeg,jpg,gif,png,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx',
-        use_cookies: true,
         list_limit: 'all',
         expandable: true,
         websafe_mode: 'utf-8',
@@ -283,9 +282,7 @@
             $('#browser-list-limit-select').change(function() {
                 self._limitcount = 0;
 
-                if (self.options.use_cookies) {
-                    Wf.Cookie.set('wf_' + Wf.getName() + '_limit', $(this).val());
-                }
+                Wf.Cookie.set('wf_' + Wf.getName() + '_limit', $(this).val());
 
                 self.refresh();
             });
@@ -1076,7 +1073,7 @@
             var path = src || this._dir;
 
             // store directory in cookie
-            if ((src || this._dir === '') && this.options.use_cookies) {
+            if ((src || this._dir === '')) {
                 Wf.Cookie.set("wf_" + Wf.getName() + '_dir', this._cleanPath(path));
             }
 
