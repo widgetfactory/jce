@@ -178,6 +178,10 @@ abstract class WFUtility
     {
         $search = array();
 
+        if (!function_exists('mb_internal_encoding')) {
+            $mode = 'ascii';
+        }
+
         // trim
         if (is_array($subject)) {
             $subject = array_map('trim', $subject);
