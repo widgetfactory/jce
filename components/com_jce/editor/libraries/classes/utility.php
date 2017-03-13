@@ -10,6 +10,11 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 
+/* Set internal character encoding to UTF-8 */
+if (function_exists('mb_internal_encoding')) {
+    mb_internal_encoding("UTF-8");
+}
+
 abstract class WFUtility
 {
     public static function getExtension($path)
@@ -221,8 +226,6 @@ abstract class WFUtility
         // only for utf-8 to avoid PCRE errors - PCRE must be at least version 5
         if ($mode == 'utf-8') {
             try {
-                // set internal encoding to UTF-8
-                mb_internal_encoding('UTF-8');
                 // perform pcre replacement
                 $result = preg_replace($search, '', $subject);
             } catch (Exception $e) {
