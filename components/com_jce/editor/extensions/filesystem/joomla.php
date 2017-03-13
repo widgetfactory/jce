@@ -131,7 +131,11 @@ class WFJoomlaFileSystem extends WFFileSystem
             $base = $this->getRootDir();
         }
 
-        $path = mb_substr($path, mb_strlen($base));
+        if (function_exists('mb_substr')) {
+            $path = mb_substr($path, mb_strlen($base));
+        } else {
+            $path = substr($path, strlen($base));
+        }
 
         return ltrim($path, '/');
     }
@@ -344,12 +348,22 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // directory path relative to site root
         if (is_dir(WFUtility::makePath(JPATH_SITE, $path))) {
-            return mb_substr($path, mb_strlen($this->getRootDir()));
+
+            if (function_exists('mb_substr')) {
+                return mb_substr($path, mb_strlen($this->getRootDir()));
+            }
+
+            return substr($path, strlen($this->getRootDir()));
         }
 
         // file url relative to site root
         if (is_file(WFUtility::makePath(JPATH_SITE, $path))) {
-            return mb_substr(dirname($path), mb_strlen($this->getRootDir()));
+            
+            if (function_exists('mb_substr')) {
+                return mb_substr(dirname($path), mb_strlen($this->getRootDir()));
+            }
+            
+            return substr(dirname($path), strlen($this->getRootDir()));
         }
 
         return '';
