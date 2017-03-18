@@ -58,17 +58,29 @@ class WFStyleselectPluginConfig
                         } else {
                             $style->inline = $style->element;
                         }
-                        // remove element
-                        unset($style->element);
 
                         // remove element
                         $style->remove = 'all';
                     }
 
+                    /*if (!isset($style->element) && !isset($style->selector)) {
+                        $style->inline = 'span';
+                        $style->selector = '*';
+                    }*/
+
                     // match all if not set
                     if (!isset($style->selector)) {
+
                         $style->selector = '*';
+
+                        // set to element
+                        if (isset($style->element)) {
+                            $style->selector = $style->element;
+                        }
                     }
+
+                    // remove element
+                    unset($style->element);
 
                     $styles[] = $style;
                 }
