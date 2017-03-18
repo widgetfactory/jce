@@ -13,7 +13,7 @@ tiny_mce/plugins/*
 !tiny_mce/plugins/mediamanager
 !tiny_mce/plugins/microdata
 !tiny_mce/plugins/templatemanager
-!tiny_mce/plugins/source_pro
+!tiny_mce/plugins/source
 
 # config
 !.gitignore
