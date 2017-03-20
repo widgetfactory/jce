@@ -627,12 +627,15 @@
                 if (src.indexOf('://' + this.options.base) !== -1) {
                     // remove scheme
                     src = src.replace(/http(s)?:\/\//i, '');
-                    // remove query etc.
-                    src = src.substr(0, src.indexOf('?'));
                     // remove base
                     src = src.replace(this.options.base, '');
                 }
             }
+
+            // convert &amp; and ? to &
+            src = src.replace(/(&amp;|\?)/g, '&');
+            // remove query etc.
+            src = src.substr(0, src.indexOf('&'));
 
             // remove leading slash
             src = src.replace(/^[\/\\]+/, '');
