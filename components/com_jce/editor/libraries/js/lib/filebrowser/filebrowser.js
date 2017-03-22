@@ -634,8 +634,11 @@
 
             // convert &amp; and ? to &
             src = src.replace(/(&amp;|\?)/g, '&');
+
             // remove query etc.
-            src = src.substr(0, src.indexOf('&'));
+            if (src.indexOf('&') !== -1) {
+                src = src.substr(0, src.indexOf('&'));
+            }
 
             // remove leading slash
             src = src.replace(/^[\/\\]+/, '');
