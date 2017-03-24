@@ -551,12 +551,12 @@
                             $(this).trigger('modal.close');
                         }
                     },
-                    icon: 'uk-icon-check',
-                    classes: 'uk-button-primary'
+                    attributes: {'class' : 'uk-button-primary'},
+                    icon: 'uk-icon-check'
                 }, {
                     text: ed.getLang('dlg.cancel', 'Cancel'),
                     icon: 'uk-icon-close',
-                    classes: 'uk-modal-close'
+                    attributes: {'class' : 'uk-modal-close'}
                 }]
             }, fields);
         },
