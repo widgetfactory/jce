@@ -8,59 +8,59 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function () {
 	tinymce.create('tinymce.plugins.AutolinkPlugin', {
-	/**
-	* Initializes the plugin, this will be executed after the plugin has been created.
-	* This call is done before the editor instance has finished it's initialization so use the onInit event
-	* of the editor instance to intercept that event.
-	*
-	* @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
-	* @param {string} url Absolute URL to where the plugin is located.
-	*/
+		/**
+		 * Initializes the plugin, this will be executed after the plugin has been created.
+		 * This call is done before the editor instance has finished it's initialization so use the onInit event
+		 * of the editor instance to intercept that event.
+		 *
+		 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
+		 * @param {string} url Absolute URL to where the plugin is located.
+		 */
 
-	init : function(ed, url) {
-		var t = this;
-                
-                if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {                    
-                    return;
-                }
+		init: function (ed, url) {
+			var t = this;
 
-		// Add a key down handler
-		ed.onKeyDown.addToTop(function(ed, e) {
-			if (e.keyCode == 13)
-				return t.handleEnter(ed);
-		});
+			if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
+				return;
+			}
 
-		// Internet Explorer has built-in automatic linking for most cases
-		if (tinyMCE.isIE)
-			return;
-
-		ed.onKeyPress.add(function(ed, e) {
-			if (e.which == 41)
-				return t.handleEclipse(ed);
-		});
-
-		// Add a key up handler
-		ed.onKeyUp.add(function(ed, e) {
-			if (e.keyCode == 32)
-				return t.handleSpacebar(ed);
+			// Add a key down handler
+			ed.onKeyDown.addToTop(function (ed, e) {
+				if (e.keyCode == 13)
+					return t.handleEnter(ed);
 			});
-	       },
 
-		handleEclipse : function(ed) {
+			// Internet Explorer has built-in automatic linking for most cases
+			if (tinyMCE.isIE)
+				return;
+
+			ed.onKeyPress.add(function (ed, e) {
+				if (e.which == 41)
+					return t.handleEclipse(ed);
+			});
+
+			// Add a key up handler
+			ed.onKeyUp.add(function (ed, e) {
+				if (e.keyCode == 32)
+					return t.handleSpacebar(ed);
+			});
+		},
+
+		handleEclipse: function (ed) {
 			this.parseCurrentLine(ed, -1, '(', true);
 		},
 
-		handleSpacebar : function(ed) {
-			 this.parseCurrentLine(ed, 0, '', true);
-		 },
+		handleSpacebar: function (ed) {
+			this.parseCurrentLine(ed, 0, '', true);
+		},
 
-		handleEnter : function(ed) {
+		handleEnter: function (ed) {
 			this.parseCurrentLine(ed, -1, '', false);
 		},
 
-		parseCurrentLine : function(ed, end_offset, delimiter, goback) {
+		parseCurrentLine: function (ed, end_offset, delimiter, goback) {
 			var r, end, start, endContainer, bookmark, text, matches, prev, len;
 
 			// We need at least five characters to form a URL,
@@ -108,15 +108,14 @@
 
 			start = end;
 
-			do
-			{
+			do {
 				// Move the selection one character backwards.
 				r.setStart(endContainer, end >= 2 ? end - 2 : 0);
 				r.setEnd(endContainer, end >= 1 ? end - 1 : 0);
 				end -= 1;
 
 				// Loop until one of the following is found: a blank space, &nbsp;, delimeter, (end-2) >= 0
-			} while (r.toString() != ' ' && r.toString() != '' && r.toString().charCodeAt(0) != 160 && (end -2) >= 0 && r.toString() != delimiter);
+			} while (r.toString() != ' ' && r.toString() != '' && r.toString().charCodeAt(0) != 160 && (end - 2) >= 0 && r.toString() != delimiter);
 
 			if (r.toString() == delimiter || r.toString().charCodeAt(0) == 160) {
 				r.setStart(endContainer, end);
@@ -125,8 +124,7 @@
 			} else if (r.startOffset == 0) {
 				r.setStart(endContainer, 0);
 				r.setEnd(endContainer, start);
-			}
-			else {
+			} else {
 				r.setStart(endContainer, end);
 				r.setEnd(endContainer, start);
 			}
@@ -140,30 +138,30 @@
 			text = r.toString();
 			matches = text.match(/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i);
 
-			if (matches) {                                
-                                if (matches[1] == 'www.') {
+			if (matches) {
+				if (matches[1] == 'www.') {
 					matches[1] = 'http://www.';
-                                        
-                                        if (!ed.getParam('autolink_url', true)) {
-                                            return;
-                                        }
-                                        
+
+					if (!ed.getParam('autolink_url', true)) {
+						return;
+					}
+
 				} else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
 					matches[1] = 'mailto:' + matches[1];
-                                        
-                                        if (!ed.getParam('autolink_email', true)) {
-                                            return;
-                                        }
+
+					if (!ed.getParam('autolink_email', true)) {
+						return;
+					}
 				} else {
-                                    if (!ed.getParam('autolink_url', true)) {
-                                        return;
-                                    }
-                                }
+					if (!ed.getParam('autolink_url', true)) {
+						return;
+					}
+				}
 
 				bookmark = ed.selection.getBookmark();
 
 				ed.selection.setRng(r);
-				tinyMCE.execCommand('createlink',false, matches[1] + matches[2]);
+				tinyMCE.execCommand('createlink', false, matches[1] + matches[2]);
 				ed.selection.moveToBookmark(bookmark);
 				ed.nodeChanged();
 
@@ -180,18 +178,18 @@
 		},
 
 		/**
-		* Returns information about the plugin as a name/value array.
-		* The current keys are longname, author, authorurl, infourl and version.
-		*
-		* @return {Object} Name/value array containing information about the plugin.
-		*/
-		getInfo : function() {
+		 * Returns information about the plugin as a name/value array.
+		 * The current keys are longname, author, authorurl, infourl and version.
+		 *
+		 * @return {Object} Name/value array containing information about the plugin.
+		 */
+		getInfo: function () {
 			return {
-				longname : 'Autolink',
-				author : 'Moxiecode Systems AB',
-				authorurl : 'http://tinymce.moxiecode.com',
-				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/autolink',
-				version : tinymce.majorVersion + "." + tinymce.minorVersion
+				longname: 'Autolink',
+				author: 'Moxiecode Systems AB',
+				authorurl: 'http://tinymce.moxiecode.com',
+				infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/autolink',
+				version: tinymce.majorVersion + "." + tinymce.minorVersion
 			};
 		}
 	});
