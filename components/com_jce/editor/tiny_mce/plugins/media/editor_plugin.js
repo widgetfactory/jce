@@ -711,7 +711,7 @@
                     }
                 }
                 attribs[k] = v;
-            } else {
+            } else {                
                 for (k in n.attributes.map) {
                     v = n.attributes.map[k];
 
