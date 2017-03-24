@@ -8,7 +8,7 @@
         var sel = document.getElementById(field_name);
 
         if (!sel) {
-          return;
+            return;
         }
 
         var found = false;
@@ -43,13 +43,13 @@
         settings: {},
         defaults: {
             'Fonts': "" +
-                    "Arial, Helvetica, sans-serif=Arial, Helvetica, sans-serif;" +
-                    "Times New Roman, Times, serif=Times New Roman, Times, serif;" +
-                    "Courier New, Courier, mono=Courier New, Courier, mono;" +
-                    "Times New Roman, Times, serif=Times New Roman, Times, serif;" +
-                    "Georgia, Times New Roman, Times, serif=Georgia, Times New Roman, Times, serif;" +
-                    "Verdana, Arial, Helvetica, sans-serif=Verdana, Arial, Helvetica, sans-serif;" +
-                    "Geneva, Arial, Helvetica, sans-serif=Geneva, Arial, Helvetica, sans-serif",
+                "Arial, Helvetica, sans-serif=Arial, Helvetica, sans-serif;" +
+                "Times New Roman, Times, serif=Times New Roman, Times, serif;" +
+                "Courier New, Courier, mono=Courier New, Courier, mono;" +
+                "Times New Roman, Times, serif=Times New Roman, Times, serif;" +
+                "Georgia, Times New Roman, Times, serif=Georgia, Times New Roman, Times, serif;" +
+                "Verdana, Arial, Helvetica, sans-serif=Verdana, Arial, Helvetica, sans-serif;" +
+                "Geneva, Arial, Helvetica, sans-serif=Geneva, Arial, Helvetica, sans-serif",
             'Sizes': "9;10;12;14;16;18;24;xx-small;x-small;small;medium;large;x-large;xx-large;smaller;larger",
             'Measurement': "+pixels=px;points=pt;inches=in;centimetres=cm;millimetres=mm;picas=pc;ems=em;exs=ex;%",
             'SpacingMeasurement': "pixels=px;points=pt;inches=in;centimetres=cm;millimetres=mm;picas=pc;+ems=em;exs=ex;%",
@@ -78,8 +78,7 @@
                         if (parsedStyles.hasOwnProperty(name)) {
                             if (mergedStyles[name] === undefined) {
                                 mergedStyles[name] = parsedStyles[name];
-                            }
-                            else if (name === 'text-decoration') {
+                            } else if (name === 'text-decoration') {
                                 if (mergedStyles[name].indexOf(parsedStyles[name]) === -1) {
                                     mergedStyles[name] = mergedStyles[name] + ' ' + parsedStyles[name];
                                 }
@@ -92,7 +91,10 @@
             return mergedStyles;
         },
         init: function () {
-            var self = this, ed = tinyMCEPopup.editor, ce = document.getElementById('container'), h;
+            var self = this,
+                ed = tinyMCEPopup.editor,
+                ce = document.getElementById('container'),
+                h;
 
             if (!this.settings.file_browser) {
                 $('.browser').removeClass('browser');
@@ -104,13 +106,13 @@
 
             this.applyActionIsInsert = ed.getParam("edit_css_style_insert_span", false);
 
-            $('#insert').click(function(e) {
+            $('#insert').click(function (e) {
                 e.preventDefault();
 
                 self.updateAction();
             });
 
-            $('#apply').click(function(e) {
+            $('#apply').click(function (e) {
                 e.preventDefault();
 
                 self.applyAction();
@@ -143,7 +145,7 @@
             this.fillSelect('block_letterspacing_measurement', 'style_letterspacing_measurement', this.defaults.SpacingMeasurement, ';', true);
             this.fillSelect('block_vertical_alignment', 'style_vertical_alignment', this.defaults.VAlign, ';', true);
             this.fillSelect('block_text_align', 'style_text_align', "left;right;center;justify", ';', true);
-            this.fillSelect('block_whitespace', 'style_whitespace', "normal;pre;nowrap", ';', true);
+            this.fillSelect('block_whitespace', 'style_whitespace', "normal;pre;pre-wrap;pre-line;nowrap", ';', true);
             this.fillSelect('block_display', 'style_display', this.defaults.Display, ';', true);
             this.fillSelect('block_text_indent_measurement', 'style_text_indent_measurement', this.defaults.IndentMeasurement, ';', true);
 
@@ -201,7 +203,9 @@
             Wf.init();
         },
         setupFormData: function () {
-            var ed = tinyMCEPopup.editor, ce = document.getElementById('container'), s, b, i;
+            var ed = tinyMCEPopup.editor,
+                ce = document.getElementById('container'),
+                s, b, i;
 
             // Setup text fields
 
@@ -272,10 +276,10 @@
             this.setupBox(ce, 'border_width', 'border', 'Width');
             this.setupBox(ce, 'border_color', 'border', 'Color');
 
-            $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
-              $('#border_color_' + k).val(function() {
-                return ed.dom.toHex(this.value);
-              });
+            $.each(['top', 'right', 'bottom', 'left'], function (i, k) {
+                $('#border_color_' + k).val(function () {
+                    return ed.dom.toHex(this.value);
+                });
             });
 
             // Setup list fields
@@ -352,7 +356,7 @@
                 el.value = v;
             }
         },
-        setProp: function(n, p, v) {
+        setProp: function (n, p, v) {
             var el = document.getElementById(n);
             $(el).prop(p, v);
         },
@@ -407,7 +411,8 @@
             }
         },
         isSame: function (e, pr, sf, b) {
-            var a = [], i, x;
+            var a = [],
+                i, x;
 
             if (typeof (b) == "undefined")
                 b = ['Top', 'Right', 'Bottom', 'Left'];
@@ -451,7 +456,8 @@
             this.applyActionIsInsert = !this.applyActionIsInsert;
         },
         applyAction: function () {
-            var ce = document.getElementById('container'), ed = tinyMCEPopup.editor;
+            var ce = document.getElementById('container'),
+                ed = tinyMCEPopup.editor;
 
             this.generateCSS();
 
@@ -477,8 +483,7 @@
 
                 if (tinyMCEPopup.getWindowArg('applyStyleToBlocks')) {
                     nodes = ed.selection.getSelectedBlocks();
-                }
-                else {
+                } else {
                     nodes = ed.selection.getNode();
                 }
 
@@ -490,7 +495,9 @@
             tinyMCEPopup.close();
         },
         generateCSS: function () {
-            var ce = document.getElementById('container'), num = new RegExp('[0-9]+', 'g'), s, t;
+            var ce = document.getElementById('container'),
+                num = new RegExp('[0-9]+', 'g'),
+                s, t;
 
             ce.style.cssText = "";
 
@@ -685,13 +692,13 @@
                     addSelectValue(s, p[0], p[1]);
 
                     if (se) {
-                      selectByValue(s, p[1]);
+                        selectByValue(s, p[1]);
                     }
                 } else {
                     addSelectValue(s, p[0], p[0]);
 
                     if (se) {
-                      selectByValue(s, p[0]);
+                        selectByValue(s, p[0]);
                     }
                 }
             }
