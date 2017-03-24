@@ -162,6 +162,10 @@ defined('_JEXEC') or die('RESTRICTED');
         <label class="uk-form-label uk-width-3-10" for="onscroll">onscroll</label>
         <div class="uk-form-controls uk-width-7-10"><input id="onscroll" class="html5" type="text" value="" /></div>
     </div>
+    <div class="uk-form-row">
+        <label class="uk-form-label uk-width-3-10" for="oncontextmenu">oncontextmenu</label>
+        <div class="uk-form-controls uk-width-7-10"><input id="oncontextmenu" type="text" class="html5" value="" /></div>
+    </div>
 
     <!-- Form -->
 
@@ -172,10 +176,6 @@ defined('_JEXEC') or die('RESTRICTED');
     <div class="uk-form-row">
         <label class="uk-form-label uk-width-3-10" for="onchange">onchange</label>
         <div class="uk-form-controls uk-width-7-10"><input id="onchange" type="text" class="form" value="" /></div>
-    </div>
-    <div class="uk-form-row">
-        <label class="uk-form-label uk-width-3-10" for="oncontextmenu">oncontextmenu</label>
-        <div class="uk-form-controls uk-width-7-10"><input id="oncontextmenu" type="text" class="html5 form" value="" /></div>
     </div>
     <div class="uk-form-row">
         <label class="uk-form-label uk-width-3-10" for="onfocus">onfocus</label>
