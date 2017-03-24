@@ -26,8 +26,8 @@
     </params>
     <params group="buttons">
             <param name="buttons" class="checklist buttonlist" type="list" multiple="multiple" default="readmore,pagebreak" label="WF_PARAM_BUTTONS" description="WF_PARAM_BUTTONS_DESC">
-                <option value="readmore">Readmore</option>
-                <option value="pagebreak">Pagebreak</option>
+                <option value="readmore">WF_ARTICLE_READMORE</option>
+                <option value="pagebreak">WF_ARTICLE_PAGEBREAK</option>
             </param>
         </params>
     <help>
