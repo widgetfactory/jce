@@ -249,7 +249,7 @@ class WFLanguageParser extends JObject
                         $key = preg_replace('#_dlg$#', '', $key);
 
                         // remove the section name
-                        $k = preg_replace('#'.$key.'(_dlg)?_#', '', $k);
+                        $k = preg_replace('#^'.$key.'(_dlg)?_#', '', $k);
 
                         // hex colours to uppercase and remove marker
                         if (strpos($k, 'hex_') !== false) {
