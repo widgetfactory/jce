@@ -11,7 +11,7 @@
     <description>WF_SPELLCHECKER_DESC</description>
     <icon>spellchecker</icon>
     <params group="standard">
-        <param name="engine" type="list" default="browser" label="WF_SPELLCHECKER_PARAM_ENGINE" description="WF_SPELLCHECKER_PARAM_GOOGLESPELL_LANGUAGES_DESC">
+        <param name="engine" type="list" default="browser" label="WF_SPELLCHECKER_PARAM_ENGINE" description="WF_SPELLCHECKER_PARAM_ENGINE_DESC">
             <option value="browser">WF_SPELLCHECKER_PARAM_BROWSER</option>
             <option value="pspell">WF_SPELLCHECKER_PARAM_PSPELL_PHP</option>
             <option value="enchantspell">WF_SPELLCHECKER_PARAM_ENCHANT</option>
