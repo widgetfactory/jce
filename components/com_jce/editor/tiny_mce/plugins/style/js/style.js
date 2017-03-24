@@ -39,6 +39,16 @@
         s.options[s.options.length] = o;
     }
 
+    function getColor(n) {
+        var v = $(n).val();
+
+        if (v.indexOf('#') !== -1) {
+            return v;
+        }
+
+        return '#' + v;
+    }
+
     var StyleDialog = {
         settings: {},
         defaults: {
@@ -462,21 +472,27 @@
             this.generateCSS();
 
             tinyMCEPopup.restoreSelection();
-            ed.dom.setAttrib(ed.selection.getNode(), 'style', tinyMCEPopup.editor.dom.serializeStyle(tinyMCEPopup.editor.dom.parseStyle(ce.style.cssText)));
+
+            //ed.dom.setAttrib(ed.selection.getNode(), 'style', tinyMCEPopup.editor.dom.serializeStyle(tinyMCEPopup.editor.dom.parseStyle(ce.style.cssText)));
 
             var newStyles = tinyMCEPopup.editor.dom.parseStyle(ce.style.cssText);
 
             if (this.applyActionIsInsert) {
+                
+                // register formatter to remove all styles
                 ed.formatter.register('plugin_style', {
                     inline: 'span',
                     styles: this.existingStyles
                 });
+
                 ed.formatter.remove('plugin_style');
 
+                // register formatter to apply new styles
                 ed.formatter.register('plugin_style', {
                     inline: 'span',
                     styles: newStyles
                 });
+
                 ed.formatter.apply('plugin_style');
             } else {
                 var nodes;
@@ -494,6 +510,7 @@
             this.applyAction();
             tinyMCEPopup.close();
         },
+
         generateCSS: function () {
             var ce = document.getElementById('container'),
                 num = new RegExp('[0-9]+', 'g'),
@@ -509,7 +526,7 @@
             ce.style.textTransform = $('#text_case').val();
             ce.style.fontWeight = $('#text_weight').val();
             ce.style.fontVariant = $('#text_variant').val();
-            ce.style.color = $('#text_color').val();
+            ce.style.color = getColor('#text_color');
 
             s = "";
             s += $('#text_underline').prop('checked') ? " underline" : "";
@@ -526,7 +543,7 @@
 
             // Build background styles
 
-            ce.style.backgroundColor = $('#background_color').val();
+            ce.style.backgroundColor = getColor('#background_color');
             ce.style.backgroundImage = $('#background_image').val() != "" ? "url(" + $('#background_image').val() + ")" : "";
             ce.style.backgroundRepeat = $('#background_repeat').val();
             ce.style.backgroundAttachment = $('#background_attachment').val();
@@ -597,12 +614,12 @@
                 ce.style.borderWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
 
             if (!$('#border_color_same').prop('checked')) {
-                ce.style.borderTopColor = $('#border_color_top').val();
-                ce.style.borderRightColor = $('#border_color_right').val();
-                ce.style.borderBottomColor = $('#border_color_bottom').val();
-                ce.style.borderLeftColor = $('#border_color_left').val();
+                ce.style.borderTopColor = getColor('#border_color_top');
+                ce.style.borderRightColor = getColor('#border_color_right');
+                ce.style.borderBottomColor = getColor('#border_color_bottom');
+                ce.style.borderLeftColor = getColor('#border_color_left');
             } else
-                ce.style.borderColor = $('#border_color_top').val();
+                ce.style.borderColor = getColor('#border_color_top');
 
             // Build list styles
 
