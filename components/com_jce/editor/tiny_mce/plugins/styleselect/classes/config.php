@@ -64,19 +64,21 @@ class WFStyleselectPluginConfig
                     }
 
                     // edge case for forced_root_block=false
-                    if (!$settings['forced_root_block'] && !isset($style->element)) {
-                        $style->inline      = 'span';
-                        $style->selector    = '*';
-                    }
+                    if ($settings['forced_root_block'] === false) {
+                        if (!isset($style->element)) {
+                            $style->inline = 'span';
+                            $style->selector = '*';
+                        }
+                    } else {
+                        // match all if not set
+                        if (!isset($style->selector)) {
 
-                    // match all if not set
-                    if (!isset($style->selector) && $settings['forced_root_block']) {
+                            $style->selector = '*';
 
-                        $style->selector = '*';
-
-                        // set to element
-                        if (isset($style->element)) {
-                            $style->selector = $style->element;
+                            // set to element
+                            if (isset($style->element)) {
+                                $style->selector = $style->element;
+                            }
                         }
                     }
 
@@ -151,7 +153,7 @@ class WFStyleselectPluginConfig
         if (count($remove)) {
             foreach ($fonts as $key => $value) {
                 foreach ($remove as $gone) {
-                    if ($gone && preg_match('/^'.$gone.'=/i', $value)) {
+                    if ($gone && preg_match('/^' . $gone . '=/i', $value)) {
                         // Remove family
                         unset($fonts[$key]);
                     }
