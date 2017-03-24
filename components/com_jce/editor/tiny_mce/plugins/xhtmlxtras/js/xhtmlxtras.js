@@ -8,6 +8,7 @@
  * other free or open source software licenses.
  */
 (function($) {
+
 	var XHTMLXtrasDialog = {
 		settings: {},
 
@@ -41,7 +42,15 @@
 							k = "class";
 						}
 
-						$(this).val(ed.dom.getAttrib(n, k));
+						var v = ed.dom.getAttrib(n, k);
+
+						// clean up class
+						if (k === "class") {
+							v = v.replace(/mceItem[a-z0-9]+/gi, '').replace(/\s+/, ' ');
+							v = $.trim(v);
+						}
+	
+						$(this).val(v);
 					});
 
 					$('#insert').button('option', 'label', ed.getLang('update', 'Insert'));
@@ -56,15 +65,17 @@
 
 			// hide HTML5 fields
 			if (ed.settings.schema === 'html4' && ed.settings.validate === true) {
-				$('input.html5').parent('td').parent('tr').hide();
+				$('input.html5').parents('.uk-form-row').hide();
 			}
+			
 			// hide for non-form nodes
 			if (!tinymce.is(n, ':input, form')) {
-				$('input.form').parent('td').parent('tr').hide();
+				$('input.form').parents('.uk-form-row').hide();
 			}
+
 			// hide for non-media nodes
-			if (!tinymce.is(n, 'img')) {
-				$('input.media').parent('td').parent('tr').hide();
+			if (n.nodeName !== "IMG") {
+				$('input.media').parents('.uk-form-row').hide();
 			}
 		},
 
@@ -81,7 +92,7 @@
 
 			var args = {};
 
-			$(':input').not('#classlist').each(function() {
+			$(':input').not('#classlist-select, #classes').each(function() {
 				var k = $(this).attr('id'),
 					v = $(this).val();
 
@@ -89,12 +100,12 @@
 					k = 'data-mce-' + k;
 				}
 
-				if (k === "classes") {
-					k = "class";
-				}
-
 				args[k] = v;
 			});
+
+			// get classes value
+			var cls = $('#classes').val();
+
 			// opened by an element button
 			if (element) {
 				if (n.nodeName.toLowerCase() == element) {
@@ -104,6 +115,10 @@
 				}
 
 				ed.formatter.apply(element.toLowerCase(), args, elm);
+
+				// apply classes
+				ed.dom.addClass(elm, cls);
+
 				// probably Attributes
 			} else {
 				var isTextSelection = se.getContent() == se.getContent({
@@ -112,10 +127,13 @@
 
 				// is a body or text selection
 				if (n == ed.getBody() || isTextSelection) {
+					args['class'] = cls;
 					ed.formatter.apply('attributes', args);
 					// attribute selection
 				} else {
 					ed.dom.setAttribs(n, args);
+					// apply classes
+					ed.dom.addClass(n, cls);
 				}
 			}
 
