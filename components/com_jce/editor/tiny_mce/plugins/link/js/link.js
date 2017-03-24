@@ -521,19 +521,21 @@
                     });
                 },
                 buttons: [{
-                    text: ed.getLang('dlg.create', 'Create'),
+                    text: ed.getLang('link_dlg.create_email', 'Create Email'),
                     click: function () {
                         var args = [],
                             errors = 0;
                         $.each(['mailto', 'cc', 'bcc', 'subject'], function (i, s) {
                             var v = $('#email_' + s).val();
+
                             if (v) {
                                 v = v.replace(/\n\r/g, '');
 
                                 $.each(v.split(','), function (i, o) {
                                     if (s !== 'subject') {
                                         if (!/@/.test(o)) {
-                                            Wf.Modal.alert(s + ed.getLang('link_dlg.invalid_email', ' is not a valid e-mail address!'));
+                                            var msg = ed.getLang('link_dlg.invalid_email', '%s is not a valid e-mail address!');
+                                            Wf.Modal.alert(msg.replace(/%s/, ed.dom.encode(o)));
                                             errors++;
                                         }
                                     }
