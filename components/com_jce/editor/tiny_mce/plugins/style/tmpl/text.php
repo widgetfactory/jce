@@ -10,13 +10,11 @@
 defined('_JEXEC') or die('RESTRICTED');
 ?>
 <div class="uk-form-row">
-  <label for="text_font" class="hastip uk-form-label uk-width-2-10"
-           title="<?php echo WFText::_('WF_STYLES_TEXT_FONT_DESC'); ?>"><?php echo WFText::_('WF_STYLES_TEXT_FONT'); ?></label>
+  <label for="text_font" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TEXT_FONT'); ?></label>
     <div class="uk-form-controls uk-width-8-10 uk-datalist"><input id="text_font" type="text" /><select id="text_font_list"></select></div>
 </div>
 <div class="uk-grid uk-grid-small">
-    <label for="text_size" class="hastip uk-form-label uk-width-2-10"
-           title="<?php echo WFText::_('WF_STYLES_TEXT_SIZE_DESC'); ?>"><?php echo WFText::_('WF_STYLES_TEXT_SIZE'); ?></label>
+    <label for="text_size" class="uk-form-label uk-width-2-10"><?php echo WFText::_('WF_STYLES_TEXT_SIZE'); ?></label>
 
       <div class="uk-form-controls uk-width-2-10 uk-datalist">
         <input id="text_size" type="text" /><select id="text_size_list"></select>
@@ -26,8 +24,7 @@ defined('_JEXEC') or die('RESTRICTED');
       </div>
 
     <div class="uk-width-4-10">
-      <label for="text_weight" class="hastip uk-form-label uk-width-3-10"
-           title="<?php echo WFText::_('WF_STYLES_TEXT_WEIGHT_DESC'); ?>"><?php echo WFText::_('WF_STYLES_TEXT_WEIGHT'); ?></label>
+      <label for="text_weight" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_STYLES_TEXT_WEIGHT'); ?></label>
            <div class="uk-form-controls uk-width-7-10"><select id="text_weight"></select></div>
   </div>
 </div>
