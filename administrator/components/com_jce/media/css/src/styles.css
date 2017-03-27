@@ -680,6 +680,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     top: 38px;
     height: 86%;
     height: calc(100% - 38px);
+    width: 288px;
 }
 
 .wf-colorpicker .uk-icon-hashtag {

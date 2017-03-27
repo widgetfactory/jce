@@ -100,7 +100,6 @@ body > #colorpicker {
 #colorpicker_web div,
 #colorpicker_template div {
   margin: 10px auto 0 auto;
-  text-align: center;
 }
 #colorpicker_template p {
   margin: 1em auto;
@@ -110,8 +109,8 @@ body > #colorpicker {
 #colorpicker_template span {
   display: block;
   float: left;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   overflow: hidden;
   cursor: pointer;
 }
@@ -942,6 +941,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     top: 38px;
     height: 86%;
     height: calc(100% - 38px);
+    width: 288px;
 }
 
 .wf-colorpicker .uk-icon-hashtag {
