@@ -100,7 +100,7 @@
 
 			var text = s.getContent();
 
-			text = text.toLowerCase().replace(/([a-z])/, function (a, b) {
+			text = text.toLowerCase().replace(/([\u0000-\u1FFF])/, function (a, b) {
 				return b.toUpperCase();
 			}).replace(/(\.\s?)([\u0000-\u1FFF])/gi, function (a, b, c) {
 				return b + c.toUpperCase();
