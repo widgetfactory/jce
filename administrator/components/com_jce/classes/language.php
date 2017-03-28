@@ -388,19 +388,14 @@ class WFLanguageParser extends JObject
             header('Content-type: application/javascript; charset: UTF-8');
             header('Vary: Accept-Encoding');
 
-            // expires after 2 days
-            $expires = 60 * 60 * 24 * 2;
-
-            header('Cache-Control: maxage='.$expires);
-
-            // Handle proxies
-            header('Expires: '.gmdate('D, d M Y H:i:s', time() + $expires).' GMT');
+            // cache control
+            header('Cache-Control: max-age=0,no-cache');
 
             // get content hash
             $hash = md5($data);
 
             // set etag header
-            header("ETag: \"{$hash}\"");
+            header('ETag: '.$hash);
 
             echo $data;
 
