@@ -908,7 +908,8 @@
                     }
                 }
 
-                nodes = dom.select('table', args.node);
+                // Convert width and height attributes to styles
+                nodes = dom.select('table, td, th', args.node);
                 i = nodes.length;
                 while (i--) {
                     node = nodes[i];
