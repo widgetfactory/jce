@@ -230,7 +230,7 @@
                                 case 's':
                                     return Wf.String.formatSize(file.size);
                                 case 'm':
-                                    return Wf.String.formatSize(self.options.max_size);
+                                    return Wf.String.formatSize(self.options.max_size * 1024);
                             }
                         });
 
