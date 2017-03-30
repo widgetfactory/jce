@@ -838,7 +838,7 @@ class WFModelEditor extends WFModelBase
 
         foreach ($templates as $item) {
             // Template CSS
-            $path = JPATH_SITE . '/templates/' . $item;
+            $path = JPATH_SITE . '/templates/' . $item . '/css';
 
             // get the first path that exists
             if (is_dir($path)) {
@@ -915,7 +915,7 @@ class WFModelEditor extends WFModelBase
                 }
 
                 // check for editor.css file
-                if (JFile::exists($path . '/css/editor.css')) {
+                if (JFile::exists($path . '/editor.css')) {
                     $file = 'editor.css';
                 }
 
