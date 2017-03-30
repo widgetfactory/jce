@@ -47,24 +47,24 @@
             });
 
             function isFormat(n) {
-                return tinymce.inArray(n.nodeName, nodes);
+                return tinymce.inArray(nodes, n.nodeName) !== -1;
             }
 
             ed.onNodeChange.add(function (ed, cm, n) {
                 var c = cm.get('formatselect'),
-                    p;
+                    parents, value = "";
 
-                    
-
-                // select font
+                // select format
                 if (c) {
-                    p = ed.dom.getParent(n, isFormat);
+                    // find block parents
+                    parent = ed.dom.getParent(n, isFormat, ed.getBody());
 
-                    if (p) {
-                        c.select(p.nodeName.toLowerCase());
-                    } else {
-                        c.select("");
+                    if (parent) {
+                        value = parent.nodeName.toLowerCase();
                     }
+
+                    // select value
+                    c.select(value);
                 }
             });
         },
