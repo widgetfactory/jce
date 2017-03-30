@@ -586,7 +586,7 @@
             cls.push('mceItemUploadMarker');
             // set attribs
             n.attr({
-                'src': this.plugin_url + '/img/trans.gif',
+                'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
                 'class': tinymce.trim(cls.join(' '))
             });
 
