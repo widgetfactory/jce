@@ -210,9 +210,9 @@
 }
 
 div#wf_upload_button {
-    background: url("../img/cloud.png") no-repeat scroll center center #EEEEEE;
-    border: 2px dashed #999999;
-    border-radius: 3px;
+    background: url("../img/cloud.png") no-repeat center center #fafafa;
+    border: 1px dashed #bbb;
+    border-radius: 2px;
     cursor: pointer;
     display: none;
     height: 56px;
@@ -223,7 +223,6 @@ div#wf_upload_button {
 }
 
 div#wf_upload_button label {
-    text-shadow: 0 1px 0 #FFFFFF;
     position: relative;
     font-size: 12px;
     font-family: Arial, Helvetica, sans-serif;
@@ -240,6 +239,8 @@ div#wf_upload_button input[type="file"] {
     right: 0;
     top: 0;
     cursor: pointer;
+    width: 100%;
+    height: 100%;
 }
 
 

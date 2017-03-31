@@ -497,18 +497,17 @@
                 var vp = ed.dom.getViewPort(ed.getWin());
                 var p1 = dom.getRect(ed.getContentAreaContainer());
                 var p2 = ed.dom.getRect(marker);
-                var st = ed.getBody().scrollTop;
-
-                if (st > p2.y + p2.h / 2 - 25) {
+ 
+                if (vp.y > p2.y + p2.h / 2 - 25) {
                     return;
                 }
 
-                if (st < (p2.y + p2.h / 2 + 25) - p1.h) {
+                if (vp.y < (p2.y + p2.h / 2 + 25) - p1.h) {                    
                     return;
                 }
 
                 var x = Math.max(p2.x - vp.x, 0) + p1.x;
-                var y = Math.max(p2.y - vp.y, 0) + p1.y - Math.max(st - p2.y, 0);
+                var y = Math.max(p2.y - vp.y, 0) + p1.y - Math.max(vp.y - p2.y, 0);
 
                 var zIndex = ed.id == 'mce_fullscreen' ? dom.get('mce_fullscreen_container').style.zIndex : 0;
 
