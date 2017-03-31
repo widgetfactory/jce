@@ -198,6 +198,36 @@
                 $(ul).remove();
             }
         },
+
+        sortNodes: function (parent) {
+            // create the list to sort
+            var list = $('li', parent).map(function () {
+                var v = $('.uk-tree-text', this).attr('title');
+
+                return {
+                    value: v,
+                    element: this
+                };
+            }).get();
+
+            // sort list
+            list.sort(function (a, b) {
+                if (a.value < b.value) {
+                    return -1;
+                }
+
+                if (b.value < a.value) {
+                    return 1;
+                }
+
+                return 0;
+            });
+
+            $.each(list, function (i, item) {
+                $(parent).append(item.element);
+            });
+        },
+
         /**
          * Create a node
          *
@@ -308,6 +338,9 @@
                             // add active class to tree node
                             $(li).addClass('uk-tree-active');
                         });
+
+                        // sort list nodes
+                        self.sortNodes(ul);
 
                         self.toggleNodeState(parent, 1);
                         self._trigger('nodecreate');
@@ -451,7 +484,7 @@
                 this._collapseNodes(node);
             }
         },
-        refreshNode: function(node) {
+        refreshNode: function (node) {
             var parent = this._findParent(node);
             return this._trigger('nodeload', parent);
         },
@@ -484,9 +517,9 @@
 
             if ($(node).length) {
                 var padding = parseInt($(node).css('padding-left')) + parseInt($(this.element).css('padding-left'));
-                
-                var left    = $(node).get(0).offsetLeft - padding;
-                var top     = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
+
+                var left = $(node).get(0).offsetLeft - padding;
+                var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
 
                 // remove active states
                 $(this.element).find('.uk-tree-active').removeClass('uk-tree-active');
@@ -511,11 +544,11 @@
             if (typeof node === "string") {
                 node = [node];
             }
-            
+
             inst.createNode(node, parent);
         });
 
-        $(this).on('tree:removenode', function (e, node) {            
+        $(this).on('tree:removenode', function (e, node) {
             inst.removeNode(node);
         });
 
