@@ -31,7 +31,8 @@
 
 .file.mp3,
 .file.wav,
-.file.aiff {
+.file.aiff,
+.file.oga {
     background-position: 0 -80px;
 }
 
@@ -60,7 +61,8 @@
 .file.ogg,
 .file.mp4,
 .file.mpeg,
-.file.mpg {
+.file.mpg,
+.file.ogv {
     background-position: 0 -200px;
 }
 
