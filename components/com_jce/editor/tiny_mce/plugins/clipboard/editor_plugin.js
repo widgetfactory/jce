@@ -32,7 +32,20 @@
         'color', 'direction', 'letter-spacing', 'line-height', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi', 'vertical-align', 'white-space', 'word-spacing'
     ];
 
-    var pixelStyles = ['width', 'height', 'min-width', 'min-height', 'max-width', 'max-height', 'top', 'right', 'bottom', 'left', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'];
+    var pixelStyles = [
+        'width', 'height', 'min-width', 'max-width', 'min-height', 'max-height',
+        'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+        'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
+    ];
+
+    var borderStyles = [
+        'border', 'border-width', 'border-style', 'border-color',
+        'border-top', 'border-right', 'border-bottom', 'border-left',
+        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+        'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+        'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'
+    ];
 
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
@@ -76,6 +89,7 @@
      */
     function trimHtml(html) {
         function trimSpaces(all, s1, s2) {
+
             // WebKit &nbsp; meant to preserve multiple spaces but instead inserted around all inline tags,
             // including the spans with inline styles created on paste
             if (!s1 && !s2) {
@@ -88,7 +102,7 @@
         html = filter(html, [
             /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
             /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
-            [/( ?)<span class="Apple-converted-space">\u00a0<\/span>( ?)/g, trimSpaces],
+            [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
             /<br class="Apple-interchange-newline">/g,
             /<br>$/i // Trailing BR elements
         ]);
@@ -287,8 +301,10 @@
         if (v.indexOf('pt') !== -1) {
             // convert to integer
             v = parseInt(v, 10);
-            // convert to pixel value
-            v = Math.round(v / 1.33333);
+            // convert to pixel value (round up to 1)
+            v = Math.ceil(v / 1.33333);
+            // convert to absolute integer
+            v = Math.abs(v);
         }
 
         return v;
@@ -298,9 +314,20 @@
      * Checks if the specified text starts with "1. " or "a. " etc.
      */
     function isNumericList(text) {
-        var found, patterns;
+        var found = "",
+            patterns;
 
-        patterns = [
+        patterns = {
+            'uppper-roman': /^[IVXLMCD]{1,2}\.[ \u00a0]/,
+            'lower-roman': /^[ivxlmcd]{1,2}\.[ \u00a0]/,
+            'upper-alpha': /^[A-Z]{1,2}[\.\)][ \u00a0]/,
+            'lower-alpha': /^[a-z]{1,2}[\.\)][ \u00a0]/,
+            'numeric': /^[0-9]+\.[ \u00a0]/,
+            'japanese': /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/,
+            'chinese': /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/
+        };
+
+        /*patterns = [
             /^[IVXLMCD]{1,2}\.[ \u00a0]/, // Roman upper case
             /^[ivxlmcd]{1,2}\.[ \u00a0]/, // Roman lower case
             /^[a-z]{1,2}[\.\)][ \u00a0]/, // Alphabetical a-z
@@ -308,13 +335,13 @@
             /^[0-9]+\.[ \u00a0]/, // Numeric lists
             /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/, // Japanese
             /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/ // Chinese
-        ];
+        ];*/
 
         text = text.replace(/^[\u00a0 ]+/, '');
 
-        each(patterns, function (pattern) {
+        each(patterns, function (pattern, type) {
             if (pattern.test(text)) {
-                found = true;
+                found = type;
                 return false;
             }
         });
@@ -329,10 +356,7 @@
     function WordFilter(editor, content) {
         var settings = editor.settings;
 
-        var retainStyleProperties, validStyles;
-
-        // convert footnotes
-        //content = convertFootNotes(editor, content);
+        var retainStyleProperties, validStyles = {};
 
         // Chrome...
         content = content.replace(/<meta([^>]+)>/, '');
@@ -362,10 +386,18 @@
         content = content.replace(/<b[^>]+id="?docs-internal-[^>]*>/gi, '');
         content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
 
-        retainStyleProperties = settings.paste_retain_style_properties;
+        // get retain styles or a subset to allow for text color and table borders
+        retainStyleProperties = settings.clipboard_paste_retain_style_properties;
 
         if (retainStyleProperties) {
             validStyles = tinymce.makeMap(retainStyleProperties.split(/[, ]/));
+        } else {
+            // add color
+            validStyles = {"color" : {}};
+
+            each(borderStyles, function(name) {
+                validStyles[name] = {};
+            });
         }
 
         /**
@@ -424,7 +456,7 @@
                 }
             }
 
-            function convertParagraphToLi(paragraphNode, listName, start) {
+            function convertParagraphToLi(paragraphNode, listName, start, type) {
                 var level = paragraphNode._listLevel || lastLevel;
 
                 // Handle list nesting
@@ -444,6 +476,15 @@
                 if (!currentListNode || currentListNode.name != listName) {
                     prevListNode = prevListNode || currentListNode;
                     currentListNode = new Node(listName, 1);
+
+                    // add list style if any
+                    if (type && /roman|alpha/.test(type)) {
+                        var style = 'list-style-type:' + type;
+                        currentListNode.attr({
+                            'style': style,
+                            'data-mce-style': style
+                        });
+                    }
 
                     if (start > 1) {
                         currentListNode.attr('start', '' + start);
@@ -490,7 +531,8 @@
 
                 if (node.name == 'p' && node.firstChild) {
                     // Find first text node in paragraph
-                    var nodeText = getText(node);
+                    var nodeText = getText(node),
+                        type;
 
                     // Detect unordered lists look for bullets
                     if (isBulletList(nodeText)) {
@@ -499,7 +541,7 @@
                     }
 
                     // Detect ordered lists 1., a. or ixv.
-                    if (isNumericList(nodeText)) {
+                    if (type = isNumericList(nodeText)) {
                         // Parse OL start number
                         var matches = /([0-9]+)\./.exec(nodeText);
                         var start = 1;
@@ -507,7 +549,7 @@
                             start = parseInt(matches[1], 10);
                         }
 
-                        convertParagraphToLi(node, 'ol', start);
+                        convertParagraphToLi(node, 'ol', start, type);
                         continue;
                     }
 
@@ -527,6 +569,10 @@
                     currentListNode = null;
                 }
             }
+        }
+
+        function updateBorderStyle() {
+
         }
 
         function filterStyles(node, styleValue) {
@@ -562,7 +608,14 @@
 
                     case "font-color":
                     case "mso-foreground":
+                    case "color":
                         name = "color";
+
+                        // remove "windowtext"
+                        if (value == "windowtext") {
+                            value = "";
+                        }
+
                         break;
 
                     case "mso-background":
@@ -603,7 +656,7 @@
                 }
 
                 // Output only valid styles
-                if (validStyles && validStyles[name]) {
+                if (validStyles && validStyles[name]) {                                        
                     outputStyles[name] = value;
                 }
             });
@@ -679,7 +732,7 @@
         if (!validElements) {
             validElements = (
                 '-strong/b,-em/i,-u,-span,-p,-ol,-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
-                '-p/div,-a[href|name|data-mce-footnote],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
+                '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
                 'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
             );
         }
@@ -715,6 +768,7 @@
 
             while (i--) {
                 node = nodes[i];
+
                 node.attr('style', filterStyles(node, node.attr('style')));
 
                 // Remove pointess spans
@@ -1544,6 +1598,46 @@
             } else {
                 // process style attributes
                 processStyles(ed, o.node);
+            }
+
+            // fix table borders
+            if (o.wordContent) {
+                each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
+                    var styles = {};
+                    
+                    each(borderStyles, function (name) {
+                        // process each side, eg: border-left-width
+                        if (/-(top|right|bottom|left)-/.test(name)) {
+                            // get style
+                            var value = dom.getStyle(n, name);
+                            
+                            // remove default values
+                            if (value === "currentcolor" || value === "medium") {
+                                value = "";
+                            }
+
+                            // convert to pixels
+                            if (value && /^\d[a-z]?/.test(value)) {
+                                value = convertToPixels(value);
+
+                                if (value) {
+                                    value += "px";
+                                }
+                            }
+
+                            styles[name] = value;
+                        }
+                    });
+
+                    // remove borders
+                    dom.setStyle(n, 'border', '');
+
+                    // set updated styles object
+                    dom.setStyles(n, styles);
+
+                    // compress and set style
+                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(n.style.cssText)));
+                });
             }
 
             // image file/data regular expression
