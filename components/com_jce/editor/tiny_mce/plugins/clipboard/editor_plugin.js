@@ -1649,11 +1649,8 @@
                     // remove borders
                     dom.setStyle(n, 'border', '');
 
-                    // set updated styles object
-                    dom.setStyles(n, styles);
-
                     // compress and set style
-                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(n.style.cssText)));
+                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))));
                 });
             }
 
