@@ -167,9 +167,9 @@
      */
     function removeWebKitStyles(editor, content) {
         // Filter away styles that isn't matching the target node
-        var webKitStyles = editor.settings.paste_webkit_styles;
+        var webKitStyles = editor.clipboard_settings.paste_webkit_styles;
 
-        if (editor.settings.paste_remove_styles_if_webkit === false || webKitStyles == "all") {
+        if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
             return content;
         }
 
@@ -1446,8 +1446,8 @@
             if (o.wordContent) {
                 h = WordFilter(ed, h);
             }
-
-            if (tinymce.isWebKit) {
+            // remove webKit style weirdness if not word content
+            if (tinymce.isWebKit && !o.wordContent) {
                 h = removeWebKitStyles(ed, h);
             }
 
@@ -1618,6 +1618,11 @@
                                 value = "";
                             }
 
+                            // remove width values if set to none or initial
+                            if (name.indexOf('-width') !== -1 && /(none|initial)/.test(value)) {
+                                value = "";
+                            }
+
                             // convert to pixels
                             if (value && /^\d[a-z]?/.test(value)) {
                                 value = convertToPixels(value);
@@ -1630,7 +1635,7 @@
                             styles[name] = value;
                         }
                     });
-                    
+
                     // remove styles with no width value
                     each(styles, function(v, k) {
                         if (k.indexOf('-width') !== -1 && v === "") {
