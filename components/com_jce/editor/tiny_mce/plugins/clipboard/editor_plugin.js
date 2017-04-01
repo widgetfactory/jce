@@ -62,7 +62,12 @@
         return content;
     }
 
-    function isWordContent(content) {
+    function isWordContent(editor, content) {
+        // force word cleanup
+        if (editor.settings.clipboard_paste_force_cleanup) {
+            return true;
+        }
+
         // Open Office
         if (/(content=\"OpenOffice.org[^\"]+\")/i.test(content) || ooRe.test(content)) {
             return true; // Mark the pasted contents as word specific content
@@ -393,9 +398,11 @@
             validStyles = tinymce.makeMap(retainStyleProperties.split(/[, ]/));
         } else {
             // add color
-            validStyles = {"color" : {}};
+            validStyles = {
+                "color": {}
+            };
 
-            each(borderStyles, function(name) {
+            each(borderStyles, function (name) {
                 validStyles[name] = {};
             });
         }
@@ -656,7 +663,7 @@
                 }
 
                 // Output only valid styles
-                if (validStyles && validStyles[name]) {                                        
+                if (validStyles && validStyles[name]) {
                     outputStyles[name] = value;
                 }
             });
@@ -1010,11 +1017,6 @@
 
                 // set plainText flag
                 self.plainText = self.command == 'mcePasteText';
-
-                // set word content flag
-                if (ed.getParam('clipboard_paste_force_cleanup')) {
-                    o.wordContent = true;
-                }
 
                 // Execute pre process handlers
                 self.onPreProcess.dispatch(self, o);
@@ -1439,7 +1441,7 @@
                 return h;
             }
 
-            o.wordContent = isWordContent(h);
+            o.wordContent = isWordContent(ed, h);
 
             if (o.wordContent) {
                 h = WordFilter(ed, h);
@@ -1604,13 +1606,13 @@
             if (o.wordContent) {
                 each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
                     var styles = {};
-                    
+
                     each(borderStyles, function (name) {
                         // process each side, eg: border-left-width
                         if (/-(top|right|bottom|left)-/.test(name)) {
                             // get style
                             var value = dom.getStyle(n, name);
-                            
+
                             // remove default values
                             if (value === "currentcolor" || value === "medium") {
                                 value = "";
@@ -1626,6 +1628,16 @@
                             }
 
                             styles[name] = value;
+                        }
+                    });
+                    
+                    // remove styles with no width value
+                    each(styles, function(v, k) {
+                        if (k.indexOf('-width') !== -1 && v === "") {
+                            var s = k.replace('-width', '');
+                            delete(styles[s + '-style']);
+                            delete(styles[s + '-color']);
+                            delete(styles[k]);
                         }
                     });
 
