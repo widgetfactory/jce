@@ -340,7 +340,9 @@
                         });
 
                         // sort list nodes
-                        self.sortNodes(ul);
+                        if ($(ul).children().length > 1) {
+                            self.sortNodes(ul);
+                        }
 
                         self.toggleNodeState(parent, 1);
                         self._trigger('nodecreate');
