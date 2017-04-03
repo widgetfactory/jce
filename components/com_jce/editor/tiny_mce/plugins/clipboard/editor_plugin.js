@@ -1183,9 +1183,6 @@
                     sel.setRng(oldRng);
                     sel.setContent('');
 
-                    // set paste state as true...we got this far right?
-                    self.canPaste = true;
-
                     // For some odd reason we need to detach the the mceInsertContent call from the paste event
                     // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
                     // when it tries to restore the selection
@@ -1202,9 +1199,6 @@
                     function block(e) {
                         e.preventDefault();
                     }
-
-                    // set paste state as true...we got this far right?
-                    self.canPaste = true;
 
                     //n.innerHTML = '\uFEFF<br data-mce-bogus="1" />';
 
@@ -1329,11 +1323,13 @@
                     if (failed || !doc.queryCommandSupported(command)) {
                         if (tinymce.isGecko) {
                             ed.windowManager.confirm(msg, function (state) {
-                                if (state)
+                                if (state) {
                                     open('http://www.mozilla.org/editor/midasdemo/securityprefs.html', '_blank');
+                                }
                             });
-                        } else
+                        } else {
                             ed.windowManager.alert(ed.getLang('clipboard_no_support'));
+                        }
                     }
                 });
             });
@@ -1614,12 +1610,7 @@
                             var value = dom.getStyle(n, name);
 
                             // remove default values
-                            if (value === "currentcolor" || value === "medium") {
-                                value = "";
-                            }
-
-                            // remove width values if set to none or initial
-                            if (name.indexOf('-width') !== -1 && /(none|initial)/.test(value)) {
+                            if (value === "currentcolor") {
                                 value = "";
                             }
 
@@ -1637,12 +1628,12 @@
                     });
 
                     // remove styles with no width value
-                    each(styles, function(v, k) {
+                    each(styles, function (v, k) {
                         if (k.indexOf('-width') !== -1 && v === "") {
-                            var s = k.replace('-width', '');
-                            delete(styles[s + '-style']);
-                            delete(styles[s + '-color']);
-                            delete(styles[k]);
+                            var s = k.replace(/-width/, '');
+                            delete styles[s + '-style'];
+                            delete styles[s + '-color'];
+                            delete styles[k];
                         }
                     });
 
@@ -1650,7 +1641,7 @@
                     dom.setStyle(n, 'border', '');
 
                     // compress and set style
-                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))));
+                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))), n.nodeName);
                 });
             }
 
