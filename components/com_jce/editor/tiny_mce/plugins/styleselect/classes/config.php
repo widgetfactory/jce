@@ -43,6 +43,21 @@ class WFStyleselectPluginConfig
                 $blocks = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
 
                 foreach ((array) $custom_styles as $style) {
+                    // clean up title
+                    if (isset($style->title)) {
+                        $style->title = self::cleanString($style->title);
+                    }
+
+                    // clean up classes
+                    if (isset($style->selector)) {
+                        $style->selector = self::cleanString($style->selector);
+                    }
+
+                    // clean up classes
+                    if (isset($style->classes)) {
+                        $style->classes = self::cleanString($style->classes);
+                    }
+                    
                     if (isset($style->styles)) {
                         $style->styles = self::cleanJSON($style->styles);
                     }
@@ -89,7 +104,7 @@ class WFStyleselectPluginConfig
                 }
 
                 if (!empty($styles)) {
-                    $settings['style_formats'] = htmlentities(json_encode($styles, JSON_UNESCAPED_SLASHES), ENT_NOQUOTES, 'UTF-8');
+                    $settings['style_formats'] = json_encode($styles, JSON_UNESCAPED_SLASHES);
                 }
             }
         }
@@ -100,6 +115,10 @@ class WFStyleselectPluginConfig
         }
 
         $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
+    }
+
+    protected static function cleanString($string) {
+        return htmlentities($string, ENT_NOQUOTES, 'UTF-8');
     }
 
     protected static function cleanJSON($string, $delim1 = ';', $delim2 = ':')
@@ -120,7 +139,10 @@ class WFStyleselectPluginConfig
             $parts = preg_replace('#^["\']#', '', $parts);
             $parts = preg_replace('#["\']$#', '', $parts);
 
-            $ret[trim($parts[0])] = trim($parts[1]);
+            $key    = trim(self::cleanString($parts[0]));
+            $value  = trim(self::cleanString($parts[1])); 
+
+            $ret[$key] = $value;
         }
 
         return $ret;
