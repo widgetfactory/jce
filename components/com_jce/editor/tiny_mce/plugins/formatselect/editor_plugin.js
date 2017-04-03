@@ -59,7 +59,7 @@
                     // find block parents
                     parent = ed.dom.getParent(n, isFormat, ed.getBody());
 
-                    if (parent) {
+                    if (parent && parent.nodeName) {
                         value = parent.nodeName.toLowerCase();
                     }
 
