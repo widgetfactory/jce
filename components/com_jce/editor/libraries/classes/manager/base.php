@@ -245,10 +245,11 @@ class WFMediaManagerBase extends WFEditorPlugin
     protected function getFileBrowserConfig($config = array())
     {
         $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
-        $textcase = $this->getParam('editor.websafe_textcase', 'any');
+        $textcase = $this->getParam('editor.websafe_textcase', '');
 
-        if (!empty($textcase) && is_array($textcase)) {
-            $textcase = count($textcase) > 1 ? 'any' : array_shift($textcase);
+        // implode textcase array to create string
+        if (is_array($textcase)) {
+            $textcase = implode(",", $textcase);
         }
 
         $filter = (array) $this->getParam('editor.dir_filter', array());

@@ -150,10 +150,11 @@ class WFFileSystem extends WFExtension
                 // split into path parts to preserve /
                 $parts = explode('/', $root);
 
-                $textcase = $wf->getParam('editor.websafe_textcase');
+                $textcase = $wf->getParam('editor.websafe_textcase', '');
 
-                if (!empty($textcase)) {
-                    $textcase = array_shift($textcase);
+                // implode textcase array to create string
+                if (is_array($textcase)) {
+                    $textcase = implode(",", $textcase);
                 }
 
                 // clean path parts
