@@ -99,10 +99,10 @@ WFAggregator.add('dailymotion', {
             args[k] = v;
         });
 
-        var m = src.match(/dai\.?ly(motion\.com)?\/(swf|video)?\/?([a-z0-9]+)_?/);
+        var m = src.match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/);
 
         if (m) {
-            id = m[4];
+            id = m.pop();
         }
 
         // protocol / scheme relative url
@@ -142,16 +142,14 @@ WFAggregator.add('dailymotion', {
         // replace &amp; with &
         src = src.replace(/&amp;/g, '&');
 
-        var m = src.match(/dai\.?ly(motion\.com)?\/(swf|video)?\/?([a-z0-9]+)_?/);
+        var m = src.match(/dai\.?ly(motion\.com)?\/(embed)?\/?(swf|video)?\/?([a-z0-9]+)_?/);
 
         if (m) {
-            id = m[4];
+            id = m.pop();
         }
 
         // simplify url
-        src = '//dai.ly/' + id;
-
-        data.src = src;
+        data.src = '//www.dailymotion.com/embed/video/' + id;
 
         return data;
     },
