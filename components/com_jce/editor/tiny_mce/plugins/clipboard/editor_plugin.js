@@ -237,6 +237,14 @@
         // split to array if string
         if (s && tinymce.is(s, 'string')) {
             styleProps = tinymce.explode(s);
+
+            each(styleProps, function(style, i) {
+                if (style === "border") {
+                    // add expanded border styles
+                    styleProps = styleProps.concat(borderStyles);
+                    return true;
+                }
+            });
         }
 
         // Retains some style properties
