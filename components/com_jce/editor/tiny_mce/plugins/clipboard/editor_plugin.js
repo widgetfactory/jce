@@ -167,7 +167,7 @@
      */
     function removeWebKitStyles(editor, content) {
         // Filter away styles that isn't matching the target node
-        var webKitStyles = editor.clipboard_settings.paste_webkit_styles;
+        var webKitStyles = editor.settings.clipboard_paste_webkit_styles;
 
         if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
             return content;
@@ -395,15 +395,17 @@
         retainStyleProperties = settings.clipboard_paste_retain_style_properties;
 
         if (retainStyleProperties) {
-            validStyles = tinymce.makeMap(retainStyleProperties.split(/[, ]/));
-        } else {
-            // add color
-            validStyles = {
-                "color": {}
-            };
+            each(retainStyleProperties.split(/[, ]/), function(style) {
+                // add all border styles if "border" is set
+                if (style === "border") {
+                    each(borderStyles, function (name) {
+                        validStyles[name] = {};
+                    });
 
-            each(borderStyles, function (name) {
-                validStyles[name] = {};
+                    return true;
+                }
+                
+                validStyles[style] = {};
             });
         }
 
