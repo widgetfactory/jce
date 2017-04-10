@@ -293,7 +293,7 @@ WFPopups.addPopup('jcemediabox', {
             }
         }
 
-        var relRX = /(\w+|alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|licence|tag|friend)\s+?/g;
+        var relRX = /(^|\\s+)alternate|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark|nofollow|noopener|noreferrer|licence|tag|friend(\\s+|$)/gi;
         var json = ed.dom.getAttrib(n, 'data-json') || ed.dom.getAttrib(n, 'data-mediabox');
 
         if (json) {
