@@ -52,7 +52,7 @@
 
             ed.onNodeChange.add(function (ed, cm, n) {
                 var c = cm.get('formatselect'),
-                    parents, value = "";
+                    parent, value = "";
 
                 // select format
                 if (c) {
