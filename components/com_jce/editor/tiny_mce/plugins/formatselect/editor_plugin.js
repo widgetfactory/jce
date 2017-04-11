@@ -52,15 +52,15 @@
 
             ed.onNodeChange.add(function (ed, cm, n) {
                 var c = cm.get('formatselect'),
-                    parent, value = "";
+                    p, value = "";
 
                 // select format
                 if (c) {
                     // find block parents
-                    parent = ed.dom.getParent(n, isFormat, ed.getBody());
+                    p = ed.dom.getParent(n, isFormat, ed.getBody());
 
-                    if (parent && parent.nodeName) {
-                        value = parent.nodeName.toLowerCase();
+                    if (p && p.nodeName) {
+                        value = p.nodeName.toLowerCase();
                     }
 
                     // select value
