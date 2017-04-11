@@ -78,6 +78,26 @@
 
             // Pre-init
             ed.onPreInit.add(function() {
+                function isAnchorLink(node) {
+                    var href = node.attr('href'), name = node.attr('name') || node.attr('id');
+
+                    // must have a name or id attribute set
+                    if (!name) {
+                        return false;
+                    }
+                    // no href, and name set
+                    if (!href) {
+                        return true;
+                    }  
+
+                    // a valid anchor link, eg: #test
+                    if (href.charAt(0) === "#" && href.length > 1) {
+                        return true;
+                    }
+                    
+                    return false;
+                }
+                
                 // Convert anchor elements to image placeholder
                 ed.parser.addNodeFilter('a', function(nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
@@ -86,7 +106,7 @@
                             cls = node.attr('class') || '',
                             name = node.attr('name') || node.attr('id');
 
-                        if ((!href || href.charAt(0) == '#') && name) {
+                        if (isAnchorLink(node)) {
                             if (!cls || /mceItemAnchor/.test(cls) === false) {
                                 cls += ' mceItemAnchor';
                                 node.attr('class', tinymce.trim(cls));
