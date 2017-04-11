@@ -1525,7 +1525,7 @@
             if ((typeof (h) === "string") && (h.length > 0)) {
 
                 // clean any Word specific tags
-                h = this._cleanWordContent(h);
+                h = WordFilter(ed, h);
 
                 // If HTML content with line-breaking tags, then remove all cr/lf chars because only tags will break a line
                 if (/<(?:p|br|h[1-6]|ul|ol|dl|table|t[rdh]|div|blockquote|fieldset|pre|address|center)[^>]*>/i.test(h)) {
