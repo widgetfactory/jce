@@ -1,4 +1,4 @@
-(function() {
+(function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event;
 
@@ -7,12 +7,12 @@
     }
 
     tinymce.create('tinymce.plugins.SourcePlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             self.editor = ed;
 
             if (ed.plugins.fullscreen) {
-                ed.onFullScreen.add(function(ed, state) {
+                ed.onFullScreen.add(function (ed, state) {
                     var element = ed.getElement();
                     var container = element.parentNode;
 
@@ -37,15 +37,17 @@
                         DOM.setStyle(iframe, 'max-width', ed.settings.container_width || '100%');
                     }
 
-                    var editor = iframe.contentWindow.SourceEditor;
-                    // get iframe width and height
-                    var w = iframe.clientWidth;
-                    var h = iframe.clientHeight;
-                    // resize
-                    editor.resize(w, h);
+                    if (iframe) {
+                        var editor = iframe.contentWindow.SourceEditor;
+                        // get iframe width and height
+                        var w = iframe.clientWidth;
+                        var h = iframe.clientHeight;
+                        // resize
+                        editor.resize(w, h);
+                    }
                 });
 
-                ed.onFullScreenResize.add(function(ed, vp) {
+                ed.onFullScreenResize.add(function (ed, vp) {
                     var element = ed.getElement();
                     var header = DOM.getPrev(element, '.wf-editor-header');
                     var iframe = DOM.get(ed.id + '_editor_source_iframe');
@@ -54,11 +56,11 @@
                 });
             }
 
-            ed.onSetContent.add(function(ed, o) {
+            ed.onSetContent.add(function (ed, o) {
                 self.setContent(o.content, true);
             });
 
-            ed.onInit.add(function(ed) {
+            ed.onInit.add(function (ed) {
                 // get the stored active tab
                 var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id);
 
@@ -73,7 +75,7 @@
             });
         },
 
-        setContent: function(v) {
+        setContent: function (v) {
             var ed = this.editor;
 
             var iframe = DOM.get(ed.id + '_editor_source_iframe');
@@ -89,7 +91,7 @@
             return false;
         },
 
-        insertContent: function(v) {
+        insertContent: function (v) {
             var ed = this.editor;
 
             var iframe = DOM.get(ed.id + '_editor_source_iframe');
@@ -105,7 +107,7 @@
             return false;
         },
 
-        getContent: function() {
+        getContent: function () {
             var ed = this.editor;
 
             var iframe = DOM.get(ed.id + '_editor_source_iframe');
@@ -122,11 +124,11 @@
             return null;
         },
 
-        hide: function() {
+        hide: function () {
             DOM.hide(this.editor.id + '_editor_source');
         },
 
-        save: function() {
+        save: function () {
             var ed = this.editor;
             var content = this.getContent();
 
@@ -135,7 +137,7 @@
             return ed.save();
         },
 
-        toggle: function() {
+        toggle: function () {
             var ed = this.editor;
             var self = this,
                 s = ed.settings;
@@ -202,7 +204,7 @@
                     'src': query
                 });
 
-                Event.add(iframe, 'load', function() {
+                Event.add(iframe, 'load', function () {
                     var editor = iframe.contentWindow.SourceEditor;
 
                     var w = iframe.clientWidth;
@@ -218,7 +220,7 @@
                         'selection_match': ed.getParam('source_selection_match', true),
                         'font_size': ed.getParam('source_font_size', ''),
                         'fullscreen': DOM.hasClass(container, 'mce-fullscreen'),
-                        'load': function() {
+                        'load': function () {
                             DOM.removeClass(container, 'mce-loading');
                             editor.resize(w, h);
                         }
@@ -238,7 +240,7 @@
                 }, '<a tabindex="-1" class="mceResize" onclick="return false;" href="javascript:;" id="' + ed.id + '_editor_source_resize"></a>');
 
                 var resize = DOM.get(ed.id + '_editor_source_resize');
-                
+
                 // add window resize / orientationchange
                 /*Event.add(window, 'resize orientationchange', function() {
             		var p = ed.getContainer();
@@ -254,34 +256,34 @@
                 });*/
 
                 // cancel default click
-                Event.add(resize, 'click', function(e) {
+                Event.add(resize, 'click', function (e) {
                     e.preventDefault();
                 });
 
                 // Resize source editor
-                Event.add(resize, 'mousedown', function(e) {
+                Event.add(resize, 'mousedown', function (e) {
                     var mm, mu, sx, sy, sw, sh, w, h;
 
                     var ifrDoc = iframe.contentWindow.document,
                         editor = iframe.contentWindow.SourceEditor;
 
                     e.preventDefault();
-                    
+
                     function resizeTo(w, h) {
-                    	w = Math.max(w, 300);
-                    	h = Math.max(h, 200);
-                    	
-                    	iframe.style.maxWidth = w + 'px';
+                        w = Math.max(w, 300);
+                        h = Math.max(h, 200);
+
+                        iframe.style.maxWidth = w + 'px';
                         iframe.style.height = h + 'px';
                         container.style.maxWidth = w + 'px';
 
                         editor.resize(w, h);
-                        
+
                         // pass through values
-                        ed.settings.container_width 	= w;
-                        ed.settings.container_height 	= h + statusbar.offsetHeight;
-						
-						// remove interface height if set                        
+                        ed.settings.container_width = w;
+                        ed.settings.container_height = h + statusbar.offsetHeight;
+
+                        // remove interface height if set                        
                         h = h - (ed.settings.interface_height || 0);
                         // resize editor
                         ed.theme.resizeTo(w, h);
@@ -341,7 +343,7 @@
                 var editor = iframe.contentWindow.SourceEditor;
                 // get iframe width and height
                 var w = iframe.clientWidth;
-                var h = iframe.clientHeight;       
+                var h = iframe.clientHeight;
                 // resize
                 editor.resize(w, h);
                 // set fullscreen state
@@ -355,19 +357,19 @@
             var height = ed.settings.container_height || sessionStorage.getItem('wf-editor-container-height') || (ifrHeight + statusbar.offsetHeight);
 
             // get width from setting or session data or editor textarea
-			var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
-            
+            var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
+
             if (DOM.hasClass(container, 'mce-fullscreen')) {
                 var vp = DOM.getViewPort();
                 height = vp.h - header.offsetHeight;
             }
 
             DOM.setStyle(iframe, 'height', height - statusbar.offsetHeight);
-            
+
             var editor = iframe.contentWindow.SourceEditor;
-            
+
             if (editor) {
-            	editor.resize(width, height - statusbar.offsetHeight);
+                editor.resize(width, height - statusbar.offsetHeight);
             }
 
             /*var width = ed.settings.container_width || sessionStorage.getItem('wf-editor-container-width');
