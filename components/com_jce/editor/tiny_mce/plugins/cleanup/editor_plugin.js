@@ -38,7 +38,7 @@
 
             ed.onPreInit.add(function () {
 
-                if (ed.settings.validate) {
+                if (ed.settings.verify_html) {
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
 
@@ -64,7 +64,7 @@
                 }
 
                 // only if "Cleanup HTML" enabled
-                if (ed.settings.validate) {
+                if (ed.settings.verify_html) {
                     // Invalid Attribute Values cleanup
                     var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
 
