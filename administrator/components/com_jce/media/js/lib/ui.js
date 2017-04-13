@@ -104,11 +104,15 @@
           // add new element
           $(el).insertAfter($(self).siblings('.ui-repeatable').add(self).last());
 
+          $(self).trigger('repeatable:change');
+
           e.preventDefault();
       });
 
       $('.ui-repeatable-delete', this).click(function(e) {
         $(this).parent().remove();
+
+        $(self).trigger('repeatable:change');
 
         e.preventDefault();
       });

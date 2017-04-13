@@ -78,7 +78,9 @@
             });
 
             // repeatable
-            $('.ui-repeatable').repeatable();
+            $('.ui-repeatable').repeatable().on('repeatable:change', function() {                
+                $(this).parent().find(':input[name]').addClass('isdirty');
+            });
 
             // profiles list checkboxes
             $('th input[type="checkbox"]', $('#profiles-list, #users-list')).click(function() {
