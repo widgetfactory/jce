@@ -64,9 +64,13 @@ class plgEditorJCE extends JPlugin
 
         wfimport('admin.models.editor');
 
-        $model = new WFModelEditor();
+        $editor = new WFModelEditor();
 
-        return $model->buildEditor();
+        $settings = $editor->getEditorSettings();
+
+        $app->triggerEvent('onBeforeWfEditorRender', $settings);
+
+        return $editor->render($settings);
     }
 
     /**

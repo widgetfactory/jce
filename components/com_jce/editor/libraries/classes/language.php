@@ -20,6 +20,16 @@ abstract class WFLanguage
         return file_exists(JPATH_SITE.'/language/'.$tag.'/'.$tag.'.com_jce.ini');
     }
 
+    public static function getLanguage() {
+        $user   = JFactory::getUser();
+        $params = JComponentHelper::getParams('com_languages');
+        $locale = $user->getParam('language', $params->get('site', 'en-GB'));
+
+        $language = JLanguage::getInstance($locale);
+
+        return $language;
+    }
+
     /**
      * Return the curernt language code.
      *
@@ -27,7 +37,8 @@ abstract class WFLanguage
      */
     public static function getDir()
     {
-        $language = JFactory::getLanguage();
+        $language = self::getLanguage();
+
         $tag = self::getTag();
 
         if ($language->getTag() == $tag) {
@@ -44,7 +55,7 @@ abstract class WFLanguage
      */
     public static function getTag()
     {
-        $language = JFactory::getLanguage();
+        $language = self::getLanguage();
         $tag = $language->getTag();
 
         if (!isset(self::$instance)) {
@@ -78,7 +89,7 @@ abstract class WFLanguage
      */
     public static function load($prefix, $path = JPATH_SITE)
     {
-        $language = JFactory::getLanguage();
+        $language = self::getLanguage();
         $tag = self::getTag();
 
         $language->load($prefix, $path, $tag, true);
