@@ -21,9 +21,16 @@ abstract class WFLanguage
     }
 
     public static function getLanguage() {
+        $app    = JFactory::getApplication();
+        
         $user   = JFactory::getUser();
         $params = JComponentHelper::getParams('com_languages');
+
         $locale = $user->getParam('language', $params->get('site', 'en-GB'));
+
+        if ($app->isAdmin()) {
+            $locale = $user->getParam('admin_language', $params->get('administrator', 'en-GB'));
+        }
 
         $language = JLanguage::getInstance($locale);
 
