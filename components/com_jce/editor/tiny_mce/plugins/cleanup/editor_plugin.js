@@ -32,9 +32,9 @@
             this.editor = ed;
 
             // set validate value to verify_html value
-            /*if (ed.settings.verify_html === false) {
+            if (ed.settings.verify_html === false) {
                 ed.settings.validate = false;
-            }*/
+            }
 
             ed.onPreInit.add(function () {
 
