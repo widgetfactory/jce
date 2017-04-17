@@ -205,7 +205,7 @@
                         node = nodes[i];
 
                         node.attr('data-mce-' + name, node.attr(name));
-                        node.attr(name, null);
+                        node.attr(name, 'return false;');
                     }
                 });
 
