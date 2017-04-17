@@ -68,7 +68,7 @@ class plgEditorJCE extends JPlugin
 
         $settings = $editor->getEditorSettings();
 
-        $app->triggerEvent('onBeforeWfEditorRender', $settings);
+        $app->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
         return $editor->render($settings);
     }
