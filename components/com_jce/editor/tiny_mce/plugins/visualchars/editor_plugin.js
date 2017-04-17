@@ -69,7 +69,7 @@
         _toggleVisualChars: function (state, o) {
             var self = this;
             
-            var ed = this.editor, node, nodeList, i, body = ed.getBody(),
+            var ed = this.editor, node, nodeList, i, body = o || ed.getBody(),
                 nodeValue, selection = ed.selection,
                 div, bookmark;
             var charMap, visualCharsRegExp;
