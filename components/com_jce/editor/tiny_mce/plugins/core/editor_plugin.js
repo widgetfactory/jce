@@ -7,20 +7,20 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function(tinymce) {
+(function (tinymce) {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         is = tinymce.is,
         each = tinymce.each,
         VK = tinymce.VK;
 
-    tinyMCE.onAddEditor.add(function(mgr, ed) {
+    tinyMCE.onAddEditor.add(function (mgr, ed) {
         /**
          * Firefox on Mac OS will move the browser back to the previous page if you press CMD+Left arrow.
          * You might then loose all your work so we need to block that behavior and replace it with our own.
          */
         if (tinymce.isMac && tinymce.isGecko && !tinymce.isIE11) {
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if (VK.metaKeyPressed(e) && !e.shiftKey && (e.keyCode == 37 || e.keyCode == 39)) {
                     ed.selection.getSel().modify('move', e.keyCode == 37 ? 'backward' : 'forward', 'word');
                     e.preventDefault();
@@ -29,7 +29,7 @@
         }
     });
 
-    tinymce.util.PreviewCss = function(ed, fmt) {
+    tinymce.util.PreviewCss = function (ed, fmt) {
         var name, previewElm, dom = ed.dom,
             previewCss = '',
             parentFontSize, previewStylesName;
@@ -46,7 +46,11 @@
 
         // Removes any variables since these can't be previewed
         function removeVars(val) {
-            return val.replace(/%(\w+)/g, '');
+            if (val) {
+                val = val.replace(/%(\w+)/g, '');
+            }
+
+            return val;
         }
 
         // Create block/inline element to use for preview
@@ -54,27 +58,30 @@
         previewElm = dom.create(name);
 
         // Add format styles to preview element
-        each(fmt.styles, function(value, name) {
+        each(fmt.styles, function (value, name) {
             value = removeVars(value);
 
-            if (value)
+            if (value) {
                 dom.setStyle(previewElm, name, value);
+            }
         });
 
         // Add attributes to preview element
-        each(fmt.attributes, function(value, name) {
+        each(fmt.attributes, function (value, name) {
             value = removeVars(value);
 
-            if (value)
+            if (value) {
                 dom.setAttrib(previewElm, name, value);
+            }
         });
 
         // Add classes to preview element
-        each(fmt.classes, function(value) {
+        each(fmt.classes, function (value) {
             value = removeVars(value);
 
-            if (!dom.hasClass(previewElm, value))
+            if (!dom.hasClass(previewElm, value)) {
                 dom.addClass(previewElm, value);
+            }
         });
 
         // Add the previewElm outside the visual area
@@ -88,7 +95,7 @@
         parentFontSize = dom.getStyle(ed.getBody(), 'fontSize', true);
         parentFontSize = /px$/.test(parentFontSize) ? parseInt(parentFontSize, 10) : 0;
 
-        each(previewStyles.split(' '), function(name) {
+        each(previewStyles.split(' '), function (name) {
             var value = dom.getStyle(previewElm, name, true);
 
             // If background is transparent then check if the body has a background color we can use
@@ -132,7 +139,7 @@
          * @param {Object} s Optional name/value settings object.
          * @param {Editor} ed Optional the editor instance this button is for.
          */
-        ButtonDialog: function(id, s, ed) {
+        ButtonDialog: function (id, s, ed) {
             this.parent(id, s, ed);
 
             this.settings = s = tinymce.extend({
@@ -160,7 +167,7 @@
          *
          * @method showMenu
          */
-        showDialog: function() {
+        showDialog: function () {
             var t = this,
                 ed = this.editor,
                 s = this.settings,
@@ -202,7 +209,7 @@
 
             Event.add(ed.getDoc(), 'mousedown', t.hideDialog, t);
 
-            Event.add(DOM.doc, 'mousedown', function(e) {
+            Event.add(DOM.doc, 'mousedown', function (e) {
                 var n = e.target;
 
                 while (n) {
@@ -223,7 +230,7 @@
             t.onShowDialog.dispatch(t);
 
             if (t._focused) {
-                t._keyHandler = Event.add(t.id + '_dialog', 'keydown', function(e) {
+                t._keyHandler = Event.add(t.id + '_dialog', 'keydown', function (e) {
                     if (e.keyCode == 27)
                         t.hideDialog();
                 });
@@ -231,14 +238,14 @@
 
             t.isDialogVisible = 1;
         },
-        storeSelection: function() {
+        storeSelection: function () {
             // Store bookmark
             if (tinymce.isIE) {
                 this.editor.focus();
                 this.bookmark = this.editor.selection.getBookmark(1);
             }
         },
-        restoreSelection: function() {
+        restoreSelection: function () {
             if (this.bookmark) {
                 this.editor.selection.moveToBookmark(this.bookmark);
                 this.editor.focus();
@@ -251,7 +258,7 @@
          *
          * @method renderMenu
          */
-        renderDialog: function() {
+        renderDialog: function () {
             var t = this,
                 m, s = this.settings,
                 w, v, ed = this.editor;
@@ -302,7 +309,7 @@
                         'width': '100%',
                         'height': '100%'
                     },
-                    onload: function() {
+                    onload: function () {
                         t.isDialogRendered = true;
                         t.onRenderDialog.dispatch(t);
                     }
@@ -313,7 +320,7 @@
                 'class': this.classPrefix + 'DialogButtons'
             });
 
-            each(s.buttons, function(o) {
+            each(s.buttons, function (o) {
                 var btn = DOM.add(m, 'button', {
                     'type': 'button',
                     'class': 'mceDialogButton',
@@ -321,7 +328,7 @@
                 }, o.title || '');
 
                 if (o.click) {
-                    Event.add(btn, 'click', function(e) {
+                    Event.add(btn, 'click', function (e) {
                         e.preventDefault();
 
                         t.restoreSelection();
@@ -342,7 +349,7 @@
 
             return w;
         },
-        setButtonDisabled: function(button, state) {
+        setButtonDisabled: function (button, state) {
             var id = this.id + '_button_' + button;
 
             if (state) {
@@ -351,7 +358,7 @@
                 DOM.removeClass(id, 'disabled');
             }
         },
-        setButtonLabel: function(button, label) {
+        setButtonLabel: function (button, label) {
             DOM.setHTML(this.id + '_button_' + button, label);
         },
         /**
@@ -361,11 +368,11 @@
          * @method hideMenu
          * @param {Event} e Optional event object.
          */
-        hideDialog: function(e) {
+        hideDialog: function (e) {
             var t = this;
 
             // Prevent double toogles by canceling the mouse click event to the button
-            if (e && e.type == "mousedown" && DOM.getParent(e.target, function(e) {
+            if (e && e.type == "mousedown" && DOM.getParent(e.target, function (e) {
                     return e.id === t.id || e.id === t.id + '_open';
                 }))
                 return;
@@ -387,12 +394,12 @@
          *
          * @method postRender
          */
-        postRender: function() {
+        postRender: function () {
             var t = this,
                 s = t.settings,
                 bm, ed = this.editor;
 
-            Event.add(t.id, 'click', function() {
+            Event.add(t.id, 'click', function () {
                 if (!t.isDisabled()) {
 
                     if (s.onclick)
@@ -402,7 +409,7 @@
                 }
             });
         },
-        destroy: function() {
+        destroy: function () {
             this.parent();
 
             Event.clear(this.id + '_dialog');
