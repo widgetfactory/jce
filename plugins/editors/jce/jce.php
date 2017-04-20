@@ -49,8 +49,7 @@ class plgEditorJCE extends JPlugin
         $language = JFactory::getLanguage();
 
         $document = JFactory::getDocument();
-        // set IE mode
-        //$document->setMetaData('X-UA-Compatible', 'IE=Edge', true);
+
         // Check for existence of Admin Component
         if (!is_dir(JPATH_SITE.'/components/com_jce') || !is_dir(JPATH_ADMINISTRATOR.'/components/com_jce')) {
             JError::raiseWarning('SOME_ERROR_CODE', 'WF_COMPONENT_MISSING');
