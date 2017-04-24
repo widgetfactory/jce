@@ -167,7 +167,7 @@
      */
     function removeWebKitStyles(editor, content) {
         // Filter away styles that isn't matching the target node
-        var webKitStyles = editor.settings.clipboard_paste_webkit_styles;
+        var webKitStyles = editor.settings.paste_webkit_styles;
 
         if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
             return content;
@@ -1452,6 +1452,7 @@
             if (o.wordContent) {
                 h = WordFilter(ed, h);
             }
+            
             // remove webKit style weirdness if not word content
             if (tinymce.isWebKit && !o.wordContent) {
                 h = removeWebKitStyles(ed, h);
