@@ -200,6 +200,11 @@
         },
 
         sortNodes: function (parent) {
+            var p = $(parent).parent();
+            
+            // detach parent
+            parent = $(parent).detach();
+            
             // create the list to sort
             var list = $('li', parent).map(function () {
                 var v = $('.uk-tree-text', this).attr('title');
@@ -226,6 +231,8 @@
             $.each(list, function (i, item) {
                 $(parent).append(item.element);
             });
+
+            $(p).append(parent);
         },
 
         /**
