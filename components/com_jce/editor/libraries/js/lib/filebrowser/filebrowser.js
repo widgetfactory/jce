@@ -1186,12 +1186,11 @@
             // Add folder-up button
             if (!this._isRoot()) {
                 $('#folder-list').append('<li class="folder-up" title="Up"><a href="javascript:;>...</a></li>');
-            }
 
-            if (this._treeLoaded()) {
-                $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
-
-                $('#tree-body').trigger('tree:scroll', this._dir);
+                if (this._treeLoaded()) {
+                    $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
+                    $('#tree-body').trigger('tree:scroll', this._dir);
+                }
             }
 
             // Alternate loadList function
