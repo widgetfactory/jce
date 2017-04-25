@@ -12,6 +12,7 @@
         Event = tinymce.dom.Event,
         each = tinymce.each;
 
+    // https://en.wikipedia.org/wiki/Emoticons_(Unicode_block)    
     var emoji = [
         { "😀": "grinning_face" },
         { "😁": "grinning_face_with_smiling_eyes" },
