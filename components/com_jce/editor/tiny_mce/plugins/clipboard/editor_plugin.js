@@ -104,7 +104,22 @@
             return '\u00a0';
         }
 
-        html = filter(html, [
+        function getInnerFragment(html) {
+            var startFragment = '<!--StartFragment-->';
+            var endFragment = '<!--EndFragment-->';
+            var startPos = html.indexOf(startFragment);
+            if (startPos !== -1) {
+                var fragmentHtml = html.substr(startPos + startFragment.length);
+                var endPos = fragmentHtml.indexOf(endFragment);
+                if (endPos !== -1 && /^<\/(p|h[1-6]|li)>/i.test(fragmentHtml.substr(endPos + endFragment.length, 5))) {
+                    return fragmentHtml.substr(0, endPos);
+                }
+            }
+
+            return html;
+        }
+
+        html = filter(getInnerFragment(html), [
             /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
             /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
             [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
