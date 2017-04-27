@@ -9,7 +9,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var each = tinymce.each,
         JSON = tinymce.util.JSON,
         Node = tinymce.html.Node,
@@ -19,7 +19,7 @@
         DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.CodePlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
 
             this.editor = ed;
@@ -29,7 +29,7 @@
                 return ed.dom.is(n, '.mceItemScript, .mceItemStyle, .mceItemPhp, .mcePhp');
             }
 
-            ed.onNodeChange.add(function(ed, cm, n, co) {
+            ed.onNodeChange.add(function (ed, cm, n, co) {
                 ed.dom.removeClass(ed.dom.select('.mceItemSelected'), 'mceItemSelected');
 
                 if (isCode(n)) {
@@ -37,15 +37,15 @@
                 }
             });
 
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if (e.keyCode === BACKSPACE || e.keyCode === DELETE) {
                     self._removeCode(e);
                 }
             });
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 if (ed.getParam('code_style')) {
-                    ed.schema.addValidElements('style[scoped|*]');
+                    //ed.schema.addValidElements('style[scoped|*]');
                     ed.schema.addValidChildren('+body[style]');
                 }
 
@@ -55,20 +55,20 @@
                 }
 
                 // Convert script elements to span placeholder
-                ed.parser.addNodeFilter('script,style', function(nodes) {
+                ed.parser.addNodeFilter('script,style', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         self._serializeSpan(nodes[i]);
                     }
                 });
 
-                ed.parser.addNodeFilter('noscript', function(nodes) {
+                ed.parser.addNodeFilter('noscript', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         self._serializeNoScript(nodes[i]);
                     }
                 });
 
                 // Convert span placeholders to script elements
-                ed.serializer.addNodeFilter('script,div,span', function(nodes, name, args) {
+                ed.serializer.addNodeFilter('script,div,span', function (nodes, name, args) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         var node = nodes[i];
 
@@ -91,10 +91,10 @@
                 });
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 // Display "script" instead of "span" in element path
                 if (ed.theme && ed.theme.onResolveName) {
-                    ed.theme.onResolveName.add(function(theme, o) {
+                    ed.theme.onResolveName.add(function (theme, o) {
                         var cls = o.node.className;
 
                         if (o.name === 'span' && /mceItemScript/.test(cls)) {
@@ -116,7 +116,7 @@
                     ed.dom.loadCSS(url + "/css/content.css");
             });
 
-            ed.onBeforeSetContent.add(function(ed, o) {
+            ed.onBeforeSetContent.add(function (ed, o) {
                 //self._convertCurlyCode(o.content);
 
                 // test for PHP, Script or Style
@@ -137,8 +137,8 @@
                     }
 
                     // PHP code within an attribute
-                    o.content = o.content.replace(/\="([^"]+?)"/g, function(a, b) {
-                        b = b.replace(/<\?(php)?(.+?)\?>/gi, function(x, y, z) {
+                    o.content = o.content.replace(/\="([^"]+?)"/g, function (a, b) {
+                        b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
                             return '{php:start}' + ed.dom.encode(z) + '{php:end}';
                         });
 
@@ -147,8 +147,8 @@
 
                     // PHP code within a textarea
                     if (/<textarea/.test(o.content)) {
-                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function(a, b, c) {
-                            c = c.replace(/<\?(php)?(.+?)\?>/gi, function(x, y, z) {
+                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+                            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
                                 return '{php:start}' + ed.dom.encode(z) + '{php:end}';
                             });
                             return '<textarea' + b + '>' + c + '</textarea>';
@@ -157,7 +157,7 @@
                     }
 
                     // PHP code within an element
-                    o.content = o.content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function(a, b, c, d, e) {
+                    o.content = o.content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
                         if (b.charAt(b.length) !== ' ') {
                             b += ' ';
                         }
@@ -171,7 +171,7 @@
                     o.content = o.content.replace(/<script([^>]+)><\/script>/gi, '<script$1>\u00a0</script>');
 
                     // protect style and script tags from forced_root_block
-                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function(a, b, c) {
+                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function (a, b, c) {
                         if (c.indexOf('data-mce-type') === -1) {
                             if (c.indexOf('type') === -1) {
                                 var type = (b === "script") ? "javascript" : "css";
@@ -186,17 +186,17 @@
                 }
             });
 
-            ed.onPostProcess.add(function(ed, o) {
+            ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
                     // Process converted php
                     if (/(mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
-                        o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function(a, b) {
+                        o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
 
                         // textarea
-                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function(a, b, c) {
+                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
                             if (/&lt;\?php/.test(c)) {
                                 c = ed.dom.decode(c);
                             }
@@ -204,18 +204,18 @@
                         });
 
                         // as attribute
-                        o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function(a, b) {
+                        o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
 
                         // other
-                        o.content = o.content.replace(/<span class="mcePhp"><!--([\s\S]*?)-->(&nbsp;|\u00a0)?<\/span>/g, function(a, b, c) {
+                        o.content = o.content.replace(/<span class="mcePhp"><!--([\s\S]*?)-->(&nbsp;|\u00a0)?<\/span>/g, function (a, b, c) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
                     }
 
                     // remove data-mce-type
-                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function(a, b, c) {
+                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function (a, b, c) {
                         c = c.replace(/\s?data-mce-type="[^"]+"/gi, "");
 
                         return '<' + b + c + '>';
@@ -224,7 +224,7 @@
             });
 
         },
-        _removeCode: function(e) {
+        _removeCode: function (e) {
             var ed = this.editor,
                 s = ed.selection,
                 n = s.getNode();
@@ -239,14 +239,14 @@
                 }
             }
         },
-        _convertCurlyCode: function(content) {
+        _convertCurlyCode: function (content) {
             // open / close type code eg: {youtube}url{/youtube}
             content = content.replace(/\{([\w]+)\b([^\}]*)\}([\s\S]+?)\{\/\1\}/, '<div class="mceItemCurlyCode" data-mce-type="code-item">{$1$2}$3{/$1}</div>');
 
             // single tag code type eg: {code}
             content = content.replace(/\{([^\}]+)\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}</span>');
         },
-        _buildScript: function(n) {
+        _buildScript: function (n) {
             var self = this,
                 ed = this.editor,
                 v, node, text, p;
@@ -274,14 +274,15 @@
                     text.raw = true;
                     // add cdata
                     if (ed.getParam('code_cdata', true) && p.type === "text/javascript") {
-                        v = '// <![CDATA[\n' + self._clean(tinymce.trim(v)) + '\n// ]]>';
+                        //v = '// <![CDATA[\n' + self._clean(tinymce.trim(v)) + '\n// ]]>';
+                        v = self._clean(tinymce.trim(v));
                     }
                     text.value = v;
                     node.append(text);
                 }
             }
 
-            each(p, function(v, k) {
+            each(p, function (v, k) {
                 if (k === "type") {
                     v = v.replace(/mce-/, '');
                 }
@@ -296,7 +297,7 @@
 
             return true;
         },
-        _buildStyle: function(n) {
+        _buildStyle: function (n) {
             var self = this,
                 ed = this.editor,
                 v, node, text, p;
@@ -326,7 +327,8 @@
                     text.raw = true;
                     // add cdata
                     if (ed.getParam('code_cdata', true)) {
-                        v = '<!--\n' + self._clean(tinymce.trim(v)) + '\n-->';
+                        //v = '<!--\n' + self._clean(tinymce.trim(v)) + '\n-->';
+                        v = self._clean(tinymce.trim(v));
                     }
                     text.value = v;
                     node.append(text);
@@ -334,13 +336,13 @@
             }
 
             // add scoped attribute
-            if (n.parent.name === 'head') {
+            /*if (n.parent.name === 'head') {
                 p.scoped = null;
             } else {
                 p.scoped = "scoped";
-            }
+            }*/
 
-            each(p, function(v, k) {
+            each(p, function (v, k) {
                 if (k === "type") {
                     v = v.replace(/mce-/, '');
                 }
@@ -355,7 +357,7 @@
 
             return true;
         },
-        _buildNoScript: function(n) {
+        _buildNoScript: function (n) {
             var self = this,
                 ed = this.editor,
                 p, node;
@@ -367,7 +369,7 @@
 
             node = new Node('noscript', 1);
 
-            each(p, function(v, k) {
+            each(p, function (v, k) {
                 node.attr(k, v);
             });
 
@@ -376,16 +378,17 @@
 
             return true;
         },
-        _serializeSpan: function(n) {
+        _serializeSpan: function (n) {
             var self = this,
                 ed = this.editor,
+                doc = ed.getDoc(),
                 dom = ed.dom,
                 v, k, p = {};
 
             if (!n.parent)
                 return;
 
-            each(n.attributes, function(at) {
+            each(n.attributes, function (at) {
                 if (at.name.indexOf('data-mce-') !== -1)
                     return;
 
@@ -410,7 +413,7 @@
 
             n.replace(span);
         },
-        _serializeNoScript: function(n) {
+        _serializeNoScript: function (n) {
             var self = this,
                 ed = this.editor,
                 dom = ed.dom,
@@ -419,7 +422,7 @@
             if (!n.parent)
                 return;
 
-            each(n.attributes, function(at) {
+            each(n.attributes, function (at) {
                 if (at.name == 'type')
                     return;
 
@@ -434,11 +437,11 @@
             n.wrap(div);
             n.unwrap();
         },
-        _ucfirst: function(s) {
+        _ucfirst: function (s) {
             return s.charAt(0).toUpperCase() + s.substring(1);
         },
         // Private internal function
-        _clean: function(s) {
+        _clean: function (s) {
             // Remove prefix and suffix code for element
             s = s.replace(/(\/\/\s+<!\[CDATA\[)/gi, '\n');
             s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
