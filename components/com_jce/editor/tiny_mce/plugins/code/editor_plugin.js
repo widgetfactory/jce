@@ -273,8 +273,7 @@
                     text = new Node('#text', 3);
                     text.raw = true;
                     // add cdata
-                    if (ed.getParam('code_cdata', true) && p.type === "text/javascript") {
-                        //v = '// <![CDATA[\n' + self._clean(tinymce.trim(v)) + '\n// ]]>';
+                    if (p.type === "text/javascript") {
                         v = self._clean(tinymce.trim(v));
                     }
                     text.value = v;
@@ -325,11 +324,7 @@
                 if (v) {
                     text = new Node('#text', 3);
                     text.raw = true;
-                    // add cdata
-                    if (ed.getParam('code_cdata', true)) {
-                        //v = '<!--\n' + self._clean(tinymce.trim(v)) + '\n-->';
-                        v = self._clean(tinymce.trim(v));
-                    }
+                    v = self._clean(tinymce.trim(v));
                     text.value = v;
                     node.append(text);
                 }

@@ -118,9 +118,9 @@
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param>
-        <param name="cdata" type="radio" default="1" label="WF_PARAM_CDATA" description="WF_PARAM_CDATA_DESC">
+        <!--param name="cdata" type="radio" default="1" label="WF_PARAM_CDATA" description="WF_PARAM_CDATA_DESC">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
-        </param>
+        </param-->
     </params>
 </config>
