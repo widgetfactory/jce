@@ -437,12 +437,19 @@
         },
         // Private internal function
         _clean: function (s) {
-            // Remove prefix and suffix code for element
-            s = s.replace(/(\/\/\s+<!\[CDATA\[)/gi, '\n');
-            s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
-            s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
-            s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
-            s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
+            
+            // remove javascript comments
+            s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
+            s = s.replace(/(\n\/\/ \]\]>)$/g, '');
+
+            // remove css comments
+            s = s.replace(/^(<!--\n)/g, '');
+            s = s.replace(/(\n-->)$/g, '');
+
+            //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
+            //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
+            //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
+            //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
 
             return s;
         }
