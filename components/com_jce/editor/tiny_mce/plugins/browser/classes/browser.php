@@ -36,22 +36,18 @@ class WFFileBrowserPlugin extends WFMediaManager
         // clean filter value
         $filter = (string) preg_replace('/[^\w_,]/i', '', $filter);
 
+        // get filetypes from params
+        $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
+
         if ($filter == 'images') {
             $filetypes = 'jpg,jpeg,png,gif';
         } elseif ($filter === 'media') {
             $filetypes = 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap';
         } elseif ($filter === 'html') {
             $filetypes = 'html,htm,txt';
-        } else {
-            if (strpos($filter, ',') !== false) {
-                $filetypes = $filter;
-            } else {
-                $filetypes = $this->get('_filetypes');
-            }
+        } else if (strpos($filter, ',') !== false) {
+            $filetypes = $filter;
         }
-
-        // get filetypes from params
-        $filetypes = $this->getParam('extensions', $filetypes);
 
         // set filetypes
         $this->setFileTypes($filetypes);
