@@ -15,36 +15,121 @@
         Schema = tinymce.html.Schema,
         DomParser = tinymce.html.DomParser,
         Serializer = tinymce.html.Serializer,
+        Dispatcher = tinymce.util.Dispatcher,
+        RangeUtils = tinymce.dom.RangeUtils,
         Node = tinymce.html.Node;
 
-    // TODO: Should be in some global class
-    function createIdGenerator(prefix) {
-        var count = 0;
+    var styleProps = [
+        'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
+        'border', 'border-bottom', 'border-bottom-color', 'border-bottom-style', 'border-bottom-width', 'border-color', 'border-left', 'border-left-color', 'border-left-style', 'border-left-width', 'border-right', 'border-right-color', 'border-right-style', 'border-right-width', 'border-style', 'border-top', 'border-top-color', 'border-top-style', 'border-top-width', 'border-width', 'outline', 'outline-color', 'outline-style', 'outline-width',
+        'height', 'max-height', 'max-width', 'min-height', 'min-width', 'width',
+        'font', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+        'content', 'counter-increment', 'counter-reset', 'quotes',
+        'list-style', 'list-style-image', 'list-style-position', 'list-style-type',
+        'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top',
+        'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top',
+        'bottom', 'clear', 'clip', 'cursor', 'display', 'float', 'left', 'overflow', 'position', 'right', 'top', 'visibility', 'z-index',
+        'orphans', 'page-break-after', 'page-break-before', 'page-break-inside', 'widows',
+        'border-collapse', 'border-spacing', 'caption-side', 'empty-cells', 'table-layout',
+        'color', 'direction', 'letter-spacing', 'line-height', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi', 'vertical-align', 'white-space', 'word-spacing'
+    ];
 
-        return function () {
-            return prefix + (count++);
-        };
-    }
+    var pixelStyles = [
+        'width', 'height', 'min-width', 'max-width', 'min-height', 'max-height',
+        'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+        'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
+    ];
 
-    /**
-     * Trims the specified HTML by removing all WebKit fragments, all elements wrapping the body trailing BR elements etc.
-     *
-     * @param {String} html Html string to trim contents on.
-     * @return {String} Html contents that got trimmed.
-     */
-    function trimHtml(html) {
-        function trimSpaces(all, s1, s2) {
+    var borderStyles = [
+        'border', 'border-width', 'border-style', 'border-color',
+        'border-top', 'border-right', 'border-bottom', 'border-left',
+        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+        'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
+        'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'
+    ];
 
-            // WebKit &nbsp; meant to preserve multiple spaces but instead inserted around all inline tags,
-            // including the spans with inline styles created on paste
-            if (!s1 && !s2) {
-                return ' ';
-            }
+    var Utils = function () {
+        function filter(content, items) {
+            tinymce.each(items, function (v) {
+                if (v.constructor == RegExp) {
+                    content = content.replace(v, '');
+                } else {
+                    content = content.replace(v[0], v[1]);
+                }
+            });
 
-            return '\u00a0';
+            return content;
         }
 
-        function getInnerFragment(html) {
+        /**
+         * Gets the innerText of the specified element. It will handle edge cases
+         * and works better than textContent on Gecko.
+         *
+         * @param {String} html HTML string to get text from.
+         * @return {String} String of text with line feeds.
+         */
+        function innerText(html) {
+            var schema = new Schema(),
+                domParser = new DomParser({}, schema),
+                text = '';
+            var shortEndedElements = schema.getShortEndedElements();
+            var ignoreElements = tinymce.makeMap('script noscript style textarea video audio iframe object', ' ');
+            var blockElements = schema.getBlockElements();
+
+            function walk(node) {
+                var name = node.name,
+                    currentNode = node;
+
+                if (name === 'br') {
+                    text += '\n';
+                    return;
+                }
+
+                // img/input/hr
+                if (shortEndedElements[name]) {
+                    text += ' ';
+                }
+
+                // Ingore script, video contents
+                if (ignoreElements[name]) {
+                    text += ' ';
+                    return;
+                }
+
+                if (node.type == 3) {
+                    text += node.value;
+                }
+
+                // Walk all children
+                if (!node.shortEnded) {
+                    if ((node = node.firstChild)) {
+                        do {
+                            walk(node);
+                        } while ((node = node.next));
+                    }
+                }
+
+                // Add \n or \n\n for blocks or P
+                if (blockElements[name] && currentNode.next) {
+                    text += '\n';
+
+                    if (name == 'p') {
+                        text += '\n';
+                    }
+                }
+            }
+
+            html = filter(html, [
+                /<!\[[^\]]+\]>/g // Conditional comments
+            ]);
+
+            walk(domParser.parse(html));
+
+            return text;
+        }
+
+        var getInnerFragment = function (html) {
             var startFragment = '<!--StartFragment-->';
             var endFragment = '<!--EndFragment-->';
             var startPos = html.indexOf(startFragment);
@@ -57,103 +142,306 @@
             }
 
             return html;
+        };
+
+        /**
+         * Trims the specified HTML by removing all WebKit fragments, all elements wrapping the body trailing BR elements etc.
+         *
+         * @param {String} html Html string to trim contents on.
+         * @return {String} Html contents that got trimmed.
+         */
+        function trimHtml(html) {
+            function trimSpaces(all, s1, s2) {
+                // WebKit &nbsp; meant to preserve multiple spaces but instead inserted around all inline tags,
+                // including the spans with inline styles created on paste
+                if (!s1 && !s2) {
+                    return ' ';
+                }
+
+                return '\u00a0';
+            }
+
+            html = filter(getInnerFragment(html), [
+                /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
+                /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
+                [/( ?)<span class="Apple-converted-space">\u00a0<\/span>( ?)/g, trimSpaces],
+                /<br class="Apple-interchange-newline">/g,
+                /<br>$/i // Trailing BR elements
+            ]);
+
+            return html;
         }
 
-        html = filter(getInnerFragment(html), [
-            /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
-            /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
-            [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
-            /<br class="Apple-interchange-newline">/g,
-            /<br>$/i // Trailing BR elements
-        ]);
+        // TODO: Should be in some global class
+        function createIdGenerator(prefix) {
+            var count = 0;
 
-        return html;
-    }
-
-    /**
-     * Gets the innerText of the specified element. It will handle edge cases
-     * and works better than textContent on Gecko.
-     *
-     * @param {String} html HTML string to get text from.
-     * @return {String} String of text with line feeds.
-     */
-    function innerText(html) {
-        var schema = new Schema(),
-            domParser = new DomParser({}, schema),
-            text = '';
-        var shortEndedElements = schema.getShortEndedElements();
-        var ignoreElements = tinymce.makeMap('script noscript style textarea video audio iframe object', ' ');
-        var blockElements = schema.getBlockElements();
-
-        function walk(node) {
-            var name = node.name,
-                currentNode = node;
-
-            if (name === 'br') {
-                text += '\n';
-                return;
-            }
-
-            // img/input/hr
-            if (shortEndedElements[name]) {
-                text += ' ';
-            }
-
-            // Ingore script, video contents
-            if (ignoreElements[name]) {
-                text += ' ';
-                return;
-            }
-
-            if (node.type == 3) {
-                text += node.value;
-            }
-
-            // Walk all children
-            if (!node.shortEnded) {
-                if ((node = node.firstChild)) {
-                    do {
-                        walk(node);
-                    } while ((node = node.next));
-                }
-            }
-
-            // Add \n or \n\n for blocks or P
-            if (blockElements[name] && currentNode.next) {
-                text += '\n';
-
-                if (name == 'p') {
-                    text += '\n';
-                }
-            }
+            return function () {
+                return prefix + (count++);
+            };
         }
 
-        html = filter(html, [
-            /<!\[[^\]]+\]>/g // Conditional comments
-        ]);
+        return {
+            filter: filter,
+            innerText: innerText,
+            trimHtml: trimHtml,
+            createIdGenerator: createIdGenerator
+        };
+    }();
 
-        walk(domParser.parse(html));
+    var InternalHtml = function () {
+        var internalMimeType = 'x-tinymce/html';
+        var internalMark = '<!-- ' + internalMimeType + ' -->';
 
-        return text;
-    }
-
-    var internalMimeType = 'x-tinymce/html';
-    var internalMark = '<!-- ' + internalMimeType + ' -->';
-
-    var internalHtml = {
-        mark: function (html) {
+        var mark = function (html) {
             return internalMark + html;
-        },
-        unmark: function (html) {
+        };
+
+        var unmark = function (html) {
             return html.replace(internalMark, '');
-        },
-        isMarked: function (html) {
+        };
+
+        var isMarked = function (html) {
             return html.indexOf(internalMark) !== -1;
-        },
-        internalHtmlMime: function () {
-            return internalMimeType;
+        };
+
+        return {
+            mark: mark,
+            unmark: unmark,
+            isMarked: isMarked,
+            internalHtmlMime: function () {
+                return internalMimeType;
+            }
+        };
+    }();
+
+    var Newlines = function () {
+
+        var isPlainText = function (text) {
+            // so basically any tag that is not one of the "p, div, br", or is one of them, but is followed
+            // by some additional characters qualifies the text as not a plain text (having some HTML tags)
+            return !/<(?:(?!\/?(?:div|p|br))[^>]*|(?:div|p|br)\s+\w[^>]+)>/.test(text);
+        };
+
+        var toBRs = function (text) {
+            return text.replace(/\r?\n/g, '<br>');
+        };
+
+        var openContainer = function (rootTag, rootAttrs) {
+            var key, attrs = [];
+            var tag = '<' + rootTag;
+
+            if (typeof rootAttrs === 'object') {
+                for (key in rootAttrs) {
+                    if (rootAttrs.hasOwnProperty(key)) {
+                        attrs.push(key + '="' + Entities.encodeAllRaw(rootAttrs[key]) + '"');
+                    }
+                }
+
+                if (attrs.length) {
+                    tag += ' ' + attrs.join(' ');
+                }
+            }
+            return tag + '>';
+        };
+
+        var toBlockElements = function (text, rootTag, rootAttrs) {
+            var pieces = text.split(/\r?\n/);
+            var i = 0,
+                len = pieces.length;
+            var stack = [];
+            var blocks = [];
+            var tagOpen = openContainer(rootTag, rootAttrs);
+            var tagClose = '</' + rootTag + '>';
+            var isLast, newlineFollows, isSingleNewline;
+
+            // if single-line text then nothing to do
+            if (pieces.length === 1) {
+                return text;
+            }
+
+            for (; i < len; i++) {
+                isLast = i === len - 1;
+                newlineFollows = !isLast && !pieces[i + 1];
+                isSingleNewline = !pieces[i] && !stack.length;
+
+                stack.push(pieces[i] ? pieces[i] : '&nbsp;');
+
+                if (isLast || newlineFollows || isSingleNewline) {
+                    blocks.push(stack.join('<br>'));
+                    stack = [];
+                }
+
+                if (newlineFollows) {
+                    i++; // extra progress for extra newline
+                }
+            }
+
+            return blocks.length === 1 ? blocks[0] : tagOpen + blocks.join(tagClose + tagOpen) + tagClose;
+        };
+
+        var convert = function (text, rootTag, rootAttrs) {
+            return rootTag ? toBlockElements(text, rootTag, rootAttrs) : toBRs(text);
+        };
+
+        return {
+            isPlainText: isPlainText,
+            convert: convert,
+            toBRs: toBRs,
+            toBlockElements: toBlockElements
+        };
+    }();
+
+    function Quirks(editor) {
+        function addPreProcessFilter(filterFunc) {
+            editor.onBeforePastePreProcess.add(function (e) {
+                e.content = filterFunc(e.content);
+            });
         }
-    };
+
+        function addPostProcessFilter(filterFunc) {
+            editor.onPastePostProcess.add(function (e) {
+                filterFunc(e.node);
+            });
+        }
+
+        /**
+         * Removes BR elements after block elements. IE9 has a nasty bug where it puts a BR element after each
+         * block element when pasting from word. This removes those elements.
+         *
+         * This:
+         *  <p>a</p><br><p>b</p>
+         *
+         * Becomes:
+         *  <p>a</p><p>b</p>
+         */
+        function removeExplorerBrElementsAfterBlocks(html) {            
+            var wordFilter = new WordFilter(editor);
+            
+            // Only filter word specific content
+            if (!wordFilter.isWordContent(editor, html)) {
+                return html;
+            }
+
+            // Produce block regexp based on the block elements in schema
+            var blockElements = [];
+
+            each(editor.schema.getBlockElements(), function (block, blockName) {
+                blockElements.push(blockName);
+            });
+
+            var explorerBlocksRegExp = new RegExp(
+                '(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*(<\\/?(' + blockElements.join('|') + ')[^>]*>)(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*',
+                'g'
+            );
+
+            // Remove BR:s from: <BLOCK>X</BLOCK><BR>
+            html = Utils.filter(html, [
+                [explorerBlocksRegExp, '$1']
+            ]);
+
+            // IE9 also adds an extra BR element for each soft-linefeed and it also adds a BR for each word wrap break
+            html = Utils.filter(html, [
+                [/<br><br>/g, '<BR><BR>'], // Replace multiple BR elements with uppercase BR to keep them intact
+                [/<br>/g, ' '], // Replace single br elements with space since they are word wrap BR:s
+                [/<BR><BR>/g, '<br>'] // Replace back the double brs but into a single BR
+            ]);
+
+            return html;
+        }
+
+        /**
+         * WebKit has a nasty bug where the all computed styles gets added to style attributes when copy/pasting contents.
+         * This fix solves that by simply removing the whole style attribute.
+         *
+         * The paste_webkit_styles option can be set to specify what to keep:
+         *  paste_webkit_styles: "none" // Keep no styles
+         *  paste_webkit_styles: "all", // Keep all of them
+         *  paste_webkit_styles: "font-weight color" // Keep specific ones
+         *
+         * @param {String} content Content that needs to be processed.
+         * @return {String} Processed contents.
+         */
+        function removeWebKitStyles(content) {
+            // Passthrough all styles from Word and let the WordFilter handle that junk
+            if (WordFilter.isWordContent(content)) {
+                return content;
+            }
+
+            // Filter away styles that isn't matching the target node
+            var webKitStyles = editor.settings.paste_webkit_styles;
+
+            if (editor.settings.paste_remove_styles_if_webkit === false || webKitStyles == "all") {
+                return content;
+            }
+
+            if (webKitStyles) {
+                webKitStyles = webKitStyles.split(/[, ]/);
+            }
+
+            // Keep specific styles that doesn't match the current node computed style
+            if (webKitStyles) {
+                var dom = editor.dom,
+                    node = editor.selection.getNode();
+
+                content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, function (all, before, value, after) {
+                    var inputStyles = dom.parseStyle(value, 'span'),
+                        outputStyles = {};
+
+                    if (webKitStyles === "none") {
+                        return before + after;
+                    }
+
+                    for (var i = 0; i < webKitStyles.length; i++) {
+                        var inputValue = inputStyles[webKitStyles[i]],
+                            currentValue = dom.getStyle(node, webKitStyles[i], true);
+
+                        if (/color/.test(webKitStyles[i])) {
+                            inputValue = dom.toHex(inputValue);
+                            currentValue = dom.toHex(currentValue);
+                        }
+
+                        if (currentValue != inputValue) {
+                            outputStyles[webKitStyles[i]] = inputValue;
+                        }
+                    }
+
+                    outputStyles = dom.serializeStyle(outputStyles, 'span');
+                    if (outputStyles) {
+                        return before + ' style="' + outputStyles + '"' + after;
+                    }
+
+                    return before + after;
+                });
+            } else {
+                // Remove all external styles
+                content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, '$1$3');
+            }
+
+            // Keep internal styles
+            content = content.replace(/(<[^>]+) data-mce-style="([^"]+)"([^>]*>)/gi, function (all, before, value, after) {
+                return before + ' style="' + value + '"' + after;
+            });
+
+            return content;
+        }
+
+        function removeUnderlineAndFontInAnchor(root) {
+            editor.dom.select('a font, a u', root).each(function (i, node) {
+                editor.dom.remove(node, true);
+            });
+        }
+
+        // Sniff browsers and apply fixes since we can't feature detect
+        if (tinymce.isWebKit) {
+            addPreProcessFilter(removeWebKitStyles);
+        }
+
+        if (tinymce.isIE) {
+            addPreProcessFilter(removeExplorerBrElementsAfterBlocks);
+            addPostProcessFilter(removeUnderlineAndFontInAnchor);
+        }
+    }
 
     function CutCopy(editor) {
         var noop = function () {};
@@ -163,7 +451,7 @@
                 try {
                     clipboardData.setData('text/html', html);
                     clipboardData.setData('text/plain', text);
-                    clipboardData.setData(internalHtml.internalHtmlMime(), html);
+                    clipboardData.setData(InternalHtml.internalHtmlMime(), html);
                     return true;
                 } catch (e) {
                     return false;
@@ -282,10 +570,7 @@
         var pasteBinDefaultContent = '%MCEPASTEBIN%',
             keyboardPastePlainTextState;
         var mceInternalUrlPrefix = 'data:text/mce-internal,';
-        var uniqueId = createIdGenerator("mceclip");
-
-
-        self.internalHtml = internalHtml;
+        var uniqueId = Utils.createIdGenerator("mceclip");
 
         /**
          * Pastes the specified HTML. This means that the HTML is filtered and then
@@ -299,8 +584,8 @@
             var args, dom = editor.dom,
                 internal;
 
-            internal = internalFlag || self.internalHtml.isMarked(html);
-            html = self.internalHtml.unmark(html);
+            internal = internalFlag || InternalHtml.isMarked(html);
+            html = InternalHtml.unmark(html);
 
             var args = {
                 content: html,
@@ -323,7 +608,10 @@
                     style: 'display:none'
                 }, html);
 
-                args.node = tempBody;
+                args = {
+                    node: tempBody,
+                    internal: internal
+                };
 
                 editor.onPastePostProcess.dispatch(self, args);
 
@@ -332,12 +620,6 @@
             }
 
             insertContent(editor, html);
-
-            /*if (!args.isDefaultPrevented()) {
-                //SmartPaste.insertContent(editor, html);
-
-                insertContent(editor, html);
-            }*/
         }
 
         /**
@@ -348,32 +630,7 @@
          */
         function pasteText(text) {
             text = editor.dom.encode(text).replace(/\r\n/g, '\n');
-
-            var startBlock = editor.dom.getParent(editor.selection.getStart(), editor.dom.isBlock);
-
-            // Create start block html for example <p attr="value">
-            var forcedRootBlockName = editor.settings.forced_root_block;
-            var forcedRootBlockStartHtml;
-            if (forcedRootBlockName) {
-                forcedRootBlockStartHtml = editor.dom.createHTML(forcedRootBlockName, editor.settings.forced_root_block_attrs);
-                forcedRootBlockStartHtml = forcedRootBlockStartHtml.substr(0, forcedRootBlockStartHtml.length - 3) + '>';
-            }
-
-            if ((startBlock && /^(PRE|DIV)$/.test(startBlock.nodeName)) || !forcedRootBlockName) {
-                text = Utils.filter(text, [
-                    [/\n/g, "<br>"]
-                ]);
-            } else {
-                text = Utils.filter(text, [
-                    [/\n\n/g, "</p>" + forcedRootBlockStartHtml],
-                    [/^(.*<\/p>)(<p>)$/, forcedRootBlockStartHtml + '$1'],
-                    [/\n/g, "<br />"]
-                ]);
-
-                if (text.indexOf('<p>') != -1) {
-                    text = forcedRootBlockStartHtml + text;
-                }
-            }
+            text = Newlines.convert(text, editor.settings.forced_root_block, editor.settings.forced_root_block_attrs);
 
             pasteHtml(text, false);
         }
@@ -487,7 +744,7 @@
             }, pasteBinDefaultContent);
 
             // Move paste bin out of sight since the controlSelection rect gets displayed otherwise on IE and Gecko
-            if (Env.ie || Env.gecko) {
+            if (tinymce.isIE || tinymce.isGecko) {
                 dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) == 'rtl' ? 0xFFFF : -0xFFFF);
             }
 
@@ -707,12 +964,12 @@
             return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
         }
 
-        function isKeyboardPasteEvent(e) {
+        function isKeyboardPasteEvent(e) { 
             return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
         }
 
         function registerEventHandlers() {
-            editor.on('keydown', function (e) {
+            editor.onKeyDown.add(function (editor, e) {                
                 function removePasteBinOnKeyUp(e) {
                     // Ctrl+V or Shift+Insert
                     if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
@@ -726,7 +983,7 @@
 
                     // Edge case on Safari on Mac where it doesn't handle Cmd+Shift+V correctly
                     // it fires the keydown but no paste or keyup so we are left with a paste bin
-                    if (keyboardPastePlainTextState && Env.webkit && navigator.userAgent.indexOf('Version/') != -1) {
+                    if (keyboardPastePlainTextState && tinymce.isWebKit && navigator.userAgent.indexOf('Version/') != -1) {
                         return;
                     }
 
@@ -737,9 +994,9 @@
 
                     // IE doesn't support Ctrl+Shift+V and it doesn't even produce a paste event
                     // so lets fake a paste event and let IE use the execCommand/dataTransfer methods
-                    if (Env.ie && keyboardPastePlainTextState) {
+                    if (tinymce.isIE && keyboardPastePlainTextState) {
                         e.preventDefault();
-                        editor.fire('paste', {
+                        editor.onPaste.dispatch({
                             ieFake: true
                         });
                         return;
@@ -748,11 +1005,16 @@
                     removePasteBin();
                     createPasteBin();
 
+                    var removePasteBinOnKeyUpCallback = function(editor, e) {
+                        removePasteBinOnKeyUp(e);
+                    }
+
                     // Remove pastebin if we get a keyup and no paste event
                     // For example pasting a file in IE 11 will not produce a paste event
-                    editor.once('keyup', removePasteBinOnKeyUp);
-                    editor.once('paste', function () {
-                        editor.off('keyup', removePasteBinOnKeyUp);
+                    editor.onKeyUp.add(removePasteBinOnKeyUpCallback, null, {once: true});
+
+                    editor.onPaste.add(function() {
+                        editor.onKeyUp.remove(removePasteBinOnKeyUpCallback, null, {once: true});
                     });
                 }
             });
@@ -795,7 +1057,7 @@
                     if (hasContentType(clipboardContent, 'text/plain') && content.indexOf('</p>') == -1) {
                         content = clipboardContent['text/plain'];
                     } else {
-                        content = innerText(content);
+                        content = Utils.innerText(content);
                     }
                 }
 
@@ -832,7 +1094,7 @@
 
                 keyboardPastePlainTextState = false;
 
-                if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
+                if (isBrokenAndroidClipboardEvent(e)) {
                     removePasteBin();
                     return;
                 }
@@ -848,7 +1110,7 @@
                 }
 
                 // Try IE only method if paste isn't a keyboard paste
-                if (Env.ie && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+                if (tinymce.isIE && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
                     createPasteBin();
 
                     editor.dom.bind(pasteBinElm, 'paste', function (e) {
@@ -864,13 +1126,13 @@
                     e.preventDefault();
                     insertClipboardContent(clipboardContent, isKeyBoardPaste, plainTextMode, internal);
                 } else {
-                    Delay.setEditorTimeout(editor, function () {
+                    window.setTimeout(function () {
                         insertClipboardContent(clipboardContent, isKeyBoardPaste, plainTextMode, internal);
                     }, 0);
                 }
             });
 
-            editor.dom.bind('dragstart dragend', function (e) {
+            editor.dom.bind(editor.getDoc(), 'dragstart dragend', function (e) {
                 draggingInternally = e.type == 'dragstart';
             });
 
@@ -879,7 +1141,7 @@
                 return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
             }
 
-            editor.on('drop', function (e) {
+            editor.dom.bind(editor.getDoc(), 'drop', function (e) {
                 var dropContent, rng;
 
                 rng = getCaretRangeFromEvent(e);
@@ -902,28 +1164,28 @@
                         e.preventDefault();
 
                         // FF 45 doesn't paint a caret when dragging in text in due to focus call by execCommand
-                        Delay.setEditorTimeout(editor, function () {
-                            editor.undoManager.transact(function () {
-                                if (dropContent['mce-internal']) {
-                                    editor.execCommand('Delete');
-                                }
+                        window.setTimeout(function () {
+                            editor.undoManager.add();
 
-                                editor.selection.setRng(rng);
+                            if (dropContent['mce-internal']) {
+                                editor.execCommand('Delete');
+                            }
 
-                                content = trimHtml(content);
+                            editor.selection.setRng(rng);
 
-                                if (!dropContent['text/html']) {
-                                    pasteText(content);
-                                } else {
-                                    pasteHtml(content, internal);
-                                }
-                            });
-                        });
+                            content = trimHtml(content);
+
+                            if (!dropContent['text/html']) {
+                                pasteText(content);
+                            } else {
+                                pasteHtml(content, internal);
+                            }
+                        }, 0);
                     }
                 }
             });
 
-            editor.dom.bind('dragover dragend', function (e) {
+            editor.dom.bind(editor.getDoc(), 'dragover dragend', function (e) {
                 if (editor.settings.paste_data_images) {
                     e.preventDefault();
                 }
@@ -978,184 +1240,6 @@
                 }
             });
         });
-    }
-
-    var styleProps = [
-        'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
-        'border', 'border-bottom', 'border-bottom-color', 'border-bottom-style', 'border-bottom-width', 'border-color', 'border-left', 'border-left-color', 'border-left-style', 'border-left-width', 'border-right', 'border-right-color', 'border-right-style', 'border-right-width', 'border-style', 'border-top', 'border-top-color', 'border-top-style', 'border-top-width', 'border-width', 'outline', 'outline-color', 'outline-style', 'outline-width',
-        'height', 'max-height', 'max-width', 'min-height', 'min-width', 'width',
-        'font', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
-        'content', 'counter-increment', 'counter-reset', 'quotes',
-        'list-style', 'list-style-image', 'list-style-position', 'list-style-type',
-        'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top',
-        'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top',
-        'bottom', 'clear', 'clip', 'cursor', 'display', 'float', 'left', 'overflow', 'position', 'right', 'top', 'visibility', 'z-index',
-        'orphans', 'page-break-after', 'page-break-before', 'page-break-inside', 'widows',
-        'border-collapse', 'border-spacing', 'caption-side', 'empty-cells', 'table-layout',
-        'color', 'direction', 'letter-spacing', 'line-height', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi', 'vertical-align', 'white-space', 'word-spacing'
-    ];
-
-    var pixelStyles = [
-        'width', 'height', 'min-width', 'max-width', 'min-height', 'max-height',
-        'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
-        'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
-        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
-    ];
-
-    var borderStyles = [
-        'border', 'border-width', 'border-style', 'border-color',
-        'border-top', 'border-right', 'border-bottom', 'border-left',
-        'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
-        'border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color',
-        'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'
-    ];
-
-    // Open Office
-    var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
-
-    function filter(content, items) {
-        each(items, function (v) {
-            if (v.constructor == RegExp) {
-                content = content.replace(v, '');
-            } else {
-                content = content.replace(v[0], v[1]);
-            }
-        });
-
-        return content;
-    }
-
-    function isWordContent(editor, content) {
-        // force word cleanup
-        if (editor.settings.clipboard_paste_force_cleanup) {
-            return true;
-        }
-
-        // Open Office
-        if (/(content=\"OpenOffice.org[^\"]+\")/i.test(content) || ooRe.test(content)) {
-            return true; // Mark the pasted contents as word specific content
-        }
-
-        // Word
-        /*if (/(class=\"?Mso|style=\"[^\"]*\bmso\-|w:WordDocument)/.test(content)) {
-           return true;
-        }*/
-
-        // Word
-        return (
-            (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
-            (/class="OutlineElement/).test(content) ||
-            (/id="?docs\-internal\-guid\-/.test(content))
-        );
-    }
-
-    /**
-     * Removes BR elements after block elements. IE9 has a nasty bug where it puts a BR element after each
-     * block element when pasting from word. This removes those elements.
-     *
-     * This:
-     *  <p>a</p><br><p>b</p>
-     *
-     * Becomes:
-     *  <p>a</p><p>b</p>
-     */
-    function removeExplorerBrElementsAfterBlocks(editor, html) {
-        // Produce block regexp based on the block elements in schema
-        var blockElements = [];
-
-        each(editor.schema.getBlockElements(), function (block, blockName) {
-            blockElements.push(blockName);
-        });
-
-        var explorerBlocksRegExp = new RegExp(
-            '(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*(<\\/?(' + blockElements.join('|') + ')[^>]*>)(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*',
-            'g'
-        );
-
-        // Remove BR:s from: <BLOCK>X</BLOCK><BR>
-        html = filter(html, [
-            [explorerBlocksRegExp, '$1']
-        ]);
-
-        // IE9 also adds an extra BR element for each soft-linefeed and it also adds a BR for each word wrap break
-        html = filter(html, [
-            [/<br><br>/g, '<BR><BR>'], // Replace multiple BR elements with uppercase BR to keep them intact
-            [/<br>/g, ' '], // Replace single br elements with space since they are word wrap BR:s
-            [/<BR><BR>/g, '<br>'] // Replace back the double brs but into a single BR
-        ]);
-
-        return html;
-    }
-
-    /**
-     * WebKit has a nasty bug where the all computed styles gets added to style attributes when copy/pasting contents.
-     * This fix solves that by simply removing the whole style attribute.
-     *
-     * The paste_webkit_styles option can be set to specify what to keep:
-     *  paste_webkit_styles: "none" // Keep no styles
-     *  paste_webkit_styles: "all", // Keep all of them
-     *  paste_webkit_styles: "font-weight color" // Keep specific ones
-     *
-     * @param {String} content Content that needs to be processed.
-     * @return {String} Processed contents.
-     */
-    function removeWebKitStyles(editor, content) {
-        // Filter away styles that isn't matching the target node
-        var webKitStyles = editor.settings.paste_webkit_styles;
-
-        if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
-            return content;
-        }
-
-        if (webKitStyles) {
-            webKitStyles = webKitStyles.split(/[, ]/);
-        }
-
-        // Keep specific styles that doesn't match the current node computed style
-        if (webKitStyles) {
-            var dom = editor.dom,
-                node = editor.selection.getNode();
-
-            content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, function (all, before, value, after) {
-                var inputStyles = dom.parseStyle(value, 'span'),
-                    outputStyles = {};
-
-                if (webKitStyles === "none") {
-                    return before + after;
-                }
-
-                for (var i = 0; i < webKitStyles.length; i++) {
-                    var inputValue = inputStyles[webKitStyles[i]],
-                        currentValue = dom.getStyle(node, webKitStyles[i], true);
-
-                    if (/color/.test(webKitStyles[i])) {
-                        inputValue = dom.toHex(inputValue);
-                        currentValue = dom.toHex(currentValue);
-                    }
-
-                    if (currentValue != inputValue) {
-                        outputStyles[webKitStyles[i]] = inputValue;
-                    }
-                }
-
-                outputStyles = dom.serializeStyle(outputStyles, 'span');
-                if (outputStyles) {
-                    return before + ' style="' + outputStyles + '"' + after;
-                }
-
-                return before + after;
-            });
-        } else {
-            // Remove all external styles
-            content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, '$1$3');
-        }
-
-        // Keep internal styles
-        content = content.replace(/(<[^>]+) data-mce-style="([^"]+)"([^>]*>)/gi, function (all, before, value, after) {
-            return before + ' style="' + value + '"' + after;
-        });
-
-        return content;
     }
 
     /**
@@ -1257,584 +1341,612 @@
         return v;
     }
 
-    /**
-     * Checks if the specified text starts with "1. " or "a. " etc.
-     */
-    function isNumericList(text) {
-        var found = "",
-            patterns;
+    function WordFilter(editor) {
+        // Open Office
+        var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
-        patterns = {
-            'uppper-roman': /^[IVXLMCD]{1,2}\.[ \u00a0]/,
-            'lower-roman': /^[ivxlmcd]{1,2}\.[ \u00a0]/,
-            'upper-alpha': /^[A-Z]{1,2}[\.\)][ \u00a0]/,
-            'lower-alpha': /^[a-z]{1,2}[\.\)][ \u00a0]/,
-            'numeric': /^[0-9]+\.[ \u00a0]/,
-            'japanese': /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/,
-            'chinese': /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/
-        };
-
-        /*patterns = [
-            /^[IVXLMCD]{1,2}\.[ \u00a0]/, // Roman upper case
-            /^[ivxlmcd]{1,2}\.[ \u00a0]/, // Roman lower case
-            /^[a-z]{1,2}[\.\)][ \u00a0]/, // Alphabetical a-z
-            /^[A-Z]{1,2}[\.\)][ \u00a0]/, // Alphabetical A-Z
-            /^[0-9]+\.[ \u00a0]/, // Numeric lists
-            /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/, // Japanese
-            /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/ // Chinese
-        ];*/
-
-        text = text.replace(/^[\u00a0 ]+/, '');
-
-        each(patterns, function (pattern, type) {
-            if (pattern.test(text)) {
-                found = type;
-                return false;
+        function isWordContent(editor, content) {
+            // force word cleanup
+            if (editor.settings.clipboard_paste_force_cleanup) {
+                return true;
             }
-        });
 
-        return found;
-    }
+            // Open Office
+            if (/(content=\"OpenOffice.org[^\"]+\")/i.test(content) || ooRe.test(content)) {
+                return true; // Mark the pasted contents as word specific content
+            }
 
-    function isBulletList(text) {
-        return /^[\s\u00a0]*[\u2022\u00b7\u00a7\u25CF]\s*/.test(text);
-    }
+            // Word
+            /*if (/(class=\"?Mso|style=\"[^\"]*\bmso\-|w:WordDocument)/.test(content)) {
+               return true;
+            }*/
 
-    function WordFilter(editor, content) {
+            // Word
+            return (
+                (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
+                (/class="OutlineElement/).test(content) ||
+                (/id="?docs\-internal\-guid\-/.test(content))
+            );
+        }
+
+        /**
+         * Checks if the specified text starts with "1. " or "a. " etc.
+         */
+        function isNumericList(text) {
+            var found = "",
+                patterns;
+
+            patterns = {
+                'uppper-roman': /^[IVXLMCD]{1,2}\.[ \u00a0]/,
+                'lower-roman': /^[ivxlmcd]{1,2}\.[ \u00a0]/,
+                'upper-alpha': /^[A-Z]{1,2}[\.\)][ \u00a0]/,
+                'lower-alpha': /^[a-z]{1,2}[\.\)][ \u00a0]/,
+                'numeric': /^[0-9]+\.[ \u00a0]/,
+                'japanese': /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/,
+                'chinese': /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/
+            };
+
+            /*patterns = [
+                /^[IVXLMCD]{1,2}\.[ \u00a0]/, // Roman upper case
+                /^[ivxlmcd]{1,2}\.[ \u00a0]/, // Roman lower case
+                /^[a-z]{1,2}[\.\)][ \u00a0]/, // Alphabetical a-z
+                /^[A-Z]{1,2}[\.\)][ \u00a0]/, // Alphabetical A-Z
+                /^[0-9]+\.[ \u00a0]/, // Numeric lists
+                /^[\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d]+\.[ \u00a0]/, // Japanese
+                /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/ // Chinese
+            ];*/
+
+            text = text.replace(/^[\u00a0 ]+/, '');
+
+            each(patterns, function (pattern, type) {
+                if (pattern.test(text)) {
+                    found = type;
+                    return false;
+                }
+            });
+
+            return found;
+        }
+
+        function isBulletList(text) {
+            return /^[\s\u00a0]*[\u2022\u00b7\u00a7\u25CF]\s*/.test(text);
+        }
+
         var settings = editor.settings;
 
-        var retainStyleProperties, validStyles = {};
+        editor.onBeforePastePreProcess.add(function (e) {
+            var content = e.content,
+                retainStyleProperties, validStyles = {};
 
-        // Chrome...
-        content = content.replace(/<meta([^>]+)>/, '');
+            // Chrome...
+            content = content.replace(/<meta([^>]+)>/, '');
 
-        // Word comments like conditional comments etc
-        content = content.replace(/<!--([\s\S]*?)-->/gi, '');
+            // Word comments like conditional comments etc
+            content = content.replace(/<!--([\s\S]*?)-->/gi, '');
 
-        // remove styles
-        content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, '');
+            // remove styles
+            content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, '');
 
-        // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content, MS Office namespaced tags, and a few other tags
-        content = content.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
+            // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content, MS Office namespaced tags, and a few other tags
+            content = content.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
 
-        // Copy paste from Java like Open Office will produce this junk on FF
-        content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
+            // Copy paste from Java like Open Office will produce this junk on FF
+            content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
 
-        // Open Office
-        content = filter(content, [
-            [/[\s\S]+?<meta[^>]*>/, ''], // Remove everything before meta element
-            [/<!--[\s\S]+?-->/gi, ''], // Comments
-            [/<style[^>]*>[\s\S]+?<\/style>/gi, ''] // Remove styles
-        ]);
+            // Open Office
+            content = Utils.filter(content, [
+                [/[\s\S]+?<meta[^>]*>/, ''], // Remove everything before meta element
+                [/<!--[\s\S]+?-->/gi, ''], // Comments
+                [/<style[^>]*>[\s\S]+?<\/style>/gi, ''] // Remove styles
+            ]);
 
-        content = content.replace(ooRe, '', 'g');
+            content = content.replace(ooRe, '', 'g');
 
-        // Remove google docs internal guid markers
-        content = content.replace(/<b[^>]+id="?docs-internal-[^>]*>/gi, '');
-        content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
+            // Remove google docs internal guid markers
+            content = content.replace(/<b[^>]+id="?docs-internal-[^>]*>/gi, '');
+            content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
 
-        // get retain styles or a subset to allow for text color and table borders
-        retainStyleProperties = settings.clipboard_paste_retain_style_properties;
+            // get retain styles or a subset to allow for text color and table borders
+            retainStyleProperties = settings.clipboard_paste_retain_style_properties;
 
-        if (retainStyleProperties) {
-            each(retainStyleProperties.split(/[, ]/), function (style) {
-                // add all border styles if "border" is set
-                if (style === "border") {
-                    each(borderStyles, function (name) {
-                        validStyles[name] = {};
-                    });
+            if (retainStyleProperties) {
+                each(retainStyleProperties.split(/[, ]/), function (style) {
+                    // add all border styles if "border" is set
+                    if (style === "border") {
+                        each(borderStyles, function (name) {
+                            validStyles[name] = {};
+                        });
+
+                        return true;
+                    }
+
+                    validStyles[style] = {};
+                });
+            }
+
+            /**
+             * Converts fake bullet and numbered lists to real semantic OL/UL.
+             *
+             * @param {tinymce.html.Node} node Root node to convert children of.
+             */
+            function convertFakeListsToProperLists(node) {
+                var currentListNode, prevListNode, lastLevel = 1;
+
+                function getText(node) {
+                    var txt = '';
+
+                    if (node.type === 3) {
+                        return node.value;
+                    }
+
+                    if ((node = node.firstChild)) {
+                        do {
+                            txt += getText(node);
+                        } while ((node = node.next));
+                    }
+
+                    return txt;
+                }
+
+                function trimListStart(node, regExp) {
+                    if (node.type === 3) {
+                        if (regExp.test(node.value)) {
+                            node.value = node.value.replace(regExp, '');
+                            return false;
+                        }
+                    }
+
+                    if ((node = node.firstChild)) {
+                        do {
+                            if (!trimListStart(node, regExp)) {
+                                return false;
+                            }
+                        } while ((node = node.next));
+                    }
 
                     return true;
                 }
 
-                validStyles[style] = {};
-            });
-        }
+                function removeIgnoredNodes(node) {
+                    if (node._listIgnore) {
+                        node.remove();
+                        return;
+                    }
 
-        /**
-         * Converts fake bullet and numbered lists to real semantic OL/UL.
-         *
-         * @param {tinymce.html.Node} node Root node to convert children of.
-         */
-        function convertFakeListsToProperLists(node) {
-            var currentListNode, prevListNode, lastLevel = 1;
-
-            function getText(node) {
-                var txt = '';
-
-                if (node.type === 3) {
-                    return node.value;
-                }
-
-                if ((node = node.firstChild)) {
-                    do {
-                        txt += getText(node);
-                    } while ((node = node.next));
-                }
-
-                return txt;
-            }
-
-            function trimListStart(node, regExp) {
-                if (node.type === 3) {
-                    if (regExp.test(node.value)) {
-                        node.value = node.value.replace(regExp, '');
-                        return false;
+                    if ((node = node.firstChild)) {
+                        do {
+                            removeIgnoredNodes(node);
+                        } while ((node = node.next));
                     }
                 }
 
-                if ((node = node.firstChild)) {
-                    do {
-                        if (!trimListStart(node, regExp)) {
-                            return false;
+                function convertParagraphToLi(paragraphNode, listName, start, type) {
+                    var level = paragraphNode._listLevel || lastLevel;
+
+                    // Handle list nesting
+                    if (level != lastLevel) {
+                        if (level < lastLevel) {
+                            // Move to parent list
+                            if (currentListNode) {
+                                currentListNode = currentListNode.parent.parent;
+                            }
+                        } else {
+                            // Create new list
+                            prevListNode = currentListNode;
+                            currentListNode = null;
                         }
-                    } while ((node = node.next));
-                }
+                    }
 
-                return true;
-            }
+                    if (!currentListNode || currentListNode.name != listName) {
+                        prevListNode = prevListNode || currentListNode;
+                        currentListNode = new Node(listName, 1);
 
-            function removeIgnoredNodes(node) {
-                if (node._listIgnore) {
-                    node.remove();
-                    return;
-                }
-
-                if ((node = node.firstChild)) {
-                    do {
-                        removeIgnoredNodes(node);
-                    } while ((node = node.next));
-                }
-            }
-
-            function convertParagraphToLi(paragraphNode, listName, start, type) {
-                var level = paragraphNode._listLevel || lastLevel;
-
-                // Handle list nesting
-                if (level != lastLevel) {
-                    if (level < lastLevel) {
-                        // Move to parent list
-                        if (currentListNode) {
-                            currentListNode = currentListNode.parent.parent;
+                        // add list style if any
+                        if (type && /roman|alpha/.test(type)) {
+                            var style = 'list-style-type:' + type;
+                            currentListNode.attr({
+                                'style': style,
+                                'data-mce-style': style
+                            });
                         }
+
+                        if (start > 1) {
+                            currentListNode.attr('start', '' + start);
+                        }
+
+                        paragraphNode.wrap(currentListNode);
                     } else {
-                        // Create new list
+                        currentListNode.append(paragraphNode);
+                    }
+
+                    paragraphNode.name = 'li';
+
+                    // Append list to previous list if it exists
+                    if (level > lastLevel && prevListNode) {
+                        prevListNode.lastChild.append(currentListNode);
+                    }
+
+                    lastLevel = level;
+
+                    // Remove start of list item "1. " or "&middot; " etc
+                    removeIgnoredNodes(paragraphNode);
+                    trimListStart(paragraphNode, /^\u00a0+/);
+                    trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
+                    trimListStart(paragraphNode, /^\u00a0+/);
+                }
+
+                // Build a list of all root level elements before we start
+                // altering them in the loop below.
+                var elements = [],
+                    child = node.firstChild;
+                while (typeof child !== 'undefined' && child !== null) {
+                    elements.push(child);
+
+                    child = child.walk();
+                    if (child !== null) {
+                        while (typeof child !== 'undefined' && child.parent !== node) {
+                            child = child.walk();
+                        }
+                    }
+                }
+
+                for (var i = 0; i < elements.length; i++) {
+                    node = elements[i];
+
+                    if (node.name == 'p' && node.firstChild) {
+                        // Find first text node in paragraph
+                        var nodeText = getText(node),
+                            type;
+
+                        // Detect unordered lists look for bullets
+                        if (isBulletList(nodeText)) {
+                            convertParagraphToLi(node, 'ul');
+                            continue;
+                        }
+
+                        // Detect ordered lists 1., a. or ixv.
+                        if (type = isNumericList(nodeText)) {
+                            // Parse OL start number
+                            var matches = /([0-9]+)\./.exec(nodeText);
+                            var start = 1;
+                            if (matches) {
+                                start = parseInt(matches[1], 10);
+                            }
+
+                            convertParagraphToLi(node, 'ol', start, type);
+                            continue;
+                        }
+
+                        // Convert paragraphs marked as lists but doesn't look like anything
+                        if (node._listLevel) {
+                            convertParagraphToLi(node, 'ul', 1);
+                            continue;
+                        }
+
+                        currentListNode = null;
+                    } else {
+                        // If the root level element isn't a p tag which can be
+                        // processed by convertParagraphToLi, it interrupts the
+                        // lists, causing a new list to start instead of having
+                        // elements from the next list inserted above this tag.
                         prevListNode = currentListNode;
                         currentListNode = null;
                     }
                 }
-
-                if (!currentListNode || currentListNode.name != listName) {
-                    prevListNode = prevListNode || currentListNode;
-                    currentListNode = new Node(listName, 1);
-
-                    // add list style if any
-                    if (type && /roman|alpha/.test(type)) {
-                        var style = 'list-style-type:' + type;
-                        currentListNode.attr({
-                            'style': style,
-                            'data-mce-style': style
-                        });
-                    }
-
-                    if (start > 1) {
-                        currentListNode.attr('start', '' + start);
-                    }
-
-                    paragraphNode.wrap(currentListNode);
-                } else {
-                    currentListNode.append(paragraphNode);
-                }
-
-                paragraphNode.name = 'li';
-
-                // Append list to previous list if it exists
-                if (level > lastLevel && prevListNode) {
-                    prevListNode.lastChild.append(currentListNode);
-                }
-
-                lastLevel = level;
-
-                // Remove start of list item "1. " or "&middot; " etc
-                removeIgnoredNodes(paragraphNode);
-                trimListStart(paragraphNode, /^\u00a0+/);
-                trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
-                trimListStart(paragraphNode, /^\u00a0+/);
             }
 
-            // Build a list of all root level elements before we start
-            // altering them in the loop below.
-            var elements = [],
-                child = node.firstChild;
-            while (typeof child !== 'undefined' && child !== null) {
-                elements.push(child);
+            function filterStyles(node, styleValue) {
+                var outputStyles = {},
+                    matches, styles = editor.dom.parseStyle(styleValue);
 
-                child = child.walk();
-                if (child !== null) {
-                    while (typeof child !== 'undefined' && child.parent !== node) {
-                        child = child.walk();
-                    }
-                }
-            }
+                each(styles, function (value, name) {
+                    // Convert various MS styles to W3C styles
+                    switch (name) {
+                        case 'mso-list':
+                            // Parse out list indent level for lists
+                            matches = /\w+ \w+([0-9]+)/i.exec(styleValue);
+                            if (matches) {
+                                node._listLevel = parseInt(matches[1], 10);
+                            }
 
-            for (var i = 0; i < elements.length; i++) {
-                node = elements[i];
+                            // Remove these nodes <span style="mso-list:Ignore">o</span>
+                            // Since the span gets removed we mark the text node and the span
+                            if (/Ignore/i.test(value) && node.firstChild) {
+                                node._listIgnore = true;
+                                node.firstChild._listIgnore = true;
+                            }
 
-                if (node.name == 'p' && node.firstChild) {
-                    // Find first text node in paragraph
-                    var nodeText = getText(node),
-                        type;
+                            break;
 
-                    // Detect unordered lists look for bullets
-                    if (isBulletList(nodeText)) {
-                        convertParagraphToLi(node, 'ul');
-                        continue;
-                    }
+                        case "horiz-align":
+                            name = "text-align";
+                            break;
 
-                    // Detect ordered lists 1., a. or ixv.
-                    if (type = isNumericList(nodeText)) {
-                        // Parse OL start number
-                        var matches = /([0-9]+)\./.exec(nodeText);
-                        var start = 1;
-                        if (matches) {
-                            start = parseInt(matches[1], 10);
-                        }
+                        case "vert-align":
+                            name = "vertical-align";
+                            break;
 
-                        convertParagraphToLi(node, 'ol', start, type);
-                        continue;
-                    }
+                        case "font-color":
+                        case "mso-foreground":
+                        case "color":
+                            name = "color";
 
-                    // Convert paragraphs marked as lists but doesn't look like anything
-                    if (node._listLevel) {
-                        convertParagraphToLi(node, 'ul', 1);
-                        continue;
-                    }
+                            // remove "windowtext"
+                            if (value == "windowtext") {
+                                value = "";
+                            }
 
-                    currentListNode = null;
-                } else {
-                    // If the root level element isn't a p tag which can be
-                    // processed by convertParagraphToLi, it interrupts the
-                    // lists, causing a new list to start instead of having
-                    // elements from the next list inserted above this tag.
-                    prevListNode = currentListNode;
-                    currentListNode = null;
-                }
-            }
-        }
+                            break;
 
-        function updateBorderStyle() {
+                        case "mso-background":
+                        case "mso-highlight":
+                            name = "background";
+                            break;
 
-        }
-
-        function filterStyles(node, styleValue) {
-            var outputStyles = {},
-                matches, styles = editor.dom.parseStyle(styleValue);
-
-            each(styles, function (value, name) {
-                // Convert various MS styles to W3C styles
-                switch (name) {
-                    case 'mso-list':
-                        // Parse out list indent level for lists
-                        matches = /\w+ \w+([0-9]+)/i.exec(styleValue);
-                        if (matches) {
-                            node._listLevel = parseInt(matches[1], 10);
-                        }
-
-                        // Remove these nodes <span style="mso-list:Ignore">o</span>
-                        // Since the span gets removed we mark the text node and the span
-                        if (/Ignore/i.test(value) && node.firstChild) {
-                            node._listIgnore = true;
-                            node.firstChild._listIgnore = true;
-                        }
-
-                        break;
-
-                    case "horiz-align":
-                        name = "text-align";
-                        break;
-
-                    case "vert-align":
-                        name = "vertical-align";
-                        break;
-
-                    case "font-color":
-                    case "mso-foreground":
-                    case "color":
-                        name = "color";
-
-                        // remove "windowtext"
-                        if (value == "windowtext") {
-                            value = "";
-                        }
-
-                        break;
-
-                    case "mso-background":
-                    case "mso-highlight":
-                        name = "background";
-                        break;
-
-                    case "font-weight":
-                    case "font-style":
-                        if (value != "normal") {
-                            outputStyles[name] = value;
-                        }
-                        return;
-
-                    case "mso-element":
-                        // Remove track changes code
-                        if (/^(comment|comment-list)$/i.test(value)) {
-                            node.remove();
+                        case "font-weight":
+                        case "font-style":
+                            if (value != "normal") {
+                                outputStyles[name] = value;
+                            }
                             return;
-                        }
 
-                        break;
+                        case "mso-element":
+                            // Remove track changes code
+                            if (/^(comment|comment-list)$/i.test(value)) {
+                                node.remove();
+                                return;
+                            }
+
+                            break;
+                    }
+
+                    if (name.indexOf('mso-comment') === 0) {
+                        node.remove();
+                        return;
+                    }
+
+                    // Never allow mso- prefixed names
+                    if (name.indexOf('mso-') === 0) {
+                        return;
+                    }
+
+                    // convert to pixel values
+                    if (tinymce.inArray(pixelStyles, name) !== -1) {
+                        value = convertToPixels(value);
+                    }
+
+                    // Output only valid styles
+                    if (validStyles && validStyles[name]) {
+                        outputStyles[name] = value;
+                    }
+                });
+
+                // Convert bold style to "b" element
+                if (/(bold)/i.test(outputStyles["font-weight"])) {
+                    delete outputStyles["font-weight"];
+                    node.wrap(new Node("b", 1));
                 }
 
-                if (name.indexOf('mso-comment') === 0) {
-                    node.remove();
-                    return;
+                // Convert italic style to "i" element
+                if (/(italic)/i.test(outputStyles["font-style"])) {
+                    delete outputStyles["font-style"];
+                    node.wrap(new Node("i", 1));
                 }
 
-                // Never allow mso- prefixed names
-                if (name.indexOf('mso-') === 0) {
-                    return;
+                // Serialize the styles and see if there is something left to keep
+                outputStyles = editor.dom.serializeStyle(outputStyles, node.name);
+
+                if (outputStyles) {
+                    return outputStyles;
                 }
 
-                // convert to pixel values
-                if (tinymce.inArray(pixelStyles, name) !== -1) {
-                    value = convertToPixels(value);
+                return null;
+            }
+
+            if (settings.paste_enable_default_filters === false) {
+                return;
+            }
+
+            // Remove basic Word junk
+            content = Utils.filter(content, [
+                // Word comments like conditional comments etc
+                /<!--[\s\S]+?-->/gi,
+
+                // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
+                // MS Office namespaced tags, and a few other tags
+                /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
+
+                // Convert <s> into <strike> for line-though
+                [/<(\/?)s>/gi, "<$1strike>"],
+
+                // Replace nsbp entites to char since it's easier to handle
+                [/&nbsp;/gi, "\u00a0"],
+
+                // Convert <span style="mso-spacerun:yes">___</span> to string of alternating
+                // breaking/non-breaking spaces of same length
+                [/<span\s+style\s*=\s*"\s*mso-spacerun\s*:\s*yes\s*;?\s*"\s*>([\s\u00a0]*)<\/span>/gi,
+                    function (str, spaces) {
+                        return (spaces.length > 0) ?
+                            spaces.replace(/./, " ").slice(Math.floor(spaces.length / 2)).split("").join("\u00a0") : "";
+                    }
+                ]
+            ]);
+
+            // cleanup table border
+            content = content.replace(/<table([^>]+)>/, function ($1, $2) {
+
+                if (settings.schema !== "html4") {
+                    $2 = $2.replace(/(border|cell(padding|spacing))="([^"]+)"/gi, '');
                 }
 
-                // Output only valid styles
-                if (validStyles && validStyles[name]) {
-                    outputStyles[name] = value;
+                return '<table' + $2 + '>';
+            });
+
+            // remove double linebreaks (IE issue?)
+            if (settings.forced_root_block) {
+                content = content.replace(/<br><br>/gi, '');
+            }
+
+            var validElements = settings.paste_word_valid_elements;
+
+            if (!validElements) {
+                validElements = (
+                    '-strong/b,-em/i,-u,-span,-p,-ol,-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
+                    '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
+                    'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
+                );
+            }
+
+            // Setup strict schema
+            var schema = new Schema({
+                valid_elements: validElements,
+                valid_children: '-li[p]'
+            });
+
+            // Add style/class attribute to all element rules since the user might have removed them from
+            // paste_word_valid_elements config option and we need to check them for properties
+            each(schema.elements, function (rule) {
+                /*eslint dot-notation:0*/
+                if (!rule.attributes["class"]) {
+                    rule.attributes["class"] = {};
+                    rule.attributesOrder.push("class");
+                }
+
+                if (!rule.attributes.style) {
+                    rule.attributes.style = {};
+                    rule.attributesOrder.push("style");
                 }
             });
 
-            // Convert bold style to "b" element
-            if (/(bold)/i.test(outputStyles["font-weight"])) {
-                delete outputStyles["font-weight"];
-                node.wrap(new Node("b", 1));
-            }
+            // Parse HTML into DOM structure
+            var domParser = new DomParser({}, schema);
 
-            // Convert italic style to "i" element
-            if (/(italic)/i.test(outputStyles["font-style"])) {
-                delete outputStyles["font-style"];
-                node.wrap(new Node("i", 1));
-            }
+            // Filter styles to remove "mso" specific styles and convert some of them
+            domParser.addAttributeFilter('style', function (nodes) {
+                var i = nodes.length,
+                    node;
 
-            // Serialize the styles and see if there is something left to keep
-            outputStyles = editor.dom.serializeStyle(outputStyles, node.name);
+                while (i--) {
+                    node = nodes[i];
 
-            if (outputStyles) {
-                return outputStyles;
-            }
+                    node.attr('style', filterStyles(node, node.attr('style')));
 
-            return null;
-        }
-
-        if (settings.paste_enable_default_filters === false) {
-            return;
-        }
-
-        // Remove basic Word junk
-        content = filter(content, [
-            // Word comments like conditional comments etc
-            /<!--[\s\S]+?-->/gi,
-
-            // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
-            // MS Office namespaced tags, and a few other tags
-            /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
-
-            // Convert <s> into <strike> for line-though
-            [/<(\/?)s>/gi, "<$1strike>"],
-
-            // Replace nsbp entites to char since it's easier to handle
-            [/&nbsp;/gi, "\u00a0"],
-
-            // Convert <span style="mso-spacerun:yes">___</span> to string of alternating
-            // breaking/non-breaking spaces of same length
-            [/<span\s+style\s*=\s*"\s*mso-spacerun\s*:\s*yes\s*;?\s*"\s*>([\s\u00a0]*)<\/span>/gi,
-                function (str, spaces) {
-                    return (spaces.length > 0) ?
-                        spaces.replace(/./, " ").slice(Math.floor(spaces.length / 2)).split("").join("\u00a0") : "";
-                }
-            ]
-        ]);
-
-        // cleanup table border
-        content = content.replace(/<table([^>]+)>/, function ($1, $2) {
-
-            if (settings.schema !== "html4") {
-                $2 = $2.replace(/(border|cell(padding|spacing))="([^"]+)"/gi, '');
-            }
-
-            return '<table' + $2 + '>';
-        });
-
-        // remove double linebreaks (IE issue?)
-        if (settings.forced_root_block) {
-            content = content.replace(/<br><br>/gi, '');
-        }
-
-        var validElements = settings.paste_word_valid_elements;
-
-        if (!validElements) {
-            validElements = (
-                '-strong/b,-em/i,-u,-span,-p,-ol,-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
-                '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
-                'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
-            );
-        }
-
-        // Setup strict schema
-        var schema = new Schema({
-            valid_elements: validElements,
-            valid_children: '-li[p]'
-        });
-
-        // Add style/class attribute to all element rules since the user might have removed them from
-        // paste_word_valid_elements config option and we need to check them for properties
-        each(schema.elements, function (rule) {
-            /*eslint dot-notation:0*/
-            if (!rule.attributes["class"]) {
-                rule.attributes["class"] = {};
-                rule.attributesOrder.push("class");
-            }
-
-            if (!rule.attributes.style) {
-                rule.attributes.style = {};
-                rule.attributesOrder.push("style");
-            }
-        });
-
-        // Parse HTML into DOM structure
-        var domParser = new DomParser({}, schema);
-
-        // Filter styles to remove "mso" specific styles and convert some of them
-        domParser.addAttributeFilter('style', function (nodes) {
-            var i = nodes.length,
-                node;
-
-            while (i--) {
-                node = nodes[i];
-
-                node.attr('style', filterStyles(node, node.attr('style')));
-
-                // Remove pointess spans
-                if (node.name == 'span' && node.parent && !node.attributes.length) {
-                    node.unwrap();
-                }
-            }
-        });
-
-        // Check the class attribute for comments or del items and remove those
-        domParser.addAttributeFilter('class', function (nodes) {
-            var i = nodes.length,
-                node, className;
-
-            while (i--) {
-                node = nodes[i];
-
-                className = node.attr('class');
-                if (/^(MsoCommentReference|MsoCommentText|msoDel)$/i.test(className)) {
-                    node.remove();
-                }
-
-                node.attr('class', null);
-            }
-        });
-
-        // Remove all del elements since we don't want the track changes code in the editor
-        domParser.addNodeFilter('del', function (nodes) {
-            var i = nodes.length;
-
-            while (i--) {
-                nodes[i].remove();
-            }
-        });
-
-        var footnotes = editor.getParam('clipboard_paste_process_footnotes', 'convert');
-
-        // Keep some of the links and anchors
-        domParser.addNodeFilter('a', function (nodes) {
-            var i = nodes.length,
-                node, href, name;
-
-            while (i--) {
-                node = nodes[i];
-                href = node.attr('href');
-                name = node.attr('name');
-
-                if (href && href.indexOf('#_msocom_') != -1) {
-                    node.remove();
-                    continue;
-                }
-
-                // convert URL
-                if (href && !name) {
-                    href = editor.convertURL(href);
-                }
-
-                if (href && href.indexOf('file://') === 0) {
-                    href = href.split('#')[1];
-                    if (href) {
-                        href = '#' + href;
-                    }
-                }
-
-                if (!href && !name) {
-                    node.unwrap();
-                } else {
-                    // Remove all named anchors that aren't specific to TOC, Footnotes or Endnotes
-                    if (name && !/^_?(?:toc|edn|ftn)/i.test(name)) {
+                    // Remove pointess spans
+                    if (node.name == 'span' && node.parent && !node.attributes.length) {
                         node.unwrap();
-                        continue;
+                    }
+                }
+            });
+
+            // Check the class attribute for comments or del items and remove those
+            domParser.addAttributeFilter('class', function (nodes) {
+                var i = nodes.length,
+                    node, className;
+
+                while (i--) {
+                    node = nodes[i];
+
+                    className = node.attr('class');
+                    if (/^(MsoCommentReference|MsoCommentText|msoDel)$/i.test(className)) {
+                        node.remove();
                     }
 
-                    // remove footnote
-                    if (name && footnotes === "remove") {
+                    node.attr('class', null);
+                }
+            });
+
+            // Remove all del elements since we don't want the track changes code in the editor
+            domParser.addNodeFilter('del', function (nodes) {
+                var i = nodes.length;
+
+                while (i--) {
+                    nodes[i].remove();
+                }
+            });
+
+            var footnotes = editor.getParam('clipboard_paste_process_footnotes', 'convert');
+
+            // Keep some of the links and anchors
+            domParser.addNodeFilter('a', function (nodes) {
+                var i = nodes.length,
+                    node, href, name;
+
+                while (i--) {
+                    node = nodes[i];
+                    href = node.attr('href');
+                    name = node.attr('name');
+
+                    if (href && href.indexOf('#_msocom_') != -1) {
                         node.remove();
                         continue;
                     }
 
-                    // unlink footnote
-                    if (name && footnotes === "unlink") {
-                        node.unwrap();
-                        continue;
+                    // convert URL
+                    if (href && !name) {
+                        href = editor.convertURL(href);
                     }
 
-                    // set href, remove name
-                    node.attr({
-                        href: href,
-                        name: null
-                    });
+                    if (href && href.indexOf('file://') === 0) {
+                        href = href.split('#')[1];
+                        if (href) {
+                            href = '#' + href;
+                        }
+                    }
 
-                    // set appropriate anchor
-                    if (settings.schema === "html4") {
-                        node.attr('name', name);
+                    if (!href && !name) {
+                        node.unwrap();
                     } else {
-                        node.attr('id', name);
+                        // Remove all named anchors that aren't specific to TOC, Footnotes or Endnotes
+                        if (name && !/^_?(?:toc|edn|ftn)/i.test(name)) {
+                            node.unwrap();
+                            continue;
+                        }
+
+                        // remove footnote
+                        if (name && footnotes === "remove") {
+                            node.remove();
+                            continue;
+                        }
+
+                        // unlink footnote
+                        if (name && footnotes === "unlink") {
+                            node.unwrap();
+                            continue;
+                        }
+
+                        // set href, remove name
+                        node.attr({
+                            href: href,
+                            name: null
+                        });
+
+                        // set appropriate anchor
+                        if (settings.schema === "html4") {
+                            node.attr('name', name);
+                        } else {
+                            node.attr('id', name);
+                        }
                     }
                 }
+            });
+
+            // Parse into DOM structure
+            var rootNode = domParser.parse(content);
+
+            // Process DOM
+            if (settings.paste_convert_word_fake_lists !== false) {
+                convertFakeListsToProperLists(rootNode);
             }
+
+            // Serialize DOM back to HTML
+            content = new Serializer({
+                validate: settings.validate
+            }, schema).serialize(rootNode);
+
+            e.content = content;
         });
 
-        // Parse into DOM structure
-        var rootNode = domParser.parse(content);
-
-        // Process DOM
-        if (settings.paste_convert_word_fake_lists !== false) {
-            convertFakeListsToProperLists(rootNode);
-        }
-
-        // Serialize DOM back to HTML
-        content = new Serializer({
-            validate: settings.validate
-        }, schema).serialize(rootNode);
-
-        return content;
+        this.isWordContent = isWordContent;
     }
 
     /**
@@ -1872,160 +1984,81 @@
         return content;
     }
 
+    /**
+     * Inserts the specified contents at the caret position.
+     */
+    function insertContent(editor, content) {
+
+        // remove empty paragraphs
+        if (editor.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
+            content = content.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
+        }
+
+        // process regular expression
+        if (editor.getParam('clipboard_paste_filter')) {
+            var re, rules = ed.getParam('clipboard_paste_filter').split(';');
+
+            each(rules, function (s) {
+                // if it is already in Regular Expression format...
+                if (/^\/.*\/(g|i|m)*$/.test(s)) {
+                    re = (new Function('return ' + s))();
+                    // ...else create expression
+                } else {
+                    re = new RegExp(s);
+                }
+
+                content = content.replace(re, "");
+            });
+        }
+
+        editor.execCommand('mceInsertContent', false, content);
+    }
+
     tinymce.create('tinymce.plugins.ClipboardPlugin', {
         init: function (ed, url) {
-            var self = this,
-                cb;
-
+            var self = this;
             self.editor = ed;
-            self.url = url;
+
+            ed.onBeforePastePreProcess = new Dispatcher(this);
+            ed.onPastePreProcess = new Dispatcher(this);
+            ed.onPastePostProcess = new Dispatcher(this);
 
             CutCopy().register(ed);
+
+            self.clipboard = new Clipboard(ed);
+            self.quirks = new Quirks(ed);
+            self.wordFilter = new WordFilter(ed);
 
             // set default paste state for dialog trigger
             this.canPaste = false;
 
-            // Setup plugin events
-            self.onPreProcess = new tinymce.util.Dispatcher(this);
-            self.onPostProcess = new tinymce.util.Dispatcher(this);
-            self.onAfterPaste = new tinymce.util.Dispatcher(this);
+            if (ed.settings.paste_preprocess) {
+                ed.onPastePreProcess.add(function (ed, e) {
+                    ed.settings.paste_preprocess.call(self, self, e);
+                });
+            }
 
-            ed.onBeforePastePreProcess = new tinymce.util.Dispatcher(this);
-            ed.onPastePreProcess = new tinymce.util.Dispatcher(this);
-            ed.onPastePostProcess = new tinymce.util.Dispatcher(this);
+            if (ed.settings.paste_postprocess) {
+                ed.onPastePostProcess.add(function (ed, e) {
+                    ed.settings.paste_postprocess.call(self, self, e);
+                });
+            }
 
-            ed.onPastePreProcess.add(self._preProcess);
-            ed.onPastePostProcess.add(self._postProcess);
+            ed.onPastePreProcess.add(this.preProcess);
+            ed.onPastePostProcess.add(this.postProcess);
 
-            // Register default handlers
-            self.onPreProcess.add(self._preProcess);
-            self.onPostProcess.add(self._postProcess);
-
-            // Register optional preprocess handler
-            self.onPreProcess.add(function (pl, o) {
-                ed.execCallback('paste_preprocess', pl, o);
-            });
-
-            // Register optional postprocess
-            self.onPostProcess.add(function (pl, o) {
-                ed.execCallback('paste_postprocess', pl, o);
-            });
-
-            ed.onKeyDown.addToTop(function (ed, e) {
-                // Block ctrl+v from adding an undo level since the default logic in tinymce.Editor will add that
-                if ((VK.metaKeyPressed && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45)) {
-                    return false; // Stop other listeners
+            ed.addCommand('mceInsertClipboardContent', function (ui, value) {
+                if (value.content) {
+                    self.clipboard.pasteHtml(value.content, value.internal);
                 }
 
-                // block events
-                if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed && e.keyCode == 88)) {
-                    e.preventDefault();
-                    return false;
-                }
-
-                if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed && e.keyCode == 67)) {
-                    e.preventDefault();
-                    return false;
+                if (value.text) {
+                    self.clipboard.pasteText(value.text);
                 }
             });
 
             self.pasteText = ed.getParam('clipboard_paste_text', 1);
             self.pasteHtml = ed.getParam('clipboard_paste_html', 1);
-
-            // This function executes the process handlers and inserts the contents
-            function process(o) {
-                var dom = ed.dom,
-                    rng;
-
-                ed.setProgressState(1);
-
-                // trim content
-                o.content = trimHtml(o.content);
-
-                // override states
-                switch (self.command) {
-                    case 'mcePaste':
-                        if (!self.pasteHtml) {
-                            self.command = 'mcePasteText';
-                        }
-                        break;
-                    case 'mcePasteText':
-                        if (!self.pasteText) {
-                            self.command = 'mcePaste';
-                        }
-                        break;
-                    case 'mcePasteWord':
-                        if (!self.pasteWord || !self.pasteHtml) {
-                            self.command = 'mcePasteText';
-                        }
-                        break;
-                    default:
-                        self.command = 'mcePaste';
-                        if (!self.pasteHtml && self.pasteText) {
-                            self.command = 'mcePasteText';
-                        }
-
-                        break;
-                }
-
-                // set plainText flag
-                self.plainText = self.command == 'mcePasteText';
-
-                // Execute pre process handlers
-                self.onPreProcess.dispatch(self, o);
-
-                // Create DOM structure
-                o.node = dom.create('div', 0, o.content);
-
-                // If pasting inside the same element and the contents is only one block
-                // remove the block and keep the text since Firefox will copy parts of pre and h1-h6 as a pre element
-                if (tinymce.isGecko) {
-                    rng = ed.selection.getRng(true);
-                    if (rng.startContainer == rng.endContainer && rng.startContainer.nodeType == 3) {
-                        // Is only one block node and it doesn't contain word stuff
-                        if (o.node.childNodes.length === 1 && /^(p|h[1-6]|pre)$/i.test(o.node.firstChild.nodeName) && o.content.indexOf('__MCE_ITEM__') === -1)
-                            dom.remove(o.node.firstChild, true);
-                    }
-                }
-
-                // Execute post process handlers
-                self.onPostProcess.dispatch(self, o);
-
-                // Serialize content
-                o.content = ed.serializer.serialize(o.node, {
-                    getInner: 1,
-                    forced_root_block: ''
-                });
-
-                if (self.plainText) {
-                    self._insertPlainText(o.content);
-                } else {
-                    self._insert(o.content);
-                }
-
-                // Trigger onAfterPaste event
-                self.onAfterPaste.dispatch(self);
-
-                ed.setProgressState(0);
-
-                // reset to default
-                self.command = 'mcePaste';
-            }
-
-            // Add command for external usage
-            /*ed.addCommand('mceInsertClipboardContent', function (u, o) {
-                //process(o);
-            });*/
-
-            ed.addCommand('mceInsertClipboardContent', function (ui, value) {
-                if (value.content) {
-                    new Clipboard(ed).pasteHtml(value.content, value.internal);
-                }
-
-                if (value.text) {
-                    new Clipboard(ed).pasteText(value.text);
-                }
-            });
 
             ed.onInit.add(function () {
                 if (ed.plugins.contextmenu) {
@@ -2071,201 +2104,6 @@
                 }
             });
 
-            // This function grabs the contents from the clipboard by adding a
-            // hidden div and placing the caret inside it and after the browser paste
-            // is done it grabs that contents and processes that
-            function grabContent(e) {
-                var n, or, rng, oldRng, sel = ed.selection,
-                    dom = ed.dom,
-                    doc = ed.getDoc(),
-                    body = ed.getBody(),
-                    posY, textContent;
-
-                // Check if browser supports direct plaintext access
-                if (e.clipboardData || doc.dataTransfer) {
-                    textContent = (e.clipboardData || doc.dataTransfer).getData('Text');
-
-                    if (ed.pasteAsPlainText) {
-                        e.preventDefault();
-                        process({
-                            content: textContent.replace(/\r?\n/g, '<br />')
-                        });
-                        return;
-                    }
-                }
-                // don't repeat paste
-                if (dom.get('_mcePaste')) {
-                    return;
-                }
-
-                // Create container to paste into
-                n = dom.add(body, 'div', {
-                    id: '_mcePaste',
-                    'class': 'mcePaste',
-                    'data-mce-bogus': '1'
-                }, '\uFEFF\uFEFF');
-
-                // If contentEditable mode we need to find out the position of the closest element
-                if (body != ed.getDoc().body)
-                    posY = dom.getPos(ed.selection.getStart(), body).y;
-                else
-                    posY = body.scrollTop + dom.getViewPort(ed.getWin()).y;
-
-                // Styles needs to be applied after the element is added to the document since WebKit will otherwise remove all styles
-                // If also needs to be in view on IE or the paste would fail
-                dom.setStyles(n, {
-                    position: 'absolute',
-                    left: (tinymce.isIE || tinymce.isGecko) ? -40 : 0, // Need to move it out of site on Gecko since it will othewise display a ghost resize rect for the div
-                    top: posY - 25,
-                    width: 10,
-                    height: 10,
-                    overflow: 'hidden',
-                    opacity: 0
-                });
-                // Old IE...
-                if (tinymce.isIE && !tinymce.isIE11) {
-                    // Store away the old range
-                    oldRng = sel.getRng();
-
-                    // Select the container
-                    rng = dom.doc.body.createTextRange();
-                    rng.moveToElementText(n);
-                    rng.execCommand('Paste');
-
-                    // Remove container
-                    dom.remove(n);
-
-                    // Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
-                    // to IE security settings so we pass the junk though better than nothing right
-                    if (n.innerHTML === '\uFEFF\uFEFF') {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // Restore the old range and clear the contents before pasting
-                    sel.setRng(oldRng);
-                    sel.setContent('');
-
-                    // For some odd reason we need to detach the the mceInsertContent call from the paste event
-                    // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
-                    // when it tries to restore the selection
-                    setTimeout(function () {
-                        // Process contents
-                        process({
-                            content: ed.pasteAsPlainText ? n.textContent.replace(/\r?\n/g, '<br />') : n.innerHTML
-                        });
-                    }, 0);
-
-                    // Block the real paste event
-                    tinymce.dom.Event.cancel(e);
-                } else {
-                    function block(e) {
-                        e.preventDefault();
-                    }
-
-                    //n.innerHTML = '\uFEFF<br data-mce-bogus="1" />';
-
-                    // Block mousedown and click to prevent selection change
-                    dom.bind(doc, 'mousedown', block);
-                    dom.bind(doc, 'keydown', block);
-
-                    or = ed.selection.getRng();
-
-                    // Move caret into hidden div
-                    n = n.firstChild;
-                    rng = doc.createRange();
-                    rng.setStart(n, 0);
-                    rng.setEnd(n, 2);
-                    sel.setRng(rng);
-
-                    // Wait a while and grab the pasted contents
-                    window.setTimeout(function () {
-                        var h = '',
-                            nl;
-                        // Paste divs duplicated in paste divs seems to happen when you paste plain text so lets first look for that broken behavior in WebKit
-                        if (!dom.select('div.mcePaste > div.mcePaste').length) {
-                            nl = dom.select('div.mcePaste');
-
-                            // WebKit will split the div into multiple ones so this will loop through then all and join them to get the whole HTML string
-                            each(nl, function (n) {
-                                var child = n.firstChild;
-
-                                // WebKit inserts a DIV container with lots of odd styles
-                                if (child && child.nodeName == 'DIV' && child.style.marginTop && child.style.backgroundColor) {
-                                    dom.remove(child, 1);
-                                }
-
-                                // Remove apply style spans
-                                each(dom.select('span.Apple-style-span', n), function (n) {
-                                    dom.remove(n, 1);
-                                });
-
-                                // Remove bogus br elements
-                                each(dom.select('br[data-mce-bogus]', n), function (n) {
-                                    dom.remove(n);
-                                });
-
-                                // WebKit will make a copy of the DIV for each line of plain text pasted and insert them into the DIV
-                                if (n.parentNode.className != 'mcePaste') {
-                                    h += n.innerHTML;
-                                }
-                            });
-                        } else {
-                            // Found WebKit weirdness so force the content into paragraphs this seems to happen when you paste plain text from Nodepad etc
-                            // So this logic will replace double enter with paragraphs and single enter with br so it kind of looks the same
-                            h = '<p>' + dom.encode(textContent).replace(/\r?\n\r?\n/g, '</p><p>').replace(/\r?\n/g, '<br />') + '</p>';
-                        }
-
-                        // Remove the nodes
-                        each(dom.select('div.mcePaste'), function (n) {
-                            dom.remove(n);
-                        });
-
-                        // Restore the old selection
-                        if (or) {
-                            sel.setRng(or);
-                        }
-
-                        process({
-                            content: h
-                        });
-
-                        // Unblock events ones we got the contents
-                        dom.unbind(ed.getDoc(), 'mousedown', block);
-                        dom.unbind(ed.getDoc(), 'keydown', block);
-                    }, 0);
-
-                }
-            }
-
-            // Is it's Opera or older FF use key handler
-            if (tinymce.isOpera) {
-                ed.onKeyDown.addToTop(function (ed, e) {
-                    if (((tinymce.isMac ? e.metaKey : e.ctrlKey) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45))
-                        grabContent(e);
-                });
-
-            } else {
-                // Grab contents on paste event on Gecko and WebKit
-                ed.onPaste.addToTop(function (ed, e) {
-                    //return grabContent(e);
-
-                    console.log(e);
-                });
-            }
-
-            // Block all drag/drop events
-            if (ed.getParam('clipboard_paste_block_drop')) {
-                ed.onInit.add(function () {
-                    ed.dom.bind(ed.getBody(), ['dragend', 'dragover', 'draggesture', 'dragdrop', 'drop', 'drag'], function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        return false;
-                    });
-                });
-            }
-
             each(['Cut', 'Copy'], function (command) {
                 ed.addCommand(command, function () {
                     var doc = ed.getDoc(),
@@ -2306,7 +2144,7 @@
 
                     // just open the window
                     if (ed.getParam('clipboard_paste_use_dialog') || (tinymce.isIE && !doc.queryCommandSupported('Paste'))) {
-                        return self._openWin(cmd);
+                        return self.openWin(cmd);
                     } else {
                         try {
                             doc.execCommand('Paste', false, null);
@@ -2316,7 +2154,7 @@
 
                         // if paste command not supported open window
                         if (self.canPaste === false) {
-                            return self._openWin(cmd);
+                            return self.openWin(cmd);
                         }
                     }
                 });
@@ -2356,16 +2194,8 @@
                 });
             }
         },
-        getInfo: function () {
-            return {
-                longname: 'Paste text/word',
-                author: 'Moxiecode Systems AB / Ryan demmer',
-                authorurl: 'http://tinymce.moxiecode.com',
-                infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/paste',
-                version: '@@version@@'
-            };
-        },
-        _openWin: function (cmd) {
+
+        openWin: function (cmd) {
             var ed = this.editor;
 
             ed.windowManager.open({
@@ -2378,100 +2208,86 @@
                 cmd: cmd
             });
         },
-        _preProcess: function (pl, o) {
-            var ed = pl.editor,
-                h = o.content,
+
+        preProcess: function (e) {
+            var ed = this.editor,
+                content = e.content,
                 rb;
 
             if (ed.settings.paste_enable_default_filters == false) {
                 return;
             }
 
-            if (tinymce.isIE) {
-                h = removeExplorerBrElementsAfterBlocks(ed, h);
-            }
-
             // Process away some basic content
-            h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
-            h = h.replace(/(&nbsp;|<br[^>]*>)+\s*$/g, ''); // nbsp entities at the end of contents
+            content = content.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
+            content = content.replace(/(&nbsp;|<br[^>]*>)+\s*$/g, ''); // nbsp entities at the end of contents
 
             // skip plain text
             if (this.plainText) {
-                return h;
-            }
-
-            o.wordContent = isWordContent(ed, h);
-
-            if (o.wordContent) {
-                h = WordFilter(ed, h);
-            }
-
-            // remove webKit style weirdness if not word content
-            if (tinymce.isWebKit && !o.wordContent) {
-                h = removeWebKitStyles(ed, h);
+                return content;
             }
 
             // remove attributes
             if (ed.getParam('clipboard_paste_remove_attributes')) {
                 var attribs = ed.getParam('clipboard_paste_remove_attributes').split(',');
 
-                h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
+                content = content.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
             }
 
             // replace double linebreaks with paragraphs
             if (rb = ed.getParam('forced_root_block')) {
                 var blocks = '';
                 // only split if a double break exists
-                if (h.indexOf('<br><br>') != -1) {
+                if (content.indexOf('<br><br>') != -1) {
                     // convert marker to paragraphs
                     tinymce.each(h.split('<br><br>'), function (block) {
                         blocks += '<' + rb + '>' + block + '</' + rb + '>';
                     });
 
-                    h = blocks;
+                    content = blocks;
                 }
             }
 
             // Remove all spans (and font, u, strike if inline_styles = true as these would get converted to spans later)
             if (ed.getParam('clipboard_paste_remove_spans')) {
-                h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
+                content = content.replace(/<\/?(u|strike)[^>]*>/gi, '');
 
                 if (ed.settings.convert_fonts_to_spans) {
-                    h = h.replace(/<\/?(font)[^>]*>/gi, '');
+                    content = content.replace(/<\/?(font)[^>]*>/gi, '');
                 }
 
-                h = h.replace(/<\/?(span)[^>]*>/gi, '');
+                content = content.replace(/<\/?(span)[^>]*>/gi, '');
             }
 
             // replace paragraphs with linebreaks
             if (!ed.getParam('forced_root_block')) {
                 // remove empty paragraphs first
                 if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                    h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
+                    content = content.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
                 }
 
-                h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
+                content = content.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
             }
 
             // convert urls in content
             if (ed.getParam('clipboard_paste_convert_urls', true)) {
-                h = convertURLs(ed, h);
+                content = convertURLs(ed, content);
             }
 
             // convert some tags if cleanup is off
             if (ed.settings.verify_html === false) {
-                h = h.replace(/<b\b([^>]*)>/gi, '<strong$1>');
-                h = h.replace(/<\/b>/gi, '</strong>');
+                content = content.replace(/<b\b([^>]*)>/gi, '<strong$1>');
+                content = content.replace(/<\/b>/gi, '</strong>');
             }
 
-            o.content = h;
+            e.content = content;
         },
 
         /**
          * Paste as Plain Text
          * Remove all html form pasted contents. Newlines will be converted to paragraphs or linebreaks
          */
-        _insertPlainText: function (h) {
+        insertPlainText: function (h) {
             var ed = this.editor,
                 dom = ed.dom,
                 rb, entities = null;
@@ -2530,7 +2346,7 @@
         /**
          * Various post process items.
          */
-        _postProcess: function (pl, o) {
+        postProcess: function (o) {
             var self = this,
                 ed = this.editor,
                 dom = ed.dom,
@@ -2563,7 +2379,7 @@
             }
 
             // fix table borders
-            if (o.wordContent) {
+            if (self.isWordContent) {
                 each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
                     var styles = {};
 
@@ -2684,39 +2500,6 @@
                     }
                 });
             }
-        },
-
-        /**
-         * Inserts the specified contents at the caret position.
-         */
-        _insert: function (h, skip_undo) {
-            var ed = this.editor;
-
-            // remove empty paragraphs
-            if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                h = h.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
-            }
-
-            // process regular expression
-            if (ed.getParam('clipboard_paste_filter')) {
-                var re, rules = ed.getParam('clipboard_paste_filter').split(';');
-
-                each(rules, function (s) {
-                    // if it is already in Regular Expression format...
-                    if (/^\/.*\/(g|i|m)*$/.test(s)) {
-                        re = (new Function('return ' + s))();
-                        // ...else create expression
-                    } else {
-                        re = new RegExp(s);
-                    }
-
-                    h = h.replace(re, "");
-                });
-            }
-
-            ed.execCommand('mceInsertContent', false, h, {
-                skip_undo: skip_undo
-            });
         }
     });
     // Register plugin
