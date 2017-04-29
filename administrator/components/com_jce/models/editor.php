@@ -95,6 +95,11 @@ class WFModelEditor extends WFModelBase
         $this->context = $wf->getContext();
     }
 
+    public function buildEditor() {
+        $settings = $this->getEditorSettings();
+        return $this->render($settings);
+    }
+
     public function getEditorSettings()
     {
         // get an editor instance
