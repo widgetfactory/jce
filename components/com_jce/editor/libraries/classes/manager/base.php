@@ -258,7 +258,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $filter = array_filter($filter);
 
         // get directory from parameter
-        $dir = $this->getParam('dir');
+        $dir = $this->getParam('dir', '', '', 'string', false);
 
         // fix Link plugin legacy "direction" conflict
         if ($this->get('caller') === 'link') {
