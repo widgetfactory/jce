@@ -82,26 +82,6 @@
                     ed.selection.select(e.target);
                 }
 
-                // fix weird cell selection in Webkit 
-                if (e.target.nodeName == 'TD' || e.target.nodeName == 'TH') {
-                    if (tinymce.isWebKit) {
-                        var n = e.target,
-                            rng = ed.selection.getRng();
-
-                        // Get the very last node inside the table cell
-                        var end = n.lastChild;
-
-                        while (end.lastChild) {
-                            end = end.lastChild;
-                        }
-                        // Select the entire table cell. Nothing outside of the table cell should be selected.
-                        if (end && end.nodeValue) {
-                            rng.setEnd(end, end.nodeValue.length);
-                            ed.selection.setRng(rng);
-                        }
-                    }
-                }
-
                 t._getMenu(ed).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
                 Event.add(ed.getDoc(), 'click', hideMenu);
