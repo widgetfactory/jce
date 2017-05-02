@@ -144,11 +144,10 @@ class WFElementText extends WFElement
 
     public function convertValue($value)
     {
-        $unit = 'KB';
-
+        $unit   = 'KB';
         $prefix = '';
 
-        preg_match('#([0-9]+)\s?([a-z]+)#i', $value, $matches);
+        preg_match('#([0-9]+)\s?([a-z]*)#i', $value, $matches);
 
         // get unit
         if (isset($matches[2])) {
@@ -162,15 +161,12 @@ class WFElementText extends WFElement
         // Convert to bytes
         switch (strtolower($prefix)) {
             case 'g':
-            case 'gb':
                 $value *= 1073741824;
                 break;
             case 'm':
-            case 'mb':
                 $value *= 1048576;
                 break;
             case 'k':
-            case 'kb':
                 $value *= 1024;
                 break;
         }
