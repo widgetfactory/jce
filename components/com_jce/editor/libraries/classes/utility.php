@@ -336,7 +336,7 @@ abstract class WFUtility
     {
         $unit = '';
 
-        preg_match('#([0-9]+)\s?([a-z]+)#i', $value, $matches);
+        preg_match('#([0-9]+)\s?([a-z]*)#i', $value, $matches);
 
         if (isset($matches[1])) {
             $value = (int) $matches[1];
