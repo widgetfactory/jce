@@ -408,7 +408,9 @@ class WFModelProfiles extends WFModel
                             break;
                         case 'plugins':
                             $row->plugins = (string) $item;
-
+                            break;
+                        case 'checked_out_time':
+                            $row->checked_out_time = $db->getNullDate();
                             break;
                         default:
                             $key = $item->getName();
