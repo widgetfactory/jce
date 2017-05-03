@@ -68,15 +68,10 @@
             return true;
         }
 
-        // Open Office
-        if (/(content=\"OpenOffice.org[^\"]+\")/i.test(content) || ooRe.test(content)) {
+        // Open / Libre Office
+        if (/(content=\"OpenOffice.org[^\"]+\")/i.test(content) || ooRe.test(content) || /@page {/.test(content)) {
             return true; // Mark the pasted contents as word specific content
         }
-
-        // Word
-        /*if (/(class=\"?Mso|style=\"[^\"]*\bmso\-|w:WordDocument)/.test(content)) {
-           return true;
-        }*/
 
         // Word
         return (
@@ -389,26 +384,14 @@
         // Chrome...
         content = content.replace(/<meta([^>]+)>/, '');
 
-        // Word comments like conditional comments etc
-        content = content.replace(/<!--([\s\S]*?)-->/gi, '');
-
         // remove styles
         content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, '');
-
-        // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content, MS Office namespaced tags, and a few other tags
-        content = content.replace(/<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|\w:\w+)(?=[\s\/>]))[^>]*>/gi, '');
 
         // Copy paste from Java like Open Office will produce this junk on FF
         content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
 
         // Open Office
-        content = filter(content, [
-            [/[\s\S]+?<meta[^>]*>/, ''], // Remove everything before meta element
-            [/<!--[\s\S]+?-->/gi, ''], // Comments
-            [/<style[^>]*>[\s\S]+?<\/style>/gi, ''] // Remove styles
-        ]);
-
-        content = content.replace(ooRe, '', 'g');
+        //content = content.replace(ooRe, '', 'g');
 
         // Remove google docs internal guid markers
         content = content.replace(/<b[^>]+id="?docs-internal-[^>]*>/gi, '');
@@ -601,10 +584,6 @@
                     currentListNode = null;
                 }
             }
-        }
-
-        function updateBorderStyle() {
-
         }
 
         function filterStyles(node, styleValue) {
