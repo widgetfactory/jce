@@ -330,20 +330,31 @@ class JoomlalinksMenu extends JObject
                 $parent = 1;
             }
 
-            $query->where(array('m.published = 1', 'm.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')', 'm.parent_id = ' . (int) $parent));
+            $query->where('m.published = 1');
+
+            if ($user->authorise('core.admin') === false) {
+                $query->where('m.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            }
+
+            $query->where('m.parent_id = ' . (int) $parent);
+
             $query->order('m.lft ASC, m.id, m.title');
         } else {
             $where = '';
             $join = '';
 
             if ($type) {
-                $join = ' INNER JOIN #__menu_types AS s ON s.id = ' . intval($type);
-                $where = ' AND m.menutype = s.menutype';
+                $join  .= ' INNER JOIN #__menu_types AS s ON s.id = ' . intval($type);
+                $where .= ' AND m.menutype = s.menutype';
             }
+
+            if ($user->get('gid') != 25) {
+                $where .= ' AND m.access <= ' . (int) $user->get('aid');
+            }
+
             $query = 'SELECT m.* FROM #__menu AS m'
             . $join
             . ' WHERE m.published = 1'
-            . ' AND m.access <= ' . (int) $user->get('aid')
             . ' AND m.parent = ' . (int) $parent
             . $where
             . ' ORDER BY m.lft ASC, m.id, m.title'
