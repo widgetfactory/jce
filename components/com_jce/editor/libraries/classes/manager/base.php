@@ -196,9 +196,10 @@ class WFMediaManagerBase extends WFEditorPlugin
             $meta['width'] = round($size[0]);
             $meta['height'] = round($size[1]);
         }
+
         if ($ext == 'wmv' && $meta['x'] == '') {
-            $meta['width'] = round($fileinfo['asf']['video_media']['2']['image_width']);
-            $meta['height'] = round(($fileinfo['asf']['video_media']['2']['image_height']) + 60);
+            $meta['width']  = round($fileinfo['asf']['video_media']['2']['image_width']);
+            $meta['height'] = round(($fileinfo['asf']['video_media']['2']['image_height']));
         }
 
         return $meta;
