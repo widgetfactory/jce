@@ -32,7 +32,7 @@ WFPopups.addPopup('window', {
      */
     check : function(n) {
         var ed = tinyMCEPopup.editor;
-        var oc = ed.dom.getAttrib(n, 'onclick') || ed.dom.getAttrib(n, 'data-mce-onclick');
+        var oc = ed.dom.getAttrib(n, 'data-mce-onclick') || ed.dom.getAttrib(n, 'onclick');
 
         return oc && /window\.open/.test(oc);
     },
@@ -50,7 +50,7 @@ WFPopups.addPopup('window', {
      */
     getAttributes: function(n) {
         var ed 		= tinyMCEPopup.editor, data = {};
-        var click 	= ed.dom.getAttrib(n, 'onclick') || ed.dom.getAttrib(n, 'data-mce-onclick');
+        var click 	= ed.dom.getAttrib(n, 'data-mce-onclick') || ed.dom.getAttrib(n, 'onclick');
 
         var data = click.replace(/window\.open\((.*?)\);(return false;)?/, function(a, b) {
             return b;
@@ -66,7 +66,7 @@ WFPopups.addPopup('window', {
         var data = {};
 
         if (query.img) {
-            data.src = query.img;
+            $('#popup_src').val(query.img);
         }
 
         $('#window_popup_title').val(title);
@@ -212,5 +212,4 @@ WFPopups.addPopup('window', {
         ed.dom.setAttrib(n, 'href', href);
         ed.dom.setAttrib(n, 'data-mce-onclick', "window.open(" + query + ",'" + encodeURIComponent(title) + "','" + decodeURIComponent($.param(features)).replace(/&/g, ',') + "');return false;");
     }
-
 });
