@@ -475,14 +475,10 @@
                 // make web safe
                 v = Wf.String.safe(this.value, self.options.websafe_mode, self.options.websafe_spaces);
 
-                if (v !== this.value) {
-                    $(this).addClass('invalid');
+                // toggle class if name is not safe
+                $(this).toggleClass('uk-form-danger', v !== this.value);
 
-                    return;
-                }
-
-                $(this).removeClass('invalid');
-
+                // update upload element
                 if (e.type === "change") {
                     self._renameFile(file, v + '.' + file.extension);
                 }
