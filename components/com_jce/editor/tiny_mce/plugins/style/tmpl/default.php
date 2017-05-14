@@ -25,4 +25,6 @@ $tabs = WFTabs::getInstance();
         <button type="button" id="cancel"><?php echo WFText::_('WF_LABEL_CANCEL'); ?></button>
     </div>
 </form>
-<div id="container"></div>
+<div style="display:none;">
+    <div id="container"></div>
+</div>
