@@ -409,7 +409,7 @@
                 this.setValue(fp + "_left", this.getNum(ce.style[pr + b[3] + sf]));
                 this.setProp(fp + "_left", "disabled", false);
 
-                if (f.elements[fp + "_top_measurement"]) {
+                if ($('#' + fp + "_top_measurement").get(0)) {
                     selectByValue(fp + '_top_measurement', this.getMeasurement(ce.style[pr + b[0] + sf]));
                     selectByValue(fp + '_right_measurement', this.getMeasurement(ce.style[pr + b[1] + sf]));
                     selectByValue(fp + '_bottom_measurement', this.getMeasurement(ce.style[pr + b[2] + sf]));
