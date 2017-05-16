@@ -359,6 +359,11 @@
                     if (ed.getParam('pad_empty_tags', true) === false) {
                         o.content = o.content.replace(paddedRx, '<$1$2></$1>');
                     }
+
+                    // convert multiple consecutive non-breaking spaces
+                    if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
+                        o.content = o.content.replace(/\u00a0/g, '&nbsp;');
+                    }
                 }
             });
 
