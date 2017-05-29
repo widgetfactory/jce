@@ -1116,7 +1116,7 @@
             // hidden div and placing the caret inside it and after the browser paste
             // is done it grabs that contents and processes that
             function grabContent(e) {
-                var n, or, rng, oldRng, sel = ed.selection,
+                var n, rng, oldRng, sel = ed.selection,
                     dom = ed.dom,
                     doc = ed.getDoc(),
                     body = ed.getBody(),
@@ -1199,6 +1199,8 @@
 
                     // Block the real paste event
                     tinymce.dom.Event.cancel(e);
+
+                    oldRng = null;
                 } else {
                     function block(e) {
                         e.preventDefault();
@@ -1210,7 +1212,7 @@
                     dom.bind(doc, 'mousedown', block);
                     dom.bind(doc, 'keydown', block);
 
-                    or = ed.selection.getRng();
+                    oldRng = ed.selection.getRng();
 
                     // Move caret into hidden div
                     n = n.firstChild;
@@ -1265,8 +1267,8 @@
                         });
 
                         // Restore the old selection
-                        if (or) {
-                            sel.setRng(or);
+                        if (oldRng) {
+                            sel.setRng(oldRng);
                         }
 
                         process({
@@ -1276,6 +1278,8 @@
                         // Unblock events ones we got the contents
                         dom.unbind(ed.getDoc(), 'mousedown', block);
                         dom.unbind(ed.getDoc(), 'keydown', block);
+
+                        oldRng = null;
                     }, 0);
 
                 }
@@ -1755,9 +1759,7 @@
                 });
             }
 
-            ed.execCommand('mceInsertContent', false, h, {
-                skip_undo: skip_undo
-            });
+            ed.execCommand('mceInsertContent', false, h);
         }
     });
     // Register plugin
