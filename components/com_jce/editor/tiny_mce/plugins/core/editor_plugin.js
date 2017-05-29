@@ -46,7 +46,7 @@
 
         // Removes any variables since these can't be previewed
         function removeVars(val) {
-            if (val) {
+            if (val && typeof(val) === "string") {
                 val = val.replace(/%(\w+)/g, '');
             }
 
