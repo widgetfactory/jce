@@ -72,7 +72,7 @@
 
             // additional POST data to add (will not be parsed by PHP json parser)
             var args = {
-                'format': 'raw'
+                'format': 'json'
             };
 
             // get form input data (including token)
