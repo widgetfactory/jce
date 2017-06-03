@@ -1,7 +1,7 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
- * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2017 Ephox Corp. All rights reserved
  * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -15,7 +15,8 @@
         Schema = tinymce.html.Schema,
         DomParser = tinymce.html.DomParser,
         Serializer = tinymce.html.Serializer,
-        Node = tinymce.html.Node;
+        Node = tinymce.html.Node,
+        Entities = tinymce.html.Entities;
 
     var styleProps = [
         'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
@@ -123,6 +124,70 @@
         ]);
 
         return html;
+    }
+
+    /**
+     * Gets the innerText of the specified element. It will handle edge cases
+     * and works better than textContent on Gecko.
+     *
+     * @param {String} html HTML string to get text from.
+     * @return {String} String of text with line feeds.
+     */
+    function innerText(html) {
+        var schema = new Schema(), domParser = new DomParser({}, schema), text = '';
+        var shortEndedElements = schema.getShortEndedElements();
+        var ignoreElements = tinymce.makeMap('script noscript style textarea video audio iframe object', ' ');
+        var blockElements = schema.getBlockElements();
+
+        function walk(node) {
+            var name = node.name, currentNode = node;
+
+            if (name === 'br') {
+                text += '\n';
+                return;
+            }
+
+            // img/input/hr
+            if (shortEndedElements[name]) {
+                text += ' ';
+            }
+
+            // Ingore script, video contents
+            if (ignoreElements[name]) {
+                text += ' ';
+                return;
+            }
+
+            if (node.type == 3) {
+                text += node.value;
+            }
+
+            // Walk all children
+            if (!node.shortEnded) {
+                if ((node = node.firstChild)) {
+                    do {
+                        walk(node);
+                    } while ((node = node.next));
+                }
+            }
+
+            // Add \n or \n\n for blocks or P
+            if (blockElements[name] && currentNode.next) {
+                text += '\n';
+
+                if (name == 'p') {
+                    text += '\n';
+                }
+            }
+        }
+
+        html = filter(html, [
+            /<!\[[^\]]+\]>/g // Conditional comments
+        ]);
+
+        walk(domParser.parse(html));
+
+        return text;
     }
 
     /**
@@ -248,7 +313,7 @@
         if (s && tinymce.is(s, 'string')) {
             styleProps = tinymce.explode(s);
 
-            each(styleProps, function(style, i) {
+            each(styleProps, function (style, i) {
                 if (style === "border") {
                     // add expanded border styles
                     styleProps = styleProps.concat(borderStyles);
@@ -401,7 +466,7 @@
         retainStyleProperties = settings.clipboard_paste_retain_style_properties;
 
         if (retainStyleProperties) {
-            each(retainStyleProperties.split(/[, ]/), function(style) {
+            each(retainStyleProperties.split(/[, ]/), function (style) {
                 // add all border styles if "border" is set
                 if (style === "border") {
                     each(borderStyles, function (name) {
@@ -410,7 +475,7 @@
 
                     return true;
                 }
-                
+
                 validStyles[style] = {};
             });
         }
@@ -932,21 +997,103 @@
         return content;
     }
 
+    var Newlines = function () {
+        var Entities = tinymce.html.Entities;
+
+        var isPlainText = function (text) {
+            // so basically any tag that is not one of the "p, div, br", or is one of them, but is followed
+            // by some additional characters qualifies the text as not a plain text (having some HTML tags)
+            return !/<(?:(?!\/?(?:div|p|br))[^>]*|(?:div|p|br)\s+\w[^>]+)>/.test(text);
+        };
+
+        var toBRs = function (text) {
+            return text.replace(/\r?\n/g, '<br>');
+        };
+
+        var openContainer = function (rootTag, rootAttrs) {
+            var key, attrs = [];
+            var tag = '<' + rootTag;
+
+            if (typeof rootAttrs === 'object') {
+                for (key in rootAttrs) {
+                    if (rootAttrs.hasOwnProperty(key)) {
+                        attrs.push(key + '="' + Entities.encodeAllRaw(rootAttrs[key]) + '"');
+                    }
+                }
+
+                if (attrs.length) {
+                    tag += ' ' + attrs.join(' ');
+                }
+            }
+            return tag + '>';
+        };
+
+        var toBlockElements = function (text, rootTag, rootAttrs) {
+            var pieces = text.split(/\r?\n/);
+            var i = 0, len = pieces.length;
+            var stack = [];
+            var blocks = [];
+            var tagOpen = openContainer(rootTag, rootAttrs);
+            var tagClose = '</' + rootTag + '>';
+            var isLast, newlineFollows, isSingleNewline;
+
+            // if single-line text then nothing to do
+            if (pieces.length === 1) {
+                return text;
+            }
+
+            for (; i < len; i++) {
+                isLast = i === len - 1;
+                newlineFollows = !isLast && !pieces[i + 1];
+                isSingleNewline = !pieces[i] && !stack.length;
+
+                stack.push(pieces[i] ? pieces[i] : '&nbsp;');
+
+                if (isLast || newlineFollows || isSingleNewline) {
+                    blocks.push(stack.join('<br>'));
+                    stack = [];
+                }
+
+                if (newlineFollows) {
+                    i++; // extra progress for extra newline
+                }
+            }
+
+            return blocks.length === 1 ? blocks[0] : tagOpen + blocks.join(tagClose + tagOpen) + tagClose;
+        };
+
+        var convert = function (text, rootTag, rootAttrs) {
+            return rootTag ? toBlockElements(text, rootTag, rootAttrs) : toBRs(text);
+        };
+
+        return {
+            isPlainText: isPlainText,
+            convert: convert,
+            toBRs: toBRs,
+            toBlockElements: toBlockElements
+        };
+    };
+
     tinymce.create('tinymce.plugins.ClipboardPlugin', {
         init: function (ed, url) {
-            var self = this,
-                cb;
+            var self = this;
 
             self.editor = ed;
             self.url = url;
 
+            var pasteBinElm, lastRng, keyboardPasteTimeStamp = 0;
+            var pasteBinDefaultContent = '%MCEPASTEBIN%', keyboardPastePlainTextState;
+            var mceInternalUrlPrefix = 'data:text/mce-internal,';
+
             // set default paste state for dialog trigger
             this.canPaste = false;
+
+            // set pasteAsPlainText flag
+            this.pasteAsPlainText = false;
 
             // Setup plugin events
             self.onPreProcess = new tinymce.util.Dispatcher(this);
             self.onPostProcess = new tinymce.util.Dispatcher(this);
-            self.onAfterPaste = new tinymce.util.Dispatcher(this);
 
             // Register default handlers
             self.onPreProcess.add(self._preProcess);
@@ -962,110 +1109,21 @@
                 ed.execCallback('paste_postprocess', pl, o);
             });
 
-            ed.onKeyDown.addToTop(function (ed, e) {
-                // Block ctrl+v from adding an undo level since the default logic in tinymce.Editor will add that
-                if ((VK.metaKeyPressed && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45)) {
-                    return false; // Stop other listeners
-                }
-
-                // block events
-                if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed && e.keyCode == 88)) {
-                    e.preventDefault();
-                    return false;
-                }
-
-                if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed && e.keyCode == 67)) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
             self.pasteText = ed.getParam('clipboard_paste_text', 1);
             self.pasteHtml = ed.getParam('clipboard_paste_html', 1);
 
-            // This function executes the process handlers and inserts the contents
-            function process(o) {
-                var dom = ed.dom,
-                    rng;
-
-                ed.setProgressState(1);
-
-                // trim content
-                o.content = trimHtml(o.content);
-
-                // override states
-                switch (self.command) {
-                    case 'mcePaste':
-                        if (!self.pasteHtml) {
-                            self.command = 'mcePasteText';
-                        }
-                        break;
-                    case 'mcePasteText':
-                        if (!self.pasteText) {
-                            self.command = 'mcePaste';
-                        }
-                        break;
-                    case 'mcePasteWord':
-                        if (!self.pasteWord || !self.pasteHtml) {
-                            self.command = 'mcePasteText';
-                        }
-                        break;
-                    default:
-                        self.command = 'mcePaste';
-                        if (!self.pasteHtml && self.pasteText) {
-                            self.command = 'mcePasteText';
-                        }
-
-                        break;
-                }
-
-                // set plainText flag
-                self.plainText = self.command == 'mcePasteText';
-
-                // Execute pre process handlers
-                self.onPreProcess.dispatch(self, o);
-
-                // Create DOM structure
-                o.node = dom.create('div', 0, o.content);
-
-                // If pasting inside the same element and the contents is only one block
-                // remove the block and keep the text since Firefox will copy parts of pre and h1-h6 as a pre element
-                if (tinymce.isGecko) {
-                    rng = ed.selection.getRng(true);
-                    if (rng.startContainer == rng.endContainer && rng.startContainer.nodeType == 3) {
-                        // Is only one block node and it doesn't contain word stuff
-                        if (o.node.childNodes.length === 1 && /^(p|h[1-6]|pre)$/i.test(o.node.firstChild.nodeName) && o.content.indexOf('__MCE_ITEM__') === -1)
-                            dom.remove(o.node.firstChild, true);
-                    }
-                }
-
-                // Execute post process handlers
-                self.onPostProcess.dispatch(self, o);
-
-                // Serialize content
-                o.content = ed.serializer.serialize(o.node, {
-                    getInner: 1,
-                    forced_root_block: ''
-                });
-
-                if (self.plainText) {
-                    self._insertPlainText(o.content);
-                } else {
-                    self._insert(o.content);
-                }
-
-                // Trigger onAfterPaste event
-                self.onAfterPaste.dispatch(self);
-
-                ed.setProgressState(0);
-
-                // reset to default
-                self.command = 'mcePaste';
-            }
-
             // Add command for external usage
-            ed.addCommand('mceInsertClipboardContent', function (u, o) {
-                process(o);
+            ed.addCommand('mceInsertClipboardContent', function (u, data) {
+                self.pasteAsPlainText = false;
+
+                if (data.text) {
+                    self.pasteAsPlainText = true;
+                    pasteText(data.text);
+                }
+
+                if (data.content) {
+                    pasteHtml(data.content);
+                }
             });
 
             ed.onInit.add(function () {
@@ -1112,192 +1170,439 @@
                 }
             });
 
-            // This function grabs the contents from the clipboard by adding a
-            // hidden div and placing the caret inside it and after the browser paste
-            // is done it grabs that contents and processes that
-            function grabContent(e) {
-                var n, rng, oldRng, sel = ed.selection,
-                    dom = ed.dom,
-                    doc = ed.getDoc(),
-                    body = ed.getBody(),
-                    posY, textContent;
+            function pasteText(text) {
+                text = text.replace(/\r\n/g, '\n');
+                text = new Newlines().convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
 
-                // Check if browser supports direct plaintext access
-                if (e.clipboardData || doc.dataTransfer) {
-                    textContent = (e.clipboardData || doc.dataTransfer).getData('Text');
+                pasteHtml(text);
+            }
 
-                    if (ed.pasteAsPlainText) {
-                        e.preventDefault();
-                        process({
-                            content: textContent.replace(/\r?\n/g, '<br />')
-                        });
-                        return;
+            function pasteHtml(content) {
+                // create object to process
+                var o = { content: content };
+
+                // Execute pre process handlers
+                self.onPreProcess.dispatch(self, o);
+
+                // Create DOM structure
+                o.node = ed.dom.create('div', 0, o.content);
+
+                // Execute post process handlers
+                self.onPostProcess.dispatch(self, o);
+ 
+                // Serialize content
+                o.content = ed.serializer.serialize(o.node, {
+                    getInner: 1,
+                    forced_root_block: ''
+                });
+
+                self._insert(o.content);
+
+                // reset pasteAsPlainText state
+                self.pasteAsPlainText = false;
+            }
+
+            // This function executes the process handlers and inserts the contents
+            function insertClipboardContent(clipboardContent) {
+                var content, isPlainTextHtml;
+
+                // Grab HTML from Clipboard API or paste bin as a fallback
+                if (hasContentType(clipboardContent, 'text/html')) {
+                    content = clipboardContent['text/html'];
+                } else {
+                    content = getPasteBinHtml();
+
+                    // If paste bin is empty try using plain text mode
+                    // since that is better than nothing right
+                    if (content == pasteBinDefaultContent) {
+                        self.pasteAsPlainText = true;
                     }
                 }
-                // don't repeat paste
-                if (dom.get('_mcePaste')) {
+
+                content = trimHtml(content);
+
+                // WebKit has a nice bug where it clones the paste bin if you paste from for example notepad
+                // so we need to force plain text mode in this case
+                if (pasteBinElm && pasteBinElm.firstChild && pasteBinElm.firstChild.id === 'mcepastebin') {
+                    self.pasteAsPlainText = true;
+                }
+
+                removePasteBin();
+
+                isPlainTextHtml = new Newlines().isPlainText(content);
+
+                if (self.pasteAsPlainText) {
+                    // Use plain text contents from Clipboard API unless the HTML contains paragraphs then
+                    // we should convert the HTML to plain text since works better when pasting HTML/Word contents as plain text
+                    if (hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
+                        content = clipboardContent['text/plain'];
+                    } else {
+                        content = innerText(content);
+                    }
+                }
+
+                // If the content is the paste bin default HTML then it was
+                // impossible to get the cliboard data out.
+                if (content == pasteBinDefaultContent) {
+                    if (!isKeyBoardPaste) {
+                        ed.windowManager.alert('Please use Ctrl+V/Cmd+V keyboard shortcuts to paste contents.');
+                    }
+
                     return;
                 }
 
-                // Create container to paste into
-                n = dom.add(body, 'div', {
-                    id: '_mcePaste',
-                    'class': 'mcePaste',
-                    'data-mce-bogus': '1'
-                }, '\uFEFF\uFEFF');
-
-                // If contentEditable mode we need to find out the position of the closest element
-                if (body != ed.getDoc().body)
-                    posY = dom.getPos(ed.selection.getStart(), body).y;
-                else
-                    posY = body.scrollTop + dom.getViewPort(ed.getWin()).y;
-
-                // Styles needs to be applied after the element is added to the document since WebKit will otherwise remove all styles
-                // If also needs to be in view on IE or the paste would fail
-                dom.setStyles(n, {
-                    position: 'absolute',
-                    left: (tinymce.isIE || tinymce.isGecko) ? -40 : 0, // Need to move it out of site on Gecko since it will othewise display a ghost resize rect for the div
-                    top: posY - 25,
-                    width: 10,
-                    height: 10,
-                    overflow: 'hidden',
-                    opacity: 0
-                });
-                // Old IE...
-                if (tinymce.isIE && !tinymce.isIE11) {
-                    // Store away the old range
-                    oldRng = sel.getRng();
-
-                    // Select the container
-                    rng = dom.doc.body.createTextRange();
-                    rng.moveToElementText(n);
-                    rng.execCommand('Paste');
-
-                    // Remove container
-                    dom.remove(n);
-
-                    // Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
-                    // to IE security settings so we pass the junk though better than nothing right
-                    if (n.innerHTML === '\uFEFF\uFEFF') {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // Restore the old range and clear the contents before pasting
-                    sel.setRng(oldRng);
-                    sel.setContent('');
-
-                    // For some odd reason we need to detach the the mceInsertContent call from the paste event
-                    // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
-                    // when it tries to restore the selection
-                    setTimeout(function () {
-                        // Process contents
-                        process({
-                            content: ed.pasteAsPlainText ? n.textContent.replace(/\r?\n/g, '<br />') : n.innerHTML
-                        });
-                    }, 0);
-
-                    // Block the real paste event
-                    tinymce.dom.Event.cancel(e);
-
-                    oldRng = null;
+                if (self.pasteAsPlainText) {
+                    pasteText(content);
                 } else {
-                    function block(e) {
-                        e.preventDefault();
-                    }
-
-                    //n.innerHTML = '\uFEFF<br data-mce-bogus="1" />';
-
-                    // Block mousedown and click to prevent selection change
-                    dom.bind(doc, 'mousedown', block);
-                    dom.bind(doc, 'keydown', block);
-
-                    oldRng = ed.selection.getRng();
-
-                    // Move caret into hidden div
-                    n = n.firstChild;
-                    rng = doc.createRange();
-                    rng.setStart(n, 0);
-                    rng.setEnd(n, 2);
-                    sel.setRng(rng);
-
-                    // Wait a while and grab the pasted contents
-                    window.setTimeout(function () {
-                        var h = '',
-                            nl;
-
-                        // Paste divs duplicated in paste divs seems to happen when you paste plain text so lets first look for that broken behavior in WebKit
-                        if (!dom.select('div.mcePaste > div.mcePaste').length) {
-                            nl = dom.select('div.mcePaste');
-
-                            // WebKit will split the div into multiple ones so this will loop through then all and join them to get the whole HTML string
-                            each(nl, function (n) {
-                                var child = n.firstChild;
-
-                                // WebKit inserts a DIV container with lots of odd styles
-                                if (child && child.nodeName == 'DIV' && child.style.marginTop && child.style.backgroundColor) {
-                                    dom.remove(child, 1);
-                                }
-
-                                // Remove apply style spans
-                                each(dom.select('span.Apple-style-span', n), function (n) {
-                                    dom.remove(n, 1);
-                                });
-
-                                // Remove bogus br elements
-                                each(dom.select('br[data-mce-bogus]', n), function (n) {
-                                    dom.remove(n);
-                                });
-
-                                // WebKit will make a copy of the DIV for each line of plain text pasted and insert them into the DIV
-                                if (n.parentNode.className != 'mcePaste') {
-                                    h += n.innerHTML;
-                                }
-                            });
-
-                        } else {
-                            // Found WebKit weirdness so force the content into paragraphs this seems to happen when you paste plain text from Nodepad etc
-                            // So this logic will replace double enter with paragraphs and single enter with br so it kind of looks the same
-                            h = '<p>' + dom.encode(textContent).replace(/\r?\n\r?\n/g, '</p><p>').replace(/\r?\n/g, '<br />') + '</p>';
-                        }
-
-                        // Remove the nodes
-                        each(dom.select('div.mcePaste'), function (n) {
-                            dom.remove(n);
-                        });
-
-                        // Restore the old selection
-                        if (oldRng) {
-                            sel.setRng(oldRng);
-                        }
-
-                        process({
-                            content: h
-                        });
-
-                        // Unblock events ones we got the contents
-                        dom.unbind(ed.getDoc(), 'mousedown', block);
-                        dom.unbind(ed.getDoc(), 'keydown', block);
-
-                        oldRng = null;
-                    }, 0);
-
+                    pasteHtml(content);
                 }
             }
 
-            // Is it's Opera or older FF use key handler
-            if (tinymce.isOpera) {
-                ed.onKeyDown.addToTop(function (ed, e) {
-                    if (((tinymce.isMac ? e.metaKey : e.ctrlKey) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45))
-                        grabContent(e);
-                });
+            /**
+             * Creates a paste bin element as close as possible to the current caret location and places the focus inside that element
+             * so that when the real paste event occurs the contents gets inserted into this element
+             * instead of the current editor selection element.
+             */
+            function createPasteBin() {
+                var dom = ed.dom, body = ed.getBody();
+                var viewport = ed.dom.getViewPort(ed.getWin()), scrollTop = viewport.y, top = 20;
+                var scrollContainer;
 
-            } else {
-                // Grab contents on paste event on Gecko and WebKit
-                ed.onPaste.addToTop(function (ed, e) {
-                    return grabContent(e);
-                });
+                lastRng = editor.selection.getRng();
+
+                /**
+                 * Returns the rect of the current caret if the caret is in an empty block before a
+                 * BR we insert a temporary invisible character that we get the rect this way we always get a proper rect.
+                 *
+                 * TODO: This might be useful in core.
+                 */
+                function getCaretRect(rng) {
+                    var rects, textNode, node, container = rng.startContainer;
+
+                    rects = rng.getClientRects();
+
+                    if (rects.length) {
+                        return rects[0];
+                    }
+
+                    if (!rng.collapsed || container.nodeType != 1) {
+                        return;
+                    }
+
+                    node = container.childNodes[lastRng.startOffset];
+
+                    // Skip empty whitespace nodes
+                    while (node && node.nodeType == 3 && !node.data.length) {
+                        node = node.nextSibling;
+                    }
+
+                    if (!node) {
+                        return;
+                    }
+
+                    // Check if the location is |<br>
+                    // TODO: Might need to expand this to say |<table>
+                    if (node.tagName == 'BR') {
+                        textNode = dom.doc.createTextNode('\uFEFF');
+                        node.parentNode.insertBefore(textNode, node);
+
+                        rng = dom.createRng();
+                        rng.setStartBefore(textNode);
+                        rng.setEndAfter(textNode);
+
+                        rects = rng.getClientRects();
+                        dom.remove(textNode);
+                    }
+
+                    if (rects.length) {
+                        return rects[0];
+                    }
+                }
+
+                // Calculate top cordinate this is needed to avoid scrolling to top of document
+                // We want the paste bin to be as close to the caret as possible to avoid scrolling
+                if (lastRng.getClientRects) {
+                    var rect = getCaretRect(lastRng);
+
+                    if (rect) {
+                        // Client rects gets us closes to the actual
+                        // caret location in for example a wrapped paragraph block
+                        top = scrollTop + (rect.top - dom.getPos(body).y);
+                    } else {
+                        top = scrollTop;
+
+                        // Check if we can find a closer location by checking the range element
+                        var container = lastRng.startContainer;
+                        if (container) {
+                            if (container.nodeType == 3 && container.parentNode != body) {
+                                container = container.parentNode;
+                            }
+
+                            if (container.nodeType == 1) {
+                                top = dom.getPos(container, scrollContainer || body).y;
+                            }
+                        }
+                    }
+                }
+
+                // Create a pastebin
+                pasteBinElm = dom.add(ed.getBody(), 'div', {
+                    id: "mcepastebin",
+                    contentEditable: true,
+                    "data-mce-bogus": "all",
+                    style: 'position: absolute; top: ' + top + 'px;' +
+                    'width: 10px; height: 10px; overflow: hidden; opacity: 0'
+                }, pasteBinDefaultContent);
+
+                // Move paste bin out of sight since the controlSelection rect gets displayed otherwise on IE and Gecko
+                if (tinymce.isIE || tinymce.isGecko) {
+                    dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) == 'rtl' ? 0xFFFF : -0xFFFF);
+                }
+
+                pasteBinElm.focus();
+                ed.selection.select(pasteBinElm, true);
             }
+
+            /**
+             * Removes the paste bin if it exists.
+             */
+            function removePasteBin() {
+                if (pasteBinElm) {
+                    var pasteBinClone;
+
+                    // WebKit/Blink might clone the div so
+                    // lets make sure we remove all clones
+                    // TODO: Man o man is this ugly. WebKit is the new IE! Remove this if they ever fix it!
+                    while ((pasteBinClone = ed.dom.get('mcepastebin'))) {
+                        ed.dom.remove(pasteBinClone);
+                        ed.dom.unbind(pasteBinClone);
+                    }
+
+                    if (lastRng) {
+                        ed.selection.setRng(lastRng);
+                    }
+                }
+
+                pasteBinElm = lastRng = null;
+            }
+
+            /**
+             * Returns the contents of the paste bin as a HTML string.
+             *
+             * @return {String} Get the contents of the paste bin.
+             */
+            function getPasteBinHtml() {
+                var html = '', pasteBinClones, i, clone, cloneHtml;
+
+                // Since WebKit/Chrome might clone the paste bin when pasting
+                // for example: <img style="float: right"> we need to check if any of them contains some useful html.
+                // TODO: Man o man is this ugly. WebKit is the new IE! Remove this if they ever fix it!
+                pasteBinClones = ed.dom.select('div[id=mcepastebin]');
+
+                for (i = 0; i < pasteBinClones.length; i++) {
+                    clone = pasteBinClones[i];
+
+                    // Pasting plain text produces pastebins in pastebinds makes sence right!?
+                    if (clone.firstChild && clone.firstChild.id == 'mcepastebin') {
+                        clone = clone.firstChild;
+                    }
+
+                    cloneHtml = clone.innerHTML;
+
+                    if (html != pasteBinDefaultContent) {
+                        html += cloneHtml;
+                    }
+                }
+
+                return html;
+            }
+
+            /**
+             * Gets various content types out of a datatransfer object.
+             *
+             * @param {DataTransfer} dataTransfer Event fired on paste.
+             * @return {Object} Object with mime types and data for those mime types.
+             */
+            function getDataTransferItems(dataTransfer) {
+                var items = {};
+
+                if (dataTransfer) {
+                    // Use old WebKit/IE API
+                    if (dataTransfer.getData) {
+                        var legacyText = dataTransfer.getData('Text');
+                        if (legacyText && legacyText.length > 0) {
+                            if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
+                                items['text/plain'] = legacyText;
+                            }
+                        }
+                    }
+
+                    if (dataTransfer.types) {
+                        for (var i = 0; i < dataTransfer.types.length; i++) {
+                            var contentType = dataTransfer.types[i];
+                            items[contentType] = dataTransfer.getData(contentType);
+                        }
+                    }
+                }
+
+                return items;
+            }
+
+            /**
+             * Gets various content types out of the Clipboard API. It will also get the
+             * plain text using older IE and WebKit API:s.
+             *
+             * @param {ClipboardEvent} clipboardEvent Event fired on paste.
+             * @return {Object} Object with mime types and data for those mime types.
+             */
+            function getClipboardContent(clipboardEvent) {
+                var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
+
+                // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
+                if (navigator.userAgent.indexOf(' Edge/') !== -1) {
+                    content = tinymce.extend(content, { 'text/html': '' });
+                }
+
+                return content;
+            }
+
+            function isKeyboardPasteEvent(e) {
+                return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
+            }
+
+            /**
+             * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
+             *
+             * @param {Event} e Paste event object to check if it contains any data.
+             * @return {Boolean} true/false if the clipboard is empty or not.
+             */
+            function isBrokenAndroidClipboardEvent(e) {
+                var clipboardData = e.clipboardData;
+                return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
+            }
+
+            function hasContentType(clipboardContent, mimeType) {
+                return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+            }
+
+            function hasHtmlOrText(content) {
+                return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
+            }
+
+            ed.onKeyDown.add(function (ed, e) {
+                // Block ctrl+v from adding an undo level since the default logic in tinymce.Editor will add that
+                if ((VK.metaKeyPressed && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45)) {
+                    return false; // Stop other listeners
+                }
+
+                // block events
+                if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed && e.keyCode == 88)) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed && e.keyCode == 67)) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                function removePasteBinOnKeyUp(ed, e) {
+                    // Ctrl+V or Shift+Insert
+                    if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
+                        removePasteBin();
+                    }
+
+                    ed.onKeyUp.remove(removePasteBinOnKeyUp);
+                }
+
+                var keyboardPastePlainTextState, keyboardPasteTimeStamp;
+
+                // Ctrl+V or Shift+Insert
+                if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
+                    keyboardPastePlainTextState = e.shiftKey && e.keyCode == 86;
+
+                    // Edge case on Safari on Mac where it doesn't handle Cmd+Shift+V correctly
+                    // it fires the keydown but no paste or keyup so we are left with a paste bin
+                    if (keyboardPastePlainTextState && tinymce.isWebKit && navigator.userAgent.indexOf('Version/') != -1) {
+                        return;
+                    }
+
+                    // Prevent undoManager keydown handler from making an undo level with the pastebin in it
+                    e.stopImmediatePropagation();
+
+                    keyboardPasteTimeStamp = new Date().getTime();
+
+                    // IE doesn't support Ctrl+Shift+V and it doesn't even produce a paste event
+                    // so lets fake a paste event and let IE use the execCommand/dataTransfer methods
+                    if (tinymce.isIE && keyboardPastePlainTextState) {
+                        e.preventDefault();
+                        ed.onPaste.dispatch({ ieFake: true });
+                        return;
+                    }
+
+                    removePasteBin();
+                    createPasteBin();
+
+                    // Remove pastebin if we get a keyup and no paste event
+                    // For example pasting a file in IE 11 will not produce a paste event
+                    ed.onKeyUp.add(removePasteBinOnKeyUp);
+
+                    function keyUpOff(ed, e) {
+                        removePasteBinOnKeyUp(ed, e);
+                        ed.onPaste.remove(keyUpOff);
+                    }
+
+                    ed.onPaste.add(keyUpOff);
+                }
+            });
+
+            // Grab contents on paste event
+            ed.onPaste.addToTop(function (ed, e) {
+                // Getting content from the Clipboard can take some time
+                var clipboardTimer = new Date().getTime();
+                var clipboardContent = getClipboardContent(e);
+                var clipboardDelay = new Date().getTime() - clipboardTimer;
+
+                var isKeyBoardPaste = (new Date().getTime() - keyboardPasteTimeStamp - clipboardDelay) < 1000;
+
+                // override HTML paste
+                if (!self.pasteHtml || keyboardPastePlainTextState) {
+                    self.pasteAsPlainText = true;
+                }
+
+                keyboardPastePlainTextState = false;
+
+                if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
+                    removePasteBin();
+                    return;
+                }
+
+                // Not a keyboard paste prevent default paste and try to grab the clipboard contents using different APIs
+                if (!isKeyBoardPaste) {
+                    e.preventDefault();
+                }
+
+                // Try IE only method if paste isn't a keyboard paste
+                if (tinymce.isIE && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+                    createPasteBin();
+
+                    editor.dom.bind(pasteBinElm, 'paste', function (e) {
+                        e.stopPropagation();
+                    });
+
+                    ed.getDoc().execCommand('Paste', false, null);
+                    clipboardContent["text/html"] = getPasteBinHtml();
+                }
+
+                if (hasHtmlOrText(clipboardContent)) {
+                    e.preventDefault();
+                    insertClipboardContent(clipboardContent);
+                } else {
+                    window.setTimeout(function () {
+                        insertClipboardContent(clipboardContent);
+                    }, 0);
+                }
+            });
 
             // Block all drag/drop events
             if (ed.getParam('clipboard_paste_block_drop')) {
@@ -1368,6 +1673,8 @@
 
             });
 
+            //self.pasteHtml = false;
+
             // Add buttons
             if (self.pasteHtml) {
                 ed.addButton('paste', {
@@ -1420,8 +1727,8 @@
                 inline: 1,
                 popup_css: false
             }, {
-                cmd: cmd
-            });
+                    cmd: cmd
+                });
         },
         _preProcess: function (pl, o) {
             var ed = pl.editor,
@@ -1441,7 +1748,7 @@
             h = h.replace(/(&nbsp;|<br[^>]*>)+\s*$/g, ''); // nbsp entities at the end of contents
 
             // skip plain text
-            if (this.plainText) {
+            if (this.pasteAsPlainText) {
                 return h;
             }
 
@@ -1450,7 +1757,7 @@
             if (o.wordContent) {
                 h = WordFilter(ed, h);
             }
-            
+
             // remove webKit style weirdness if not word content
             if (tinymce.isWebKit && !o.wordContent) {
                 h = removeWebKitStyles(ed, h);
@@ -1513,66 +1820,6 @@
         },
 
         /**
-         * Paste as Plain Text
-         * Remove all html form pasted contents. Newlines will be converted to paragraphs or linebreaks
-         */
-        _insertPlainText: function (h) {
-            var ed = this.editor,
-                dom = ed.dom,
-                rb, entities = null;
-
-            if ((typeof (h) === "string") && (h.length > 0)) {
-
-                // clean any Word specific tags
-                h = WordFilter(ed, h);
-
-                // If HTML content with line-breaking tags, then remove all cr/lf chars because only tags will break a line
-                if (/<(?:p|br|h[1-6]|ul|ol|dl|table|t[rdh]|div|blockquote|fieldset|pre|address|center)[^>]*>/i.test(h)) {
-                    h = h.replace(/[\n\r]+/g, '');
-                } else {
-                    // Otherwise just get rid of carriage returns (only need linefeeds)
-                    h = h.replace(/\r+/g, '');
-                }
-
-                h = h.replace(/<\/(?:p|h[1-6]|ul|ol|dl|table|div|blockquote|fieldset|pre|address|center)>/gi, "\n\n"); // Block tags get a blank line after them
-
-                h = h.replace(/<br[^>]*>|<\/tr>/gi, "\n"); // Single linebreak for <br /> tags and table rows
-                h = h.replace(/<\/t[dh]>\s*<t[dh][^>]*>/gi, "\t"); // Table cells get tabs betweem them
-
-                h = h.replace(/<[a-z!\/?][^>]*>/gi, ''); // Delete all remaining tags
-                h = h.replace(/&nbsp;/gi, " "); // Convert non-break spaces to regular spaces (remember, *plain text*)
-
-                // replace HTML entity with actual character
-                h = dom.decode(tinymce.html.Entities.encodeRaw(h));
-
-                h = h.replace(/(?:(?!\n)\s)*(\n+)(?:(?!\n)\s)*/gi, "$1"); // Cool little RegExp deletes whitespace around linebreak chars.
-                h = h.replace(/\n{3,}/g, "\n\n"); // Max. 2 consecutive linebreaks
-                h = h.replace(/^\s+|\s+$/g, ''); // Trim the front & back
-
-                // Perform replacements
-                h = h.replace(/\u2026/g, "...");
-                h = h.replace(/[\x93\x94]/g, '"');
-                h = h.replace(/[\x60\x91\x92]/g, "'");
-
-                if (rb = ed.getParam("forced_root_block")) {
-                    // strip whitespace
-                    h = h.replace(/^\s+|\s+$/g, '');
-                    // replace double linebreaks with paragraphs
-                    h = h.replace(/\n\n/g, '</' + rb + '><' + rb + '>');
-                }
-                // replace single linebreak with br element
-                h = h.replace(/\n+?/g, '<br />');
-
-                // remove empty paragraphs
-                if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                    h = h.replace(/<p>(\s|&nbsp;|\u00a0)?<\/p>/gi, '');
-                }
-            }
-
-            this._insert(h);
-        },
-
-        /**
          * Various post process items.
          */
         _postProcess: function (pl, o) {
@@ -1586,7 +1833,7 @@
             }
 
             // skip if plain text
-            if (this.plainText) {
+            if (this.pasteAsPlainText) {
                 return;
             }
 

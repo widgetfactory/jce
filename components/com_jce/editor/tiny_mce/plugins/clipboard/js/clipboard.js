@@ -57,48 +57,26 @@ var ClipboardDialog = {
 				ifr.contentWindow.focus();
 			}, 100);
 
-			/*window.onresize = function() {
-				self.resize();
-			};*/
-
 		} else {
 			document.title = ed.getLang('clipboard.paste_text_desc');
 			el.innerHTML = '<textarea id="content" name="content" dir="ltr" wrap="soft" class="mceFocus"></textarea>';
 		}
-
-		//this.resize();
 	},
 
 	insert: function () {
-		var h, wc, c = document.getElementById('content');
+		var html = "", node = document.getElementById('content');
 
 		tinyMCEPopup.restoreSelection();
 
-		if (c.nodeName == 'TEXTAREA') {
-			h = c.value;
+		var data = {};
 
-			lines = h.split(/\r?\n/);
-			if (lines.length > 1) {
-				h = '';
-				tinymce.each(lines, function (row) {
-					if (tinyMCEPopup.editor.getParam('force_p_newlines')) {
-						h += '<p>' + row + '</p>';
-					} else {
-						h += row + '<br />';
-					}
-				});
-			}
-
-			wc = false;
+		if (node.nodeName == 'TEXTAREA') {
+			data.text = node.value;
 		} else {
-			h = c.contentWindow.document.body.innerHTML;
-			wc = true;
+			data.content = node.contentWindow.document.body.innerHTML;
 		}
 
-		tinyMCEPopup.editor.execCommand('mceInsertClipboardContent', false, {
-			content: h,
-			wordContent: wc
-		});
+		tinyMCEPopup.editor.execCommand('mceInsertClipboardContent', false, data);
 		tinyMCEPopup.close();
 	},
 
