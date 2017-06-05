@@ -1235,7 +1235,7 @@
                             $.each(v.options, function(value, name) {
                                 var selected = "";
 
-                                if (v.default && value === v.default) {
+                                if (v['default'] && value === v['default']) {
                                     selected = " selected";
                                 }
                                 

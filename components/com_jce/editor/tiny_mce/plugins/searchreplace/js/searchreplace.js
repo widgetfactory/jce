@@ -24,7 +24,7 @@
             e.preventDefault();
 
             ed.execCommand('mceSearch', false, {
-                "case": $('#matchcase').is(':checked'),
+                "textcase": $('#matchcase').is(':checked'),
                 "text": $('#search_string').val(),
                 "wholeword": $('#wholewords').is(':checked')
             });
