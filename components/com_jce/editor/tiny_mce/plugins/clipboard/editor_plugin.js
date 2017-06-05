@@ -1074,6 +1074,9 @@
         };
     };
 
+    // IE flag to include Edge
+    var isIE = tinymce.isIE || tinymce.isIE12;
+
     tinymce.create('tinymce.plugins.ClipboardPlugin', {
         init: function (ed, url) {
             var self = this;
@@ -1189,7 +1192,7 @@
 
                 // Execute post process handlers
                 self.onPostProcess.dispatch(self, o);
- 
+
                 // Serialize content
                 o.content = ed.serializer.serialize(o.node, {
                     getInner: 1,
@@ -1203,7 +1206,7 @@
             }
 
             // This function executes the process handlers and inserts the contents
-            function insertClipboardContent(clipboardContent) {
+            function insertClipboardContent(clipboardContent, isKeyBoardPaste) {
                 var content, isPlainTextHtml;
 
                 // Grab HTML from Clipboard API or paste bin as a fallback
@@ -1211,7 +1214,6 @@
                     content = clipboardContent['text/html'];
                 } else {
                     content = getPasteBinHtml();
-
                     // If paste bin is empty try using plain text mode
                     // since that is better than nothing right
                     if (content == pasteBinDefaultContent) {
@@ -1268,7 +1270,7 @@
                 var viewport = ed.dom.getViewPort(ed.getWin()), scrollTop = viewport.y, top = 20;
                 var scrollContainer;
 
-                lastRng = editor.selection.getRng();
+                lastRng = ed.selection.getRng();
 
                 /**
                  * Returns the rect of the current caret if the caret is in an empty block before a
@@ -1355,7 +1357,7 @@
                 }, pasteBinDefaultContent);
 
                 // Move paste bin out of sight since the controlSelection rect gets displayed otherwise on IE and Gecko
-                if (tinymce.isIE || tinymce.isGecko) {
+                if (isIE || tinymce.isGecko) {
                     dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) == 'rtl' ? 0xFFFF : -0xFFFF);
                 }
 
@@ -1402,7 +1404,7 @@
                 for (i = 0; i < pasteBinClones.length; i++) {
                     clone = pasteBinClones[i];
 
-                    // Pasting plain text produces pastebins in pastebinds makes sence right!?
+                    // Pasting plain text produces pastebins in pastebins makes sence right!?
                     if (clone.firstChild && clone.firstChild.id == 'mcepastebin') {
                         clone = clone.firstChild;
                     }
@@ -1490,11 +1492,6 @@
             }
 
             ed.onKeyDown.add(function (ed, e) {
-                // Block ctrl+v from adding an undo level since the default logic in tinymce.Editor will add that
-                if ((VK.metaKeyPressed && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45)) {
-                    return false; // Stop other listeners
-                }
-
                 // block events
                 if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed && e.keyCode == 88)) {
                     e.preventDefault();
@@ -1534,7 +1531,7 @@
 
                     // IE doesn't support Ctrl+Shift+V and it doesn't even produce a paste event
                     // so lets fake a paste event and let IE use the execCommand/dataTransfer methods
-                    if (tinymce.isIE && keyboardPastePlainTextState) {
+                    if (isIE && keyboardPastePlainTextState) {
                         e.preventDefault();
                         ed.onPaste.dispatch({ ieFake: true });
                         return;
@@ -1557,7 +1554,7 @@
             });
 
             // Grab contents on paste event
-            ed.onPaste.addToTop(function (ed, e) {
+            ed.onPaste.add(function (ed, e) {
                 // Getting content from the Clipboard can take some time
                 var clipboardTimer = new Date().getTime();
                 var clipboardContent = getClipboardContent(e);
@@ -1583,25 +1580,26 @@
                 }
 
                 // Try IE only method if paste isn't a keyboard paste
-                if (tinymce.isIE && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+                if (isIE && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
                     createPasteBin();
 
-                    editor.dom.bind(pasteBinElm, 'paste', function (e) {
+                    ed.dom.bind(pasteBinElm, 'paste', function (e) {
                         e.stopPropagation();
                     });
 
                     ed.getDoc().execCommand('Paste', false, null);
+                    
                     clipboardContent["text/html"] = getPasteBinHtml();
                 }
 
-                if (hasHtmlOrText(clipboardContent)) {
+                // using the API so block the event;
+                if (hasContentType(clipboardContent, 'text/html')) {
                     e.preventDefault();
-                    insertClipboardContent(clipboardContent);
-                } else {
-                    window.setTimeout(function () {
-                        insertClipboardContent(clipboardContent);
-                    }, 0);
                 }
+
+                window.setTimeout(function () {
+                    insertClipboardContent(clipboardContent, isKeyBoardPaste);
+                }, 0);
             });
 
             // Block all drag/drop events
@@ -1655,7 +1653,7 @@
                     self.command = cmd;
 
                     // just open the window
-                    if (ed.getParam('clipboard_paste_use_dialog') || (tinymce.isIE && !doc.queryCommandSupported('Paste'))) {
+                    if (ed.getParam('clipboard_paste_use_dialog') || (isIE && !doc.queryCommandSupported('Paste'))) {
                         return self._openWin(cmd);
                     } else {
                         try {
@@ -1672,8 +1670,6 @@
                 });
 
             });
-
-            //self.pasteHtml = false;
 
             // Add buttons
             if (self.pasteHtml) {
@@ -1739,7 +1735,7 @@
                 return;
             }
 
-            if (tinymce.isIE) {
+            if (isIE) {
                 h = removeExplorerBrElementsAfterBlocks(ed, h);
             }
 
@@ -1924,7 +1920,7 @@
             });
 
             // remove font and underline tags in IE
-            if (tinymce.isIE) {
+            if (isIE) {
                 each(dom.select('a', o.node), function (el) {
                     each(dom.select('font,u'), function (n) {
                         dom.remove(n, 1);

@@ -73,7 +73,12 @@ var ClipboardDialog = {
 		if (node.nodeName == 'TEXTAREA') {
 			data.text = node.value;
 		} else {
-			data.content = node.contentWindow.document.body.innerHTML;
+			var content = node.contentWindow.document.body.innerHTML;
+			
+			// Remove styles
+			content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, ''); 
+
+			data.content = content;
 		}
 
 		tinyMCEPopup.editor.execCommand('mceInsertClipboardContent', false, data);
