@@ -1206,34 +1206,23 @@
             }
 
             // This function executes the process handlers and inserts the contents
-            function insertClipboardContent(clipboardContent, isKeyBoardPaste) {
+            function insertClipboardContent(clipboardContent) {
                 var content, isPlainTextHtml;
 
-                // Grab HTML from Clipboard API or paste bin as a fallback
-                if (hasContentType(clipboardContent, 'text/html')) {
-                    content = clipboardContent['text/html'];
-                } else {
-                    content = getPasteBinHtml();
-                    // If paste bin is empty try using plain text mode
-                    // since that is better than nothing right
-                    if (content == pasteBinDefaultContent) {
-                        self.pasteAsPlainText = true;
-                    }
-                }
-
+                // get html content
+                content = clipboardContent['text/html'];
+                // trim
                 content = trimHtml(content);
 
-                // WebKit has a nice bug where it clones the paste bin if you paste from for example notepad
-                // so we need to force plain text mode in this case
-                if (pasteBinElm && pasteBinElm.firstChild && pasteBinElm.firstChild.id === 'mcepastebin') {
-                    self.pasteAsPlainText = true;
+                // no content....?
+                if (content === pasteBinDefaultContent) {
+                    return;
                 }
 
-                removePasteBin();
-
-                isPlainTextHtml = new Newlines().isPlainText(content);
-
+                // paste text
                 if (self.pasteAsPlainText) {
+                    isPlainTextHtml = new Newlines().isPlainText(content);
+
                     // Use plain text contents from Clipboard API unless the HTML contains paragraphs then
                     // we should convert the HTML to plain text since works better when pasting HTML/Word contents as plain text
                     if (hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
@@ -1241,23 +1230,86 @@
                     } else {
                         content = innerText(content);
                     }
+
+                    pasteText(content);
+
+                    return true;
                 }
 
-                // If the content is the paste bin default HTML then it was
-                // impossible to get the cliboard data out.
-                if (content == pasteBinDefaultContent) {
-                    if (!isKeyBoardPaste) {
-                        ed.windowManager.alert('Please use Ctrl+V/Cmd+V keyboard shortcuts to paste contents.');
+                // paste HTML
+                pasteHtml(content);
+            }
+
+            /**
+             * Gets various content types out of a datatransfer object.
+             *
+             * @param {DataTransfer} dataTransfer Event fired on paste.
+             * @return {Object} Object with mime types and data for those mime types.
+             */
+            function getDataTransferItems(dataTransfer) {
+                var items = {};
+
+                if (dataTransfer) {
+                    // Use old WebKit/IE API
+                    if (dataTransfer.getData) {
+                        var legacyText = dataTransfer.getData('Text');
+                        if (legacyText && legacyText.length > 0) {
+                            if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
+                                items['text/plain'] = legacyText;
+                            }
+                        }
                     }
 
-                    return;
+                    if (dataTransfer.types) {
+                        for (var i = 0; i < dataTransfer.types.length; i++) {
+                            var contentType = dataTransfer.types[i];
+                            items[contentType] = dataTransfer.getData(contentType);
+                        }
+                    }
                 }
 
-                if (self.pasteAsPlainText) {
-                    pasteText(content);
-                } else {
-                    pasteHtml(content);
+                return items;
+            }
+
+            /**
+             * Gets various content types out of the Clipboard API. It will also get the
+             * plain text using older IE and WebKit API:s.
+             *
+             * @param {ClipboardEvent} clipboardEvent Event fired on paste.
+             * @return {Object} Object with mime types and data for those mime types.
+             */
+            function getClipboardContent(clipboardEvent) {
+                var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
+
+                // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
+                if (navigator.userAgent.indexOf(' Edge/') !== -1) {
+                    content = tinymce.extend(content, { 'text/html': '' });
                 }
+
+                return content;
+            }
+
+            function isKeyboardPasteEvent(e) {
+                return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
+            }
+
+            /**
+             * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
+             *
+             * @param {Event} e Paste event object to check if it contains any data.
+             * @return {Boolean} true/false if the clipboard is empty or not.
+             */
+            function isBrokenAndroidClipboardEvent(e) {
+                var clipboardData = e.clipboardData;
+                return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
+            }
+
+            function hasContentType(clipboardContent, mimeType) {
+                return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+            }
+
+            function hasHtmlOrText(content) {
+                return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
             }
 
             /**
@@ -1282,7 +1334,6 @@
                     var rects, textNode, node, container = rng.startContainer;
 
                     rects = rng.getClientRects();
-
                     if (rects.length) {
                         return rects[0];
                     }
@@ -1404,7 +1455,7 @@
                 for (i = 0; i < pasteBinClones.length; i++) {
                     clone = pasteBinClones[i];
 
-                    // Pasting plain text produces pastebins in pastebins makes sence right!?
+                    // Pasting plain text produces pastebins in pastebinds makes sence right!?
                     if (clone.firstChild && clone.firstChild.id == 'mcepastebin') {
                         clone = clone.firstChild;
                     }
@@ -1419,76 +1470,73 @@
                 return html;
             }
 
-            /**
-             * Gets various content types out of a datatransfer object.
-             *
-             * @param {DataTransfer} dataTransfer Event fired on paste.
-             * @return {Object} Object with mime types and data for those mime types.
-             */
-            function getDataTransferItems(dataTransfer) {
-                var items = {};
+            // This function grabs the contents from the clipboard by adding a
+            // hidden div and placing the caret inside it and after the browser paste
+            // is done it grabs that contents and processes that
+            function getContentFromPasteBin(e) {
+                var dom = ed.dom;
 
-                if (dataTransfer) {
-                    // Use old WebKit/IE API
-                    if (dataTransfer.getData) {
-                        var legacyText = dataTransfer.getData('Text');
-                        if (legacyText && legacyText.length > 0) {
-                            if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
-                                items['text/plain'] = legacyText;
-                            }
-                        }
-                    }
-
-                    if (dataTransfer.types) {
-                        for (var i = 0; i < dataTransfer.types.length; i++) {
-                            var contentType = dataTransfer.types[i];
-                            items[contentType] = dataTransfer.getData(contentType);
-                        }
-                    }
+                // don't repeat paste
+                if (dom.get('mcepastebin')) {
+                    return;
                 }
 
-                return items;
-            }
+                createPasteBin();
 
-            /**
-             * Gets various content types out of the Clipboard API. It will also get the
-             * plain text using older IE and WebKit API:s.
-             *
-             * @param {ClipboardEvent} clipboardEvent Event fired on paste.
-             * @return {Object} Object with mime types and data for those mime types.
-             */
-            function getClipboardContent(clipboardEvent) {
-                var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
+                // old annoying IE....   
+                if (isIE && isIE < 11) {
+                    var rng;
 
-                // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
-                if (navigator.userAgent.indexOf(' Edge/') !== -1) {
-                    content = tinymce.extend(content, { 'text/html': '' });
+                    // Select the container
+                    rng = dom.doc.body.createTextRange();
+                    rng.moveToElementText(pasteBinElm);
+                    rng.execCommand('Paste');
+
+                    var html = pasteBinElm.innerHTML;
+
+                    // Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
+                    // to IE security settings so we pass the junk though better than nothing right
+                    if (html === pasteBinDefaultContent) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // Remove container
+                    removePasteBin();
+
+                    // For some odd reason we need to detach the the mceInsertContent call from the paste event
+                    // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
+                    // when it tries to restore the selection
+                    setTimeout(function () {
+                        insertClipboardContent({ "text/html": html });
+                    }, 0);
+
+                    // Block the real paste event
+                    Event.cancel(e);
+
+                    return;
                 }
 
-                return content;
-            }
+                function block(e) {
+                    e.preventDefault();
+                }
 
-            function isKeyboardPasteEvent(e) {
-                return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
-            }
+                // Block mousedown and click to prevent selection change
+                dom.bind(ed.getDoc(), 'mousedown', block);
+                dom.bind(ed.getDoc(), 'keydown', block);
 
-            /**
-             * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
-             *
-             * @param {Event} e Paste event object to check if it contains any data.
-             * @return {Boolean} true/false if the clipboard is empty or not.
-             */
-            function isBrokenAndroidClipboardEvent(e) {
-                var clipboardData = e.clipboardData;
-                return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
-            }
+                // Wait a while and grab the pasted contents
+                window.setTimeout(function () {
+                    var html = getPasteBinHtml();
 
-            function hasContentType(clipboardContent, mimeType) {
-                return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
-            }
+                    removePasteBin();
 
-            function hasHtmlOrText(content) {
-                return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
+                    insertClipboardContent({ "text/html": html });
+
+                    // Unblock events ones we got the contents
+                    dom.unbind(ed.getDoc(), 'mousedown', block);
+                    dom.unbind(ed.getDoc(), 'keydown', block);
+                }, 0);
             }
 
             ed.onKeyDown.add(function (ed, e) {
@@ -1503,103 +1551,40 @@
                     return false;
                 }
 
-                function removePasteBinOnKeyUp(ed, e) {
-                    // Ctrl+V or Shift+Insert
-                    if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
-                        removePasteBin();
-                    }
-
-                    ed.onKeyUp.remove(removePasteBinOnKeyUp);
-                }
-
-                var keyboardPastePlainTextState, keyboardPasteTimeStamp;
-
                 // Ctrl+V or Shift+Insert
                 if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
-                    keyboardPastePlainTextState = e.shiftKey && e.keyCode == 86;
-
-                    // Edge case on Safari on Mac where it doesn't handle Cmd+Shift+V correctly
-                    // it fires the keydown but no paste or keyup so we are left with a paste bin
-                    if (keyboardPastePlainTextState && tinymce.isWebKit && navigator.userAgent.indexOf('Version/') != -1) {
-                        return;
-                    }
-
                     // Prevent undoManager keydown handler from making an undo level with the pastebin in it
                     e.stopImmediatePropagation();
 
-                    keyboardPasteTimeStamp = new Date().getTime();
+                    keyboardPastePlainTextState = e.shiftKey && e.keyCode == 86;
 
-                    // IE doesn't support Ctrl+Shift+V and it doesn't even produce a paste event
-                    // so lets fake a paste event and let IE use the execCommand/dataTransfer methods
-                    if (isIE && keyboardPastePlainTextState) {
-                        e.preventDefault();
-                        ed.onPaste.dispatch({ ieFake: true });
-                        return;
+                    // mark as plain text paste
+                    if (keyboardPastePlainTextState) {
+                        self.pasteAsPlainText = true;
+
+                        getContentFromPasteBin(e);
                     }
-
-                    removePasteBin();
-                    createPasteBin();
-
-                    // Remove pastebin if we get a keyup and no paste event
-                    // For example pasting a file in IE 11 will not produce a paste event
-                    ed.onKeyUp.add(removePasteBinOnKeyUp);
-
-                    function keyUpOff(ed, e) {
-                        removePasteBinOnKeyUp(ed, e);
-                        ed.onPaste.remove(keyUpOff);
-                    }
-
-                    ed.onPaste.add(keyUpOff);
                 }
             });
 
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
-                // Getting content from the Clipboard can take some time
-                var clipboardTimer = new Date().getTime();
                 var clipboardContent = getClipboardContent(e);
-                var clipboardDelay = new Date().getTime() - clipboardTimer;
 
-                var isKeyBoardPaste = (new Date().getTime() - keyboardPasteTimeStamp - clipboardDelay) < 1000;
-
-                // override HTML paste
-                if (!self.pasteHtml || keyboardPastePlainTextState) {
-                    self.pasteAsPlainText = true;
-                }
-
-                keyboardPastePlainTextState = false;
-
-                if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
-                    removePasteBin();
-                    return;
-                }
-
-                // Not a keyboard paste prevent default paste and try to grab the clipboard contents using different APIs
-                if (!isKeyBoardPaste) {
+                if (self.pasteAsPlainText && hasContentType(clipboardContent, "text/plain")) {
                     e.preventDefault();
+                    var text = clipboardContent["text/plain"];
+                    return pasteText(text);
                 }
 
-                // Try IE only method if paste isn't a keyboard paste
-                if (isIE && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
-                    createPasteBin();
-
-                    ed.dom.bind(pasteBinElm, 'paste', function (e) {
-                        e.stopPropagation();
-                    });
-
-                    ed.getDoc().execCommand('Paste', false, null);
-                    
-                    clipboardContent["text/html"] = getPasteBinHtml();
-                }
-
-                // using the API so block the event;
-                if (hasContentType(clipboardContent, 'text/html')) {
+                // use clipboard API
+                if (hasContentType(clipboardContent, "text/html")) {
                     e.preventDefault();
+                    insertClipboardContent(clipboardContent);
+                    // use paste bin    
+                } else {
+                    getContentFromPasteBin(e);
                 }
-
-                window.setTimeout(function () {
-                    insertClipboardContent(clipboardContent, isKeyBoardPaste);
-                }, 0);
             });
 
             // Block all drag/drop events
@@ -1648,27 +1633,31 @@
             // Add commands
             each(['mcePasteText', 'mcePaste'], function (cmd) {
                 ed.addCommand(cmd, function () {
-                    var doc = ed.getDoc();
-                    // set command
-                    self.command = cmd;
+                    var doc = ed.getDoc(), failed;
 
                     // just open the window
-                    if (ed.getParam('clipboard_paste_use_dialog') || (isIE && !doc.queryCommandSupported('Paste'))) {
+                    if (ed.getParam('clipboard_paste_use_dialog') || (isIE && !doc.queryCommandEnabled('Paste'))) {
                         return self._openWin(cmd);
                     } else {
                         try {
+                            // set plain text mode
+                            self.pasteAsPlainText = (cmd === "mcePasteText");
+
                             doc.execCommand('Paste', false, null);
                         } catch (e) {
-                            self.canPaste = false;
+                            failed = true;
                         }
 
-                        // if paste command not supported open window
-                        if (self.canPaste === false) {
+                        // Chrome reports the paste command as supported however older IE:s will return false for cut/paste
+                        if (!doc.queryCommandEnabled('Paste')) {
+                            failed = true;
+                        }
+
+                        if (failed) {
                             return self._openWin(cmd);
                         }
                     }
                 });
-
             });
 
             // Add buttons
