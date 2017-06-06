@@ -1306,6 +1306,78 @@
         };
     };
 
+    /**
+     * Gets various content types out of a datatransfer object.
+     *
+     * @param {DataTransfer} dataTransfer Event fired on paste.
+     * @return {Object} Object with mime types and data for those mime types.
+     */
+    function getDataTransferItems(dataTransfer) {
+        var items = {};
+
+        if (dataTransfer) {
+            // Use old WebKit/IE API
+            if (dataTransfer.getData) {
+                var legacyText = dataTransfer.getData('Text');
+                if (legacyText && legacyText.length > 0) {
+                    if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
+                        items['text/plain'] = legacyText;
+                    }
+                }
+            }
+
+            if (dataTransfer.types) {
+                for (var i = 0; i < dataTransfer.types.length; i++) {
+                    var contentType = dataTransfer.types[i];
+                    items[contentType] = dataTransfer.getData(contentType);
+                }
+            }
+        }
+
+        return items;
+    }
+
+    /**
+     * Gets various content types out of the Clipboard API. It will also get the
+     * plain text using older IE and WebKit API:s.
+     *
+     * @param {ClipboardEvent} clipboardEvent Event fired on paste.
+     * @return {Object} Object with mime types and data for those mime types.
+     */
+    function getClipboardContent(clipboardEvent) {
+        var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
+
+        // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
+        if (navigator.userAgent.indexOf(' Edge/') !== -1) {
+            content = tinymce.extend(content, { 'text/html': '' });
+        }
+
+        return content;
+    }
+
+    function isKeyboardPasteEvent(e) {
+        return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
+    }
+
+    /**
+     * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
+     *
+     * @param {Event} e Paste event object to check if it contains any data.
+     * @return {Boolean} true/false if the clipboard is empty or not.
+     */
+    function isBrokenAndroidClipboardEvent(e) {
+        var clipboardData = e.clipboardData;
+        return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
+    }
+
+    function hasContentType(clipboardContent, mimeType) {
+        return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+    }
+
+    function hasHtmlOrText(content) {
+        return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
+    }
+
     // IE flag to include Edge
     var isIE = tinymce.isIE || tinymce.isIE12;
 
@@ -1344,11 +1416,11 @@
             }
 
             // Register default handlers
-            self.onPreProcess.add(function(self, o) {
+            self.onPreProcess.add(function (self, o) {
                 preProcess(self, o);
             });
 
-            self.onPostProcess.add(function(self, o) {
+            self.onPostProcess.add(function (self, o) {
                 postProcess(self, o);
             });
 
@@ -1488,78 +1560,6 @@
 
                 // paste HTML
                 pasteHtml(content);
-            }
-
-            /**
-             * Gets various content types out of a datatransfer object.
-             *
-             * @param {DataTransfer} dataTransfer Event fired on paste.
-             * @return {Object} Object with mime types and data for those mime types.
-             */
-            function getDataTransferItems(dataTransfer) {
-                var items = {};
-
-                if (dataTransfer) {
-                    // Use old WebKit/IE API
-                    if (dataTransfer.getData) {
-                        var legacyText = dataTransfer.getData('Text');
-                        if (legacyText && legacyText.length > 0) {
-                            if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
-                                items['text/plain'] = legacyText;
-                            }
-                        }
-                    }
-
-                    if (dataTransfer.types) {
-                        for (var i = 0; i < dataTransfer.types.length; i++) {
-                            var contentType = dataTransfer.types[i];
-                            items[contentType] = dataTransfer.getData(contentType);
-                        }
-                    }
-                }
-
-                return items;
-            }
-
-            /**
-             * Gets various content types out of the Clipboard API. It will also get the
-             * plain text using older IE and WebKit API:s.
-             *
-             * @param {ClipboardEvent} clipboardEvent Event fired on paste.
-             * @return {Object} Object with mime types and data for those mime types.
-             */
-            function getClipboardContent(clipboardEvent) {
-                var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
-
-                // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
-                if (navigator.userAgent.indexOf(' Edge/') !== -1) {
-                    content = tinymce.extend(content, { 'text/html': '' });
-                }
-
-                return content;
-            }
-
-            function isKeyboardPasteEvent(e) {
-                return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
-            }
-
-            /**
-             * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
-             *
-             * @param {Event} e Paste event object to check if it contains any data.
-             * @return {Boolean} true/false if the clipboard is empty or not.
-             */
-            function isBrokenAndroidClipboardEvent(e) {
-                var clipboardData = e.clipboardData;
-                return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
-            }
-
-            function hasContentType(clipboardContent, mimeType) {
-                return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
-            }
-
-            function hasHtmlOrText(content) {
-                return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
             }
 
             /**
