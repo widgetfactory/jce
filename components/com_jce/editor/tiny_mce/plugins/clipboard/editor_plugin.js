@@ -200,7 +200,9 @@
      * Becomes:
      *  <p>a</p><p>b</p>
      */
-    function removeExplorerBrElementsAfterBlocks(editor, html) {
+    function removeExplorerBrElementsAfterBlocks(self, o) {
+        var html = o.content;
+
         // Produce block regexp based on the block elements in schema
         var blockElements = [];
 
@@ -225,7 +227,7 @@
             [/<BR><BR>/g, '<br>'] // Replace back the double brs but into a single BR
         ]);
 
-        return html;
+        o.content = html;
     }
 
     /**
@@ -236,16 +238,25 @@
      *  paste_webkit_styles: "none" // Keep no styles
      *  paste_webkit_styles: "all", // Keep all of them
      *  paste_webkit_styles: "font-weight color" // Keep specific ones
-     *
+     * 
+     * @param {Object} self A reference to the plugin.
      * @param {String} content Content that needs to be processed.
      * @return {String} Processed contents.
      */
-    function removeWebKitStyles(editor, content) {
+    function removeWebKitStyles(self, o) {
+        var editor = self.editor, content = o.content;
+
+        if (isWordContent(editor, o.content)) {
+            return;
+        }
+
+        console.log(content);
+
         // Filter away styles that isn't matching the target node
         var webKitStyles = editor.settings.paste_webkit_styles;
 
         if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
-            return content;
+            return;
         }
 
         if (webKitStyles) {
@@ -296,7 +307,230 @@
             return before + ' style="' + value + '"' + after;
         });
 
-        return content;
+        o.content = content;
+    }
+
+    function preProcess(self, o) {
+        var ed = self.editor, h = o.content, rb;
+
+        // Process away some basic content
+        h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
+        h = h.replace(/(&nbsp;|<br[^>]*>)+\s*$/g, ''); // nbsp entities at the end of contents
+
+        // skip plain text
+        if (self.pasteAsPlainText) {
+            return h;
+        }
+
+        o.wordContent = isWordContent(ed, h);
+
+        if (o.wordContent) {
+            h = WordFilter(ed, h);
+        }
+
+        // remove attributes
+        if (ed.getParam('clipboard_paste_remove_attributes')) {
+            var attribs = ed.getParam('clipboard_paste_remove_attributes').split(',');
+
+            h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
+        }
+
+        // replace double linebreaks with paragraphs
+        if (rb = ed.getParam('forced_root_block')) {
+            var blocks = '';
+            // only split if a double break exists
+            if (h.indexOf('<br><br>') != -1) {
+                // convert marker to paragraphs
+                tinymce.each(h.split('<br><br>'), function (block) {
+                    blocks += '<' + rb + '>' + block + '</' + rb + '>';
+                });
+
+                h = blocks;
+            }
+        }
+
+        // Remove all spans (and font, u, strike if inline_styles = true as these would get converted to spans later)
+        if (ed.getParam('clipboard_paste_remove_spans')) {
+            h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
+
+            if (ed.settings.convert_fonts_to_spans) {
+                h = h.replace(/<\/?(font)[^>]*>/gi, '');
+            }
+
+            h = h.replace(/<\/?(span)[^>]*>/gi, '');
+        }
+
+        // replace paragraphs with linebreaks
+        if (!ed.getParam('forced_root_block')) {
+            // remove empty paragraphs first
+            if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
+                h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
+            }
+
+            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
+        }
+
+        // convert urls in content
+        if (ed.getParam('clipboard_paste_convert_urls', true)) {
+            h = convertURLs(ed, h);
+        }
+
+        // convert some tags if cleanup is off
+        if (ed.settings.verify_html === false) {
+            h = h.replace(/<b\b([^>]*)>/gi, '<strong$1>');
+            h = h.replace(/<\/b>/gi, '</strong>');
+        }
+
+        o.content = h;
+    }
+
+    function postProcess(self, o) {
+        var ed = self.editor, dom = ed.dom, h;
+
+        // skip plain text
+        if (self.pasteAsPlainText) {
+            return h;
+        }
+
+        // Remove Apple style spans
+        each(dom.select('span.Apple-style-span', o.node), function (n) {
+            dom.remove(n, 1);
+        });
+
+        // Remove all styles
+        if (ed.getParam('clipboard_paste_remove_styles')) {
+            // Remove style attribute
+            each(dom.select('*[style]', o.node), function (el) {
+                el.removeAttribute('style');
+                el.removeAttribute('data-mce-style');
+            });
+        } else {
+            // process style attributes
+            processStyles(ed, o.node);
+        }
+
+        // fix table borders
+        if (o.wordContent) {
+            each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
+                var styles = {};
+
+                each(borderStyles, function (name) {
+                    // process each side, eg: border-left-width
+                    if (/-(top|right|bottom|left)-/.test(name)) {
+                        // get style
+                        var value = dom.getStyle(n, name);
+
+                        // remove default values
+                        if (value === "currentcolor") {
+                            value = "";
+                        }
+
+                        // convert to pixels
+                        if (value && /^\d[a-z]?/.test(value)) {
+                            value = convertToPixels(value);
+
+                            if (value) {
+                                value += "px";
+                            }
+                        }
+
+                        styles[name] = value;
+                    }
+                });
+
+                // remove styles with no width value
+                each(styles, function (v, k) {
+                    if (k.indexOf('-width') !== -1 && v === "") {
+                        var s = k.replace(/-width/, '');
+                        delete styles[s + '-style'];
+                        delete styles[s + '-color'];
+                        delete styles[k];
+                    }
+                });
+
+                // remove borders
+                dom.setStyle(n, 'border', '');
+
+                // compress and set style
+                dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))), n.nodeName);
+            });
+        }
+
+        // image file/data regular expression
+        var imgRe = /(file:|data:image)\//i,
+            uploader = ed.plugins.upload;
+        var canUpload = uploader && uploader.plugins.length;
+
+        // Process images - remove local
+        each(dom.select('img', o.node), function (el) {
+            var s = dom.getAttrib(el, 'src');
+
+            // remove img element if blank, local file url or base64 encoded
+            if (!s || imgRe.test(s)) {
+                if (ed.getParam('clipboard_paste_upload_images', true) && canUpload) {
+                    // add marker
+                    ed.dom.setAttrib(el, 'data-mce-upload-marker', '1');
+                } else {
+                    dom.remove(el);
+                }
+            } else {
+                dom.setAttrib(el, 'src', ed.convertURL(s));
+            }
+        });
+
+        // remove font and underline tags in IE
+        if (isIE) {
+            each(dom.select('a', o.node), function (el) {
+                each(dom.select('font,u'), function (n) {
+                    dom.remove(n, 1);
+                });
+            });
+        }
+
+        // remove tags
+        if (ed.getParam('clipboard_paste_remove_tags')) {
+            dom.remove(dom.select(ed.getParam('clipboard_paste_remove_tags'), o.node), 1);
+        }
+
+        // keep tags
+        if (ed.getParam('clipboard_paste_keep_tags')) {
+            var tags = ed.getParam('clipboard_paste_keep_tags');
+
+            dom.remove(dom.select('*:not(' + tags + ')', o.node), 1);
+        }
+
+        // remove all spans
+        if (ed.getParam('clipboard_paste_remove_spans')) {
+            dom.remove(dom.select('span', o.node), 1);
+            // remove empty spans
+        } else {
+            ed.dom.remove(dom.select('span:empty', o.node));
+
+            each(dom.select('span', o.node), function (n) {
+                // remove span without children eg: <span></span>
+                if (!n.childNodes || n.childNodes.length === 0) {
+                    dom.remove(n);
+                }
+
+                // remove span without attributes
+                if (dom.getAttribs(n).length === 0) {
+                    dom.remove(n, 1);
+                }
+            });
+        }
+
+        if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
+            dom.remove(dom.select('p:empty', o.node));
+
+            each(dom.select('p', o.node), function (n) {
+                var h = n.innerHTML;
+
+                // remove paragraph without children eg: <p></p>
+                if (!n.childNodes || n.childNodes.length === 0 || /^(\s|&nbsp;|\u00a0)?$/.test(h)) {
+                    dom.remove(n);
+                }
+            });
+        }
     }
 
     /**
@@ -1098,9 +1332,27 @@
             self.onPreProcess = new tinymce.util.Dispatcher(this);
             self.onPostProcess = new tinymce.util.Dispatcher(this);
 
+            // process quirks
+            if (tinymce.isWebKit) {
+                self.onPreProcess.add(function (self, o) {
+                    removeWebKitStyles(self, o);
+                });
+            }
+
+            if (isIE) {
+                self.onPreProcess.add(function (self, o) {
+                    removeExplorerBrElementsAfterBlocks(self, o);
+                });
+            }
+
             // Register default handlers
-            self.onPreProcess.add(self._preProcess);
-            self.onPostProcess.add(self._postProcess);
+            self.onPreProcess.add(function(self, o) {
+                preProcess(self, o);
+            });
+
+            self.onPostProcess.add(function(self, o) {
+                postProcess(self, o);
+            });
 
             // Register optional preprocess handler
             self.onPreProcess.add(function (pl, o) {
@@ -1693,15 +1945,7 @@
                 });
             }
         },
-        getInfo: function () {
-            return {
-                longname: 'Paste text/word',
-                author: 'Moxiecode Systems AB / Ryan demmer',
-                authorurl: 'http://tinymce.moxiecode.com',
-                infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/paste',
-                version: '@@version@@'
-            };
-        },
+
         _openWin: function (cmd) {
             var ed = this.editor;
 
@@ -1714,253 +1958,6 @@
             }, {
                     cmd: cmd
                 });
-        },
-        _preProcess: function (pl, o) {
-            var ed = pl.editor,
-                h = o.content,
-                rb;
-
-            if (ed.settings.paste_enable_default_filters == false) {
-                return;
-            }
-
-            if (isIE) {
-                h = removeExplorerBrElementsAfterBlocks(ed, h);
-            }
-
-            // Process away some basic content
-            h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
-            h = h.replace(/(&nbsp;|<br[^>]*>)+\s*$/g, ''); // nbsp entities at the end of contents
-
-            // skip plain text
-            if (this.pasteAsPlainText) {
-                return h;
-            }
-
-            o.wordContent = isWordContent(ed, h);
-
-            if (o.wordContent) {
-                h = WordFilter(ed, h);
-            }
-
-            // remove webKit style weirdness if not word content
-            if (tinymce.isWebKit && !o.wordContent) {
-                h = removeWebKitStyles(ed, h);
-            }
-
-            // remove attributes
-            if (ed.getParam('clipboard_paste_remove_attributes')) {
-                var attribs = ed.getParam('clipboard_paste_remove_attributes').split(',');
-
-                h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
-            }
-
-            // replace double linebreaks with paragraphs
-            if (rb = ed.getParam('forced_root_block')) {
-                var blocks = '';
-                // only split if a double break exists
-                if (h.indexOf('<br><br>') != -1) {
-                    // convert marker to paragraphs
-                    tinymce.each(h.split('<br><br>'), function (block) {
-                        blocks += '<' + rb + '>' + block + '</' + rb + '>';
-                    });
-
-                    h = blocks;
-                }
-            }
-
-            // Remove all spans (and font, u, strike if inline_styles = true as these would get converted to spans later)
-            if (ed.getParam('clipboard_paste_remove_spans')) {
-                h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
-
-                if (ed.settings.convert_fonts_to_spans) {
-                    h = h.replace(/<\/?(font)[^>]*>/gi, '');
-                }
-
-                h = h.replace(/<\/?(span)[^>]*>/gi, '');
-            }
-
-            // replace paragraphs with linebreaks
-            if (!ed.getParam('forced_root_block')) {
-                // remove empty paragraphs first
-                if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                    h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
-                }
-
-                h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
-            }
-
-            // convert urls in content
-            if (ed.getParam('clipboard_paste_convert_urls', true)) {
-                h = convertURLs(ed, h);
-            }
-
-            // convert some tags if cleanup is off
-            if (ed.settings.verify_html === false) {
-                h = h.replace(/<b\b([^>]*)>/gi, '<strong$1>');
-                h = h.replace(/<\/b>/gi, '</strong>');
-            }
-
-            o.content = h;
-        },
-
-        /**
-         * Various post process items.
-         */
-        _postProcess: function (pl, o) {
-            var self = this,
-                ed = this.editor,
-                dom = ed.dom,
-                h;
-
-            if (ed.settings.paste_enable_default_filters == false) {
-                return;
-            }
-
-            // skip if plain text
-            if (this.pasteAsPlainText) {
-                return;
-            }
-
-            // Remove Apple style spans
-            each(dom.select('span.Apple-style-span', o.node), function (n) {
-                dom.remove(n, 1);
-            });
-
-            // Remove all styles
-            if (ed.getParam('clipboard_paste_remove_styles')) {
-                // Remove style attribute
-                each(dom.select('*[style]', o.node), function (el) {
-                    el.removeAttribute('style');
-                    el.removeAttribute('data-mce-style');
-                });
-            } else {
-                // process style attributes
-                processStyles(ed, o.node);
-            }
-
-            // fix table borders
-            if (o.wordContent) {
-                each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
-                    var styles = {};
-
-                    each(borderStyles, function (name) {
-                        // process each side, eg: border-left-width
-                        if (/-(top|right|bottom|left)-/.test(name)) {
-                            // get style
-                            var value = dom.getStyle(n, name);
-
-                            // remove default values
-                            if (value === "currentcolor") {
-                                value = "";
-                            }
-
-                            // convert to pixels
-                            if (value && /^\d[a-z]?/.test(value)) {
-                                value = convertToPixels(value);
-
-                                if (value) {
-                                    value += "px";
-                                }
-                            }
-
-                            styles[name] = value;
-                        }
-                    });
-
-                    // remove styles with no width value
-                    each(styles, function (v, k) {
-                        if (k.indexOf('-width') !== -1 && v === "") {
-                            var s = k.replace(/-width/, '');
-                            delete styles[s + '-style'];
-                            delete styles[s + '-color'];
-                            delete styles[k];
-                        }
-                    });
-
-                    // remove borders
-                    dom.setStyle(n, 'border', '');
-
-                    // compress and set style
-                    dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))), n.nodeName);
-                });
-            }
-
-            // image file/data regular expression
-            var imgRe = /(file:|data:image)\//i,
-                uploader = ed.plugins.upload;
-            var canUpload = uploader && uploader.plugins.length;
-
-            // Process images - remove local
-            each(dom.select('img', o.node), function (el) {
-                var s = dom.getAttrib(el, 'src');
-
-                // remove img element if blank, local file url or base64 encoded
-                if (!s || imgRe.test(s)) {
-                    if (ed.getParam('clipboard_paste_upload_images', true) && canUpload) {
-                        // add marker
-                        ed.dom.setAttrib(el, 'data-mce-upload-marker', '1');
-                    } else {
-                        dom.remove(el);
-                    }
-                } else {
-                    dom.setAttrib(el, 'src', ed.convertURL(s));
-                }
-            });
-
-            // remove font and underline tags in IE
-            if (isIE) {
-                each(dom.select('a', o.node), function (el) {
-                    each(dom.select('font,u'), function (n) {
-                        dom.remove(n, 1);
-                    });
-                });
-            }
-
-            // remove tags
-            if (ed.getParam('clipboard_paste_remove_tags')) {
-                dom.remove(dom.select(ed.getParam('clipboard_paste_remove_tags'), o.node), 1);
-            }
-
-            // keep tags
-            if (ed.getParam('clipboard_paste_keep_tags')) {
-                var tags = ed.getParam('clipboard_paste_keep_tags');
-
-                dom.remove(dom.select('*:not(' + tags + ')', o.node), 1);
-            }
-
-            // remove all spans
-            if (ed.getParam('clipboard_paste_remove_spans')) {
-                dom.remove(dom.select('span', o.node), 1);
-                // remove empty spans
-            } else {
-                ed.dom.remove(dom.select('span:empty', o.node));
-
-                each(dom.select('span', o.node), function (n) {
-                    // remove span without children eg: <span></span>
-                    if (!n.childNodes || n.childNodes.length === 0) {
-                        dom.remove(n);
-                    }
-
-                    // remove span without attributes
-                    if (dom.getAttribs(n).length === 0) {
-                        dom.remove(n, 1);
-                    }
-                });
-            }
-
-            if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                dom.remove(dom.select('p:empty', o.node));
-
-                each(dom.select('p', o.node), function (n) {
-                    var h = n.innerHTML;
-
-                    // remove paragraph without children eg: <p></p>
-                    if (!n.childNodes || n.childNodes.length === 0 || /^(\s|&nbsp;|\u00a0)?$/.test(h)) {
-                        dom.remove(n);
-                    }
-                });
-            }
         },
 
         /**
