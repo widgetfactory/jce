@@ -1320,9 +1320,7 @@
             if (dataTransfer.getData) {
                 var legacyText = dataTransfer.getData('Text');
                 if (legacyText && legacyText.length > 0) {
-                    if (legacyText.indexOf(mceInternalUrlPrefix) == -1) {
-                        items['text/plain'] = legacyText;
-                    }
+                    items['text/plain'] = legacyText;
                 }
             }
 
@@ -1390,7 +1388,6 @@
 
             var pasteBinElm, lastRng, keyboardPasteTimeStamp = 0;
             var pasteBinDefaultContent = '%MCEPASTEBIN%', keyboardPastePlainTextState;
-            var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
             // set default paste state for dialog trigger
             this.canPaste = false;
