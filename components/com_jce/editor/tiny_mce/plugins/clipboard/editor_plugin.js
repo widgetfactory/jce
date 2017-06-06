@@ -201,7 +201,7 @@
      *  <p>a</p><p>b</p>
      */
     function removeExplorerBrElementsAfterBlocks(self, o) {
-        var html = o.content;
+        var editor = self.editor, html = o.content;
 
         // Produce block regexp based on the block elements in schema
         var blockElements = [];
