@@ -250,8 +250,6 @@
             return;
         }
 
-        console.log(content);
-
         // Filter away styles that isn't matching the target node
         var webKitStyles = editor.settings.paste_webkit_styles;
 
