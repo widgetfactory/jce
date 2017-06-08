@@ -691,6 +691,9 @@ class WFModelEditor extends WFModelBase
             $installed = (array) $settings['external_plugins'];
 
             foreach ($installed as $plugin => $path) {
+                $path = dirname($path);
+                $path = str_replace(JURI::root(true), JPATH_SITE, $path);
+                
                 $file = $path . '/classes/config.php';
 
                 if (is_file($file)) {
