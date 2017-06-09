@@ -692,7 +692,11 @@ class WFModelEditor extends WFModelBase
 
             foreach ($installed as $plugin => $path) {
                 $path = dirname($path);
-                $path = str_replace(JURI::root(true), JPATH_SITE, $path);
+                if(empty(JURI::root(true))) {
+                    $path =  JPATH_SITE . $path;
+                } else {
+                    $path =  str_replace(JURI::root(true), JPATH_SITE, $path);
+                }
                 
                 $file = $path . '/classes/config.php';
 
