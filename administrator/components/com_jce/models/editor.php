@@ -95,7 +95,8 @@ class WFModelEditor extends WFModelBase
         $this->context = $wf->getContext();
     }
 
-    public function buildEditor() {
+    public function buildEditor()
+    {
         $settings = $this->getEditorSettings();
         return $this->render($settings);
     }
@@ -692,12 +693,14 @@ class WFModelEditor extends WFModelBase
 
             foreach ($installed as $plugin => $path) {
                 $path = dirname($path);
-                if(empty(JURI::root(true))) {
-                    $path =  JPATH_SITE . $path;
+                $root = JURI::root(true);
+
+                if (empty($root)) {
+                    $path = WFUtility::makePath(JPATH_SITE, $path);
                 } else {
-                    $path =  str_replace(JURI::root(true), JPATH_SITE, $path);
+                    $path = str_replace($root, JPATH_SITE, $path);
                 }
-                
+
                 $file = $path . '/classes/config.php';
 
                 if (is_file($file)) {
