@@ -29,6 +29,11 @@
 		setTimeout(fn, 0);
 	}
 
+	// http://stackoverflow.com/a/6969486
+    function escapeRegExChars(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    }
+
 	/**
 	 * Debounce a function.
 	 * https://github.com/twitter/typeahead.js
@@ -126,8 +131,12 @@
 			var x = [],
 				f, v;
 
+			var matcher = new RegExp(escapeRegExChars(s), "i");	
+
 			if (/[a-z0-9_\.-]/i.test(s)) {
 				$(options.selector, options.list).each(function() {
+					var match = false;
+					
 					var title = $(this).attr('title');
 					// get "basename" from title
 					var name = title.replace(/^.*[\/\\]/g, '');
@@ -136,12 +145,14 @@
 					if (s.charAt(0) === '.') {
 						v = s.substr(1);
 						f = name.substr(name.lastIndexOf('.') + 1);
+
+						match = f.toLowerCase() === v.toLowerCase();
+
 					} else {
-						f = name.substring(0, s.length);
-						v = s;
+						match = matcher.test(name);
 					}
 
-					if (f.toLowerCase() === v.toLowerCase()) {
+					if (match) {
 						if ($.inArray(this, x) === -1) {
 							x.push(this);
 						}
