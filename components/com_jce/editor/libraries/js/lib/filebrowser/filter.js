@@ -10,7 +10,7 @@
 
 /*jshint smarttabs:true, undef:true, latedef:true, curly:true, bitwise:true, camelcase:true */
 /*globals $code */
-(function($) {
+(function ($) {
 
 	var specialKeyCodeMap = {
 		9: 'tab',
@@ -30,9 +30,9 @@
 	}
 
 	// http://stackoverflow.com/a/6969486
-    function escapeRegExChars(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    }
+	function escapeRegExChars(str) {
+		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+	}
 
 	/**
 	 * Debounce a function.
@@ -47,12 +47,12 @@
 
 		var timeout, result;
 
-		return function() {
+		return function () {
 			var context = this,
 				args = arguments,
 				later, callNow;
 
-			later = function() {
+			later = function () {
 				timeout = null;
 				if (!immediate) {
 					result = func.apply(context, args);
@@ -72,7 +72,7 @@
 		};
 	}
 
-	$.fn.listfilter = function(options) {
+	$.fn.listfilter = function (options) {
 
 		options = $.extend({
 			list: null,
@@ -86,7 +86,7 @@
 		var el = this,
 			x = [];
 
-		$(options.clear).on('click.listfilter', function(e) {
+		$(options.clear).on('click.listfilter', function (e) {
 			reset();
 
 			$(el).val('');
@@ -96,12 +96,12 @@
 		});
 
 		// create filter event
-		$(el).on('listfilter:filter', function(e, s) {
-      filter(s);
+		$(el).on('listfilter:filter', function (e, s) {
+			filter(s);
 		});
 
 		// Debounce keyup function
-		var keyup = debounce(function(e) {
+		var keyup = debounce(function (e) {
 			if (e.keyCode && specialKeyCodeMap[e.keyCode]) {
 				return;
 			}
@@ -109,7 +109,7 @@
 			var v = $(el).val();
 
 			// wait for input to update
-			defer(function() {
+			defer(function () {
 				if (v === "") {
 					$(options.clear).trigger('click.listfilter');
 					return;
@@ -127,30 +127,55 @@
 		// add keyup and change events to trigger filter
 		$(el).on('keyup.listfilter paste.listfilter cut.listfilter', keyup);
 
+		function toUnicode(s) {
+			function _toUnicode(c) {
+                c = c.toString(16).toUpperCase();
+
+                while (c.length < 4) {
+                    c = '0' + c;
+                }
+
+                return '\\u' + c;
+            }
+			
+			var str = '';
+
+			for (var i = 0, ln = s.length; i < ln; i++) {
+				var ch = s[i];
+				// only process on possible restricted characters or utf-8 letters/numbers
+				if (/[^\w\.\-~\s \/]/i.test(ch)) {
+					ch = '\\u' + ch.charCodeAt(0);
+				}
+				str += ch;
+			}
+
+			return str;
+		}
+
 		function filter(s) {
 			var x = [],
 				f, v;
 
-			var matcher = new RegExp(escapeRegExChars(s), "i");	
+			// filter by extension
+			if (s.charAt(0) === '.') {
+				v = s.substr(1);
+				matcher = new RegExp('\.(' + escapeRegExChars(v) + '[a-z0-9]*)$', "i");
+			} else {
+				s = toUnicode(s);
+				matcher = new RegExp(escapeRegExChars(s), "ui");
+			}
 
-			if (/[a-z0-9_\.-]/i.test(s)) {
-				$(options.selector, options.list).each(function() {
+			if (/[\u0000-\u1FFF\.\-~\s ]/i.test(s)) {
+				$(options.selector, options.list).each(function () {
 					var match = false;
-					
+
 					var title = $(this).attr('title');
-					// get "basename" from title
-					var name = title.replace(/^.*[\/\\]/g, '');
 
-					// filter by extension
-					if (s.charAt(0) === '.') {
-						v = s.substr(1);
-						f = name.substr(name.lastIndexOf('.') + 1);
+					// convert to unicode
+					title = toUnicode(title);
 
-						match = f.toLowerCase() === v.toLowerCase();
-
-					} else {
-						match = matcher.test(name);
-					}
+					// check for match
+					match = matcher.test(title);
 
 					if (match) {
 						if ($.inArray(this, x) === -1) {
@@ -168,7 +193,7 @@
 			}
 
 			if (x && x.length) {
-        $(options.selector, options.list).show().not(x).hide();
+				$(options.selector, options.list).show().not(x).hide();
 
 				scroll(x[0]);
 
@@ -186,7 +211,7 @@
 
 			$(options.list).css('overflow', 'hidden').animate({
 				scrollTop: pos.top + top
-			}, 1000, function() {
+			}, 1000, function () {
 				$(options.list).css('overflow', 'auto');
 			});
 		}
@@ -194,7 +219,7 @@
 		function sort(x) {
 			var a = [];
 
-			$(options.selector, options.list).each(function() {
+			$(options.selector, options.list).each(function () {
 				if ($.inArray(this, x) != -1) {
 					a.push(this);
 				}
