@@ -381,7 +381,11 @@
                 var limit = $('#browser-list-limit-select').val();
 
                 // if we are not showing all items, get filtered list from server
-                if (limit === 'all') {
+                var limit = $('#browser-list-limit-select').val();
+                var count = self._foldercount + self._filecount;
+
+                // if we are not showing all items, get filtered list from server
+                if (limit === 'all' || parseInt(limit) > count) {
                     return $(this).trigger('listfilter:filter', s);
                 }
 
@@ -397,7 +401,6 @@
                     // not websafe, bail
                     if (!self._isWebSafe(s)) {
                         self.refresh();
-
                         return;
                     }
 
@@ -410,7 +413,7 @@
 
                     self._getList('', prefix + s);
 
-                } else {
+                } else {                    
                     self.refresh();
                 }
 
