@@ -117,10 +117,13 @@
 
 				// cancel events
 				e.stopImmediatePropagation();
-
-				if (v !== ".") {
-					$(el).trigger('listfilter:find', [v]);
+				
+				// at least 2 characters required
+				if (v.length === 1) {
+					return;
 				}
+
+				$(el).trigger('listfilter:find', [v]);
 			});
 		}, 300);
 

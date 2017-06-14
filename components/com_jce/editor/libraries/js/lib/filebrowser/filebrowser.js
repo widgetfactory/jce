@@ -377,17 +377,38 @@
                 clear: '#search + .uk-icon'
             }).on('listfilter:find', function(ev, s) {
                 var el = this;
+
+                var limit = $('#browser-list-limit-select').val();
+
                 // if we are not showing all items, get filtered list from server
-                if ($('#browser-list-limit-select').val() === 'all') {
+                if (limit === 'all') {
                     return $(this).trigger('listfilter:filter', s);
                 }
 
-                if (s && self._isWebSafe(s)) {
+                if (s) {
+                    var prefix = "";
+                    
+                    // check if we are searching by extension
+                    if (s.charAt(0) === ".") {
+                        s = s.substr(1);
+                        prefix = ".";
+                    }
+
+                    // not websafe, bail
+                    if (!self._isWebSafe(s)) {
+                        self.refresh();
+
+                        return;
+                    }
+
+                    // show loading message
+                    self._setLoader();
+
                     $('#browser-list').one('load.filter', function() {
                         $(el).trigger('listfilter:found', [null, $('li.file', '#item-list').get()]);
                     });
 
-                    self._getList('', s);
+                    self._getList('', prefix + s);
 
                 } else {
                     self.refresh();
@@ -1105,6 +1126,7 @@
                 $('form').append('<input type="hidden" name="refresh" value="1" />');
             }
 
+            // get list from server
             this._getList();
         },
         /**
