@@ -48,3 +48,7 @@
 #text[disabled]::-moz-placeholder {
     color: inherit !important;
 }
+
+.anchor .uk-icon-file-text-o:before {
+    content: "\f13d";
+}
