@@ -9,7 +9,7 @@
  */
 
 // String functions
-(function($) {
+(function ($) {
     var standalone = (typeof tinyMCEPopup === "undefined");
 
     // uid counter
@@ -41,14 +41,14 @@
             help: $.noop,
             alerts: ''
         },
-        getURI: function(absolute) {
+        getURI: function (absolute) {
             if (!standalone) {
                 return tinyMCEPopup.editor.documentBaseURI.getURI(absolute);
             }
 
             return (absolute) ? this.options.root : this.options.site;
         },
-        init: function(options) {
+        init: function (options) {
             var self = this;
 
             $.extend(this.options, options);
@@ -105,13 +105,13 @@
                 icons: {
                     primary: 'uk-icon-question'
                 }
-            }).click(function(e) {
+            }).click(function (e) {
                 e.preventDefault();
                 self.help();
             });
 
             // add button actions
-            $('#cancel').click(function(e) {
+            $('#cancel').click(function (e) {
                 tinyMCEPopup.close();
                 e.preventDefault();
             });
@@ -134,28 +134,28 @@
             $('.hastip, .tip, .tooltip').tips();
 
             // set styles events
-            $('#align, #clear, #dir').change(function() {
+            $('#align, #clear, #dir').change(function () {
                 self.updateStyles();
             });
 
             // set margin events
-            $('input[id^="margin_"]').change(function() {
+            $('input[id^="margin_"]').change(function () {
                 self.updateStyles();
             });
 
             // setup border widget
-            $('#border').borderWidget().on('border:change', function() {
+            $('#border').borderWidget().on('border:change', function () {
                 self.updateStyles();
             });
 
             // update styles on border change
-            $('#border_width, #border_style, #border_color').change(function() {
+            $('#border_width, #border_style, #border_color').change(function () {
                 self.updateStyles();
-            }).on('datalist:change', function() {
+            }).on('datalist:change', function () {
                 self.updateStyles();
             });
 
-            $('#style').change(function() {
+            $('#style').change(function () {
                 self.setStyles();
             });
 
@@ -189,17 +189,17 @@
          * Get the name of the plugin
          * @returns {String} Plugin name
          */
-        getName: function() {
+        getName: function () {
             return $('body').data('plugin');
         },
-        getPath: function(plugin) {
+        getPath: function (plugin) {
             if (!standalone) {
                 return tinyMCEPopup.editor.plugins[this.getName()].url;
             }
 
             return this.options.site + 'components/com_jce/editor/tiny_mce/plugins/' + this.getName();
         },
-        loadLanguage: function() {
+        loadLanguage: function () {
             if (!standalone) {
                 var ed = tinyMCEPopup.editor,
                     u = ed.getParam('document_base_url') + 'components/com_jce/editor/tiny_mce';
@@ -214,7 +214,7 @@
                 }
             }
         },
-        help: function() {
+        help: function () {
             var ed = tinyMCEPopup.editor;
 
             ed.windowManager.open({
@@ -228,12 +228,12 @@
             });
         },
 
-        createColourPickers: function() {
+        createColourPickers: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 doc = ed.getDoc();
 
-            $('input.color, input.colour').each(function() {
+            $('input.color, input.colour').each(function () {
                 var id = $(this).attr('id');
                 var v = this.value;
 
@@ -251,7 +251,7 @@
 
                 var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
 
-                $(this).on('colorpicker:pick', function() {
+                $(this).on('colorpicker:pick', function () {
                     var v = this.value;
 
                     if (v.charAt(0) !== "#") {
@@ -261,7 +261,7 @@
                     $(this).next('.uk-icon-colorpicker').css('background-color', v);
                 });
 
-                $(this).change(function(e) {
+                $(this).change(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -283,7 +283,7 @@
                 var stylesheets = [];
 
                 if (doc.styleSheets.length) {
-                    $.each(doc.styleSheets, function(i, s) {
+                    $.each(doc.styleSheets, function (i, s) {
                         // only load template stylesheets, not from tinymce plugins
                         if (s.href && s.href.indexOf('tiny_mce') == -1) {
                             stylesheets.push(s);
@@ -313,17 +313,17 @@
                 $(this).colorpicker(settings);
             });
         },
-        createBrowsers: function(el, callback, filter) {
+        createBrowsers: function (el, callback, filter) {
             var self = this;
 
             if (el) {
-                $(el).addClass('browser');
+                $(el).addClass('browser').addClass(filter || '');
             }
 
-            $('input.browser').add(el).each(function() {
+            $('input.browser').add(el).each(function () {
                 var input = this;
 
-                filter = filter || (function(el) {
+                filter = (function (el) {
                     if ($(el).hasClass('image') || $(el).hasClass('images')) {
                         return 'images';
                     }
@@ -345,11 +345,11 @@
                     'media': 'film'
                 };
 
-                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function(e) {
+                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function (e) {
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,
-                        "filter": filter,
+                        "filter": $(this).attr('data-filter') || filter,
                         "caller": self.getName(),
                         "window": window
                     });
@@ -357,7 +357,7 @@
                 }).insertAfter(this);
             });
         },
-        getLanguage: function() {
+        getLanguage: function () {
             if (!this.language) {
                 var s = $('body').attr('lang') || 'en';
 
@@ -375,7 +375,7 @@
          * @param {Object} o Width / Height Object pair
          * @param {Object} c Width / Height Object pair
          */
-        sizeToFit: function(o, c) {
+        sizeToFit: function (o, c) {
             var x = c.width;
             var y = c.height;
             var w = o.width;
@@ -416,17 +416,17 @@
          *
          * Modified for JQuery
          */
-        addI18n: function(p, o) {
+        addI18n: function (p, o) {
             var i18n = this.i18n;
 
             if ($.type(p) == 'string') {
-                $.each(o, function(k, o) {
+                $.each(o, function (k, o) {
                     i18n[p + '.' + k] = o;
                 });
             } else {
-                $.each(p, function(lc, o) {
-                    $.each(o, function(g, o) {
-                        $.each(o, function(k, o) {
+                $.each(p, function (lc, o) {
+                    $.each(o, function (g, o) {
+                        $.each(o, function (k, o) {
                             if (g === 'common')
                                 i18n[lc + '.' + k] = o;
                             else
@@ -438,7 +438,7 @@
                 });
             }
         },
-        translate: function(s, ds) {
+        translate: function (s, ds) {
             return tinyMCEPopup.getLang('dlg.' + s, ds);
         }
     };
@@ -456,7 +456,7 @@
          * @copyright Copyright 2009, Moxiecode Systems AB
          * @licence GNU / LGPL - http://www.gnu.org/copyleft/lesser.html
          */
-        get: function(n, s) {
+        get: function (n, s) {
             var c = document.cookie,
                 e, p = n + "=",
                 b, v;
@@ -504,7 +504,7 @@
          * @copyright Copyright 2009, Moxiecode Systems AB
          * @licence GNU / LGPL - http://www.gnu.org/copyleft/lesser.html
          */
-        set: function(n, v, e, p, d, s) {
+        set: function (n, v, e, p, d, s) {
             document.cookie = n + "=" + escape(v) +
                 ((e) ? "; expires=" + e.toGMTString() : "") +
                 ((p) ? "; path=" + escape(p) : "") +
@@ -526,7 +526,7 @@ if (typeof ColorPicker === 'undefined') {
 }
 /* Compat */
 AutoValidator = {
-    validate: function() {
+    validate: function () {
         return true;
     }
 };
