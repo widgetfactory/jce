@@ -330,7 +330,40 @@
                     // legacy mce stuff
                     o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
 
-                    ed.onCleanupPostProcess.dispatch(ed, o);
+                    if (ed.settings.validate === false) {
+                        // fix body content
+                        o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
+
+                        if (!ed.getParam('remove_tag_padding')) {
+                            // pad empty elements
+                            o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+                        }
+                    }
+
+                    if (!ed.getParam('table_pad_empty_cells', true)) {
+                        o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+                    }
+
+                    // clean bootstrap icons
+                    o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8></$1>');
+
+                    // clean empty tags
+                    o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+
+                    // remove padding on div (legacy)
+                    if (ed.getParam('remove_div_padding')) {
+                        o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
+                    }
+
+                    // remove padding on everything
+                    if (ed.getParam('pad_empty_tags', true) === false) {
+                        o.content = o.content.replace(paddedRx, '<$1$2></$1>');
+                    }
+
+                    // convert multiple consecutive non-breaking spaces
+                    if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
+                        o.content = o.content.replace(/\u00a0/g, '&nbsp;');
+                    }
                 }
             });
 
@@ -355,45 +388,6 @@
             ed.addButton('cleanup', {
                 title: 'advanced.cleanup_desc',
                 cmd: 'mceCleanup'
-            });
-
-            ed.onCleanupPostProcess = new tinymce.util.Dispatcher();
-
-            ed.onCleanupPostProcess.add(function (ed, o) {                
-                if (ed.settings.validate === false) {
-                    // fix body content
-                    o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
-
-                    if (!ed.getParam('remove_tag_padding')) {
-                        // pad empty elements
-                        o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
-                    }
-                }
-
-                if (!ed.getParam('table_pad_empty_cells', true)) {
-                    o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
-                }
-
-                // clean bootstrap icons
-                o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8></$1>');
-
-                // clean empty tags
-                o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
-
-                // remove padding on div (legacy)
-                if (ed.getParam('remove_div_padding')) {
-                    o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
-                }
-
-                // remove padding on everything
-                if (ed.getParam('pad_empty_tags', true) === false) {
-                    o.content = o.content.replace(paddedRx, '<$1$2></$1>');
-                }
-
-                // convert multiple consecutive non-breaking spaces
-                if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
-                    o.content = o.content.replace(/\u00a0/g, '&nbsp;');
-                }
             });
         },
         convertFromGeshi: function (h) {
