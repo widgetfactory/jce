@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,13 +11,13 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 // load base model
-require_once dirname(__FILE__).'/model.php';
+require_once dirname(__FILE__) . '/model.php';
 
 class WFModelPlugins extends WFModel
 {
     public static function getCommands()
     {
-        $data = file_get_contents(__DIR__.'/commands.json');
+        $data = file_get_contents(__DIR__ . '/commands.json');
         $json = json_decode($data);
 
         $commands = array();
@@ -41,30 +41,30 @@ class WFModelPlugins extends WFModel
         if (!isset($plugins)) {
             $plugins = array();
 
-          // get core json
-          $core = file_get_contents(__DIR__.'/plugins.json');
-          // decode to object
-          $data = json_decode($core);
+            // get core json
+            $core = file_get_contents(__DIR__ . '/plugins.json');
+            // decode to object
+            $data = json_decode($core);
 
             if ($data) {
                 foreach ($data as $name => $attribs) {
                     // skip if the plugin file is missing
-                  if (!is_file(WF_EDITOR_PLUGINS.'/'.$name.'/editor_plugin.js')) {
-                      continue;
-                  }
-                  // update attributes
-                  $attribs->type = 'plugin';
-                    $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS).'/'.$name;
-                    $attribs->manifest = WF_EDITOR_PLUGINS.'/'.$name.'/'.$name.'.xml';
-                  // compatability
-                  $attribs->name = $name;
-                  // pass to array
-                  $plugins[$name] = $attribs;
+                    if (!is_file(WF_EDITOR_PLUGINS . '/' . $name . '/editor_plugin.js')) {
+                        continue;
+                    }
+                    // update attributes
+                    $attribs->type = 'plugin';
+                    $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                    $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+                    // compatability
+                    $attribs->name = $name;
+                    // pass to array
+                    $plugins[$name] = $attribs;
                 }
             }
-          // get pro json
-          if (is_file(__DIR__.'/pro.json')) {
-              $pro = @file_get_contents(__DIR__.'/pro.json');
+            // get pro json
+            if (is_file(__DIR__ . '/pro.json')) {
+                $pro = @file_get_contents(__DIR__ . '/pro.json');
                 // decode to object
                 if ($pro) {
                     $data = json_decode($pro);
@@ -72,13 +72,13 @@ class WFModelPlugins extends WFModel
                     if ($data) {
                         foreach ($data as $name => $attribs) {
                             // skip if the plugin file is missing
-                            if (!is_file(WF_EDITOR_PLUGINS.'/'.$name.'/editor_plugin.js')) {
+                            if (!is_file(WF_EDITOR_PLUGINS . '/' . $name . '/editor_plugin.js')) {
                                 continue;
                             }
                             // update attributes
                             $attribs->type = 'plugin';
-                            $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS).'/'.$name;
-                            $attribs->manifest = WF_EDITOR_PLUGINS.'/'.$name.'/'.$name.'.xml';
+                            $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                            $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
                             // compatability
                             $attribs->name = $name;
                             // pass to array
@@ -86,40 +86,40 @@ class WFModelPlugins extends WFModel
                         }
                     }
                 }
-          }
+            }
 
-          // get all installed plugins
-          $installed = JPluginHelper::getPlugin('jce');
+            // get all installed plugins
+            $installed = JPluginHelper::getPlugin('jce');
 
             foreach ($installed as $item) {
                 // check for delimiter, only load editor plugins
-            if (strpos($item->name, 'editor-') === false) {
-                continue;
-            }
+                if (strpos($item->name, 'editor-') === false) {
+                    continue;
+                }
 
-            // load language
-            $language->load('plg_jce_'.$item->name, JPATH_ADMINISTRATOR);
+                // load language
+                $language->load('plg_jce_' . $item->name, JPATH_ADMINISTRATOR);
 
-            // create path
-            $path = JPATH_PLUGINS.'/jce/'.$item->name;
+                // create path
+                $path = JPATH_PLUGINS . '/jce/' . $item->name;
 
-            // get xml file
-            $file = $path.'/'.$item->name.'.xml';
+                // get xml file
+                $file = $path . '/' . $item->name . '.xml';
 
                 if (is_file($file)) {
                     // load xml data
-                $xml = WFXMLElement::load($file);
+                    $xml = WFXMLElement::load($file);
 
                     if ($xml) {
                         // check xml file is valid
-                    if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
-                        continue;
-                    }
+                        if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
+                            continue;
+                        }
 
-                    // check for editor_plugins.js file
-                    if (!is_file($path.'/editor_plugin.js')) {
-                        continue;
-                    }
+                        // check for editor_plugins.js file
+                        if (!is_file($path . '/editor_plugin.js')) {
+                            continue;
+                        }
 
                         $name = str_replace('editor-', '', $item->name);
 
@@ -133,10 +133,10 @@ class WFModelPlugins extends WFModel
                         $plugins[$name]->icon = (string) $xml->icon;
                         $plugins[$name]->editable = 0;
 
-                    // can't be editable without parameters
-                    if ($params && count($params->children())) {
-                        $plugins[$name]->editable = 1;
-                    }
+                        // can't be editable without parameters
+                        if ($params && count($params->children())) {
+                            $plugins[$name]->editable = 1;
+                        }
 
                         $row = (int) $xml->attributes()->row;
 
@@ -144,8 +144,8 @@ class WFModelPlugins extends WFModel
                         $plugins[$name]->description = (string) $xml->description;
                         $plugins[$name]->core = 0;
 
-                    // relative path
-                    $plugins[$name]->path = str_replace(JPATH_SITE, '', $path);
+                        // relative path
+                        $plugins[$name]->path = str_replace(JPATH_SITE, '', $path);
                         $plugins[$name]->type = 'plugin';
                     }
                 }
@@ -172,8 +172,8 @@ class WFModelPlugins extends WFModel
         if (empty($extensions)) {
             $extensions = array();
 
-          // recursively get all extension files
-          $files = JFolder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
+            // recursively get all extension files
+            $files = JFolder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
 
             foreach ($files as $file) {
                 $name = basename($file, '.xml');
@@ -185,102 +185,102 @@ class WFModelPlugins extends WFModel
                 $object->name = $name;
                 $object->title = $name;
                 $object->description = '';
-                $object->id = $object->folder.'.'.$object->name;
+                $object->id = $object->folder . '.' . $object->name;
                 $object->extension = $object->name;
-              // set as non-core by default
-              $object->core = 0;
-              // set as not editable by default
-              $object->editable = 0;
-              // set type
-              $object->type = $object->folder;
+                // set as non-core by default
+                $object->core = 0;
+                // set as not editable by default
+                $object->editable = 0;
+                // set type
+                $object->type = $object->folder;
 
                 $extensions[] = $object;
             }
 
-          // get all installed plugins
-          $installed = JPluginHelper::getPlugin('jce');
+            // get all installed plugins
+            $installed = JPluginHelper::getPlugin('jce');
 
             if (!empty($installed)) {
                 foreach ($installed as $p) {
 
-                  // check for delimiter, only load "extensions"
-                  if (strpos($p->name, '-') === false && strpos($p->name, 'editor-') !== false) {
-                      continue;
-                  }
+                    // check for delimiter, only load "extensions"
+                    if (strpos($p->name, '-') === false && strpos($p->name, 'editor-') !== false) {
+                        continue;
+                    }
 
-                  // set path
-                  $p->path = JPATH_PLUGINS.'/jce/'.$p->name;
+                    // set path
+                    $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
 
-                  // Joomla 1.5!!
-                  if (!defined('JPATH_PLATFORM')) {
-                      $p->path = JPATH_PLUGINS.'/jce';
-                  }
+                    // Joomla 1.5!!
+                    if (!defined('JPATH_PLATFORM')) {
+                        $p->path = JPATH_PLUGINS . '/jce';
+                    }
 
                     $parts = explode('-', $p->name);
-                  // get type and name
-                  $p->folder = $parts[0];
+                    // get type and name
+                    $p->folder = $parts[0];
                     $p->extension = $parts[1];
 
-                  // plugin manifest, eg: filesystem-joomla.xml
-                  $p->manifest = $p->path.'/'.$p->name.'.xml';
+                    // plugin manifest, eg: filesystem-joomla.xml
+                    $p->manifest = $p->path . '/' . $p->name . '.xml';
 
                     $p->plugins = array();
                     $p->description = '';
                     $p->title = $p->name;
-                  // create plugin id, eg: filesystem.joomla
-                  $p->id = $p->folder.'.'.$p->extension;
-                  // not core
-                  $p->core = 0;
-                  // set as not editable by default
-                  $p->editable = 0;
-                  // set type
-                  $p->type = $p->folder;
+                    // create plugin id, eg: filesystem.joomla
+                    $p->id = $p->folder . '.' . $p->extension;
+                    // not core
+                    $p->core = 0;
+                    // set as not editable by default
+                    $p->editable = 0;
+                    // set type
+                    $p->type = $p->folder;
 
-                  // load language
-                  $language->load('plg_jce_'.$p->folder.'_'.$p->extension, JPATH_ADMINISTRATOR);
+                    // load language
+                    $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_ADMINISTRATOR);
 
                     $extensions[] = $p;
                 }
             }
 
-          // process xml for each extension
-          for ($i = 0; $i < count($extensions); ++$i) {
-              $extension = $extensions[$i];
+            // process xml for each extension
+            for ($i = 0; $i < count($extensions); ++$i) {
+                $extension = $extensions[$i];
 
-              $xml = WFXMLElement::load($extension->manifest);
+                $xml = WFXMLElement::load($extension->manifest);
 
-              if ($xml) {
-                  // not a valid extension xml file
-                if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
-                    unset($extensions[$i]);
-                    continue;
+                if ($xml) {
+                    // not a valid extension xml file
+                    if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
+                        unset($extensions[$i]);
+                        continue;
+                    }
+
+                    // list of plugins this extension is restricted to
+                    $plugins = (string) $xml->plugins;
+
+                    if ($plugins) {
+                        $extension->plugins = explode(',', $plugins);
+                    }
+
+                    $extension->title = (string) $xml->name;
+                    $extension->description = (string) $xml->description;
+                    $extension->core = (int) $xml->attributes()->core ? 1 : 0;
+
+                    $params = $xml->params;
+
+                    // can't be editable without parameters
+                    if ($params && count($params->children())) {
+                        $extension->editable = 1;
+                    }
+
+                    // installer stuff
+                    $extension->author = (string) $xml->author;
+                    $extension->version = (string) $xml->version;
+                    $extension->creationdate = (string) $xml->creationDate;
+                    $extension->authorUrl = (string) $xml->authorUrl;
                 }
-
-                // list of plugins this extension is restricted to
-                $plugins = (string) $xml->plugins;
-
-                  if ($plugins) {
-                      $extension->plugins = explode(',', $plugins);
-                  }
-
-                  $extension->title = (string) $xml->name;
-                  $extension->description = (string) $xml->description;
-                  $extension->core = (int) $xml->attributes()->core ? 1 : 0;
-
-                  $params = $xml->params;
-
-                // can't be editable without parameters
-                if ($params && count($params->children())) {
-                    $extension->editable = 1;
-                }
-
-                // installer stuff
-                $extension->author = (string) $xml->author;
-                  $extension->version = (string) $xml->version;
-                  $extension->creationdate = (string) $xml->creationDate;
-                  $extension->authorUrl = (string) $xml->authorUrl;
-              }
-          }
+            }
         }
 
         // reset array
@@ -304,7 +304,7 @@ class WFModelPlugins extends WFModel
 
     public static function addToProfile($id, $plugin)
     {
-        JTable::addIncludePath(dirname(dirname(__FILE__)).'/tables');
+        JTable::addIncludePath(dirname(dirname(__FILE__)) . '/tables');
         // Add to Default Group
         $profile = JTable::getInstance('profiles', 'WFTable');
 
@@ -348,7 +348,7 @@ class WFModelPlugins extends WFModel
 
     public static function removeFromProfile($id, $plugin)
     {
-        JTable::addIncludePath(dirname(dirname(__FILE__)).'/tables');
+        JTable::addIncludePath(dirname(dirname(__FILE__)) . '/tables');
         // Add to Default Group
         $profile = JTable::getInstance('profiles', 'WFTable');
 
@@ -396,16 +396,16 @@ class WFModelPlugins extends WFModel
         jimport('joomla.filesystem.file');
 
         // get the base file
-        $file = dirname(dirname(__FILE__)).'/index.html';
+        $file = dirname(dirname(__FILE__)) . '/index.html';
 
         if (is_file($file) && is_dir($path)) {
-            JFile::copy($file, $path.'/'.basename($file));
+            JFile::copy($file, $path . '/' . basename($file));
 
             // admin component
             $folders = JFolder::folders($path, '.', true, true);
 
             foreach ($folders as $folder) {
-                JFile::copy($file, $folder.'/'.basename($file));
+                JFile::copy($file, $folder . '/' . basename($file));
             }
         }
     }
@@ -421,11 +421,11 @@ class WFModelPlugins extends WFModel
             $query = $db->getQuery(true);
 
             if (is_object($query)) {
-                $query->select('id')->from('#__wf_profiles')->where('name = '.$db->Quote('Default').' OR id = 1');
+                $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
             } else {
                 $query = 'SELECT id'
-                        .' FROM #__wf_profiles'
-                        .' WHERE name = '.$db->Quote('Default').' OR id = 1';
+                . ' FROM #__wf_profiles'
+                . ' WHERE name = ' . $db->Quote('Default') . ' OR id = 1';
             }
 
             $db->setQuery($query);
@@ -444,7 +444,7 @@ class WFModelPlugins extends WFModel
 
         if ($route == 'install') {
             if ($plugin->type == 'extension') {
-                $plugin->path = $plugin->path.'/'.$plugin->name;
+                $plugin->path = $plugin->path . '/' . $plugin->name;
             }
 
             // add index.html files
