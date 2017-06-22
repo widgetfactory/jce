@@ -19,8 +19,8 @@
                 var s = ed.settings, c;
 
                 // reset colours
-                updateColor('forecolor');
-                updateColor('backcolor');
+                //updateColor('forecolor');
+                //updateColor('backcolor');
 
                 function updateColor(controlId, color) {
                     if (c = cm.get(controlId)) {                                                
