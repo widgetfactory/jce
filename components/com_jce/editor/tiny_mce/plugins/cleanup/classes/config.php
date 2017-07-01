@@ -24,7 +24,7 @@ class WFCleanupPluginConfig
 
         // use named encoding with limited entities set if raw/utf-8 and keep_nbsp === true
         if ($settings['entity_encoding'] === 'raw' && $nbsp) {
-            $settings['entity_encoding'] = '';
+            $settings['entity_encoding'] = 'named';
             $settings['entities'] = '160,nbsp,173,shy';
         }
 
