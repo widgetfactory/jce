@@ -109,33 +109,11 @@ class PlgSystemJce extends JPlugin
             $type = $field->getAttribute('type');
 
             if (strtolower($type) === 'media') {
-                // get filter value for field, eg: images, media, files
-                $filter = $field->getAttribute('filter', 'images');
-
-                // get file browser link
-                $link = $this->getLink($filter);
-
-                // link not available for environment
-                if (empty($link)) {
-                    continue;
-                }
-
                 $group = (string) $field->group;
-                $form->setFieldAttribute($name, 'link', $link, $group);
-                $form->setFieldAttribute($name, 'class', 'input-large wf-media-input', $group);
-
-                $hasMedia = true;
+                
+                $form->addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jce/models/fields');
+                $form->setFieldAttribute($name, 'type', 'mediajce', $group);
             }
-        }
-
-        if ($hasMedia) {
-            // Include jQuery
-            JHtml::_('jquery.framework');
-
-            $document = JFactory::getDocument();
-            $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
-
-            $document->addStyleSheet(JURI::root(true).'/plugins/content/jce/css/media.css');
         }
 
         return true;
