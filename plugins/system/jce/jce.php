@@ -14,15 +14,6 @@ defined('JPATH_BASE') or die;
  */
 class PlgSystemJce extends JPlugin
 {
-    protected function getLink($filter = 'images')
-    {
-        require_once JPATH_ADMINISTRATOR.'/components/com_jce/helpers/browser.php';
-
-        $link = WFBrowserHelper::getMediaFieldLink('', $filter);
-
-        return $link;
-    }
-
     public function onPlgSystemJceContentPrepareForm($form, $data)
     {
         return $this->onContentPrepareForm($form, $data);
@@ -111,7 +102,7 @@ class PlgSystemJce extends JPlugin
             if (strtolower($type) === 'media') {
                 $group = (string) $field->group;
                 
-                $form->addFieldPath(JPATH_ADMINISTRATOR . '/components/com_jce/models/fields');
+                $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
             }
         }

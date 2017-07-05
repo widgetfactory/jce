@@ -59,8 +59,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
 
         $document = JFactory::getDocument();
         $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
-
-        $document->addStyleSheet(JURI::root(true) . '/plugins/content/jce/css/media.css');
+        $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
         $this->link = WFBrowserHelper::getMediaFieldLink('', $this->filter);
@@ -69,8 +68,8 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $data = parent::getLayoutData();
 
         $extraData = array(
-            'link' => $this->link,
-            'class' => $this->element['class'] . ' input-large wf-media-input',
+            'link'      => $this->link,
+            'class'     => $this->element['class'] . ' input-large wf-media-input'
         );
 
         return array_merge($data, $extraData);
