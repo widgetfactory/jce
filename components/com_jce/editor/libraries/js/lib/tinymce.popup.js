@@ -1,4 +1,4 @@
-(function(win) {
+(function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
         var each = tinymce.each;
@@ -6,14 +6,14 @@
         var TinyMCE_Utils = {
 
             classes: [],
-                /**
-                 * Returns a array of all single CSS classes in the document. A single CSS class is a simple
-                 * rule like ".class" complex ones like "div td.class" will not be added to output.
-                 *
-                 * @method getClasses
-                 * @return {Array} Array with class objects each object has a class field might be other fields in the future.
-                 */
-            getClasses: function() {
+            /**
+             * Returns a array of all single CSS classes in the document. A single CSS class is a simple
+             * rule like ".class" complex ones like "div td.class" will not be added to output.
+             *
+             * @method getClasses
+             * @return {Array} Array with class objects each object has a class field might be other fields in the future.
+             */
+            getClasses: function () {
                 var self = this,
                     ed = tinyMCEPopup.editor,
                     cl = [],
@@ -27,17 +27,17 @@
 
                 function addClasses(s) {
                     // IE style imports
-                    each(s.imports, function(r) {
+                    each(s.imports, function (r) {
                         addClasses(r);
                     });
 
-                    each(s.cssRules || s.rules, function(r) {
+                    each(s.cssRules || s.rules, function (r) {
                         // Real type or fake it on IE
                         switch (r.type || 1) {
                             // Rule
                             case 1:
                                 if (r.selectorText) {
-                                    each(r.selectorText.split(','), function(v) {
+                                    each(r.selectorText.split(','), function (v) {
                                         v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                                         // Is internal or it doesn't contain a class
@@ -89,10 +89,10 @@
                 return cl;
             },
 
-            fillClassList: function(id) {
+            fillClassList: function (id) {
                 var ed = tinyMCEPopup.editor,
                     lst = document.getElementById(id),
-                    v, cl = [];
+                    v, cl = [''];
 
                 if (!lst) {
                     return;
@@ -102,26 +102,30 @@
                     var custom = ed.getParam('styleselect_custom_classes');
 
                     if (custom) {
-                      cl = cl.concat(custom);
+                        cl = cl.concat(custom);
                     }
                 }
 
                 if (ed.getParam('styleselect_stylesheet') !== false) {
-                  var classes = this.getClasses();
+                    var classes = this.getClasses();
 
-                  if (classes.length) {
-                    cl = cl.concat(classes);
-                  }
+                    if (classes.length) {
+                        cl = cl.concat(classes);
+                    }
                 }
 
                 if (cl.length > 0) {
-                    tinymce.each(cl, function(o) {
+                    tinymce.each(cl, function (o) {
+                        if (typeof o === "string") {
+                            o = {"class" : o};
+                        }
+                        
                         lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
                     });
                 }
             },
 
-            updateColor: function(parent) {
+            updateColor: function (parent) {
                 if (typeof parent == 'string') {
                     parent = document.getElementById(parent);
                 }
