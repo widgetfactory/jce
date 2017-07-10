@@ -11,7 +11,6 @@
   <description>PLG_CONTENT_JCE_XML_DESCRIPTION</description>
   <files folder="plugins/content/jce">
     <file plugin="jce">jce.php</file>
-    <folder>css</folder>
   </files>
 
   <languages folder="administrator/language/en-GB">
