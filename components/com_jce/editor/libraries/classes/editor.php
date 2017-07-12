@@ -152,7 +152,7 @@ class WFEditor extends JObject
     /**
      * Get an appropriate editor profile.
      */
-    public function getProfile($plugin = '')
+    public function getProfile($plugin = '', $id = 0)
     {
         // get the profile variables for the current context
         $options = $this->getProfileVars($plugin);
@@ -163,9 +163,6 @@ class WFEditor extends JObject
             $db = JFactory::getDBO();
             $user = JFactory::getUser();
             $app = JFactory::getApplication();
-
-            // default $id
-            $id = 0;
 
             $query = $db->getQuery(true);
 
