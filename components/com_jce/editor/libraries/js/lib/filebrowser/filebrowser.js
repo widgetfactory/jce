@@ -8,11 +8,11 @@
  * other free or open source software licenses.
  */
 
-(function($, Wf, undef) {
+(function ($, Wf, undef) {
     var mimeTypes = {};
 
     // Parses the default mime types string into a mimes lookup map
-    (function(data) {
+    (function (data) {
         var items = data.split(","),
             i, y, ext;
 
@@ -36,13 +36,13 @@
     );
 
     // Create a unique ID
-    var guid = (function() {
+    var guid = (function () {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
                 .substring(1);
         }
-        return function() {
+        return function () {
             return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
         };
@@ -57,7 +57,7 @@
         return mimeTypes[ext] || ext;
     }
 
-    var FileBrowser = function(element, options) {
+    var FileBrowser = function (element, options) {
         var self = this;
 
         this.element = element;
@@ -134,15 +134,15 @@
          * @param {Mixed} args Arguments
          * @returns {void}
          */
-        _trigger: function(ev, args) {
+        _trigger: function (ev, args) {
             $(this.element).trigger('filebrowser:' + ev.toLowerCase(), args);
         },
 
-        setOptions: function(options) {
+        setOptions: function (options) {
             this.options = $.extend(this.options, options);
         },
 
-        getOptions: function() {
+        getOptions: function () {
             return this.options;
         },
 
@@ -150,14 +150,14 @@
          * Initialize the filebrowser
          * @returns {void}
          */
-        _init: function(options) {
+        _init: function (options) {
             var self = this;
 
             // extend options with passed in values
             this.options = $.extend(this.options, options);
 
             // bind events - legacy
-            $.each(this.options, function(k, v) {
+            $.each(this.options, function (k, v) {
                 // bind event from options
                 if (typeof v === "function") {
                     $(self.element).on('filebrowser:' + k.toLowerCase(), v);
@@ -176,7 +176,7 @@
             $(list).addClass('item-list').attr({
                 'id': 'item-list',
                 'role': 'listbox'
-            }).bind('click.item-list', function(e) {
+            }).bind('click.item-list', function (e) {
                 var n = e.target,
                     p = n.parentNode;
 
@@ -222,10 +222,10 @@
 
                     return true;
                 }
-            }).bind('dblclick.item-list', function(e) {
+            }).bind('dblclick.item-list', function (e) {
                 e.preventDefault();
                 return false;
-            }).bind('keydown.item-list', function(e) {
+            }).bind('keydown.item-list', function (e) {
                 switch (e.which) {
                     case 13:
                         // get currently selected item
@@ -255,12 +255,12 @@
             });
 
             // update browser list on scroll
-            $('#browser-list').append(list).bind('scroll.browser-list', function(e) {
+            $('#browser-list').append(list).bind('scroll.browser-list', function (e) {
                 self._updateList();
             });
 
             // Item details navigation
-            $('.details-nav-left, .details-nav-right', '#browser-details-nav').click(function(e) {
+            $('.details-nav-left, .details-nav-right', '#browser-details-nav').click(function (e) {
                 var $item = $('li.selected.active', '#item-list').removeClass('active');
 
                 if ($(this).hasClass('details-nav-left')) {
@@ -279,7 +279,7 @@
             // Set list limit selection
             $('#browser-list-limit-select').val(Wf.Cookie.get('wf_' + Wf.getName() + '_limit') || this.options.list_limit);
 
-            $('#browser-list-limit-select').change(function() {
+            $('#browser-list-limit-select').change(function () {
                 self._limitcount = 0;
 
                 Wf.Cookie.set('wf_' + Wf.getName() + '_limit', $(this).val());
@@ -288,7 +288,7 @@
             });
 
             // Browser list navigation
-            $('ul li', '#browser-list-limit').click(function(e) {
+            $('ul li', '#browser-list-limit').click(function (e) {
                 e.preventDefault();
 
                 var x = 0,
@@ -313,7 +313,7 @@
             });
 
             // Check All checkbox
-            $('input[type="checkbox"]', '#check-all').click(function(e) {
+            $('input[type="checkbox"]', '#check-all').click(function (e) {
                 var el = e.target;
 
                 var s = $(el).is(':checked');
@@ -340,8 +340,8 @@
             // show details button only if folder tree enabled and details enabled
             $('#show-details').toggle(this._treeLoaded());
 
-            $('#show-search').click(function() {
-                $('#searchbox').toggleClass('uk-hidden').attr('aria-hidden', function() {
+            $('#show-search').click(function () {
+                $('#searchbox').toggleClass('uk-hidden').attr('aria-hidden', function () {
                     return $(this).hasClass('uk-hidden');
                 });
 
@@ -352,11 +352,11 @@
                 }
             });
 
-            $('#search + .uk-icon').click(function() {
+            $('#search + .uk-icon').click(function () {
                 $('#search').focus();
             });
 
-            $('body').click(function(e) {
+            $('body').click(function (e) {
                 if ($('#searchbox').hasClass('uk-hidden')) {
                     return;
                 }
@@ -375,7 +375,7 @@
                 list: '#item-list',
                 selector: 'li',
                 clear: '#search + .uk-icon'
-            }).on('listfilter:find', function(ev, s) {
+            }).on('listfilter:find', function (ev, s) {
                 var el = this;
 
                 var limit = $('#browser-list-limit-select').val();
@@ -391,7 +391,7 @@
 
                 if (s) {
                     var prefix = "";
-                    
+
                     // check if we are searching by extension
                     if (s.charAt(0) === ".") {
                         s = s.substr(1);
@@ -407,18 +407,18 @@
                     // show loading message
                     self._setLoader();
 
-                    $('#browser-list').one('load.filter', function() {
+                    $('#browser-list').one('load.filter', function () {
                         $(el).trigger('listfilter:found', [null, $('li.file', '#item-list').get()]);
                     });
 
                     self._getList('', prefix + s);
 
-                } else {                    
+                } else {
                     self.refresh();
                 }
 
                 return true;
-            }).on('listfilter:found', function(ev, e, items) {
+            }).on('listfilter:found', function (ev, e, items) {
                 // clear button triggered
                 if (e) {
                     if ($('#browser-list-limit-select').val() === 'all') {
@@ -432,12 +432,12 @@
             });
 
             // Setup refresh button
-            $('#refresh').click(function(e) {
+            $('#refresh').click(function (e) {
                 self.refresh(e);
             });
 
             // Details button
-            $('#show-details:visible').click(function(e) {
+            $('#show-details:visible').click(function (e) {
                 $(this).toggleClass('uk-active');
                 $('main').toggleClass('uk-tree-hidden');
             });
@@ -453,7 +453,7 @@
             if (this.options.expandable) {
                 $('#browser').addClass('expandable');
 
-                $('#layout-full-toggle').click(function() {
+                $('#layout-full-toggle').click(function () {
                     $('#browser').toggleClass('full-height');
                     self._trigger($('#browser').hasClass('full-height') ? 'onMaximise' : 'onMinimise');
                 });
@@ -462,19 +462,19 @@
             // fix ie8 layout
             if (!$.support.cssFloat && document.querySelector) {
 
-                setTimeout(function() {
+                setTimeout(function () {
                     var ph = $('main', '#browser').height();
 
-                    $('#browser-list, #browser-tree, #browser-details-container', '#browser').each(function() {
+                    $('#browser-list, #browser-tree, #browser-details-container', '#browser').each(function () {
                         var self = this,
                             m = 0;
 
-                        $(this).siblings().each(function() {
+                        $(this).siblings().each(function () {
                             var h = $(this).outerHeight(true);
                             m += parseInt(h);
                         });
 
-                        $.each(['top', 'bottom'], function(i, k) {
+                        $.each(['top', 'bottom'], function (i, k) {
                             var v = $(self).css('padding-' + k);
                             m += parseInt(v);
                         });
@@ -490,12 +490,12 @@
             // trigger init
             this._trigger('onInit', this);
         },
-        _updateList: function() {
+        _updateList: function () {
             var self = this;
             // get visible area
             var area = $('#browser-list').height() + $('#browser-list').scrollTop();
 
-            $('.file.jpg, .file.jpeg, .file.png, .file.gif, .file.bmp', '#item-list').not('[data-width]').each(function() {
+            $('.file.jpg, .file.jpeg, .file.png, .file.gif, .file.bmp', '#item-list').not('[data-width]').each(function () {
                 // get item position
                 var pos = $(this).position();
 
@@ -507,7 +507,7 @@
         /**
          * Get the height of the dilaog interface.
          */
-        _getInterfaceHeight: function() {
+        _getInterfaceHeight: function () {
             // get the base interface height, ie: everything - the file browser
             var ih = Math.max(0, Math.round($('#browser').offset().top) - 5);
 
@@ -524,7 +524,7 @@
          * Resize the browser window
          * @param {String} Interface height.
          */
-        resize: function(ih, init) {
+        resize: function (ih, init) {
             /*var fh = $('#browser').hasClass('full-height'), ih = ih || this._getInterfaceHeight();
 
             var ap = Math.round($('div.actionPanel').offset().top) - 10;
@@ -545,13 +545,13 @@
          * @param {String} Language key
          * @param {String} Default value
          */
-        _translate: function(s, ds) {
+        _translate: function (s, ds) {
             return Wf.translate(s, ds);
         },
         /**
          * Setup list sorting for item list
          */
-        _setupListSort: function() {
+        _setupListSort: function () {
             var self = this;
             // Sortables
 
@@ -574,14 +574,14 @@
                         selector: 'li.file'
                     }
                 }
-            }).on('listsort:sort', function() {
+            }).on('listsort:sort', function () {
                 self._trigger('onListSort');
             });
         },
         /**
          *Check if the path is local and /or a valid local file url
          */
-        _validatePath: function(s) {
+        _validatePath: function (s) {
             function _toUnicode(c) {
                 c = c.toString(16).toUpperCase();
 
@@ -618,7 +618,7 @@
 
             return true;
         },
-        _cleanPath: function(path) {
+        _cleanPath: function (path) {
             if (path) {
                 // make relative
                 if (new RegExp(':\/\/').test(path)) {
@@ -640,7 +640,7 @@
          * Set up the base directory
          * @param {String} src The base url
          */
-        _setupDir: function() {
+        _setupDir: function () {
             var dir = '';
 
             // get the file src from the widget element
@@ -703,7 +703,7 @@
                 this._getList(src);
             }
         },
-        _toggleTree: function(s) {
+        _toggleTree: function (s) {
             // add full-width class to browser
             $('#browser').toggleClass('full-width', !s);
 
@@ -716,13 +716,13 @@
         /**
          * Check if a name is websafe
          */
-        _isWebSafe: function(name) {
+        _isWebSafe: function (name) {
             // get websafe name
             var safe = Wf.String.safe(name, this.options.websafe_mode, this.options.websafe_spaces, this.options.websafe_textcase);
             // only check lowercase as both upper and lower are websafe
             return name.toLowerCase() === safe.toLowerCase();
         },
-        _isViewable: function(name) {
+        _isViewable: function (name) {
             var button = this._getButton('file', 'view');
             var viewable = this.options.viewable;
 
@@ -732,7 +732,7 @@
 
             return new RegExp('\\.(' + viewable.replace(/,/g, '|') + ')$', 'i').test(name);
         },
-        _buildList: function(o) {
+        _buildList: function (o) {
             var self = this,
                 h = '';
 
@@ -745,11 +745,11 @@
 
             if (o.folders.length) {
 
-                $.each(o.folders, function(i, e) {
+                $.each(o.folders, function (i, e) {
                     var data = [],
                         classes = [];
 
-                    $.each(e.properties, function(k, v) {
+                    $.each(e.properties, function (k, v) {
                         if (v !== '') {
                             data.push('data-' + k + '="' + v + '"');
                         }
@@ -775,10 +775,10 @@
             }
 
             if (o.total.files) {
-                $.each(o.files, function(i, e) {
+                $.each(o.files, function (i, e) {
                     var data = [],
                         classes = [];
-                    $.each(e.properties, function(k, v) {
+                    $.each(e.properties, function (k, v) {
                         if (v !== '') {
                             data.push('data-' + k + '="' + v + '"');
                         }
@@ -829,7 +829,7 @@
 
             this._showListDetails();
         },
-        _showListDetails: function() {
+        _showListDetails: function () {
             var s = !$('.layout-icon', '#show-details').hasClass('tree') && this._treeLoaded();
 
             this._toggleTree(s);
@@ -838,27 +838,27 @@
          * Check if the Tree option is set and the Tree Class is loaded
          * return Boolean.
          */
-        _treeLoaded: function() {
+        _treeLoaded: function () {
             return this.options.folder_tree && typeof $.fn.tree === "function";
         },
 
-        _trimPath: function(path) {
-            return path.replace(/^\//, '').replace(/\/$/, '');     
+        _trimPath: function (path) {
+            return path.replace(/^\//, '').replace(/\/$/, '');
         },
 
         /**
          * Initialize the Tree
          * @param {String} src Optional src url eg: images/stories/fruit.jpg
          */
-        _createTree: function(src) {
+        _createTree: function (src) {
             var self = this;
             // use src or stored directory
             var path = src || this._dir;
 
             path = this._cleanPath(path);
 
-            $('#tree-body').on('tree:init', function(e, callback) {
-                Wf.JSON.request('getTree', path, function(o) {
+            $('#tree-body').on('tree:init', function (e, callback) {
+                Wf.JSON.request('getTree', path, function (o) {
                     // Set default tree
                     $('#tree-body').html(o);
 
@@ -872,12 +872,12 @@
                     self._getList(src);
                 });
 
-            }).on('tree:nodeclick', function(e, node) {
+            }).on('tree:nodeclick', function (e, node) {
                 self._changeDir($(node).attr('id'));
-            }).on('tree:nodeload', function(e, node) {
+            }).on('tree:nodeload', function (e, node) {
                 $('#tree-body').trigger('tree:toggleloader', node);
 
-                Wf.JSON.request('getTreeItem', $(node).attr('id'), function(o) {
+                Wf.JSON.request('getTreeItem', $(node).attr('id'), function (o) {
                     if (o && !o.error) {
                         $('ul:first', node).remove();
 
@@ -892,7 +892,7 @@
         /**
          * Reset the Manager
          */
-        _reset: function() {
+        _reset: function () {
             // Clear selects
             this._deselectItems();
             // Clear returns
@@ -908,7 +908,7 @@
         /**
          * Clear the Paste action
          */
-        _clearPaste: function() {
+        _clearPaste: function () {
             // Clear paste
             this._pasteaction = '';
             this._pasteitems = '';
@@ -920,7 +920,7 @@
          * @param {String} message
          * @param {String} loading
          */
-        setStatus: function(o) {
+        setStatus: function (o) {
             $('#browser-message').removeClass('load error');
 
             // set state
@@ -934,13 +934,13 @@
          * @param {String} message
          * @param {String} classname
          */
-        _setMessage: function(message, classname) {
+        _setMessage: function (message, classname) {
             return true;
         },
         /**
          * Sets a loading message
          */
-        _setLoader: function() {
+        _setLoader: function () {
             this.setStatus({
                 message: this._translate('message_load', 'Loading...'),
                 state: 'load'
@@ -949,13 +949,13 @@
         /**
          * Reset the message display
          */
-        _resetMessage: function() {
+        _resetMessage: function () {
             return true;
         },
         /**
          * Reset the status display
          */
-        _resetStatus: function() {
+        _resetStatus: function () {
             var self = this,
                 dir = decodeURIComponent(this._dir),
                 $status = $('#browser-message');
@@ -974,7 +974,7 @@
             var sw = $status.width();
 
             // add "home" click
-            $('li:first', $pathway).click(function() {
+            $('li:first', $pathway).click(function () {
                 self._changeDir('/');
             });
 
@@ -991,14 +991,14 @@
                 var x = 1,
                     parts = dir.split('/');
 
-                $.each(parts, function(i, s) {
+                $.each(parts, function (i, s) {
                     var path = s;
 
                     if (i > 0) {
                         path = parts.slice(0, i + 1).join('/');
                     }
 
-                    var $item = $('<li title="' + s + '" />').click(function(e) {
+                    var $item = $('<li title="' + s + '" />').click(function (e) {
                         self._changeDir(path);
                     }).append('<a>' + s + '</a>').insertBefore($count);
 
@@ -1015,7 +1015,7 @@
          * Get the parent directory
          * @return {String} s The parent/previous directory.
          */
-        _getPreviousDir: function() {
+        _getPreviousDir: function () {
             if (this._dir.length < 2) {
                 return this._dir;
             }
@@ -1032,7 +1032,7 @@
          * Add an item to the returnedItems array
          * @return {Object} file The item.
          */
-        _addReturnedItem: function(items) {
+        _addReturnedItem: function (items) {
             if ($.type(items) == 'array') {
                 $.merge(this._returnedItems, items);
             } else {
@@ -1043,7 +1043,7 @@
          * Setup the returned file after upload
          * @param {String} file The returning file name.
          */
-        _returnFile: function(file) {
+        _returnFile: function (file) {
             this._addReturnedItem({
                 name: Wf.String.basename(file)
             });
@@ -1054,25 +1054,25 @@
          * Set the current directory
          * @param {String} dir
          */
-        _setDir: function(dir) {
+        _setDir: function (dir) {
             this._dir = dir;
         },
         /**
          * Get the base directory
          */
-        getBaseDir: function() {
+        getBaseDir: function () {
             return this.options.dir;
         },
         /**
          * Get the current directory
          */
-        getCurrentDir: function() {
+        getCurrentDir: function () {
             return this._dir;
         },
         /**
          Determine whether current directory is root
          */
-        _isRoot: function() {
+        _isRoot: function () {
             var s = this._dir;
 
             // remove leading slash
@@ -1084,7 +1084,7 @@
          * Change Directory
          * @param {String} dir
          */
-        _changeDir: function(dir) {
+        _changeDir: function (dir) {
             this._reset();
             this._limitcount = 0;
             this._setDir(dir);
@@ -1098,7 +1098,7 @@
          * Retrieve a list of files and folders
          * @param {String} src optional src url eg: images/stories/fruit.jpg
          */
-        _getList: function(src, filter) {
+        _getList: function (src, filter) {
             // get path from src or stored directory
             var path = src || this._dir;
 
@@ -1119,7 +1119,7 @@
         /**
          * Refresh the file list
          */
-        refresh: function(e) {
+        refresh: function (e) {
             this._reset();
 
             // show loading message
@@ -1135,7 +1135,7 @@
         /**
          * Load the browser list
          */
-        load: function(items) {
+        load: function (items) {
             // add returned items
             if (items) {
                 this._addReturnedItem(items);
@@ -1149,23 +1149,23 @@
         /**
          * Show an error message
          */
-        error: function(error) {
+        error: function (error) {
             this._raiseError(error);
         },
-        startUpload: function() {
+        startUpload: function () {
             $('#upload-queue').uploader('start');
         },
-        stopUpload: function() {
+        stopUpload: function () {
             $('#upload-queue').uploader('stop');
         },
-        setUploadStatus: function(o) {
+        setUploadStatus: function (o) {
             $('#upload-queue').uploader('setStatus', o);
         },
         /**
          * Load the file/folder list into the container div
          * @param {Object} The folder/file JSON object
          */
-        _loadList: function(o) {
+        _loadList: function (o) {
             $('input[name="refresh"]', 'form').remove();
 
             // data error...
@@ -1245,25 +1245,25 @@
             this._resetMessage();
             this._trigger('onListComplete');
         },
-        _getDialogOptions: function(dialog) {
+        _getDialogOptions: function (dialog) {
             var options = this.options[dialog];
             var elements = '';
 
             if (options && options.elements) {
                 if ($.isPlainObject(options.elements)) {
-                    $.each(options.elements, function(k, v) {
+                    $.each(options.elements, function (k, v) {
                         if (v.options) {
                             elements += '<div class="uk-form-row">';
                             elements += '<label class="uk-form-label uk-width-1-5" for="' + k + '">' + (v.label || k) + '</label>';
                             elements += '<div class="uk-form-controls uk-width-4-5"><select id="' + k + '" name="' + k + '">';
 
-                            $.each(v.options, function(value, name) {
+                            $.each(v.options, function (value, name) {
                                 var selected = "";
 
                                 if (v['default'] && value === v['default']) {
                                     selected = " selected";
                                 }
-                                
+
                                 elements += '<option value="' + value + '"' + selected + '>' + name + '</option>';
                             });
 
@@ -1286,7 +1286,7 @@
          * @param {String} The command name
          * @param {String} The command type
          */
-        _execute: function(name) {
+        _execute: function (name) {
             var self = this;
             var dir = this._dir;
             // trim dir - remove leading /
@@ -1320,7 +1320,7 @@
                             Wf.Modal.media(name, url);
                         } else {
                             Wf.Modal.iframe(name, url, {
-                                onFrameLoad: function(e) {
+                                onFrameLoad: function (e) {
                                     var iframe = $('div.iframe-preview iframe').get(0);
                                     var h = iframe.contentWindow.document.body.innerHTML;
                                     var tmpDiv = document.createElement('div');
@@ -1332,7 +1332,7 @@
                                         return s.replace(/^administrator\//, '');
                                     }
 
-                                    $('img, embed', $(tmpDiv)).each(function() {
+                                    $('img, embed', $(tmpDiv)).each(function () {
                                         var s = toRelative($(this).attr('src'));
 
                                         if (!/http(s)?:\/\//.test(s)) {
@@ -1341,7 +1341,7 @@
                                         $(this).attr('src', s);
                                     });
 
-                                    $('a, area', $(tmpDiv)).each(function() {
+                                    $('a, area', $(tmpDiv)).each(function () {
                                         var s = toRelative($(this).attr('href'));
 
                                         if (!/http(s)?:\/\//.test(s)) {
@@ -1350,8 +1350,8 @@
                                         $(this).attr('href', s);
                                     });
 
-                                    $('object', $(tmpDiv)).each(function() {
-                                        $('param[name=movie], param[name=src]', this).each(function() {
+                                    $('object', $(tmpDiv)).each(function () {
+                                        $('param[name=movie], param[name=src]', this).each(function () {
                                             var s = toRelative($(this).attr('value'));
                                             if (!/http(s)?:\/\//.test(s)) {
                                                 s = string.path(site, s);
@@ -1371,7 +1371,7 @@
                 case 'upload':
                     var uploadModal = Wf.Modal.upload($.extend({
                         elements: this._getDialogOptions('upload'),
-                        open: function() {
+                        open: function () {
                             /**
                              * Private internal function
                              * Check file name against list
@@ -1382,7 +1382,7 @@
                                     msg = self._translate('file_exists_alert', 'A file with the same name exists in the target folder.');
                                 var name = Wf.String.safe(file.name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
-                                $('li', 'file-list').each(function() {
+                                $('li', 'file-list').each(function () {
                                     if (name == $(this).attr('title')) {
                                         found = true;
                                     }
@@ -1416,26 +1416,26 @@
                                 websafe_mode: self.options.websafe_mode,
                                 websafe_spaces: self.options.websafe_spaces,
                                 websafe_textcase: self.options.websafe_textcase
-                            }, self.options.upload)).on('uploadwidget:filerename', function(e, file) {
+                            }, self.options.upload)).on('uploadwidget:filerename', function (e, file) {
                                 return _checkName(file);
-                            }).on('uploadwidget:filecomplete', function(e, file, item) {
+                            }).on('uploadwidget:filecomplete', function (e, file, item) {
                                 self._addReturnedItem(item);
                                 self._trigger('onUploadFile', null, file);
 
-                            }).on('uploadwidget:uploadstart', function(e, file) {
+                            }).on('uploadwidget:uploadstart', function (e, file) {
                                 // add file specific upload data
                                 file.data = $(':input:enabled', file.element).serializeArray();
                                 // disable fields
                                 $(':input:enabled', file.element).prop('disabled', true);
 
-                            }).on('uploadwidget:uploadcomplete', function(e, errors) {
+                            }).on('uploadwidget:uploadcomplete', function (e, errors) {
                                 $('#upload-submit').disabled = false;
 
                                 if (!errors) {
                                     // Refresh file list
                                     self._getList();
 
-                                    window.setTimeout(function() {
+                                    window.setTimeout(function () {
                                         $(uploadModal).trigger('modal.close');
                                     }, 1000);
 
@@ -1445,11 +1445,14 @@
 
                             self._trigger('onUploadOpen');
                         },
-                        upload: function() {
+                        upload: function () {
                             // get form data
                             var fields = $.merge($('form > :input:enabled').serializeArray(), $(':input:enabled', '#upload-options').serializeArray());
                             // set current directory
-                            fields.push({ "name": "upload-dir", "value": dir });
+                            fields.push({
+                                "name": "upload-dir",
+                                "value": dir
+                            });
 
                             self._trigger('onUpload', null, [fields]);
 
@@ -1458,7 +1461,7 @@
 
                             return false;
                         },
-                        close: function() {
+                        close: function () {
                             $('#upload-queue').trigger('uploadwidget:close');
                         }
                     }, self.options.upload.dialog));
@@ -1466,14 +1469,14 @@
                 case 'folder_new':
                     var elements = this._getDialogOptions('folder_new');
 
-                    Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function(v, args) {
+                    Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function (v, args) {
                         if (v) {
                             self._setLoader();
 
                             v = Wf.String.safe(v, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                             args = [dir, v].concat(args || []);
 
-                            Wf.JSON.request('folderNew', args, function(o) {
+                            Wf.JSON.request('folderNew', args, function (o) {
                                 if (o) {
                                     $('#tree-body').trigger('tree:createnode', [o.folders, dir]);
                                     self._trigger('onFolderNew');
@@ -1508,14 +1511,17 @@
                             // remove from tree
                             if (self._treeLoaded()) {
                                 // remove existing items
-                                $.each(items, function(i, item) {
+                                $.each(items, function (i, item) {
                                     if (fn == 'moveItem') {
                                         $('#tree-body').trigger('tree:removenode', [item]);
                                     }
                                 });
 
-                                var folders = $.map(o.folders, function(item, i) {                                    
-                                    return {"id" : item, "name" : Wf.String.basename(item)};
+                                var folders = $.map(o.folders, function (item, i) {
+                                    return {
+                                        "id": item,
+                                        "name": Wf.String.basename(item)
+                                    };
                                 });
 
                                 // create new items
@@ -1525,16 +1531,16 @@
                         self._trigger('onPaste');
                     }
 
-                    $.each(items, function(i, item) {
+                    $.each(items, function (i, item) {
                         var complete = i === items.length - 1;
 
-                        Wf.JSON.request(fn, [item, dir], function(o) {
+                        Wf.JSON.request(fn, [item, dir], function (o) {
                             if (o) {
                                 if (o.confirm) {
-                                    Wf.Modal.confirm(self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'), function(state) {
+                                    Wf.Modal.confirm(self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'), function (state) {
                                         if (state) {
                                             self._setLoader();
-                                            Wf.JSON.request(fn, [item, dir, true], function(o) {
+                                            Wf.JSON.request(fn, [item, dir, true], function (o) {
                                                 callback(o, dir);
                                             });
                                         }
@@ -1544,7 +1550,10 @@
                                             self.refresh();
                                         }
                                     }, {
-                                        label: { 'confirm': self._translate('replace', 'Replace'), 'cancel': self._translate('cancel', 'Cancel') },
+                                        label: {
+                                            'confirm': self._translate('replace', 'Replace'),
+                                            'cancel': self._translate('cancel', 'Cancel')
+                                        },
                                         header: false
                                     });
                                 } else {
@@ -1565,15 +1574,15 @@
                 case 'delete':
                     var msg = self._translate('delete_item_alert', 'Delete Selected Item(s)');
 
-                    Wf.Modal.confirm(msg, function(state) {
+                    Wf.Modal.confirm(msg, function (state) {
                         if (state) {
                             self._setLoader();
-                            Wf.JSON.request('deleteItem', list, function(o) {
+                            Wf.JSON.request('deleteItem', list, function (o) {
                                 if (o) {
                                     if (o.folders.length) {
                                         // remove from tree
                                         if (self._treeLoaded()) {
-                                            $.each(o.folders, function(i, item) {
+                                            $.each(o.folders, function (i, item) {
                                                 $('#tree-body').trigger('tree:removenode', [item]);
                                             });
                                         }
@@ -1589,7 +1598,9 @@
 
                         }
                     }, {
-                        label: { 'confirm': self._translate('delete', 'Delete') },
+                        label: {
+                            'confirm': self._translate('delete', 'Delete')
+                        },
                         header: false
                     });
                     break;
@@ -1603,7 +1614,7 @@
                         v = Wf.String.basename(Wf.String.stripExt(list));
                     }
 
-                    var rename = Wf.Modal.prompt('Rename', function(name, args) {
+                    var rename = Wf.Modal.prompt('Rename', function (name, args) {
                         name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
                         if (v === name) {
@@ -1611,13 +1622,13 @@
                             return false;
                         }
 
-                        Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function(state) {
+                        Wf.Modal.confirm(self._translate('rename_item_alert', 'Renaming files/folders will break existing links. Continue?'), function (state) {
                             if (state) {
                                 self._setLoader();
 
                                 args = [list, name].concat(args || []);
 
-                                Wf.JSON.request('renameItem', args, function(o) {
+                                Wf.JSON.request('renameItem', args, function (o) {
                                     if (o) {
                                         self._reset();
                                         var item = Wf.String.path(self._dir, name);
@@ -1655,7 +1666,9 @@
                     }, {
                         value: v,
                         header: false,
-                        label: { 'confirm': self._translate('rename', 'Rename') },
+                        label: {
+                            'confirm': self._translate('rename', 'Rename')
+                        },
                         elements: this._getDialogOptions('rename'),
                         close_on_submit: false
                     });
@@ -1666,14 +1679,14 @@
          * Show an error dialog
          * @param {String} error
          */
-        _raiseError: function(error) {
+        _raiseError: function (error) {
             var self = this,
                 err = '';
 
             switch ($.type(error)) {
                 case 'array':
                     err += '<ul class="error-list">';
-                    $.each(error, function(k, v) {
+                    $.each(error, function (k, v) {
                         err += '<li>' + v + '</li>';
                     });
 
@@ -1686,7 +1699,7 @@
             }
 
             this._dialog['alert'] = Wf.Modal.alert(err, {
-                close: function() {
+                close: function () {
                     self.refresh();
                 }
 
@@ -1696,10 +1709,10 @@
          * Add an array of actions
          * @param {Object} actions
          */
-        _addActions: function(actions) {
+        _addActions: function (actions) {
             var self = this;
 
-            $.each(actions, function(i, action) {
+            $.each(actions, function (i, action) {
                 self._addAction(action);
             });
 
@@ -1708,7 +1721,7 @@
          * Add an action to the Manager
          * @param {Object} options
          */
-        _addAction: function(o) {
+        _addAction: function (o) {
             var self = this,
                 name = o.name || '',
                 fn = this._execute;
@@ -1741,7 +1754,7 @@
 
                 var icon = (map[name] || name);
 
-                $.each(icon.split(' '), function(i, k) {
+                $.each(icon.split(' '), function (i, k) {
                     $(action).prepend('<i class="uk-icon uk-icon-medium uk-icon-' + cls + ' uk-icon-' + k + '" />');
                 });
 
@@ -1752,7 +1765,7 @@
                 }
 
                 if (o.name) {
-                    $(action).click(function(e) {
+                    $(action).click(function (e) {
                         e.preventDefault();
 
                         if ($.type(fn) == 'function') {
@@ -1771,19 +1784,19 @@
          * Get an action by name
          * @param {String} name
          */
-        _getAction: function(name) {
+        _getAction: function (name) {
             return this._actions[name];
         },
         /**
          * Add an array of buttons to the Manager
          * @param {Object} buttons
          */
-        _addButtons: function(buttons) {
+        _addButtons: function (buttons) {
             var self = this;
 
             if (buttons) {
                 if (buttons.folder) {
-                    $.each(buttons.folder, function(i, button) {
+                    $.each(buttons.folder, function (i, button) {
                         if (button) {
                             self._addButton(button, 'folder');
                         }
@@ -1791,7 +1804,7 @@
                 }
 
                 if (buttons.file) {
-                    $.each(buttons.file, function(i, button) {
+                    $.each(buttons.file, function (i, button) {
                         if (button) {
                             self._addButton(button, 'file');
                         }
@@ -1804,7 +1817,7 @@
          * @param {Object} o Button Object
          * @param {String} type
          */
-        _addButton: function(o, type) {
+        _addButton: function (o, type) {
             var self = this,
                 dialog = this.options.dialog,
                 fn = this._execute;
@@ -1841,7 +1854,7 @@
                 if (o.icon) {
                     var icons = o.icon.split(' ');
 
-                    $.each(icons, function(i, icon) {
+                    $.each(icons, function (i, icon) {
                         $(button).append('<i class="uk-icon uk-icon-' + (map[icon] || icon) + '" />');
                     });
 
@@ -1853,7 +1866,7 @@
                 }
 
                 if (name) {
-                    $(button).click(function() {
+                    $(button).click(function () {
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
                                 $(button).toggleClass('uk-active');
@@ -1886,10 +1899,10 @@
         /**
          * Hide all buttons
          */
-        _hideAllButtons: function() {
+        _hideAllButtons: function () {
             var self = this;
 
-            $('a.button', '#browser-buttons').each(function() {
+            $('a.button', '#browser-buttons').each(function () {
                 self._hideButton(this);
             });
 
@@ -1898,10 +1911,10 @@
          * Hide buttons by type
          * @param {String} type The button type
          */
-        _hideButtons: function(buttons) {
+        _hideButtons: function (buttons) {
             var self = this;
 
-            $.each(buttons, function(i, button) {
+            $.each(buttons, function (i, button) {
                 self._hideButton(button);
             });
 
@@ -1910,14 +1923,14 @@
          * Hide a button
          * @param {String} button The button to hide
          */
-        _hideButton: function(button) {
+        _hideButton: function (button) {
             $(button).addClass('uk-hidden').attr('aria-hidden', true);
         },
         /**
          * Show all buttons
          * @param {String} type The button type to show
          */
-        _showButtons: function() {
+        _showButtons: function () {
             var self = this;
 
             this._hideAllButtons();
@@ -1932,7 +1945,7 @@
                 var filebtns = this._buttons['file'];
                 var folderbtns = this._buttons['folder'];
 
-                $.each(filebtns, function(k, o) {
+                $.each(filebtns, function (k, o) {
                     if (!o.trigger && o.multiple) {
                         if (folderbtns[k]) {
                             buttons[k] = o;
@@ -1940,7 +1953,7 @@
                     }
                 });
 
-                $.each(folderbtns, function(k, o) {
+                $.each(folderbtns, function (k, o) {
                     if (!o.trigger && o.multiple) {
                         if (filebtns[k]) {
                             buttons[k] = o;
@@ -1948,7 +1961,7 @@
                     }
                 });
 
-                $.each(buttons, function(k, o) {
+                $.each(buttons, function (k, o) {
                     self._showButton(o.element, o.single, true);
                 });
 
@@ -1956,7 +1969,7 @@
                 // set folder as default type
                 var type = file.length ? 'file' : 'folder';
 
-                $.each(this._buttons[type], function(k, o) {
+                $.each(this._buttons[type], function (k, o) {
                     if (!o.trigger && !o.restrict) {
                         self._showButton(o.element, o.single, o.multiple);
                     }
@@ -1982,7 +1995,7 @@
          * @param {String} button The button to show
          * @param {Boolean} multiple Whether a button is a multiple selection action
          */
-        _showButton: function(button, single, multiple) {
+        _showButton: function (button, single, multiple) {
             if (button) {
                 var show = false,
                     n = $('li.selected', '#item-list').length;
@@ -2009,26 +2022,26 @@
          * @param {String} type The button type
          * @param {String} name The button name
          */
-        _getButton: function(type, name) {
+        _getButton: function (type, name) {
             return this._buttons[type][name] || null;
         },
         /**
          * Show the paste button
          */
-        _showPasteButton: function() {
+        _showPasteButton: function () {
             this._showButton($('a.paste', '#browser-buttons'), true, true);
         },
         /**
          * Determine whether an item is selected
          * @param {Object} el The list item
          */
-        _isSelectedItem: function(el) {
+        _isSelectedItem: function (el) {
             return $(el).is('li.selected');
         },
         /**
          * Deselect all list items
          */
-        _deselectItems: function() {
+        _deselectItems: function () {
             var dialog = this.options.dialog;
 
             // deselect item and uncheck checkboxes
@@ -2037,7 +2050,7 @@
             // empty text and comment
             $('#browser-details-text, #browser-details-comment').empty();
 
-            $.each(['#browser-details-nav-left', '#browser-details-nav-right', '#browser-details-nav-text'], function(i, el) {
+            $.each(['#browser-details-nav-left', '#browser-details-nav-right', '#browser-details-nav-text'], function (i, el) {
                 $(el).addClass('uk-invisible').attr('aria-hidden', true);
             });
 
@@ -2050,7 +2063,7 @@
          * @param {Array} items The array of items to select
          * @param {Boolean} show Show item properties
          */
-        _selectItems: function(items, show) {
+        _selectItems: function (items, show) {
             $(items).addClass('selected').find('input[type="checkbox"]').prop('checked', true);
 
             if (show) {
@@ -2070,7 +2083,7 @@
          * @param {Array} el Array of elements to remove
          * @param {Boolean} show Show remaining item properties
          */
-        _removeSelectedItems: function(items, show) {
+        _removeSelectedItems: function (items, show) {
             $(items).removeClass('selected active').find('input[type="checkbox"]').prop('checked', false);
 
             if (show) {
@@ -2083,7 +2096,7 @@
          * Return selected items by key or all selected items
          * @param {String} key Item key
          */
-        getSelectedItems: function(key) {
+        getSelectedItems: function (key) {
             var $items = $('li.selected', '#item-list');
 
             return $items.get(key) || $items;
@@ -2092,7 +2105,7 @@
          * Return selected items by key or all selected items
          * @param {Array} items Array of items to select
          */
-        setSelectedItems: function(items) {
+        setSelectedItems: function (items) {
             this._findItem(items);
         },
         /**
@@ -2100,7 +2113,7 @@
          * @param {String} e The click event.
          * @param {Boolean} multiple Allow multiple selections.
          */
-        _setSelectedItems: function(e, multiple) {
+        _setSelectedItems: function (e, multiple) {
             var checkbox = false;
 
             // the selected element
@@ -2212,7 +2225,7 @@
         /**
          * Show the selected items' details
          */
-        _showSelectedItems: function() {
+        _showSelectedItems: function () {
             var $items = $('li.selected', '#item-list'),
                 n = $items.length;
 
@@ -2230,7 +2243,7 @@
          * Find a select an item (file) by name, id or url
          * @param {String} name The file name.
          */
-        _findItem: function(files, type) {
+        _findItem: function (files, type) {
             var self = this,
                 items = [];
             type = type || 'file';
@@ -2244,7 +2257,7 @@
 
             var base = self.getBaseDir();
 
-            $.each(files, function(i, file) {
+            $.each(files, function (i, file) {
                 if (file && file.name) {
                     var name = decodeURIComponent(file.name);
 
@@ -2285,7 +2298,7 @@
             // Select items and display properties
             this._selectItems(items, true);
         },
-        _serializeItemData: function(item) {
+        _serializeItemData: function (item) {
             var data = {
                 "url": $(item).data("url"),
                 "preview": $(item).data("preview"),
@@ -2299,10 +2312,10 @@
         /**
          * Serialize the current item selection, add current dir to path
          */
-        _serializeSelectedItems: function() {
+        _serializeSelectedItems: function () {
             var self = this;
 
-            return $('li.selected', '#item-list').map(function() {
+            return $('li.selected', '#item-list').map(function () {
                 return Wf.String.path(self._dir, $(this).attr('title'));
             }).get().join(',');
 
@@ -2310,7 +2323,7 @@
         /**
          * Show a file /folder properties / details
          */
-        _showItemDetails: function() {
+        _showItemDetails: function () {
             var self = this,
                 $items = $('li.selected', '#item-list'),
                 n = $items.length;
@@ -2334,7 +2347,7 @@
                     $('.details-nav-right', $nav).addClass('uk-invisible').attr('aria-hidden', true);
                 }
 
-                $('.details-nav-text', $nav).removeClass('uk-invisible').html(function() {
+                $('.details-nav-text', $nav).removeClass('uk-invisible').html(function () {
                     return self._translate('one_of_many', '%o of %m').replace('%o', index + 1).replace('%m', n);
                 });
 
@@ -2348,7 +2361,7 @@
             // get item details
             this._getItemDetails();
         },
-        _getDimensions: function(file) {
+        _getDimensions: function (file) {
             var img = new Image();
 
             if (!$(file).data('url')) {
@@ -2359,7 +2372,7 @@
 
             $(file).addClass('loading disabled').children('span.checkbox').addClass('disabled');
 
-            img.onload = function() {
+            img.onload = function () {
                 $(file).attr({
                     'data-preview': src,
                     'data-width': img.width,
@@ -2369,14 +2382,14 @@
                 $(file).removeClass('loading disabled').children('span.checkbox').removeClass('disabled');
             };
 
-            img.onerror = function() {
+            img.onerror = function () {
                 $(file).removeClass('loading disabled').children('span.checkbox').removeClass('disabled');
             };
 
             img.src = src;
         },
 
-        _getMediaProps: function(file) {
+        _getMediaProps: function (file) {
             var deferred = new $.Deferred(),
                 props = {};
 
@@ -2387,7 +2400,7 @@
             if (file.type === "video" && /\.(mp4|m4v|ogg|ogv|webm)$/i.test(file.preview) && $.support.video) {
                 var video = document.createElement('video');
 
-                video.onloadedmetadata = function() {
+                video.onloadedmetadata = function () {
                     props = {
                         "duration": parseInt(video.duration / 60, 10) + ':' + parseInt(video.duration % 60, 10),
                         "width": video.videoWidth,
@@ -2403,7 +2416,7 @@
             } else if (file.type === "audio" && /\.(mp3|oga|ogg)$/i.test(file.preview) && $.support.audio) {
                 var audio = document.createElement('audio');
 
-                audio.onloadedmetadata = function() {
+                audio.onloadedmetadata = function () {
                     props.duration = parseInt(audio.duration / 60, 10) + ':' + parseInt(audio.duration % 60, 10);
 
                     audio = null;
@@ -2416,7 +2429,7 @@
                 var image = new Image(),
                     props = {};
 
-                image.onload = function() {
+                image.onload = function () {
                     props.width = image.width;
                     props.height = image.height;
 
@@ -2438,7 +2451,7 @@
         /**
          * Get a file or folder's properties
          */
-        _getItemDetails: function() {
+        _getItemDetails: function () {
             var self = this,
                 mime;
 
@@ -2451,7 +2464,7 @@
             var path = Wf.String.path(this._dir, Wf.String.encodeURI(title));
 
             // Process properties callback
-            var callback = function() {
+            var callback = function () {
                 // Dimensions (will only apply to file items)
                 if ($(item).data('width') && $(item).data('height')) {
                     $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + $(item).data('width') + ' x ' + $(item).data('height') + '</div>');
@@ -2521,7 +2534,7 @@
 
             // process triggered buttons
             if ($(item).data('trigger')) {
-                $.each($(item).data('trigger').split(','), function(i, v) {
+                $.each($(item).data('trigger').split(','), function (i, v) {
                     if (v !== '') {
                         var button = self._getButton(type, v);
 
@@ -2580,15 +2593,15 @@
                     self._getMediaProps({
                         "preview": preview,
                         "type": mime
-                    }).then(function(o) {
-                        $.each(o, function(k, v) {
+                    }).then(function (o) {
+                        $.each(o, function (k, v) {
                             $(item).data(k, v);
                         });
                         callback();
-                    }, function() {
-                        Wf.JSON.request('getDimensions', [path], function(o) {
+                    }, function () {
+                        Wf.JSON.request('getDimensions', [path], function (o) {
                             if (o && !o.error) {
-                                $.each(o, function(k, v) {
+                                $.each(o, function (k, v) {
                                     $(item).data(k, v);
                                 });
                             }
@@ -2601,15 +2614,15 @@
     };
 
     // jQuery hook
-    $.fn.filebrowser = function(options) {
+    $.fn.filebrowser = function (options) {
         $(this).addClass('filebrowser');
 
         var instance = new FileBrowser(this, options);
 
-        $(this).on('filebrowser:insert', function(e, cb) {
+        $(this).on('filebrowser:insert', function (e, cb) {
             var selected = instance.getSelectedItems();
 
-            var data = $.map(selected, function(item) {
+            var data = $.map(selected, function (item) {
                 return {
                     "url": $(item).data("url"),
                     "preview": $(item).data("preview"),
@@ -2624,36 +2637,36 @@
             }
         });
 
-        $(this).on('filebrowser:status', function(e, status) {
+        $(this).on('filebrowser:status', function (e, status) {
             instance.setStatus(status);
         });
 
-        $(this).on('filebrowser:load', function(e, url) {
+        $(this).on('filebrowser:load', function (e, url) {
             return instance.load(url);
         });
 
-        $(this).on('filebrowser:refresh', function() {
+        $(this).on('filebrowser:refresh', function () {
             return instance.refresh();
         });
 
         // expose FileBrowser functions
-        $.fn.filebrowser.getbasedir = function() {
+        $.fn.filebrowser.getbasedir = function () {
             return instance.getBaseDir();
         };
 
-        $.fn.filebrowser.getcurrentdir = function() {
+        $.fn.filebrowser.getcurrentdir = function () {
             return instance.getCurrentDir();
         };
 
-        $.fn.filebrowser.getselected = function() {
+        $.fn.filebrowser.getselected = function () {
             return instance.getSelectedItems();
         };
 
-        $.fn.filebrowser.status = function(status) {
+        $.fn.filebrowser.status = function (status) {
             return instance.setStatus(status);
         };
 
-        $.fn.filebrowser.load = function(url) {
+        $.fn.filebrowser.load = function (url) {
             return instance.load(url);
         };
 
