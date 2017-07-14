@@ -17,6 +17,7 @@ wfimport('admin.models.plugins');
 wfimport('editor.libraries.classes.token');
 wfimport('editor.libraries.classes.editor');
 wfimport('editor.libraries.classes.language');
+wfimport('editor.libraries.classes.utility');
 
 jimport('joomla.application.component.model');
 
