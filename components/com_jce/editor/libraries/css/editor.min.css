@@ -141,6 +141,11 @@
     min-height: 45px;
 }
 
+.wf-editor-header:empty,
+.mce-fullscreen .wf-editor-header:empty {
+    display: none;
+}
+
 .wf-editor-toggle {
     position: relative;
     display: block;
