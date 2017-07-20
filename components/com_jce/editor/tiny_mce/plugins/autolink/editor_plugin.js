@@ -9,6 +9,9 @@
  */
 
 (function () {
+	var AutoUrlDetectState;
+	var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+
 	tinymce.create('tinymce.plugins.AutolinkPlugin', {
 		/**
 		 * Initializes the plugin, this will be executed after the plugin has been created.
@@ -24,6 +27,10 @@
 
 			if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
 				return;
+			}
+
+			if (ed.settings.autolink_pattern) {
+				AutoLinkPattern = ed.settings.autolink_pattern;
 			}
 
 			// Add a key down handler
@@ -60,120 +67,145 @@
 			this.parseCurrentLine(ed, -1, '', false);
 		},
 
-		parseCurrentLine: function (ed, end_offset, delimiter, goback) {
-			var r, end, start, endContainer, bookmark, text, matches, prev, len;
+		parseCurrentLine: function (editor, endOffset, delimiter) {
+			var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
 
-			// We need at least five characters to form a URL,
-			// hence, at minimum, five characters from the beginning of the line.
-			r = ed.selection.getRng(true).cloneRange();
-			if (r.startOffset < 5) {
-				// During testing, the caret is placed inbetween two text nodes. 
-				// The previous text node contains the URL.
-				prev = r.endContainer.previousSibling;
-				if (prev == null) {
-					if (r.endContainer.firstChild == null || r.endContainer.firstChild.nextSibling == null)
-						return;
-
-					prev = r.endContainer.firstChild.nextSibling;
+			function scopeIndex(container, index) {
+				if (index < 0) {
+					index = 0;
 				}
-				len = prev.length;
-				r.setStart(prev, len);
-				r.setEnd(prev, len);
 
-				if (r.endOffset < 5)
-					return;
+				if (container.nodeType == 3) {
+					var len = container.data.length;
 
-				end = r.endOffset;
-				endContainer = prev;
-			} else {
-				endContainer = r.endContainer;
-
-				// Get a text node
-				if (endContainer.nodeType != 3 && endContainer.firstChild) {
-					while (endContainer.nodeType != 3 && endContainer.firstChild)
-						endContainer = endContainer.firstChild;
-
-					// Move range to text node
-					if (endContainer.nodeType == 3) {
-						r.setStart(endContainer, 0);
-						r.setEnd(endContainer, endContainer.nodeValue.length);
+					if (index > len) {
+						index = len;
 					}
 				}
 
-				if (r.endOffset == 1)
+				return index;
+			}
+
+			function setStart(container, offset) {
+				if (container.nodeType != 1 || container.hasChildNodes()) {
+					rng.setStart(container, scopeIndex(container, offset));
+				} else {
+					rng.setStartBefore(container);
+				}
+			}
+
+			function setEnd(container, offset) {
+				if (container.nodeType != 1 || container.hasChildNodes()) {
+					rng.setEnd(container, scopeIndex(container, offset));
+				} else {
+					rng.setEndAfter(container);
+				}
+			}
+
+			// Never create a link when we are inside a link
+			if (editor.selection.getNode().tagName == 'A') {
+				return;
+			}
+
+			// We need at least five characters to form a URL,
+			// hence, at minimum, five characters from the beginning of the line.
+			rng = editor.selection.getRng(true).cloneRange();
+			if (rng.startOffset < 5) {
+				// During testing, the caret is placed between two text nodes.
+				// The previous text node contains the URL.
+				prev = rng.endContainer.previousSibling;
+				if (!prev) {
+					if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
+						return;
+					}
+
+					prev = rng.endContainer.firstChild.nextSibling;
+				}
+
+				len = prev.length;
+				setStart(prev, len);
+				setEnd(prev, len);
+
+				if (rng.endOffset < 5) {
+					return;
+				}
+
+				end = rng.endOffset;
+				endContainer = prev;
+			} else {
+				endContainer = rng.endContainer;
+
+				// Get a text node
+				if (endContainer.nodeType != 3 && endContainer.firstChild) {
+					while (endContainer.nodeType != 3 && endContainer.firstChild) {
+						endContainer = endContainer.firstChild;
+					}
+
+					// Move range to text node
+					if (endContainer.nodeType == 3) {
+						setStart(endContainer, 0);
+						setEnd(endContainer, endContainer.nodeValue.length);
+					}
+				}
+
+				if (rng.endOffset == 1) {
 					end = 2;
-				else
-					end = r.endOffset - 1 - end_offset;
+				} else {
+					end = rng.endOffset - 1 - endOffset;
+				}
 			}
 
 			start = end;
 
 			do {
 				// Move the selection one character backwards.
-				r.setStart(endContainer, end >= 2 ? end - 2 : 0);
-				r.setEnd(endContainer, end >= 1 ? end - 1 : 0);
+				setStart(endContainer, end >= 2 ? end - 2 : 0);
+				setEnd(endContainer, end >= 1 ? end - 1 : 0);
 				end -= 1;
+				rngText = rng.toString();
 
-				// Loop until one of the following is found: a blank space, &nbsp;, delimeter, (end-2) >= 0
-			} while (r.toString() != ' ' && r.toString() != '' && r.toString().charCodeAt(0) != 160 && (end - 2) >= 0 && r.toString() != delimiter);
+				// Loop until one of the following is found: a blank space, &nbsp;, delimiter, (end-2) >= 0
+			} while (rngText != ' ' && rngText !== '' && rngText.charCodeAt(0) != 160 && (end - 2) >= 0 && rngText != delimiter);
 
-			if (r.toString() == delimiter || r.toString().charCodeAt(0) == 160) {
-				r.setStart(endContainer, end);
-				r.setEnd(endContainer, start);
+			if (rng.toString() == delimiter || rng.toString().charCodeAt(0) == 160) {
+				setStart(endContainer, end);
+				setEnd(endContainer, start);
 				end += 1;
-			} else if (r.startOffset == 0) {
-				r.setStart(endContainer, 0);
-				r.setEnd(endContainer, start);
+			} else if (rng.startOffset === 0) {
+				setStart(endContainer, 0);
+				setEnd(endContainer, start);
 			} else {
-				r.setStart(endContainer, end);
-				r.setEnd(endContainer, start);
+				setStart(endContainer, end);
+				setEnd(endContainer, start);
 			}
 
 			// Exclude last . from word like "www.site.com."
-			var text = r.toString();
+			text = rng.toString();
 			if (text.charAt(text.length - 1) == '.') {
-				r.setEnd(endContainer, start - 1);
+				setEnd(endContainer, start - 1);
 			}
 
-			text = r.toString();
-			matches = text.match(/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i);
+			text = rng.toString();
+			matches = text.match(AutoLinkPattern);
 
 			if (matches) {
 				if (matches[1] == 'www.') {
 					matches[1] = 'http://www.';
-
-					if (!ed.getParam('autolink_url', true)) {
-						return;
-					}
-
 				} else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
 					matches[1] = 'mailto:' + matches[1];
-
-					if (!ed.getParam('autolink_email', true)) {
-						return;
-					}
-				} else {
-					if (!ed.getParam('autolink_url', true)) {
-						return;
-					}
 				}
 
-				bookmark = ed.selection.getBookmark();
+				bookmark = editor.selection.getBookmark();
 
-				ed.selection.setRng(r);
-				tinyMCE.execCommand('createlink', false, matches[1] + matches[2]);
-				ed.selection.moveToBookmark(bookmark);
-				ed.nodeChanged();
+				editor.selection.setRng(rng);
+				editor.execCommand('createlink', false, matches[1] + matches[2]);
 
-				// TODO: Determine if this is still needed.
-				if (tinyMCE.isWebKit) {
-					// move the caret to its original position
-					ed.selection.collapse(false);
-					var max = Math.min(endContainer.length, start + 1);
-					r.setStart(endContainer, max);
-					r.setEnd(endContainer, max);
-					ed.selection.setRng(r);
+				if (editor.settings.default_link_target) {
+					editor.dom.setAttrib(editor.selection.getNode(), 'target', editor.settings.default_link_target);
 				}
+
+				editor.selection.moveToBookmark(bookmark);
+				editor.nodeChanged();
 			}
 		},
 
