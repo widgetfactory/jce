@@ -267,6 +267,14 @@ class WFMediaManagerBase extends WFEditorPlugin
             $dir = $this->getParam($this->getName().'.dir', $fallback);
         }
 
+        $websafe_spaces = (int) $this->getParam('editor.websafe_allow_spaces', 0);
+
+        if ($websafe_spaces === 0) {
+            $websafe_spaces = $this->getParam('editor.websafe_spaces_replacement', '_');
+        } else {
+            $websafe_spaces = ' ';
+        }
+
         $base = array(
             'dir' => $dir,
             'filesystem' => $this->getFileSystem(),
@@ -297,7 +305,7 @@ class WFMediaManagerBase extends WFEditorPlugin
                 ),
             ),
             'websafe_mode' => $this->getParam('editor.websafe_mode', 'utf-8'),
-            'websafe_spaces' => $this->getParam('editor.websafe_allow_spaces', 0),
+            'websafe_spaces' => $websafe_spaces,
             'websafe_textcase' => $textcase,
             'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M'),
             'position' => $this->getParam('editor.filebrowser_position', $this->getParam('editor.browser_position', 'bottom')),

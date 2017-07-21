@@ -179,7 +179,7 @@ abstract class WFUtility
      *
      * @return mixed The sanitised string or array
      */
-    public static function makeSafe($subject, $mode = 'utf-8', $allowspaces = false, $case = '')
+    public static function makeSafe($subject, $mode = 'utf-8', $spaces = '_', $case = '')
     {
         $search = array();
 
@@ -194,10 +194,8 @@ abstract class WFUtility
             $subject = trim($subject);
         }
 
-        // replace spaces with underscore
-        if (!$allowspaces) {
-            $subject = preg_replace('#[\s ]#', '_', $subject);
-        }
+        // replace spaces with specified character or space
+        $subject = preg_replace('#[\s ]#', $spaces, $subject);
 
         switch ($mode) {
             default:

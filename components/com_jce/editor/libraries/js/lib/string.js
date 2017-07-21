@@ -71,10 +71,8 @@
         safe: function(s, mode, spaces, textcase) {
             mode = mode || 'utf-8';
 
-            // replace spaces with underscore
-            if (!spaces) {
-                s = s.replace(/[\s ]/g, '_');
-            }
+            // replace spaces with specified character
+            s = s.replace(/[\s ]/g, spaces);
 
             // remove some common characters
             s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
