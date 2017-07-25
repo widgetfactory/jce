@@ -269,13 +269,15 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
 
-        // legacy replacement
-        if ((int) $websafe_spaces === 0) {
-            $websafe_spaces = '_';
-        }
-        // convert to space
-        if ((int) $websafe_spaces === 1) {
-            $websafe_spaces = ' ';
+        if (is_numeric($websafe_spaces)) {
+            // legacy replacement
+            if ($websafe_spaces == 0) {           
+                $websafe_spaces = '_';
+            }
+            // convert to space
+            if ($websafe_spaces == 1) {
+                $websafe_spaces = ' ';
+            }
         }
 
         $base = array(

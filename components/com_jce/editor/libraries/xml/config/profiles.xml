@@ -78,7 +78,7 @@
             <option value="utf-8">UTF-8</option>
             <option value="ascii">ASCII</option>
         </param>
-        <param name="websafe_allow_spaces" type="list" default="0" label="WF_PARAM_WEBSAFE_ALLOW_SPACES" description="WF_PARAM_WEBSAFE_ALLOW_SPACES_DESC">
+        <param name="websafe_allow_spaces" type="list" default="_" label="WF_PARAM_WEBSAFE_ALLOW_SPACES" description="WF_PARAM_WEBSAFE_ALLOW_SPACES_DESC">
             <option value="1">WF_OPTION_YES</option>
             <option value="_">WF_OPTION_WEBSAFE_ALLOW_SPACES_UNDERSCORE</option>
             <option value="-">WF_OPTION_WEBSAFE_ALLOW_SPACES_DASH</option>

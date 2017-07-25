@@ -72,7 +72,7 @@
             mode = mode || 'utf-8';
 
             // replace spaces with specified character
-            s = s.replace(/[\s ]/g, spaces);
+            s = s.replace(/[\s ]+/g, spaces);
 
             // remove some common characters
             s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
