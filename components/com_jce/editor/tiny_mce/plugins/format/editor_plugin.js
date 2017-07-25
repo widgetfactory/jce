@@ -7,14 +7,14 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var VK = tinymce.VK,
         each = tinymce.each,
         map = tinymce.map;
     var blocks = [];
 
     tinymce.create('tinymce.plugins.FormatPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             this.editor = ed;
 
@@ -22,31 +22,67 @@
                 return ed.dom.isBlock(n);
             }
 
-            ed.onPreInit.add(function(ed) {
-                each(ed.schema.getBlockElements(), function(v, k) {
+            ed.onPreInit.add(function (ed) {
+                each(ed.schema.getBlockElements(), function (v, k) {
                     blocks.push(k.toLowerCase());
                 });
 
                 // Register default block formats
-                each('aside figure'.split(/\s/), function(name) {
-                    ed.formatter.register(name, { block: name, remove: 'all', wrapper: true });
+                each('aside figure'.split(/\s/), function (name) {
+                    ed.formatter.register(name, {
+                        block: name,
+                        remove: 'all',
+                        wrapper: true
+                    });
+                });
+
+                // div
+                ed.formatter.register('div', {
+                    block: 'div'
                 });
 
                 // div container
-                ed.formatter.register('div_container', { block: 'div', remove: 'all', wrapper: true });
+                ed.formatter.register('div_container', {
+                    block: 'div',
+                    wrapper: true
+                });
                 // span
-                ed.formatter.register('span', { inline: 'span', remove: 'all' });
+                ed.formatter.register('span', {
+                    inline: 'span',
+                    remove: 'all'
+                });
                 // section
-                ed.formatter.register('section', { block: 'section', remove: 'all', wrapper: true, merge_siblings: false });
+                ed.formatter.register('section', {
+                    block: 'section',
+                    remove: 'all',
+                    wrapper: true,
+                    merge_siblings: false
+                });
                 // article
-                ed.formatter.register('article', { block: 'article', remove: 'all', wrapper: true, merge_siblings: false });
+                ed.formatter.register('article', {
+                    block: 'article',
+                    remove: 'all',
+                    wrapper: true,
+                    merge_siblings: false
+                });
                 // code
-                ed.formatter.register('code', { inline: 'code', remove: 'all' });
+                ed.formatter.register('code', {
+                    inline: 'code',
+                    remove: 'all'
+                });
                 // samp
-                ed.formatter.register('samp', { inline: 'samp', remove: 'all' });
+                ed.formatter.register('samp', {
+                    inline: 'samp',
+                    remove: 'all'
+                });
 
                 // blockquote - remove wrapper?
-                ed.formatter.register('blockquote', { block: 'blockquote', wrapper: 1, remove: 'all', merge_siblings: false });
+                ed.formatter.register('blockquote', {
+                    block: 'blockquote',
+                    wrapper: 1,
+                    remove: 'all',
+                    merge_siblings: false
+                });
             });
 
             // update with HMTL5 tags
@@ -59,14 +95,14 @@
                 deep: true
             }];
 
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP) && e.altKey) {
                     // clear blocks
                     self._clearBlocks(ed, e);
                 }
             });
 
-            ed.onKeyUp.addToTop(function(ed, e) {
+            ed.onKeyUp.addToTop(function (ed, e) {
                 if (e.keyCode === VK.ENTER) {
                     var n = ed.selection.getNode();
                     if (n.nodeName === 'DIV' && ed.settings.force_p_newlines) {
@@ -80,7 +116,7 @@
             });
 
             // Format Block fix
-            ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
+            ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
                 var se = ed.selection,
                     n = se.getNode(),
                     p;
@@ -132,33 +168,12 @@
 
                         break;
                     case 'RemoveFormat':
-                        if (!v) {
-                            if (ed.dom.isBlock(n)) {
-                                ed.undoManager.add();
-
-                                p = ed.dom.getParent(n, blocks.join(','));
-
-                                if (p) {
-                                    var name = p.nodeName.toLowerCase();
-
-                                    if (ed.formatter.get(name)) {
-                                        ed.formatter.remove(name);
-                                    }
-                                }
-
-                                var cm = ed.controlManager.get('formatselect');
-
-                                if (cm) {
-                                    cm.select(p);
-                                }
-
-                            } else {
-                                var cm = ed.controlManager.get('styleselect');
-                                // get select Styles value if any
-                                if (cm && cm.selectedValue) {
-                                    // remove style
-                                    ed.execCommand('mceToggleFormat', false, cm.selectedValue);
-                                }
+                        if (!v && !ed.dom.isBlock(n)) {
+                            var cm = ed.controlManager.get('styleselect');
+                            // get select Styles value if any
+                            if (cm && cm.selectedValue) {
+                                // remove style
+                                ed.execCommand('mceToggleFormat', false, cm.selectedValue);
                             }
                         }
 
@@ -166,7 +181,7 @@
                 }
             });
 
-            ed.onExecCommand.add(function(ed, cmd, ui, v, o) {
+            ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
                 var se = ed.selection,
                     n = se.getNode();
                 // remove empty Definition List
@@ -218,7 +233,7 @@
                 });
             });*/
         },
-        _clearBlocks: function(ed, e) {
+        _clearBlocks: function (ed, e) {
             var p, n = ed.selection.getNode();
 
             // Find parent element just before the document body
