@@ -195,7 +195,7 @@ abstract class WFUtility
         }
 
         // replace spaces with specified character or space
-        $subject = preg_replace('#[\s ]#', $spaces, $subject);
+        $subject = preg_replace('#[\s ]+#', $spaces, $subject);
 
         switch ($mode) {
             default:
