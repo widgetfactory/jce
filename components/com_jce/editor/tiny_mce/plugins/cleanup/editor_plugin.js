@@ -38,7 +38,7 @@
 
             ed.onPreInit.add(function () {
 
-                if (ed.settings.verify_html) {
+                if (ed.settings.verify_html !== false) {
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
 
@@ -64,20 +64,41 @@
                 }
 
                 // only if "Cleanup HTML" enabled
-                if (ed.settings.verify_html) {
+                if (ed.settings.verify_html !== false) {
                     // Invalid Attribute Values cleanup
                     var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
 
                     if (invalidAttribValue) {
-                        function replaceAttributeValue(nodes, name, re) {
+                        /**
+                         * adapted from https://github.com/tinymce/tinymce/blob/master/src/core/src/main/js/ui/Selector.js 
+                         * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+                         */
+                        function attrFilter(value, expr, check) {
+                            return !expr ? !!check :
+                                expr === "=" ? value === check :
+                                expr === "*=" ? value.indexOf(check) >= 0 :
+                                expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
+                                expr === "!=" ? value != check :
+                                expr === "^=" ? value.indexOf(check) === 0 :
+                                expr === "$=" ? value.substr(value.length - check.length) === check :
+                                false;
+                        }
+                        
+                        function replaceAttributeValue(nodes, name, expr, check) {
                             var i = nodes.length,
                                 node;
 
                             while (i--) {
                                 node = nodes[i];
+                                
+                                var value = node.attr(name);
+
+                                if (!value) {
+                                    continue;
+                                }
 
                                 // remove attribute if it matches expression
-                                if (new RegExp(re).test(node.attr(name))) {
+                                if (!expr || attrFilter(value, expr, check)) {
                                     node.attr(name, null);
                                     // remove temp attribute
                                     if (name === 'src' || name === 'href' || name === 'style') {
@@ -93,7 +114,7 @@
                         }
 
                         each(tinymce.explode(invalidAttribValue), function (item) {
-                            var re, matches = /([a-z\*]+)\[([a-z]+)([\^\$~]?=)["']([^"']+)["']\]/i.exec(item);
+                            var re, matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~]?=)?["']?([^"']+)?["']?\]/i.exec(item);
 
                             if (matches && matches.length == 5) {
                                 var tag = matches[1],
@@ -101,34 +122,21 @@
                                     expr = matches[3],
                                     value = matches[4];
 
-                                switch (expr) {
-                                    default:
-                                        case '=':
-                                        re = '(' + value + ')';
-                                    break;
-                                    case '!=':
-                                            re = '(^' + value + ')';
-                                        break;
-                                    case '^=':
-                                            re = '^(' + value + ')';
-                                        break;
-                                    case '$=':
-                                            re = '(' + value + ')$';
-                                        break;
-                                    case '~=':
-                                            re = value;
-                                        break;
+                                // remove the entire attribute   
+                                if (attrib && !expr && !value) {
+                                    expr = '';
                                 }
-                                if (re) {
+
+                                if (typeof expr !== "undefined") {                                    
                                     // all tags
                                     if (tag == '*') {
                                         ed.parser.addAttributeFilter(attrib, function (nodes, name) {
-                                            replaceAttributeValue(nodes, name, re);
+                                            replaceAttributeValue(nodes, name, expr, value);
                                         });
                                         // specific tag
                                     } else {
                                         ed.parser.addNodeFilter(tag, function (nodes, name) {
-                                            replaceAttributeValue(nodes, attrib, re);
+                                            replaceAttributeValue(nodes, attrib, expr, value);
                                         });
                                     }
                                 }
