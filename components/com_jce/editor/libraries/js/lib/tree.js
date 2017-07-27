@@ -64,25 +64,12 @@
                 'role': 'tree'
             }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
-            // Add ARIA role and tabindex to tree items
-            $('li', parent).attr({
-                'role': 'treeitem'
-            }).attr('aria-expanded', function () {
-                return $(this).hasClass('uk-tree-open') ? true : false;
-            }).attr('aria-level', function (i, v) {
-                if (!v) {
-                    return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
-                }
-            }).click(function (e) {
+            $(parent).click(function (e) {
                 var n = e.target,
                     p = $(n).parents('li').get(0);
 
                 e.preventDefault();
                 e.stopPropagation();
-
-                if (n.nodeName === "I") {
-                    n = n.parentNode;
-                }
 
                 if ($(n).hasClass('uk-tree-toggle')) {
                     self.toggleNode(e, p);
@@ -95,6 +82,17 @@
 
                 // add active class to tree node
                 $(p).addClass('uk-tree-active');
+            });
+
+            // Add ARIA role and tabindex to tree items
+            $('li', parent).attr({
+                'role': 'treeitem'
+            }).attr('aria-expanded', function () {
+                return $(this).hasClass('uk-tree-open') ? true : false;
+            }).attr('aria-level', function (i, v) {
+                if (!v) {
+                    return parseFloat($(this.parentNode.parentNode).attr('aria-level')) + 1;
+                }
             });
 
             // add toggle icons
@@ -201,10 +199,10 @@
 
         sortNodes: function (parent) {
             var p = $(parent).parent();
-            
+
             // detach parent
             parent = $(parent).detach();
-            
+
             // create the list to sort
             var list = $('li', parent).map(function () {
                 var v = $('.uk-tree-text', this).attr('title');
@@ -290,15 +288,15 @@
                         name = title;
 
                         var url = node.url || '#';
-                        var li = document.createElement('li');
 
                         if (!node['class']) {
                             node['class'] = 'folder';
                         }
 
-                        $(li).addClass(node['class']);
+                        // create the node html
+                        var html = '<li id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '">';
 
-                        var html = '<div class="uk-tree-row">';
+                        html += '<div class="uk-tree-row">';
 
                         if (node['class'].indexOf('folder') >= 0) {
                             html += '<span class="uk-tree-toggle" role="presentation">' + ' <i class="uk-icon uk-icon-plus-square-o"></i>' + ' <i class="uk-icon uk-icon-minus-square-o"></i>' + '</span>';
@@ -316,46 +314,20 @@
 
                         html += '<span class="uk-tree-text uk-width-9-10 uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
                         html += '</a></div>';
+                        html += '</li>';
 
-                        $(li).attr({
-                            'id': self._escape(encodeURI(node.id))
-                        }).append(html).attr('aria-level', parseFloat($(parent).attr('aria-level')) + 1);
-
-                        $(ul).append(li);
-
-                        $(li).click(function (e) {
-                            var n = e.target;
-
-                            e.preventDefault();
-                            e.stopPropagation();
-
-                            if (n.nodeName === "I") {
-                                n = n.parentNode;
-                            }
-
-                            if ($(n).hasClass('uk-tree-toggle')) {
-                                self.toggleNode(e, this);
-                            } else {
-                                self._trigger('nodeclick', this);
-                            }
-
-                            // remove all active classes from other tree nodes
-                            $(self.element).find('.uk-tree-active').removeClass('uk-tree-active');
-
-                            // add active class to tree node
-                            $(li).addClass('uk-tree-active');
-                        });
-
-                        // sort list nodes
-                        if ($(ul).children().length > 1) {
-                            self.sortNodes(ul);
-                        }
+                        $(ul).append(html);
 
                         self.toggleNodeState(parent, 1);
                         self._trigger('nodecreate');
                     } else {
                         // Node exists, set as open
                         self.toggleNodeState(parent, 1);
+                    }
+
+                    // sort list nodes
+                    if ($(ul).children().length > 1) {
+                        self.sortNodes(ul);
                     }
                 });
 
