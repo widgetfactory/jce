@@ -75,7 +75,7 @@
                             }
 
                             if (o.folders && o.folders.length) {
-                                $(self).trigger('tree:createnode', [o.folders, node]);
+                                $(self).trigger('tree:createnode', [o.folders, node, false]);
                             }
 
                             $(self).trigger('tree:togglenodestate', [node, true]);
@@ -85,7 +85,7 @@
                     }
                     $(self).trigger('tree:toggleloader', node);
                 }, self);
-            });
+            }).trigger('tree:init');
 
             /* Search */
             $('#search-button').click(function (e) {
