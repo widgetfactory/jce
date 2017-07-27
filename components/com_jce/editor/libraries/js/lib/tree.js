@@ -41,10 +41,8 @@
                 return;
             }
 
-            self._nodeEvents();
-
             this._trigger('init', function () {
-                self._nodeEvents();
+                self.nodeEvents();
             });
         },
         /**
@@ -52,7 +50,7 @@
          * @param {objec} parent object
          * @returns {void}
          */
-        _nodeEvents: function (parent) {
+        nodeEvents: function (parent) {
             var self = this;
 
             if (!parent) {
@@ -64,12 +62,16 @@
                 'role': 'tree'
             }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
-            $(parent).click(function (e) {
+            $(parent).on('click', function (e) {
                 var n = e.target,
                     p = $(n).parents('li').get(0);
 
                 e.preventDefault();
                 e.stopPropagation();
+
+                if ($(n).hasClass('uk-icon')) {
+                    n = n.parentNode;
+                }
 
                 if ($(n).hasClass('uk-tree-toggle')) {
                     self.toggleNode(e, p);
@@ -239,7 +241,7 @@
          * @param {Stringor Element} The parent node
          * @return {Array} An array of nodes to create.
          */
-        createNode: function (nodes, parent) {
+        createNode: function (nodes, parent, sortNodes) {
             var self = this;
             var e, p, h, l, np, i;
 
@@ -324,12 +326,12 @@
                         // Node exists, set as open
                         self.toggleNodeState(parent, 1);
                     }
-
-                    // sort list nodes
-                    if ($(ul).children().length > 1) {
-                        self.sortNodes(ul);
-                    }
                 });
+
+                // sort list nodes
+                if (sortNodes !== false && $(ul).children().length > 1) {
+                    self.sortNodes(ul);
+                }
 
             } else {
                 // No new nodes, set as open
@@ -521,12 +523,12 @@
     $.fn.tree = function (options) {
         var inst = new Tree(this, options);
 
-        $(this).on('tree:createnode', function (e, node, parent) {
+        $(this).on('tree:createnode', function (e, node, parent, sortNodes) {
             if (typeof node === "string") {
                 node = [node];
             }
 
-            inst.createNode(node, parent);
+            inst.createNode(node, parent, sortNodes);
         });
 
         $(this).on('tree:removenode', function (e, node) {
@@ -555,6 +557,10 @@
 
         $(this).on('tree:scroll', function (e, id) {
             inst.scrollTo(id);
+        });
+
+        $(this).on('tree:init', function (e) {
+            inst.nodeEvents();
         });
 
         return this;
