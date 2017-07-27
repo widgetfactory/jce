@@ -24,7 +24,7 @@
         }
     })(
         "video,flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi," +
-        "audio,mp3|ogg|oga|webm," +
+        "audio,mp3|ogg|oga|webm|m4a," +
         "image,jpg|jpeg|png|gif|png|svg|bmp|tiff," +
         "text,txt|htm|html," +
         "word,doc|docx," +

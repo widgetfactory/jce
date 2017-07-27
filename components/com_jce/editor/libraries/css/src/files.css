@@ -19,7 +19,7 @@
 .file.html, .file.htm {
     background: url(../img/ext.png) no-repeat 0 -60px;
 }
-.file.mp3, .file.wav, .file.aiff {
+.file.mp3, .file.wav, .file.aiff, .file.m4a {
     background: url(../img/ext.png) no-repeat 0 -80px;
 }
 .file.php {
@@ -84,7 +84,7 @@
 /** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
 
 /* Apple Quicktime */
-.file.mov, .file.qt, .file.m4a {
+.file.mov, .file.qt {
     background: url(../img/ext.png) no-repeat 0 -200px;
 }
 /* RealPlayer */
