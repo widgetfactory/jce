@@ -104,7 +104,7 @@ class WFStyleselectPluginConfig
                 }
 
                 if (!empty($styles)) {
-                    $settings['style_formats'] = json_encode($styles, JSON_UNESCAPED_SLASHES);
+                    $settings['style_formats'] = json_encode($styles, JSON_UNESCAPED_SLASHES, JSON_NUMERIC_CHECK);
                 }
             }
         }
@@ -118,7 +118,11 @@ class WFStyleselectPluginConfig
     }
 
     protected static function cleanString($string) {
-        return htmlentities($string, ENT_NOQUOTES, 'UTF-8');
+        $string = trim($string, '"');
+        $string = trim($string, "'");
+        $string = htmlentities($string, ENT_NOQUOTES, 'UTF-8');
+
+        return trim($string);
     }
 
     protected static function cleanJSON($string, $delim1 = ';', $delim2 = ':')
@@ -135,12 +139,11 @@ class WFStyleselectPluginConfig
                 continue;
             }
 
-            // cleanup string
-            $parts = preg_replace('#^["\']#', '', $parts);
-            $parts = preg_replace('#["\']$#', '', $parts);
+            $key    = $parts[0];
+            $value  = $parts[1];
 
-            $key    = trim(self::cleanString($parts[0]));
-            $value  = trim(self::cleanString($parts[1])); 
+            $key    = self::cleanString($key);
+            $value  = self::cleanString($value);
 
             $ret[$key] = $value;
         }
