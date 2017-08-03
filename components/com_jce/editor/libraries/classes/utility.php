@@ -41,7 +41,7 @@ abstract class WFUtility
         $path = preg_replace('#[/\\\\]+#', $ds, $path);
 
         // return path with prefix if any
-        return $prefix.$path;
+        return $prefix . $path;
     }
 
     /**
@@ -54,7 +54,7 @@ abstract class WFUtility
      */
     public static function fixPath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($path.$ds);
+        return self::cleanPath($path . $ds);
     }
 
     private static function checkCharValue($string)
@@ -96,7 +96,7 @@ abstract class WFUtility
      */
     public static function makePath($a, $b, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($a.$ds.$b, $ds);
+        return self::cleanPath($a . $ds . $b, $ds);
     }
 
     private static function utf8_latin_to_ascii($subject)
@@ -158,12 +158,13 @@ abstract class WFUtility
             array_walk($string, function (&$value, $key, $case) {
                 $value = WFUtility::changeCase($value, $case);
             }, $case);
-        } else {
+        }
+        else {
             switch ($case) {
-                case 'lowercase':
+                case 'lowercase' :
                     $string = mb_strtolower($string);
                     break;
-                case 'uppercase':
+                case 'uppercase' :
                     $string = mb_strtoupper($string);
                     break;
             }
@@ -190,7 +191,8 @@ abstract class WFUtility
         // trim
         if (is_array($subject)) {
             $subject = array_map('trim', $subject);
-        } else {
+        }
+        else {
             $subject = trim($subject);
         }
 
@@ -198,12 +200,12 @@ abstract class WFUtility
         $subject = preg_replace('#[\s ]+#', $spaces, $subject);
 
         switch ($mode) {
-            default:
-            case 'utf-8':
+            default :
+            case 'utf-8' :
                 $search[] = '#[^a-zA-Z0-9_\.\-~\p{L}\p{N}\s ]#u';
                 $mode = 'utf-8';
                 break;
-            case 'ascii':
+            case 'ascii' :
                 $subject = self::utf8_latin_to_ascii($subject);
                 $search[] = '#[^a-zA-Z0-9_\.\-~\s ]#';
                 break;
@@ -264,11 +266,13 @@ abstract class WFUtility
     public static function formatSize($size)
     {
         if ($size < 1024) {
-            return $size.' '.WFText::_('WF_LABEL_BYTES');
-        } elseif ($size >= 1024 && $size < 1024 * 1024) {
-            return sprintf('%01.2f', $size / 1024.0).' '.WFText::_('WF_LABEL_KB');
-        } else {
-            return sprintf('%01.2f', $size / (1024.0 * 1024)).' '.WFText::_('WF_LABEL_MB');
+            return $size . ' ' . WFText::_('WF_LABEL_BYTES');
+        }
+        elseif ($size >= 1024 && $size < 1024 * 1024) {
+            return sprintf('%01.2f', $size / 1024.0) . ' ' . WFText::_('WF_LABEL_KB');
+        }
+        else {
+            return sprintf('%01.2f', $size / (1024.0 * 1024)) . ' ' . WFText::_('WF_LABEL_MB');
         }
     }
 
@@ -308,6 +312,45 @@ abstract class WFUtility
         return self::formatSize(@filesize($file));
     }
 
+    public static function convertEncoding($string)
+    {
+        if (!function_exists('mb_detect_encoding')) {
+            // From http://w3.org/International/questions/qa-forms-utf-8.html
+            $isUTF8 = preg_match('%^(?:
+	              [\x09\x0A\x0D\x20-\x7E]          	 # ASCII
+	            | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
+	            |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+	            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+	            |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+	            |  \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+	            | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+	            |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+	        )*$%xs', $string);
+
+            if (!$isUTF8) {
+                return utf8_encode($string);
+            }
+
+            return $string;
+        }
+
+        // get encoding
+        $encoding = mb_detect_encoding($string, "auto", true);
+
+        // return existing string if it is already utf-8
+        if ($encoding === 'UTF-8') {
+            return $string;
+        }
+
+        // invalid encoding, so make a "safe" string
+        if ($encoding === false) {
+            return preg_replace('#[^a-zA-Z0-9_\.\-~\s ]#', '', $string);
+        }
+
+        // convert to utf-8 and return
+        return mb_convert_encoding($string, 'UTF-8', $encoding);
+    }
+
     public static function isUtf8($string)
     {
         if (!function_exists('mb_detect_encoding')) {
@@ -337,7 +380,7 @@ abstract class WFUtility
         preg_match('#([0-9]+)\s?([a-z]*)#i', $value, $matches);
 
         if (isset($matches[1])) {
-            $value = (int) $matches[1];
+            $value = (int)$matches[1];
         }
 
         if (isset($matches[2])) {
@@ -346,13 +389,13 @@ abstract class WFUtility
 
         // Convert to bytes
         switch (strtolower($unit)) {
-            case 'g':
+            case 'g' :
                 $value = intval($value) * 1073741824;
                 break;
-            case 'm':
+            case 'm' :
                 $value = intval($value) * 1048576;
                 break;
-            case 'k':
+            case 'k' :
                 $value = intval($value) * 1024;
                 break;
         }
@@ -479,7 +522,8 @@ abstract class WFUtility
         foreach ($array2 as $key => &$value) {
             if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
                 $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
-            } else {
+            }
+            else {
                 $merged[$key] = $value;
             }
         }

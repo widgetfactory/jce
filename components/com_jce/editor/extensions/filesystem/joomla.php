@@ -241,7 +241,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Sort alphabetically
             natcasesort($list);
             foreach ($list as $item) {
-                $item = WFUtility::isUTF8($item) ? $item : utf8_encode($item);
+                $item = WFUtility::convertEncoding($item);
 
                 $id = WFUtility::makePath($relative, $item, '/');
 
@@ -283,7 +283,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Sort alphabetically
             natcasesort($list);
             foreach ($list as $item) {
-                $item = WFUtility::isUTF8($item) ? $item : utf8_encode($item);
+                $item = WFUtility::convertEncoding($item);
 
                 // create relative file
                 $id = WFUtility::makePath($relative, $item, '/');
