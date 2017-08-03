@@ -27,6 +27,7 @@
 
                 if (c) {
                     formatNames = [];
+
                     each(c.items, function(item) {
                         formatNames.push(item.value);
                     });
@@ -135,6 +136,14 @@
 
                         if (keys > 1) {
                             name = fmt.name = fmt.name || 'style_' + (counter++);
+
+                            // make sure all attribute values are strings
+                            if (fmt.attributes) {
+                                each(fmt.attributes, function(value, key) {
+                                    fmt.attributes[key] = value + '';
+                                });
+                            }
+
                             ed.formatter.register(name, fmt);
 
                             ctrl.add(fmt.title, name, {
