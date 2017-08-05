@@ -1819,24 +1819,42 @@
                 }
             });
 
+            function isPlainTextPaste(content) {
+                if (!hasContentType(content, "text/plain")) {
+                    return false;
+                }
+
+                if (isIE) {
+                    return false;
+                }
+
+                // plain text mode or no html    
+                return self.pasteAsPlainText || !hasContentType(content, "text/html");
+            }
+
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(e);
 
-                if (hasContentType(clipboardContent, "text/plain")) {
+                // use plain text
+                if (isPlainTextPaste(clipboardContent)) {
                     e.preventDefault();
                     var text = clipboardContent["text/plain"];
-                    return pasteText(text);
+                    pasteText(text);
+
+                    return;
                 }
 
-                // use clipboard API
+                // use html from clipboard API
                 if (hasContentType(clipboardContent, "text/html")) {
                     e.preventDefault();
                     insertClipboardContent(clipboardContent);
-                    // use paste bin    
-                } else {
-                    getContentFromPasteBin(e);
+
+                    return;
                 }
+
+                // use paste bin
+                getContentFromPasteBin(e);
             });
 
             // Block all drag/drop events
