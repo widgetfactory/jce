@@ -201,6 +201,11 @@
      *  <p>a</p><p>b</p>
      */
     function removeExplorerBrElementsAfterBlocks(self, o) {
+        // Only filter word specific content
+        if (!o.wordContent) {
+            return;
+        }
+
         var editor = self.editor, html = o.content;
 
         // Produce block regexp based on the block elements in schema
@@ -1818,7 +1823,7 @@
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(e);
 
-                if (self.pasteAsPlainText && hasContentType(clipboardContent, "text/plain")) {
+                if (hasContentType(clipboardContent, "text/plain")) {
                     e.preventDefault();
                     var text = clipboardContent["text/plain"];
                     return pasteText(text);
