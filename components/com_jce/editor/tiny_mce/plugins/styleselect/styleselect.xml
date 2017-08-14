@@ -16,7 +16,7 @@
             <option value="custom">WF_STYLESELECT_CUSTOM</option>
         </param>
 
-        <param name="stylesheet" placeholder="eg: templates/$template/css/content.css" type="text" default="" label="WF_STYLESELECT_STYLESHEET" description="WF_STYLESELECT_STYLESHEET_DESC" parent="styles[stylesheet]" />
+        <param name="stylesheet" placeholder="eg: templates/$template/css/content.css" type="text" size="100" default="" label="WF_STYLESELECT_STYLESHEET_CUSTOM" description="WF_STYLESELECT_STYLESHEET_CUSTOM_DESC" parent="styles[stylesheet]" />
 
         <param name="sort" type="radio" default="1" label="WF_STYLESELECT_STYLES_SORT" description="WF_STYLESELECT_STYLES_SORT_DESC">
             <option value="1">WF_OPTION_YES</option>
