@@ -158,23 +158,14 @@ class WFStyleselectPluginConfig
         if (in_array('stylesheet', $include) === false) {
             $settings['styleselect_stylesheets'] = false;
         } else {
-            $stylesheets = $wf->getParam('styleselect.stylesheets', '', '');
-            $files = array();
+            $stylesheet = $wf->getParam('styleselect.stylesheet', '', '');
+            $templates  = self::getSiteTemplates();
 
-            $templates = self::getSiteTemplates();
-
-            foreach (explode(',', $stylesheets) as $stylesheet) {
+            if (!empty($stylesheet)) {
                 $stylesheet = trim($stylesheet);
+                $stylesheet = str_replace('$template', $templates[0], $stylesheet);
 
-                if (empty($stylesheet)) {
-                    continue;
-                }
-
-                $files[] = str_replace('$template', $templates[0], $stylesheet);
-            }
-            
-            if (!empty($files)) {
-                $settings['styleselect_stylesheets'] = implode(',', $files);
+                $settings['styleselect_stylesheet'] = $stylesheet;
             }
         }
 

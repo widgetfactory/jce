@@ -26,6 +26,10 @@
         });
     }
 
+    function isEditorContentCss(url) {
+        return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
+    }
+
     tinymce.create('tinymce.plugins.ImportCSS', {
         convertSelectorToFormat: function(selectorText) {
             var format, ed = this.editor;
@@ -162,7 +166,7 @@
             ed.onNodeChange.add(function() {
                 var styleselect = ed.controlManager.get('styleselect');
 
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
+                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheet', true)) {
                     return self.populateStyleSelect();
                 }
             });
@@ -177,21 +181,22 @@
                 rules = [],
                 fontface;
 
+                var filtered = {};
+
             function isAllowedStylesheet(href) {
-                var allowed = true, styleselect = ed.getParam('styleselect_stylesheets');
+                var styleselect = ed.getParam('styleselect_stylesheet');
 
                 if (!styleselect) {
-                    return allowed;
+                    return true;
                 }
 
-                each(tinymce.explode(',', styleselect), function(url) {                    
-                    if (href.indexOf(url) === -1) {                        
-                        allowed = false;
-                        return false;
-                    }
-                });
+                if (typeof filtered[href] !== 'undefined') {                    
+                    return filtered[href];
+                }
 
-                return allowed;
+                filtered[href] = (href.indexOf(styleselect) !== -1);
+
+                return filtered[href];
             }
 
             function parseCSS(stylesheet) {
@@ -214,7 +219,11 @@
                     rules = stylesheet.cssRules || stylesheet.rules;
                     href = stylesheet.href;
 
-                    if (!href || !isAllowedStylesheet(href)) {
+                    if (!href) {
+                        return;
+                    }
+
+                    if (isEditorContentCss(href)) {
                         return;
                     }
 
@@ -232,6 +241,10 @@
                     switch (r.type || 1) {
                         // Rule
                         case 1:
+                            if (!isAllowedStylesheet(stylesheet.href)) {                                                                
+                                return true;
+                            }
+
                             // IE8
                             if (!r.type) {}
 
@@ -240,8 +253,9 @@
                                     v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                                     // Is internal or it doesn't contain a class
-                                    if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v))
+                                    if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
                                         return;
+                                    }
 
                                     if (tinymce.inArray(self.classes, v) === -1) {
                                         self.classes.push(v);

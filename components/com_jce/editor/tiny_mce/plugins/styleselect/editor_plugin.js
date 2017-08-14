@@ -50,7 +50,7 @@
             switch (n) {
                 case "styleselect":
                     // only create the control if we are using it!
-                    if (ed.getParam('styleselect_stylesheets') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
+                    if (ed.getParam('styleselect_stylesheet') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
                         return this._createStyleSelect();
                     }
 
