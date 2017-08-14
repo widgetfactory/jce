@@ -1,7 +1,27 @@
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
-        var each = tinymce.each;
+        var each = tinymce.each, filtered = {};
+
+        function isAllowedStylesheet(href) {
+            var styleselect = tinyMCEPopup.editor.getParam('styleselect_stylesheet');
+
+            if (!styleselect) {
+                return true;
+            }
+
+            if (typeof filtered[href] !== 'undefined') {
+                return filtered[href];
+            }
+
+            filtered[href] = (href.indexOf(styleselect) !== -1);
+
+            return filtered[href];
+        }
+
+        function isEditorContentCss(url) {
+            return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
+        }
 
         var TinyMCE_Utils = {
 
@@ -31,18 +51,33 @@
                         addClasses(r);
                     });
 
+                    var href = s.href;
+
+                    if (!href) {
+                        return;
+                    }
+
+                    if (isEditorContentCss(href)) {
+                        return;
+                    }
+
                     each(s.cssRules || s.rules, function (r) {
                         // Real type or fake it on IE
                         switch (r.type || 1) {
                             // Rule
                             case 1:
+                                if (!isAllowedStylesheet(s.href)) {
+                                    return true;
+                                }
+
                                 if (r.selectorText) {
                                     each(r.selectorText.split(','), function (v) {
                                         v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                                         // Is internal or it doesn't contain a class
-                                        if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v))
+                                        if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
                                             return;
+                                        }
 
                                         // Remove everything but class name
                                         ov = v;
@@ -63,7 +98,7 @@
                                 }
                                 break;
 
-                                // Import
+                            // Import
                             case 3:
                                 try {
                                     addClasses(r.styleSheet);
@@ -117,9 +152,9 @@
                 if (cl.length > 0) {
                     tinymce.each(cl, function (o) {
                         if (typeof o === "string") {
-                            o = {"class" : o};
+                            o = { "class": o };
                         }
-                        
+
                         lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
                     });
                 }
