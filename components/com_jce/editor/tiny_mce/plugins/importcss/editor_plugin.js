@@ -136,7 +136,7 @@
             ed.onPreInit.add(function(editor) {
                 var styleselect = ed.controlManager.get('styleselect');
 
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheet', true)) {
+                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
                     styleselect.onPostRender.add(function(ed, n) {
                         if (!styleselect.NativeListBox) {
                             DOM.bind(DOM.get(n.id + '_text'), 'focus mousedown', self.populateStyleSelect, self);
@@ -162,7 +162,7 @@
             ed.onNodeChange.add(function() {
                 var styleselect = ed.controlManager.get('styleselect');
 
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheet', true)) {
+                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
                     return self.populateStyleSelect();
                 }
             });
@@ -176,6 +176,23 @@
                 ov, href = '',
                 rules = [],
                 fontface;
+
+            function isAllowedStylesheet(href) {
+                var allowed = true, styleselect = ed.getParam('styleselect_stylesheets');
+
+                if (!styleselect) {
+                    return allowed;
+                }
+
+                each(tinymce.explode(',', styleselect), function(url) {                    
+                    if (href.indexOf(url) === -1) {                        
+                        allowed = false;
+                        return false;
+                    }
+                });
+
+                return allowed;
+            }
 
             function parseCSS(stylesheet) {
                 // IE style imports
@@ -195,12 +212,16 @@
 
                 try {
                     rules = stylesheet.cssRules || stylesheet.rules;
+                    href = stylesheet.href;
+
+                    if (!href || !isAllowedStylesheet(href)) {
+                        return;
+                    }
 
                     // get stylesheet href
                     if (stylesheet.href) {
                         href = stylesheet.href.substr(0, stylesheet.href.lastIndexOf('/') + 1);
                     }
-
                 } catch (e) {
                     // Firefox fails on rules to remote domain for example: 
                     // @import url(//fonts.googleapis.com/css?family=Pathway+Gothic+One);

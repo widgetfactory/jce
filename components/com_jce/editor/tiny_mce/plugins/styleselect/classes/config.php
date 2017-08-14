@@ -10,6 +10,51 @@
  */
 class WFStyleselectPluginConfig
 {
+    /**
+     * Return the current site template name.
+     */
+    private static function getSiteTemplates()
+    {
+        $db = JFactory::getDBO();
+        $app = JFactory::getApplication();
+        $id = 0;
+
+        if ($app->isSite()) {
+            $menus = $app->getMenu();
+            $menu = $menus->getActive();
+
+            if ($menu) {
+                $id = isset($menu->template_style_id) ? $menu->template_style_id : $menu->id;
+            }
+        }
+
+        $query = $db->getQuery(true);
+
+        if (is_object($query)) {
+            $query->select('id, template')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
+        } else {
+            $query = 'SELECT menuid as id, template'
+                . ' FROM #__templates_menu'
+                . ' WHERE client_id = 0';
+        }
+
+        $db->setQuery($query);
+        $templates = $db->loadObjectList();
+
+        $assigned = array();
+
+        foreach ($templates as $template) {
+            if ($id == $template->id) {
+                array_unshift($assigned, $template->template);
+            } else {
+                $assigned[] = $template->template;
+            }
+        }
+
+        // return templates
+        return $assigned;
+    }
+    
     public static function getConfig(&$settings)
     {
         $wf = WFEditor::getInstance();
@@ -111,7 +156,26 @@ class WFStyleselectPluginConfig
 
         // set this value false if stylesheet not included
         if (in_array('stylesheet', $include) === false) {
-            $settings['styleselect_stylesheet'] = false;
+            $settings['styleselect_stylesheets'] = false;
+        } else {
+            $stylesheets = $wf->getParam('styleselect.stylesheets', '', '');
+            $files = array();
+
+            $templates = self::getSiteTemplates();
+
+            foreach (explode(',', $stylesheets) as $stylesheet) {
+                $stylesheet = trim($stylesheet);
+
+                if (empty($stylesheet)) {
+                    continue;
+                }
+
+                $files[] = str_replace('$template', $templates[0], $stylesheet);
+            }
+            
+            if (!empty($files)) {
+                $settings['styleselect_stylesheets'] = implode(',', $files);
+            }
         }
 
         $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
