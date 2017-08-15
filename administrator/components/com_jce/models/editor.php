@@ -1011,7 +1011,7 @@ class WFModelEditor extends WFModelBase
                 // add etag
                 if ($absolute === false) {
                     // create hash
-                    $etag = '?' . md5_file(JPATH_SITE . '/' . $file);
+                    $etag = '?' . filemtime(JPATH_SITE . '/' . $file);
                 }
 
                 $stylesheets[] = $root . '/' . $file . $etag;

@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var each = tinymce.each,
         DOM = tinymce.DOM;
 
@@ -16,7 +16,7 @@
      * @param p URL of the css file
      */
     function toAbsolute(u, p) {
-        return u.replace(/url\(["']?(.+?)["']?\)/gi, function(a, b) {
+        return u.replace(/url\(["']?(.+?)["']?\)/gi, function (a, b) {
 
             if (b.indexOf('://') < 0) {
                 return 'url("' + p + b + '")';
@@ -31,7 +31,7 @@
     }
 
     tinymce.create('tinymce.plugins.ImportCSS', {
-        convertSelectorToFormat: function(selectorText) {
+        convertSelectorToFormat: function (selectorText) {
             var format, ed = this.editor;
 
             // empty value
@@ -91,7 +91,7 @@
 
             return format;
         },
-        populateStyleSelect: function() {
+        populateStyleSelect: function () {
             var ed = this.editor,
                 PreviewCss = tinymce.util.PreviewCss;
 
@@ -111,7 +111,7 @@
                 return;
             }
 
-            each(selectors, function(s, idx) {
+            each(selectors, function (s, idx) {
                 var name = 'style_' + (counter + idx);
 
                 var fmt = self.convertSelectorToFormat(s);
@@ -120,7 +120,7 @@
                     ed.formatter.register(name, fmt);
 
                     styleselect.add(fmt.title, name, {
-                        style: function() {
+                        style: function () {
                             return PreviewCss(ed, fmt);
                         }
                     });
@@ -129,7 +129,7 @@
 
             styleselect.hasClasses = true;
         },
-        init: function(ed, url) {
+        init: function (ed, url) {
             this.editor = ed;
 
             var self = this;
@@ -137,11 +137,11 @@
             this.classes = [];
             this.fontface = [];
 
-            ed.onPreInit.add(function(editor) {
+            ed.onPreInit.add(function (editor) {
                 var styleselect = ed.controlManager.get('styleselect');
 
                 if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
-                    styleselect.onPostRender.add(function(ed, n) {
+                    styleselect.onPostRender.add(function (ed, n) {
                         if (!styleselect.NativeListBox) {
                             DOM.bind(DOM.get(n.id + '_text'), 'focus mousedown', self.populateStyleSelect, self);
                             DOM.bind(DOM.get(n.id + '_open'), 'focus mousedown', self.populateStyleSelect, self);
@@ -154,7 +154,7 @@
                 var fontselect = ed.controlManager.get('fontselect');
 
                 if (fontselect) {
-                    fontselect.onPostRender.add(function() {
+                    fontselect.onPostRender.add(function () {
                         // font face items not yet created, run import
                         if (!self.fontface.length || !self.classes.length) {
                             self._import();
@@ -163,7 +163,7 @@
                 }
             });
 
-            ed.onNodeChange.add(function() {
+            ed.onNodeChange.add(function () {
                 var styleselect = ed.controlManager.get('styleselect');
 
                 if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheet', true)) {
@@ -171,7 +171,7 @@
                 }
             });
         },
-        _import: function() {
+        _import: function () {
             var self = this,
                 ed = this.editor,
                 doc = ed.getDoc(),
@@ -181,7 +181,7 @@
                 rules = [],
                 fontface;
 
-                var filtered = {};
+            var filtered = {};
 
             function isAllowedStylesheet(href) {
                 var styleselect = ed.getParam('styleselect_stylesheet');
@@ -190,7 +190,7 @@
                     return true;
                 }
 
-                if (typeof filtered[href] !== 'undefined') {                    
+                if (typeof filtered[href] !== 'undefined') {
                     return filtered[href];
                 }
 
@@ -201,7 +201,7 @@
 
             function parseCSS(stylesheet) {
                 // IE style imports
-                each(stylesheet.imports, function(r) {
+                each(stylesheet.imports, function (r) {
                     if (r.href.indexOf('://fonts.googleapis.com') > 0) {
                         var v = '@import url(' + r.href + ');';
 
@@ -236,20 +236,20 @@
                     // @import url(//fonts.googleapis.com/css?family=Pathway+Gothic+One);
                 }
 
-                each(rules, function(r) {
+                each(rules, function (r) {
                     // Real type or fake it on IE
                     switch (r.type || 1) {
                         // Rule
                         case 1:
-                            if (!isAllowedStylesheet(stylesheet.href)) {                                                                
+                            if (!isAllowedStylesheet(stylesheet.href)) {
                                 return true;
                             }
 
                             // IE8
-                            if (!r.type) {}
+                            if (!r.type) { }
 
                             if (r.selectorText) {
-                                each(r.selectorText.split(','), function(v) {
+                                each(r.selectorText.split(','), function (v) {
                                     v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                                     // Is internal or it doesn't contain a class
@@ -265,7 +265,7 @@
 
                             break;
 
-                            // Import
+                        // Import
                         case 3:
                             if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                                 var v = '@import url(' + r.href + ');';
@@ -280,7 +280,7 @@
                                 parseCSS(r.styleSheet);
                             }
                             break;
-                            // font-face
+                        // font-face
                         case 5:
                             // check for text and skip popular font icons
                             if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {
@@ -298,10 +298,10 @@
             // parse stylesheets
             if (self.classes.length === 0) {
                 try {
-                    each(doc.styleSheets, function(styleSheet) {
+                    each(doc.styleSheets, function (styleSheet) {
                         parseCSS(styleSheet);
                     });
-                } catch (ex) {}
+                } catch (ex) { }
             }
 
             // add font-face rules
@@ -317,10 +317,10 @@
                     var css = self.fontface.join("\n");
 
                     if (style.styleSheet) {
-                        var setCss = function() {
+                        var setCss = function () {
                             try {
                                 style.styleSheet.cssText = css;
-                            } catch (e) {}
+                            } catch (e) { }
                         };
                         if (style.styleSheet.disabled) {
                             setTimeout(setCss, 10);
@@ -337,7 +337,7 @@
                     // set fontface flag so we only do this once
                     fontface = true;
 
-                } catch (e) {}
+                } catch (e) { }
             }
 
             // sort alphabetically
