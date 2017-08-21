@@ -144,6 +144,12 @@
                                 });
                             }
 
+                            if (fmt.styles) {
+                                each(fmt.styles, function(value, key) {
+                                    fmt.styles[key] = value + '';
+                                });
+                            }
+
                             ed.formatter.register(name, fmt);
 
                             ctrl.add(fmt.title, name, {
