@@ -165,7 +165,7 @@ class WFStyleselectPluginConfig
                 $stylesheet = str_replace('$template', $templates[0], $stylesheet);
                 $settings['styleselect_stylesheet'] = $stylesheet;
 
-                /*
+                // add the stylesheet to the content_css setting
                 $stylesheet = ltrim('/', $stylesheet);
                 $etag = "";
 
@@ -173,18 +173,16 @@ class WFStyleselectPluginConfig
                     // create hash
                     $etag = '?' . filemtime(JPATH_SITE . '/' . $stylesheet);
 
-                    $settings['styleselect_stylesheet'] = $stylesheet;
-
                     // explode to array
                     $content_css = explode(",", $settings['content_css']);
                     $content_css[] = JURI::root(true) . '/' . $stylesheet . $etag;
 
                     // remove duplicates
                     $content_css = array_unique($content_css);
+                    
                     // implode to string
                     $settings['content_css'] = implode(",", $content_css);
                 }
-                */
             }
         }
 
