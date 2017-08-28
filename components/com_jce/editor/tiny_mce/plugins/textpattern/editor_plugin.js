@@ -194,10 +194,19 @@
             var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
             editor.addCommand('InsertCustomTextPattern', function(ui, node) {
-                node = node.replace(/\$\$/g, '');
+                node = node.replace(/^\$\$|\$\$$/g, '');
 
-                if (custom_patterns[node]) {
-                    var html = custom_patterns[node];
+                var html;
+
+                if (tinymce.is(custom_patterns, "function")) {
+                    html = custom_patterns(node);
+                }
+
+                if (tinymce.is(custom_patterns, "object")) {
+                    html = custom_patterns[node];
+                }
+
+                if (tinymce.is(html)) {
                     editor.execCommand('mceReplaceContent', false, html);
                 }
             });
