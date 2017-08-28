@@ -1045,6 +1045,9 @@ class WFFileBrowser extends JObject
         // trim extension
         $ext = trim($ext);
 
+        // make extension websafe
+        $ext = WFUtility::makeSafe($ext, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
+
         // check extension exists
         if (empty($ext) || $ext === $file['name']) {
             throw new InvalidArgumentException('Upload Failed: The file name does not contain a valid extension.');
@@ -1052,6 +1055,7 @@ class WFFileBrowser extends JObject
 
         // strip extension
         $name = WFUtility::stripExtension($name);
+        
         // make file name 'web safe'
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
