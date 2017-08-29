@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,13 +11,13 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 // load base model
-require_once dirname(__FILE__).'/model.php';
+require_once dirname(__FILE__) . '/model.php';
 
 class WFModelCpanel extends WFModel
 {
     public function getVersion()
     {
-        $xml = WFXMLHelper::parseInstallManifest(JPATH_ADMINISTRATOR.'/components/com_jce/jce.xml');
+        $xml = WFXMLHelper::parseInstallManifest(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml');
 
         return $xml['version'];
     }
@@ -36,40 +36,36 @@ class WFModelCpanel extends WFModel
         $feeds = array();
         $options = array(
             'rssUrl' => 'https://www.joomlacontenteditor.net/news?format=feed',
-            'cache_time' => $params->get('feed_cachetime', 86400),
         );
 
-        // prevent Strict Standards errors in simplepie
-        error_reporting(32767 ^ 2048);
+        $xml = simplexml_load_file($options['rssUrl']);
 
-        // use this directly instead of JFactory::getXMLParser to avoid the feed data error
-        jimport('simplepie.simplepie');
-
-        if (!is_writable(JPATH_BASE.'/cache')) {
-            $options['cache_time'] = 0;
+        if (empty($xml)) {
+            return $feeds;
         }
 
-        error_reporting(E_ERROR | E_WARNING | E_PARSE);
+        jimport('joomla.filter.input');
+        $filter = JFilterInput::getInstance();
 
-        $rss = new SimplePie($options['rssUrl'], JPATH_BASE.'/cache', isset($options['cache_time']) ? $options['cache_time'] : 0);
-        $rss->force_feed(true);
-        $rss->handle_content_type();
+        $count = count($xml->channel->item);
 
-        if ($rss->init()) {
-            $count = $rss->get_item_quantity();
+        if ($count) {
+            $count = ($count > $limit) ? $limit : $count;
 
-            if ($count) {
-                $count = ($count > $limit) ? $limit : $count;
-                for ($i = 0; $i < $count; ++$i) {
-                    $feed = new StdClass();
-                    $item = $rss->get_item($i);
+            for ($i = 0; $i < $count; ++$i) {
+                $feed = new StdClass();
+                $item = $xml->channel->item[$i];
 
-                    $feed->link = $item->get_link();
-                    $feed->title = $item->get_title();
-                    $feed->description = $item->get_description();
+                $link = (string) $item->link;
+                $feed->link = htmlspecialchars($filter->clean($link));
 
-                    $feeds[] = $feed;
-                }
+                $title = (string) $item->title;
+                $feed->title = htmlspecialchars($filter->clean($title));
+
+                $description = (string) $item->description;
+                $feed->description = htmlspecialchars($filter->clean($description));
+
+                $feeds[] = $feed;
             }
         }
 
