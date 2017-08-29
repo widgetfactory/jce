@@ -388,11 +388,11 @@
     }
 
     function postProcess(self, o) {
-        var ed = self.editor, dom = ed.dom, h;
+        var ed = self.editor, dom = ed.dom;
 
         // skip plain text
         if (self.pasteAsPlainText) {
-            return h;
+            return;
         }
 
         // Remove Apple style spans
