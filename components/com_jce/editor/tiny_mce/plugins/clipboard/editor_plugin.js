@@ -1840,6 +1840,10 @@
                 if (isPlainTextPaste(clipboardContent)) {
                     e.preventDefault();
                     var text = clipboardContent["text/plain"];
+
+                    // set pasteAsPlainText state
+                    self.pasteAsPlainText = true;
+
                     pasteText(text);
 
                     return;
