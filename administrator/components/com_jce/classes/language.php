@@ -169,6 +169,28 @@ class WFLanguageParser extends JObject
         return $array;
     }
 
+    protected static function getOverrides() 
+    {
+        // get the language file
+        $language = JFactory::getLanguage();
+        // get language tag
+        $tag = $language->getTag();
+        
+        $file = JPATH_SITE . '/language/overrides/' . $tag . '.override.ini';
+
+        $ini  = array();
+
+        if (is_file($file)) {
+            $content = @file_get_contents($file);
+            
+            if ($content && is_string($content)) {
+                $ini = @parse_ini_string($content, true);
+            }
+        }
+
+        return $ini;
+    }
+
     protected static function filterSections($ini, $sections = array(), $filter = '')
     {
         if ($ini && is_array($ini)) {
@@ -220,6 +242,9 @@ class WFLanguageParser extends JObject
 
         $output = '';
 
+        // get overrides
+        $overrides = self::getOverrides();
+
         if (!empty($data)) {
             $x = 0;
 
@@ -230,6 +255,10 @@ class WFLanguageParser extends JObject
                     $i = 0;
 
                     foreach ($strings as $k => $v) {
+                        if (array_key_exists(strtoupper($k), $overrides)) {
+                            $v = $overrides[$k];
+                        }
+                        
                         // remove "
                         $v = str_replace('"', '', $v);
 
