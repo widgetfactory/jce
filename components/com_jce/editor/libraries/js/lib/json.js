@@ -1,4 +1,4 @@
-(function($, Wf) {
+(function ($, Wf) {
     /**
      * Test if valid JSON string
      * https://github.com/douglascrockford/JSON-js/blob/master/json2.js
@@ -32,23 +32,6 @@
     }
 
     Wf.JSON = {
-        queue: function(o) {
-            var _old = o.complete;
-
-            o.complete = function() {
-                if (_old)
-                    _old.apply(this, arguments);
-            };
-
-            $([this.queue]).queue("ajax", function() {
-                window.setTimeout(function() {
-                    $.ajax(o);
-                }, 500);
-
-            });
-
-            $.dequeue(this.queue, "ajax");
-        },
         /**
          * Send JSON request
          *
@@ -62,7 +45,7 @@
          * @param scope
          *            Scope to execute callback in
          */
-        request: function(func, data, callback, scope) {
+        request: function (func, data, callback, scope) {
             var json = {
                 'method': func,
                 'id': uid()
@@ -78,14 +61,14 @@
             // get form input data (including token)
             var fields = $(':input', 'form').serializeArray();
 
-            $.each(fields, function(i, field) {
+            $.each(fields, function (i, field) {
                 args[field.name] = field.value;
             });
 
             // if data is a string or array
             if ($.type(data) === 'string' || $.type(data) === 'array') {
                 $.extend(json, {
-                    'params': $.type(data) === 'string' ? Wf.String.encodeURI(data) : $.map(data, function(s) {
+                    'params': $.type(data) === 'string' ? Wf.String.encodeURI(data) : $.map(data, function (s) {
                         if (s && $.type(s) === 'string') {
                             return Wf.String.encodeURI(s);
                         }
@@ -130,60 +113,57 @@
                 Wf.Modal.alert(txt);
             }
 
-            this.queue({
-                context: scope || this,
-                type: 'POST',
-                url: url,
-                data: 'json=' + JSON.stringify(json) + '&' + $.param(args),
-                dataType: 'text',
-                success: function(o) {
-                    var r;
+            $.ajax({
+                "context": scope || this,
+                "url": url,
+                "dataType": "text",
+                "method": "post",
+                "data": "json=" + JSON.stringify(json) + '&' + $.param(args)
+            }).done(function (o) {
+                var r;
 
-                    if (o) {
-                        // check result - should be object, parse as JSON if string
-                        if ($.type(o) === 'string' && isJSON(o)) {
-                            // parse string as JSON object
-                            var s = $.parseJSON(o);
-                            // pass if successful
-                            if (s) {
-                                o = s;
-                            }
+                if (o) {
+                    // check result - should be object, parse as JSON if string
+                    if ($.type(o) === 'string' && isJSON(o)) {
+                        // parse string as JSON object
+                        var s = $.parseJSON(o);
+                        // pass if successful
+                        if (s) {
+                            o = s;
+                        }
+                    }
+
+                    // process object result
+                    if ($.isPlainObject(o)) {
+                        if (o.error) {
+                            showError(o.text || o.error.message || '');
                         }
 
-                        // process object result
-                        if ($.isPlainObject(o)) {
-                            if (o.error) {
-                                showError(o.text || o.error.message || '');
-                            }
+                        r = o.result || null;
 
-                            r = o.result || null;
-
-                            if (r && r.error && r.error.length) {
-                                showError(r.error || '');
-                            }
-                            // show error
+                        if (r && r.error && r.error.length) {
+                            showError(r.error || '');
+                        }
+                        // show error
+                    } else {
+                        // check for malformed JSON
+                        if (/[{}]/.test(o)) {
+                            showError('The server returned an invalid JSON response.');
                         } else {
-                            // check for malformed JSON
-                            if (/[{}]/.test(o)) {
-                                showError('The server returned an invalid JSON response.');
-                            } else {
-                                showError(o);
-                            }
+                            showError(o);
                         }
-                    } else {
-                        o = { 'error': '' };
                     }
-
-                    if ($.isFunction(callback)) {
-                        callback.call(scope || this, r);
-                    } else {
-                        return r;
-                    }
-                },
-                error: function(e, txt, status) {
-                    Wf.Modal.alert(status || ('SERVER ERROR - ' + txt.toUpperCase()));
+                } else {
+                    o = { 'error': '' };
                 }
 
+                if ($.isFunction(callback)) {
+                    callback.call(scope || this, r);
+                } else {
+                    return r;
+                }
+            }).fail(function (e, status, txt) {
+                Wf.Modal.alert(status || ('Server Error - ' + txt));
             });
         }
     }
