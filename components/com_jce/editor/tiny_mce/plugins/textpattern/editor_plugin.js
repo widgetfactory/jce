@@ -129,8 +129,6 @@
                     },
 
                     onformat: function(elm, fmt, vars) {
-                        console.log(elm, fmt, vars);
-
                         tinymce.each(vars, function(value, key) {
                             ed.dom.setAttrib(elm, key, value);
                         });
