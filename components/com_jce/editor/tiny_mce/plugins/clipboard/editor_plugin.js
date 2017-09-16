@@ -51,6 +51,46 @@
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
+    var parseCssToRules = function (content) {
+        var doc = document.implementation.createHTMLDocument(""),
+            styleElement = document.createElement("style");
+
+        styleElement.textContent = content;
+
+        doc.body.appendChild(styleElement);
+
+        return styleElement.sheet.cssRules;
+    }
+
+    function cleanCssContent(content) {
+        var classes = [], rules = parseCssToRules(content);
+        
+        each(rules, function (r) {
+            if (r.selectorText) {
+                each(r.selectorText.split(','), function (v) {
+                    v = v.replace(/^\s*|\s*$|^\s\./g, "");
+
+                    // Is internal or it doesn't contain a class
+                    if (/\.mso/i.test(v) || !/\.[\w\-]+$/.test(v)) {
+                        return;
+                    }
+
+                    var text = r.cssText || "";
+
+                    if (!text) {
+                        return
+                    }
+
+                    if (tinymce.inArray(classes, text) === -1) {
+                        classes.push(text);
+                    }
+                });
+            }
+        });
+
+        return classes.join("");
+    }
+
     function filter(content, items) {
         each(items, function (v) {
             if (v.constructor == RegExp) {
@@ -88,7 +128,7 @@
      * @param {String} html Html string to trim contents on.
      * @return {String} Html contents that got trimmed.
      */
-    function trimHtml(html) {
+    function trimHtml(html) {        
         function trimSpaces(all, s1, s2) {
 
             // WebKit &nbsp; meant to preserve multiple spaces but instead inserted around all inline tags,
@@ -100,7 +140,7 @@
             return '\u00a0';
         }
 
-        function getInnerFragment(html) {
+        function getInnerFragment(html) {            
             var startFragment = '<!--StartFragment-->';
             var endFragment = '<!--EndFragment-->';
             var startPos = html.indexOf(startFragment);
@@ -134,13 +174,16 @@
      * @return {String} String of text with line feeds.
      */
     function innerText(html) {
-        var schema = new Schema(), domParser = new DomParser({}, schema), text = '';
+        var schema = new Schema(),
+            domParser = new DomParser({}, schema),
+            text = '';
         var shortEndedElements = schema.getShortEndedElements();
         var ignoreElements = tinymce.makeMap('script noscript style textarea video audio iframe object', ' ');
         var blockElements = schema.getBlockElements();
 
         function walk(node) {
-            var name = node.name, currentNode = node;
+            var name = node.name,
+                currentNode = node;
 
             if (name === 'br') {
                 text += '\n';
@@ -206,7 +249,8 @@
             return;
         }
 
-        var editor = self.editor, html = o.content;
+        var editor = self.editor,
+            html = o.content;
 
         // Produce block regexp based on the block elements in schema
         var blockElements = [];
@@ -249,7 +293,8 @@
      * @return {String} Processed contents.
      */
     function removeWebKitStyles(self, o) {
-        var editor = self.editor, content = o.content;
+        var editor = self.editor,
+            content = o.content;
 
         if (isWordContent(editor, o.content)) {
             return;
@@ -314,7 +359,9 @@
     }
 
     function preProcess(self, o) {
-        var ed = self.editor, h = o.content, rb;
+        var ed = self.editor,
+            h = o.content,
+            rb;
 
         // Process away some basic content
         h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
@@ -388,7 +435,8 @@
     }
 
     function postProcess(self, o) {
-        var ed = self.editor, dom = ed.dom;
+        var ed = self.editor,
+            dom = ed.dom;
 
         // skip plain text
         if (self.pasteAsPlainText) {
@@ -399,6 +447,14 @@
         each(dom.select('span.Apple-style-span', o.node), function (n) {
             dom.remove(n, 1);
         });
+
+        // Remove all classes
+        if (ed.getParam('clipboard_paste_strip_class_attributes')) {
+            // Remove class attribute
+            each(dom.select('*[class]', o.node), function (el) {
+                el.removeAttribute('class');
+            });
+        }
 
         // Remove all styles
         if (ed.getParam('clipboard_paste_remove_styles')) {
@@ -687,8 +743,17 @@
         content = content.replace(/<meta([^>]+)>/, '');
 
         // remove styles
-        content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, '');
+        content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, function (match, attr, value) {            
+            // remove style tag
+            if (settings.clipboard_paste_keep_word_styles !== true) {
+                return "";
+            }
 
+            // process to remove mso junk
+            var styles = cleanCssContent(value);
+
+            return '<style' + attr + '>' + styles + '</style>';
+        });
         // Copy paste from Java like Open Office will produce this junk on FF
         content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
 
@@ -997,7 +1062,7 @@
         }
 
         if (settings.paste_enable_default_filters === false) {
-            return;
+            return content;
         }
 
         // Remove basic Word junk
@@ -1100,11 +1165,15 @@
                 node = nodes[i];
 
                 className = node.attr('class');
+
                 if (/^(MsoCommentReference|MsoCommentText|msoDel)$/i.test(className)) {
                     node.remove();
+                    continue;
                 }
 
-                node.attr('class', null);
+                if (/^Mso[\w]+/i.test(className) || settings.clipboard_paste_keep_word_styles !== true) {
+                    node.attr('class', null);
+                }
             }
         });
 
@@ -1267,7 +1336,8 @@
 
         var toBlockElements = function (text, rootTag, rootAttrs) {
             var pieces = text.split(/\r?\n/);
-            var i = 0, len = pieces.length;
+            var i = 0,
+                len = pieces.length;
             var stack = [];
             var blocks = [];
             var tagOpen = openContainer(rootTag, rootAttrs);
@@ -1352,7 +1422,9 @@
 
         // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
         if (navigator.userAgent.indexOf(' Edge/') !== -1) {
-            content = tinymce.extend(content, { 'text/html': '' });
+            content = tinymce.extend(content, {
+                'text/html': ''
+            });
         }
 
         return content;
@@ -1392,7 +1464,8 @@
             self.url = url;
 
             var pasteBinElm, lastRng, keyboardPasteTimeStamp = 0;
-            var pasteBinDefaultContent = '%MCEPASTEBIN%', keyboardPastePlainTextState;
+            var pasteBinDefaultContent = '%MCEPASTEBIN%',
+                keyboardPastePlainTextState;
 
             // set default paste state for dialog trigger
             this.canPaste = false;
@@ -1418,7 +1491,7 @@
             }
 
             // Register default handlers
-            self.onPreProcess.add(function (self, o) {
+            self.onPreProcess.add(function (self, o) {                
                 preProcess(self, o);
             });
 
@@ -1506,7 +1579,9 @@
 
             function pasteHtml(content) {
                 // create object to process
-                var o = { content: content };
+                var o = {
+                    content: content
+                };
 
                 // Execute pre process handlers
                 self.onPreProcess.dispatch(self, o);
@@ -1570,8 +1645,11 @@
              * instead of the current editor selection element.
              */
             function createPasteBin() {
-                var dom = ed.dom, body = ed.getBody();
-                var viewport = ed.dom.getViewPort(ed.getWin()), scrollTop = viewport.y, top = 20;
+                var dom = ed.dom,
+                    body = ed.getBody();
+                var viewport = ed.dom.getViewPort(ed.getWin()),
+                    scrollTop = viewport.y,
+                    top = 20;
                 var scrollContainer;
 
                 lastRng = ed.selection.getRng();
@@ -1656,7 +1734,7 @@
                     contentEditable: true,
                     "data-mce-bogus": "all",
                     style: 'position: absolute; top: ' + top + 'px;' +
-                    'width: 10px; height: 10px; overflow: hidden; opacity: 0'
+                        'width: 10px; height: 10px; overflow: hidden; opacity: 0'
                 }, pasteBinDefaultContent);
 
                 // Move paste bin out of sight since the controlSelection rect gets displayed otherwise on IE and Gecko
@@ -1697,7 +1775,8 @@
              * @return {String} Get the contents of the paste bin.
              */
             function getPasteBinHtml() {
-                var html = '', pasteBinClones, i, clone, cloneHtml;
+                var html = '',
+                    pasteBinClones, i, clone, cloneHtml;
 
                 // Since WebKit/Chrome might clone the paste bin when pasting
                 // for example: <img style="float: right"> we need to check if any of them contains some useful html.
@@ -1760,7 +1839,9 @@
                     // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
                     // when it tries to restore the selection
                     setTimeout(function () {
-                        insertClipboardContent({ "text/html": html });
+                        insertClipboardContent({
+                            "text/html": html
+                        });
                     }, 0);
 
                     // Block the real paste event
@@ -1783,7 +1864,9 @@
 
                     removePasteBin();
 
-                    insertClipboardContent({ "text/html": html });
+                    insertClipboardContent({
+                        "text/html": html
+                    });
 
                     // Unblock events ones we got the contents
                     dom.unbind(ed.getDoc(), 'mousedown', block);
@@ -1907,7 +1990,8 @@
             // Add commands
             each(['mcePasteText', 'mcePaste'], function (cmd) {
                 ed.addCommand(cmd, function () {
-                    var doc = ed.getDoc(), failed;
+                    var doc = ed.getDoc(),
+                        failed;
 
                     // just open the window
                     if (ed.getParam('clipboard_paste_use_dialog') || (isIE && !doc.queryCommandEnabled('Paste'))) {
@@ -1978,8 +2062,8 @@
                 inline: 1,
                 popup_css: false
             }, {
-                    cmd: cmd
-                });
+                cmd: cmd
+            });
         },
 
         /**
