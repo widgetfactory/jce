@@ -51,46 +51,6 @@
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
-    var parseCssToRules = function (content) {
-        var doc = document.implementation.createHTMLDocument(""),
-            styleElement = document.createElement("style");
-
-        styleElement.textContent = content;
-
-        doc.body.appendChild(styleElement);
-
-        return styleElement.sheet.cssRules;
-    }
-
-    function cleanCssContent(content) {
-        var classes = [], rules = parseCssToRules(content);
-        
-        each(rules, function (r) {
-            if (r.selectorText) {
-                each(r.selectorText.split(','), function (v) {
-                    v = v.replace(/^\s*|\s*$|^\s\./g, "");
-
-                    // Is internal or it doesn't contain a class
-                    if (/\.mso/i.test(v) || !/\.[\w\-]+$/.test(v)) {
-                        return;
-                    }
-
-                    var text = r.cssText || "";
-
-                    if (!text) {
-                        return
-                    }
-
-                    if (tinymce.inArray(classes, text) === -1) {
-                        classes.push(text);
-                    }
-                });
-            }
-        });
-
-        return classes.join("");
-    }
-
     function filter(content, items) {
         each(items, function (v) {
             if (v.constructor == RegExp) {
@@ -449,7 +409,7 @@
         });
 
         // Remove all classes
-        if (ed.getParam('clipboard_paste_strip_class_attributes')) {
+        if (ed.getParam('clipboard_paste_strip_class_attributes', 0) == 1) {
             // Remove class attribute
             each(dom.select('*[class]', o.node), function (el) {
                 el.removeAttribute('class');
@@ -1171,7 +1131,7 @@
                     continue;
                 }
 
-                if (/^Mso[\w]+/i.test(className) || settings.clipboard_paste_keep_word_styles !== true) {
+                if (/^Mso[\w]+/i.test(className) || settings.clipboard_paste_strip_class_attributes) {
                     node.attr('class', null);
                 }
             }

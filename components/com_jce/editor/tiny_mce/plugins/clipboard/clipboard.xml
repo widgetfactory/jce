@@ -21,9 +21,10 @@
             <option value="0">WF_PASTE_FORCE_CLEANUP_DETECT</option>
             <option value="1">WF_PASTE_FORCE_CLEANUP_ALWAYS</option>
         </param>
-        <param name="paste_strip_class_attributes" type="radio" default="0" label="WF_PASTE_PARAM_CLASSES" description="WF_PASTE_PARAM_CLASSES_DESC">
+        <param name="paste_strip_class_attributes" type="list" default="0" label="WF_PASTE_PARAM_CLASSES" description="WF_PASTE_PARAM_CLASSES_DESC">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
+            <option value="2">WF_OPTION_PASTE_CLASSES_WORD_ONLY</option>
         </param>
         <param name="paste_remove_spans" type="radio" default="0" label="WF_PASTE_PARAM_SPANS" description="WF_PASTE_PARAM_SPANS_DESC">
             <option value="1">WF_OPTION_YES</option>
