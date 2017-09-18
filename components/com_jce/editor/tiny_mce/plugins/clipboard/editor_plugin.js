@@ -409,7 +409,7 @@
         });
 
         // Remove all classes
-        if (ed.getParam('clipboard_paste_strip_class_attributes', 0) == 1) {
+        if (ed.getParam('clipboard_paste_strip_class_attributes', 2) == 1) {
             // Remove class attribute
             each(dom.select('*[class]', o.node), function (el) {
                 el.removeAttribute('class');
@@ -1131,7 +1131,7 @@
                     continue;
                 }
 
-                if (/^Mso[\w]+/i.test(className) || settings.clipboard_paste_strip_class_attributes) {
+                if (/^Mso[\w]+/i.test(className) || editor.getParam('clipboard_paste_strip_class_attributes', 2)) {
                     node.attr('class', null);
                 }
             }
