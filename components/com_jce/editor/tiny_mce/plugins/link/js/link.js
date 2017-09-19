@@ -11,6 +11,36 @@
     // http://stackoverflow.com/a/46181
     var emailRex = /(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})/;
 
+    /**
+     * From tinymce/plugins/link/plugin.js
+     *
+     * Released under LGPL License.
+     * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+     * License: http://www.tinymce.com/license
+     */
+    var toggleTargetRules = function (rel, isUnsafe) {
+        var rules = ['noopener'];
+        var newRel = rel ? rel.split(/\s+/) : [];
+
+        var toString = function (rel) {
+            return $.trim(rel.sort().join(' '));
+        };
+
+        var addTargetRules = function (rel) {
+            rel = removeTargetRules(rel);
+            return rel.length ? rel.concat(rules) : rules;
+        };
+
+        var removeTargetRules = function (rel) {
+            return rel.filter(function (val) {
+                return $.inArray(val, rules) === -1;
+            });
+        };
+
+        newRel = isUnsafe ? addTargetRules(newRel) : removeTargetRules(newRel);
+        return newRel.length ? toString(newRel) : null;
+    };
+
     var LinkDialog = {
         settings: {},
         init: function () {
@@ -281,31 +311,7 @@
 
             return html;
         },
-        /**
-         * From tinymce/plugins/link/plugin.js
-         *
-         * Released under LGPL License.
-         * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-         * License: http://www.tinymce.com/license
-         */
-        toggleTargetRules: function (rel, isUnsafe) {
-            var rules = 'noopener noreferrer';
 
-            function addTargetRules(rel) {
-                rel = removeTargetRules(rel);
-                return rel ? [rel, rules].join(' ') : rules;
-            }
-
-            function removeTargetRules(rel) {
-                var regExp = new RegExp('(' + rules.replace(' ', '|') + ')', 'g');
-                if (rel) {
-                    rel = tinymce.trim(rel.replace(regExp, ''));
-                }
-                return rel ? rel : null;
-            }
-
-            return isUnsafe ? addTargetRules(rel) : removeTargetRules(rel);
-        },
         checkPrefix: function (n) {
             var self = this;
 
@@ -389,8 +395,8 @@
             });
 
             if (!ed.settings.allow_unsafe_link_target) {
-			    args.rel = this.toggleTargetRules(args.rel, args.target == '_blank');
-			}
+                args.rel = toggleTargetRules(args.rel, args.target == '_blank' && /:\/\//.test(args.href));
+            }
 
             var txt = $('#text').val();
 
@@ -553,12 +559,16 @@
                             $(this).trigger('modal.close');
                         }
                     },
-                    attributes: {'class' : 'uk-button-primary'},
+                    attributes: {
+                        'class': 'uk-button-primary'
+                    },
                     icon: 'uk-icon-check'
                 }, {
                     text: ed.getLang('dlg.cancel', 'Cancel'),
                     icon: 'uk-icon-close',
-                    attributes: {'class' : 'uk-modal-close'}
+                    attributes: {
+                        'class': 'uk-modal-close'
+                    }
                 }]
             }, fields);
         },
