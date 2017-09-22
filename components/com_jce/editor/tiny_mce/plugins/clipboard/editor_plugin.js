@@ -370,15 +370,15 @@
         }
 
         // replace paragraphs with linebreaks
-        if (!ed.getParam('forced_root_block')) {
+        /*if (!ed.getParam('forced_root_block')) {
             // remove empty paragraphs first
             if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
                 h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
             }
 
-            // convert paragraphs to single linebreaks
-            h = h.replace(/<\/(p|div)>/gi, '<br />').replace(/<(p|div)([^>]*)>/g, '');//.replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
-        }
+            // convert paragraphs to double linebreaks, and remove double linbreaks at the end of a tag
+            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
+        }*/
 
         // convert urls in content
         if (ed.getParam('clipboard_paste_convert_urls', true)) {
@@ -548,6 +548,20 @@
                 if (!n.childNodes || n.childNodes.length === 0 || /^(\s|&nbsp;|\u00a0)?$/.test(h)) {
                     dom.remove(n);
                 }
+            });
+        }
+
+        // replace paragraphs with linebreaks
+        if (!ed.getParam('forced_root_block')) {
+            var frag = dom.createFragment('<br /><br />');
+            
+            each(dom.select('p,div', o.node), function (n) {
+                // if the linebreaks are 
+                if (n.parentNode.lastChild !== n) {
+                    dom.insertAfter(frag, n);
+                }
+
+                dom.remove(n, 1);
             });
         }
     }
