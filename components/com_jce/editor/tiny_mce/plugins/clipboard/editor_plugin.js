@@ -345,7 +345,7 @@
             h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
         }
 
-        // replace double linebreaks with paragraphs
+        // replace double linebreaks with paragraphs, empty paragraphs may be removed later
         if (rb = ed.getParam('forced_root_block')) {
             var blocks = '';
             // only split if a double break exists
@@ -371,14 +371,14 @@
         }
 
         // replace paragraphs with linebreaks
-        if (!ed.getParam('forced_root_block')) {
+        /*if (!ed.getParam('forced_root_block')) {
             // remove empty paragraphs first
             if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
                 h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
             }
 
             h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
-        }
+        }*/
 
         // convert urls in content
         if (ed.getParam('clipboard_paste_convert_urls', true)) {
