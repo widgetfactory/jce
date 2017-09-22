@@ -295,6 +295,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
             'list_limit' => $this->getParam('editor.list_limit', 'all'),
+            'view_mode' => $this->getParam('editor.view_mode', 'list'),
             'features' => array(
                 'upload' => $this->getParam('upload', 1),
                 'folder' => array(

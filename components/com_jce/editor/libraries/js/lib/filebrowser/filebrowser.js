@@ -118,6 +118,7 @@
         },
         viewable: 'jpeg,jpg,gif,png,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx',
         list_limit: 'all',
+        view_mode: 'list',
         expandable: true,
         websafe_mode: 'utf-8',
         websafe_spaces: false,
