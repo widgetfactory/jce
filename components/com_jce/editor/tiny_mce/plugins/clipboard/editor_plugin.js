@@ -1226,6 +1226,22 @@
             }
         });
 
+        // Remove single paragraphs in table cells
+        if (editor.getParam('clipboard_paste_remove_paragraph_in_table_cell')) {
+            domParser.addNodeFilter('td', function (nodes) {
+                var i = nodes.length,
+                node, firstChild, lastChild;
+    
+                while (i--) {
+                    node = nodes[i], firstChild = node.firstChild, lastChild = node.lastChild;
+    
+                    if (firstChild.name === "p" && firstChild === lastChild) {
+                        firstChild.unwrap();
+                    }
+                }
+            });
+        }
+
         // Parse into DOM structure
         var rootNode = domParser.parse(content);
 
