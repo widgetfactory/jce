@@ -341,7 +341,6 @@
         // remove attributes
         if (ed.getParam('clipboard_paste_remove_attributes')) {
             var attribs = ed.getParam('clipboard_paste_remove_attributes').split(',');
-
             h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
         }
 
@@ -371,14 +370,17 @@
         }
 
         // replace paragraphs with linebreaks
-        /*if (!ed.getParam('forced_root_block')) {
+        if (!ed.getParam('forced_root_block')) {
             // remove empty paragraphs first
             if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
                 h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
             }
 
-            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2}$/g, '');
-        }*/
+            // convert paragraphs to linebreaks, then remove multiple linebreaks at the end of the block..., eg: <br /><br /></td>
+            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\//gi, function(match, br, tag) {
+                return '</';
+            });
+        }
 
         // convert urls in content
         if (ed.getParam('clipboard_paste_convert_urls', true)) {
@@ -2029,12 +2031,12 @@
         /**
          * Inserts the specified contents at the caret position.
          */
-        _insert: function (h, skip_undo) {
+        _insert: function (html, skip_undo) {
             var ed = this.editor;
 
             // remove empty paragraphs
             if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                h = h.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
+                html = html.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
             }
 
             // process regular expression
@@ -2050,11 +2052,11 @@
                         re = new RegExp(s);
                     }
 
-                    h = h.replace(re, "");
+                    html = html.replace(re, "");
                 });
             }
 
-            ed.execCommand('mceInsertContent', false, h);
+            ed.execCommand('mceInsertContent', false, html);
         }
     });
     // Register plugin
