@@ -88,7 +88,7 @@
      * @param {String} html Html string to trim contents on.
      * @return {String} Html contents that got trimmed.
      */
-    function trimHtml(html) {        
+    function trimHtml(html) {
         function trimSpaces(all, s1, s2) {
 
             // WebKit &nbsp; meant to preserve multiple spaces but instead inserted around all inline tags,
@@ -100,7 +100,7 @@
             return '\u00a0';
         }
 
-        function getInnerFragment(html) {            
+        function getInnerFragment(html) {
             var startFragment = '<!--StartFragment-->';
             var endFragment = '<!--EndFragment-->';
             var startPos = html.indexOf(startFragment);
@@ -376,8 +376,8 @@
                 h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
             }
 
-            // convert paragraphs to linebreaks, then remove multiple linebreaks at the end of the block..., eg: <br /><br /></td>
-            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
+            // convert paragraphs to single linebreaks
+            h = h.replace(/<\/(p|div)>/gi, '<br />').replace(/<(p|div)([^>]*)>/g, '');//.replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
         }
 
         // convert urls in content
@@ -703,7 +703,7 @@
         content = content.replace(/<meta([^>]+)>/, '');
 
         // remove styles
-        content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, function (match, attr, value) {            
+        content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, function (match, attr, value) {
             // remove style tag
             if (settings.clipboard_paste_keep_word_styles !== true) {
                 return "";
@@ -1212,6 +1212,20 @@
             }
         });
 
+        // Remove empty span tags without attributes or content
+        domParser.addNodeFilter('span', function (nodes) {
+            var i = nodes.length,
+            node;
+
+            while (i--) {
+                node = nodes[i];
+
+                if (node.parent && !node.attributes.length) {
+                    node.unwrap();
+                }
+            }
+        });
+
         // Parse into DOM structure
         var rootNode = domParser.parse(content);
 
@@ -1451,7 +1465,7 @@
             }
 
             // Register default handlers
-            self.onPreProcess.add(function (self, o) {                
+            self.onPreProcess.add(function (self, o) {
                 preProcess(self, o);
             });
 
