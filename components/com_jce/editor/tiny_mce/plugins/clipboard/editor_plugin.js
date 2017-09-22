@@ -377,9 +377,7 @@
             }
 
             // convert paragraphs to linebreaks, then remove multiple linebreaks at the end of the block..., eg: <br /><br /></td>
-            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\//gi, function(match, br, tag) {
-                return '</';
-            });
+            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
         }
 
         // convert urls in content
