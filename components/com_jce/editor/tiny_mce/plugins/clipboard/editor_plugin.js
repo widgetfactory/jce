@@ -63,6 +63,47 @@
         return content;
     }
 
+    var parseCssToRules = function (content) {
+        var doc = document.implementation.createHTMLDocument(""),
+            styleElement = document.createElement("style");
+
+        styleElement.textContent = content;
+
+        doc.body.appendChild(styleElement);
+
+        return styleElement.sheet.cssRules;
+    }
+
+    function cleanCssContent(content) {
+        var classes = [],
+            rules = parseCssToRules(content);
+
+        each(rules, function (r) {
+            if (r.selectorText) {
+                each(r.selectorText.split(','), function (v) {
+                    v = v.replace(/^\s*|\s*$|^\s\./g, "");
+
+                    // Is internal or it doesn't contain a class
+                    if (/\.mso/i.test(v) || !/\.[\w\-]+$/.test(v)) {
+                        return;
+                    }
+
+                    var text = r.cssText || "";
+
+                    if (!text) {
+                        return
+                    }
+
+                    if (tinymce.inArray(classes, text) === -1) {
+                        classes.push(text);
+                    }
+                });
+            }
+        });
+
+        return classes.join("");
+    }
+
     function isWordContent(editor, content) {
         // force word cleanup
         if (editor.settings.clipboard_paste_force_cleanup) {
@@ -554,7 +595,7 @@
         // replace paragraphs with linebreaks
         if (!ed.getParam('forced_root_block')) {
             var frag = dom.createFragment('<br /><br />');
-            
+
             each(dom.select('p,div', o.node), function (n) {
                 // if the linebreaks are 
                 if (n.parentNode.lastChild !== n) {
@@ -573,12 +614,15 @@
     function processStyles(editor, node) {
         var dom = editor.dom;
 
-        // Process style information
-        var s = editor.getParam('clipboard_paste_retain_style_properties');
+        // Style to keep
+        var keepStyles = editor.getParam('clipboard_paste_retain_style_properties');
+
+        // Style to remove
+        var removeStyles = editor.getParam('clipboard_paste_remove_style_properties');
 
         // split to array if string
-        if (s && tinymce.is(s, 'string')) {
-            styleProps = tinymce.explode(s);
+        if (keepStyles && tinymce.is(keepStyles, 'string')) {
+            styleProps = tinymce.explode(keepStyles);
 
             each(styleProps, function (style, i) {
                 if (style === "border") {
@@ -586,6 +630,24 @@
                     styleProps = styleProps.concat(borderStyles);
                     return true;
                 }
+            });
+        }
+
+        // split to array if string
+        if (removeStyles && tinymce.is(removeStyles, 'string')) {
+            removeProps = tinymce.explode(removeStyles);
+
+            each(removeProps, function (style, i) {
+                if (style === "border") {
+                    // add expanded border styles
+                    removeProps = removeProps.concat(borderStyles);
+                    return true;
+                }
+            });
+
+            // remove from core styleProps array
+            styleProps = tinymce.grep(styleProps, function (prop) {
+                return tinymce.inArray(removeProps, prop) === -1;
             });
         }
 
@@ -711,7 +773,7 @@
     function WordFilter(editor, content) {
         var settings = editor.settings;
 
-        var retainStyleProperties, validStyles = {};
+        var keepStyles, validStyles = {};
 
         // Chrome...
         content = content.replace(/<meta([^>]+)>/, '');
@@ -724,9 +786,9 @@
             }
 
             // process to remove mso junk
-            var styles = cleanCssContent(value);
+            value = cleanCssContent(value);
 
-            return '<style' + attr + '>' + styles + '</style>';
+            return '<style' + attr + '>' + value + '</style>';
         });
         // Copy paste from Java like Open Office will produce this junk on FF
         content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
@@ -739,10 +801,10 @@
         content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
 
         // get retain styles or a subset to allow for text color and table borders
-        retainStyleProperties = settings.clipboard_paste_retain_style_properties;
+        keepStyles = settings.clipboard_paste_retain_style_properties;
 
-        if (retainStyleProperties) {
-            each(retainStyleProperties.split(/[, ]/), function (style) {
+        if (keepStyles) {
+            each(keepStyles.split(/[, ]/), function (style) {
                 // add all border styles if "border" is set
                 if (style === "border") {
                     each(borderStyles, function (name) {
@@ -977,8 +1039,8 @@
 
                     case "font-weight":
                     case "font-style":
-                        if (value != "normal") {
-                            outputStyles[name] = value;
+                        if (value == "normal") {
+                            value = "";
                         }
                         return;
 
@@ -1229,7 +1291,7 @@
         // Remove empty span tags without attributes or content
         domParser.addNodeFilter('span', function (nodes) {
             var i = nodes.length,
-            node;
+                node;
 
             while (i--) {
                 node = nodes[i];
@@ -1244,11 +1306,11 @@
         if (editor.getParam('clipboard_paste_remove_paragraph_in_table_cell')) {
             domParser.addNodeFilter('td', function (nodes) {
                 var i = nodes.length,
-                node, firstChild, lastChild;
-    
+                    node, firstChild, lastChild;
+
                 while (i--) {
                     node = nodes[i], firstChild = node.firstChild, lastChild = node.lastChild;
-    
+
                     if (firstChild.name === "p" && firstChild === lastChild) {
                         firstChild.unwrap();
                     }
