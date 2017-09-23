@@ -1421,8 +1421,8 @@
      * @param {ClipboardEvent} clipboardEvent Event fired on paste.
      * @return {Object} Object with mime types and data for those mime types.
      */
-    function getClipboardContent(clipboardEvent) {
-        var content = getDataTransferItems(clipboardEvent.clipboardData || ed.getDoc().dataTransfer);
+    function getClipboardContent(editor, clipboardEvent) {
+        var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
         // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
         if (navigator.userAgent.indexOf(' Edge/') !== -1) {
@@ -1921,7 +1921,7 @@
 
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
-                var clipboardContent = getClipboardContent(e);
+                var clipboardContent = getClipboardContent(ed, e);
 
                 // use plain text
                 if (isPlainTextPaste(clipboardContent)) {
