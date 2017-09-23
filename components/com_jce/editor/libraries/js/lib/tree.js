@@ -496,7 +496,7 @@
          * @return void
          */
         scrollTo: function (id) {
-            var node = this._findNode(id);
+            var el = this.element, node = this._findNode(id);
 
             if ($(node).length) {
                 var padding = parseInt($(node).css('padding-left')) + parseInt($(this.element).css('padding-left'));
@@ -505,13 +505,24 @@
                 var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
 
                 // remove active states
-                $(this.element).find('.uk-tree-active').removeClass('uk-tree-active');
+                $(el).find('.uk-tree-active').removeClass('uk-tree-active');
 
-                $(this.element).animate({
+                // list of events to stop scoll animation on
+                var evts = 'click.tree mousedown.tree wheel.tree mousewheel.tree keyup.tree touchmove.tree';
+
+                $(el).on(evts, function() {
+                    $(el).stop();
+                });
+
+                function off() {
+                    $(el).off(evts);
+                }
+
+                $(el).animate({
                     scrollLeft: Math.round(left),
                 }, 500).animate({
                     scrollTop: Math.round(top)
-                }, 1500);
+                }, 1500, off);
 
                 // mark as active
                 $(node).addClass('uk-tree-active');
