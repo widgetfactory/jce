@@ -24,6 +24,9 @@
         this._init();
     };
 
+    // list of events to stop scoll animation on
+    var scrollEvents = 'click.scroll mousedown.scroll wheel.scroll mousewheel.scroll keyup.scroll touchmove.scroll';
+
     Tree.prototype = {
         /**
          * Shortcut function for event triggering
@@ -43,6 +46,11 @@
 
             this._trigger('init', function () {
                 self.nodeEvents();
+            });
+
+            // cancel scrolling animation
+            $(this.element).on(scrollEvents, function() {
+                $(this).stop();
             });
         },
         /**
@@ -507,22 +515,13 @@
                 // remove active states
                 $(el).find('.uk-tree-active').removeClass('uk-tree-active');
 
-                // list of events to stop scoll animation on
-                var evts = 'click.tree mousedown.tree wheel.tree mousewheel.tree keyup.tree touchmove.tree';
-
-                $(el).on(evts, function() {
-                    $(el).stop();
-                });
-
-                function off() {
-                    $(el).off(evts);
-                }
-
                 $(el).animate({
                     scrollLeft: Math.round(left),
                 }, 500).animate({
                     scrollTop: Math.round(top)
-                }, 1500, off);
+                }, 1500, function() {
+                    $(this).off(scrollEvents);
+                });
 
                 // mark as active
                 $(node).addClass('uk-tree-active');
