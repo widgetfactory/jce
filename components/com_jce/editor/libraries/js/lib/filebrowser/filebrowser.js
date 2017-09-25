@@ -57,6 +57,9 @@
         return mimeTypes[ext] || ext;
     }
 
+    // list of events to stop scoll animation on
+    var scrollEvents = 'click.scroll mousedown.scroll wheel.scroll mousewheel.scroll keyup.scroll touchmove.scroll';
+
     var FileBrowser = function (element, options) {
         var self = this;
 
@@ -485,6 +488,11 @@
                 }, 0);
             }
 
+            // set scrollEvents cancel
+            $('#browser-list').on(scrollEvents, function() {
+                $(this).stop();
+            });
+
             // setup directory
             this._setupDir();
 
@@ -626,8 +634,8 @@
                     path = Wf.URL.toRelative(path);
                 }
 
-                // remove leading slash
-                path = path.replace(/^[\/\\]+/, '');
+                // remove slashes
+                path = this._trimPath(path);
 
                 // get dir if file (relative to site url)
                 if (/\.([a-z0-9]{2,}$)/i.test(path)) {
@@ -665,8 +673,8 @@
                 src = src.substr(0, src.indexOf('&'));
             }
 
-            // remove leading slash
-            src = src.replace(/^[\/\\]+/, '');
+            // remove slashes
+            src = this._trimPath(src);
 
             // invalid src or not a local file resource
             if (!this._validatePath(src)) {
@@ -683,7 +691,7 @@
             }
 
             // store directory
-            this._dir = Wf.String.encodeURI(dir);
+            this._setDir(Wf.String.encodeURI(dir));
 
             // make sure its relative
             if (src && /:\/\//.test(src)) {
@@ -844,6 +852,8 @@
         },
 
         _trimPath: function (path) {
+            // convert to string
+            path = '' + path;
             return path.replace(/^\//, '').replace(/\/$/, '');
         },
 
@@ -980,7 +990,7 @@
             });
 
             // trim path
-            dir = $.trim(dir.replace(/^\//, ''));
+            dir = $.trim(this._trimPath(dir));
 
             // add folder count
             var $count = $('<li class="count">( ' + this._foldercount + ' ' + this._translate('folders', 'folders') + ', ' + this._filecount + ' ' + this._translate('files', 'files') + ')</li>').appendTo($pathway);
@@ -1020,6 +1030,7 @@
             if (this._dir.length < 2) {
                 return this._dir;
             }
+
             var dirs = this._dir.split('/');
             var s = '';
 
@@ -1055,8 +1066,8 @@
          * Set the current directory
          * @param {String} dir
          */
-        _setDir: function (dir) {
-            this._dir = dir;
+        _setDir: function (dir) {            
+            this._dir = '' + dir;
         },
         /**
          * Get the base directory
@@ -1076,8 +1087,8 @@
         _isRoot: function () {
             var s = this._dir;
 
-            // remove leading slash
-            s = s.replace(/^[\\\/]/, '');
+            // remove slashes
+            s = this._trimPath(s);
 
             return s === '';
         },
@@ -1167,6 +1178,8 @@
          * @param {Object} The folder/file JSON object
          */
         _loadList: function (o) {
+            var dir = '';
+            
             $('input[name="refresh"]', 'form').remove();
 
             // data error...
@@ -1204,9 +1217,13 @@
             }
 
             if (o.folders.length) {
-                this._dir = Wf.String.encodeURI(Wf.String.dirname(o.folders[0].id) || '/', true);
+                dir = Wf.String.encodeURI(Wf.String.dirname(o.folders[0].id) || '/', true);
             } else if (o.files.length) {
-                this._dir = Wf.String.encodeURI(Wf.String.dirname(o.files[0].id) || '/', true);
+                dir = Wf.String.encodeURI(Wf.String.dirname(o.files[0].id) || '/', true);
+            }
+
+            if (dir) {
+                this._setDir(dir);
             }
 
             // Add folder-up button
@@ -1290,8 +1307,9 @@
         _execute: function (name) {
             var self = this;
             var dir = this._dir;
-            // trim dir - remove leading /
-            dir = dir.replace(/^[\/\\]+/, '');
+
+            // remove slashes
+            dir = this._trimPath(dir);
 
             var list = this._serializeSelectedItems();
 
@@ -2293,7 +2311,9 @@
 
                 $('#browser-list').animate({
                     scrollTop: Math.round(top)
-                }, 1500);
+                }, 1500, function() {
+                    $(this).off(scrollEvents);
+                });
             }
 
             // Select items and display properties
