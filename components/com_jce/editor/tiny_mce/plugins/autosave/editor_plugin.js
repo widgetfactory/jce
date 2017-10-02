@@ -23,7 +23,7 @@
         return;
     }
 
-    tinymce._beforeUnloadHandler = function() {
+    tinymce._beforeUnloadHandler = function(e) {
         var msg;
 
         tinymce.each(tinymce.editors, function(editor) {
@@ -35,6 +35,10 @@
             // Setup a return message if the editor is dirty
             if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload", true)) {
                 msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
+                // hide joomla loader
+                if (typeof Joomla !== "undefined" && Joomla.loadingLayer) {
+                    Joomla.loadingLayer('hide');
+                }
             }
         });
 
