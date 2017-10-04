@@ -525,9 +525,9 @@
         each(dom.select('img', o.node), function (el) {
             var s = dom.getAttrib(el, 'src');
 
-            // remove img element if blank, local file url or base64 encoded
+            // remove or processs for upload img element if blank, local file url or base64 encoded
             if (!s || imgRe.test(s)) {
-                if (ed.getParam('clipboard_paste_upload_images', true) && canUpload) {
+                if (ed.getParam('clipboard_paste_upload_images') && canUpload) {
                     // add marker
                     ed.dom.setAttrib(el, 'data-mce-upload-marker', '1');
                 } else {
