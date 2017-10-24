@@ -148,7 +148,7 @@ class WFStyleselectPluginConfig
                 }
 
                 if (!empty($styles)) {
-                    $settings['style_formats'] = json_encode($styles, JSON_UNESCAPED_SLASHES, JSON_NUMERIC_CHECK);
+                    $settings['style_formats'] = json_encode($styles, JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
                 }
             }
         }
