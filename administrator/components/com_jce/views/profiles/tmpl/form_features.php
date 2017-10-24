@@ -129,6 +129,13 @@ if (strpos($theme, '.') === false) {
                                         endif;
                                     endif;
                                 endforeach;
+                                // Add 5 spacer items to the first row
+                                if ($i === 1) :
+                                    for ($x = 1; $x <= 5; ++$x) :
+                                        echo '<div class="mceToolBarItem sortableRowItem spacer uk-sortable-handle" data-name="spacer"><div class="mceSeparator"></div></div>';
+                                    endfor;    
+                                endif;
+
                                 ?>
                               </div>
                               <div class="sortableRowHandle"><span class="icon-menu"></span></div>
