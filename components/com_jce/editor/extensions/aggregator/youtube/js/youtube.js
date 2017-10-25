@@ -182,7 +182,7 @@ WFAggregator.add('youtube', {
 
         data = $.extend(data, query);
 
-        // protocol / scheme relative url
+        // https url
         src = src.replace(/^(http:)?\/\//, 'https://');
 
         if (src.indexOf('youtube-nocookie') !== -1) {
