@@ -98,7 +98,7 @@ function com_uninstall()
 
     // Remove profiles if empty
     $query = $db->getQuery();
-    $query = 'SELECT COUNT(id) FROM '.$table;
+    $query = 'SELECT COUNT(id) FROM #__wf_profiles';
     $db->setQuery($query);
 
     if ($db->loadResult() === 0) {
