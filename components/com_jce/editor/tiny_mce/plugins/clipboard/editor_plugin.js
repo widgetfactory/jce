@@ -401,11 +401,11 @@
 
         // Remove all spans (and font, u, strike if inline_styles = true as these would get converted to spans later)
         if (ed.getParam('clipboard_paste_remove_spans')) {
-            h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
+            /*h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
 
             if (ed.settings.convert_fonts_to_spans) {
                 h = h.replace(/<\/?(font)[^>]*>/gi, '');
-            }
+            }*/
 
             h = h.replace(/<\/?(span)[^>]*>/gi, '');
         }
