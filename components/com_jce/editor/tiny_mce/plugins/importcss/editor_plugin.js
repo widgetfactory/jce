@@ -165,8 +165,8 @@
 
             ed.onNodeChange.add(function () {
                 var styleselect = ed.controlManager.get('styleselect');
-
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheet', true)) {
+                
+                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
                     return self.populateStyleSelect();
                 }
             });
