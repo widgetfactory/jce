@@ -11,7 +11,7 @@
 (function() {
 	function findParentLayer(node) {
 		do {
-			if (node.className && node.className.indexOf('mceItemLayer') != -1) {
+			if (node.className && node.className.indexOf('mce-item-layer') != -1) {
 				return node;
 			}
 		} while (node = node.parentNode);
@@ -124,11 +124,11 @@
 			tinymce.each(dom.select('div,p', e), function(e) {
 				if (/^(absolute|relative|fixed)$/i.test(e.style.position)) {
 					if (s)
-						dom.addClass(e, 'mceItemVisualAid');
+						dom.addClass(e, 'mce-item-visualaid');
 					else
-						dom.removeClass(e, 'mceItemVisualAid');
+						dom.removeClass(e, 'mce-item-visualaid');
 
-					dom.addClass(e, 'mceItemLayer');
+					dom.addClass(e, 'mce-item-layer');
 				}
 			});
 		},
@@ -206,7 +206,7 @@
 					width : 100,
 					height : 100
 				},
-				'class' : 'mceItemVisualAid mceItemLayer'
+				'class' : 'mce-item-visualaid mce-item-layer'
 			}, ed.selection.getContent() || ed.getLang('layer.content'));
 			
 			ed.dom.setAttrib(le, 'data-mce-style', '');
@@ -232,8 +232,8 @@
 						height : ''
 					});
 
-					ed.dom.removeClass(le, 'mceItemVisualAid');
-					ed.dom.removeClass(le, 'mceItemLayer');
+					ed.dom.removeClass(le, 'mce-item-visualaid');
+					ed.dom.removeClass(le, 'mce-item-layer');
 				} else {
 					if (le.style.left == "")
 						le.style.left = 20 + 'px';

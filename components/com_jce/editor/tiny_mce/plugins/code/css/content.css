@@ -1,7 +1,7 @@
-.mceItemPhp,
+.mce-item-php,
 .mcePhp,
-.mceItemScript,
-.mceItemStyle {
+.mce-item-script,
+.mce-item-style {
     display: inline-block;
     width: 20px;
     height: 22px;
@@ -23,23 +23,23 @@
     border: 0 none;
 }
 
-.mceItemPhp,
+.mce-item-php,
 .mcePhp {
     background-position: 0 -100px;
 }
 
-.mceItemScript {
+.mce-item-script {
     background-position: 0 -220px;
 }
 
-.mceItemStyle {
+.mce-item-style {
     background-position: 0 -420px;
 }
 
-.mceItemScript.mceItemSelected,
-.mceItemStyle.mceItemSelected,
-.mceItemPhp.mceItemSelected,
-.mcePhp.mceItemSelected {
+.mce-item-script.mce-item-selected,
+.mce-item-style.mce-item-selected,
+.mce-item-php.mce-item-selected,
+.mcePhp.mce-item-selected {
     background-color: #b4d4ff;
     border: 0 none;
 }

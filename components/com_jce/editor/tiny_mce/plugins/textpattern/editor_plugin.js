@@ -179,7 +179,7 @@
                     args['width'] = 320;
                     args['height'] = 240;
                     args['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-                    args['class'] = 'mceItemUploadMarker';
+                    args['class'] = 'mce-item-uploadmarker';
                 }
 
                 var html = dom.createHTML('img', args);

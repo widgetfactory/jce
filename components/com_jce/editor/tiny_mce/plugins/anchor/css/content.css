@@ -1,4 +1,4 @@
-a.mceItemAnchor {
+a.mce-item-anchor {
     width:11px !important; 
     height:11px !important; 
     background:url(../img/anchor.gif) no-repeat 2px center; 
@@ -17,9 +17,9 @@ a.mceItemAnchor {
     -moz-user-select:all; 
     -moz-user-modify:read-only; 
 }
-a.mceItemAnchor::selection {
+a.mce-item-anchor::selection {
     background-color: #b4d4ff;
 }
-.mceItemAnchor.mceItemSelected {
+.mce-item-anchor.mce-item-selected {
     background-color: #b4d4ff;
 }

@@ -26,14 +26,14 @@
             this.url = url;
 
             function isCode(n) {
-                return ed.dom.is(n, '.mceItemScript, .mceItemStyle, .mceItemPhp, .mcePhp');
+                return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp');
             }
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
-                ed.dom.removeClass(ed.dom.select('.mceItemSelected'), 'mceItemSelected');
+                ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
 
                 if (isCode(n)) {
-                    ed.dom.addClass(n, 'mceItemSelected');
+                    ed.dom.addClass(n, 'mce-item-selected');
                 }
             });
 
@@ -72,15 +72,15 @@
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         var node = nodes[i];
 
-                        if (node.name == 'span' && /mceItemScript/.test(node.attr('class'))) {
+                        if (node.name == 'span' && /mce-item-script/.test(node.attr('class'))) {
                             self._buildScript(node);
                         }
 
-                        if (node.name == 'span' && /mceItemStyle/.test(node.attr('class'))) {
+                        if (node.name == 'span' && /mce-item-style/.test(node.attr('class'))) {
                             self._buildStyle(node);
                         }
 
-                        /*if (/mceItemCurlyCode/.test(node.attr('class'))) {
+                        /*if (/mce-item-curlycode/.test(node.attr('class'))) {
                             node.unwrap();
                         }*/
 
@@ -97,11 +97,11 @@
                     ed.theme.onResolveName.add(function (theme, o) {
                         var cls = o.node.className;
 
-                        if (o.name === 'span' && /mceItemScript/.test(cls)) {
+                        if (o.name === 'span' && /mce-item-script/.test(cls)) {
                             o.name = 'script';
                         }
 
-                        if (o.name === 'span' && /mceItemStyle/.test(cls)) {
+                        if (o.name === 'span' && /mce-item-style/.test(cls)) {
                             o.name = 'style';
                         }
 
@@ -229,7 +229,7 @@
                 s = ed.selection,
                 n = s.getNode();
 
-            if (ed.dom.is(n, '.mceItemScript, .mceItemStyle, .mceItemPhp, .mcePhp')) {
+            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp')) {
                 ed.undoManager.add();
 
                 ed.dom.remove(n);
@@ -241,10 +241,10 @@
         },
         _convertCurlyCode: function (content) {
             // open / close type code eg: {youtube}url{/youtube}
-            content = content.replace(/\{([\w]+)\b([^\}]*)\}([\s\S]+?)\{\/\1\}/, '<div class="mceItemCurlyCode" data-mce-type="code-item">{$1$2}$3{/$1}</div>');
+            content = content.replace(/\{([\w]+)\b([^\}]*)\}([\s\S]+?)\{\/\1\}/, '<div class="mce-item-curlycode" data-mce-type="code-item">{$1$2}$3{/$1}</div>');
 
             // single tag code type eg: {code}
-            content = content.replace(/\{([^\}]+)\}/, '<span class="mceItemCurlyCode" data-mce-type="code-item">{$1}</span>');
+            content = content.replace(/\{([^\}]+)\}/, '<span class="mce-item-curlycode" data-mce-type="code-item">{$1}</span>');
         },
         _buildScript: function (n) {
             var self = this,

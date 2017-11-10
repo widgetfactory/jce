@@ -82,10 +82,10 @@
 
                 cm.setActive('hr', s);
 
-                ed.dom.removeClass(ed.dom.select('hr.mceItemSelected:not(.mceItemPageBreak,.mceItemReadMore)'), 'mceItemSelected');
+                ed.dom.removeClass(ed.dom.select('hr.mce-item-selected:not(.mce-item-pagebreak,.mce-item-readmore)'), 'mce-item-selected');
 
                 if (s) {
-                    ed.dom.addClass(n, 'mceItemSelected');
+                    ed.dom.addClass(n, 'mce-item-selected');
                 }
             });
 

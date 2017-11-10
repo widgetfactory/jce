@@ -31,7 +31,7 @@
             }
 
             function isAnchor(n) {
-            	return ed.dom.hasClass(n, 'mceItemAnchor');
+            	return ed.dom.hasClass(n, 'mce-item-anchor');
             }
 
             // Register commands

@@ -1,4 +1,4 @@
-.mceItemReadMore, .mceItemPageBreak {
+.mce-item-readmore, .mce-item-pagebreak {
     display: inline-block;
     padding: 0 2px;
     margin: 0;
@@ -14,19 +14,19 @@
     word-spacing: normal;
     cursor: pointer;
 }
-.mceItemReadMore {
+.mce-item-readmore {
     background-image: url(../img/readmore.png);
     clear: both;
 }
-.mceItemPageBreak {
+.mce-item-pagebreak {
     background-image: url(../img/pagebreak.png);
     clear: both;
 }
-.mceItemReadMore.mceItemSelected, .mceItemPageBreak.mceItemSelected {
+.mce-item-readmore.mce-item-selected, .mce-item-pagebreak.mce-item-selected {
     background-color: #d9edf7;
     border-color: #31708f;
 }
-.mceItemPageBreak:after {
+.mce-item-pagebreak:after {
   content: attr(title);
   color: #444;
   font-size: 12px;

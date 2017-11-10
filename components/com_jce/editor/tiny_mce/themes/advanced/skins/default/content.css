@@ -71,11 +71,11 @@ h6 {
     font-size: .75em
 }
 
-.mceItemTable,
-.mceItemTable td,
-.mceItemTable th,
-.mceItemTable caption,
-.mceItemVisualAid {
+.mce-item-table,
+.mce-item-table td,
+.mce-item-table th,
+.mce-item-table caption,
+.mce-item-visualaid {
     border: 1px dashed #BBB;
     border-collapse: separate;
     border-spacing: 1px;
@@ -100,7 +100,7 @@ img {
 table,
 img,
 hr,
-.mceItemAnchor {
+.mce-item-anchor {
     cursor: default
 }
 

@@ -292,7 +292,7 @@
                 r = se.getRng(true);
 
             each(dom.select('span').reverse(), function(n) {
-                if (n && (dom.hasClass(n, 'mceItemHiddenSpellWord') || dom.hasClass(n, 'mceItemHidden'))) {
+                if (n && (dom.hasClass(n, 'mce-item-hiddenspellword') || dom.hasClass(n, 'mce-item-hidden'))) {
                     if (!w || dom.decode(n.innerHTML) == w)
                         dom.remove(n, 1);
                 }
@@ -327,7 +327,7 @@
                     v = dom.encode(v);
                     // Create container element
                     elem = dom.create('span', {
-                        'class': 'mceItemHidden'
+                        'class': 'mce-item-hidden'
                     });
 
                     // Following code fixes IE issues by creating text nodes
@@ -352,7 +352,7 @@
                             v = v.substring(pos + 11);
                             // Add span element for the word
                             elem.appendChild(dom.create('span', {
-                                'class': 'mceItemHiddenSpellWord'
+                                'class': 'mce-item-hiddenspellword'
                             }, txt));
                         }
                         // Add text node for the rest of the content
@@ -362,7 +362,7 @@
                         }
                     } else {
                         // Other browsers preserve whitespace characters on innerHTML usage
-                        elem.innerHTML = v.replace(rx, '$1<span class="mceItemHiddenSpellWord">$2</span>');
+                        elem.innerHTML = v.replace(rx, '$1<span class="mce-item-hiddenspellword">$2</span>');
                     }
 
                     // Finally, replace the node with the container
@@ -389,7 +389,7 @@
                 t._menu = m;
             }
 
-            if (dom.hasClass(wordSpan, 'mceItemHiddenSpellWord')) {
+            if (dom.hasClass(wordSpan, 'mce-item-hiddenspellword')) {
                 m.removeAll();
                 m.add({
                     title: 'spellchecker.wait',
@@ -501,7 +501,7 @@
                 o;
 
             each(dom.select('span'), function(n) {
-                if (n && dom.hasClass(n, 'mceItemHiddenSpellWord')) {
+                if (n && dom.hasClass(n, 'mce-item-hiddenspellword')) {
                     o = true;
                     return false;
                 }

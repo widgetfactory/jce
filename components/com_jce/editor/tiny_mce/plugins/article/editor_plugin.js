@@ -24,11 +24,11 @@
             t.url = url;
 
             function isReadMore(n) {
-                return ed.dom.is(n, 'hr.mceItemReadMore');
+                return ed.dom.is(n, 'hr.mce-item-readmore');
             };
 
             function isPageBreak(n) {
-                return ed.dom.is(n, 'hr.mceItemPageBreak');
+                return ed.dom.is(n, 'hr.mce-item-pagebreak');
             };
 
             // Register commands
@@ -80,11 +80,11 @@
                         var n = o.node,
                             v;
 
-                        if (o.name === 'hr' && /mceItemPageBreak/.test(n.className)) {
+                        if (o.name === 'hr' && /mce-item-pagebreak/.test(n.className)) {
                             v = 'pagebreak';
                         }
 
-                        if (o.name === 'hr' && /mceItemReadMore/.test(n.className)) {
+                        if (o.name === 'hr' && /mce-item-readmore/.test(n.className)) {
                             v = 'readmore';
                         }
 
@@ -100,15 +100,15 @@
                 cm.setActive('readmore', isReadMore(n));
                 cm.setActive('pagebreak', isPageBreak(n));
 
-                ed.dom.removeClass(ed.dom.select('hr.mceItemPageBreak.mceItemSelected, hr.mceItemReadMore.mceItemSelected'), 'mceItemSelected');
+                ed.dom.removeClass(ed.dom.select('hr.mce-item-pagebreak.mce-item-selected, hr.mce-item-readmore.mce-item-selected'), 'mce-item-selected');
 
                 if (isPageBreak(n) || isReadMore(n)) {
-                    ed.dom.addClass(n, 'mceItemSelected');
+                    ed.dom.addClass(n, 'mce-item-selected');
                 }
             });
 
             function _cancelResize() {
-                each(ed.dom.select('hr.mceItemPageBreak, hr.mceItemReadMore'), function(n) {
+                each(ed.dom.select('hr.mce-item-pagebreak, hr.mce-item-readmore'), function(n) {
                     n.onresizestart = function() {
                         return false;
                     };
@@ -140,7 +140,7 @@
                     var s = ed.selection,
                         n = s.getNode();
 
-                    if (ed.dom.is(n, 'hr.mceItemPageBreak, hr.mceItemReadMore')) {
+                    if (ed.dom.is(n, 'hr.mce-item-pagebreak, hr.mce-item-readmore')) {
                         ed.dom.remove(n);
 
                         e.preventDefault();
@@ -157,7 +157,7 @@
                             cls = node.attr('class') || '';
 
                         if (id == 'system-readmore' || /system-pagebreak/.test(cls)) {
-                            var cls = /system-pagebreak/.test(cls) ? 'mceItemPageBreak' : 'mceItemReadMore';
+                            var cls = /system-pagebreak/.test(cls) ? 'mce-item-pagebreak' : 'mce-item-readmore';
 
                             node.attr('class', cls);
 
@@ -173,7 +173,7 @@
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i];
                         if (/mceItem(PageBreak|ReadMore)/.test(node.attr('class') || '')) {
-                            if (/mceItemPageBreak/.test(node.attr('class'))) {
+                            if (/mce-item-pagebreak/.test(node.attr('class'))) {
                                 node.attr('class', 'system-pagebreak');
                             } else {
                                 node.attr('class', null);
@@ -199,7 +199,7 @@
                 n = ed.selection.getNode(),
                 o;
 
-            if (ed.dom.is(n, 'hr.mceItemPageBreak')) {
+            if (ed.dom.is(n, 'hr.mce-item-pagebreak')) {
                 o = {
                     title: ed.dom.getAttrib(n, 'title', ''),
                     alt: ed.dom.getAttrib(n, 'data-mce-alt', '')
@@ -236,7 +236,7 @@
             n = dom.getParent(n, blocks, 'BODY') || n;
 
             tinymce.extend(args, {
-                'class': s == 'pagebreak' ? 'mceItemPageBreak' : 'mceItemReadMore',
+                'class': s == 'pagebreak' ? 'mce-item-pagebreak' : 'mce-item-readmore',
                 'data-mce-alt': args.alt || null
             });
 

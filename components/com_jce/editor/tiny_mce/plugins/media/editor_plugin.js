@@ -8,8 +8,11 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
-    var each = tinymce.each, extend = tinymce.extend, JSON = tinymce.util.JSON, Event = tinymce.dom.Event;
+(function () {
+    var each = tinymce.each,
+        extend = tinymce.extend,
+        JSON = tinymce.util.JSON,
+        Event = tinymce.dom.Event;
     var Node = tinymce.html.Node;
 
     var Styles = new tinymce.html.Styles();
@@ -91,8 +94,9 @@
     };
 
     tinymce.create('tinymce.plugins.MediaPlugin', {
-        init: function(ed, url) {
-            var self = this, lookup = {};
+        init: function (ed, url) {
+            var self = this,
+                lookup = {};
 
             var cbase = {
                 // Type, clsid, mime types, codebase
@@ -113,15 +117,16 @@
                 }
             };
 
-            each(cbase, function(v, k) {
+            each(cbase, function (v, k) {
                 extend(mediaTypes[k], v);
             });
 
             this.mimes = {};
 
             // Parses the default mime types string into a mimes lookup map
-            (function(data) {
-                var items = data.split(/,/), i, y, ext;
+            (function (data) {
+                var items = data.split(/,/),
+                    i, y, ext;
 
                 for (i = 0; i < items.length; i += 2) {
                     ext = items[i + 1].split(/ /);
@@ -131,23 +136,23 @@
                     }
                 }
             })(
-                    "application/x-director,dcr," +
-                    "video/divx,divx," +
-                    "application/pdf,pdf," +
-                    "application/x-shockwave-flash,swf swfl," +
-                    "audio/mpeg,mpga mpega mp2 mp3," +
-                    "audio/ogg,ogg spx oga," +
-                    "audio/x-wav,wav," +
-                    "video/mpeg,mpeg mpg mpe," +
-                    "video/mp4,mp4 m4v," +
-                    "video/ogg,ogg ogv," +
-                    "video/webm,webm," +
-                    "video/quicktime,qt mov," +
-                    "video/x-flv,flv," +
-                    "video/vnd.rn-realvideo,rv", +
-                    "video/3gpp,3gp," +
-                    "video/x-matroska,mkv"
-                    );
+                "application/x-director,dcr," +
+                "video/divx,divx," +
+                "application/pdf,pdf," +
+                "application/x-shockwave-flash,swf swfl," +
+                "audio/mpeg,mpga mpega mp2 mp3," +
+                "audio/ogg,ogg spx oga," +
+                "audio/x-wav,wav," +
+                "video/mpeg,mpeg mpg mpe," +
+                "video/mp4,mp4 m4v," +
+                "video/ogg,ogg ogv," +
+                "video/webm,webm," +
+                "video/quicktime,qt mov," +
+                "video/x-flv,flv," +
+                "video/vnd.rn-realvideo,rv", +
+                "video/3gpp,3gp," +
+                "video/x-matroska,mkv"
+            );
 
             self.editor = ed;
             self.url = url;
@@ -155,7 +160,7 @@
             // Parse media types into a lookup table
             var scriptRegExp = '';
 
-            each(mediaTypes, function(v, k) {
+            each(mediaTypes, function (v, k) {
                 v.name = k;
 
                 if (v.classid) {
@@ -165,21 +170,21 @@
                     lookup[v.type] = v;
                 }
 
-                lookup['mceItem' + k] = v;
+                lookup['mce-item-' + k] = v;
                 lookup[k.toLowerCase()] = v;
             });
 
             self.lookup = lookup;
 
             function isMediaNode(n) {
-                return n && (ed.dom.is(n, '.mceItemMedia') || ed.dom.getParent(n, '.mceItemMedia') !== null);
+                return n && (ed.dom.is(n, '.mce-item-media') || ed.dom.getParent(n, '.mce-item-media') !== null);
             }
 
             function isMediaClass(cls) {
-                return cls && /mceItem(Media|Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|Silverlight|Audio|Video|Generic|Iframe)/.test(cls);
+                return cls && /mce-item-(media|flash|shockwave|windowsmedia|quicktime|realmedia|divx|silverlight|audio|video|generic|iframe)/.test(cls);
             }
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 var invalid = ed.settings.invalid_elements;
 
                 // keep this for legacy
@@ -196,8 +201,9 @@
                 invalid = tinymce.explode(invalid, ',');
 
                 // Convert video elements to image placeholder
-                ed.parser.addNodeFilter('object,embed,video,audio,script,iframe', function(nodes) {
-                    var i = nodes.length, node;
+                ed.parser.addNodeFilter('object,embed,video,audio,script,iframe', function (nodes) {
+                    var i = nodes.length,
+                        node;
 
                     while (i--) {
                         node = nodes[i];
@@ -213,8 +219,9 @@
                 });
 
                 // Convert placeholders to video elements (legacy conversion)
-                ed.serializer.addNodeFilter('img,span', function(nodes, name, args) {
-                    var i = nodes.length, node, cls;
+                ed.serializer.addNodeFilter('img,span', function (nodes, name, args) {
+                    var i = nodes.length,
+                        node, cls;
 
                     while (i--) {
                         node = nodes[i];
@@ -227,18 +234,18 @@
                 });
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 // Display "media" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
-                    ed.theme.onResolveName.add(function(theme, o) {
+                    ed.theme.onResolveName.add(function (theme, o) {
                         var n = o.node;
 
                         if (n) {
-                            if (n.className.indexOf('mceItemMedia') !== -1) {
+                            if (n.className.indexOf('mce-item-media') !== -1) {
                                 o.name = 'media';
                             }
 
-                            if (n.className.indexOf('mceItemIframe') !== -1) {
+                            if (n.className.indexOf('mce-item-iframe') !== -1) {
                                 o.name = 'iframe';
                             }
                         }
@@ -250,15 +257,15 @@
                 }
             });
 
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function (ed, cm, n) {
                 var s = isMediaNode(n);
 
-                ed.dom.removeClass(ed.dom.select('.mceItemSelected.mceItemPreview'), 'mceItemSelected');
+                ed.dom.removeClass(ed.dom.select('.mce-item-selected.mce-item-preview'), 'mce-item-selected');
 
                 if (s) {
-                    var p = ed.dom.getParent(n, '.mceItemMedia.mceItemPreview');
+                    var p = ed.dom.getParent(n, '.mce-item-media.mce-item-preview');
 
-                    ed.dom.addClass(p, 'mceItemSelected');
+                    ed.dom.addClass(p, 'mce-item-selected');
 
                     ed.selection.select(p);
 
@@ -272,17 +279,17 @@
                 }
             });
 
-            ed.onBeforeSetContent.add(function(ed, o) {
+            ed.onBeforeSetContent.add(function (ed, o) {
                 var h = o.content;
 
                 // process comments within media elements
-                h = h.replace(/<(audio|embed|object|video|iframe)([^>]*?)>([\w\W]+?)<\/\1>/gi, function(a, b, c, d) {
+                h = h.replace(/<(audio|embed|object|video|iframe)([^>]*?)>([\w\W]+?)<\/\1>/gi, function (a, b, c, d) {
 
                     // convert conditional comments to simpler format
                     d = d.replace(/<!--\[if([^\]]*)\]>(<!)?-->/gi, '<![if$1]>');
 
                     // convert conditional comments
-                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function(a, b) {
+                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function (a, b) {
                         return '<comment data-comment-condition="[if' + b + ']">';
                     });
 
@@ -296,7 +303,7 @@
             });
 
         },
-        getInfo: function() {
+        getInfo: function () {
             return {
                 longname: 'Media',
                 author: 'Ryan Demmer',
@@ -309,13 +316,18 @@
         /**
          * Convert a URL
          */
-        convertUrl: function(url, force_absolute) {
-            var self = this, ed = self.editor, settings = ed.settings, converter = settings.url_converter, scope = settings.url_converter_scope || self;
+        convertUrl: function (url, force_absolute) {
+            var self = this,
+                ed = self.editor,
+                settings = ed.settings,
+                converter = settings.url_converter,
+                scope = settings.url_converter_scope || self;
 
             if (!url)
                 return url;
 
-            var parts, query = '', n = url.indexOf('?');
+            var parts, query = '',
+                n = url.indexOf('?');
 
             if (n === -1) {
                 url = url.replace(/&amp;/g, '&');
@@ -341,8 +353,11 @@
          * @param o Object
          * @return o Object
          */
-        createTemplate: function(n, o) {
-            var self = this, ed = this.editor, dom = ed.dom, nn, hc, cn, html, v;
+        createTemplate: function (n, o) {
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                nn, hc, cn, html, v;
 
             hc = n.firstChild;
             nn = n.name;
@@ -460,8 +475,13 @@
          * @param cl Classname
          * @return img Image Element
          */
-        toImage: function(n) {
-            var self = this, ed = this.editor, type, name, o = {}, data = {}, classid = '', styles, matches, placeholder;
+        toImage: function (n) {
+            var self = this,
+                ed = this.editor,
+                type, name, o = {},
+                data = {},
+                classid = '',
+                styles, matches, placeholder;
 
             // If node isn't in document or is child of media node
             if (!n.parent || /^(object|audio|video|embed|iframe)$/.test(n.parent.name)) {
@@ -493,8 +513,8 @@
                 var style = Styles.parse(n.attr('style'));
 
                 // get width an height
-                var w = n.attr('width')     || style.width  || '';
-                var h = n.attr('height')    || style.height || '';
+                var w = n.attr('width') || style.width || '';
+                var h = n.attr('height') || style.height || '';
 
                 var type = n.attr('type');
 
@@ -507,15 +527,14 @@
                     data.param = {};
 
                     // get and assign flash variables
-                    each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function(k) {
+                    each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function (k) {
                         var v = n.attr(k);
 
                         if (v) {
                             if (k == 'flashvars') {
                                 try {
                                     v = encodeURIComponent(v);
-                                } catch (e) {
-                                }
+                                } catch (e) {}
                             }
 
                             data.param[k] = v;
@@ -526,8 +545,8 @@
                 }
 
                 // remove nested children
-                each(['audio', 'embed', 'object', 'video', 'iframe'], function(el) {
-                    each(n.getAll(el), function(node) {
+                each(['audio', 'embed', 'object', 'video', 'iframe'], function (el) {
+                    each(n.getAll(el), function (node) {
                         node.remove();
                     });
                 });
@@ -553,14 +572,16 @@
                 }
 
                 // get type data
-                var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {name: 'generic'};
+                var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {
+                    name: 'generic'
+                };
 
                 type = lookup.name || type;
 
                 var style = Styles.parse(n.attr('style'));
 
                 // attributes that should be styles
-                each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function(na) {
+                each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function (na) {
                     var v = n.attr(na);
 
                     if (v) {
@@ -591,7 +612,7 @@
                 });
 
                 // standard attributes
-                each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function(at) {
+                each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
                     placeholder.attr(at, n.attr(at));
                 });
 
@@ -614,29 +635,29 @@
             name = name.toLowerCase();
 
             // add identifier class
-            classes.push('mceItemMedia mceItem' + ucfirst(name));
+            classes.push('mce-item-media mce-item-' + name.toLowerCase());
 
             if (placeholder.name === "span") {
-                classes.push('mceItemPreview');
+                classes.push('mce-item-preview');
             }
 
             // add type class
             if (type && name !== type.toLowerCase()) {
-                classes.push('mceItem' + ucfirst(type));
+                classes.push('mce-item-' + type.toLowerCase());
             }
 
             if (name == 'audio') {
                 var agent = navigator.userAgent.match(/(Opera|Chrome|Safari|Gecko)/);
                 if (agent) {
-                    classes.push('mceItemAgent' + ucfirst(agent[0]));
+                    classes.push('mce-item-agent' + agent[0].toLowerCase());
                 }
             }
 
             // Set data attribute and class
             placeholder.attr({
-                width   : w,
-                height  : h,
-                'class' : classes.join(' '),
+                width: w,
+                height: h,
+                'class': classes.join(' '),
                 'data-mce-json': JSON.serialize(o)
             });
 
@@ -646,26 +667,28 @@
                 var attrs = o.iframe;
 
                 tinymce.extend(attrs, {
-                    src             : n.attr('src'),
-                    allowfullscreen : n.attr('allowfullscreen'),
-                    width           : n.attr('width') || w,
-                    height          : n.attr('height') || h,
-                    frameborder     : '0'
+                    src: n.attr('src'),
+                    allowfullscreen: n.attr('allowfullscreen'),
+                    width: n.attr('width') || w,
+                    height: n.attr('height') || h,
+                    frameborder: '0'
                 });
 
                 preview.attr(attrs);
 
                 placeholder.attr({
-                    contentEditable : 'false'
+                    contentEditable: 'false'
                 });
 
                 var shim = new tinymce.html.Node('span', 1);
-                shim.attr('class', 'mceItemShim');
+                shim.attr('class', 'mce-item-shim');
 
                 placeholder.append(preview);
                 placeholder.append(shim);
             } else {
-                placeholder.attr({'src' : 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'});
+                placeholder.attr({
+                    'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                });
             }
 
             // Replace the video/object/embed element with a placeholder image containing the data
@@ -676,12 +699,18 @@
          * @param n Node
          * @return attribs Object
          */
-        serializeAttributes: function(n) {
-            var ed = this.editor, self = this, dom = this.editor.dom, attribs = {}, ti = '', k, v;
+        serializeAttributes: function (n) {
+            var ed = this.editor,
+                self = this,
+                dom = this.editor.dom,
+                attribs = {},
+                ti = '',
+                k, v;
 
             if (n != 'iframe' || n != 'param') {
                 // get type and src
-                var type = n.attr('type'), src = n.attr('src') || n.attr('data');
+                var type = n.attr('type'),
+                    src = n.attr('src') || n.attr('data');
 
                 // Attempt mime-type lookup
                 if (!type && src) {
@@ -706,12 +735,11 @@
                     if (k == 'flashvars') {
                         try {
                             v = encodeURIComponent(v);
-                        } catch (e) {
-                        }
+                        } catch (e) {}
                     }
                 }
                 attribs[k] = v;
-            } else {                
+            } else {
                 for (k in n.attributes.map) {
                     v = n.attributes.map[k];
 
@@ -752,7 +780,7 @@
                 var params = n.parent.getAll('param');
 
                 if (params) {
-                    each(params, function(p) {
+                    each(params, function (p) {
                         k = p.attr('name');
                         v = p.attr('value');
 
@@ -760,8 +788,7 @@
                             if (k == 'flashvars') {
                                 try {
                                     v = encodeURIComponent(v);
-                                } catch (e) {
-                                }
+                                } catch (e) {}
                             }
                         }
 
@@ -779,8 +806,10 @@
          * @param el Parent Element
          * @return Parent Element
          */
-        createNodes: function(data, el) {
-            var self = this, ed = this.editor, s, dom = ed.dom;
+        createNodes: function (data, el) {
+            var self = this,
+                ed = this.editor,
+                s, dom = ed.dom;
 
             /**
              * Internal function to create or process a node
@@ -790,8 +819,9 @@
             function createNode(o, el) {
 
                 // process node object
-                each(o, function(v, k) {
-                    var nn = el.name, n;
+                each(o, function (v, k) {
+                    var nn = el.name,
+                        n;
 
                     if (tinymce.is(v, 'object')) {
                         if (/(param|source)/.test(nn) && /(audio|embed|object|video)/.test(k)) {
@@ -815,7 +845,7 @@
                             // create source elements from array
                             if (v instanceof Array) {
                                 // iterate through array
-                                each(v, function(s) {
+                                each(v, function (s) {
                                     // set attribute if string
                                     if (tinymce.is(s, 'string')) {
                                         self.setAttribs(el, data, k, s);
@@ -874,8 +904,10 @@
          * @param k Attribute Key
          * @param v Attribute Value
          */
-        setAttribs: function(n, data, k, v) {
-            var ed = this.editor, dom = ed.dom, nn = n.name;
+        setAttribs: function (n, data, k, v) {
+            var ed = this.editor,
+                dom = ed.dom,
+                nn = n.name;
 
             if (v == null || typeof v == 'undefined') {
                 return;
@@ -886,10 +918,9 @@
                     case 'flashvars':
                         try {
                             v = decodeURIComponent(v);
-                        } catch (e) {
-                        }
+                        } catch (e) {}
                         break;
-                    case 'src' :
+                    case 'src':
                     case 'movie':
                     case 'source':
                     case 'url':
@@ -906,7 +937,7 @@
                         v = data[k] || v;
                         n.attr(k, v.toString());
                         break;
-                    case 'class' :
+                    case 'class':
                         var cls = tinymce.explode(' ', n.attr('class'));
 
                         if (tinymce.inArray(cls, v) == -1) {
@@ -916,18 +947,17 @@
                         n.attr('class', tinymce.trim(cls.join(' ', v)));
 
                         break;
-                    case 'type' :
+                    case 'type':
                         n.attr(k, v.replace(/(&(quot|apos);|")/g, "'"));
                         break;
                     case 'flashvars':
                         try {
                             v = decodeURIComponent(v);
-                        } catch (e) {
-                        }
+                        } catch (e) {}
 
                         n.attr(k, v);
                         break;
-                    case 'src' :
+                    case 'src':
                     case 'data':
                     case 'source':
                         n.attr(k, this.convertUrl(v));
@@ -951,11 +981,11 @@
         },
         /**
          * Get the mimetype from the classname or src
-         * @param Classname eg: mceItemFlash or src
+         * @param Classname eg: mce-item-flash or src
          * @return mimetype eg: application/x-shockwave-flash
          */
-        getMimeType: function(s) {
-            var props, type, ext, cl = s.match(/mceItem(Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|PDF|Silverlight|Iframe)/);
+        getMimeType: function (s) {
+            var props, type, ext, cl = s.match(/mce-item-(Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|PDF|Silverlight|Iframe)/);
 
             if (cl) {
                 props = mediaTypes[cl[1]];
@@ -980,8 +1010,11 @@
          * @param n Image Element to replace
          * @return Object / Audio / Video / Embed element
          */
-        restoreElement: function(n, args) {
-            var self = this, ed = this.editor, dom = ed.dom, cl, props, v;
+        restoreElement: function (n, args) {
+            var self = this,
+                ed = this.editor,
+                dom = ed.dom,
+                cl, props, v;
 
             var data = JSON.parse(n.attr('data-mce-json'));
             var name = this.getNodeName(n.attr('class'));
@@ -994,7 +1027,7 @@
             var src = root.src || root.data || '';
             var params = root.param || '';
 
-            each(['width', 'height'], function(k) {
+            each(['width', 'height'], function (k) {
                 v = n.attr(k);
                 // set width and height but not for audio element
                 if (v && name != 'audio') {
@@ -1004,7 +1037,7 @@
                 }
 
                 // check for and set width and height for child object/embed/video
-                each(['object', 'embed', 'video'], function(s) {
+                each(['object', 'embed', 'video'], function (s) {
                     if (root[s] && !root[s][k]) {
                         root[s][k] = v;
                     }
@@ -1013,11 +1046,11 @@
             });
 
             // standard attributes
-            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'class'], function(at) {
+            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'class'], function (at) {
                 v = n.attr(at);
 
                 if (at == 'class') {
-                    v = tinymce.trim(v.replace(/\s?mceItem([\w]+)/g, ''));
+                    v = tinymce.trim(v.replace(/\s?mce-item-([\w]+)/g, ''));
                 }
 
                 if (v && /[\w\d]+/.test(v)) {
@@ -1026,7 +1059,7 @@
             });
 
             // check for XHTML Strict setting
-            var strict = ed.getParam('media_strict', true) && /mceItem(Flash|ShockWave)/.test(n.attr('class'));
+            var strict = ed.getParam('media_strict', true) && /mce-item-(Flash|ShockWave)/.test(n.attr('class'));
 
             // create embed node if necessary
             if (name == 'object') {
@@ -1043,7 +1076,7 @@
                     root.data = src;
 
                     // add movie param for Flash
-                    if (/mceItemFlash/.test(n.attr('class'))) {
+                    if (/mce-item-flash/.test(n.attr('class'))) {
                         extend(params, {
                             'movie': src
                         });
@@ -1057,7 +1090,9 @@
                     delete root.classid;
                     delete root.codebase;
                 } else {
-                    var lookup = this.lookup[root.type] || this.lookup[name] || {name: 'generic'};
+                    var lookup = this.lookup[root.type] || this.lookup[name] || {
+                        name: 'generic'
+                    };
 
                     if (lookup.name !== "generic") {
 
@@ -1097,11 +1132,11 @@
                         // add src parameter
                         var k = 'src';
                         // use url for WindowsMedia
-                        if (/mceItemWindowsMedia/.test(n.attr('class'))) {
+                        if (/mce-item-windowsmedia/.test(n.attr('class'))) {
                             k = 'url';
                         }
                         // use source for Silverlight
-                        if (/mceItemSilverLight/.test(n.attr('class'))) {
+                        if (/mce-item-silverlight/.test(n.attr('class'))) {
                             k = 'source';
                         }
 
@@ -1148,8 +1183,8 @@
             // create nodes
             n.replace(this.createNodes(root, parent));
         },
-        getNodeName: function(s) {
-            s = /mceItem(Audio|Embed|Object|Video|Iframe)/.exec(s);
+        getNodeName: function (s) {
+            s = /mce-item-(audio|embed|object|video|iframe)/i.exec(s);
             if (s) {
                 return s[1].toLowerCase();
             }

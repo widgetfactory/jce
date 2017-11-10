@@ -735,7 +735,7 @@
                         u, pi, ti = '';
 
                     // Ignore non element and bogus/hidden elements
-                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mceItemHidden') || DOM.hasClass(n, 'mceItemRemoved') || DOM.hasClass(n, 'mceItemShim'))
+                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mce-item-hidden') || DOM.hasClass(n, 'mce-item-removed') || DOM.hasClass(n, 'mce-item-shim'))
                         return;
 
                     // Handle prefix

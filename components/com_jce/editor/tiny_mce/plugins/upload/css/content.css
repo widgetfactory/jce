@@ -1,4 +1,4 @@
-.mceItemUpload {
+.mce-item-upload {
     border:1px dashed #bbb !important;
     background-position:center;
     background-repeat:no-repeat;
@@ -13,7 +13,7 @@
     min-width: 320px;
 }
 
-.mceItemUpload span.upload-progress {
+.mce-item-upload span.upload-progress {
     position: relative;
     display: inline-block;
     top: 50%;
@@ -29,9 +29,9 @@
     -ms-user-select : none;
 }
 
-.mceItemUploadMarker {
+.mce-item-uploadmarker {
     background-image: url("../img/picture.png");
 }
-.mceItemUploadMarker.loading {
+.mce-item-uploadmarker.loading {
     background-image: url("../img/upload.gif");
 }

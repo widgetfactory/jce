@@ -244,7 +244,7 @@
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
-                        if (cls && /mceItemUploadMarker/.test(cls)) {
+                        if (cls && /mce-item-uploadmarker/.test(cls)) {
                             // remove marker classes
                             cls = cls.replace(/(?:^|\s)mceItem(Upload|UploadMarker)(?!\S)/g, '');
                             // add placeholder class
@@ -273,7 +273,7 @@
                 }
 
                 function bindUploadEvents(ed) {
-                    each(ed.dom.select('img.mceItemUploadMarker', ed.getBody()), function(n) {
+                    each(ed.dom.select('img.mce-item-uploadmarker', ed.getBody()), function(n) {
                         if (self.plugins.length == 0) {
                             ed.dom.remove(n);
                         } else {
@@ -415,7 +415,7 @@
                                     }
 
                                     // transfer width and height if marker
-                                    if (ed.dom.hasClass(n, 'mceItemUploadMarker')) {
+                                    if (ed.dom.hasClass(n, 'mce-item-uploadmarker')) {
                                         ed.dom.setAttribs(s, {
                                             'width': n.width || s.width,
                                             'height': n.height || s.height
@@ -581,8 +581,8 @@
                 cls = n.attr('class').replace(/\s*upload-placeholder\s*/, '').split(' ');
             }
             // add marker classes
-            cls.push('mceItemUpload');
-            cls.push('mceItemUploadMarker');
+            cls.push('mce-item-upload');
+            cls.push('mce-item-uploadmarker');
             // set attribs
             n.attr({
                 'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
@@ -673,7 +673,7 @@
                     var w = 300,
                         h = 300;
 
-                    ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" class="mceItemUpload" />', {
+                    ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" class="mce-item-upload" />', {
                         skip_undo: 1
                     });
                     // get approximate size of image from file size

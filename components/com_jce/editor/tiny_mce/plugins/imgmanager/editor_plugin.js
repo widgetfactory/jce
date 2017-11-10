@@ -13,7 +13,7 @@
             this.editor = ed;
 
             function isMceItem(n) {
-                return /mceItem/.test(n.className);
+                return /mce-item-/.test(n.className);
             }
 
             // Register commands

@@ -24,7 +24,7 @@
             var self = this;
 
             function isAnchor(n) {
-                return ed.dom.getParent(n, 'a.mceItemAnchor');
+                return ed.dom.getParent(n, 'a.mce-item-anchor');
             }
 
             ed.settings.allow_html_in_named_anchor = true;
@@ -38,13 +38,13 @@
                 var s = isAnchor(n);
 
                 // clear any existing anchor selections
-                ed.dom.removeClass(ed.dom.select('.mceItemAnchor.mceItemSelected'), 'mceItemSelected');
+                ed.dom.removeClass(ed.dom.select('.mce-item-anchor.mce-item-selected'), 'mce-item-selected');
 
                 // set active
                 cm.setActive('anchor', s);
 
                 if (s) {
-                    ed.dom.addClass(ed.dom.select('.mceItemAnchor'), 'mceItemSelected');
+                    ed.dom.addClass(ed.dom.select('.mce-item-anchor'), 'mce-item-selected');
                 }
             });
 
@@ -107,8 +107,8 @@
                             name = node.attr('name') || node.attr('id');
 
                         if (isAnchorLink(node)) {
-                            if (!cls || /mceItemAnchor/.test(cls) === false) {
-                                cls += ' mceItemAnchor';
+                            if (!cls || /mce-item-anchor/.test(cls) === false) {
+                                cls += ' mce-item-anchor';
                                 node.attr('class', tinymce.trim(cls));
                             }
                         }
@@ -126,7 +126,7 @@
                 s = ed.selection,
                 n = s.getNode();
 
-            if (!s.isCollapsed() && ed.dom.getParent(n, 'a.mceItemAnchor')) {
+            if (!s.isCollapsed() && ed.dom.getParent(n, 'a.mce-item-anchor')) {
                 ed.undoManager.add();
 
                 ed.formatter.remove('link');
@@ -141,7 +141,7 @@
                 n = ed.selection.getNode(),
                 v;
 
-            n = ed.dom.getParent(n, 'a.mceItemAnchor');
+            n = ed.dom.getParent(n, 'a.mce-item-anchor');
             v = ed.dom.getAttrib(n, 'name') || ed.dom.getAttrib(n, 'id');
 
             return v;
@@ -172,7 +172,7 @@
             //ed.undoManager.add();
 
             var at = {
-                'class': 'mceItemAnchor'
+                'class': 'mce-item-anchor'
             };
 
             if (n = ed.dom.getParent(n, 'A')) {

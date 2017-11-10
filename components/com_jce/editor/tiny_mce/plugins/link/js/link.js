@@ -285,7 +285,7 @@
         getAnchorListHTML: function (id, target) {
             var ed = tinyMCEPopup.editor,
                 name;
-            var nodes = ed.dom.select('.mceItemAnchor');
+            var nodes = ed.dom.select('.mce-item-anchor');
 
             var html = "";
 
