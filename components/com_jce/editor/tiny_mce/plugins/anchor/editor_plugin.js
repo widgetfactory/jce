@@ -44,7 +44,7 @@
                 cm.setActive('anchor', s);
 
                 if (s) {
-                    ed.dom.addClass(ed.dom.select('.mce-item-anchor'), 'mce-item-selected');
+                    ed.dom.addClass(n, 'mce-item-selected');
                 }
             });
 
