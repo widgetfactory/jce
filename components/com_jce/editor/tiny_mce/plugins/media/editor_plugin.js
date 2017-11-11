@@ -992,7 +992,7 @@
                 return this.mimes[ext];
             }
             
-            var props, type, cl = s.match(/mce-item-(flash|shockwave|windowsmedia|quicktime|realmedia|divx|pdf|silverlight|iframe)/);
+            var props, type, cl = s.match(/mce-item-(audio|video|flash|shockwave|windowsmedia|quicktime|realmedia|divx|pdf|silverlight|iframe)/);
 
             if (cl) {
                 props = mediaTypes[cl[1]];
@@ -1061,13 +1061,13 @@
             // check for XHTML Strict setting
             var strict = ed.getParam('media_strict', true) && /mce-item-(flash|shockwave)/.test(n.attr('class'));
 
+            // not type attribute set
+            if (!root.type) {
+                root.type = this.getMimeType(src) || this.getMimeType(n.attr('class'));
+            }
+
             // create embed node if necessary
             if (name == 'object') {
-                // not type attribute set
-                if (!root.type) {
-                    root.type = this.getMimeType(n.attr('class')) || this.getMimeType(src);
-                }
-
                 params = params || {};
 
                 delete root.src;
@@ -1102,7 +1102,7 @@
                                 width: root.width,
                                 height: root.height,
                                 src: src,
-                                type: root.type || this.getMimeType(n.attr('class')) || this.getMimeType(src)
+                                type: root.type
                             };
                         }
 
