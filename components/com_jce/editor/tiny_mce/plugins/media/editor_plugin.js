@@ -46,51 +46,51 @@
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
-        "Flash": {
+        "flash": {
             classid: "CLSID:D27CDB6E-AE6D-11CF-96B8-444553540000",
             type: "application/x-shockwave-flash",
             codebase: "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,1,53,64"
         },
-        "ShockWave": {
+        "shockwave": {
             classid: "CLSID:166B1BCA-3F9C-11CF-8075-444553540000",
             type: "application/x-director",
             codebase: "http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=10,2,0,023"
         },
-        "WindowsMedia": {
+        "windowsmedia": {
             classid: "CLSID:6BF52A52-394A-11D3-B153-00C04F79FAA6",
             type: "application/x-mplayer2",
             codebase: "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=10,00,00,3646"
         },
-        "QuickTime": {
+        "quicktime": {
             classid: "CLSID:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B",
             type: "video/quicktime",
             codebase: "http://www.apple.com/qtactivex/qtplugin.cab#version=7,3,0,0"
         },
-        "DivX": {
+        "divx": {
             classid: "CLSID:67DABFBF-D0AB-41FA-9C46-CC0F21721616",
             type: "video/divx",
             codebase: "http://go.divx.com/plugin/DivXBrowserPlugin.cab"
         },
-        "RealMedia": {
+        "realmedia": {
             classid: "CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA",
             type: "audio/x-pn-realaudio-plugin"
         },
-        "Java": {
+        "java": {
             classid: "CLSID:8AD9C840-044E-11D1-B3E9-00805F499D93",
             type: "application/x-java-applet",
             codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_5_0-windows-i586.cab#Version=1,5,0,0"
         },
-        "Silverlight": {
+        "silverlight": {
             classid: "CLSID:DFEAF541-F3E1-4C24-ACAC-99C30715084A",
             type: "application/x-silverlight-2"
         },
-        "Video": {
-            type: 'video/mp4'
+        "video": {
+            type: 'video/mpeg'
         },
-        "Audio": {
-            type: 'audio/mp3'
+        "audio": {
+            type: 'audio/mpeg'
         },
-        "Iframe": {}
+        "iframe": {}
     };
 
     tinymce.create('tinymce.plugins.MediaPlugin', {
@@ -100,19 +100,19 @@
 
             var cbase = {
                 // Type, clsid, mime types, codebase
-                "Flash": {
+                "flash": {
                     codebase: "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=" + ed.getParam('media_version_flash', '10,1,53,64')
                 },
-                "ShockWave": {
+                "shockwave": {
                     codebase: "http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=" + ed.getParam('media_version_shockwave', '10,2,0,023')
                 },
-                "WindowsMedia": {
+                "windowsmedia": {
                     codebase: "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=" + ed.getParam('media_version_windowsmedia', '10,00,00,3646')
                 },
-                "QuickTime": {
+                "quicktime": {
                     codebase: "http://www.apple.com/qtactivex/qtplugin.cab#version=" + ed.getParam('media_version_quicktime', '7,3,0,0')
                 },
-                "Java": {
+                "java": {
                     codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_5_0-windows-i586.cab#Version=" + ed.getParam('media_version_java', '1,5,0,0')
                 }
             };
@@ -643,7 +643,7 @@
 
             // add type class
             if (type && name !== type.toLowerCase()) {
-                classes.push('mce-item-' + type.toLowerCase());
+                classes.push('mce-item-' + type.split('/').pop().toLowerCase());
             }
 
             if (name == 'audio') {
@@ -985,20 +985,20 @@
          * @return mimetype eg: application/x-shockwave-flash
          */
         getMimeType: function (s) {
-            var props, type, ext, cl = s.match(/mce-item-(Flash|ShockWave|WindowsMedia|QuickTime|RealMedia|DivX|PDF|Silverlight|Iframe)/);
+
+            // get from source value
+            if (/\.([a-z0-9]{2,4})/.test(s)) {
+                var ext = s.substring(s.length, s.lastIndexOf('.') + 1).toLowerCase();
+                return this.mimes[ext];
+            }
+            
+            var props, type, cl = s.match(/mce-item-(flash|shockwave|windowsmedia|quicktime|realmedia|divx|pdf|silverlight|iframe)/);
 
             if (cl) {
                 props = mediaTypes[cl[1]];
 
                 if (props) {
                     type = props.type;
-                }
-            }
-
-            if (!props || type) {
-                if (/\.([a-z0-9]{2,4})/.test(s)) {
-                    ext = s.substring(s.length, s.lastIndexOf('.') + 1).toLowerCase();
-                    type = this.mimes[ext];
                 }
             }
 
@@ -1059,7 +1059,7 @@
             });
 
             // check for XHTML Strict setting
-            var strict = ed.getParam('media_strict', true) && /mce-item-(Flash|ShockWave)/.test(n.attr('class'));
+            var strict = ed.getParam('media_strict', true) && /mce-item-(flash|shockwave)/.test(n.attr('class'));
 
             // create embed node if necessary
             if (name == 'object') {
@@ -1185,6 +1185,7 @@
         },
         getNodeName: function (s) {
             s = /mce-item-(audio|embed|object|video|iframe)/i.exec(s);
+            
             if (s) {
                 return s[1].toLowerCase();
             }
