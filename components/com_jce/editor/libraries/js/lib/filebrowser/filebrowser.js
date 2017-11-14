@@ -655,13 +655,13 @@
             // get the file src from the widget element
             var src = $(this.element).val();
 
+            var base = this.options.base;
+
             // check for and remove base (external filesystems)
-            if (src && this.options.base) {
-                if (src.indexOf('://' + this.options.base) !== -1) {
-                    // remove scheme
-                    src = src.replace(/http(s)?:\/\//i, '');
+            if (src && base) {
+                if (src.indexOf(base) === 0) {
                     // remove base
-                    src = src.replace(this.options.base, '');
+                    src = src.substr(base.length + 1);
                 }
             }
 
