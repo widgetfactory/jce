@@ -357,7 +357,7 @@ class JoomlalinksMenu extends JObject
             . ' WHERE m.published = 1'
             . ' AND m.parent = ' . (int) $parent
             . $where
-            . ' ORDER BY m.lft ASC, m.id, m.title'
+            . ' ORDER BY m.lft ASC, m.id, m.name'
             ;
         }
 
