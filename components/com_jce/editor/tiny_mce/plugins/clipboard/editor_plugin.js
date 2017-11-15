@@ -161,6 +161,7 @@
             /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
             [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
             /<br class="Apple-interchange-newline">/g,
+            /^<meta[^>]+>/g, // Chrome weirdness
             /<br>$/i // Trailing BR elements
         ]);
 
