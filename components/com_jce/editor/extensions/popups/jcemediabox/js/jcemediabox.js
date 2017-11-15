@@ -373,13 +373,13 @@ WFPopups.addPopup('jcemediabox', {
                     v = decodeURIComponent(v);
                 } catch (e) {}
 
-                var n = $('.uk-repeatable').eq(0);
+                var n = $('.uk-repeatable', '#jcemediabox_popup_params').eq(0);
 
                 if (x > 0) {
                     $(n).clone(true).appendTo($(n).parent());
                 }
 
-                var elements = $('.uk-repeatable').eq(x).find('input, select');
+                var elements = $('.uk-repeatable', '#jcemediabox_popup_params').eq(x).find('input, select');
 
                 $(elements).eq(0).val(k);
                 $(elements).eq(1).val(v);
@@ -483,7 +483,7 @@ WFPopups.addPopup('jcemediabox', {
             rel = rel.replace(/([a-z0-9]+)(\[([^\]]+)\]);?/gi, '');
         }
 
-        $('.uk-repeatable').each(function() {
+        $('.uk-repeatable', '#jcemediabox_popup_params').each(function() {
             var elements = $('input, select', this);
             var key = $(elements).eq(0).val(),
                 value = $(elements).eq(1).val();
