@@ -196,7 +196,7 @@
                 }
 
                 // Add custom 'comment' element
-                ed.schema.addCustomElements('comment');
+                ed.schema.addCustomElements('mce-comment');
 
                 invalid = tinymce.explode(invalid, ',');
 
@@ -268,14 +268,6 @@
                     ed.dom.addClass(p, 'mce-item-selected');
 
                     ed.selection.select(p);
-
-                    /*var h = ed.dom.getAttrib(n, 'height');
-
-                    if (h) {
-                      // update height style
-                      ed.dom.setStyle(n, 'height', h);
-                      ed.execCommand('mceRepaint');
-                    }*/
                 }
             });
 
@@ -286,20 +278,28 @@
                 h = h.replace(/<(audio|embed|object|video|iframe)([^>]*?)>([\w\W]+?)<\/\1>/gi, function (a, b, c, d) {
 
                     // convert conditional comments to simpler format
-                    d = d.replace(/<!--\[if([^\]]*)\]>(<!)?-->/gi, '<![if$1]>');
+                    d = d.replace(/<!(--)?(<!)?\[if([^\]]+)\](>--)?>/gi, '<![if$3]>');
 
                     // convert conditional comments
-                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function (a, b) {
-                        return '<comment data-comment-condition="[if' + b + ']">';
+                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function (a, b) {                        
+                        return '<mce-comment data-comment-condition="[if' + b + ']">';
                     });
 
                     // convert conditional comments end
-                    d = d.replace(/<!(--<!)?\[endif\](--)?>/gi, '</comment>');
+                    d = d.replace(/<!(--<!)?\[endif\](--)?>/gi, '</mce-comment>');
 
                     return '<' + b + c + '>' + d + '</' + b + '>';
                 });
 
                 o.content = h;
+            });
+
+            ed.onPostProcess.add(function (ed, o) {
+                if (o.get) {
+                    // process comments within media elements
+                    o.content = o.content.replace(/<mce-comment data-comment-condition="([^>]+)">/gi, '<!--$1>');
+                    o.content = o.content.replace(/<\/mce-comment>/g, '<![endif]-->');
+                }
             });
 
         },
@@ -416,7 +416,7 @@
                     }
                 }
             } else {
-                if (nn == 'comment') {
+                if (nn == 'mce-comment') {
                     if (v = n.attr('data-comment-condition')) {
                         if (typeof o[nn] == 'undefined') {
                             o[nn] = {};
@@ -456,8 +456,6 @@
                     }
                 }
             }
-
-            html = tinymce.trim(html);
 
             if (html) {
                 if (typeof o.html == 'undefined') {
@@ -828,7 +826,7 @@
                             el = el.parent;
                         }
 
-                        if (k == 'comment') {
+                        if (k == 'mce-comment') {                            
                             var node = new Node('#comment', 8);
                             node.value = v['data-comment-condition'] + '>';
 
@@ -991,7 +989,7 @@
                 var ext = s.substring(s.length, s.lastIndexOf('.') + 1).toLowerCase();
                 return this.mimes[ext];
             }
-            
+
             var props, type, cl = s.match(/mce-item-(audio|video|flash|shockwave|windowsmedia|quicktime|realmedia|divx|pdf|silverlight|iframe)/);
 
             if (cl) {
@@ -1185,7 +1183,7 @@
         },
         getNodeName: function (s) {
             s = /mce-item-(audio|embed|object|video|iframe)/i.exec(s);
-            
+
             if (s) {
                 return s[1].toLowerCase();
             }
