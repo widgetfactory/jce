@@ -122,6 +122,12 @@
             ed.onBeforeSetContent.add(function(ed, o) {
                 o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+)>/gi, '<hr$1data-mce-alt="$2"$3>');
             });
+            
+            ed.onPostProcess.add(function(ed, o) {
+                if (o.get) {
+                	o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+)>/gi, '<hr$1alt="$2"$3>');	
+                }
+            });
 
             ed.onSetContent.add(function() {
                 if (tinymce.isIE) {
