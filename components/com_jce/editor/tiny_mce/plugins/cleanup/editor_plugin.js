@@ -318,11 +318,11 @@
                 o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8>&nbsp;</$1>');
 
                 // padd some empty tags
-                o.content = o.content.replace(/<(a|i|span)([^>]+)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+                o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
             });
 
             // Cleanup callback
-            ed.onPostProcess.add(function (ed, o) {
+            ed.onPostProcess.add(function (ed, o) {                
                 if (o.set) {
                     // Geshi
                     o.content = self.convertFromGeshi(o.content);
