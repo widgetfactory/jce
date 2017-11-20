@@ -2161,7 +2161,17 @@
                 });
             }
 
+            // get validate setting
+            var validate = ed.settings.validate;
+
+            // reset validate setting
+            ed.settings.validate = true;
+
+            // insert content
             ed.execCommand('mceInsertContent', false, html);
+
+            // reset validate
+            ed.settings.validate = validate;
         }
     });
     // Register plugin
