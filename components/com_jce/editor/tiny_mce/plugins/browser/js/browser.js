@@ -7,83 +7,76 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
-    var BrowserDialog = {
-        init: function(ed) {
-            var self = this,
-                action = 'insert';
+(function ($) {
+    function init() {
+        $('#insert').click(function (e) {
+            e.preventDefault();
+            insert();
+        });
 
-            $('#insert').click(function(e) {
-                e.preventDefault();
-                self.insert();
-            });
+        $('#cancel').click(function (e) {
+            e.preventDefault();
+            tinyMCEPopup.close();
+        });
 
-            $('#cancel').click(function(e) {
-                e.preventDefault();
-                tinyMCEPopup.close();
-            });
+        var win = tinyMCEPopup.window;
+        var src = tinyMCEPopup.getWindowArg('value');
 
-            var win = tinyMCEPopup.window;
-            var src = tinyMCEPopup.getWindowArg('value');
+        Wf.init();
 
-            Wf.init();
-
-            if (/(:\/\/|www|index.php(.*)\?option)/gi.test(src)) {
-                src = '';
-            }
-
-            if (src) {
-                src = tinyMCEPopup.editor.convertURL(src);
-                $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
-            }
-
-            $('#src').val(src).filebrowser().on('filebrowser:onfileclick', function(e, file) {
-                self.selectFile(file);
-            });
-        },
-
-        insert: function() {
-            var win = tinyMCEPopup.getWindowArg('window'),
-                self = this;
-
-            var src = $('#src').val(),
-                selected = [];
-            var callback = tinyMCEPopup.getWindowArg('callback');
-
-            // get selected items
-            $('#src').trigger('filebrowser:insert', function(selected, data) {
-
-                if (typeof callback === "string") {
-                    if (data.length) {
-                        self.selectFile(data[0]);
-                    }
-
-                    win.document.getElementById(callback).value = $('#src').val();
-                }
-
-                if (typeof callback === "function") {
-                    callback(selected, data);
-                }
-
-                // close popup window
-                tinyMCEPopup.close();
-            });
-        },
-
-        selectFile: function(file) {
-            var self = this,
-                name = file.title,
-                src = file.url;
-
-            if (src) {
-                // remove leading slash
-                src = src.replace(/^\//, '');
-                $('#src').val(src);
-            }
+        if (/(:\/\/|www|index.php(.*)\?option)/gi.test(src)) {
+            src = '';
         }
-    };
 
-    $(document).ready(function() {
-        BrowserDialog.init();
-    });
+        if (src) {
+            src = tinyMCEPopup.editor.convertURL(src);
+            $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
+        }
+
+        $('#src').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {            
+            selectFile(data);
+        });
+    }
+
+    function insert() {
+        var win = tinyMCEPopup.getWindowArg('window');
+
+        var selected = [];
+        var callback = tinyMCEPopup.getWindowArg('callback');
+
+        // get selected items
+        $('#src').trigger('filebrowser:insert', function (selected, data) {
+            // nothing selected, so create empty item
+            if (!data.length) {
+                data = [{
+                    "title": "",
+                    "url": ""
+                }];
+            }
+
+            if (typeof callback === "string") {
+                selectFile(data[0]);
+                win.document.getElementById(callback).value = $('#src').val();
+            }
+
+            if (typeof callback === "function") {
+                callback(selected, data);
+            }
+
+            // close popup window
+            tinyMCEPopup.close();
+        });
+    }
+
+    function selectFile(file) {
+        var src = file.url || '';
+
+        // remove leading slash
+        src = src.replace(/^\//, '');
+
+        // update input element
+        $('#src').val(src);
+    }
+
+    $(document).ready(init);
 })(jQuery);
