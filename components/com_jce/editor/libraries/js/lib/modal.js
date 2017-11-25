@@ -512,9 +512,13 @@
                             }, 0);
                         };
 
-                        img.src = url + (/\?/.test(url) ? '&' : '?') + new Date().getTime();
+                        // add timestamp to bypass cache 
+                        if (!/\?/.test(url)) {
+                            url += '?' + new Date().getTime();
+                        }
 
-                        // pdf (only for Firefox really)
+                        img.src = url;
+
                     } else if (/\.pdf$/i.test(url)) {
                         $(div).addClass('media-preview loading');
 
