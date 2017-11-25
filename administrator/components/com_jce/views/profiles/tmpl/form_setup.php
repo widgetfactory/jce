@@ -84,6 +84,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </div>
             <div class="controls">
               <?php echo $this->lists['usergroups']; ?>
+              <input type="hidden" name="usergroups[]" value="" />
             </div>
         </div>
         <div class="control-group">
@@ -92,6 +93,7 @@ defined('_JEXEC') or die('RESTRICTED');
             </label>
             <div class="controls clearfix">
                 <?php echo $this->lists['users']; ?>
+                <input type="hidden" name="users[]" value="" />
             </div>
             <div class="controls clearfix">
                 <div class="span4 text-right">
