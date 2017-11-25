@@ -40,9 +40,14 @@
 
     function insert() {
         var win = tinyMCEPopup.getWindowArg('window');
+        var callback = tinyMCEPopup.getWindowArg('callback');
+
+        // a callback function of id must exist
+        if (!callback) {
+            return tinyMCEPopup.close();
+        }
 
         var selected = [];
-        var callback = tinyMCEPopup.getWindowArg('callback');
 
         // get selected items
         $('#src').trigger('filebrowser:insert', function (selected, data) {
