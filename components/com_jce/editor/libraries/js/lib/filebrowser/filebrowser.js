@@ -2656,6 +2656,8 @@
             if (typeof cb === "function") {
                 cb(selected, data);
             }
+
+            return data;
         });
 
         $(this).on('filebrowser:status', function (e, status) {
