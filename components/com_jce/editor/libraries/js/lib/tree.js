@@ -173,15 +173,15 @@
             var node = this._findNode(id, parent);
 
             // Rename the node
-            $(node).attr('id', name);
+            $(node).attr('data-id', name);
 
             // Rename the span
             $('a:first .uk-tree-text', node).text(Wf.String.basename(name));
 
             // Rename each of the child nodes
-            $('li[id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
-                var nt = $(n).attr('id');
-                $(n).attr('id', nt.replace(id, name));
+            $('li[data-id^="' + this._escape(encodeURI(id)) + '"]', node).each(function (n) {
+                var nt = $(n).attr('data-id');
+                $(n).attr('data-id', nt.replace(id, name));
             });
 
         },
@@ -260,12 +260,17 @@
 
             // If parent is not an element, find the parent element
             if (!parent) {
-                parent = Wf.String.dirname($(nodes[0]).attr('id'));
+                parent = Wf.String.dirname($(nodes[0]).attr('data-id') || $(nodes[0]).attr('id'));
             }
 
             if ($.type(parent) == 'string') {
                 parent = this._findParent(parent);
             }
+
+            // filter nodes that already exist
+            nodes = $.grep(nodes, function(node) {
+                return self._findNode(node.id, parent).length === 0;
+            });
 
             // remove active states
             $(this.element).find('.uk-tree-active').removeClass('uk-tree-active');
@@ -304,7 +309,7 @@
                         }
 
                         // create the node html
-                        var html = '<li id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '">';
+                        var html = '<li data-id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '">';
 
                         html += '<div class="uk-tree-row">';
 
@@ -355,7 +360,7 @@
          */
         _findParent: function (el) {
             if ($.type(el) === "string") {
-                return $('li[id="' + this._encode(el) + '"]:first', this.element);
+                return $('li[data-id="' + this._encode(el) + '"]:first', this.element);
             } else {
                 return $(el).parents('li:first');
             }
@@ -378,7 +383,7 @@
                 parent = this._findParent(parent);
             }
 
-            return $(parent).find('li[id="' + this._escape(this._encode(id)) + '"]:first');
+            return $(parent).find('li[data-id="' + this._escape(this._encode(id)) + '"]:first');
         },
         /**
          * Toggle the loader class on the node span element

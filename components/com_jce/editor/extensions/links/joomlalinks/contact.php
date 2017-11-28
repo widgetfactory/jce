@@ -53,7 +53,7 @@ class JoomlalinksContact extends JObject
         $wf = WFEditorPlugin::getInstance();
 
         if ($wf->checkAccess('links.joomlalinks.contacts', 1)) {
-            return '<li id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">'.WFText::_('WF_LINKS_JOOMLALINKS_CONTACTS').'</span></a></div></li>';
+            return '<li data-id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">'.WFText::_('WF_LINKS_JOOMLALINKS_CONTACTS').'</span></a></div></li>';
         }
     }
 

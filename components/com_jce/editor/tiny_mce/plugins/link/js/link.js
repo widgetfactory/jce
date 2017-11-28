@@ -81,7 +81,7 @@
                     v = $('a', node).attr('href');
 
                     if (v == '#') {
-                        v = $(node).attr('id');
+                        v = $(node).attr('data-id') || $(node).attr('id');
                     }
 
                     self.insertLink(Wf.String.decode(v));
@@ -91,7 +91,11 @@
 
                 $(this).trigger('tree:toggleloader', node);
 
-                var query = Wf.String.query(Wf.String.unescape($(node).attr('id')));
+                // get node id
+                var id = $(node).attr('data-id') || $(node).attr('id');
+                
+                // create query
+                var query = Wf.String.query(Wf.String.unescape(id));
 
                 Wf.JSON.request('getLinks', {
                     'json': query

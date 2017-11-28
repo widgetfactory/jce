@@ -603,7 +603,7 @@ class WFFileBrowser extends JObject
             $treedir = $dir;
             if ($root) {
                 $result = '<ul>'
-                . '<li id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
+                . '<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
                 . ' <div class="uk-tree-row">'
                 . '   <a href="#">'
                 . '     <span class="uk-tree-icon" role="presentation">'
@@ -625,7 +625,7 @@ class WFFileBrowser extends JObject
 
                 $open = preg_match('#' . $name . '\b#', $treedir);
 
-                $result .= '<li id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
+                $result .= '<li data-id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
                     . ' <div class="uk-tree-row">'
                     . '   <a href="#">'
                     . '     <span class="uk-tree-icon" role="presentation"></span>'

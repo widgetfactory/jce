@@ -884,11 +884,11 @@
                 });
 
             }).on('tree:nodeclick', function (e, node) {
-                self._changeDir($(node).attr('id'));
+                self._changeDir($(node).attr('data-id'));
             }).on('tree:nodeload', function (e, node) {
                 $('#tree-body').trigger('tree:toggleloader', node);
 
-                Wf.JSON.request('getTreeItem', $(node).attr('id'), function (o) {
+                Wf.JSON.request('getTreeItem', $(node).attr('data-id'), function (o) {
                     if (o && !o.error) {
                         $('ul:first', node).remove();
 
