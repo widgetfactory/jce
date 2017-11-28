@@ -33,7 +33,7 @@
             $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
         }
 
-        $('#src').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {            
+        $('[data-filebrowser]').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {            
             selectFile(data);
         });
     }
@@ -50,7 +50,7 @@
         var selected = [];
 
         // get selected items
-        $('#src').trigger('filebrowser:insert', function (selected, data) {
+        $('[data-filebrowser]').trigger('filebrowser:insert', function (selected, data) {
             // nothing selected, so create empty item
             if (!data.length) {
                 data = [{
@@ -61,7 +61,7 @@
 
             if (typeof callback === "string") {
                 selectFile(data[0]);
-                win.document.getElementById(callback).value = $('#src').val();
+                win.document.getElementById(callback).value = $('[data-filebrowser]').val();
             }
 
             if (typeof callback === "function") {
@@ -80,7 +80,7 @@
         src = src.replace(/^\//, '');
 
         // update input element
-        $('#src').val(src);
+        $('[data-filebrowser]').val(src);
     }
 
     $(document).ready(init);

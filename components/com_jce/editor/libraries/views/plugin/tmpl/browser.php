@@ -13,7 +13,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 <div class="uk-position-cover uk-browser uk-browser-external">
 	<?php $this->filebrowser->render(); ?>
 
-	<input type="hidden" id="src" value="" class="filebrowser" />
+	<input type="hidden" value="" class="filebrowser" data-filebrowser />
 </div>
 <div class="actionPanel uk-modal-footer">
 	<button class="uk-button" id="refresh"><?php echo WFText::_('WF_LABEL_REFRESH')?></button>
