@@ -80,11 +80,11 @@
                         var n = o.node,
                             v;
 
-                        if (o.name === 'hr' && /mce-item-pagebreak/.test(n.className)) {
+                        if (n && n.nodeName === 'HR' && /mce-item-pagebreak/.test(n.className)) {
                             v = 'pagebreak';
                         }
 
-                        if (o.name === 'hr' && /mce-item-readmore/.test(n.className)) {
+                        if (n && n.nodeName === 'HR' && /mce-item-readmore/.test(n.className)) {
                             v = 'readmore';
                         }
 
