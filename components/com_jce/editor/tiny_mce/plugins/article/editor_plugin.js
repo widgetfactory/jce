@@ -177,8 +177,9 @@
 
                 ed.serializer.addNodeFilter('hr', function(nodes, name, args) {
                     for (var i = 0; i < nodes.length; i++) {
-                        var node = nodes[i];
-                        if (/mceItem(PageBreak|ReadMore)/.test(node.attr('class') || '')) {
+                        var node = nodes[i], cls = node.attr('class') || '';
+
+                        if (/mce-item-(pagebreak|readmore)/.test(cls)) {
                             if (/mce-item-pagebreak/.test(node.attr('class'))) {
                                 node.attr('class', 'system-pagebreak');
                             } else {
