@@ -241,11 +241,13 @@
                         var n = o.node;
 
                         if (n) {
-                            if (n.className.indexOf('mce-item-media') !== -1) {
+                            var cls = ed.dom.getAttrib(n, 'class', '');
+                            
+                            if (cls.indexOf('mce-item-media') !== -1) {
                                 o.name = 'media';
                             }
 
-                            if (n.className.indexOf('mce-item-iframe') !== -1) {
+                            if (cls.indexOf('mce-item-iframe') !== -1) {
                                 o.name = 'iframe';
                             }
                         }
@@ -470,7 +472,6 @@
         /**
          * Convert media elements to image placeholder
          * @param n Media Element
-         * @param cl Classname
          * @return img Image Element
          */
         toImage: function (n) {
@@ -978,8 +979,8 @@
             }
         },
         /**
-         * Get the mimetype from the classname or src
-         * @param Classname eg: mce-item-flash or src
+         * Get the mimetype from the class name or src
+         * @param Class name eg: mce-item-flash or src
          * @return mimetype eg: application/x-shockwave-flash
          */
         getMimeType: function (s) {

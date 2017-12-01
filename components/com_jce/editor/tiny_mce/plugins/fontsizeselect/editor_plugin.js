@@ -68,7 +68,7 @@
                     each(o.parents, function (n) {                                                
                         if (n.style) {
                             fv = n.style.fontSize || ed.dom.getStyle(n, 'fontSize'),
-                                cl = n.className;
+                                cl = ed.dom.getAttrib(n, 'class', '');
 
                             c.select(function (v) {
                                 if (v.fontSize && v.fontSize === fv) {                                    

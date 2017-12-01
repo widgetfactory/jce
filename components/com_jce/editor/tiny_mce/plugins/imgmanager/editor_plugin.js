@@ -13,7 +13,8 @@
             this.editor = ed;
 
             function isMceItem(n) {
-                return /mce-item-/.test(n.className);
+                var cls = ed.dom.getAttrib(n, 'class', '');
+                return /mce-item-/.test(cls);
             }
 
             // Register commands
