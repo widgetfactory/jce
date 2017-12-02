@@ -512,8 +512,8 @@
                 // remove borders
                 dom.setStyle(n, 'border', '');
 
-                // compress and set style
-                dom.setAttrib(n, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(styles, n.nodeName))), n.nodeName);
+                // set styles
+                dom.setStyles(n, styles);
             });
         }
 
@@ -661,7 +661,7 @@
             var styles = dom.parseStyle(n.style.cssText);
 
             // check style against styleProps array
-            each(styles, function (v, k) {
+            each(styles, function (v, k) {                
                 if (tinymce.inArray(styleProps, k) != -1) {
                     ns[k] = v;
                     x++;
@@ -671,6 +671,9 @@
             // Remove all of the existing styles
             dom.setAttrib(n, 'style', '');
 
+            // compress
+            ns = dom.parseStyle(dom.serializeStyle(ns, n.nodeName));
+
             if (x > 0) {
                 dom.setStyles(n, ns); // Add back the stored subset of styles
             } else {
@@ -679,6 +682,7 @@
                     dom.remove(n, true);
                 }
             }
+
             // We need to compress the styles on WebKit since if you paste <img border="0" /> it will become <img border="0" style="... lots of junk ..." />
             // Removing the mce_style that contains the real value will force the Serializer engine to compress the styles
             if (tinymce.isWebKit) {
@@ -1187,7 +1191,7 @@
                 node.attr('style', filterStyles(node, node.attr('style')));
 
                 // Remove pointess spans
-                if (node.name == 'span' && node.parent && !node.attributes.length) {
+                if (node.name == 'span' && node.parent && !node.attributes.length) {                    
                     node.unwrap();
                 }
             }
