@@ -48,6 +48,17 @@
         'border-top-style', 'border-right-style', 'border-bottom-style', 'border-left-style'
     ];
 
+    var backgroundStyles = {
+        'background-image': 'none',
+        'background-position': '0% 0%',
+        'background-size': 'auto auto',
+        'background-repeat': 'repeat',
+        'background-origin': 'padding-box',
+        'background-clip': 'border-box',
+        'background-attachment': 'scroll',
+        'background-color': 'transparent'
+    };
+
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
@@ -509,8 +520,21 @@
                     }
                 });
 
+                each(backgroundStyles, function(def, name) {
+                    var value = dom.getStyle(n, name);
+
+                    if (value === def) {
+                        value = "";
+                    }
+
+                    styles[name] = value;
+                });
+
                 // remove borders
                 dom.setStyle(n, 'border', '');
+
+                // remove background
+                dom.setStyle(n, 'background', '');
 
                 // set styles
                 dom.setStyles(n, styles);
