@@ -151,11 +151,13 @@
 
                 if (cl.length > 0) {
                     tinymce.each(cl, function (o) {
-                        if (typeof o === "string") {
+                        if (typeof o === "string" && o) {
                             o = { "class": o };
                         }
 
-                        lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
+                        if (o['class']) {
+                            lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
+                        }
                     });
                 }
             },
