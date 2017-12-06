@@ -30,12 +30,11 @@ class WFXMLElement extends SimpleXMLElement
         libxml_use_internal_errors(true);
 
         if (is_file($data)) {
-            // Try to load the xml file
-            $xml = simplexml_load_file($data, 'WFXMLElement');
-        } else {
-            // Try to load the xml string
-            $xml = simplexml_load_string($data, 'WFXMLElement');
+            $data = file_get_contents($data);
         }
+
+        // Try to load the xml string
+        $xml = simplexml_load_string($data, 'WFXMLElement');
 
         if (empty($xml)) {
             // There was an error
