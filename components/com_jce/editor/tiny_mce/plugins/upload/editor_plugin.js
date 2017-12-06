@@ -246,7 +246,7 @@
                         node = nodes[i], cls = node.attr('class');
                         if (cls && /mce-item-uploadmarker/.test(cls)) {
                             // remove marker classes
-                            cls = cls.replace(/(?:^|\s)mceItem(Upload|UploadMarker)(?!\S)/g, '');
+                            cls = cls.replace(/(?:^|\s)mce-item-(upload|uploadmarker)(?!\S)/g, '');
                             // add placeholder class
                             cls += ' upload-placeholder';
                             // set class and src

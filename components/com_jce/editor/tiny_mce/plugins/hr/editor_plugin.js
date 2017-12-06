@@ -74,7 +74,7 @@
             });
 
             function isHR(n) {
-                return n.nodeName === "HR" && /mceItem(PageBreak|ReadMore)/.test(n.className) === false;
+                return n.nodeName === "HR" && /mce-item-(pagebreak|readmore)/.test(n.className) === false;
             }
 
             ed.onNodeChange.add(function(ed, cm, n) {

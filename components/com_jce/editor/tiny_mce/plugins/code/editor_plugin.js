@@ -392,7 +392,7 @@
 
             var span = new Node('span', 1);
 
-            span.attr('class', 'mceItem' + this._ucfirst(n.name));
+            span.attr('class', 'mce-item-' + n.name);
             span.attr('data-mce-json', JSON.serialize(p));
             span.attr('data-mce-type', n.attr('data-mce-type') || p.type);
 
@@ -432,9 +432,7 @@
             n.wrap(div);
             n.unwrap();
         },
-        _ucfirst: function (s) {
-            return s.charAt(0).toUpperCase() + s.substring(1);
-        },
+
         // Private internal function
         _clean: function (s) {
             

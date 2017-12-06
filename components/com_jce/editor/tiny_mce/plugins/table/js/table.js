@@ -282,7 +282,7 @@
                     r = [];
 
                 $.each(a, function (i, v) {
-                    if (v.indexOf('mceItem') == -1) {
+                    if (v.indexOf('mce-item') == -1) {
                         if ($('option[value="' + v + '"]', n).length == 0) {
                             $(n).append(new Option(v, v));
                         }
@@ -357,7 +357,7 @@
 
                 $('#classes').val(function () {
                     var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
                     self.updateClassList(cls);
 
@@ -418,7 +418,7 @@
 
             $('#classes').val(function () {
                 var cls = ed.dom.getAttrib(elm, 'class');
-                cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+                cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
                 self.updateClassList(cls);
 
@@ -467,7 +467,7 @@
 
                 $('#classes').val(function () {
                     var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mceItem(\w+)(?!\S)/g, '');
+                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
                     self.updateClassList(cls);
 

@@ -46,7 +46,7 @@
 
 						// clean up class
 						if (k === "class") {
-							v = v.replace(/mceItem[a-z0-9]+/gi, '').replace(/\s+/, ' ');
+							v = v.replace(/mce-item-[a-z0-9]+/gi, '').replace(/\s+/, ' ');
 							v = $.trim(v);
 						}
 	
