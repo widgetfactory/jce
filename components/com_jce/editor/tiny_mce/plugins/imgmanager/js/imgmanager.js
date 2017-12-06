@@ -7,20 +7,20 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
+(function ($) {
 
     var ImageManagerDialog = {
         settings: {},
-        init: function() {
+        init: function () {
             tinyMCEPopup.restoreSelection();
-            
+
             var ed = tinyMCEPopup.editor,
                 n = ed.selection.getNode(),
                 self = this,
                 br, el;
 
             // add insert button action
-            $('#insert').click(function(e) {
+            $('#insert').click(function (e) {
                 self.insert();
                 e.preventDefault();
             });
@@ -32,14 +32,14 @@
             src = ed.convertURL(src);
 
             // Show / hide attributes
-            $.each(this.settings.attributes, function(k, v) {
+            $.each(this.settings.attributes, function (k, v) {
                 if (!parseFloat(v)) {
                     $('#attributes-' + k).hide();
                 }
             });
 
             // add focus behaviour to onmoueover / onmouseout
-            $('#onmouseover, #onmouseout').focus(function() {
+            $('#onmouseover, #onmouseout').focus(function () {
                 $('#onmouseover, #onmouseout').removeClass('focus');
                 $(this).addClass('focus');
             });
@@ -64,7 +64,7 @@
                 var w = Wf.getAttrib(n, 'width'),
                     h = Wf.getAttrib(n, 'height');
 
-                $('#width').val(function() {
+                $('#width').val(function () {
                     if (w) {
                         $(this).addClass('uk-isdirty');
                         return w;
@@ -75,7 +75,7 @@
                     }
                 });
 
-                $('#height').val(function() {
+                $('#height').val(function () {
                     if (h) {
                         $(this).addClass('uk-isdirty');
                         return h;
@@ -89,12 +89,12 @@
                 $('#alt').val(ed.dom.getAttrib(n, 'alt'));
                 $('#title').val(ed.dom.getAttrib(n, 'title'));
                 // Margin
-                $.each(['top', 'right', 'bottom', 'left'], function() {
+                $.each(['top', 'right', 'bottom', 'left'], function () {
                     $('#margin_' + this).val(Wf.getAttrib(n, 'margin-' + this));
                 });
 
                 // Border
-                $('#border_width').val(function() {
+                $('#border_width').val(function () {
                     var v = Wf.getAttrib(n, 'border-width');
 
                     if ($('option[value="' + v + '"]', this).length == 0) {
@@ -109,7 +109,7 @@
 
                 // if no border values set, set defaults
                 if (!$('#border').is(':checked')) {
-                    $.each(['border_width', 'border_style', 'border_color'], function(i, k) {
+                    $.each(['border_width', 'border_style', 'border_color'], function (i, k) {
                         $('#' + k).val(self.settings.defaults[k]).change();
                     });
                 }
@@ -134,7 +134,7 @@
                 // onmouseover / onmouseout
                 $('#onmouseout').val(src);
 
-                $.each(['onmouseover', 'onmouseout'], function() {
+                $.each(['onmouseover', 'onmouseout'], function () {
                     v = ed.dom.getAttrib(n, this);
                     v = $.trim(v);
                     v = v.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
@@ -152,14 +152,14 @@
             }
 
             if (ed.settings.filebrowser_position === "external") {
-                Wf.createBrowsers($('#src'), function(files) {
+                Wf.createBrowsers($('#src'), function (files) {
                     var file = files.shift();
                     self.selectFile(file);
                 }, 'images');
             } else {
-                $('#src').filebrowser().on('filebrowser:onfileclick', function(e, file, data) {
+                $('#src').filebrowser().on('filebrowser:onfileclick', function (e, file, data) {
                     self.selectFile(file, data);
-                }).on('filebrowser:onfileinsert', function(e, file, data) {
+                }).on('filebrowser:onfileinsert', function (e, file, data) {
                     self.selectFile(file, data);
                 });
             }
@@ -168,7 +168,7 @@
             Wf.updateStyles();
 
             // update constrain after applying values
-            $('.uk-constrain-checkbox').on('constrain:change', function(e, elms) {
+            $('.uk-constrain-checkbox').on('constrain:change', function (e, elms) {
                 $(elms).addClass('uk-isdirty');
             }).trigger('constrain:update');
 
@@ -176,16 +176,24 @@
             $('.uk-equalize-checkbox').trigger('equalize:update');
 
         },
-        insert: function() {
+        insert: function () {
             var ed = tinyMCEPopup.editor,
                 self = this;
+
+            var n = ed.selection.getNode();
 
             if ($('#src').val() === '') {
                 Wf.Modal.alert(tinyMCEPopup.getLang('imgmanager_dlg.no_src', 'Please enter a url for the image'));
                 return false;
             }
+
+            // skip alt check on update if the original alt attribute is blank
+            if (n && n.nodeName === "IMG" && ed.dom.getAttrib(n, 'alt') === "") {
+                this.insertAndClose();
+            }
+
             if ($('#alt').val() === '') {
-                Wf.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function(state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('imgmanager_dlg.missing_alt'), function (state) {
                     if (state) {
                         self.insertAndClose();
                     }
@@ -197,7 +205,7 @@
                 this.insertAndClose();
             }
         },
-        insertAndClose: function() {
+        insertAndClose: function () {
             var ed = tinyMCEPopup.editor,
                 self = this,
                 v, args = {},
@@ -221,7 +229,7 @@
             };
 
             // set attributes
-            $.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc'], function(i, k) {
+            $.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc'], function (i, k) {
                 v = $('#' + k + ':enabled').val();
 
                 if (k == 'src') {
@@ -294,7 +302,7 @@
             tinyMCEPopup.close();
         },
 
-        selectFile: function(file, data) {
+        selectFile: function (file, data) {
             var self = this,
                 name = data.title,
                 src = data.url;
@@ -312,8 +320,8 @@
                 if (!data.width || !data.height) {
                     var img = new Image();
 
-                    img.onload = function() {
-                        $.each(['width', 'height'], function(i, k) {
+                    img.onload = function () {
+                        $.each(['width', 'height'], function (i, k) {
                             $('#' + k).val(img[k]).data('tmp', img[k]).removeClass('uk-edited').addClass('uk-text-muted');
                         });
 
@@ -321,7 +329,7 @@
 
                     img.src = src;
                 } else {
-                    $.each(['width', 'height'], function(i, k) {
+                    $.each(['width', 'height'], function (i, k) {
                         var v = data[k] || "";
                         $('#' + k).val(v).data('tmp', v).removeClass('uk-edited').addClass('uk-text-muted');
                     });
@@ -345,7 +353,7 @@
     };
     window.ImageManagerDialog = ImageManagerDialog;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         ImageManagerDialog.init();
     });
 })(jQuery);
