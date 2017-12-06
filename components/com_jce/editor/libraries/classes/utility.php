@@ -129,9 +129,13 @@ abstract class WFUtility
 
         if (function_exists('transliterator_transliterate')) {
             if (is_array($subject)) {
-                array_walk($subject, function (&$string) {
+                /*array_walk($subject, function (&$string) {
                     $string = WFUtility::utf8_latin_to_ascii($string);
-                });
+                });*/
+
+                for($i = 0; $i < count($subject); $i++) {
+                    $subject[$i] = WFUtility::utf8_latin_to_ascii($subject[$i]);
+                }
 
                 return $subject;
             }
@@ -155,11 +159,10 @@ abstract class WFUtility
         }
 
         if (is_array($string)) {
-            array_walk($string, function (&$value, $key, $case) {
-                $value = WFUtility::changeCase($value, $case);
-            }, $case);
-        }
-        else {
+            for($i = 0; $i < count($string); $i++) {
+                $string[$i] = WFUtility::changeCase($string[$i], $case);
+            }
+        } else {
             switch ($case) {
                 case 'lowercase' :
                     $string = mb_strtolower($string);
