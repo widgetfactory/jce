@@ -43,7 +43,7 @@
                 }
             });
 
-            ed.onPreInit.add(function () {                
+            ed.onPreInit.add(function () {
                 if (ed.getParam('code_style')) {
                     //ed.schema.addValidElements('style[scoped|*]');
                     ed.schema.addValidChildren('+body[style]');
@@ -90,19 +90,21 @@
                     }
                 });
 
-                ed.onPastePreProcess.add(function(ed, o) {
-                    if (ed.settings.preformat_code_on_paste) {
-                        o.content = o.content.replace(/<(script|style)([^>]+)>([\s\S]+?)<\/\1>/gi, function(a, b) {
-                            a = a.replace(/<br\/?>/gi, '\n');
-                            return '<pre>' + ed.dom.encode(a) + '</pre>';
-                        });
+                if (ed.plugins.clipboard) {
+                    ed.onPastePreProcess.add(function (ed, o) {
+                        if (ed.settings.preformat_code_on_paste) {
+                            o.content = o.content.replace(/<(script|style)([^>]+)>([\s\S]+?)<\/\1>/gi, function (a, b) {
+                                a = a.replace(/<br\/?>/gi, '\n');
+                                return '<pre>' + ed.dom.encode(a) + '</pre>';
+                            });
 
-                        o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function(a, b, c) {
-                            a = a.replace(/<br\/?>/gi, '\n');
-                            return '<pre>' + ed.dom.encode(a) + '</pre>';
-                        });
-                    }
-                });
+                            o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (a, b, c) {
+                                a = a.replace(/<br\/?>/gi, '\n');
+                                return '<pre>' + ed.dom.encode(a) + '</pre>';
+                            });
+                        }
+                    });
+                }
             });
 
             ed.onInit.add(function () {
@@ -199,8 +201,8 @@
                 }
             });
 
-            ed.onPostProcess.add(function (ed, o) {                
-                if (o.get) {                    
+            ed.onPostProcess.add(function (ed, o) {
+                if (o.get) {
                     // Process converted php
                     if (/(mce-item-php|mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
@@ -448,7 +450,7 @@
 
         // Private internal function
         _clean: function (s) {
-            
+
             // remove javascript comments
             s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
             s = s.replace(/(\n\/\/ \]\]>)$/g, '');
