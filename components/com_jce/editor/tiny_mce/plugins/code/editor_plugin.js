@@ -43,7 +43,7 @@
                 }
             });
 
-            ed.onPreInit.add(function () {
+            ed.onPreInit.add(function () {                
                 if (ed.getParam('code_style')) {
                     //ed.schema.addValidElements('style[scoped|*]');
                     ed.schema.addValidChildren('+body[style]');
@@ -89,6 +89,20 @@
                         }
                     }
                 });
+
+                ed.onPastePreProcess.add(function(ed, o) {
+                    if (ed.settings.preformat_code_on_paste) {
+                        o.content = o.content.replace(/<(script|style)([^>]+)>([\s\S]+?)<\/\1>/gi, function(a, b) {
+                            a = a.replace(/<br\/?>/gi, '\n');
+                            return '<pre>' + ed.dom.encode(a) + '</pre>';
+                        });
+
+                        o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function(a, b, c) {
+                            a = a.replace(/<br\/?>/gi, '\n');
+                            return '<pre>' + ed.dom.encode(a) + '</pre>';
+                        });
+                    }
+                });
             });
 
             ed.onInit.add(function () {
@@ -105,7 +119,7 @@
                             o.name = 'style';
                         }
 
-                        if (o.name === 'span' && /mcePhp/.test(cls)) {
+                        if (o.name === 'span' && /mce-item-php/.test(cls)) {
                             o.name = 'php';
                         }
                     });
@@ -121,7 +135,6 @@
 
                 // test for PHP, Script or Style
                 if (/<(\?|script|style)/.test(o.content)) {
-
                     // Remove javascript if not enabled
                     if (!ed.getParam('code_script')) {
                         o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
@@ -186,10 +199,10 @@
                 }
             });
 
-            ed.onPostProcess.add(function (ed, o) {
-                if (o.get) {
+            ed.onPostProcess.add(function (ed, o) {                
+                if (o.get) {                    
                     // Process converted php
-                    if (/(mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
+                    if (/(mce-item-php|mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
                         o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
@@ -229,7 +242,7 @@
                 s = ed.selection,
                 n = s.getNode();
 
-            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp')) {
+            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mce-item-php')) {
                 ed.undoManager.add();
 
                 ed.dom.remove(n);
