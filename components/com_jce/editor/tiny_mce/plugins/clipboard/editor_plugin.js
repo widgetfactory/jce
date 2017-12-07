@@ -411,27 +411,10 @@
             }
         }
 
-        // Remove all spans (and font, u, strike if inline_styles = true as these would get converted to spans later)
+        // Remove all spans
         if (ed.getParam('clipboard_paste_remove_spans')) {
-            /*h = h.replace(/<\/?(u|strike)[^>]*>/gi, '');
-
-            if (ed.settings.convert_fonts_to_spans) {
-                h = h.replace(/<\/?(font)[^>]*>/gi, '');
-            }*/
-
             h = h.replace(/<\/?(span)[^>]*>/gi, '');
         }
-
-        // replace paragraphs with linebreaks
-        /*if (!ed.getParam('forced_root_block')) {
-            // remove empty paragraphs first
-            if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                h = h.replace(/<p([^>]*)>(\s|&nbsp;|\u00a0)*<\/p>/gi, '');
-            }
-
-            // convert paragraphs to double linebreaks, and remove double linbreaks at the end of a tag
-            h = h.replace(/<\/(p|div)>/gi, '<br /><br />').replace(/<(p|div)([^>]*)>/g, '').replace(/(<br \/>){2,}<\/(\w+)>/gi, '</$2>');
-        }*/
 
         // convert urls in content
         if (ed.getParam('clipboard_paste_convert_urls', true)) {
@@ -520,7 +503,7 @@
                     }
                 });
 
-                each(backgroundStyles, function(def, name) {
+                each(backgroundStyles, function (def, name) {
                     var value = dom.getStyle(n, name);
 
                     if (value === def) {
@@ -685,7 +668,7 @@
             var styles = dom.parseStyle(n.style.cssText);
 
             // check style against styleProps array
-            each(styles, function (v, k) {                
+            each(styles, function (v, k) {
                 if (tinymce.inArray(styleProps, k) != -1) {
                     ns[k] = v;
                     x++;
@@ -1155,6 +1138,16 @@
             ]
         ]);
 
+        // replace <u> and <strike> with styles
+        if (settings.inline_styles) {
+            content = content.replace(/<(u|strike)>/gi, function (match, node) {
+                var value = (node === "u") ? "underline" : "line-through";
+                return '<span style="text-decoration:' + value + ';">';
+            });
+            
+            content = content.replace(/<\/(u|strike)>/g, '</span>');
+        }
+
         // cleanup table border
         content = content.replace(/<table([^>]+)>/, function ($1, $2) {
 
@@ -1215,7 +1208,7 @@
                 node.attr('style', filterStyles(node, node.attr('style')));
 
                 // Remove pointess spans
-                if (node.name == 'span' && node.parent && !node.attributes.length) {                    
+                if (node.name == 'span' && node.parent && !node.attributes.length) {
                     node.unwrap();
                 }
             }
@@ -1569,11 +1562,11 @@
             this.pasteAsPlainText = false;
 
             // Setup plugin events
-            self.onPreProcess       = new tinymce.util.Dispatcher(this);
-            self.onPostProcess      = new tinymce.util.Dispatcher(this);
+            self.onPreProcess = new tinymce.util.Dispatcher(this);
+            self.onPostProcess = new tinymce.util.Dispatcher(this);
 
-            ed.onPastePreProcess    = new tinymce.util.Dispatcher(this);
-            ed.onPastePostProcess   = new tinymce.util.Dispatcher(this); 
+            ed.onPastePreProcess = new tinymce.util.Dispatcher(this);
+            ed.onPastePostProcess = new tinymce.util.Dispatcher(this);
 
             // process quirks
             if (tinymce.isWebKit) {
