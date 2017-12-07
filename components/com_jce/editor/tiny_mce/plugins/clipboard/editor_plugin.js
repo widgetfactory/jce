@@ -1569,8 +1569,11 @@
             this.pasteAsPlainText = false;
 
             // Setup plugin events
-            self.onPreProcess = new tinymce.util.Dispatcher(this);
-            self.onPostProcess = new tinymce.util.Dispatcher(this);
+            self.onPreProcess       = new tinymce.util.Dispatcher(this);
+            self.onPostProcess      = new tinymce.util.Dispatcher(this);
+
+            ed.onPastePreProcess    = new tinymce.util.Dispatcher(this);
+            ed.onPastePostProcess   = new tinymce.util.Dispatcher(this); 
 
             // process quirks
             if (tinymce.isWebKit) {
@@ -1596,11 +1599,13 @@
 
             // Register optional preprocess handler
             self.onPreProcess.add(function (pl, o) {
+                ed.onPastePreProcess.dispatch(ed, o);
                 ed.execCallback('paste_preprocess', pl, o);
             });
 
             // Register optional postprocess
             self.onPostProcess.add(function (pl, o) {
+                ed.onPastePostProcess.dispatch(ed, o);
                 ed.execCallback('paste_postprocess', pl, o);
             });
 
