@@ -398,7 +398,7 @@
         }
 
         // replace double linebreaks with paragraphs, empty paragraphs may be removed later
-        if (rb = ed.getParam('forced_root_block')) {
+        /*if (rb = ed.getParam('forced_root_block')) {
             var blocks = '';
             // only split if a double break exists
             if (h.indexOf('<br><br>') != -1) {
@@ -409,7 +409,7 @@
 
                 h = blocks;
             }
-        }
+        }*/
 
         // Remove all spans
         if (ed.getParam('clipboard_paste_remove_spans')) {
