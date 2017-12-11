@@ -73,7 +73,7 @@
     background: url(../img/ext.png) no-repeat 0 -320px;
 }
 /* Microsoft Powerpoint */
-.file.ppt, .file.pptx {
+.file.ppt, .file.pptx, .file.pps, .file.ppsx {
     background: url(../img/ext.png) no-repeat 0 -380px;
 }
 /* Adobe® Acrobat */
