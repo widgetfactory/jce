@@ -1,9 +1,7 @@
 /**
- * @version		$Id: editor_plugin.js 250 2011-06-29 13:26:28Z happy_noodle_boy $
- * @package      JCE
- * @copyright    Copyright (C) 2005 - 2009 Ryan Demmer. All rights reserved.
- * @author		Ryan Demmer
- * @license      GNU/GPL
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved.
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -67,24 +65,34 @@
                     }
                 });
 
-                // Convert span placeholders to script elements
-                ed.serializer.addNodeFilter('script,div,span', function (nodes, name, args) {
+                ed.parser.addNodeFilter('pre', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i];
+                        var node = nodes[i], cls = node.attr('class');
 
-                        if (node.name == 'span' && /mce-item-script/.test(node.attr('class'))) {
+                        if (/mce-item-curlycode/.test(cls)) {
+                            node.unwrap();
+                        }
+                    }
+                });
+
+                // Convert span placeholders to script elements
+                ed.serializer.addNodeFilter('script,div,span,pre', function (nodes, name, args) {
+                    for (var i = 0, len = nodes.length; i < len; i++) {
+                        var node = nodes[i], cls = node.attr('class');
+
+                        if (name == 'span' && /mce-item-script/.test(cls)) {
                             self._buildScript(node);
                         }
 
-                        if (node.name == 'span' && /mce-item-style/.test(node.attr('class'))) {
+                        if (name == 'span' && /mce-item-style/.test(cls)) {
                             self._buildStyle(node);
                         }
 
-                        /*if (/mce-item-curlycode/.test(node.attr('class'))) {
+                        if (name === "pre" && /mce-item-shortcode/.test(cls)) {
                             node.unwrap();
-                        }*/
+                        }
 
-                        if (node.name == 'div' && node.attr('data-mce-type') == 'noscript') {
+                        if (name == 'div' && node.attr('data-mce-type') == 'noscript') {
                             self._buildNoScript(node);
                         }
                     }
@@ -113,16 +121,22 @@
                     ed.theme.onResolveName.add(function (theme, o) {
                         var cls = o.node.className;
 
-                        if (o.name === 'span' && /mce-item-script/.test(cls)) {
-                            o.name = 'script';
+                        if (o.name === "span") {
+                            if (/mce-item-script/.test(cls)) {
+                                o.name = 'script';
+                            }
+    
+                            if (/mce-item-style/.test(cls)) {
+                                o.name = 'style';
+                            }
+    
+                            if (/mce-item-php/.test(cls)) {
+                                o.name = 'php';
+                            }
                         }
 
-                        if (o.name === 'span' && /mce-item-style/.test(cls)) {
-                            o.name = 'style';
-                        }
-
-                        if (o.name === 'span' && /mce-item-php/.test(cls)) {
-                            o.name = 'php';
+                        if (o.name === "pre.mce-item-shortcode") {
+                            o.name = 'shortcode';
                         }
                     });
 
@@ -133,7 +147,23 @@
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {
-                //self._convertCurlyCode(o.content);
+
+                o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function(match, tag, attribs, content) {
+                    var data = '{' + tag + attribs + '}';
+
+                    // if there is content, there must be a closing tag
+                    if (content) {
+                        // encode html-like syntax
+                        if (/</.test(content)) {
+                            content = ed.dom.encode(content);
+                        }
+                        
+                        data += content;
+                        data += '{/' + tag + '}';
+                    }
+                   
+                    return '<pre class="mce-item-shortcode">' + data + '</pre>';
+                });
 
                 // test for PHP, Script or Style
                 if (/<(\?|script|style)/.test(o.content)) {
@@ -259,13 +289,7 @@
                 }
             }
         },
-        _convertCurlyCode: function (content) {
-            // open / close type code eg: {youtube}url{/youtube}
-            content = content.replace(/\{([\w]+)\b([^\}]*)\}([\s\S]+?)\{\/\1\}/, '<div class="mce-item-curlycode" data-mce-type="code-item">{$1$2}$3{/$1}</div>');
 
-            // single tag code type eg: {code}
-            content = content.replace(/\{([^\}]+)\}/, '<span class="mce-item-curlycode" data-mce-type="code-item">{$1}</span>');
-        },
         _buildScript: function (n) {
             var self = this,
                 ed = this.editor,
