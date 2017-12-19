@@ -37,10 +37,16 @@
             }
 
             ed.onPreInit.add(function () {
-
                 if (ed.settings.verify_html !== false) {
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
+
+                    // allow empty elements. There really is no need to remove them...
+                    each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
+                        if (elements[name]) {
+                            elements[name].removeEmpty = false;
+                        }
+                    });
 
                     if (!ed.getParam('pad_empty_tags', true)) {
                         each(elements, function (v, k) {
@@ -83,14 +89,14 @@
                                 expr === "$=" ? value.substr(value.length - check.length) === check :
                                 false;
                         }
-                        
+
                         function replaceAttributeValue(nodes, name, expr, check) {
                             var i = nodes.length,
                                 node;
 
                             while (i--) {
                                 node = nodes[i];
-                                
+
                                 var value = node.attr(name);
 
                                 if (!value) {
@@ -127,7 +133,7 @@
                                     expr = '';
                                 }
 
-                                if (typeof expr !== "undefined") {                                    
+                                if (typeof expr !== "undefined") {
                                     // all tags
                                     if (tag == '*') {
                                         ed.parser.addAttributeFilter(attrib, function (nodes, name) {
@@ -176,27 +182,28 @@
                 }
 
                 // try and keep empty a tags that are not anchors, process bootstrap icons
-                ed.parser.addNodeFilter('a,i,span', function (nodes, name) {
+                ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
                     var i = nodes.length,
                         node, cls;
 
                     while (i--) {
-                        node = nodes[i], cls = node.attr('class');
+                        node = nodes[i], cls = (node.attr('class') || name === "li");
                         // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
                         if (cls && !node.firstChild) {
-                            node.attr('data-mce-bootstrap', '1');
+                            node.attr('data-mce-empty', '1');
                             node.append(new Node('#text', '3')).value = '\u00a0';
                         }
                     }
                 });
+
                 // cleanup padded "bootstrap" tags
-                ed.serializer.addAttributeFilter('data-mce-bootstrap', function (nodes, name) {
+                ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
                     var i = nodes.length,
                         node, fc;
 
                     while (i--) {
                         node = nodes[i], fc = node.firstChild;
-                        node.attr('data-mce-bootstrap', null);
+                        node.attr('data-mce-empty', null);
 
                         if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
                             fc.remove();
@@ -319,10 +326,13 @@
 
                 // padd some empty tags
                 o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+
+                // padd list elements
+                o.content = o.content.replace(/<li>/, '<li data-mce-empty="1">&nbsp;</li>');
             });
 
             // Cleanup callback
-            ed.onPostProcess.add(function (ed, o) {                
+            ed.onPostProcess.add(function (ed, o) {
                 if (o.set) {
                     // Geshi
                     o.content = self.convertFromGeshi(o.content);
@@ -357,6 +367,9 @@
 
                     // clean empty tags
                     o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+
+                    // clean empty list tags
+                    o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
 
                     // remove padding on div (legacy)
                     if (ed.getParam('remove_div_padding')) {
