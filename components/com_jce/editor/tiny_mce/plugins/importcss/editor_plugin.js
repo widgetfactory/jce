@@ -184,7 +184,7 @@
             var filtered = {};
 
             function isAllowedStylesheet(href) {
-                var styleselect = ed.getParam('styleselect_stylesheet');
+                var styleselect = ed.getParam('styleselect_stylesheets');
 
                 if (!styleselect) {
                     return true;

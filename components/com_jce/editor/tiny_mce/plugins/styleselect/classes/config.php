@@ -163,10 +163,10 @@ class WFStyleselectPluginConfig
             if (!empty($stylesheet)) {
                 $stylesheet = trim($stylesheet);
                 $stylesheet = str_replace('$template', $templates[0], $stylesheet);
-                $settings['styleselect_stylesheet'] = $stylesheet;
+                $settings['styleselect_stylesheets'] = $stylesheet;
 
                 // add the stylesheet to the content_css setting
-                $stylesheet = ltrim('/', $stylesheet);
+                $stylesheet = trim($stylesheet, "/");
                 $etag = "";
 
                 if (is_file(JPATH_SITE . '/' . $stylesheet)) {
