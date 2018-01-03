@@ -601,7 +601,7 @@
         }
 
         // replace paragraphs with linebreaks
-        if (!ed.getParam('forced_root_block')) {
+        /*if (!ed.getParam('forced_root_block')) {
             var frag = dom.createFragment('<br /><br />');
 
             each(dom.select('p,div', o.node), function (n) {
@@ -612,7 +612,7 @@
 
                 dom.remove(n, 1);
             });
-        }
+        }*/
     }
 
     /**
