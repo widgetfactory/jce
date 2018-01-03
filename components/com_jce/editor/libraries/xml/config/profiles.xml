@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <params group="setup">
-        <!--param name="dialog_theme" type="folderlist" directory="components/com_jce/editor/libraries/css/jquery" hide_none="true" hide_default="true" default="smoothness" label="WF_PARAM_EDITOR_DIALOG_THEME" description="WF_PARAM_EDITOR_DIALOG_THEME_DESC" /-->
         <!-- URLS -->
         <param name="relative_urls" type="radio" default="1" label="WF_PARAM_RELATIVE" description="WF_PARAM_RELATIVE_DESC">
             <option value="1">WF_OPTION_YES</option>
@@ -33,15 +32,6 @@
             <option value="2">WF_PARAM_CSS_INHERIT</option>
         </param>
         <param name="profile_content_css_custom" placeholder="eg: templates/$template/css/content.css" type="textarea" rows="2" cols="55" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" parent="profile_content_css[0,1]" />
-        <!--param name="theme_advanced_styles" type="text" size="100" default="" label="WF_PARAM_STYLES" description="WF_PARAM_STYLES_DESC" placeholder="eg: Style1=style1,Style2=style2,Style3=style3" /-->
-        <!--param name="custom_styles" type="styleformat" default="" label="WF_PARAM_CUSTOM_STYLES" description="WF_PARAM_CUSTOM_STYLES_DESC" parent="profile_content_css[0,1]" /-->
-        <!-- Formatting parameters -->
-        <!--param name="theme_advanced_blockformats" type="blockformats" default="" label="WF_PARAM_BLOCK_FORMAT" description="WF_PARAM_BLOCK_FORMAT_DESC"/-->
-        <!--param name="fonts" type="fonts" default="" label="WF_PARAM_FONTS" description="WF_PARAM_FONTS_DESC" /-->
-
-        <!--param name="theme_advanced_fonts_add" type="text" size="100" default="" label="WF_PARAM_FONT_ADD" description="WF_PARAM_FONT_ADD_DESC" placeholder="eg: Arial=arial,helvetica,sans-serif;Georgia=georgia,palatino" />
-        <param name="theme_advanced_fonts_remove" type="text" size="100" default="" label="WF_PARAM_FONT_REMOVE" description="WF_PARAM_FONT_REMOVE_DESC" placeholder="eg: Arial;Georgia;Courier New" /-->
-        <!--param name="theme_advanced_font_sizes" type="text" size="100" default="" placeholder="eg: 8pt,10pt,12pt,14pt,18pt,24pt,36pt" label="WF_PARAM_FONT_SIZES" description="WF_PARAM_FONT_SIZES_DESC" /-->
         <param name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
     </params>
     <params group="filesystem">
@@ -100,8 +90,6 @@
 
     </params>
 
-    <!--params group="image" file="components/com_jce/editor/libraries/pro/xml/image.xml" /-->
-
     <params group="advanced">
 	<!-- Elements -->
         <param name="invalid_elements" type="text" size="50" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC" />
@@ -120,9 +108,11 @@
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param>
-        <!--param name="cdata" type="radio" default="1" label="WF_PARAM_CDATA" description="WF_PARAM_CDATA_DESC">
+
+        <!--param name="protect_shortcode" type="radio" default="0" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param-->
+
     </params>
 </config>

@@ -67,7 +67,8 @@
 
                 ed.parser.addNodeFilter('pre', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i], cls = node.attr('class');
+                        var node = nodes[i],
+                            cls = node.attr('class');
 
                         if (/mce-item-curlycode/.test(cls)) {
                             node.unwrap();
@@ -78,7 +79,8 @@
                 // Convert span placeholders to script elements
                 ed.serializer.addNodeFilter('script,div,span,pre', function (nodes, name, args) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i], cls = node.attr('class');
+                        var node = nodes[i],
+                            cls = node.attr('class');
 
                         if (name == 'span' && /mce-item-script/.test(cls)) {
                             self._buildScript(node);
@@ -125,11 +127,11 @@
                             if (/mce-item-script/.test(cls)) {
                                 o.name = 'script';
                             }
-    
+
                             if (/mce-item-style/.test(cls)) {
                                 o.name = 'style';
                             }
-    
+
                             if (/mce-item-php/.test(cls)) {
                                 o.name = 'php';
                             }
@@ -148,22 +150,24 @@
 
             ed.onBeforeSetContent.add(function (ed, o) {
 
-                o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function(match, tag, attribs, content) {
-                    var data = '{' + tag + attribs + '}';
+                if (ed.settings.code_protect_shortcode) {
+                    o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function (match, tag, attribs, content) {
+                        var data = '{' + tag + attribs + '}';
 
-                    // if there is content, there must be a closing tag
-                    if (content) {
-                        // encode html-like syntax
-                        if (/</.test(content)) {
-                            content = ed.dom.encode(content);
+                        // if there is content, there must be a closing tag
+                        if (content) {
+                            // encode html-like syntax
+                            if (/</.test(content)) {
+                                content = ed.dom.encode(content);
+                            }
+
+                            data += content;
+                            data += '{/' + tag + '}';
                         }
-                        
-                        data += content;
-                        data += '{/' + tag + '}';
-                    }
-                   
-                    return '<pre class="mce-item-shortcode">' + data + '</pre>';
-                });
+
+                        return '<pre class="mce-item-shortcode">' + data + '</pre>';
+                    });
+                }
 
                 // test for PHP, Script or Style
                 if (/<(\?|script|style)/.test(o.content)) {
