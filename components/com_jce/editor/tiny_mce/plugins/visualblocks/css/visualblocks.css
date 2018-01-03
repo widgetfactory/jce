@@ -6,7 +6,7 @@ h4,
 h5,
 h6,
 aside,
-div,
+div:not([data-mce-bogus]),
 section,
 article,
 blockquote,
@@ -162,4 +162,8 @@ dd::before {
 
 .mce-item-shortcode::before {
     content: "SHORTCODE"
+}
+
+div[data-mce-bogus]::before {
+    content: "";
 }
