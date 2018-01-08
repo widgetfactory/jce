@@ -266,8 +266,8 @@ class WFFileBrowser extends JObject
     }
 
     public function setFileTypes($list = 'jpg,jpeg,png,gif')
-    {
-        if ($list{0} === '=') {
+    {        
+        if ($list && $list[0] === '=') {
             $list = substr($list, 1);
         }
 
