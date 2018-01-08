@@ -62,6 +62,145 @@
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
+    var isMsEdge = function () {
+        return navigator.userAgent.indexOf(' Edge/') !== -1;
+    };
+
+    var InternalHtml = function () {
+        var internalMimeType = 'x-tinymce/html';
+        var internalMark = '<!-- ' + internalMimeType + ' -->';
+
+        var mark = function (html) {
+            return internalMark + html;
+        };
+
+        var unmark = function (html) {
+            return html.replace(internalMark, '');
+        };
+
+        var isMarked = function (html) {
+            return html.indexOf(internalMark) !== -1;
+        };
+
+        return {
+            mark: mark,
+            unmark: unmark,
+            isMarked: isMarked,
+            internalHtmlMime: function () {
+                return internalMimeType;
+            }
+        };
+    };
+
+    var InternalHtml = new InternalHtml();
+
+    var CutCopy = function (editor) {
+        var noop = function () {};
+
+        var hasWorkingClipboardApi = function (clipboardData) {            
+            // iOS supports the clipboardData API but it doesn't do anything for cut operations
+            // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11780845/
+            return tinymce.isIOS === false && clipboardData !== undefined && typeof clipboardData.setData === 'function' && isMsEdge() !== true;
+        };
+
+        var setHtml5Clipboard = function (clipboardData, html, text) {
+            if (hasWorkingClipboardApi(clipboardData)) {                
+                try {
+                    clipboardData.clearData();
+                    clipboardData.setData('text/html', html);
+                    clipboardData.setData('text/plain', text);
+                    clipboardData.setData(InternalHtml.internalHtmlMime(), html);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        };
+
+        var setClipboardData = function (evt, data, fallback, done) {
+            if (setHtml5Clipboard(evt.clipboardData, data.html, data.text)) {
+                evt.preventDefault();
+                done();
+            } else {
+                fallback(data.html, done);
+            }
+        };
+
+        var fallback = function (editor) {
+            return function (html, done) {
+                var markedHtml = InternalHtml.mark(html);
+                var outer = editor.dom.create('div', {
+                    contenteditable: "false",
+                    "data-mce-bogus": "all"
+                });
+                var inner = editor.dom.create('div', {
+                    contenteditable: "true"
+                }, markedHtml);
+                editor.dom.setStyles(outer, {
+                    position: 'fixed',
+                    left: '-3000px',
+                    width: '1000px',
+                    overflow: 'hidden'
+                });
+                outer.appendChild(inner);
+                editor.dom.add(editor.getBody(), outer);
+
+                var range = editor.selection.getRng();
+                inner.focus();
+
+                var offscreenRange = editor.dom.createRng();
+                offscreenRange.selectNodeContents(inner);
+                editor.selection.setRng(offscreenRange);
+
+                setTimeout(function () {
+                    outer.parentNode.removeChild(outer);
+                    editor.selection.setRng(range);
+                    done();
+                }, 0);
+            };
+        };
+
+        var getData = function (editor) {
+            return {
+                html: editor.selection.getContent({
+                    contextual: true
+                }),
+                text: editor.selection.getContent({
+                    format: 'text'
+                })
+            };
+        };
+
+        var cut = function (editor, evt) {
+            if (editor.selection.isCollapsed() === false) {
+                setClipboardData(evt, getData(editor), fallback(editor), function () {
+                    // Chrome fails to execCommand from another execCommand with this message:
+                    // "We don't execute document.execCommand() this time, because it is called recursively.""
+                    setTimeout(function () { // detach
+                        editor.execCommand('Delete');
+                    }, 0);
+                });
+            }
+        };
+
+        var copy = function (editor, evt) {
+            if (editor.selection.isCollapsed() === false) {
+                setClipboardData(evt, getData(editor), fallback(editor), noop);
+            }
+        };
+
+        var register = function (editor) {
+            editor.onCut.add(cut);
+            editor.onCopy.add(copy);
+        };
+
+        return {
+            register: register
+        };
+    };
+
     function filter(content, items) {
         each(items, function (v) {
             if (v.constructor == RegExp) {
@@ -1144,7 +1283,7 @@
                 var value = (node === "u") ? "underline" : "line-through";
                 return '<span style="text-decoration:' + value + ';">';
             });
-            
+
             content = content.replace(/<\/(u|strike)>/g, '</span>');
         }
 
@@ -1551,6 +1690,8 @@
             self.editor = ed;
             self.url = url;
 
+            new CutCopy().register(ed);
+
             var pasteBinElm, lastRng, keyboardPasteTimeStamp = 0;
             var pasteBinDefaultContent = '%MCEPASTEBIN%',
                 keyboardPastePlainTextState;
@@ -1698,7 +1839,7 @@
             }
 
             // This function executes the process handlers and inserts the contents
-            function insertClipboardContent(clipboardContent) {
+            function insertClipboardContent(clipboardContent, internal) {
                 var content, isPlainTextHtml;
 
                 // get html content
@@ -1713,7 +1854,7 @@
 
                 // paste text
                 if (self.pasteAsPlainText) {
-                    isPlainTextHtml = new Newlines().isPlainText(content);
+                    isPlainTextHtml = (internal === false && new Newlines().isPlainText(content));
 
                     // Use plain text contents from Clipboard API unless the HTML contains paragraphs then
                     // we should convert the HTML to plain text since works better when pasting HTML/Word contents as plain text
@@ -2012,6 +2153,8 @@
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
 
+                var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
+
                 // use plain text
                 if (isPlainTextPaste(clipboardContent)) {
                     e.preventDefault();
@@ -2027,8 +2170,13 @@
 
                 // use html from clipboard API
                 if (hasContentType(clipboardContent, "text/html")) {
+                    // if clipboard lacks internal mime type, inspect html for internal markings
+                    if (!internal) {
+                        internal = InternalHtml.isMarked(clipboardContent['text/html']);
+                    }
+
                     e.preventDefault();
-                    insertClipboardContent(clipboardContent);
+                    insertClipboardContent(clipboardContent, internal);
 
                     return;
                 }
