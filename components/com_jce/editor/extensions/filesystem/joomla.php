@@ -668,17 +668,28 @@ class WFJoomlaFileSystem extends WFFileSystem
         // get overwrite state
         $conflict = $this->get('upload_conflict', 'overwrite');
         // get suffix
-        $suffix = WFFileBrowser::getFileSuffix();
+        $suffix = $this->get('upload_suffix', '_copy');
 
         if ($conflict == 'unique') {
             // get extension
             $extension = JFile::getExt($name);
             // get name without extension
             $name = JFile::stripExt($name);
+            // create tmp copy
+            $tmpname = $name;
+
+            $x = 1;
 
             while (JFile::exists($dest)) {
-                $name .= $suffix;
-                $dest = WFUtility::makePath($path, $name.'.'.$extension);
+                if (strpos($suffix, '$') !== false) {
+                    $tmpname = $name . str_replace('$', $x, $suffix); 
+                } else {
+                    $tmpname .= $suffix;
+                }
+
+                $dest = WFUtility::makePath($path, $tmpname.'.'.$extension);
+
+                $x++;
             }
         }
 

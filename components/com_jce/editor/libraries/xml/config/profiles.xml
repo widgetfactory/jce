@@ -45,6 +45,8 @@
             <option value="unique">WF_PARAM_UPLOAD_EXISTS_UNIQUE</option>
             <option value="overwrite">WF_PARAM_UPLOAD_EXISTS_OVERWRITE</option>
         </param>
+        <param name="upload_suffix" placeholder="_copy" max="" type="text" default="" label="WF_PARAM_UPLOAD_SUFFIX" description="WF_PARAM_UPLOAD_SUFFIX_DESC" parent="upload_conflict[unique]" />
+        
         <param name="browser_position" type="list" default="bottom" label="WF_PARAM_BROWSER_POSITION" description="WF_PARAM_BROWSER_POSITION_DESC">
             <option value="top">WF_LABEL_TOP</option>
             <option value="bottom">WF_LABEL_BOTTOM</option>

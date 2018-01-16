@@ -182,6 +182,7 @@ class WFFileBrowser extends JObject
             $config = array(
                 'dir' => $this->get('dir'),
                 'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
+                'upload_suffix' => $wf->getParam('editor.upload_suffix', '_copy'),
                 'filetypes' => $this->listFileTypes(),
             );
 
@@ -931,13 +932,6 @@ class WFFileBrowser extends JObject
         } else {
             return $this->image('libraries.icons/def.gif');
         }
-    }
-
-    public function getFileSuffix()
-    {
-        $suffix = WFText::_('WF_MANAGER_FILE_SUFFIX');
-
-        return str_replace('WF_MANAGER_FILE_SUFFIX', '_copy', $suffix);
     }
 
     private function validateUploadedFile($file)

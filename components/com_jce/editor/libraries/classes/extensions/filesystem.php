@@ -26,7 +26,7 @@ class WFFileSystem extends WFExtension
             'upload' => array(
                 'stream' => false,
                 'chunking' => false,
-                'unique_filenames' => false,
+                'unique_filenames' => false
             ),
         )));
     }
