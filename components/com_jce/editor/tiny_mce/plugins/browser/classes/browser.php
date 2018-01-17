@@ -32,11 +32,11 @@ class WFFileBrowserPlugin extends WFMediaManager
         // get the plugin that opened the file browser
         $caller = $this->get('caller', 'browser');
 
-        // get legacy filetypes
-        $filter = JRequest::getVar('filter', '');
+        // get mediatype from xml
+        $mediatype = JRequest::getVar('mediatype', 'files');
 
         // clean filter value
-        $filter = (string) preg_replace('/[^\w_,]/i', '', $filter);
+        $mediatype = (string) preg_replace('/[^\w_,]/i', '', $mediatype);
 
         // get filetypes from params
         $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
@@ -45,14 +45,13 @@ class WFFileBrowserPlugin extends WFMediaManager
             "images" => "jpg,jpeg,png,gif",
             "media"  => "avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap",
             "html"   => "html,htm,txt",
-            "files"  => $filetypes,
-            "raw"    => $filetypes
+            "files"  => $filetypes
         );
 
-        if (array_key_exists($filter, $map)) {
-            $filetypes = $map[$filter];
+        if (array_key_exists($mediatype, $map)) {
+            $filetypes = $map[$mediatype];
         } else {
-            $filetypes = $filter;
+            $filetypes = $mediatype;
         }
 
         // set filetypes

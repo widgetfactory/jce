@@ -41,7 +41,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $result = parent::setup($element, $value, $group);
 
         if ($result === true) {
-            $this->filter = isset($this->element['filter']) ? (string) $this->element['filter'] : 'images';
+            $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
         }
 
         return $result;
@@ -62,7 +62,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
-        $this->link = WFBrowserHelper::getMediaFieldLink('', $this->filter);
+        $this->link = WFBrowserHelper::getMediaFieldLink('', $this->mediatype);
 
         // Get the basic field data
         $data = parent::getLayoutData();

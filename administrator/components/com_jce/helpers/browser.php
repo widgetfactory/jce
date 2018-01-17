@@ -12,18 +12,18 @@ defined('_JEXEC') or die('RESTRICTED');
 
 abstract class WFBrowserHelper
 {
-    public static function getBrowserLink($element = null, $filter = '', $callback = '')
+    public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
     {
         require_once dirname(dirname(__FILE__)) . '/models/model.php';
 
         $model = new WFModel();
 
-        return $model->getBrowserLink($element, $filter, $callback);
+        return $model->getBrowserLink($element, $mediatype, $callback);
     }
 
-    public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
+    public static function getMediaFieldLink($element = null, $mediatype = 'images', $callback = '')
     {
-        $link = self::getBrowserLink($element, $filter, $callback);
+        $link = self::getBrowserLink($element, $mediatype, $callback);
 
         return $link;
     }

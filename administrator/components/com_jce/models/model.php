@@ -105,7 +105,7 @@ class WFModel extends WFModelBase
         }
     }
 
-    public static function getBrowserLink($element = null, $filter = '', $callback = '')
+    public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
     {
         // load base classes
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
@@ -133,8 +133,8 @@ class WFModel extends WFModelBase
                 $url .= '&element=' . $element;
             }
 
-            if ($filter) {
-                $url .= '&filter=' . $filter;
+            if ($mediatype) {
+                $url .= '&mediatype=' . $mediatype;
             }
 
             if ($callback) {
