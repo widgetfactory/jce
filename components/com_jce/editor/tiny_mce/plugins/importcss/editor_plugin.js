@@ -57,7 +57,7 @@
             var inlineSelectorElements = tinymce.makeMap('a,img');
 
             // element.class - Produce block formats
-            if (selector[1]) {
+            if (elementName) {
                 format = {
                     title: selectorText
                 };
