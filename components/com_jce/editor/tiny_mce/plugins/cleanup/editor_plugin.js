@@ -328,7 +328,7 @@
                 o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
 
                 // padd list elements
-                o.content = o.content.replace(/<li>/, '<li data-mce-empty="1">&nbsp;</li>');
+                o.content = o.content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
             });
 
             // Cleanup callback
