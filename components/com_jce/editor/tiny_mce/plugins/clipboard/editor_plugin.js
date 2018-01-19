@@ -448,6 +448,11 @@
         var editor = self.editor,
             content = o.content;
 
+        // skip internal content
+        if (o.internal) {
+            return;
+        }
+
         if (isWordContent(editor, o.content)) {
             return;
         }
@@ -455,7 +460,7 @@
         // Filter away styles that isn't matching the target node
         var webKitStyles = editor.settings.paste_webkit_styles;
 
-        if (editor.settings.clipboard_paste_remove_styles_if_webkit === false || webKitStyles == "all") {
+        if (editor.settings.clipboard_paste_remove_styles_if_webkit !== true || webKitStyles == "all") {
             return;
         }
 
@@ -1811,10 +1816,11 @@
                 pasteHtml(text);
             }
 
-            function pasteHtml(content) {
+            function pasteHtml(content, internal) {
                 // create object to process
                 var o = {
-                    content: content
+                    content: content,
+                    internal : internal
                 };
 
                 // Execute pre process handlers
@@ -1870,7 +1876,7 @@
                 }
 
                 // paste HTML
-                pasteHtml(content);
+                pasteHtml(content, internal);
             }
 
             /**
