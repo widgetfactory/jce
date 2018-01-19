@@ -779,9 +779,9 @@
             editor.addQueryStateHandler('InsertOrderedList', queryListCommandState('OL'));
             editor.addQueryStateHandler('InsertDefinitionList', queryListCommandState('DL'));
 
-            editor.onKeyDown.add(function (e) {
+            editor.onKeyDown.add(function (ed, e) {                
                 // Check for tab but not ctrl/cmd+tab since it switches browser tabs
-                if (e.keyCode != 9 || tinymce.util.VK.metaKeyPressed(e)) {
+                if (e.keyCode != 9 || tinymce.VK.metaKeyPressed(e)) {
                     return;
                 }
 
@@ -795,11 +795,11 @@
                     }
                 }
 
-                if (e.keyCode == tinymce.util.VK.BACKSPACE) {
+                if (e.keyCode == tinymce.VK.BACKSPACE) {
                     if (self.backspaceDelete()) {
                         e.preventDefault();
                     }
-                } else if (e.keyCode == tinymce.util.VK.DELETE) {
+                } else if (e.keyCode == tinymce.VK.DELETE) {
                     if (self.backspaceDelete(true)) {
                         e.preventDefault();
                     }
