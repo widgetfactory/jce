@@ -77,8 +77,7 @@
                 format = {
                     inline: "span",
                     selector: '*',
-                    title: selectorText.substr(1),
-                    classes: classes
+                    title: selectorText.substr(1)
                 };
             }
 
