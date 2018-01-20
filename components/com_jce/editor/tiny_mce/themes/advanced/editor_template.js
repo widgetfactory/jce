@@ -272,11 +272,10 @@
             DOM.insertAfter(p, n);
 
             Event.add(ed.id + '_path_row', 'click', function (e) {
-                e = e.target;
+                e = DOM.getParent(e.target, 'a');
 
-                if (e.nodeName == 'A') {
+                if (e && e.nodeName == 'A') {
                     t._sel(e.className.replace(/^.*mcePath_([0-9]+).*$/, '$1'));
-
                     return false;
                 }
             });
@@ -809,14 +808,13 @@
                     ti = na.title;
                     na = na.name;
 
-                    //u = "javascript:tinymce.EditorManager.get('" + ed.id + "').theme._sel('" + (de++) + "');";
                     pi = DOM.create('a', {
                         'href': "javascript:;",
                         role: 'button',
                         onmousedown: "return false;",
                         title: ti,
                         'class': 'mcePath_' + (de++)
-                    }, na);
+                    }, '<span class="mceText">' + na + '</span>');
 
                     // WFEditor - Added mcePath class to path span
 
@@ -840,6 +838,24 @@
                         }
                     }, DOM);
                 }
+
+                var row = DOM.get(ed.id + "_path_row"), status = row.parentNode, mod = 20;
+
+                tinymce.each(status.childNodes, function(n) {
+                    if (DOM.hasClass(n, 'mcePathRow')) {
+                        return true;
+                    }
+
+                    mod += n.offsetWidth;
+                });
+
+                tinymce.each(DOM.select('a', p), function(n) {                    
+                    DOM.removeClass(n, 'mcePathHidden');
+                    
+                    if((p.offsetWidth + mod + DOM.getPrev(p, '.mcePathLabel').offsetWidth) > status.offsetWidth) {
+                        DOM.addClass(n, 'mcePathHidden');
+                    }    
+                });
             }
         },
         // Commands gets called by execCommand

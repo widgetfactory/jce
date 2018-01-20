@@ -1395,6 +1395,15 @@ div.mcePathRow {
     overflow: hidden;
 }
 
+.mcePathHidden .mceText {
+    display: none;
+}
+
+.mcePathHidden:after {
+    content: "...";
+    display: inline-block;
+}
+
 span.mcePathLabel {
     position: relative;
     display: inline-block;
@@ -1404,6 +1413,12 @@ span.mcePathLabel {
 
 span.mcePathPath {
     display: inline-block;
+}
+
+.mceStatusbar div.mceWordCount {
+    float: right;
+    vertical-align: middle;
+    line-height: 18px;
 }
 
 .defaultSkin.mce_search .mceButtonDialog label,
