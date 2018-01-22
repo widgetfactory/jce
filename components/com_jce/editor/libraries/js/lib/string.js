@@ -212,8 +212,13 @@
             if (/^\s*www\./.test(s)) {
                 s = 'http://' + s;
             }
+
+            // the url contains "shortcode" characters, skip encoding
+            if (s.indexOf('{') !== -1) {
+                return s;
+            }
+
             return s.replace(/ /g, '%20');
-            //return  this.encodeURI(s, true);
         },
         /**
          * From TinyMCE form_utils.js function, slightly modified.
