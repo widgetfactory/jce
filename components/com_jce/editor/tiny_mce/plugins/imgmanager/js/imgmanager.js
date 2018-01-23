@@ -296,8 +296,11 @@
 
                 ed.dom.setAttribs('__mce_tmp', args);
                 ed.dom.setAttrib('__mce_tmp', 'id', '');
-                ed.undoManager.add();
             }
+
+            ed.undoManager.add();
+
+            ed.nodeChanged();
 
             tinyMCEPopup.close();
         },

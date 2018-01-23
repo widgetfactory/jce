@@ -404,8 +404,6 @@
 
             var txt = $('#text').val();
 
-            ed.undoManager.add();
-
             // no selection
             if (se.isCollapsed()) {
                 ed.execCommand('mceInsertContent', false, '<a href="' + args.href + '" id="__mce_tmp">' + txt + '</a>', {
@@ -481,6 +479,10 @@
 
             // Create or remove popup
             WFPopups.createPopup(el);
+
+            ed.undoManager.add();
+
+            ed.nodeChanged();
 
             // close dialog
             tinyMCEPopup.close();
