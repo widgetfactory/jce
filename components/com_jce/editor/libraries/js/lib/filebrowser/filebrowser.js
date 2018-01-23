@@ -440,6 +440,11 @@
                 self.refresh(e);
             });
 
+            if (!this._treeLoaded()) {
+                $(this).toggleClass('uk-active');
+                $('main').toggleClass('uk-tree-hidden');
+            }
+
             // Details button
             $('#show-details:visible').click(function (e) {
                 $(this).toggleClass('uk-active');
