@@ -95,7 +95,12 @@ class WFStyleselectPluginConfig
 
                     // clean up classes
                     if (isset($style->selector)) {
-                        $style->selector = self::cleanString($style->selector);
+                        $selector = self::cleanString($style->selector);
+
+                        // clean up selector to allow element and class only
+                        $selector = preg_replace('#[^a-z0-9,\.]+#', '', $selector);
+
+                        $style->selector = trim($selector);
                     }
 
                     // clean up classes
