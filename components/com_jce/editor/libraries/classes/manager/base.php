@@ -221,6 +221,25 @@ class WFMediaManagerBase extends WFEditorPlugin
             return $data;
         }
 
+        // svg
+        if (preg_match('#\.svg$#i', $file)) {
+            $svg = @simplexml_load_file($path);
+
+            if ($svg && isset($svg['viewBox'])) {
+                list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
+                
+                $width 	= (int) $end_x;
+                $height	= (int) $end_y;
+                
+                if ($width && $height) {
+                    $data['width'] 	= $width;
+                    $data['height']	= $height;
+
+                    return $data;
+                }
+            }
+        }
+
         // video and audio
         if (preg_match('#\.(avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mpeg|m4a|swf|dcr|rm|ra|ram|divx|mp4|ogv|ogg|webm|flv|f4v|mp3|ogg|wav|xap)$#i', $file)) {
 
