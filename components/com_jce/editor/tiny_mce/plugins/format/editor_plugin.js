@@ -65,6 +65,26 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+                // footer
+                ed.formatter.register('footer', {
+                    block: 'footer',
+                    remove: 'all',
+                    wrapper: true,
+                    merge_siblings: false
+                });
+                // cite
+                ed.formatter.register('cite', {
+                    block: 'cite',
+                    remove: 'all',
+                    wrapper: true,
+                    merge_siblings: false
+                });
+                // footer
+                ed.formatter.register('q', {
+                    inline: 'q',
+                    remove: 'all',
+                    merge_siblings: false
+                });
                 // code
                 ed.formatter.register('code', {
                     inline: 'code',
@@ -87,7 +107,7 @@
 
             // update with HMTL5 tags
             ed.settings.removeformat = [{
-                selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q',
+                selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
                 remove: 'all',
                 split: true,
                 expand: false,
