@@ -162,7 +162,7 @@
             };
         };
 
-        var getData = function (editor) {
+        var getData = function (editor) {            
             return {
                 html: editor.selection.getContent({
                     contextual: true
@@ -502,7 +502,7 @@
 
                 return before + after;
             });
-        } else {
+        } else {            
             // Remove all external styles
             content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, '$1$3');
         }
@@ -1849,7 +1849,8 @@
                 var content, isPlainTextHtml;
 
                 // get html content
-                content = clipboardContent['text/html'];
+                content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
+
                 // trim
                 content = trimHtml(content);
 
