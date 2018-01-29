@@ -26,10 +26,14 @@
         'code': 'advanced.code',
         'samp': 'advanced.samp',
         'span': 'advanced.span',
-        'section': 'advanced.section',
-        'article': 'advanced.article',
-        'aside': 'advanced.aside',
+        'section' : 'advanced.section',
+        'article' : 'advanced.article',
+        'aside' : 'advanced.aside',
+        'header' : 'advanced.header',
+        'footer' : 'advanced.footer',
+        'nav' : 'advanced.nav',
         'figure': 'advanced.figure',
+        //'figcaption': 'advanced.figcaption',
         'dt': 'advanced.dt',
         'dd': 'advanced.dd'
     };

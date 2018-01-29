@@ -72,17 +72,18 @@
                     wrapper: true,
                     merge_siblings: false
                 });
-                // cite
-                ed.formatter.register('cite', {
-                    block: 'cite',
+                // header
+                ed.formatter.register('header', {
+                    block: 'header',
                     remove: 'all',
                     wrapper: true,
                     merge_siblings: false
                 });
-                // footer
-                ed.formatter.register('q', {
-                    inline: 'q',
+                // nav
+                ed.formatter.register('nav', {
+                    block: 'nav',
                     remove: 'all',
+                    wrapper: true,
                     merge_siblings: false
                 });
                 // code

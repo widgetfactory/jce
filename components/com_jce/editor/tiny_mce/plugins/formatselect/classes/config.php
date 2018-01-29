@@ -29,7 +29,11 @@ class WFFormatselectPluginConfig
         'section' => 'advanced.section',
         'article' => 'advanced.article',
         'aside' => 'advanced.aside',
+        'header' => 'advanced.header',
+        'footer' => 'advanced.footer',
+        'nav' => 'advanced.nav',
         'figure' => 'advanced.figure',
+        //'figcaption' => 'advanced.figcaption',
         'dt' => 'advanced.dt',
         'dd' => 'advanced.dd',
     );
@@ -45,7 +49,7 @@ class WFFormatselectPluginConfig
         $verify = (bool) $wf->getParam('editor.verify_html', 0);
 
         $legacy = $wf->getParam('editor.theme_advanced_blockformats');
-        $default = 'p,div,address,pre,h1,h2,h3,h4,h5,h6,code,samp,span,section,article,aside,figure,dt,dd';
+        $default = 'p,div,address,pre,h1,h2,h3,h4,h5,h6,code,samp,span,section,article,aside,header,footer,nav,figure,dt,dd';
 
         // get blockformats from parameter
         $blockformats = $wf->getParam('formatselect.blockformats');

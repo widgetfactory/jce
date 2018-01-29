@@ -15,7 +15,7 @@ defined('JPATH_BASE') or die('RESTRICTED');
  */
 class WFElementBlockformats extends WFElement
 {
-    protected static $formats = array('p' => 'Paragraph', 'div' => 'Div', 'div_container' => 'Div Container', 'h1' => 'Heading1', 'h2' => 'Heading2', 'h3' => 'Heading3', 'h4' => 'Heading4', 'h5' => 'Heading5', 'h6' => 'Heading6', 'blockquote' => 'Blockquote', 'address' => 'Address', 'code' => 'Code', 'pre' => 'Preformatted', 'samp' => 'Sample', 'span' => 'Span', 'section' => 'Section', 'article' => 'Article', 'aside' => 'Aside', 'figure' => 'Figure', 'dt' => 'Definition Term', 'dd' => 'Definition List');
+    protected static $formats = array('p' => 'Paragraph', 'div' => 'Div', 'div_container' => 'Div Container', 'h1' => 'Heading1', 'h2' => 'Heading2', 'h3' => 'Heading3', 'h4' => 'Heading4', 'h5' => 'Heading5', 'h6' => 'Heading6', 'blockquote' => 'Blockquote', 'address' => 'Address', 'code' => 'Code', 'pre' => 'Preformatted', 'samp' => 'Sample', 'span' => 'Span', 'section' => 'Section', 'article' => 'Article', 'aside' => 'Aside', 'header' => 'Header', 'footer' => 'Footer', 'nav' => 'Nav', 'figure' => 'Figure', 'dt' => 'Definition Term', 'dd' => 'Definition List');
 
     /**
      * Element type.
