@@ -8,77 +8,55 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function () {
     var cookie = tinymce.util.Cookie;
 
     tinymce.create('tinymce.plugins.VisualBlocks', {
-        init : function(ed, url) {
-            var cssId;
-
-            // We don't support older browsers like IE6/7 and they don't provide prototypes for DOM objects
-            if (!window.NodeList) {
-                return;
-            }
-
+        init: function (ed, url) {
             // get state from cookie
             var state = cookie.get('wf_visualblocks_state');
 
-            if (state && tinymce.is(state, 'string')) {
-                if (state == 'null') {
-                    state = 0;
+            if (tinymce.is(state, "string")) {
+                if (state === "null" || state === "false") {
+                    state = false;
                 }
 
-                state = parseFloat(state);
+                state = !!state;
             }
-
+            
+            // get state from parameter (may be integer)
             state = ed.getParam('visualblocks_default_state', state);
 
             function toggleVisualBlocks() {
-              var dom = ed.dom, linkElm;
+                ed.controlManager.setActive('visualblocks', state);
+                cookie.set('wf_visualblocks_state', state);
 
-              if (!cssId) {
-                  cssId = dom.uniqueId();
-                  linkElm = dom.create('link', {
-                      id: cssId,
-                      rel : 'stylesheet',
-                      href : url + '/css/visualblocks.css'
-                  });
-
-                  ed.getDoc().getElementsByTagName('head')[0].appendChild(linkElm);
-              } else {
-                  linkElm = dom.get(cssId);
-                  linkElm.disabled = !linkElm.disabled;
-              }
-
-              ed.controlManager.setActive('visualblocks', !linkElm.disabled);
-
-              if (linkElm.disabled) {
-                  cookie.set('wf_visualblocks_state', 0);
-              } else {
-                  cookie.set('wf_visualblocks_state', 1);
-              }
+                if (!state) {
+                    ed.dom.removeClass(ed.getBody(), 'mceVisualBlocks');
+                } else {
+                    ed.dom.addClass(ed.getBody(), 'mceVisualBlocks');
+                }
             }
 
-            ed.addCommand('mceVisualBlocks', function() {
-              toggleVisualBlocks();
+            ed.addCommand('mceVisualBlocks', function () {
+                state = !state;
+                toggleVisualBlocks();
             });
 
-            ed.onSetContent.add(function() {
-                var dom = ed.dom, linkElm;
-
-                if (cssId) {
-                    linkElm = dom.get(cssId);
-                    ed.controlManager.setActive('visualblocks', !linkElm.disabled);
-                }
-
+            ed.onSetContent.add(function () {
+                ed.controlManager.setActive('visualblocks', state);
             });
 
             ed.addButton('visualblocks', {
-                title : 'visualblocks.desc',
-                cmd : 'mceVisualBlocks'
+                title: 'visualblocks.desc',
+                cmd: 'mceVisualBlocks'
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
+                if (!ed.settings.compress.css) {
+                    ed.dom.loadCSS(url + "/css/visualblocks.css");
+                }
+
                 if (state) {
                     toggleVisualBlocks();
                 }

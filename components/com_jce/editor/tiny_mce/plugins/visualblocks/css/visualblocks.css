@@ -1,169 +1,142 @@
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-aside,
-div:not([data-mce-bogus]),
-section,
-article,
-blockquote,
-address,
-pre,
-figure,
-ul,
-ol,
-dl,
-dt,
-dd {
-    display: block;
-    padding: 14px 2px 2px;
-    margin: 2px 0;
-    border: 1px dashed #BBB;
-    background: transparent;
-    box-sizing: border-box;
-    position: relative;
+.mceVisualBlocks p,
+.mceVisualBlocks h1,
+.mceVisualBlocks h2,
+.mceVisualBlocks h3,
+.mceVisualBlocks h4,
+.mceVisualBlocks h5,
+.mceVisualBlocks h6,
+.mceVisualBlocks aside,
+.mceVisualBlocks div:not([data-mce-bogus]),
+.mceVisualBlocks section,
+.mceVisualBlocks article,
+.mceVisualBlocks blockquote,
+.mceVisualBlocks address,
+.mceVisualBlocks pre,
+.mceVisualBlocks figure,
+.mceVisualBlocks ul,
+.mceVisualBlocks ol,
+.mceVisualBlocks dl,
+.mceVisualBlocks dt,
+.mceVisualBlocks dd {
+  display: block;
+  padding: 14px 2px 2px;
+  margin: 2px 0;
+  border: 1px dashed #BBB;
+  background: transparent;
+  box-sizing: border-box;
+  position: relative;
 }
-
-section,
-article,
-address,
-aside,
-figure {
-    margin: 0 0 1em 2px
+.mceVisualBlocks section,
+.mceVisualBlocks article,
+.mceVisualBlocks address,
+.mceVisualBlocks aside,
+.mceVisualBlocks figure {
+  margin: 0 0 1em 2px;
 }
-
-figcaption {
-    border: 1px dashed #BBB
+.mceVisualBlocks figcaption {
+  border: 1px dashed #BBB;
 }
-
-dd,
-dt {
-    margin-bottom: 2px;
+.mceVisualBlocks dd,
+.mceVisualBlocks dt {
+  margin-bottom: 2px;
 }
-
-ul,
-ol {
-    margin: 0 0 1em 3px;
-    padding: 5px 40px;
+.mceVisualBlocks ul,
+.mceVisualBlocks ol {
+  margin: 0 0 1em 3px;
+  padding: 5px 40px;
 }
-
-p::before,
-h1::before,
-h2::before,
-h3::before,
-h4::before,
-h5::before,
-h6::before,
-aside::before,
-div::before,
-section::before,
-article::before,
-blockquote::before,
-address::before,
-pre::before,
-figure::before,
-ul::before,
-ol::before,
-dl::before,
-dt::before,
-dd::before {
-    display: block;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 9px;
-    line-height: 12px;
-    position: absolute;
-    top: 0;
-    left: 2px;
-    color: #666;
+.mceVisualBlocks p::before,
+.mceVisualBlocks h1::before,
+.mceVisualBlocks h2::before,
+.mceVisualBlocks h3::before,
+.mceVisualBlocks h4::before,
+.mceVisualBlocks h5::before,
+.mceVisualBlocks h6::before,
+.mceVisualBlocks aside::before,
+.mceVisualBlocks div::before,
+.mceVisualBlocks section::before,
+.mceVisualBlocks article::before,
+.mceVisualBlocks blockquote::before,
+.mceVisualBlocks address::before,
+.mceVisualBlocks pre::before,
+.mceVisualBlocks figure::before,
+.mceVisualBlocks ul::before,
+.mceVisualBlocks ol::before,
+.mceVisualBlocks dl::before,
+.mceVisualBlocks dt::before,
+.mceVisualBlocks dd::before {
+  display: block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  line-height: 12px;
+  position: absolute;
+  top: 0;
+  left: 2px;
+  color: #666;
 }
-
-p::before {
-    content: "P"
+.mceVisualBlocks p::before {
+  content: "P";
 }
-
-h1::before {
-    content: "H1"
+.mceVisualBlocks h1::before {
+  content: "H1";
 }
-
-h2::before {
-    content: "H2"
+.mceVisualBlocks h2::before {
+  content: "H2";
 }
-
-h3::before {
-    content: "H3"
+.mceVisualBlocks h3::before {
+  content: "H3";
 }
-
-h4::before {
-    content: "H4"
+.mceVisualBlocks h4::before {
+  content: "H4";
 }
-
-h5::before {
-    content: "H5"
+.mceVisualBlocks h5::before {
+  content: "H5";
 }
-
-h6::before {
-    content: "H6"
+.mceVisualBlocks h6::before {
+  content: "H6";
 }
-
-aside::before {
-    content: "ASIDE"
+.mceVisualBlocks aside::before {
+  content: "ASIDE";
 }
-
-div::before {
-    content: "DIV"
+.mceVisualBlocks div::before {
+  content: "DIV";
 }
-
-section::before {
-    content: "SECTION"
+.mceVisualBlocks section::before {
+  content: "SECTION";
 }
-
-article::before {
-    content: "ARTICLE"
+.mceVisualBlocks article::before {
+  content: "ARTICLE";
 }
-
-blockquote::before {
-    content: "BLOCKQUOTE"
+.mceVisualBlocks blockquote::before {
+  content: "BLOCKQUOTE";
 }
-
-address::before {
-    content: "ADDRESS"
+.mceVisualBlocks address::before {
+  content: "ADDRESS";
 }
-
-pre::before {
-    content: "PRE"
+.mceVisualBlocks pre::before {
+  content: "PRE";
 }
-
-figure::before {
-    content: "FIGURE"
+.mceVisualBlocks figure::before {
+  content: "FIGURE";
 }
-
-ul::before {
-    content: "UL"
+.mceVisualBlocks ul::before {
+  content: "UL";
 }
-
-ol::before {
-    content: "OL"
+.mceVisualBlocks ol::before {
+  content: "OL";
 }
-
-dl::before {
-    content: "DL"
+.mceVisualBlocks dl::before {
+  content: "DL";
 }
-
-dt::before {
-    content: "DT"
+.mceVisualBlocks dt::before {
+  content: "DT";
 }
-
-dd::before {
-    content: "DD"
+.mceVisualBlocks dd::before {
+  content: "DD";
 }
-
-.mce-item-shortcode::before {
-    content: "SHORTCODE"
+.mceVisualBlocks .mce-item-shortcode::before {
+  content: "SHORTCODE";
 }
-
-div[data-mce-bogus]::before {
-    content: "";
+.mceVisualBlocks div[data-mce-bogus]::before {
+  content: "";
 }
