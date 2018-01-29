@@ -7,23 +7,28 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each, explode = tinymce.explode;
+(function () {
+    var DOM = tinymce.DOM,
+        Event = tinymce.dom.Event,
+        extend = tinymce.extend,
+        each = tinymce.each,
+        explode = tinymce.explode;
 
     tinymce.create('tinymce.plugins.FontColorPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             this.editor = ed;
 
-            ed.onNodeChange.add(function(ed, cm, n, collapsed, o) {
-                var s = ed.settings, c;
+            ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
+                var s = ed.settings,
+                    c;
 
                 // reset colours
                 //updateColor('forecolor');
                 //updateColor('backcolor');
 
                 function updateColor(controlId, color) {
-                    if (c = cm.get(controlId)) {                                                
+                    if (c = cm.get(controlId)) {
                         if (!color)
                             color = c.settings.default_color;
                         if (color !== c.value) {
@@ -34,7 +39,7 @@
 
                 var fc, bc;
 
-                each(o.parents, function(n) {
+                each(o.parents, function (n) {
                     if (n.style) {
 
                         if (n.style.color) {
@@ -55,7 +60,7 @@
                 });
             });
         },
-        createControl: function(n, cf) {
+        createControl: function (n, cf) {
             if (n === "forecolor") {
                 return this._createForeColorMenu();
             }
@@ -64,13 +69,20 @@
                 return this._createBackColorMenu();
             }
         },
-        _createForeColorMenu: function() {
-            var c, self = this, ed = self.editor, s = ed.settings, o = {}, v;
+        _createForeColorMenu: function () {
+            var c, self = this,
+                ed = self.editor,
+                s = ed.settings,
+                o = {},
+                v;
 
-            o.more_colors_func = function() {
-                ed.execCommand('mceColorPicker', false, {color: c.value, func: function(co) {
-                    c.setColor(co);
-                }});
+            o.more_colors_func = function () {
+                ed.execCommand('mceColorPicker', false, {
+                    color: c.value,
+                    func: function (co) {
+                        c.setColor(co);
+                    }
+                });
             };
 
             if (v = s.theme_advanced_text_colors) {
@@ -80,13 +92,17 @@
             o.default_color = s.fontcolor_foreground_color || '#000000';
 
             o.title = 'advanced.forecolor_desc';
-            o.onselect = function(v) {
+            o.onselect = function (v) {
 
                 if (!v) {
                     return ed.formatter.remove('forecolor');
                 }
 
-                ed.formatter.apply('forecolor', {'value' : v});
+                ed.formatter.apply('forecolor', {
+                    'value': v
+                });
+                ed.undoManager.add();
+                ed.nodeChanged();
             };
 
             o.scope = this;
@@ -95,14 +111,21 @@
 
             return c;
         },
-        _createBackColorMenu: function() {
-            var c, self = this, ed = self.editor, s = ed.settings, o = {}, v;
+        _createBackColorMenu: function () {
+            var c, self = this,
+                ed = self.editor,
+                s = ed.settings,
+                o = {},
+                v;
 
-            o.more_colors_func = function() {
-                    ed.execCommand('mceColorPicker', false, {color: c.value, func: function(co) {
-                            c.setColor(co);
-                        }});
-                };
+            o.more_colors_func = function () {
+                ed.execCommand('mceColorPicker', false, {
+                    color: c.value,
+                    func: function (co) {
+                        c.setColor(co);
+                    }
+                });
+            };
 
             if (v = s.theme_advanced_background_colors) {
                 o.colors = v;
@@ -111,13 +134,17 @@
             o.default_color = s.fontcolor_background_color || '#FFFF00';
 
             o.title = 'advanced.backcolor_desc';
-            o.onselect = function(v) {
+            o.onselect = function (v) {
 
                 if (!v) {
                     return ed.formatter.remove('hilitecolor');
                 }
 
-                ed.formatter.apply('hilitecolor', {'value' : v});
+                ed.formatter.apply('hilitecolor', {
+                    'value': v
+                });
+                ed.undoManager.add();
+                ed.nodeChanged();
             };
             o.scope = this;
 
