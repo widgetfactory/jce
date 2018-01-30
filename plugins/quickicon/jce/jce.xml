@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="quickicon" method="upgrade">
 	<name>plg_quickicon_jce</name>
-	<author>Ryan Demmer</author>
-	<creationDate>31-08-2016</creationDate>
-	<copyright>Copyright (C) 2006 - 2016 Ryan Demmer. All rights reserved</copyright>
-	<license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
-	<authorEmail>@@email@@</authorEmail>
-	<authorUrl>www.joomalcontenteditor.net</authorUrl>
-	<version>2.6.0-pro-beta3</version>
+	<version>@@version@@</version>
+    <creationDate>@@date@@</creationDate>
+    <author>Ryan Demmer</author>
+    <authorEmail>@@email@@</authorEmail>
+    <authorUrl>http://www.joomlacontenteditor.net</authorUrl>
+    <copyright>@@copyright@@</copyright>
+    <license>@@licence@@</license>
 	<description>PLG_QUICKICON_JCE_XML_DESCRIPTION</description>
 	<files folder="plugins/quickicon/jce">
 		<filename plugin="jce">jce.php</filename>
