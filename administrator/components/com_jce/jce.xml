@@ -14,7 +14,6 @@
         <folder>editor</folder>
         <folder>media</folder>
         <folder>views</folder>
-        <file>index.html</file>
         <file>jce.php</file>
         <file>licence.txt</file>
     </files>
