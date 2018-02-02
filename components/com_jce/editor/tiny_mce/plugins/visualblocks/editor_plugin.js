@@ -54,7 +54,7 @@
 
             ed.onInit.add(function () {
                 if (!ed.settings.compress.css) {
-                    ed.dom.loadCSS(url + "/css/visualblocks.css");
+                    ed.dom.loadCSS(url + "/css/content.css");
                 }
 
                 if (state) {

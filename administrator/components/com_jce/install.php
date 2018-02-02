@@ -260,7 +260,9 @@ abstract class WFInstall
             $site.'/editor/tiny_mce/plugins/source/css/editor.css',
             $site.'/editor/tiny_mce/plugins/source/codemirror/css/codemirror.css',
             $site.'/editor/tiny_mce/plugins/source/js/editor.js',
-            $site.'/editor/tiny_mce/plugins/source/js/format.js'
+            $site.'/editor/tiny_mce/plugins/source/js/format.js',
+
+            $site.'/editor/tiny_mce/plugins/visualblocks/css/visualblocks.css'
         );
 
         $folders = array(
