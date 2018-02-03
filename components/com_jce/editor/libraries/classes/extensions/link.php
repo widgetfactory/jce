@@ -101,6 +101,7 @@ class WFLinkExtension extends WFExtension
 
         foreach ($args as $k => $v) {
             $args->$k = $filter->clean($v, $method);
+            $args->$k = (string) filter_var($args->$k, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
         }
 
         return $args;
