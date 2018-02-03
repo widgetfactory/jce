@@ -238,6 +238,7 @@ class WFModelPlugins extends WFModel
 
                     // load language
                     $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_ADMINISTRATOR);
+                    $language->load('plg_jce_' . $p->folder . '-' . $p->extension, JPATH_ADMINISTRATOR);
 
                     $extensions[] = $p;
                 }
