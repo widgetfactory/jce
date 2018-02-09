@@ -20,8 +20,8 @@
                 last = 0,
                 VK = tinymce.VK;
 
-            t.countre = ed.getParam('wordcount_countregex', /[\w\u2019\u00co-\u00ff^\uc397^u00f7\'-]+/g); // u2019 == &rsquo; u00c0-u00ff extended latin chars with diacritical marks. exclude uc397 multiplication & u00f7 division
-            t.cleanre = ed.getParam('wordcount_cleanregex', /[0-9.(),;:!?%#$?\'\"_+=\\\/-]*/g);
+            t.countre = ed.getParam('wordcount_countregex', /[\w\u2019\x27\-\u00C0-\u1FFF]+/g); // u2019 == &rsquo; u00c0-u00ff extended latin chars with diacritical marks. exclude uc397 multiplication & u00f7 division
+            t.cleanre = ed.getParam('wordcount_cleanregex', /[0-9.(),;:!?%#$?\x27\x22_+=\\\/\-]*/g);
             t.update_rate = ed.getParam('wordcount_update_rate', 2000);
             t.update_on_delete = ed.getParam('wordcount_update_on_delete', false);
             t.id = ed.id + '-word-count';
@@ -79,11 +79,11 @@
             if (tx) {
                 tx = tx.replace(/\.\.\./g, ' '); // convert ellipses to spaces
                 tx = tx.replace(/<.[^<>]*?>/g, ' ').replace(/&nbsp;|&#160;/gi, ' '); // remove html tags and space chars
-
+    
                 // deal with html entities
-                tx = tx.replace(/(\w+)(&.+?;)+(\w+)/, "$1$3").replace(/&.+?;/g, ' ');
+                tx = tx.replace(/(\w+)(&#?[a-z0-9]+;)+(\w+)/i, "$1$3").replace(/&.+?;/g, ' ');
                 tx = tx.replace(this.cleanre, ''); // remove numbers and punctuation
-
+    
                 var wordArray = tx.match(this.countre);
                 if (wordArray) {
                     tc = wordArray.length;
