@@ -1,0 +1,75 @@
+// out: content.css, sourcemap: false, compress: false
+.mceVisualBlocks {
+    p,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    aside,
+    div,
+    section,
+    article,
+    header,
+    footer,
+    nav,
+    blockquote,
+    address,
+    pre,
+    figure,
+    ul,
+    ol,
+    dl,
+    dt,
+    dd {
+        margin: 2px 0;
+        border: 1px dashed #BBB;
+        box-sizing: border-box;
+        padding: 2px;
+    }
+    p:before,
+    h1:before,
+    h2:before,
+    h3:before,
+    h4:before,
+    h5:before,
+    h6:before,
+    aside:before,
+    div:before,
+    section:before,
+    article:before,
+    header:before,
+    footer:before,
+    nav:before,
+    blockquote:before,
+    address:before,
+    pre:before,
+    figure:before,
+    ul:before,
+    ol:before,
+    dl:before,
+    dt:before,
+    dd:before {
+        background: transparent no-repeat 2px 2px;
+        padding: 10px 0 2px 0;
+        display: block;
+        content: "";
+    }
+    figcaption {
+        border: 1px dashed #BBB
+    }
+    dd,
+    dt {
+        margin-bottom: 2px;
+    }
+    ul,
+    ol {
+        padding: 5px 40px;
+    }
+    ul:before,
+    ol:before {
+        margin: -2px 0 0 -38px;
+    }
+    @import (less) 'base64.less';
+}
