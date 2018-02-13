@@ -23,9 +23,14 @@ abstract class WFToken
     /**
      * Check the received token.
      */
-    public static function checkToken($method = 'POST')
+    public static function checkToken($method = 'post')
     {
+        if (method_exists('JSession', 'checkToken')) {
+            return JSession::checkToken('post') || JSession::checkToken('get');
+        }
+        
         $token = self::getToken();
+
         // check POST and GET for token
         return JRequest::getVar($token, JRequest::getVar($token, '', 'GET', 'alnum'), 'POST', 'alnum');
     }
