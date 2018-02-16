@@ -443,6 +443,9 @@ class WFFileBrowser extends JObject
 
         WFUtility::checkPath($path);
 
+        // trim leading slash
+        $path = ltrim($path, "/");
+
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
         $dir = $filesystem->getSourceDir($path);
 

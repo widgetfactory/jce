@@ -1152,16 +1152,16 @@
         /**
          * Load the browser list
          */
-        load: function (items) {
+        load: function (item) {
             // add returned items
-            if (items) {
-                this._addReturnedItem(items);
+            if (item) {
+                this._addReturnedItem(item);
             }
 
             // show loading message
             this._setLoader();
 
-            this._getList();
+            this._getList(item);
         },
         /**
          * Show an error message
