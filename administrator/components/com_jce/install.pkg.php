@@ -58,6 +58,14 @@ class pkg_jceInstallerScript
             }
         }
 
+        $id = $plugin->find(array('type' => 'plugin', 'folder' => 'fields', 'element' => 'mediajce'));
+
+        if ($id) {
+            $plugin->load($id);
+            $plugin->enabled = 1;
+            $plugin->store();
+        }
+
         // get installer reference
         $installer = method_exists($parent, 'getParent') ? $parent->getParent() : $parent->parent;
 
