@@ -10,8 +10,7 @@
  */
 
 (function() {
-    var JSON = tinymce.util.JSON,
-        each = tinymce.each,
+    var each = tinymce.each,
         DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.SpellcheckerPlugin', {
@@ -542,25 +541,30 @@
                 query += '&' + k + '=' + encodeURIComponent(args[k]);
             }
 
+            var data = JSON.stringify({
+                "id" : "spellcheck",
+                "method" : m,
+                "params" : p
+            });
+
             tinymce.util.XHR.send({
                 url: t.rpcUrl,
                 content_type: 'application/x-www-form-urlencoded',
-                data: 'json=' + JSON.serialize({
-                    'fn': m,
-                    'args': p
-                }) + query,
+                data: 'json=' + data + query,
                 success: function(o) {
-                    var c = JSON.parse(o);
+                    var c;
 
-                    if (typeof(c) == 'undefined') {
+                    try {
+                        c = JSON.parse(o);
+                    } catch (e) {
                         c = {
-                            error: 'JSON Parse error.'
+                            error: 'JSON Parse error'
                         };
                     }
 
-                    if (c.error) {
+                    if (!c || c.error) {
                         ed.setProgressState(0);
-                        var e = c.error;
+                        var e = c.error || 'JSON Parse error';
                         ed.windowManager.alert(e.errstr || ('Error response: ' + e));
                     } else {
                         cb.call(t, c.result || '');
