@@ -97,14 +97,14 @@
     var CutCopy = function (editor) {
         var noop = function () {};
 
-        var hasWorkingClipboardApi = function (clipboardData) {            
+        var hasWorkingClipboardApi = function (clipboardData) {
             // iOS supports the clipboardData API but it doesn't do anything for cut operations
             // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11780845/
             return tinymce.isIOS === false && clipboardData !== undefined && typeof clipboardData.setData === 'function' && isMsEdge() !== true;
         };
 
         var setHtml5Clipboard = function (clipboardData, html, text) {
-            if (hasWorkingClipboardApi(clipboardData)) {                
+            if (hasWorkingClipboardApi(clipboardData)) {
                 try {
                     clipboardData.clearData();
                     clipboardData.setData('text/html', html);
@@ -162,7 +162,7 @@
             };
         };
 
-        var getData = function (editor) {            
+        var getData = function (editor) {
             return {
                 html: editor.selection.getContent({
                     contextual: true
@@ -502,7 +502,7 @@
 
                 return before + after;
             });
-        } else {            
+        } else {
             // Remove all external styles
             content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, '$1$3');
         }
@@ -610,6 +610,19 @@
 
         // fix table borders
         if (o.wordContent) {
+            // Convert width and height attributes to styles
+            each(dom.select('table, td, th', o.node), function (n) {
+                if ((value = dom.getAttrib(n, 'width'))) {
+                    dom.setStyle(n, 'width', value);
+                    dom.setAttrib(n, 'width', '');
+                }
+
+                if ((value = dom.getAttrib(n, 'height'))) {
+                    dom.setStyle(n, 'height', value);
+                    dom.setAttrib(n, 'height', '');
+                }
+            });
+            
             each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
                 var styles = {};
 
@@ -1824,7 +1837,7 @@
                 // create object to process
                 var o = {
                     content: content,
-                    internal : internal
+                    internal: internal
                 };
 
                 // Execute pre process handlers
