@@ -750,10 +750,6 @@
                             na = 'strong';
                             break;
 
-                            /*case 'i':
-                             na = 'em';
-                             break;*/
-
                         case 'img':
                             if (v = DOM.getAttrib(n, 'src'))
                                 ti += 'src: ' + v + ' ';
@@ -789,10 +785,15 @@
                         ti += 'id: ' + v + ' ';
 
                     if (v = DOM.getAttrib(n, 'class')) {
-                        ti += 'class: ' + v + ' ';
+                        v = v.replace(/mce-item-[\w]+/g, '');
+                        v = tinymce.trim(v);
 
-                        if (ed.dom.isBlock(n) || na == 'img' || na == 'span') {
-                            na += '.' + v;
+                        if (v) {
+                            ti += 'class: ' + v + ' ';
+
+                            if (ed.dom.isBlock(n) || na == 'img' || na == 'span') {
+                                na += '.' + v;
+                            }
                         }
                     }
 
