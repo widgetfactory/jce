@@ -596,6 +596,19 @@
             });
         }
 
+        // Convert width and height attributes to styles
+        each(dom.select('table, td, th', o.node), function (n) {
+            if ((value = dom.getAttrib(n, 'width'))) {
+                dom.setStyle(n, 'width', value);
+                dom.setAttrib(n, 'width', '');
+            }
+
+            if ((value = dom.getAttrib(n, 'height'))) {
+                dom.setStyle(n, 'height', value);
+                dom.setAttrib(n, 'height', '');
+            }
+        });
+
         // Remove all styles
         if (ed.getParam('clipboard_paste_remove_styles')) {
             // Remove style attribute
@@ -610,19 +623,6 @@
 
         // fix table borders
         if (o.wordContent) {
-            // Convert width and height attributes to styles
-            each(dom.select('table, td, th', o.node), function (n) {
-                if ((value = dom.getAttrib(n, 'width'))) {
-                    dom.setStyle(n, 'width', value);
-                    dom.setAttrib(n, 'width', '');
-                }
-
-                if ((value = dom.getAttrib(n, 'height'))) {
-                    dom.setStyle(n, 'height', value);
-                    dom.setAttrib(n, 'height', '');
-                }
-            });
-            
             each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
                 var styles = {};
 
