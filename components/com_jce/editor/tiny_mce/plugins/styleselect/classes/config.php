@@ -97,6 +97,9 @@ class WFStyleselectPluginConfig
                     if (isset($style->selector)) {
                         $selector = self::cleanString($style->selector);
 
+                        // convert selector values to lowercase
+                        $selector = strtolower($selector);
+
                         // clean up selector to allow element and class only
                         $selector = preg_replace('#[^a-z0-9,\.]+#', '', $selector);
 
