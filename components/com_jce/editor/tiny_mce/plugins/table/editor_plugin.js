@@ -1122,13 +1122,27 @@
                             selectedCells = dom.select('td.mceSelected,th.mceSelected');
 
                             if (selectedCells.length > 0) {
+                                var parent = dom.getParent(selectedCells[0], 'table');
+
+                                //var allCells = dom.select('td,th', parent);
+                                
+                                /*if (selectedCells.length === allCells.length) {
+                                    sel.select(parent);
+
+                                    dom.removeClass(selectedCells, 'mceSelected');
+
+                                    ed.nodeChanged();
+
+                                    return;
+                                }*/
+
                                 rng = dom.createRng();
                                 node = selectedCells[0];
                                 rng.setStartBefore(node);
                                 rng.setEndAfter(node);
 
                                 setPoint(node, 1);
-                                walker = new TreeWalker(node, dom.getParent(selectedCells[0], 'table'));
+                                walker = new TreeWalker(node, parent);
 
                                 do {
                                     if (node.nodeName == 'TD' || node.nodeName == 'TH') {
