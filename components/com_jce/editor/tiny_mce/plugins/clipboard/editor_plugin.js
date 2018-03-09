@@ -1641,7 +1641,7 @@
 
         if (dataTransfer) {
             // Use old WebKit/IE API
-            if (dataTransfer.getData) {
+            if (dataTransfer.getData) {                
                 var legacyText = dataTransfer.getData('Text');
                 if (legacyText && legacyText.length > 0) {
                     items['text/plain'] = legacyText;
@@ -2161,16 +2161,17 @@
             });
 
             function isPlainTextPaste(content) {
-                if (!hasContentType(content, "text/plain")) {
-                    return false;
+                if (self.pasteAsPlainText) {
+                    return true;
                 }
 
                 if (isIE) {
                     return false;
                 }
 
-                // plain text mode or no html    
-                return self.pasteAsPlainText || !hasContentType(content, "text/html");
+                if (!hasContentType(content, "text/plain")) {
+                    return false;
+                }
             }
 
             // Grab contents on paste event
