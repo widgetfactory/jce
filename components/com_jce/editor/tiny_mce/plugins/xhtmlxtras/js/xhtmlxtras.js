@@ -12,6 +12,24 @@
 	var XHTMLXtrasDialog = {
 		settings: {},
 
+		getAttributes: function(n) {
+			var ed = tinyMCEPopup.editor, nodeName = n.nodeName.toLowerCase();
+			
+			var i, attrs = n.attributes, attribs = {};
+
+			// map all attributes
+			for (i = attrs.length - 1; i >= 0; i--) {
+				var name = attrs[i].name, value = ed.dom.getAttrib(n, name);
+
+				// only valid attributes
+				if (ed.schema.isValid(nodeName, name)) {
+					attribs[name] = value;
+				}
+			}
+
+			return attribs;
+		},
+
 		init: function () {
 			var ed = tinyMCEPopup.editor,
 				se = ed.selection,
@@ -26,18 +44,7 @@
 			Wf.init();
 
 			if (n) {
-				// remove all data-mediabox- attributes
-				var i, attrs = n.attributes, attribs = {};
-
-				// map all attributes
-				for (i = attrs.length - 1; i >= 0; i--) {
-					var name = attrs[i].name, value = ed.dom.getAttrib(n, name);
-
-					// skip internal
-					if (value !== "" && name.indexOf('mce-') === -1) {
-						attribs[name] = value;
-					}
-				}
+				var attribs = this.getAttributes(n);
 
 				var text = n.textContent || n.innerText || '';
 
@@ -72,23 +79,21 @@
 
 					// process remaining attributes
 					$.each(attribs, function (k, v) {
-						if (v !== '') {
+						try {
+							v = decodeURIComponent(v);
+						} catch (e) {}
 
-							try {
-								v = decodeURIComponent(v);
-							} catch (e) {}
+						var repeatable = $('.uk-repeatable').eq(0);
 
-							var n = $('.uk-repeatable').eq(0);
-
-							if (x > 0) {
-								$(n).clone(true).appendTo($(n).parent());
-							}
-
-							var elements = $('.uk-repeatable').eq(x).find('input, select');
-
-							$(elements).eq(0).val(k);
-							$(elements).eq(1).val(v);
+						if (x > 0) {
+							$(repeatable).clone(true).appendTo($(repeatable).parent());
 						}
+
+						var elements = $('.uk-repeatable').eq(x).find('input, select');
+
+						$(elements).eq(0).val(k);
+						$(elements).eq(1).val(v);
+
 						x++;
 					});
 
@@ -129,7 +134,7 @@
 			// get the element type (opener)
 			var element = tinyMCEPopup.getWindowArg('element');
 
-			var args = {};
+			var args = {}, attribs = this.getAttributes(n);
 
 			$(':input').not('#classlist-select, #classes, input[name]').each(function () {
 				var k = $(this).attr('id'),
@@ -140,6 +145,8 @@
 				}
 
 				args[k] = v;
+
+				delete attribs[k];
 			});
 
 			// get custom attributes
@@ -149,10 +156,20 @@
 					value = $(elements).eq(1).val();
 	
 				args[key] = value;
+
+				delete attribs[key];
 			});
 
 			// get classes value
 			var cls = $('#classes').val();
+
+			// remove from attributes map
+			delete attribs["class"];
+
+			// remove any attributes left
+			$.each(attribs, function(key, value) {
+				args[key] = "";
+			});
 
 			// opened by an element button
 			if (element) {
