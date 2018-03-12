@@ -10,69 +10,116 @@
  */
 defined('_JEXEC') or die('RESTRICTED');
 ?>
-<div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="contenteditable"><?php echo WFText::_('WF_LABEL_CONTENTEDITBALE'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><select id="contenteditable">
-            <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-            <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
-            <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
-            <option value="inherit"><?php echo WFText::_('WF_OPTION_INHERIT'); ?></option>
-        </select>
+  <div class="uk-form-row">
+    <label class="uk-form-label uk-width-2-10" for="contenteditable">
+      <?php echo WFText::_('WF_LABEL_CONTENTEDITBALE'); ?>
+    </label>
+    <div class="uk-form-controls uk-width-8-10">
+      <select id="contenteditable">
+        <option value="">
+          <?php echo WFText::_('WF_OPTION_NOT_SET'); ?>
+        </option>
+        <option value="true">
+          <?php echo WFText::_('WF_OPTION_YES'); ?>
+        </option>
+        <option value="false">
+          <?php echo WFText::_('WF_OPTION_NO'); ?>
+        </option>
+        <option value="inherit">
+          <?php echo WFText::_('WF_OPTION_INHERIT'); ?>
+        </option>
+      </select>
     </div>
-</div>
+  </div>
 
-<div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="draggable"><?php echo WFText::_('WF_LABEL_DRAGGABLE'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+  <div class="uk-form-row">
+    <label class="uk-form-label uk-width-2-10" for="draggable">
+      <?php echo WFText::_('WF_LABEL_DRAGGABLE'); ?>
+    </label>
+    <div class="uk-form-controls uk-width-8-10">
       <select id="draggable">
-          <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-          <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
-          <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
-          <option value="auto"><?php echo WFText::_('WF_OPTION_AUTO'); ?></option>
-        </select>
+        <option value="">
+          <?php echo WFText::_('WF_OPTION_NOT_SET'); ?>
+        </option>
+        <option value="true">
+          <?php echo WFText::_('WF_OPTION_YES'); ?>
+        </option>
+        <option value="false">
+          <?php echo WFText::_('WF_OPTION_NO'); ?>
+        </option>
+        <option value="auto">
+          <?php echo WFText::_('WF_OPTION_AUTO'); ?>
+        </option>
+      </select>
     </div>
-</div>
+  </div>
 
-<div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="hidden"><?php echo WFText::_('WF_LABEL_HIDDEN'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+  <div class="uk-form-row">
+    <label class="uk-form-label uk-width-2-10" for="hidden">
+      <?php echo WFText::_('WF_LABEL_HIDDEN'); ?>
+    </label>
+    <div class="uk-form-controls uk-width-8-10">
       <select id="hidden">
-        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-        <option value=""><?php echo WFText::_('WF_OPTION_NO'); ?></option>
-        <option value="hidden"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
+        <option value="">
+          <?php echo WFText::_('WF_OPTION_NOT_SET'); ?>
+        </option>
+        <option value="">
+          <?php echo WFText::_('WF_OPTION_NO'); ?>
+        </option>
+        <option value="hidden">
+          <?php echo WFText::_('WF_OPTION_YES'); ?>
+        </option>
       </select>
     </div>
-</div>
+  </div>
 
-<div class="uk-form-row">
-    <label class="uk-form-label uk-width-3-10" for="spellcheck"><?php echo WFText::_('WF_LABEL_SPELLCHECK'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+  <div class="uk-form-row">
+    <label class="uk-form-label uk-width-2-10" for="spellcheck">
+      <?php echo WFText::_('WF_LABEL_SPELLCHECK'); ?>
+    </label>
+    <div class="uk-form-controls uk-width-8-10">
       <select id="spellcheck">
-        <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-        <option value="true"><?php echo WFText::_('WF_OPTION_YES'); ?></option>
-        <option value="false"><?php echo WFText::_('WF_OPTION_NO'); ?></option>
+        <option value="">
+          <?php echo WFText::_('WF_OPTION_NOT_SET'); ?>
+        </option>
+        <option value="true">
+          <?php echo WFText::_('WF_OPTION_YES'); ?>
+        </option>
+        <option value="false">
+          <?php echo WFText::_('WF_OPTION_NO'); ?>
+        </option>
       </select>
     </div>
-</div>
+  </div>
 
-<!--div class="uk-form-row">
-    <label for="custom_attributes" class="uk-form-label uk-width-3-10"><?php echo WFText::_('WF_LABEL_CUSTOM_ATTRIBUTES'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+  <div class="uk-form-row">
+    <label for="custom_attributes" class="uk-form-label uk-width-2-10">
+      <?php echo WFText::_('WF_LABEL_CUSTOM'); ?>
+    </label>
+    <div class="uk-form-controls uk-width-8-10">
       <div class="uk-repeatable">
-              <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
-                  <label class="uk-form-label uk-width-1-10"><?php echo WFText::_('WF_LABEL_NAME'); ?></label>
-                  <div class="uk-form-controls uk-width-4-10">
-                    <input type="text" name="custom_name[]" />
-                  </div>
-                  <label class="uk-form-label uk-width-1-10"><?php echo WFText::_('WF_LABEL_VALUE'); ?></label>
-                  <div class="uk-form-controls uk-width-4-10">
-                    <input type="text" name="custom_value[]" />
-                  </div>
-              </div>
-              <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
-                <button type="button" class="uk-button uk-repeatable-create"><i class="uk-icon-plus"></i></button>
-                <button type="button" class="uk-button uk-repeatable-delete"><i class="uk-icon-trash"></i></button>
-              </div>
+        <div class="uk-form-controls uk-grid uk-grid-small uk-margin-small uk-width-9-10">
+          <label class="uk-form-label uk-width-1-10">
+            <?php echo WFText::_('WF_LABEL_NAME'); ?>
+          </label>
+          <div class="uk-form-controls uk-width-4-10">
+            <input type="text" name="custom_name[]" />
+          </div>
+          <label class="uk-form-label uk-width-1-10">
+            <?php echo WFText::_('WF_LABEL_VALUE'); ?>
+          </label>
+          <div class="uk-form-controls uk-width-4-10">
+            <input type="text" name="custom_value[]" />
+          </div>
+        </div>
+        <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
+          <button type="button" class="uk-button uk-repeatable-create">
+            <i class="uk-icon-plus"></i>
+          </button>
+          <button type="button" class="uk-button uk-repeatable-delete">
+            <i class="uk-icon-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
-</div-->
+  </div>

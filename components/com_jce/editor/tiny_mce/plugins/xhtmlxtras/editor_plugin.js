@@ -87,10 +87,9 @@
             ed.addCommand('mceAttributes', function() {
                 ed.windowManager.open({
                     file : ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=xhtmlxtras&element=attributes',
-                    width : 440,
-                    height : 360,
-                    inline : 1,
-                    size: 'mce-modal-portrait-medium'
+                    width : 640,
+                    height : 480,
+                    inline : 1
                 }, {
                     plugin_url : url
                 });

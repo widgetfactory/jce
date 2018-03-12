@@ -16,16 +16,16 @@ if ($element == 'del' || $element == 'ins') :
 endif;
 ?>
     <div class="uk-form-row">
-        <label class="uk-form-label uk-width-3-10" for="title"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label>
-        <div class="uk-form-controls uk-width-7-10"><input id="title" type="text" value="" /></div>
+        <label class="uk-form-label uk-width-2-10" for="title"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label>
+        <div class="uk-form-controls uk-width-8-10"><input id="title" type="text" value="" /></div>
     </div>
     <div class="uk-form-row">
-        <label class="uk-form-label uk-width-3-10" for="id"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_ID'); ?></label>
-        <div class="uk-form-controls uk-width-7-10"><input id="id" type="text" value="" /></div>
+        <label class="uk-form-label uk-width-2-10" for="id"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_ID'); ?></label>
+        <div class="uk-form-controls uk-width-8-10"><input id="id" type="text" value="" /></div>
     </div>
     <div class="uk-form-row">
-        <label for="classlist" class="uk-form-label uk-width-3-10 hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
-        <div class="uk-form-controls uk-width-7-10 uk-datalist">
+        <label for="classlist" class="uk-form-label uk-width-2-10 hastip" title="<?php echo WFText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLASSES'); ?></label>
+        <div class="uk-form-controls uk-width-8-10 uk-datalist">
             <input type="text" id="classes" />
             <select id="classlist">
               <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
@@ -33,16 +33,16 @@ endif;
         </div>
     </div>
     <div class="uk-form-row">
-        <label class="uk-form-label uk-width-3-10" for="dir"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label>
-        <div class="uk-form-controls uk-width-7-10"><select id="dir">
+        <label class="uk-form-label uk-width-2-10" for="dir"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label>
+        <div class="uk-form-controls uk-width-8-10"><select id="dir">
                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="ltr"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_LTR'); ?></option>
                 <option value="rtl"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_RTL'); ?></option>
             </select></div>
     </div>
     <div class="uk-form-row">
-        <label class="uk-form-label uk-width-3-10" for="lang"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGCODE'); ?></label>
-        <div class="uk-form-controls uk-width-7-10"><input id="lang" type="text" value="" />
+        <label class="uk-form-label uk-width-2-10" for="lang"><?php echo WFText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGCODE'); ?></label>
+        <div class="uk-form-controls uk-width-8-10"><input id="lang" type="text" value="" />
         </div>
     </div>
     <?php

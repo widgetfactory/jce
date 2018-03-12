@@ -7,12 +7,12 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
+(function ($) {
 
 	var XHTMLXtrasDialog = {
 		settings: {},
 
-		init: function() {
+		init: function () {
 			var ed = tinyMCEPopup.editor,
 				se = ed.selection,
 				n = se.getNode(),
@@ -26,12 +26,23 @@
 			Wf.init();
 
 			if (n) {
+				// remove all data-mediabox- attributes
+				var i, attrs = n.attributes, attribs = {};
+
+				// map all attributes
+				for (i = attrs.length - 1; i >= 0; i--) {
+					var name = attrs[i].name, value = ed.dom.getAttrib(n, name);
+
+					// skip internal
+					if (value !== "" && name.indexOf('mce-') === -1) {
+						attribs[name] = value;
+					}
+				}
+
 				var text = n.textContent || n.innerText || '';
 
-				if (!se.isCollapsed() || text == se.getContent({
-						format: 'text'
-					})) {
-					$(':input').each(function() {
+				if (!se.isCollapsed() || text == se.getContent({format: 'text'})) {
+					$(':input').each(function () {
 						var k = $(this).attr('id');
 
 						if (/on(click|dblclick)/.test(k)) {
@@ -42,15 +53,43 @@
 							k = "class";
 						}
 
-						var v = ed.dom.getAttrib(n, k);
+						var v = attribs[k];
 
-						// clean up class
-						if (k === "class") {
-							v = v.replace(/mce-item-[a-z0-9]+/gi, '').replace(/\s+/, ' ');
-							v = $.trim(v);
+						if (typeof v !== "undefined") {
+							// clean up class
+							if (k === "class") {
+								v = v.replace(/mce-item-[a-z0-9]+/gi, '').replace(/\s+/, ' ');
+								v = $.trim(v);
+							}
+
+							$(this).val(v);
+
+							delete attribs[k];
 						}
-	
-						$(this).val(v);
+					});
+
+					var x = 0;
+
+					// process remaining attributes
+					$.each(attribs, function (k, v) {
+						if (v !== '') {
+
+							try {
+								v = decodeURIComponent(v);
+							} catch (e) {}
+
+							var n = $('.uk-repeatable').eq(0);
+
+							if (x > 0) {
+								$(n).clone(true).appendTo($(n).parent());
+							}
+
+							var elements = $('.uk-repeatable').eq(x).find('input, select');
+
+							$(elements).eq(0).val(k);
+							$(elements).eq(1).val(v);
+						}
+						x++;
 					});
 
 					$('#insert').button('option', 'label', ed.getLang('update', 'Insert'));
@@ -67,7 +106,7 @@
 			if (ed.settings.schema === 'html4' && ed.settings.validate === true) {
 				$('input.html5').parents('.uk-form-row').hide();
 			}
-			
+
 			// hide for non-form nodes
 			if (!tinymce.is(n, ':input, form')) {
 				$('input.form').parents('.uk-form-row').hide();
@@ -79,7 +118,7 @@
 			}
 		},
 
-		insert: function() {
+		insert: function () {
 			var ed = tinyMCEPopup.editor,
 				se = ed.selection,
 				n = se.getNode(),
@@ -92,7 +131,7 @@
 
 			var args = {};
 
-			$(':input').not('#classlist-select, #classes').each(function() {
+			$(':input').not('#classlist-select, #classes, input[name]').each(function () {
 				var k = $(this).attr('id'),
 					v = $(this).val();
 
@@ -101,6 +140,15 @@
 				}
 
 				args[k] = v;
+			});
+
+			// get custom attributes
+			$('.uk-repeatable').each(function() {
+				var elements = $('input, select', this);
+				var key = $(elements).eq(0).val(),
+					value = $(elements).eq(1).val();
+	
+				args[key] = value;
 			});
 
 			// get classes value
@@ -142,7 +190,7 @@
 			tinyMCEPopup.close();
 		},
 
-		remove: function() {
+		remove: function () {
 			var ed = tinyMCEPopup.editor;
 
 			var element = tinyMCEPopup.getWindowArg('element');
@@ -155,11 +203,11 @@
 			tinyMCEPopup.close();
 		},
 
-		insertDateTime: function(id) {
+		insertDateTime: function (id) {
 			document.getElementById(id).value = this.getDateTime(new Date(), "%Y-%m-%dT%H:%M:%S");
 		},
 
-		getDateTime: function(d, fmt) {
+		getDateTime: function (d, fmt) {
 			fmt = fmt.replace("%D", "%m/%d/%y");
 			fmt = fmt.replace("%r", "%I:%M:%S %p");
 			fmt = fmt.replace("%Y", "" + d.getFullYear());
@@ -176,7 +224,7 @@
 			return fmt;
 		},
 
-		addZeros: function(value, len) {
+		addZeros: function (value, len) {
 			var i;
 			value = "" + value;
 
