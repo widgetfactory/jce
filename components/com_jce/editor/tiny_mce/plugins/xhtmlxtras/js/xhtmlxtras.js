@@ -21,10 +21,12 @@
 			for (i = attrs.length - 1; i >= 0; i--) {
 				var name = attrs[i].name, value = ed.dom.getAttrib(n, name);
 
-				// only valid attributes
-				if (ed.schema.isValid(nodeName, name)) {
-					attribs[name] = value;
+				// skip internal, eg: _moz_resizing or data-mce-style
+				if (name.charAt(0) === "_" || name.indexOf('-mce-') !== -1) {
+					continue;
 				}
+
+				attribs[name] = value;
 			}
 
 			return attribs;
