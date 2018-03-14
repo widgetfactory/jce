@@ -10,7 +10,7 @@
  */
 
 /*global tinymce:true */
-(function() {
+(function () {
     var each = tinymce.each,
         extend = tinymce.extend;
 
@@ -74,7 +74,7 @@
                 return s;
             }
 
-            s = s.split('/').map(function(string) {
+            s = s.split('/').map(function (string) {
                 return cleanChars(string, mode);
             }).join('/');
 
@@ -99,7 +99,7 @@
     }
 
     tinymce.create('tinymce.plugins.TextPatternPlugin', {
-        init: function(editor, url) {
+        init: function (editor, url) {
             var isPatternsDirty = true,
                 patterns;
 
@@ -107,7 +107,7 @@
             if (editor.settings.textpattern_use_markdown) {
                 var scriptLoader = new tinymce.dom.ScriptLoader();
                 scriptLoader.add(url + '/js/marked.min.js');
-                scriptLoader.loadQueue(function() {
+                scriptLoader.loadQueue(function () {
                     if (typeof marked !== "undefined") {
                         marked.setOptions({
                             renderer: new marked.Renderer(),
@@ -117,38 +117,48 @@
                 });
             }
 
-            editor.onPreInit.add(function(ed) {
+            editor.onPreInit.add(function (ed) {
                 ed.formatter.register('markdownlink', {
                     inline: 'a',
                     selector: 'a',
                     remove: 'all',
                     split: true,
                     deep: true,
-                    onmatch: function() {
+                    onmatch: function () {
                         return true;
                     },
 
-                    onformat: function(elm, fmt, vars) {
-                        tinymce.each(vars, function(value, key) {
+                    onformat: function (elm, fmt, vars) {
+                        tinymce.each(vars, function (value, key) {
                             ed.dom.setAttrib(elm, key, value);
                         });
                     }
                 });
             });
 
-            editor.onBeforeSetContent.add(function(ed, o) {
-                if (editor.settings.textpattern_use_markdown) {
-                    o.content = toHtml(o.content);
-                }
-            });
+            if (editor.settings.textpattern_use_markdown) {
+                editor.onBeforeSetContent.add(function (ed, o) {                    
+                    var content = toHtml(o.content);
+                    o.content = new tinymce.html.Serializer({}, ed.schema).serialize(ed.parser.parse(content));
+                });
 
-            editor.onPostProcess.add(function(ed, o) {
-                if (editor.settings.textpattern_use_markdown) {
-                    o.content = toHtml(o.content);
-                }
-            });
+                if (editor.plugins.clipboard) {
+                    editor.onGetClipboardContent.add(function (ed, clipboard) {
+                        var text = clipboard["text/plain"] || "", html = clipboard["text/html"] || "";
+                        // only supports plain text paste
+                        if (text && !html) {
+                            var markdown = toHtml(text);
 
-            editor.addCommand('InsertMarkdownImage', function(ui, node) {
+                            // a conversion has occured
+                            if (text !== markdown) {
+                                clipboard["text/html"]  = markdown;
+                            }
+                        }
+                    });
+                }
+            }
+
+            editor.addCommand('InsertMarkdownImage', function (ui, node) {
                 var data = node.split(']('),
                     dom = editor.dom;
 
@@ -171,7 +181,10 @@
                 src = editor.convertURL(src);
 
                 // create args object
-                var args = { 'alt': alt, 'src': src };
+                var args = {
+                    'alt': alt,
+                    'src': src
+                };
 
                 // empty src, create placeholder
                 if (!src) {
@@ -191,7 +204,7 @@
 
             var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
-            editor.addCommand('InsertCustomTextPattern', function(ui, node) {
+            editor.addCommand('InsertCustomTextPattern', function (ui, node) {
                 node = node.replace(/^\$\$|\$\$$/g, '');
 
                 var html;
@@ -209,31 +222,85 @@
                 }
             });
 
-            patterns = editor.settings.textpattern_patterns || [
-                { start: '*', end: '*', format: 'italic' },
-                { start: '**', end: '**', format: 'bold' },
-                { start: '~~', end: '~~', format: 'strikethrough' },
-                { start: '`', end: '`', format: 'code' },
+            patterns = editor.settings.textpattern_patterns || [{
+                    start: '*',
+                    end: '*',
+                    format: 'italic'
+                },
+                {
+                    start: '**',
+                    end: '**',
+                    format: 'bold'
+                },
+                {
+                    start: '~~',
+                    end: '~~',
+                    format: 'strikethrough'
+                },
+                {
+                    start: '`',
+                    end: '`',
+                    format: 'code'
+                },
                 //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
-                { start: '![', end: ')', cmd: 'InsertMarkdownImage', remove: true },
+                {
+                    start: '![',
+                    end: ')',
+                    cmd: 'InsertMarkdownImage',
+                    remove: true
+                },
                 //{ start: '[', end: ')', format: 'markdownlink' },
-                { start: '#', format: 'h1' },
-                { start: '##', format: 'h2' },
-                { start: '###', format: 'h3' },
-                { start: '####', format: 'h4' },
-                { start: '#####', format: 'h5' },
-                { start: '######', format: 'h6' },
-                { start: '>', format: 'blockquote' },
-                { start: '1. ', cmd: 'InsertOrderedList' },
-                { start: '* ', cmd: 'InsertUnorderedList' },
-                { start: '- ', cmd: 'InsertUnorderedList' },
-                { start: '$$', end: '$$', cmd: 'InsertCustomTextPattern' }
+                {
+                    start: '#',
+                    format: 'h1'
+                },
+                {
+                    start: '##',
+                    format: 'h2'
+                },
+                {
+                    start: '###',
+                    format: 'h3'
+                },
+                {
+                    start: '####',
+                    format: 'h4'
+                },
+                {
+                    start: '#####',
+                    format: 'h5'
+                },
+                {
+                    start: '######',
+                    format: 'h6'
+                },
+                {
+                    start: '>',
+                    format: 'blockquote'
+                },
+                {
+                    start: '1. ',
+                    cmd: 'InsertOrderedList'
+                },
+                {
+                    start: '* ',
+                    cmd: 'InsertUnorderedList'
+                },
+                {
+                    start: '- ',
+                    cmd: 'InsertUnorderedList'
+                },
+                {
+                    start: '$$',
+                    end: '$$',
+                    cmd: 'InsertCustomTextPattern'
+                }
             ];
 
             // Returns a sorted patterns list, ordered descending by start length
             function getPatterns() {
                 if (isPatternsDirty) {
-                    patterns.sort(function(a, b) {
+                    patterns.sort(function (a, b) {
                         if (a.start.length > b.start.length) {
                             return -1;
                         }
@@ -485,13 +552,13 @@
                 }
             }
 
-            editor.onKeyDown.add(function(ed, e) {
+            editor.onKeyDown.add(function (ed, e) {
                 if (e.keyCode == 13 && !tinymce.VK.modifierPressed(e)) {
                     handleEnter();
                 }
             });
 
-            editor.onKeyUp.add(function(ed, e) {
+            editor.onKeyUp.add(function (ed, e) {
                 if (e.keyCode == 32 && !tinymce.VK.modifierPressed(e)) {
                     handleSpace();
                 }
@@ -499,7 +566,7 @@
 
             this.getPatterns = getPatterns;
 
-            this.setPatterns = function(newPatterns) {
+            this.setPatterns = function (newPatterns) {
                 patterns = newPatterns;
                 isPatternsDirty = true;
             };

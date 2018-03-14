@@ -1728,6 +1728,7 @@
             self.onPreProcess = new tinymce.util.Dispatcher(this);
             self.onPostProcess = new tinymce.util.Dispatcher(this);
 
+            ed.onGetClipboardContent = new tinymce.util.Dispatcher(this);
             ed.onPastePreProcess = new tinymce.util.Dispatcher(this);
             ed.onPastePostProcess = new tinymce.util.Dispatcher(this);
 
@@ -2172,6 +2173,8 @@
                 if (!hasContentType(content, "text/plain")) {
                     return false;
                 }
+
+                return false;
             }
 
             // Grab contents on paste event
@@ -2180,8 +2183,10 @@
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
+                ed.onGetClipboardContent.dispatch(ed, clipboardContent);
+
                 // use plain text
-                if (isPlainTextPaste(clipboardContent)) {
+                if (!internal && isPlainTextPaste(clipboardContent)) {
                     e.preventDefault();
                     var text = clipboardContent["text/plain"];
 

@@ -11,10 +11,10 @@
 	<description>WF_TEXTPATTERN_DESC</description>
 	<icon></icon>
 	<params group="standard">
-	    <!--param name="use_markdown" type="radio" default="1" label="WF_TEXTPATTERN_USE_MARKDOWN" description="WF_TEXTPATTERN_USE_MARKDOWN_DESC">
+	    <param name="use_markdown" type="radio" default="1" label="WF_TEXTPATTERN_USE_MARKDOWN" description="WF_TEXTPATTERN_USE_MARKDOWN_DESC">
 	      <option value="1">WF_OPTION_YES</option>
 	      <option value="0">WF_OPTION_NO</option>
-	    </param-->
+	    </param>
 	</params>
 	<help>
 		<topic key="textpattern.about" title="WF_TEXTPATTERN_HELP_ABOUT" />
