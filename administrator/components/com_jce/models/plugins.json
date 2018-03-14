@@ -271,6 +271,14 @@
         "row": "4",
         "core": "1"
     },
+    "textpattern": {
+        "title": "WF_TEXTPATTERN_TITLE",
+        "description": "WF_TEXTPATTERN_DESC",
+        "icon": "",
+        "editable": "0",
+        "row": "0",
+        "core": "1"
+    },
     "visualchars": {
         "title": "WF_VISUALCHARS_TITLE",
         "description": "WF_VISUALCHARS_DESC",

@@ -103,8 +103,10 @@
             var isPatternsDirty = true,
                 patterns;
 
+            var use_markdown = editor.settings.textpattern_use_markdown !== false;
+
             // load "marked"
-            if (editor.settings.textpattern_use_markdown) {
+            if (use_markdown) {
                 var scriptLoader = new tinymce.dom.ScriptLoader();
                 scriptLoader.add(url + '/js/marked.min.js');
                 scriptLoader.loadQueue(function () {
@@ -136,7 +138,7 @@
                 });
             });
 
-            if (editor.settings.textpattern_use_markdown) {
+            if (use_markdown) {
                 editor.onBeforeSetContent.add(function (ed, o) {                    
                     var content = toHtml(o.content);
                     o.content = new tinymce.html.Serializer({}, ed.schema).serialize(ed.parser.parse(content));

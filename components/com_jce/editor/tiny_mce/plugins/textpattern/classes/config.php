@@ -12,7 +12,5 @@ class WFTextpatternPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        $wf = WFEditor::getInstance();
-        $settings['textpattern_use_markdown'] = $wf->getParam('source.use_markdown', 0, 0, 'boolean');
     }
 }
