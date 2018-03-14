@@ -103,7 +103,7 @@
             var isPatternsDirty = true,
                 patterns;
 
-            var use_markdown = editor.settings.textpattern_use_markdown !== false;
+            var use_markdown = !!editor.settings.textpattern_use_markdown;
 
             // load "marked"
             if (use_markdown) {
