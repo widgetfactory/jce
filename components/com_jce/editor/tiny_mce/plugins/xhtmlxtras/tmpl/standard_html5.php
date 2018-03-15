@@ -94,7 +94,7 @@ defined('_JEXEC') or die('RESTRICTED');
 
   <div class="uk-form-row">
     <label for="custom_attributes" class="uk-form-label uk-width-2-10">
-      <?php echo WFText::_('WF_LABEL_CUSTOM'); ?>
+      <?php echo WFText::_('WF_LABEL_OTHER'); ?>
     </label>
     <div class="uk-form-controls uk-width-8-10">
       <div class="uk-repeatable">
