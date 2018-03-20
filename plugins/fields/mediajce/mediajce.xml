@@ -17,5 +17,19 @@
 		<language tag="en-GB">en-GB.plg_fields_mediajce.ini</language>
 		<language tag="en-GB">en-GB.plg_fields_mediajce.sys.ini</language>
 	</languages>
-	<config></config>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="mediatype"
+					type="combo"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_DESC"
+				>
+				<option value="images">images</option>
+				<option value="files">files</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
 </extension>

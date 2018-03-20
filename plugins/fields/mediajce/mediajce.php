@@ -30,8 +30,6 @@ class PlgFieldsMediaJce extends FieldsPlugin
 			return $fieldNode;
 		}
 
-		$fieldNode->setAttribute('hide_default', 'true');
-
 		return $fieldNode;
 	}
 }
