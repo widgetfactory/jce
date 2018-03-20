@@ -101,8 +101,6 @@ class PlgSystemJce extends JPlugin
 
             if (strtolower($type) === 'media') {
                 $group = (string) $field->group;
-                
-                $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
             }
         }
