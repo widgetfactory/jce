@@ -2161,17 +2161,42 @@
                 }
             });
 
+            function isHtmlPaste(content) {
+                if (!hasContentType(content, "text/html")) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            function isSafari() {
+                var ua = navigator.userAgent;
+                return ua.indexOf('AppleWebKit') !== -1 && ua.indexOf('Safari') !== -1;
+            }
+
             function isPlainTextPaste(content) {
+                // CTRL + SHIFT + V or Paste Text dialog
                 if (self.pasteAsPlainText) {
                     return true;
                 }
 
+                // IE does not support text/plain
                 if (isIE) {
                     return false;
                 }
 
-                if (!hasContentType(content, "text/plain")) {
+                // prefer text/html
+                if (hasContentType(content, "text/html")) {
                     return false;
+                }
+
+                if (hasContentType(content, "text/plain")) {
+                    // Safari weirdness...
+                    if (isSafari() && "text/rtf" in content) {
+                        return false;
+                    }
+
+                    return true;
                 }
 
                 return false;
@@ -2199,7 +2224,7 @@
                 }
 
                 // use html from clipboard API
-                if (hasContentType(clipboardContent, "text/html")) {
+                if (isHtmlPaste(clipboardContent)) {
                     // if clipboard lacks internal mime type, inspect html for internal markings
                     if (!internal) {
                         internal = InternalHtml.isMarked(clipboardContent['text/html']);
