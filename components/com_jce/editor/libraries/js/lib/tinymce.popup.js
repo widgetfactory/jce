@@ -137,7 +137,7 @@
                     var custom = ed.getParam('styleselect_custom_classes');
 
                     if (custom) {
-                        cl = cl.concat(custom);
+                        cl = cl.concat(custom.split(','));
                     }
                 }
 
