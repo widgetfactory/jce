@@ -529,7 +529,7 @@
             return h;
         }
 
-        o.wordContent = isWordContent(ed, h);
+        o.wordContent = isWordContent(ed, h) && !o.internal;
 
         if (o.wordContent) {
             h = WordFilter(ed, h);
