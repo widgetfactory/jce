@@ -526,7 +526,7 @@
 
                 // check for extension in file name, eg. image.php.jpg
                 if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
-                    this.fire('error', { "code": 800, "message": 'Invalid file type', "file": file });
+                    this.fire('error', { "code": 800, "message": 'FILE_INVALID_ERROR', "file": file });
                     return false;
                 }
 
@@ -537,7 +537,7 @@
 
                     // check against allowed types
                     if (rx.test(ext) === false) {
-                        this.fire('error', { "code": 601, "message": 'File type not supported', "file": file });
+                        this.fire('error', { "code": 601, "message": 'FILE_EXTENSION_ERROR', "file": file });
                         return false;
                     }
                 }
@@ -546,7 +546,7 @@
 
                 // check file size
                 if (file.size && parseInt(file.size) > parseInt(this.options.max_size) * 1024) {
-                    this.fire('error', { "code": 600, "message": 'File size exceeds the maximum allowed size', "file": file });
+                    this.fire('error', { "code": 600, "message": 'FILE_SIZE_ERROR', "file": file });
                     return false;
                 }
 
@@ -571,7 +571,7 @@
                 this.fire('fileadded', file);
 
                 if (this.fileExists(file)) {
-                    this.fire('error', { "code": 700, "message": 'A file with this name is already in the queue', "file": file });
+                    this.fire('error', { "code": 700, "message": 'FILE_EXISTS_ERROR', "file": file });
                     return false;
                 }
 

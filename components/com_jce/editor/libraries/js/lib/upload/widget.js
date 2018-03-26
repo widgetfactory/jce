@@ -202,7 +202,8 @@
             }
 
             // create language key from message
-            var msg = error.message.replace(/[^a-z ]/gi, '').replace(/\s+/g, '_').toLowerCase();
+            var msg = error.message.replace(/[^a-z_ ]/gi, '').replace(/\s+/g, '_').toLowerCase();
+
             // get code as string
             var code = error.code.toString();
 
@@ -213,12 +214,16 @@
             // clean up message a bit
             message = message.replace(/<br[\s\/]+?>/gi, '');
 
+            // process variable
+            message = message.replace('%s', file.name);
+
             if (error.details) {
                 details = '<br />' + error.details;
             } else {
                 switch (error.code) {
                     case self.FILE_EXTENSION_ERROR:
                     case self.FILE_INVALID_ERROR:
+                    case self.FILE_EXISTS_ERROR:
                         details = details.replace('%s', file.name);
                         break;
 
