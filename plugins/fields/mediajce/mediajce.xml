@@ -29,6 +29,13 @@
 				<option value="images">images</option>
 				<option value="files">files</option>
 				</field>
+
+				<field
+					name="media_class"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_DESC"
+				/>
 			</fieldset>
 		</fields>
 	</config>
