@@ -14,18 +14,24 @@ if ($field->value == '')
 	return;
 }
 
-$class = $fieldParams->get('media_class');
-$type  = $fieldParams->get('mediatype');
+$class = (string) $fieldParams->get('media_class', '');
+$type  = (string) $fieldParams->get('mediatype', 'images');
+$text  = (string) $fieldParams->get('media_description', '');
 
 if ($class)
 {
 	$class = ' class="' . htmlentities($class, ENT_COMPAT, 'UTF-8', true) . '"';
 }
 
+if ($text)
+{
+	$text = htmlentities($text, ENT_COMPAT, 'UTF-8', true);
+}
+
 $value  = (array) $field->value;
 $buffer = '';
 
-$element = '<img src="%s"%s alt="" />';
+$element = '<img src="%s"%s alt="%s" />';
 
 if ($type !== "images") {
     $element = '<a href="%s"%s>%s</a>';
@@ -36,12 +42,17 @@ foreach ($value as $path)
 	if (!$path)
 	{
 		continue;
-	}
+    }
+
+    // set text as basename if not an image
+    if (!$text && $type !== "images") {
+        $text = basename($path);
+    }
 
 	$buffer .= sprintf($element,
 		htmlentities($path, ENT_COMPAT, 'UTF-8', true),
         $class,
-        basename($path)
+        $text
 	);
 }
 
