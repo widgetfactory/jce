@@ -1641,7 +1641,7 @@
 
         if (dataTransfer) {
             // Use old WebKit/IE API
-            if (dataTransfer.getData) {                
+            if (dataTransfer.getData) {
                 var legacyText = dataTransfer.getData('Text');
                 if (legacyText && legacyText.length > 0) {
                     items['text/plain'] = legacyText;
@@ -1837,24 +1837,49 @@
             function pasteHtml(content, internal) {
                 // create object to process
                 var o = {
-                    content: content,
+                    content : content,
                     internal: internal
                 };
 
-                // Execute pre process handlers
-                self.onPreProcess.dispatch(self, o);
+                // only process externally sourced content
+                if (!internal) {
+                    // Execute pre process handlers
+                    self.onPreProcess.dispatch(self, o);
 
-                // Create DOM structure
-                o.node = ed.dom.create('div', 0, o.content);
+                    // Create DOM structure
+                    o.node = ed.dom.create('div', 0, o.content);
 
-                // Execute post process handlers
-                self.onPostProcess.dispatch(self, o);
+                    // Execute post process handlers
+                    self.onPostProcess.dispatch(self, o);
 
-                // Serialize content
-                o.content = ed.serializer.serialize(o.node, {
-                    getInner: 1,
-                    forced_root_block: ''
-                });
+                    // Serialize content
+                    o.content = ed.serializer.serialize(o.node, {
+                        getInner: 1,
+                        forced_root_block: ''
+                    });
+
+                    // remove empty paragraphs
+                    if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
+                        o.content = o.content.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
+                    }
+
+                    // process regular expression
+                    if (ed.getParam('clipboard_paste_filter')) {
+                        var re, rules = ed.getParam('clipboard_paste_filter').split(';');
+
+                        each(rules, function (s) {
+                            // if it is already in Regular Expression format...
+                            if (/^\/.*\/(g|i|m)*$/.test(s)) {
+                                re = (new Function('return ' + s))();
+                                // ...else create expression
+                            } else {
+                                re = new RegExp(s);
+                            }
+
+                            o.content = o.content.replace(re, "");
+                        });
+                    }
+                }
 
                 self._insert(o.content);
 
@@ -2365,30 +2390,8 @@
         /**
          * Inserts the specified contents at the caret position.
          */
-        _insert: function (html, skip_undo) {
+        _insert: function (content, skip_undo) {
             var ed = this.editor;
-
-            // remove empty paragraphs
-            if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
-                html = html.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
-            }
-
-            // process regular expression
-            if (ed.getParam('clipboard_paste_filter')) {
-                var re, rules = ed.getParam('clipboard_paste_filter').split(';');
-
-                each(rules, function (s) {
-                    // if it is already in Regular Expression format...
-                    if (/^\/.*\/(g|i|m)*$/.test(s)) {
-                        re = (new Function('return ' + s))();
-                        // ...else create expression
-                    } else {
-                        re = new RegExp(s);
-                    }
-
-                    html = html.replace(re, "");
-                });
-            }
 
             // get validate setting
             var validate = ed.settings.validate;
@@ -2397,7 +2400,7 @@
             ed.settings.validate = true;
 
             // insert content
-            ed.execCommand('mceInsertContent', false, html);
+            ed.execCommand('mceInsertContent', false, content);
 
             // reset validate
             ed.settings.validate = validate;
