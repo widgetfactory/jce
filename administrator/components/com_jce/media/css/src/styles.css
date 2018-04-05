@@ -598,6 +598,7 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     position: absolute;
     left: 0;
     margin: 0 !important;
+    max-width: inherit;
 }
 
 .wf-colorpicker {
