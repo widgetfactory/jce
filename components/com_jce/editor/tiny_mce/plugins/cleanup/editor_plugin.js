@@ -120,7 +120,7 @@
                         }
 
                         each(tinymce.explode(invalidAttribValue), function (item) {
-                            var re, matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~]?=)?["']?([^"']+)?["']?\]/i.exec(item);
+                            var re, matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
 
                             if (matches && matches.length == 5) {
                                 var tag = matches[1],
