@@ -139,9 +139,15 @@
                                         ed.parser.addAttributeFilter(attrib, function (nodes, name) {
                                             replaceAttributeValue(nodes, name, expr, value);
                                         });
+                                        ed.serializer.addAttributeFilter(attrib, function (nodes, name) {
+                                            replaceAttributeValue(nodes, name, expr, value);
+                                        });
                                         // specific tag
                                     } else {
                                         ed.parser.addNodeFilter(tag, function (nodes, name) {
+                                            replaceAttributeValue(nodes, attrib, expr, value);
+                                        });
+                                        ed.serializer.addNodeFilter(tag, function (nodes, name) {
                                             replaceAttributeValue(nodes, attrib, expr, value);
                                         });
                                     }
