@@ -104,9 +104,13 @@
 
                 var w = $(a).val(),
                     h = $(b).val(),
-                    tw = $(a).data('tmp');
+                    tw = $(a).data('tmp');    
 
                 if (w && h && tw) {
+                    if (w.indexOf('%') !== -1 || h.indexOf('%') !== -1) {
+                        return;
+                    }
+                    
                     // if constrain is on
                     if ($(cb).is(':checked')) {
                         var temp = ((h / tw) * w).toFixed(0);
