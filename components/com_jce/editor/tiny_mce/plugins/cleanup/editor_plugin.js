@@ -37,6 +37,28 @@
             }
 
             ed.onPreInit.add(function () {
+                // cleanup tmp attributes
+                ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+                    var i = nodes.length,
+                        node, fc;
+
+                    while (i--) {
+                        node = nodes[i];
+                        node.attr('data-mce-tmp', null);
+                    }
+                });
+
+                // cleanup tmp attributes
+                ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+                    var i = nodes.length,
+                        node, fc;
+
+                    while (i--) {
+                        node = nodes[i];
+                        node.attr('data-mce-tmp', null);
+                    }
+                });
+                
                 if (ed.settings.verify_html !== false) {
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
