@@ -164,7 +164,10 @@
             var path    = ed.getParam('emotions_url', url + '/img');
             var icons   = ed.getParam('emotions_smilies', emoji, 'hash');
 
-            // test for json or txt file
+            // create conten using default set
+            this.content = createEmojiContent(icons);
+
+            // get emoji from json or text file
             if (path && /\.(json|txt)$/.test(path)) {
 
                 // resolve to local url if relative
@@ -179,9 +182,6 @@
                             icons = JSON.parse(text);
                         } catch (e) {}
 
-                        self.content = createEmojiContent(icons);
-                    },
-                    error: function() {
                         self.content = createEmojiContent(icons);
                     }
                 });
