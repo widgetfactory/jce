@@ -88,11 +88,13 @@ class WFLinkExtension extends WFExtension
     {
         $list = $this->getLists();
 
-        if (count($list)) {
-            $view = $this->getView(array('name' => 'links', 'layout' => 'links'));
-            $view->assign('list', implode("\n", $list));
-            $view->display();
+        if (empty($list)) {
+            return "";
         }
+
+        $view = $this->getView(array('name' => 'links', 'layout' => 'links'));
+        $view->assign('list', implode("\n", $list));
+        $view->display();
     }
 
     private static function cleanInput($args, $method = 'string')

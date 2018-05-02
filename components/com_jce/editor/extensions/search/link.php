@@ -14,6 +14,8 @@ wfimport('editor.libraries.classes.extensions');
 
 class WFLinkSearchExtension extends WFSearchExtension
 {
+    private $enabled = array();
+    
     /**
      * Constructor activating the default information of the class.
      */
@@ -37,6 +39,8 @@ class WFLinkSearchExtension extends WFSearchExtension
         foreach ($plugins as $plugin) {
             if (JPluginHelper::isEnabled('search', $plugin)) {
                 JPluginHelper::importPlugin('search', $plugin);
+
+                $this->enabled[] = $plugin;
             }
         }
     }
@@ -53,8 +57,7 @@ class WFLinkSearchExtension extends WFSearchExtension
     public function isEnabled()
     {
         $wf = WFEditorPlugin::getInstance();
-
-        return (bool) $wf->getParam('search.link.enable', 1);
+        return (bool) $wf->getParam('search.link.enable', 1) && !empty($this->enabled);
     }
 
     /**
@@ -92,6 +95,10 @@ class WFLinkSearchExtension extends WFSearchExtension
 
     public function render()
     {
+        if (!$this->isEnabled()) {
+            return "";
+        }
+        
         // built select lists
         $orders = array();
         $orders[] = JHtml::_('select.option', 'newest', JText::_('WF_SEARCH_NEWEST_FIRST'));
