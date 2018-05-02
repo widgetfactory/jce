@@ -131,8 +131,15 @@
 
             self.content = "";
 
-            function createEmojiContent(icons) {
+            function createEmojiContent(icons, path) {
                 var content = document.createElement('div');
+
+                if (!path) {
+                    path = url + '/img';
+                }
+
+                // make absolute
+                path = ed.documentBaseURI.toAbsolute(path, true);
                 
                 each(icons, function (o) {
                     if (typeof o === "string") {
@@ -143,7 +150,7 @@
                         // remove extension
                         if (/\.[a-z0-9]{2,4}$/.test(k)) {
                             v = k.replace(/\.[^.]+$/i, '');
-                            k = '<img src="' + url + '/' + k + '" alt="' + ed.getLang('emotions.' + v, v) + '" />';
+                            k = '<img src="' + path + '/' + k + '" alt="' + ed.getLang('emotions.' + v, v) + '" />';
                         }
 
                         a[k] = v;
@@ -161,19 +168,17 @@
                 return content.innerHTML;
             }
 
-            var path    = ed.getParam('emotions_url', url + '/img');
+            var path    = ed.getParam('emotions_url');
             var icons   = ed.getParam('emotions_smilies', emoji, 'hash');
 
             // create conten using default set
-            this.content = createEmojiContent(icons);
+            this.content = createEmojiContent(icons, path);
 
             // get emoji from json or text file
             if (path && /\.(json|txt)$/.test(path)) {
 
                 // resolve to local url if relative
-                if (path.indexOf('://') === -1) {
-                    path = ed.settings.base_url + path;
-                }
+                path = ed.documentBaseURI.toAbsolute(path);
 
                 tinymce.util.XHR.send({
                     url: path,
