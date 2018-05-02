@@ -138,9 +138,11 @@
                     path = url + '/img';
                 }
 
-                // make absolute
-                path = ed.documentBaseURI.toAbsolute(path, true);
-                
+                // make absolute if required
+                if (path.indexOf('://') === -1) {
+                    path = ed.documentBaseURI.toAbsolute(path, true);
+                }
+
                 each(icons, function (o) {
                     if (typeof o === "string") {
                         var v = "",
@@ -178,7 +180,9 @@
             if (path && /\.(json|txt)$/.test(path)) {
 
                 // resolve to local url if relative
-                path = ed.documentBaseURI.toAbsolute(path);
+                if (path.indexOf('://') === -1) {
+                    path = ed.documentBaseURI.toAbsolute(path, true);
+                }
 
                 tinymce.util.XHR.send({
                     url: path,
