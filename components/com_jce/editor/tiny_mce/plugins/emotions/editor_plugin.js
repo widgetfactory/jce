@@ -134,43 +134,43 @@
             function createEmojiContent(icons, path) {
                 var content = document.createElement('div');
 
-                if (!path) {
-                    path = url + '/img';
-                }
-
                 // make absolute if required
-                if (path.indexOf('://') === -1) {
+                if (path && path.indexOf('://') === -1) {
                     path = ed.documentBaseURI.toAbsolute(path, true);
                 }
 
-                each(icons, function (o) {
-                    if (typeof o === "string") {
-                        var v = "",
-                            k = o,
-                            a = {};
+                each(icons, function (data) {
+                    if (typeof data === "string") {
+                        var label = "",
+                            src = data,
+                            item = {};
 
-                        // remove extension
-                        if (/\.[a-z0-9]{2,4}$/.test(k)) {
-                            v = k.replace(/\.[^.]+$/i, '');
-                            k = '<img src="' + path + '/' + k + '" alt="' + ed.getLang('emotions.' + v, v) + '" />';
+                        if (path) {
+                            src = path + '/' + src;
                         }
 
-                        a[k] = v;
-                        o = a;
+                        // remove extension
+                        if (/\.[a-z0-9]{2,4}$/.test(data)) {
+                            label = data.replace(/\.[^.]+$/i, '');
+                            data = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
+                        }
+
+                        item[data] = label;
+                        data = item;
                     }
 
-                    each(o, function (v, k) {
+                    each(data, function (label, key) {
                         DOM.add(content, 'div', {
                             "class": "mce_emotions_icon",
-                            "title": ed.getLang('emotions.' + v, v)
-                        }, k);
+                            "title": ed.getLang('emotions.' + label, label)
+                        }, key);
                     });
                 });
 
                 return content.innerHTML;
             }
 
-            var path    = ed.getParam('emotions_url');
+            var path    = ed.getParam('emotions_url', url + '/img');
             var icons   = ed.getParam('emotions_smilies', emoji, 'hash');
 
             // create conten using default set
