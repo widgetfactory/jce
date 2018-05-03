@@ -150,9 +150,9 @@
                         }
 
                         // remove extension
-                        if (/\.[a-z0-9]{2,4}$/.test(data)) {
-                            label = data.replace(/\.[^.]+$/i, '');
-                            data = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
+                        if (/\.(png|jpg|jpeg|gif)$/i.test(data)) {
+                            label   = data.replace(/\.[^.]+$/i, '');
+                            data    = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
                         }
 
                         item[data] = label;
@@ -160,6 +160,19 @@
                     }
 
                     each(data, function (label, key) {
+                        // is it an image?
+                        if (/\.(png|jpg|jpeg|gif)$/i.test(key)) {
+                            var src = key;
+
+                            if (path) {
+                                src = path + '/' + src;
+                            }
+
+                            src = ed.documentBaseURI.toAbsolute(src, true);
+                            
+                            key = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
+                        }
+                        
                         DOM.add(content, 'div', {
                             "class": "mce_emotions_icon",
                             "title": ed.getLang('emotions.' + label, label)
@@ -176,13 +189,18 @@
             // create conten using default set
             this.content = createEmojiContent(icons, path);
 
+            // set loaded flag to prevent duplicate xhr request
+            this.loaded = false;
+
             // get emoji from json or text file
-            if (path && /\.(json|txt)$/.test(path)) {
+            if (path && /\.(json|txt)$/.test(path) && !this.loaded) {
 
                 // resolve to local url if relative
                 if (path.indexOf('://') === -1) {
                     path = ed.documentBaseURI.toAbsolute(path, true);
                 }
+
+                this.loaded = true;
 
                 tinymce.util.XHR.send({
                     url: path,
@@ -191,7 +209,10 @@
                             icons = JSON.parse(text);
                         } catch (e) {}
 
-                        self.content = createEmojiContent(icons);
+                          // create path
+                        path = path.substring(0, path.lastIndexOf('/'));
+
+                        self.content = createEmojiContent(icons, path);
                     }
                 });
             }
@@ -220,8 +241,15 @@
                                 p = DOM.getParent(n, '.mce_emotions_icon');
 
                             if (p) {
-                                var h = (n.nodeName === "IMG") ? p.innerHTML : p.innerText;
-                                ed.execCommand('mceInsertContent', false, h);
+                                var html = p.innerText;
+                                
+                                // convert img src to relative and get as innerHTML
+                                if (n.nodeName === "IMG") {
+                                    n.setAttribute('src', ed.documentBaseURI.toRelative(n.src));
+                                    html = p.innerHTML;
+                                }
+
+                                ed.execCommand('mceInsertContent', false, html);
                             }
 
                             c.hideDialog();
