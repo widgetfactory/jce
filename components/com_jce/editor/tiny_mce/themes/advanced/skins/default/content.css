@@ -15,10 +15,10 @@ html {
 }
 
 body {
-    color: #000;
+    color: #444;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
-    background: #FFF;
+    background: #fff;
     margin: initial;
 }
 
@@ -26,7 +26,6 @@ body.mceContentReset {
     background: #FFFFFF none !important;
     color: #000000 !important;
 }
-
 
 /* https://www.w3.org/TR/html5/rendering.html#phrasing-content-0 */
 
@@ -151,7 +150,6 @@ font[face=mceinline] {
 img::selection {
     background: #b4d4ff !important;
 }
-
 
 /** bookmark **/
 
