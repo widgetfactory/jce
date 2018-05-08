@@ -40,7 +40,7 @@ defined('_WF_EXT') or die('RESTRICTED');
   </div>
   <div class="uk-form-row">
     <div class="uk-width-4-10">
-      <input type="checkbox" id="youtube_privacy" checked="checked" />
+      <input type="checkbox" id="youtube_privacy" />
       <label for="youtube_privacy" title="<?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>" class="tooltip">
         <?php echo WFText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?>
       </label>

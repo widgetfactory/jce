@@ -20,6 +20,36 @@
     	</param>
 		<param name="width" type="text" default="560" label="WF_LABEL_WIDTH" description="WF_AGGREGATOR_YOUTUBE_WIDTH_DESC" />
 		<param name="height" type="text" default="315" label="WF_LABEL_HEIGHT" description="WF_AGGREGATOR_YOUTUBE_HEIGHT_DESC" />
+
+		<param name="controls" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_CONTROLS" description="WF_AGGREGATOR_YOUTUBE_CONTROLS_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
+
+		<param name="related" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_RELATED" description="WF_AGGREGATOR_YOUTUBE_RELATED_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
+
+		<param name="loop" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_LOOP" description="WF_AGGREGATOR_YOUTUBE_LOOP_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
+
+		<param name="autoplay" type="list" default="0" label="WF_AGGREGATOR_YOUTUBE_AUTOPLAY" description="WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
+
+		<param name="privacy" type="list" default="0" label="WF_AGGREGATOR_YOUTUBE_PRIVACY" description="WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
+
+		<param name="showinfo" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_SHOWINFO" description="WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC">
+        	<option value="1">WF_OPTION_YES</option>
+        	<option value="0">WF_OPTION_NO</option>
+    	</param>
 	</params>
 	<plugins></plugins>
 </install>

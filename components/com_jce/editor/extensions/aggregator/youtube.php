@@ -40,8 +40,15 @@ class WFAggregatorExtension_Youtube extends WFAggregatorExtension
         $plugin = WFEditorPlugin::getInstance();
 
         return array(
-            'width' => $plugin->getParam('aggregator.youtube.width', 560),
-            'height' => $plugin->getParam('aggregator.youtube.height', 315),
+            'width'     => $plugin->getParam('aggregator.youtube.width', 560),
+            'height'    => $plugin->getParam('aggregator.youtube.height', 315),
+
+            'controls'  => (int) $plugin->getParam('aggregator.youtube.controls', 1),
+            'loop'      => (int) $plugin->getParam('aggregator.youtube.loop', 0),
+            'autoplay'  => (int) $plugin->getParam('aggregator.youtube.autoplay', 0),
+            'rel'       => (int) $plugin->getParam('aggregator.youtube.related', 1),
+            'showinfo'  => (int) $plugin->getParam('aggregator.youtube.showinfo', 1),
+            'privacy'   => (int) $plugin->getParam('aggregator.youtube.privacy', 0)
         );
     }
 }

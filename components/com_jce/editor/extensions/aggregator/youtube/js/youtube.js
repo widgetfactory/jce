@@ -28,7 +28,13 @@ WFAggregator.add('youtube', {
         end: '',
         privacy: 0
     },
-    setup: function() {},
+    setup: function() {
+        var self = this;
+        
+        $.each(this.params, function (k, v) {
+            $('#youtube_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
+        });
+    },
     getTitle: function() {
         return this.title || this.name;
     },
