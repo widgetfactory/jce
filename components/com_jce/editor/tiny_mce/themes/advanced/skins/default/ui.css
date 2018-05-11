@@ -1442,8 +1442,10 @@ span.mcePathPath {
     display: inline-block;
     font-size: 14px;
     line-height: 2em;
-    width: 2em;
-    height: 2em;
+    width: auto;
+    height: auto;
+    min-width: 2em;
+    min-height: 2em;
     text-align: center;
     cursor: pointer;
     user-select: none;
