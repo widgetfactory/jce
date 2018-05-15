@@ -64,7 +64,7 @@ class WFFileBrowserPlugin extends WFMediaManager
 
         $browser = $this->getFileBrowser();
         
-        $upload = $browser->get('upload');
+        $upload = $browser->get('upload', array());
         $upload['filetypes'] = $filetypes;
         
         $browser->setProperties(array('upload' => $upload));
