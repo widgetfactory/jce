@@ -33,7 +33,7 @@ class WFFileBrowserPlugin extends WFMediaManager
         $caller = $this->get('caller', 'browser');
 
         // get mediatype from xml
-        $mediatype = JRequest::getVar('mediatype', 'files');
+        $mediatype = JRequest::getVar('mediatype', JRequest::getVar('filter', 'files'));
 
         // clean filter value
         $mediatype = (string) preg_replace('/[^\w_,]/i', '', $mediatype);
@@ -61,6 +61,13 @@ class WFFileBrowserPlugin extends WFMediaManager
 
         // set filetypes
         $this->setFileTypes($filetypes);
+
+        $browser = $this->getFileBrowser();
+        
+        $upload = $browser->get('upload');
+        $upload['filetypes'] = $filetypes;
+        
+        $browser->setProperties(array('upload' => $upload));
     }
 
     /**
