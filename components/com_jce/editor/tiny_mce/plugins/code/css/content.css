@@ -1,7 +1,8 @@
 .mce-item-php,
 .mcePhp,
 .mce-item-script,
-.mce-item-style {
+.mce-item-style,
+style[data-mce-type="text/css"] {
     display: inline-block;
     width: 20px;
     height: 22px;
@@ -32,14 +33,16 @@
     background-position: 0 -220px;
 }
 
-.mce-item-style {
+.mce-item-style,
+style[data-mce-type="text/css"] {
     background-position: 0 -420px;
 }
 
 .mce-item-script.mce-item-selected,
 .mce-item-style.mce-item-selected,
 .mce-item-php.mce-item-selected,
-.mcePhp.mce-item-selected {
+.mcePhp.mce-item-selected,
+style.mce-item-selected {
     background-color: #b4d4ff;
     border: 0 none;
 }

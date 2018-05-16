@@ -16,6 +16,23 @@
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
+        function clean(s) {
+            // remove javascript comments
+            s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
+            s = s.replace(/(\n\/\/ \]\]>)$/g, '');
+
+            // remove css comments
+            s = s.replace(/^(<!--\n)/g, '');
+            s = s.replace(/(\n-->)$/g, '');
+
+            //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
+            //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
+            //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
+            //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
+
+            return s;
+        }
+
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
             var self = this;
@@ -24,7 +41,7 @@
             this.url = url;
 
             function isCode(n) {
-                return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp');
+                return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp, style[data-mce-type="text/css"]');
             }
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
@@ -53,7 +70,7 @@
                 }
 
                 // Convert script elements to span placeholder
-                ed.parser.addNodeFilter('script,style', function (nodes) {
+                ed.parser.addNodeFilter('script', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         self._serializeSpan(nodes[i]);
                     }
@@ -97,6 +114,38 @@
                         if (name == 'div' && node.attr('data-mce-type') == 'noscript') {
                             self._buildNoScript(node);
                         }
+                    }
+                });
+
+                ed.serializer.addNodeFilter('style', function (nodes, name, args) {
+                    var node, value = '';
+                    
+                    for (var i = 0, len = nodes.length; i < len; i++) {
+                        node = nodes[i];
+
+                        node.attr('type', node.attr('data-mce-type') || 'text/css');
+
+                        if (node.firstChild) {
+                            value = node.firstChild.value;
+                            value = clean(value);
+
+                            node.empty();
+                        }
+
+                        var text = new Node('#text', 3);
+                        text.raw = true;
+                        text.value = tinymce.trim(value);
+                        node.append(text);
+
+                        /*var span = new Node('span', 1);
+                        span.attr('class', 'mce-item-' + name);
+                        span.attr('data-mce-type', node.attr('type'));
+
+                        span.append(node);
+
+                        var comment = new Node('#comment', 8);
+                        comment.value = value;
+                        span.append(comment);*/
                     }
                 });
 
@@ -283,7 +332,7 @@
                 s = ed.selection,
                 n = s.getNode();
 
-            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mce-item-php')) {
+            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mce-item-php, style[data-mce-type="text/css"]')) {
                 ed.undoManager.add();
 
                 ed.dom.remove(n);
@@ -322,7 +371,7 @@
                     text.raw = true;
                     // add cdata
                     if (p.type === "text/javascript") {
-                        v = self._clean(tinymce.trim(v));
+                        v = clean(tinymce.trim(v));
                     }
                     text.value = v;
                     node.append(text);
@@ -372,7 +421,7 @@
                 if (v) {
                     text = new Node('#text', 3);
                     text.raw = true;
-                    v = self._clean(tinymce.trim(v));
+                    v = clean(tinymce.trim(v));
                     text.value = v;
                     node.append(text);
                 }
@@ -448,7 +497,7 @@
 
             if (v.length) {
                 var text = new Node('#comment', 8);
-                text.value = this._clean(v);
+                text.value = clean(v);
                 span.append(text);
             }
             // padd empty span to prevent it being removed
@@ -479,25 +528,6 @@
 
             n.wrap(div);
             n.unwrap();
-        },
-
-        // Private internal function
-        _clean: function (s) {
-
-            // remove javascript comments
-            s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
-            s = s.replace(/(\n\/\/ \]\]>)$/g, '');
-
-            // remove css comments
-            s = s.replace(/^(<!--\n)/g, '');
-            s = s.replace(/(\n-->)$/g, '');
-
-            //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
-            //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
-            //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
-            //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
-
-            return s;
         }
     });
     // Register plugin
