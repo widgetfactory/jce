@@ -335,9 +335,6 @@
             // setup list sorting
             this._setupListSort();
 
-            // show / hide tree list
-            this._toggleTree(this._treeLoaded());
-
             // Show / hide search icon
             $('#block-search-icon').toggle(this.options.search);
 
@@ -440,24 +437,24 @@
                 self.refresh(e);
             });
 
-            if (!this._treeLoaded()) {
-                $(this).toggleClass('uk-active');
-                $('main').toggleClass('uk-tree-hidden');
+            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details');
+
+            // show details view (hide tree)
+            if (parseInt(showDetails) || !this._treeLoaded()) {
+                $('#show-details').removeClass('uk-active');
+                $('main').addClass('uk-tree-hidden');
+            } else {
+                $('#show-details').addClass('uk-active');
+                $('main').removeClass('uk-tree-hidden');
             }
 
             // Details button
             $('#show-details:visible').click(function (e) {
                 $(this).toggleClass('uk-active');
                 $('main').toggleClass('uk-tree-hidden');
+
+                Wf.Cookie.set('wf_' + Wf.getName() + '_details', $('main').hasClass('uk-tree-hidden') ? 1 : 0);
             });
-
-            // get the interface height at loading
-            /*var ih = this._getInterfaceHeight();
-
-            // resize browser on window resize
-            $(window).bind('resize', function () {
-                self.resize(ih);
-            });*/
 
             if (this.options.expandable) {
                 $('#browser').addClass('expandable');
