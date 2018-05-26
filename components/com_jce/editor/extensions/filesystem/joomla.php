@@ -223,7 +223,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         return 0;
     }
 
-    public function getFolders($relative, $filter = '')
+    public function getFolders($relative, $filter = '', $sort = '')
     {
         $path = WFUtility::makePath($this->getBaseDir(), $relative);
         $path = WFUtility::fixPath($path);
@@ -238,8 +238,9 @@ class WFJoomlaFileSystem extends WFFileSystem
         $folders = array();
 
         if (!empty($list)) {
-            // Sort alphabetically
+            // Sort alphabetically by default
             natcasesort($list);
+
             foreach ($list as $item) {
                 $item = WFUtility::convertEncoding($item);
 
@@ -260,10 +261,14 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
+        if ($sort) {
+            $folders = self::sortItemsByKey($folders, $sort);
+        }
+
         return $folders;
     }
 
-    public function getFiles($relative, $filter = '')
+    public function getFiles($relative, $filter = '', $sort = '')
     {
         $path = WFUtility::makePath($this->getBaseDir(), $relative);
         $path = WFUtility::fixPath($path);
@@ -280,8 +285,9 @@ class WFJoomlaFileSystem extends WFFileSystem
         $x = 1;
 
         if (!empty($list)) {
-            // Sort alphabetically
+            // Sort alphabetically by default
             natcasesort($list);
+
             foreach ($list as $item) {
                 $item = WFUtility::convertEncoding($item);
 
@@ -300,6 +306,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $item,
                     'writable' => is_writable(WFUtility::makePath($path, $item)) || $this->isFtp(),
                     'type' => 'files',
+                    'extension' => pathinfo($item, PATHINFO_EXTENSION)
                 );
 
                 $properties = self::getFileDetails($data['id'], $x);
@@ -308,6 +315,10 @@ class WFJoomlaFileSystem extends WFFileSystem
 
                 ++$x;
             }
+        }
+
+        if ($sort) {            
+            $files = self::sortItemsByKey($files, $sort);
         }
 
         return $files;
@@ -328,7 +339,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
         $date = @filemtime($path);
 
-        return array('modified' => $date);
+        return array('modified' => $date, 'size' => '');
     }
 
     /**

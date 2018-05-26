@@ -566,7 +566,7 @@
             var self = this;
             // Sortables
 
-            $('#item-list').listsort({
+            /*$('#item-list').listsort({
                 fields: {
                     '#sort-ext': {
                         attribute: 'title',
@@ -587,6 +587,44 @@
                 }
             }).on('listsort:sort', function () {
                 self._trigger('onListSort');
+            });*/
+
+            // get the sort value from a cookie
+            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '');
+
+            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function() {
+                // reset all
+                $(this).siblings('.asc, .desc').removeClass('desc').addClass('asc');
+                
+                var direction = '';
+
+                if ($(this).hasClass('asc')) {
+                    $(this).removeClass('asc').addClass('desc');
+                    direction = '-';
+                } else {
+                    $(this).removeClass('desc').addClass('asc');
+                    direction = '';
+                }
+
+                // get value
+                var type = $(this).data('sort');
+
+                self._sortValue = direction + type;
+
+                // store in a cookie
+                Wf.Cookie.set('wf_' + Wf.getName() + '_sort', self._sortValue);
+
+                self.refresh();
+            }).addClass(function() {
+                if (this.id.indexOf(self._sortValue) === -1) {
+                    return 'asc';
+                }
+                
+                if (self._sortValue && self._sortValue.charAt(0) === '-') {
+                    return 'desc';
+                }
+                
+                return 'asc';
             });
         },
         /**
@@ -1127,8 +1165,11 @@
             // get list limit
             this._limit = $('#browser-list-limit-select').val() || this.options.list_limit;
 
+            // get sort value
+            var sort = this._sortValue || '';
+
             // send request
-            Wf.JSON.request('getItems', [path, this._limit, this._limitcount, filter || ''], this._loadList, this);
+            Wf.JSON.request('getItems', [path, this._limit, this._limitcount, filter || '', sort], this._loadList, this);
         },
         /**
          * Refresh the file list

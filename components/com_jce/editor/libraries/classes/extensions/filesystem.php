@@ -168,6 +168,27 @@ class WFFileSystem extends WFExtension
         return $root;
     }
 
+    protected static function sortItemsByKey($items, $type)
+    {
+        $sortable = array();
+
+        // set default direction
+        $direction = 'asc';
+
+        if ($type[0] === "-") {
+            $direction = 'desc';
+            $type = substr($type, 1);
+        }
+
+        foreach ($items as $key => $item) {
+            $sortable[$key] = isset($item[$type]) ? $item[$type] : $item['properties'][$type];
+        }
+
+        array_multisort($sortable, $direction === "desc" ? SORT_DESC : SORT_ASC, SORT_NATURAL | SORT_FLAG_CASE, $items);
+
+        return $items;
+    }
+
     public function toAbsolute($path)
     {
         return $path;

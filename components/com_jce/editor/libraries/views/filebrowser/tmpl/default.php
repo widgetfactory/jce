@@ -50,28 +50,28 @@ defined('_JEXEC') or die('RESTRICTED');
               </div>
 
               <!-- Sort Extension -->
-              <div class="uk-width-1-10 uk-button uk-padding-remove uk-text-left" id="sort-ext" role="button" data-sort-type="extension" aria-labelledby="sort-ext-label">
+              <div class="uk-width-1-10 uk-button uk-padding-remove uk-text-left" id="sort-ext" data-sort="extension" role="button" data-sort-type="extension" aria-labelledby="sort-ext-label">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
                 <span id="sort-ext-label" class="uk-hidden"><?php echo WFText::_('WF_LABEL_EXTENSION'); ?></span>
               </div>
 
               <!-- Sort Name -->
-              <div class="uk-flex-item-auto uk-button uk-padding-remove uk-text-left" id="sort-name" role="button" data-sort-type="string" aria-labelledby="sort-name-label">
+              <div class="uk-flex-item-auto uk-button uk-padding-remove uk-text-left" id="sort-name" data-sort="name" role="button" data-sort-type="string" aria-labelledby="sort-name-label">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
                 <span id="sort-name-label">&nbsp;<?php echo WFText::_('WF_LABEL_NAME'); ?></span>
               </div>
 
               <!-- Sort Date -->
-              <div class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" role="button" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
+              <div class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" role="button" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <span id="sort-data-label">&nbsp;<?php echo WFText::_('WF_LABEL_DATE'); ?></span>
               </div>
 
               <!-- Sort Size -->
-              <div class="uk-width-3-10 uk-button uk-text-left" id="sort-size" role="button" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <div class="uk-width-3-10 uk-button uk-text-left" id="sort-size" role="button" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <span id="sort-size-label">&nbsp;<?php echo WFText::_('WF_LABEL_SIZE'); ?></span>
