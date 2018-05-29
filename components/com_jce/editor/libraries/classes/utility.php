@@ -463,7 +463,7 @@ abstract class WFUtility
      */
     public static function validateFileName($name)
     {
-        if (empty($name)) {
+        if (empty($name) && (string) $name !== "0") {
             return false;
         }
 
