@@ -526,7 +526,7 @@
 
         // skip plain text
         if (self.pasteAsPlainText) {
-            return h;
+            return;
         }
 
         o.wordContent = isWordContent(ed, h) && !o.internal;
@@ -558,11 +558,6 @@
         // Remove all spans
         if (ed.getParam('clipboard_paste_remove_spans')) {
             h = h.replace(/<\/?(span)[^>]*>/gi, '');
-        }
-
-        // convert urls in content
-        if (ed.getParam('clipboard_paste_convert_urls', true)) {
-            h = convertURLs(ed, h);
         }
 
         // convert some tags if cleanup is off
@@ -1857,6 +1852,11 @@
                         getInner: 1,
                         forced_root_block: ''
                     });
+
+                    // convert urls in content
+                    if (ed.getParam('clipboard_paste_convert_urls', true)) {
+                        o.content = convertURLs(ed, o.content);
+                    }
 
                     // remove empty paragraphs
                     if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
