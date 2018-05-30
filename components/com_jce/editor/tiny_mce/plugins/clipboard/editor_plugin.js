@@ -1841,6 +1841,11 @@
                     // Execute pre process handlers
                     self.onPreProcess.dispatch(self, o);
 
+                    // convert urls in content
+                    if (ed.getParam('clipboard_paste_convert_urls', true)) {
+                        o.content = convertURLs(ed, o.content);
+                    }
+
                     // Create DOM structure
                     o.node = ed.dom.create('div', 0, o.content);
 
@@ -1852,11 +1857,6 @@
                         getInner: 1,
                         forced_root_block: ''
                     });
-
-                    // convert urls in content
-                    if (ed.getParam('clipboard_paste_convert_urls', true)) {
-                        o.content = convertURLs(ed, o.content);
-                    }
 
                     // remove empty paragraphs
                     if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
