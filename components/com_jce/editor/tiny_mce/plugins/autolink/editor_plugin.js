@@ -33,6 +33,8 @@
 				AutoLinkPattern = ed.settings.autolink_pattern;
 			}
 
+			ed.onAutoLink = new tinymce.util.Dispatcher(this);
+
 			// Add a key down handler
 			ed.onKeyDown.addToTop(function (ed, e) {
 				if (e.keyCode == 13)
@@ -200,9 +202,13 @@
 				editor.selection.setRng(rng);
 				editor.execCommand('createlink', false, matches[1] + matches[2]);
 
+				var node = editor.selection.getNode();
+
 				if (editor.settings.default_link_target) {
-					editor.dom.setAttrib(editor.selection.getNode(), 'target', editor.settings.default_link_target);
+					editor.dom.setAttrib(node, 'target', editor.settings.default_link_target);
 				}
+
+				editor.onAutoLink.dispatch(editor, {node: node});
 
 				editor.selection.moveToBookmark(bookmark);
 				editor.nodeChanged();
