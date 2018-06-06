@@ -615,7 +615,7 @@ class WFModelEditor extends WFModelBase
                 });
 
                 // core plugins
-                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload');
+                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding');
 
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $items)) {
@@ -626,6 +626,11 @@ class WFModelEditor extends WFModelBase
                 if ($wf->getParam('editor.path', 1)) {
                     $items[] = 'wordcount';
                 }
+
+                // remove missing plugins
+                $items = array_filter($items, function($item) {
+                    return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
+                });
 
                 // reset index
                 $items = array_values($items);
