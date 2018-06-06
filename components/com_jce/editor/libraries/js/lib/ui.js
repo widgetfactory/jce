@@ -1,30 +1,30 @@
-(function($) {
+(function ($) {
 
-    $.fn.checkbox = function() {
-        return this.each(function() {
+    $.fn.checkbox = function () {
+        return this.each(function () {
             var self = this;
 
             if ($(this).hasClass('uk-form-constrain')) {
                 return this;
             }
 
-            $(this).wrap('<i class="uk-checkbox" />').click(function() {
+            $(this).wrap('<i class="uk-checkbox" />').click(function () {
                 $(this).parent().toggleClass('uk-icon-check', this.checked);
-            }).on('checkbox:check', function() {
+            }).on('checkbox:check', function () {
                 $(this).parent().toggleClass('uk-icon-check', self.checked);
             }).parent().toggleClass('uk-icon-check', self.checked).css('margin-top', $(self).parent().height() / 2);
         });
     };
 
-    $.fn.equalize = function() {
-        return this.each(function() {
+    $.fn.equalize = function () {
+        return this.each(function () {
             var x = 0,
                 cb = this,
                 $elms = $(this).parents('.uk-form-equalize').find('input[type="text"]'),
                 self = this;
 
             // add icon and click
-            $(self).click(function() {
+            $(self).click(function () {
                 var state = this.checked;
 
                 //$(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !state);
@@ -44,7 +44,7 @@
                 $(self).wrap('<i class="uk-equalize uk-icon-lock" />');
             }*/
 
-            $elms.first().change(function() {
+            $elms.first().change(function () {
                 var state = $(self).prop('checked');
 
                 if (state) {
@@ -55,11 +55,11 @@
                 $(cb).trigger('equalize:change', [$elms.andSelf()]);
             });
 
-            $(this).on('equalize:update', function() {
+            $(this).on('equalize:update', function () {
                 // get first value
                 var value = $elms.first().val();
 
-                $elms.each(function() {
+                $elms.each(function () {
                     if ($(this).val() === value) {
                         x++;
                     }
@@ -76,41 +76,47 @@
         });
     };
 
-    $.fn.constrain = function() {
-        return this.each(function() {
+    $.fn.constrain = function () {
+        return this.each(function () {
             var cb = this,
                 $elms = $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]');
 
-            $(this).on('constrain:update', function() {
-                $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]').each(function() {
+            $(this).on('constrain:update', function () {
+                $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]').each(function () {
                     $(this).data('tmp', this.value);
                 });
             });
 
             $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
 
-            $(cb).click(function() {
+            $(cb).click(function () {
                 $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
             });
 
             // set tmp values
-            $elms.each(function() {
+            $elms.each(function () {
                 $(this).data('tmp', this.value);
-            }).change(function(e) {
+            }).change(function (e) {
                 e.stopPropagation();
 
-                var a = this, $elms = $(this).parents('.uk-form-constrain').find('input'),
-                    b = $elms.not(':checkbox').not(this), cb = $elms.filter(':checkbox');
+                var a = this,
+                    $elms = $(this).parents('.uk-form-constrain').find('input'),
+                    b = $elms.not(':checkbox').not(this),
+                    cb = $elms.filter(':checkbox');
 
                 var w = $(a).val(),
                     h = $(b).val(),
-                    tw = $(a).data('tmp');    
+                    tw = $(a).data('tmp');
+
+                // trigger change
+                $(cb).trigger('constrain:change', [$elms]);
 
                 if (w && h && tw) {
+                    // ignore percentage values
                     if (w.indexOf('%') !== -1 || h.indexOf('%') !== -1) {
                         return;
                     }
-                    
+
                     // if constrain is on
                     if ($(cb).is(':checked')) {
                         var temp = ((h / tw) * w).toFixed(0);
@@ -118,15 +124,13 @@
                     }
                 }
 
-                $(cb).trigger('constrain:change', [$elms]);
-
                 $(a).data('tmp', w);
             });
         });
     };
 
-    $.fn.repeatable = function() {
-        return this.each(function() {
+    $.fn.repeatable = function () {
+        return this.each(function () {
             var self = this;
 
             if ($(this).data('uk-repeatable')) {
@@ -148,18 +152,18 @@
                 $(el).insertAfter($(self).siblings('.uk-repeatable').add(self).last());
             }
 
-            $('.uk-repeatable-create', this).click(function(e) {
+            $('.uk-repeatable-create', this).click(function (e) {
                 clone();
                 e.preventDefault();
             });
 
-            $('.uk-repeatable-delete', this).click(function(e) {
+            $('.uk-repeatable-delete', this).click(function (e) {
                 $(this).parent().parent().remove();
 
                 e.preventDefault();
             });
 
-            $(self).on('repeatable:clone', function(e, count) {
+            $(self).on('repeatable:clone', function (e, count) {
                 for (var i = 0; i < count; i++) {
                     clone();
                 }
@@ -167,7 +171,7 @@
         });
     };
 
-    $.fn.button = function(options, key, value) {
+    $.fn.button = function (options, key, value) {
         options = options || {};
 
         var map = {
@@ -178,7 +182,7 @@
             "uk-icon-closethick": "uk-icon-close"
         };
 
-        return this.each(function() {
+        return this.each(function () {
             // jQuery UI legacy
             if (typeof options === "string") {
                 if (options === "option" && key && value) {
@@ -211,8 +215,8 @@
         });
     };
 
-    $.fn.tabs = function(options, key, value) {
-        return this.each(function() {
+    $.fn.tabs = function (options, key, value) {
+        return this.each(function () {
 
             var el = this;
 
@@ -236,7 +240,7 @@
 
             $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active');
 
-            $('.uk-tab li', el).click(function(e) {
+            $('.uk-tab li', el).click(function (e) {
                 e.preventDefault();
 
                 // legacy
@@ -271,9 +275,13 @@
         });
     };
 
-    $.fn.accordion = function(options, key, value) {
+    $.fn.accordion = function (options, key, value) {
         var el = this,
-            hidden = { 'height': 0, 'position': 'relative', 'overflow': 'hidden' };
+            hidden = {
+                'height': 0,
+                'position': 'relative',
+                'overflow': 'hidden'
+            };
 
         // jQuery UI legacy
         if (typeof options === "string") {
@@ -288,7 +296,7 @@
 
         $(this).children('h3').addClass('uk-accordion-title').next('div').addClass('uk-accordion-content').css(hidden);
 
-        $('.uk-accordion-title', this).click(function(e) {
+        $('.uk-accordion-title', this).click(function (e) {
             e.preventDefault();
 
             var tab = this;
@@ -298,7 +306,7 @@
             // deactivate title
             $('.uk-accordion-title', el).removeClass('uk-active');
 
-            $(this).addClass('uk-active').next('div').css('height', function(i, v) {
+            $(this).addClass('uk-active').next('div').css('height', function (i, v) {
                 if (parseInt(v) === 0) {
                     $(el).trigger('accordion.activate', [tab, this]);
                     return 'auto';
@@ -310,15 +318,17 @@
 
         if ($.isPlainObject(options)) {
             if (typeof options.beforeActivate === "function") {
-                $(this).on('accordion:activate', function(e, tab) {
-                    var ui = { "newHeader": tab };
+                $(this).on('accordion:activate', function (e, tab) {
+                    var ui = {
+                        "newHeader": tab
+                    };
                     options.beforeActivate(e, ui);
                 });
             }
         }
 
         // reset
-        $(this).on('accordion:reset', function(e) {
+        $(this).on('accordion:reset', function (e) {
             // collapse all content
             $('.uk-accordion-content', el).height(0);
             // deactivate title
@@ -328,14 +338,16 @@
         return this;
     };
 
-    $.fn.dialog = function() {
+    $.fn.dialog = function () {
         return this;
     };
 
-    $.fn.datalist = function(options) {
-        options = $.extend({"seperator" : " "}, options);
-        
-        return this.each(function() {
+    $.fn.datalist = function (options) {
+        options = $.extend({
+            "seperator": " "
+        }, options);
+
+        return this.each(function () {
             var self = this;
 
             var id = $(this).attr('id');
@@ -357,15 +369,16 @@
             $(input).prop('disabled', $(this).prop('disabled')).val(value);
 
             // add external event
-            $(input).change(function() {
+            $(input).change(function () {
                 // get first value if multiple (eg: classlist)
-                var v = this.value, v = v.split(options.seperator)[0];
+                var v = this.value,
+                    v = v.split(options.seperator)[0];
                 // pass value to select and trigger change
                 $(self).val(v);
                 $(self).trigger('datalist:change');
             });
 
-            $(this).change(function(e) {
+            $(this).change(function (e) {
                 var value = this.value;
 
                 // only trigger on native handlers, ie: when the select list is actually selected
