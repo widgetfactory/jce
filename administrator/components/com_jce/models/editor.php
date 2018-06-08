@@ -636,11 +636,6 @@ class WFModelEditor extends WFModelBase
                 // add core plugins
                 $items = array_merge($core, $items);
 
-                // remove missing plugins
-                $items = array_filter($items, function($item) {
-                    return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
-                });
-
                 // remove duplicates and empty values
                 $items = array_unique(array_filter($items));
 
@@ -667,10 +662,15 @@ class WFModelEditor extends WFModelBase
 
                     // reset index
                     $items = array_values($items);
-
+                    
                     // add to array
                     $plugins['external'][$name] = JURI::root(true) . $attribs->path . '/editor_plugin.js';
                 }
+
+                // remove missing plugins
+                $items = array_filter($items, function($item) {
+                    return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
+                });
 
                 // update core plugins
                 $plugins['core'] = $items;
