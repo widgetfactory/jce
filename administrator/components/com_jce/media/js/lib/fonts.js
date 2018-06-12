@@ -5,17 +5,24 @@
         $('div.fontlist').on('update', function() {
             var data = {}, v = "";
 
-            $('li input[type="checkbox"]:checked', this).each(function() {
-                var s = this.value.split('=');
+            $('li', this).each(function() {
+                var k, v;
 
-                if (s.length === 2) {
-                    data[s[0]] = s[1];
-                }
-            });
-
-            $('li.font-item', this).not('.hide').each(function() {
-                var k = $('input', this).first().val(), v = $('input', this).last().val();
+                var $checkbox = $('input:checkbox:checked', this);
                 
+                if ($checkbox.length) {
+                    var parts = $checkbox.val().split('=');
+
+                    if (parts.length === 2) {
+                        k = parts[0], v = parts[1];
+                    }
+
+                }
+
+                if ($(this).hasClass('font-item')) {
+                    k = $('input', this).first().val(), v = $('input', this).last().val();
+                }
+
                 if (k && v) {
                     data[k] = v;
                 }
