@@ -23,6 +23,22 @@
     tinymce.create('tinymce.plugins.PreviewPlugin', {
         init: function(ed, url) {
             this.editor = ed;
+
+            var self = this;
+
+            ed.onInit.add(function(ed) {
+                // get the stored active tab
+                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
+
+                if (activeTab === "wf-editor-preview") {
+                    // hide editor
+                    ed.hide();
+                    // hide textarea
+                    DOM.hide(ed.getElement());
+                    
+                    self.toggle();
+                }
+            });
         },
 
         hide: function() {

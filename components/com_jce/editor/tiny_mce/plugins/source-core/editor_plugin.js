@@ -33,7 +33,7 @@
 
             ed.onInit.add(function(ed) {
                 // get the stored active tab
-                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id);
+                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
 
                 if (activeTab === "wf-editor-source") {
                     // hide editor

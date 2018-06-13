@@ -54,5 +54,10 @@
             <option value="0">WF_OPTION_OFF</option>
         </param>
         <param name="toggle_label" type="text" default="" label="WF_PARAM_EDITOR_TOGGLE_LABEL" description="WF_PARAM_EDITOR_TOGGLE_LABEL_DESC" parent="toggle[1]" />
+        <param name="active_tab" type="list" default="wysiwyg" label="WF_PARAM_EDITOR_ACTIVE_TAB" description="WF_PARAM_EDITOR_ACTIVE_TAB_DESC">
+            <option value="wysiwyg">WF_PARAM_EDITOR_ACTIVE_TAB_WYSIWYG</option>
+            <option value="source">WF_PARAM_EDITOR_ACTIVE_TAB_CODE</option>
+            <option value="preview">WF_PARAM_EDITOR_ACTIVE_TAB_PREVIEW</option>
+        </param>
     </params>
 </config>

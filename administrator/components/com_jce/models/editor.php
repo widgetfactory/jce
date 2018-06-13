@@ -208,6 +208,9 @@ class WFModelEditor extends WFModelBase
             $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
             $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
 
+            // Set active tab
+            $settings['active_tab'] = 'wf-editor-' . $wf->getParam('editor.active_tab', 'wysiwyg');
+
             // Get all optional plugin configuration options
             $this->getPluginConfig($settings);
 
