@@ -19,14 +19,12 @@ abstract class WFUtility
 {
     public static function getExtension($path)
     {
-        return array_pop(explode('.', $path));
+        return pathinfo($path, PATHINFO_EXTENSION);
     }
 
     public static function stripExtension($path)
     {
-        $dot = strrpos($path, '.');
-
-        return substr($path, 0, $dot);
+        return pathinfo($path, PATHINFO_FILENAME);
     }
 
     public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
