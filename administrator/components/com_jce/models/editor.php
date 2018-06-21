@@ -618,7 +618,12 @@ class WFModelEditor extends WFModelBase
                 });
 
                 // core plugins
-                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding');
+                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload');
+
+                // load branding
+                if (!WF_EDITOR_PRO) {
+                    $core[] = 'branding';
+                }
 
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $items)) {
