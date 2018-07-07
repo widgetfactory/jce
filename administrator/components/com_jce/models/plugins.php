@@ -145,7 +145,8 @@ class WFModelPlugins extends WFModel
                         $plugins[$name]->core = 0;
 
                         // relative path
-                        $plugins[$name]->path = str_replace(JPATH_SITE, '', $path);
+                        $plugins[$name]->path = $path;
+                        $plugins[$name]->url = JURI::root(true) . '/plugins/jce/' . $item->name;
                         $plugins[$name]->type = 'plugin';
                     }
                 }
