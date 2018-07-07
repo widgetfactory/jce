@@ -168,7 +168,7 @@
 
             // load preview data
             tinymce.util.XHR.send({
-                url: s['site_url'] + 'index.php?option=com_jce&view=editor&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
+                url: s.site_url + 'index.php?option=com_jce&view=editor&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
                 data: 'json=' + JSON.stringify({
                     'method': 'showPreview'
                 }) + '&' + query,
