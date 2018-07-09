@@ -54,7 +54,7 @@ class WFModelPlugins extends WFModel
                     }
                     // update attributes
                     $attribs->type = 'plugin';
-                    $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                    $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
                     $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
                     // compatability
                     $attribs->name = $name;
@@ -77,7 +77,7 @@ class WFModelPlugins extends WFModel
                             }
                             // update attributes
                             $attribs->type = 'plugin';
-                            $attribs->path = str_replace(JPATH_SITE, '', WF_EDITOR_PLUGINS) . '/' . $name;
+                            $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
                             $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
                             // compatability
                             $attribs->name = $name;
@@ -146,7 +146,7 @@ class WFModelPlugins extends WFModel
 
                         // relative path
                         $plugins[$name]->path = $path;
-                        $plugins[$name]->url = JURI::root(true) . '/plugins/jce/' . $item->name;
+                        $plugins[$name]->url = 'plugins/jce/' . $item->name;
                         $plugins[$name]->type = 'plugin';
                     }
                 }

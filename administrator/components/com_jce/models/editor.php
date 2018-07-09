@@ -672,7 +672,7 @@ class WFModelEditor extends WFModelBase
                     $items = array_values($items);
                     
                     // add to array
-                    $plugins['external'][$name] = $attribs->url . '/editor_plugin.js';
+                    $plugins['external'][$name] = JURI::root(true) . '/' . $attribs->url . '/editor_plugin.js';
                 }
 
                 // remove missing plugins
