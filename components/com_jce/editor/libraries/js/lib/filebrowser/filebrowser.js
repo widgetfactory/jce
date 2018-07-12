@@ -1191,15 +1191,20 @@
          * Load the browser list
          */
         load: function (item) {
+            var src = "";
+            
             // add returned items
             if (item) {
                 this._addReturnedItem(item);
+                
+                // pass string value to src
+                src = item.name || item;
             }
 
             // show loading message
             this._setLoader();
 
-            this._getList(item);
+            this._getList(src);
         },
         /**
          * Show an error message
