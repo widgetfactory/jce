@@ -1,139 +1,145 @@
-.ui-jce ul.adminformlist li div.styleformat-list {
-    margin-left: 220px;
-    clear: none;
+.ui-jce .styleformat-list .styleformat-item-plus {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 2px 0;
+    max-width: 400px;
     position: relative;
-}
-
-.ui-jce div.styleformat-list a.plus {
-    background: none repeat scroll 0 0 white;
-    border: 1px dashed #000;
-    display: block;
-    margin: 5px 0;
-    max-width: 390px;
-    padding: 10px;
+    background-color: #fff;
     width: 100%;
-    float : none;
+    box-sizing: border-box;
 }
 
-.ui-jce div.styleformat-list a.plus span {
-    width : 100%;
-    max-width : 370px;
+.ui-jce .styleformat-list .styleformat-item-plus {
+    border-style: dashed;
+}
+
+.ui-jce .styleformat-list .styleformat-item-plus span {
     display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    line-height: 2rem;
 }
 
-.ui-jce div.styleformat-list a.plus span + span {
-    width : 20px;
-    text-align : center;
+.ui-jce .styleformat-list .styleformat-item-plus .icon {
+    margin-right: 10px;
+    line-height: 2rem;
+    width: 28px;
+    height: 28px;
 }
 
-.ui-jce div.styleformat-list div.styleformat a.close {
-    display: inline-block;
+.ui-jce .styleformat-list .styleformat-item-trash {
     position: absolute;
-    right: 10px;
+    right: 0;
     top: 5px;
 }
 
-.ui-jce div.styleformat-list div.styleformat a.close.handle {
+.ui-jce .styleformat-list .styleformat .styleformat-item-handle {
+    position: absolute;
     left: 5px;
-    top: 5px;
+    top: 7px;
     cursor: move;
-    width : 100%;
-    max-width : 370px;
-    line-height: 20px;
+    width: 100%;
+    max-width: 380px;
+    line-height: 14px;
+    display: block;
+    /* height: 24px; */
+    padding: 4px 5px;
 }
 
-.ui-jce div.styleformat-list div.styleformat a.close.collapse {
+.ui-jce .styleformat-list .styleformat .collapse {
     right: 14px;
     top: 42px;
     font-size: 12px;
     height: 20px;
 }
 
-.ui-jce div.styleformat-list div.styleformat,
-.ui-jce div.styleformat-list div.styleformat-highlight {
+.ui-jce .styleformat-list .styleformat,
+.ui-jce .styleformat-list .styleformat-highlight {
     border: 1px solid #CCCCCC;
-    padding: 25px 5px 5px;
+    padding: 30px 5px 5px;
     max-width : 400px;
     position: relative;
     background-color: #fff;
+    box-sizing: border-box;
 }
 
-.ui-jce div.styleformat-list div.styleformat-highlight {
+.ui-jce .styleformat-list .styleformat-highlight {
     border-style: dashed;
     min-height : 46px;
     margin : 10px 0;
     background-color: #F7F7F7;
 }
 
-.ui-jce div.styleformat-list div.styleformat div {
+.ui-jce .styleformat-list .styleformat > div {
     margin : 5px 0;
     padding : 5px 10px 5px 5px;
     position: relative;
 }
 
-.ui-jce div.styleformat-list div.styleformat + div {
+.ui-jce .styleformat-list .styleformat + div {
     margin-top : 10px;
 }
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title {
+.ui-jce .styleformat-list .styleformat .styleformat-item-title {
     background-color: #eee;
 }
 
-.ui-jce div.styleformat-list div.styleformat div input,
-.ui-jce div.styleformat-list div.styleformat div select {
-    width : 350px;
+.ui-jce .styleformat-list .styleformat div input,
+.ui-jce .styleformat-list .styleformat div select {
+    max-width : 100%;
+    width: 365px;
 }
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input {
+.ui-jce .styleformat-list .styleformat div select {
+    width: 100%;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input {
     font-size: inherit;
     color : inherit;
     float : none;
 }
 /* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.code,
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.samp {
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.code,
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.samp {
     font-family: monospace
 }
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.strong {font-weight: bolder}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.strong {font-weight: bolder}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.em {font-style: italic}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.em {font-style: italic}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.sub {vertical-align: sub}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.sub {vertical-align: sub}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.sup {vertical-align: super}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.sup {vertical-align: super}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h1 {font-size: 2em; margin: .67em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h1 {font-size: 2em; margin: .67em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h2 {font-size: 1.5em; margin: .75em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h2 {font-size: 1.5em; margin: .75em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h3 {font-size: 1.17em; margin: .83em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h3 {font-size: 1.17em; margin: .83em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h4 {margin: 1.12em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h4 {margin: 1.12em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h5 {font-size: .83em; margin: 1.5em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h5 {font-size: .83em; margin: 1.5em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-title input.h6 {font-size: .75em; margin: 1.67em 0}
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h6 {font-size: .75em; margin: 1.67em 0}
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-element {clear: left}
+.ui-jce .styleformat-list .styleformat .styleformat-item-element {clear: left}
 
-.ui-jce div.styleformat label {
+.ui-jce .styleformat label {
     display: block;
     min-width : 100px;
 }
 
-.ui-jce div.styleformat label + input,
-.ui-jce div.styleformat label + select {
+.ui-jce .styleformat label + input,
+.ui-jce .styleformat label + select {
     margin : 0;
-    width : 300px;
 }
 
-.ui-jce div.styleformat span.help-block {
-    font-size : 0.9em;
-    max-width: 320px;
-    margin-top : 5px;
+.ui-jce .styleformat .help-block {
 }
 
-.ui-jce div.styleformat-list div.styleformat div.styleformat-item-element option:first-child {
+.ui-jce .styleformat-list .styleformat .styleformat-item-element option:first-child {
     margin : 5px 0;
 }

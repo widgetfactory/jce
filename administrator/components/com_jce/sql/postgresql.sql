@@ -11,7 +11,7 @@ CREATE TABLE "#__wf_profiles" (
     "plugins" text NOT NULL,
     "published" smallint NOT NULL,
     "ordering" integer NOT NULL,
-    "checked_out" smallint NOT NULL,
+    "checked_out" integer NOT NULL,
     "checked_out_time" timestamp without time zone NOT NULL,
     "params" text NOT NULL,
     PRIMARY KEY ("id")

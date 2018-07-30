@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
@@ -111,7 +111,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemGetRootDir', array(&$root));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemGetRootDir', array(&$root));
 
         return $root;
     }
@@ -306,7 +306,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $item,
                     'writable' => is_writable(WFUtility::makePath($path, $item)) || $this->isFtp(),
                     'type' => 'files',
-                    'extension' => pathinfo($item, PATHINFO_EXTENSION)
+                    'extension' => pathinfo($item, PATHINFO_EXTENSION),
                 );
 
                 $properties = self::getFileDetails($data['id'], $x);
@@ -317,7 +317,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        if ($sort) {            
+        if ($sort) {
             $files = self::sortItemsByKey($files, $sort);
         }
 
@@ -359,7 +359,6 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // directory path relative to site root
         if (is_dir(WFUtility::makePath(JPATH_SITE, $path))) {
-
             if (function_exists('mb_substr')) {
                 return mb_substr($path, mb_strlen($this->getRootDir()));
             }
@@ -369,11 +368,10 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // file url relative to site root
         if (is_file(WFUtility::makePath(JPATH_SITE, $path))) {
-            
             if (function_exists('mb_substr')) {
                 return mb_substr(dirname($path), mb_strlen($this->getRootDir()));
             }
-            
+
             return substr(dirname($path), strlen($this->getRootDir()));
         }
 
@@ -424,25 +422,25 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             if ($count <= 100) {
                 if (preg_match('#\.svg$#i', $file)) {
-                	$svg = @simplexml_load_file($path);
+                    $svg = @simplexml_load_file($path);
 
-            		if ($svg && isset($svg['viewBox'])) {
-                		list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
-                		
-                		$width 	= (int) $end_x;
-                		$height	= (int) $end_y;
-                		
-                		if ($width && $height) {
-                			$image['width'] 	= $width;
-                			$image['height']	= $height;
-                		}
-            		}
+                    if ($svg && isset($svg['viewBox'])) {
+                        list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
+
+                        $width = (int) $end_x;
+                        $height = (int) $end_y;
+
+                        if ($width && $height) {
+                            $image['width'] = $width;
+                            $image['height'] = $height;
+                        }
+                    }
                 } else {
-                	list($image['width'], $image['height']) = @getimagesize($path);
+                    list($image['width'], $image['height']) = @getimagesize($path);
                 }
             }
 
-            $data['preview'] .= '?' . $date;
+            $data['preview'] .= '?'.$date;
 
             return array_merge_recursive($data, $image);
         }
@@ -466,7 +464,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $path = WFUtility::makePath($this->getBaseDir(), $src);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeDelete', array(&$path));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeDelete', array(&$path));
 
         if (is_file($path)) {
             $result->type = 'files';
@@ -481,7 +479,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterDelete', array($path, $result->state));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterDelete', array($path, $result->state));
 
         return $result;
     }
@@ -499,7 +497,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $src = WFUtility::makePath($this->getBaseDir(), rawurldecode($src));
         $dir = dirname($src);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeRename', array(&$src, &$dest));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeRename', array(&$src, &$dest));
 
         $result = new WFFileSystemResult();
 
@@ -527,7 +525,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->path = $path;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterRename', array(&$result));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterRename', array(&$result));
 
         return $result;
     }
@@ -547,7 +545,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeCopy', array(&$src, &$dest));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeCopy', array(&$src, &$dest));
 
         // src is a file
         if (is_file($src)) {
@@ -557,7 +555,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Folders cannot be copied into themselves as this creates an infinite copy / paste loop
             if ($file === $destination) {
                 $result->state = false;
-                $result->message = WFText::_('WF_MANAGER_COPY_INTO_ERROR');
+                $result->message = JText::_('WF_MANAGER_COPY_INTO_ERROR');
             }
 
             $result->type = 'folders';
@@ -565,7 +563,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->path = $dest;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterCopy', array(&$result));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterCopy', array(&$result));
 
         return $result;
     }
@@ -585,7 +583,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeMove', array(&$src, &$dest));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeMove', array(&$src, &$dest));
 
         if ($src != $dest) {
             // src is a file
@@ -599,7 +597,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterMove', array(&$result));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterMove', array(&$result));
 
         return $result;
     }
@@ -643,7 +641,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $result->state = $this->folderCreate($path);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemCreateFolder', array($path, $result->state));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemCreateFolder', array($path, $result->state));
 
         return $result;
     }
@@ -701,25 +699,25 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             while (JFile::exists($dest)) {
                 if (strpos($suffix, '$') !== false) {
-                    $tmpname = $name . str_replace('$', $x, $suffix); 
+                    $tmpname = $name.str_replace('$', $x, $suffix);
                 } else {
                     $tmpname .= $suffix;
                 }
 
                 $dest = WFUtility::makePath($path, $tmpname.'.'.$extension);
 
-                $x++;
+                ++$x;
             }
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeUpload', array(&$src, &$dest));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeUpload', array(&$src, &$dest));
 
         if (JFile::upload($src, $dest, false, true)) {
             $result->state = true;
             $result->path = $dest;
         }
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterUpload', array(&$result));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterUpload', array(&$result));
 
         return $result;
     }
@@ -742,11 +740,11 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemBeforeWrite', array(&$path, &$content));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeWrite', array(&$path, &$content));
 
         $result = JFile::write($path, $content);
 
-        JDispatcher::getInstance()->trigger('onWfFileSystemAfterWrite', array($path, $result));
+        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterWrite', array($path, $result));
 
         return $result;
     }

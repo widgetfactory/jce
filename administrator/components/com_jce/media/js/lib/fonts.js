@@ -2,27 +2,47 @@
 
     $(document).ready(function() {
 
-        $('div.fontlist').on('update', function() {
+        $('.fontlist').each(function() {
+            var el = this;
+            
+            // trigger input change
+            $('input[type="checkbox"]', this).on('click', function() {
+                $('.fontlist').trigger('update');
+            });
+            
+            $('input[type="text"]', this).on('change', function() {
+                $('.fontlist').trigger('update');
+            });
+
+            // create close action
+            $('.font-item-trash', this).on('click', function(e) {
+                e.preventDefault();
+                
+                $(this).parents('.font-item').remove();
+                $('.fontlist').trigger('update');
+            });
+
+            // create new action
+            $('.font-item-plus', this).on('click', function(e) {
+                e.preventDefault();
+                
+                $('.font-item[hidden]', el).clone(true).insertBefore(this).removeAttr('hidden').find('input').val("").first().focus();
+            });
+
+        }).on('update', function() {
             var data = {}, v = "";
 
-            $('li', this).each(function() {
-                var k, v;
+            $('input[type="checkbox"]:checked', this).each(function() {
+                var s = this.value.split('=');
 
-                var $checkbox = $('input:checkbox:checked', this);
+                if (s.length === 2) {
+                    data[s[0]] = s[1];
+                }
+            });
+
+            $('.font-item', this).not('.hide').each(function() {
+                var k = $('input:text', this).first().val(), v = $('input:text', this).last().val();
                 
-                if ($checkbox.length) {
-                    var parts = $checkbox.val().split('=');
-
-                    if (parts.length === 2) {
-                        k = parts[0], v = parts[1];
-                    }
-
-                }
-
-                if ($(this).hasClass('font-item')) {
-                    k = $('input', this).first().val(), v = $('input', this).last().val();
-                }
-
                 if (k && v) {
                     data[k] = v;
                 }
@@ -34,50 +54,16 @@
 
             // serialize and return
             $('input[type="hidden"]', this).val(v).change();
-        });
-
-        // trigger input change
-        $('input[type="checkbox"]', 'div.fontlist').on('click', function() {
-            $('div.fontlist').trigger('update');
-        });
-        
-        $('input[type="text"]', 'div.fontlist').on('change', function() {
-            $('div.fontlist').trigger('update');
-        });
-
-        // create close action
-        $('a.close', 'div.fontlist').not('.plus').click(function(e) {
-            $(this).parent().remove();
-            $('div.fontlist').trigger('update');
-
-            e.preventDefault();
-        });
-
-        // create new action
-        $('a.close.plus', 'div.fontlist').click(function(e) {
-            var $item = $('div.fontlist ul li.font-item').last().clone(true).appendTo('div.fontlist ul').removeClass('hide');
-
-            // clear inputs
-            $('input', $item).val("").first().focus();
-
-            e.preventDefault();
-        });
-        
-        // add events to new item
-        $('div.fontlist ul li.font-item.hide input').change(function() {
-            $('div.fontlist').trigger('update');
-        });
-
-        // make sortable
-        $('div.fontlist ul').sortable({
+        }).sortable({
             axis: 'y',
+            items: '.font-item',
             update: function(event, ui) {
-                $('div.fontlist').trigger('update');
+                $('.fontlist').trigger('update');
             },
-            placeholder: "fontlist-highlight",
+            placeholder: "font-item-highlight",
             start: function(event, ui) {
                 $(ui.placeholder).height($(ui.item).height()).width($(ui.item).width());
-            },
+            }
         });
     });
 })(jQuery);

@@ -1,42 +1,35 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_WF_EXT') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
 class JoomlalinksContent extends JObject
 {
-    public $_option = 'com_content';
-
-    /**
-     * Constructor activating the default information of the class.
-     */
-    public function __construct($options = array())
-    {
-    }
+    private $option = 'com_content';
 
     /**
      * Returns a reference to a editor object.
      *
      * This method must be invoked as:
-     * 		<pre>  $browser =JContentEditor::getInstance();</pre>
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
      *
      * @return JCE The editor object
      *
-     * @since	1.5
+     * @since    1.5
      */
-    public static function getInstance()
+    public static function getInstance($options = array())
     {
         static $instance;
 
         if (!is_object($instance)) {
-            $instance = new self();
+            $instance = new self($options);
         }
 
         return $instance;
@@ -44,23 +37,17 @@ class JoomlalinksContent extends JObject
 
     public function getOption()
     {
-        return $this->_option;
+        return $this->option;
     }
 
     public function getList()
     {
-        $wf = WFEditorPlugin::getInstance();
-
-        if ($wf->checkAccess('links.joomlalinks.content', 1)) {
-            return '<li data-id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">'.WFText::_('WF_LINKS_JOOMLALINKS_CONTENT').'</span></a></div></li>';
-        }
+        return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
     {
-        $wf = WFEditorPlugin::getInstance();
-
-        require_once JPATH_SITE.'/components/com_content/helpers/route.php';
+        require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
         $items = array();
         $view = isset($args->view) ? $args->view : '';
@@ -68,60 +55,18 @@ class JoomlalinksContent extends JObject
         $language = '';
 
         switch ($view) {
-            // get top-level sections / categories
+            // get top-level categories
             default:
-                $sections = self::_getSection();
+                $articles   = array();
 
-                foreach ($sections as $section) {
-                    $url = '';
-
-                    // Joomla! 1.5
-                    if (method_exists('ContentHelperRoute', 'getSectionRoute')) {
-                        $id = ContentHelperRoute::getSectionRoute($section->id);
-                        $view = 'section';
-                    } else {
-                        if (isset($section->language)) {
-                            $language = $category->language;
-                        }
-
-                        $id = ContentHelperRoute::getCategoryRoute($section->slug, $language);
-                        $view = 'category';
-                    }
-
-                    if (strpos($id, 'index.php?Itemid=') !== false) {
-                        $url = self::_getMenuLink($id);
-                        $id = 'index.php?option=com_content&view='.$view.'&id='.$section->id;
-                    }
-
-                    $items[] = array(
-                        'url' => self::route($url),
-                        'id' => $id,
-                        'name' => $section->title,
-                        'class' => 'folder content',
-                    );
+                if (!isset($args->id)) {
+                    $args->id = 1;
                 }
-                // Check Static/Uncategorized permissions
-                if (!defined('JPATH_PLATFORM') && $wf->checkAccess('static', 1)) {
-                    $items[] = array(
-                        'id' => 'option=com_content&amp;view=uncategorized',
-                        'name' => WFText::_('WF_LINKS_JOOMLALINKS_UNCATEGORIZED'),
-                        'class' => 'folder content nolink',
-                    );
-                }
-                break;
-            // get categories in section or sub-categories (Joomla! 1.6+)
-            case 'section':
-                $articles = array();
 
-                // Joomla! 1.5
-                if (method_exists('ContentHelperRoute', 'getSectionRoute')) {
-                    $categories = WFLinkBrowser::getCategory($args->id, 'com_content');
-                } else {
-                    $categories = WFLinkBrowser::getCategory('com_content', $args->id);
+                $categories = WFLinkBrowser::getCategory('com_content', $args->id);
 
-                    // get any articles in this category (in Joomla! 1.6+ a category can contain sub-categories and articles)
-                    $articles = self::_getArticles($args->id);
-                }
+                // get any articles in this category (in Joomla! 1.6+ a category can contain sub-categories and articles)
+                $articles = self::_getArticles($args->id);
 
                 foreach ($categories as $category) {
                     $url = '';
@@ -134,13 +79,13 @@ class JoomlalinksContent extends JObject
 
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::_getMenuLink($id);
-                        $id = 'index.php?option=com_content&view=category&id='.$category->id;
+                        $id = 'index.php?option=com_content&view=category&id=' . $category->id;
                     }
 
                     $items[] = array(
-                        'url' => self::route($url),
+                        'url' => $this->route($url),
                         'id' => $id,
-                        'name' => $category->title.' / '.$category->alias,
+                        'name' => $category->title . ' / ' . $category->alias,
                         'class' => 'folder content',
                     );
                 }
@@ -148,22 +93,17 @@ class JoomlalinksContent extends JObject
                 if (!empty($articles)) {
                     // output article links
                     foreach ($articles as $article) {
-                        // Joomla! 1.5
-                        if (isset($article->sectionid)) {
-                            $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $article->sectionid);
-                        } else {
-                            if (isset($article->language)) {
-                                $language = $article->language;
-                            }
-
-                            $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
+                        if (isset($article->language)) {
+                            $language = $article->language;
                         }
 
-                        $id = self::route($id);
+                        $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
+
+                        $id = $this->route($id);
 
                         $items[] = array(
                             'id' => $id,
-                            'name' => $article->title.' / '.$article->alias,
+                            'name' => $article->title . ' / ' . $article->alias,
                             'class' => 'file',
                         );
 
@@ -171,8 +111,8 @@ class JoomlalinksContent extends JObject
 
                         foreach ($anchors as $anchor) {
                             $items[] = array(
-                                'id' => $id.'#'.$anchor,
-                                'name' => '#'.$anchor,
+                                'id' => $id . '#' . $anchor,
+                                'name' => '#' . $anchor,
                                 'class' => 'file anchor',
                             );
                         }
@@ -185,69 +125,62 @@ class JoomlalinksContent extends JObject
                 // get any articles in this category (in Joomla! 1.6+ a category can contain sub-categories and articles)
                 $articles = self::_getArticles($args->id);
 
-                if (defined('JPATH_PLATFORM')) {
-                    // get sub-categories
-                    $categories = WFLinkBrowser::getCategory('com_content', $args->id);
+                // get sub-categories
+                $categories = WFLinkBrowser::getCategory('com_content', $args->id);
 
-                    if (count($categories)) {
-                        foreach ($categories as $category) {
-                            // check for sub-categories
-                            $sub = WFLinkBrowser::getCategory('com_content', $category->id);
+                if (count($categories)) {
+                    foreach ($categories as $category) {
+                        // check for sub-categories
+                        $sub = WFLinkBrowser::getCategory('com_content', $category->id);
 
-                            // language
-                            if (isset($category->language)) {
-                                $language = $category->language;
-                            }
-
-                            $url = '';
-                            $id = ContentHelperRoute::getCategoryRoute($category->id, $language);
-
-                            // get sub-categories
-                            if (count($sub)) {
-                                $url = $id;
-                                $id = 'index.php?option=com_content&view=section&id='.$category->id;
-                                // no sub-categories, get articles for category
-                            } else {
-                                // no com_content, might be link like index.php?ItemId=1
-                                if (strpos($id, 'index.php?Itemid=') !== false) {
-                                    $url = $id; //$id;
-                                    $id = 'index.php?option=com_content&view=category&id='.$category->id;
-                                }
-                            }
-
-                            if (strpos($url, 'index.php?Itemid=') !== false) {
-                                $url = self::_getMenuLink($url);
-                            }
-
-                            $items[] = array(
-                                'url' => self::route($url),
-                                'id' => $id,
-                                'name' => $category->title.' / '.$category->alias,
-                                'class' => 'folder content',
-                            );
+                        // language
+                        if (isset($category->language)) {
+                            $language = $category->language;
                         }
+
+                        $url = '';
+                        $id = ContentHelperRoute::getCategoryRoute($category->id, $language);
+
+                        // get sub-categories
+                        if (count($sub)) {
+                            $url = $id;
+                            $id = 'index.php?option=com_content&view=section&id=' . $category->id;
+                            // no sub-categories, get articles for category
+                        } else {
+                            // no com_content, might be link like index.php?ItemId=1
+                            if (strpos($id, 'index.php?Itemid=') !== false) {
+                                $url = $id; //$id;
+                                $id = 'index.php?option=com_content&view=category&id=' . $category->id;
+                            }
+                        }
+
+                        if (strpos($url, 'index.php?Itemid=') !== false) {
+                            $url = self::_getMenuLink($url);
+                        }
+
+                        $items[] = array(
+                            'url' => $this->route($url),
+                            'id' => $id,
+                            'name' => $category->title . ' / ' . $category->alias,
+                            'class' => 'folder content',
+                        );
                     }
                 }
 
                 // output article links
                 foreach ($articles as $article) {
-                    // Joomla! 1.5
-                    if (isset($article->sectionid)) {
-                        $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $article->sectionid);
-                    } else {
-                        // language
-                        if (isset($article->language)) {
-                            $language = $article->language;
-                        }
-
-                        $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
+                    // language
+                    if (isset($article->language)) {
+                        $language = $article->language;
                     }
 
-                    $id = self::route($id);
+                    $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
+
+                    $id = $this->route($id);
 
                     $items[] = array(
                         'id' => $id,
-                        'name' => $article->title.' / '.$article->alias,
+                        'name' => $article->title . ' / ' . $article->alias,
                         'class' => 'file',
                     );
 
@@ -255,8 +188,8 @@ class JoomlalinksContent extends JObject
 
                     foreach ($anchors as $anchor) {
                         $items[] = array(
-                            'id' => $id.'#'.$anchor,
-                            'name' => '#'.$anchor,
+                            'id' => $id . '#' . $anchor,
+                            'name' => '#' . $anchor,
                             'class' => 'file anchor',
                         );
                     }
@@ -273,11 +206,11 @@ class JoomlalinksContent extends JObject
 
                     $id = ContentHelperRoute::getArticleRoute($static->id, 0, $language);
 
-                    $id = self::route($id);
+                    $id = $this->route($id);
 
                     $items[] = array(
                         'id' => $id,
-                        'name' => $static->title.' / '.$static->alias,
+                        'name' => $static->title . ' / ' . $static->alias,
                         'class' => 'file',
                     );
 
@@ -285,8 +218,8 @@ class JoomlalinksContent extends JObject
 
                     foreach ($anchors as $anchor) {
                         $items[] = array(
-                            'id' => $id.'#'.$anchor,
-                            'name' => '#'.$anchor,
+                            'id' => $id . '#' . $anchor,
+                            'name' => '#' . $anchor,
                             'class' => 'file anchor',
                         );
                     }
@@ -299,10 +232,8 @@ class JoomlalinksContent extends JObject
 
     private function _getMenuLink($url)
     {
-        $wf = WFEditorPlugin::getInstance();
-
         // resolve the url from the menu link
-        if ($wf->getParam('links.joomlalinks.article_resolve_alias', 1) == 1) {
+        if ((int) $this->get('article_resolve_alias', 1)) {
             // get itemid
             preg_match('#Itemid=([\d]+)#', $url, $matches);
             // get link from menu
@@ -311,7 +242,7 @@ class JoomlalinksContent extends JObject
                 $menu->load($matches[1]);
 
                 if ($menu->link) {
-                    return $menu->link.'&Itemid='.$menu->id;
+                    return $menu->link . '&Itemid=' . $menu->id;
                 }
             }
         }
@@ -319,87 +250,46 @@ class JoomlalinksContent extends JObject
         return $url;
     }
 
-    private function _getSection()
-    {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
-
-        if (method_exists('JUser', 'getAuthorisedViewLevels')) {
-            return WFLinkBrowser::getCategory('com_content');
-        } else {
-            $query = 'SELECT id, title, alias, access'
-                    .' FROM #__sections'
-                    .' WHERE published = 1'
-                    .' AND access <= '.(int) $user->get('aid')
-                    //. ' GROUP BY id'
-                    .' ORDER BY title'
-            ;
-
-            $db->setQuery($query);
-
-            return $db->loadObjectList();
-        }
-    }
-
     private function _getArticles($id)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
-        $wf = WFEditorPlugin::getInstance();
 
         $query = $db->getQuery(true);
-        $version = new JVersion();
 
-        $language = $version->isCompatible('3.0') ? ', a.language' : '';
         $case = '';
 
-        if ($wf->getParam('links.joomlalinks.article_alias', 1) == 1) {
-            if (is_object($query)) {
-                //sqlsrv changes
-                $case_when1 = ' CASE WHEN ';
-                $case_when1 .= $query->charLength('a.alias', '!=', '0');
-                $case_when1 .= ' THEN ';
-                $a_id = $query->castAsChar('a.id');
-                $case_when1 .= $query->concatenate(array($a_id, 'a.alias'), ':');
-                $case_when1 .= ' ELSE ';
-                $case_when1 .= $a_id.' END as slug';
+        if ((int) $this->get('article_alias', 1)) {
+            //sqlsrv changes
+            $case_when1 = ' CASE WHEN ';
+            $case_when1 .= $query->charLength('a.alias', '!=', '0');
+            $case_when1 .= ' THEN ';
+            $a_id = $query->castAsChar('a.id');
+            $case_when1 .= $query->concatenate(array($a_id, 'a.alias'), ':');
+            $case_when1 .= ' ELSE ';
+            $case_when1 .= $a_id . ' END as slug';
 
-                $case_when2 = ' CASE WHEN ';
-                $case_when2 .= $query->charLength('b.alias', '!=', '0');
-                $case_when2 .= ' THEN ';
-                $c_id = $query->castAsChar('b.id');
-                $case_when2 .= $query->concatenate(array($c_id, 'b.alias'), ':');
-                $case_when2 .= ' ELSE ';
-                $case_when2 .= $c_id.' END as catslug';
-            } else {
-                $case_when1 = ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(":", a.id, a.alias) ELSE a.id END as slug';
-                $case_when2 = ' CASE WHEN CHAR_LENGTH(b.alias) THEN CONCAT_WS(":", b.id, b.alias) ELSE b.id END as catslug';
-            }
+            $case_when2 = ' CASE WHEN ';
+            $case_when2 .= $query->charLength('b.alias', '!=', '0');
+            $case_when2 .= ' THEN ';
+            $c_id = $query->castAsChar('b.id');
+            $case_when2 .= $query->concatenate(array($c_id, 'b.alias'), ':');
+            $case_when2 .= ' ELSE ';
+            $case_when2 .= $c_id . ' END as catslug';
 
-            $case = ','.$case_when1.','.$case_when2;
+            $case = ',' . $case_when1 . ',' . $case_when2;
         }
 
-        if (is_object($query)) {
-            $groups = implode(',', $user->getAuthorisedViewLevels());
+        $groups = implode(',', $user->getAuthorisedViewLevels());
 
-            $query->select('a.id AS slug, b.id AS catslug, a.alias, a.title AS title, a.access, '.$query->concatenate(array('a.introtext', 'a.fulltext')).' AS content'.$language.$case);
-            $query->from('#__content AS a');
-            $query->innerJoin('#__categories AS b ON b.id = '.(int) $id);
-            $query->where('a.catid = '.(int) $id);
-            $query->where('a.access IN ('.$groups.')');
-            $query->where('b.access IN ('.$groups.')');
-            $query->where('a.state = 1');
-            $query->order('a.title');
-        } else {
-            $query = 'SELECT a.id AS slug, b.id AS catslug, a.alias, a.title AS title, u.id AS sectionid, a.access, a.introtext, a.fulltext'.$case
-                    .' FROM #__content AS a'
-                    .' INNER JOIN #__categories AS b ON b.id = '.(int) $id
-                    .' INNER JOIN #__sections AS u ON u.id = a.sectionid'
-                    .' WHERE a.catid = '.(int) $id
-                    .' AND a.state = 1'
-                    .' AND a.access <= '.(int) $user->get('aid')
-                    .' ORDER BY a.title';
-        }
+        $query->select('a.id AS slug, b.id AS catslug, a.alias, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content, a.language' . $case);
+        $query->from('#__content AS a');
+        $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
+        $query->where('a.catid = ' . (int) $id);
+        $query->where('a.access IN (' . $groups . ')');
+        $query->where('b.access IN (' . $groups . ')');
+        $query->where('a.state = 1');
+        $query->order('a.title');
 
         $db->setQuery($query, 0);
 
@@ -411,15 +301,12 @@ class JoomlalinksContent extends JObject
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
 
-        $version = new JVersion();
-        $language = $version->isCompatible('3.0') ? ', language' : '';
-
-        $query = 'SELECT id, title, alias, access, introtext AS content'.$language
-                .' FROM #__content'
-                .' WHERE state = 1'
-                .' AND access <= '.(int) $user->get('aid').' AND sectionid = 0'
-                .' AND catid = 0'
-                .' ORDER BY title';
+        $query = 'SELECT id, title, alias, access, introtext AS content, language'
+        . ' FROM #__content'
+        . ' WHERE state = 1'
+        . ' AND access <= ' . (int) $user->get('aid') . ' AND sectionid = 0'
+            . ' AND catid = 0'
+            . ' ORDER BY title';
 
         $db->setQuery($query, 0);
 
@@ -447,12 +334,10 @@ class JoomlalinksContent extends JObject
         return $anchors;
     }
 
-    private static function route($url)
+    private function route($url)
     {
-        $wf = WFEditorPlugin::getInstance();
-
-        if ($wf->getParam('links.joomlalinks.sef_url', 0)) {
-            $url = WFLinkExtension::route($url);
+        if ((int) $this->get('sef_url', 0)) {
+            $url = WFLinkBrowser::route($url);
         }
 
         return $url;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -34,8 +34,8 @@ class WFStyleselectPluginConfig
             $query->select('id, template')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
         } else {
             $query = 'SELECT menuid as id, template'
-                . ' FROM #__templates_menu'
-                . ' WHERE client_id = 0';
+                .' FROM #__templates_menu'
+                .' WHERE client_id = 0';
         }
 
         $db->setQuery($query);
@@ -57,9 +57,9 @@ class WFStyleselectPluginConfig
 
     public static function getConfig(&$settings)
     {
-        $wf = WFEditor::getInstance();
+        $wf = WFApplication::getInstance();
 
-        $include = (array)$wf->getParam('styleselect.styles', array('stylesheet', 'custom'));
+        $include = (array) $wf->getParam('styleselect.styles', array('stylesheet', 'custom'));
 
         if (in_array('custom', $include)) {
             // theme styles list (legacy)
@@ -80,14 +80,19 @@ class WFStyleselectPluginConfig
                 $settings['styleselect_custom_classes'] = implode(',', array_merge($list1, $list2));
             }
 
-            $custom_styles = json_decode($wf->getParam('styleselect.custom_styles', $wf->getParam('editor.custom_styles', '')));
+            $custom_styles = $wf->getParam('styleselect.custom_styles', $wf->getParam('editor.custom_styles', ''));
+            
+            // decode json string
+            if (is_string($custom_styles)) {
+                $custom_styles = json_decode(htmlspecialchars_decode($custom_styles));
+            }
 
             if (!empty($custom_styles)) {
                 $styles = array();
 
                 $blocks = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
 
-                foreach ((array)$custom_styles as $style) {
+                foreach ((array) $custom_styles as $style) {
                     // clean up title
                     if (isset($style->title)) {
                         $style->title = self::cleanString($style->title);
@@ -174,22 +179,22 @@ class WFStyleselectPluginConfig
                 $settings['styleselect_stylesheets'] = $stylesheet;
 
                 // add the stylesheet to the content_css setting
-                $stylesheet = trim($stylesheet, "/");
-                $etag = "";
+                $stylesheet = trim($stylesheet, '/');
+                $etag = '';
 
-                if (is_file(JPATH_SITE . '/' . $stylesheet)) {
+                if (is_file(JPATH_SITE.'/'.$stylesheet)) {
                     // create hash
-                    $etag = '?' . filemtime(JPATH_SITE . '/' . $stylesheet);
+                    $etag = '?'.filemtime(JPATH_SITE.'/'.$stylesheet);
 
                     // explode to array
-                    $content_css = explode(",", $settings['content_css']);
-                    $content_css[] = JURI::root(true) . '/' . $stylesheet . $etag;
+                    $content_css = explode(',', $settings['content_css']);
+                    $content_css[] = JURI::root(true).'/'.$stylesheet.$etag;
 
                     // remove duplicates
                     $content_css = array_unique($content_css);
-                    
+
                     // implode to string
-                    $settings['content_css'] = implode(",", $content_css);
+                    $settings['content_css'] = implode(',', $content_css);
                 }
             }
         }
@@ -242,7 +247,7 @@ class WFStyleselectPluginConfig
      */
     protected static function getFonts()
     {
-        $wf = WFEditor::getInstance();
+        $wf = WFApplication::getInstance();
 
         $add = $wf->getParam('editor.theme_advanced_fonts_add');
         $remove = $wf->getParam('editor.theme_advanced_fonts_remove');
@@ -259,7 +264,7 @@ class WFStyleselectPluginConfig
         if (count($remove)) {
             foreach ($fonts as $key => $value) {
                 foreach ($remove as $gone) {
-                    if ($gone && preg_match('/^' . $gone . '=/i', $value)) {
+                    if ($gone && preg_match('/^'.$gone.'=/i', $value)) {
                         // Remove family
                         unset($fonts[$key]);
                     }

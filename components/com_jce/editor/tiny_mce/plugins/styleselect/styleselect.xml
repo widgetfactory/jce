@@ -1,31 +1,33 @@
 <?xml version="1.0" ?>
-<install version="2.0" type="plugin" plugin="styleselect" core="1" editable="1">
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
     <name>WF_STYLESELECT_TITLE</name>
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
     <authorEmail>info@joomlacontenteditor.net</authorEmail>
-    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
     <copyright>Ryan Demmer</copyright>
     <license>@@licence@@</license>
     <description>WF_STYLESELECT_DESC</description>
     <icon>styleselect</icon>
-    <params group="standard">
-        <param name="styles" type="list" class="checklist" multiple="multiple" default="stylesheet,custom" label="WF_STYLESELECT_STYLES" description="WF_STYLESELECT_STYLES_DESC">
-            <option value="stylesheet">WF_STYLESELECT_STYLESHEET</option>
-            <option value="custom">WF_STYLESELECT_CUSTOM</option>
-        </param>
+    <fields name="styleselect">
+        <fieldset name="config">
+            <field name="styles" type="checkboxes" default="stylesheet,custom" label="WF_STYLESELECT_STYLES" description="WF_STYLESELECT_STYLES_DESC">
+                <option value="stylesheet">WF_STYLESELECT_STYLESHEET</option>
+                <option value="custom">WF_STYLESELECT_CUSTOM</option>
+            </field>
 
-        <param name="stylesheet" placeholder="eg: templates/$template/css/content.css" type="text" size="100" default="" label="WF_STYLESELECT_STYLESHEET_CUSTOM" description="WF_STYLESELECT_STYLESHEET_CUSTOM_DESC" parent="styles[stylesheet]" />
+            <field name="stylesheet" placeholder="eg: templates/$template/css/content.css" type="text" size="100" default="" label="WF_STYLESELECT_STYLESHEET_CUSTOM" description="WF_STYLESELECT_STYLESHEET_CUSTOM_DESC" parent="styles[stylesheet]" />
 
-        <param name="sort" type="radio" default="1" label="WF_STYLESELECT_STYLES_SORT" description="WF_STYLESELECT_STYLES_SORT_DESC">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
-        </param>
+            <field name="sort" type="yesno" default="1" label="WF_STYLESELECT_STYLES_SORT" description="WF_STYLESELECT_STYLES_SORT_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
 
-        <param name="custom_classes" type="text" default="" placeholder="eg: class1,class2,class3" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
-        <param name="custom_styles" type="styleformat" default="" label="WF_STYLESELECT_CUSTOM" description="WF_STYLESELECT_CUSTOM_DESC" parent="styles[custom]" />
-    </params>
+            <field name="custom_classes" type="text" default="" placeholder="eg: class1,class2,class3" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
+            <field name="custom_styles" type="styleformat" default="" label="WF_STYLESELECT_CUSTOM" description="WF_STYLESELECT_CUSTOM_DESC" parent="styles[custom]" />
+        </fieldset>
+    </fields>
     <help></help>
     <languages></languages>
-</install>
+</extension>

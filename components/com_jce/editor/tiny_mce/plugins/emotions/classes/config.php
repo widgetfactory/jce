@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -13,7 +13,7 @@ class WFEmotionsPluginConfig
     public static function getConfig(&$settings)
     {
         // Get JContentEditor instance
-        $wf = WFEditor::getInstance();
+        $wf = WFApplication::getInstance();
 
         $settings['emotions_smilies'] = $wf->getParam('emotions.smilies');
         $settings['emotions_url'] = $wf->getParam('emotions.url');

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @copyright    Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright    Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 ?>
   <form class="uk-form uk-form-horizontal" onsubmit="return false;" action="<?php echo $this->action; ?>" target="_self" method="post" enctype="multipart/form-data">
     <div id="browser">
@@ -20,7 +20,7 @@ defined('_JEXEC') or die('RESTRICTED');
           </div>
 
           <ul class="uk-breadcrumb pathway uk-margin-remove">
-            <li title="<?php echo WFText::_('WF_LABEL_HOME', 'Home'); ?>">
+            <li title="<?php echo JText::_('WF_LABEL_HOME', 'Home'); ?>">
               <i class="uk-icon uk-icon-spinner"></i>
               <i class="uk-icon uk-icon-home"></i>
             </li>
@@ -30,10 +30,10 @@ defined('_JEXEC') or die('RESTRICTED');
       </nav>
 
       <main class="uk-grid uk-grid-collapse uk-width-1-1 uk-position-cover uk-flex">
-        <div class="uk-width-3-10">
+        <div class="uk-width-3-10 uk-width-large-1-4">
           <div class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-text-center">
-              <?php echo WFText::_('WF_LABEL_FOLDERS'); ?>
+              <?php echo JText::_('WF_LABEL_FOLDERS'); ?>
             </div>
           </div>
           <div id="browser-tree">
@@ -53,28 +53,28 @@ defined('_JEXEC') or die('RESTRICTED');
               <div class="uk-width-1-10 uk-button uk-padding-remove uk-text-left" id="sort-ext" data-sort="extension" role="button" data-sort-type="extension" aria-labelledby="sort-ext-label">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
-                <span id="sort-ext-label" class="uk-hidden"><?php echo WFText::_('WF_LABEL_EXTENSION'); ?></span>
+                <span id="sort-ext-label" class="uk-hidden"><?php echo JText::_('WF_LABEL_EXTENSION'); ?></span>
               </div>
 
               <!-- Sort Name -->
               <div class="uk-flex-item-auto uk-button uk-padding-remove uk-text-left" id="sort-name" data-sort="name" role="button" data-sort-type="string" aria-labelledby="sort-name-label">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
-                <span id="sort-name-label">&nbsp;<?php echo WFText::_('WF_LABEL_NAME'); ?></span>
+                <span id="sort-name-label">&nbsp;<?php echo JText::_('WF_LABEL_NAME'); ?></span>
               </div>
 
               <!-- Sort Date -->
               <div class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" role="button" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
-                <span id="sort-data-label">&nbsp;<?php echo WFText::_('WF_LABEL_DATE'); ?></span>
+                <span id="sort-data-label">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></span>
               </div>
 
               <!-- Sort Size -->
               <div class="uk-width-3-10 uk-button uk-text-left" id="sort-size" role="button" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
-                <span id="sort-size-label">&nbsp;<?php echo WFText::_('WF_LABEL_SIZE'); ?></span>
+                <span id="sort-size-label">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></span>
               </div>
 
               <div class="uk-padding-remove uk-text-right uk-position-top-right">
@@ -109,15 +109,15 @@ defined('_JEXEC') or die('RESTRICTED');
               </ul>
               <div class="limit-text uk-navbar-content uk-width-2-4">
                 <label for="browser-list-limit-select" class="uk-margin-small-right">
-                  <?php echo WFText::_('WF_LABEL_SHOW'); ?>
+                  <?php echo JText::_('WF_LABEL_SHOW'); ?>
                 </label>
-                <select id="browser-list-limit-select" class="uk-form-small">
+                <select id="browser-list-limit-select">
                   <option value="10">10</option>
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
                   <option value="all">
-                    <?php echo WFText::_('WF_OPTION_ALL'); ?>
+                    <?php echo JText::_('WF_OPTION_ALL'); ?>
                   </option>
                 </select>
               </div>
@@ -137,7 +137,7 @@ defined('_JEXEC') or die('RESTRICTED');
         <div class="uk-width-3-10 uk-position-relative">
           <div class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-text-center">
-              <?php echo WFText::_('WF_LABEL_DETAILS'); ?>
+              <?php echo JText::_('WF_LABEL_DETAILS'); ?>
             </div>
           </div>
           <div id="browser-details-container" class="uk-grid uk-grid-collapse uk-flex">
@@ -164,5 +164,5 @@ defined('_JEXEC') or die('RESTRICTED');
         </div>
     </div>
     </main>
-    <input type="hidden" name="<?php echo WFToken::getToken(); ?>" value="1" />
+    <input type="hidden" name="<?php echo JSession::getFormToken(); ?>" value="1" />
   </form>

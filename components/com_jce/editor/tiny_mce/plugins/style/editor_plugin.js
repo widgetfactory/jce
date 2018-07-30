@@ -28,7 +28,7 @@
                 }
 
                 ed.windowManager.open({
-                    file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=style',
+                    file 	: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
                     width 	: 620 + parseInt(ed.getLang('style.delta_width', 0)),
                     height 	: 420 + parseInt(ed.getLang('style.delta_height', 0)),
                     inline 	: 1,

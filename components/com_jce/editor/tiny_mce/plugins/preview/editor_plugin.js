@@ -104,9 +104,7 @@
             DOM.show(preview);
 
             var query = '',
-                args = {
-                    'format': 'raw'
-                };
+                args = {};
 
             // set token
             args[ed.settings.token] = 1;
@@ -139,7 +137,7 @@
                 var css = [self.url + '/css/preview.css'];
 
                 if (ed.settings.compress.css) {
-                    css = [s.site_url + 'index.php?option=com_jce&view=editor&task=pack&type=css&layout=preview&context=' + s.context + '&' + s.token + '=1'];
+                    css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&layout=preview&context=' + s.context + '&' + s.token + '=1'];
                 } else {
                     css = tinymce.explode(ed.settings.content_css);
                 }
@@ -168,7 +166,7 @@
 
             // load preview data
             tinymce.util.XHR.send({
-                url: s['site_url'] + 'index.php?option=com_jce&view=editor&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
+                url: s.site_url + 'index.php?option=com_jce&task=plugin.display&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
                 data: 'json=' + JSON.stringify({
                     'method': 'showPreview'
                 }) + '&' + query,

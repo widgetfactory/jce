@@ -1,18 +1,14 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
-
-// Load class dependencies
-wfimport('editor.libraries.classes.plugin');
-wfimport('editor.libraries.classes.browser');
+defined('JPATH_PLATFORM') or die;
 
 class WFMediaManagerBase extends WFEditorPlugin
 {
@@ -97,7 +93,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         parent::display();
 
         $document = WFDocument::getInstance();
-        $layout = JRequest::getCmd('layout', 'plugin');
+        $layout = JFactory::getApplication()->input->getCmd('layout', 'plugin');
 
         $view = $this->getView();
         $browser = $this->getFileBrowser();
@@ -198,7 +194,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         if ($ext == 'wmv' && $meta['x'] == '') {
-            $meta['width']  = round($fileinfo['asf']['video_media']['2']['image_width']);
+            $meta['width'] = round($fileinfo['asf']['video_media']['2']['image_width']);
             $meta['height'] = round(($fileinfo['asf']['video_media']['2']['image_height']));
         }
 
@@ -227,13 +223,13 @@ class WFMediaManagerBase extends WFEditorPlugin
 
             if ($svg && isset($svg['viewBox'])) {
                 list($start_x, $start_y, $end_x, $end_y) = explode(' ', $svg['viewBox']);
-                
-                $width 	= (int) $end_x;
-                $height	= (int) $end_y;
-                
+
+                $width = (int) $end_x;
+                $height = (int) $end_y;
+
                 if ($width && $height) {
-                    $data['width'] 	= $width;
-                    $data['height']	= $height;
+                    $data['width'] = $width;
+                    $data['height'] = $height;
 
                     return $data;
                 }
@@ -269,7 +265,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // implode textcase array to create string
         if (is_array($textcase)) {
-            $textcase = implode(",", $textcase);
+            $textcase = implode(',', $textcase);
         }
 
         $filter = (array) $this->getParam('editor.dir_filter', array());
@@ -290,7 +286,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         if (is_numeric($websafe_spaces)) {
             // legacy replacement
-            if ($websafe_spaces == 0) {           
+            if ($websafe_spaces == 0) {
                 $websafe_spaces = '_';
             }
             // convert to space

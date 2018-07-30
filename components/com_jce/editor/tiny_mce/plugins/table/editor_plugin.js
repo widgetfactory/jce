@@ -1777,7 +1777,7 @@
                 }
             });
 
-            var url = ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=table';
+            var url = ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=table';
 
             // Register action commands
             each({

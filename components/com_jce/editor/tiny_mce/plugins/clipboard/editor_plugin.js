@@ -685,6 +685,19 @@
         each(dom.select('img', o.node), function (el) {
             var s = dom.getAttrib(el, 'src');
 
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    console.log(this);
+                }
+            };
+
+            xhr.open('GET', s, true);
+
+            xhr.responseType = 'blob';
+            xhr.send();
+
             // remove or processs for upload img element if blank, local file url or base64 encoded
             if (!s || imgRe.test(s)) {
                 if (ed.getParam('clipboard_paste_upload_images') && canUpload) {
@@ -1832,7 +1845,7 @@
             function pasteHtml(content, internal) {
                 // create object to process
                 var o = {
-                    content : content,
+                    content: content,
                     internal: internal
                 };
 
@@ -2377,7 +2390,7 @@
             var ed = this.editor;
 
             ed.windowManager.open({
-                file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=clipboard&cmd=' + cmd,
+                file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=clipboard&cmd=' + cmd,
                 width: parseInt(ed.getParam("clipboard_paste_dialog_width", "450")),
                 height: parseInt(ed.getParam("clipboard_paste_dialog_height", "400")),
                 inline: 1,

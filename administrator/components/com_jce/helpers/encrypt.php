@@ -12,7 +12,7 @@
 // Protection against direct access
 defined('_JEXEC') or die();
 
-require_once dirname(dirname(__FILE__)).'/classes/encrypt.php';
+require_once __DIR__.'/encrypt/aes.php';
 
 /**
  * Implements encrypted settings handling features.
@@ -29,9 +29,6 @@ class WFEncryptHelper
      * @param string $a  Hash algorithm
      *
      * @return string The derived key
-     *
-     * @see     http://en.wikipedia.org/wiki/PBKDF2
-     * @see     http://www.ietf.org/rfc/rfc2898.txt
      *
      * @copyright   Copyright (C) 2005 - 2011 Open Source Matters, Inc. All rights reserved
      */

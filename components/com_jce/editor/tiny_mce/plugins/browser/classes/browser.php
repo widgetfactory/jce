@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
 require_once WF_EDITOR_LIBRARIES.'/classes/manager.php';
 
@@ -21,6 +21,8 @@ class WFFileBrowserPlugin extends WFMediaManager
 
     public function __construct($config = array())
     {
+        $app = JFactory::getApplication();
+        
         $config = array(
             'layout' => 'browser',
             'can_edit_images' => 1,
@@ -33,7 +35,7 @@ class WFFileBrowserPlugin extends WFMediaManager
         $caller = $this->get('caller', 'browser');
 
         // get mediatype from xml
-        $mediatype = JRequest::getVar('mediatype', JRequest::getVar('filter', 'files'));
+        $mediatype = $app->input->get('mediatype', $app->input->get('filter', 'files'));
 
         // clean filter value
         $mediatype = (string) preg_replace('/[^\w_,]/i', '', $mediatype);
@@ -42,15 +44,15 @@ class WFFileBrowserPlugin extends WFMediaManager
         $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
 
         $map = array(
-            "images" => "jpg,jpeg,png,gif",
-            "media"  => "avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap",
-            "html"   => "html,htm,txt",
-            "files"  => $filetypes
+            'images' => 'jpg,jpeg,png,gif',
+            'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
+            'html' => 'html,htm,txt',
+            'files' => $filetypes,
         );
 
         // add svg support to images if it is allowed in filetypes
-        if (in_array('svg', explode(",", $filetypes))) {
-            $map['images'] = "jpg,jpeg,png,gif,svg";
+        if (in_array('svg', explode(',', $filetypes))) {
+            $map['images'] = 'jpg,jpeg,png,gif,svg';
         }
 
         if (array_key_exists($mediatype, $map)) {
@@ -63,10 +65,10 @@ class WFFileBrowserPlugin extends WFMediaManager
         $this->setFileTypes($filetypes);
 
         $browser = $this->getFileBrowser();
-        
+
         $upload = $browser->get('upload', array());
         $upload['filetypes'] = $browser->getFileTypes('list', $filetypes);
-        
+
         $browser->setProperties(array('upload' => $upload));
     }
 
@@ -76,22 +78,24 @@ class WFFileBrowserPlugin extends WFMediaManager
     public function display()
     {
         parent::display();
+        
+        $app = JFactory::getApplication();
 
         $document = WFDocument::getInstance();
-        $layout = JRequest::getCmd('layout', 'plugin');
+        $layout = $app->input->getCmd('layout', 'plugin');
 
         if ($document->get('standalone') == 1) {
             if ($layout === 'plugin') {
                 $document->addScript(array('window.min'), 'plugins');
 
-                $element = JRequest::getCmd('element', JRequest::getCmd('fieldid', ''));
-                $callback = JRequest::getCmd('callback', '');
+                $element = $app->input->getCmd('element', $app->input->getCmd('fieldid', ''));
+                $callback = $app->input->getCmd('callback', '');
 
                 $settings = array(
                     'site_url' => JURI::base(true).'/',
                     'language' => WFLanguage::getCode(),
                     'element' => $element,
-                    'token' => WFToken::getToken(),
+                    'token' => JSession::getFormToken(),
                 );
 
                 if ($callback) {

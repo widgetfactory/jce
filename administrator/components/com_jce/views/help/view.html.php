@@ -1,18 +1,16 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2013 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
-wfimport('admin.classes.view');
-
-class WFViewHelp extends WFView
+class JceViewHelp extends JViewLegacy
 {
     public function display($tpl = null)
     {
@@ -20,23 +18,25 @@ class WFViewHelp extends WFView
         $language = $model->getLanguage();
         $lang = JFactory::getLanguage();
 
-        $section = JRequest::getWord('section');
-        $category = JRequest::getWord('category');
-        $article = JRequest::getWord('article');
+        $app = JFactory::getApplication();
 
-        $component = JComponentHelper::getComponent('com_jce');
+        $document = JFactory::getDocument();
 
-        require_once WF_ADMINISTRATOR.'/classes/parameter.php';
+        $section = $app->input->getWord('section');
+        $category = $app->input->getWord('category');
+        $article = $app->input->getWord('article');
 
-        $params = new WFParameter($component->params);
-        $url = $params->get('preferences.help.url', 'https://www.joomlacontenteditor.net');
-        $method = $params->get('preferences.help.method', 'reference');
-        $pattern = $params->get('preferences.help.pattern', '');
+        $params = JComponentHelper::getParams('com_jce');
+
+        $registry = new JRegistry($params);
+        $url = $registry->get('preferences.help.url', 'https://www.joomlacontenteditor.net');
+        $method = $registry->get('preferences.help.method', 'reference');
+        $pattern = $registry->get('preferences.help.pattern', '');
 
         switch ($method) {
             default:
             case 'reference':
-                $url .= '/index.php?option=com_content&view=article&tmpl=component&print=1&mode=inline&task=findkey&lang='.$language.'&keyref=';
+                $url .= '/index.php?option=com_content&view=article&tmpl=component&print=1&mode=inline&task=findkey&lang=' . $language . '&keyref=';
                 break;
             case 'xml':
                 break;
@@ -44,7 +44,8 @@ class WFViewHelp extends WFView
                 break;
         }
 
-        $this->assign('model', $model);
+        $this->model = $model;
+        
         $key = array();
 
         if ($section) {
@@ -63,7 +64,11 @@ class WFViewHelp extends WFView
             'pattern' => $pattern,
         );
 
-        $this->addScriptDeclaration('jQuery(document).ready(function($){Wf.help.init('.json_encode($options).');});');
+        JHtml::_('jquery.framework');
+
+        $document->addScript('components/com_jce/media/js/help.min.js');
+        $document->addStyleSheet('components/com_jce/media/css/help.min.css');
+        $document->addScriptDeclaration('jQuery(document).ready(function($){Wf.Help.init(' . json_encode($options) . ');});');
 
         parent::display($tpl);
     }

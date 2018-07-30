@@ -1,16 +1,14 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
-
-wfimport('editor.libraries.classes.response');
+defined('JPATH_PLATFORM') or die;
 
 final class WFRequest extends JObject
 {
@@ -130,24 +128,20 @@ final class WFRequest extends JObject
      */
     public function process($array = false)
     {
-        // Check for request forgeries
-        WFToken::checkToken() or die('Access to this resource is restricted');
-
         if ($this->isRequest() === false) {
             return false;
         }
 
+        // Check for request forgeries
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+        $app = JFactory::getApplication();
+
         // empty arguments
         $args = array();
 
-        // Joomla Input Filter
-        $filter = JFilterInput::getInstance();
-
-        $json = JRequest::getVar('json', '', 'POST', 'STRING', 2);
-        $method = JRequest::getWord('method');
-
-        // set error handling for requests
-        JError::setErrorHandling(E_ALL, 'callback', array('WFRequest', 'raiseError'));
+        $json = $app->input->getVar('json', '', 'POST', 'STRING', 2);
+        $method = $app->input->getWord('method');
 
         // get and encode json data
         if ($json) {
@@ -159,7 +153,7 @@ final class WFRequest extends JObject
         }
 
         // get current request id
-        $id = empty($json->id) ? JRequest::getWord('id') : $json->id;
+        $id = empty($json->id) ? $app->input->getWord('id') : $json->id;
 
         // create response
         $response = new WFResponse($id);
@@ -179,7 +173,7 @@ final class WFRequest extends JObject
                 $fn = $json->method;
 
                 // clean function
-                $fn = $filter->clean($fn, 'cmd');
+                $fn = JFilterInput::getInstance()->clean($fn, 'cmd');
 
                 // pass params to input and flatten
                 if (!empty($json->params)) {
@@ -236,31 +230,5 @@ final class WFRequest extends JObject
 
         // default response
         $response->setError(array('code' => -32601, 'message' => 'The server returned an invalid response'))->send();
-    }
-
-    /**
-     * Format a JError object as a JSON string.
-     */
-    public static function raiseError($error)
-    {
-        $data = array();
-
-        $data[] = JError::translateErrorLevel($error->get('level')).' '.$error->get('code').': ';
-
-        if ($error->get('message')) {
-            $data[] = $error->get('message');
-        }
-
-        $output = array(
-            'result' => '',
-            'error' => true,
-            'code' => $error->get('code'),
-            'text' => $data,
-        );
-
-        header('Content-Type: text/json');
-        header('Content-Encoding: UTF-8');
-
-        exit(json_encode($output));
     }
 }

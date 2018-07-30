@@ -1,3 +1,5 @@
+@import url('ui.css');
+
 .mobileSkin .mceToolBarItem .mceListBox, .mobileSkin .mceToolBarItem .mceSplitButton {
 	border-color: #dcdcdc;
 	height: 36px;
@@ -15,12 +17,13 @@
 }
 
 .mobileSkin .mceToolBarItem .mceListBox {
-	width: 112px;
+  width: 112px;
+  padding: 0;
 }
 
 .mobileSkin .mceToolBarItem .mceSplitButton {
     width: 55px;
-    padding: 7px;
+    padding: 0;
     height: 36px;
 }
 
@@ -78,4 +81,13 @@
 }
 .mobileSkin .mceLayout .mceStatusbar {
     background-color: #fafafa !important;
+}
+
+.mobileSkin .mceToolBarItem .mceListBox::before {
+  line-height: 32px;
+  width: 90px;
+}
+
+.mobileSkin .mceToolBarItem .mceSplitButton .mceIcon {
+  margin: 7px 6px;
 }

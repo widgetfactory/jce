@@ -33,7 +33,7 @@
         }
     };
 
-    $.fn.tooltip = function(options) {
+    $.fn.tips = function(options) {
         options = $.extend({
             speed: 150,
             position: 'top center',
@@ -48,6 +48,7 @@
             trigger: 'hover',
             disabled: ':disabled, .disabled'
         }, options);
+        
         /**
          * Initialise the tooltip
          * @param {Object} elements
@@ -94,9 +95,11 @@
             if (options.trigger == 'hover') {
                 $(element).hover(
                     function(e) {
+                        
                         if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
                             return;
                         }
+
                         return start(e, element);
                     },
                     function(e) {
@@ -116,10 +119,10 @@
             var $tips = $('.uk-tooltip');
 
             if (!$tips.get(0)) {
-                $tips = $('<div class="tooltip uk-tooltip" role="tooltip" aria-hidden="true">' +
+                $tips = $('<div class="uk-tooltip" role="tooltip" aria-hidden="true">' +
                     '<span class="close uk-icon uk-icon-close" title="Close">&times;</span>' +
-                    '<div class="tooltip-arrow"></div>' +
-                    '<div class="tooltip-inner uk-tooltip-inner"></div>' +
+                    '<div class="uk-tooltip-inner"></div>' +
+                    '<div class="arrow"></div>' +
                     '</div>').appendTo(options.parent);
 
                 $('.uk-icon-close', $tips).click(function() {
@@ -127,7 +130,7 @@
                 }).hide();
             }
 
-            $tips.addClass('tooltip').addClass(options.className);
+            $tips.addClass(options.className);
         }
 
         /**
@@ -140,6 +143,11 @@
             createTips();
 
             var $tips = $('.uk-tooltip');
+
+            if ($(element).hasClass('hasPopover')) {
+                $tips.addClass('popover');
+            }
+
             // store element
             $tips.data('source', element);
 
@@ -156,24 +164,37 @@
                     title = $.trim(parts[0]);
                     text = $.trim(parts[1]);
                 }
+
+                title = title || $(element).attr('title');
+
+                text = $(element).data('content') || text;
+
                 // Store original title and remove
                 $(element).data('title', $(element).attr('title')).attr('title', '');
+
                 // add aria description
                 $(element).attr('aria-describedby', 'uk-tooltip');
 
                 var h = '';
+                
                 // Set tooltip title html
                 if (title) {
                     h += '<h4>' + title + '</h4>';
                 }
+
                 // Set tooltip text html
                 if (text) {
-                    h += '<p>' + text + '</p>';
+                    h += '<div>' + text + '</div>';
                 }
             }
 
             // Set tooltip html
             $('.uk-tooltip-inner', $tips).html(h);
+
+            if ($(element).hasClass('hasPopover')) {
+                $('.uk-tooltip-inner > h4', $tips).addClass('popover-title popover-header');
+                $('.uk-tooltip-inner > div', $tips).addClass('popover-content popover-body');
+            }
 
             // Set visible
             $tips.show().addClass('in').attr('aria-hidden', 'false');
@@ -344,7 +365,5 @@
             init(this);
         });
     };
-
-    $.fn.tips = $.fn.tooltip;
 
 })(jQuery);

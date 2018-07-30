@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -32,11 +32,11 @@ class WFViewPopup extends WFViewBase
         $this->document->addStylesheet(JURI::root(true).'/components/com_jce/media/css/popup.css');
 
         // Get variables
-        $img = JRequest::getVar('img');
-        $title = JRequest::getWord('title');
-        $mode = JRequest::getInt('mode', '0');
-        $click = JRequest::getInt('click', '0');
-        $print = JRequest::getInt('print', '0');
+        $img = $app->input->get('img');
+        $title = $app->input->getWord('title');
+        $mode = $app->input->getInt('mode', '0');
+        $click = $app->input->getInt('click', '0');
+        $print = $app->input->getInt('print', '0');
 
         $dim = array('', '');
 
@@ -47,8 +47,8 @@ class WFViewPopup extends WFViewBase
             }
         }
 
-        $width = JRequest::getInt('w', JRequest::getInt('width', ''));
-        $height = JRequest::getInt('h', JRequest::getInt('height', ''));
+        $width = $app->input->getInt('w', $app->input->getInt('width', ''));
+        $height = $app->input->getInt('h', $app->input->getInt('height', ''));
 
         if (!$width) {
             $width = $dim[0];

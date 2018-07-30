@@ -17,9 +17,9 @@
     vertical-align: top;
     background: transparent;
     text-decoration: none;
-    color: #333;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
+    color: #444;
+    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
     text-shadow: none;
     float: none;
     position: static;
@@ -38,7 +38,6 @@
     max-width: none;
 }
 
-
 /* Yootheme Zoo */
 
 .repeatable-element .repeatable-content {
@@ -47,7 +46,6 @@
 
 .wf-editor-container {
     position: relative;
-    padding: 5px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -63,7 +61,9 @@
     background: #fff;
 }
 
-.wf-editor-container.mce-fullscreen .defaultSkin .mceStatusbar .mceResize {
+.wf-editor-container .mce-tinymce {box-sizing: border-box;}
+
+.mce-fullscreen .mce-resizehandle {
     display: none;
 }
 
@@ -98,7 +98,7 @@
     left: 0;
     top: 41px;
     z-index: 10001;
-    background: transparent url('../../tiny_mce/themes/advanced/skins/default/img/progress.gif') no-repeat center;
+    background: transparent url('../../tinymce/skins/classic/img/progress.gif') no-repeat center;
 }
 
 .wf-editor,
@@ -134,24 +134,28 @@
 }
 
 .wf-editor-header {
-    min-height: 41px;
+    min-height: 39px;
 }
 
 .mce-fullscreen .wf-editor-header {
     min-height: 45px;
 }
 
-.wf-editor-header:empty,
-.mce-fullscreen .wf-editor-header:empty {
-    display: none;
+.wf-editor-tabs {
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.wf-editor-toggle {
+.wf-editor-tabs li {
+    cursor: pointer
+}
+
+.wf-editor-header .wf-editor-toggle {
     position: relative;
     display: block;
     float: left;
     margin-top: 5px;
-    padding: 4px 24px 4px 32px;
+    padding: 4px 10px;
     margin-bottom: 0;
     font-size: 14px;
     line-height: 22px;
@@ -160,6 +164,9 @@
     background: url("../img/power.png") no-repeat 10px center;
     opacity: 0.6;
     min-height: 24px;
+    position: absolute;
+    right: 5px;
+    margin: 0;
 }
 
 .wf-editor-toggle:hover {
@@ -184,7 +191,7 @@
 .wf-editor-preview {
     position: relative;
     width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     box-sizing: border-box;
     background: #fff;
     min-width: 300px;
@@ -251,7 +258,8 @@ div#wf_upload_button input[type="file"] {
 
 /* Bootstrap nav */
 
-.wf-editor-container .nav {
+
+/*.wf-editor-container .nav {
     margin-bottom: 20px;
     margin-left: 0;
     list-style: none;
@@ -273,10 +281,6 @@ div#wf_upload_button input[type="file"] {
 
 .wf-editor-container .nav>.pull-right {
     float: right;
-}
-
-.wf-editor-container .nav-tabs {
-    *zoom: 1;
 }
 
 .wf-editor-container .nav-tabs:before,
@@ -466,6 +470,5 @@ div#wf_upload_button input[type="file"] {
 }
 
 .wf-editor-container .wf-editor-tabs li {
-    float: right;
     padding: 0;
-}
+}*/

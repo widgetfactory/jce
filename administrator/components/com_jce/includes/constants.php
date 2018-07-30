@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -38,6 +38,8 @@ define('WF_EDITOR_LIBRARIES',  WF_EDITOR.'/libraries');
 define('WF_EDITOR_CLASSES',    WF_EDITOR_LIBRARIES.'/classes');
 // JCE Editor Extensions
 define('WF_EDITOR_EXTENSIONS', WF_EDITOR.'/extensions');
+
+define('WF_EDITOR_URI', JURI::root(true) . '/components/com_jce/editor');
 
 define('WF_EDITOR_PRO', '@@is_pro@@');
 

@@ -1,16 +1,14 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
-
-wfimport('editor.libraries.classes.extensions.filesystem');
+defined('JPATH_PLATFORM') or die;
 
 class WFFileBrowser extends JObject
 {
@@ -156,7 +154,7 @@ class WFFileBrowser extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
 
-        $context = JRequest::getInt('context');
+        $context = JFactory::getApplication()->input->getInt('context');
 
         $query = '';
 
@@ -166,10 +164,10 @@ class WFFileBrowser extends JObject
         );
 
         foreach ($args as $k => $v) {
-            $query .= '&' . $k . '=' . $v;
+            $query .= '&'.$k.'='.$v;
         }
 
-        return JURI::base(true) . '/index.php?option=com_jce&view=editor&layout=plugin' . $query;
+        return JURI::base(true).'/index.php?option=com_jce&task=plugin.rpc'.$query;
     }
 
     public function getFileSystem()
@@ -267,7 +265,7 @@ class WFFileBrowser extends JObject
     }
 
     public function setFileTypes($list = 'jpg,jpeg,png,gif')
-    {        
+    {
         if ($list && $list[0] === '=') {
             $list = substr($list, 1);
         }
@@ -291,7 +289,7 @@ class WFFileBrowser extends JObject
         } else {
             $list = explode(';', $list);
             foreach ($types as $group => $extensions) {
-                $list[] = $group . '=' . $extensions;
+                $list[] = $group.'='.$extensions;
             }
 
             $list = implode(';', $list);
@@ -444,7 +442,7 @@ class WFFileBrowser extends JObject
         WFUtility::checkPath($path);
 
         // trim leading slash
-        $path = ltrim($path, "/");
+        $path = ltrim($path, '/');
 
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
         $dir = $filesystem->getSourceDir($path);
@@ -458,21 +456,21 @@ class WFFileBrowser extends JObject
                 $ext = WFUtility::makeSafe($filter);
 
                 for ($i = 0; $i < count($filetypes); ++$i) {
-                    if (preg_match('#^' . $ext . '#', $filetypes[$i]) === false) {
+                    if (preg_match('#^'.$ext.'#', $filetypes[$i]) === false) {
                         unset($filetypes[$i]);
                     }
                 }
             } else {
-                $name = '^(?i).*' . WFUtility::makeSafe($filter) . '.*';
+                $name = '^(?i).*'.WFUtility::makeSafe($filter).'.*';
             }
         }
 
         // get file list by filter
-        $files = $this->getFiles($dir, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort);
+        $files = $this->getFiles($dir, $name.'\.(?i)('.implode('|', $filetypes).')$', $sort);
 
         if (empty($filter) || $filter{0} != '.') {
             // get folder list
-            $folders = $this->getFolders($dir, '^(?i).*' . WFUtility::makeSafe($filter) . '.*', $sort);
+            $folders = $this->getFolders($dir, '^(?i).*'.WFUtility::makeSafe($filter).'.*', $sort);
         }
 
         $folderArray = array();
@@ -607,15 +605,15 @@ class WFFileBrowser extends JObject
             $treedir = $dir;
             if ($root) {
                 $result = '<ul>'
-                . '<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
-                . ' <div class="uk-tree-row">'
-                . '   <a href="#">'
-                . '     <span class="uk-tree-icon" role="presentation">'
-                . '       <i class="uk-icon uk-icon-home"></i>'
-                . '     </span>'
-                . '     <span class="uk-tree-text">' . WFText::_('WF_LABEL_HOME', 'Home') . '</span>'
-                    . '   </a>'
-                    . ' </div>';
+                .'<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
+                .' <div class="uk-tree-row">'
+                .'   <a href="#">'
+                .'     <span class="uk-tree-icon" role="presentation">'
+                .'       <i class="uk-icon uk-icon-home"></i>'
+                .'     </span>'
+                .'     <span class="uk-tree-text">'.JText::_('WF_LABEL_HOME', 'Home').'</span>'
+                    .'   </a>'
+                    .' </div>';
 
                 $dir = '/';
             }
@@ -627,15 +625,15 @@ class WFFileBrowser extends JObject
             foreach ($folders as $folder) {
                 $name = ltrim($folder['id'], '/');
 
-                $open = preg_match('#' . $name . '\b#', $treedir);
+                $open = preg_match('#'.$name.'\b#', $treedir);
 
-                $result .= '<li data-id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
-                    . ' <div class="uk-tree-row">'
-                    . '   <a href="#">'
-                    . '     <span class="uk-tree-icon" role="presentation"></span>'
-                    . '     <span class="uk-tree-text uk-width-4-5 uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>'
-                    . '   </a>'
-                    . ' </div>';
+                $result .= '<li data-id="'.$this->escape($name).'" class="'.($open ? 'uk-tree-open' : '').'">'
+                    .' <div class="uk-tree-row">'
+                    .'   <a href="#">'
+                    .'     <span class="uk-tree-icon" role="presentation"></span>'
+                    .'     <span class="uk-tree-text uk-width-4-5 uk-text-truncate" title="'.$folder['name'].'">'.$folder['name'].'</span>'
+                    .'   </a>'
+                    .' </div>';
 
                 if ($open) {
                     if ($h = $this->getTreeItems($folder['id'], false, false)) {
@@ -692,7 +690,7 @@ class WFFileBrowser extends JObject
      */
     private function addDefaultActions()
     {
-        $this->addAction('help', array('title' => WFText::_('WF_BUTTON_HELP')));
+        $this->addAction('help', array('title' => JText::_('WF_BUTTON_HELP')));
 
         if ($this->checkFeature('upload')) {
             $this->addAction('upload');
@@ -729,7 +727,7 @@ class WFFileBrowser extends JObject
         }
 
         if (!array_key_exists('title', $options)) {
-            $options['title'] = WFText::_('WF_BUTTON_' . strtoupper($name));
+            $options['title'] = JText::_('WF_BUTTON_'.strtoupper($name));
         }
 
         $this->_actions[$name] = $options;
@@ -828,7 +826,7 @@ class WFFileBrowser extends JObject
         }
 
         if (!array_key_exists('title', $options)) {
-            $options['title'] = WFText::_('WF_BUTTON_' . strtoupper($name));
+            $options['title'] = JText::_('WF_BUTTON_'.strtoupper($name));
         }
 
         if (!array_key_exists('multiple', $options)) {
@@ -928,10 +926,10 @@ class WFFileBrowser extends JObject
      */
     public function getFileIcon($ext)
     {
-        if (JFile::exists(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
-            return $this->image('libraries.icons/' . $ext . '.gif');
-        } elseif (JFile::exists($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
-            return $this->image('plugins.icons/' . $ext . '.gif');
+        if (JFile::exists(WF_EDITOR_LIBRARIES.'/img/icons/'.$ext.'.gif')) {
+            return $this->image('libraries.icons/'.$ext.'.gif');
+        } elseif (JFile::exists($this->getPluginPath().'/img/icons/'.$ext.'.gif')) {
+            return $this->image('plugins.icons/'.$ext.'.gif');
         } else {
             return $this->image('libraries.icons/def.gif');
         }
@@ -966,7 +964,7 @@ class WFFileBrowser extends JObject
 
         if (is_array($allowed) && !empty($allowed) && in_array(strtolower($ext), $allowed) === false) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
+            throw new InvalidArgumentException(JText::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
         }
 
         $size = round(filesize($file['tmp_name']) / 1024);
@@ -979,16 +977,14 @@ class WFFileBrowser extends JObject
         if ($size > (int) $upload['max_size']) {
             @unlink($file['tmp_name']);
 
-            throw new InvalidArgumentException(WFText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
+            throw new InvalidArgumentException(JText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
         // validate mimetype
         if ($upload['validate_mimetype']) {
-            wfimport('editor.libraries.classes.mime');
-
             if (WFMimeType::check($file['name'], $file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
-                throw new InvalidArgumentException(WFText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
             }
         }
 
@@ -1003,12 +999,14 @@ class WFFileBrowser extends JObject
     public function upload()
     {
         // Check for request forgeries
-        WFToken::checkToken() or die();
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
         // check for feature access
         if (!$this->checkFeature('upload')) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
+        
+        $app = JFactory::getApplication();
 
         $filesystem = $this->getFileSystem();
         jimport('joomla.filesystem.file');
@@ -1017,13 +1015,13 @@ class WFFileBrowser extends JObject
         $result = new WFFileSystemResult();
 
         // get uploaded file
-        $file = JRequest::getVar('file', '', 'files', 'array');
+        $file = $app->input->files->get('file', array(), 'array');
 
         // validate file
         $this->validateUploadedFile($file);
 
         // get file name
-        $name = (string) JRequest::getVar('name', $file['name']);
+        $name = (string) $app->input->get('name', $file['name']);
 
         // decode
         $name = rawurldecode($name);
@@ -1052,7 +1050,7 @@ class WFFileBrowser extends JObject
 
         // strip extension
         $name = WFUtility::stripExtension($name);
-        
+
         // make file name 'web safe'
         $name = WFUtility::makeSafe($name, $this->get('websafe_mode', 'utf-8'), $this->get('websafe_spaces'), $this->get('websafe_textcase'));
 
@@ -1062,7 +1060,7 @@ class WFFileBrowser extends JObject
         }
 
         // target directory
-        $dir = (string) JRequest::getVar('upload-dir');
+        $dir = (string) $app->input->get('upload-dir');
         // decode and cast as string
         $dir = rawurldecode($dir);
         // check destination path
@@ -1078,7 +1076,7 @@ class WFFileBrowser extends JObject
         // Check file number limits
         if (!empty($upload['total_files'])) {
             if ($filesystem->countFiles($dir, true) > $upload['total_files']) {
-                throw new InvalidArgumentException(WFText::_('WF_MANAGER_FILE_LIMIT_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_FILE_LIMIT_ERROR'));
             }
         }
 
@@ -1087,19 +1085,19 @@ class WFFileBrowser extends JObject
             $size = $filesystem->getTotalSize($dir);
 
             if (($size / 1024 / 1024) > $upload['total_size']) {
-                throw new InvalidArgumentException(WFText::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
             }
         }
 
         // add random string
         if ($upload['add_random']) {
-            $name = $name . '_' . substr(md5(uniqid(rand(), 1)), 0, 5);
+            $name = $name.'_'.substr(md5(uniqid(rand(), 1)), 0, 5);
         }
 
         // rebuild file name - name + extension
-        $name = $name . '.' . $ext;
+        $name = $name.'.'.$ext;
 
-        $contentType = JRequest::getVar('CONTENT_TYPE', '', 'SERVER');
+        $contentType = $_SERVER['CONTENT_TYPE'];
 
         // Only multipart uploading is supported for now
         if ($contentType && strpos($contentType, 'multipart') !== false) {
@@ -1112,7 +1110,7 @@ class WFFileBrowser extends JObject
 
             if (!$result->state) {
                 if (empty($result->message)) {
-                    $result->message = WFText::_('WF_MANAGER_UPLOAD_ERROR');
+                    $result->message = JText::_('WF_MANAGER_UPLOAD_ERROR');
                 }
 
                 $result->code = 103;
@@ -1122,7 +1120,7 @@ class WFFileBrowser extends JObject
         } else {
             $result->state = false;
             $result->code = 103;
-            $result->message = WFText::_('WF_MANAGER_UPLOAD_ERROR');
+            $result->message = JText::_('WF_MANAGER_UPLOAD_ERROR');
         }
 
         // upload finished
@@ -1160,7 +1158,7 @@ class WFFileBrowser extends JObject
     {
         // check for feature access
         if (!$this->checkFeature('delete', 'folder') && !$this->checkFeature('delete', 'file')) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1175,13 +1173,13 @@ class WFFileBrowser extends JObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = $item;
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('delete', 'folder') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = dirname($item);
@@ -1199,10 +1197,10 @@ class WFFileBrowser extends JObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(JText::sprintf('WF_MANAGER_DELETE_' . strtoupper($result->type) . '_ERROR', basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_DELETE_'.strtoupper($result->type).'_ERROR', basename($item)), 'error');
                     }
                 } else {
-                    $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Delete', array($item)));
+                    $this->setResult($this->fireEvent('on'.ucfirst($result->type).'Delete', array($item)));
                     $this->setResult($item, $result->type);
                 }
             }
@@ -1223,7 +1221,7 @@ class WFFileBrowser extends JObject
     {
         // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $args = func_get_args();
@@ -1246,20 +1244,20 @@ class WFFileBrowser extends JObject
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
-            JError::raiseError(403, 'INVALID FILE NAME');
+            throw new InvalidArgumentException('INVALID FILE NAME');
         }
 
         $filesystem = $this->getFileSystem();
 
         if ($filesystem->is_file($source)) {
             if ($this->checkFeature('rename', 'file') === false) {
-                JError::raiseError(403, 'Access to this resource is restricted');
+                throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
             }
 
             $path = dirname($source);
         } elseif ($filesystem->is_dir($source)) {
             if ($this->checkFeature('rename', 'folder') === false) {
-                JError::raiseError(403, 'Access to this resource is restricted');
+                throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
             }
 
             $path = $source;
@@ -1276,12 +1274,12 @@ class WFFileBrowser extends JObject
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
-                $this->setResult(WFText::sprintf('WF_MANAGER_RENAME_' . strtoupper($result->type) . '_ERROR', basename($source)), 'error');
+                $this->setResult(JText::sprintf('WF_MANAGER_RENAME_'.strtoupper($result->type).'_ERROR', basename($source)), 'error');
                 if ($result->message) {
                     $this->setResult($result->message, 'error');
                 }
             } else {
-                $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Rename', array($destination)));
+                $this->setResult($this->fireEvent('on'.ucfirst($result->type).'Rename', array($destination)));
                 $this->setResult(basename($result->path), $result->type);
             }
         }
@@ -1301,7 +1299,7 @@ class WFFileBrowser extends JObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1325,7 +1323,7 @@ class WFFileBrowser extends JObject
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
-            JError::raiseError(403, 'INVALID PATH NAME');
+            throw new InvalidArgumentException('INVALID PATH NAME');
         }
 
         foreach ($items as $item) {
@@ -1337,13 +1335,13 @@ class WFFileBrowser extends JObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = dirname($item);
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = $item;
@@ -1367,10 +1365,10 @@ class WFFileBrowser extends JObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(JText::sprintf('WF_MANAGER_COPY_' . strtoupper($result->type) . '_ERROR', basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_COPY_'.strtoupper($result->type).'_ERROR', basename($item)), 'error');
                     }
                 } else {
-                    $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Copy', array($item)));
+                    $this->setResult($this->fireEvent('on'.ucfirst($result->type).'Copy', array($item)));
                     $path = $filesystem->toRelative($result->path);
                     $this->setResult($path, $result->type);
                 }
@@ -1392,7 +1390,7 @@ class WFFileBrowser extends JObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1416,7 +1414,7 @@ class WFFileBrowser extends JObject
 
         // check for extension in destination name
         if (WFUtility::validateFileName($destination) === false) {
-            JError::raiseError(403, 'INVALID PATH NAME');
+            throw new InvalidArgumentException('INVALID PATH NAME');
         }
 
         foreach ($items as $item) {
@@ -1427,11 +1425,11 @@ class WFFileBrowser extends JObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
-                    JError::raiseError(403, 'Access to this resource is restricted');
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
             }
 
@@ -1448,10 +1446,10 @@ class WFFileBrowser extends JObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(JText::sprintf('WF_MANAGER_MOVE_' . strtoupper($result->type) . '_ERROR', basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_MOVE_'.strtoupper($result->type).'_ERROR', basename($item)), 'error');
                     }
                 } else {
-                    $this->setResult($this->fireEvent('on' . ucfirst($result->type) . 'Move', array($item)));
+                    $this->setResult($this->fireEvent('on'.ucfirst($result->type).'Move', array($item)));
                     $path = $filesystem->toRelative($result->path);
                     $this->setResult($path, $result->type);
                 }
@@ -1472,7 +1470,7 @@ class WFFileBrowser extends JObject
     public function folderNew()
     {
         if ($this->checkFeature('create', 'folder') === false) {
-            JError::raiseError(403, 'Access to this resource is restricted');
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $args = func_get_args();
@@ -1495,7 +1493,7 @@ class WFFileBrowser extends JObject
 
         // check for extension in destination name
         if (WFUtility::validateFileName($name) === false) {
-            JError::raiseError(403, 'INVALID FOLDER NAME');
+            throw new InvalidArgumentException('INVALID FOLDER NAME');
         }
 
         $result = $filesystem->createFolder($dir, $name, $args);

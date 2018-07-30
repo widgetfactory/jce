@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
-<install version="2.0" type="plugin" plugin="source" core="1">
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
 	<name>WF_SOURCE_TITLE</name>
 	<version>@@version@@</version>
 	<creationDate>@@date@@</creationDate>
 	<author>Ryan Demmer</author>
 	<authorEmail>@@e-mail@@</authorEmail>
-	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
 	<copyright>@@copyright@@</copyright>
 	<license>@@licence@@</license>
 	<description>WF_SOURCE_DESC</description>
 	<languages></languages>
-</install>
+</extension>

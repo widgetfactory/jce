@@ -1,3 +1,7 @@
+@import url('ui.css');
+@import url('ui_silver.css');
+@import url('ui_black.css');
+
 .o2k7Skin .mceToolBar {border: 0 none;}
 
 .o2k7Skin .mceLayout, .o2k7Skin .mceLayout .mceToolbar {
@@ -11,7 +15,7 @@
 
 .o2k7Skin .mceToolBarItem .mceListBox, .o2k7Skin .mceToolBarItem .mceSplitButton {
 	border: 1px solid #ABC6DD;
-	height: 26px;
+	height: 28px;
 	box-sizing: border-box;
 	border-radius: 0;
 	position: relative;
@@ -28,6 +32,10 @@
 	width: 42px;
 	padding: 2px;
   border-left-width: 0;
+}
+
+.o2k7Skin .mceToolBarItem .mceSplitButton .mceIcon {
+	margin: 0;
 }
 
 .o2k7Skin .mceToolBarItemStart .mceSplitButton {
@@ -64,18 +72,12 @@
 }
 
 .o2k7Skin .mceToolBarItem .mceListBox:after, .o2k7Skin .mceToolBarItem .mceSplitButton:after {
-	content: "▼";
 	display: block;
-	font-size: 9px;
-	line-height: 24px;
-	color: #444;
-	width: 17px;
+	line-height: 26px;
 	position: absolute;
 	right: 0;
 	top: 0;
-	text-align: center;
 	border-left: 1px solid #ABC6DD;
-	box-sizing: border-box;
 }
 
 .o2k7Skin .mceLayout .mceStatusbar {
@@ -103,6 +105,13 @@
     border-color: #ABC6DD;
 }
 
+.o2k7Skin .mceToolBarItem .mceListBox:after,
+.o2k7Skin .mceToolBarItem .mceSplitButton:after {
+	/* #D2E1F4 #C1D4EE #C8DBED */
+	background: -ms-linear-gradient(top, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
+	background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
+}
+
 /* Silver */
 .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox, .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton {
 	border-color: #bbb;
@@ -110,6 +119,8 @@
 
 .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox:after, .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton:after {
 	border-color: #bbb;
+	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
 }
 
 .o2k7Skin.o2k7SkinSilver .mceLayout .mceStatusbar {
@@ -136,10 +147,6 @@
 
 .o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox:after, .o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton:after {
 	border-color: #535353;
-  background: -moz-linear-gradient(top, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
-  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(203, 207, 212, 1)), color-stop(100%, rgba(152, 159, 169, 1)));
-  background: -webkit-linear-gradient(top, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
-  background: -o-linear-gradient(top, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
   background: -ms-linear-gradient(top, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
   background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
@@ -161,3 +168,7 @@
     border-color: #535353;
 }
 .o2k7SkinBlack .mceToolBarItem.sortableRowItem.ui-sortable-highlight {border-color: #fff;}
+
+.mceEditor .mceToolbar .mceToolBarItem .mceListBox:before {
+	display: block;
+}

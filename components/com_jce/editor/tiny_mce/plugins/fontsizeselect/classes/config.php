@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,7 +12,7 @@ class WFFontsizeselectPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        $wf = WFEditor::getInstance();
+        $wf = WFApplication::getInstance();
 
         $settings['fontsizeselect_font_sizes'] = $wf->getParam('fontsizeselect.font_sizes', '8pt,10pt,12pt,14pt,18pt,24pt,36pt', '8pt,10pt,12pt,14pt,18pt,24pt,36pt');
     }

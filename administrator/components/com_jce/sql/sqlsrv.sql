@@ -13,7 +13,7 @@ CREATE TABLE [#__wf_profiles](
 	[plugins] [nvarchar](max) NOT NULL,
 	[published] [smallint] NOT NULL,
 	[ordering] [int] NOT NULL,
-	[checked_out] [smallint] NOT NULL,
+	[checked_out] [int] NOT NULL,
 	[checked_out_time] [datetime] NOT NULL,
 	[params] [nvarchar](max) NOT NULL,
  CONSTRAINT [PK_#__wf_profiles_id] PRIMARY KEY CLUSTERED 

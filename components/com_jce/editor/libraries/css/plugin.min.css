@@ -512,11 +512,17 @@ input[type="range"]::-ms-thumb {
     .uk-form-horizontal .uk-form-controls {
         margin-left: inherit;
     }
-}
 
-@media (max-width: 375px) {
-    .uk-form-row [class*="uk-width"] {
-        width: 100% !important;
+    .uk-form-horizontal .uk-form-label {
+        width: inherit;
+    }
+
+    .uk-form-horizontal .uk-form-controls {
+        margin-left: inherit;
+    }
+
+    .uk-form-horizontal .uk-form-label {
+        width: initial;
     }
 }
 

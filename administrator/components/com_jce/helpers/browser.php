@@ -1,29 +1,51 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
-abstract class WFBrowserHelper
+abstract class WfBrowserHelper
 {
-    public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
+    public static function getBrowserLink($element = null, $filter = '')
     {
-        require_once dirname(dirname(__FILE__)) . '/models/model.php';
+        $app = JFactory::getApplication();
+        
+        // set $url as empty string
+        $url = '';
 
-        $model = new WFModel();
+        // load editor class
+        require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
-        return $model->getBrowserLink($element, $mediatype, $callback);
+        // get editor instance
+        $wf = WFApplication::getInstance();
+
+        // check the current user is in a profile
+        if ($wf->getProfile('browser')) {
+            $token = JFactory::getSession()->getFormToken();
+
+            $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
+
+            if ($element) {
+                $url .= '&element='.$element;
+            }
+
+            if ($filter) {
+                $url .= '&filter='.$filter;
+            }
+        }
+
+        return $url;
     }
 
-    public static function getMediaFieldLink($element = null, $mediatype = 'images', $callback = '')
+    public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
     {
-        $link = self::getBrowserLink($element, $mediatype, $callback);
+        $link = self::getBrowserLink($element, $filter, $callback);
 
         return $link;
     }

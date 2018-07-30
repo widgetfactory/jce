@@ -66,5 +66,5 @@
 		<param name="custom_config" type="textarea" rows="5" cols="50" default="" spellcheck="false" label="WF_PARAM_CUSTOM_CONFIG" description="WF_PARAM_CUSTOM_CONFIG_DESC" />
 		<param name="callback_file" type="text" default="" size="50" label="WF_PARAM_CALLBACK" description="WF_PARAM_CALLBACK_DESC" />
 	</params>
-	<!--params group="other"><param name="help_url" type="text" size="80" default="http://www.joomlacontenteditor.net/index.php?option=com_content&amp;view=article" label="WF_PARAM_HELP_URL" description="WF_PARAM_HELP_URL_DESC" /></params-->
+	<!--params group="other"><param name="help_url" type="text" size="80" default="https://www.joomlacontenteditor.net/index.php?option=com_content&amp;view=article" label="WF_PARAM_HELP_URL" description="WF_PARAM_HELP_URL_DESC" /></params-->
 </config>

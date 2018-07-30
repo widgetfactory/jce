@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -54,7 +54,7 @@ class WFElementPopups extends WFElement
             }
 
             $options = array();
-            $options[] = JHTML::_('select.option', '', WFText::_('WF_OPTION_NOT_SET'));
+            $options[] = JHTML::_('select.option', '', JText::_('WF_OPTION_NOT_SET'));
 
             foreach ($files as $file) {
                 $filename = basename($file, '.xml');
@@ -63,12 +63,12 @@ class WFElementPopups extends WFElement
                 $filename = array_pop($parts);
 
                 // legacy
-                $language->load('com_jce_popups_'.$filename, JPATH_SITE);
+                $language->load('WF_popups_'.$filename, JPATH_SITE);
                 // new
                 $language->load('plg_jce_popups_'.$filename, JPATH_SITE);
 
                 $xml = WFXMLHelper::parseInstallManifest($file);
-                $options[] = JHTML::_('select.option', $filename, WFText::_($xml['name']));
+                $options[] = JHTML::_('select.option', $filename, JText::_($xml['name']));
             }
 
             return JHTML::_('select.genericlist', $options, ''.$control_name.'['.$name.']', 'class="inputbox plugins-default-select"', 'value', 'text', $value);

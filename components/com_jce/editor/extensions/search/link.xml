@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<install version="2.0" type="extension" extension="link" folder="search" core="1">
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
     <name>WF_LINK_SEARCH_TITLE</name>
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
     <authorEmail>@@e-mail@@</authorEmail>
-    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
     <description>WF_LINK_SEARCH_DESC</description>
@@ -13,22 +13,24 @@
         <filename>link.php</filename>
         <folder>link</folder>
     </files>
-    <params group="link">
-        <!--param name="enable" type="list" default="1" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
+    <fields name="link">
+        <fieldset name="search.link">
+        <!--param name="enable" type="yesno" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
         </param-->
-        <param name="plugins" type="linksearch" default="" label="WF_PARAM_LINK_SEARCH_PLUGINS" description="WF_PARAM_LINK_SEARCH_PLUGINS_DESC" parent="enable[1]" />
+        <field name="plugins" type="plugins" useaccess="true" multiple="true" folder="search" label="WF_PARAM_LINK_SEARCH_PLUGINS" description="WF_PARAM_LINK_SEARCH_PLUGINS_DESC" default="categories,contacts,content,newsfeeds,weblinks" />
         <!--param name="sef_url" type="radio" default="0" label="WF_LINK_SEARCH_SEF_URL" description="WF_LINK_SEARCH_SEF_URL_DESC" parent="enable[1]">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
         </param-->
-        <param name="remove_alias" type="radio" default="0" label="WF_LINK_SEARCH_REMOVE_ALIAS" description="WF_LINK_SEARCH_REMOVE_ALIAS_DESC" parent="enable[1]">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
-        </param>
-    </params>
+        <field name="remove_alias" type="yesno" default="0" label="WF_LINK_SEARCH_REMOVE_ALIAS" description="WF_LINK_SEARCH_REMOVE_ALIAS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+</fields>
     <plugins>link</plugins>
     <media></media>
     <languages></languages>
-</install>
+</extension>

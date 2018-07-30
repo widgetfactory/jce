@@ -817,8 +817,8 @@
             return {
                 longname: 'Drag & Drop and Placeholder Upload',
                 author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net',
+                authorurl: 'https://www.joomlacontenteditor.net',
+                infourl: 'https://www.joomlacontenteditor.net',
                 version: '@@version@@'
             };
         }

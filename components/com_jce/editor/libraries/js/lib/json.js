@@ -54,9 +54,7 @@
             callback = callback || $.noop;
 
             // additional POST data to add (will not be parsed by PHP json parser)
-            var args = {
-                'format': 'json'
-            };
+            var args = {};
 
             // get form input data (including token)
             var fields = $(':input', 'form').serializeArray();
@@ -94,6 +92,9 @@
 
             // strip token
             url = url.replace(/&wf([a-z0-9]+)=1/, '');
+
+            // replace task
+            url = url.replace(/task=plugin.display/, 'task=plugin.rpc');
 
             function showError(e) {
                 var txt = "";

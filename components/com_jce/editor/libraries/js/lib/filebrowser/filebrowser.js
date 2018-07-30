@@ -504,7 +504,7 @@
         _updateList: function () {
             var self = this;
             // get visible area
-            var area = $('#browser-list').height() + $('#browser-list').scrollTop();
+            var top = $('#browser-list').scrollTop(), area = $('#browser-list').height() + top;
 
             $('.file.jpg, .file.jpeg, .file.png, .file.gif, .file.bmp', '#item-list').not('[data-width]').each(function () {
                 // get item position
@@ -1191,15 +1191,20 @@
          * Load the browser list
          */
         load: function (item) {
+            var src = "";
+            
             // add returned items
             if (item) {
                 this._addReturnedItem(item);
+                
+                // pass string value to src
+                src = item.name || item;
             }
 
             // show loading message
             this._setLoader();
 
-            this._getList(item);
+            this._getList(src);
         },
         /**
          * Show an error message
@@ -2500,8 +2505,11 @@
                     deferred.resolve(props);
                 };
 
-                // prevent caching
-                var src = /:\/\//.test(file.preview) ? file.preview : Wf.String.encodeURI(file.preview) + '?' + new Date().getTime();
+                var src = Wf.String.encodeURI(file.preview) + '?' + new Date().getTime();
+
+                if (/:\/\//.test(file.preview) || file.preview.indexOf('?') !== -1) {
+                    src = file.preview;
+                }
 
                 image.src = src;
 
@@ -2589,12 +2597,12 @@
             }
 
             // check if item websafe - show warning
-            if ($(item).hasClass('notsafe')) {
+            /*if ($(item).hasClass('notsafe')) {
                 comments +=
                     '<li class="comments ' + type + ' notsafe">' +
                     '<span class="hastip" title="' + self._translate('bad_name_desc', 'Bad file or folder name') + '">' + self._translate('bad_name', 'Bad file or folder name') + '</span>' +
                     '</li>';
-            }
+            }*/
 
             // process triggered buttons
             if ($(item).data('trigger')) {

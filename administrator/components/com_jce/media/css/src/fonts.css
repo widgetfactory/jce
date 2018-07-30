@@ -1,8 +1,5 @@
 .ui-jce .fontlist {
     position: relative;
-}
-
-.ui-jce .fontlist ul {
     display: block;
     list-style: none outside none;
     margin: 0 !important;
@@ -10,66 +7,56 @@
     padding: 0;
 }
 
-.ui-jce .fontlist li input[type="checkbox"] {
-  margin: 5px 10px;
+.ui-jce .fontlist input[type="checkbox"] {
+    margin: 5px 10px;
 }
 
-.ui-jce .fontlist a.close {
-    line-height: 1.4em;
-    vertical-align: middle;
-    margin-right: 20px;
-}
-
-.ui-jce .fontlist a.plus {
-    background: none;
-    border: 1px dashed #000000;
-    display: block;
-    float: left;
-    margin: 5px 0;
+.ui-jce .fontlist .font-item,
+.ui-jce .fontlist .font-item-plus {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 2px 0;
     max-width: 400px;
-    padding: 5px;
     position: relative;
+    background-color: #fff;
     width: 100%;
 }
 
-.ui-jce .fontlist a.plus span {
-    width : 100%;
-    max-width : 380px;
-    display: inline-block;
-}
-
-.ui-jce .fontlist a.plus span + span {
-    width : 20px;
-    text-align : center;
-}
-
-.ui-jce .fontlist ul li,
-.ui-jce .fontlist ul li.fontlist-highlight {
-    border: 1px solid #CCCCCC;
-    padding: 5px;
-    margin : 2px 0;
-    max-width : 400px;
-    position: relative;
-    background-color: #fff;
-}
-
-.ui-jce .fontlist ul li.fontlist-highlight {
+.ui-jce .fontlist .font-item-plus {
     border-style: dashed;
-    min-height : 30px;
-    margin : 5px 0;
-    background-color: #f5f5f5;
 }
 
-.ui-jce div.fontlist ul li {
+.ui-jce .fontlist .font-item-plus span {
+    display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    line-height: 2rem;
+}
+
+.ui-jce .fontlist .font-item-plus .icon {
+    margin-right: 10px;
+    line-height: 2rem;
+    width: 28px;
+    height: 28px;
+}
+
+.ui-jce .fontlist .font-item-highlight,
+.ui-jce .fontlist .ui-sortable-helper {
+    border: 1px dashed #ccc;
+    padding: 5px 10px;
+}
+
+.ui-jce .fontlist>div,
+.ui-jce .fontlist label {
     cursor: move;
 }
 
-.ui-jce div.fontlist ul li.font-item input {
-    width : 100px;
+.ui-jce .fontlist .font-item input[type="text"] {
     margin: 0 2px 0 0;
-    float : none;
+    float: none;
 }
 
-.ui-jce div.fontlist ul li.font-item input + input {
-    width : 230px;
+.ui-jce .fontlist .font-item[title="Webdings"] label,
+.ui-jce .fontlist .font-item[title="Wingdings"] label {
+    font-family: inherit !important;
 }

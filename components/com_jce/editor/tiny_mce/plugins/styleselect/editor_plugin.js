@@ -67,6 +67,7 @@
             ctrl = ctrlMan.createListBox('styleselect', {
                 title: 'advanced.style_select',
                 filter: true,
+                min_height: 200,
                 max_height: 300,
                 onselect: function(name) {
                     var matches, formatNames = [],

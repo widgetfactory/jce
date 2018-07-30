@@ -291,7 +291,11 @@
                 if (this.options.widget) {
                     this.widget = $(this.options.widget);
                 } else {
-                    this.widget = $('<span class="colorpicker_widget"></span>').insertAfter(this.element);
+                    this.widget = $(this.element).parent().find('.colorpicker_widget');
+
+                    if (!this.widget.length) {
+                        this.widget = $('<span class="colorpicker_widget"></span>').insertAfter(this.element);
+                    }
                 }
 
                 $(this.widget).css('background-color', $(this.element).val() || '#000000').tips({

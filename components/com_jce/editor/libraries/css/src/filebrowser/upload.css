@@ -15,7 +15,7 @@ div#upload-body {
 
 div#upload-queue-block {
 	clear: both;
-	height: 240px;
+	height: 250px;
 	overflow: auto;
 	box-sizing: border-box;
 	padding: 5px;

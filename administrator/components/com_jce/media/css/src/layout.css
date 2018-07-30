@@ -1,6 +1,6 @@
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2013 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,84 +12,94 @@ html {
     overflow-y: visible !important;
 }
 
-ul#profileLayoutTable>li {
-    margin-bottom: 10px;
-}
-
-#profileLayoutTable .sortableList {
+.editor-layout {
     position: relative;
+    margin: 20px 60px 50px 0;
 }
 
-#profileLayoutTable .profileLayoutContainer {
-    display: table;
-    position: relative;
-    margin-top: 35px;
-    margin-left: 0 !important;
-    margin-right: 60px;
+.com_jce .mce-tinymce {
+    border-width: 1px;
+    box-sizing: content-box;
 }
 
-#profileLayoutTable .profileLayoutContainerEditor p {
-    line-height: 16px;
-    margin: 2px 5px;
-    white-space: normal;
+.mce-tinymce .mce-statusbar {
+    border-width: 1px;
 }
 
-#profileLayoutTable .profileLayoutContainerStatusBar {
-    margin: 0 20px 1px 0;
+.mce-tinymce .mce-edit-area {
+    border-width: 1px 1px 0px;
 }
 
-#profileLayoutTable .profileLayoutContainerStatusBar .mceStatusbar {
-    padding: 0 3px 0 0;
+.mce-tinymce .mce-panel.mce-edit-area {
+    background: #fff;
 }
 
-#profileLayoutTable .profileLayoutContainerStatusBar .mceStatusbar>div {
-    padding: 0 2px;
-    float: left;
+.com_jce .mce-toolbar .mce-btn,
+.com_jce .mce-toolbar .mce-btn button {
+    cursor: move;
+}
+
+.com_jce .mce-btn {
+    display: inline-block;
+    font-size: 0;
+}
+
+.mce-btn-group:empty {
+    min-width: 30px;
+    min-height: 30px;
+    display: none;
+}
+
+.mce-btn-group.visible:empty {
     display: inline-block;
 }
 
-#profileLayoutTable .profileLayoutContainerToolbar {
-    width: calc(100% - 260px);
-    /* label width + right margin */
+.mce-toolbar.ui-sortable-helper {
+    background-color: #e6e6e6;
 }
 
-#profileLayoutTable .profileLayoutContainerToolbar+.profileLayoutContainerEditor {
-    margin: 0 0 1px 0;
+.editor-layout+div.mce-tinymce {
+    min-width: 600px;
+    display: inline-block;
 }
 
-#profileLayoutTable .profileLayoutContainerStatusBar .mcePathLabel {
-    padding: 3px 2px 2px 0;
+.mce-edit-area>div {
+    min-height: 120px;
 }
 
-#profileLayoutTable .profileLayoutContainerStatusBar .mceResize {
-    cursor: default;
-    float: right;
-    margin: 0 -3px 0 0;
+.mce-edit-area>div>p {
+    white-space: pre-wrap;
+    margin: 5px;
+}
+
+#profileLayoutTable {
+    position: relative;
 }
 
 #editor_toggle {
-    padding: 5px;
+    padding: 0 5px;
     line-height: 20px;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    user-select: none;
     cursor: default;
+    display: block;
 }
 
-.widthMarker {
+.com_jce .widthMarker {
     border: 1px dashed #999;
     border-bottom-width: 0;
     display: block;
     left: 0;
-    padding: 40px 0 0 0;
+    height: 24px;
     position: absolute;
     text-align: center;
-    top: -24px;
-    box-sizing: border-box;
-    width: 100%;
+    top: -28px;
+    box-sizing: content-box;
 }
 
-.widthMarker span {
+.com_jce .widthMarker span {
     background: none repeat scroll 0 0 #FFFFFF;
     display: inline-block;
     left: 50%;
@@ -101,44 +111,20 @@ ul#profileLayoutTable>li {
     text-align: center;
 }
 
-.sortableList.group {
-    margin: 20px 0px 0px 0px;
+.ui-sortable-sorting .mce-btn {
+    background-color: #e6e6e6;
 }
 
-.sortableList .sortableListItem {
-    position: relative;
-    width: 100%;
+.com_jce .sortable-row-highlight,
+.com_jce .sortable-btn-highlight {
+    border: 1px dashed #9FBBDD !important;
 }
 
-.ui-jce.ie8 .sortableList .sortableListItem .sortableRow .sortableRowItem {
-    float: left;
+.com_jce .sortable-row-highlight {
+    margin: 0 0 2px 0;
 }
 
-.sortableList .sortableListItem .sortableRow .sortableRowItem img {
-    border: 0;
-    padding: 0;
-    margin: 0
-}
-
-
-/* Sortable Highlight */
-
-.sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight,
-.sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
-    border: 1px dashed #9FBBDD;
-    background: none;
-    box-sizing: border-box;
-}
-
-.sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
-    height: 30px;
-}
-
-.sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
-    height: 26px;
-}
-
-.mceToolbar .sortableRowHandle {
+.com_jce .sortable-handle {
     height: 32px;
     border: 1px solid #ddd;
     cursor: move;
@@ -151,76 +137,136 @@ ul#profileLayoutTable>li {
     right: -20px;
 }
 
-.mceToolbar .sortableRowHandle span {
-    margin: 9px 0;
-    background: none;
-    padding: 0 1px;
-    vertical-align: middle;
-}
-
-.sortableContainerHandle {
-    border: 1px solid #CCC;
-    cursor: move;
-    background-color: #F0F0EE;
+.com_jce .sortable-handle i {
+    height: 28px;
+    line-height: 28px;
     text-align: center;
-    margin: 0 0 0 -20px;
-    position: relative;
-    display: block;
-    float: left;
-    height: 20px;
+    vertical-align: middle;
+    margin: 0;
 }
 
-.sortableContainerHandle .ui-icon {
-    margin: 2px 0 0;
-}
-
-.sortableHandle img {
-    margin-top: 5px;
-}
-
-.profileLayoutContainer .sortableOption {
+.com_jce .sortable-option {
+    margin: 0;
     width: 20px;
-    height: 30px;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: -44px;
+    opacity: 0;
     cursor: pointer;
+    position: absolute;
+    top: 4px;
+    right: -60px;
+    height: 28px;
 }
 
-html[dir="rtl"] .profileLayoutContainer .sortableOption {
-    left: -20px;
+.com_jce .sortable-option i {
+    line-height: 28px;
+}
+
+.com_jce .sortable-option.sortable-option-hover {
+    opacity: 0.8;
+}
+
+.editor-button-pool {
+    max-width: 100%;
+    margin-right: 60px;
+}
+
+.editor-button-pool .sortable-option {
+    display: none;
+}
+
+html[dir="rtl"] .com_jce .sortable-handle {
+    left: -30px;
     right: auto;
 }
 
-.profileLayoutContainer .sortableOption span {
-    margin: 9px 0;
-    vertical-align: middle;
-    display: none;
+html[dir="rtl"] .com_jce .sortable-option {
+    left: -60px;
+    right: auto;
+}
+
+html[dir="rtl"] .widthMarker {
+    left: auto;
+}
+
+html[dir="rtl"] .form-horizontal .control-label {
+    float: right;
+}
+
+.mce-container .mce-btn .mce-caret {
+    margin: -7px;
+}
+
+.ui-sortable>.mce-toolbar {
+    position: relative;
+}
+
+.mce-container .mce-toolbar {
+    font-size: 0;
+    line-height: 1;
+    height: auto;
+    min-height: 28px;
+    position: relative;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 1px;
+    margin-bottom: 2px;
+}
+
+.mce-container .mce-toolbar  > div {
+    font-size: 0;
+    line-height: 1;
+}
+
+.mce-tinymce.mce-panel,
+.mce-toolbar-grp.mce-panel {
+    border: 0 none;
     background: none;
-    padding: 0 1px;
+    padding: 0;
 }
 
-.profileLayoutContainer .sortableOption:hover span {
-    display: inline-block;
+.mce-container .mce-flow-layout-item {
+    margin: 0;
 }
 
-.profileLayoutContainer .sortableOption:hover span:first-child {
-    display: none;
+.mce-listbox, .mce-splitbtn {
+    border: 1px solid #ddd;
+    height: 26px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    position: relative;
+    cursor: move;
 }
 
-.profileLayoutContainerCurrent .sortableOption span+span {
-    display: none;
+.mce-listbox[data-name="styleselect"] {
+    background: #fff;
 }
 
-.profileLayoutContainerCurrent .sortableOption:hover span:first-child {
-    display: inline-block;
+.mce-toolbar-grp .mce-btn-has-text .mce-txt {
+    margin-right: 10px;
 }
 
-.profileLayoutContainerCurrent .sortableOption:hover span+span {
-    display: none;
+.mce-toolbar .mce-container .mce-btn .mce-caret {
+    margin: -2px 0;
 }
 
-.sortableRemove.hidden {
-    visibility: hidden;
+.editor-layout .mceToolbarRow:first-child > div:first-child {
+	margin-left: -2px;
 }
+
+.sortable-handle i, .sortable-option i {font-size: initial}
+
+.editor-layout .sortable-option i:last-child {display: none;}
+
+/*.defaultSkin .mceLayout .mceToolbarRow:after {
+    content: "::";
+    display: block;
+    width: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -10px;
+    font-size: 1.2rem;
+    color: #aaa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}*/

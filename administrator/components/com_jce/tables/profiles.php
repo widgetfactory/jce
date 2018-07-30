@@ -1,172 +1,84 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2013 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('JPATH_BASE') or die('RESTRICTED');
+defined('JPATH_BASE') or die;
 
-require_once dirname(dirname(__FILE__)).'/helpers/extension.php';
-require_once dirname(dirname(__FILE__)).'/helpers/encrypt.php';
-
-class WFTableProfiles extends JTable
+class WfTableProfiles extends JTable
 {
-    /*
-     * Primary Key
-     *
-     *  @var int
-     */
-    public $id = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $name = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $description = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $components = null;
-
-    /*
-     *
-     *
-     * @var int
-     */
-    public $area = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $device = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $users = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $types = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $rows = null;
-
-    /*
-     *
-     *
-     * @var varchar
-     */
-    public $plugins = null;
-
-    /*
-     *
-     *
-     * @var tinyint
-     */
-    public $published = 0;
-
-    /*
-     *
-     *
-     * @var tinyint
-     */
-    public $ordering = 1;
-
-    /*
-     *
-     *
-     * @var int unsigned
-     */
-    public $checked_out = 0;
-
-    /*
-     *
-     *
-     * @var datetime
-     */
-    public $checked_out_time = '';
-
-    /*
-     *
-     *
-     * @var text
-     */
-    public $params = null;
-
     public function __construct(&$db)
     {
         parent::__construct('#__wf_profiles', 'id', $db);
     }
 
-    /**
-     * Overridden JTable::load to decrypt parameters.
-     *
-     * @param int  $id    An optional profile id
-     * @param bool $reset False if row not found or on error
-     *                    (internal error state set in that case)
-     *
-     * @return bool True on success, false on failure
-     *
-     * @since   2.4
-     */
+    public function bind($src, $ignore = array())
+    {
+        $data = array();
+
+        foreach ($src as $key => $value) {
+            $data[$key] = $value;
+        }
+
+        if (!empty($data['config'])) {
+            $json = array();
+
+            $config = $data['config'];
+
+            // get existing parameters and decode to array
+            $params = (array) json_decode($this->params, true);
+
+            if (empty($data['plugins'])) {
+                $data['plugins'] = $this->plugins;
+            }
+
+            // get plugins
+            $items = explode(',', $data['plugins']);
+
+            // add editor as param key
+            array_unshift($items, 'editor');
+
+            // data for editor and plugins
+            foreach ($items as $item) {
+                // add config data
+                if (array_key_exists($item, $config)) {
+                    $json[$item] = filter_var_array($config[$item], FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+                }
+            }
+
+            $params = WFUtility::array_merge_recursive_distinct($params, $json);
+
+            // combine with stored data and encode as json string
+            $data['params'] = json_encode($params, JSON_UNESCAPED_SLASHES);
+        }
+
+        return parent::bind($data, $ignore);
+    }
+
     public function load($id = null, $reset = true)
     {
         $return = parent::load($id, $reset);
 
-        if ($return !== false && !empty($this->params)) {
-            $this->params = WFEncryptHelper::decrypt($this->params);
+        if ($return !== false) {
+            // decrypt address
+            if (!empty($this->params)) {
+                //$this->params = WFEncryptHelper::decrypt($this->params);
+            }
         }
 
         return $return;
     }
 
-    /**
-     * Overridden JTable::store to encrypt parameters.
-     *
-     * @param bool $updateNulls True to update fields even if they are null
-     *
-     * @return bool True on success
-     *
-     * @since   2.4
-     */
     public function store($updateNulls = false)
     {
-        if ($this->id && $this->params) {
-            $component = WFExtensionHelper::getComponent();
-
-            // get params definitions
-            $params = new WFParameter($component->params, '', 'preferences');
-
-            if ($params->get('secureparams', 0)) {
-                $this->params = WFEncryptHelper::encrypt($this->params);
-            }
+        // encrypt address
+        if (!empty($this->params)) {
+            //$this->params = WFEncryptHelper::encrypt($this->params);
         }
 
         return parent::store($updateNulls);

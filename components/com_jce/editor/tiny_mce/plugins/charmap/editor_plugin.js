@@ -17,7 +17,7 @@
 			// Register commands
 			ed.addCommand('mceCharacterMap', function(v) {
 				ed.windowManager.open({
-					url: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=charmap',
+					url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=charmap',
 					width   : 640 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
 					height  : 300 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
 					close_previous: false,

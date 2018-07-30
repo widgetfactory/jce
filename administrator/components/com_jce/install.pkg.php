@@ -2,7 +2,7 @@
 
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -58,25 +58,17 @@ class pkg_jceInstallerScript
             }
         }
 
-        $id = $plugin->find(array('type' => 'plugin', 'folder' => 'fields', 'element' => 'mediajce'));
-
-        if ($id) {
-            $plugin->load($id);
-            $plugin->enabled = 1;
-            $plugin->store();
-        }
-
         // get installer reference
         $installer = method_exists($parent, 'getParent') ? $parent->getParent() : $parent->parent;
 
         require_once JPATH_ADMINISTRATOR.'/components/com_jce/install.php';
 
-        $state = WFInstall::install($installer);
+        $state = WfInstall::install($installer);
 
         if ($state) {
             if ((string) $installer->manifest->variant !== 'pro') {
                 $message = $installer->get('message');
-                $message .= file_get_contents(JPATH_ADMINISTRATOR.'/components/com_jce/views/cpanel/tmpl/default_pro_footer.php');
+                $message .= file_get_contents(JPATH_ADMINISTRATOR.'/components/com_jce/views/cpanel/tmpl/default_pro.php');
                 $installer->set('message', $message);
             }
         }
@@ -95,7 +87,7 @@ class pkg_jceInstallerScript
         // profiles table is empty, remove...
         if ($db->loadResult() === 0) {
             $db->dropTable('#__wf_profiles', true);
-            $db->query();
+            $db->execute();
         }
     }
 
@@ -116,8 +108,9 @@ class pkg_jceInstallerScript
         $version = 0;
 
         if (is_file($manifest)) {
-            $data = JApplicationHelper::parseXMLInstallFile($manifest);
-            $version = isset($data['version']) ? (string) $data['version'] : 0;
+            if ($xml = simplexml_load_file($manifest)) {
+                $version = (string) $xml->version;
+            }
         }
 
         $installer->set('current_version', $version);
@@ -125,36 +118,19 @@ class pkg_jceInstallerScript
 
     public function postflight($type, $parent)
     {
+        $app = JFactory::getApplication();
         $extension = JTable::getInstance('extension');
-
-        // remove "jcefilebrowser" quickicon
-        $id = $extension->find(array('type' => 'plugin', 'folder' => 'quickicon', 'element' => 'jcefilebrowser'));
-
-        if ($id) {
-            $installer = new JInstaller();
-            $installer->uninstall('plugin', $id);
-        }
 
         $plugin = JPluginHelper::getPlugin('extension', 'joomla');
 
+        $installer = $parent->getParent();
+
         if ($plugin) {
-            $version = new JVersion();
-
-            if ($version->isCompatible('3.0')) {
-                $dispatcher = JEventDispatcher::getInstance();
-                $installer = $parent;
-            } else {
-                $dispatcher = JDispatcher::getInstance();
-                $installer = $parent->getParent();
-            }
-
-            $plg_extension_joomla = new PlgExtensionJoomla($dispatcher, (array) $plugin);
-
             // find and remove package
             $component_id = $extension->find(array('type' => 'component', 'element' => 'com_jce'));
 
             if ($component_id) {
-                $plg_extension_joomla->onExtensionAfterUninstall($installer, $component_id, true);
+                $app->triggerEvent('onExtensionAfterUninstall', array($installer, $component_id, true));
             }
 
             // find and remove package
@@ -162,9 +138,9 @@ class pkg_jceInstallerScript
 
             if ($package_id) {
                 // remove
-                $plg_extension_joomla->onExtensionAfterUninstall($installer, $package_id, true);
+                $app->triggerEvent('onExtensionAfterUninstall', array($installer, $package_id, true));
                 // install
-                $plg_extension_joomla->onExtensionAfterInstall($installer, $package_id);
+                $app->triggerEvent('onExtensionAfterInstall', array($installer, $package_id));
             }
         }
     }

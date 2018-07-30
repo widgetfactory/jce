@@ -1,68 +1,41 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @license   	GNU/GPL 3 - http://www.gnu.org/copyleft/gpl.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
-wfimport('admin.classes.controller');
-wfimport('admin.classes.error');
-wfimport('admin.helpers.xml');
-wfimport('admin.helpers.extension');
+require_once JPATH_COMPONENT_SITE.'/editor/libraries/classes/application.php';
 
-class WFControllerEditor extends WFControllerBase
+class JceControllerEditor extends JControllerLegacy
 {
     public function execute($task)
     {
-        // Load language
-        $language = JFactory::getLanguage();
-        $language->load('com_jce', JPATH_ADMINISTRATOR);
+        $app = WFApplication::getInstance();
 
-        $plugin = JRequest::getCmd('plugin');
+        // check for session token
+        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
 
-        if ($plugin) {
-            if (strpos($plugin, '.') !== false) {
-                $parts = explode('.', $plugin);
-                $plugin = $parts[0];
-            }
+        // check a valid profile exists
+        $app->getProfile() or jexit();
 
-            $path = WF_EDITOR_PLUGINS.'/'.$plugin;
+        $editor = new WFEditor();
 
-            if (strpos($plugin, 'editor-') !== false) {
-                $path = JPATH_PLUGINS.'/jce/'.$plugin;
-            }
-
-            if (is_dir($path) && file_exists($path.'/'.$plugin.'.php')) {
-                include_once $path.'/'.$plugin.'.php';
-            } else {
-                throw new InvalidArgumentException('File "'.$plugin.'" not found!');
-            }
-        } else {
-            if ($task == 'pack' || $task == 'loadlanguages' || $task == 'compileless') {
-                wfimport('admin.models.editor');
-                $model = new WFModelEditor();
-
-                switch ($task) {
-                    case 'loadlanguages':
-                        $model->loadLanguages();
-                        break;
-                    case 'pack':
-                        $model->pack();
-                        break;
-                    case 'compileless':
-                        $model->compileLess();
-                        break;
-                }
-
-                exit();
-            }
+        if (strpos($task, '.') !== false) {
+            list($name, $task) = explode('.', $task);
         }
 
-        throw new InvalidArgumentException('Invalid URL parameters');
+        if (method_exists($editor, $task)) {
+            $editor->$task();
+
+            var_dump($task);
+        }
+
+        jexit();
     }
 }

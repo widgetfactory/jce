@@ -1,19 +1,16 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2013 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
-// load base model
-require_once dirname(__FILE__).'/model.php';
-
-class WFModelHelp extends WFModel
+class JceModelHelp extends JModelLegacy
 {
     public function getLanguage()
     {
@@ -29,12 +26,12 @@ class WFModelHelp extends WFModel
 
         if (file_exists($file)) {
             // load xml
-            $xml = WFXMLElement::load($file);
+            $xml = simplexml_load_file($file);
 
             if ($xml) {
                 foreach ($xml->help->children() as $topic) {
                     $subtopics = $topic->subtopic;
-                    $class = count($subtopics) ? ' class="subtopics"' : '';
+                    $class = count($subtopics) ? 'subtopics' : '';
 
                     $key = (string) $topic->attributes()->key;
                     $title = (string) $topic->attributes()->title;
@@ -42,38 +39,41 @@ class WFModelHelp extends WFModel
 
                     // if file attribute load file
                     if ($file) {
-                        $result .= $this->getTopics(WF_EDITOR.'/'.$file);
+                        $result .= $this->getTopics(JPATH_COMPONENT_SITE . '/editor/' . $file);
                     } else {
-                        $result .= '<dd'.$class.' id="'.$key.'"><i class="icon-copy"></i><i class="icon-file"></i>&nbsp;'.trim(WFText::_($title)).'</dd>';
+                        $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link">' . trim(JText::_($title)) . '</a>';
                     }
 
                     if (count($subtopics)) {
-                        $result .= '<dl class="hidden">';
+                        $result .= '<ul class="nav nav-list hidden">';
                         foreach ($subtopics as $subtopic) {
                             $sub_subtopics = $subtopic->subtopic;
 
                             // if a file is set load it as sub-subtopics
                             if ($file = (string) $subtopic->attributes()->file) {
-                                $result .= '<dd class="subtopics"><i class="icon-copy"></i>&nbsp;'.trim(WFText::_((string) $subtopic->attributes()->title)).'</dd>';
-                                $result .= '<dl class="hidden">';
-                                $result .= $this->getTopics(WF_EDITOR.'/'.$file);
-                                $result .= '</dl>';
+                                $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link">' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<ul class="nav nav-list hidden">';
+                                $result .= $this->getTopics(JPATH_COMPONENT_SITE . '/editor/' . $file);
+                                $result .= '</ul>';
+                                $result .= '</li>';
                             } else {
-                                $id = $subtopic->attributes()->key ? ' id="'.(string) $subtopic->attributes()->key.'"' : '';
+                                $id = $subtopic->attributes()->key ? ' id="' . (string) $subtopic->attributes()->key . '"' : '';
 
-                                $class = count($sub_subtopics) ? ' class="subtopics"' : '';
-                                $result .= '<dd'.$class.$id.'><i class="icon-copy"></i><i class="icon-file"></i>&nbsp;'.trim(WFText::_((string) $subtopic->attributes()->title)).'</dd>';
+                                $class = count($sub_subtopics) ? ' class="nav-item subtopics"' : '';
+                                $result .= '<li' . $class . $id . '><a href="#" class="nav-link">' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
 
                                 if (count($sub_subtopics)) {
-                                    $result .= '<dl class="hidden">';
+                                    $result .= '<ul class="nav nav-list hidden">';
                                     foreach ($sub_subtopics as $sub_subtopic) {
-                                        $result .= '<dd id="'.(string) $sub_subtopic->attributes()->key.'"><i class="icon-copy"></i><i class="icon-file"></i>&nbsp;'.trim(WFText::_((string) $sub_subtopic->attributes()->title)).'</dd>';
+                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '" class="nav-item"><a href="#" class="nav-link">' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
                                     }
-                                    $result .= '</dl>';
+                                    $result .= '</ul>';
                                 }
+
+                                $result .= '</li>';
                             }
                         }
-                        $result .= '</dl>';
+                        $result .= '</ul>';
                     }
                 }
             }
@@ -91,35 +91,47 @@ class WFModelHelp extends WFModel
      */
     public function renderTopics()
     {
-        $section = JRequest::getWord('section', 'admin');
-        $category = JRequest::getWord('category', 'cpanel');
+        $app = JFactory::getApplication();
+
+        $section = $app->input->getWord('section', 'admin');
+        $category = $app->input->getWord('category', 'cpanel');
 
         $document = JFactory::getDocument();
         $language = JFactory::getLanguage();
 
-        $document->setTitle(WFText::_('WF_HELP').' : '.WFText::_('WF_'.strtoupper($category).'_TITLE'));
+        $language->load('com_jce', JPATH_SITE);
+        $language->load('WF_pro', JPATH_SITE);
 
-        $file = WF_EDITOR_PLUGINS.'/'.$category.'/'.$category.'.xml';
+        $document->setTitle(JText::_('WF_HELP') . ' : ' . JText::_('WF_' . strtoupper($category) . '_TITLE'));
 
         switch ($section) {
             case 'admin':
-                $file = JPATH_ADMINISTRATOR.'/components/com_jce/models/'.$category.'.xml';
+                $file = __DIR__ . '/' . $category . '.xml';
                 break;
             case 'editor':
-                $file = WF_EDITOR_PLUGINS.'/'.$category.'/'.$category.'.xml';
+                $file = JPATH_COMPONENT_SITE . '/editor/tiny_mce/plugins/' . $category . '/' . $category . '.xml';
+
+                // check for installed plugin
+                $plugin = JPluginHelper::getPlugin('jce', 'editor-' . $category);
+
+                if ($plugin) {
+                    $file = JPATH_PLUGINS . '/jce/editor-' . $category . '/editor-' . $category . '.xml';
+                    $language->load('plg_jce_editor_' . $category, JPATH_ADMINISTRATOR);
+                }
+
                 if (!is_file($file)) {
-                    $file = WF_EDITOR_LIBRARIES.'/xml/help/editor.xml';
+                    $file = JPATH_COMPONENT_SITE . '/editor/xml/help/editor.xml';
                 } else {
-                    $language->load('com_jce_'.$category, JPATH_SITE);
+                    $language->load('WF_' . $category, JPATH_SITE);
                 }
                 break;
         }
 
         $result = '';
 
-        $result .= '<dl><dt><i class="icon-folder"></i>&nbsp;'.WFText::_('WF_'.strtoupper($category).'_TITLE').'</dt>';
+        $result .= '<ul class="nav nav-list" id="help-menu"><li class="nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
         $result .= $this->getTopics($file);
-        $result .= '</dl>';
+        $result .= '</ul>';
 
         return $result;
     }

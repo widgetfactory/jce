@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install version="2.0" type="plugin" plugin="inlinepopups" core="1" editable="0">
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
   <name>WF_INLINEPOPUPS_TITLE</name>
   <version>@@version@@</version>
   <creationDate>@@date@@</creationDate>
   <author>Ryan Demmer</author>
   <authorEmail>@@e-mail@@</authorEmail>
-  <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+  <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
   <copyright>Ryan Demmer</copyright>
   <license>@@licence@@</license>
   <description>WF_INLINEPOPUPS_DESC</description>
   <icon></icon>
-  <params></params>
   <help></help>
   <languages></languages>
-</install>
+</extension>

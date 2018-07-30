@@ -289,7 +289,7 @@
                 last = {};
 
                 editor.windowManager.open({
-                    file: editor.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=searchreplace',
+                    file: editor.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=searchreplace',
                     width: 560 + parseInt(editor.getLang('searchreplace.delta_width', 0)),
                     height: 180 + parseInt(editor.getLang('searchreplace.delta_height', 0)),
                     inline: 1,

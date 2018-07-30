@@ -11,14 +11,19 @@
 html {
     background: #fff none;
     overflow: hidden;
+    font-size: 16px;
+}
+
+body {
+    font-size: 16px;
 }
 
 .ui-jce {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    bottom: 5px;
+    top: 0.25rem;
+    left: 0.25rem;
+    right: 0.25rem;
+    bottom: 0.25rem;
 }
 
 .ui-jce>div {
@@ -27,211 +32,108 @@ html {
     height: 100%;
     position: relative;
     display: table;
+    padding: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
 }
 
-.ui-jce .row-fluid:before,
-.ui-jce .row-fluid:after {
-    content: "";
-    display: table;
-    line-height: 0;
-}
-
-.ui-jce .row-fluid:after {
-    clear: both;
-}
-
-.ui-jce .row-fluid {
-    width: 100%;
-}
-
-.lhs,
-.rhs {
-    box-sizing: border-box;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.ui-jce div {
-    height: 100%;
-}
-
-.lhs {
-    width: 250px;
-    background-color: #fafafa;
-    padding: 10px;
-    border: 1px dashed #ddd;
-    left: 0;
-    right: auto;
-}
-
-.rhs {
-    width: calc(100% - 264px);
-    left: auto;
-    right: 0;
-}
-
-#help-menu {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-    white-space: pre;
-}
-
-#help-menu dl,
-#help-menu dt,
-#help-menu dd {
-    margin: 0;
+header .container-fluid {
     padding: 0;
 }
 
-#help-menu dd.loading {
-    background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat 16px center;
+nav,
+main {
+    box-sizing: border-box;
+    height: 100%;
+    -webkit-flex: auto;
+    flex: auto;
+    float: left;
+    position: relative;
 }
 
-#help-menu dd.loading i {
-    visibility: hidden;
+nav {
+    background-color: #fafafa;
+    padding: 0.5rem;
+    border: 1px dashed #ddd;
 }
 
-#help-menu dl {
-    margin: 0px;
-    padding: 0px;
-}
-
-#help-menu dt {
-    margin: 0px 0px 5px 0px;
-    line-height: inherit;
-}
-
-#help-menu dd {
+nav .well {
+    height: calc(100% - 2rem);
+    padding: 1rem;
     margin: 0;
-    padding: 0px 0px 0px 20px;
-    line-height: 24px;
+}
+
+nav .nav {
+    display: block;
+}
+
+main .navbar .btn-navbar {
+    background: transparent;
+    border: 0;
+    box-shadow: inherit;
+}
+
+main .navbar .btn-navbar:hover {
+    background: transparent;
+}
+
+main .navbar .btn-navbar .icon-bar {
+    background: #444;
+    box-shadow: inherit;
+}
+
+main {
+    margin: 0;
+    margin-left: 0.5rem;
+    width: 80%;
+}
+
+section {
     overflow: hidden;
-    cursor: pointer;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 2.5rem;
+    border: 1px dashed #ddd;
+    background: #fafafa;
+    padding: 0.5rem;
 }
 
-html[dir="rtl"] #help-menu dd {
-    padding: 0px 20px 0px 0;
+.ui-jce .navbar .btn-navbar {
+    float: left;
+    display: block;
+    padding: 0;
 }
 
-#help-menu dd i {
-    display: none;
+.ui-jce .btn-navbar .icon-bar+.icon-bar {
+    margin-top: 3px;
 }
 
-#help-menu dd i+i {
-    display: inline-block;
+.ui-jce .navbar .btn-navbar .icon-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
 }
 
-#help-menu dd.subtopics i {
-    display: inline-block;
-}
-
-#help-menu dd.subtopics i+i {
-    display: none;
-}
-
-#help-menu dl.hidden {
-    display: none;
-}
-
-#help-menu dl dl {
-    padding: 0 0 0 15px;
-}
-
-#help-table {
-    background-color: #efefef;
-    height: 100%;
-}
-
-#help-table td {
-    background-color: #fff;
-    border: 1px solid #ccc;
-}
-
-#help-frame {
-    height: 100%;
-    overflow: hidden;
-}
-
-#help-frame iframe {
+iframe {
     width: 100%;
     height: 100%;
 }
 
-.ui-jce #help-menu-toggle,
-.ui-jce #help-menu-toggle-clone {
-    margin: 0 2px;
-    height: 100%;
-    background: #eee;
-    float: left;
-    position: absolute;
-    left: 250px;
-    width: 10px;
-    box-sizing: border-box;
-}
-
-.ui-jce #help-menu-toggle-clone {
-    margin: 0;
-    width: 10px;
-    top: 10px;
-    background: #ccc;
-}
-
-.ui-jce iv#help-menu-toggle .resize-handle {
-    cursor: ew-resize;
-    width: 10px;
-    height: 50px;
-    background: #ddd;
-    top: 50%;
+.ui-jce .nav-list li {
     position: relative;
-    margin-top: -25px;
 }
 
-.ui-jce #help-menu-toggle .resize-handle i {
-    width: 10px;
-    text-align: center;
-    margin: -5px 0 0 0;
-    opacity: 0.6;
-    top: 50%;
+.loading:before {
+    display: inline-block;
+    background: url("../../../../../components/com_jce/editor/libraries/img/load.gif") no-repeat 0 0;
+    width: 20px;
+    height: 20px;
+    content: "";
+    left: -25px;
     position: absolute;
-    left: -1px;
-}
-
-.ui-jce #help-menu-toggle .toggle-handle {
-    cursor: pointer;
-    width: 10px;
-    height: 14px;
-    background: #ddd;
-    top: 0;
-    position: relative;
-    vertical-align: middle;
-    line-height: 14px;
-}
-
-.ui-jce #help-menu-toggle .toggle-handle i {
-    display: none;
-    font-size: 10px;
-    opacity: 0.6;
-    width: 10px;
-    margin: 0;
-}
-
-.ui-jce #help-menu-toggle .toggle-handle i+i {
-    display: inline-block;
-}
-
-.ui-jce #help-menu-toggle .toggle-handle.collapsed i {
-    display: inline-block;
-}
-
-.ui-jce #help-menu-toggle .toggle-handle.collapsed i+i {
-    display: none;
-}
-
-.ui-jce #help-menu-toggle+div {
-    margin-left: 0;
+    top: 2px;
 }

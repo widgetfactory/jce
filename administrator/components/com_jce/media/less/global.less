@@ -1,8 +1,15 @@
 // out: ../css/global.min.css, sourcemap: false, compress: false
-
 @images: "../../../../../components/com_jce/editor/libraries/img";
 
-@import "../../../../../components/com_jce/editor/libraries/less/colorpicker.less";
-@import (inline) "../css/src/styles.css";
+.ui-jce {
+    position: relative;
+}
+
+.ui-jce.row {
+    margin-left: -20px;
+}
+
+@import (inline) "../css/src/compat.css";
 @import (inline) "../css/src/tips.css";
-@import (inline) "../css/src/upload.css";
+@import (inline) "../css/src/color.css";
+@import "../../../../../components/com_jce/editor/libraries/less/colorpicker.less";

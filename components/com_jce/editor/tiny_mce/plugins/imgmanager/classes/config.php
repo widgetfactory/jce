@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,18 +12,18 @@ class WFImgmanagerPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        require_once dirname(__FILE__).'/imgmanager.php';
+        require_once __DIR__.'/imgmanager.php';
 
-                // set plugin
-                JRequest::setVar('plugin', 'imgmanager');
+        // set plugin
+        JFactory::getApplication()->input->set('plugin', 'imgmanager');
 
         $plugin = new WFImageManagerPlugin();
 
         if ($plugin->getParam('inline_upload', $plugin->getParam('dragdrop_upload', 1, 0), 0)) {
             $settings['imgmanager_upload'] = array(
-                        'max_size' => $plugin->getParam('max_size', 1024),
-                        'filetypes' => $plugin->getFileTypes(),
-                    );
+                'max_size' => $plugin->getParam('max_size', 1024),
+                'filetypes' => $plugin->getFileTypes(),
+            );
         }
     }
 }

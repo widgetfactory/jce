@@ -1,14 +1,14 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
 class WFDocument extends JObject
 {
@@ -462,16 +462,18 @@ class WFDocument extends JObject
 
     public function getQueryString($query = array())
     {
+        $app = JFactory::getApplication();
+        
         // get plugin
-        $plugin = JRequest::getWord('plugin');
+        $plugin = $app->input->getWord('plugin');
 
         if ($plugin) {
             $query['plugin'] = $this->get('name');
         }
 
         // set layout
-        if (JRequest::getWord('layout')) {
-            $query['layout'] = JRequest::getWord('layout');
+        if ($app->input->getWord('layout')) {
+            $query['layout'] = $app->input->getWord('layout');
         }
 
         // set standalone mode (for File Browser etc)
@@ -480,7 +482,7 @@ class WFDocument extends JObject
         }
 
         // get context hash
-        $context = JRequest::getInt('context');
+        $context = $app->input->getInt('context');
 
         // set component id
         if ($context) {
@@ -488,7 +490,8 @@ class WFDocument extends JObject
         }
 
         // get token
-        $token = WFToken::getToken();
+        $token = JSession::getFormToken();
+
         // set token
         $query[$token] = 1;
 
@@ -635,18 +638,14 @@ class WFDocument extends JObject
      */
     public function pack($minify = true, $gzip = false)
     {
-        if (JRequest::getCmd('task') == 'pack') {
+        $app = JFactory::getApplication();
+        
+        if ($app->input->getCmd('task') == 'pack') {
 
             // check token
-            WFToken::checkToken('GET') or die('RESTRICTED');
+            JSession::checkToken('get') or jexit();
 
-            wfimport('admin.classes.packer');
-            wfimport('admin.classes.language');
-
-            $component = WFExtensionHelper::getComponent();
-            $params = new WFParameter($component->params);
-
-            $type = JRequest::getWord('type', 'javascript');
+            $type = $app->input->getWord('type', 'javascript');
 
             // create packer
             $packer = new WFPacker(array('type' => $type));

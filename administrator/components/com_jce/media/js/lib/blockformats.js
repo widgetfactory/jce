@@ -2,25 +2,21 @@
 
     $(document).ready(function() {
 
-        $('div.blockformats').on('update', function() {
-            var v = $('li input[type="checkbox"]:checked', this).map(function() {
-                return this.value;
-            }).get().join();
+        $('.blockformats').each(function() {
+            var el = this;
+            
+            // trigger input change
+            $('input[type="checkbox"]', this).on('click', function() {
+                $(el).trigger('update');
+            });
 
-            // serialize and return
-            $('input[type="hidden"]', this).val(v).change();
-        });
-
-        // trigger input change
-        $('input[type="checkbox"]', 'div.blockformats').on('click', function() {
-            $('div.blockformats').trigger('update');
-        });
-
-        // make sortable
-        $('div.blockformats ul').sortable({
+        }).on('update', function() {
+            // trigger change on all inputs
+            $('input[type="hidden"]', this).change();
+        }).sortable({
             axis: 'y',
             update: function(event, ui) {
-                $('div.blockformats').trigger('update');
+                $('.blockformats').trigger('update');
             },
             placeholder: "blockformat-highlight",
             start: function(event, ui) {

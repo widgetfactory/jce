@@ -1,22 +1,22 @@
 <?xml version="1.0" ?>
-<install version="1.5" type="extension" extension="joomla" folder="filesystem" method="upgrade" core="1">
+<extension version="3.8">
     <name>WF_FILESYSTEM_JOOMLA_TITLE</name>
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
     <author>Ryan Demmer</author>
     <authorEmail>@@e-mail@@</authorEmail>
-    <authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+    <authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
     <description>WF_FILESYSTEM_JOOMLA_DESC</description>
-    <files>
-        <filename>joomla.php</filename>
-    </files>
-    <params group="joomla" parent="filesystem">
-        <param name="allow_root" type="list" default="0" label="WF_PARAM_ALLOW_ROOT" description="WF_PARAM_ALLOW_ROOT_DESC">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
-        </param>
-        <param name="restricted_dir" type="text" default="" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" />
-    </params>
-</install>
+    <files></files>
+    <fields>
+        <fieldset name="filesystem.joomla">
+            <field name="allow_root" type="radio" default="0" label="WF_PARAM_ALLOW_ROOT" description="WF_PARAM_ALLOW_ROOT_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="restricted_dir" type="text" default="" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" />
+        </fieldset>
+    </fields>
+</extension>

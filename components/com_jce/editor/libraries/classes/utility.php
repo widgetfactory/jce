@@ -1,32 +1,30 @@
 <?php
 
 /**
- * @copyright    Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright    Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
 /* Set internal character encoding to UTF-8 */
 if (function_exists('mb_internal_encoding')) {
-    mb_internal_encoding("UTF-8");
+    mb_internal_encoding('UTF-8');
 }
 
 abstract class WFUtility
 {
     public static function getExtension($path)
     {
-        return array_pop(explode('.', $path));
+        return pathinfo($path, PATHINFO_EXTENSION);
     }
 
     public static function stripExtension($path)
     {
-        $dot = strrpos($path, '.');
-
-        return substr($path, 0, $dot);
+        return pathinfo($path, PATHINFO_FILENAME);
     }
 
     public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
@@ -41,7 +39,7 @@ abstract class WFUtility
         $path = preg_replace('#[/\\\\]+#', $ds, $path);
 
         // return path with prefix if any
-        return $prefix . $path;
+        return $prefix.$path;
     }
 
     /**
@@ -54,7 +52,7 @@ abstract class WFUtility
      */
     public static function fixPath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($path . $ds);
+        return self::cleanPath($path.$ds);
     }
 
     private static function checkCharValue($string)
@@ -96,7 +94,7 @@ abstract class WFUtility
      */
     public static function makePath($a, $b, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($a . $ds . $b, $ds);
+        return self::cleanPath($a.$ds.$b, $ds);
     }
 
     private static function utf8_latin_to_ascii($subject)
@@ -133,8 +131,8 @@ abstract class WFUtility
                     $string = WFUtility::utf8_latin_to_ascii($string);
                 });*/
 
-                for($i = 0; $i < count($subject); $i++) {
-                    $subject[$i] = WFUtility::utf8_latin_to_ascii($subject[$i]);
+                for ($i = 0; $i < count($subject); ++$i) {
+                    $subject[$i] = self::utf8_latin_to_ascii($subject[$i]);
                 }
 
                 return $subject;
@@ -159,15 +157,15 @@ abstract class WFUtility
         }
 
         if (is_array($string)) {
-            for($i = 0; $i < count($string); $i++) {
-                $string[$i] = WFUtility::changeCase($string[$i], $case);
+            for ($i = 0; $i < count($string); ++$i) {
+                $string[$i] = self::changeCase($string[$i], $case);
             }
         } else {
             switch ($case) {
-                case 'lowercase' :
+                case 'lowercase':
                     $string = mb_strtolower($string);
                     break;
-                case 'uppercase' :
+                case 'uppercase':
                     $string = mb_strtoupper($string);
                     break;
             }
@@ -194,8 +192,7 @@ abstract class WFUtility
         // trim
         if (is_array($subject)) {
             $subject = array_map('trim', $subject);
-        }
-        else {
+        } else {
             $subject = trim($subject);
         }
 
@@ -203,12 +200,12 @@ abstract class WFUtility
         $subject = preg_replace('#[\s ]+#', $spaces, $subject);
 
         switch ($mode) {
-            default :
-            case 'utf-8' :
+            default:
+            case 'utf-8':
                 $search[] = '#[^a-zA-Z0-9_\.\-~\p{L}\p{N}\s ]#u';
                 $mode = 'utf-8';
                 break;
-            case 'ascii' :
+            case 'ascii':
                 $subject = self::utf8_latin_to_ascii($subject);
                 $search[] = '#[^a-zA-Z0-9_\.\-~\s ]#';
                 break;
@@ -269,13 +266,11 @@ abstract class WFUtility
     public static function formatSize($size)
     {
         if ($size < 1024) {
-            return $size . ' ' . WFText::_('WF_LABEL_BYTES');
-        }
-        elseif ($size >= 1024 && $size < 1024 * 1024) {
-            return sprintf('%01.2f', $size / 1024.0) . ' ' . WFText::_('WF_LABEL_KB');
-        }
-        else {
-            return sprintf('%01.2f', $size / (1024.0 * 1024)) . ' ' . WFText::_('WF_LABEL_MB');
+            return $size.' '.JText::_('WF_LABEL_BYTES');
+        } elseif ($size >= 1024 && $size < 1024 * 1024) {
+            return sprintf('%01.2f', $size / 1024.0).' '.JText::_('WF_LABEL_KB');
+        } else {
+            return sprintf('%01.2f', $size / (1024.0 * 1024)).' '.JText::_('WF_LABEL_MB');
         }
     }
 
@@ -338,7 +333,7 @@ abstract class WFUtility
         }
 
         // get encoding
-        $encoding = mb_detect_encoding($string, "auto", true);
+        $encoding = mb_detect_encoding($string, 'auto', true);
 
         // return existing string if it is already utf-8
         if ($encoding === 'UTF-8') {
@@ -383,7 +378,7 @@ abstract class WFUtility
         preg_match('#([0-9]+)\s?([a-z]*)#i', $value, $matches);
 
         if (isset($matches[1])) {
-            $value = (int)$matches[1];
+            $value = (int) $matches[1];
         }
 
         if (isset($matches[2])) {
@@ -392,13 +387,13 @@ abstract class WFUtility
 
         // Convert to bytes
         switch (strtolower($unit)) {
-            case 'g' :
+            case 'g':
                 $value = intval($value) * 1073741824;
                 break;
-            case 'm' :
+            case 'm':
                 $value = intval($value) * 1048576;
                 break;
-            case 'k' :
+            case 'k':
                 $value = intval($value) * 1024;
                 break;
         }
@@ -463,7 +458,7 @@ abstract class WFUtility
      */
     public static function validateFileName($name)
     {
-        if (empty($name) && (string) $name !== "0") {
+        if (empty($name) && (string) $name !== '0') {
             return false;
         }
 
@@ -525,8 +520,7 @@ abstract class WFUtility
         foreach ($array2 as $key => &$value) {
             if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
                 $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
-            }
-            else {
+            } else {
                 $merged[$key] = $value;
             }
         }

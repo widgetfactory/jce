@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
-<install version="2.0" type="extension" extension="youtube" folder="aggregator" method="upgrade" core="1">
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
 	<name>WF_AGGREGATOR_YOUTUBE_TITLE</name>
 	<version>@@version@@</version>
 	<creationDate>@@date@@</creationDate>
 	<author>Ryan Demmer</author>
 	<authorEmail>@@e-mail@@</authorEmail>
-	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
 	<copyright>@@copyright@@</copyright>
 	<license>@@licence@@</license>
 	<description>WF_AGGREGATOR_YOUTUBE_DESC</description>
@@ -13,43 +13,45 @@
 		<filename>youtube.php</filename>
 		<folder>youtube</folder>
 	</files>
-	<params group="youtube">
-		<param name="enable" type="list" default="1" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
-		<param name="width" type="text" default="560" label="WF_LABEL_WIDTH" description="WF_AGGREGATOR_YOUTUBE_WIDTH_DESC" />
-		<param name="height" type="text" default="315" label="WF_LABEL_HEIGHT" description="WF_AGGREGATOR_YOUTUBE_HEIGHT_DESC" />
+	<fields name="youtube">
+		<fieldset name="aggregator.youtube">
+			<field name="enable" type="yesno" default="1" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field name="width" type="number" default="560" class="input-small" label="WF_LABEL_WIDTH" description="WF_AGGREGATOR_YOUTUBE_WIDTH_DESC" />
+			<field name="height" type="number" default="315" class="input-small" label="WF_LABEL_HEIGHT" description="WF_AGGREGATOR_YOUTUBE_HEIGHT_DESC" />
 
-		<param name="controls" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_CONTROLS" description="WF_AGGREGATOR_YOUTUBE_CONTROLS_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
+			<field name="controls" type="yesno" default="1"  label="WF_AGGREGATOR_YOUTUBE_CONTROLS" description="WF_AGGREGATOR_YOUTUBE_CONTROLS_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-		<param name="related" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_RELATED" description="WF_AGGREGATOR_YOUTUBE_RELATED_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
+			<field name="related" type="yesno" default="1"  label="WF_AGGREGATOR_YOUTUBE_RELATED" description="WF_AGGREGATOR_YOUTUBE_RELATED_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-		<param name="loop" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_LOOP" description="WF_AGGREGATOR_YOUTUBE_LOOP_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
+			<field name="loop" type="yesno" default="1"  label="WF_AGGREGATOR_YOUTUBE_LOOP" description="WF_AGGREGATOR_YOUTUBE_LOOP_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-		<param name="autoplay" type="list" default="0" label="WF_AGGREGATOR_YOUTUBE_AUTOPLAY" description="WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
+			<field name="autoplay" type="yesno" default="0"  label="WF_AGGREGATOR_YOUTUBE_AUTOPLAY" description="WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-		<param name="privacy" type="list" default="0" label="WF_AGGREGATOR_YOUTUBE_PRIVACY" description="WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
+			<field name="privacy" type="yesno" default="0"  label="WF_AGGREGATOR_YOUTUBE_PRIVACY" description="WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 
-		<param name="showinfo" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_SHOWINFO" description="WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC">
-        	<option value="1">WF_OPTION_YES</option>
-        	<option value="0">WF_OPTION_NO</option>
-    	</param>
-	</params>
+			<field name="showinfo" type="yesno" default="1"  label="WF_AGGREGATOR_YOUTUBE_SHOWINFO" description="WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+	</fields>
 	<plugins></plugins>
-</install>
+</extension>

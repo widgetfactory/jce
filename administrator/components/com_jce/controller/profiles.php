@@ -1,519 +1,114 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright 	Copyright (c) 2009-2013 Ryan Demmer. All rights reserved
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die;
 
-class WFControllerProfiles extends WFController
+class JceControllerProfiles extends JControllerAdmin
 {
     /**
-     * Custom Constructor.
+     * Method to import profile data from an XML file.
+     *
+     * @since   3.0
      */
-    public function __construct($default = array())
-    {
-        parent::__construct();
-
-        $this->registerTask('apply', 'save');
-        $this->registerTask('unpublish', 'publish');
-        $this->registerTask('enable', 'publish');
-        $this->registerTask('disable', 'publish');
-        $this->registerTask('orderup', 'order');
-        $this->registerTask('orderdown', 'order');
-    }
-
-    public function remove()
+    public function import()
     {
         // Check for request forgeries
-        JRequest::checkToken() or die('RESTRICTED');
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-        JArrayHelper::toInteger($cid, array(0));
+        $app = JFactory::getApplication();
 
-        if (count($cid) < 1) {
-            JError::raiseError(500, WFText::_('WF_PROFILES_SELECT_ERROR'));
-        }
+        $model = $this->getModel();
 
-        $cids = implode(',', $cid);
+        $result = $model->import();
 
-        $query = 'DELETE FROM #__wf_profiles'
-            .' WHERE id IN ( '.$cids.' )'
-        ;
-        $db->setQuery($query);
-        if (!$db->query()) {
-            JError::raiseError(500, $db->getErrorMsg());
-        }
+        // Get redirect URL
+		$redirect_url = JRoute::_('index.php?option=com_jce&view=profiles', false);
 
-        $msg = JText::sprintf('WF_PROFILES_DELETED', count($cid));
-        $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
+		// Push message queue to session because we will redirect page by Javascript, not $app->redirect().
+		// The "application.queue" is only set in redirect() method, so we must manually store it.
+		$app->getSession()->set('application.queue', $app->getMessageQueue());
+
+		header('Content-Type: application/json');
+
+		echo new JResponseJson(array('redirect' => $redirect_url), "", !$result);
+
+		exit();
     }
 
     public function copy()
     {
         // Check for request forgeries
-        JRequest::checkToken() or die('RESTRICTED');
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $db = JFactory::getDBO();
         $user = JFactory::getUser();
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-        JArrayHelper::toInteger($cid, array(0));
+        $cid = $this->input->get('cid', array(), 'array');
 
-        $n = count($cid);
-        if ($n == 0) {
-            return JError::raiseWarning(500, WFText::_('WF_PROFILES_SELECT_ERROR'));
+        // Access checks.
+        if (!$user->authorise('core.create', 'com_jce')) {
+            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
         }
 
-        $row = JTable::getInstance('profiles', 'WFTable');
-
-        foreach ($cid as $id) {
-            // load the row from the db table
-            $row->load((int) $id);
-            $row->name = JText::sprintf('WF_PROFILES_COPY_OF', $row->name);
-            $row->id = 0;
-            $row->published = 0;
-
-            if (!$row->check()) {
-                return JError::raiseWarning(500, $row->getError());
+        if (empty($cid)) {
+            throw new Exception(JText::_('No Item Selected'));
+        } else {
+            $model = $this->getModel();
+            // Copy the items.
+            try {
+                $model->copy($cid);
+                $ntext = $this->text_prefix.'_N_ITEMS_COPIED';
+                $this->setMessage(JText::plural($ntext, count($cid)));
+            } catch (Exception $e) {
+                $this->setMessage($e->getMessage(), 'error');
             }
-            if (!$row->store()) {
-                return JError::raiseWarning(500, $row->getError());
-            }
-            $row->checkin();
-            $row->reorder('ordering='.$db->Quote($row->ordering));
         }
-        $msg = JText::sprintf('WF_PROFILES_COPIED', $n);
-        $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
-    }
-
-    private static function cleanParamData($data)
-    {
-        // clean up link plugin parameters
-        if (isset($data['link'])) {
-            $params = $data['link'];
-
-            if (isset($params['dir'])) {
-                if (!empty($params['dir']) && empty($params['direction'])) {
-                    $params['direction'] = $params['dir'];
-                }
-                unset($params['dir']);
-            }
-
-            $data['link'] = $params;
-        }
-
-        return $data;
-    }
-
-    public function save()
-    {
-        // Check for request forgeries
-        JRequest::checkToken() or die('RESTRICTED');
-
-        $db = JFactory::getDBO();
-        $filter = JFilterInput::getInstance();
-        $row = JTable::getInstance('profiles', 'WFTable');
-        $task = $this->getTask();
-        $post = JRequest::get('post', array());
-        $id = JRequest::getInt('id');
-
-        $result = array('error' => false);
-
-        // load existing profile
-        $row->load($id);
-
-        // bind data but ignore params and usergroups
-        $row->bind($post, array('params', 'usergroups'));
-
-        // process values
-        foreach ($post as $key => $value) {
-            // don't process null values
-            if (is_null($value)) {
-                continue;
-            }
-
-            switch ($key) {
-                case 'name':
-                case 'description':
-                    $value = $filter->clean($value);
-                    break;
-                case 'components':
-                case 'device':
-                    $value = array_filter($value);
-
-                    $value = implode(',', $this->cleanInput($value));
-                    break;
-                case 'usergroups':
-                    $key = 'types';
-                    $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
-                    break;
-                case 'users':
-                    $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
-                    break;
-                case 'area':
-                    if (empty($value) || count($value) == 2) {
-                        $value = 0;
-                    } else {
-                        $value = $value[0];
-                    }
-                    break;
-                case 'plugins':
-                    $value = preg_replace('#[^\w,]+#', '', $value);
-                    break;
-                case 'rows':
-                    $value = preg_replace('#[^\w,;]+#', '', $value);
-                    break;
-                case 'params':
-                    $json = array();
-                    // get params
-                    $params = isset($row->params) ? $row->params : '';
-                    // convert params to json data array
-                    $data = (array) json_decode($params, true);
-
-                    // clean up data
-                    $data = self::cleanParamData($data);
-
-                    // assign editor data
-                    if (array_key_exists('editor', $value)) {
-                        $json['editor'] = $value['editor'];
-                    }
-
-                    // get plugins
-                    $plugins = explode(',', $row->plugins);
-
-                    // assign plugin data
-                    foreach ($plugins as $plugin) {
-                        // add plugin params to array
-                        if (array_key_exists($plugin, $value)) {
-                            $json[$plugin] = $value[$plugin];
-                        }
-                    }
-
-                    // combine and encode as json string
-                    $value = json_encode(WFParameter::mergeParams($data, $json, false));
-
-                    break;
-            }
-
-            $row->bind(array($key => $value));
-        }
-
-        if (!$row->check()) {
-            JError::raiseError(500, $db->getErrorMsg());
-        }
-
-        if (!$row->store()) {
-            JError::raiseError(500, $db->getErrorMsg());
-        }
-
-        $row->checkin();
-
-        switch ($task) {
-            case 'apply':
-                $msg = JText::sprintf('WF_PROFILES_SAVED_CHANGES', $row->name);
-                $this->setRedirect('index.php?option=com_jce&view=profiles&task=edit&cid[]='.$row->id, $msg);
-                break;
-
-            case 'save':
-            default:
-                $msg = JText::sprintf('WF_PROFILES_SAVED', $row->name);
-                $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
-                break;
-        }
-    }
-
-    /**
-     * Generic publish method.
-     */
-    public function publish()
-    {
-        // Check for request forgeries
-        JRequest::checkToken() or die('Invalid Token');
-
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-
-        JArrayHelper::toInteger($cid, array(0));
-
-        switch ($this->getTask()) {
-            case 'publish':
-            case 'enable':
-                $publish = 1;
-                break;
-            case 'unpublish':
-            case 'disable':
-                $publish = 0;
-                break;
-        }
-
-        $view = JRequest::getCmd('view');
-
-        if (count($cid) < 1) {
-            $action = $publish ? WFText::_('WF_LABEL_PUBLISH') : WFText::_('WF_LABEL_UNPUBLISH');
-            JError::raiseError(500, JText::sprintf('WF_PROFILES_VIEW_SELECT', $view, $action));
-        }
-
-        $cids = implode(',', $cid);
-
-        $query = 'UPDATE #__wf_profiles SET published = '.(int) $publish
-        .' WHERE id IN ( '.$cids.' )'
-        .' AND ( checked_out = 0 OR ( checked_out = '.(int) $user->get('id').' ))'
-        ;
-        $db->setQuery($query);
-
-        if (!$db->query()) {
-            JError::raiseError(500, $db->getErrorMsg());
-        }
-
-        if (count($cid) == 1) {
-            $row = JTable::getInstance('profiles', 'WFTable');
-            $row->checkin($cid[0]);
-        }
-        $this->setRedirect('index.php?option=com_jce&view=profiles');
-    }
-
-    public function order()
-    {
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        $db = JFactory::getDBO();
-
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-        JArrayHelper::toInteger($cid, array(0));
-
-        $uid = $cid[0];
-        $inc = ($this->getTask() == 'orderup' ? -1 : 1);
-
-        $row = JTable::getInstance('profiles', 'WFTable');
-        $row->load($uid);
-        $row->move($inc);
 
         $this->setRedirect('index.php?option=com_jce&view=profiles');
-    }
-
-    public function saveorder()
-    {
-        // Check for request forgeries
-        JRequest::checkToken() or jexit('Invalid Token');
-
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-        $order = JRequest::getVar('order', array(0), 'post', 'array');
-
-        if (!empty($cid)) {
-            $model = $this->getModel('profiles', 'WFModel');
-            $result = $model->saveOrder($cid, $order);
-        }
-
-        // ajax request
-        if (JRequest::getWord('tmpl') === 'component') {
-            echo (int) $result;
-            JFactory::getApplication()->close();
-        }
-
-        $msg = WFText::_('WF_PROFILES_ORDERING_SAVED');
-        $this->setRedirect('index.php?option=com_jce&view=profiles', $msg);
-    }
-
-    public function cancelEdit()
-    {
-        // Check for request forgeries
-        JRequest::checkToken() or die('RESTRICTED');
-
-        $view = JRequest::getCmd('view');
-
-        $db = JFactory::getDBO();
-        $row = JTable::getInstance($view, 'WFTable');
-        $row->bind(JRequest::get('post'));
-        $row->checkin();
-
-        $this->setRedirect(JRoute::_('index.php?option=com_jce&view='.$view, false));
     }
 
     public function export()
     {
-        wfimport('admin.helpers.encrypt');
-
-        $mainframe = JFactory::getApplication();
-        $db = JFactory::getDBO();
-        $tmp = $mainframe->getCfg('tmp_path');
-
-        $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
-        $buffer .= "\n".'<export type="profiles">';
-        $buffer .= "\n\t".'<profiles>';
-
-        $cid = JRequest::getVar('cid', array(0), 'post', 'array');
-        JArrayHelper::toInteger($cid, array(0));
-
-        if (count($cid) < 1) {
-            JError::raiseError(500, WFText::_('WF_PROFILES_SELECT_ERROR'));
-        }
-
-        $cids = implode(',', $cid);
-
-        $query = $db->getQuery(true);
-        // check for name
-        if (is_object($query)) {
-            $query->select('*')->from('#__wf_profiles')->where('id IN ('.$cids.')');
-        } else {
-            $query = 'SELECT * FROM #__wf_profiles WHERE id IN ('.$cids.')';
-        }
-
-        $db->setQuery($query);
-        $profiles = $db->loadObjectList();
-
-        foreach ($profiles as $profile) {
-            // remove some stuff
-            unset($profile->id);
-            unset($profile->checked_out);
-            unset($profile->checked_out_time);
-            // set published to 0
-            $profile->published = 0;
-
-            $buffer .= "\n\t\t";
-            $buffer .= '<profile>';
-
-            foreach ($profile as $key => $value) {
-                if ($key == 'params') {
-                    $buffer .= "\n\t\t\t".'<'.$key.'>';
-                    if ($value) {
-                        // decrypt if necessary
-                        $value = WFEncryptHelper::decrypt($value);
-
-                        // check is valid json
-                        $valid = json_decode($value, false);
-
-                        // json is valid
-                        if (is_null($valid) === false) {
-                            // create array
-                            $params = explode("\n", $value);
-
-                            foreach ($params as $param) {
-                                if ($param !== '') {
-                                    $buffer .= "\n\t\t\t\t".'<param>'.$param.'</param>';
-                                }
-                            }
-                            $buffer .= "\n\t\t\t\t";
-                        }
-                    }
-                    $buffer .= '</'.$key.'>';
-                } else {
-                    $buffer .= "\n\t\t\t".'<'.$key.'>'.$this->encodeData($value).'</'.$key.'>';
-                }
-            }
-            $buffer .= "\n\t\t</profile>";
-        }
-        $buffer .= "\n\t</profiles>";
-        $buffer .= "\n</export>";
-
-        // set_time_limit doesn't work in safe mode
-        if (!ini_get('safe_mode')) {
-            @set_time_limit(0);
-        }
-
-        $name = 'jce_profile_'.date('Y_m_d').'.xml';
-
-        header('Pragma: public');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Expires: 0');
-        header('Content-Transfer-Encoding: binary');
-        header('Content-Type: text/xml');
-        header('Content-Disposition: attachment;'
-            .' filename="'.$name.'";'
-        );
-
-        echo $buffer;
-
-        exit();
-    }
-
-    /**
-     * Process XML restore file.
-     *
-     * @param object $xml
-     *
-     * @return bool
-     */
-    public function import()
-    {
         // Check for request forgeries
-        JRequest::checkToken() or die('RESTRICTED');
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $app = JFactory::getApplication();
-        $file = JRequest::getVar('import', '', 'files', 'array');
-        $input = JRequest::getVar('import_input');
-        $tmp = $app->getCfg('tmp_path');
-        $model = $this->getModel('profiles', 'WFModel');
+        $user = JFactory::getUser();
+        $ids = $this->input->get('cid', array(), 'array');
 
-        $filter = JFilterInput::getInstance();
-
-        jimport('joomla.filesystem.file');
-
-        if (!is_array($file)) {
-            $app->enqueueMessage(WFText::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
-        } else {
-            // check for valid uploaded file
-            if (is_uploaded_file($file['tmp_name']) && $file['name']) {
-                // create destination path
-                $destination = $tmp.'/'.$file['name'];
-
-                if (JFile::upload($file['tmp_name'], $destination)) {
-                    // check it exists, was uploaded properly
-                    if (JFile::exists($destination)) {
-                        // process import
-                        if ($model->processImport($destination) === false) {
-                            JFile::delete($destination);
-                        }
-                    } else {
-                        $app->enqueueMessage(WFText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
-                    }
-                } else {
-                    $app->enqueueMessage(WFText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
-                }
-            } else {
-                // clean input
-                $input = $filter->clean($input, 'path');
-
-                // check for file input value instead
-                if ($input) {
-                    // check file exists
-                    if (JFile::exists($input)) {
-                        // process import
-                        $model->processImport($input);
-                    } else {
-                        $app->enqueueMessage(WFText::_('WF_PROFILES_IMPORT_NOFILE'), 'error');
-                    }
-                } else {
-                    $app->enqueueMessage(WFText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
-                }
-            }
+        // Access checks.
+        if (!$user->authorise('core.create', 'com_jce')) {
+            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
         }
 
-        $this->setRedirect('index.php?option=com_jce&view=profiles');
+        if (empty($ids)) {
+            throw new Exception(JText::_('No Item Selected'));
+        } else {
+            $model = $this->getModel();
+            // Publish the items.
+            if (!$model->export($ids)) {
+                throw new Exception($model->getError());
+            }
+        }
     }
 
     /**
-     * CDATA encode a parameter if it contains & < > characters, eg: <![CDATA[index.php?option=com_content&view=article&id=1]]>.
+     * Proxy for getModel.
      *
-     * @param object $param
+     * @param string $name   The model name. Optional
+     * @param string $prefix The class prefix. Optional
+     * @param array  $config The array of possible config values. Optional
      *
-     * @return CDATA encoded parameter or parameter
+     * @return object The model
+     *
+     * @since   1.6
      */
-    private function encodeData($data)
+    public function getModel($name = 'Profile', $prefix = 'JceModel', $config = array('ignore_request' => true))
     {
-        if (preg_match('/[<>&]/', $data)) {
-            $data = '<![CDATA['.$data.']]>';
-        }
-
-        $data = preg_replace('/"/', '\"', $data);
-
-        return $data;
+        return parent::getModel($name, $prefix, $config);
     }
 }

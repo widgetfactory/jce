@@ -27,7 +27,7 @@
                 }
 
                 ed.windowManager.open({
-                    file: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=imgmanager',
+                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=imgmanager',
                     width: 780 + ed.getLang('imgmanager.delta_width', 0),
                     height: 640 + ed.getLang('imgmanager.delta_height', 0),
                     inline: 1,
@@ -123,7 +123,7 @@
 
             if (data && data.filetypes) {
                 if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
-                    return ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=imgmanager';
+                    return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=imgmanager';
                 }
             }
 
@@ -139,8 +139,8 @@
             return {
                 longname: 'Image Manager',
                 author: 'Ryan Demmer',
-                authorurl: 'http://www.joomlacontenteditor.net',
-                infourl: 'http://www.joomlacontenteditor.net/index2.php?option=com_content&amp;task=findkey&amp;pop=1&amp;lang=en&amp;keyref=imgmanager.about',
+                authorurl: 'https://www.joomlacontenteditor.net',
+                infourl: 'https://www.joomlacontenteditor.net/index2.php?option=com_content&amp;task=findkey&amp;pop=1&amp;lang=en&amp;keyref=imgmanager.about',
                 version: '@@version@@'
             };
         }

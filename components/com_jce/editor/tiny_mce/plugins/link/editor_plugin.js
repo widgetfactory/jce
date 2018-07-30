@@ -43,9 +43,9 @@
                 }
 
                 ed.windowManager.open({
-                    file 	: ed.getParam('site_url') + 'index.php?option=com_jce&view=editor&plugin=link',
+                    file 	: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=link',
                     width 	: 540 + ed.getLang('link.delta_width', 0),
-                    height 	: 560 + ed.getLang('link.delta_height', 0),
+                    height 	: 570 + ed.getLang('link.delta_height', 0),
                     inline 	: 1,
                     popup_css : false
                 }, {
@@ -84,8 +84,8 @@
             return {
                 longname : 'Link',
                 author : 'Moxiecode Systems AB / Ryan Demmer',
-                authorurl : 'http://tinymce.moxiecode.com / http://www.joomlacontenteditor.net',
-                infourl : 'http://www.joomlacontenteditor.net',
+                authorurl : 'http://tinymce.moxiecode.com / https://www.joomlacontenteditor.net',
+                infourl : 'https://www.joomlacontenteditor.net',
                 version : '@@version@@'
             };
         }

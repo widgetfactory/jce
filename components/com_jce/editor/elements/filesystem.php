@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -60,7 +60,7 @@ class WFElementFilesystem extends WFElement
         $options = array();
 
         if ((bool) $node->attributes()->exclude_default === false) {
-            $options[] = JHTML::_('select.option', '', WFText::_('WF_OPTION_NOT_SET'));
+            $options[] = JHTML::_('select.option', '', JText::_('WF_OPTION_NOT_SET'));
         }
 
         $params = array();
@@ -72,7 +72,7 @@ class WFElementFilesystem extends WFElement
             $filename = array_pop($parts);
 
             // legacy
-            $language->load('com_jce_filesystem_'.$filename, JPATH_SITE);
+            $language->load('WF_filesystem_'.$filename, JPATH_SITE);
             // new
             $language->load('plg_jce_filesystem-'.$filename, JPATH_ADMINISTRATOR);
 
@@ -81,7 +81,7 @@ class WFElementFilesystem extends WFElement
             $params[$filename] = $instance;
 
             $xml = WFXMLHelper::parseInstallManifest($file);
-            $options[] = JHTML::_('select.option', $filename, WFText::_($xml['name']));
+            $options[] = JHTML::_('select.option', $filename, JText::_($xml['name']));
         }
 
         // if a group is specified, setup to be an object

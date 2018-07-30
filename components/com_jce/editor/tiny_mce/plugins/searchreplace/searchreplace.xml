@@ -5,12 +5,12 @@
 	<creationDate>@@date@@</creationDate>
 	<author>Ryan Demmer</author>
 	<authorEmail>@@e-mail@@</authorEmail>
-	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
 	<copyright>Ryan Demmer</copyright>
 	<license>@@licence@@</license>
 	<description>WF_SEARCHREPLACE_DESC</description>
 	<icon>search,replace</icon>
-	<params></params>
+	
 	<help></help>
 	<languages></languages>
 </extension>

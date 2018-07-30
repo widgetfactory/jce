@@ -136,7 +136,7 @@ div#upload-body {
 
 div#upload-queue-block {
 	clear: both;
-	height: 240px;
+	height: 250px;
 	overflow: auto;
 	box-sizing: border-box;
 	padding: 5px;
@@ -292,7 +292,6 @@ main>div:last-child {
     border-width: 0 1px;
 }
 
-
 /* Show border on second div */
 
 .uk-tree-hidden>div+div {
@@ -417,11 +416,12 @@ main>div:last-child {
 
 #browser-list-limit select {
     margin: 0;
-    vertical-align: middle;
+    vertical-align: initial;
 }
 
 #browser-list-limit label {
     min-width: 30px;
+    vertical-align: initial;
 }
 
 #browser-list-limit .limit-text {
@@ -471,7 +471,6 @@ main>div:last-child {
     height: 20px;
 }
 
-
 /*#upload {
     color: #444;
 }
@@ -483,7 +482,6 @@ main>div:last-child {
 #folder_new .uk-icon {
     color: #DAA520;
 }*/
-
 
 /**
  * Status Bar
@@ -582,7 +580,6 @@ div#browser-message span {
     border-width: 0;
 }
 
-
 /* Searchbox */
 
 #searchbox {
@@ -604,7 +601,6 @@ div#browser-message span {
     line-height: 2em;
     top: 0;
 }
-
 
 /* Tree */
 
@@ -677,7 +673,6 @@ div#info-comment {
     max-width: 28px;
 }
 
-
 /*Layout Right*/
 
 #browser-details-comment {
@@ -730,7 +725,6 @@ div#info-comment {
 #browser-details-nav ul {
     margin: 0;
 }
-
 
 /**
  * Item List
@@ -860,11 +854,9 @@ div#info-comment {
 
 .item-list li.folder .uk-item-date {}
 
-
 /**
  * Extension Icons
 */
-
 
 /*ul.item-list li.folder.notwritable,dd.folder.notwritable {
     background: url('../img/icons.png') no-repeat 0 -580px;
@@ -945,7 +937,6 @@ ul.item-list li.folder-up {
     opacity: 0.6;
 }
 
-
 /* Loader */
 
 .uk-dialog div.big-loader {
@@ -972,10 +963,11 @@ ul.item-list li.folder-up {
     display: none;
 }
 
-.uk-tree-hidden .item-list li a {
-    max-width: 37%
+@media (max-width: 800px) {
+    .uk-tree-hidden .item-list li a {
+        max-width: 36%
+    }
 }
-
 
 /* icon colours */
 
@@ -999,7 +991,6 @@ ul.item-list li.folder-up {
 
 .mp4 .uk-icon,
 .wmv .uk-icon,
-.m4a .uk-icon,
 .flv .uk-icon,
 .mov .uk-icon,
 .ogg .uk-icon,

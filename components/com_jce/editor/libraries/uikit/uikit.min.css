@@ -8,7 +8,7 @@
  */
 html {
   /* 1 */
-  font: normal 12px / 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px / 20px "Helvetica Neue", Helvetica, Arial, sans-serif;
   /* 2 */
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
@@ -74,7 +74,7 @@ strong {
 :not(pre) > kbd,
 :not(pre) > samp {
   /* 1 */
-  font-size: 10px;
+  font-size: 11px;
   /* 2 */
   font-family: Consolas, monospace, serif;
   /* 3 */
@@ -251,33 +251,33 @@ h6 {
  */
 h1,
 .uk-h1 {
-  font-size: 31px;
-  line-height: 36px;
+  font-size: 34px;
+  line-height: 39px;
 }
 h2,
 .uk-h2 {
-  font-size: 21px;
-  line-height: 27px;
+  font-size: 23px;
+  line-height: 29px;
 }
 h3,
 .uk-h3 {
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 17px;
+  line-height: 22px;
 }
 h4,
 .uk-h4 {
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 20px;
 }
 h5,
 .uk-h5 {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
 }
 h6,
 .uk-h6 {
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11px;
+  line-height: 16px;
 }
 /* Lists
  ========================================================================== */
@@ -327,8 +327,8 @@ address {
 blockquote {
   padding-left: 15px;
   border-left: 5px solid #ddd;
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 20px;
   font-style: italic;
 }
 /* Preformatted text
@@ -339,7 +339,7 @@ blockquote {
 pre {
   padding: 10px;
   background: #fafafa;
-  font: 10px / 15px Consolas, monospace, serif;
+  font: 11px / 16px Consolas, monospace, serif;
   color: #444;
   -moz-tab-size: 4;
   tab-size: 4;
@@ -1314,8 +1314,8 @@ iframe {
 .uk-panel-title {
   margin-top: 0;
   margin-bottom: 15px;
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 17px;
+  line-height: 22px;
   font-weight: normal;
   text-transform: none;
   color: #444;
@@ -1582,8 +1582,8 @@ iframe {
 /* Sub-object `uk-article-title`
  ========================================================================== */
 .uk-article-title {
-  font-size: 31px;
-  line-height: 36px;
+  font-size: 34px;
+  line-height: 39px;
   font-weight: normal;
   text-transform: none;
 }
@@ -1594,16 +1594,16 @@ iframe {
 /* Sub-object `uk-article-meta`
  ========================================================================== */
 .uk-article-meta {
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11px;
+  line-height: 16px;
   color: #999;
 }
 /* Sub-object `uk-article-lead`
  ========================================================================== */
 .uk-article-lead {
   color: #444;
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 17px;
+  line-height: 22px;
   font-weight: normal;
 }
 /* Sub-object `uk-article-divider`
@@ -1652,15 +1652,15 @@ iframe {
  ========================================================================== */
 .uk-comment-title {
   margin: 5px 0 0 0;
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 20px;
 }
 /* Sub-object `uk-comment-meta`
  ========================================================================== */
 .uk-comment-meta {
   margin: 2px 0 0 0;
-  font-size: 9px;
-  line-height: 13px;
+  font-size: 10px;
+  line-height: 15px;
   color: #999;
 }
 /* Sub-object `uk-comment-body`
@@ -1782,8 +1782,8 @@ iframe {
  * Item subtitle
  */
 .uk-nav li > a > div {
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11px;
+  line-height: 16px;
 }
 /* Sub-object: `uk-nav-header`
  ========================================================================== */
@@ -1791,7 +1791,7 @@ iframe {
   padding: 5px 15px;
   text-transform: uppercase;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 11px;
 }
 .uk-nav-header:not(:first-child) {
   margin-top: 15px;
@@ -2089,7 +2089,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   line-height: 40px;
   /* 2 */
   color: #444;
-  font-size: 12px;
+  font-size: 13px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   margin-top: -1px;
@@ -2143,7 +2143,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   line-height: 28px;
 }
 .uk-navbar-nav-subtitle > div {
-  margin-top: -7px;
+  margin-top: -6.5px;
   font-size: 10px;
   line-height: 12px;
 }
@@ -2194,7 +2194,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 /* Sub-objects: `uk-navbar-brand`
  ========================================================================== */
 .uk-navbar-brand {
-  font-size: 15px;
+  font-size: 17px;
   color: #444;
   text-decoration: none;
 }
@@ -2212,7 +2212,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 /* Sub-object: `uk-navbar-toggle`
  ========================================================================== */
 .uk-navbar-toggle {
-  font-size: 15px;
+  font-size: 17px;
   color: #444;
   text-decoration: none;
 }
@@ -3088,7 +3088,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
  */
 .uk-table caption,
 .uk-table tfoot {
-  font-size: 10px;
+  font-size: 11px;
   font-style: italic;
 }
 .uk-table caption {
@@ -3386,8 +3386,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   /* 4 */
   padding-bottom: 15px;
   /* 5 */
-  font-size: 15px;
-  line-height: 25px;
+  font-size: 17px;
+  line-height: 29px;
 }
 /*
  * 1. Fixes IE9
@@ -3408,7 +3408,7 @@ input[type].uk-form-small,
 input:not([type]).uk-form-small {
   height: 20px;
   padding: 2px;
-  font-size: 10px;
+  font-size: 11px;
 }
 select.uk-form-large,
 textarea.uk-form-large,
@@ -3416,7 +3416,7 @@ input[type].uk-form-large,
 input:not([type]).uk-form-large {
   height: 32px;
   padding: 4px 3px;
-  font-size: 14px;
+  font-size: 15px;
 }
 /* Reset height
  * Must be after size modifiers
@@ -3586,8 +3586,8 @@ select.uk-form-width-mini {
   position: absolute;
   top: 50%;
   width: 30px;
-  margin-top: -6px;
-  font-size: 12px;
+  margin-top: -7px;
+  font-size: 13px;
   color: #999;
   text-align: center;
   /* 1 */
@@ -3794,19 +3794,19 @@ select.uk-form-width-mini {
   min-height: 18px;
   padding: 0 6px;
   line-height: 16px;
-  font-size: 9px;
+  font-size: 10px;
 }
 .uk-button-small {
   min-height: 20px;
   padding: 0 10px;
   line-height: 18px;
-  font-size: 10px;
+  font-size: 11px;
 }
 .uk-button-large {
   min-height: 32px;
   padding: 0 15px;
   line-height: 30px;
-  font-size: 14px;
+  font-size: 15px;
   border-radius: 3px;
 }
 /* Sub-object `uk-button-group`
@@ -6267,9 +6267,9 @@ select.uk-form-width-mini {
   display: inline-block;
   padding: 0 5px;
   background: #337ab7;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: bold;
-  line-height: 12px;
+  line-height: 14px;
   color: #fff;
   text-align: center;
   vertical-align: middle;
@@ -6288,10 +6288,10 @@ a.uk-badge:hover {
  ========================================================================== */
 .uk-badge-notification {
   box-sizing: border-box;
-  min-width: 15px;
+  min-width: 16px;
   border-radius: 500px;
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11px;
+  line-height: 16px;
 }
 /* Color modifier
  ========================================================================== */
@@ -8132,12 +8132,12 @@ a.uk-thumbnail:focus {
 /* Size modifiers
  ========================================================================== */
 .uk-text-small {
-  font-size: 9px;
-  line-height: 13px;
+  font-size: 10px;
+  line-height: 15px;
 }
 .uk-text-large {
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 17px;
+  line-height: 22px;
   font-weight: normal;
 }
 /* Weight modifiers
@@ -8538,14 +8538,14 @@ a.uk-thumbnail:focus {
 /* Headings
  ========================================================================== */
 .uk-heading-large {
-  font-size: 31px;
-  line-height: 36px;
+  font-size: 34px;
+  line-height: 39px;
 }
 /* Tablet and bigger */
 @media (min-width: 768px) {
   .uk-heading-large {
-    font-size: 45px;
-    line-height: 55px;
+    font-size: 48px;
+    line-height: 59px;
   }
 }
 /* Link
@@ -9617,9 +9617,9 @@ a.uk-thumbnail:focus {
   position: absolute;
   top: 50%;
   right: 10px;
-  margin-top: -5px;
-  font-size: 11px;
-  line-height: 11px;
+  margin-top: -6px;
+  font-size: 12px;
+  line-height: 12px;
   color: #999;
 }
 .uk-form-password-toggle:hover {
@@ -9731,7 +9731,7 @@ a.uk-thumbnail:focus {
   -webkit-transition: width 0.6s ease;
   transition: width 0.6s ease;
   /* 2 */
-  font-size: 10px;
+  font-size: 11px;
   color: #fff;
   text-align: center;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
@@ -9804,8 +9804,8 @@ a.uk-thumbnail:focus {
   margin-bottom: 15px;
   padding: 5px 15px;
   background: #f5f5f5;
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 17px;
+  line-height: 22px;
   cursor: pointer;
   border: 1px solid #ddd;
   border-radius: 2px;
@@ -10434,8 +10434,8 @@ a.uk-datepicker-table-muted {
   padding: 15px;
   background: #444;
   color: #fff;
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 15px;
+  line-height: 20px;
   cursor: pointer;
   border: 1px solid #444;
   border-radius: 2px;
@@ -11019,8 +11019,8 @@ html[dir="rtl"] .uk-slider > * {
   /* 4 */
   background: #333;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11px;
+  line-height: 16px;
   border-radius: 3px;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }

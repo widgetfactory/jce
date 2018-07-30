@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -33,67 +33,27 @@ class plgQuickiconJce extends JPlugin
 
     public function onGetIcons($context)
     {
-        @include_once JPATH_ADMINISTRATOR . '/components/com_jce/models/model.php';
-
-        // check for class to prevent fatal errors
-        if (!class_exists('WFModel')) {
+        if ($context != $this->params->get('context', 'mod_quickicon')) {
             return;
         }
 
-        if ($context != $this->params->get('context', 'mod_quickicon') || WFModel::authorize('browser') === false) {
+        $user = JFactory::getUser();
+
+        if (!$user->authorise('core.admin.browser', 'com_jce')) {
             return;
         }
 
-        $document = JFactory::getDocument();
         $language = JFactory::getLanguage();
-
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        $width = $this->params->get('width', 780);
-        $height = $this->params->get('height', 560);
         $filter = $this->params->get('filter', '');
 
-        require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
-
-        JHtml::_('behavior.modal');
-
-        $version = new JVersion();
-
-        if ($version->isCompatible('3.0')) {           
-            $document->addScriptDeclaration("
-                jQuery('document').ready(function($) {
-                    SqueezeBox.assign($('#plg_quickicon_jce a').get(), {
-                        handler: 'iframe', size: {x: " . $width . ', y: ' . $height . '}
-                    });
-                });'
-            );
-
-            $icon = 'pictures';
-        } else {            
-            $document->addScriptDeclaration("
-                window.addEvent('domready', function() {
-    			    SqueezeBox.assign($$('#plg_quickicon_jce a'), {
-    				    handler: 'iframe', size: {x: " . $width . ', y: ' . $height . '}
-    			    });
-    		    });'
-            );
-
-            $icon = 'header/icon-48-media.png';
-        }
-
-        $link = WFBrowserHelper::getBrowserLink('', $filter);
-
-        if ($link) {
-            return array(array(
-                'link' => $link,
-                'image' => $icon,
-                'icon' => 'pictures',
-                'access' => array('jce.browser', 'com_jce'),
-                'text' => JText::_('PLG_QUICKICON_JCE_TITLE'),
-                'id' => 'plg_quickicon_jce',
-            ));
-        }
-
-        return array();
+        return array(array(
+            'link'      => 'index.php?option=com_jce&view=browser&filter=' . $filter,
+            'image'     => 'picture',
+            'access'    => array('jce.browser', 'com_jce'),
+            'text'      => JText::_('PLG_QUICKICON_JCE_TITLE'),
+            'id'        => 'plg_quickicon_jce',
+        ));
     }
 }
