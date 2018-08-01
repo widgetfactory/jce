@@ -1,7 +1,7 @@
 <?php
 /**
  * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved
- * @copyright   Copyright (C) 2016 Ryan Demmer. All rights reserved
+ * @copyright   Copyright (C) 2018 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
@@ -56,7 +56,7 @@ class PlgExtensionJce extends JPlugin
                 return false;
             }
 
-            require_once JPATH_ADMINISTRATOR.'/components/com_jce/models/plugins.php';
+            require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
 
             // enable plugin
             $plugin = JTable::getInstance('extension');
@@ -80,27 +80,27 @@ class PlgExtensionJce extends JPlugin
 
             $plugin->path = $installer->getPath('extension_root');
 
-            $model = new WFModelPlugins();
-            $model->postInstall('install', $plugin, $installer);
+            JcePluginsHelper::postInstall('install', $plugin, $installer);
 
+            // clean up legacy extensions
             if ($plugin->type == 'extension') {
                 jimport('joomla.filesystem.folder');
                 jimport('joomla.filesystem.file');
 
-                $path = JPATH_SITE.'/components/com_jce/editor/extensions/'.$type;
+                $path = JPATH_SITE . '/components/com_jce/editor/extensions/' . $type;
 
-              // delete manifest
-              if (is_file($path.'/'.$plugin->name.'.xml')) {
-                  JFile::delete($path.'/'.$plugin->name.'.xml');
-              }
-              // delete file
-              if (is_file($path.'/'.$plugin->name.'.php')) {
-                  JFile::delete($path.'/'.$plugin->name.'.php');
-              }
-              // delete folder
-              if (is_dir($path.'/'.$plugin->name)) {
-                  JFolder::delete($path.'/'.$plugin->name);
-              }
+                // delete manifest
+                if (is_file($path . '/' . $plugin->name . '.xml')) {
+                    JFile::delete($path . '/' . $plugin->name . '.xml');
+                }
+                // delete file
+                if (is_file($path . '/' . $plugin->name . '.php')) {
+                    JFile::delete($path . '/' . $plugin->name . '.php');
+                }
+                // delete folder
+                if (is_dir($path . '/' . $plugin->name)) {
+                    JFolder::delete($path . '/' . $plugin->name);
+                }
             }
         }
     }
@@ -127,7 +127,7 @@ class PlgExtensionJce extends JPlugin
                 return false;
             }
 
-            require_once JPATH_ADMINISTRATOR.'/components/com_jce/models/plugins.php';
+            require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
 
             $parts = explode('-', $basename);
             $type = $parts[0];
@@ -144,8 +144,7 @@ class PlgExtensionJce extends JPlugin
 
             $plugin->path = $installer->getPath('extension_root');
 
-            $model = new WFModelPlugins();
-            $model->postInstall('uninstall', $plugin, $installer);
+            JcePluginsHelper::postInstall('uninstall', $plugin, $installer);
         }
     }
 }

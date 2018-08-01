@@ -457,9 +457,9 @@ class WFEditor
         }
 
         // get plugins
-        $plugins = WFPluginsHelper::getPlugins();
+        $plugins = JcePluginsHelper::getPlugins();
         // get core commands
-        $commands = WFPluginsHelper::getCommands();
+        $commands = JcePluginsHelper::getCommands();
 
         // merge plugins and commands
         $icons = array_merge($commands, $plugins);
@@ -613,7 +613,7 @@ class WFEditor
                 $items = explode(',', $this->profile->plugins);
 
                 // get core and installed plugins list
-                $list = WFPluginsHelper::getPlugins();
+                $list = JcePluginsHelper::getPlugins();
 
                 // check that the plugin is available
                 $items = array_filter($items, function ($item) use ($list) {

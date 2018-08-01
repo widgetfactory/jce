@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
-abstract class WFPluginsHelper
+abstract class JcePluginsHelper
 {
     public static function getCommands()
     {
@@ -288,25 +288,12 @@ abstract class WFPluginsHelper
         return $extensions;
     }
 
-    /**
-     * Process import data from XML file.
-     *
-     * @param object $file    XML file
-     * @param bool   $install Can be used by the package installer
-     *
-     * @return bool
-     */
-    public function processImport($file, $install = false)
-    {
-        return true;
-    }
-
     public static function addToProfile($id, $plugin)
     {
         JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
 
         // Add to Default Group
-        $profile = JTable::getInstance('profiles', 'WFTable');
+        $profile = JTable::getInstance('Profiles', 'JceTable');
 
         if ($profile->load($id)) {
             // Add to plugins list
@@ -351,7 +338,7 @@ abstract class WFPluginsHelper
         JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
 
         // Add to Default Group
-        $profile = JTable::getInstance('profiles', 'WFTable');
+        $profile = JTable::getInstance('Profiles', 'JceTable');
 
         if ($profile->load($id)) {
             // remove from plugins list
@@ -421,13 +408,7 @@ abstract class WFPluginsHelper
         if (isset($plugin->row) && $plugin->row > 0) {
             $query = $db->getQuery(true);
 
-            if (is_object($query)) {
-                $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
-            } else {
-                $query = 'SELECT id'
-                    . ' FROM #__wf_profiles'
-                    . ' WHERE name = ' . $db->Quote('Default') . ' OR id = 1';
-            }
+            $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
 
             $db->setQuery($query);
             $id = $db->loadResult();

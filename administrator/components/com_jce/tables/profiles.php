@@ -10,7 +10,7 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTableProfiles extends JTable
+class JceTableProfiles extends JTable
 {
     public function __construct(&$db)
     {

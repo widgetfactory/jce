@@ -14,14 +14,15 @@
 
 .extensions-select.radio input[type="radio"] {
     display: inline-block;
-    margin: 0;
+    margin: 0 5px 0 0;
     float: none;
 }
 
 .extensions-select label {
     display: inline-block;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
     vertical-align: middle;
+    padding: 0;
 }
 
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
@@ -93,11 +94,9 @@ a.browser {
 }
 
 .com_jce .form-horizontal .control-label {
-    width: 200px
 }
 
 .com_jce .form-horizontal .controls {
-    margin-left: 200px;
     position: relative;
 }
 

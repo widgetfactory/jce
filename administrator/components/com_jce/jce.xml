@@ -24,7 +24,7 @@
         @@language-pro@@
     </languages>
 
-	<!-- SQL query files to execute on installation -->
+    <!-- SQL query files to execute on installation -->
     <install>
         <sql>
             <file charset="utf8" driver="mysql">sql/mysql.sql</file>

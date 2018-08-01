@@ -25,12 +25,16 @@
         <file type="plugin" id="jce" group="quickicon">plg_quickicon_jce.zip</file>
         <file type="plugin" id="jce" group="system">plg_system_jce.zip</file>
     </files>
+
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.pkg_jce.sys.ini</language>
     </languages>
+
     <variant>@@variant@@</variant>
+
     <compatibility>
         <version>3</version>
         <version>4</version>
     </compatibility>
+
 </extension>

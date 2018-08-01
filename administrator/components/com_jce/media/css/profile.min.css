@@ -194,6 +194,10 @@ dd.file.notsafe {
  * other free or open source software ddcenses.
  */
 
+ .ui-jce .filetype {
+     display: inline-block;
+ }
+
 .ui-jce .filetype .filetype-list {
     display: none;
     list-style: none;
@@ -228,6 +232,7 @@ dd.file.notsafe {
 
 .ui-jce .filetype .filetype-list .filetype-item.filetype-custom .file {
     margin: 5px;
+    min-height: 20px;
 }
 
 .ui-jce .filetype .filetype-list label {
@@ -239,9 +244,7 @@ dd.file.notsafe {
 }
 
 .ui-jce .filetype .filetype-list input[type="text"] {
-    width: 7rem;
     margin: 0;
-    display: inline-block;
 }
 
 .ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
@@ -266,6 +269,11 @@ dd.file.notsafe {
 
 .ui-jce .filetype .filetype-list .btn {
     color: #ccc;
+    max-width: 40px;
+}
+
+.ui-jce .filetype .filetype-list .btn span {
+    vertical-align: middle;
 }
 
 .ui-jce .filetype .filetype-group {
@@ -866,15 +874,23 @@ html[dir="rtl"] .form-horizontal .control-label {
     font-weight: bold;
 }*/
 .ui-jce .users-select {
-    margin: 5px 0 0 5px;
+   position: relative;
+   margin: 10px 0;
+}
+/*
+.ui-jce .users-select select, .ui-jce .users-select .chzn-container, .ui-jce .users-select .input-append {
+    float: left;
 }
 
-.field-user-wrapper + .users-select {}
+.ui-jce .users-select .input-append input[type="text"] {
+    display: none;
+}
 
 .ui-jce .users-select .chzn-container-multi .chzn-choices {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0; 
 }
+*/
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
@@ -891,14 +907,15 @@ html[dir="rtl"] .form-horizontal .control-label {
 
 .extensions-select.radio input[type="radio"] {
     display: inline-block;
-    margin: 0;
+    margin: 0 5px 0 0;
     float: none;
 }
 
 .extensions-select label {
     display: inline-block;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
     vertical-align: middle;
+    padding: 0;
 }
 
 html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
@@ -970,11 +987,9 @@ a.browser {
 }
 
 .com_jce .form-horizontal .control-label {
-    width: 200px
 }
 
 .com_jce .form-horizontal .controls {
-    margin-left: 200px;
     position: relative;
 }
 

@@ -28,7 +28,7 @@
 
             <field name="alt" type="text" default="" size="50" label="WF_LABEL_ALT" description="WF_LABEL_ALT_DESC" />
 
-            <field name="margin_top" type="list" default="" pattern="[0-9]+" class="editable" label="WF_PARAM_MARGIN_TOP" description="WF_PARAM_MARGIN_TOP_DESC">
+            <field name="margin_top" type="list" default="" class="editable" label="WF_PARAM_MARGIN_TOP" description="WF_PARAM_MARGIN_TOP_DESC">
                 <option value="">WF_OPTION_NOT_SET</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -42,7 +42,7 @@
                 <option value="9">9</option>
                 <option value="10">10</option>
             </field>
-            <field name="margin_right" type="list" default="" pattern="[0-9]+" class="editable" label="WF_PARAM_MARGIN_RIGHT" description="WF_PARAM_MARGIN_RIGHT_DESC">
+            <field name="margin_right" type="list" default="" class="editable" label="WF_PARAM_MARGIN_RIGHT" description="WF_PARAM_MARGIN_RIGHT_DESC">
                 <option value="">WF_OPTION_NOT_SET</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -56,7 +56,7 @@
                 <option value="9">9</option>
                 <option value="10">10</option>
             </field>
-            <field name="margin_bottom" type="list" default="" pattern="[0-9]+" class="editable" label="WF_PARAM_MARGIN_BOTTOM" description="WF_PARAM_MARGIN_BOTTOM_DESC">
+            <field name="margin_bottom" type="list" default="" class="editable" label="WF_PARAM_MARGIN_BOTTOM" description="WF_PARAM_MARGIN_BOTTOM_DESC">
                 <option value="">WF_OPTION_NOT_SET</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -70,7 +70,7 @@
                 <option value="9">9</option>
                 <option value="10">10</option>
             </field>
-            <field name="margin_left" type="list" default="" pattern="[0-9]+" class="editable" label="WF_PARAM_MARGIN_LEFT" description="WF_PARAM_MARGIN_LEFT_DESC">
+            <field name="margin_left" type="list" default="" class="editable" label="WF_PARAM_MARGIN_LEFT" description="WF_PARAM_MARGIN_LEFT_DESC">
                 <option value="">WF_OPTION_NOT_SET</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
@@ -88,7 +88,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="border_width" type="list" default="1" pattern="[0-9]+" class="editable" label="WF_PARAM_BORDER_WIDTH" description="WF_PARAM_BORDER_WIDTH_DESC">
+            <field name="border_width" type="list" default="1" class="editable" label="WF_PARAM_BORDER_WIDTH" description="WF_PARAM_BORDER_WIDTH_DESC">
                 <option value="inherit">WF_OPTION_NOT_SET</option>
                 <option value="0">0</option>
                 <option value="1">1</option>
