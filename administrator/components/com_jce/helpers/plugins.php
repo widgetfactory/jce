@@ -184,7 +184,7 @@ abstract class JcePluginsHelper
                 $object->manifest = $file;
                 $object->plugins = array();
                 $object->name = $name;
-                $object->title = $name;
+                $object->title = 'WF_' . strtoupper($object->folder) . '_' . strtoupper($name) . '_TITLE';
                 $object->description = '';
                 $object->id = $object->folder . '.' . $object->name;
                 $object->extension = $object->name;
