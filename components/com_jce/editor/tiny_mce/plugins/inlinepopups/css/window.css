@@ -63,8 +63,47 @@
     vertical-align: middle;
 }
 
-.mceLoading .mceModalContent {
+/*.mceLoading .mceModalContent {
     background: #fff url('../../../themes/advanced/skins/default/img/progress.gif') no-repeat center 45%;
+}*/
+
+.mceLoading .mceModalContent:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: #fff;
+    opacity: 0.8;
+    z-index: 10000;
+    box-sizing: border-box;
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.mceLoading .mceModalContent:after {
+    content: "";
+    display: block;
+    border: 0.25rem solid rgba(0, 0, 0, 0.1);
+    border-left-color: #888;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    animation: donut-spin 1.2s linear infinite;
+    z-index: 10001;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -1rem 0 0 -1rem;
+    box-sizing: border-box;
 }
 
 .mceModalHeader {
