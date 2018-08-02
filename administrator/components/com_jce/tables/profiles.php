@@ -17,7 +17,7 @@ class JceTableProfiles extends JTable
         parent::__construct('#__wf_profiles', 'id', $db);
     }
 
-    public function bind($src, $ignore = array())
+    /*public function bind($src, $ignore = array())
     {
         $data = array();
 
@@ -58,7 +58,7 @@ class JceTableProfiles extends JTable
         }
 
         return parent::bind($data, $ignore);
-    }
+    }*/
 
     public function load($id = null, $reset = true)
     {
