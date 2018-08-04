@@ -10,9 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-// Load class dependencies
-require_once WF_EDITOR_LIBRARIES . '/classes/plugin.php';
-
 class WFPreviewPlugin extends WFEditorPlugin
 {
     /**
@@ -35,6 +32,7 @@ class WFPreviewPlugin extends WFEditorPlugin
     public function showPreview()
     {
         $app = JFactory::getApplication();
+        $user = JFactory::getUser();
 
         // reset document type
         $document = JFactory::getDocument();
