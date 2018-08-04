@@ -46,6 +46,9 @@
 .ui-jce .tabs-left > .nav-tabs > li > a {
     margin-right: -1px;
     box-shadow: initial;
+
+    color: inherit;
+    text-align: left;
 }
 
 .ui-jce .tabs-left .tab-content {
