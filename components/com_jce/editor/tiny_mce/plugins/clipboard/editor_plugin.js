@@ -1245,7 +1245,7 @@
                         if (value == "normal") {
                             value = "";
                         }
-                        return;
+                        break;
 
                     case "mso-element":
                         // Remove track changes code
@@ -1270,6 +1270,20 @@
                 // convert to pixel values
                 if (tinymce.inArray(pixelStyles, name) !== -1) {
                     value = convertToPixels(value);
+                }
+
+                // convert to padding-left for indent
+                if (name === "margin-left") {
+                    indentValue = parseInt(settings.indentation, 10);
+                    value = parseInt(value, 10);
+
+                    // convert to an indent value
+                    value = Math.round(value / indentValue) * indentValue;
+
+                    if (value) {
+                        name   = settings.indent_use_margin ? 'margin-left' : 'padding-left';
+                        value += 'px';
+                    }
                 }
 
                 // Output only valid styles
