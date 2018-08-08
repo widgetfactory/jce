@@ -635,10 +635,6 @@
                         // convert to pixels
                         if (value && /^\d[a-z]?/.test(value)) {
                             value = convertToPixels(value);
-
-                            if (value) {
-                                value += "px";
-                            }
                         }
 
                         styles[name] = value;
@@ -901,6 +897,10 @@
             v = Math.abs(v);
         }
 
+        if (v) {
+            v += 'px';
+        }
+
         return v;
     }
 
@@ -950,7 +950,7 @@
     function WordFilter(editor, content) {
         var settings = editor.settings;
 
-        var keepStyles, validStyles = {};
+        var keepStyles, removeStyles, validStyles = {};
 
         // Chrome...
         content = content.replace(/<meta([^>]+)>/, '');
@@ -977,22 +977,58 @@
         content = content.replace(/<b[^>]+id="?docs-internal-[^>]*>/gi, '');
         content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
 
-        // get retain styles or a subset to allow for text color and table borders
-        keepStyles = settings.clipboard_paste_retain_style_properties;
+        // styles to keep
+        keepStyles      = settings.clipboard_paste_retain_style_properties;
+        // styles to remove
+        removeStyles    = settings.clipboard_paste_remove_style_properties;
 
-        if (keepStyles) {
-            each(keepStyles.split(/[, ]/), function (style) {
-                // add all border styles if "border" is set
+        // split to array if string
+        if (keepStyles && tinymce.is(keepStyles, 'string')) {
+            styleProps = tinymce.explode(keepStyles);
+
+            each(styleProps, function (style, i) {
                 if (style === "border") {
-                    each(borderStyles, function (name) {
-                        validStyles[name] = {};
-                    });
-
+                    // add expanded border styles
+                    styleProps = styleProps.concat(borderStyles);
                     return true;
                 }
-
-                validStyles[style] = {};
             });
+        }
+
+        // split to array if string
+        if (removeStyles && tinymce.is(removeStyles, 'string')) {
+            removeProps = tinymce.explode(removeStyles);
+
+            each(removeProps, function (style, i) {
+                if (style === "border") {
+                    // add expanded border styles
+                    removeProps = removeProps.concat(borderStyles);
+                    return true;
+                }
+            });
+
+            // remove from core styleProps array
+            styleProps = tinymce.grep(styleProps, function (prop) {
+                return tinymce.inArray(removeProps, prop) === -1;
+            });
+        }
+
+        each(styleProps, function (style) {
+            // add all border styles if "border" is set
+            if (style === "border") {
+                each(borderStyles, function (name) {
+                    validStyles[name] = {};
+                });
+
+                return true;
+            }
+
+            validStyles[style] = {};
+        });
+
+        // remove valid styles if we are removing all styles
+        if (settings.clipboard_paste_remove_styles) {
+            validStyles = {};
         }
 
         /**
@@ -1251,7 +1287,7 @@
                 }
 
                 // Output only valid styles
-                if (validStyles && validStyles[name]) {
+                if (validStyles[name]) {
                     outputStyles[name] = value;
                 }
             });
