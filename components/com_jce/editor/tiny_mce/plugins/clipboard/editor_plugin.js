@@ -1068,7 +1068,7 @@
             }
 
             function trimListStart(node, regExp) {
-                if (node.type === 3) {
+                if (node.type === 3) {                    
                     if (regExp.test(node.value)) {
                         node.value = node.value.replace(regExp, '');
                         return false;
@@ -1151,7 +1151,7 @@
                 removeIgnoredNodes(paragraphNode);
                 trimListStart(paragraphNode, /^\u00a0+/);
 
-                if (currentListNode.nodeName === "OL") {
+                if (currentListNode.name === "ol") {
                     trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
                 }
 
