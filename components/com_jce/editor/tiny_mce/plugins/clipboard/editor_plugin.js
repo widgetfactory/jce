@@ -613,7 +613,7 @@
             });
         } else {
             // process style attributes
-            processStyles(ed, o.node);
+            processStyles(ed, o);
         }
 
         // fix table borders
@@ -766,7 +766,7 @@
      * Process style attributes
      * @param node Node to process
      */
-    function processStyles(editor, node) {
+    function processStyles(editor, o) {
         var dom = editor.dom;
 
         // Style to keep
@@ -784,6 +784,11 @@
                     // add expanded border styles
                     styleProps = styleProps.concat(borderStyles);
                     return true;
+                }
+
+                // add padding style for indent
+                if (o.wordContent && style === "margin-left" && !editor.settings.indent_use_margin) {
+                    styleProps.push("padding-left");
                 }
             });
         }
@@ -806,8 +811,29 @@
             });
         }
 
+        // convert margin-left to indent
+        if (o.wordContent) {
+            each(dom.select('p[style]', o.node), function(el) {
+                var value = dom.getStyle(el, 'margin-left');
+                
+                var indentValue = parseInt(editor.settings.indentation, 10);
+                value = parseInt(value, 10);
+    
+                // convert to an indent value, must be greater than 0
+                value = Math.round(value / indentValue) * indentValue;
+    
+                if (value) {
+                    // remove existing margin-left
+                    dom.setStyle(el, 'margin-left', '');
+                    
+                    var name = editor.settings.indent_use_margin ? 'margin-left' : 'padding-left';
+                    dom.setStyle(el, name, value + 'px');
+                }
+            });
+        }
+
         // Retains some style properties
-        each(dom.select('*[style]', node), function (n) {
+        each(dom.select('*[style]', o.node), function (n) {
             var ns = {},
                 x = 0;
 
@@ -845,7 +871,7 @@
         });
 
         // convert some attributes
-        each(dom.select('*[align]', node), function (el) {
+        each(dom.select('*[align]', o.node), function (el) {
             var v = dom.getAttrib(el, 'align');
 
             if (v === "left" || v === "right" || v === "center") {
@@ -1270,20 +1296,6 @@
                 // convert to pixel values
                 if (tinymce.inArray(pixelStyles, name) !== -1) {
                     value = convertToPixels(value);
-                }
-
-                // convert to padding-left for indent
-                if (name === "margin-left") {
-                    indentValue = parseInt(settings.indentation, 10);
-                    value = parseInt(value, 10);
-
-                    // convert to an indent value
-                    value = Math.round(value / indentValue) * indentValue;
-
-                    if (value) {
-                        name   = settings.indent_use_margin ? 'margin-left' : 'padding-left';
-                        value += 'px';
-                    }
                 }
 
                 // Output only valid styles
