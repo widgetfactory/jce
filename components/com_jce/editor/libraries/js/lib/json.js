@@ -90,9 +90,6 @@
 
             var url = document.location.href;
 
-            // strip token
-            url = url.replace(/&wf([a-z0-9]+)=1/, '');
-
             function showError(e) {
                 var txt = "";
 
