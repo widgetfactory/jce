@@ -1478,7 +1478,7 @@
 
                             // Initialize uploader
                             $('#upload-queue').uploader($.extend({
-                                url: $('form:first').attr('action'),
+                                url: document.location.href,
                                 field: $('input[type="file"]:first'),
                                 websafe_mode: self.options.websafe_mode,
                                 websafe_spaces: self.options.websafe_spaces,
