@@ -282,8 +282,12 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // fix Link plugin legacy "direction" conflict
         if ($this->get('caller') === 'link') {
-            $fallback = $this->getParam('editor.dir');
-            $dir = $this->getParam($this->getName().'.dir', $fallback);
+            // get directory from File Browser parameters
+            $dir = $this->getParam('browser.dir');
+            // if value is empty, use editor parameter
+            if (empty($dir)) {
+                $dir = $this->getParam('editor.dir');
+            }
         }
 
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
