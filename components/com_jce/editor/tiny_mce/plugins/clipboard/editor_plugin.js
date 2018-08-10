@@ -1139,7 +1139,7 @@
                 removeIgnoredNodes(paragraphNode);
                 trimListStart(paragraphNode, /^\u00a0+/);
 
-                if (currentListNode.nodeName === "OL") {
+                if (currentListNode.name === "ol") {
                     trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
                 }
 
@@ -1287,7 +1287,7 @@
                 }
 
                 // convert to padding-left for indent
-                if (name === "margin-left") {
+                if (node.name == 'p' && name === "margin-left") {
                     indentValue = parseInt(settings.indentation, 10);
                     value = parseInt(value, 10);
 
