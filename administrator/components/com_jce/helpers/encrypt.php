@@ -191,7 +191,7 @@ class WFEncryptHelper
         }
 
         if ($encryption == 'CTR128') {
-            $encrypted = WFUtilEncrypt::AESEncryptCtr($settingsINI, $key, 128);
+            $encrypted = WFUtilEncrypt::AESEncryptCtr($data, $key, 128);
             if (empty($encrypted)) {
                 $encryption = '';
             } else {
