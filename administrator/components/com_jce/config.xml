@@ -27,9 +27,9 @@
           <option value="0">JNO</option>
         </field>
 
-        <field name="secureparams" type="list" default="0" label="WF_PREFERENCES_SECUREPARAMS" description="WF_PREFERENCES_SECUREPARAMS_DESC">
-            <option value="1">WF_OPTION_YES</option>
-            <option value="0">WF_OPTION_NO</option>
+        <field name="secureparams" type="radio" default="0" label="WF_PREFERENCES_SECUREPARAMS" description="WF_PREFERENCES_SECUREPARAMS_DESC" class="btn-group btn-group-yesno">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
         </field>
 
     </fieldset>
