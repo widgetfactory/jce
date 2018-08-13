@@ -67,7 +67,7 @@ class JceTableProfiles extends JTable
         if ($return !== false) {
             // decrypt address
             if (!empty($this->params)) {
-                //$this->params = WFEncryptHelper::decrypt($this->params);
+                $this->params = WFEncryptHelper::decrypt($this->params);
             }
         }
 
@@ -78,7 +78,7 @@ class JceTableProfiles extends JTable
     {
         // encrypt address
         if (!empty($this->params)) {
-            //$this->params = WFEncryptHelper::encrypt($this->params);
+            $this->params = WFEncryptHelper::encrypt($this->params);
         }
 
         return parent::store($updateNulls);
