@@ -982,6 +982,11 @@
         // styles to remove
         removeStyles    = settings.clipboard_paste_remove_style_properties;
 
+        // clear default styles list if we are removing all styles
+        if (settings.clipboard_paste_remove_styles) {
+            styleProps = [];
+        }
+
         // split to array if string
         if (keepStyles && tinymce.is(keepStyles, 'string')) {
             styleProps = tinymce.explode(keepStyles);
@@ -1025,11 +1030,6 @@
 
             validStyles[style] = {};
         });
-
-        // remove valid styles if we are removing all styles
-        if (settings.clipboard_paste_remove_styles) {
-            validStyles = {};
-        }
 
         /**
          * Converts fake bullet and numbered lists to real semantic OL/UL.
