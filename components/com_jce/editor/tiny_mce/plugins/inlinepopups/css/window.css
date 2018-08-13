@@ -108,8 +108,8 @@
 
 .mceModalHeader {
     padding: 10px 30px 10px 15px;
-    background-color: #ddd;
-    border-bottom: 1px solid #bbb;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
     min-height: 20px;
 }
 
@@ -148,7 +148,7 @@
     padding: 10px;
     border-top: 1px solid #e5e5e5;
     border-radius: 0 0 3px 3px;
-    background: #fafafa;
+    background: #fff;
     text-align: center;
 }
 

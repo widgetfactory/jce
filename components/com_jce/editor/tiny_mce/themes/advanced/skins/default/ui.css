@@ -878,7 +878,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     content: "";
     display: block;
     position: absolute;
-    width: 24px;
+    width: 26px;
     background-color: #fafafa;
     height: 6px;
     left: -1px;

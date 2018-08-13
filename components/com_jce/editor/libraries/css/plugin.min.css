@@ -109,6 +109,7 @@ label {
     margin: 0 auto;
     top: 50%;
     max-height: 100%;
+    border-radius: 3px;
 }
 
 .uk-modal-prompt,
@@ -188,8 +189,9 @@ label {
 .uk-modal-header {
     padding: 10px;
     margin: -10px -10px 10px;
-    background: #ddd;
-    border-bottom: 1px solid #ccc;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    border-radius: 3px 3px 0 0;
 }
 
 .uk-modal-body {
@@ -210,15 +212,15 @@ label {
 
 .uk-modal-header h3 {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 1.25rem;
 }
 
 .uk-modal-footer {
     padding: 10px;
     margin: 10px -10px -10px -10px;
     border-top: 1px solid #ddd;
-    border-radius: 0 0 2px 2px;
-    background: #fafafa;
+    border-radius: 0 0 3px 3px;
+    background: #fff;
 }
 
 .uk-modal-alert .uk-modal-dialog,
