@@ -605,7 +605,7 @@
         });
 
         // Remove all styles
-        if (ed.getParam('clipboard_paste_remove_styles')) {
+        if (ed.getParam('clipboard_paste_remove_styles', 1)) {
             // Remove style attribute
             each(dom.select('*[style]', o.node), function (el) {
                 el.removeAttribute('style');
@@ -669,6 +669,18 @@
 
                 // set styles
                 dom.setStyles(n, styles);
+            });
+        }
+
+        // update indents
+        if (o.wordContent) {
+            // update indent conversion
+            each(dom.select('p[data-mce-indent]', o.node), function (el) {
+                var value = dom.getAttrib(el, 'data-mce-indent');
+                var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
+
+                dom.setStyle(el, style, value + 'px');
+                dom.setAttrib(el, 'data-mce-indent', '');
             });
         }
 
@@ -785,11 +797,6 @@
                     styleProps = styleProps.concat(borderStyles);
                     return true;
                 }
-
-                // add padding style for indent
-                if (o.wordContent && style === "margin-left" && !editor.settings.indent_use_margin) {
-                    styleProps.push("padding-left");
-                }
             });
         }
 
@@ -808,27 +815,6 @@
             // remove from core styleProps array
             styleProps = tinymce.grep(styleProps, function (prop) {
                 return tinymce.inArray(removeProps, prop) === -1;
-            });
-        }
-
-        // convert margin-left to indent
-        if (o.wordContent) {
-            each(dom.select('p[style]', o.node), function(el) {
-                var value = dom.getStyle(el, 'margin-left');
-                
-                var indentValue = parseInt(editor.settings.indentation, 10);
-                value = parseInt(value, 10);
-    
-                // convert to an indent value, must be greater than 0
-                value = Math.round(value / indentValue) * indentValue;
-    
-                if (value) {
-                    // remove existing margin-left
-                    dom.setStyle(el, 'margin-left', '');
-                    
-                    var name = editor.settings.indent_use_margin ? 'margin-left' : 'padding-left';
-                    dom.setStyle(el, name, value + 'px');
-                }
             });
         }
 
@@ -1039,7 +1025,7 @@
         });
 
         // remove valid styles if we are removing all styles
-        if (settings.clipboard_paste_remove_styles) {
+        if (editor.getParam('clipboard_paste_remove_styles', 1)) {
             validStyles = {};
         }
 
@@ -1279,7 +1265,22 @@
                             node.remove();
                             return;
                         }
+                        break;
 
+                    case "margin-left":
+                        if (node.name === "p" && settings.paste_convert_indents !== false) {
+                            var indentValue = parseInt(editor.settings.indentation, 10);
+                            value = parseInt(value, 10);
+                    
+                            // convert to an indent value, must be greater than 0
+                            value = Math.round(value / indentValue) * indentValue;
+                            
+                            // store value and remove
+                            if (value) {
+                                node.attr('data-mce-indent', "" + value);
+                                value = "";
+                            }
+                        }
                         break;
                 }
 
@@ -1560,7 +1561,7 @@
         // Parse into DOM structure
         var rootNode = domParser.parse(content);
 
-        // Process DOM
+        // Process Lists
         if (settings.paste_convert_word_fake_lists !== false) {
             convertFakeListsToProperLists(rootNode);
         }
