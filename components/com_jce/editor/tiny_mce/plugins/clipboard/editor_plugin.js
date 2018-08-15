@@ -95,7 +95,7 @@
     var InternalHtml = new InternalHtml();
 
     var CutCopy = function (editor) {
-        var noop = function () {};
+        var noop = function () { };
 
         var hasWorkingClipboardApi = function (clipboardData) {
             // iOS supports the clipboardData API but it doesn't do anything for cut operations
@@ -605,7 +605,7 @@
         });
 
         // Remove all styles
-        if (ed.getParam('clipboard_paste_remove_styles')) {
+        if (ed.getParam('clipboard_paste_remove_styles', 1)) {
             // Remove style attribute
             each(dom.select('*[style]', o.node), function (el) {
                 el.removeAttribute('style');
@@ -672,6 +672,21 @@
             });
         }
 
+        // update indents
+        if (o.wordContent) {
+            // update indent conversion
+            each(dom.select('[data-mce-indent]', o.node), function (el) {
+                if (el.nodeName === "p") {
+                    var value = dom.getAttrib(el, 'data-mce-indent');
+                    var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
+
+                    dom.setStyle(el, style, value + 'px');
+                }
+
+                dom.setAttrib(el, 'data-mce-indent', '');
+            });
+        }
+
         // image file/data regular expression
         var imgRe = /(file:|data:image)\//i,
             uploader = ed.plugins.upload;
@@ -680,19 +695,6 @@
         // Process images - remove local
         each(dom.select('img', o.node), function (el) {
             var s = dom.getAttrib(el, 'src');
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    console.log(this);
-                }
-            };
-
-            xhr.open('GET', s, true);
-
-            xhr.responseType = 'blob';
-            xhr.send();
 
             // remove or processs for upload img element if blank, local file url or base64 encoded
             if (!s || imgRe.test(s)) {
@@ -978,14 +980,9 @@
         content = content.replace(/<br class="?Apple-interchange-newline"?>/gi, '');
 
         // styles to keep
-        keepStyles      = settings.clipboard_paste_retain_style_properties;
+        keepStyles = settings.clipboard_paste_retain_style_properties;
         // styles to remove
-        removeStyles    = settings.clipboard_paste_remove_style_properties;
-
-        // clear default styles list if we are removing all styles
-        if (settings.clipboard_paste_remove_styles) {
-            styleProps = [];
-        }
+        removeStyles = settings.clipboard_paste_remove_style_properties;
 
         // split to array if string
         if (keepStyles && tinymce.is(keepStyles, 'string')) {
@@ -1030,6 +1027,11 @@
 
             validStyles[style] = {};
         });
+
+        // remove valid styles if we are removing all styles
+        if (editor.getParam('clipboard_paste_remove_styles', 1)) {
+            validStyles = {};
+        }
 
         /**
          * Converts fake bullet and numbered lists to real semantic OL/UL.
@@ -1269,6 +1271,22 @@
                         }
 
                         break;
+
+                    case "margin-left":
+                        if (node.name === "p" && settings.paste_convert_indents !== false) {
+                            var indentValue = parseInt(editor.settings.indentation, 10);
+                            value = parseInt(value, 10);
+
+                            // convert to an indent value, must be greater than 0
+                            value = Math.round(value / indentValue) * indentValue;
+
+                            // store value and remove
+                            if (value) {
+                                node.attr('data-mce-indent', "" + value);
+                                value = "";
+                            }
+                        }
+                        break;
                 }
 
                 if (name.indexOf('mso-comment') === 0) {
@@ -1284,20 +1302,6 @@
                 // convert to pixel values
                 if (tinymce.inArray(pixelStyles, name) !== -1) {
                     value = convertToPixels(value);
-                }
-
-                // convert to padding-left for indent
-                if (node.name == 'p' && name === "margin-left") {
-                    indentValue = parseInt(settings.indentation, 10);
-                    value = parseInt(value, 10);
-
-                    // convert to an indent value
-                    value = Math.round(value / indentValue) * indentValue;
-
-                    if (value) {
-                        name   = settings.indent_use_margin ? 'margin-left' : 'padding-left';
-                        value += 'px';
-                    }
                 }
 
                 // Output only valid styles
@@ -2446,8 +2450,8 @@
                 inline: 1,
                 popup_css: false
             }, {
-                cmd: cmd
-            });
+                    cmd: cmd
+                });
         },
 
         /**

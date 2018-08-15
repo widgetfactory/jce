@@ -19,7 +19,7 @@ class WFClipboardPluginConfig
         $settings['clipboard_paste_use_dialog'] = $wf->getParam('clipboard.paste_use_dialog', 0, 0, 'boolean');
         $settings['clipboard_paste_force_cleanup'] = $wf->getParam('clipboard.paste_force_cleanup', 0, 0, 'boolean');
         $settings['clipboard_paste_strip_class_attributes'] = $wf->getParam('clipboard.paste_strip_class_attributes', 2, 2);
-        $settings['clipboard_paste_remove_styles'] = $wf->getParam('clipboard.paste_remove_styles', 0, 0, 'boolean');
+        $settings['clipboard_paste_remove_styles'] = $wf->getParam('clipboard.paste_remove_styles', 1, 1, 'boolean');
         $settings['clipboard_paste_retain_style_properties'] = $wf->getParam('clipboard.paste_retain_style_properties', '', '');
         $settings['clipboard_paste_remove_style_properties'] = $wf->getParam('clipboard.paste_remove_style_properties', '', '');
         $settings['clipboard_paste_remove_spans'] = $wf->getParam('clipboard.paste_remove_spans', 0, 0, 'boolean');

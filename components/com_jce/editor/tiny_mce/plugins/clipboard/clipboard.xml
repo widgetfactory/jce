@@ -31,7 +31,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="paste_remove_styles" type="yesno" default="0" label="WF_PASTE_PARAM_STYLES" description="WF_PASTE_PARAM_STYLES_DESC">
+            <field name="paste_remove_styles" type="yesno" default="1" label="WF_PASTE_PARAM_STYLES" description="WF_PASTE_PARAM_STYLES_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
