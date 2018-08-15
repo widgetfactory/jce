@@ -675,11 +675,14 @@
         // update indents
         if (o.wordContent) {
             // update indent conversion
-            each(dom.select('p[data-mce-indent]', o.node), function (el) {
-                var value = dom.getAttrib(el, 'data-mce-indent');
-                var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
+            each(dom.select('[data-mce-indent]', o.node), function (el) {
+                if (el.nodeName === "P") {
+                    var value = dom.getAttrib(el, 'data-mce-indent');
+                    var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
 
-                dom.setStyle(el, style, value + 'px');
+                    dom.setStyle(el, style, value + 'px');
+                }
+
                 dom.setAttrib(el, 'data-mce-indent', '');
             });
         }
