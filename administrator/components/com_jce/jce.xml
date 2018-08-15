@@ -54,6 +54,7 @@
             <folder>models</folder>
             <folder>sql</folder>
             <folder>tables</folder>
+            <folder>vendor</folder>
             <folder>views</folder>
             <file>access.xml</file>
             <file>config.xml</file>
