@@ -39,7 +39,7 @@ class JceModelHelp extends JModelLegacy
 
                     // if file attribute load file
                     if ($file) {
-                        $result .= $this->getTopics(JPATH_COMPONENT_SITE . '/editor/' . $file);
+                        $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                     } else {
                         $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link">' . trim(JText::_($title)) . '</a>';
                     }
@@ -53,7 +53,7 @@ class JceModelHelp extends JModelLegacy
                             if ($file = (string) $subtopic->attributes()->file) {
                                 $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link">' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
                                 $result .= '<ul class="nav nav-list hidden">';
-                                $result .= $this->getTopics(JPATH_COMPONENT_SITE . '/editor/' . $file);
+                                $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                                 $result .= '</ul>';
                                 $result .= '</li>';
                             } else {
@@ -109,7 +109,7 @@ class JceModelHelp extends JModelLegacy
                 $file = __DIR__ . '/' . $category . '.xml';
                 break;
             case 'editor':
-                $file = JPATH_COMPONENT_SITE . '/editor/tiny_mce/plugins/' . $category . '/' . $category . '.xml';
+                $file = JPATH_SITE . '/components/com_jce/editor/tiny_mce/plugins/' . $category . '/' . $category . '.xml';
 
                 // check for installed plugin
                 $plugin = JPluginHelper::getPlugin('jce', 'editor-' . $category);
@@ -120,7 +120,7 @@ class JceModelHelp extends JModelLegacy
                 }
 
                 if (!is_file($file)) {
-                    $file = JPATH_COMPONENT_SITE . '/editor/xml/help/editor.xml';
+                    $file = JPATH_SITE . '/components/com_jce/editor/xml/help/editor.xml';
                 } else {
                     $language->load('WF_' . $category, JPATH_SITE);
                 }

@@ -26,7 +26,7 @@ class WFEncryptHelper
         $keyData = Encoding::binToHex($keyAscii);
 
         $filecontents = "<?php defined('WF_EDITOR') or die(); define('WF_SERVERKEY', '$keyData'); ?>";
-        $filename     = JPATH_COMPONENT_ADMINISTRATOR . '/serverkey.php';
+        $filename     = JPATH_ADMINISTRATOR . '/components/com_jce/serverkey.php';
 
         file_put_contents($filename, $filecontents);
 
@@ -42,7 +42,7 @@ class WFEncryptHelper
     public static function getKey($legacy = false)
     {
         if (!defined('WF_SERVERKEY')) {
-            $filename = JPATH_COMPONENT_ADMINISTRATOR . '/serverkey.php';
+            $filename = JPATH_ADMINISTRATOR . '/components/com_jce/serverkey.php';
 
             if (is_file($filename)) {
                 include_once($filename);
@@ -132,6 +132,10 @@ class WFEncryptHelper
 
         if ($mode == '###DEFUSE###') {
             $key = self::getKey();
+
+            if (empty($key)) {
+                return $encrypted;
+            }
 
             //get encrypted string without marker
             $encrypted = substr($encrypted, 12);

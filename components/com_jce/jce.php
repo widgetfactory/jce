@@ -10,4 +10,4 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once JPATH_COMPONENT_ADMINISTRATOR.'/jce.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/jce.php';

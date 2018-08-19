@@ -290,7 +290,7 @@ abstract class JcePluginsHelper
 
     public static function addToProfile($id, $plugin)
     {
-        JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
+        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // Add to Default Group
         $profile = JTable::getInstance('Profiles', 'JceTable');
@@ -335,7 +335,7 @@ abstract class JcePluginsHelper
 
     public static function removeFromProfile($id, $plugin)
     {
-        JTable::addIncludePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
+        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // Add to Default Group
         $profile = JTable::getInstance('Profiles', 'JceTable');
@@ -384,7 +384,7 @@ abstract class JcePluginsHelper
         jimport('joomla.filesystem.file');
 
         // get the base file
-        $file = JPATH_COMPONENT_ADMINISTRATOR . '/index.html';
+        $file = JPATH_ADMINISTRATOR . '/components/com_jce/index.html';
 
         if (is_file($file) && is_dir($path)) {
             JFile::copy($file, $path . '/' . basename($file));

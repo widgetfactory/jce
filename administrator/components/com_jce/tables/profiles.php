@@ -78,7 +78,13 @@ class JceTableProfiles extends JTable
     {
         // encrypt address
         if (!empty($this->params)) {
-            $this->params = WFEncryptHelper::encrypt($this->params);
+            
+            $params = JComponentHelper::getParams('com_jce');
+
+            if ($params->get('secureparams', 0)) {
+                $this->params = WFEncryptHelper::encrypt($this->params);
+            }
+
         }
 
         return parent::store($updateNulls);

@@ -84,7 +84,7 @@ class JceController extends JControllerLegacy
             $view->document = $document;
 
             // Load the submenu.
-            require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/admin.php';
+            require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/admin.php';
 
             JceHelperAdmin::addSubmenu($vName);
 

@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once JPATH_COMPONENT_SITE.'/editor/libraries/classes/application.php';
+require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
 class JceControllerEditor extends JControllerLegacy
 {

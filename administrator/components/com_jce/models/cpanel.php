@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once JPATH_COMPONENT_ADMINISTRATOR . '/includes/constants.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/constants.php';
 
 class JceModelCpanel extends JModelLegacy
 {
@@ -64,7 +64,7 @@ class JceModelCpanel extends JModelLegacy
         $licence = "";
         $version = "";
 
-        if ($xml = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/jce.xml')) {
+        if ($xml = simplexml_load_file(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml')) {
             $licence = (string)$xml->license;
             $version = (string)$xml->version;
 
