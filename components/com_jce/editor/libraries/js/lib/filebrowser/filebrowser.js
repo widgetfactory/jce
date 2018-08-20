@@ -325,7 +325,7 @@
                 $('input[type="checkbox"]', '#browser-list').prop('checked', !!s);
 
                 if (s) {
-                    self._selectItems($('li', '#browser-list').not('.folder-up'), true);
+                    self._selectItems(null, $('li', '#browser-list').not('.folder-up'), true);
                 } else {
                     // remove all selections
                     self._deselectItems();
@@ -491,7 +491,7 @@
             }
 
             // set scrollEvents cancel
-            $('#browser-list').on(scrollEvents, function() {
+            $('#browser-list').on(scrollEvents, function () {
                 $(this).stop();
             });
 
@@ -592,10 +592,10 @@
             // get the sort value from a cookie
             this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '');
 
-            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function() {
+            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function () {
                 // reset all
                 $(this).siblings('.asc, .desc').removeClass('desc').addClass('asc');
-                
+
                 var direction = '';
 
                 if ($(this).hasClass('asc')) {
@@ -615,15 +615,15 @@
                 Wf.Cookie.set('wf_' + Wf.getName() + '_sort', self._sortValue);
 
                 self.refresh();
-            }).addClass(function() {
+            }).addClass(function () {
                 if (this.id.indexOf(self._sortValue) === -1) {
                     return 'asc';
                 }
-                
+
                 if (self._sortValue && self._sortValue.charAt(0) === '-') {
                     return 'desc';
                 }
-                
+
                 return 'asc';
             });
         },
@@ -1106,7 +1106,7 @@
          * Set the current directory
          * @param {String} dir
          */
-        _setDir: function (dir) {            
+        _setDir: function (dir) {
             this._dir = '' + dir;
         },
         /**
@@ -1192,11 +1192,11 @@
          */
         load: function (item) {
             var src = "";
-            
+
             // add returned items
             if (item) {
                 this._addReturnedItem(item);
-                
+
                 // pass string value to src
                 src = item.name || item;
             }
@@ -1227,7 +1227,7 @@
          */
         _loadList: function (o) {
             var dir = '';
-            
+
             $('input[name="refresh"]', 'form').remove();
 
             // data error...
@@ -1552,11 +1552,11 @@
                             });
                         }
                     }, {
-                        elements: elements
-                    });
+                            elements: elements
+                        });
                     break;
 
-                    // Cut / Copy operation
+                // Cut / Copy operation
                 case 'copy':
                 case 'cut':
                     this._pasteaction = name;
@@ -1566,7 +1566,7 @@
 
                     break;
 
-                    // Paste the file
+                // Paste the file
                 case 'paste':
                     var fn = (this._pasteaction == 'copy') ? 'copyItem' : 'moveItem';
                     this._setLoader();
@@ -1617,12 +1617,12 @@
                                             self.refresh();
                                         }
                                     }, {
-                                        label: {
-                                            'confirm': self._translate('replace', 'Replace'),
-                                            'cancel': self._translate('cancel', 'Cancel')
-                                        },
-                                        header: false
-                                    });
+                                            label: {
+                                                'confirm': self._translate('replace', 'Replace'),
+                                                'cancel': self._translate('cancel', 'Cancel')
+                                            },
+                                            header: false
+                                        });
                                 } else {
                                     callback(o, dir);
 
@@ -1637,7 +1637,7 @@
 
                     break;
 
-                    // Delete a file or folder
+                // Delete a file or folder
                 case 'delete':
                     var msg = self._translate('delete_item_alert', 'Delete Selected Item(s)');
 
@@ -1665,14 +1665,14 @@
 
                         }
                     }, {
-                        label: {
-                            'confirm': self._translate('delete', 'Delete')
-                        },
-                        header: false
-                    });
+                            label: {
+                                'confirm': self._translate('delete', 'Delete')
+                            },
+                            header: false
+                        });
                     break;
 
-                    // Rename a file or folder
+                // Rename a file or folder
                 case 'rename':
                     var s = this.getSelectedItems(0);
                     var v = Wf.String.basename(list);
@@ -1731,14 +1731,14 @@
                             }
                         });
                     }, {
-                        value: v,
-                        header: false,
-                        label: {
-                            'confirm': self._translate('rename', 'Rename')
-                        },
-                        elements: this._getDialogOptions('rename'),
-                        close_on_submit: false
-                    });
+                            value: v,
+                            header: false,
+                            label: {
+                                'confirm': self._translate('rename', 'Rename')
+                            },
+                            elements: this._getDialogOptions('rename'),
+                            close_on_submit: false
+                        });
                     break;
             }
         },
@@ -2130,11 +2130,11 @@
          * @param {Array} items The array of items to select
          * @param {Boolean} show Show item properties
          */
-        _selectItems: function (items, show) {
+        _selectItems: function (e, items, show) {
             $(items).addClass('selected').find('input[type="checkbox"]').prop('checked', true);
 
             if (show) {
-                this._showSelectedItems();
+                this._showSelectedItems(e);
             }
 
             var $list = $('#item-list');
@@ -2238,6 +2238,9 @@
             var ctrl = (e.ctrlKey || e.metaKey),
                 shift = e.shiftKey;
 
+            // set default event data
+            e.data = {}
+
             // Single click
             if (!ctrl && !shift && !checkbox || !multiple) {
                 // uncheck all boxes
@@ -2246,16 +2249,19 @@
                 // deselect all
                 this._deselectItems();
                 // select item
-                this._selectItems([el], true);
+                this._selectItems(e, [el], true);
 
                 // ctrl & shift
             } else if (multiple && (ctrl || shift || checkbox)) {
+                // flag event as multiple
+                e.data.multiple = true;
+
                 // ctrl
                 if (ctrl || checkbox) {
                     if (this._isSelectedItem(el)) {
                         this._removeSelectedItems([el], true);
                     } else {
-                        this._selectItems([el], true);
+                        this._selectItems(e, [el], true);
                     }
                 }
 
@@ -2282,9 +2288,9 @@
                                 selection.push(items[i]);
                             }
                         }
-                        this._selectItems(selection, true);
+                        this._selectItems(e, selection, true);
                     } else {
-                        this._selectItems([el], true);
+                        this._selectItems(e, [el], true);
                     }
                 }
             }
@@ -2292,7 +2298,7 @@
         /**
          * Show the selected items' details
          */
-        _showSelectedItems: function () {
+        _showSelectedItems: function (e) {
             var $items = $('li.selected', '#item-list'),
                 n = $items.length;
 
@@ -2303,7 +2309,7 @@
                 // make the first item active
                 $items.first().addClass('active');
 
-                this._showItemDetails();
+                this._showItemDetails(e);
             }
         },
         /**
@@ -2359,13 +2365,13 @@
 
                 $('#browser-list').animate({
                     scrollTop: Math.round(top)
-                }, 1500, function() {
+                }, 1500, function () {
                     $(this).off(scrollEvents);
                 });
             }
 
             // Select items and display properties
-            this._selectItems(items, true);
+            this._selectItems(null, items, true);
         },
         _serializeItemData: function (item) {
             var data = {
@@ -2392,7 +2398,7 @@
         /**
          * Show a file /folder properties / details
          */
-        _showItemDetails: function () {
+        _showItemDetails: function (e) {
             var self = this,
                 $items = $('li.selected', '#item-list'),
                 n = $items.length;
@@ -2428,7 +2434,7 @@
             // show relevant buttons
             this._showButtons();
             // get item details
-            this._getItemDetails();
+            this._getItemDetails(e);
         },
         _getDimensions: function (file) {
             var img = new Image();
@@ -2520,7 +2526,7 @@
         /**
          * Get a file or folder's properties
          */
-        _getItemDetails: function () {
+        _getItemDetails: function (e) {
             var self = this,
                 mime;
 
@@ -2555,7 +2561,7 @@
                     "title": $(item).attr("title"),
                     "width": $(item).data("width"),
                     "height": $(item).data("height"),
-                    "selected": $(item).hasClass('selected')
+                    "isSelection": e && e.data && !e.data.multiple
                 };
 
                 self._trigger('onFileDetails', [item, o]);
