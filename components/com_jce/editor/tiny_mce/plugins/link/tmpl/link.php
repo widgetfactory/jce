@@ -47,6 +47,7 @@ $links = $this->plugin->getLinks();
             <option value="_blank"><?php echo WFText::_('WF_OPTION_TARGET_BLANK'); ?></option>
             <option value="_parent"><?php echo WFText::_('WF_OPTION_TARGET_PARENT'); ?></option>
             <option value="_top"><?php echo WFText::_('WF_OPTION_TARGET_TOP'); ?></option>
+            <option value="download"><?php echo WFText::_('WF_OPTION_TARGET_DOWNLOAD', 'Download'); ?></option>
         </select>
     </div>
 </div>

@@ -240,8 +240,15 @@
                 // Setup form data
                 $('#href').val(href);
                 // attributes
-                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function (i, k) {
-                    $('#' + k).val(ed.dom.getAttrib(n, k));
+                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target', 'download'], function (i, k) {
+                    var v = ed.dom.getAttrib(n, k);
+
+                    if (k === "download" && v) {
+                        k = "target";
+                        v = "download";
+                    }
+
+                    $('#' + k).val(v);
                 });
 
                 $('#dir').val(ed.dom.getAttrib(n, 'dir'));
@@ -393,6 +400,17 @@
 
                 if (k == 'class') {
                     v = $('#classlist').val() || $('#classes').val() || '';
+                }
+
+                if (k == 'target') {
+                    if (v == 'download') {
+                        // set download value as file basename
+                        args['download'] = Wf.String.basename($('#href').val());
+                        // set target value to "_blank" for IE
+                        v = '_blank';
+                    } else {
+                        args['download'] = '';
+                    }
                 }
 
                 args[k] = v;
