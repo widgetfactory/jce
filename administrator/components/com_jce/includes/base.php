@@ -49,3 +49,6 @@ JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php')
 JLoader::register('WFEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
 
 JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/Crypto', false, false, 'psr4');
+
+// legacy class for backwards compatability
+JLoader::register('WFText', WF_EDITOR_CLASSES . '/text.php');
