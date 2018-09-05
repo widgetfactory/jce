@@ -46,7 +46,7 @@ class JceModelConfig extends JModelForm
     public function getForm($data = array(), $loadData = true)
     {
         // Get the form.
-        $form = $this->loadForm('com_jce.config', 'config', array('control' => 'config', 'load_data' => $loadData));
+        $form = $this->loadForm('com_jce.config', 'config', array('control' => 'jform', 'load_data' => $loadData));
 
         if (empty($form)) {
             return false;
@@ -89,7 +89,18 @@ class JceModelConfig extends JModelForm
     {
         // Get the editor data
         $plugin = JPluginHelper::getPlugin('editors', 'jce');
-        $data   = ArrayHelper::fromObject($plugin->params);
+
+        // json_decode
+        $json = json_decode($plugin->params, true);
+
+        array_walk($json, function(&$value, $key) {
+            if (is_numeric($value)) {
+                $value = $value + 0;
+            }
+        });
+
+        $data = new StdClass;
+        $data->params = $json;
 
         return $data;
     }
@@ -110,7 +121,7 @@ class JceModelConfig extends JModelForm
         $plugin = JPluginHelper::getPlugin('editors', 'jce');
 
         if (!$plugin->id) {
-            $this->setError('Invalid component');
+            $this->setError('Invalid plugin');
             return false;
         }
 

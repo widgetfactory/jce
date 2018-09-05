@@ -23,13 +23,15 @@ class JceControllerConfig extends JControllerForm
 	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
+		$app = JFactory::getApplication();
+
 		$data = $this->input->get('jform', array(), 'array');
 		$user = JFactory::getUser();
 
 		// Check if the user is authorised to do this.
 		if (!$user->authorise('core.admin', 'com_jce')) {
-			$this->app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-			$this->app->redirect('index.php?option=com_jce');
+			$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+			$app->redirect('index.php?option=com_jce');
 		}
 
 		$model = $this->getModel();
@@ -59,25 +61,25 @@ class JceControllerConfig extends JControllerForm
 				}
 			}
 
-			$this->app->redirect('index.php?option=com_jce&view=config');
+			$app->redirect('index.php?option=com_jce&view=config');
 		}
 
-		try {
+		try {			
 			$model->save($data);
 		} catch (RuntimeException $e) {
 			// Save failed, go back to the screen and display a notice.
-			$this->app->enqueueMessage(JText::sprintf('JERROR_SAVE_FAILED', $e->getMessage()), 'error');
-			$this->app->redirect(JRoute::_('index.php?option=com_jce&view=config', false));
+			$app->enqueueMessage(JText::sprintf('JERROR_SAVE_FAILED', $e->getMessage()), 'error');
+			$app->redirect(JRoute::_('index.php?option=com_jce&view=config', false));
 		}
 
 		$this->setMessage(JText::_($prefix . ($recordId === 0 && $app->isClient('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'));
 
 		switch ($this->getTask()) {
 			case 'apply':
-				$this->app->redirect('index.php?option=com_jce&view=config');
+				$app->redirect('index.php?option=com_jce&view=config');
 				break;
 			case 'save':
-				$this->app->redirect('index.php?option=com_jce');
+				$app->redirect('index.php?option=com_jce');
 				break;
 		}
 
