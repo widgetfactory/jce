@@ -310,7 +310,8 @@
                     var head = DOM.doc.getElementsByTagName('head')[0];
                     // create style element
                     var style = DOM.create('style', {
-                        type: 'text/css'
+                        type: 'text/css',
+                        id: 'wf-fontface'
                     });
 
                     var css = self.fontface.join("\n");
