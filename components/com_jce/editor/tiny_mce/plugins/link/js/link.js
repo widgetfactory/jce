@@ -93,7 +93,7 @@
 
                 // get node id
                 var id = $(node).attr('data-id') || $(node).attr('id');
-                
+
                 // create query
                 var query = Wf.String.query(Wf.String.unescape(id));
 
@@ -182,8 +182,8 @@
                 if (n) {
                     n = ed.dom.getParent(n, 'A') || n;
                     var v = se.getContent({
-                            format: 'text'
-                        }),
+                        format: 'text'
+                    }),
                         shortEnded = ed.schema.getShortEndedElements();
 
                     // reset node in IE if the link is the first element
@@ -237,22 +237,34 @@
 
                 var href = decodeURIComponent(ed.convertURL(ed.dom.getAttrib(n, 'href')));
 
-                // Setup form data
-                $('#href').val(href);
-                // attributes
-                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function (i, k) {
-                    $('#' + k).val(ed.dom.getAttrib(n, k));
+                var attribs = {};
+
+                $.each(n.attributes, function (i, attr) {                    
+                    if (attr.name === "href") {
+                        return true;
+                    }
+
+                    if (attr.name.indexOf('data-mce-') !== -1) {
+                        return true;
+                    }
+
+                    attribs[attr.name] = attr.value;
                 });
 
-                $('#dir').val(ed.dom.getAttrib(n, 'dir'));
-                $('#rev').val(ed.dom.getAttrib(n, 'rev'), true);
+                // Setup form data
+                $('#href').val(href);
+
+                // attributes
+                $.each(['title', 'id', 'style', 'dir', 'rev', 'rel', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function (i, k) {
+                    $('#' + k).val(ed.dom.getAttrib(n, k));
+                    delete attribs[k];
+                });
 
                 if (href.charAt(0) == '#') {
                     $('#anchor').val(href);
                 }
 
                 $('#classes').val(ed.dom.getAttrib(n, 'class'));
-                $('#target').val(ed.dom.getAttrib(n, 'target'));
 
                 // check for popups
                 var data = WFPopups.getPopup(n) || {};
@@ -273,6 +285,28 @@
                     }
 
                     return v;
+                });
+
+                var x = 0;
+
+                // process remaining attributes
+                $.each(attribs, function (k, v) {
+                    try {
+                        v = decodeURIComponent(v);
+                    } catch (e) { }
+
+                    var repeatable = $('.uk-repeatable', '#advanced_tab').eq(0);
+
+                    if (x > 0) {
+                        $(repeatable).clone(true).appendTo($(repeatable).parent());
+                    }
+
+                    var elements = $('.uk-repeatable', '#advanced_tab').eq(x).find('input, select');
+
+                    $(elements).eq(0).val(k);
+                    $(elements).eq(1).val(v);
+
+                    x++;
                 });
 
             } else {
@@ -397,6 +431,15 @@
 
                 args[k] = v;
             });
+
+            // get custom attributes
+			$('.uk-repeatable', '#advanced_tab').each(function() {
+				var elements = $('input, select', this);
+				var key = $(elements).eq(0).val(),
+					value = $(elements).eq(1).val();
+	
+				args[key] = value;
+			});
 
             if (!ed.settings.allow_unsafe_link_target) {
                 args.rel = toggleTargetRules(args.rel, args.target == '_blank' && /:\/\//.test(args.href));
