@@ -1300,7 +1300,7 @@
                 }
 
                 // convert to pixel values
-                if (tinymce.inArray(pixelStyles, name) !== -1) {
+                if (value && tinymce.inArray(pixelStyles, name) !== -1) {
                     value = convertToPixels(value);
                 }
 
