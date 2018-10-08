@@ -131,8 +131,6 @@ class WFController extends WFControllerBase
                     JHtml::core();
                 }
 
-                require_once JPATH_ADMINISTRATOR.'/includes/toolbar.php';
-
                 JToolBarHelper::title(WFText::_('WF_ADMINISTRATION').' :: '.WFText::_('WF_'.strtoupper($name)), 'logo.png');
 
                 $options = array(
