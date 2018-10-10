@@ -7755,8 +7755,8 @@ a.uk-thumbnail:focus {
   /* 6 */
   touch-action: cross-slide-y pinch-zoom double-tap-zoom;
   /* 7 */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  /*-webkit-transform: translateZ(0);*/
+  /*transform: translateZ(0);*/
 }
 /*
  * Open state
