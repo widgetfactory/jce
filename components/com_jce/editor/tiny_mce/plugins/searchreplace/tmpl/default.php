@@ -40,7 +40,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 		<div class="uk-float-left">
 			<button type="submit" class="uk-button uk-button-primary" id="find"><i class="uk-icon-search uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_FIND', 'Find'); ?></button>
 			<button type="button" class="uk-button uk-button-danger" id="replace" disabled><i class="uk-icon-exchange uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACE', 'Replace'); ?></button>
-			<button type="button" class="uk-button uk-button-danger" id="replaceAll" disabled><i class="uk-icon-retweet uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All'); ?></button>
+			<button type="button" class="uk-button uk-button-danger" id="replaceAll" disabled><i class="uk-icon-loop uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All'); ?></button>
 			<button type="button" class="uk-button uk-button-primary" id="prev" disabled><i class="uk-icon-arrow-left uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_PREV', 'Previous'); ?></button>
 			<button type="button" class="uk-button uk-button-primary" id="next" disabled><i class="uk-icon-arrow-right uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_NEXT', 'Next'); ?></button>
 		</div>

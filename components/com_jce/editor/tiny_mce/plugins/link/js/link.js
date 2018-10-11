@@ -611,7 +611,7 @@
 
                             $('<dt class="link uk-margin-small" />').text(n.title).click(function () {
                                 self.insertLink(Wf.String.decode(n.link));
-                            }).prepend('<i class="uk-icon uk-icon-file-text-o uk-margin-small-right" />').appendTo($dl);
+                            }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
 
                             $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
 

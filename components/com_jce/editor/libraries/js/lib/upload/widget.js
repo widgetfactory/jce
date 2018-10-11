@@ -444,7 +444,7 @@
             // extension
             var ext = file.extension.toLowerCase();
             // input
-            var input = $('<i class="uk-icon uk-icon-file-' + mapIcon(ext) + '-o" /><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
+            var input = $('<i class="uk-icon uk-icon-file-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
             var name = $('<div class="queue-item-name uk-width-4-5 uk-form-icon uk-form-icon-both" />').append(input);
 
             var buttons = [remove];

@@ -258,6 +258,13 @@
                 e.preventDefault();
             });
 
+            $('.folder-up', '#browser').click(function(e) {
+                e.preventDefault();
+                
+                var u = self._getPreviousDir();
+                return self._changeDir(u);
+            });
+
             // update browser list on scroll
             $('#browser-list').append(list).bind('scroll.browser-list', function (e) {
                 self._updateList();
@@ -788,8 +795,10 @@
             // empty list
             $('#item-list').empty();
 
+            $('#browser').toggleClass('root', this._isRoot());
+
             if (!this._isRoot()) {
-                h += '<li class="folder folder-up" title="Up"><span class="uk-width-0-10"></span><i class="uk-width-1-10 uk-icon uk-icon-arrow-circle-left uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></li>';
+                //h += '<li class="folder folder-up" title="Up"><span class="uk-width-0-10"></span><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></li>';
             }
 
             if (o.folders.length) {
@@ -862,7 +871,7 @@
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label>';
-                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-file-o uk-icon-file-' + getMimeType(icon) + '-o file ' + icon + '"></i>';
+                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + icon + '"></i>';
                     h += '  <a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
@@ -1898,9 +1907,9 @@
                 'cut': 'cut',
                 'copy': 'copy',
                 'paste': 'paste',
-                'rename': 'pencil-square-o',
-                'preview': 'eye',
-                'view': 'eye',
+                'rename': 'edit',
+                'preview': 'preview',
+                'view': 'preview',
                 'image-editor': 'crop'
             };
 

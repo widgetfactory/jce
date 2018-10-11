@@ -106,7 +106,7 @@
             });
 
             // add toggle icons
-            $('li', parent).find('.uk-tree-row').attr('role', 'presentation').prepend('<span class="uk-tree-toggle" role="presentation"><i class="uk-icon uk-icon-plus-square-o"></i><i class="uk-icon uk-icon-minus-square-o"></i></span>');
+            $('li', parent).find('.uk-tree-row').attr('role', 'presentation').prepend('<span class="uk-tree-toggle" role="presentation"><i class="uk-icon uk-icon-caret-right"></i><i class="uk-icon uk-icon-caret-down"></i></span>');
 
             // add icons
             $('li', parent).not('.uk-tree-root').find('.uk-tree-icon').attr('role', 'presentation').append('<i class="uk-icon uk-icon-folder"></i><i class="uk-icon uk-icon-folder-open"></i>');
@@ -314,7 +314,7 @@
                         html += '<div class="uk-tree-row">';
 
                         if (node['class'].indexOf('folder') >= 0) {
-                            html += '<span class="uk-tree-toggle" role="presentation">' + ' <i class="uk-icon uk-icon-plus-square-o"></i>' + ' <i class="uk-icon uk-icon-minus-square-o"></i>' + '</span>';
+                            html += '<span class="uk-tree-toggle" role="presentation">' + ' <i class="uk-icon uk-icon-caret-right"></i>' + ' <i class="uk-icon uk-icon-caret-down"></i>' + '</span>';
                         }
 
                         html += '<a href="' + url + '" title="' + title + '"><span class="uk-tree-icon">';
@@ -322,7 +322,7 @@
                         if (node['class'].indexOf('folder') >= 0) {
                             html += '<i role="presentation" class="uk-icon uk-icon-folder"></i><i role="presentation" class="uk-icon uk-icon-folder-open"></i>';
                         } else {
-                            html += '<i role="presentation" class="uk-icon uk-icon-file-text-o"></i>';
+                            html += '<i role="presentation" class="uk-icon uk-icon-file-text"></i>';
                         }
 
                         html += '</span>';

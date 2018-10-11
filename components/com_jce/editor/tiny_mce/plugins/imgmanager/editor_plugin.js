@@ -29,7 +29,7 @@
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=imgmanager',
                     width: 780 + ed.getLang('imgmanager.delta_width', 0),
-                    height: 640 + ed.getLang('imgmanager.delta_height', 0),
+                    height: 680 + ed.getLang('imgmanager.delta_height', 0),
                     inline: 1,
                     popup_css: false
                 }, {

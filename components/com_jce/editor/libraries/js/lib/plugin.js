@@ -84,7 +84,7 @@
             // add button actions
             $('#cancel').button({
                 icons: {
-                    primary: 'uk-icon-close'
+                    primary: 'uk-icon-cancel'
                 }
             });
 
@@ -103,7 +103,7 @@
 
             $('#help').button({
                 icons: {
-                    primary: 'uk-icon-question'
+                    primary: 'uk-icon-help'
                 }
             }).click(function (e) {
                 e.preventDefault();
@@ -339,9 +339,9 @@
                 $(this).parent('td, .uk-form-controls').addClass('uk-form-icon uk-form-icon-flip');
 
                 var map = {
-                    'images': 'picture-o',
-                    'html': 'file-text-o',
-                    'files': 'file-text-o',
+                    'images': 'picture',
+                    'html': 'file-text',
+                    'files': 'file-text',
                     'media': 'film'
                 };
 

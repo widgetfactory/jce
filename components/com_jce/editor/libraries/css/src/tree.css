@@ -10,7 +10,7 @@
 
 .uk-tree a {
     display: inline-block;
-    width: calc(100% - 24px);
+    /*width: calc(100% - 32px);*/
     white-space: nowrap;
 }
 
@@ -28,30 +28,27 @@
 .uk-tree-toggle,
 .uk-tree-icon {
     display: inline-block;
-    width: 20px;
-    height: 20px;
     text-align: center;
     vertical-align: middle;
-    line-height: 20px;
 }
 
 .uk-tree-toggle .uk-icon,
 .uk-tree-icon .uk-icon {
-    height: 20px;
-    width: 20px;
+    height: 2em;
+    width: 2em;
     vertical-align: middle;
-    line-height: 20px;
+    line-height: 2em;
 }
 
-.uk-icon-minus-square-o {
+.uk-icon-caret-down {
     display: none;
 }
 
-.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-plus-square-o {
+.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-caret-right {
     display: none;
 }
 
-.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-minus-square-o {
+.uk-tree-open>.uk-tree-row>.uk-tree-toggle .uk-icon-caret-down {
     display: inline-block;
 }
 
@@ -73,6 +70,8 @@
 
 .uk-tree-loading>.uk-tree-row>.uk-tree-toggle {
     background: url('../img/load.gif') no-repeat center;
+    width: 32px;
+    height: 32px;
 }
 
 .uk-tree,
@@ -86,18 +85,18 @@
 }
 
 .uk-tree li {
-    line-height: 28px;
+    line-height: 32px;
     vertical-align: middle;
     margin: 0;
 }
 
 .uk-tree-node li {
-    padding: 0 0 0 23px;
+    padding: 0 0 0 32px;
 }
 
 .uk-tree-row .uk-tree-text {
     display: inline-block;
-    line-height: 20px;
+    line-height: 32px;
     vertical-align: middle;
 }
 
@@ -118,4 +117,8 @@
 
 .uk-tree-hide {
     display: none;
+}
+
+.uk-tree-root > ul > li {
+    padding: 0;
 }

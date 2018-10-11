@@ -18,7 +18,7 @@ $links = $this->plugin->getLinks();
     <label class="uk-form-label uk-width-1-5" for="href" class="hastip" title="<?php echo JText::_('WF_LABEL_URL_DESC'); ?>"><?php echo JText::_('WF_LABEL_URL'); ?></label>
     <div class="uk-form-controls uk-form-icon uk-form-icon-flip uk-width-4-5">
         <input id="href" type="text" value="" required class="browser" />
-        <span class="email uk-icon uk-icon-envelope-o" title="<?php echo JText::_('WF_LABEL_EMAIL'); ?>"></span>
+        <span class="email uk-icon uk-icon-email" title="<?php echo JText::_('WF_LABEL_EMAIL'); ?>"></span>
     </div>
 </div>
 <div class="uk-form-row">

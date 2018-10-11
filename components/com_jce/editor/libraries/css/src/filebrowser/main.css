@@ -23,20 +23,20 @@
     height: 2em;
     line-height: 2em;
     vertical-align: baseline;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .uk-navbar .uk-button span {
-    font-size: 12px;
+    font-size: 1rem;
 }
 
 .uk-navbar-content {
-    height: 28px;
+    height: 32px;
     margin: 0 0 0 -1px;
 }
 
 .uk-navbar-content input[type="checkbox"] {
-    margin-top: 0;
+    margin: 0 0 0 2px;
 }
 
 nav.uk-navbar {
@@ -47,7 +47,7 @@ nav.uk-navbar {
 
 .uk-browser-bottom nav.uk-navbar {
     border-top-width: 1px;
-    padding: 2px 0;
+    padding: 0;
 }
 
 nav .uk-navbar-content {
@@ -61,7 +61,7 @@ main {
 main .uk-navbar {
     border-width: 0;
     border-bottom-width: 1px;
-    line-height: 28px;
+    line-height: 32px;
 }
 
 main>div {
@@ -179,7 +179,7 @@ main>div:last-child {
     box-sizing: border-box;
     margin: 0;
     height: 89.6%;
-    height: calc(100% - 29px);
+    height: calc(100% - 33px);
 }
 
 .layout-left .header {
@@ -196,15 +196,17 @@ main>div:last-child {
 
 #browser-list {
     margin: 0;
-    padding: 5px 1px;
+    padding: 1px;
     overflow: auto;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
-    height: 79.5%;
-    height: calc(100% - 58px);
+    height: calc(100% - 102px);
     width: 100%;
     box-sizing: border-box;
+}
+
+.root #browser-list {
+    height: calc(100% - 66px);
+    padding: 5px 1px;
 }
 
 #browser-list-limit {
@@ -250,7 +252,7 @@ main>div:last-child {
 
 #browser-details-container {
     height: 79%;
-    height: calc(100% - 58px);
+    height: calc(100% - 66px);
     width: 100%;
 }
 
@@ -373,7 +375,7 @@ div#browser-message span {
 }
 
 .uk-navbar .uk-text-right .uk-button {
-    padding: 0 7px;
+    padding: 0 0.5em;
 }
 
 #show-search.uk-active {
@@ -383,11 +385,11 @@ div#browser-message span {
 /* Searchbox */
 
 #searchbox {
-    margin: 0 28px 0 0 !important;
-    height: 28px;
+    margin: 0 32px 0 0 !important;
+    height: 32px;
     top: -1px;
-    right: -1px;
-    left: 1px;
+    right: 0;
+    left: 2px;
 }
 
 #searchbox input {
@@ -399,7 +401,7 @@ div#browser-message span {
 
 #searchbox .uk-icon {
     line-height: 2em;
-    top: 0;
+    top: 1px;
 }
 
 /* Tree */
@@ -560,13 +562,18 @@ div#info-comment {
     background: none;
 }
 
-.item-list .active {
+.item-list li > * {
+    line-height: 32px;
+    vertical-align: middle;
+}
+
+/*.item-list .active {
     background-color: #d9edf7;
 }
 
 .item-list li:hover {
     background-color: #d9edf7;
-}
+}*/
 
 .item-list li.file,
 .item-list li.folder {
@@ -592,7 +599,9 @@ div#info-comment {
 }
 
 .item-list li input[type="checkbox"] {
-    margin: 4px 7px 5px 7px;
+    width: 16px;
+    height: 16px;
+    margin: 8px;
 }
 
 .item-list li a:hover,
@@ -609,25 +618,47 @@ div#info-comment {
     display: none;
 }
 
-.folder-up>span:first-child {
-    display: inline-block;
-    width: 28px;
+.folder-up {
+    display: block;
+    position: static;
+    line-height: 28px;
+    padding: 2px;
+    cursor: pointer;
 }
+
+.folder-up .uk-icon-folder-up {
+    line-height: 2em;
+    width: 2em;
+    text-align: center;
+    margin: 0 0.5em 0 0;
+}
+
+.folder-up a {
+    text-decoration: none;
+}
+
+.folder-up a:hover,
+.folder-up a:visited,
+.folder-up a:active  {
+    color: #444;
+}
+
+.root .folder-up {display: none;}
 
 .item-list li .uk-icon {
     background-color: transparent;
     margin: 0 10px 0 0;
     height: 2em;
     width: 2em;
-    font-size: 14px;
+    /*font-size: 14px;*/
     line-height: 2em;
     text-align: center;
 }
 
 .item-list .selected {
     color: black;
-    background-color: #d9edf7;
     font-weight: bold;
+    background-color: #d9edf7;
 }
 
 .item-list .nofile {
@@ -677,13 +708,13 @@ ul.item-list li.folder-up {
 #browser-buttons {
     border-left: 1px solid #ddd;
     min-width: 2em;
-    font-size: 14px;
+    font-size: 16px;
     box-sizing: border-box;
 }
 
 #browser-buttons .button {
     border: 0 none;
-    margin: 1px auto;
+    margin: auto;
     color: #444;
     background: none;
     text-align: center;
@@ -696,7 +727,6 @@ ul.item-list li.folder-up {
 }
 
 #browser-buttons .button .uk-icon {
-    font-size: inherit;
 }
 
 #browser-buttons .button:hover {

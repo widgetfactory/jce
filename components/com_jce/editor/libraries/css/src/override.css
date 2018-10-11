@@ -1,25 +1,27 @@
-@font-face {
+/*@font-face {
     font-family: 'FontAwesome';
     src: url('../fonts/fontawesome-webfont.eot?#iefix') format('embedded-opentype');
     src: url('../fonts/fontawesome-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-}
+}*/
 
 html {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
+
+    font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
 
 label {
     vertical-align: middle;
-    line-height: 28px;
+    line-height: 32px;
     display: inline-block;
 }
 
 .uk-form-horizontal .uk-form-label {
     font-weight: inherit;
-    line-height: 28px;
+    line-height: 32px;
     display: inline-block;
 }
 
@@ -45,15 +47,15 @@ label {
 }
 
 [class*="uk-icon-"] {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .uk-icon-medium {
-    font-size: 2em;
+    font-size: 1.75em;
 }
 
 .uk-icon-large {
-    font-size: 2.5em;
+    font-size: 2em;
 }
 
 .uk-icon-small {
@@ -79,6 +81,7 @@ label {
 .uk-button-danger {
     text-shadow: inherit;
     box-shadow: inherit;
+    line-height: inherit;
 }
 
 .uk-button:active,
@@ -93,6 +96,12 @@ label {
 .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success) {
     background-color: #fff;
     border-color: #ddd;
+}
+
+.uk-button-text,
+.uk-button .uk-text {
+    vertical-align: middle;
+    margin-left: 0.25em;
 }
 
 
@@ -270,7 +279,7 @@ label {
 
 .uk-form-horizontal .uk-form-label {
     margin: 0;
-    line-height: 28px;
+    line-height: 32px;
     display: inline-block;
 }
 
@@ -284,9 +293,9 @@ label {
 
 .uk-comment-meta {
     color: #444;
-    font-size: 12px;
+    font-size: 13px;
     margin: 0;
-    line-height: 16px;
+    line-height: 20px;
 }
 
 
@@ -317,12 +326,14 @@ label {
 }
 
 .uk-form-horizontal .uk-form-controls input[type="text"],
-.uk-form-horizontal .uk-form-controls input[type="number"] {
-    line-height: 22px;
+.uk-form-horizontal .uk-form-controls input[type="number"],
+.uk-form-horizontal .uk-form-controls select {
+    line-height: 32px;
+    height: 32px;
 }
 
 .uk-form-horizontal .uk-form-controls input[type="range"] {
-    height: 28px;
+    height: 32px;
 }
 
 
@@ -345,7 +356,10 @@ label {
 
 .uk-form-icon>[class*="uk-icon-"] {
     width: 2em;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 2em;
+    margin: 0;
+    top: 0;
 }
 
 .uk-form-icon-flip>[class*="uk-icon-"],
@@ -358,7 +372,8 @@ label {
     margin-top: 0;
     width: 2em;
     height: 2em;
-    top: 0.5em;
+    top: 0;
+    line-height: 2em;
 }
 
 .uk-form-icon-both>[class*="uk-icon-"]:first-child {
@@ -391,11 +406,17 @@ label {
 .uk-form-icon-both>[class*="uk-icon-colorpicker"]:last-child {
     background-color: #fff;
     width: 1.5em;
-    height: 1.5em;
-    top: 0.24em;
-    border-radius: 2px;
-    margin-right: 3px;
+    height: 2em;
+    top: 0;
+    border-radius: 0 2px 2px 0;
     border: 1px solid #ddd;
+}
+
+.uk-form-icon>[class*="uk-icon-hashtag"] {
+    width: 1.5em;
+    height: 2em;
+    top: 0;
+    margin: 0;
 }
 
 .uk-dropdown {
@@ -690,3 +711,28 @@ input[type="range"]::-ms-thumb {
 
 .uk-margin-left-remove {margin-left: 0 !important;}
 .uk-margin-right-remove {margin-right: 0 !important;}
+
+.uk-form input[type="radio"], .uk-form input[type="checkbox"] {
+    background: #fff;
+}
+
+.uk-form input[type="radio"], .uk-form input[type="checkbox"] {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    border: initial;;
+    overflow: hidden;
+    margin-top: initial;;
+    vertical-align: middle;
+    -webkit-appearance: checkbox;
+    outline: initial;;
+    background: initial;
+}
+
+.uk-form input[type="radio"] {
+    -webkit-appearance: radio;
+}
+
+.uk-form input[type="checkbox"]:checked::before, .uk-form input[type="checkbox"]:indeterminate::before {
+    content: "";
+}

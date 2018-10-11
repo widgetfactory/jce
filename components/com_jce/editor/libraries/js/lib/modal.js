@@ -119,7 +119,7 @@
 
                     // add icon
                     if (o.icon) {
-                        $(btn).prepend('<i class="uk-button-' + o.icon + ' ' + o.icon + '" />&nbsp;');
+                        $(btn).prepend('<i class="uk-icon ' + o.icon + '" />&nbsp;');
                     }
 
                     $(footer).append(btn);

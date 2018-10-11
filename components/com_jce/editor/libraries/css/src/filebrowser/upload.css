@@ -37,7 +37,7 @@ div#upload-queue-block {
 
 .queue-item-size {
 		vertical-align: middle;
-		line-height: 28px;
+		line-height: 32px;
 }
 
 .queue-item .queue-item-name .queue-item-extension {
@@ -45,7 +45,7 @@ div#upload-queue-block {
 	font-size: inherit;
 	cursor: inherit;
 	vertical-align: middle;
-	line-height: 28px;
+	line-height: 32px;
 	height: inherit;
 	margin: 0;
 	top: 0;
@@ -75,4 +75,8 @@ div#upload-queue-block {
 
 .wf-upload-dragover > div {
 	border-width: 2px !important;
+}
+
+.queue-item-action {
+	padding: 0 7px;
 }

@@ -95,6 +95,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
           </div>
 
+          <div class="folder-up" title="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></div>
           <div id="browser-list"></div>
 
           <div id="browser-list-limit" class="uk-navbar">

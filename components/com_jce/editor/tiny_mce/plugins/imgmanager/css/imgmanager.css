@@ -2,21 +2,21 @@
 
 .uk-browser-top .uk-form,
 .uk-browser-bottom .uk-tabs+.uk-form {
-    height: 57%;
+    height: 56%;
 }
 
 .uk-browser .uk-tabs {
-    min-height: 43%;
+    min-height: 44%;
     position: relative;
 }
 
 .uk-browser-top .uk-form {
-    top: -43%;
+    top: -44%;
     position: relative;
 }
 
 .uk-browser-top .uk-tabs {
-    top: 58%;
+    top: 56%;
     position: relative;
 }
 
