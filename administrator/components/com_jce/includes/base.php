@@ -52,3 +52,10 @@ JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/
 
 // legacy class for backwards compatability
 JLoader::register('WFText', WF_EDITOR_CLASSES . '/text.php');
+// legacy class for backwards compatability
+JLoader::register('WFModelEditor', WF_ADMINISTRATOR . '/models/editor.php');
+
+// legacy function prevent fatal errors in 3rd party extensions
+function wfimport($path = ""){
+    return true;
+}

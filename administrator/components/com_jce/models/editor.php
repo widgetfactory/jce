@@ -12,12 +12,34 @@ defined('JPATH_PLATFORM') or die;
 
 class WFModelEditor extends JObject
 {
+    private static $editor;
+    
     public function buildEditor()
     {
-        $editor = new WFEditor();
+        if (!isset(self::$editor)) {
+            self::$editor = new WFEditor();
+        }
+        
+        $settings = self::$editor->getEditorSettings();
 
-        $settings = $editor->getEditorSettings();
+        return self::$editor->render($settings);
+    }
 
-        return $editor->render($settings);
+    public function getEditorSettings()
+    {
+        if (!isset(self::$editor)) {
+            self::$editor = new WFEditor();
+        }
+
+        return self::$editor->getEditorSettings();
+    }
+
+    public function render($settings = array())
+    {
+        if (!isset(self::$editor)) {
+            self::$editor = new WFEditor();
+        }
+
+        return self::$editor->render($settings);
     }
 }

@@ -115,6 +115,15 @@ class WFEditor
         return $this->getOutput();
     }
 
+    /**
+     * Legacy function to get the editor settings
+     *
+     * @return array
+     */
+    public function getEditorSettings() {
+        return $this->getSettings();
+    }
+
     public function getSettings()
     {
         // get an editor instance
