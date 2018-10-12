@@ -827,7 +827,7 @@
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                         data.join(' ') +
-                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-5-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-6-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -872,12 +872,12 @@
                     h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label>';
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + icon + '"></i>';
-                    h += '  <a class="uk-width-1-4 uk-padding-remove uk-flex-item-auto" href="#">';
+                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="#">';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
                     h += '  </a>';
                     h += '  <span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
-                    h += '  <span class="uk-width-3-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
+                    h += '  <span class="uk-width-4-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
                     h += '</li>';
                 });
 
@@ -1807,7 +1807,7 @@
             }
 
             var map = {
-                'folder_new': 'folder',
+                'folder_new': 'folder-plus',
                 'upload': 'cloud-upload',
                 'help': 'question-circle'
             };
@@ -1816,22 +1816,21 @@
             var cls = name.replace(/_/g, '-');
 
             // create anchor element
-            var action = document.createElement('a');
+            var action = document.createElement('button');
 
             $(action).addClass('action uk-button');
 
             if (name) {
                 $(action).attr({
-                    'role': 'button',
                     'id': name,
                     'title': o.title,
                     'labelledby': name + '_label'
-                }).addClass(cls).append('<span id="' + name + '_label" class="uk-hidden-mini">&nbsp;' + o.title + '</span>');
+                }).addClass(cls).append('<span id="' + name + '_label" class="uk-text uk-hidden-mini">&nbsp;' + o.title + '</span>');
 
                 var icon = (map[name] || name);
 
                 $.each(icon.split(' '), function (i, k) {
-                    $(action).prepend('<i class="uk-icon uk-icon-medium uk-icon-' + cls + ' uk-icon-' + k + '" />');
+                    $(action).prepend('<i class="uk-icon uk-icon-small uk-icon-' + cls + ' uk-icon-' + k + '" />');
                 });
 
                 // stack icons

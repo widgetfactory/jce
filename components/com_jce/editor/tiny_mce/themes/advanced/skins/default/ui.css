@@ -131,13 +131,14 @@
 
 .defaultSkin .mceStatusbar {
     font-size: 9pt;
-    line-height: 16px;
+    line-height: 32px;
     overflow: visible;
     color: #000;
     display: block;
-    height: 20px;
+    height: 32px;
     padding: 5px;
     background: #f5f5f5;
+    box-sizing: border-box;
 }
 
 .defaultSkin .mceStatusbar div {
@@ -629,8 +630,8 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
-    min-height: 200px;
-    min-width: 188px;
+    min-height: 192px;
+    min-width: 192px;
     /* DropMenu button length x 2 */
 }
 
@@ -666,7 +667,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     display: block;
     cursor: default;
     margin: 0;
-    padding: 0 25px 0 25px;
+    padding: 0 32px 0 32px;
 }
 
 .defaultSkin .mceMenu span.mceText,
@@ -681,9 +682,9 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 
 .defaultSkin .mceMenu .mceIcon {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 22px;
+    top: 6px;
+    left: 6px;
+    width: 20px;
 }
 
 .defaultSkin .mceMenu .mceMenuItems {

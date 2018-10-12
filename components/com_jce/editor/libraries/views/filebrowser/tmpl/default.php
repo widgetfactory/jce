@@ -71,13 +71,13 @@ defined('JPATH_PLATFORM') or die;
               </div>
 
               <!-- Sort Size -->
-              <div class="uk-width-3-10 uk-button uk-text-left" id="sort-size" role="button" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <div class="uk-width-4-10 uk-button uk-text-left" id="sort-size" role="button" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <span id="sort-size-label">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></span>
               </div>
 
-              <div class="uk-padding-remove uk-text-right uk-position-top-right">
+              <div class="uk-navbar uk-padding-remove uk-text-right uk-position-top-right">
                 <!-- Toggle Details -->
                 <div class="uk-button uk-active" id="show-details" role="button">
                   <i class="uk-icon-columns details"></i>

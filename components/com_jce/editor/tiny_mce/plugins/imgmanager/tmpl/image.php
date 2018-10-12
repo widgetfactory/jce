@@ -43,7 +43,7 @@ defined('JPATH_PLATFORM') or die;
                 </div>
 
                 <div class="uk-form-controls">
-                    <strong class="uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
+                    <strong class="uk-form-label uk-margin-left uk-margin-right uk-vertical-align-middle">&times;</strong>
                 </div>
 
                 <div class="uk-form-controls">

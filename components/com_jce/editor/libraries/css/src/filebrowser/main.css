@@ -21,8 +21,7 @@
 .uk-navbar .uk-button {
     border-width: 0;
     height: 2em;
-    line-height: 2em;
-    vertical-align: baseline;
+    line-height: 1.75em;
     font-size: 16px;
 }
 
@@ -61,7 +60,6 @@ main {
 main .uk-navbar {
     border-width: 0;
     border-bottom-width: 1px;
-    line-height: 32px;
 }
 
 main>div {
@@ -294,19 +292,6 @@ main>div:last-child {
     white-space: nowrap;
 }
 
-.ie8 div#browser-message {
-    background-position: 0 -320px;
-}
-
-#browser-message .uk-spinner {
-    background: url('../img/load.gif') no-repeat center;
-    display: block;
-    height: 20px;
-    width: 20px;
-    padding: 5px 0 5px 0;
-    display: none;
-}
-
 #browser-message .uk-icon-spinner {
     display: none;
 }
@@ -318,14 +303,6 @@ main>div:last-child {
 #browser-message.load .uk-icon-spinner {
     display: inline-block;
     height: 30px;
-}
-
-#browser-message .uk-icon-spinner:before {
-    content: "";
-    background: url('../img/load.gif') no-repeat center;
-    width: 20px;
-    display: inline-block;
-    height: 31px;
 }
 
 .pathway {
@@ -378,6 +355,11 @@ div#browser-message span {
     padding: 0 0.5em;
 }
 
+.uk-navbar .uk-button:hover, 
+.uk-navbar .uk-button:focus {
+    background-color: #fff;
+}
+
 #show-search.uk-active {
     border-width: 0;
 }
@@ -387,7 +369,7 @@ div#browser-message span {
 #searchbox {
     margin: 0 32px 0 0 !important;
     height: 32px;
-    top: -1px;
+    top: 0;
     right: 0;
     left: 2px;
 }
@@ -400,8 +382,6 @@ div#browser-message span {
 }
 
 #searchbox .uk-icon {
-    line-height: 2em;
-    top: 1px;
 }
 
 /* Tree */
@@ -457,6 +437,7 @@ div#info-comment {
 
 .asc [class*="-asc"] {
     display: inline-block;
+    margin: auto 8px;
 }
 
 .asc [class*="-desc"] {
@@ -472,7 +453,7 @@ div#info-comment {
 }
 
 #sort-ext {
-    max-width: 28px;
+    max-width: 32px;
 }
 
 /*Layout Right*/
@@ -676,7 +657,7 @@ div#info-comment {
 }
 
 .item-list li .uk-item-size {
-    padding-left: 26px;
+    padding-left: 48px;
 }
 
 .item-list li .uk-item-date {
@@ -739,24 +720,8 @@ ul.item-list li.folder-up {
     }
 }
 
-.uk-navbar .uk-button.action {
+nav.uk-navbar .uk-button.action {
     background-color: #fff;
-    padding: 0 10px;
-}
-
-.action {
-    margin: 0 0 0 3px;
-    height: 28px;
-    display: inline-block;
-}
-
-.action .uk-icon {
-    /*font: inherit;*/
-    padding: 0;
-}
-
-.action:hover .uk-icon {
-    opacity: 0.6
 }
 
 .button label {
@@ -801,14 +766,15 @@ ul.item-list li.folder-up {
 
 /* icon colours */
 
-.action .uk-icon-help {
+/*.action .uk-icon-help {
     color: #254ABF;
 }
 
 .uk-icon-folder,
+.uk-icon-folder-plus,
 .uk-icon-folder-open {
     color: #D2B073;
-}
+}*/
 
 .jpeg .uk-icon,
 .jpg .uk-icon,

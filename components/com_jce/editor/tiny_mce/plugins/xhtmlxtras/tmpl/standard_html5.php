@@ -113,10 +113,10 @@ defined('JPATH_PLATFORM') or die;
           </div>
         </div>
         <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
-          <button type="button" class="uk-button uk-repeatable-create">
+          <button type="button" class="uk-button uk-button-link uk-repeatable-create">
             <i class="uk-icon-plus"></i>
           </button>
-          <button type="button" class="uk-button uk-repeatable-delete">
+          <button type="button" class="uk-button uk-button-link uk-repeatable-delete">
             <i class="uk-icon-trash"></i>
           </button>
         </div>

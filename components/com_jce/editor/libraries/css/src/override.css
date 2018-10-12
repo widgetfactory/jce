@@ -227,7 +227,7 @@ label {
     margin: 10px -10px -10px -10px;
     border-top: 1px solid #ddd;
     border-radius: 0 0 3px 3px;
-    background: #fff;
+    background: #f5f5f5;
 }
 
 .uk-modal-alert .uk-modal-dialog,
@@ -674,13 +674,13 @@ input[type="range"]::-ms-thumb {
     box-shadow: inherit;
 }
 
-.uk-icon-spinner:before {
+/*.uk-icon-spinner:before {
     content: "";
     background: url('../img/load.gif') no-repeat center;
     width: 20px;
     display: inline-block;
     height: 20px;
-}
+}*/
 
 .uk-stack {
     position: relative;
@@ -735,4 +735,8 @@ input[type="range"]::-ms-thumb {
 
 .uk-form input[type="checkbox"]:checked::before, .uk-form input[type="checkbox"]:indeterminate::before {
     content: "";
+}
+.uk-form input[type="radio"]:checked::before {
+    content: "";
+    display: none;
 }
