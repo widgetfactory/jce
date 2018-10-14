@@ -83,7 +83,7 @@ if ($saveOrder)
                             $canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $user->get('id') || $item->checked_out == 0;
                             $canChange  = $user->authorise('core.edit.state', 'com_jce') && $canCheckin;
                             ?>
-                            <tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->area; ?>">
+                            <tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->id; ?>">
                                 <td class="order nowrap center hidden-phone text-center d-none d-md-table-cell">
                                     <?php
                                     $iconClass = '';

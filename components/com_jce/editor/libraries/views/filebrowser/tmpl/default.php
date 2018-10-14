@@ -90,7 +90,7 @@ defined('JPATH_PLATFORM') or die;
 
               <div id="searchbox" class="uk-form-icon uk-form-icon-flip uk-hidden uk-flex-item-auto uk-position-absolute uk-position-top" role="popup">
                 <input type="search" id="search" class="uk-width-1-1" />
-                <i class="uk-icon uk-icon-close"></i>
+                <i class="uk-icon uk-icon-cross-small"></i>
               </div>
             </div>
           </div>
@@ -141,9 +141,9 @@ defined('JPATH_PLATFORM') or die;
               <?php echo JText::_('WF_LABEL_DETAILS'); ?>
             </div>
           </div>
-          <div id="browser-details-container" class="uk-grid uk-grid-collapse uk-flex">
-            <div id="browser-details" class="uk-width-8-10 uk-flex-item-auto">
-              <div id="browser-details-text"></div>
+          <div id="browser-details-container" class="uk-grid uk-grid-collapse uk-flex uk-height-1-1">
+            <div id="browser-details" class="uk-width-8-10 uk-flex-item-auto uk-height-1-1">
+              <div id="browser-details-text" class="uk-height-1-1"></div>
               <div id="browser-details-comment"></div>
             </div>
 

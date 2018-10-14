@@ -30,6 +30,8 @@
     max-width: 300px;
 }
 
+.ui-jce .buttons .mce-btn {background-color: #fff;}
+
 .ui-jce .input-group-append {display: inline-block; vertical-align: middle;}
 .ui-jce .input-append .form-text {font-size: 11px;line-height: 28px;}
 

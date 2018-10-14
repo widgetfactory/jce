@@ -170,8 +170,7 @@
     line-height: 22px;
     text-align: center;
     cursor: pointer;
-    background: url(../img/power.png) 10px center no-repeat;
-    opacity: .6;
+    /*background: url(../img/power.svg) 10px center no-repeat;*/
     min-height: 24px;
     position: absolute;
     right: 0;
@@ -179,8 +178,23 @@
     z-index: 1000;
 }
 
-.wf-editor-toggle:hover {
-    opacity: 0.9;
+.wf-editor-header .wf-editor-toggle > svg {
+    display: block;
+    margin: 4px auto;
+    fill: #666;
+}
+
+.wf-editor-toggle:hover  > svg {
+    fill: #888;
+}
+
+/* Joomla 4 */
+[view="tabs"] .wf-editor-toggle > svg {
+    fill: #fff;
+}
+
+[view="tabs"] .wf-editor-toggle-off .wf-editor-toggle > svg {
+    fill: #666;
 }
 
 .mce-fullscreen .wf-editor-toggle {
@@ -232,7 +246,7 @@
 }
 
 div#wf_upload_button {
-    background: url("../img/cloud.png") no-repeat center center #fafafa;
+    background: url("../img/cloud.svg") no-repeat center center #fafafa;
     border: 1px dashed #bbb;
     border-radius: 2px;
     cursor: pointer;

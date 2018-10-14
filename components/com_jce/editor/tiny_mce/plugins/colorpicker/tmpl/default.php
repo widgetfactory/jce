@@ -36,5 +36,5 @@ defined('JPATH_PLATFORM') or die;
       </div>
   </div>
 
-    <button type="button" class="uk-button uk-button-primary" id="colorpicker_insert" onclick="ColorPicker.insert();"><i class="uk-icon-check"></i><?php echo JText::_('WF_LABEL_APPLY'); ?></button>
+    <button type="button" class="uk-button uk-button-primary" id="colorpicker_insert" onclick="ColorPicker.insert();"><i class="uk-icon-check"></i><span class="uk-button-text"><?php echo JText::_('WF_LABEL_APPLY'); ?></span></button>
 </div>

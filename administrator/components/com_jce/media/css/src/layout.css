@@ -249,7 +249,7 @@ html[dir="rtl"] .form-horizontal .control-label {
 }
 
 .editor-layout .mceToolbarRow:first-child > div:first-child {
-	margin-left: -2px;
+	margin-left: 0;
 }
 
 .sortable-handle i, .sortable-option i {font-size: initial}

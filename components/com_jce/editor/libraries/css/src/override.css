@@ -740,3 +740,7 @@ input[type="range"]::-ms-thumb {
     content: "";
     display: none;
 }
+
+.uk-form-label {
+    min-width: 32px;
+}

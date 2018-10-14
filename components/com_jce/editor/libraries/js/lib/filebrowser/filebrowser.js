@@ -2584,7 +2584,7 @@
 
             // create properties list
             var info = document.createElement('div');
-            $(info).addClass('uk-comment').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + name + '">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
+            $(info).addClass('uk-comment uk-height-1-1').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + name + '">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
 
             // additional data for file items
             if ($(item).data('preview')) {
