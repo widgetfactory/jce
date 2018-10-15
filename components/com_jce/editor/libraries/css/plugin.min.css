@@ -1197,10 +1197,11 @@ label {
 .uk-form-icon-both>[class*="uk-icon-colorpicker"]:last-child {
     background-color: #fff;
     width: 1.5em;
-    height: 2em;
-    top: 0;
-    border-radius: 0 2px 2px 0;
-    border: 1px solid #ddd;
+    height: 1.5em;
+    top: 0.25em;
+    border-radius: 2px;
+    right: 0.25em;
+    box-sizing: border-box;
 }
 
 .uk-form-icon>[class*="uk-icon-hashtag"] {
@@ -1578,7 +1579,8 @@ input[type="range"]::-ms-thumb {
 }
 
 .uk-form-icon input.color {
-    padding-left: 24px !important
+    padding-left: 20px !important;
+    text-transform: lowercase;
 }
 
 .uk-form-icon input.color:disabled~span {

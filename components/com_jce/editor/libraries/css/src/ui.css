@@ -41,7 +41,8 @@
 }
 
 .uk-form-icon input.color {
-    padding-left: 24px !important
+    padding-left: 20px !important;
+    text-transform: lowercase;
 }
 
 .uk-form-icon input.color:disabled~span {
