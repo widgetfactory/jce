@@ -177,37 +177,37 @@
                             }
                         });
                     }
-                } else {
-                    ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-                        var i = nodes.length,
-                            node;
-
-                        if (ed.schema.isValidChild('body', name)) {
-                            while (i--) {
-                                node = nodes[i];
-                                node.remove();
-                            }
-                        }
-                    });
-
-                    ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-                        var i = nodes.length,
-                            node;
-
-                        if (ed.schema.isValidChild('body', name)) {
-                            while (i--) {
-                                node = nodes[i];
-
-                                // don't remove system spans
-                                if (name === 'span' && node.attr('data-mce-type')) {
-                                    continue;
-                                }
-
-                                node.unwrap();
-                            }
-                        }
-                    });
                 }
+
+                ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+                    var i = nodes.length,
+                        node;
+
+                    if (ed.schema.isValidChild('body', name)) {
+                        while (i--) {
+                            node = nodes[i];
+                            node.remove();
+                        }
+                    }
+                });
+
+                ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+                    var i = nodes.length,
+                        node;
+
+                    if (ed.schema.isValidChild('body', name)) {
+                        while (i--) {
+                            node = nodes[i];
+
+                            // don't remove system spans
+                            if (name === 'span' && node.attr('data-mce-type')) {
+                                continue;
+                            }
+
+                            node.unwrap();
+                        }
+                    }
+                });
 
                 // try and keep empty a tags that are not anchors, process bootstrap icons
                 ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
