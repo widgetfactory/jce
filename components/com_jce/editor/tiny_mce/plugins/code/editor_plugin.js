@@ -59,11 +59,6 @@
             });
 
             ed.onPreInit.add(function () {
-                if (ed.getParam('code_style')) {
-                    //ed.schema.addValidElements('style[scoped|*]');
-                    ed.schema.addValidChildren('+body[style]');
-                }
-
                 // allow script URLS, eg: href="javascript:;"
                 if (ed.getParam('code_script')) {
                     ed.settings.allow_script_urls = true;
