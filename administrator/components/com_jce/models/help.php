@@ -41,7 +41,7 @@ class JceModelHelp extends JModelLegacy
                     if ($file) {
                         $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                     } else {
-                        $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link">' . trim(JText::_($title)) . '</a>';
+                        $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link"><i class="icon-copy"></i>&nbsp;' . trim(JText::_($title)) . '</a>';
                     }
 
                     if (count($subtopics)) {
@@ -51,7 +51,7 @@ class JceModelHelp extends JModelLegacy
 
                             // if a file is set load it as sub-subtopics
                             if ($file = (string) $subtopic->attributes()->file) {
-                                $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link">' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
                                 $result .= '<ul class="nav nav-list hidden">';
                                 $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                                 $result .= '</ul>';
@@ -60,12 +60,12 @@ class JceModelHelp extends JModelLegacy
                                 $id = $subtopic->attributes()->key ? ' id="' . (string) $subtopic->attributes()->key . '"' : '';
 
                                 $class = count($sub_subtopics) ? ' class="nav-item subtopics"' : '';
-                                $result .= '<li' . $class . $id . '><a href="#" class="nav-link">' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li' . $class . $id . '><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
 
                                 if (count($sub_subtopics)) {
                                     $result .= '<ul class="nav nav-list hidden">';
                                     foreach ($sub_subtopics as $sub_subtopic) {
-                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '" class="nav-item"><a href="#" class="nav-link">' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
+                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '" class="nav-item"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
                                     }
                                     $result .= '</ul>';
                                 }
@@ -120,7 +120,7 @@ class JceModelHelp extends JModelLegacy
                 }
 
                 if (!is_file($file)) {
-                    $file = JPATH_SITE . '/components/com_jce/editor/xml/help/editor.xml';
+                    $file = JPATH_SITE . '/components/com_jce/editor/libraries/xml/help/editor.xml';
                 } else {
                     $language->load('WF_' . $category, JPATH_SITE);
                 }
