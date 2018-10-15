@@ -215,7 +215,7 @@ class JoomlalinksMenu extends JObject
 
         $query = $db->getQuery(true);
 
-        $query->select('*')->from('#__menu_types')->order('title');
+        $query->select('*')->from('#__menu_types')->where('client_id = 0')->order('title');
 
         $db->setQuery($query, 0);
 
@@ -279,6 +279,10 @@ class JoomlalinksMenu extends JObject
         }
 
         $query->where(array('m.published = 1', 'm.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')', 'm.parent_id = ' . (int) $parent));
+
+        // only site menu items
+        $query->where('m.client_id = 0');
+
         $query->order('m.lft ASC');
 
         $db->setQuery($query, 0);
