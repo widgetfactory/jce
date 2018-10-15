@@ -237,7 +237,7 @@ class JoomlalinksMenu extends JObject
         $query = $db->getQuery(true);
 
         if (is_object($query)) {
-            $query->select('*')->from('#__menu_types')->order('title');
+            $query->select('*')->from('#__menu_types')->where('client_id = 0')->order('title');
         } else {
             $query = 'SELECT * FROM #__menu_types ORDER By title';
         }
@@ -337,6 +337,9 @@ class JoomlalinksMenu extends JObject
             }
 
             $query->where('m.parent_id = ' . (int) $parent);
+
+            // only site menu items
+            $query->where('m.client_id = 0');
 
             $query->order('m.lft ASC, m.id, m.title');
         } else {
