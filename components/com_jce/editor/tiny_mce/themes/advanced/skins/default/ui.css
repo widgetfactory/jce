@@ -498,12 +498,17 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 
 .defaultSkin .mceColorSplitMenu a {
     display: block;
-    width: 19.5px;
-    height: 19.5px;
+    width: 24px;
+    height: 24px;
     overflow: hidden;
     border: 1px solid #ddd;
     box-sizing: border-box;
     text-align: center;
+    cursor: pointer;
+}
+
+.defaultSkin .mceColorSplitMenu a:hover {
+    border-color: #bbb;
 }
 
 .defaultSkin .mceColorSplitMenu td.mceMoreColors {
@@ -514,9 +519,9 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     color: #444;
     display: block;
     font-family: Arial, sans-serif;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    line-height: 18px;
+    line-height: 24px;
     text-align: center;
     text-decoration: none;
     content: "\00d7";
@@ -528,10 +533,9 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     width: 100%;
     height: auto;
     text-align: center;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    line-height: 20px;
-    border: 1px solid #FFF
+    line-height: 30px;
+    border: 1px solid #FFF;
+    cursor: pointer;
 }
 
 .defaultSkin .mceColorSplitMenu a.mceMoreColors:hover {
@@ -831,7 +835,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     min-height: 32px;
     text-decoration: none;
     text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 2px;
     cursor: pointer;
 }
@@ -841,7 +845,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     color: #444;
     outline: 0;
     text-decoration: none;
-    border-color: rgba(0, 0, 0, .16);
+    border-color: rgba(0, 0, 0, 0.16);
 }
 
 .defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButtonPrimary {
@@ -868,7 +872,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 
 .defaultSkin .mceButtonDialog .mceButtonDialogButtons {
     text-align: right;
-    background-color: #fafafa;
+    background-color: #f5f5f5;
     padding: 10px;
     border-top: 1px solid #ddd;
 }
