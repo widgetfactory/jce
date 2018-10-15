@@ -77,6 +77,11 @@ class WFCleanupPluginConfig
             }
         }
 
+        // clean invalid_elements
+        $settings['invalid_elements'] = array_filter($settings['invalid_elements'], function ($value) {
+            return $value !== '';
+        });
+
         // remove it if it is the same as the default
         if ($settings['invalid_elements'] === self::$invalid_elements) {
             $settings['invalid_elements'] = array();
