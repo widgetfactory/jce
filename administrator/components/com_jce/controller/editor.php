@@ -32,8 +32,6 @@ class JceControllerEditor extends JControllerLegacy
 
         if (method_exists($editor, $task)) {
             $editor->$task();
-
-            var_dump($task);
         }
 
         jexit();
