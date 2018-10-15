@@ -120,7 +120,7 @@
 
             if (!$tips.get(0)) {
                 $tips = $('<div class="uk-tooltip" role="tooltip" aria-hidden="true">' +
-                    '<span class="close uk-icon uk-icon-close" title="Close">&times;</span>' +
+                    '<span class="close uk-icon uk-icon-close" title="Close"></span>' +
                     '<div class="uk-tooltip-inner"></div>' +
                     '<div class="arrow"></div>' +
                     '</div>').appendTo(options.parent);
