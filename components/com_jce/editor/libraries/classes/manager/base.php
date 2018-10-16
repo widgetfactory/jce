@@ -160,7 +160,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         jimport('joomla.filesystem.file');
         clearstatcache();
 
-        $meta = array('width' => '', 'height' => '', 'time' => '');
+        $meta = array('width' => '', 'height' => '', 'time' => '', 'x' => '', 'y' => '');
 
         $ext = JFile::getExt($path);
 
@@ -194,8 +194,8 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         if ($ext == 'wmv' && $meta['x'] == '') {
-            $meta['width'] = round($fileinfo['asf']['video_media']['2']['image_width']);
-            $meta['height'] = round(($fileinfo['asf']['video_media']['2']['image_height']));
+            $meta['width'] = round($fileinfo['asf']['video_media']['1']['image_width']);
+            $meta['height'] = round(($fileinfo['asf']['video_media']['1']['image_height']));
         }
 
         return $meta;
