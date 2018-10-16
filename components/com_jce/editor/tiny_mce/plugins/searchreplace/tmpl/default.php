@@ -14,13 +14,13 @@ defined('WF_EDITOR') or die('RESTRICTED');
 <form onsubmit="return false;" action="#">
 	<div>
 		<div class="uk-form-row">
-			<label class="uk-form-label uk-width-3-10" for="searchstring"><?php echo JText::_('WF_SEARCHREPLACE_FINDWHAT'); ?></label>
+			<label class="uk-form-label uk-width-3-10" for="search_string"><?php echo JText::_('WF_SEARCHREPLACE_FINDWHAT'); ?></label>
 			<div class="uk-form-controls uk-width-7-10">
 				<input type="text" id="search_string" />
 			</div>
 		</div>
 		<div class="uk-form-row">
-			<label class="uk-form-label uk-width-3-10" for="replacestring"><?php echo JText::_('WF_SEARCHREPLACE_REPLACEWITH'); ?></label>
+			<label class="uk-form-label uk-width-3-10" for="replace_string"><?php echo JText::_('WF_SEARCHREPLACE_REPLACEWITH'); ?></label>
 			<div class="uk-form-controls uk-width-7-10">
 				<input type="text" id="replace_string" />
 			</div>

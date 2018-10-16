@@ -249,7 +249,7 @@
 
                 $(this).parent('.uk-form-controls, td, span').addClass('uk-form-icon uk-form-icon-both').prepend('<i class="uk-icon-hashtag" />');
 
-                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
+                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" aria-label="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
 
                 $(this).on('colorpicker:pick', function () {
                     var v = this.value;
@@ -345,7 +345,7 @@
                     'media': 'film'
                 };
 
-                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function (e) {
+                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function (e) {
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,
@@ -439,7 +439,7 @@
             }
         },
         translate: function (s, ds) {
-            return tinyMCEPopup.getLang('dlg.' + s, ds);
+            return tinyMCEPopup.getLang('dlg.' + s, ds || s);
         }
     };
 

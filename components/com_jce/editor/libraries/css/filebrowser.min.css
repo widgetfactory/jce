@@ -228,11 +228,11 @@ div#upload-queue-block {
 .uk-navbar .uk-button {
     border-width: 0;
     height: 2em;
-    line-height: 1.75em;
+    line-height: 1;
     font-size: 16px;
 }
 
-.uk-navbar .uk-button span {
+.uk-navbar .uk-button label {
     font-size: 1rem;
 }
 
@@ -404,7 +404,7 @@ main>div:last-child {
     padding: 1px;
     overflow: auto;
     user-select: none;
-    height: calc(100% - 102px);
+    height: calc(100% - 98px);
     width: 100%;
     box-sizing: border-box;
 }
@@ -639,7 +639,7 @@ div#info-comment {
 }
 
 #check-all {
-    padding: 0 8px;
+    padding: 0 7px;
 }
 
 .asc [class*="-asc"] {
@@ -800,7 +800,7 @@ div#info-comment {
 .item-list li input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    margin: 8px;
+    margin: 7px;
 }
 
 .item-list li a:hover,
@@ -820,8 +820,6 @@ div#info-comment {
 .folder-up {
     display: block;
     position: static;
-    line-height: 28px;
-    padding: 2px;
     cursor: pointer;
 }
 
@@ -832,14 +830,13 @@ div#info-comment {
     margin: 0 0.5em 0 0;
 }
 
-.folder-up a {
-    text-decoration: none;
-}
-
-.folder-up a:hover,
-.folder-up a:visited,
-.folder-up a:active  {
+.folder-up button,
+.folder-up button:hover,
+.folder-up button:visited,
+.folder-up button:active  {
     color: #444;
+    text-decoration: none;
+    border: 0 none;
 }
 
 .root .folder-up {display: none;}
@@ -925,25 +922,12 @@ ul.item-list li.folder-up {
     font-size: inherit;
 }
 
-#browser-buttons .button .uk-icon {
-}
-
 #browser-buttons .button:hover {
     opacity: 0.6;
 }
 
-@media (min-height: 768px) {
-    #browser-buttons {
-        font-size: 16px;
-    }
-}
-
 nav.uk-navbar .uk-button.action {
     background-color: #fff;
-}
-
-.button label {
-    display: none;
 }
 
 .button .uk-icon:hover {

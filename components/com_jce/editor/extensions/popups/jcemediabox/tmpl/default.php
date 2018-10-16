@@ -140,8 +140,8 @@ defined('_WF_EXT') or die('RESTRICTED');
                       </div>
                   </div>
                   <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
-                    <button type="button" class="uk-button uk-button-link uk-repeatable-create"><i class="uk-icon-plus"></i></button>
-                    <button type="button" class="uk-button uk-button-link uk-repeatable-delete"><i class="uk-icon-trash"></i></button>
+                    <button class="uk-button uk-button-link uk-repeatable-create" aria-label="<?php echo JText::_('WF_LABEL_ADD'); ?>" title="<?php echo JText::_('WF_LABEL_ADD'); ?>"><i class="uk-icon-plus"></i></button>
+                    <button class="uk-button uk-button-link uk-repeatable-delete" aria-label="<?php echo JText::_('WF_LABEL_REMOVE'); ?>" title="<?php echo JText::_('WF_LABEL_REMOVE'); ?>"><i class="uk-icon-trash"></i></button>
                   </div>
           </div>
         </div>

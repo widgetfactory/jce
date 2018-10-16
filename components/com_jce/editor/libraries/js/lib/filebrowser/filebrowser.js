@@ -827,7 +827,7 @@
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
                         data.join(' ') +
-                        '><label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-6-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                        '><label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-6-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
                 });
 
             }
@@ -870,7 +870,7 @@
                     var icon = ext.toLowerCase();
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
-                    h += '  <label class="uk-width-0-10 uk-item-checkbox"><input type="checkbox" /></label>';
+                    h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + icon + '"></i>';
                     h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="#">';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
@@ -1824,8 +1824,8 @@
                 $(action).attr({
                     'id': name,
                     'title': o.title,
-                    'labelledby': name + '_label'
-                }).addClass(cls).append('<span id="' + name + '_label" class="uk-text uk-hidden-mini">&nbsp;' + o.title + '</span>');
+                    'aria-label': o.title
+                }).addClass(cls).append('<label id="' + name + '_label" class="uk-text uk-hidden-mini">&nbsp;' + o.title + '</label>');
 
                 var icon = (map[name] || name);
 
@@ -1913,16 +1913,15 @@
             };
 
             // only create button type once
-            var button = $('a.' + o.name, $('#browser-buttons'));
+            var button = $('button.' + o.name, $('#browser-buttons'));
 
             if (!button.length) {
-                button = document.createElement('a');
+                button = document.createElement('button');
 
                 $(button).attr({
                     'title': o.title,
-                    'role': 'button',
-                    'aria-labelledby': o.name + '_label'
-                }).append('<label for="' + o.name + '" aria-hidden="true">' + o.title + '</label>');
+                    'aria-label': o.title
+                });
 
                 var name = o.name.replace(/_/g, '-');
 
@@ -1977,7 +1976,7 @@
         _hideAllButtons: function () {
             var self = this;
 
-            $('a.button', '#browser-buttons').each(function () {
+            $('.button', '#browser-buttons').each(function () {
                 self._hideButton(this);
             });
 
@@ -2104,7 +2103,7 @@
          * Show the paste button
          */
         _showPasteButton: function () {
-            this._showButton($('a.paste', '#browser-buttons'), true, true);
+            this._showButton($('.button.paste', '#browser-buttons'), true, true);
         },
         /**
          * Determine whether an item is selected

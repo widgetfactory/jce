@@ -44,48 +44,47 @@ defined('JPATH_PLATFORM') or die;
           <div class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-grid uk-grid-collapse uk-flex uk-padding-remove uk-position-relative" id="browser-list-actions">
               <!-- Check-All -->
-              <div id="check-all" class="uk-width-0-10 uk-button uk-button-link">
+              <button id="check-all" class="uk-width-0-10 uk-button uk-button-link" aria-label="Check All">
                 <!--span class="checkbox" role="checkbox" aria-checked="false"></span-->
                 <input type="checkbox" />
-              </div>
+              </button>
 
               <!-- Sort Extension -->
-              <div class="uk-width-1-10 uk-button uk-padding-remove uk-text-left" id="sort-ext" data-sort="extension" role="button" data-sort-type="extension" aria-labelledby="sort-ext-label">
+              <button class="uk-width-1-10 uk-button uk-padding-remove uk-text-left" id="sort-ext" data-sort="extension" data-sort-type="extension" aria-label="<?php echo JText::_('WF_LABEL_EXTENSION'); ?>">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
-                <span id="sort-ext-label" class="uk-hidden"><?php echo JText::_('WF_LABEL_EXTENSION'); ?></span>
-              </div>
+              </button>
 
               <!-- Sort Name -->
-              <div class="uk-flex-item-auto uk-button uk-padding-remove uk-text-left" id="sort-name" data-sort="name" role="button" data-sort-type="string" aria-labelledby="sort-name-label">
+              <button class="uk-flex-item-auto uk-button uk-padding-remove uk-text-left" id="sort-name" data-sort="name" data-sort-type="string" aria-labelledby="sort-name-label">
                 <i class="uk-icon-sort-alpha-asc"></i>
                 <i class="uk-icon-sort-alpha-desc"></i>
-                <span id="sort-name-label">&nbsp;<?php echo JText::_('WF_LABEL_NAME'); ?></span>
-              </div>
+                <label id="sort-name-label" for="sort-name">&nbsp;<?php echo JText::_('WF_LABEL_NAME'); ?></label>
+              </button>
 
               <!-- Sort Date -->
-              <div class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" role="button" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
+              <button class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
-                <span id="sort-data-label">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></span>
-              </div>
+                <label id="sort-data-label" for="sort-date">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></label>
+              </button>
 
               <!-- Sort Size -->
-              <div class="uk-width-4-10 uk-button uk-text-left" id="sort-size" role="button" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <button class="uk-width-4-10 uk-button uk-text-left" id="sort-size" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
-                <span id="sort-size-label">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></span>
-              </div>
+                <label id="sort-size-label" for="sort-size">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></label>
+              </button>
 
               <div class="uk-navbar uk-padding-remove uk-text-right uk-position-top-right">
                 <!-- Toggle Details -->
-                <div class="uk-button uk-active" id="show-details" role="button">
+                <button class="uk-button uk-active" id="show-details" aria-label="Toggle Details">
                   <i class="uk-icon-columns details"></i>
-                </div>
+                </button>
                 <!-- Search -->
-                <div class="uk-button" id="show-search" role="button">
+                <button class="uk-button" id="show-search" aria-label="Search">
                   <i class="uk-icon-search"></i>
-                </div>
+                </button>
               </div>
 
               <div id="searchbox" class="uk-form-icon uk-form-icon-flip uk-hidden uk-flex-item-auto uk-position-absolute uk-position-top" role="popup">
@@ -95,7 +94,9 @@ defined('JPATH_PLATFORM') or die;
             </div>
           </div>
 
-          <div class="folder-up" title="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i><a class="uk-flex-item-auto" href="#">...</a></div>
+          <div class="folder-up" title="Up">
+            <button class="uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i>...</button>
+          </div>
           <div id="browser-list"></div>
 
           <div id="browser-list-limit" class="uk-navbar">

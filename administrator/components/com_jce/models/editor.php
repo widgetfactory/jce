@@ -13,13 +13,13 @@ defined('JPATH_PLATFORM') or die;
 class WFModelEditor extends JObject
 {
     private static $editor;
-    
+
     public function buildEditor()
     {
         if (!isset(self::$editor)) {
             self::$editor = new WFEditor();
         }
-        
+
         $settings = self::$editor->getEditorSettings();
 
         return self::$editor->render($settings);
@@ -40,6 +40,22 @@ class WFModelEditor extends JObject
             self::$editor = new WFEditor();
         }
 
-        return self::$editor->render($settings);
+        if (empty($settings)) {
+            $settings = self::$editor->getEditorSettings();
+        }
+
+        self::$editor->render($settings);
+
+        $document = JFactory::getDocument();
+
+        foreach (self::$editor->getScripts() as $script) {
+            $document->addScriptVersion($script);
+        }
+
+        foreach (self::$editor->getStyleSheets() as $style) {
+            $document->addStylesheetVersion($style);
+        }
+
+        $document->addScriptDeclaration(implode("\n", self::$editor->getScriptDeclaration()));
     }
 }

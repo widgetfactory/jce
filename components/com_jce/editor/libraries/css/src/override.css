@@ -13,12 +13,6 @@ html {
     font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
 
-label {
-    vertical-align: middle;
-    line-height: 32px;
-    display: inline-block;
-}
-
 .uk-form-horizontal .uk-form-label {
     font-weight: inherit;
     line-height: 32px;

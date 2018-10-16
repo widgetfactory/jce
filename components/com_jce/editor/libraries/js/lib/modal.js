@@ -32,7 +32,7 @@
             options = $.extend({
                 container: $('form').first().get(0) || 'body',
                 classes: '',
-                id: 'dialog' + this._uid(),
+                id: 'dialog_' + this._uid(),
                 open: $.noop,
                 close: $.noop,
                 beforeclose: $.noop,
@@ -71,7 +71,7 @@
             }
 
             // add close
-            $(modal).append('<button type="button" class="uk-modal-close uk-close"></button>');
+            $(modal).append('<button type="button" class="uk-modal-close uk-close" aria-label="' + Wf.translate('close', 'Close') + '"></button>');
 
             if (options.header) {
                 // add header
@@ -94,7 +94,7 @@
                 footer = $('<div class="uk-modal-footer uk-text-right" />');
 
                 $.each(options.buttons, function(i, o) {
-                    var btn = $('<button class="uk-button uk-margin-small-left" />').click(function(e) {
+                    var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '" />').click(function(e) {
                         e.preventDefault();
 
                         if ($.isFunction(o.click)) {
@@ -114,7 +114,7 @@
 
                     // add text
                     if (o.text) {
-                        $(btn).append('<span class="uk-text">' + o.text + '</span>');
+                        $(btn).append('<label class="uk-text" for="' + options.id + '_button_' + i + '">' + o.text + '</label>');
                     }
 
                     // add icon

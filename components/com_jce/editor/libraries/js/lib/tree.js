@@ -189,7 +189,7 @@
          * Remove a node
          *
          * @param {String}
-         *            The node title
+         * The node title
          */
         removeNode: function (id) {
             var parent = Wf.String.dirname(id);
@@ -309,7 +309,7 @@
                         }
 
                         // create the node html
-                        var html = '<li data-id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '">';
+                        var html = '<li data-id="' + self._escape(encodeURI(node.id)) + '" class="' + node['class'] + '" aria-level="' + parseFloat($(parent).attr('aria-level')) + 1 + '" aria-label="' + title + '">';
 
                         html += '<div class="uk-tree-row">';
 
