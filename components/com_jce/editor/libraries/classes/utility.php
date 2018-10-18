@@ -265,7 +265,7 @@ abstract class WFUtility
         $subject = preg_replace('#[\s ]+#', $spaces, $subject);
 
         if ($mode === 'utf-8') {
-            $search[] = '#[^\p{L}\p{N}\p{M}_\.\-~\s ]#u';
+            $search[] = '#[^\pL\pM\pN_\.\-~\s ]#u';
         } else {
             $subject = self::utf8_latin_to_ascii($subject);
             $search[] = '#[^a-zA-Z0-9_\.\-~\s ]#';
