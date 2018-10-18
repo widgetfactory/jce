@@ -1,30 +1,65 @@
 <?php
 
 /**
- * @copyright    Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @copyright    Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
  * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die('RESTRICTED');
 
 /* Set internal character encoding to UTF-8 */
 if (function_exists('mb_internal_encoding')) {
-    mb_internal_encoding('UTF-8');
+    mb_internal_encoding("UTF-8");
 }
 
 abstract class WFUtility
 {
+    /**
+     * Get the file extension from a path
+     *
+     * @param  string $path The file path
+     * @return string The file extension
+     */
     public static function getExtension($path)
     {
         return pathinfo($path, PATHINFO_EXTENSION);
     }
 
+    /**
+     * Remove the extension from a file name or path
+     *
+     * @param  string $path The file path
+     * @return string The file path without the extension
+     */
     public static function stripExtension($path)
     {
-        return pathinfo($path, PATHINFO_FILENAME);
+        return preg_replace('#\.[^.]*$#', '', $path);
+    }
+
+    /**
+     * Get the file name
+     *
+     * @param  string $path The file path
+     * @return string The file name without the path or extension
+     */
+    public static function getFilename($path)
+    {
+        $info = pathinfo($path);
+
+        // basename should be set
+        if (empty($info['basename'])) {
+            return $path;
+        }
+
+        // "filename" is empty, posssibly due to incorrect locale
+        if (empty($info['filename'])) {
+            return self::stripExtension($info['basename']);
+        }
+
+        return $info['filename'];
     }
 
     public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
@@ -39,7 +74,7 @@ abstract class WFUtility
         $path = preg_replace('#[/\\\\]+#', $ds, $path);
 
         // return path with prefix if any
-        return $prefix.$path;
+        return $prefix . $path;
     }
 
     /**
@@ -52,7 +87,7 @@ abstract class WFUtility
      */
     public static function fixPath($path, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($path.$ds);
+        return self::cleanPath($path . $ds);
     }
 
     private static function checkCharValue($string)
@@ -94,7 +129,7 @@ abstract class WFUtility
      */
     public static function makePath($a, $b, $ds = DIRECTORY_SEPARATOR)
     {
-        return self::cleanPath($a.$ds.$b, $ds);
+        return self::cleanPath($a . $ds . $b, $ds);
     }
 
     private static function utf8_latin_to_ascii($subject)
@@ -128,11 +163,11 @@ abstract class WFUtility
         if (function_exists('transliterator_transliterate')) {
             if (is_array($subject)) {
                 /*array_walk($subject, function (&$string) {
-                    $string = WFUtility::utf8_latin_to_ascii($string);
+                $string = WFUtility::utf8_latin_to_ascii($string);
                 });*/
 
-                for ($i = 0; $i < count($subject); ++$i) {
-                    $subject[$i] = self::utf8_latin_to_ascii($subject[$i]);
+                for ($i = 0; $i < count($subject); $i++) {
+                    $subject[$i] = WFUtility::utf8_latin_to_ascii($subject[$i]);
                 }
 
                 return $subject;
@@ -157,8 +192,8 @@ abstract class WFUtility
         }
 
         if (is_array($string)) {
-            for ($i = 0; $i < count($string); ++$i) {
-                $string[$i] = self::changeCase($string[$i], $case);
+            for ($i = 0; $i < count($string); $i++) {
+                $string[$i] = WFUtility::changeCase($string[$i], $case);
             }
         } else {
             switch ($case) {
@@ -174,6 +209,31 @@ abstract class WFUtility
         return $string;
     }
 
+    private static function cleanUTF8($string)
+    {
+        // remove some common characters
+        $string = preg_replace('#[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]#', '', $string);
+
+        $result = '';
+        $length = strlen($string);
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $string[$i];
+
+            // only process on possible restricted characters or utf-8 letters/numbers
+            if (preg_match('#[^\w\.\-~\s ]#', $char)) {
+                // skip any character less than 127, eg: &?@* etc.
+                if (ord($char) < 127) {
+                    continue;
+                }
+            }
+
+            $result .= $char;
+        }
+
+        return $result;
+    }
+
     /**
      * Makes file name safe to use.
      *
@@ -184,6 +244,11 @@ abstract class WFUtility
     public static function makeSafe($subject, $mode = 'utf-8', $spaces = '_', $case = '')
     {
         $search = array();
+
+        // set default mode if none is passed in
+        if (empty($mode)) {
+            $mode = 'utf-8';
+        }
 
         if (!function_exists('mb_internal_encoding')) {
             $mode = 'ascii';
@@ -199,16 +264,11 @@ abstract class WFUtility
         // replace spaces with specified character or space
         $subject = preg_replace('#[\s ]+#', $spaces, $subject);
 
-        switch ($mode) {
-            default:
-            case 'utf-8':
-                $search[] = '#[^a-zA-Z0-9_\.\-~\p{L}\p{N}\s ]#u';
-                $mode = 'utf-8';
-                break;
-            case 'ascii':
-                $subject = self::utf8_latin_to_ascii($subject);
-                $search[] = '#[^a-zA-Z0-9_\.\-~\s ]#';
-                break;
+        if ($mode === 'utf-8') {
+            $search[] = '#[^\p{L}\p{N}\p{M}_\.\-~\s ]#u';
+        } else {
+            $subject = self::utf8_latin_to_ascii($subject);
+            $search[] = '#[^a-zA-Z0-9_\.\-~\s ]#';
         }
 
         // remove multiple . characters
@@ -266,11 +326,11 @@ abstract class WFUtility
     public static function formatSize($size)
     {
         if ($size < 1024) {
-            return $size.' '.JText::_('WF_LABEL_BYTES');
+            return $size . ' ' . WFText::_('WF_LABEL_BYTES');
         } elseif ($size >= 1024 && $size < 1024 * 1024) {
-            return sprintf('%01.2f', $size / 1024.0).' '.JText::_('WF_LABEL_KB');
+            return sprintf('%01.2f', $size / 1024.0) . ' ' . WFText::_('WF_LABEL_KB');
         } else {
-            return sprintf('%01.2f', $size / (1024.0 * 1024)).' '.JText::_('WF_LABEL_MB');
+            return sprintf('%01.2f', $size / (1024.0 * 1024)) . ' ' . WFText::_('WF_LABEL_MB');
         }
     }
 
@@ -333,7 +393,7 @@ abstract class WFUtility
         }
 
         // get encoding
-        $encoding = mb_detect_encoding($string, 'auto', true);
+        $encoding = mb_detect_encoding($string, "auto", true);
 
         // return existing string if it is already utf-8
         if ($encoding === 'UTF-8') {
@@ -458,7 +518,7 @@ abstract class WFUtility
      */
     public static function validateFileName($name)
     {
-        if (empty($name) && (string) $name !== '0') {
+        if (empty($name) && (string) $name !== "0") {
             return false;
         }
 
