@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -29,17 +29,17 @@ class JceControllerProfiles extends JControllerAdmin
         $result = $model->import();
 
         // Get redirect URL
-		$redirect_url = JRoute::_('index.php?option=com_jce&view=profiles', false);
+        $redirect_url = JRoute::_('index.php?option=com_jce&view=profiles', false);
 
-		// Push message queue to session because we will redirect page by Javascript, not $app->redirect().
-		// The "application.queue" is only set in redirect() method, so we must manually store it.
-		$app->getSession()->set('application.queue', $app->getMessageQueue());
+        // Push message queue to session because we will redirect page by Javascript, not $app->redirect().
+        // The "application.queue" is only set in redirect() method, so we must manually store it.
+        $app->getSession()->set('application.queue', $app->getMessageQueue());
 
-		header('Content-Type: application/json');
+        header('Content-Type: application/json');
 
-		echo new JResponseJson(array('redirect' => $redirect_url), "", !$result);
+        echo new JResponseJson(array('redirect' => $redirect_url), "", !$result);
 
-		exit();
+        exit();
     }
 
     public function copy()
@@ -62,7 +62,7 @@ class JceControllerProfiles extends JControllerAdmin
             // Copy the items.
             try {
                 $model->copy($cid);
-                $ntext = $this->text_prefix.'_N_ITEMS_COPIED';
+                $ntext = $this->text_prefix . '_N_ITEMS_COPIED';
                 $this->setMessage(JText::plural($ntext, count($cid)));
             } catch (Exception $e) {
                 $this->setMessage($e->getMessage(), 'error');

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved
+ * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 3 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
 JLoader::import('joomla.application.component.controller');
 
 /**
- * Users Component Controller.
+ * JCE Component Controller.
  *
  * @since 1.5
  */
@@ -33,7 +33,7 @@ class JceController extends JControllerLegacy
      * @param array $config An optional associative array of configuration settings
      *
      * @see     JController
-     * @since   1.6
+     * @since   1.5
      */
     public function __construct($config = array())
     {
