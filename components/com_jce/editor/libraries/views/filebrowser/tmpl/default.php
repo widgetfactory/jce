@@ -62,18 +62,18 @@ defined('JPATH_PLATFORM') or die;
                 <label id="sort-name-label" for="sort-name">&nbsp;<?php echo JText::_('WF_LABEL_NAME'); ?></label>
               </button>
 
-              <!-- Sort Date -->
-              <button class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
-                <i class="uk-icon-sort-numeric-asc"></i>
-                <i class="uk-icon-sort-numeric-desc"></i>
-                <label id="sort-data-label" for="sort-date">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></label>
-              </button>
-
               <!-- Sort Size -->
-              <button class="uk-width-4-10 uk-button uk-text-left" id="sort-size" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <button class="uk-width-2-10 uk-button uk-text-left" id="sort-size" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <label id="sort-size-label" for="sort-size">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></label>
+              </button>
+
+              <!-- Sort Date -->
+              <button class="uk-width-4-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
+                <i class="uk-icon-sort-numeric-asc"></i>
+                <i class="uk-icon-sort-numeric-desc"></i>
+                <label id="sort-data-label" for="sort-date">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></label>
               </button>
 
               <div class="uk-navbar uk-padding-remove uk-text-right uk-position-top-right">
@@ -103,7 +103,7 @@ defined('JPATH_PLATFORM') or die;
             <div class="uk-width-1-1 uk-grid uk-grid-collapse">
               <ul class="limit-left uk-pagination uk-pagination-left uk-width-1-4">
                 <li class="limit-left-end uk-invisible" role="button">
-                  <a href=""><i class="uk-icon-fast-backward"></i></a>
+                  <a href=""><i class="uk-icon-first"></i></a>
                 </li>
                 <li class="limit-left uk-invisible" role="button">
                   <a href=""><i class="uk-icon-backward"></i></a>
@@ -128,7 +128,7 @@ defined('JPATH_PLATFORM') or die;
                   <a href=""><i class="uk-icon-forward"></i></a>
                 </li>
                 <li class="limit-right-end uk-invisible" role="button">
-                  <a href=""><i class="uk-icon-fast-forward"></i></a>
+                  <a href=""><i class="uk-icon-last"></i></a>
                 </li>
               </ul>
             </div>

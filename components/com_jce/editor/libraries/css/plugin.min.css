@@ -725,8 +725,13 @@
 .uk-icon-caption-add:before {
   content: "\e942";
 }
+
 .uk-icon-caption-delete:before {
   content: "\e940";
+}
+
+.uk-icon-multiple-images:before {
+  content: "\e941";
 }
 
 /*.uk-icon-spinner:before {
