@@ -206,7 +206,7 @@ class WFEditor
             // get body class if any
             $body_class = $wf->getParam('editor.body_class', '');
             // check for editor reset
-            $content_reset = $wf->getParam('editor.content_style_reset', $wf->getParam('editor.highcontrast', 0)) == 1 ? 'mceContentReset' : '';
+            $content_reset = $wf->getParam('editor.content_style_reset', 0) == 1 ? 'mceContentReset' : '';
             // combine body class and reset
             $settings['body_class'] = trim($body_class . ' ' . $content_reset);
             // set body id
