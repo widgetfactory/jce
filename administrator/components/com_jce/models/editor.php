@@ -838,12 +838,12 @@ class WFModelEditor extends WFModelBase
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        // use system template as default
-        $url = 'templates/system/css';
-        // use 'system' as default
-        $template = 'system';
-        // use system editor.css as default
-        $styles = 'templates/system/css/editor.css';
+        // set default url as empty value
+        $url = '';
+        // set default tempalte as empty value
+        $template = '';
+        // use editor default styles
+        $styles = '';
         // stylesheets
         $stylesheets = array();
         // files
@@ -942,9 +942,8 @@ class WFModelEditor extends WFModelBase
 
                 $files[] = $url . '/' . basename($file);
                 break;
-            // Nothing, use system default
+            // Nothing, use editor default
             case 2:
-                $files[] = 'templates/system/css/editor.css';
                 break;
         }
 
