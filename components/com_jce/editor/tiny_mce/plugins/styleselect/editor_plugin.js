@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         extend = tinymce.extend,
@@ -16,11 +16,11 @@
         explode = tinymce.explode;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             this.editor = ed;
 
-            ed.onNodeChange.add(function(ed, cm) {
+            ed.onNodeChange.add(function (ed, cm) {
                 var c = cm.get('styleselect'),
                     formatNames = [],
                     matches;
@@ -28,14 +28,14 @@
                 if (c) {
                     formatNames = [];
 
-                    each(c.items, function(item) {
+                    each(c.items, function (item) {
                         formatNames.push(item.value);
                     });
 
                     matches = ed.formatter.matchAll(formatNames);
                     c.select(matches[0]);
 
-                    tinymce.each(matches, function(match, index) {
+                    tinymce.each(matches, function (match, index) {
                         if (index > 0) {
                             c.mark(match);
                         }
@@ -44,20 +44,20 @@
             });
 
         },
-        createControl: function(n, cf) {
+        createControl: function (n, cf) {
             var ed = this.editor;
 
             switch (n) {
                 case "styleselect":
                     // only create the control if we are using it!
-                    if (ed.getParam('styleselect_stylesheets') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {                        
+                    if (ed.getParam('styleselect_stylesheets') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
                         return this._createStyleSelect();
                     }
 
                     break;
             }
         },
-        _createStyleSelect: function(n) {
+        _createStyleSelect: function (n) {
             var self = this,
                 ed = this.editor,
                 ctrlMan = ed.controlManager,
@@ -68,11 +68,11 @@
                 title: 'advanced.style_select',
                 filter: true,
                 max_height: 300,
-                onselect: function(name) {
+                onselect: function (name) {
                     var matches, formatNames = [],
                         removedFormat;
 
-                    each(ctrl.items, function(item) {
+                    each(ctrl.items, function (item) {
                         formatNames.push(item.value);
                     });
 
@@ -82,7 +82,7 @@
                     // Toggle off the current format(s)
                     matches = ed.formatter.matchAll(formatNames);
 
-                    tinymce.each(matches, function(match) {
+                    tinymce.each(matches, function (match) {
                         if (!name || match === name) {
 
                             if (match) {
@@ -111,7 +111,7 @@
             });
 
             // Handle specified format
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 var counter = 0,
                     formats = ed.getParam('style_formats'),
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
@@ -122,15 +122,15 @@
                 if (formats) {
                     if (typeof formats === "string") {
                         try {
-                          formats = JSON.parse(formats);
-                        } catch(e) {
-                          formats = [];
+                            formats = JSON.parse(formats);
+                        } catch (e) {
+                            formats = [];
                         }
                     }
-                    each(formats, function(fmt) {
+                    each(formats, function (fmt) {
                         var name, keys = 0;
 
-                        each(fmt, function() {
+                        each(fmt, function () {
                             keys++;
                         });
 
@@ -139,13 +139,13 @@
 
                             // make sure all attribute values are strings
                             if (fmt.attributes) {
-                                each(fmt.attributes, function(value, key) {
+                                each(fmt.attributes, function (value, key) {
                                     fmt.attributes[key] = value + '';
                                 });
                             }
 
                             if (fmt.styles) {
-                                each(fmt.styles, function(value, key) {
+                                each(fmt.styles, function (value, key) {
                                     fmt.styles[key] = value + '';
                                 });
                             }
@@ -153,10 +153,12 @@
                             ed.formatter.register(name, fmt);
 
                             ctrl.add(fmt.title, name, {
-                                style: function() {
-                                    return new PreviewCss(ed, fmt);
+                                style: function () {
+                                    return PreviewCss(ed, fmt);
                                 }
                             });
+
+
                         } else {
                             ctrl.add(fmt.title);
                         }
@@ -164,7 +166,7 @@
                 }
                 // custom styles
                 if (styles) {
-                    each(styles, function(val, key) {
+                    each(styles, function (val, key) {
                         var name, fmt;
 
                         if (val) {
@@ -186,8 +188,8 @@
                             }
 
                             ctrl.add(ed.translate(key), name, {
-                                style: function() {
-                                    return new PreviewCss(ed, fmt);
+                                style: function () {
+                                    return PreviewCss(ed, fmt);
                                 }
                             });
                         }
