@@ -155,7 +155,7 @@
 
                             ctrl.add(fmt.title, name, {
                                 style: function() {
-                                    return new PreviewCss(ed, fmt);
+                                    return PreviewCss(ed, fmt);
                                 }
                             });
                         } else {
@@ -188,7 +188,7 @@
 
                             ctrl.add(ed.translate(key), name, {
                                 style: function() {
-                                    return new PreviewCss(ed, fmt);
+                                    return PreviewCss(ed, fmt);
                                 }
                             });
                         }
