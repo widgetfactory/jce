@@ -12,6 +12,14 @@ html {
     margin: initial;
 }
 
+body {
+    font-family: inherit;
+    font-size: 1rem;
+    background: inherit;
+    color: inherit;
+    margin: initial;
+}
+
 .mceContentBody {
     height: 100%;
     height: calc(100% - 10px);
