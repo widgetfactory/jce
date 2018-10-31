@@ -127,6 +127,7 @@
     box-shadow: inherit;
     padding: 10px;
     white-space: pre-wrap;
+    width: 100%;
 }
 
 .mce-fullscreen .wf-no-editor {
