@@ -127,6 +127,10 @@
             if (!DOM.hasClass(container, 'mce-fullscreen')) {
                 DOM.setStyle(element, 'width', width);
             }
+        },
+
+        getCursorPos: function() {
+           return 0;
         }
     });
 
