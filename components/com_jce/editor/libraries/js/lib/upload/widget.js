@@ -369,7 +369,7 @@
             $('#upload-queue').empty();
 
             if ($.support.dragdrop) {
-                $('<div id="upload-queue-drag" class="uk-block uk-block-large uk-text-center uk-text-large"><i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted"></i>' + Wf.translate('upload_drop', 'Drop files here') + '</div>').appendTo('#upload-queue-block').show()
+                $('<div id="upload-queue-drag" class="uk-flex uk-flex-center uk-flex-middle uk-text-large uk-height-1-1 uk-text-large"><i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted"></i>' + Wf.translate('upload_drop', 'Drop files here') + '</div>').appendTo('#upload-queue-block').show()
             }
         },
         /**
