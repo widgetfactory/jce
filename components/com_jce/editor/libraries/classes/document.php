@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -152,10 +152,10 @@ class WFDocument extends JObject
     private function getURL($relative = false)
     {
         if ($relative) {
-            return JURI::root(true).'/components/com_jce/editor';
+            return JURI::root(true) . '/components/com_jce/editor';
         }
 
-        return JURI::root().'components/com_jce/editor';
+        return JURI::root() . 'components/com_jce/editor';
     }
 
     /**
@@ -201,8 +201,8 @@ class WFDocument extends JObject
     /**
      * Returns a JCE resource url.
      *
-     * @param 	string  The path to resolve eg: libaries
-     * @param 	bool Create a relative url
+     * @param     string  The path to resolve eg: libaries
+     * @param     bool Create a relative url
      *
      * @return full url
      */
@@ -221,7 +221,7 @@ class WFDocument extends JObject
             // get the plugin name using this document instance
             $plugin = $this->get('name');
 
-            $base = $this->getURL(true).'/';
+            $base = $this->getURL(true) . '/';
 
             $parts = explode('.', $path);
             $path = array_shift($parts);
@@ -229,52 +229,52 @@ class WFDocument extends JObject
             switch ($path) {
                 // JCE root folder
                 case 'jce':
-                    $pre = $base.'';
+                    $pre = $base . '';
                     break;
                 // JCE libraries resource folder
                 case 'libraries':
-                    $pre = $base.'libraries/'.$type;
+                    $pre = $base . 'libraries/' . $type;
                     break;
                 case 'pro':
-                    $pre = $base.'libraries/pro/'.$type;
+                    $pre = $base . 'libraries/pro/' . $type;
                     break;
                 case 'jquery':
-                    $pre = $base.'libraries/jquery/'.$type;
+                    $pre = $base . 'libraries/jquery/' . $type;
                     break;
                 case 'mediaelement':
-                    $pre = $base.'libraries/mediaelement/'.$type;
+                    $pre = $base . 'libraries/mediaelement/' . $type;
                     break;
                 case 'bootstrap':
-                    $pre = $base.'libraries/bootstrap/'.$type;
+                    $pre = $base . 'libraries/bootstrap/' . $type;
                     break;
                 // TinyMCE folder
                 case 'tiny_mce':
-                    $pre = $base.'tiny_mce';
+                    $pre = $base . 'tiny_mce';
                     break;
                 // JCE current plugin folder
                 case 'plugins':
-                    $pre = $base.'tiny_mce/plugins/'.$plugin.'/'.$type;
+                    $pre = $base . 'tiny_mce/plugins/' . $plugin . '/' . $type;
                     break;
                 // Extensions folder
                 case 'extensions':
-                    $pre = $base.'extensions';
+                    $pre = $base . 'extensions';
                     break;
                 case 'joomla':
                     return JURI::root(true);
                     break;
                 case 'media':
-                    return JURI::root(true).'/media/system';
+                    return JURI::root(true) . '/media/system';
                     break;
                 case 'component':
-                    $pre = JURI::root(true).'/administrator/components/com_jce/media/'.$type;
+                    $pre = JURI::root(true) . '/administrator/components/com_jce/media/' . $type;
                     break;
                 default:
-                    $pre = $base.$path;
+                    $pre = $base . $path;
                     break;
             }
 
             if (count($parts)) {
-                $pre = rtrim($pre, '/').'/'.implode('/', $parts);
+                $pre = rtrim($pre, '/') . '/' . implode('/', $parts);
             }
 
             // Store url
@@ -323,9 +323,9 @@ class WFDocument extends JObject
         $name = trim(array_pop($parts), '/');
 
         $parts[] = 'img';
-        $parts[] = $name.'.'.$ext;
+        $parts[] = $name . '.' . $ext;
 
-        return $this->getBaseURL($root).implode('/', $parts);
+        return $this->getBaseURL($root) . implode('/', $parts);
     }
 
     public function removeScript($file, $root = 'libraries')
@@ -348,11 +348,11 @@ class WFDocument extends JObject
         // remove extension if present
         $file = basename($file, '.js');
         // strip . and trailing /
-        $file = trim(trim($base, '.'), '/').'/'.$file.'.js';
+        $file = trim(trim($base, '.'), '/') . '/' . $file . '.js';
         // remove leading and trailing slashes
         $file = trim($file, '/');
         // create path
-        $file = $this->getBaseURL($root, 'js').'/'.$file;
+        $file = $this->getBaseURL($root, 'js') . '/' . $file;
 
         return $file;
     }
@@ -365,11 +365,11 @@ class WFDocument extends JObject
         // remove extension if present
         $file = basename($file, '.css');
         // strip . and trailing /
-        $file = trim(trim($base, '.'), '/').'/'.$file.'.css';
+        $file = trim(trim($base, '.'), '/') . '/' . $file . '.css';
         // remove leading and trailing slashes
         $file = trim($file, '/');
         // create path
-        $file = $this->getBaseURL($root, 'css').'/'.$file;
+        $file = $this->getBaseURL($root, 'css') . '/' . $file;
 
         return $file;
     }
@@ -429,7 +429,7 @@ class WFDocument extends JObject
         if (!isset($this->_script[strtolower($type)])) {
             $this->_script[strtolower($type)] = $content;
         } else {
-            $this->_script[strtolower($type)] .= chr(13).$content;
+            $this->_script[strtolower($type)] .= chr(13) . $content;
         }
     }
 
@@ -463,7 +463,7 @@ class WFDocument extends JObject
     public function getQueryString($query = array())
     {
         $app = JFactory::getApplication();
-        
+
         // get plugin
         $plugin = $app->input->getWord('plugin');
 
@@ -498,7 +498,7 @@ class WFDocument extends JObject
         $output = array();
 
         foreach ($query as $key => $value) {
-            $output[] = $key.'='.$value;
+            $output[] = $key . '=' . $value;
         }
 
         return implode('&', $output);
@@ -514,14 +514,14 @@ class WFDocument extends JObject
 
         foreach ($files as $file) {
 
-                // only add stamp to static stylesheets
-                if (strpos($file, '://') === false && strpos($file, 'index.php?option=com_jce') === false) {
-                    $seed .= basename($file);
-                }
+            // only add stamp to static stylesheets
+            if (strpos($file, '://') === false && strpos($file, 'index.php?option=com_jce') === false) {
+                $seed .= basename($file);
+            }
         }
 
         if ($seed) {
-            $hash = md5(WF_VERSION.$seed);
+            $hash = md5(WF_VERSION . $seed);
         }
 
         return $hash;
@@ -533,56 +533,56 @@ class WFDocument extends JObject
     private function getHead()
     {
         // set title
-        $output = '<title>'.$this->getTitle().'</title>'."\n";
+        $output = '<title>' . $this->getTitle() . '</title>' . "\n";
 
         // render stylesheets
         if ($this->get('compress_css', 0)) {
-            $file = JURI::base(true).'/index.php?option=com_jce&view=editor&'.$this->getQueryString(array('task' => 'pack', 'type' => 'css'));
+            $file = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack', 'type' => 'css'));
             // add hash
-            $file .= '&'.$this->getHash(array_keys($this->_styles));
+            $file .= '&' . $this->getHash(array_keys($this->_styles));
 
-            $output .= "\t\t<link href=\"".$file."\" rel=\"stylesheet\" type=\"text/css\" />\n";
+            $output .= "\t\t<link href=\"" . $file . "\" rel=\"stylesheet\" type=\"text/css\" />\n";
         } else {
             foreach ($this->_styles as $src => $type) {
                 $hash = $this->getHash($src);
 
                 // only add stamp to static stylesheets
                 if (!empty($hash)) {
-                    $hash = strpos($src, '?') === false ? '?'.$hash : '&'.$hash;
+                    $hash = strpos($src, '?') === false ? '?' . $hash : '&' . $hash;
                 }
 
-                $output .= "\t\t<link href=\"".$src.$hash.'" rel="stylesheet" type="'.$type."\" />\n";
+                $output .= "\t\t<link href=\"" . $src . $hash . '" rel="stylesheet" type="' . $type . "\" />\n";
             }
         }
 
         // Render scripts
         if ($this->get('compress_javascript', 0)) {
-            $script = JURI::base(true).'/index.php?option=com_jce&view=editor&'.$this->getQueryString(array('task' => 'pack'));
+            $script = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack'));
             // add hash
-            $script .= '&'.$this->getHash(array_keys($this->_scripts));
+            $script .= '&' . $this->getHash(array_keys($this->_scripts));
 
-            $output .= "\t\t<script data-cfasync=\"false\" type=\"text/javascript\" src=\"".$script."\"></script>\n";
+            $output .= "\t\t<script data-cfasync=\"false\" type=\"text/javascript\" src=\"" . $script . "\"></script>\n";
         } else {
             foreach ($this->_scripts as $src => $type) {
                 $hash = $this->getHash($src);
 
                 // only add stamp to static stylesheets
                 if (!empty($hash)) {
-                    $hash = strpos($src, '?') === false ? '?'.$hash : '&'.$hash;
+                    $hash = strpos($src, '?') === false ? '?' . $hash : '&' . $hash;
                 }
 
-                $output .= "\t\t<script data-cfasync=\"false\" type=\"".$type.'" src="'.$src.$hash."\"></script>\n";
+                $output .= "\t\t<script data-cfasync=\"false\" type=\"" . $type . '" src="' . $src . $hash . "\"></script>\n";
             }
         }
 
         // Script declarations
         foreach ($this->_script as $type => $content) {
-            $output .= "\t\t<script data-cfasync=\"false\" type=\"".$type.'">'.$content.'</script>';
+            $output .= "\t\t<script data-cfasync=\"false\" type=\"" . $type . '">' . $content . '</script>';
         }
 
         // Other head data
         foreach ($this->_head as $head) {
-            $output .= "\t".$head."\n";
+            $output .= "\t" . $head . "\n";
         }
 
         return $output;
@@ -602,7 +602,7 @@ class WFDocument extends JObject
     {
         //get the file content
         ob_start();
-        require_once WF_EDITOR_LIBRARIES.'/views/plugin/index.php';
+        require_once WF_EDITOR_LIBRARIES . '/views/plugin/index.php';
         $data = ob_get_contents();
         ob_end_clean();
 
@@ -639,7 +639,7 @@ class WFDocument extends JObject
     public function pack($minify = true, $gzip = false)
     {
         $app = JFactory::getApplication();
-        
+
         if ($app->input->getCmd('task') == 'pack') {
 
             // check token
@@ -666,15 +666,15 @@ class WFDocument extends JObject
 
                     // parse ini language files
                     $parser = new WFLanguageParser(array(
-                      'plugins' => array('core' => array($this->getName()), 'external' => array()),
-                      'sections' => array('dlg', $this->getName().'_dlg'),
-                      'mode' => 'plugin',
+                        'plugins' => array('core' => array($this->getName()), 'external' => array()),
+                        'sections' => array('dlg', $this->getName() . '_dlg'),
+                        'mode' => 'plugin',
                     ));
                     $data .= $parser->load();
 
                     // add script declarations
                     /*foreach ($this->getScriptDeclarations() as $script) {
-                        $data .= $script;
+                    $data .= $script;
                     }*/
 
                     $packer->setContentEnd($data);
