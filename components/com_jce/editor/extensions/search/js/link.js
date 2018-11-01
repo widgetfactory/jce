@@ -98,7 +98,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
 
                             if (n.anchors) {
                                 $.each(n.anchors, function(i, a) {
-                                    $('<dd class="anchor" />').text(a).click(function() {
+                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').click(function() {
                                         self.options.onClick.call(this, Wf.String.decode(n.link + '#' + a));
                                     }).appendTo($dl);
                                 });

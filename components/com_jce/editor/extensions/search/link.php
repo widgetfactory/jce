@@ -222,12 +222,8 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $needle = $searchwords[0];
             }
 
-            // get anchors
-            $anchors = self::getAnchors($row->text);
-
-            if (!empty($anchors)) {
-                $row->anchors = $anchors;
-            }
+            // get anchors if any...
+            $row->anchors = self::getAnchors($row->text);
 
             $row->text = SearchHelper::prepareSearchContent($row->text, $needle);
 
@@ -256,6 +252,10 @@ class WFLinkSearchExtension extends WFSearchExtension
             $result->title  = $row->title;
             $result->text   = $row->text;
             $result->link   = $row->href;
+
+            if (!empty($row->anchors)) {
+                $result->anchors = $row->anchors;
+            }
 
             $results[] = $result;
         }

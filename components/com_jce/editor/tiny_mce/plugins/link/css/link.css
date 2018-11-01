@@ -49,6 +49,6 @@
     color: inherit !important;
 }
 
-.anchor .uk-icon-file-text-o:before {
-    content: "\f13d";
+.anchor .uk-icon-file-text:before {
+    content: "\eca0";
 }
