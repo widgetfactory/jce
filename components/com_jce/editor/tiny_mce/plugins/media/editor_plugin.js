@@ -1182,12 +1182,14 @@
             // create nodes
             n.replace(this.createNodes(root, parent));
         },
-        getNodeName: function (s) {
-            s = /mce-item-(audio|embed|object|video|iframe)/i.exec(s);
+        getNodeName: function (str) {
+            var match = /mce-item-(audio|embed|object|video|iframe)/i.exec(str);
 
-            if (s) {
-                return s[1].toLowerCase();
+            if (match) {
+                return match[1].toLowerCase();
             }
+
+            return 'object';
         }
 
     });
