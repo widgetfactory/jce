@@ -108,9 +108,7 @@ div#search-browser div#search-result dl.odd {
 }
 
 div#search-browser div#search-result dl dd.anchor {
-    background: #fff url("../../../libraries/img/icons.png") no-repeat 0 -1280px;
     line-height: 20px;
-    padding: 0 0 0 22px;
     cursor: pointer;
 }
 

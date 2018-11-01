@@ -198,6 +198,11 @@ class WFLinkSearchExtension extends WFSearchExtension
         for ($i = 0, $count = count($rows); $i < $count; ++$i) {
             $row = &$rows[$i];
 
+            // skip empty titles
+            if (empty($row->title)) {
+                continue;
+            }
+
             $result = new StdClass();
 
             if ($searchphrase == 'exact') {
@@ -209,12 +214,8 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $needle = $searchwords[0];
             }
 
-            // get anchors
-            $anchors = self::getAnchors($row->text);
-
-            if (!empty($anchors)) {
-                $row->anchors = $anchors;
-            }
+            // get anchors if any
+            $row->anchors = self::getAnchors($row->text);
 
             if (method_exists('SearchHelper', 'getActions')) {
                 $row->text = SearchHelper::prepareSearchContent($row->text, $needle);
@@ -260,6 +261,10 @@ class WFLinkSearchExtension extends WFSearchExtension
             $result->title = $row->title;
             $result->text = $row->text;
             $result->link = $row->href;
+
+            if (!empty($row->anchors)) {
+                $result->anchors = $row->anchors;
+            }
 
             $results[] = $result;
         }
