@@ -939,11 +939,15 @@
                     case 'class':
                         var cls = tinymce.explode(' ', n.attr('class'));
 
-                        if (tinymce.inArray(cls, v) == -1) {
+                        if (tinymce.inArray(cls, v) === -1 && v.indexOf('mce-item-') === -1) {
                             cls.push(tinymce.trim(v));
                         }
 
-                        n.attr('class', tinymce.trim(cls.join(' ', v)));
+                        v = tinymce.trim(cls.join(' '));
+
+                        if (v) {
+                            n.attr('class', v);
+                        }
 
                         break;
                     case 'type':
@@ -1048,11 +1052,12 @@
             each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'class'], function (at) {
                 v = n.attr(at);
 
-                if (at == 'class') {
-                    v = tinymce.trim(v.replace(/\s?mce-item-([\w]+)/g, ''));
+                if (at == 'class') {                    
+                    v = v.replace(/\s?mce-item-([\w]+)/g, '');
+                    v = tinymce.trim(v);
                 }
 
-                if (v && /[\w\d]+/.test(v)) {
+                if (v && /\w+/.test(v)) {
                     root[at] = v;
                 }
             });
