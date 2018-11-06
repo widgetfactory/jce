@@ -180,3 +180,19 @@ pre.mcePreformatted {
     background: #39f;
     color: #fff
 }
+
+    .mce-resizehandle-ne {
+        cursor: ne-resize;
+    }
+
+    .mce-resizehandlese {
+        cursor: se-resize;
+    }
+
+    .mce-resizehandle-nw {
+        cursor: nw-resize;
+    }
+
+    .mce-resizehandle-sw {
+        cursor: sw-resize;
+    }
