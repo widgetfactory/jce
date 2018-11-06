@@ -57,7 +57,7 @@
             $(div).addClass('uk-modal');
 
             // create modal
-            var modal = $('<div class="uk-modal-dialog" />').appendTo(div);
+            var modal = $('<div class="uk-modal-dialog" role="dialog" aria-modal="true" aria-label="' + title + '" />').appendTo(div);
 
             // add classes to modal
             $(modal).addClass(options.classes);
@@ -119,7 +119,7 @@
 
                     // add icon
                     if (o.icon) {
-                        $(btn).prepend('<i class="uk-icon ' + o.icon + '" />&nbsp;');
+                        $(btn).prepend('<i class="uk-icon ' + o.icon + '" aria-hidden="true" />&nbsp;');
                     }
 
                     $(footer).append(btn);
