@@ -242,7 +242,7 @@
 
                         if (n) {
                             var cls = ed.dom.getAttrib(n, 'class', '');
-                            
+
                             if (cls.indexOf('mce-item-media') !== -1) {
                                 o.name = 'media';
                             }
@@ -283,7 +283,7 @@
                     d = d.replace(/<!(--)?(<!)?\[if([^\]]+)\](>--)?>/gi, '<![if$3]>');
 
                     // convert conditional comments
-                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function (a, b) {                        
+                    d = d.replace(/<!\[if([^\]]+)\]>/gi, function (a, b) {
                         return '<mce-comment data-comment-condition="[if' + b + ']">';
                     });
 
@@ -533,7 +533,7 @@
                             if (k == 'flashvars') {
                                 try {
                                     v = encodeURIComponent(v);
-                                } catch (e) {}
+                                } catch (e) { }
                             }
 
                             data.param[k] = v;
@@ -734,7 +734,7 @@
                     if (k == 'flashvars') {
                         try {
                             v = encodeURIComponent(v);
-                        } catch (e) {}
+                        } catch (e) { }
                     }
                 }
                 attribs[k] = v;
@@ -752,7 +752,7 @@
                         case 'controls':
                         case 'loop':
                         case 'seamless':
-                            // needed for Youtube iframes!
+                        // needed for Youtube iframes!
                         case 'allowfullscreen':
                             attribs[k] = k;
                             break;
@@ -787,7 +787,7 @@
                             if (k == 'flashvars') {
                                 try {
                                     v = encodeURIComponent(v);
-                                } catch (e) {}
+                                } catch (e) { }
                             }
                         }
 
@@ -827,7 +827,7 @@
                             el = el.parent;
                         }
 
-                        if (k == 'mce-comment') {                            
+                        if (k == 'mce-comment') {
                             var node = new Node('#comment', 8);
                             node.value = v['data-comment-condition'] + '>';
 
@@ -917,7 +917,7 @@
                     case 'flashvars':
                         try {
                             v = decodeURIComponent(v);
-                        } catch (e) {}
+                        } catch (e) { }
                         break;
                     case 'src':
                     case 'movie':
@@ -939,11 +939,15 @@
                     case 'class':
                         var cls = tinymce.explode(' ', n.attr('class'));
 
-                        if (tinymce.inArray(cls, v) == -1) {
+                        if (tinymce.inArray(cls, v) === -1 && v.indexOf('mce-item-') === -1) {
                             cls.push(tinymce.trim(v));
                         }
 
-                        n.attr('class', tinymce.trim(cls.join(' ', v)));
+                        v = tinymce.trim(cls.join(' '));
+
+                        if (v) {
+                            n.attr('class', v);
+                        }
 
                         break;
                     case 'type':
@@ -952,7 +956,7 @@
                     case 'flashvars':
                         try {
                             v = decodeURIComponent(v);
-                        } catch (e) {}
+                        } catch (e) { }
 
                         n.attr(k, v);
                         break;
@@ -1049,10 +1053,11 @@
                 v = n.attr(at);
 
                 if (at == 'class') {
-                    v = tinymce.trim(v.replace(/\s?mce-item-([\w]+)/g, ''));
+                    v = v.replace(/\s?mce-item-([\w]+)/g, '');
+                    v = tinymce.trim(v);
                 }
 
-                if (v && /[\w\d]+/.test(v)) {
+                if (v && /\w+/.test(v)) {
                     root[at] = v;
                 }
             });
