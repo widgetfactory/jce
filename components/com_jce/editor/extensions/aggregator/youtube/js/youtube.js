@@ -82,6 +82,12 @@ WFAggregator.add('youtube', {
         $(':input', '#youtube_options').not('#youtube_embed, #youtube_https, #youtube_privacy').each(function() {
             var k = $(this).attr('id'),
                 v = $(this).val();
+
+            // no id set, skip it as it is a custom parameter
+            if (!k) {
+                return true;
+            }
+
             // remove youtube_ prefix
             k = k.substr(k.indexOf('_') + 1);
 
@@ -136,6 +142,15 @@ WFAggregator.add('youtube', {
                 }
             });
         }
+
+        $('.uk-repeatable', '#youtube_params').each(function() {
+            var key = $('input[name^="youtube_params_name"]', this).val();
+            var value = $('input[name^="youtube_params_value"]', this).val();
+
+            if (key !== '' && value !== '') {
+                args[key] = value;
+            }
+        });
 
         // convert args to URL query string
         var q = $.param(args);
@@ -221,11 +236,30 @@ WFAggregator.add('youtube', {
             delete query.wmode;
         }
 
-        // add additional parameter fields
+        var x = 0;
+
+        // process remaining values as params
         $.each(query, function(k, v) {
             if (typeof self.props[k] == 'undefined') {
-                $('#youtube_options').append('<div class="uk-form-row"><label class="uk-form-label uk-width-2-10" for="youtube_' + k + '">' + k + '</label><div class="uk-form-row uk-width-8-10"><input type="text" id="youtube_' + k + '" value="' + v + '" /></div></div>');
+
+                try {
+                    v = decodeURIComponent(v);
+                } catch (e) {}
+
+                var n = $('.uk-repeatable', '#youtube_params').eq(0);
+
+                if (x > 0) {
+                    $(n).clone(true).appendTo($(n).parent());
+                }
+
+                var elements = $('.uk-repeatable', '#youtube_params').eq(x).find('input, select');
+
+                $(elements).eq(0).val(k);
+                $(elements).eq(1).val(v);
+
+                delete data[k];
             }
+            x++;
         });
 
         // process url

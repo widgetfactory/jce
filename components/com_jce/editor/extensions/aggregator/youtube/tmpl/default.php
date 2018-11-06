@@ -1,12 +1,12 @@
 <?php
 /**
-* @copyright    Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
-* @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-* JCE is free software. This version may have been modified pursuant
-* to the GNU General Public License, and as distributed it includes or
-* is derivative of works licensed under the GNU General Public License or
-* other free or open source software licenses
-*/
+ * @copyright    Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses
+ */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
   <div class="uk-form-row">
@@ -80,3 +80,25 @@ defined('_WF_EXT') or die('RESTRICTED');
       <input type="text" id="youtube_playlist" />
     </div>
   </div>
+
+  <div class="uk-form-row">
+        <label for="youtube_params" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS_DESC'); ?>"><?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS'); ?></label>
+        <div class="uk-width-4-5" id="youtube_params">
+          <div class="uk-form-row uk-repeatable">
+                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
+                      <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_NAME'); ?></label>
+                      <div class="uk-form-controls uk-width-4-10">
+                        <input type="text" name="youtube_params_name[]" />
+                      </div>
+                      <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_VALUE'); ?></label>
+                      <div class="uk-form-controls uk-width-4-10">
+                        <input type="text" name="youtube_params_value[]" />
+                      </div>
+                  </div>
+                  <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
+                    <button type="button" class="uk-button uk-button-link uk-repeatable-create"><i class="uk-icon-plus"></i></button>
+                    <button type="button" class="uk-button uk-button-link uk-repeatable-delete"><i class="uk-icon-trash"></i></button>
+                  </div>
+          </div>
+        </div>
+    </div>
