@@ -52,3 +52,7 @@
 .anchor .uk-icon-file-text:before {
     content: "\eca0";
 }
+
+.uk-tree-node li.anchor {
+    padding: 0 0 0 64px;
+}
