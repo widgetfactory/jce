@@ -326,6 +326,10 @@ html {
     height: 32px;
 }
 
+.uk-form-horizontal .uk-form-controls select {
+    line-height: 1;
+}
+
 .uk-form-horizontal .uk-form-controls input[type="range"] {
     height: 32px;
 }
