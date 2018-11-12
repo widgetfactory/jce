@@ -652,6 +652,7 @@
                     if (v.length == 4) {
                         v = v + v.substr(1);
                     }
+
                     h += '<li style="background-color:' + v + '"><span class="colorpicker_templateblock" aria-labelledby="template_colors_' + i + '" title="' + v + '"></span></li>';
                     if (self.options.forcedHighContrastMode) {
                         h += '<canvas class="mceColorSwatch" data-color="' + v + '"></canvas>';

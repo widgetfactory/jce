@@ -1122,6 +1122,10 @@ html {
     height: 32px;
 }
 
+.uk-form-horizontal .uk-form-controls select {
+    line-height: 1;
+}
+
 .uk-form-horizontal .uk-form-controls input[type="range"] {
     height: 32px;
 }
@@ -1642,6 +1646,30 @@ input.colour {
     right: inherit;
 }
 
+.wf-colorpicker-simple {
+    height: auto;
+    width: inherit;
+    max-width: 100px;;
+    padding: 5px;
+}
+
+.wf-colorpicker-simple .uk-icon-close {
+    visibility: hidden;
+}
+
+.wf-colorpicker-simple #colorpicker {
+    min-width: inherit;
+    margin: 0;
+}
+
+.wf-colorpicker-simple .wf-colorpicker-simple-colors > div {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin: 1px;
+    cursor: pointer;
+}
+
 .wf-colorpicker .uk-tabs {
     height: 91.6%;
     height: calc(100% - 49px);
@@ -1699,6 +1727,12 @@ input.colour {
 
 .wf-colorpicker #colorpicker_tabs .uk-switcher {
     padding: 0;
+}
+
+.wf-colorpicker.uk-tooltip-top::after, 
+.wf-colorpicker.uk-tooltip-top-left::after, 
+.wf-colorpicker.uk-tooltip-top-right::after {
+    border-top-color: #fff;
 }
 
 .uk-tooltip {
