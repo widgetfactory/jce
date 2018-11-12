@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -25,11 +25,11 @@ class JoomlalinksWeblinks extends JObject
      * Returns a reference to a editor object.
      *
      * This method must be invoked as:
-     * 		<pre>  $browser =JContentEditor::getInstance();</pre>
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
      *
      * @return JCE The editor object
      *
-     * @since	1.5
+     * @since    1.5
      */
     public static function getInstance()
     {
@@ -52,7 +52,7 @@ class JoomlalinksWeblinks extends JObject
         $wf = WFEditorPlugin::getInstance();
 
         if ($wf->checkAccess('links.joomlalinks.weblinks', 1)) {
-            return '<li data-id="index.php?option=com_weblinks&view=categories" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">'.WFText::_('WF_LINKS_JOOMLALINKS_WEBLINKS').'</span></a></div></li>';
+            return '<li data-id="index.php?option=com_weblinks&view=categories" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . WFText::_('WF_LINKS_JOOMLALINKS_WEBLINKS') . '</span></a></div></li>';
         }
     }
 
@@ -63,9 +63,9 @@ class JoomlalinksWeblinks extends JObject
         $items = array();
 
         if (!defined('JPATH_PLATFORM')) {
-            require_once JPATH_SITE.'/includes/application.php';
+            require_once JPATH_SITE . '/includes/application.php';
         }
-        require_once JPATH_SITE.'/components/com_weblinks/helpers/route.php';
+        require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
 
         $language = '';
 
@@ -88,17 +88,17 @@ class JoomlalinksWeblinks extends JObject
 
                         if (strpos($id, 'index.php?Itemid=') !== false) {
                             $url = $id;
-                            $id = 'index.php?option=com_weblinks&view=category&id='.$category->id;
+                            $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
                         }
                     } else {
                         $itemid = WFLinkBrowser::getItemId('com_weblinks', array('categories' => null, 'category' => $category->id));
-                        $id = 'index.php?option=com_weblinks&view=category&id='.$category->id.$itemid;
+                        $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id . $itemid;
                     }
 
                     $items[] = array(
                         'url' => self::route($url),
                         'id' => $id,
-                        'name' => $category->title.' / '.$category->alias,
+                        'name' => $category->title . ' / ' . $category->alias,
                         'class' => 'folder weblink',
                     );
                 }
@@ -115,7 +115,7 @@ class JoomlalinksWeblinks extends JObject
                             $url = '';
 
                             if ($children) {
-                                $id = 'index.php?option=com_weblinks&view=category&id='.$category->id;
+                                $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
                             } else {
                                 if (method_exists('WeblinksHelperRoute', 'getCategoryRoute')) {
                                     // language
@@ -127,18 +127,18 @@ class JoomlalinksWeblinks extends JObject
 
                                     if (strpos($id, 'index.php?Itemid=') !== false) {
                                         $url = $id;
-                                        $id = 'index.php?option=com_weblinks&view=category&id='.$category->id;
+                                        $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
                                     }
                                 } else {
                                     $itemid = WFLinkBrowser::getItemId('com_weblinks', array('categories' => null, 'category' => $category->id));
-                                    $id = 'index.php?option=com_weblinks&view=category&id='.$category->id.$itemid;
+                                    $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id . $itemid;
                                 }
                             }
 
                             $items[] = array(
                                 'url' => self::route($url),
                                 'id' => $id,
-                                'name' => $category->title.' / '.$category->alias,
+                                'name' => $category->title . ' / ' . $category->alias,
                                 'class' => 'folder weblink',
                             );
                         }
@@ -161,7 +161,7 @@ class JoomlalinksWeblinks extends JObject
 
                     $items[] = array(
                         'id' => self::route($id),
-                        'name' => $weblink->title.' / '.$weblink->alias,
+                        'name' => $weblink->title . ' / ' . $weblink->alias,
                         'class' => 'file',
                     );
                 }
@@ -197,7 +197,7 @@ class JoomlalinksWeblinks extends JObject
                 $a_id = $dbquery->castAsChar('a.id');
                 $case_when1 .= $dbquery->concatenate(array($a_id, 'a.alias'), ':');
                 $case_when1 .= ' ELSE ';
-                $case_when1 .= $a_id.' END as slug';
+                $case_when1 .= $a_id . ' END as slug';
 
                 $case_when2 = ' CASE WHEN ';
                 $case_when2 .= $dbquery->charLength('b.alias', '!=', '0');
@@ -205,29 +205,36 @@ class JoomlalinksWeblinks extends JObject
                 $c_id = $dbquery->castAsChar('b.id');
                 $case_when2 .= $dbquery->concatenate(array($c_id, 'b.alias'), ':');
                 $case_when2 .= ' ELSE ';
-                $case_when2 .= $c_id.' END as catslug';
+                $case_when2 .= $c_id . ' END as catslug';
             } else {
                 $case_when1 = ' CASE WHEN CHAR_LENGTH(a.alias) THEN CONCAT_WS(\':\', a.id, a.alias) ELSE a.id END as slug';
                 $case_when2 = ' CASE WHEN CHAR_LENGTH(b.alias) THEN CONCAT_WS(\':\', b.id, b.alias) ELSE b.id END as catslug';
             }
 
-            $query .= ','.$case_when1.','.$case_when2;
+            $query .= ',' . $case_when1 . ',' . $case_when2;
         }
 
         if (method_exists('JUser', 'getAuthorisedViewLevels')) {
             $where = ' AND a.state = 1';
-            $where .= ' AND b.access IN ('.implode(',', $user->getAuthorisedViewLevels()).')';
+
+            if (!$user->authorise('core.admin')) {
+                $where .= ' AND b.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')';
+            }
+
         } else {
             $where = ' AND a.published = 1';
-            $where .= ' AND b.access <= '.(int) $user->get('aid');
+
+            if ($user->get('gid') != 25) {
+                $where .= ' AND b.access <= ' . (int) $user->get('aid');
+            }
         }
 
         $query .= ' FROM #__weblinks AS a'
-                .' INNER JOIN #__categories AS b ON b.id = '.(int) $id
-                .' WHERE a.catid = '.(int) $id
-                .$where
-                .' AND b.published = 1'
-                .' ORDER BY a.title'
+        . ' INNER JOIN #__categories AS b ON b.id = ' . (int) $id
+        . ' WHERE a.catid = ' . (int) $id
+        . $where
+        . ' AND b.published = 1'
+        . ' ORDER BY a.title'
         ;
 
         $db->setQuery($query, 0);

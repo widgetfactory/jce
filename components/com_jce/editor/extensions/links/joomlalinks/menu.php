@@ -266,7 +266,14 @@ class JoomlalinksMenu extends JObject
         $query->clear();
 
         if (is_object($query)) {
-            $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item'), 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')'))->order('id, name');
+            $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
+            
+            if (!$user->authorise('core.admin')) {
+                $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            }
+            
+            $query->order('id, name');
+            
         } else {
             $query = 'SELECT id, name, link, alias'
             . ' FROM #__menu'
@@ -289,7 +296,11 @@ class JoomlalinksMenu extends JObject
         $query = $db->getQuery(true);
 
         if (is_object($query)) {
-            $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0', 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')'));
+            $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0'));
+            
+            if (!$user->authorise('core.admin')) {
+                $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            }
 
             if ($id) {
                 $query->where('parent_id = ' . (int) $id);
@@ -332,7 +343,7 @@ class JoomlalinksMenu extends JObject
 
             $query->where('m.published = 1');
 
-            if ($user->authorise('core.admin') === false) {
+            if (!$user->authorise('core.admin')) {
                 $query->where('m.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
             }
 

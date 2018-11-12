@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -61,7 +61,7 @@ class WFLinkExtension extends WFExtension
     private function getLinkExtension($name)
     {
         if (array_key_exists($name, self::$links) === false || empty(self::$links[$name])) {
-            $classname = 'WFLinkBrowser_'.ucfirst($name);
+            $classname = 'WFLinkBrowser_' . ucfirst($name);
             // create class
             if (class_exists($classname)) {
                 self::$links[$name] = new $classname();
@@ -113,8 +113,8 @@ class WFLinkExtension extends WFExtension
     {
         $args = self::cleanInput($args, 'STRING');
 
-        foreach ($this->extensions as $extension) {            
-            if (in_array($args->option, $extension->getOption())) {                
+        foreach ($this->extensions as $extension) {
+            if (in_array($args->option, $extension->getOption())) {
                 $items = $extension->getLinks($args);
             }
         }
@@ -139,7 +139,7 @@ class WFLinkExtension extends WFExtension
      *
      * @return Category list object
      *
-     * @since	1.5
+     * @since    1.5
      */
     public function getCategory($section, $parent = 1)
     {
@@ -155,16 +155,22 @@ class WFLinkExtension extends WFExtension
         $language = $version->isCompatible('3.0') ? ', language' : '';
 
         if (method_exists('JUser', 'getAuthorisedViewLevels')) {
-            $where[] = 'parent_id = '.(int) $parent;
-            $where[] = 'extension = '.$db->Quote($section);
-            $where[] = 'access IN ('.implode(',', $user->getAuthorisedViewLevels()).')';
+            $where[] = 'parent_id = ' . (int) $parent;
+            $where[] = 'extension = ' . $db->Quote($section);
+
+            if (!$user->authorise('core.admin')) {
+                $where[] = 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')';
+            }
 
             if (!$wf->checkAccess('static', 1)) {
-                $where[] = 'path != '.$db->Quote('uncategorised');
+                $where[] = 'path != ' . $db->Quote('uncategorised');
             }
         } else {
-            $where[] = 'section = '.$db->Quote($section);
-            $where[] = 'access <= '.(int) $user->get('aid');
+            $where[] = 'section = ' . $db->Quote($section);
+
+            if ($user->get('gid') != 25) {
+                $where[] = 'access <= ' . (int) $user->get('aid');
+            }
         }
 
         $case = '';
@@ -178,7 +184,7 @@ class WFLinkExtension extends WFExtension
                 $a_id = $query->castAsChar('id');
                 $case .= $query->concatenate(array($a_id, 'alias'), ':');
                 $case .= ' ELSE ';
-                $case .= $a_id.' END as slug';
+                $case .= $a_id . ' END as slug';
             } else {
                 $case .= ', CASE WHEN CHAR_LENGTH(alias) THEN CONCAT_WS(":", id, alias) ELSE id END as slug';
             }
@@ -186,11 +192,11 @@ class WFLinkExtension extends WFExtension
 
         if (is_object($query)) {
             $where[] = 'published = 1';
-            $query->select('id AS slug, id AS id, title, alias, access'.$language.$case)->from('#__categories')->where($where)->order('title');
+            $query->select('id AS slug, id AS id, title, alias, access' . $language . $case)->from('#__categories')->where($where)->order('title');
         } else {
-            $query = 'SELECT id AS slug, id AS id, title, alias, access'.$case;
+            $query = 'SELECT id AS slug, id AS id, title, alias, access' . $case;
             $query .= ' FROM #__categories';
-            $query .= ' WHERE '.implode(' AND ', $where);
+            $query .= ' WHERE ' . implode(' AND ', $where);
             $query .= ' ORDER BY title';
         }
         $db->setQuery($query);
@@ -233,7 +239,7 @@ class WFLinkExtension extends WFExtension
             }
         }
 
-        return $match ? '&Itemid='.$match : '';
+        return $match ? '&Itemid=' . $match : '';
     }
 
     /**
@@ -262,7 +268,7 @@ class WFLinkExtension extends WFExtension
     /**
      * XML encode a string.
      *
-     * @param 	string	String to encode
+     * @param     string    String to encode
      *
      * @return string Encoded string
      */

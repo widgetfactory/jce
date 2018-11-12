@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -25,11 +25,11 @@ class JoomlalinksContact extends JObject
      * Returns a reference to a editor object.
      *
      * This method must be invoked as:
-     * 		<pre>  $browser =JContentEditor::getInstance();</pre>
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
      *
      * @return JCE The editor object
      *
-     * @since	1.5
+     * @since    1.5
      */
     public static function getInstance()
     {
@@ -53,7 +53,7 @@ class JoomlalinksContact extends JObject
         $wf = WFEditorPlugin::getInstance();
 
         if ($wf->checkAccess('links.joomlalinks.contacts', 1)) {
-            return '<li data-id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">'.WFText::_('WF_LINKS_JOOMLALINKS_CONTACTS').'</span></a></div></li>';
+            return '<li data-id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . WFText::_('WF_LINKS_JOOMLALINKS_CONTACTS') . '</span></a></div></li>';
         }
     }
 
@@ -65,7 +65,7 @@ class JoomlalinksContact extends JObject
         $language = '';
 
         if (defined('JPATH_PLATFORM')) {
-            require_once JPATH_SITE.'/components/com_contact/helpers/route.php';
+            require_once JPATH_SITE . '/components/com_contact/helpers/route.php';
         }
 
         switch ($view) {
@@ -85,15 +85,15 @@ class JoomlalinksContact extends JObject
                         $url = ContactHelperRoute::getCategoryRoute($category->id, $language);
                     } else {
                         $itemid = WFLinkBrowser::getItemId('com_contact', array('category' => $category->id));
-                        $url = 'index.php?option=com_contact&view=category&catid='.$category->slug.$itemid;
+                        $url = 'index.php?option=com_contact&view=category&catid=' . $category->slug . $itemid;
                     }
                     // convert to SEF
                     $url = self::route($url);
 
                     $items[] = array(
-                        'id' => 'index.php?option=com_contact&view=category&id='.$category->id,
+                        'id' => 'index.php?option=com_contact&view=category&id=' . $category->id,
                         'url' => $url,
-                        'name' => $category->title.' / '.$category->alias,
+                        'name' => $category->title . ' / ' . $category->alias,
                         'class' => 'folder contact',
                     );
                 }
@@ -122,7 +122,7 @@ class JoomlalinksContact extends JObject
                         $items[] = array(
                             'url' => $url,
                             'id' => $id,
-                            'name' => $category->title.' / '.$category->alias,
+                            'name' => $category->title . ' / ' . $category->alias,
                             'class' => 'folder content',
                         );
                     }
@@ -139,21 +139,21 @@ class JoomlalinksContact extends JObject
                     if (defined('JPATH_PLATFORM')) {
                         $id = ContactHelperRoute::getContactRoute($contact->id, $args->id, $language);
                     } else {
-                        $catid = $args->id ? '&catid='.$args->id : '';
+                        $catid = $args->id ? '&catid=' . $args->id : '';
                         $itemid = WFLinkBrowser::getItemId('com_contact', array('contact' => $contact->id));
 
                         if (!$itemid && isset($args->Itemid)) {
                             // fall back to the parent item's Itemid
-                            $itemid = '&Itemid='.$args->Itemid;
+                            $itemid = '&Itemid=' . $args->Itemid;
                         }
 
-                        $id = 'index.php?option=com_contact&view=contact'.$catid.'&id='.$contact->id.'-'.$contact->alias.$itemid;
+                        $id = 'index.php?option=com_contact&view=contact' . $catid . '&id=' . $contact->id . '-' . $contact->alias . $itemid;
                     }
                     $id = self::route($id);
 
                     $items[] = array(
                         'id' => $id,
-                        'name' => $contact->name.' / '.$contact->alias,
+                        'name' => $contact->name . ' / ' . $contact->alias,
                         'class' => 'file',
                     );
                 }
@@ -187,15 +187,23 @@ class JoomlalinksContact extends JObject
         $query = $db->getQuery(true);
 
         if (is_object($query)) {
-            $query->select('id, name, alias'.$language)->from('#__contact_details')->where(array('catid='.(int) $id, 'published = 1', 'access IN ('.implode(',', $user->getAuthorisedViewLevels()).')'));
+            $query->select('id, name, alias' . $language)->from('#__contact_details')->where(array('catid=' . (int) $id, 'published = 1'));
+            
+            if (!$user->authorise('core.admin')) {
+                $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+            }
+
         } else {
             $query = 'SELECT id, name, alias'
-            .' FROM #__contact_details'
-            .' WHERE catid = '.(int) $id
-            .' AND published = 1'
-            .' AND access <= '.(int) $user->get('aid')
-            .' ORDER BY name'
-            ;
+            . ' FROM #__contact_details'
+            . ' WHERE catid = ' . (int) $id
+            . ' AND published = 1';
+
+            if ($user->get('gid') != 25) {
+                $query .= ' AND access <= ' . (int) $user->get('aid');
+            }
+
+            $query .= ' ORDER BY name';
         }
 
         $db->setQuery($query);
