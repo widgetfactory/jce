@@ -699,7 +699,16 @@ div#info-comment {
 
 #info-preview {
   height: calc(100% - 120px);
-  padding: 5px 0;
+  padding: 0;
+  margin-top: 5px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  box-sizing: border-box;
+  background-size: contain;
+}
+
+#info-preview[style*=".png"] {
+  background-color: #f5f5f5;
 }
 
 #info-preview img {

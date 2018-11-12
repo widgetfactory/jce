@@ -15,6 +15,9 @@
             <field name="foreground_color" type="color" size="10" default="#000000" label="WF_FORECOLOR_TITLE" description="WF_FONTCOLOR_DESC"/>
             <field name="background_color" type="color" size="10" default="#000000" label="WF_BACKCOLOR_TITLE" description="WF_BACKCOLOR_DESC"/>
 
+            <field name="foreground_colors" type="text" default="" hint="eg: #000000,#cc0000,#cccccc" label="WF_FORECOLOR_LIST_TITLE" description="WF_FORECOLOR_LIST_DESC"/>
+            <field name="background_colors" type="text" default="" hint="eg: #cccccc,#dddddd,#eeeeee" label="WF_BACKCOLOR_LIST_TITLE" description="WF_BACKCOLOR_LIST_DESC"/>
+
             <field type="heading" label="WF_PROFILES_PLUGINS_BUTTONS" />
             
             <field name="buttons" type="buttons" multiple="multiple" default="forecolor,backcolor" label="WF_PARAM_BUTTONS" description="WF_PARAM_BUTTONS_DESC">

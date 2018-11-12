@@ -16,5 +16,8 @@ class WFFontcolorPluginConfig
 
         $settings['fontcolor_foreground_color'] = $wf->getParam('fontcolor.foreground_color', '');
         $settings['fontcolor_background_color'] = $wf->getParam('fontcolor.background_color', '');
+
+        $settings['fontcolor_foreground_colors'] = $wf->getParam('fontcolor.foreground_colors', '');
+        $settings['fontcolor_background_colors'] = $wf->getParam('fontcolor.background_colors', '');
     }
 }
