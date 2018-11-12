@@ -235,7 +235,13 @@ class JoomlalinksMenu extends JObject
         $params = new JRegistry($db->loadResult());
 
         $query->clear();
-        $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item'), 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')'))->order('name');
+        $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
+        
+        if (!$user->authorise('core.admin')) {
+            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+        }
+        
+        $query->order('name');
 
         $db->setQuery($query, 0);
 
@@ -249,7 +255,11 @@ class JoomlalinksMenu extends JObject
 
         $query = $db->getQuery(true);
 
-        $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0', 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')'));
+        $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0'));
+        
+        if (!$user->authorise('core.admin')) {
+            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+        }
 
         if ($id) {
             $query->where('parent_id = ' . (int) $id);
@@ -278,7 +288,11 @@ class JoomlalinksMenu extends JObject
             $parent = 1;
         }
 
-        $query->where(array('m.published = 1', 'm.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')', 'm.parent_id = ' . (int) $parent));
+        $query->where(array('m.published = 1', 'm.parent_id = ' . (int) $parent));
+
+        if (!$user->authorise('core.admin')) {
+            $query->where('m.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+        }
 
         // only site menu items
         $query->where('m.client_id = 0');

@@ -141,7 +141,12 @@ class JoomlalinksContact extends JObject
         $user = JFactory::getUser();
 
         $query = $db->getQuery(true);
-        $query->select('id, name, alias, language')->from('#__contact_details')->where(array('catid=' . (int) $id, 'published = 1', 'access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')'));
+        $query->select('id, name, alias, language')->from('#__contact_details')->where(array('catid=' . (int) $id, 'published = 1'));
+        
+        if (!$user->authorise('core.admin')) {
+            $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+        }
+
         $db->setQuery($query);
 
         return $db->loadObjectList();

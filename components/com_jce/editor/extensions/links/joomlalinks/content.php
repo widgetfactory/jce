@@ -196,35 +196,6 @@ class JoomlalinksContent extends JObject
                 }
 
                 break;
-            case 'uncategorized':
-                $statics = self::_getUncategorized();
-                foreach ($statics as $static) {
-                    // language
-                    if (isset($static->language)) {
-                        $language = $static->language;
-                    }
-
-                    $id = ContentHelperRoute::getArticleRoute($static->id, 0, $language);
-
-                    $id = $this->route($id);
-
-                    $items[] = array(
-                        'id' => $id,
-                        'name' => $static->title . ' / ' . $static->alias,
-                        'class' => 'file',
-                    );
-
-                    $anchors = self::getAnchors($statics->content);
-
-                    foreach ($anchors as $anchor) {
-                        $items[] = array(
-                            'id' => $id . '#' . $anchor,
-                            'name' => '#' . $anchor,
-                            'class' => 'file anchor',
-                        );
-                    }
-                }
-                break;
         }
 
         return $items;
@@ -286,27 +257,14 @@ class JoomlalinksContent extends JObject
         $query->from('#__content AS a');
         $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
         $query->where('a.catid = ' . (int) $id);
-        $query->where('a.access IN (' . $groups . ')');
-        $query->where('b.access IN (' . $groups . ')');
+
+        if (!$user->authorise('core.admin')) {
+            $query->where('a.access IN (' . $groups . ')');
+            $query->where('b.access IN (' . $groups . ')');
+        }
+
         $query->where('a.state = 1');
         $query->order('a.title');
-
-        $db->setQuery($query, 0);
-
-        return $db->loadObjectList();
-    }
-
-    private function _getUncategorized()
-    {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
-
-        $query = 'SELECT id, title, alias, access, introtext AS content, language'
-        . ' FROM #__content'
-        . ' WHERE state = 1'
-        . ' AND access <= ' . (int) $user->get('aid') . ' AND sectionid = 0'
-            . ' AND catid = 0'
-            . ' ORDER BY title';
 
         $db->setQuery($query, 0);
 

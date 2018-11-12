@@ -161,18 +161,15 @@ class JoomlalinksWeblinks extends JObject
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
 
-        $version = new JVersion();
-        $language = $version->isCompatible('3.0') ? ', a.language' : '';
-
         $dbquery = $db->getQuery(true);
 
         $section = JText::_('Web Links');
 
-        $query = 'SELECT a.id AS slug, b.id AS catslug, a.title AS title, a.description AS text, a.url, a.alias';
+        $query = $db->getQuery(true);
+
+        $case = '';
 
         if ((int) $this->get('weblinks_alias', 1)) {
-            $query .= $language;
-
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $dbquery->charLength('a.alias', '!=', '0');
@@ -190,19 +187,23 @@ class JoomlalinksWeblinks extends JObject
             $case_when2 .= ' ELSE ';
             $case_when2 .= $c_id . ' END as catslug';
 
-            $query .= ',' . $case_when1 . ',' . $case_when2;
+            $case .= ',' . $case_when1 . ',' . $case_when2;
         }
 
-        $where = ' AND a.state = 1';
-        $where .= ' AND b.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')';
+        $query->select('a.id AS slug, b.id AS catslug, a.title AS title, a.description AS text, a.url, a.alias, a.language' . $case);
 
-        $query .= ' FROM #__weblinks AS a'
-        . ' INNER JOIN #__categories AS b ON b.id = ' . (int) $id
-        . ' WHERE a.catid = ' . (int) $id
-            . $where
-            . ' AND b.published = 1'
-            . ' ORDER BY a.title'
-        ;
+        $query->from('#__weblinks AS a');
+        $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
+        $query->where('a.catid = ' . (int) $id);
+
+        $query->where('a.state = 1');
+        
+        if (!$user->authorise('core.admin')) {
+            $query->where('b.access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
+        }
+
+        $query->where('b.published = 1');
+        $query->order('a.title');
 
         $db->setQuery($query, 0);
 
