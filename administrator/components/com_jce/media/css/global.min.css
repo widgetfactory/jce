@@ -1030,6 +1030,10 @@ html[dir="rtl"] .ui-jce .ui-tabs .ui-tabs-nav li {
     background: #fafafa;
     color: #666;
 }
+
+.ui-jce select {
+    line-height: 1;
+}
 .ui-jce .tooltip {
     position: absolute;
     z-index: 1030;
