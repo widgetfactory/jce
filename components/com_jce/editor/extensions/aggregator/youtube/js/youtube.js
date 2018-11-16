@@ -20,7 +20,7 @@ WFAggregator.add('youtube', {
         rel: 1,
         autoplay: 0,
         controls: 1,
-        showinfo: 1,
+        modestbranding: 0,
         enablejsapi: 0,
         loop: 0,
         playlist: '',
@@ -63,18 +63,15 @@ WFAggregator.add('youtube', {
             data = {},
             args = {},
             type = this.getType(),
-            id, query = {};
+            id;
 
         // parse URI
         var u = this.parseURL(src);
 
         if (u.query) {
             // split query
-            query = Wf.String.query(u.query);
+            args = Wf.String.query(u.query);
         }
-
-        // extend args with query data
-        $.extend(args, query);
 
         // ssl url
         src = src.replace(/^(http:)?\/\//, 'https://');
@@ -207,7 +204,7 @@ WFAggregator.add('youtube', {
         src = src.replace(/^(http:)?\/\//, 'https://');
 
         if (src.indexOf('youtube-nocookie') !== -1) {
-            data['youtube_privacy'] = true;
+            data.privacy = 1;
         }
 
         if (query.v) {
