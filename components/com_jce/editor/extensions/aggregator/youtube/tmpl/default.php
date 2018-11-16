@@ -47,9 +47,9 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 
     <div class="uk-width-6-10">
-      <input type="checkbox" id="youtube_showinfo" checked />
-      <label for="youtube_showinfo" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC') ?>" class="tooltip">
-        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_SHOWINFO') ?>
+      <input type="checkbox" id="youtube_modestbranding" checked />
+      <label for="youtube_modestbranding" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC') ?>" class="tooltip">
+        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING') ?>
       </label>
     </div>
   </div>

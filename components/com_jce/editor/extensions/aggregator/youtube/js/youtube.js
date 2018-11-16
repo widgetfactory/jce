@@ -20,7 +20,7 @@ WFAggregator.add('youtube', {
         rel: 1,
         autoplay: 0,
         controls: 1,
-        showinfo: 1,
+        modestbranding: 0,
         enablejsapi: 0,
         loop: 0,
         playlist: '',
@@ -207,7 +207,7 @@ WFAggregator.add('youtube', {
         src = src.replace(/^(http:)?\/\//, 'https://');
 
         if (src.indexOf('youtube-nocookie') !== -1) {
-            data['youtube_privacy'] = true;
+            data.privacy = 1;
         }
 
         if (query.v) {
