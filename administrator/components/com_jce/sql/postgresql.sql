@@ -1,4 +1,4 @@
-CREATE TABLE "#__wf_profiles" (
+CREATE TABLE IF NOT EXISTS "#__wf_profiles" (
     "id" serial NOT NULL,
     "name" character varying(255) NOT NULL,
     "description" text NOT NULL,
