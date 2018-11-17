@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -336,7 +336,7 @@ abstract class WFMimeType
         'application/vnd.openxmlformats-officedocument.presentationml.template' => 'potx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.template' => 'xltx',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx dotx',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.template' => 'dotx',
         'application/vnd.osgi.dp' => 'dp',
         'application/vnd.palm' => 'pdb pqa oprc',

@@ -27,7 +27,7 @@
         "audio,mp3|ogg|oga|webm|m4a," +
         "image,jpg|jpeg|png|gif|png|svg|bmp|tiff," +
         "text,txt|htm|html," +
-        "word,doc|docx," +
+        "word,doc|docx|dot|dotx," +
         "excel,xls|xlsx," +
         "powerpoint,ppt|pptx," +
         "zip,rar|zip|tar|gz," +

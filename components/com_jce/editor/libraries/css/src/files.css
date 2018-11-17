@@ -65,7 +65,7 @@
     background: url(../img/ext.png) no-repeat 0 -340px;
 }
 /* Microsoft Word */
-.file.doc, .file.docx {
+.file.doc, .file.docx, .file.dot, .file.dotx {
     background: url(../img/ext.png) no-repeat 0 -400px;
 }
 /* Microsoft Excel */

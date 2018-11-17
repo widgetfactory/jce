@@ -29,7 +29,7 @@
             return 'text';
         }
 
-        if (/^(doc|docx)$/.test(ext)) {
+        if (/^(doc|docx|dot|dotx)$/.test(ext)) {
             return 'word';
         }
 
