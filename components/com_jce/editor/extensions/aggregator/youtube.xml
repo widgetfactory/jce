@@ -46,7 +46,7 @@
         	<option value="0">WF_OPTION_NO</option>
     	</param>
 
-		<param name="showinfo" type="list" default="1" label="WF_AGGREGATOR_YOUTUBE_SHOWINFO" description="WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC">
+		<param name="modestbranding" type="list" default="0" label="WF_AGGREGATOR_YOUTUBE_MODESTBRANDING" description="WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC">
         	<option value="1">WF_OPTION_YES</option>
         	<option value="0">WF_OPTION_NO</option>
     	</param>

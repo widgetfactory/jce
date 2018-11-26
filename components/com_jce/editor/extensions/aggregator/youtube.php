@@ -47,7 +47,7 @@ class WFAggregatorExtension_Youtube extends WFAggregatorExtension
             'loop'      => (int) $plugin->getParam('aggregator.youtube.loop', 0),
             'autoplay'  => (int) $plugin->getParam('aggregator.youtube.autoplay', 0),
             'rel'       => (int) $plugin->getParam('aggregator.youtube.related', 1),
-            'showinfo'  => (int) $plugin->getParam('aggregator.youtube.showinfo', 1),
+            'modestbranding'  => (int) $plugin->getParam('aggregator.youtube.modestbranding', 0),
             'privacy'   => (int) $plugin->getParam('aggregator.youtube.privacy', 0)
         );
     }
