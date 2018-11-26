@@ -47,7 +47,7 @@
 				<option value="0">JNO</option>
 			</field>
 
-			<field name="showinfo" type="yesno" default="1"  label="WF_AGGREGATOR_YOUTUBE_SHOWINFO" description="WF_AGGREGATOR_YOUTUBE_SHOWINFO_DESC">
+			<field name="modestbranding" type="yesno" default="0"  label="WF_AGGREGATOR_YOUTUBE_MODESTBRANDING" description="WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC">
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
