@@ -50,7 +50,7 @@ class plgQuickiconJce extends JPlugin
 
         return array(array(
             'link'      => 'index.php?option=com_jce&view=browser&filter=' . $filter,
-            'image'     => 'picture',
+            'image'     => 'picture fa-file-image-o',
             'access'    => array('jce.browser', 'com_jce'),
             'text'      => JText::_('PLG_QUICKICON_JCE_TITLE'),
             'id'        => 'plg_quickicon_jce',
