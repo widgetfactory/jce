@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2018 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -23,7 +23,7 @@ class WFLinkBrowser_Joomlalinks
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        $path = dirname(__FILE__).'/joomlalinks';
+        $path = __DIR__ . '/joomlalinks';
 
         // Get all files
         $files = JFolder::files($path, '\.(php)$');
@@ -33,13 +33,13 @@ class WFLinkBrowser_Joomlalinks
                 $name = basename($file, '.php');
 
                 // skip weblinks if it doesn't exist!
-                if ($name === 'weblinks' && !is_file(JPATH_SITE.'/components/com_weblinks/helpers/route.php')) {
+                if ($name === 'weblinks' && !is_file(JPATH_SITE . '/components/com_weblinks/helpers/route.php')) {
                     continue;
                 }
 
-                require_once $path.'/'.$file;
+                require_once $path . '/' . $file;
 
-                $classname = 'Joomlalinks'.ucfirst($name);
+                $classname = 'Joomlalinks' . ucfirst($name);
 
                 if (class_exists($classname)) {
                     $this->_adapters[] = new $classname();
@@ -59,7 +59,7 @@ class WFLinkBrowser_Joomlalinks
     {
         $wf = WFEditorPlugin::getInstance();
 
-        return $wf->checkAccess($wf->getName().'.links.joomlalinks.enable', 1);
+        return $wf->checkAccess($wf->getName() . '.links.joomlalinks.enable', 1);
     }
 
     public function getOption()
