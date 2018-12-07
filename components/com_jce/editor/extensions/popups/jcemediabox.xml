@@ -15,11 +15,6 @@
     </files>
     <fields name="jcemediabox">
         <fieldset name="popups.jcemediabox">
-            <field name="attribute" type="list" default="data-mediabox" label="WF_MEDIABOX_ATTRIBUTE" description="WF_MEDIABOX_ATTRIBUTE_DESC">
-                <option value="data-mediabox">data-mediabox</option>
-                <option value="rel">rel</option>
-            </field>
-
             <field name="popup_group" type="text" default="" label="WF_POPUPS_JCEMEDIABOX_GROUP" description="WF_POPUPS_JCEMEDIABOX_GROUP_DESC" />
 
             <field name="popup_icon" type="yesno" default="1" label="WF_POPUPS_JCEMEDIABOX_ICON" description="WF_POPUPS_JCEMEDIABOX_ICON_DESC">

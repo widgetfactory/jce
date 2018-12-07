@@ -77,7 +77,6 @@ JCEMediaBox = {
 };
 WFPopups.addPopup('jcemediabox', {
     params: {
-        'attribute': 'data-mediabox',
         'popup_group': '',
         'popup_icon': 1,
         'popup_icon_position': '',
