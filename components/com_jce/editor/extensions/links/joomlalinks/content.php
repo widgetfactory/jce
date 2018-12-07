@@ -181,7 +181,7 @@ class JoomlalinksContent extends JObject
                     $items[] = array(
                         'id' => $id,
                         'name' => $article->title . ' / ' . $article->alias,
-                        'class' => 'file',
+                        'class' => 'file' . ($article->state ? '' : ' unpublished uk-text-muted'),
                     );
 
                     $anchors = self::getAnchors($article->content);
@@ -203,8 +203,10 @@ class JoomlalinksContent extends JObject
 
     private function _getMenuLink($url)
     {
+        $wf = WFEditorPlugin::getInstance();
+        
         // resolve the url from the menu link
-        if ((int) $this->get('article_resolve_alias', 1)) {
+        if ($wf->getParam('joomlalinks.article_resolve_alias', 1)) {
             // get itemid
             preg_match('#Itemid=([\d]+)#', $url, $matches);
             // get link from menu
@@ -225,6 +227,8 @@ class JoomlalinksContent extends JObject
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
+
+        $wf = WFEditorPlugin::getInstance();
 
         $query = $db->getQuery(true);
 
@@ -253,17 +257,23 @@ class JoomlalinksContent extends JObject
 
         $groups = implode(',', $user->getAuthorisedViewLevels());
 
-        $query->select('a.id AS slug, b.id AS catslug, a.alias, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content, a.language' . $case);
+        $query->select('a.id AS slug, b.id AS catslug, a.alias, a.state, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content, a.language' . $case);
         $query->from('#__content AS a');
         $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
-        $query->where('a.catid = ' . (int) $id);
-
-        if (!$user->authorise('core.admin')) {
-            $query->where('a.access IN (' . $groups . ')');
-            $query->where('b.access IN (' . $groups . ')');
-        }
 
         $query->where('a.state = 1');
+
+        if ($wf->getParam('joomlalinks.article_unpublished', 0) == 1) {
+            $query->orWhere('a.state = 0');
+        }
+
+        $query->andWhere('a.catid = ' . (int) $id);
+
+        if (!$user->authorise('core.admin')) {
+            $query->andWhere('a.access IN (' . $groups . ')');
+            $query->andWhere('b.access IN (' . $groups . ')');
+        }
+
         $query->order('a.title');
 
         $db->setQuery($query, 0);
