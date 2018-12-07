@@ -1043,7 +1043,7 @@ a.browser {
 .nav-tabs .mce-toolbar .mce-list-box,
 .nav-tabs .mce-toolbar .mceListBox {
     max-width: 95px;
-    max-height: 28px;
+    max-height: 32px;
 }
 
 .nav-tabs .mce-toolbar {
