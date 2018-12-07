@@ -2362,7 +2362,7 @@
 
             if (items.length) {
 
-                var h = $(items).first().outerHeight() + 2;
+                var h = $(items).first().outerHeight() + $('.folder-up').outerHeight();
                 var top = $(items).get(0).offsetTop - h;
 
                 $('#browser-list').animate({
