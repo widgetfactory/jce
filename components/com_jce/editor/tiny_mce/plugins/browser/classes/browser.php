@@ -88,8 +88,8 @@ class WFFileBrowserPlugin extends WFMediaManager
             if ($layout === 'plugin') {
                 $document->addScript(array('window.min'), 'plugins');
 
-                $element = $app->input->getCmd('element', $app->input->getCmd('fieldid', ''));
-                $callback = $app->input->getCmd('callback', '');
+                $element    = $app->input->getCmd('element', '');
+                $callback   = $app->input->getCmd('callback', '');
 
                 $settings = array(
                     'site_url' => JURI::base(true).'/',

@@ -33,7 +33,7 @@
             $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
         }
 
-        $('[data-filebrowser]').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {            
+        $('[data-filebrowser]').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {
             selectFile(data);
         });
     }
@@ -47,16 +47,16 @@
             return tinyMCEPopup.close();
         }
 
-        var selected = [];
-
         // get selected items
         $('[data-filebrowser]').trigger('filebrowser:insert', function (selected, data) {
             // nothing selected, so create empty item
             if (!data.length) {
-                data = [{
-                    "title": "",
-                    "url": ""
-                }];
+                data = [
+                    {
+                        "title": "",
+                        "url": ""
+                    }
+                ];
             }
 
             if (typeof callback === "string") {
