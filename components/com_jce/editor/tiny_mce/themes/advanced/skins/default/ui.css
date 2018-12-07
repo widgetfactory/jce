@@ -272,6 +272,10 @@
     display: table;
 }
 
+.defaultSkin .mceListBoxMenu {
+    min-height: 200px;
+}
+
 .defaultSkin .mceListBox a {
     display: block;
 }
@@ -634,7 +638,6 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
-    min-height: 192px;
     min-width: 192px;
     /* DropMenu button length x 2 */
 }
