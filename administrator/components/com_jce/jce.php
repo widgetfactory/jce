@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,7 +11,7 @@
 defined('_JEXEC') or die('RESTRICTED');
 
 // load base classes
-require_once dirname(__FILE__).'/includes/base.php';
+require_once dirname(__FILE__) . '/includes/base.php';
 
 // get the view
 $view = JRequest::getCmd('view');
@@ -34,15 +34,15 @@ jimport('joomla.application.component.helper');
 jimport('joomla.application.component.controller');
 
 // Require the base controller
-require_once WF_ADMINISTRATOR.'/controller.php';
+require_once WF_ADMINISTRATOR . '/controller.php';
 
 // Load controller
-$controllerPath = WF_ADMINISTRATOR.'/controller/'.$view.'.php';
+$controllerPath = WF_ADMINISTRATOR . '/controller/' . $view . '.php';
 
 if (file_exists($controllerPath)) {
     require_once $controllerPath;
 
-    $controllerClass = 'WFController'.ucfirst($view);
+    $controllerClass = 'WFController' . ucfirst($view);
     $controller = new $controllerClass(array(
         'base_path' => WF_ADMINISTRATOR,
     ));
