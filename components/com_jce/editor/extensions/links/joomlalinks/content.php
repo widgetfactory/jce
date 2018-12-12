@@ -248,7 +248,7 @@ class JoomlalinksContent extends JObject
                     $items[] = array(
                         'id' => $id,
                         'name' => $article->title . ' / ' . $article->alias,
-                        'class' => 'file',
+                        'class' => 'file' . ($article->state ? '' : ' unpublished uk-text-muted'),
                     );
 
                     $anchors = self::getAnchors($article->content);
@@ -278,7 +278,7 @@ class JoomlalinksContent extends JObject
                     $items[] = array(
                         'id' => $id,
                         'name' => $static->title . ' / ' . $static->alias,
-                        'class' => 'file',
+                        'class' => 'file' . ($article->state ? '' : ' unpublished uk-text-muted'),
                     );
 
                     $anchors = self::getAnchors($statics->content);
@@ -387,25 +387,36 @@ class JoomlalinksContent extends JObject
         if (is_object($query)) {
             $groups = implode(',', $user->getAuthorisedViewLevels());
 
-            $query->select('a.id AS slug, b.id AS catslug, a.alias, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content' . $language . $case);
+            $query->select('a.id AS slug, b.id AS catslug, a.alias, a.state, a.title AS title, a.access, ' . $query->concatenate(array('a.introtext', 'a.fulltext')) . ' AS content' . $language . $case);
             $query->from('#__content AS a');
             $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
-            $query->where('a.catid = ' . (int) $id);
+            
+            $query->where('a.state = 1');
 
-            if (!$user->authorise('core.admin')) {
-                $query->where('a.access IN (' . $groups . ')');
-                $query->where('b.access IN (' . $groups . ')');
+            if ($wf->getParam('links.joomlalinks.article_unpublished', 0) == 1) {
+                $query->orWhere('a.state = 0');
             }
 
-            $query->where('a.state = 1');
+            $query->andWhere('a.catid = ' . (int) $id);
+
+            if (!$user->authorise('core.admin')) {
+                $query->andWhere('a.access IN (' . $groups . ')');
+                $query->andWhere('b.access IN (' . $groups . ')');
+            }
+
             $query->order('a.title');
         } else {
-            $query = 'SELECT a.id AS slug, b.id AS catslug, a.alias, a.title AS title, u.id AS sectionid, a.access, a.introtext, a.fulltext' . $case
+            $query = 'SELECT a.id AS slug, b.id AS catslug, a.alias, a.state, a.title AS title, u.id AS sectionid, a.access, a.introtext, a.fulltext' . $case
             . ' FROM #__content AS a'
             . ' INNER JOIN #__categories AS b ON b.id = ' . (int) $id
             . ' INNER JOIN #__sections AS u ON u.id = a.sectionid'
-            . ' WHERE a.catid = ' . (int) $id
-                . ' AND a.state = 1';
+            . ' WHERE a.catid = ' . (int) $id;
+
+            if ($wf->getParam('links.joomlalinks.article_unpublished', 0) == 1) {
+                $query .= ' (AND a.state = 1 OR a.state = 0)';
+            } else {
+                $query .= ' AND a.state = 1';
+            }
 
             if ($user->get('gid') != 25) {
                 $query .= ' AND a.access <= ' . (int) $user->get('aid');
@@ -427,17 +438,22 @@ class JoomlalinksContent extends JObject
         $version = new JVersion();
         $language = $version->isCompatible('3.0') ? ', language' : '';
 
-        $query = 'SELECT id, title, alias, access, introtext AS content' . $language
+        $query = 'SELECT id, title, alias, access, state, introtext AS content' . $language
             . ' FROM #__content'
-            . ' WHERE state = 1';
+            . ' WHERE sectionid = 0'
+            . ' AND catid = 0';
 
-        if ($user->get('gid') != 25) {
-            $query .= ' AND a.access <= ' . (int) $user->get('aid');
-        }
+            if ($wf->getParam('links.joomlalinks.article_unpublished', 0) == 1) {
+                $query .= ' (AND state = 1 OR state = 0)';
+            } else {
+                $query .= ' AND state = 1';
+            }
 
-        $query .= ' AND sectionid = 0'
-            . ' AND catid = 0'
-            . ' ORDER BY title';
+            if ($user->get('gid') != 25) {
+                $query .= ' AND access <= ' . (int) $user->get('aid');
+            }
+
+            $query .= ' ORDER BY title';
 
         $db->setQuery($query, 0);
 

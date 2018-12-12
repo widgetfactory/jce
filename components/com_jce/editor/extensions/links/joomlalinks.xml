@@ -32,6 +32,10 @@
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </param>
+        <param name="article_unpublished" type="radio" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_UNPUBLISHED_DESC" parent="enable[1]">
+            <option value="1">WF_OPTION_YES</option>
+            <option value="0">WF_OPTION_NO</option>
+        </param>
         <param name="static" type="radio" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED" description="WF_LINKS_JOOMLALINKS_PARAM_UNCATEGORIZED_DESC" parent="enable[1]">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
