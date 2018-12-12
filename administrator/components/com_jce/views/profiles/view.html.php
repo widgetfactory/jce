@@ -315,6 +315,7 @@ class WFViewProfiles extends WFView
                     'com_search',
                     'com_user',
                     'com_updates',
+                    'com_fields'
                 );
 
                 $query = $db->getQuery(true);
