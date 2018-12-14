@@ -312,7 +312,7 @@
                 }
 
                 // add pixel to width
-                if (k == 'width' && /[^a-z]/i.test(v)) {
+                if (k == 'width' && !/[a-z%]/i.test(v)) {
                     v += 'px';
                 }
 
@@ -326,7 +326,12 @@
             // Margin
             $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
                 v = $('#margin_' + k).val();
-                $(img).css('margin-' + k, /[^a-z]/i.test(v) ? v + 'px' : v);
+
+                if (!/[a-z%]/i.test(v)) {
+                    v = v + 'px';
+                }
+
+                $(img).css('margin-' + k, v);
             });
 
             var styles = ed.dom.parseStyle($(img).attr('style'));
