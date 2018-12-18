@@ -55,7 +55,12 @@
                         if (/auto|inherit/.test(v)) {
                             return v;
                         }
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+
+                        if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
+                            return pareseInt(v);
+                        }
+
+                        return v;
                     }
 
                     if (v = ed.dom.getAttrib(e, 'vspace')) {
@@ -69,7 +74,11 @@
                             return v;
                         }
 
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+                        if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
+                            return pareseInt(v);
+                        }
+
+                        return v;
                     }
 
                     if (v = ed.dom.getAttrib(e, 'hspace')) {
@@ -152,7 +161,7 @@
                 // need to use tinymce DOMUilts for this because jQuery returns 0px for blank values
                 var v = ed.dom.getStyle($img.get(0), 'margin-' + k);
 
-                if (v && v.indexOf('px') != -1) {
+                if (v && !/[a-z%]/i.test(v)) {
                     v = parseInt(v);
                 }
 
