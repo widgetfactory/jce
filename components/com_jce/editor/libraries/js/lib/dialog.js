@@ -57,7 +57,7 @@
                         }
 
                         if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
-                            return pareseInt(v);
+                            return parseInt(v);
                         }
 
                         return v;
@@ -75,7 +75,7 @@
                         }
 
                         if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
-                            return pareseInt(v);
+                            return parseInt(v);
                         }
 
                         return v;
@@ -336,7 +336,7 @@
             $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
                 v = $('#margin_' + k).val();
 
-                if (!/[a-z%]/i.test(v)) {
+                if (v && !/[a-z%]/i.test(v)) {
                     v = v + 'px';
                 }
 
