@@ -65,11 +65,11 @@ class plgEditorJCE extends JPlugin
         $editor->render($settings);
 
         foreach($editor->getScripts() as $script) {        	
-        	$document->addScriptVersion($script);
+        	$document->addScript($script, array('version' => 'auto'));
         }
         
         foreach($editor->getStyleSheets() as $style) {
-        	$document->addStylesheetVersion($style);
+        	$document->addStylesheet($style, array('version' => 'auto'));
         }
         
         $document->addScriptDeclaration(implode("\n", $editor->getScriptDeclaration()));
