@@ -151,6 +151,8 @@
             // Register buttons
             ed.addButton('fullscreen', { title: 'fullscreen.desc', cmd: 'mceFullScreen' });
 
+            ed.addShortcut('ctrl+shift+f', 'fullscreen.desc', 'mceFullScreen');
+
             ed.onNodeChange.add(function(ed, cm) {
                 cm.setActive('fullscreen', ed.getParam('fullscreen_enabled'));
             });
