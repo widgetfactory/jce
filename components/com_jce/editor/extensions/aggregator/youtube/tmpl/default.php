@@ -17,40 +17,47 @@ defined('_WF_EXT') or die('RESTRICTED');
       </label>
     </div>
     <div class="uk-width-6-10">
-
-      <input type="checkbox" id="youtube_rel" checked />
-      <label for="youtube_rel" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>" class="tooltip">
-        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?>
-      </label>
-    </div>
-  </div>
-  <div class="uk-form-row">
-    <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_loop" />
       <label for="youtube_loop" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_LOOP_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_LOOP') ?>
       </label>
     </div>
-    <div class="uk-width-6-10">
+  </div>
+  <div class="uk-form-row">
+    <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_autoplay" />
       <label for="youtube_autoplay" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY') ?>
       </label>
     </div>
-  </div>
-  <div class="uk-form-row">
-    <div class="uk-width-4-10">
+    <div class="uk-width-6-10">
       <input type="checkbox" id="youtube_privacy" />
       <label for="youtube_privacy" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?>
       </label>
     </div>
-
-    <div class="uk-width-6-10">
+  </div>
+  <div class="uk-form-row">
+    <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_modestbranding" checked />
       <label for="youtube_modestbranding" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING') ?>
       </label>
+    </div>
+
+    <div class="uk-width-6-10">
+      <label for="youtube_rel" class="uk-form-label uk-width-1-5 tooltip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>">
+        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?>
+      </label>
+
+      <select id="youtube_rel">
+        <option value="1">
+          <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_ALL') ?>
+        </option>
+        <option value="0">
+          <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_CHANNEL') ?>
+        </option>
+      </select>
     </div>
   </div>
 
