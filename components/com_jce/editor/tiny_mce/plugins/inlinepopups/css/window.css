@@ -84,6 +84,7 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -159,7 +160,6 @@
     position: absolute;
     text-align: left;
     width: 100%;
-    max-width: 1024px;
     min-width: 160px;
 }
 
@@ -323,17 +323,9 @@
 }
 
 .mce-modal-landscape-full {
-    max-width: 96%;
-    max-width: calc(100% - 40px);
-    height: 96%;
+    width: calc(100% - 40px);
     height: calc(100vh - 20px);
     padding: 0;
-}
-
-.mce-modal-landscape-full .mceModalContent {
-    padding: 0;
-    height: 95.3%;
-    height: calc(100% - 41px);
 }
 
 .mce-modal-portrait-128,
@@ -367,9 +359,25 @@
 
 .mce-modal-portrait-768,
 .mce-modal-portrait-full {
-    max-width: 768px;
+    width: calc(100% - 40px);
     height: calc(100vh - 20px);
+
+    max-height: 768px;
     padding: 0;
+}
+
+.mce-modal-portrait-full {
+    max-width: 1024px;
+}
+
+.mce-modal-portrait-768 {
+    max-width: 768px;
+}
+
+.mce-modal-landscape-full .mceModalContent,
+.mce-modal-portrait-full .mceModalContent {
+    padding: 0;
+    height: calc(100% - 41px);
 }
 
 .mce-modal-square-xlarge {

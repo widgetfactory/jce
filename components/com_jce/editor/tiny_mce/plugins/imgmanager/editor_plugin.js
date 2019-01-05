@@ -31,7 +31,8 @@
                     width: 780 + ed.getLang('imgmanager.delta_width', 0),
                     height: 680 + ed.getLang('imgmanager.delta_height', 0),
                     inline: 1,
-                    popup_css: false
+                    popup_css: false,
+                    size: 'mce-modal-portrait-full'
                 }, {
                     plugin_url: url
                 });
