@@ -120,12 +120,13 @@ class WFLinkExtension extends WFExtension
         }
         $array = array();
         $result = array();
+
         if (isset($items)) {
             foreach ($items as $item) {
                 $array[] = array(
-                    'id' => isset($item['id']) ? self::xmlEncode($item['id']) : '',
-                    'url' => isset($item['url']) ? self::xmlEncode($item['url']) : '',
-                    'name' => self::xmlEncode($item['name']), 'class' => $item['class'],
+                    'id'    => isset($item['id']) ? self::xmlEncode($item['id']) : '',
+                    'url'   => isset($item['url']) ? self::xmlEncode($item['url']) : '',
+                    'name'  => self::xmlEncode($item['name']), 'class' => $item['class'],
                 );
             }
             $result = array('folders' => $array);
@@ -141,7 +142,7 @@ class WFLinkExtension extends WFExtension
      *
      * @since    1.5
      */
-    public function getCategory($section, $parent = 1)
+    public static function getCategory($section, $parent = 1)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -212,7 +213,7 @@ class WFLinkExtension extends WFExtension
      *
      * @return Category list object
      */
-    public function getItemId($component, $needles = array())
+    public static function getItemId($component, $needles = array())
     {
         $match = null;
 
