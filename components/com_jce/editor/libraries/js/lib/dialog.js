@@ -55,7 +55,12 @@
                         if (/auto|inherit/.test(v)) {
                             return v;
                         }
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+
+                        if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
+                            return parseInt(v);
+                        }
+
+                        return v;
                     }
 
                     if (v = ed.dom.getAttrib(e, 'vspace')) {
@@ -69,7 +74,11 @@
                             return v;
                         }
 
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+                        if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
+                            return parseInt(v);
+                        }
+
+                        return v;
                     }
 
                     if (v = ed.dom.getAttrib(e, 'hspace')) {
@@ -326,7 +335,12 @@
             // Margin
             $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
                 v = $('#margin_' + k).val();
-                $(img).css('margin-' + k, /[^a-z]/i.test(v) ? v + 'px' : v);
+
+                if (v && !/[a-z%]/i.test(v)) {
+                    v = v + 'px';
+                }
+
+                $(img).css('margin-' + k, v);
             });
 
             var styles = ed.dom.parseStyle($(img).attr('style'));
