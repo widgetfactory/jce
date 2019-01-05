@@ -22,6 +22,25 @@
                 return ed.dom.isBlock(n);
             }
 
+            // Register buttons
+            ed.addButton('italic', {
+                title : 'italic.desc',
+                onclick : function(e) {
+                    e.preventDefault();
+                    
+                    if (e.shiftKey) {
+                        ed.formatter.apply('italic-i');
+                        return;
+                    }
+
+                    ed.formatter.apply('italic');
+                }
+            });
+
+            ed.addShortcut('ctrl+shit+i', 'italic.desc', function() {
+                ed.formatter.apply('italic-i');
+            });
+
             ed.onPreInit.add(function (ed) {
                 each(ed.schema.getBlockElements(), function (v, k) {
                     blocks.push(k.toLowerCase());
@@ -104,6 +123,12 @@
                     remove: 'all',
                     merge_siblings: false
                 });
+
+                // Italic - <i>
+                ed.formatter.register('italic-i', {
+                    inline: 'i',
+                    remove: 'all'
+                }); 
             });
 
             // update with HMTL5 tags
@@ -201,6 +226,8 @@
                         break;
                 }
             });
+
+            
 
             ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
                 var se = ed.selection,
