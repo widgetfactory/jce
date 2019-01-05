@@ -413,6 +413,9 @@
                     if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
                         o.content = o.content.replace(/\u00a0/g, '&nbsp;');
                     }
+
+                    // fix boolean custom attributes
+                    o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
                 }
             });
 
