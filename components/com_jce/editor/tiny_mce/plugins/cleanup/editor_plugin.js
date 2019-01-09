@@ -9,7 +9,6 @@
  */
 (function () {
     var each = tinymce.each,
-        extend = tinymce.extend,
         Node = tinymce.html.Node;
 
     function split(str, delim) {
@@ -22,8 +21,6 @@
     ];
 
     var fontIconRe = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon)-([\w-]+)([^"]*)"([^>]*)>(&nbsp;|\u00a0)?<\/\1>/gi;
-
-    var emptyRx = /<(ol|ul|sub|sup|blockquote|span|font|a|table|tbody|tr|strong|em|b|i)\b([^>]+)><\/\1>/gi;
     var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
 
     tinymce.create('tinymce.plugins.CleanupPlugin', {
