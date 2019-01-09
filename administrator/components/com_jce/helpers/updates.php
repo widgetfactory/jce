@@ -2,7 +2,7 @@
 
 /**
  * @copyright  Copyright (c) 2010-2013 Nicholas K. Dionysopoulos / AkeebaBackup.com
- * @copyright  Copyright (c) 2009-2017 Ryan Demmer. All rights reserved
+ * @copyright  Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
  * @license    GNU LGPLv3 or later <http://www.gnu.org/copyleft/lesser.html>
  *
  * Based on the LiveUpdateDownloadHelper class from Akeeba LiveUpdate
