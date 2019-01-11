@@ -324,8 +324,6 @@ class JoomlalinksContent extends JObject
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
 
-        $isSuperUser = JUserHelper::checkSuperUserInUsers(array($user->id));
-
         if (method_exists('JUser', 'getAuthorisedViewLevels')) {
             return WFLinkBrowser::getCategory('com_content');
         } else {
