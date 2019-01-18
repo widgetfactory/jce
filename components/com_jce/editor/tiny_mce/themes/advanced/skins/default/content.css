@@ -180,3 +180,16 @@ pre.mcePreformatted {
     background: #39f;
     color: #fff
 }
+
+figcaption:empty::after {
+    content: "...";
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    color: #888;
+    pointer-events: none;
+}
+
+figcaption:empty[data-mce-empty]::after {
+    content: attr(data-mce-empty);
+}

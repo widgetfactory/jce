@@ -28,12 +28,32 @@
                 });
 
                 // Register default block formats
-                each('aside figure'.split(/\s/), function (name) {
-                    ed.formatter.register(name, {
-                        block: name,
-                        remove: 'all',
-                        wrapper: true
-                    });
+                ed.formatter.register('aside', {
+                    block: 'aside',
+                    remove: 'all',
+                    wrapper: true
+                });
+
+                ed.formatter.register('figure', {
+                    block: 'figure',
+                    remove: 'all',
+                    wrapper: true,
+                    onformat: function (elm, fmt, vars, node) {
+                        var node = ed.selection.getNode(), parent = ed.dom.getParent(node, blocks.join(','));
+
+                        if (node.nodeName === "IMG") {
+                            if (parent) {
+                                //ed.dom.remove(parent, 1);
+                                ed.dom.add(parent, 'figcaption', {
+                                    'data-mce-empty': ed.getLang('figcaption.default', 'Type caption here...')
+                                });
+
+                                ed.dom.replace(ed.dom.create('figure'), parent, 1);
+                            }
+
+                            ed.dom.setAttrib(elm, 'data-mce-image', 1);
+                        }
+                    }
                 });
 
                 // div
@@ -46,11 +66,13 @@
                     block: 'div',
                     wrapper: true
                 });
+
                 // span
                 ed.formatter.register('span', {
                     inline: 'span',
                     remove: 'all'
                 });
+
                 // section
                 ed.formatter.register('section', {
                     block: 'section',
@@ -58,6 +80,7 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // article
                 ed.formatter.register('article', {
                     block: 'article',
@@ -159,6 +182,10 @@
                             if (p) {
                                 var name = p.nodeName.toLowerCase();
 
+                                if (name === 'figure') {
+                                    ed.dom.remove(ed.dom.select('figcaption', p));
+                                }
+
                                 if (ed.formatter.get(name)) {
                                     ed.formatter.remove(name);
                                 }
@@ -170,6 +197,7 @@
                                 cm.select(p);
                             }
                         }
+
                         // Definition List
                         if (v === 'dt' || v === 'dd') {
                             if (n && !ed.dom.getParent(n, 'dl')) {
@@ -187,6 +215,14 @@
                             o.terminate = true;
                         }
 
+                        if (v === 'figure') {
+                            var fig = ed.dom.getParent(n, 'figure');
+
+                            if (fig) {
+                                ed.dom.remove(ed.dom.select('figcaption', fig));
+                            }
+                        }
+
                         break;
                     case 'RemoveFormat':
                         if (!v && !ed.dom.isBlock(n)) {
@@ -199,12 +235,23 @@
                         }
 
                         break;
+
+                    case 'mceToggleFormat':
+                        if (v === 'figure') {
+                            var fig = ed.dom.getParent(n, 'figure');
+
+                            if (fig) {
+                                ed.dom.remove(ed.dom.select('figcaption', fig));
+                            }
+                        }
+                        break;
                 }
             });
 
             ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
                 var se = ed.selection,
                     n = se.getNode();
+
                 // remove empty Definition List
                 switch (cmd) {
                     case 'mceToggleFormat':
@@ -213,6 +260,15 @@
                                 ed.formatter.remove('dl');
                             }
                         }
+
+                        break;
+                    case 'FormatBlock':
+                        /*if (v === 'figure') {
+                            var fig = ed.dom.getParent(n, 'figure');
+                            ed.dom.add(fig, 'figcaption', {
+                                'data-mce-empty': ed.getLang('figcaption.default', 'Type caption here...')
+                            });
+                        }*/
                         break;
                 }
             });
