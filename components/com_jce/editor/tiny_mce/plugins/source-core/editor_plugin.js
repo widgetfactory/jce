@@ -78,6 +78,19 @@
             var ed = this.editor;
             return ed.getElement().value;
         },
+        getSelection: function() {
+            var ed = this.editor, elm = ed.getElement();
+
+            if (elm) {
+                var start = elm.selectionStart, end = elm.selectionEnd;
+
+                if (elm.value()) {
+                    return elm.value().substring(start, end);
+                }
+            }
+
+            return '';
+        },
         save: function() {
             return this.getContent();
         },
