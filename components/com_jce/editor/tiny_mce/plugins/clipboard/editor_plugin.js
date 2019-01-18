@@ -1591,7 +1591,13 @@
             content = content.replace(new RegExp('(=["\']|>)?' + ux, 'g'), function (a, b, c) {
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
-                    return '<a href="' + c + '">' + c + '</a>';
+                    var attribs = ['href="' + c + '"'];
+
+                    if (ed.settings.default_link_target) {
+                        attribs.push('target="' + ed.settings.default_link_target + '"');
+                    }
+
+                    return '<a ' + attribs.join(' ') + '>' + c + '</a>';
                 }
 
                 return a;
