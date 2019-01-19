@@ -273,6 +273,36 @@
                 }
             });
 
+            ed.onKeyDown.add(function (ed, e) {
+                var isDelete, rng, container;
+    
+                isDelete = e.keyCode == VK.DELETE;
+
+                if (!e.isDefaultPrevented() && (isDelete || e.keyCode == VK.BACKSPACE) && !VK.modifierPressed(e)) {
+                    rng = ed.selection.getRng();
+                    container = rng.startContainer;
+                    offset = rng.startOffset;
+                    collapsed = rng.collapsed;
+                    
+                    // override delete if the figcaption is empty
+                    if (container.nodeName == 'FIGCAPTION' && (!container.nodeValue || container.nodeValue.length === 0)) {
+                        e.preventDefault();
+                    }
+
+                    if (container.nodeType === 3 && (!collapsed && !offset)) {
+                        var figcaption = ed.dom.getParent(container, 'FIGCAPTION');
+
+                        if (figcaption) {
+                            while (figcaption.firstChild) {
+                                figcaption.removeChild(figcaption.firstChild);
+                            }
+
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+
             /*ed.onPreInit.add(function() {
 
                 function wrapList(node) {
