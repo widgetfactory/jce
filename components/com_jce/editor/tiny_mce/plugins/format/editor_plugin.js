@@ -28,32 +28,19 @@
                 });
 
                 // Register default block formats
+
+                // aside
                 ed.formatter.register('aside', {
                     block: 'aside',
                     remove: 'all',
                     wrapper: true
                 });
 
+                // figure
                 ed.formatter.register('figure', {
                     block: 'figure',
                     remove: 'all',
-                    wrapper: true,
-                    onformat: function (elm, fmt, vars, node) {
-                        var node = ed.selection.getNode(), parent = ed.dom.getParent(node, blocks.join(','));
-
-                        if (node.nodeName === "IMG") {
-                            if (parent) {
-                                //ed.dom.remove(parent, 1);
-                                ed.dom.add(parent, 'figcaption', {
-                                    'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...')
-                                });
-
-                                ed.dom.replace(ed.dom.create('figure'), parent, 1);
-                            }
-
-                            ed.dom.setAttrib(elm, 'data-mce-image', 1);
-                        }
-                    }
+                    wrapper: true
                 });
 
                 // div

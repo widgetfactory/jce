@@ -221,69 +221,6 @@
                     }
                 });
 
-                ed.parser.addNodeFilter('figure', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-
-                        if (node.getAll('figcaption').length === 0) {
-                            var figcaption = new Node('figcaption', 1);
-                            figcaption.attr('data-mce-empty', ed.getLang('figcaption.default', 'Type caption here...'));
-                            //figcaption.attr('contenteditable', true);
-                            
-                            node.append(figcaption);
-                        }
-
-                        if (node.getAll('img').length) {
-                            node.attr('data-mce-image', '1');
-                            //node.attr('contenteditable', 'false');
-                        }
-                    }
-                });
-
-                ed.parser.addNodeFilter('figcaption', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-                        // Add identifying attribute to create dummy text
-                        if (!node.firstChild) {
-                            node.attr('data-mce-empty', ed.getLang('figcaption.default', 'Type caption here...'));
-                        }
-                        // make editable
-                        //node.attr('contenteditable', 'true');
-                    }
-                });
-
-                ed.serializer.addNodeFilter('figure', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-
-                        node.attr('contenteditable', null);
-                    }
-                });
-
-                ed.serializer.addNodeFilter('figcaption', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-                        // remove empty figcaption
-                        if (!node.firstChild) {
-                            node.remove();
-                        } else {
-                            node.attr('contenteditable', null);
-                        }
-                    }
-                });
-
                 // cleanup padded "bootstrap" tags
                 ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
                     var i = nodes.length,
@@ -309,17 +246,6 @@
 
                         node.attr('data-mce-' + name, node.attr(name));
                         node.attr(name, 'return false;');
-                    }
-                });
-
-                ed.serializer.addAttributeFilter('data-mce-image', function (nodes, name) {
-                    var i = nodes.length,
-                        node, k;
-
-                    while (i--) {
-                        node = nodes[i];
-
-                        node.attr(name, null);
                     }
                 });
 
