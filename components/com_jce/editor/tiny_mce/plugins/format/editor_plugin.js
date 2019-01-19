@@ -45,7 +45,7 @@
                             if (parent) {
                                 //ed.dom.remove(parent, 1);
                                 ed.dom.add(parent, 'figcaption', {
-                                    'data-mce-empty': ed.getLang('figcaption.default', 'Type caption here...')
+                                    'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...')
                                 });
 
                                 ed.dom.replace(ed.dom.create('figure'), parent, 1);
