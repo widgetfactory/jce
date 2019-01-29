@@ -47,12 +47,10 @@
                 });
 
                 // Register default block formats
-                each('aside figure'.split(/\s/), function (name) {
-                    ed.formatter.register(name, {
-                        block: name,
-                        remove: 'all',
-                        wrapper: true
-                    });
+                ed.formatter.register('aside', {
+                    block: 'aside',
+                    remove: 'all',
+                    wrapper: true
                 });
 
                 // div
@@ -226,8 +224,6 @@
                         break;
                 }
             });
-
-            
 
             ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
                 var se = ed.selection,

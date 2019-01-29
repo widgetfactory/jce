@@ -181,18 +181,40 @@ pre.mcePreformatted {
     color: #fff
 }
 
-    .mce-resizehandle-ne {
-        cursor: ne-resize;
-    }
+.mce-resizehandle-ne {
+    cursor: ne-resize;
+}
 
-    .mce-resizehandlese {
-        cursor: se-resize;
-    }
+.mce-resizehandlese {
+    cursor: se-resize;
+}
 
-    .mce-resizehandle-nw {
-        cursor: nw-resize;
-    }
+.mce-resizehandle-nw {
+    cursor: nw-resize;
+}
 
-    .mce-resizehandle-sw {
-        cursor: sw-resize;
-    }
+.mce-resizehandle-sw {
+    cursor: sw-resize;
+}
+
+figure {
+    display: table;
+}
+
+figcaption {
+    display: table-caption;
+    caption-side: bottom;
+}
+
+figcaption:empty::after {
+    content: "...";
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    color: #888;
+    pointer-events: none;
+}
+
+figcaption:empty[data-mce-empty]::after {
+    content: attr(data-mce-empty);
+}

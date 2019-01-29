@@ -1,5 +1,6 @@
 // out: content.css, sourcemap: false, compress: false
 .mceVisualBlocks {
+
     p,
     h1,
     h2,
@@ -8,7 +9,7 @@
     h5,
     h6,
     aside,
-    div,
+    div:not(.mce-resizehandle):not(.mce-resize-helper),
     section,
     article,
     header,
@@ -28,6 +29,7 @@
         box-sizing: border-box;
         padding: 2px;
     }
+
     p:before,
     h1:before,
     h2:before,
@@ -36,7 +38,7 @@
     h5:before,
     h6:before,
     aside:before,
-    div:before,
+    div:not(.mce-resizehandle):not(.mce-resize-helper):before,
     section:before,
     article:before,
     header:before,
@@ -56,20 +58,27 @@
         display: block;
         content: "";
     }
+
     figcaption {
-        border: 1px dashed #BBB
+        border: 1px dashed #BBB;
+        padding: 5px;
+        margin: 2px 0;
     }
+
     dd,
     dt {
         margin-bottom: 2px;
     }
+
     ul,
     ol {
         padding: 5px 40px;
     }
+
     ul:before,
     ol:before {
         margin: -2px 0 0 -38px;
     }
+
     @import (less) 'base64.less';
 }
