@@ -116,6 +116,11 @@
     white-space: pre-wrap;
 }
 
+.wf-no-editor {
+    width: 100%;
+    min-height: 200px;
+}
+
 .mce-fullscreen .wf-no-editor {
     max-width: 99%;
     max-width: calc(100% - 10px);
