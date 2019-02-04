@@ -1015,13 +1015,13 @@ class WFFileBrowser extends JObject
         $result = new WFFileSystemResult();
 
         // get uploaded file
-        $file = $app->input->files->get('file', array(), 'array');
+        $file = $app->input->files->get('file', array(), 'ARRAY');
 
         // validate file
         $this->validateUploadedFile($file);
 
         // get file name
-        $name = (string) $app->input->get('name', $file['name']);
+        $name = (string) $app->input->get('name', $file['name'], 'STRING');
 
         // decode
         $name = rawurldecode($name);
@@ -1060,9 +1060,11 @@ class WFFileBrowser extends JObject
         }
 
         // target directory
-        $dir = (string) $app->input->get('upload-dir');
+        $dir = (string) $app->input->get('upload-dir', '', 'STRING');
+
         // decode and cast as string
         $dir = rawurldecode($dir);
+
         // check destination path
         WFUtility::checkPath($dir);
 
