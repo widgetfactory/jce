@@ -421,11 +421,21 @@
                     return false;
                 }*/
 
-                sibling = li.previousSibling;
+                sibling = li.previousSibling || li.nextSibling;
+                
                 if (sibling && sibling.nodeName == 'LI') {
                     newList = editor.dom.create(li.parentNode.nodeName);
-                    sibling.appendChild(newList);
+
+                    if (li.previousSibling) {
+                        sibling.appendChild(newList);
+                    } else {
+                        var listItem = editor.dom.create('li', {'style' : 'list-style-type: none;'});
+                        li.parentNode.insertBefore(listItem, li);
+                        listItem.appendChild(newList);
+                    }
+
                     newList.appendChild(li);
+
                     mergeLists(li.lastChild, newList);
                     return true;
                 }
