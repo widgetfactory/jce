@@ -421,6 +421,14 @@
                     return false;
                 }*/
 
+                function appendToNewListItem(li, newList) {
+                    var listItem = editor.dom.create('li', {'style' : 'list-style-type: none;'});
+                    
+                    li.parentNode.insertBefore(listItem, li);
+                    listItem.appendChild(newList);
+                }
+
+                // multiple list items
                 sibling = li.previousSibling || li.nextSibling;
                 
                 if (sibling && sibling.nodeName == 'LI') {
@@ -429,14 +437,23 @@
                     if (li.previousSibling) {
                         sibling.appendChild(newList);
                     } else {
-                        var listItem = editor.dom.create('li', {'style' : 'list-style-type: none;'});
-                        li.parentNode.insertBefore(listItem, li);
-                        listItem.appendChild(newList);
+                        appendToNewListItem(li, newList);
                     }
 
                     newList.appendChild(li);
 
                     mergeLists(li.lastChild, newList);
+                    return true;
+                }
+
+                // single list item
+                if (!sibling && isListNode(li.parentNode)) {
+                    newList = editor.dom.create(li.parentNode.nodeName);
+
+                    appendToNewListItem(li, newList);
+
+                    newList.appendChild(li);
+
                     return true;
                 }
 
