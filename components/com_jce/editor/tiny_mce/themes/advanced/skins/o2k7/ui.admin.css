@@ -15,7 +15,6 @@
 
 .o2k7Skin .mceToolBarItem .mceListBox, .o2k7Skin .mceToolBarItem .mceSplitButton {
 	border: 1px solid #ABC6DD;
-	height: 28px;
 	box-sizing: border-box;
 	border-radius: 0;
 	position: relative;
@@ -30,7 +29,7 @@
 
 .o2k7Skin .mceToolBarItem .mceSplitButton {
 	width: 42px;
-	padding: 2px;
+	padding: 5px 2px;
   border-left-width: 0;
 }
 
@@ -73,11 +72,14 @@
 
 .o2k7Skin .mceToolBarItem .mceListBox:after, .o2k7Skin .mceToolBarItem .mceSplitButton:after {
 	display: block;
-	line-height: 26px;
 	position: absolute;
 	right: 0;
 	top: 0;
 	border-left: 1px solid #ABC6DD;
+}
+
+.o2k7Skin .mceToolBarItem .mceSplitButton:after {
+	line-height: 30px;
 }
 
 .o2k7Skin .mceLayout .mceStatusbar {
