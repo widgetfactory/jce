@@ -19,8 +19,8 @@
             tinyMCEPopup.close();
         });
 
-        var win = tinyMCEPopup.window;
         var src = tinyMCEPopup.getWindowArg('value');
+        var callback = tinyMCEPopup.getWindowArg('callback');
 
         Wf.init();
 
