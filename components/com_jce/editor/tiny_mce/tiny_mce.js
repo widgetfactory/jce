@@ -16,7 +16,7 @@
     var i, base, src, p, query = '',
         it, scripts = [];
 
-    base = '../../../tinymce-for-jce-electron/jscripts/tiny_mce';
+    base = '../../../tinymce-muon/jscripts/tiny_mce';
 
     function include(u) {
         scripts.push(base + '/classes/' + u);
