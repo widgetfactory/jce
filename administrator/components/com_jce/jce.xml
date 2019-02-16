@@ -19,6 +19,11 @@
         <file>licence.txt</file>
     </files>
 
+    <!-- Media -->
+    <media folder="media/jce" destination="jce">
+        <folder>icons</folder>
+    </media>
+
     <languages folder="language/en-GB">
         <language tag="en-GB">en-GB.com_jce.ini</language>
         @@language-pro@@
