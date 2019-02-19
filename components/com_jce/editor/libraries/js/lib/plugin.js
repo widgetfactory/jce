@@ -281,25 +281,22 @@
                     $(this).trigger('colorpicker:pick', '#' + v);
                 }).change();
 
-                var custom_colors = ed.getParam('colorpicker_custom_colors', '');
+                var colorpicker_custom_colors = ed.getParam('colorpicker_custom_colors', '');
+                var colorpicker_type = ed.getParam('colorpicker_type', '');
 
-                custom_colors = ['#333333','#33ffff','#005e8d','#002b41','#ff0000','#999999','#808080','#c09853'];
+                if (colorpicker_type === "simple" && colorpicker_custom_colors.length) {
 
-                ed.settings.colorpicker_type = "simple";
-
-                if (ed.settings.colorpicker_type === "simple" && custom_colors.length) {
-
-                    if (typeof custom_colors === "string") {
-                        custom_colors = custom_colors.split(',');
+                    if (typeof colorpicker_custom_colors === "string") {
+                        colorpicker_custom_colors = colorpicker_custom_colors.split(',');
                     }
 
                     var html = '<div role="listbox" tabindex="0" class="wf-colorpicker-simple-colors">';
 
-                    $.each(custom_colors, function (i, col) {
+                    $.each(colorpicker_custom_colors, function (i, col) {
                         if (col.length == 4) {
                             col = col + col.substr(1);
                         }
-                        
+
                         html += '<div style="background-color:' + col + '" data-color="' + col + '" title="' + col + '"><span aria-hidden="true" aria-label="' + col + '"></span></div>';
                     });
 
@@ -312,7 +309,7 @@
                         className: 'wf-colorpicker wf-colorpicker-simple',
                         opacity: 1
                     }).on('tooltip:show', function () {
-                        $('#colorpicker').on('click', '.wf-colorpicker-simple-colors > div', function(e) {
+                        $('#colorpicker').on('click', '.wf-colorpicker-simple-colors > div', function (e) {
                             var col = $(e.target).data('color');
 
                             if (col) {
@@ -326,7 +323,7 @@
                     var stylesheets = [];
 
                     if (doc.styleSheets.length) {
-                        $.each(doc.styleSheets, function (i, s) {                            
+                        $.each(doc.styleSheets, function (i, s) {
                             // only load template stylesheets, not from tinymce plugins
                             if (s.href && s.href.indexOf('tiny_mce') == -1) {
                                 stylesheets.push(s);
@@ -350,7 +347,7 @@
                             name: 'Name'
                         },
                         stylesheets: stylesheets,
-                        custom_colors: custom_colors
+                        custom_colors: colorpicker_custom_colors
                     });
 
                     $(this).colorpicker(settings);
