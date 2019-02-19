@@ -759,7 +759,7 @@ table.mceSplitButtonEnabled:hover .mceOpen a,
 
 .defaultSkin .mceButtonDialog {
     position: absolute;
-    left: 0;
+    left: 1px;
     top: 1px;
     z-index: 1000;
     border: 1px solid #ddd;
