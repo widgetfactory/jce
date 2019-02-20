@@ -237,10 +237,11 @@ dd.file.notsafe {
 
 .ui-jce .filetype .filetype-list label {
     padding: 0;
-    margin: 0 -34px 0 0;
+    margin: 0 0 0 0;
     display: inline-block;
-    width: 100%;
+    width: calc(100% - 44px);
     line-height: 28px;
+    vertical-align: middle;
 }
 
 .ui-jce .filetype .filetype-list input[type="text"] {
