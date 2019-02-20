@@ -208,7 +208,7 @@
             var code = error.code.toString();
 
             // get details
-            var details = Wf.translate('error_' + code.replace(/[\D]/g, ''), "");
+            var details = ''//Wf.translate('error_' + code.replace(/[\D]/g, ''), "");
             var message = Wf.translate(msg, error.message);
 
             // clean up message a bit
