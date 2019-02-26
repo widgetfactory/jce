@@ -387,11 +387,13 @@
                         o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
                     }
 
-                    // clean bootstrap icons
-                    //o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8></$1>');
-
                     // clean empty tags
-                    //o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+                    o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function(match, tag, attribs) {
+                        // remove data-mce-empty attribute
+                        attribs = attribs.replace('data-mce-empty="1"', '');
+                        // return empty tag
+                        return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+                    });
 
                     // clean empty list tags
                     o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
