@@ -512,8 +512,8 @@
                 var style = Styles.parse(n.attr('style'));
 
                 // get width an height
-                var w = n.attr('width') || style.width || '';
-                var h = n.attr('height') || style.height || '';
+                var w = n.attr('width') || style.width || 384;
+                var h = n.attr('height') || style.height || 216;
 
                 var type = n.attr('type');
 
