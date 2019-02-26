@@ -521,28 +521,36 @@ abstract class WFUtility
         if (empty($name) && (string) $name !== "0") {
             return false;
         }
-
+        
         // list of invalid extensions
         $executable = array(
             'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
-            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh',
+            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh', 'svg'
         );
-        // get file parts, eg: ['image', 'jpg']
+
+        // get file parts, eg: ['image', 'php', 'jpg']
         $parts = explode('.', $name);
-        // reverse so that name is last array item
-        $parts = array_reverse($parts);
-        // remove name
+
+        // remove extension
         array_pop($parts);
+
+        // remove name
+        array_shift($parts);
+
+        // no extensions in file name
+        if (empty($parts)) {
+            return true;
+        }
+
         // lowercase it
         array_map('strtolower', $parts);
 
-        // check for extension in file name, eg: image.php.jpg or as extension, eg: image.php
-        foreach ($executable as $ext) {
-            if (in_array($ext, $parts)) {
+        // check for extension in file name, eg: image.php.jpg
+        foreach ($executable as $extension) {
+            if (in_array($extension, $parts)) {
                 return false;
             }
         }
-
         return true;
     }
 
