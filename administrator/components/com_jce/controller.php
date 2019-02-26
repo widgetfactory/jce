@@ -68,6 +68,18 @@ class JceController extends JControllerLegacy
         $vFormat = $document->getType();
         $lName = $app->input->get('layout', 'default');
 
+        if ($vName === "popup") {
+            // add a view path
+            $this->addViewPath(JPATH_SITE . '/components/com_jce/views');
+            $view = $this->getView($vName, $vFormat);
+
+            if ($view) {
+                $view->display();
+            }
+
+            return $this;
+        }
+
         // create view
         $view = $this->getView($vName, $vFormat);
 
