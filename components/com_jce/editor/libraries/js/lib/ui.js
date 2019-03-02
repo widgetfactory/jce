@@ -376,6 +376,8 @@
                 // pass value to select and trigger change
                 $(self).val(v);
                 $(self).trigger('datalist:change');
+
+                $(self).prop('disabled', $(this).prop('disabled'));
             });
 
             $(this).change(function (e) {

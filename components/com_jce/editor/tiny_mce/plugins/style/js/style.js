@@ -478,7 +478,7 @@
             var newStyles = tinyMCEPopup.editor.dom.parseStyle(ce.style.cssText);
 
             if (this.applyActionIsInsert) {
-                
+
                 // register formatter to remove all styles
                 ed.formatter.register('plugin_style', {
                     inline: 'span',
@@ -723,7 +723,7 @@
         toggleSame: function (ce, pre) {
             var s = ce.checked;
 
-            $('#' + pre + '_right, #' + pre + '_bottom, #' + pre + '_left').attr('disabled', s).toggleClass('disabled', s).next('span.pickcolor_icon, span.browser_icon, span.select-edit').toggleClass('disabled', s);
+            $('#' + pre + '_right, #' + pre + '_bottom, #' + pre + '_left').attr('disabled', s).toggleClass('disabled', s).change().next('span.pickcolor_icon, span.browser_icon, span.select-edit').toggleClass('disabled', s);
             $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s);
         },
         synch: function (fr, to) {
