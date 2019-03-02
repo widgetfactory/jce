@@ -18,7 +18,7 @@ $links = $this->plugin->getLinks();
     <label class="uk-form-label uk-width-1-5" for="href" class="hastip" title="<?php echo JText::_('WF_LABEL_URL_DESC'); ?>"><?php echo JText::_('WF_LABEL_URL'); ?></label>
     <div class="uk-form-controls uk-form-icon uk-form-icon-flip uk-width-4-5">
         <input id="href" type="text" value="" required class="browser" />
-        <span class="email uk-icon uk-icon-email" role="button" aria-haspopup="true" aria-label="<?php echo JText::_('WF_LABEL_EMAIL'); ?>" title="<?php echo JText::_('WF_LABEL_EMAIL'); ?>"></span>
+        <button class="email uk-icon uk-icon-email uk-button uk-button-link" aria-haspopup="true" aria-label="<?php echo JText::_('WF_LABEL_EMAIL'); ?>" title="<?php echo JText::_('WF_LABEL_EMAIL'); ?>"></button>
     </div>
 </div>
 <div class="uk-form-row">

@@ -278,6 +278,10 @@
                         v = "000000";
                     }
 
+                    // toggle disabled
+                    $(this).next('.uk-icon-colorpicker').prop('disabled', this.disabled);
+
+                    // fire event
                     $(this).trigger('colorpicker:pick', '#' + v);
                 }).change();
 
@@ -386,7 +390,9 @@
                     'media': 'film'
                 };
 
-                $('<span role="button" class="uk-icon uk-icon-' + map[filter] + '" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></span>').click(function (e) {
+                $('<button class="uk-icon uk-icon-' + map[filter] + ' uk-button uk-button-link" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></button>').click(function (e) {
+                    e.preventDefault();
+                    
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,

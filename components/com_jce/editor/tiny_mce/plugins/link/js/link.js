@@ -60,7 +60,8 @@
                 $('#href').removeClass('browser');
             }
 
-            $('.email').click(function () {
+            $('.email').click(function (e) {
+                e.preventDefault();
                 LinkDialog.createEmail();
             });
 
