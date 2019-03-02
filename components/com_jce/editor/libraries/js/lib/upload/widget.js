@@ -278,8 +278,13 @@
             $(file.element).removeClass('queue-item-loading').addClass('queue-item-complete');
 
             var item = {
-                name: o.result.files[0] || file.name
+                name: file.name
             };
+
+            if (o.result.files && o.result.files.length) {
+                var obj = o.result.files[0] || {};
+                $.extend(item, obj.file || obj);
+            }
 
             // trigger callback
             this._trigger('filecomplete', [file, item]);

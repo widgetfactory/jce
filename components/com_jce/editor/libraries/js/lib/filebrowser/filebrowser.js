@@ -1685,9 +1685,13 @@
                 case 'rename':
                     var s = this.getSelectedItems(0);
                     var v = Wf.String.basename(list);
+                    var ext;
 
                     if ($(s).hasClass('file')) {
-                        v = Wf.String.basename(Wf.String.stripExt(list));
+                        // get and store extension
+                        ext = Wf.String.getExt(v);
+                        // get the filename
+                        v = Wf.String.filename(v);
                     }
 
                     var rename = Wf.Modal.prompt('Rename', function (name, args) {
@@ -1707,6 +1711,7 @@
                                 Wf.JSON.request('renameItem', args, function (o) {
                                     if (o) {
                                         self._reset();
+
                                         var item = Wf.String.path(self._dir, name);
 
                                         // folder rename successful
@@ -1719,9 +1724,14 @@
                                             self._trigger('onFolderRename', null, list, item);
                                         }
 
+                                        // add extension to file name
+                                        if (ext) {
+                                            item = item + '.' + ext;
+                                        }
+
                                         // file rename successful
                                         if (o.files.length) {
-                                            self._trigger('onFileDelete', null, item);
+                                            self._trigger('onFileRename', null, item);
                                         }
 
                                         if (item) {
