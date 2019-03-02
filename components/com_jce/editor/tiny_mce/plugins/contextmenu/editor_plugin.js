@@ -10,7 +10,6 @@
 
 (function () {
     var Event = tinymce.dom.Event,
-        each = tinymce.each,
         DOM = tinymce.DOM;
 
     /**
@@ -29,10 +28,10 @@
          * @param {string} url Absolute URL to where the plugin is located.
          */
         init: function (ed) {
-            var t = this,
+            var self = this,
                 showMenu, contextmenuNeverUseNative, realCtrlKey, hideMenu;
 
-            t.editor = ed;
+            self.editor = ed;
 
             contextmenuNeverUseNative = ed.settings.contextmenu_never_use_native;
 
@@ -41,8 +40,8 @@
             };
 
             var isMacWebKit = function () {
-		        return tinymce.isMac && tinymce.isWebKit;
-	        };
+                return tinymce.isMac && tinymce.isWebKit;
+            };
 
             /**
              * This event gets fired when the context menu is shown.
@@ -51,7 +50,7 @@
              * @param {tinymce.plugins.ContextMenu} sender Plugin instance sending the event.
              * @param {tinymce.ui.DropMenu} menu Drop down menu to fill with more items if needed.
              */
-            t.onContextMenu = new tinymce.util.Dispatcher(this);
+            self.onContextMenu = new tinymce.util.Dispatcher(this);
 
             hideMenu = function (e) {
                 hide(ed, e);
@@ -82,7 +81,7 @@
                     ed.selection.select(e.target);
                 }
 
-                t._getMenu(ed).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
+                self._getMenu(ed).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
                 Event.add(ed.getDoc(), 'click', hideMenu);
 
@@ -90,8 +89,9 @@
             });
 
             ed.onRemove.add(function () {
-                if (t._menu)
-                    t._menu.removeAll();
+                if (self._menu) {
+                    self._menu.removeAll();
+                }
             });
 
             function hide(ed, e) {
@@ -104,11 +104,11 @@
                     return;
                 }
 
-                if (t._menu) {
-                    t._menu.removeAll();
-                    t._menu.destroy();
+                if (self._menu) {
+                    self._menu.removeAll();
+                    self._menu.destroy();
                     Event.remove(ed.getDoc(), 'click', hideMenu);
-                    t._menu = null;
+                    self._menu = null;
                 }
             }
 
@@ -121,25 +121,10 @@
                 }
             });
         },
-        /**
-         * Returns information about the plugin as a name/value array.
-         * The current keys are longname, author, authorurl, infourl and version.
-         *
-         * @method getInfo
-         * @return {Object} Name/value array containing information about the plugin.
-         */
-        getInfo: function () {
-            return {
-                longname: 'Contextmenu',
-                author: 'Moxiecode Systems AB',
-                authorurl: 'http://tinymce.moxiecode.com',
-                infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/contextmenu',
-                version: tinymce.majorVersion + "." + tinymce.minorVersion
-            };
-        },
+
         _getMenu: function (ed) {
-            var t = this,
-                m = t._menu,
+            var self = this,
+                m = self._menu,
                 se = ed.selection,
                 col = se.isCollapsed(),
                 el = se.getNode() || ed.getBody(),
@@ -159,7 +144,7 @@
                 keyboard_focus: true
             });
 
-            t._menu = m;
+            self._menu = m;
 
             m.addSeparator();
 
@@ -191,7 +176,7 @@
                 cmd: 'JustifyFull'
             });
 
-            t.onContextMenu.dispatch(t, m, el, col);
+            self.onContextMenu.dispatch(self, m, el, col);
 
             return m;
         }
