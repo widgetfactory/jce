@@ -52,6 +52,51 @@ class JceModelCpanel extends JModelLegacy
         return $icons;
     }
 
+    public function getFeeds()
+    {
+        $app = JFactory::getApplication();
+        $params = JComponentHelper::getParams('com_jce');
+        $limit = $params->get('feed_limit', 2);
+
+        $feeds = array();
+        $options = array(
+            'rssUrl' => 'https://www.joomlacontenteditor.net/news?format=feed',
+        );
+
+        $xml = simplexml_load_file($options['rssUrl']);
+
+        if (empty($xml)) {
+            return $feeds;
+        }
+
+        jimport('joomla.filter.input');
+        $filter = JFilterInput::getInstance();
+
+        $count = count($xml->channel->item);
+
+        if ($count) {
+            $count = ($count > $limit) ? $limit : $count;
+
+            for ($i = 0; $i < $count; ++$i) {
+                $feed = new StdClass();
+                $item = $xml->channel->item[$i];
+
+                $link = (string) $item->link;
+                $feed->link = htmlspecialchars($filter->clean($link));
+
+                $title = (string) $item->title;
+                $feed->title = htmlspecialchars($filter->clean($title));
+
+                $description = (string) $item->description;
+                $feed->description = htmlspecialchars($filter->clean($description));
+
+                $feeds[] = $feed;
+            }
+        }
+
+        return $feeds;
+    }
+
     /**
      * Method to auto-populate the model state.
      *

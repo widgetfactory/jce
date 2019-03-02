@@ -96,8 +96,7 @@ class JceModelProfiles extends JModelList
                 'a.id , a.name, a.description, a.checked_out, a.checked_out_time,' .
                 ' a.published, a.ordering'
             )
-        )
-            ->from($db->quoteName('#__wf_profiles') . ' AS a');
+        )->from($db->quoteName('#__wf_profiles') . ' AS a');
 
         // Join over the users for the checked out user.
         $query->select('uc.name AS editor')

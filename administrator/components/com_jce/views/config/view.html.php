@@ -34,7 +34,7 @@ class JceViewConfig extends JViewLegacy
         $this->fieldsname = "";
 
         $this->addToolbar();
-        $this->sidebar = JHtmlSidebar::render();
+        //$this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
     }
 
