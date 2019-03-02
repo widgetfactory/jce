@@ -668,6 +668,8 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         jimport('joomla.filesystem.file');
 
+        $dispatcher = JDispatcher::getInstance();
+
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
         $dest = WFUtility::makePath($path, $name);
 
@@ -710,14 +712,31 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeUpload', array(&$src, &$dest));
+        $dispatcher->trigger('onWfFileSystemBeforeUpload', array(&$src, &$dest));
+
+        // create object to pass to joomla event
+        $object_file = new JObject(array(
+            'name'      => basename($dest),
+            'tmp_name'  => $src,
+            'filepath'  => $dest
+        ));
+
+        // trigger Joomla event before upload
+        $dispatcher->trigger('onContentBeforeSave', array('com_jce.file', &$object_file, true));
 
         if (JFile::upload($src, $dest, false, true)) {
             $result->state = true;
             $result->path = $dest;
         }
 
-        JFactory::getApplication()->triggerEvent('onWfFileSystemAfterUpload', array(&$result));
+        $dispatcher->trigger('onWfFileSystemAfterUpload', array(&$result));
+
+        // update $object_file
+        $object_file->name = basename($result->path);
+        $object_file->filepath = $result->path;
+
+        // trigger Joomla event after upload
+        $dispatcher->trigger('onContentAfterSave', array('com_jce.file', &$object_file, true));
 
         return $result;
     }
