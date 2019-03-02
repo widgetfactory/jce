@@ -11,21 +11,12 @@
 
 /*global tinymce:true */
 (function () {
-    var each = tinymce.each,
-        extend = tinymce.extend;
-
     function toHtml(s) {
         s = tinymce.trim(s);
 
-        if (typeof marked !== "undefined") {
+        if (typeof marked === "function") {
             return marked(s);
         }
-
-        return s;
-    }
-
-    function htmlTo(s) {
-        s = tinymce.trim(s);
 
         return s;
     }
@@ -137,28 +128,6 @@
                     }
                 });
             });
-
-            if (use_markdown) {
-                editor.onBeforeSetContent.add(function (ed, o) {                    
-                    var content = toHtml(o.content);
-                    o.content = new tinymce.html.Serializer({}, ed.schema).serialize(ed.parser.parse(content));
-                });
-
-                if (editor.plugins.clipboard) {
-                    editor.onGetClipboardContent.add(function (ed, clipboard) {
-                        var text = clipboard["text/plain"] || "", html = clipboard["text/html"] || "";
-                        // only supports plain text paste
-                        if (text && !html) {
-                            var markdown = toHtml(text);
-
-                            // a conversion has occured
-                            if (text !== markdown) {
-                                clipboard["text/html"]  = markdown;
-                            }
-                        }
-                    });
-                }
-            }
 
             editor.addCommand('InsertMarkdownImage', function (ui, node) {
                 var data = node.split(']('),
@@ -572,6 +541,27 @@
                 patterns = newPatterns;
                 isPatternsDirty = true;
             };
+
+            if (use_markdown) {
+                editor.onBeforeSetContent.add(function (ed, o) {
+                    o.content = toHtml(o.content);
+                });
+
+                if (editor.plugins.clipboard) {
+                    editor.onGetClipboardContent.add(function (ed, clipboard) {
+                        var text = clipboard["text/plain"] || "",
+                            html = clipboard["text/html"] || "";
+                        // only supports plain text paste
+                        if (text && !html) {
+                            markdown = toHtml(text);
+
+                            if (markdown !== text) {
+                                clipboard["text/html"] = markdown;
+                            }
+                        }
+                    });
+                }
+            }
         }
     });
 
