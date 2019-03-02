@@ -96,27 +96,6 @@
         {"🙏":"person_with_folded_hands"}
     ];
 
-    if (tinymce.isIE8) {
-        emoji = [
-            'smiley-confused.gif',
-            'smiley-cool.gif',
-            'smiley-cry.gif',
-            'smiley-eek.gif',
-            'smiley-embarassed.gif',
-            'smiley-evil.gif',
-            'smiley-laughing.gif',
-            'smiley-mad.gif',
-            'smiley-neutral.gif',
-            'smiley-roll.gif',
-            'smiley-sad.gif',
-            'smiley-surprised.gif',
-            'smiley-tongue_out.gif',
-            'smiley-wink.gif',
-            'smiley-yell.gif',
-            'smiley-smile.gif'
-        ];
-    }
-
     tinymce.create("tinymce.plugins.EmotionsPlugin", {
         init: function (ed, url) {
             var self = this;

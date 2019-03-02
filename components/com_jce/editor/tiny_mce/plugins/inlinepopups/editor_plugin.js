@@ -210,17 +210,6 @@
                 }
             }
 
-            /*if (tinymce.isIE8) {
-                var p = DOM.getRect(id),
-                    m = 41;
-
-                if (DOM.get(id + '_footer')) {
-                    m = 90;
-                }
-
-                DOM.setStyle(id + '_content', 'height', p.h - m);
-            }*/
-
             rsf = Event.add(DOM.win, 'resize orientationchange', function() {
                 if (DOM.get(id)) {
                     self.position(id);

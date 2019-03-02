@@ -50,10 +50,6 @@
             if (bullist) {
                 t.bullist = buildFormats(bullist);
             }
-
-            if (tinymce.isIE && /MSIE [2-7]/.test(navigator.userAgent)) {
-                t.isIE7 = true;
-            }
         },
         createControl: function(name, cm) {
             var t = this, btn, format, editor = t.editor;
@@ -173,10 +169,6 @@
                     menu.add({id: editor.dom.uniqueId(), title: 'advlist.types', 'class': 'mceMenuItemTitle', titleItem: true}).setDisabled(1);
 
                     each(t[name], function(item) {
-                        // IE<8 doesn't support lower-greek, skip it
-                        if (t.isIE7 && item.styles.listStyleType == 'lower-greek')
-                            return;
-
                         item.id = editor.dom.uniqueId();
 
                         menu.add({id: item.id, title: item.title, onclick: function() {

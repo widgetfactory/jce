@@ -202,7 +202,7 @@
                     fragment.appendChild(editor.dom.create('br'));
                 } else {
                     // BR is needed in empty blocks on non IE browsers
-                    if (!hasContentNode && (!tinymce.isIE || (tinymce.isIE10 || tinymce.isIE11 || tinymce.isIE12))) {
+                    if (!hasContentNode) {
                         textBlock.appendChild(editor.dom.create('br', {'data-mce-bogus': '1'}));
                     }
                 }
