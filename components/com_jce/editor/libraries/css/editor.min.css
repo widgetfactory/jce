@@ -213,12 +213,14 @@
 }
 
 /* Joomla 4 */
-.wf-editor-header .wf-editor-toggle-inverse>svg {
-    fill: #fff;
-}
-
 .wf-editor-header .wf-editor-toggle-inverse {
     background-color: rgba(0, 0, 0, 0.1);
+    right: 0;
+    left: initial;
+}
+
+.wf-editor-header .wf-editor-toggle-inverse>svg {
+    fill: #fff;
 }
 
 .wf-editor-toggle-off .wf-editor-toggle-inverse>svg {
