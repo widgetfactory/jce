@@ -18,7 +18,6 @@ class JceViewProfiles extends JViewLegacy
 		$this->pagination = $this->get('Pagination');
 		$this->state = $this->get('State');
 		$this->filterForm = $this->get('FilterForm');
-		$this->activeFilters = $this->get('ActiveFilters');
 
         $this->params = JComponentHelper::getParams('com_jce');
 
@@ -90,10 +89,10 @@ class JceViewProfiles extends JViewLegacy
     protected function getSortFields()
     {
         return array(
-            'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
-            'a.title' => JText::_('JGLOBAL_TITLE'),
-            'a.published' => JText::_('JSTATUS'),
-            'a.id' => JText::_('JGRID_HEADING_ID'),
+            'ordering' => JText::_('JGRID_HEADING_ORDERING'),
+            'name' => JText::_('JGLOBAL_TITLE'),
+            'published' => JText::_('JSTATUS'),
+            'id' => JText::_('JGRID_HEADING_ID'),
         );
     }
 }

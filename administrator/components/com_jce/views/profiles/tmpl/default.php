@@ -16,9 +16,10 @@ JHtml::_('behavior.multiselect');
 JHtml::_('behavior.tabstate');
 JHtml::_('formbehavior.chosen', 'select');
 
-$user      = JFactory::getUser();
-$listOrder = $this->escape($this->state->get('list.ordering'));
-$listDirn  = $this->escape($this->state->get('list.direction'));
+$user       = JFactory::getUser();
+$listOrder	= $this->escape($this->state->get('list.ordering'));
+$listDirn	= $this->escape($this->state->get('list.direction'));
+
 $saveOrder = $listOrder == 'ordering';
 
 if ($saveOrder)
@@ -56,13 +57,13 @@ if ($saveOrder)
                                     <?php echo JHtml::_('grid.checkall'); ?>
                                 </th>
                                 <th style="width:1%" class="nowrap center text-center">
-                                    <?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'enabled', $listDirn, $listOrder); ?>
+                                    <?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'published', $listDirn, $listOrder); ?>
                                 </th>
                                 <th class="title">
                                     <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'name', $listDirn, $listOrder); ?>
                                 </th>
                                 <th class="title hidden-phone">
-                                    <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_DESCRIPTION', 'description', $listDirn, $listOrder); ?>
+                                    <?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>
                                 </th>
                                 <th style="width:5%" class="nowrap hidden-phone center d-none d-md-table-cell text-center">
                                     <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
@@ -87,6 +88,7 @@ if ($saveOrder)
                                 <td class="order nowrap center hidden-phone text-center d-none d-md-table-cell">
                                     <?php
                                     $iconClass = '';
+
                                     if (!$canChange)
                                     {
                                         $iconClass = ' inactive';
@@ -135,8 +137,6 @@ if ($saveOrder)
 
                 <input type="hidden" name="task" value="" />
                 <input type="hidden" name="boxchecked" value="0" />
-                <input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />
-                <input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
                 <?php echo JHtml::_('form.token'); ?>
             </div>
         </div>

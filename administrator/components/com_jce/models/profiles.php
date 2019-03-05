@@ -13,115 +13,117 @@ defined('JPATH_PLATFORM') or die;
 class JceModelProfiles extends JModelList
 {
     /**
-     * Constructor.
-     *
-     * @param   array  An optional associative array of configuration settings
-     *
-     * @see     JController
-     * @since   1.6
-     */
-    public function __construct($config = array())
-    {
-        if (empty($config['filter_fields'])) {
-            $config['filter_fields'] = array(
-                'id', 'a.id',
-                'name', 'a.name',
-                'checked_out', 'a.checked_out',
-                'checked_out_time', 'a.checked_out_time',
-                'published', 'a.published',
-                'ordering', 'a.ordering',
-            );
-        }
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @see     JControllerLegacy
+	 * @since   1.6
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($config['filter_fields']))
+		{
+			$config['filter_fields'] = array(
+				'id', 'id',
+				'name', 'name',
+				'checked_out', 'checked_out',
+				'checked_out_time', 'checked_out_time',
+				'published', 'published',
+				'ordering', 'ordering'
+			);
+		}
 
-        parent::__construct($config);
-    }
-
+		parent::__construct($config);
+	}
+    
     /**
-     * Method to auto-populate the model state.
-     *
-     * Note. Calling getState in this method will result in recursion.
-     *
-     * @since   1.6
-     */
-    protected function populateState($ordering = null, $direction = null)
-    {
+	 * Method to auto-populate the model state.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @return  void
+	 *
+	 * @note    Calling getState in this method will result in recursion.
+	 * @since   1.6
+	 */
+	protected function populateState($ordering = null, $direction = null)
+	{        
         // Load the filter state.
-        $search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
-        $this->setState('filter.search', $search);
+		$this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
 
-        $published = $this->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '', 'string');
-        $this->setState('filter.published', $published);
+		// Load the parameters.
+		$params = JComponentHelper::getParams('com_jce');
+		$this->setState('params', $params);
 
-        // List state information.
-        parent::populateState('a.name', 'asc');
+		// List state information.
+		parent::populateState($ordering, $direction);
     }
-
+    
     /**
-     * Method to get a store id based on model configuration state.
-     *
-     * This is necessary because the model is used by the component and
-     * different modules that might need different sets of data or different
-     * ordering requirements.
-     *
-     * @param string $id A prefix for the store id
-     *
-     * @return string A store id
-     *
-     * @since   1.6
-     */
-    protected function getStoreId($id = '')
-    {
-        // Compile the store id.
-        $id .= ':' . $this->getState('filter.search');
-        $id .= ':' . $this->getState('filter.published');
+	 * Method to get a store id based on model configuration state.
+	 *
+	 * This is necessary because the model is used by the component and
+	 * different modules that might need different sets of data or different
+	 * ordering requirements.
+	 *
+	 * @param   string  $id  A prefix for the store id.
+	 *
+	 * @return  string  A store id.
+	 *
+	 * @since   1.6
+	 */
+	protected function getStoreId($id = '')
+	{
+		// Compile the store id.
+		$id .= ':' . $this->getState('filter.search');
 
-        return parent::getStoreId($id);
-    }
-
+		return parent::getStoreId($id);
+	}
+    
     /**
      * Build an SQL query to load the list data.
      *
      * @return  JDatabaseQuery
+     *
+     * @since   1.6
      */
     protected function getListQuery()
     {
         // Create a new query object.
         $db = $this->getDbo();
         $query = $db->getQuery(true);
+        $user = JFactory::getUser();
 
         // Select the required fields from the table.
         $query->select(
             $this->getState(
                 'list.select',
-                'a.id , a.name, a.description, a.checked_out, a.checked_out_time,' .
-                ' a.published, a.ordering'
+                'id, name, description, ordering, published, checked_out, checked_out_time'
             )
-        )->from($db->quoteName('#__wf_profiles') . ' AS a');
+        );
 
-        // Join over the users for the checked out user.
-        $query->select('uc.name AS editor')
-            ->join('LEFT', '#__users AS uc ON uc.id=a.checked_out');
+        $query->from($db->quoteName('#__wf_profiles'));
+        $query->where('(' . $db->quoteName('published') . ' IN (0, 1))');
 
-        // Filter by published state.
-        $published = $this->getState('filter.published');
-
-        if (is_numeric($published)) {
-            $query->where('a.published = ' . (int) $published);
-        } elseif ($published === '') {
-            $query->where('(a.published IN (0, 1))');
-        }
-
-        // Filter by state.
-        $query->where('a.published >= 0');
-
-        // Filter by search in name or id.
+        // Filter by search in title
         $search = $this->getState('filter.search');
 
         if (!empty($search)) {
             if (stripos($search, 'id:') === 0) {
-                $query->where('a.id = ' . (int) substr($search, 3));
+                $query->where($db->quoteName('id') . ' = ' . (int) substr($search, 3));
+            } else {
+                $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
+                $query->where('(' . $db->quoteName('name') . ' LIKE ' . $search . ' OR ' . $db->quoteName('description') . ' LIKE ' . $search . ')');
             }
         }
+
+        // Add the list ordering clause.
+        $listOrder  = $this->getState('list.ordering', 'ordering');
+        $listDirn   = $this->getState('list.direction', 'ASC');
+
+        $query->order($db->escape($listOrder . ' ' . $listDirn));
 
         return $query;
     }
