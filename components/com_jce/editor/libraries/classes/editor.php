@@ -12,6 +12,9 @@ defined('JPATH_PLATFORM') or die;
 
 class WFEditor
 {
+    // Editor instance
+    protected static $instance;
+    
     /**
      * Profile object.
      *
@@ -104,6 +107,24 @@ class WFEditor
 
         $this->context = $wf->getContext();
     }
+
+    /**
+     * Returns a reference to a editor object.
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =WFEditor::getInstance();</pre>
+     *
+     * @return JCE The editor object
+     */
+    public static function getInstance($config = array())
+    {
+        if (!isset(self::$instance)) {
+            self::$instance = new self($config);
+        }
+
+        return self::$instance;
+    }
+
     /**
      * Legacy function to build the editor
      *
