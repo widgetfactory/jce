@@ -16,10 +16,13 @@ $canEditPref = $user->authorise('core.admin', 'com_jce');
 ?>
 <div class="ui-jce row row-fluid">
 	<div class="span12 col-md-12">
-        <div id="wf-cpanel" class="thumbnails card-deck mb-2">
-            <?php echo implode("\n", $this->icons); ?>
-        </div>
-        <dl class="dl-horizontal placeholder well card card-body">
+        <nav id="wf-cpanel" class="quick-icons">
+			<ul class="unstyled">
+				<?php echo implode("\n", $this->icons); ?>
+			</ul>
+		</nav>    
+
+        <dl class="dl-horizontal card card-body well">
             <dt class="wf-tooltip" title="<?php echo JText::_('WF_CPANEL_SUPPORT') . '::' . JText::_('WF_CPANEL_SUPPORT_DESC'); ?>">
                 <?php echo JText::_('WF_CPANEL_SUPPORT'); ?>
             </dt>

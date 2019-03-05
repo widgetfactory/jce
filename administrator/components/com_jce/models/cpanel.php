@@ -21,10 +21,10 @@ class JceModelCpanel extends JModelLegacy
         $icons = array();
 
         $views = array(
-            'config'    => 'equalizer', 
-            'profiles'  => 'users', 
-            'browser'   => 'picture', 
-            'mediabox'  => 'pictures'
+            'config' => 'equalizer',
+            'profiles' => 'users',
+            'browser' => 'picture',
+            'mediabox' => 'pictures',
         );
 
         foreach ($views as $name => $icon) {
@@ -39,14 +39,14 @@ class JceModelCpanel extends JModelLegacy
                 continue;
             }
 
-            $link   = 'index.php?option=com_jce&amp;view=' . $name;
-            $title  = JText::_('WF_' . strtoupper($name));
+            $link = 'index.php?option=com_jce&amp;view=' . $name;
+            $title = JText::_('WF_' . strtoupper($name));
 
             if ($name === "browser") {
                 $title = JText::_('WF_' . strtoupper($name) . '_TITLE');
             }
 
-            $icons[] = '<div class="span2 thumbnail card col-sm-2"><a title="' . JText::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '"><i class="icon-' . $icon . '"></i><h6 class="thumbnail-title text-center">' . $title . '</h6></a></div>';
+            $icons[] = '<li><a title="' . JText::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '" class="btn btn-default"><div class="quickicon-icon d-flex align-items-end"><span class="fa fa-' . $icon . ' icon-' . $icon . '" aria-hidden="true"></span></div><div class="quickicon-text d-flex align-items-center"><span class="j-links-link">' . $title . '</span></div></a></li>';
         }
 
         return $icons;
@@ -110,8 +110,8 @@ class JceModelCpanel extends JModelLegacy
         $version = "";
 
         if ($xml = simplexml_load_file(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml')) {
-            $licence = (string)$xml->license;
-            $version = (string)$xml->version;
+            $licence = (string) $xml->license;
+            $version = (string) $xml->version;
 
             if (WF_EDITOR_PRO) {
                 $version = '<span class="badge badge-info badge-primary">Pro</span>&nbsp;' . $version;
