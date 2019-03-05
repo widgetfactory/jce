@@ -389,17 +389,17 @@ class JoomlalinksContent extends JObject
             $query->from('#__content AS a');
             $query->innerJoin('#__categories AS b ON b.id = ' . (int) $id);
             
-            $query->where('a.state = 1');
+            $query->where('a.catid = ' . (int) $id);
 
             if ($wf->getParam('links.joomlalinks.article_unpublished', 0) == 1) {
-                $query->orWhere('a.state = 0');
+                $query->where('(a.state = 0 OR a.state = 1)');
+            } else {
+                $query->where('a.state = 1');
             }
 
-            $query->andWhere('a.catid = ' . (int) $id);
-
             if (!$user->authorise('core.admin')) {
-                $query->andWhere('a.access IN (' . $groups . ')');
-                $query->andWhere('b.access IN (' . $groups . ')');
+                $query->where('a.access IN (' . $groups . ')');
+                $query->where('b.access IN (' . $groups . ')');
             }
 
             $query->order('a.title');
