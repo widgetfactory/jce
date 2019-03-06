@@ -94,7 +94,7 @@
             o.default_color = s.fontcolor_foreground_color || '#000000';
 
             o.title = 'advanced.forecolor_desc';
-            o.onselect = function (v) {
+            o.onselect = o.onclick = function (v) {
 
                 if (!v) {
                     return ed.formatter.remove('forecolor');
@@ -138,7 +138,7 @@
             o.default_color = s.fontcolor_background_color || '#FFFF00';
 
             o.title = 'advanced.backcolor_desc';
-            o.onselect = function (v) {
+            o.onselect = o.onclick = function (v) {
 
                 if (!v) {
                     return ed.formatter.remove('hilitecolor');
