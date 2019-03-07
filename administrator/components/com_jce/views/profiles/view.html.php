@@ -55,12 +55,12 @@ class JceViewProfiles extends JViewLegacy
 
         if ($user->authorise('core.create', 'com_jce')) {
             JToolbarHelper::addNew('profile.add');
-            JToolbarHelper::custom('profiles.copy', 'copy', 'copy', 'Copy', true);
+            JToolbarHelper::custom('profiles.copy', 'copy', 'copy', 'WF_PROFILES_COPY', true);
             // Instantiate a new JLayoutFile instance and render the layout
             $layout = new JLayoutFile('toolbar.uploadprofile');
             $bar->appendButton('Custom', $layout->render(array()), 'upload');
 
-            JToolbarHelper::custom('profiles.export', 'download', 'download', 'Export', true);
+            JToolbarHelper::custom('profiles.export', 'download', 'download', 'WF_PROFILES_EXPORT', true);
         }
 
         if ($user->authorise('core.edit.state', 'com_jce')) {
