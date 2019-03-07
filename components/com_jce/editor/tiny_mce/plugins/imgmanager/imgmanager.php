@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class WFImageManagerPlugin extends WFMediaManager
+class WFImgManagerPlugin extends WFMediaManager
 {
     public $_filetypes = 'jpg,jpeg,png,gif';
 
