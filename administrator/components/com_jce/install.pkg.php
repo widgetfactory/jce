@@ -176,6 +176,15 @@ class pkg_jceInstallerScript
         if ($variant === "pro" && (string) $parent->manifest->variant === "core") {
             throw new RuntimeException('JCE Core cannot be installed over JCE Pro. Please install JCE Pro. To downgrade, please first uninstall JCE Pro.');
         }
+
+        // clean up for legacy upgrade
+        if ($version && version_compare($version, '2.7.0', '<')) {
+            // remove admin folder
+            JFolder::delete(JPATH_ADMINISTRATOR . '/components/com_jce');
+
+            // remove site folder
+            JFolder::delete(JPATH_SITE . '/components/com_jce');
+        }
     }
 
     public function postflight($type, $installer)
