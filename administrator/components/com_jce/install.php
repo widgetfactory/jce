@@ -20,10 +20,6 @@ if ((int) ini_get('memory_limit') < 32) {
 
 abstract class WfInstall
 {
-    public static function cleanupInstall()
-    {
-    }
-
     public static function install($installer)
     {
         error_reporting(E_ERROR | E_WARNING);
@@ -51,7 +47,7 @@ abstract class WfInstall
         $current_version = $new_version;
 
         $xml_file = $installer->getPath('extension_administrator') . '/jce.xml';
-        
+
         // check for an xml file
         if (is_file($xml_file)) {
             if ($xml = JApplicationHelper::parseXMLInstallFile($xml_file)) {
