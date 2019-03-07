@@ -32,7 +32,8 @@
                     width 	: 620 + parseInt(ed.getLang('style.delta_width', 0)),
                     height 	: 460 + parseInt(ed.getLang('style.delta_height', 0)),
                     inline 	: 1,
-                    popup_css : false
+                    popup_css : false,
+                    size: 'mce-modal-landscape-xlarge'
                 }, {
                     applyStyleToBlocks : applyStyleToBlocks,
                     plugin_url : url,
@@ -56,16 +57,6 @@
                 title : 'style.desc',
                 cmd : 'mceStyleProps'
             });
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'Style',
-                author : 'Moxiecode Systems AB',
-                authorurl : 'http://tinymce.moxiecode.com',
-                infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/style',
-                version : tinymce.majorVersion + "." + tinymce.minorVersion
-            };
         }
     });
 

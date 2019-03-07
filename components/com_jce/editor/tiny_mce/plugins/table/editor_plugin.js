@@ -1798,7 +1798,8 @@
                             url: url + '&layout=merge',
                             width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0)),
                             height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0)),
-                            inline: 1
+                            inline: 1,
+                            size: 'mce-modal-landscape-small'
                         }, {
                             rows: rowSpan,
                             cols: colSpan,
@@ -1806,7 +1807,8 @@
                                 grid.merge(cell, data.cols, data.rows);
                             },
                             plugin_url: url,
-                            layout: "merge"
+                            layout: "merge",
+                            size: 'mce-modal-landscape-small'
                         });
                     } else {
                         grid.merge();
@@ -1864,7 +1866,8 @@
                         url: url,
                         width: 640 + parseInt(ed.getLang('table.table_delta_width', 0)),
                         height: 360 + parseInt(ed.getLang('table.table_delta_height', 0)),
-                        inline: 1
+                        inline: 1,
+                        size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
                         action: val ? val.action : 0,
@@ -1876,7 +1879,8 @@
                         url: url + '&layout=row',
                         width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
                         height: 360 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
-                        inline: 1
+                        inline: 1,
+                        size: 'mce-modal-landscape-large'
                     }, {
                         plugin_url: url,
                         layout: "row"
@@ -1887,7 +1891,8 @@
                         url: url + '&layout=cell',
                         width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
                         height: 360 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
-                        inline: 1
+                        inline: 1,
+                        size: 'mce-modal-landscape-large'
                     }, {
                         plugin_url: url,
                         layout: "cell"
