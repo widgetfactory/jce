@@ -182,7 +182,7 @@ class WFEditorPlugin extends JObject
         $document = WFDocument::getInstance();
 
         // ini language
-        $document->addScript(array('index.php?option=com_jce&' . $document->getQueryString(array('task' => 'editor.loadlanguages', 'lang' => WFLanguage::getCode()))), 'joomla');
+        $document->addScript(array('index.php?option=com_jce&' . $document->getQueryString(array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode()))), 'joomla');
 
         // pack assets if required
         $document->pack(true, $this->getParam('editor.compress_gzip', 0));
@@ -198,6 +198,8 @@ class WFEditorPlugin extends JObject
 
     public function loadlanguages()
     {
+        $name = $this->get('name');
+        
         $parser = new WFLanguageParser(array(
             'plugins' => array('core' => array($name), 'external' => array()),
             'sections' => array('dlg', $name . '_dlg', 'colorpicker'),
