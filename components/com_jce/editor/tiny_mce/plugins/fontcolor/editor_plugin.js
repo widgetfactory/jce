@@ -8,11 +8,7 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
-        extend = tinymce.extend,
-        each = tinymce.each,
-        explode = tinymce.explode;
+    var each = tinymce.each;
 
     tinymce.create('tinymce.plugins.FontColorPlugin', {
         init: function (ed, url) {
@@ -20,12 +16,7 @@
             this.editor = ed;
 
             ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
-                var s = ed.settings,
-                    c;
-
-                // reset colours
-                //updateColor('forecolor');
-                //updateColor('backcolor');
+                var c;
 
                 function updateColor(controlId, color) {
                     if (c = cm.get(controlId)) {
@@ -60,7 +51,7 @@
                 });
             });
         },
-        createControl: function (n, cf) {
+        createControl: function (n) {
             if (n === "forecolor") {
                 return this._createForeColorMenu();
             }
@@ -104,6 +95,7 @@
                 ed.formatter.apply('forecolor', {
                     'value': v
                 });
+
                 ed.undoManager.add();
                 ed.nodeChanged();
             };
@@ -148,6 +140,7 @@
                 ed.formatter.apply('hilitecolor', {
                     'value': v
                 });
+
                 ed.undoManager.add();
                 ed.nodeChanged();
             };
