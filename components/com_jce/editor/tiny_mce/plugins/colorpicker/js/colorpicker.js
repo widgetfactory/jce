@@ -22,7 +22,10 @@ var ColorPicker = {
         $('#tmp_color').val(color).colorpicker($.extend(this.settings, {
             dialog: true,
             stylesheets: stylesheets,
-            custom_colors: ed.getParam('colorpicker_custom_colors')
+            custom_colors: ed.getParam('colorpicker_custom_colors'),
+            labels: {
+                'name' : ed.getLang('colorpicker.name', 'Name')
+            }
         })).on('colorpicker:insert', function() {
             return ColorPicker.insert();
         }).on('colorpicker:close', function() {

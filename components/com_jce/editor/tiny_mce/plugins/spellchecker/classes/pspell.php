@@ -1,4 +1,7 @@
 <?php
+
+require_once (__DIR__ . '/spellchecker.php');
+
 /**
  * @author Moxiecode
  * @copyright Copyright (c) 2004-2007, Moxiecode Systems AB, All rights reserved

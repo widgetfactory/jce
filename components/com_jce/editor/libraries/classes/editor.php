@@ -14,7 +14,7 @@ class WFEditor
 {
     // Editor instance
     protected static $instance;
-    
+
     /**
      * Profile object.
      *
@@ -141,7 +141,8 @@ class WFEditor
      *
      * @return array
      */
-    public function getEditorSettings() {
+    public function getEditorSettings()
+    {
         return $this->getSettings();
     }
 
@@ -234,7 +235,7 @@ class WFEditor
             $settings['body_id'] = $wf->getParam('editor.body_id', '');
 
             // get stylesheets
-            $stylesheets = (array)self::getTemplateStyleSheets();
+            $stylesheets = (array) self::getTemplateStyleSheets();
             // set stylesheets as string
             $settings['content_css'] = implode(',', $stylesheets);
 
@@ -246,6 +247,8 @@ class WFEditor
             // Set active tab
             $settings['active_tab'] = 'wf-editor-' . $wf->getParam('editor.active_tab', 'wysiwyg');
 
+            $settings['invalid_elements'] = array();
+
             // Get all optional plugin configuration options
             $this->getPluginConfig($settings);
 
@@ -253,6 +256,7 @@ class WFEditor
             if (!empty($settings['invalid_elements'])) {
                 $settings['invalid_elements'] = array_values($settings['invalid_elements']);
             }
+            
         } // end profile
         // check for joomla debug mode
         $config = JFactory::getConfig();
@@ -266,8 +270,8 @@ class WFEditor
         $compress = array('javascript' => false, 'css' => false);
 
         // set compression states
-        if ((int)$debug === 0) {
-            $compress = array('javascript' => (int)$wf->getParam('editor.compress_javascript', 0), 'css' => (int)$wf->getParam('editor.compress_css', 0));
+        if ((int) $debug === 0) {
+            $compress = array('javascript' => (int) $wf->getParam('editor.compress_javascript', 0), 'css' => (int) $wf->getParam('editor.compress_css', 0));
         }
 
         // set compression
@@ -446,7 +450,7 @@ class WFEditor
                 return;
             }
 
-            foreach ((array)$settings['plugins'] as $plugin) {
+            foreach ((array) $settings['plugins'] as $plugin) {
                 $path = WF_EDITOR_PLUGINS . '/' . $plugin;
 
                 // if english file exists then the installed language file should too
@@ -534,7 +538,7 @@ class WFEditor
                     $custom = $wf->getParam($name . '.buttons');
 
                     if (!empty($custom)) {
-                        $custom = array_filter((array)$custom);
+                        $custom = array_filter((array) $custom);
 
                         if (empty($custom)) {
                             $item = '';
@@ -581,16 +585,16 @@ class WFEditor
      */
     protected static function getDependencies($plugin, $path)
     {
-        $file = $path . '/' . $plugin . '/classes/config.php';
+        $file = $path . '/' . $plugin . '/config.php';
 
         // check if plugin has a config file
         if (is_file($file)) {
             include_once $file;
             // create className
-            $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
+            $classname = 'WF' . ucwords($plugin, '_') . 'PluginConfig';
 
             if (method_exists($classname, 'getDependencies')) {
-                return (array)$classname::getDependencies();
+                return (array) $classname::getDependencies();
             }
         }
 
@@ -723,12 +727,12 @@ class WFEditor
      */
     private function getPluginConfig(&$settings)
     {
-        $core = (array)$settings['plugins'];
+        $core = (array) $settings['plugins'];
         $items = array();
 
-        // Core Tinymce plugins
+        // Core plugins
         foreach ($core as $plugin) {
-            $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/classes/config.php';
+            $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/config.php';
 
             if (is_file($file)) {
                 require_once $file;
@@ -737,9 +741,9 @@ class WFEditor
             }
         }
 
-        // Installed Tinymce plugins
+        // Installed plugins
         if (array_key_exists('external_plugins', $settings)) {
-            $installed = (array)$settings['external_plugins'];
+            $installed = (array) $settings['external_plugins'];
 
             foreach ($installed as $plugin => $path) {
                 $path = dirname($path);
@@ -751,7 +755,12 @@ class WFEditor
                     $path = str_replace($root, JPATH_SITE, $path);
                 }
 
-                $file = $path . '/classes/config.php';
+                $file = $path . '/config.php';
+
+                // try legacy path...
+                if (!is_file($file)) {
+                    $file = $path . '/classes/config.php';
+                }
 
                 if (is_file($file)) {
                     require_once $file;
@@ -764,7 +773,7 @@ class WFEditor
         // loop through list and create/call method
         foreach ($items as $plugin) {
             // Create class name
-            $classname = 'WF' . ucfirst($plugin) . 'PluginConfig';
+            $classname = 'WF' . ucwords($plugin, '_') . 'PluginConfig';
 
             // Check class and method are callable, and call
             if (class_exists($classname) && method_exists($classname, 'getConfig')) {
@@ -1020,7 +1029,7 @@ class WFEditor
                     $files = array_merge($files, $custom);
                     // overwrite global config value
                 } else {
-                    $files = (array)$custom;
+                    $files = (array) $custom;
                 }
                 break;
             // inherit global config value

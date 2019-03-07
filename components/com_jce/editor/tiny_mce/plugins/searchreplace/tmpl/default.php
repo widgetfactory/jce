@@ -37,12 +37,12 @@ defined('WF_EDITOR') or die('RESTRICTED');
 		</div>
 	</div>
 	<div class="mceActionPanel">
-		<div class="uk-float-left">
-			<button type="submit" class="uk-button uk-button-primary" id="find"><i class="uk-icon-search uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_FIND', 'Find'); ?></button>
-			<button type="button" class="uk-button uk-button-danger" id="replace" disabled><i class="uk-icon-exchange uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACE', 'Replace'); ?></button>
-			<button type="button" class="uk-button uk-button-danger" id="replaceAll" disabled><i class="uk-icon-loop uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All'); ?></button>
-			<button type="button" class="uk-button uk-button-primary" id="prev" disabled><i class="uk-icon-arrow-left uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_PREV', 'Previous'); ?></button>
-			<button type="button" class="uk-button uk-button-primary" id="next" disabled><i class="uk-icon-arrow-right uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_NEXT', 'Next'); ?></button>
+		<div class="uk-float-left uk-width-3-4 uk-flex uk-flex-wrap">
+			<button type="submit" class="uk-button uk-button-primary uk-margin-small-bottom uk-margin-small-right" id="find"><i class="uk-icon-search uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_FIND', 'Find'); ?></button>
+			<button type="button" class="uk-button uk-button-danger uk-margin-small-bottom uk-margin-small-right" id="replace" disabled><i class="uk-icon-exchange uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACE', 'Replace'); ?></button>
+			<button type="button" class="uk-button uk-button-danger uk-margin-small-bottom uk-margin-small-right" id="replaceAll" disabled><i class="uk-icon-loop uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All'); ?></button>
+			<button type="button" class="uk-button uk-button-primary uk-margin-small-bottom uk-margin-small-right" id="prev" disabled><i class="uk-icon-arrow-left uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_PREV', 'Previous'); ?></button>
+			<button type="button" class="uk-button uk-button-primary uk-margin-small-bottom" id="next" disabled><i class="uk-icon-arrow-right uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_NEXT', 'Next'); ?></button>
 		</div>
 		<div class="uk-float-right">
 			<button type="button" id="cancel" class="uk-button uk-hidden-mini"><?php echo JText::_('WF_LABEL_CANCEL'); ?></button>
