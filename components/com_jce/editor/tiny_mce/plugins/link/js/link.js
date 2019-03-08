@@ -162,6 +162,17 @@
                 }
             });
 
+            // trigger search if input has focus
+            $(window).on('keydown', function(e) {
+                if (e.keyCode === 13) {
+                    if ($('#search-input').is(':focus')) {
+                        self._search();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                }
+            });
+
             // setup popups
             WFPopups.setup();
 
