@@ -204,8 +204,13 @@ abstract class JcePluginsHelper
             if (!empty($installed)) {
                 foreach ($installed as $p) {
 
-                    // check for delimiter, only load "extensions"
-                    if (strpos($p->name, '-') === false && strpos($p->name, 'editor-') !== false) {
+                    // check for delimiter
+                    if (strpos($p->name, '-') === false) {
+                        continue;
+                    }
+
+                    // only load "extensions", not editor plugins
+                    if (strpos($p->name, 'editor-') !== false) {
                         continue;
                     }
 
@@ -213,6 +218,7 @@ abstract class JcePluginsHelper
                     $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
 
                     $parts = explode('-', $p->name);
+
                     // get type and name
                     $p->folder = $parts[0];
                     $p->extension = $parts[1];
@@ -222,64 +228,28 @@ abstract class JcePluginsHelper
 
                     $p->plugins = array();
                     $p->description = '';
-                    $p->title = $p->name;
+
+                    list($p->type, $p->name) = preg_split('/-/', $p->name);
+
+                    // create title from name parts, eg: plg_jce_filesystem_joomla
+                    $p->title = 'plg_jce_' . $p->type . '_' . $p->name;
+
                     // create plugin id, eg: filesystem.joomla
-                    $p->id = $p->folder . '.' . $p->extension;
+                    $p->id = $p->type . '.' . $p->name;
+
                     // not core
                     $p->core = 0;
+
                     // set as not editable by default
                     $p->editable = 0;
-                    // set type
-                    $p->type = $p->folder;
 
                     // load language
-                    $language->load('plg_jce_' . $p->folder . '_' . $p->extension, JPATH_ADMINISTRATOR);
-                    $language->load('plg_jce_' . $p->folder . '-' . $p->extension, JPATH_ADMINISTRATOR);
+                    $language->load('plg_jce_' . $p->type . '_' . $p->name, JPATH_ADMINISTRATOR);
+                    $language->load('plg_jce_' . $p->type . '-' . $p->name, JPATH_ADMINISTRATOR);
 
                     $extensions[] = $p;
                 }
             }
-
-            // process xml for each extension
-            /*for ($i = 0; $i < count($extensions); ++$i) {
-                $extension = $extensions[$i];
-
-                $xml = simplexml_load_file($extension->manifest);
-
-                if ($xml) {
-                    // not a valid extension xml file
-                    if ((string) $xml->getName() != 'extension' && (string) $xml->getName() != 'install') {
-                        unset($extensions[$i]);
-                        continue;
-                    }
-
-                    // list of plugins this extension is restricted to
-                    $plugins = (string) $xml->plugins;
-
-                    if ($plugins) {
-                        $extension->plugins = explode(',', $plugins);
-                    }
-
-                    $extension->title = (string) $xml->name;
-                    $extension->description = (string) $xml->description;
-                    $extension->core = (int) $xml->attributes()->core ? 1 : 0;
-
-                    $extension->icon = (string) $xml->icon;
-
-                    $params = $xml->params;
-
-                    // can't be editable without parameters
-                    if ($params && count($params->children())) {
-                        $extension->editable = 1;
-                    }
-
-                    // installer stuff
-                    $extension->author = (string) $xml->author;
-                    $extension->version = (string) $xml->version;
-                    $extension->creationdate = (string) $xml->creationDate;
-                    $extension->authorUrl = (string) $xml->authorUrl;
-                }
-            }*/
         }
 
         // reset array
