@@ -98,6 +98,7 @@ div#search-browser input[type="radio"] {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: pre;
+    text-decoration: underline;
 }
 
 div#search-browser div#search-result dl.odd {
