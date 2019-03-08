@@ -69,10 +69,7 @@ div#search-browser input[type="radio"] {
 
 #search-browser .uk-icon-spinner {
     display: none;
-    width: 20px;
-    height: 20px;
-    right: 5px;
-    top: 5px;
+    right: 0;
 }
 
 #search-browser.loading .uk-icon-spinner {
