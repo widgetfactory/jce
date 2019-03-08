@@ -183,29 +183,26 @@
 
 .wf-editor-header .wf-editor-toggle {
     display: block;
-    padding: 5px 10px;
-    font-size: 14px;
-    line-height: 22px;
+    padding: 0.5em;
     text-align: center;
     cursor: pointer;
-    /*background: url(../img/power.svg) 10px center no-repeat;*/
-    min-height: 24px;
+    min-height: 0.75em;
     position: absolute;
     left: 0;
     margin: 0;
     z-index: 1000;
-
     border: 0 none;
     background: none;
     -webkit-appearance: none;
 }
 
 .wf-editor-header .wf-editor-toggle>svg {
-    display: block;
-    margin: 4px auto;
+    display: inline-block;
+    margin-right: 0.5em;
     fill: #666;
     width: 16px;
     height: 16px;
+    vertical-align: middle;
 }
 
 .wf-editor-toggle:hover>svg {
