@@ -282,7 +282,11 @@ class WFEditorPlugin extends JObject
                     continue;
                 }
 
-                $defaults[$key] = $field->getAttribute('default');
+                // get parameter default
+                $value = $field->getAttribute('default');
+
+                // get stored value, fallback to parameter default
+                $defaults[$key] = $this->getParam($key, $value);
             }
         }
 
