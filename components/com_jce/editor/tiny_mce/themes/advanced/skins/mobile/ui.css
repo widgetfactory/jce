@@ -17,12 +17,12 @@
 
   background-color: #fafafa;
 }
-.mobileSkin .mceListBox .mceText a {
+.mobileSkin .mceListBox .mceText button {
   line-height: 34px;
   border-color: #dcdcdc;
   width: 85px;
 }
-.mobileSkin .mceListBox .mceOpen a {
+.mobileSkin .mceListBox .mceOpen button {
   height: 34px;
   border-color: #dcdcdc;
   width: 18px;
@@ -30,7 +30,7 @@
   background-color: #fafafa;
 }
 
-.mobileSkin .mceSplitButton .mceOpen a {
+.mobileSkin .mceSplitButton .mceOpen button {
   height: 34px;
   border-color: #dcdcdc;
   width: 18px;
@@ -38,13 +38,13 @@
   background-color: #fafafa;
 }
 
-.mobileSkin .mceSplitButton .mceText a {
+.mobileSkin .mceSplitButton .mceText button {
   border-color: #dcdcdc;
   padding: 7px;
 
   background-color: #fafafa;
 }
-.mobileSkin .mceListBox .mceOpen a::after, .mobileSkin .mceSplitButton .mceOpen a::after {
+.mobileSkin .mceListBox .mceOpen button::after, .mobileSkin .mceSplitButton .mceOpen button::after {
   line-height: 32px;
 }
 
@@ -64,11 +64,11 @@
   background-color: #E1F5FE;
   border-color: #81D4FA;
 }
-.mobileSkin .mceColorSplitMenu a.mceMoreColors:hover {
+.mobileSkin .mceColorSplitMenu button.mceMoreColors:hover {
     border-color: #81D4FA;
     background-color: #E1F5FE;
 }
-.mobileSkin .mceMenu .mceMenuItemEnabled a:hover, .mobileSkin .mceMenu .mceMenuItemActive {
+.mobileSkin .mceMenu .mceMenuItemEnabled button:hover, .mobileSkin .mceMenu .mceMenuItemActive {
     background-color: #E1F5FE;
 }
 .mobileSkin .mceTableSplitMenu {
@@ -89,6 +89,6 @@
     background: #dcdcdc;
 }
 
-.defaultSkin .mceSplitButtonDisabled .mceOpen a:after {
+.defaultSkin .mceSplitButtonDisabled .mceOpen button:after {
   color: #dcdcdc;
 }
