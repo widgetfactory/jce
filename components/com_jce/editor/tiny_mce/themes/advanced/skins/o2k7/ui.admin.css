@@ -2,18 +2,22 @@
 @import url('ui_silver.css');
 @import url('ui_black.css');
 
-.o2k7Skin .mceToolBar {border: 0 none;}
+.o2k7Skin .mceToolBar {
+	border: 0 none;
+}
 
-.o2k7Skin .mceLayout, .o2k7Skin .mceLayout .mceToolbar {
-    border: 0 none !important;
-		background: #fff;
+.o2k7Skin .mceLayout,
+.o2k7Skin .mceLayout .mceToolbar {
+	border: 0 none !important;
+	background: #fff;
 }
 
 .o2k7Skin .mceToolBarItem div {
 	display: inline-block;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox, .o2k7Skin .mceToolBarItem .mceSplitButton {
+.o2k7Skin .mceToolBarItem .mceListBox,
+.o2k7Skin .mceToolBarItem .mceSplitButton {
 	border: 1px solid #ABC6DD;
 	box-sizing: border-box;
 	border-radius: 0;
@@ -24,13 +28,13 @@
 
 .o2k7Skin .mceToolBarItem .mceListBox {
 	width: 94px;
-  border-radius: 2px;
+	border-radius: 2px;
 }
 
 .o2k7Skin .mceToolBarItem .mceSplitButton {
 	width: 42px;
 	padding: 5px 2px;
-  border-left-width: 0;
+	border-left-width: 0;
 }
 
 .o2k7Skin .mceToolBarItem .mceSplitButton .mceIcon {
@@ -38,21 +42,21 @@
 }
 
 .o2k7Skin .mceToolBarItemStart .mceSplitButton {
-  border-left-width: 1px;
+	border-left-width: 1px;
 }
 
 .o2k7Skin .mceToolBarItemEnd .mceSplitButton {
-  border-right-width: 1px;
-  border-right-color: #E5EFFD;
+	border-right-width: 1px;
+	border-right-color: #E5EFFD;
 }
 
-.o2k7Skin .mceToolBarItem .mceSplitButton + .mceSplitButton {
-  margin-left: 0;
-  border-left-width: 0
+.o2k7Skin .mceToolBarItem .mceSplitButton+.mceSplitButton {
+	margin-left: 0;
+	border-left-width: 0
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem .mceButton + .mceButton {
-  border-left-width: 0;
+.o2k7Skin .mceToolbarRow .mceToolBarItem .mceButton+.mceButton {
+	border-left-width: 0;
 }
 
 .o2k7Skin .mceToolBarItem .mceListBox .mceIcon {
@@ -70,7 +74,8 @@
 	box-sizing: border-box;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox:after, .o2k7Skin .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin .mceToolBarItem .mceListBox:after,
+.o2k7Skin .mceToolBarItem .mceSplitButton:after {
 	display: block;
 	position: absolute;
 	right: 0;
@@ -88,7 +93,7 @@
 }
 
 .o2k7Skin .mceLayout .mceLast {
-  border-color: #ABC6DD;
+	border-color: #ABC6DD;
 }
 
 .o2k7Skin .mceLayout .mceIframeContainer {
@@ -103,26 +108,25 @@
 }
 
 .o2k7Skin .mceLayout .mceToolbarRow {
-    background-color: #E5EFFD;
-    border-color: #ABC6DD;
+	background-color: #E5EFFD;
+	border-color: #ABC6DD;
 }
 
 .o2k7Skin .mceToolBarItem .mceListBox:after,
 .o2k7Skin .mceToolBarItem .mceSplitButton:after {
-	/* #D2E1F4 #C1D4EE #C8DBED */
-	background: -ms-linear-gradient(top, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
 	background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
 }
 
 /* Silver */
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox, .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton {
+.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox,
+.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton {
 	border-color: #bbb;
 }
 
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox:after, .o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox:after,
+.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton:after {
 	border-color: #bbb;
-	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
-	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(221,221,221,1) 51%, rgba(255,255,255,1) 100%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
 }
 
 .o2k7Skin.o2k7SkinSilver .mceLayout .mceStatusbar {
@@ -130,7 +134,7 @@
 }
 
 .o2k7Skin.o2k7SkinSilver .mceLayout .mceLast {
-  border-color: #bbb;
+	border-color: #bbb;
 }
 
 .o2k7Skin.o2k7SkinSilver .mceLayout .mceIframeContainer {
@@ -138,19 +142,20 @@
 }
 
 .o2k7SkinSilver .mceLayout .mceToolbarRow {
-    background-color: #eee;
-    border-color: #bbb;
+	background-color: #eee;
+	border-color: #bbb;
 }
 
 /* Black */
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox, .o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton {
+.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox,
+.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton {
 	border-color: #B0B6BE;
 }
 
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox:after, .o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox:after,
+.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton:after {
 	border-color: #535353;
-  background: -ms-linear-gradient(top, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
-  background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
+	background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
 .o2k7Skin.o2k7SkinBlack .mceLayout .mceStatusbar {
@@ -158,7 +163,7 @@
 }
 
 .o2k7Skin.o2k7SkinBlack .mceLayout .mceLast {
-  border-color: #535353;
+	border-color: #535353;
 }
 
 .o2k7Skin.o2k7SkinBlack .mceLayout .mceIframeContainer {
@@ -166,10 +171,13 @@
 }
 
 .o2k7SkinBlack .mceLayout .mceToolbarRow {
-    background-color: #535353;
-    border-color: #535353;
+	background-color: #535353;
+	border-color: #535353;
 }
-.o2k7SkinBlack .mceToolBarItem.sortableRowItem.ui-sortable-highlight {border-color: #fff;}
+
+.o2k7SkinBlack .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+	border-color: #fff;
+}
 
 .mceEditor .mceToolbar .mceToolBarItem .mceListBox:before {
 	display: block;
