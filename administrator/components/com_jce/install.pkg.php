@@ -177,6 +177,15 @@ class pkg_jceInstallerScript
             throw new RuntimeException('JCE Core cannot be installed over JCE Pro. Please install JCE Pro. To downgrade, please first uninstall JCE Pro.');
         }
 
+        // remove branding plugin
+        if ((string) $parent->manifest->variant === "pro") {
+            $branding = JPATH_SITE . '/components/com_jce/editor/tiny_mce/plugins/branding';
+
+            if (is_dir($branding)) {
+                JFolder::delete($branding);
+            }
+        }
+
         // clean up for legacy upgrade
         if ($version && version_compare($version, '2.7.1', '<')) {
             // remove admin folder
