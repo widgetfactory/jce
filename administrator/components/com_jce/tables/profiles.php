@@ -10,8 +10,6 @@
  */
 defined('JPATH_BASE') or die;
 
-require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php';
-
 class JceTableProfiles extends JTable
 {
     public function __construct(&$db)
