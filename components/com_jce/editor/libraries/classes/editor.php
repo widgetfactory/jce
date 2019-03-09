@@ -256,7 +256,7 @@ class WFEditor
             if (!empty($settings['invalid_elements'])) {
                 $settings['invalid_elements'] = array_values($settings['invalid_elements']);
             }
-            
+
         } // end profile
         // check for joomla debug mode
         $config = JFactory::getConfig();
@@ -655,7 +655,12 @@ class WFEditor
                 });
 
                 // core plugins
-                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'contextmenu', 'figure', 'ui');
+                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'inlinepopups', 'contextmenu', 'figure', 'ui');
+
+                // load branding plugin
+                if (!WF_EDITOR_PRO) {
+                    $core[] = 'branding';
+                }
 
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $items)) {
@@ -1272,5 +1277,21 @@ class WFEditor
     public function getToken($id)
     {
         return '<input type="hidden" name="' . JSession::getFormToken() . '" value="1" />';
+    }
+
+    /**
+     * Proxy function for legacy compatablity with 3rd party extensions that access the API directly
+     *
+     * @param string $key
+     * @param string $fallback
+     * @param string $default
+     * @param string $type
+     * @param boolean $allowempty
+     * @return void
+     */
+    public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
+    {
+        $wf = WFApplication::getInstance();
+        return $wf->getParam($key, $fallback, $default, $type, $allowempty);
     }
 }
