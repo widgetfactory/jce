@@ -37,7 +37,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 		</div>
 	</div>
 	<div class="mceActionPanel">
-		<div class="uk-float-left uk-width-3-4 uk-flex uk-flex-wrap">
+		<div class="uk-float-left uk-width-4-5 uk-flex uk-flex-wrap">
 			<button type="submit" class="uk-button uk-button-primary uk-margin-small-bottom uk-margin-small-right" id="find"><i class="uk-icon-search uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_FIND', 'Find'); ?></button>
 			<button type="button" class="uk-button uk-button-danger uk-margin-small-bottom uk-margin-small-right" id="replace" disabled><i class="uk-icon-exchange uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACE', 'Replace'); ?></button>
 			<button type="button" class="uk-button uk-button-danger uk-margin-small-bottom uk-margin-small-right" id="replaceAll" disabled><i class="uk-icon-loop uk-margin-small-right"></i><?php echo JText::_('WF_SEARCHREPLACE_REPLACEALL', 'Replace All'); ?></button>
