@@ -15,9 +15,9 @@ class JceViewProfiles extends JViewLegacy
     public function display($tpl = null)
     {
         $this->items = $this->get('Items');
-		$this->pagination = $this->get('Pagination');
-		$this->state = $this->get('State');
-		$this->filterForm = $this->get('FilterForm');
+        $this->pagination = $this->get('Pagination');
+        $this->state = $this->get('State');
+        $this->filterForm = $this->get('FilterForm');
 
         $this->params = JComponentHelper::getParams('com_jce');
 
@@ -26,6 +26,11 @@ class JceViewProfiles extends JViewLegacy
             JError::raiseError(500, implode("\n", $errors));
 
             return false;
+        }
+
+        if (empty($this->items)) {
+            $link = JHTML::link('index.php?option=com_jce&task=profiles.repair&' . JSession::getFormToken() . '=1', JText::_('WF_DB_CREATE_RESTORE'), array('class' => 'wf-profiles-repair'));
+            JFactory::getApplication()->enqueueMessage(JText::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
         }
 
         JHtml::_('jquery.framework');

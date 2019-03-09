@@ -42,6 +42,22 @@ class JceControllerProfiles extends JControllerAdmin
         exit();
     }
 
+    public function repair()
+    {
+        // Check for request forgeries
+        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
+
+        $model = $this->getModel('profiles');
+
+        try {
+            $model->repair();
+        } catch (Exception $e) {
+            $this->setMessage($e->getMessage(), 'error');
+        }
+
+        $this->setRedirect('index.php?option=com_jce&view=profiles');
+    }
+
     public function copy()
     {
         // Check for request forgeries

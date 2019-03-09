@@ -10,6 +10,8 @@
  */
 defined('JPATH_BASE') or die;
 
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php';
+
 class JceTableProfiles extends JTable
 {
     public function __construct(&$db)
@@ -67,7 +69,7 @@ class JceTableProfiles extends JTable
         if ($return !== false) {
             // decrypt address
             if (!empty($this->params)) {
-                $this->params = WFEncryptHelper::decrypt($this->params);
+                $this->params = JceEncryptHelper::decrypt($this->params);
             }
         }
 
@@ -82,7 +84,7 @@ class JceTableProfiles extends JTable
             $params = JComponentHelper::getParams('com_jce');
 
             if ($params->get('secureparams', 0)) {
-                $this->params = WFEncryptHelper::encrypt($this->params);
+                $this->params = JceEncryptHelper::encrypt($this->params);
             }
 
         }

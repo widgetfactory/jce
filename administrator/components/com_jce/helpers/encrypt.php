@@ -16,7 +16,7 @@ use Defuse\Crypto\Crypto;
 /**
  * Implements encrypted settings handling features.
  */
-class WFEncryptHelper
+class JceEncryptHelper
 {
     protected static function generateKey()
     {        

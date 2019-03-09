@@ -121,12 +121,7 @@ abstract class WfInstall
         $db = JFactory::getDBO();
 
         $query = $db->getQuery(true);
-
-        if (is_object($query)) {
-            $query->select('COUNT(id)')->from('#__wf_profiles')->where('name = ' . $db->Quote($name));
-        } else {
-            $query = 'SELECT COUNT(id) FROM #__wf_profiles WHERE name = ' . $db->Quote($name);
-        }
+        $query->select('COUNT(id)')->from('#__wf_profiles')->where('name = ' . $db->Quote($name));
 
         $db->setQuery($query);
         $id = $db->loadResult();
