@@ -655,7 +655,7 @@ class WFEditor
                 });
 
                 // core plugins
-                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'contextmenu', 'figure');
+                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'contextmenu', 'figure', 'ui');
 
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $items)) {

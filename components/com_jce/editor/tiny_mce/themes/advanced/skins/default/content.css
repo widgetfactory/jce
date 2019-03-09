@@ -93,7 +93,9 @@ span.mce-item-shy {
 }
 
 td.mceSelected,
-th.mceSelected {
+th.mceSelected,
+td[data-mce-selected],
+tr[data-mce-selected] {
     background-color: #3399ff !important
 }
 
