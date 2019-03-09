@@ -19,6 +19,14 @@ if ($app->input->get('task') === 'plugin') {
     throw new Exception('Restricted', 403);
 }
 
+// fix legacy plugin url
+if ($app->input->get('view') === 'editor' && $app->input->get('layout') === 'plugin') {
+
+    if ($app->input->get('plugin')) {
+        $app->input->set('task', 'plugin.display');
+    }    
+}
+
 $controller = JControllerLegacy::getInstance('Jce', array('base_path' => __DIR__));
 
 $controller->execute($app->input->get('task'));
