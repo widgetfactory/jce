@@ -96,7 +96,45 @@ td.mceSelected,
 th.mceSelected,
 td[data-mce-selected],
 tr[data-mce-selected] {
-    background-color: #3399ff !important
+    background-color: #b4d7ff !important;
+}
+
+.mceContentBody img[data-mce-selected],
+.mceContentBody table[data-mce-selected] {
+    outline: 3px solid #b4d7ff;
+}
+
+.mceContentBody div.mce-resizehandle {
+    position: absolute;
+    box-sizing: border-box;
+    background: #4099ff;
+    width: 10px;
+    height: 10px;
+    z-index: 10000;
+}
+
+.mceContentBody .mce-clonedresizable {
+    position: absolute;
+    outline: 1px dashed #000;
+    opacity: 0.5;
+    z-index: 10000;
+}
+
+.mceContentBody .mce-resize-helper {
+    background: #555;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 3px;
+    border: 1px;
+    color: white;
+    display: none;
+    font-family: sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+    line-height: 14px;
+    margin: 5px 10px;
+    padding: 5px;
+    position: absolute;
+    z-index: 10001
 }
 
 img {
