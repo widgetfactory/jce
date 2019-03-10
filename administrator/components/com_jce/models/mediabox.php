@@ -18,6 +18,22 @@ use Joomla\Utilities\ArrayHelper;
 class JceModelMediabox extends JModelForm
 {
     /**
+     * Returns a Table object, always creating it.
+     *
+     * @param type   $type   The table type to instantiate
+     * @param string $prefix A prefix for the table class name. Optional
+     * @param array  $config Configuration array for model. Optional
+     *
+     * @return JTable A database object
+     *
+     * @since   1.6
+     */
+    public function getTable($type = 'Extension', $prefix = 'JTable', $config = array())
+    {
+        return JTable::getInstance($type, $prefix, $config);
+    }
+    
+    /**
      * Method to get a form object.
      *
      * @param array $data     Data for the form
@@ -34,7 +50,7 @@ class JceModelMediabox extends JModelForm
         JFactory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         // Get the form.
-        $form = $this->loadForm('com_jce.mediabox', 'jcemediabox', array('control' => 'config', 'load_data' => $loadData), true, '//config');
+        $form = $this->loadForm('com_jce.mediabox', 'jcemediabox', array('control' => 'jform', 'load_data' => $loadData), true, '//config');
 
         if (empty($form)) {
             return false;
@@ -77,7 +93,18 @@ class JceModelMediabox extends JModelForm
     {
         // Get the editor data
         $plugin = JPluginHelper::getPlugin('system', 'jcemediabox');
-        $data = ArrayHelper::fromObject($plugin->params);
+
+        // json_decode
+        $json = json_decode($plugin->params, true);
+
+        array_walk($json, function(&$value, $key) {
+            if (is_numeric($value)) {
+                $value = $value + 0;
+            }
+        });
+
+        $data = new StdClass;
+        $data->params = $json;
 
         return $data;
     }
@@ -95,7 +122,7 @@ class JceModelMediabox extends JModelForm
     {
         $table = JTable::getInstance('extension');
 
-        $plugin = JPluginHelper::getPlugin('systtem', 'jcemediabox');
+        $plugin = JPluginHelper::getPlugin('system', 'jcemediabox');
 
         if (!$plugin->id) {
             $this->setError('Invalid plugin');
