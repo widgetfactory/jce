@@ -14,10 +14,7 @@
 (function () {
     var each = tinymce.each,
         extend = tinymce.extend,
-        JSON = tinymce.util.JSON;
-    var isWin = navigator.platform.indexOf('Win') !== -1,
-        isSafari = tinymce.isWebKit && navigator.vendor.indexOf('Apple') !== -1;
-    var Node = tinymce.html.Node,
+        JSON = tinymce.util.JSON,
         RangeUtils = tinymce.dom.RangeUtils;
 
     var counter = 0;
@@ -286,6 +283,7 @@
                 ed.selection.onSetContent.add(function () {
                     bindUploadEvents(ed);
                 });
+
                 // update events when content is set
                 ed.onSetContent.add(function () {
                     bindUploadEvents(ed);
@@ -305,7 +303,6 @@
 
                 ed.dom.bind(ed.getBody(), 'dragover', function (e) {
                     e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
-                    //cancelEvent(e);
                 });
 
                 // Attach drop handler and grab files
@@ -398,8 +395,8 @@
                             if (file.uploader) {
                                 var u = file.uploader;
 
-                                var files   = r.result.files || [];
-                                var item    = files.length ? files[0] : {};
+                                var files = r.result.files || [];
+                                var item = files.length ? files[0] : {};
 
                                 var obj = tinymce.extend({
                                     type: file.type,
