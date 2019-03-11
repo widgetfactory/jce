@@ -157,16 +157,14 @@ class WFImgManagerPlugin extends WFMediaManager
 
     public function getSettings($settings = array())
     {
-        $params = $this->getParams(array('key' => 'imgmanager'));
-
         $settings = array(
             'attributes' => array(
-                'dimensions' => $params->get('attributes_dimensions', 1),
-                'align' => $params->get('attributes_align', 1),
-                'margin' => $params->get('attributes_margin', 1),
-                'border' => $params->get('attributes_border', 1),
+                'dimensions' => $this->getParam('attributes_dimensions', 1),
+                'align' => $this->getParam('attributes_align', 1),
+                'margin' => $this->getParam('attributes_margin', 1),
+                'border' => $this->getParam('attributes_border', 1),
             ),
-            'always_include_dimensions' => $params->get('always_include_dimensions', 0),
+            'always_include_dimensions' => $this->getParam('always_include_dimensions', 0),
         );
 
         return parent::getSettings($settings);
