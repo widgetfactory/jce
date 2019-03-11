@@ -273,7 +273,7 @@ class WFEditorPlugin extends JObject
         // get parameter defaults
         if (is_file($manifest)) {
             $form   = JForm::getInstance('com_jce.plugin.' . $name, $manifest, array('load_data' => false), true, '//extension');
-            $fields = $form->getFieldset('config');
+            $fields = $form->getFieldset('defaults');
             
             foreach($fields as $field) {
                 $key = $field->getAttribute('name');
