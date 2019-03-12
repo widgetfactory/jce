@@ -101,7 +101,7 @@ tr[data-mce-selected] {
 
 .mceContentBody img[data-mce-selected],
 .mceContentBody table[data-mce-selected] {
-    outline: 3px solid #b4d7ff;
+    outline: 3px solid #b4d7ff !important;
 }
 
 .mceContentBody div.mce-resizehandle {
