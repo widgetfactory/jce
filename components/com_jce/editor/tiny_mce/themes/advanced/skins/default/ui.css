@@ -1503,3 +1503,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     line-height: inherit;
     font-family: inherit;
 }
+
+.defaultSkin .mceWordCountLimit {
+    font-weight: bold;
+    color: #cc0000;
+}
