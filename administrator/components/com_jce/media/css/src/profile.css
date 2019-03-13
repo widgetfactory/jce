@@ -93,8 +93,7 @@ a.browser {
     overflow: visible;
 }
 
-.com_jce .form-horizontal .control-label {
-}
+.com_jce .form-horizontal .control-label {}
 
 .com_jce .form-horizontal .controls {
     position: relative;
@@ -211,6 +210,7 @@ a.browser {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -256,4 +256,20 @@ a.browser {
     height: 100%;
     background: rgba(255, 255, 255, 0.8);
     z-index: 1000;
+}
+
+.form-field-repeatable-item .form-field-repeatable-remove {
+    display: none;
+}
+
+.form-field-repeatable-item+.form-field-repeatable-item .form-field-repeatable-remove {
+    display: inline-block;
+}
+
+.form-field-repeatable-item+.form-field-repeatable-item .form-field-repeatable-add {
+    display: none;
+}
+
+.form-field-repeatable-item+.form-field-repeatable-item {
+    margin-top: 5px;
 }
