@@ -133,7 +133,7 @@ class WFApplication extends JObject
         }
 
         // get the Joomla! area (admin or site)
-        $area = $app->isAdmin() ? 2 : 1;
+        $area = $app->isClient('administrator') ? 2 : 1;
 
         if (!class_exists('Wf_Mobile_Detect')) {
             // load mobile detect class

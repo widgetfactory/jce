@@ -839,7 +839,7 @@ class WFEditor
         $app = JFactory::getApplication();
         $id = 0;
 
-        if ($app->isSite()) {
+        if ($app->isClient('site')) {
             $menus = $app->getMenu();
             $menu = $menus->getActive();
 
