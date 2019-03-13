@@ -183,7 +183,7 @@
 
 .wf-editor-header .wf-editor-toggle {
     display: block;
-    padding: 0.5em;
+    padding: 0.5em 0.75em;
     text-align: center;
     cursor: pointer;
     min-height: 0.75em;
@@ -198,7 +198,7 @@
 
 .wf-editor-header .wf-editor-toggle>svg {
     display: inline-block;
-    margin-right: 0.5em;
+    margin: auto;
     fill: #666;
     width: 16px;
     height: 16px;
