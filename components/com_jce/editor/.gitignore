@@ -1,8 +1,9 @@
 # Ignore everything
+*
 
-extensions
-libraries
-tinymce
+libraries/*
+tiny_mce/*
+tiny_mce/plugins/*
 
 !libraries/pro
 !tiny_mce/plugins/caption
@@ -20,7 +21,3 @@ tinymce
 
 
 .DS_Store
-.project
-.buildpath
-.settings
-.idea
