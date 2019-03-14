@@ -1,9 +1,8 @@
 # Ignore everything
-*
 
-libraries/*
-tiny_mce/*
-tiny_mce/plugins/*
+extensions
+libraries
+tinymce
 
 !libraries/pro
 !tiny_mce/plugins/caption
