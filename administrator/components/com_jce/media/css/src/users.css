@@ -1,0 +1,18 @@
+.ui-jce .users-select {
+   position: relative;
+   margin: 10px 0;
+}
+/*
+.ui-jce .users-select select, .ui-jce .users-select .chzn-container, .ui-jce .users-select .input-append {
+    float: left;
+}
+
+.ui-jce .users-select .input-append input[type="text"] {
+    display: none;
+}
+
+.ui-jce .users-select .chzn-container-multi .chzn-choices {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0; 
+}
+*/
