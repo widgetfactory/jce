@@ -136,16 +136,6 @@
                     }, self.update_rate);
                 }
             }, 1);
-        },
-
-        getInfo: function () {
-            return {
-                longname: 'Word Count plugin',
-                author: 'Moxiecode Systems AB',
-                authorurl: 'http://tinymce.moxiecode.com',
-                infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/wordcount',
-                version: tinymce.majorVersion + "." + tinymce.minorVersion
-            };
         }
     });
 
