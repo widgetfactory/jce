@@ -202,6 +202,12 @@
 
                 <field type="spacer" hr="true" />
                 <field name="wordcount_limit" type="number" default="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
+                <field name="wordcount_alert" type="radio" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC" class="btn-group btn-group-yesno">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                
+                <field type="spacer" hr="true" />
                 <field name="object_resizing" type="radio" default="1" label="WF_PARAM_OBJECT_RESIZING" description="WF_PARAM_OBJECT_RESIZING_DESC" class="btn-group btn-group-yesno">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>

@@ -99,7 +99,7 @@
 
         _count: function (ed) {
             var self = this,
-                limit = parseInt(ed.getParam('wordcount_limit', 0));
+                limit = parseInt(ed.getParam('wordcount_limit', 0)), showAlert = ed.getParam('wordcount_alert', 0);
 
             // Keep multiple calls from happening at the same time
             if (self.block)
@@ -117,6 +117,11 @@
                         
                         if (tc < 0) {
                             tinymce.DOM.addClass(self.id, 'mceWordCountLimit');
+
+                            if (showAlert) {
+                                ed.windowManager.alert(ed.getLang('wordcount.limit_alert', 'You have reached the word limit set for this content.'));
+                            }
+
                         } else {
                             tinymce.DOM.removeClass(self.id, 'mceWordCountLimit');
                         }
