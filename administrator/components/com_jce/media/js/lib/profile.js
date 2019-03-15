@@ -109,17 +109,6 @@
     };
 
     $(document).ready(function () {
-        /*$('#jform_users').change(function () {
-            var name = $(this).data('user-name'),
-                id = $(this).data('user-value');
-
-            var opt = new Option(name, id);
-
-            if ($(this).find('option[value="' + id + '"]').length === 0) {
-                $(this).append(opt).val(id).trigger('liszt:updated').trigger('chosen:updated');
-            }
-        });*/
-
         $('select[data-toggle]').on('change', function() {
             var key = $(this).attr('data-toggle'), value = $(this).val();
 

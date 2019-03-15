@@ -68,7 +68,7 @@
             $('input[type="checkbox"]', this).click(function () {
                 serialize();
             });
-            
+
             $('.filetype-edit', this).click(function (e) {
                 e.preventDefault();
                 $('.filetype-list', self).slideToggle();
