@@ -113,7 +113,7 @@ if ($saveOrder)
                                 </td>
                                 <td>
                                     <?php if ($item->checked_out) : ?>
-                                        <?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'profiles.', $canCheckin); ?>
+                                        <?php echo JHtml::_('jgrid.checkedout', $i, $item->checked_out, $item->checked_out_time, 'profiles.', $canCheckin); ?>
                                     <?php endif; ?>
                                     <?php if ($canEdit) : ?>
                                         <?php $editIcon = $item->checked_out ? '' : '<span class="fa fa-pencil-square mr-2" aria-hidden="true"></span>'; ?>
