@@ -17,55 +17,12 @@ class JceTableProfiles extends JTable
         parent::__construct('#__wf_profiles', 'id', $db);
     }
 
-    /*public function bind($src, $ignore = array())
-    {
-        $data = array();
-
-        foreach ($src as $key => $value) {
-            $data[$key] = $value;
-        }
-
-        if (!empty($data['config'])) {
-            $json = array();
-
-            $config = $data['config'];
-
-            // get existing parameters and decode to array
-            $params = (array) json_decode($this->params, true);
-
-            if (empty($data['plugins'])) {
-                $data['plugins'] = $this->plugins;
-            }
-
-            // get plugins
-            $items = explode(',', $data['plugins']);
-
-            // add editor as param key
-            array_unshift($items, 'editor');
-
-            // data for editor and plugins
-            foreach ($items as $item) {
-                // add config data
-                if (array_key_exists($item, $config)) {
-                    $json[$item] = filter_var_array($config[$item], FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
-                }
-            }
-
-            $params = WFUtility::array_merge_recursive_distinct($params, $json);
-
-            // combine with stored data and encode as json string
-            $data['params'] = json_encode($params, JSON_UNESCAPED_SLASHES);
-        }
-
-        return parent::bind($data, $ignore);
-    }*/
-
     public function load($id = null, $reset = true)
     {
         $return = parent::load($id, $reset);
 
         if ($return !== false) {
-            // decrypt address
+            // decrypt params
             if (!empty($this->params)) {
                 $this->params = JceEncryptHelper::decrypt($this->params);
             }
@@ -76,7 +33,7 @@ class JceTableProfiles extends JTable
 
     public function store($updateNulls = false)
     {
-        // encrypt address
+        // encrypt params
         if (!empty($this->params)) {
             
             $params = JComponentHelper::getParams('com_jce');

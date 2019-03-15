@@ -680,31 +680,41 @@ class JceModelProfile extends JModelAdmin
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
 
-        $query = $db->getQuery(true);
-        $query->select('*')->from('#__wf_profiles')->where('id IN (' . implode(',', $ids) . ')');
-        $db->setQuery($query);
-        $profiles = $db->loadObjectList();
+        $private = array('id', 'checked_out', 'checked_out_time');
 
-        foreach ($profiles as $profile) {
-            // remove some stuff
-            unset($profile->id);
-            unset($profile->checked_out);
-            unset($profile->checked_out_time);
-            // set published to 0
-            $profile->published = 0;
+        foreach ($ids as $id) {
+            $table = $this->getTable();
+
+            if (!$table->load($id)) {
+                continue;
+            }
 
             $buffer .= "\n\t\t";
             $buffer .= '<profile>';
 
-            foreach ($profile as $key => $value) {
+           $fields = $table->getProperties();
+
+            foreach ($fields as $key => $value) {
+                // skip some stuff
+                if (in_array($key, $private)) {
+                    continue;
+                }
+
+                // set published to 0
+                if ($key === "published") {
+                    $value = 0;
+                }
+
                 if ($key == 'params') {
-                    $buffer .= "\n\t\t\t" . '<' . $key . '>' . $value . '</' . $key . '>';
+                    $buffer .= "\n\t\t\t" . '<' . $key . '>' . trim($value) . '</' . $key . '>';
                 } else {
                     $buffer .= "\n\t\t\t" . '<' . $key . '>' . JceProfilesHelper::encodeData($value) . '</' . $key . '>';
                 }
             }
+
             $buffer .= "\n\t\t</profile>";
         }
+
         $buffer .= "\n\t</profiles>";
         $buffer .= "\n</export>";
 

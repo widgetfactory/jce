@@ -119,11 +119,11 @@ class JceEncryptHelper
             switch ($mode) {
                 case '###AES128###':
                     $encrypted = base64_decode($encrypted);
-                    $decrypted = WFUtilEncrypt::AESDecryptCBC($encrypted, $key, 128);
+                    $decrypted = @WFUtilEncrypt::AESDecryptCBC($encrypted, $key, 128);
                     break;
     
                 case '###CTR128###':
-                    $decrypted = WFUtilEncrypt::AESDecryptCtr($encrypted, $key, 128);
+                    $decrypted = @WFUtilEncrypt::AESDecryptCtr($encrypted, $key, 128);
                     break;
             }
 
