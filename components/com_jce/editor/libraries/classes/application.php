@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once JPATH_ADMINISTRATOR.'/components/com_jce/includes/base.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
  * JCE class.
@@ -68,7 +68,7 @@ class WFApplication extends JObject
      */
     public function getVersion()
     {
-        $manifest = WF_ADMINISTRATOR.'/jce.xml';
+        $manifest = WF_ADMINISTRATOR . '/jce.xml';
 
         $version = md5_file($manifest);
 
@@ -137,7 +137,7 @@ class WFApplication extends JObject
 
         if (!class_exists('Wf_Mobile_Detect')) {
             // load mobile detect class
-            require_once __DIR__.'/mobile.php';
+            require_once __DIR__ . '/mobile.php';
         }
 
         $mobile = new Wf_Mobile_Detect();
@@ -191,21 +191,10 @@ class WFApplication extends JObject
             $app = JFactory::getApplication();
 
             $query = $db->getQuery(true);
+            $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
 
-            if (is_object($query)) {
-                $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
-
-                if ($id) {
-                    $query->where('id = '.(int) $id);
-                }
-            } else {
-                $query = 'SELECT * FROM #__wf_profiles WHERE published = 1';
-
-                if ($id) {
-                    $query .= ' AND id = '.(int) $id;
-                }
-
-                $query .= ' ORDER BY ordering ASC';
+            if ($id) {
+                $query->where('id = ' . (int) $id);
             }
 
             $db->setQuery($query);
@@ -262,7 +251,6 @@ class WFApplication extends JObject
 
                 // decrypt params
                 if (!empty($item->params)) {
-                    require_once WF_ADMINISTRATOR.'/helpers/encrypt.php';
                     $item->params = JceEncryptHelper::decrypt($item->params);
                 }
 
@@ -363,6 +351,11 @@ class WFApplication extends JObject
             // get editor params as an associative array
             $data1 = json_decode($editor->params, true);
 
+            // if null or false, revert to array
+            if (empty($data1)) {
+                $data1 = array();
+            }
+
             // assign params to "editor" key
             $data1 = array('editor' => $data1);
 
@@ -374,6 +367,11 @@ class WFApplication extends JObject
 
             // get profile params as an associative array
             $data2 = json_decode($params, true);
+
+            // if null or false, revert to array
+            if (empty($data2)) {
+                $data1 = array();
+            }
 
             // merge params
             $data = WFUtility::array_merge_recursive_distinct($data1, $data2);
