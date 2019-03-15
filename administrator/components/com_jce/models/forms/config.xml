@@ -10,7 +10,7 @@
             <field name="schema" type="list" default="mixed" label="WF_PARAM_DOCTYPE" description="WF_PARAM_DOCTYPE_DESC">
                 <option value="html4">HTML4</option>
                 <option value="mixed">WF_PARAM_DOCTYPE_MIXED</option>
-                <option value="html5-strict">HTML5</option>
+                <option value="html5">HTML5</option>
             </field>
             <field name="entity_encoding" type="list" default="raw" label="WF_PARAM_ENTITY_ENCODING" description="WF_PARAM_ENTITY_ENCODING_DESC">
                 <option value="raw">UTF-8</option>
