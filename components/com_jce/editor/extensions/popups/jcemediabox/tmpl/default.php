@@ -65,7 +65,7 @@ defined('_WF_EXT') or die('RESTRICTED');
             <div class="uk-form-controls uk-width-4-5 uk-form-constrain">
 
                 <div class="uk-form-controls">
-                    <input type="text" id="jcemediabox_popup_width" value="" class="uk-text-muted" />
+                    <input type="text" id="jcemediabox_popup_width" value="" class="uk-text-center" />
                 </div>
 
                 <div class="uk-form-controls">
@@ -73,7 +73,7 @@ defined('_WF_EXT') or die('RESTRICTED');
                 </div>
 
                 <div class="uk-form-controls">
-                    <input type="text" id="jcemediabox_popup_height" value="" class="uk-text-muted" />
+                    <input type="text" id="jcemediabox_popup_height" value="" class="uk-text-center" />
                 </div>
 
                 <label class="uk-form-label uk-margin-left">
@@ -129,13 +129,13 @@ defined('_WF_EXT') or die('RESTRICTED');
         <label for="jcemediabox_popup_params" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_POPUPS_JCEMEDIABOX_PARAMS_DESC'); ?>"><?php echo JText::_('WF_POPUPS_JCEMEDIABOX_PARAMS'); ?></label>
         <div class="uk-width-4-5" id="jcemediabox_popup_params">
           <div class="uk-form-row uk-repeatable">
-                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-8-10">
+                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
                       <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_NAME'); ?></label>
-                      <div class="uk-form-controls uk-width-4-10">
+                      <div class="uk-form-controls uk-width-3-10">
                         <input type="text" name="jcemediabox_popup_params_name[]" />
                       </div>
                       <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_VALUE'); ?></label>
-                      <div class="uk-form-controls uk-width-4-10">
+                      <div class="uk-form-controls uk-width-5-10">
                         <input type="text" name="jcemediabox_popup_params_value[]" />
                       </div>
                   </div>
