@@ -39,7 +39,7 @@ class plgQuickiconJce extends JPlugin
 
         $user = JFactory::getUser();
 
-        if (!$user->authorise('core.admin.browser', 'com_jce')) {
+        if (!$user->authorise('jce.browser', 'com_jce')) {
             return;
         }
 

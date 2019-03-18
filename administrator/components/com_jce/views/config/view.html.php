@@ -51,7 +51,7 @@ class JceViewConfig extends JViewLegacy
         JToolbarHelper::title('JCE - ' . JText::_('WF_CONFIGURATION'), 'equalizer');
 
         // If not checked out, can save the item.
-        if ($user->authorise('core.config', 'com_jce')) {
+        if ($user->authorise('jce.config', 'com_jce')) {
             JToolbarHelper::apply('config.apply');
             JToolbarHelper::save('config.save');
         }

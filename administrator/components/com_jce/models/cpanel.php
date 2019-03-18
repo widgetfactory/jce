@@ -35,7 +35,7 @@ class JceModelCpanel extends JModelLegacy
             }
 
             // check if its allowed...
-            if (!$user->authorise('core.admin.' . $name, 'com_jce')) {
+            if (!$user->authorise('jce.' . $name, 'com_jce')) {
                 continue;
             }
 
