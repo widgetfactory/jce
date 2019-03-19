@@ -21,36 +21,34 @@ class JceHelperAdmin
         $uri = (string)JUri::getInstance();
         $return = urlencode(base64_encode($uri));
 
+        $user = JFactory::getUser();
+
         JHtmlSidebar::addEntry(
             JText::_('WF_CPANEL'),
             'index.php?option=com_jce&view=cpanel',
             $vName == 'cpanel'
         );
 
-        JHtmlSidebar::addEntry(
-            JText::_('WF_CONFIGURATION'),
-            'index.php?option=com_jce&view=config',
-            $vName == 'config'
+        $views = array(
+            'config'    => 'WF_CONFIGURATION',
+            'profiles'  => 'WF_PROFILES',
+            'browser'   => 'WF_CPANEL_BROWSER',
+            'mediabox'  => 'WF_MEDIABOX'
         );
 
-        JHtmlSidebar::addEntry(
-            JText::_('WF_PROFILES'),
-            'index.php?option=com_jce&view=profiles',
-            $vName == 'profiles'
-        );
-
-        JHtmlSidebar::addEntry(
-            JText::_('WF_CPANEL_BROWSER'),
-            'index.php?option=com_jce&view=browser',
-            $vName == 'browser'
-        );
-
-        if (JPluginHelper::isEnabled('system', 'jcemediabox')) {
-            JHtmlSidebar::addEntry(
-                JText::_('WF_MEDIABOX'),
-                'index.php?option=com_jce&view=mediabox',
-                $vName == 'mediabox'
-            );
+        foreach($views as $key => $label) {
+            
+            if ($key === "mediabox" && !JPluginHelper::isEnabled('system', 'jcemediabox')) {
+                continue;
+            }
+            
+            if ($user->authorise('jce.' . $key, 'com_jce')) {
+                JHtmlSidebar::addEntry(
+                    JText::_($label),
+                    'index.php?option=com_jce&view=' . $key,
+                    $vName == $key
+                );
+            }
         }
     }
 
