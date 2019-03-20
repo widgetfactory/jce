@@ -21,7 +21,9 @@ defined('JPATH_PLATFORM') or die;
         <label class="uk-form-label uk-width-3-10" for="classes" class="hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
         <div class="uk-form-controls uk-width-7-10 uk-datalist">
             <input type="text" id="classes" value="" />
-            <select id="classlist"></select>
+            <select id="classlist">
+                <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
+            </select>
         </div>
     </div>
 
