@@ -29,7 +29,7 @@ class JFormFieldFiletype extends JFormFieldText
      * @since   11.1
      */
     public function setup(SimpleXMLElement $element, $value, $group = null)
-    {        
+    {
         $return = parent::setup($element, $value, $group);
 
         return $return;
@@ -109,7 +109,7 @@ class JFormFieldFiletype extends JFormFieldText
         $data = $this->mapValue($value);
 
         $html = array();
-        
+
         $html[] = '<div class="filetype">';
         $html[] = ' <div class="input-append input-group">';
 
@@ -137,8 +137,8 @@ class JFormFieldFiletype extends JFormFieldText
                 // clear minus sign
                 $group = str_replace('-', '', $group);
 
-                $groupKey   = 'WF_FILEGROUP_' . strtoupper($group);
-                $groupName  =  JText::_('WF_FILEGROUP_' . strtoupper($group));
+                $groupKey = 'WF_FILEGROUP_' . strtoupper($group);
+                $groupName = JText::_('WF_FILEGROUP_' . strtoupper($group));
 
                 // create simple label if there is no translation
                 if ($groupName === $groupKey) {
