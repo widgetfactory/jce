@@ -245,7 +245,7 @@ class pkg_jceInstallerScript
         if ($route == 'update') {
             $version = (string) $parent->manifest->version;
 
-            if ($version && version_compare($version, '2.7.0', '>=') && version_compare($version, '2.7.5', '<')) {
+            if ($version && version_compare($version, '2.7.0', '>=') && version_compare($version, '2.7.4', '<')) {
                 $db = JFactory::getDBO();
 
                 $query = $db->getQuery(true);
