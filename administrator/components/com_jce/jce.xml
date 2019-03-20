@@ -65,7 +65,6 @@
             <file>config.xml</file>
             <file>controller.php</file>
             <file>index.html</file>
-            <file>install.php</file>
             <file>jce.php</file>
             <file>licence.txt</file>
         </files>
