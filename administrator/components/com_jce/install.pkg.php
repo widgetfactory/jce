@@ -224,6 +224,23 @@ class pkg_jceInstallerScript
             }
         }
 
+        // remove legacy jcefilebrowser quickicon
+        $plugin = JPluginHelper::getPlugin('quickicon', 'jcefilebrowser');
+
+        if ($plugin) {
+            $inst = new JInstaller();
+            // try uninstall
+            if (!$inst->uninstall('plugin', $plugin->id)) {
+                
+                // otherwise disable
+                $table = JTable::getInstance('extension');
+
+                if ($table->load($plugin->id)) {
+                    $table->publish(null, 0);
+                }
+            }
+        }
+
         // add contextmenu to profiles in 2.7.x TODO - Remove in 2.7.5
         if ($route == 'update') {
             $version = (string) $parent->manifest->version;
