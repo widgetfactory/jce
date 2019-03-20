@@ -144,19 +144,19 @@ class pkg_jceInstallerScript
         return $this->install($installer);
     }
 
-    public function preflight($type, $installer)
+    public function preflight($route, $installer)
     {
         // skip on uninstall etc.
-        if ($type === "remove") {
+        if ($route === "remove") {
             return true;
         }
 
         $parent = $installer->getParent();
 
         // get current package version
-        $manifest   = JPATH_ADMINISTRATOR . '/manifests/packages/pkg_jce.xml';
-        $version    = 0;
-        $variant    = "core";
+        $manifest = JPATH_ADMINISTRATOR . '/manifests/packages/pkg_jce.xml';
+        $version = 0;
+        $variant = "core";
 
         if (is_file($manifest)) {
             if ($xml = @simplexml_load_file($manifest)) {
@@ -196,7 +196,7 @@ class pkg_jceInstallerScript
         }
     }
 
-    public function postflight($type, $installer)
+    public function postflight($route, $installer)
     {
         $app = JFactory::getApplication();
         $extension = JTable::getInstance('extension');
@@ -205,7 +205,7 @@ class pkg_jceInstallerScript
 
         if ($plugin) {
             $parent = $installer->getParent();
-            
+
             // find and remove package
             $component_id = $extension->find(array('type' => 'component', 'element' => 'com_jce'));
 
@@ -221,6 +221,32 @@ class pkg_jceInstallerScript
                 $app->triggerEvent('onExtensionAfterUninstall', array($parent, $package_id, true));
                 // install
                 $app->triggerEvent('onExtensionAfterInstall', array($parent, $package_id));
+            }
+        }
+
+        // add contextmenu to profiles in 2.7.x TODO - Remove in 2.7.5
+        if ($route == 'update') {
+            $version = (string) $parent->manifest->version;
+
+            if ($version && version_compare($version, '2.7.0', '>=') && version_compare($version, '2.7.5', '<')) {
+                $db = JFactory::getDBO();
+
+                $query = $db->getQuery(true);
+                $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
+
+                $db->setQuery($query);
+                $id = $db->loadResult();
+
+                if ($id) {
+                    include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
+
+                    $plugin = new StdClass;
+                    $plugin->name = 'contextmenu';
+                    $plugin->icon = '';
+                    
+                    // add to profile
+                    JcePluginsHelper::addToProfile($id, $plugin);
+                }
             }
         }
     }

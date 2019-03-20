@@ -293,10 +293,10 @@ abstract class JcePluginsHelper
                         $profile->rows = implode(';', $rows);
                     }
                 }
+            }
 
-                if (!$profile->store()) {
-                    throw new Exception(JText::_('WF_INSTALLER_PLUGIN_PROFILE_ERROR'));
-                }
+            if (!$profile->store()) {
+                throw new Exception(JText::_('WF_INSTALLER_PLUGIN_PROFILE_ERROR'));
             }
         }
 
