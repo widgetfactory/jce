@@ -53,13 +53,13 @@ class JceViewProfile extends JViewLegacy
         parent::display($tpl);
 
         $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jce/media/css/profile.min.css');
+        $document->addStyleSheet('components/com_jce/media/css/profile.min.css', array('version' => WF_VERSION));
 
-        $document->addScript('components/com_jce/media/js/core.min.js');
-        $document->addScript('components/com_jce/media/js/profile.min.js');
+        $document->addScript('components/com_jce/media/js/core.min.js', array('version' => WF_VERSION));
+        $document->addScript('components/com_jce/media/js/profile.min.js', array('version' => WF_VERSION));
 
         // default theme
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css');
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css', array('version' => WF_VERSION));
 
         $colorpickerOptions = array(
             'parent' => '.ui-jce',
