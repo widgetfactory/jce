@@ -11,7 +11,6 @@
 defined('JPATH_PLATFORM') or die;
 
 // load constants
-
 require_once __DIR__ . '/constants.php';
 
 // register classes
@@ -52,6 +51,7 @@ JLoader::registerNamespace('Defuse\\Crypto', WF_ADMINISTRATOR . '/vendor/Defuse/
 
 // legacy class for backwards compatability
 JLoader::register('WFText', WF_EDITOR_CLASSES . '/text.php');
+
 // legacy class for backwards compatability
 JLoader::register('WFModelEditor', WF_ADMINISTRATOR . '/models/editor.php');
 

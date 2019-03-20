@@ -27,6 +27,9 @@ if ($app->input->get('view') === 'editor' && $app->input->get('layout') === 'plu
     }    
 }
 
+// constants and autoload 
+require_once __DIR__ . '/includes/base.php';
+
 $controller = JControllerLegacy::getInstance('Jce', array('base_path' => __DIR__));
 
 $controller->execute($app->input->get('task'));
