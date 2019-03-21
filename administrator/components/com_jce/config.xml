@@ -23,11 +23,6 @@
           <option value="0">JNO</option>
         </field>
 
-        <field name="secureparams" type="radio" default="0" label="WF_PREFERENCES_SECUREPARAMS" description="WF_PREFERENCES_SECUREPARAMS_DESC" class="btn-group btn-group-yesno">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </field>
-
     </fieldset>
     <fieldset name="updates" label="WF_PREFERENCES_UPDATES">
         <field name="updates_key" type="password" size="50" default="" label="WF_UPDATES_KEY" description="WF_UPDATES_KEY_DESC" />

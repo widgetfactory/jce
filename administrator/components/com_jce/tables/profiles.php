@@ -30,20 +30,4 @@ class JceTableProfiles extends JTable
 
         return $return;
     }
-
-    public function store($updateNulls = false)
-    {
-        // encrypt params
-        if (!empty($this->params)) {
-            
-            $params = JComponentHelper::getParams('com_jce');
-
-            if ($params->get('secureparams', 0)) {
-                $this->params = JceEncryptHelper::encrypt($this->params);
-            }
-
-        }
-
-        return parent::store($updateNulls);
-    }
 }
