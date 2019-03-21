@@ -370,7 +370,7 @@ class WFApplication extends JObject
 
             // if null or false, revert to array
             if (empty($data2)) {
-                $data1 = array();
+                $data2 = array();
             }
 
             // merge params
