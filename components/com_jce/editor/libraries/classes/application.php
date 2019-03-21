@@ -10,6 +10,8 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
+
 /**
  * JCE class.
  *
