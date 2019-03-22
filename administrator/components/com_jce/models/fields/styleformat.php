@@ -84,19 +84,24 @@ class JFormFieldStyleFormat extends JFormField
 
                 $elements[] = '<div class="styleformat-item-' . $key . '">' . $this->getField($key, $value) . '</div>';
             }
+
+            $elements[] = '<div class="styleformat-header">';
+
             // handle
-            $elements[] = '<span class="styleformat-item-handle icon-menu"></span>';
+            $elements[] = '<span class="styleformat-item-handle"></span>';
             // delete button
-            $elements[] = '<a href="#" class="styleformat-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a>';
+            $elements[] = '<button class="styleformat-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></button>';
             // collapse
-            $elements[] = '<a href="#" class="close collapse icon-chevron-up"></a>';
+            $elements[] = '<button class="close collapse"><span class="icon-chevron-up"></span><span class="icon-chevron-down"></span></button>';
+
+            $elements[] = '</div>';
 
             $elements[] = '</div>';
 
             $output[] = implode('', $elements);
         }
 
-        $output[] = '<a href="#" class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . JText::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></a>';
+        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . JText::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
 
         // hidden field
         $output[] = '<input type="hidden" name="' . $this->name . '" value="" />';

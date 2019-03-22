@@ -34,16 +34,18 @@
 
         // create close action
         $('.styleformat-item-trash', '.styleformat-list').click(function (e) {
+            e.preventDefault();
+
             // if there  is only one item, clear and hide
             if ($('div.styleformat-list div.styleformat').length === 1) {
 
                 // clear inputs and remove styles
                 $('input, select', this.parentNode).val("").removeAttr('style').removeAttr('class');
                 // hide
-                $(this.parentNode).hide();
+                $(this).parents('.styleformat').hide();
                 // otherwise remove it
             } else {
-                $(this.parentNode).remove();
+                $(this).parents('.styleformat').remove();
             }
 
             $('.styleformat-list').trigger('update');
@@ -53,6 +55,8 @@
 
         // create new action
         $('.styleformat-item-plus', '.styleformat-list').click(function (e) {
+            e.preventDefault();
+            
             var $item = $(this).prev();
 
             if ($.fn.chosen) {
@@ -152,18 +156,15 @@
             }).change();
 
             // create collapsible action
-            $('.collapse', this).on('click.collapse', function () {
-                $(this).siblings().not('.styleformat-item-title, .close').toggleClass('hide');
-                $(this).toggleClass('icon-chevron-up icon-chevron-down');
+            $('.collapse', this).on('click.collapse', function (e) {
+                e.preventDefault();
+                $(this).parents('.styleformat').toggleClass('styleformat-collapse');
             });
         });
 
         // hide all
         if ($('.styleformat', '.styleformat-list').length > 1) {
-            $('.styleformat div', '.styleformat-list').not('div.styleformat-item-title').addClass('hide');
-
-            // set chevron
-            $('.collapse', 'div.styleformat-list').removeClass('icon-chevron-up').addClass('icon-chevron-down');
+            $('.styleformat', '.styleformat-list').addClass('styleformat-collapse');
         }
 
         if (init) {
