@@ -93,6 +93,10 @@ class JceModelConfig extends JModelForm
         // json_decode
         $json = json_decode($plugin->params, true);
 
+        if (empty($json)) {
+            $json = array();
+        }
+
         array_walk($json, function(&$value, $key) {
             if (is_numeric($value)) {
                 $value = $value + 0;
