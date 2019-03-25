@@ -298,9 +298,8 @@ var WFPopups = WFExtensions.add('Popups', {
 
             $.each(this.popups, function(k, v) {
                 if (self.isPopup(n, k)) {
-                    // remove link
-                    ed.dom.remove(n, true);
-
+                    // remove all popups
+                    self.removePopups(n);
                     return false;
                 }
             });
