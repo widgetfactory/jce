@@ -29,11 +29,11 @@
                     e.preventDefault();
                     
                     if (e.shiftKey) {
-                        ed.formatter.apply('italic-i');
+                        ed.formatter.toggle('italic-i');
                         return;
                     }
 
-                    ed.formatter.apply('italic');
+                    ed.formatter.toggle('italic');
                 }
             });
 
