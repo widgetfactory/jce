@@ -2,9 +2,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
-
-class JFormFieldPlugin extends JFormField
+class JFormFieldPlugin extends JFormFieldFileList
 {
     /**
      * The form field type.

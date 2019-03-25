@@ -161,7 +161,7 @@ abstract class JcePluginsHelper
      *
      * @return array $extensions
      */
-    public static function getExtensions()
+    public static function getExtensions($type = '')
     {
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
@@ -195,7 +195,7 @@ abstract class JcePluginsHelper
                 // set type
                 $object->type = $object->folder;
 
-                $extensions[] = $object;
+                $extensions[$object->type][] = $object;
             }
 
             // get all installed plugins
@@ -230,7 +230,7 @@ abstract class JcePluginsHelper
                     $p->description = '';
 
                     list($p->type, $p->name) = preg_split('/-/', $p->name);
-
+  
                     // create title from name parts, eg: plg_jce_filesystem_joomla
                     $p->title = 'plg_jce_' . $p->type . '_' . $p->name;
 
@@ -247,13 +247,14 @@ abstract class JcePluginsHelper
                     $language->load('plg_jce_' . $p->type . '_' . $p->name, JPATH_ADMINISTRATOR);
                     $language->load('plg_jce_' . $p->type . '-' . $p->name, JPATH_ADMINISTRATOR);
 
-                    $extensions[] = $p;
+                    $extensions[$p->type][] = $p;
                 }
             }
         }
 
-        // reset array
-        $extensions = array_values($extensions);
+        if ($type && isset($extensions[$type])) {
+            return $extensions[$type];
+        }
 
         return $extensions;
     }

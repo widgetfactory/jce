@@ -359,49 +359,59 @@ class JceModelProfile extends JModelAdmin
 
                     $extensions = JcePluginsHelper::getExtensions();
 
-                    foreach ($extensions as $p) {
+                    foreach($extensions as $type => $items) {
 
-                        // check for plugin fieldset using xpath, as fieldset can be empty
-                        $fieldset = $plugin->form->getXml()->xpath('(//fieldset[@name="plugin.' . $p->type . '"])');
+                        $item = new StdClass;
+                        $item->name     = '';
+                        $item->title    = '';
+                        $item->manifest = WF_EDITOR_LIBRARIES . '/xml/config/' . $type . '.xml';
+                        $item->context  = '';
 
-                        // not supported, move along...
-                        if (empty($fieldset)) {
-                            continue;
-                        }
+                        array_unshift($items, $item);
 
-                        $context = (string) $fieldset[0]->attributes()->context;
-
-                        // check for a context, eg: images, web, video
-                        if ($context && !in_array($p->context, explode(',', $context))) {
-                            continue;
-                        }
-
-                        if (is_file($p->manifest)) {
-                            $path = array($plugin->name, $p->type, $p->name);
-
-                            // create new extension object
-                            $extension = new StdClass;
-
-                            // set extension name as the plugin name
-                            $extension->name = $p->name;
-
-                            // set extension title
-                            $extension->title = $p->title;
-
-                            // load form
-                            $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . ']', 'load_data' => true), true, '//extension');
-                            
-                            // get fieldsets if any
-                            $fieldsets = $extension->form->getFieldsets();
-
-                            foreach ($fieldsets as $fieldset) {
-                                if (isset($data->config[$plugin->name])) {                                    
-                                    // bind data to the form
-                                    $extension->form->bind($data->config[$plugin->name]);
-                                }
-
+                        foreach ($items as $p) {
+                            // check for plugin fieldset using xpath, as fieldset can be empty
+                            $fieldset = $plugin->form->getXml()->xpath('(//fieldset[@name="plugin.' . $type . '"])');
+    
+                            // not supported, move along...
+                            if (empty($fieldset)) {
+                                continue;
+                            }
+    
+                            $context = (string) $fieldset[0]->attributes()->context;
+    
+                            // check for a context, eg: images, web, video
+                            if ($context && !in_array($p->context, explode(',', $context))) {
+                                continue;
+                            }
+    
+                            if (is_file($p->manifest)) {
+                                $path = array($plugin->name, $type, $p->name);
+    
+                                // create new extension object
+                                $extension = new StdClass;
+    
+                                // set extension name as the plugin name
+                                $extension->name = $p->name;
+    
+                                // set extension title
+                                $extension->title = $p->title;
+    
                                 // load form
-                                $plugin->extensions[$p->type][$p->name] = $extension;
+                                $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . ']', 'load_data' => true), true, '//extension');
+                                
+                                // get fieldsets if any
+                                $fieldsets = $extension->form->getFieldsets();
+    
+                                foreach ($fieldsets as $fieldset) {
+                                    if (isset($data->config[$plugin->name])) {                                    
+                                        // bind data to the form
+                                        $extension->form->bind($data->config[$plugin->name]);
+                                    }
+    
+                                    // load form
+                                    $plugin->extensions[$type][$p->name] = $extension;
+                                }
                             }
                         }
                     }

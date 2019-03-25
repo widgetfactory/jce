@@ -66,14 +66,14 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
                     echo JLayoutHelper::render('joomla.content.options_default', $plugin);
                     
                     foreach ($plugin->extensions as $type => $extensions) : ?>
+                        
                         <h3><?php echo JText::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE', true); ?></h3>
 
-                        <?php foreach ($extensions as $extension) : ?>
-
+                        <?php foreach ($extensions as $name => $extension) : ?>
                             <div class="row-fluid">  
                                         
                                 <?php if ($extension->form) :
-                                    $extension->fieldsname = "";//$type . '.' . $extension->name;
+                                    $extension->fieldsname = "";
                                     $extension->name = JText::_($extension->title, true);
                                     $extension->description = "";
                                     echo JLayoutHelper::render('joomla.content.options_default', $extension);
