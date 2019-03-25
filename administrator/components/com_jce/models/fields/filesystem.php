@@ -108,11 +108,7 @@ class JFormFieldFilesystem extends JFormField
         static $plugins;
 
         if (!isset($plugins)) {
-            $items = JcePluginsHelper::getExtensions();
-
-            $plugins = array_filter($items, function($item) {
-                return $item->type === "filesystem";
-            });
+            $plugins = JcePluginsHelper::getExtensions('filesystem');
         }
 
         return $plugins;
