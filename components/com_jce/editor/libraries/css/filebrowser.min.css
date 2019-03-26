@@ -146,6 +146,10 @@ div#upload-queue-block {
 	margin: 0;
 }
 
+.queue-item-loading .queue-item-name input {
+	padding-right: 4rem !important;
+}
+
 .queue-item-loading .queue-item-name .uk-icon:before {
 	content: "";
 	width: 20px;
@@ -173,7 +177,8 @@ div#upload-queue-block {
 	height: inherit;
 	margin: 0;
 	top: 0;
-	right: 5px;
+	right: 0;
+	width: 4rem;
 }
 
 .wf-uploader-container {
@@ -181,7 +186,7 @@ div#upload-queue-block {
 	position: relative;
 	overflow: inherit;
 }
-.wf-uploader-button {}
+
 .wf-uploader-element {
 	font-size: 999px;
 	opacity: 0;
@@ -699,16 +704,7 @@ div#info-comment {
 
 #info-preview {
   height: calc(100% - 120px);
-  padding: 0;
-  margin-top: 5px;
-  background-repeat: no-repeat;
-  background-position: top center;
-  box-sizing: border-box;
-  background-size: contain;
-}
-
-#info-preview[style*=".png"] {
-  background-color: #f5f5f5;
+  padding: 5px 0;
 }
 
 #info-preview img {

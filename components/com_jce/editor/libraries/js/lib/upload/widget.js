@@ -13,15 +13,15 @@
 (function($, Wf) {
 
     function mapIcon(ext) {
-        if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi)$/.test(ext)) {
+        if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi|mvk|webm)$/.test(ext)) {
             return 'video';
         }
 
-        if (/^(mp3|ogg|oga|webm)$/.test(ext)) {
+        if (/^(mp3|ogg|oga)$/.test(ext)) {
             return 'audio';
         }
 
-        if (/^(jpg|jpeg|png|gif|png|svg|bmp|tiff)$/.test(ext)) {
+        if (/^(jpg|jpeg|png|gif|png|svg|bmp|tiff|webp)$/.test(ext)) {
             return 'image';
         }
 
