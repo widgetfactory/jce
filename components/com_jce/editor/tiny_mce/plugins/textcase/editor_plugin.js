@@ -117,6 +117,9 @@
 
 			var text = s.getContent();
 
+			// convert to lowercase
+			text = text.toLowerCase();
+
 			text = text.replace(/(?:^|\s)[\u0000-\u1FFF]/g, function (match) {
 				return match.toUpperCase();
 			});
@@ -140,16 +143,6 @@
 
 			var text = s.getContent();
 			s.setContent(text.toUpperCase());
-		},
-
-		getInfo: function () {
-			return {
-				longname: 'Painter',
-				author: 'Ryan Demmer',
-				authorurl: 'https://www.joomlacontenteditor.net',
-				infourl: 'https://www.joomlacontenteditor.net',
-				version: '@@version@@'
-			};
 		}
 	});
 
