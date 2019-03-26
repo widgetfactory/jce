@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -46,12 +46,17 @@ class WFFileSystem extends WFExtension
         if (!is_object($instance)) {
             $fs = parent::loadExtensions('filesystem', $type);
 
+            // load the default...
+            if (empty($fs)) {
+                $fs = parent::loadExtensions('filesystem', 'joomla');
+            }
+
             // get the first filesystem extension only
             if (is_array($fs)) {
                 $fs = array_shift($fs);
             }
 
-            $classname = 'WF'.ucfirst($fs->name).'FileSystem';
+            $classname = 'WF' . ucfirst($fs->name) . 'FileSystem';
 
             if (class_exists($classname)) {
                 $instance = new $classname($config);
@@ -343,11 +348,11 @@ final class WFFileSystemResult
 
     public $type = 'files';
     /*
-     * @boolean	Result state
+     * @boolean    Result state
      */
     public $state = false;
     /*
-     * @int	Error code
+     * @int    Error code
      */
     public $code = null;
     /*
