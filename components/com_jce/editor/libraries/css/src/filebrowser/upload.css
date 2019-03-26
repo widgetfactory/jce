@@ -22,6 +22,10 @@ div#upload-queue-block {
 	margin: 0;
 }
 
+.queue-item-loading .queue-item-name input {
+	padding-right: 4rem !important;
+}
+
 .queue-item-loading .queue-item-name .uk-icon:before {
 	content: "";
 	width: 20px;
@@ -49,7 +53,8 @@ div#upload-queue-block {
 	height: inherit;
 	margin: 0;
 	top: 0;
-	right: 5px;
+	right: 0;
+	width: 4rem;
 }
 
 .wf-uploader-container {
@@ -57,7 +62,7 @@ div#upload-queue-block {
 	position: relative;
 	overflow: inherit;
 }
-.wf-uploader-button {}
+
 .wf-uploader-element {
 	font-size: 999px;
 	opacity: 0;
