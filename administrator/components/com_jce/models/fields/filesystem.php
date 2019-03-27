@@ -69,7 +69,7 @@ class JFormFieldFilesystem extends JFormField
         $html .= '<div class="filesystem-options clearfix">';
 
         foreach ($plugins as $plugin) {            
-            $form = JForm::getInstance('plg_jce_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
+            $form = JForm::getInstance('plg_jce_' . $this->name . '_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
 
             if ($form) {
                 // get the data for this form, if set
