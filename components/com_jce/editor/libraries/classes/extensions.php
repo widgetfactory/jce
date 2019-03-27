@@ -238,16 +238,16 @@ class WFExtension extends JObject
     /**
      * Return a parameter for the current plugin / group.
      *
-     * @param object $param   Parameter name
+     * @param object $key   Parameter name
      * @param object $default Default value
      *
      * @return string Parameter value
      */
-    public function getParam($param, $default = '')
+    public function getParam($key, $default = '')
     {
         $wf = WFApplication::getInstance();
 
-        return $wf->getParam($param, $default);
+        return $wf->getParam($key, $default);
     }
 
     public function getView($options = array())
