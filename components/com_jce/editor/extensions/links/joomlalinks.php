@@ -34,7 +34,7 @@ class WFLinkBrowser_Joomlalinks
             foreach ($files as $file) {
                 $name = basename($file, '.php');
 
-                if (!$wf->getParam('links.joomlalinks.' . $name, 1)) {
+                if (!$this->checkOptionAccess($name)) {
                     continue;
                 }
 
@@ -52,6 +52,19 @@ class WFLinkBrowser_Joomlalinks
                 }
             }
         }
+    }
+
+    protected function checkOptionAccess($option)
+    {
+        $wf = WFEditorPlugin::getInstance();
+        
+        $option = str_replace('com_', '', $option);
+
+        if ($option === "contact") {
+            $option = "contacts";
+        }
+
+        return (int) $wf->getParam('links.joomlalinks.' . $option, 1) === 1;
     }
 
     public function display()
@@ -94,9 +107,7 @@ class WFLinkBrowser_Joomlalinks
         foreach ($this->_adapters as $adapter) {
             if ($adapter->getOption() == $args->option) {
                 
-                $name = str_replace('com_', '', $args->option);
-
-                if (!$wf->getParam('links.joomlalinks.' . $name, 1)) {
+                if (!$this->checkOptionAccess($args->option)) {
                     continue;
                 }
                 
