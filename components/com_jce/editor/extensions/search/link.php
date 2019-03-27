@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
 class WFLinkSearchExtension extends WFSearchExtension
 {
     private $enabled = array();
-
+    
     /**
      * Constructor activating the default information of the class.
      */
@@ -27,7 +27,9 @@ class WFLinkSearchExtension extends WFSearchExtension
         $request->setRequest(array($this, 'getAreas'));
 
         $wf = WFEditorPlugin::getInstance();
-        $plugins = $wf->getParam('search.link.plugins');
+
+        // get plugins
+        $plugins = $wf->getParam('search.link.plugins', array());
 
         // use tested defaults
         if (empty($plugins)) {
@@ -55,7 +57,6 @@ class WFLinkSearchExtension extends WFSearchExtension
     public function isEnabled()
     {
         $wf = WFEditorPlugin::getInstance();
-
         return (bool) $wf->getParam('search.link.enable', 1) && !empty($this->enabled);
     }
 
