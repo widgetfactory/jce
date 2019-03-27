@@ -14,7 +14,7 @@
         <folder>jcemediabox</folder>
     </files>
     <fields name="jcemediabox">
-        <fieldset name="popups.jcemediabox">
+        <fieldset name="jcemediabox">
             <field name="popup_group" type="text" default="" label="WF_POPUPS_JCEMEDIABOX_GROUP" description="WF_POPUPS_JCEMEDIABOX_GROUP_DESC" />
 
             <field name="popup_icon" type="yesno" default="1" label="WF_POPUPS_JCEMEDIABOX_ICON" description="WF_POPUPS_JCEMEDIABOX_ICON_DESC">
