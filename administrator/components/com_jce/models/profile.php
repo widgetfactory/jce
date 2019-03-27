@@ -398,19 +398,29 @@ class JceModelProfile extends JModelAdmin
                                 $extension->title = $p->title;
     
                                 // load form
-                                $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . ']', 'load_data' => true), true, '//extension');
+                                $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . '][' . $type . ']', 'load_data' => true), true, '//extension');
                                 
                                 // get fieldsets if any
                                 $fieldsets = $extension->form->getFieldsets();
     
                                 foreach ($fieldsets as $fieldset) {
-                                    if (isset($data->config[$plugin->name])) {                                    
-                                        // bind data to the form
-                                        $extension->form->bind($data->config[$plugin->name]);
-                                    }
-    
                                     // load form
                                     $plugin->extensions[$type][$p->name] = $extension;
+
+                                    if (!isset($data->params[$plugin->name])) {
+                                        continue;
+                                    }
+
+                                    if (!isset($data->params[$plugin->name][$type])) {
+                                        continue;
+                                    }
+
+                                    if (!isset($data->params[$plugin->name][$type][$p->name])) {
+                                        continue;
+                                    }
+
+                                    // bind data to the form
+                                    $extension->form->bind($data->params[$plugin->name][$type]);
                                 }
                             }
                         }
