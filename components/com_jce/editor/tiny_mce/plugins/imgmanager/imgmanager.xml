@@ -22,7 +22,7 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field-->
-            <field name="name" type="filesystem" group="filesystem" default="" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC" />
+            <field name="filesystem" type="filesystem" default="" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC" />
 
             <field name="always_include_dimensions" type="yesno" default="0" label="WF_IMGMANAGER_PARAM_ALWAYS_INCLUDE_DIMENSIONS" description="WF_IMGMANAGER_PARAM_ALWAYS_INCLUDE_DIMENSIONS_DESC">
                 <option value="1">JYES</option>
