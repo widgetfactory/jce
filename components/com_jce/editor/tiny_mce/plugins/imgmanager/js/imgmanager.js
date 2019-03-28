@@ -198,8 +198,8 @@
                         self.insertAndClose();
                     }
                 }, {
-                    width: 300,
-                    height: 200
+                    width: 360,
+                    height: 240
                 });
             } else {
                 this.insertAndClose();

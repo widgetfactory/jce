@@ -230,6 +230,19 @@ html {
     width: 360px;
 }
 
+.uk-modal-alert,
+.uk-modal-confirm,
+.uk-modal-prompt {
+    display: flex;
+    flex-direction: column;
+}
+
+.uk-modal-alert .uk-modal-body,
+.uk-modal-confirm .uk-modal-body,
+.uk-modal-prompt .uk-modal-body {
+    flex: 1;
+}
+
 .uk-accordion-title {
     margin-bottom: 5px;
 }
