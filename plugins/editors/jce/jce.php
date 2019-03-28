@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -54,24 +54,24 @@ class plgEditorJCE extends JPlugin
         $app->triggerEvent('onBeforeWfEditorLoad');
 
         // load base file
-        require_once JPATH_ADMINISTRATOR.'/components/com_jce/includes/base.php';
+        require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
         // create editor
-        $editor     = new WFEditor();
-        $settings 	= $editor->getSettings();
+        $editor = new WFEditor();
+        $settings = $editor->getSettings();
 
         $app->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
         $editor->render($settings);
 
-        foreach($editor->getScripts() as $script) {        	
-        	$document->addScript($script, array('version' => 'auto'));
+        foreach ($editor->getScripts() as $script) {
+            $document->addScript($script, array('version' => 'auto'));
         }
-        
-        foreach($editor->getStyleSheets() as $style) {
-        	$document->addStylesheet($style, array('version' => 'auto'));
+
+        foreach ($editor->getStyleSheets() as $style) {
+            $document->addStylesheet($style, array('version' => 'auto'));
         }
-        
+
         $document->addScriptDeclaration(implode("\n", $editor->getScriptDeclaration()));
     }
 
@@ -150,24 +150,23 @@ class plgEditorJCE extends JPlugin
     {
         $return = '';
 
-		if (is_array($buttons) || (is_bool($buttons) && $buttons))
-		{
-			$buttonsEvent = new Joomla\Event\Event(
-				'getButtons',
-				[
-					'editor'    => $name,
-					'buttons' => $buttons,
-				]
+        if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
+            $buttonsEvent = new Joomla\Event\Event(
+                'getButtons',
+                [
+                    'editor' => $name,
+                    'buttons' => $buttons,
+                ]
             );
-            
+
             if (method_exists($this, 'getDispatcher')) {
                 $buttonsResult = $this->getDispatcher()->dispatch('getButtons', $buttonsEvent);
-                $buttons       = $buttonsResult['result'];
+                $buttons = $buttonsResult['result'];
             } else {
                 $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
             }
 
-			return JLayoutHelper::render('joomla.editors.buttons', $buttons);
-		}
+            return JLayoutHelper::render('joomla.editors.buttons', $buttons);
+        }
     }
 }
