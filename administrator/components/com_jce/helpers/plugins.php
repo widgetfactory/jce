@@ -51,11 +51,19 @@ abstract class JcePluginsHelper
                     if (!is_file(WF_EDITOR_PLUGINS . '/' . $name . '/editor_plugin.js')) {
                         continue;
                     }
+
                     // update attributes
                     $attribs->type = 'plugin';
 
                     $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
                     $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+
+                    $attribs->image = '';
+
+                    if (!isset($attribs->class)) {
+                        $attribs->class = '';
+                    }
+
                     // compatability
                     $attribs->name = $name;
                     // pass to array
@@ -79,6 +87,13 @@ abstract class JcePluginsHelper
                             $attribs->type = 'plugin';
                             $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
                             $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+
+                            $attribs->image = '';
+
+                            if (!isset($attribs->class)) {
+                                $attribs->class = '';
+                            }
+
                             // compatability
                             $attribs->name = $name;
                             // pass to array
@@ -123,31 +138,47 @@ abstract class JcePluginsHelper
 
                         $name = str_replace('editor-', '', $item->name);
 
-                        $plugins[$name] = new StdClass();
-                        $plugins[$name]->name = $name;
-                        $plugins[$name]->manifest = $file;
+                        $attribs = new StdClass();
+                        $attribs->name = $name;
+                        $attribs->manifest = $file;
 
                         $params = $xml->fields;
 
-                        $plugins[$name]->title = (string)$xml->name;
-                        $plugins[$name]->icon = (string)$xml->icon;
-                        $plugins[$name]->editable = 0;
+                        $attribs->title = (string)$xml->name;
+                        $attribs->icon = (string)$xml->icon;
+                        $attribs->editable = 0;
+
+                        // set default values
+                        $attribs->image = '';
+                        $attribs->class = '';
+
+                        if ($xml->icon->attributes()) {
+                            foreach($xml->icon->attributes() as $key => $value) {
+                                $attribs->$key = $value;
+                            }
+                        }
+
+                        if ($attribs->image) {
+                            $attribs->image = JURI::root(true) . '/' . $attribs->image;
+                        }
 
                         // can't be editable without parameters
                         if ($params && count($params->children())) {
-                            $plugins[$name]->editable = 1;
+                            $attribs->editable = 1;
                         }
 
                         $row = (int)$xml->attributes()->row;
 
-                        $plugins[$name]->row = $row ? $row : 4;
-                        $plugins[$name]->description = (string)$xml->description;
-                        $plugins[$name]->core = 0;
+                        $attribs->row = $row ? $row : 4;
+                        $attribs->description = (string)$xml->description;
+                        $attribs->core = 0;
 
                         // relative path
-                        $plugins[$name]->path = $path;
-                        $plugins[$name]->url = 'plugins/jce/' . $item->name;
-                        $plugins[$name]->type = 'plugin';
+                        $attribs->path = $path;
+                        $attribs->url = 'plugins/jce/' . $item->name;
+                        $attribs->type = 'plugin';
+
+                        $plugins[$name] = $attribs;
                     }
                 }
             }
