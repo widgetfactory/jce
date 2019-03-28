@@ -58,7 +58,7 @@ class WFLanguageParser extends JObject
     protected static function ini_to_array($data, $process_sections = false, $sections = array(), $filter = '')
     {
         // Check the memory cache for already processed strings.
-        $hash = md5($data.':'.(int) $process_sections.':'.serialize($sections).':'.$filter);
+        $hash = md5($data . ':' . (int) $process_sections . ':' . serialize($sections) . ':' . $filter);
 
         if (isset(self::$cache[$hash])) {
             return self::$cache[$hash];
@@ -92,7 +92,7 @@ class WFLanguageParser extends JObject
 
                     // filter section by regular expression
                     if ($filter) {
-                        if (preg_match('#'.$filter.'#', $section)) {
+                        if (preg_match('#' . $filter . '#', $section)) {
                             continue;
                         }
                     }
@@ -176,7 +176,7 @@ class WFLanguageParser extends JObject
         // get language tag
         $tag = $language->getTag();
 
-        $file = JPATH_SITE.'/language/overrides/'.$tag.'.override.ini';
+        $file = JPATH_SITE . '/language/overrides/' . $tag . '.override.ini';
 
         $ini = array();
 
@@ -201,7 +201,7 @@ class WFLanguageParser extends JObject
             // filter keys by regular expression
             if ($filter) {
                 foreach (array_keys($ini) as $key) {
-                    if (preg_match('#'.$filter.'#', $key)) {
+                    if (preg_match('#' . $filter . '#', $key)) {
                         unset($ini[$key]);
                     }
                 }
@@ -250,7 +250,7 @@ class WFLanguageParser extends JObject
 
             foreach ($data as $key => $strings) {
                 if (is_array($strings)) {
-                    $output .= '"'.strtolower($key).'":{';
+                    $output .= '"' . strtolower($key) . '":{';
 
                     $i = 0;
 
@@ -265,7 +265,7 @@ class WFLanguageParser extends JObject
                         if (is_numeric($v)) {
                             $v = (float) $v;
                         } else {
-                            $v = '"'.$v.'"';
+                            $v = '"' . $v . '"';
                         }
 
                         // key to lowercase
@@ -278,7 +278,7 @@ class WFLanguageParser extends JObject
                         $key = preg_replace('#_dlg$#', '', $key);
 
                         // remove the section name
-                        $k = preg_replace('#^'.$key.'(_dlg)?_#', '', $k);
+                        $k = preg_replace('#^' . $key . '(_dlg)?_#', '', $k);
 
                         // hex colours to uppercase and remove marker
                         if (strpos($k, 'hex_') !== false) {
@@ -286,7 +286,7 @@ class WFLanguageParser extends JObject
                         }
 
                         // create key/value pair as JSON string
-                        $output .= '"'.$k.'":'.$v.',';
+                        $output .= '"' . $k . '":' . $v . ',';
 
                         ++$i;
                     }
@@ -324,21 +324,21 @@ class WFLanguageParser extends JObject
         // get language tag
         $tag = $language->getTag();
         // base language path
-        $path = JPATH_SITE.'/language/'.$tag;
+        $path = JPATH_SITE . '/language/' . $tag;
 
         // if no file set
         if (empty($files)) {
             // Add English language
-            $files[] = JPATH_SITE.'/language/en-GB/en-GB.com_jce.ini';
+            $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce.ini';
 
             // add pro language file
-            $files[] = JPATH_SITE.'/language/en-GB/en-GB.WF_pro.ini';
+            $files[] = JPATH_SITE . '/language/en-GB/en-GB.com_jce_pro.ini';
 
             // non-english language
             if ($tag != 'en-GB') {
                 if (is_dir($path)) {
-                    $core = $path.'/'.$tag.'.com_jce.ini';
-                    $pro = $path.'/'.$tag.'.WF_pro.ini';
+                    $core = $path . '/' . $tag . '.com_jce.ini';
+                    $pro = $path . '/' . $tag . '.com_jce_pro.ini';
 
                     if (is_file($core)) {
                         $files[] = $core;
@@ -357,27 +357,9 @@ class WFLanguageParser extends JObject
             $plugins = $this->get('plugins');
 
             if (!empty($plugins)) {
-                /*foreach ($plugins['core'] as $plugin) {
-                // add English file
-                $ini = JPATH_SITE . '/language/en-GB/en-GB.WF_' . $plugin . '.ini';
-
-                if (is_file($ini)) {
-                $files[] = $ini;
-                }
-
-                // non-english language
-                if ($tag != 'en-GB') {
-                $ini = JPATH_SITE . '/language/' . $tag . '/' . $tag . '.WF_' . $plugin . '.ini';
-
-                if (is_file($ini)) {
-                $files[] = $ini;
-                }
-                }
-                }*/
-
                 foreach ($plugins['external'] as $name => $plugin) {
                     // add English file
-                    $ini = JPATH_ADMINISTRATOR.'/language/en-GB/en-GB.plg_jce_editor_'.$name.'.ini';
+                    $ini = JPATH_ADMINISTRATOR . '/language/en-GB/en-GB.plg_jce_editor_' . $name . '.ini';
 
                     if (is_file($ini)) {
                         $files[] = $ini;
@@ -385,7 +367,7 @@ class WFLanguageParser extends JObject
 
                     // non-english language
                     if ($tag != 'en-GB') {
-                        $ini = JPATH_ADMINISTRATOR.'/language/'.$tag.'/'.$tag.'.plg_jce_editor_'.$name.'.ini';
+                        $ini = JPATH_ADMINISTRATOR . '/language/' . $tag . '/' . $tag . '.plg_jce_editor_' . $name . '.ini';
 
                         if (is_file($ini)) {
                             $files[] = $ini;
@@ -406,7 +388,7 @@ class WFLanguageParser extends JObject
         // clean data
         $data = rtrim(trim($data), ',');
 
-        return 'tinyMCE.addI18n({"'.$tag.'":{'.$data.'}});';
+        return 'tinyMCE.addI18n({"' . $tag . '":{' . $data . '}});';
     }
 
     public function output($data)
@@ -424,7 +406,7 @@ class WFLanguageParser extends JObject
             $hash = md5($data);
 
             // set etag header
-            header('ETag: '.$hash);
+            header('ETag: ' . $hash);
 
             echo $data;
 
