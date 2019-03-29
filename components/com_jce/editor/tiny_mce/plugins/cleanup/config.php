@@ -43,6 +43,8 @@ class WFCleanupPluginConfig
             $settings['schema'] = 'html5-strict';
         }
 
+        $settings['validate_styles'] = $wf->getParam('editor.validate_styles', 1, 1, 'boolean', false);
+
         // Get Extended elements
         $settings['extended_valid_elements'] = $wf->getParam('editor.extended_elements', '', '');
         // Configuration list of invalid elements as array
