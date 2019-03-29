@@ -64,18 +64,18 @@
         stateControls: ['bold', 'italic', 'underline', 'strikethrough', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'sub', 'sup', 'blockquote'],
 
         init: function (ed, url) {
-            var t = this,
+            var self = this,
                 s, v, o;
 
-            t.editor = ed;
-            t.url = url;
-            t.onResolveName = new tinymce.util.Dispatcher(this);
+            self.editor = ed;
+            self.url = url;
+            self.onResolveName = new tinymce.util.Dispatcher(this);
             // add resize dispatcher
-            t.onResize = new tinymce.util.Dispatcher(this);
+            self.onResize = new tinymce.util.Dispatcher(this);
 
             s = ed.settings;
 
-            ed.forcedHighContrastMode = ed.settings.detect_highcontrast && t._isHighContrast();
+            ed.forcedHighContrastMode = ed.settings.detect_highcontrast && self._isHighContrast();
             ed.settings.skin = ed.forcedHighContrastMode ? 'highcontrast' : ed.settings.skin;
 
             // Setup default buttons
@@ -88,7 +88,7 @@
             }
 
             // Default settings
-            t.settings = s = extend({
+            self.settings = s = extend({
                 theme_advanced_path: true,
                 theme_advanced_toolbar_location: 'top',
                 theme_advanced_blockformats: "p,address,pre,h1,h2,h3,h4,h5,h6",
@@ -117,11 +117,11 @@
             // Init editor
             ed.onInit.add(function () {
                 if (!ed.settings.readonly) {
-                    ed.onNodeChange.add(t._nodeChanged, t);
-                    ed.onKeyUp.add(t._updateUndoStatus, t);
-                    ed.onMouseUp.add(t._updateUndoStatus, t);
+                    ed.onNodeChange.add(self._nodeChanged, self);
+                    ed.onKeyUp.add(self._updateUndoStatus, self);
+                    ed.onMouseUp.add(self._updateUndoStatus, self);
                     ed.dom.bind(ed.dom.getRoot(), 'dragend', function () {
-                        t._updateUndoStatus(ed);
+                        self._updateUndoStatus(ed);
                     });
                 }
             });
@@ -148,7 +148,7 @@
                     tb;
 
                 if (b) {
-                    t.progressTimer = setTimeout(function () {
+                    self.progressTimer = setTimeout(function () {
                         co = ed.getContainer();
                         co = co.insertBefore(DOM.create('DIV', {
                             style: 'position:relative'
@@ -175,7 +175,7 @@
                 } else {
                     DOM.remove(id + '_blocker');
                     DOM.remove(id + '_progress');
-                    clearTimeout(t.progressTimer);
+                    clearTimeout(self.progressTimer);
                 }
             });
 
@@ -224,9 +224,9 @@
         },
 
         renderUI: function (o) {
-            var n, ic, tb, t = this,
-                ed = t.editor,
-                s = t.settings,
+            var n, ic, tb, self = this,
+                ed = self.editor,
+                s = self.settings,
                 sc, p, nl;
 
             if (ed.settings) {
@@ -239,7 +239,7 @@
                 skin += ' ' + ed.settings.skin + 'Skin';
 
                 if (s.skin_variant) {
-                    skin += ' ' + ed.settings.skin + 'Skin' + t._ufirst(s.skin_variant);
+                    skin += ' ' + ed.settings.skin + 'Skin' + self._ufirst(s.skin_variant);
                 }
             }
 
@@ -262,7 +262,7 @@
                 'class': 'mceLayout'
             });
 
-            ic = t._createLayout(s, n, o, p);
+            ic = self._createLayout(s, n, o, p);
 
             n = o.targetNode;
 
@@ -275,7 +275,7 @@
                 e = DOM.getParent(e.target, 'a');
 
                 if (e && e.nodeName == 'A') {
-                    t._sel(e.className.replace(/^.*mcePath_([0-9]+).*$/, '$1'));
+                    self._sel(e.className.replace(/^.*mcePath_([0-9]+).*$/, '$1'));
                     return false;
                 }
             });
@@ -292,7 +292,7 @@
                 o.deltaHeight = 0;
             }
 
-            t.deltaHeight = o.deltaHeight;
+            self.deltaHeight = o.deltaHeight;
             o.targetNode = null;
 
             ed.onKeyDown.add(function (ed, evt) {
@@ -302,11 +302,11 @@
                 if (evt.altKey) {
                     if (evt.keyCode === DOM_VK_F10) {
                         // Make sure focus is given to toolbar in Safari.
-                        // We can't do this in IE as it prevents giving focus to toolbar when editor is in a frame
+                        // We can'self do this in IE as it prevents giving focus to toolbar when editor is in a frame
                         if (tinymce.isWebKit) {
                             window.focus();
                         }
-                        t.toolbarGroup.focus();
+                        self.toolbarGroup.focus();
                         return Event.cancel(evt);
                     } else if (evt.keyCode === DOM_VK_F11) {
                         DOM.get(ed.id + '_path_row').focus();
@@ -317,7 +317,7 @@
 
             /*if (ed.getParam('accessibility_shortcut', 1)) {
              // alt+0 is the UK recommended shortcut for accessing the list of access controls.
-             ed.addShortcut('alt+0', '', 'mceShortcuts', t);
+             ed.addShortcut('alt+0', '', 'mceShortcuts', self);
              }*/
 
             return {
@@ -381,8 +381,8 @@
         // Internal functions
 
         _createLayout: function (s, tb, o, p) {
-            var t = this,
-                ed = t.editor,
+            var self = this,
+                ed = self.editor,
                 lo = s.theme_advanced_toolbar_location,
                 sl = s.theme_advanced_statusbar_location,
                 n, ic, etb, c;
@@ -397,7 +397,7 @@
 
             // Create toolbar container at top
             if (lo == 'top') {
-                t._addToolbars(tb, o);
+                self._addToolbars(tb, o);
             }
 
             // Create external toolbar
@@ -421,7 +421,7 @@
 
                 p.insertBefore(c, p.firstChild);
 
-                t._addToolbars(n, o);
+                self._addToolbars(n, o);
 
                 ed.onMouseUp.add(function () {
                     var e = DOM.get(ed.id + '_external');
@@ -451,7 +451,7 @@
             }
 
             if (sl == 'top') {
-                t._addStatusBar(tb, o);
+                self._addStatusBar(tb, o);
             }
 
             // Create iframe container
@@ -461,32 +461,32 @@
 
             // Create toolbar container at bottom
             if (lo == 'bottom') {
-                t._addToolbars(tb, o);
+                self._addToolbars(tb, o);
             }
 
             if (sl == 'bottom') {
-                t._addStatusBar(tb, o);
+                self._addStatusBar(tb, o);
             }
 
             return ic;
         },
 
         _addControls: function (v, tb) {
-            var t = this,
-                s = t.settings,
-                ed = t.editor,
-                di, cf = t.editor.controlManager;
+            var self = this,
+                s = self.settings,
+                ed = self.editor,
+                di, cf = self.editor.controlManager;
 
-            if (s.theme_advanced_disable && !t._disabled) {
+            if (s.theme_advanced_disable && !self._disabled) {
                 di = {};
 
                 each(explode(s.theme_advanced_disable), function (v) {
                     di[v] = 1;
                 });
 
-                t._disabled = di;
+                self._disabled = di;
             } else {
-                di = t._disabled;
+                di = self._disabled;
             }
 
             each(explode(v), function (n) {
@@ -496,7 +496,7 @@
                     return;
                 }
 
-                c = t.createControl(n, cf);
+                c = self.createControl(n, cf);
 
                 if (c) {
                     tb.add(c);
@@ -504,9 +504,9 @@
             });
         },
         _addToolbars: function (c, o) {
-            var t = this,
-                i, tb, ed = t.editor,
-                s = t.settings,
+            var self = this,
+                i, tb, ed = self.editor,
+                s = self.settings,
                 v, cf = ed.controlManager,
                 di, n, h = [],
                 a, toolbarGroup, toolbarsExist = false;
@@ -516,10 +516,10 @@
                 'tab_focus_toolbar': ed.getParam('theme_advanced_tab_focus_toolbar')
             });
 
-            t.toolbarGroup = toolbarGroup;
+            self.toolbarGroup = toolbarGroup;
 
             a = s.theme_advanced_toolbar_align.toLowerCase();
-            a = 'mce' + t._ufirst(a);
+            a = 'mce' + self._ufirst(a);
 
             n = DOM.add(c, 'div', {
                 'class': 'mceToolbar ' + a,
@@ -543,7 +543,7 @@
                     v = s['theme_advanced_buttons' + i + '_add_before'] + ',' + v;
                 }
 
-                t._addControls(v, tb);
+                self._addControls(v, tb);
 
                 toolbarGroup.add(tb);
 
@@ -567,9 +567,9 @@
             DOM.setHTML(n, h.join(''));
         },
         _addStatusBar: function (tb, o) {
-            var n, t = this,
-                ed = t.editor,
-                s = t.settings,
+            var n, self = this,
+                ed = self.editor,
+                s = self.settings,
                 r, mf, me, td;
 
             n = td = DOM.add(tb, 'div', {
@@ -609,7 +609,7 @@
                             return;
                         }
 
-                        t.resizeTo(o.cw, o.ch, false);
+                        self.resizeTo(o.cw, o.ch, false);
                     });
                 }
 
@@ -629,7 +629,7 @@
                             width = startWidth + (e.screenX - startX);
                             height = startHeight + (e.screenY - startY);
 
-                            t.resizeTo(width, height);
+                            self.resizeTo(width, height);
                         }
 
                         function endResize(e) {
@@ -641,7 +641,7 @@
 
                             width = startWidth + (e.screenX - startX);
                             height = startHeight + (e.screenY - startY);
-                            t.resizeTo(width, height, true);
+                            self.resizeTo(width, height, true);
 
                             ed.nodeChanged();
                         }
@@ -651,7 +651,7 @@
                         // Get the current rect size
                         startX = e.screenX;
                         startY = e.screenY;
-                        ifrElm = DOM.get(t.editor.id + '_ifr');
+                        ifrElm = DOM.get(self.editor.id + '_ifr');
                         startWidth = width = ifrElm.clientWidth;
                         startHeight = height = ifrElm.clientHeight;
 
@@ -675,13 +675,12 @@
             cm.setDisabled('redo', !um.hasRedo());
         },
         _nodeChanged: function (ed, cm, n, co, ob) {
-            var t = this,
+            var self = this,
                 p, de = 0,
-                v, c, s = t.settings,
-                cl, fz, fn, fc, bc, formatNames, matches;
+                v, c, s = self.settings;
 
-            tinymce.each(t.stateControls, function (c) {
-                cm.setActive(c, ed.queryCommandState(t.controls[c][1]));
+            tinymce.each(self.stateControls, function (c) {
+                cm.setActive(c, ed.queryCommandState(self.controls[c][1]));
             });
 
             function getParent(name) {
@@ -701,14 +700,14 @@
             }
 
             cm.setActive('visualaid', ed.hasVisual);
-            t._updateUndoStatus(ed);
+            self._updateUndoStatus(ed);
             cm.setDisabled('outdent', !ed.queryCommandState('Outdent'));
 
             var link = getParent('A');
             var img = getParent('IMG');
 
             function isLink(n) {
-                return !!n && n.href && (!n.name || !n.id);
+                return !!n && (n.href || (n.id || n.name));
             }
 
             if (c = cm.get('unlink')) {
@@ -722,9 +721,9 @@
                     'class': 'mcePathPath'
                 });
 
-                if (t.statusKeyboardNavigation) {
-                    t.statusKeyboardNavigation.destroy();
-                    t.statusKeyboardNavigation = null;
+                if (self.statusKeyboardNavigation) {
+                    self.statusKeyboardNavigation.destroy();
+                    self.statusKeyboardNavigation = null;
                 }
 
                 DOM.setHTML(p, '');
@@ -751,32 +750,37 @@
                             break;
 
                         case 'img':
-                            if (v = DOM.getAttrib(n, 'src'))
+                            if (v = DOM.getAttrib(n, 'src')) {
                                 ti += 'src: ' + v + ' ';
-
+                            }
                             break;
 
                         case 'a':
-                            if (v = DOM.getAttrib(n, 'href'))
+                            if (v = DOM.getAttrib(n, 'href')) {
                                 ti += 'href: ' + v + ' ';
+                            }
 
                             break;
 
                         case 'font':
-                            if (v = DOM.getAttrib(n, 'face'))
+                            if (v = DOM.getAttrib(n, 'face')) {
                                 ti += 'font: ' + v + ' ';
+                            }
 
-                            if (v = DOM.getAttrib(n, 'size'))
+                            if (v = DOM.getAttrib(n, 'size')) {
                                 ti += 'size: ' + v + ' ';
+                            }
 
-                            if (v = DOM.getAttrib(n, 'color'))
+                            if (v = DOM.getAttrib(n, 'color')) {
                                 ti += 'color: ' + v + ' ';
+                            }
 
                             break;
 
                         case 'span':
-                            if (v = DOM.getAttrib(n, 'style'))
+                            if (v = DOM.getAttrib(n, 'style')) {
                                 ti += 'style: ' + v + ' ';
+                            }
 
                             break;
                     }
@@ -804,8 +808,8 @@
                         node: n,
                         title: ti
                     };
-                    
-                    t.onResolveName.dispatch(t, na);
+
+                    self.onResolveName.dispatch(self, na);
                     ti = na.title;
                     na = na.name;
 
@@ -830,7 +834,7 @@
                 }, ed.getBody());
 
                 if (DOM.select('a', p).length > 0) {
-                    t.statusKeyboardNavigation = new tinymce.ui.KeyboardNavigation({
+                    self.statusKeyboardNavigation = new tinymce.ui.KeyboardNavigation({
                         root: ed.id + "_path_row",
                         items: DOM.select('a', p),
                         excludeFromTabOrder: true,
@@ -840,9 +844,11 @@
                     }, DOM);
                 }
 
-                var row = DOM.get(ed.id + "_path_row"), status = row.parentNode, mod = 20;
+                var row = DOM.get(ed.id + "_path_row"),
+                    status = row.parentNode,
+                    mod = 20;
 
-                tinymce.each(status.childNodes, function(n) {
+                tinymce.each(status.childNodes, function (n) {
                     if (DOM.hasClass(n, 'mcePathRow')) {
                         return true;
                     }
@@ -850,12 +856,12 @@
                     mod += n.offsetWidth;
                 });
 
-                tinymce.each(DOM.select('a', p), function(n) {                    
+                tinymce.each(DOM.select('a', p), function (n) {
                     DOM.removeClass(n, 'mcePathHidden');
-                    
-                    if((p.offsetWidth + mod + DOM.getPrev(p, '.mcePathLabel').offsetWidth) > status.offsetWidth) {
+
+                    if ((p.offsetWidth + mod + DOM.getPrev(p, '.mcePathLabel').offsetWidth) > status.offsetWidth) {
                         DOM.addClass(n, 'mcePathHidden');
-                    }    
+                    }
                 });
             }
         },
