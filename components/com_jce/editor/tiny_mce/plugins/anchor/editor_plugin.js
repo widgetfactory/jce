@@ -7,18 +7,13 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
-        is = tinymce.is,
         each = tinymce.each;
-    var Node = tinymce.html.Node;
-    var VK = tinymce.VK,
-        BACKSPACE = VK.BACKSPACE,
-        DELETE = VK.DELETE;
+    var VK = tinymce.VK;
 
     tinymce.create('tinymce.plugins.AnchorPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             this.editor = ed;
             this.url = url;
             var self = this;
@@ -30,11 +25,51 @@
             ed.settings.allow_html_in_named_anchor = true;
 
             // Register commands
-            ed.addCommand('mceInsertAnchor', function(ui, value) {
+            ed.addCommand('mceInsertAnchor', function (ui, value) {
                 return self._insertAnchor(value);
             });
 
-            ed.onNodeChange.add(function(ed, cm, n, co) {
+            ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+                var se = ed.selection,
+                    n = se.getNode();
+
+                // remove empty Definition List
+                switch (cmd) {
+                    case 'unlink':
+                        if (isAnchor(n)) {
+                            var id = n.id || n.name || '';
+
+                            if (!id) {
+                                return;
+                            }
+
+                            // find the associated anchor and remove
+                            each(ed.dom.select('a[href]', ed.getBody()), function (node) {
+                                var href = ed.dom.getAttrib(node, 'href');
+
+                                if (href === '#' + id) {
+                                    ed.dom.remove(node, 1);
+                                }
+                            });
+                        }
+
+                        var href = ed.dom.getAttrib(n, 'href');
+
+                        if (href && href.charAt(0) === "#") {
+                            each(ed.dom.select('a[id],a[name]', ed.getBody()), function (node) {
+                                var id = node.id || node.name;
+
+                                if (id && href === '#' + id) {
+                                    ed.dom.remove(node, 1);
+                                }
+                            });
+                        }
+
+                        break;
+                }
+            });
+
+            ed.onNodeChange.add(function (ed, cm, n, co) {
                 var s = isAnchor(n);
 
                 // clear any existing anchor selections
@@ -49,16 +84,16 @@
             });
 
             // Remove anchor on backspace or delete
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
                     self._removeAnchor(e);
                 }
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 // Display "a#name" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
-                    ed.theme.onResolveName.add(function(theme, o) {
+                    ed.theme.onResolveName.add(function (theme, o) {
                         var n = o.node,
                             v, href = n.href;
 
@@ -77,9 +112,10 @@
             });
 
             // Pre-init
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 function isAnchorLink(node) {
-                    var href = node.attr('href'), name = node.attr('name') || node.attr('id');
+                    var href = node.attr('href'),
+                        name = node.attr('name') || node.attr('id');
 
                     // must have a name or id attribute set
                     if (!name) {
@@ -88,23 +124,21 @@
                     // no href, and name set
                     if (!href) {
                         return true;
-                    }  
+                    }
 
                     // a valid anchor link, eg: #test
                     if (href.charAt(0) === "#" && href.length > 1) {
                         return true;
                     }
-                    
+
                     return false;
                 }
-                
+
                 // Convert anchor elements to image placeholder
-                ed.parser.addNodeFilter('a', function(nodes) {
+                ed.parser.addNodeFilter('a', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         var node = nodes[i],
-                            href = node.attr('href'),
-                            cls = node.attr('class') || '',
-                            name = node.attr('name') || node.attr('id');
+                            cls = node.attr('class') || '';
 
                         if (isAnchorLink(node)) {
                             if (!cls || /mce-item-anchor/.test(cls) === false) {
@@ -117,11 +151,11 @@
             });
 
             // prevent anchor from collapsing
-            ed.onBeforeSetContent.add(function(ed, o) {
+            ed.onBeforeSetContent.add(function (ed, o) {
                 o.content = o.content.replace(/<a id="([^"]+)"><\/a>/gi, '<a id="$1">\uFEFF</a>');
             });
         },
-        _removeAnchor: function(e) {
+        _removeAnchor: function (e) {
             var ed = this.editor,
                 s = ed.selection,
                 n = s.getNode();
@@ -136,7 +170,7 @@
                 }
             }
         },
-        _getAnchor: function() {
+        _getAnchor: function () {
             var ed = this.editor,
                 n = ed.selection.getNode(),
                 v;
@@ -146,7 +180,7 @@
 
             return v;
         },
-        _insertAnchor: function(v) {
+        _insertAnchor: function (v) {
             var ed = this.editor,
                 attrib;
 
@@ -210,7 +244,7 @@
 
                     at.href = at['data-mce-href'] = null;
 
-                    each(ed.dom.select('a[href="#mce_temp_url#"]'), function(link) {
+                    each(ed.dom.select('a[href="#mce_temp_url#"]'), function (link) {
                         ed.dom.setAttribs(link, at);
                     });
                 }
@@ -222,7 +256,7 @@
 
             return true;
         },
-        createControl: function(n, cm) {
+        createControl: function (n, cm) {
             var self = this,
                 ed = this.editor;
 
@@ -245,7 +279,7 @@
                         'buttons': [{
                             title: ed.getLang('insert', 'Insert'),
                             id: 'insert',
-                            click: function(e) {
+                            click: function (e) {
                                 input = DOM.get(ed.id + '_input_anchor');
                                 return self._insertAnchor(input.value);
                             },
@@ -254,7 +288,7 @@
                         }, {
                             title: ed.getLang('anchor.remove', 'Remove'),
                             id: 'remove',
-                            click: function(e) {
+                            click: function (e) {
                                 if (!DOM.hasClass(e.target, 'disabled')) {
                                     self._removeAnchor();
                                 }
@@ -265,7 +299,7 @@
                         }]
                     }, ed);
 
-                    c.onShowDialog.add(function() {
+                    c.onShowDialog.add(function () {
                         input = DOM.get(ed.id + '_input_anchor');
 
                         input.value = '';
@@ -287,12 +321,12 @@
                         input.focus();
                     });
 
-                    c.onHideDialog.add(function() {
+                    c.onHideDialog.add(function () {
                         input.value = '';
                     });
 
                     // Remove the menu element when the editor is removed
-                    ed.onRemove.add(function() {
+                    ed.onRemove.add(function () {
                         c.destroy();
                     });
 
