@@ -8,14 +8,10 @@
  * other free or open source software licenses.
  */
 (function() {
-	var each = tinymce.each, extend = tinymce.extend, JSON = tinymce.util.JSON;
-	var Node = tinymce.html.Node;
-
 	tinymce.create('tinymce.plugins.LinkPlugin', {
         init : function(ed, url) {
             this.editor = ed;
             this.url = url;
-            var self = this;
 
             function isLink(n) {
                 // no node specified
@@ -78,16 +74,6 @@
                 // set disabled if anchor
                 cm.setDisabled('link', isAnchor(n));
             });
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'Link',
-                author : 'Moxiecode Systems AB / Ryan Demmer',
-                authorurl : 'http://tinymce.moxiecode.com / https://www.joomlacontenteditor.net',
-                infourl : 'https://www.joomlacontenteditor.net',
-                version : '@@version@@'
-            };
         }
     });
 
