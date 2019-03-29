@@ -461,11 +461,6 @@
                     }
 
                     if (txt) {
-                        // get textNode if HTML tag
-                        if (elm.nodeType === 1) {
-                            elm = elm.firstChild;
-                        }
-
                         if ("innerText" in elm) {
                             elm.innerText = txt;
                         } else {
