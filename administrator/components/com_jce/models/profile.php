@@ -521,13 +521,10 @@ class JceModelProfile extends JModelAdmin
 
         // get layout rows and plugins data
         $rows = isset($data['rows']) ? $data['rows'] : '';
-        $plugins = isset($data['plugins']) ? $data['plugins'] : '';
-
-        $data = parent::validate($form, $data, $group);
 
         // restore layout rows and plugins data
-        $data['rows'] = $filter->clean($rows, 'STRING');
-        $data['plugins'] = $filter->clean($plugins, 'STRING');
+        $data['rows']       = $filter->clean($rows, 'STRING');
+        $data['plugins']    = $filter->clean($plugins, 'STRING');
 
         $area = $data['area'];
 
