@@ -217,9 +217,8 @@ class WFPacker extends JObject
         // Shortern 6-character hex color codes to 3-character where possible
         //$css = preg_replace('/#([a-f0-9])\\1([a-f0-9])\\2([a-f0-9])\\3/i', '#\1\2\3', $css);
 
-        require_once dirname(__FILE__) . '/cssmin.php';
-        $min = new CSSmin(false);
-        $css = $min->run($css);
+        require_once __DIR__ . '/vendor/cssmin/cssmin.php';
+        $css = CssMin::minifyrun($css);
 
         return trim($css);
     }
@@ -279,7 +278,7 @@ class WFPacker extends JObject
 
     protected function compileLess($string, $path)
     {
-        require_once WF_ADMINISTRATOR . '/classes/lessc.inc.php';
+        require_once __DIR__ . '/vendor/lessc/lessc.inc.php';
 
         $less = new lessc();
         // add file directory
