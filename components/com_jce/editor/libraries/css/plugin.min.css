@@ -1325,25 +1325,37 @@ input[type="range"]::-ms-thumb {
 /* fix layout in upload dialog */
 
 @media (min-width: 960px) {
+
+    /* IE 11 */
     .uk-form-horizontal .uk-form-controls {
         margin-left: auto;
-        margin-left: initial;
     }
+
     .uk-form-horizontal .uk-form-label {
         width: auto;
+    }
+
+    .uk-form-horizontal .uk-form-controls {
+        margin-left: initial;
+    }
+
+    .uk-form-horizontal .uk-form-label {
         width: initial;
     }
 
     .uk-form-horizontal .uk-width-1-10 {
         width: 10%;
     }
+
     .uk-form-horizontal .uk-width-2-10,
     .uk-form-horizontal .uk-width-1-5 {
         width: 20%;
     }
+
     .uk-form-horizontal .uk-width-3-10 {
         width: 30%;
     }
+
     .uk-form-horizontal .uk-width-4-10,
     .uk-form-horizontal .uk-width-2-5 {
         width: 40%;
@@ -1351,6 +1363,7 @@ input[type="range"]::-ms-thumb {
 }
 
 @media (min-width: 375px) {
+
     .uk-form-horizontal .uk-form-label,
     .uk-form-horizontal .uk-form-controls,
     .uk-form-row [class*="uk-width"] {
@@ -1371,10 +1384,12 @@ input[type="range"]::-ms-thumb {
 /* Phone portrait and smaller */
 
 @media (max-width: 375px) {
+
     /* Whole */
     .uk-width-mini-1-1 {
         width: 100%;
     }
+
     /* Halves */
     .uk-width-mini-1-2,
     .uk-width-mini-2-4,
@@ -1382,56 +1397,70 @@ input[type="range"]::-ms-thumb {
     .uk-width-mini-5-10 {
         width: 50%;
     }
+
     /* Thirds */
     .uk-width-mini-1-3,
     .uk-width-mini-2-6 {
         width: 33.333%;
     }
+
     .uk-width-mini-2-3,
     .uk-width-mini-4-6 {
         width: 66.666%;
     }
+
     /* Quarters */
     .uk-width-mini-1-4 {
         width: 25%;
     }
+
     .uk-width-mini-3-4 {
         width: 75%;
     }
+
     /* Fifths */
     .uk-width-mini-1-5,
     .uk-width-mini-2-10 {
         width: 20%;
     }
+
     .uk-width-mini-2-5,
     .uk-width-mini-4-10 {
         width: 40%;
     }
+
     .uk-width-mini-3-5,
     .uk-width-mini-6-10 {
         width: 60%;
     }
+
     .uk-width-mini-4-5,
     .uk-width-mini-8-10 {
         width: 80%;
     }
+
     /* Sixths */
     .uk-width-mini-1-6 {
         width: 16.666%;
     }
+
     .uk-width-mini-5-6 {
         width: 83.333%;
     }
+
     /* Tenths */
     .uk-width-mini-1-10 {
         width: 10%;
     }
+
     .uk-width-mini-3-10 {
         width: 30%;
     }
+
     .uk-width-mini-7-10 {
         width: 70%;
     }
+
     .uk-width-mini-9-10 {
         width: 90%;
     }
@@ -1512,23 +1541,40 @@ input[type="range"]::-ms-thumb {
     height: calc(100% - 41px);
 }
 
-.uk-margin-left-remove {margin-left: 0 !important;}
-.uk-margin-right-remove {margin-right: 0 !important;}
+.uk-margin-left-remove {
+    margin-left: 0 !important;
+}
 
-.uk-form input[type="radio"], .uk-form input[type="checkbox"] {
+.uk-margin-right-remove {
+    margin-right: 0 !important;
+}
+
+.uk-form input[type="radio"],
+.uk-form input[type="checkbox"] {
     background: #fff;
 }
 
-.uk-form input[type="radio"], .uk-form input[type="checkbox"] {
+/* IE 11 */
+.uk-form input[type="radio"],
+.uk-form input[type="checkbox"] {
+    border: initial;
+    overflow: auto;
+    margin-top: auto;
+    outline: auto;
+    background: auto;
+}
+
+.uk-form input[type="radio"],
+.uk-form input[type="checkbox"] {
     display: inline-block;
     height: 16px;
     width: 16px;
-    border: initial;;
+    border: initial;
     overflow: hidden;
-    margin-top: initial;;
+    margin-top: initial;
     vertical-align: middle;
     -webkit-appearance: checkbox;
-    outline: initial;;
+    outline: initial;
     background: initial;
 }
 
@@ -1536,9 +1582,11 @@ input[type="range"]::-ms-thumb {
     -webkit-appearance: radio;
 }
 
-.uk-form input[type="checkbox"]:checked::before, .uk-form input[type="checkbox"]:indeterminate::before {
+.uk-form input[type="checkbox"]:checked::before,
+.uk-form input[type="checkbox"]:indeterminate::before {
     content: "";
 }
+
 .uk-form input[type="radio"]:checked::before {
     content: "";
     display: none;

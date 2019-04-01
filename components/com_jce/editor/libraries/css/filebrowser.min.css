@@ -426,6 +426,15 @@ main > div:last-child {
   width: 100%;
 }
 
+/* IE11 */
+#browser-list-limit select {
+  vertical-align: auto;
+}
+
+#browser-list-limit label {
+  vertical-align: auto;
+}
+
 #browser-list-limit select {
   margin: 0;
   vertical-align: initial;
