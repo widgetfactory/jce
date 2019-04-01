@@ -1038,6 +1038,7 @@ html {
 .uk-modal-confirm .uk-modal-body,
 .uk-modal-prompt .uk-modal-body {
     flex: 1;
+    min-height: 2rem;
 }
 
 .uk-accordion-title {
