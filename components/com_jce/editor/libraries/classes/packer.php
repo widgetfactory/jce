@@ -218,7 +218,7 @@ class WFPacker extends JObject
         //$css = preg_replace('/#([a-f0-9])\\1([a-f0-9])\\2([a-f0-9])\\3/i', '#\1\2\3', $css);
 
         require_once __DIR__ . '/vendor/cssmin/cssmin.php';
-        $css = CssMin::minifyrun($css);
+        $css = CssMin::minify($css);
 
         return trim($css);
     }
