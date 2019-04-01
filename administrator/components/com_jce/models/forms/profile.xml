@@ -2,7 +2,7 @@
 <form>
     <fields>
         <fieldset name="setup">
-            <field name="name" type="text" class="input-xxlarge input-large-text" size="40" label="JGLOBAL_TITLE" description="WF_PROFILES_TITLE_DESC" required="true"/>
+            <field name="name" type="text" class="input-xxlarge input-large-text" size="40" label="JGLOBAL_TITLE" description="WF_PROFILES_NAME_DESC" required="true"/>
             <field name="description" type="text" class="input-xxlarge" label="JGLOBAL_DESCRIPTION" description="WF_PROFILES_DESCRIPTION_DESC"/>
             <field name="published" type="radio" label="JSTATUS" description="WF_PROFILES_ENABLED_DESC" class="btn-group btn-group-yesno" default="1">
                 <option value="1">JPUBLISHED</option>
@@ -26,8 +26,8 @@
                 <option value="1">WF_PROFILES_COMPONENTS_SELECT</option>
             </field>
             <field name="components" type="components" multiple="multiple" label="" description="" disabled="true" />
-            <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="" />
-            <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description=""></field>
+            <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" />
+            <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC"></field>
         </fieldset>
     </fields>
     <fields name="config">
