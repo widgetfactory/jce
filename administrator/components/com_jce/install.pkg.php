@@ -187,7 +187,7 @@ class pkg_jceInstallerScript
         }
 
         // clean up for legacy upgrade
-        if ($version && version_compare($version, '2.7.1', '<')) {
+        if ($version && version_compare($version, '2.7.7', '<')) {
             // remove admin folder
             JFolder::delete(JPATH_ADMINISTRATOR . '/components/com_jce');
 
