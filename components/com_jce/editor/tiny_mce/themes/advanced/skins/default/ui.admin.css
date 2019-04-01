@@ -106,3 +106,7 @@
 	background: #f5f5f5;
 	vertical-align: top;
 }
+
+.defaultSkin .mceStatusbar {
+	line-height: 1;
+}
