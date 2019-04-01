@@ -284,7 +284,7 @@ class WFPacker extends JObject
         // add file directory
         $less->addImportDir($path);
         // add joomla media folder
-        $less->addImportDir(JPATH_SITE . 'media');
+        $less->addImportDir(JPATH_SITE . '/media');
 
         try {
             return $less->compile($string);
