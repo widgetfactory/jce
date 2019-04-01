@@ -529,9 +529,11 @@ input[type="range"]::-ms-thumb {
 
 @media (min-width: 960px) {
     .uk-form-horizontal .uk-form-controls {
+        margin-left: auto;
         margin-left: initial;
     }
     .uk-form-horizontal .uk-form-label {
+        width: auto;
         width: initial;
     }
 
