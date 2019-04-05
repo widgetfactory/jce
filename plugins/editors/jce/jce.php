@@ -170,9 +170,10 @@ class plgEditorJCE extends JPlugin
             array_walk($buttons, function($button) {
                 $cls = $button->get('class', '');
 
-                $cls .= ' btn';
-                
-                $button->set('class', trim($cls));
+                if (empty($cls) || strpos($cls, 'btn') === false) {
+                    $cls .= ' btn';
+                    $button->set('class', trim($cls));
+                }
             });
 
             return JLayoutHelper::render('joomla.editors.buttons', $buttons);
