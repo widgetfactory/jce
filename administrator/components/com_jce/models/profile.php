@@ -209,6 +209,11 @@ class JceModelProfile extends JModelAdmin
                         continue;
                     }
 
+                    // must be assigned...
+                    if (!$plugins[$name]->active) {
+                        continue;
+                    }
+
                     // assign icon
                     $buttons[] = $plugins[$name];
                 }
