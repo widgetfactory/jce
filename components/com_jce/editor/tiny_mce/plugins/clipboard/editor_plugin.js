@@ -61,11 +61,6 @@
 
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
-
-    var isMsEdge = function () {
-        return navigator.userAgent.indexOf(' Edge/') !== -1;
-    };
-
     var InternalHtml = function () {
         var internalMimeType = 'x-tinymce/html';
         var internalMark = '<!-- ' + internalMimeType + ' -->';
@@ -99,8 +94,7 @@
 
         var hasWorkingClipboardApi = function (clipboardData) {
             // iOS supports the clipboardData API but it doesn't do anything for cut operations
-            // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11780845/
-            return tinymce.isIOS === false && clipboardData !== undefined && typeof clipboardData.setData === 'function' && isMsEdge() !== true;
+            return tinymce.isIOS === false && clipboardData !== undefined && typeof clipboardData.setData === 'function';
         };
 
         var setHtml5Clipboard = function (clipboardData, html, text) {
@@ -2348,38 +2342,7 @@
                         return false;
                     });
                 });
-            }
-
-            each(['Cut', 'Copy'], function (command) {
-                ed.addCommand(command, function () {
-                    var doc = ed.getDoc(),
-                        failed;
-
-                    // Try executing the native command
-                    try {
-                        doc.execCommand(command, false, null);
-                    } catch (ex) {
-                        // Command failed
-                        failed = true;
-                    }
-
-                    var msg = ed.getLang('clipboard_msg', '');
-                    msg = msg.replace(/\%s/g, tinymce.isMac ? 'CMD' : 'CTRL');
-
-                    // Present alert message about clipboard access not being available
-                    if (failed || !doc.queryCommandSupported(command)) {
-                        if (tinymce.isGecko) {
-                            ed.windowManager.confirm(msg, function (state) {
-                                if (state) {
-                                    open('http://www.mozilla.org/editor/midasdemo/securityprefs.html', '_blank');
-                                }
-                            });
-                        } else {
-                            ed.windowManager.alert(ed.getLang('clipboard_no_support'));
-                        }
-                    }
-                });
-            });
+            }            
 
             // Add commands
             each(['mcePasteText', 'mcePaste'], function (cmd) {
@@ -2388,7 +2351,7 @@
                         failed;
 
                     // just open the window
-                    if (ed.getParam('clipboard_paste_use_dialog') || (isIE && !doc.queryCommandEnabled('Paste'))) {
+                    if (ed.getParam('clipboard_paste_use_dialog')) {
                         return self._openWin(cmd);
                     } else {
                         try {
