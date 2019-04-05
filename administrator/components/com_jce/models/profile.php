@@ -354,60 +354,60 @@ class JceModelProfile extends JModelAdmin
 
                     // no parameter fields
                     if (empty($plugin->form->getFieldsets())) {
-                        $plugin->form   = false;
+                        $plugin->form = false;
                         $plugins[$name] = $plugin;
                         continue;
                     }
-                    
+
                     // bind data to the form
                     $plugin->form->bind($data->params);
 
                     $extensions = JcePluginsHelper::getExtensions();
 
-                    foreach($extensions as $type => $items) {
+                    foreach ($extensions as $type => $items) {
 
                         $item = new StdClass;
-                        $item->name     = '';
-                        $item->title    = '';
+                        $item->name = '';
+                        $item->title = '';
                         $item->manifest = WF_EDITOR_LIBRARIES . '/xml/config/' . $type . '.xml';
-                        $item->context  = '';
+                        $item->context = '';
 
                         array_unshift($items, $item);
 
                         foreach ($items as $p) {
                             // check for plugin fieldset using xpath, as fieldset can be empty
                             $fieldset = $plugin->form->getXml()->xpath('(//fieldset[@name="plugin.' . $type . '"])');
-    
+
                             // not supported, move along...
                             if (empty($fieldset)) {
                                 continue;
                             }
-    
+
                             $context = (string) $fieldset[0]->attributes()->context;
-    
+
                             // check for a context, eg: images, web, video
                             if ($context && !in_array($p->context, explode(',', $context))) {
                                 continue;
                             }
-    
+
                             if (is_file($p->manifest)) {
                                 $path = array($plugin->name, $type, $p->name);
-    
+
                                 // create new extension object
                                 $extension = new StdClass;
-    
+
                                 // set extension name as the plugin name
                                 $extension->name = $p->name;
-    
+
                                 // set extension title
                                 $extension->title = $p->title;
-    
+
                                 // load form
                                 $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . '][' . $type . ']', 'load_data' => true), true, '//extension');
-                                
+
                                 // get fieldsets if any
                                 $fieldsets = $extension->form->getFieldsets();
-    
+
                                 foreach ($fieldsets as $fieldset) {
                                     // load form
                                     $plugin->extensions[$type][$p->name] = $extension;
@@ -526,10 +526,11 @@ class JceModelProfile extends JModelAdmin
 
         // get layout rows and plugins data
         $rows = isset($data['rows']) ? $data['rows'] : '';
+        $plugins = isset($data['plugins']) ? $data['plugins'] : '';
 
-        // restore layout rows and plugins data
-        $data['rows']       = $filter->clean($rows, 'STRING');
-        $data['plugins']    = $filter->clean($plugins, 'STRING');
+        // clean layout rows and plugins data
+        $data['rows'] = $filter->clean($rows, 'STRING');
+        $data['plugins'] = $filter->clean($plugins, 'STRING');
 
         $area = $data['area'];
 
@@ -721,7 +722,7 @@ class JceModelProfile extends JModelAdmin
             $buffer .= "\n\t\t";
             $buffer .= '<profile>';
 
-           $fields = $table->getProperties();
+            $fields = $table->getProperties();
 
             foreach ($fields as $key => $value) {
                 // skip some stuff
