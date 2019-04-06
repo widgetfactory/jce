@@ -38,6 +38,7 @@
             <file charset="utf8" driver="sqlzure">sql/sqlsrv.sql</file>
             <file charset="utf8" driver="sqlazure">sql/sqlsrv.sql</file>
             <file charset="utf8" driver="postgresql">sql/postgresql.sql</file>
+            <file charset="utf8" driver="pgsql">sql/postgresql.sql</file>
         </sql>
     </install>
 
