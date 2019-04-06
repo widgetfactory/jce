@@ -39,6 +39,7 @@ abstract class JceProfilesHelper
                 $driver = 'sqlsrv';
                 break;
             case 'postgresql':
+            case 'pgsql':
                 $driver = 'postgresql';
                 break;
         }
@@ -53,20 +54,6 @@ abstract class JceProfilesHelper
                 // replace prefix
                 $query = $db->replacePrefix((string) $query);
 
-                // Postgresql needs special attention because of the query syntax
-                if ($driver == 'postgresql') {
-                    $query = "CREATE OR REPLACE FUNCTION create_table_if_not_exists (create_sql text)
-                    RETURNS bool as $$
-                    BEGIN
-                        BEGIN
-                            EXECUTE create_sql;
-                            EXCEPTION WHEN duplicate_table THEN RETURN false;
-                        END;
-                        RETURN true;
-                    END; $$
-                    LANGUAGE plpgsql;
-                    SELECT create_table_if_not_exists ('" . $query . "');";
-                }
                 // set query
                 $db->setQuery(trim($query));
 
