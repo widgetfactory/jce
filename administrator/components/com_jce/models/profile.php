@@ -462,11 +462,15 @@ class JceModelProfile extends JModelAdmin
                     $value = implode(',', filter_var_array($value, FILTER_SANITIZE_STRING));
                     break;
                 case 'area':
-                    if (count($value) === 2) {
-                        $value = array(0);
+                    if (is_array($value)) {
+                        if (count($value) === 2) {
+                            $value = 0;
+                        } else {
+                            $value = $value[0];
+                        }
                     }
 
-                    $value = (int) $value[0];
+                    $value = $value;
 
                     break;
                 case 'components':
@@ -531,14 +535,6 @@ class JceModelProfile extends JModelAdmin
         // clean layout rows and plugins data
         $data['rows'] = $filter->clean($rows, 'STRING');
         $data['plugins'] = $filter->clean($plugins, 'STRING');
-
-        $area = $data['area'];
-
-        if (count($area) === 2) {
-            $area = array(0);
-        }
-
-        $data['area'] = (int) $area[0];
 
         // add back config data
         $data['params'] = $filter->clean($config, 'ARRAY');
