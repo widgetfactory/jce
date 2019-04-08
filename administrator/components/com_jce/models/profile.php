@@ -79,6 +79,28 @@ class JceModelProfile extends JModelAdmin
 
             // prepend "editor" to array
             array_unshift($plugins, 'editor');
+
+            $fields = $form->getFieldset();
+
+            foreach ($fields as $field) {
+                $name = $field->getAttribute('name');
+
+                // get the field group and add the field name
+                $group      = (string) $field->group;
+                $group      = $group . '.' . $name;
+                $group      = explode('.', $group);
+
+                // remove "config" from group name
+                array_shift($group);
+
+                // create key, eg: editor.resize_width
+                $key = implode('.', $group);
+
+                // reset the "default" attribute value
+                if ($registry->exists($key) && !$registry->get($key, '')) {
+                    $form->setFieldAttribute($name, 'default', '', (string) $field->group);
+                }
+            }
         }
 
         parent::preprocessForm($form, $data);
