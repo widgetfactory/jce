@@ -70,12 +70,7 @@ class JFormFieldRepeatable extends JFormField
                 // escape value
                 $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 
-                // revert to default if empty
-                if (empty($field->value)) {
-                    $field->value = $field->default;
-                }
-
-                $field->setup($field->element, $value, $this->group);
+                $field->setup($field->element, $field->value, $this->group);
 
                 $field->id .= '_' . $index . '_' . $n;
                 $field->name = '';
