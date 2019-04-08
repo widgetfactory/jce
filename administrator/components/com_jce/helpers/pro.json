@@ -67,7 +67,7 @@
         "title": "WF_TEXTPATTERN_TITLE",
         "description": "WF_TEXTPATTERN_DESC",
         "icon": "",
-        "editable": 0,
+        "editable": 1,
         "row": 0,
         "core": 1
     }
