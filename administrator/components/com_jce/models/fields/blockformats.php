@@ -21,7 +21,32 @@ class JFormFieldBlockformats extends JFormFieldCheckboxes
      */
     protected $layout = 'form.field.blockformats';
 
-    protected static $blockformats = array('p' => 'Paragraph', 'div' => 'Div', 'div_container' => 'Div Container', 'h1' => 'Heading1', 'h2' => 'Heading2', 'h3' => 'Heading3', 'h4' => 'Heading4', 'h5' => 'Heading5', 'h6' => 'Heading6', 'blockquote' => 'Blockquote', 'address' => 'Address', 'code' => 'Code', 'pre' => 'Preformatted', 'samp' => 'Sample', 'span' => 'Span', 'section' => 'Section', 'article' => 'Article', 'aside' => 'Aside', 'header' => 'Header', 'footer' => 'Footer', 'nav' => 'Nav', 'figure' => 'Figure', 'dt' => 'Definition Term', 'dd' => 'Definition List');
+    protected static $blockformats = array(
+        'p' => 'Paragraph',
+        'div' => 'Div',
+        'div_container' => 'Div Container',
+        'h1' => 'Heading1',
+        'h2' => 'Heading2',
+        'h3' => 'Heading3',
+        'h4' => 'Heading4',
+        'h5' => 'Heading5',
+        'h6' => 'Heading6',
+        'blockquote' => 'Blockquote',
+        'address' => 'Address',
+        'code' => 'Code',
+        'pre' => 'Preformatted',
+        'samp' => 'Sample',
+        'span' => 'Span',
+        'section' => 'Section',
+        'article' => 'Article',
+        'aside' => 'Aside',
+        'header' => 'Header',
+        'footer' => 'Footer',
+        'nav' => 'Nav',
+        'figure' => 'Figure',
+        'dt' => 'Definition Term',
+        'dd' => 'Definition List'
+    );
 
     /**
      * Allow to override renderer include paths in child fields
@@ -38,22 +63,19 @@ class JFormFieldBlockformats extends JFormFieldCheckboxes
     protected function getOptions()
     {
         $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
-        $options   = array();
+        $options = array();
 
         $blockformats = self::$blockformats;
 
         if (!empty($this->value)) {
-            $value = is_array($this->value) ? $this->value : explode(',', $this->value);
-
-            $blockformats = array_unique(array_merge($value, array_keys(self::$blockformats)));
+            $this->value = is_array($this->value) ? $this->value : explode(',', $this->value);
         }
-        
-        foreach($blockformats as $value => $text)
-        {           
+
+        foreach (self::$blockformats as $value => $text) {
             $tmp = array(
-                'value'    => $value,
-                'text'     => JText::alt($text, $fieldname),
-                'checked'  => empty($this->value) || in_array($value, array_keys(self::$blockformats))
+                'value' => $value,
+                'text' => JText::alt($text, $fieldname),
+                'checked' => empty($this->value) || in_array($value, $this->value),
             );
 
             $options[] = (object) $tmp;
