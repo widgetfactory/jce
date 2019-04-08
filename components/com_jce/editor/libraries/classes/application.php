@@ -413,7 +413,8 @@ class WFApplication extends JObject
         // get a parameter
         $value = $params->get($key);
 
-        if (is_null($value)) {
+        // key not present in params, use fallback value
+        if ($params->exists($key) === false) {
             $value = $fallback;
         } else {
             if (!$allowempty && $this->isEmptyValue($value)) {
