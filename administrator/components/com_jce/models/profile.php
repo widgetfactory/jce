@@ -72,32 +72,26 @@ class JceModelProfile extends JModelAdmin
     protected function preprocessForm(JForm $form, $data, $group = 'content')
     {
         if (!empty($data->config)) {
-            $registry = new JRegistry($data->config);
-
             // get plugins from profile data
             $plugins = explode(',', $data->plugins);
 
             // prepend "editor" to array
             array_unshift($plugins, 'editor');
 
+            $registry = new JRegistry($data);
+
+            // process individual fields to remove default value if required
             $fields = $form->getFieldset();
 
             foreach ($fields as $field) {
                 $name = $field->getAttribute('name');
 
                 // get the field group and add the field name
-                $group      = (string) $field->group;
-                $group      = $group . '.' . $name;
-                $group      = explode('.', $group);
+                $group = (string) $field->group;
+                $group = $group . '.' . $name;
 
-                // remove "config" from group name
-                array_shift($group);
-
-                // create key, eg: editor.resize_width
-                $key = implode('.', $group);
-
-                // reset the "default" attribute value
-                if ($registry->exists($key) && !$registry->get($key, '')) {
+                // reset the "default" attribute value if a value is set
+                if ($registry->exists($group)) {
                     $form->setFieldAttribute($name, 'default', '', (string) $field->group);
                 }
             }
