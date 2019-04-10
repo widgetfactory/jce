@@ -3,7 +3,9 @@
         $(this).on('click change', function() {
             var state = this.checked;
 
-            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').prop('disabled', !state).toggleClass('uk-text-muted', !state);
+            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').toggleClass('uk-text-muted', !state).attr('disabled', function() {
+                return !state ? true : null;
+            }).change();
 
             $(this).trigger('border:change');
         }).change();
@@ -384,6 +386,10 @@
             var n, v;
 
             for (n in s) {
+                if (!n) {
+                    continue;
+                }
+                
                 v = s[n];
 
                 if (n === "direction") {

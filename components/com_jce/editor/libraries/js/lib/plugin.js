@@ -240,7 +240,7 @@
                 var elm = this;
 
                 // remove # from value
-                if (v.charAt(0) === "#") {
+                if (v && v.charAt(0) === "#") {
                     this.value = v.substr(1);
                     v = this.value;
                 }
@@ -251,7 +251,9 @@
 
                 $(this).parent('.uk-form-controls, td, span').addClass('uk-form-icon uk-form-icon-both').prepend('<i class="uk-icon-hashtag" />');
 
-                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" aria-label="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).prop('disabled', $(this).is(':disabled'));
+                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" aria-label="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).attr('disabled', function() {
+                    return $(elm).is(':disabled') ? true : null;
+                });
 
                 $(this).on('colorpicker:pick', function () {
                     var v = this.value;
@@ -269,7 +271,7 @@
 
                     var v = this.value;
 
-                    if (v.charAt(0) === "#") {
+                    if (v && v.charAt(0) === "#") {
                         $(this).val(v.substr(1));
                     }
 
@@ -279,7 +281,9 @@
                     }
 
                     // toggle disabled
-                    $(this).next('.uk-icon-colorpicker').prop('disabled', this.disabled);
+                    $(this).next('.uk-icon-colorpicker').attr('disabled', function() {
+                        return elm.disabled ? true : null;
+                    });
 
                     // fire event
                     $(this).trigger('colorpicker:pick', '#' + v);
