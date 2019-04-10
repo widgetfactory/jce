@@ -58,7 +58,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
         JHtml::_('jquery.framework');
 
         $document = JFactory::getDocument();
-        $document->addScriptDeclaration('jQuery(document).ready(function($){$(".wf-media-input").removeAttr("readonly");});');
+        $document->addScript(JURI::root(true) . '/plugins/system/jce/js/media.js');
         $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
