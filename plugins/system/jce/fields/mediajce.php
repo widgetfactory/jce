@@ -68,8 +68,8 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $data = parent::getLayoutData();
 
         $extraData = array(
-            'link'      => $this->link . '&element=' . $data['id'],
-            'class'     => $this->element['class'] . ' input-large wf-media-input'
+            'link'      => $this->link,
+            'class'     => $this->element['class'] . ' input-medium wf-media-input'
         );
 
         return array_merge($data, $extraData);

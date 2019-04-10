@@ -24,11 +24,6 @@ class PlgFieldsMediaJce extends FieldsPlugin
     public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form)
     {
         $fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
-
-        if (!$fieldNode) {
-            return $fieldNode;
-        }
-
         return $fieldNode;
     }
 }

@@ -45,8 +45,6 @@ abstract class WfBrowserHelper
 
     public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
     {
-        $link = self::getBrowserLink($element, $filter, $callback);
-
-        return $link;
+        return self::getBrowserLink($element, $filter, $callback);
     }
 }

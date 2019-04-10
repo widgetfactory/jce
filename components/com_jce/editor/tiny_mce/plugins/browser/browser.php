@@ -90,12 +90,14 @@ class WFBrowserPlugin extends WFMediaManager
 
                 $element    = $app->input->getCmd('element', '');
                 $callback   = $app->input->getCmd('callback', '');
+                $field      = $app->input->getCmd('fieldid', '');
 
                 $settings = array(
-                    'site_url' => JURI::base(true).'/',
-                    'language' => WFLanguage::getCode(),
-                    'element' => $element,
-                    'token' => JSession::getFormToken(),
+                    'site_url'  => JURI::base(true).'/',
+                    'language'  => WFLanguage::getCode(),
+                    'element'   => $element,
+                    'fieldid'   => $field,
+                    'token'     => JSession::getFormToken(),
                 );
 
                 if ($callback) {
