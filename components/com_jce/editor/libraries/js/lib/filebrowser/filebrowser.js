@@ -472,31 +472,6 @@
                 });
             }
 
-            // fix ie8 layout
-            if (!$.support.cssFloat && document.querySelector) {
-
-                setTimeout(function () {
-                    var ph = $('main', '#browser').height();
-
-                    $('#browser-list, #browser-tree, #browser-details-container', '#browser').each(function () {
-                        var self = this,
-                            m = 0;
-
-                        $(this).siblings().each(function () {
-                            var h = $(this).outerHeight(true);
-                            m += parseInt(h);
-                        });
-
-                        $.each(['top', 'bottom'], function (i, k) {
-                            var v = $(self).css('padding-' + k);
-                            m += parseInt(v);
-                        });
-
-                        $(this).height(ph - m);
-                    });
-                }, 0);
-            }
-
             // set scrollEvents cancel
             $('#browser-list').on(scrollEvents, function() {
                 $(this).stop();
