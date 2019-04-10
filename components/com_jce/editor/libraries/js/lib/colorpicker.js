@@ -882,7 +882,7 @@
                 $(ifr).attr({
                     'src': 'javascript:""',
                     'id': 'stylsheets_iframe'
-                }).hide().appendTo('body').load(function(e) {
+                }).hide().appendTo('body').on('load', function(e) {
                     el = e.target, doc = el.contentWindow.document;
 
                     if (doc && doc.styleSheets) {

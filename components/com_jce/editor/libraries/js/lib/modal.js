@@ -451,7 +451,7 @@
                         'src': url,
                         'scrolling': 'auto',
                         'frameborder': 0
-                    }).load(function() {
+                    }).on('load', function() {
                         if ($.isFunction(options.onFrameLoad)) {
                             options.onFrameLoad.call(this);
                         }
