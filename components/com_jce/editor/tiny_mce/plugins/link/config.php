@@ -16,5 +16,8 @@ class WFLinkPluginConfig
 
         // expose globally for use by Autolink and Clipboard
         $settings['default_link_target'] = $wf->getParam('link.target', '');
+
+        $settings['autolink_email'] = $wf->getParam('link.autolink_email', 1, 1);
+        $settings['autolink_url'] = $wf->getParam('link.autolink_url', 1, 1);
     }
 }
