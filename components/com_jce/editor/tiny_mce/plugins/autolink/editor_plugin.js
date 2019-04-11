@@ -192,9 +192,21 @@
 
 			if (matches) {
 				if (matches[1] == 'www.') {
-					matches[1] = 'http://www.';
+					matches[1] = 'https://www.';
 				} else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
 					matches[1] = 'mailto:' + matches[1];
+				}
+
+				if (matches[1].indexOf('http') !== -1) {
+					if (!editor.getParam('autolink_url', true)) {
+						return;
+					}
+				}
+
+				if (matches[1].indexOf('mailto:') !== -1) {
+					if (!editor.getParam('autolink_email', true)) {
+						return;
+					}
 				}
 
 				bookmark = editor.selection.getBookmark();
