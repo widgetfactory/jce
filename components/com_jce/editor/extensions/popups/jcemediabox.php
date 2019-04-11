@@ -52,13 +52,13 @@ class WFPopupsExtension_Jcemediabox
             'width' => 600,
             'album' => '#jcemediabox_popup_group',
             'multiple' => '#jcemediabox_popup_title,#jcemediabox_popup_caption',
-            'attribute' => $wf->getParam('jcemediabox.attribute', 'data-mediabox'),
-            'popup_group' => $wf->getParam('jcemediabox.popup_group', ''),
-            'popup_icon' => $wf->getParam('jcemediabox.popup_icon', 1),
-            'popup_icon_position' => $wf->getParam('jcemediabox.popup_icon_position', ''),
-            'popup_autopopup' => $wf->getParam('jcemediabox.popup_autopopup', ''),
-            'popup_hide' => $wf->getParam('jcemediabox.popup_hide', 0),
-            'popup_mediatype' => $wf->getParam('jcemediabox.popup_mediatype', ''),
+            'attribute' => $wf->getParam('popups.jcemediabox.attribute', 'data-mediabox'),
+            'popup_group' => $wf->getParam('popups.jcemediabox.popup_group', ''),
+            'popup_icon' => $wf->getParam('popups.jcemediabox.popup_icon', 1),
+            'popup_icon_position' => $wf->getParam('popups.jcemediabox.popup_icon_position', ''),
+            'popup_autopopup' => $wf->getParam('popups.jcemediabox.popup_autopopup', ''),
+            'popup_hide' => $wf->getParam('popups.jcemediabox.popup_hide', 0),
+            'popup_mediatype' => $wf->getParam('popups.jcemediabox.popup_mediatype', ''),
         );
     }
 
@@ -66,7 +66,7 @@ class WFPopupsExtension_Jcemediabox
     {
         $wf = WFEditorPlugin::getInstance();
 
-        if ((JPluginHelper::isEnabled('system', 'jcemediabox') || JPluginHelper::isEnabled('system', 'wf_lightcase')) && $wf->getParam('jcemediabox.enable', 1) == 1) {
+        if ((JPluginHelper::isEnabled('system', 'jcemediabox') || JPluginHelper::isEnabled('system', 'wf_lightcase')) && $wf->getParam('popups.jcemediabox.enable', 1) == 1) {
             return true;
         }
 
