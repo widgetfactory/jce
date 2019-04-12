@@ -146,6 +146,30 @@ class WFEditor
         return $this->getSettings();
     }
 
+    private function getCompressionOptions()
+    {
+        $wf = WFApplication::getInstance();
+        
+        // check for joomla debug mode
+        $debug = JFactory::getConfig()->get('debug');
+
+        // default compression states
+        $options = array(
+            'javascript' => 0,
+            'css' => 0,
+        );
+
+        // set compression states, only if debug mode is off
+        if ((int) $debug === 0) {
+            $options = array(
+                'javascript' => (int) $wf->getParam('editor.compress_javascript', 0, 0),
+                'css' => (int) $wf->getParam('editor.compress_css', 0, 0),
+            );
+        }
+
+        return $options;
+    }
+
     public function getSettings()
     {
         // get an editor instance
@@ -167,8 +191,6 @@ class WFEditor
             'theme' => 'none',
             'plugins' => '',
         );
-
-        $settings['language_load'] = false;
 
         // if a profile is set
         if (is_object($this->profile)) {
@@ -258,49 +280,29 @@ class WFEditor
             }
 
         } // end profile
-        // check for joomla debug mode
-        $config = JFactory::getConfig();
 
-        if (defined('JPATH_PLATFORM')) {
-            $debug = $config->get('debug');
-        } else {
-            $debug = $config->getValue('config.debug');
-        }
+        // get compression options stylesheet
+        $settings['compress'] = $this->getCompressionOptions();
 
-        $compress = array('javascript' => false, 'css' => false);
-
-        // set compression states
-        if ((int) $debug === 0) {
-            $compress = array('javascript' => (int) $wf->getParam('editor.compress_javascript', 0), 'css' => (int) $wf->getParam('editor.compress_css', 0));
-        }
-
-        // set compression
-        if ($compress['css']) {
+        // set css compression
+        if ($settings['compress']['css']) {
             $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&context=' . $this->context . '&' . $token . '=1');
         } else {
             // CSS
             $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
         }
 
-        // set compression
-        if ($compress['javascript']) {
+        // set javascript compression script
+        if ($settings['compress']['javascript']) {
             $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&context=' . $this->context . '&' . $token . '=1');
         } else {
+            // Tinymce
             $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
             // Editor
             $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
-
-            if (array_key_exists('language_load', $settings)) {
-                // language
-                $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&context=' . $this->context . '&' . $token . '=1');
-            }
+            // language
+            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&context=' . $this->context . '&' . $token . '=1');
         }
-
-        // remove 'rows' key from $settings
-        unset($settings['rows']);
-
-        // pass compresison states to settings
-        $settings['compress'] = json_encode($compress);
 
         //Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
@@ -313,11 +315,13 @@ class WFEditor
             }
         }
 
-        // check for language files
-        $this->checkLanguages($settings);
-
         // process settings
-        array_walk($settings, function (&$value) {
+        array_walk($settings, function (&$value, $key) {
+            // remove 'rows' key from $settings
+            if ($key === "rows") {
+                $value = '';
+            }
+            
             if (is_array($value) && $value === array_values($value)) {
                 $value = implode(',', $value);
             }
@@ -337,6 +341,7 @@ class WFEditor
             if ($value === 'true') {
                 $value = true;
             }
+
             if ($value === 'false') {
                 $value = false;
             }
@@ -356,7 +361,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $this->addScriptDeclaration('try{WFEditor.init(' . $tinymce . ');}catch(e){console.debug(e);}');
 
@@ -427,40 +432,6 @@ class WFEditor
         }
 
         return $output;
-    }
-
-    /**
-     * Check the current language pack exists and is complete.
-     *
-     * @param array $settings Settings array
-     */
-    private function checkLanguages(&$settings)
-    {
-        $plugins = array();
-        $language = $settings['language'];
-
-        // only if languages are loaded and not english
-        if (array_key_exists('language_load', $settings) === false && $language != 'en') {
-            jimport('joomla.filesystem.file');
-
-            // check main languages and reset to english
-            if (!JFile::exists(WF_EDITOR . '/tiny_mce/langs/' . $language . '.js') || !JFile::exists(WF_EDITOR_THEMES . '/advanced/langs/' . $language . '.js')) {
-                $settings['language'] = 'en';
-
-                return;
-            }
-
-            foreach ((array) $settings['plugins'] as $plugin) {
-                $path = WF_EDITOR_PLUGINS . '/' . $plugin;
-
-                // if english file exists then the installed language file should too
-                if (JFile::exists($path . '/langs/en.js') && !JFile::exists($path . '/langs/' . $language . '.js')) {
-                    $plugins[] = $plugin;
-                }
-            }
-        }
-
-        $settings['skip_plugin_languages'] = $plugins;
     }
 
     /**
