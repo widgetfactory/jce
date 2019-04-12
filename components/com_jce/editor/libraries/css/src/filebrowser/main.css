@@ -805,7 +805,8 @@ nav.uk-navbar .uk-button.action {
 .png .uk-icon,
 .gif .uk-icon,
 .bmp .uk-icon,
-.tiff .uk-icon {
+.tiff .uk-icon,
+.webp .uk-icon {
   color: #4f9245;
 }
 

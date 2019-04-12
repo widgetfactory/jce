@@ -31,7 +31,7 @@ class WFFileBrowser extends JObject
     public $filesystem = 'joomla';
 
     /* @var string */
-    public $filetypes = 'jpg,jpeg,png,gif';
+    public $filetypes = 'jpg,jpeg,png,gif,webp';
 
     /* @var array */
     public $upload = array(
@@ -192,7 +192,7 @@ class WFFileBrowser extends JObject
 
     private function getViewable()
     {
-        return 'jpeg,jpg,gif,png,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx';
+        return 'jpeg,jpg,gif,png,webp,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx';
     }
 
     /**

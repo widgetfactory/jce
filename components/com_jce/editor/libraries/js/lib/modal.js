@@ -484,7 +484,7 @@
                 'classes': 'uk-modal-dialog-large uk-modal-preview',
                 open: function(e) {
                     // image
-                    if (/\.(jpg|jpeg|gif|png)/i.test(url)) {
+                    if (/\.(jpg|jpeg|gif|png|webp)/i.test(url)) {
                         $(div).addClass('image-preview loading');
 
                         var img = new Image(),

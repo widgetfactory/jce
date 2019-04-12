@@ -44,7 +44,7 @@ class WFBrowserPlugin extends WFMediaManager
         $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
 
         $map = array(
-            'images' => 'jpg,jpeg,png,gif',
+            'images' => 'jpg,jpeg,png,gif,webp',
             'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
             'html' => 'html,htm,txt',
             'files' => $filetypes,
