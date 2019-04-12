@@ -54,7 +54,8 @@
     background-position: 0 -160px;
 }
 
-.file.png {
+.file.png,
+.file.webp {
     background-position: 0 -180px;
 }
 

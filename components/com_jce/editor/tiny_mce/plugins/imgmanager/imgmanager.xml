@@ -17,7 +17,7 @@
 
             <field name="dir" type="text" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
             <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" />
-            <field name="extensions" type="extension" class="extensions" default="jpeg,jpg,png,gif" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC" />
+            <field name="extensions" type="extension" class="extensions" default="jpeg,jpg,png,gif,webp" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC" />
             <!--field name="hide_xtd_btns" type="yesno" default="0" label="WF_IMGMANAGER_HIDE_BUTTONS" description="WF_IMGMANAGER_HIDE_BUTTONS_DESC">
             <option value="1">JYES</option>
             <option value="0">JNO</option>

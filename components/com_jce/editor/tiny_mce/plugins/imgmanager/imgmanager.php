@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 class WFImgManagerPlugin extends WFMediaManager
 {
-    public $_filetypes = 'jpg,jpeg,png,gif';
+    public $_filetypes = 'jpg,jpeg,png,gif,webp';
 
     public function __construct($config = array())
     {

@@ -53,7 +53,8 @@
     background: url(../img/ext.png) no-repeat 0 -160px;
 }
 
-.file.png {
+.file.png,
+.file.webp {
     background: url(../img/ext.png) no-repeat 0 -180px;
 }
 
