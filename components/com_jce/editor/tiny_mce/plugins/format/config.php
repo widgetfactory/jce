@@ -44,7 +44,9 @@ class WFFormatPluginConfig
 
         // Relative urls
         $settings['relative_urls'] = $wf->getParam('editor.relative_urls', 1, 1, 'boolean');
-        if ($settings['relative_urls'] == 0) {
+        
+        // set remove_script_host if relative_urls is disabled
+        if ($settings['relative_urls'] === false) {
             $settings['remove_script_host'] = false;
         }
     }
