@@ -12,14 +12,14 @@ class WFImgmanagerPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        require_once __DIR__.'/imgmanager.php';
+        require_once __DIR__ . '/imgmanager.php';
 
         // set plugin
         JFactory::getApplication()->input->set('plugin', 'imgmanager');
 
         $plugin = new WFImgmanagerPlugin();
 
-        if ($plugin->getParam('inline_upload', $plugin->getParam('dragdrop_upload', 1, 0), 0)) {
+        if ($plugin->getParam('inline_upload', 1)) {
             $settings['imgmanager_upload'] = array(
                 'max_size' => $plugin->getParam('max_size', 1024),
                 'filetypes' => $plugin->getFileTypes(),
