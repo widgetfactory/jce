@@ -53,9 +53,10 @@ class WFSpellcheckerPluginConfig
             $settings['spellchecker_languages'] = '+'.implode(',', $languages);
         }
 
-        $settings['spellchecker_engine'] = $engine;
+        // only needs to be set if not "browser"
+        if ($engine !== "browser") {
+            $settings['spellchecker_engine'] = $engine;
 
-        if ($engine == 'pspell' || $engine == 'enchant') {
             $settings['spellchecker_suggestions'] = $wf->getParam('spellchecker.suggestions', 1, 1);
         }
     }
