@@ -24,11 +24,11 @@ class WFMediaManagerBase extends WFEditorPlugin
         }
 
         if (!array_key_exists('view_path', $config)) {
-            $config['view_path'] = WF_EDITOR_LIBRARIES.'/views/plugin';
+            $config['view_path'] = WF_EDITOR_LIBRARIES . '/views/plugin';
         }
 
         if (!array_key_exists('template_path', $config)) {
-            $config['template_path'] = WF_EDITOR_LIBRARIES.'/views/plugin/tmpl';
+            $config['template_path'] = WF_EDITOR_LIBRARIES . '/views/plugin/tmpl';
         }
 
         // Call parent
@@ -55,7 +55,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // add caller if set
         if ($caller) {
-            $name .= '.'.$caller;
+            $name .= '.' . $caller;
         }
 
         if (!isset(self::$browser[$name])) {
@@ -107,7 +107,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $options['dir'] = $browser->getFileSystem()->getRootDir();
 
         // set global options
-        $document->addScriptDeclaration('FileBrowser.options='.json_encode($options).';');
+        $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
     }
 
     public function getFileTypes()
@@ -122,7 +122,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
     private function getFileSystem()
     {
-        $filesystem = $this->getParam('filesystem.name', '', '', 'string', false);
+        $filesystem = $this->getParam('filesystem.name', '');
 
         // if an object, get the name
         if (is_object($filesystem)) {
@@ -146,7 +146,7 @@ class WFMediaManagerBase extends WFEditorPlugin
                 // set tmp directory
                 define('GETID3_TEMP_DIR', $app->getCfg('tmp_path'));
 
-                require_once WF_EDITOR_LIBRARIES.'/classes/vendor/getid3/getid3/getid3.php';
+                require_once WF_EDITOR_LIBRARIES . '/classes/vendor/getid3/getid3/getid3.php';
             }
 
             $id3 = new getID3();
@@ -274,12 +274,12 @@ class WFMediaManagerBase extends WFEditorPlugin
         $filter = array_filter($filter);
 
         // get directory from parameter
-        $dir = $this->getParam('dir', '', '', 'string', false);
+        $dir = $this->getParam('dir', '');
 
         // fix Link plugin legacy "direction" conflict
         if ($this->get('caller') === 'link') {
-            $fallback = $this->getParam('editor.dir');
-            $dir = $this->getParam($this->getName().'.dir', $fallback);
+            $fallback = $this->getParam('editor.dir', '');
+            $dir = $this->getParam($this->getName() . '.dir', $fallback);
         }
 
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
@@ -301,7 +301,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             'filetypes' => $filetypes,
             'filter' => $filter,
             'upload' => array(
-                'max_size' => $this->getParam('max_size', 1024, '', 'string', false),
+                'max_size' => $this->getParam('max_size', 1024),
                 'validate_mimetype' => (int) $this->getParam('editor.validate_mimetype', 1),
                 'add_random' => (int) $this->getParam('editor.upload_add_random', 0),
                 'total_files' => (float) $this->getParam('editor.total_files', 0),
