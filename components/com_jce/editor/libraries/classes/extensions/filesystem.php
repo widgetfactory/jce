@@ -127,8 +127,18 @@ class WFFileSystem extends WFExtension
                 // get keys only
                 $groups = array_keys($groups);
 
-                // get the first group as the user type
-                $usertype = array_shift($groups);
+                // get the first group
+                $group_id = array_shift($groups);
+
+                if (is_int($group_id)) {
+                    // usergroup table
+                    $group = JTable::getInstance('Usergroup');
+                    $group->load($group_id);
+                    // usertype
+                    $usertype = $group->title;
+                } else {
+                    $usertype = $group_id;
+                }
 
                 // Replace any path variables
                 $pattern = array('/\$id/', '/\$username/', '/\$user(group|type)/', '/\$(group|profile)/', '/\$day/', '/\$month/', '/\$year/');
@@ -146,7 +156,7 @@ class WFFileSystem extends WFExtension
                 }
 
                 // clean path parts
-                $parts = WFUtility::makeSafe($parts, $wf->getParam('editor.websafe_mode', 'utf-8'), $wf->getParam('editor.websafe_allow_spaces', 0), $textcase);
+                $parts = WFUtility::makeSafe($parts, $wf->getParam('editor.websafe_mode', 'utf-8'), $wf->getParam('editor.websafe_allow_spaces', '_'), $textcase);
 
                 //join path parts
                 $root = implode('/', $parts);
