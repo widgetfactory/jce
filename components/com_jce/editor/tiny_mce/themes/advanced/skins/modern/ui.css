@@ -1,0 +1,55 @@
+@import url('../default/ui.css');
+@import url('fonts.css');
+
+.modernSkin .mceToolbar {
+    background: #fafafa;
+}
+
+.modernSkin .mceToolbarRow .mceToolBarItem {
+    background-color: transparent;
+    margin: 2px;
+}
+
+.modernSkin .mceButton,
+.modernSkin .mceSplitButton .mceText a,
+.modernSkin .mceSplitButton .mceOpen a,
+.modernSkin .mceListBox .mceText a,
+.modernSkin .mceListBox .mceOpen a {
+    border-color: transparent;
+}
+
+.modernSkin .mceButtonEnabled:hover {
+    border: 1px solid #ddd;
+    background-color: #eee;
+}
+
+.modernSkin .mceSplitButtonEnabled:hover .mceText button, .modernSkin .mceSplitButtonEnabled:hover .mceOpen button {
+    border-color: #ddd;
+    background-color: #eee;
+}
+
+.modernSkin .mceListBox .mceText a {
+    border-top-color: #ddd;
+    border-bottom-color: #ddd;
+    border-left-color: #ddd;
+}
+
+.modernSkin .mceListBox .mceOpen a {
+    background-color: #fff;
+
+    border-top-color: #ddd;
+    border-bottom-color: #ddd;
+    border-right-color: #ddd;
+}
+
+.modernSkin .mceButtonActive, .modernSkin .mceButtonSelected {
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.modernSkin .mceSplitButton .mceText button {
+    border-color: transparent;
+}
+.modernSkin .mceSplitButton .mceOpen button {
+    border-color: transparent;
+}
