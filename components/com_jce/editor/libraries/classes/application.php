@@ -424,22 +424,27 @@ class WFApplication extends JObject
             }
         }
 
+        // clean string value of whitespace
         if (is_string($value) && $type == 'string') {
             $value = trim(preg_replace('#[\n\r\t]+#', '', $value));
         }
 
+        // cast default to float if numeric
         if (is_numeric($default)) {
             $default = (float) $default;
         }
 
+        // cast value to float if numeric
         if (is_numeric($value)) {
             $value = (float) $value;
         }
 
+        // if value is equal to system default, return empty string
         if ($value === $default) {
             return '';
         }
 
+        // cast value to boolean
         if ($type == 'boolean') {
             $value = (bool) $value;
         }
