@@ -193,17 +193,17 @@ class pkg_jceInstallerScript
         }
 
         // clean up for legacy upgrade
-        if ($version && version_compare($version, '2.7.7', '<')) {
+        if ($version && version_compare($version, '2.7.10', '<')) {
             // remove admin folder, catch exception
             try {
                 JFolder::delete(JPATH_ADMINISTRATOR . '/components/com_jce');
-            } catch(Exception $e) {}
-            
+            } catch (Exception $e) {}
+
             // remove site folder, catch exception
             try {
-                JFolder::delete(JPATH_SITE . '/components/com_jce');;
-            } catch(Exception $e) {}
-            
+                JFolder::delete(JPATH_SITE . '/components/com_jce');
+            } catch (Exception $e) {}
+
         }
     }
 
@@ -242,7 +242,7 @@ class pkg_jceInstallerScript
             $inst = new JInstaller();
             // try uninstall
             if (!$inst->uninstall('plugin', $plugin->id)) {
-                
+
                 // otherwise disable
                 $table = JTable::getInstance('extension');
 
@@ -252,10 +252,10 @@ class pkg_jceInstallerScript
             }
         }
 
-        // add contextmenu to profiles in 2.7.x TODO - Remove in 2.7.5
         if ($route == 'update') {
             $version = (string) $parent->manifest->version;
 
+            // add contextmenu to profiles in 2.7.x TODO - Remove in 2.7.5
             if ($version && version_compare($version, '2.7.0', '>=') && version_compare($version, '2.7.4', '<')) {
                 $db = JFactory::getDBO();
 
@@ -271,7 +271,7 @@ class pkg_jceInstallerScript
                     $plugin = new StdClass;
                     $plugin->name = 'contextmenu';
                     $plugin->icon = '';
-                    
+
                     // add to profile
                     JcePluginsHelper::addToProfile($id, $plugin);
                 }
