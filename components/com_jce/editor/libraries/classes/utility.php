@@ -262,7 +262,9 @@ abstract class WFUtility
         }
 
         // replace spaces with specified character or space
-        $subject = preg_replace('#[\s ]+#', $spaces, $subject);
+        if (is_string($spaces)) {
+            $subject = preg_replace('#[\s ]+#', $spaces, $subject);
+        }
 
         if ($mode === 'utf-8') {
             $search[] = '#[^\pL\pM\pN_\.\-~\s ]#u';
