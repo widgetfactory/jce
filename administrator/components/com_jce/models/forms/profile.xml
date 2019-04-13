@@ -41,6 +41,7 @@
                     <option value="o2k7.silver">WF_PARAM_EDITOR_SKIN_OFFICE_SILVER</option>
                     <option value="o2k7.black">WF_PARAM_EDITOR_SKIN_OFFICE_BLACK</option>
                     <option value="mobile">WF_PARAM_EDITOR_SKIN_MOBILE</option>
+                    <!--option value="modern">WF_PARAM_EDITOR_SKIN_MODERN</option-->
                 </field>
                 <field name="toolbar_align" type="list" default="left" label="WF_PARAM_EDITOR_TOOLBAR_ALIGN" description="WF_PARAM_EDITOR_TOOLBAR_ALIGN_DESC">
                     <option value="left">WF_OPTION_LEFT</option>
