@@ -1,3 +1,6 @@
+.mceVisualBlocks {
+  /*@import (less) 'base64.less';*/
+}
 .mceVisualBlocks p,
 .mceVisualBlocks h1,
 .mceVisualBlocks h2,
@@ -21,12 +24,11 @@
 .mceVisualBlocks dl,
 .mceVisualBlocks dt,
 .mceVisualBlocks dd {
-  margin: 2px 0;
+  /*margin: 2px 0;
+        padding: 2px;*/
   border: 1px dashed #BBB;
   box-sizing: border-box;
-  padding: 2px;
 }
-
 .mceVisualBlocks p:before,
 .mceVisualBlocks h1:before,
 .mceVisualBlocks h2:before,
@@ -50,133 +52,116 @@
 .mceVisualBlocks dl:before,
 .mceVisualBlocks dt:before,
 .mceVisualBlocks dd:before {
+  /*background: transparent no-repeat 2px 2px;
+        padding: 10px 0 2px 0;
+        display: block;
+        content: "";*/
   display: block;
-  content: "";
-  padding: 0;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 7pt;
   color: #888;
   line-height: 1;
   font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
 }
-
 .mceVisualBlocks figcaption {
   border: 1px dashed #BBB;
   padding: 5px;
   margin: 2px 0;
 }
-
 .mceVisualBlocks dd,
 .mceVisualBlocks dt {
   margin-bottom: 2px;
 }
-
 .mceVisualBlocks ul,
 .mceVisualBlocks ol {
   padding: 5px 40px;
 }
-
 .mceVisualBlocks ul:before,
 .mceVisualBlocks ol:before {
   margin: -2px 0 0 -38px;
 }
-
 .mceVisualBlocks p:before {
   content: "P";
 }
-
 .mceVisualBlocks h1:before {
   content: "H1";
 }
-
 .mceVisualBlocks h2:before {
   content: "H2";
 }
-
 .mceVisualBlocks h3:before {
   content: "H3";
 }
-
 .mceVisualBlocks h4:before {
   content: "H4";
 }
-
 .mceVisualBlocks h5:before {
   content: "H5";
 }
-
 .mceVisualBlocks h6:before {
   content: "H6";
 }
-
 .mceVisualBlocks aside:before {
   content: "ASIDE";
 }
-
 .mceVisualBlocks div:not(.mce-resizehandle):not(.mce-resize-helper):before {
   content: "DIV";
 }
-
 .mceVisualBlocks section:before {
   content: "SECTION";
 }
-
 .mceVisualBlocks article:before {
   content: "ARTICLE";
 }
-
 .mceVisualBlocks header:before {
   content: "HEADER";
 }
-
 .mceVisualBlocks footer:before {
   content: "FOOTER";
 }
-
 .mceVisualBlocks nav:before {
   content: "NAV";
 }
-
 .mceVisualBlocks blockquote:before {
   content: "BLOCKQUOTE";
 }
-
 .mceVisualBlocks address:before {
   content: "ADDRESS";
 }
-
 .mceVisualBlocks pre:before {
   content: "PRE";
 }
-
 .mceVisualBlocks figure:before {
   content: "FIGURE";
 }
-
 .mceVisualBlocks ul:before {
   content: "UL";
 }
-
 .mceVisualBlocks ol:before {
   content: "OL";
 }
-
 .mceVisualBlocks dl:before {
   content: "DL";
 }
-
 .mceVisualBlocks dt:before {
   content: "DT";
 }
-
 .mceVisualBlocks dd:before {
   content: "DD";
 }
-
+.mceVisualBlocks address:before {
+  content: "ADDRESS";
+}
+.mceVisualBlocks aside:before {
+  content: "ASIDE";
+}
 .mceVisualBlocks figure:before {
   content: "FIGURE";
 }
-
 .mceVisualBlocks figcaption:before {
   content: "FIGCAPTION";
 }

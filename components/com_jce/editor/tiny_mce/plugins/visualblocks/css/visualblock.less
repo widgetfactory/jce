@@ -1,6 +1,5 @@
 // out: content.css, sourcemap: false, compress: false
 .mceVisualBlocks {
-
     p,
     h1,
     h2,
@@ -24,10 +23,10 @@
     dl,
     dt,
     dd {
-        margin: 2px 0;
+        /*margin: 2px 0;
+        padding: 2px;*/
         border: 1px dashed #BBB;
         box-sizing: border-box;
-        padding: 2px;
     }
 
     p:before,
@@ -53,10 +52,21 @@
     dl:before,
     dt:before,
     dd:before {
-        background: transparent no-repeat 2px 2px;
+        /*background: transparent no-repeat 2px 2px;
         padding: 10px 0 2px 0;
         display: block;
-        content: "";
+        content: "";*/
+
+        display: block;
+        font-weight: 700;
+        font-size: 7pt;
+        color: #888;
+        line-height: 1;
+        font-family: -apple-systrem,BlinkMacSystremFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.5em;
     }
 
     figcaption {
@@ -80,5 +90,6 @@
         margin: -2px 0 0 -38px;
     }
 
-    @import (less) 'base64.less';
+    /*@import (less) 'base64.less';*/
+    @import (less) 'names.less';
 }
