@@ -110,9 +110,9 @@ class WFMediaManagerBase extends WFEditorPlugin
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');
     }
 
-    public function getFileTypes()
+    public function getFileTypes($format = 'array', $list = '')
     {
-        return $this->getFileBrowser()->getFileTypes('array');
+        return $this->getFileBrowser()->getFileTypes($format, $list);
     }
 
     protected function setFileTypes($filetypes)

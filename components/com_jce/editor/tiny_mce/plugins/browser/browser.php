@@ -43,6 +43,12 @@ class WFBrowserPlugin extends WFMediaManager
         // get filetypes from params
         $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
 
+        // get file browser reference
+        $browser = $this->getFileBrowser();
+
+        // map to comma seperated list
+        $filetypes = $browser->getFileTypes('list', $filetypes);
+
         $map = array(
             'images' => 'jpg,jpeg,png,gif,webp',
             'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
@@ -52,7 +58,7 @@ class WFBrowserPlugin extends WFMediaManager
 
         // add svg support to images if it is allowed in filetypes
         if (in_array('svg', explode(',', $filetypes))) {
-            $map['images'] = 'jpg,jpeg,png,gif,svg';
+            $map['images'] .= ',svg';
         }
 
         if (array_key_exists($mediatype, $map)) {
@@ -61,13 +67,11 @@ class WFBrowserPlugin extends WFMediaManager
             $filetypes = $mediatype;
         }
 
-        // set filetypes
-        $this->setFileTypes($filetypes);
-
-        $browser = $this->getFileBrowser();
+        // set updated filetypes
+        $browser->setFileTypes($filetypes);
 
         $upload = $browser->get('upload', array());
-        $upload['filetypes'] = $browser->getFileTypes('list', $filetypes);
+        $upload['filetypes'] = $filetypes;
 
         $browser->setProperties(array('upload' => $upload));
     }
