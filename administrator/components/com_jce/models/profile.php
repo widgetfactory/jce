@@ -295,6 +295,9 @@ class JceModelProfile extends JModelAdmin
                 $command->active = in_array($name, $rows);
                 $command->icon = explode(',', $command->icon);
 
+                // set default empty value
+                $command->image = '';
+
                 // ui class, default is blank
                 if (empty($command->class)) {
                     $command->class = '';
