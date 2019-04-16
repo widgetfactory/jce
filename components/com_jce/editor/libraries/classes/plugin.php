@@ -182,7 +182,9 @@ class WFEditorPlugin extends JObject
         $document = WFDocument::getInstance();
 
         // ini language
-        $document->addScript(array('index.php?option=com_jce&' . $document->getQueryString(array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode()))), 'joomla');
+        $document->addScript(array('index.php?option=com_jce&' . $document->getQueryString(
+            array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode())
+        )), 'joomla');
 
         // pack assets if required
         $document->pack(true, $this->getParam('editor.compress_gzip', 0));

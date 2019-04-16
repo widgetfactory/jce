@@ -27,7 +27,7 @@
                 }
 
                 ed.windowManager.open({
-                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=imgmanager',
+                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image',
                     width: 780 + ed.getLang('imgmanager.delta_width', 0),
                     height: 680 + ed.getLang('imgmanager.delta_height', 0),
                     inline: 1,
@@ -124,7 +124,7 @@
 
             if (data && data.filetypes) {
                 if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
-                    return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=imgmanager';
+                    return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
                 }
             }
 

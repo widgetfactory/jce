@@ -68,6 +68,11 @@ class WFDocument extends JObject
      */
     public $direction = 'ltr';
 
+    private static $queryMap = array(
+        'imgmanager'=> 'image',
+        'imgmanager_ext' => 'imagepro'
+    );
+
     /**
      * Constructor activating the default information of the class.
      */
@@ -241,17 +246,11 @@ class WFDocument extends JObject
                 case 'jquery':
                     $pre = $base . 'libraries/jquery/' . $type;
                     break;
-                case 'mediaelement':
-                    $pre = $base . 'libraries/mediaelement/' . $type;
-                    break;
-                case 'bootstrap':
-                    $pre = $base . 'libraries/bootstrap/' . $type;
-                    break;
                 // TinyMCE folder
                 case 'tiny_mce':
                     $pre = $base . 'tiny_mce';
                     break;
-                // JCE current plugin folder
+                // Tinymce plugins folder
                 case 'plugins':
                     $pre = $base . 'tiny_mce/plugins/' . $plugin . '/' . $type;
                     break;
@@ -414,9 +413,6 @@ class WFDocument extends JObject
     {
         $files = (array) $files;
 
-        jimport('joomla.environment.browser');
-        $browser = JBrowser::getInstance();
-
         foreach ($files as $file) {
             $url = $this->buildStylePath($file, $root);
             // store path
@@ -464,12 +460,15 @@ class WFDocument extends JObject
     {
         $app = JFactory::getApplication();
 
-        // get plugin
-        $plugin = $app->input->getWord('plugin');
+        // get plugin name and assign to query
+        $name = $this->get('name');
 
-        if ($plugin) {
-            $query['plugin'] = $this->get('name');
+        // re-map plugin name
+        if (array_key_exists($name, self::$queryMap)) {
+            $name = self::$queryMap[$name];
         }
+
+        $query['plugin'] = $name;
 
         // set layout
         if ($app->input->getWord('layout')) {

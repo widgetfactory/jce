@@ -14,6 +14,11 @@ require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/applicat
 
 class JceControllerPlugin extends JControllerLegacy
 {
+    private static $map = array(
+        'image'     => 'imgmanager',
+        'imagepro'  => 'imgmanager_ext'
+    );
+    
     public function execute($task)
     {
         $wf = WFApplication::getInstance();
@@ -35,6 +40,18 @@ class JceControllerPlugin extends JControllerLegacy
         // get plugin name
         if (strpos($plugin, '.') !== false) {
             list($plugin, $caller) = explode('.', $plugin);
+        }
+
+        // map plugin name to internal / legacy name
+        if (array_key_exists($plugin, self::$map)) {
+            $plugin = self::$map[$plugin];
+            $mapped = $plugin;
+
+            if (!empty($caller)) {
+                $mapped = $plugin . '.' . $caller;
+            }
+
+            $this->input->set('plugin', $mapped);
         }
 
         $path = WF_EDITOR_PLUGINS . '/' . $plugin;
