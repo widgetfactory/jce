@@ -91,16 +91,19 @@ class WFBrowserPlugin extends WFMediaManager
         if ($document->get('standalone') == 1) {
             if ($layout === 'plugin') {
                 $document->addScript(array('window.min'), 'plugins');
-
-                $element    = $app->input->getCmd('element', '');
+                
                 $callback   = $app->input->getCmd('callback', '');
-                $field      = $app->input->getCmd('fieldid', '');
+                $element    = $app->input->getCmd('fieldid', '');
+
+                // Joomla 4 field variable not converted
+                if (!$element || $element === 'field-media-id') {
+                    $element = $app->input->getCmd('element', '');
+                }
 
                 $settings = array(
                     'site_url'  => JURI::base(true).'/',
                     'language'  => WFLanguage::getCode(),
                     'element'   => $element,
-                    'fieldid'   => $field,
                     'token'     => JSession::getFormToken(),
                 );
 

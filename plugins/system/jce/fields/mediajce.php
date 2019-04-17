@@ -62,7 +62,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
-        $this->link = WFBrowserHelper::getMediaFieldLink('', $this->mediatype);
+        $this->link = WFBrowserHelper::getMediaFieldLink($this->id, $this->mediatype);
 
         // Get the basic field data
         $data = parent::getLayoutData();
