@@ -47,6 +47,7 @@
 .mceVisualBlocks address:before,
 .mceVisualBlocks pre:before,
 .mceVisualBlocks figure:before,
+.mceVisualBlocks figcaption:before,
 .mceVisualBlocks ul:before,
 .mceVisualBlocks ol:before,
 .mceVisualBlocks dl:before,
