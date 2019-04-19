@@ -418,8 +418,8 @@ class WFApplication extends JObject
             // set default as empty string
             $value = "";
             
-            // key does not exist - parameter was not set - use fallback
-            if ($params->exists($key) === false) {
+            // key does not exist (parameter was not set) - use fallback
+            if ($params->exists($key) === false || $fallback !== '') {
                 $value = $fallback;
             }
         }
