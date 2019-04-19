@@ -279,6 +279,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         // fix Link plugin legacy "direction" conflict
         if ($this->get('caller') === 'link') {
             $fallback = $this->getParam('editor.dir', '');
+            // get the directory for this plugin, fallback to global default
             $dir = $this->getParam($this->getName() . '.dir', $fallback);
         }
 
