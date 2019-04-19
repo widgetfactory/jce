@@ -333,13 +333,9 @@ abstract class JceProfilesHelper
                         case 'components':
                             break;
                         case 'params':
-                            $config = array();
-
-                            foreach ($item->children() as $param) {
-                                $config[] = (string) $param;
+                            if (empty($value)) {
+                                $value = "{}";
                             }
-
-                            $value = implode("\n", $config);
                             break;
                         case 'rows':
                             break;
