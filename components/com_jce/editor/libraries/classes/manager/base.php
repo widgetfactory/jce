@@ -93,7 +93,6 @@ class WFMediaManagerBase extends WFEditorPlugin
         parent::display();
 
         $document = WFDocument::getInstance();
-        $layout = JFactory::getApplication()->input->getCmd('layout', 'plugin');
 
         $view = $this->getView();
         $browser = $this->getFileBrowser();
