@@ -191,20 +191,6 @@ class pkg_jceInstallerScript
                 JFolder::delete($branding);
             }
         }
-
-        // clean up for legacy upgrade
-        if ($version && version_compare($version, '2.7.10', '<')) {
-            // remove admin folder, catch exception
-            try {
-                JFolder::delete(JPATH_ADMINISTRATOR . '/components/com_jce');
-            } catch (Exception $e) {}
-
-            // remove site folder, catch exception
-            try {
-                JFolder::delete(JPATH_SITE . '/components/com_jce');
-            } catch (Exception $e) {}
-
-        }
     }
 
     public function postflight($route, $installer)
