@@ -1,19 +1,20 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
+ * @package     JCE
+ * @subpackage  Component
  *
  * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2006 - 2019 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Form Field class for the Joomla Platform.
- * Display a JSON loaded window with a repeatable set of sub fields
+ * Form Field class for the JCE.
+ * Display a field with a repeatable set of defined sub fields
  *
- * @since       3.2
+ * @since       2.7
  */
 class JFormFieldRepeatable extends JFormField
 {
@@ -21,7 +22,7 @@ class JFormFieldRepeatable extends JFormField
      * The form field type.
      *
      * @var    string
-     * @since  3.2
+     * @since  2.7
      */
     protected $type = 'Repeatable';
 
@@ -30,7 +31,7 @@ class JFormFieldRepeatable extends JFormField
      *
      * @return  string  The field input markup.
      *
-     * @since   3.2
+     * @since   2.7
      */
     protected function getInput()
     {
@@ -72,8 +73,12 @@ class JFormFieldRepeatable extends JFormField
 
                 $field->setup($field->element, $field->value, $this->group);
 
-                $field->id .= '_' . $index . '_' . $n;
-                $field->name = '';
+                // reset id
+                $field->id = '';
+
+                if (strpos($field->name, '[]') === false) {
+                    $field->name .= '[]';
+                }
 
                 $str[] = $field->getInput();
                 $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
@@ -84,8 +89,6 @@ class JFormFieldRepeatable extends JFormField
 
             $str[] = '</div>';
         }
-
-        $str[] = '<input type="hidden" id="' . $this->id . '" name="' . $this->name . '" value="' . htmlspecialchars(implode(',', $values), ENT_COMPAT, 'UTF-8') . '" class="form-field-repeatable" />';
 
         return implode("", $str);
     }
