@@ -7,6 +7,8 @@
             var $repeatable = $(this).parent('.form-field-repeatable-item'), $item = $repeatable.clone(true);
             // append
             $item.insertBefore($repeatable.siblings().last());
+            // trigger update
+            $('.form-field-repeatable', $parent).trigger('repeatable:update');
         });
 
         $('.form-field-repeatable-remove').on('click', function(e) {
