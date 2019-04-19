@@ -412,14 +412,24 @@ class WFApplication extends JObject
 
         // get a parameter
         $value = $params->get($key);
-        
+
         // key not present in params or was empty string (JRegistry returns null), use fallback value
         if (is_null($value)) {
             // set default as empty string
             $value = "";
             
             // key does not exist (parameter was not set) - use fallback
-            if ($params->exists($key) === false || $fallback !== '') {
+            if ($params->exists($key) === false) {
+                $value = $fallback;
+
+                // if fallback is empty, revert to system default if non-empty
+                if ($fallback === '' && $default !== '') {
+                    $value = $default;
+                    // reset $default to prevent $value clearing
+                    $default = '';
+                }
+            // parameter is set, but is empty, but fallback is not
+            } else if ($fallback !== '') {
                 $value = $fallback;
             }
         }
@@ -439,7 +449,7 @@ class WFApplication extends JObject
             $value = (float) $value;
         }
 
-        // if value is equal to system default, return empty string
+        // if value is equal to system default, clear $value and return
         if ($value === $default) {
             return '';
         }
