@@ -12,10 +12,6 @@
     <icon></icon>
     <fields name="media">
         <fieldset name="config">
-            <field name="strict" type="yesno" default="1" label="WF_MEDIA_PARAM_STRICT" description="WF_MEDIA_PARAM_STRICT_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
             <field name="iframes" type="yesno" default="0" label="WF_MEDIA_PARAM_IFRAMES" description="WF_MEDIA_PARAM_IFRAMES_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -36,12 +32,6 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-
-            <field name="version_flash" type="text" size="50" default="10,1,53,64" label="WF_MEDIA_VERSION_FLASH" />
-            <field name="version_windowsmedia" type="text" size="50" default="10,00,00,3646" label="WF_MEDIA_VERSION_WINDOWSMEDIA" />
-            <field name="version_quicktime" type="text" size="50" default="7,3,0,0" label="WF_MEDIA_VERSION_QUICKTIME" />
-            <field name="version_java" type="text" size="50" default="1,5,0,0" label="WF_MEDIA_VERSION_JAVA" />
-            <field name="version_shockwave" type="text" size="50" default="10,2,0,023" label="WF_MEDIA_VERSION_SHOCKWAVE" />
         </fieldset>
     </fields>
     <languages></languages>

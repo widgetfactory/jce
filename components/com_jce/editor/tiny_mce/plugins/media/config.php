@@ -42,15 +42,6 @@ class WFMediaPluginConfig
         }
 
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $tags);
-
-        $settings['media_strict'] = $wf->getParam('media.strict', 1, 1);
-
         $settings['media_live_embed'] = $wf->getParam('media.live_embed', 0, 0);
-
-        $settings['media_version_flash'] = $wf->getParam('media.version_flash', '10,1,53,64', '10,1,53,64');
-        $settings['media_version_windowsmedia'] = $wf->getParam('media.version_windowsmedia', '10,00,00,3646', '10,00,00,3646');
-        $settings['media_version_shockwave'] = $wf->getParam('media.version_shockwave', '10,2,0,023', '10,2,0,023');
-        $settings['media_version_quicktime'] = $wf->getParam('media.version_quicktime', '7,3,0,0', '7,3,0,0');
-        $settings['media_version_java'] = $wf->getParam('media.version_java', '1,5,0,0', '1,5,0,0');
     }
 }
