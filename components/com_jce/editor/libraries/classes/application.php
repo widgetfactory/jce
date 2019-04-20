@@ -425,17 +425,18 @@ class WFApplication extends JObject
                 // if fallback is empty, revert to system default if non-empty
                 if ($fallback === '' && $default !== '') {
                     $value = $default;
-                    // reset $default to prevent $value clearing
+
+                    // reset $default to prevent clearing
                     $default = '';
                 }
-            // parameter is set, but is empty, but fallback is not
+            // parameter is set, but is empty, but fallback is not (inherited values)
             } else if ($fallback !== '') {
                 $value = $fallback;
             }
         }
 
         // clean string value of whitespace
-        if (is_string($value) && $type == 'string') {
+        if (is_string($value)) {
             $value = trim(preg_replace('#[\n\r\t]+#', '', $value));
         }
 
