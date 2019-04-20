@@ -447,6 +447,11 @@ class WFEditorPlugin extends JObject
                 $fallback = $wf->getParam($name . '.' . $key, $fallback, $default, $type);
                 $name = $caller;
             }
+            
+            // reset the $default to prevent clearing
+            if ($fallback === $default) {
+                $default = '';
+            }
 
             // return parameter
             return $wf->getParam($name . '.' . $key, $fallback, $default, $type);
