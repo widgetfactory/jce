@@ -302,8 +302,6 @@ class pkg_jceInstallerScript
     {        
         $parent = $installer->getParent();
         $current_version = $parent->get('current_version'); 
-
-        $app->enqueueMessage('Version - ' . $current_version);
         
         $admin = JPATH_ADMINISTRATOR . '/components/com_jce';
         $site  = JPATH_SITE . '/components/com_jce';
