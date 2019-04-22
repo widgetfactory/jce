@@ -578,20 +578,29 @@ abstract class WFUtility
      *
      * @param array $array1
      * @param array $array2
+     * @param boolean $ignore_empty_string
      *
      * @return array
      *
      * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
      * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
      */
-    public static function array_merge_recursive_distinct(array &$array1, array &$array2)
+    public static function array_merge_recursive_distinct(array &$array1, array &$array2, $ignore_empty_string = false)
     {
         $merged = $array1;
 
         foreach ($array2 as $key => &$value) {
             if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value);
+                $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value, $ignore_empty_string);
             } else {
+                if (is_null($value)) {
+                    continue;
+                }
+                
+                if ($ignore_empty_string && $value === "") {
+                    continue;
+                }
+
                 $merged[$key] = $value;
             }
         }

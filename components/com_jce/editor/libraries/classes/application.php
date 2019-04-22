@@ -373,8 +373,8 @@ class WFApplication extends JObject
                 $data2 = array();
             }
 
-            // merge params
-            $data = WFUtility::array_merge_recursive_distinct($data1, $data2);
+            // merge params, but ignore empty values
+            $data = WFUtility::array_merge_recursive_distinct($data1, $data2, true);
 
             // create new registry with params
             $params = new JRegistry($data);
