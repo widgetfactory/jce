@@ -243,8 +243,7 @@
         "icon": "style",
         "editable": 0,
         "row": 4,
-        "core": 1,
-        "class": "list-box"
+        "core": 1
     },
     "styleselect": {
         "title": "WF_STYLESELECT_TITLE",
