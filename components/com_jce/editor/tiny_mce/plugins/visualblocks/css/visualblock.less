@@ -1,4 +1,4 @@
-// out: content.css, sourcemap: false, compress: false
+// out: content.css, sourcemap: false, compress: true
 .mceVisualBlocks {
     p,
     h1,
@@ -23,8 +23,8 @@
     dl,
     dt,
     dd {
-        /*margin: 2px 0;
-        padding: 2px;*/
+        margin: 2px 0;
+        padding: 2px;
         border: 1px dashed #BBB;
         box-sizing: border-box;
     }
@@ -53,12 +53,13 @@
     dl:before,
     dt:before,
     dd:before {
-        /*background: transparent no-repeat 2px 2px;
-        padding: 10px 0 2px 0;
+        background: transparent no-repeat left center;
+        background-size: contain;
+        padding: 4px 0;
         display: block;
-        content: "";*/
+        content: "";
 
-        display: block;
+        /*display: block;
         font-weight: 700;
         font-size: 7pt;
         color: #888;
@@ -67,7 +68,7 @@
         position: relative;
         width: 100%;
         box-sizing: border-box;
-        padding: 0.5em 0.25em;
+        padding: 0.5em 0.25em;*/
     }
 
     figcaption {
@@ -91,6 +92,6 @@
         margin: -2px 0 0 -38px;
     }
 
-    /*@import (less) 'base64.less';*/
-    @import (less) 'names.less';
+    @import (less) 'base64.less';
+    /*@import (less) 'names.less';*/
 }
