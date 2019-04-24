@@ -100,7 +100,7 @@ class JceModelHelp extends JModelLegacy
         $language = JFactory::getLanguage();
 
         $language->load('com_jce', JPATH_SITE);
-        $language->load('WF_pro', JPATH_SITE);
+        $language->load('com_jce_pro', JPATH_SITE);
 
         $document->setTitle(JText::_('WF_HELP') . ' : ' . JText::_('WF_' . strtoupper($category) . '_TITLE'));
 
