@@ -280,8 +280,8 @@ class WFMediaManagerBase extends WFEditorPlugin
         // get base directory from editor parameter
         $baseDir = $this->getParam('editor.dir', '', 'images');
         
-        // get directory from plugin parameter
-        $dir = $this->getParam($this->getName() . '.dir', '', $baseDir);
+        // get directory from plugin parameter, fallback to base directory as it cannot itself be empty
+        $dir = $this->getParam($this->getName() . '.dir', $baseDir);
 
         // get websafe spaces parameter and convert legacy values
         $websafe_spaces = $this->getParam('editor.websafe_allow_spaces', '_');
