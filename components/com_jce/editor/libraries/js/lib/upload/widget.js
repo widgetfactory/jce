@@ -252,6 +252,7 @@
                 $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center" />').html(message).appendTo(file.element);
             } else {
                 Wf.Modal.alert(message);
+                this.errors--;
             }
         },
 
