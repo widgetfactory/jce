@@ -393,6 +393,10 @@
          */
         _removeFiles: function() {
             this.uploader.splice();
+
+            // reset errors
+            this.errors = 0;
+
             // insert empty list element
             $(this.element).empty();
         },
@@ -411,6 +415,10 @@
          */
         _removeFile: function(file) {
             this._trigger('filedelete', file);
+
+            if ($(file.element).hasClass('queue-item-error')) {
+                this.errors--;
+            }
 
             $(file.element).remove();
 
