@@ -65,8 +65,6 @@ class JFormFieldBlockformats extends JFormFieldCheckboxes
         $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
         $options = array();
 
-        $blockformats = self::$blockformats;
-
         if (!empty($this->value)) {
             $this->value = is_array($this->value) ? $this->value : explode(',', $this->value);
         }

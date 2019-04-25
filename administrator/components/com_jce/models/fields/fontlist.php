@@ -24,13 +24,6 @@ class JFormFieldFontList extends JFormFieldFileList
      */
     protected function getInput()
     {
-        // Get the field id
-        $id = isset($this->element['id']) ? $this->element['id'] : null;
-        $cssId = '#'.$this->getId($id, $this->element['name']);
-
-        // Load the ajax-chosen customised field
-        JHtml::_('tag.ajaxfield', $cssId, true);
-
         if (!is_array($this->value) && !empty($this->value)) {
             // String in format 2,5,4
             if (is_string($this->value)) {
