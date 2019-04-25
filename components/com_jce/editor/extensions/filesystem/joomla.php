@@ -15,6 +15,11 @@ jimport('joomla.filesystem.file');
 
 class WFJoomlaFileSystem extends WFFileSystem
 {
+    private static $restricted  = array(
+        'administrator','bin','cache','components','cli','includes','language','layouts','libraries','logs','media','modules','plugins','templates','tmp','xmlrpc'
+    );
+    
+    private static $allowroot   = false;
     /**
      * Constructor activating the default information of the class.
      */
@@ -72,28 +77,25 @@ class WFJoomlaFileSystem extends WFFileSystem
             $root = parent::getRootDir();
             $wf = WFEditorPlugin::getInstance();
 
-            // Restricted Joomla! folders
-            $default = 'administrator,cache,components,includes,language,libraries,logs,media,modules,plugins,templates,xmlrpc';
-
             // list of restricted directories
-            $restricted = strtolower($wf->getParam('filesystem.joomla.restrict_dir', $default));
+            $restricted = strtolower($wf->getParam('filesystem.joomla.restrict_dir', self::$restricted));
+
             // explode to array
-            $restricted = explode(',', $restricted);
-
-            // is root allowed?
-            $allowroot = $wf->getParam('filesystem.joomla.allow_root', 0);
-
-            // Revert to default if empty
-            if (empty($root) && !$allowroot) {
-                $root = 'images';
+            if (is_string($restricted)) {
+                self::$restricted = explode(',', $restricted);
+            } else {
+                self::$restricted = $restricted;
             }
 
-            // Force default if directory is a joomla directory
-            if (!empty($root) && $allowroot) {
-                $parts = explode('/', $root);
+            // is root allowed?
+            self::$allowroot = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
 
-                // check if directory is allowed if root access is allowed
-                if (in_array(strtolower($parts[0]), $restricted)) {
+            // set $root to empty if it is allowed
+            if (self::$allowroot) {
+                $root = '';
+            } else {
+                // Revert to default if empty
+                if (empty($root)) {
                     $root = 'images';
                 }
             }
@@ -243,6 +245,20 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             foreach ($list as $item) {
                 $item = WFUtility::convertEncoding($item);
+
+                $break = false;
+
+                if (self::$allowroot) {
+                    foreach(self::$restricted as $name) {
+                        if (WFUtility::makePath($path, $item) === WFUtility::makePath($path, $name)) {
+                            $break = true;
+                        }
+                    }
+                }
+
+                if ($break) {
+                    continue;
+                }
 
                 $id = WFUtility::makePath($relative, $item, '/');
 
