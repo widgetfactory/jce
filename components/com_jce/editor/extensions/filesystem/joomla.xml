@@ -16,7 +16,25 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="restricted_dir" type="text" default="" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1" />
+
+            <field name="restrict_dir" type="customlist" default="administrator,bin,cache,components,cli,includes,language,layouts,libraries,logs,media,modules,plugins,templates,tmp,xmlrpc" multiple="true" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1">
+                <option value="administrator">administrator</option>
+                <option value="bin">bin</option>
+                <option value="cache">cache</option>
+                <option value="components">components</option>
+                <option value="cli">cli</option>
+                <option value="includes">includes</option>
+                <option value="language">language</option>
+                <option value="layouts">layouts</option>
+                <option value="libraries">libraries</option>
+                <option value="logs">logs</option>
+                <option value="media">media</option>
+                <option value="modules">modules</option>
+                <option value="plugins">plugins</option>
+                <option value="templates">templates</option>
+                <option value="tmp">tmp</option>
+                <option value="xmlrpc">xmlrpc</option>
+            </field>
         </fieldset>
     </fields>
 </extension>
