@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 abstract class WfBrowserHelper
 {
-    public static function getBrowserLink($element = null, $filter = '')
+    public static function getBrowserLink($element = null, $filter = '', $callback = '')
     {
         $app = JFactory::getApplication();
         
@@ -37,6 +37,10 @@ abstract class WfBrowserHelper
 
             if ($filter) {
                 $url .= '&filter='.$filter;
+            }
+
+            if ($callback) {
+                $url .= '&callback=' . $callback;
             }
         }
 
