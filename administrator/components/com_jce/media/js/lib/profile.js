@@ -15,7 +15,7 @@
         if (task == 'profile.cancel') {
             try {
                 Joomla.submitform(task, form);
-            } catch (e) {}
+            } catch (e) { }
 
             return;
         }
@@ -28,7 +28,7 @@
 
             try {
                 Joomla.submitform(task, form);
-            } catch (e) {}
+            } catch (e) { }
         }
     };
 
@@ -109,7 +109,7 @@
     };
 
     $(document).ready(function () {
-        $('select[data-toggle]').on('change', function() {
+        $('select[data-toggle]').on('change', function () {
             var key = $(this).attr('data-toggle'), value = $(this).val();
 
             $parent = $(this).parents('.control-group').siblings('.filesystem-options');
@@ -124,15 +124,85 @@
             if ($.fn.chosen) {
                 $item.find('select').chosen('destroy').chosen();
             }
-            
         });
 
         $('select[data-toggle]').trigger('change');
     });
 
+    // fire when everything is loaded
+    $(window).on('load', function () {
+        $('.com_jce_select_custom').each(function () {
+            var elm = this, id = $(this).attr('id'), selector = '#' + id + '_chzn';
+
+            function tagHandler(event, element) {
+                // Search a highlighted result
+
+                var highlighted = $(selector).find('li.active-result.highlighted').first();
+
+                // Add the highlighted option
+                if (event.which === 13 && highlighted.text() !== '') {
+                    // Extra check. If we have added a custom tag with element text remove it
+                    var customOptionValue = highlighted.text();
+
+                    $(selector).find('option').filter(function () {
+                        return $(element).val() == customOptionValue;
+                    }).remove();
+
+                    // Select the highlighted result
+                    var customOption = $(selector).find('option').filter(function () {
+                        return $(element).html() == highlighted.text();
+                    }).prop('selected', true);
+                } else {
+                    // Extra check. Search if the custom tag already exists
+                    var customOption = $(elm).find('option').filter(function () {
+                        return $(element).html() == customOption;
+                    });
+
+                    if (customOption.text() !== '') {
+                        customOption.prop('selected', true);
+                    } else {
+                        var option = $('<option>');
+                        option.text(element.value).val(element.value);
+                        option.prop('selected', true);
+                        // Append the option and repopulate the chosen field
+                        $(elm).append(option);
+                    }
+                }
+
+                element.value = '';
+
+                $(elm).trigger('liszt:updated');
+            }
+
+            // Method to add tags pressing comma
+            $(selector).find('input').on('keypress', function (event) {
+                if (event.charCode === 44) {
+                    // Tag is greater than the minimum required chars
+                    if (this.value && this.value.length >= 3) {
+                        tagHandler(event, this);
+                    }
+
+                    // Do not add comma to tag at all
+                    event.preventDefault();
+                }
+            });
+
+            // Method to add tags pressing enter
+            $(selector).find('input').on('keyup', function (event) {
+                if (event.which === 13) {
+                    // Tag is greater than the minimum required chars
+                    if (this.value && this.value.length >= 3) {
+                        tagHandler(event, this);
+                    }
+
+                    event.preventDefault();
+                }
+            });
+        });
+    });
+
     function init() {
-        var self = this,
-            skip = true;
+        var skip = true;
         var base_url = '';
 
         $('script[src*="components/com_jce/media/js/profile.min.js"]').each(function () {
@@ -161,9 +231,9 @@
 
             // add class to this element and any that share it's name, eg: param[]
             $(this).add('[name="' + name + '"]').addClass('isdirty');
+        }).on('liszt:updated', function () {
+            $(this).addClass('isdirty');
         });
-
-        var dir = $('body').css('direction') == 'rtl' ? 'right' : 'left';
 
         // Layout
         createLayout();
@@ -295,7 +365,7 @@
         skip = false;
 
         // secondary tabs within profile content
-        $('.nav-tabs li', '.tab-content').on('click', function(e) {
+        $('.nav-tabs li', '.tab-content').on('click', function (e) {
             e.preventDefault();
 
             var idx = $(this).index(), $container = $(this).parent().parent('.tabbable');
