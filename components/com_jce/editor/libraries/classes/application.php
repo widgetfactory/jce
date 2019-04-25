@@ -387,8 +387,8 @@ class WFApplication extends JObject
 
     private function isEmptyValue($value)
     {
-        if (is_string($value)) {
-            return $value === '';
+        if (is_null($value)) {
+            return true;
         }
 
         if (is_array($value)) {
@@ -404,6 +404,7 @@ class WFApplication extends JObject
      * @param $key Parameter key eg: editor.width
      * @param $fallback Fallback value
      * @param $default Default value
+     * @param bool $allowempty Whether the value can be empty or must return the fallback value
      */
     public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
@@ -413,16 +414,16 @@ class WFApplication extends JObject
         // get a parameter
         $value = $params->get($key);
 
-        // key not present in params or was empty string (JRegistry returns null), use fallback value
-        if (is_null($value)) {
+        // key not present in params or was empty string or empty array (JRegistry returns null), use fallback value
+        if (self::isEmptyValue($value)) {            
             // set default as empty string
-            $value = "";
+            $value = '';
             
             // key does not exist (parameter was not set) - use fallback
             if ($params->exists($key) === false) {
                 $value = $fallback;
 
-                // if fallback is empty, revert to system default if non-empty
+                // if fallback is empty, revert to system default if it is non-empty
                 if ($fallback === '' && $default !== '') {
                     $value = $default;
 
