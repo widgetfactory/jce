@@ -419,11 +419,10 @@ class WFEditorPlugin extends JObject
      * @param mixed  $fallback   Fallback value
      * @param mixed  $default    Default value
      * @param string $type       Variable type eg: string, boolean, integer, array
-     * @param bool   $allowempty Whether the value can be empty or must return the fallback value
      *
      * @return mixed
      */
-    public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
+    public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
         // get plugin name
         $name = $this->getName();
@@ -436,15 +435,15 @@ class WFEditorPlugin extends JObject
 
         // root key set
         if ($keys[0] === 'editor' || $keys[0] === $name || $keys[0] === $caller) {
-            return $wf->getParam($key, $fallback, $default, $type, $allowempty);
+            return $wf->getParam($key, $fallback, $default, $type);
         // no root key set, treat as shared param
         } else {
             // get fallback param from editor key
-            $fallback = $wf->getParam('editor.' . $key, $fallback, $default, $type, $allowempty);
+            $fallback = $wf->getParam('editor.' . $key, $fallback, $default, $type);
 
             if ($caller) {
                 // get fallback from plugin (with editor parameter as fallback)
-                $fallback = $wf->getParam($name . '.' . $key, $fallback, $default, $type, $allowempty);
+                $fallback = $wf->getParam($name . '.' . $key, $fallback, $default, $type);
                 $name = $caller;
             }
             
@@ -454,7 +453,7 @@ class WFEditorPlugin extends JObject
             }
 
             // return parameter
-            return $wf->getParam($name . '.' . $key, $fallback, $default, $type, $allowempty);
+            return $wf->getParam($name . '.' . $key, $fallback, $default, $type);
         }
     }
 
