@@ -419,7 +419,6 @@ class WFEditorPlugin extends JObject
      * @param mixed  $fallback   Fallback value
      * @param mixed  $default    Default value
      * @param string $type       Variable type eg: string, boolean, integer, array
-     * @param bool   $allowempty
      *
      * @return mixed
      */
