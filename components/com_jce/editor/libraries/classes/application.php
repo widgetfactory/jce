@@ -406,7 +406,7 @@ class WFApplication extends JObject
      * @param $default Default value
      * @param bool $allowempty Whether the value can be empty or must return the fallback value
      */
-    public function getParam($key, $fallback = '', $default = '', $type = 'string')
+    public function getParam($key, $fallback = '', $default = '', $type = 'string', $allowempty = true)
     {
         // get params for base key
         $params = $this->getParams();
@@ -432,6 +432,11 @@ class WFApplication extends JObject
                 }
             // parameter is set, but is empty, but fallback is not (inherited values)
             } else if ($fallback !== '') {
+                $value = $fallback;
+            }
+
+            // if allowempty is false, return the fallback value - sepcial case to allow for empty directory values
+            if ($value === '' && $allowempty === false) {
                 $value = $fallback;
             }
         }
