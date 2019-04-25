@@ -16,7 +16,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="restricted_dir" type="text" default="" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" />
+            <field name="restricted_dir" type="text" default="" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1" />
         </fieldset>
     </fields>
 </extension>
