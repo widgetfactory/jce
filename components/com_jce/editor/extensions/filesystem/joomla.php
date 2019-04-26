@@ -78,7 +78,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $wf = WFEditorPlugin::getInstance();
 
             // list of restricted directories
-            $restricted = strtolower($wf->getParam('filesystem.joomla.restrict_dir', self::$restricted));
+            $restricted = $wf->getParam('filesystem.joomla.restrict_dir', self::$restricted);
 
             // explode to array
             if (is_string($restricted)) {
