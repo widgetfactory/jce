@@ -107,15 +107,11 @@ main > div:last-child {
 }
 
 .uk-tree {
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
 }
 
 .uk-tree li {
-  -ms-flex: 1 1 auto;
-  -webkit-flex: 1 1 auto;
-  flex: 1 1 auto;
+  flex: 1 0 auto;
 }
 
 .uk-tree-hidden #sort-date,
@@ -133,9 +129,7 @@ main > div:last-child {
   top: 5px;
   left: 5px;
   z-index: 1;
-  width: 99%;
   width: calc(100% - 10px);
-  height: 90%;
   height: calc(100% - 50px);
 }
 
@@ -177,7 +171,6 @@ main > div:last-child {
 #browser-tree {
   box-sizing: border-box;
   margin: 0;
-  height: 89.6%;
   height: calc(100% - 33px);
 }
 

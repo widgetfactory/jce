@@ -327,7 +327,7 @@
 
                         html += '</span>';
 
-                        html += '<span class="uk-tree-text uk-width-9-10 uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
+                        html += '<span class="uk-tree-text uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
                         html += '</a></div>';
                         html += '</li>';
 
