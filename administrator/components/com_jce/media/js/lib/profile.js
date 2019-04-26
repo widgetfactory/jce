@@ -151,7 +151,7 @@
                     // Select the highlighted result
                     var customOption = $(selector).find('option').filter(function () {
                         return $(element).html() == highlighted.text();
-                    }).prop('selected', true);
+                    }).attr('selected', 'selected');
                 } else {
                     // Extra check. Search if the custom tag already exists
                     var customOption = $(elm).find('option').filter(function () {
@@ -159,11 +159,11 @@
                     });
 
                     if (customOption.text() !== '') {
-                        customOption.prop('selected', true);
+                        customOption.attr('selected', 'selected');
                     } else {
                         var option = $('<option>');
                         option.text(element.value).val(element.value);
-                        option.prop('selected', true);
+                        option.attr('selected', 'selected');
                         // Append the option and repopulate the chosen field
                         $(elm).append(option);
                     }
