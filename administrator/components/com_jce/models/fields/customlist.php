@@ -37,21 +37,37 @@ class JFormFieldCustomList extends JFormFieldList
         return $return;
     }
 
-    /**
-     * Method to get the field input for a tag field.
-     *
-     * @return string The field input
-     *
-     * @since   3.1
-     */
-    protected function getInput()
+    protected function getOptions()
     {
-        if (!is_array($this->value) && !empty($this->value)) {
-            if (is_string($this->value)) {
-                $this->value = explode(',', $this->value);
+        $options = parent::getOptions();
+
+        $this->value = is_array($this->value) ? $this->value : explode(',', $this->value);
+
+        $custom = array();
+
+        foreach ($this->value as $value) {
+            $tmp = array(
+                'value' => $value,
+                'text'  => $value,
+                'selected' => true,
+            );
+
+            $found = false;
+
+            foreach($options as $option) {
+                if ($option->value === $value) {
+                    $found = true;
+                }
+            }
+
+            if (!$found) {
+                $custom[] = (object) $tmp;
             }
         }
 
-        return parent::getInput();
+        // Merge any additional options in the XML definition.
+		$options = array_merge($options, $custom);
+
+        return $options;
     }
 }
