@@ -54,6 +54,10 @@ class JFormFieldFilesystem extends JFormField
         // default
         if (empty($value)) {
             $value = array('name' => $this->default);
+        } else {
+            if (!isset($value['name'])) {
+                $value['name'] = $this->default;
+            }
         }
 
         $plugins = $this->getPlugins();
