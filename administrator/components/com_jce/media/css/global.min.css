@@ -4,6 +4,18 @@
 .ui-jce.row {
   margin-left: -20px;
 }
+.ui-jce label {
+  max-width: 12rem;
+}
+.ui-jce .radio label,
+.ui-jce .checkbox label,
+.ui-jce .radio,
+.ui-jce .checkbox {
+  display: inline-block;
+}
+.ui-jce .checkboxes input {
+  float: initial;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
