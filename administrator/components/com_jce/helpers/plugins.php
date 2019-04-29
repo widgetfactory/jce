@@ -112,11 +112,12 @@ abstract class JcePluginsHelper
                     continue;
                 }
 
-                // load language
-                $language->load('plg_jce_' . $item->name, JPATH_ADMINISTRATOR);
-
                 // create path
                 $path = JPATH_PLUGINS . '/jce/' . $item->name;
+
+                // load language
+                $language->load('plg_jce_' . $item->name, JPATH_ADMINISTRATOR);
+                $language->load('plg_jce_' . $item->name, $path);
 
                 // get xml file
                 $file = $path . '/' . $item->name . '.xml';
@@ -275,8 +276,8 @@ abstract class JcePluginsHelper
                     $p->editable = 0;
 
                     // load language
-                    $language->load('plg_jce_' . $p->type . '_' . $p->name, JPATH_ADMINISTRATOR);
                     $language->load('plg_jce_' . $p->type . '-' . $p->name, JPATH_ADMINISTRATOR);
+                    $language->load('plg_jce_' . $p->type . '-' . $p->name, $p->path);
 
                     $extensions[$p->type][] = $p;
                 }
