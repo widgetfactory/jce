@@ -91,7 +91,7 @@ class JceModelProfile extends JModelAdmin
                 $group = $group . '.' . $name;
 
                 // reset the "default" attribute value if a value is set
-                if ($registry->exists($group)) {
+                if ($registry->exists($group) && $field->getAttribute('allowempty')) {
                     $form->setFieldAttribute($name, 'default', '', (string) $field->group);
                 }
             }
