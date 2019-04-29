@@ -198,7 +198,7 @@ class WFFileBrowser extends JObject
     /**
      * Return a list of allowed file extensions in specific format.
      *
-     * @return formatted extension list
+     * @return mixed formatted extension list
      */
     public function getFileTypes($format = 'map', $list = '')
     {
@@ -288,7 +288,8 @@ class WFFileBrowser extends JObject
             $list = implode(',', $list);
         } else {
             $list = explode(';', $list);
-            foreach ($types as $group => $extensions) {
+
+            foreach ($filetypes as $group => $extensions) {
                 $list[] = $group . '=' . $extensions;
             }
 
@@ -364,7 +365,7 @@ class WFFileBrowser extends JObject
      * @param string $relative The relative path of the folder
      * @param string $filter   A regex filter option
      *
-     * @return File list array
+     * @return array list array
      */
     private function getFiles($relative, $filter = '.', $sort = '')
     {
@@ -379,7 +380,7 @@ class WFFileBrowser extends JObject
      *
      * @param string $relative The relative path of the folder
      *
-     * @return Folder list array
+     * @return array list array
      */
     private function getFolders($relative, $filter = '', $sort = '')
     {
@@ -443,7 +444,7 @@ class WFFileBrowser extends JObject
         // get source dir from path eg: images/stories/fruit.jpg = images/stories
         $dir = $filesystem->getSourceDir($path);
 
-        $filetypes = $this->getFileTypes('array');
+        $filetypes = (array) $this->getFileTypes('array');
 
         $name = '';
 
@@ -893,7 +894,7 @@ class WFFileBrowser extends JObject
     /**
      * Execute an event.
      *
-     * @return Evenet result
+     * @return array result
      *
      * @param object $name           Event name
      * @param array  $args[optional] Optional arguments
@@ -956,7 +957,7 @@ class WFFileBrowser extends JObject
         $ext = WFUtility::getExtension($file['name']);
 
         // check extension is allowed
-        $allowed = $this->getFileTypes('array');
+        $allowed = (array) $this->getFileTypes('array');
 
         if (is_array($allowed) && !empty($allowed) && in_array(strtolower($ext), $allowed) === false) {
             @unlink($file['tmp_name']);
