@@ -611,7 +611,7 @@ abstract class WFUtility
                     continue;
                 }
                 
-                if ($ignore_empty_string && $value === "") {
+                if (array_key_exists($key, $merged) && $ignore_empty_string && $value === "") {
                     continue;
                 }
 
