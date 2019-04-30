@@ -88,12 +88,12 @@
                 ed.onContextMenu.add(t._showMenu, t);
             }
 
+            ed.onNodeChange.add(function (ed, cm) {
+                cm.setActive('spellchecker', !!t.active);
+            });
+
             // only required for PHP spellchecker
             if (!t.native_spellchecker) {
-                ed.onNodeChange.add(function (ed, cm) {
-                    cm.setActive('spellchecker', !!t.active);
-                });
-
                 ed.onBeforeGetContent.add(function () {
                     if (t.active) {
                         t._removeWords();
