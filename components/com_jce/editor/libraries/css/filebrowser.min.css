@@ -139,11 +139,16 @@ div#upload-body {
 
 div#upload-queue-block {
 	clear: both;
-	height: 250px;
+	height: 14rem;
 	overflow: auto;
 	box-sizing: border-box;
 	padding: 5px;
 	margin: 0;
+}
+
+#upload-options {
+	max-height: 12rem;
+	overflow: auto;
 }
 
 .queue-item-loading .queue-item-name input {
