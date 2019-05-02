@@ -23,8 +23,13 @@ div#upload-queue-block {
 }
 
 #upload-options {
-	max-height: 12rem;
+	max-height: 14rem;
 	overflow: auto;
+}
+
+#upload-options .uk-form-row {
+    margin-bottom: 0.5em;
+    margin-top: 0;
 }
 
 .queue-item-loading .queue-item-name input {
