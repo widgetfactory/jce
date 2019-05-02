@@ -10,8 +10,8 @@
     <packagerurl>https://www.joomlacontenteditor.net</packagerurl>
     <description>PKG_JCE_XML_DESCRIPTION</description>
     <updateservers>
-        <server type="collection" priority="1" name="JCE Editor Package">
-            <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/pkg_jce@@pro@@.xml]]>
+        <server type="extension" priority="1" name="JCE Editor Package">
+            <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce@@pro@@.xml]]>
         </server>
     </updateservers>
     <scriptfile>install.pkg.php</scriptfile>
