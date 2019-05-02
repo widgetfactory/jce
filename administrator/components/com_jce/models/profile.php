@@ -91,16 +91,17 @@ class JceModelProfile extends JModelAdmin
                 // create key from group and name
                 $group = $group . '.' . $name;
 
+                // explode group to array
                 $parts = explode('.', $group);
 
-                // remove "config" from group to match stored params data
-                if ($parts[0] === 'config') {
+                // remove "config" from group name so it matches params data object
+                if ($parts[0] === "config") {
                     array_shift($parts);
                     $group = implode('.', $parts);
                 }
 
                 // reset the "default" attribute value if a value is set
-                if ($registry->exists($group)) {
+                if ($registry->exists($group)) {                    
                     $form->setFieldAttribute($name, 'default', '', (string) $field->group);
                 }
             }
@@ -109,36 +110,36 @@ class JceModelProfile extends JModelAdmin
         parent::preprocessForm($form, $data);
     }
 
-    /**
-     * Method to get the row form.
-     *
-     * @param array $data     Data for the form
-     * @param bool  $loadData True if the form is to load its own data (default case), false if not
-     *
-     * @return mixed A JForm object on success, false on failure
-     *
-     * @since   1.6
-     */
     public function getForm($data = array(), $loadData = true)
     {
         JFormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
-        // Get the form.
+        // Get the setup form.
         $form = $this->loadForm('com_jce.profile', 'profile', array('control' => 'jform', 'load_data' => false));
 
-        if (empty($form)) {
+        if (!$form) {
             return false;
         }
 
         JFactory::getLanguage()->load('com_jce_pro', JPATH_SITE);
 
+        // editor manifest
+        $manifest = __DIR__ . '/forms/editor.xml';
+
+        // load editor manifest
+        if (is_file($manifest)) {
+            if ($editor_xml = simplexml_load_file($manifest)) {
+                $form->setField($editor_xml, 'config');
+            }
+        }
+
         // pro manifest
         $manifest = WF_EDITOR_LIBRARIES . '/pro/xml/image.xml';
 
-        // load pro data
+        // load pro manifest
         if (is_file($manifest)) {
-            if ($pro = simplexml_load_file($manifest)) {
-                $form->setField($pro);
+            if ($pro_xml = simplexml_load_file($manifest)) {
+                $form->setField($pro_xml, 'config');
             }
         }
 
@@ -192,10 +193,8 @@ class JceModelProfile extends JModelAdmin
             }
         }
 
-        $data->users = $users;
-
-        // pass through params data
-        $data->config = $data->params;
+        $data->users    = $users;
+        $data->config   = $data->params; 
 
         return $data;
     }
