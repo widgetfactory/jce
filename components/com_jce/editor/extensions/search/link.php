@@ -173,7 +173,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         // get router mode
         $sef 	= (int) $wf->getParam('search.link.sef_url', 0);
         
-        $limit 	= (int) $wf->getParam('search.link.limit', 10);
+        $limit 	= (int) $wf->getParam('search.link.limit', 50);
 
         // set router off so a raw url is returned by the Search plugin
         if ($router) {
@@ -197,6 +197,10 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         // get passed through area
         $area = $app->input->post->getCmd('areas', (array) $area);
+
+        if (empty($area)) {
+            $area = null;
+        }
 
         // trigger search on loaded plugins
         $searches = $app->triggerEvent('onContentSearch', array(
