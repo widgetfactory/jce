@@ -33,7 +33,7 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         // use tested defaults
         if (empty($plugins)) {
-            $plugins = array('categories', 'contacts', 'content', 'newsfeeds', 'weblinks');
+            $plugins = array('categories', 'contacts', 'content', 'newsfeeds', 'weblinks', 'tags');
         }
 
         foreach ($plugins as $plugin) {
@@ -191,6 +191,12 @@ class WFLinkSearchExtension extends WFSearchExtension
             $searchword = substr($searchword, 1, -1);
             $searchphrase = 'exact';
         }
+
+        // get passed through ordering
+        $ordering = $app->input->post->getWord('ordering', $ordering);
+
+        // get passed through area
+        $area = $app->input->post->getCmd('areas', (array) $area);
 
         // trigger search on loaded plugins
         $searches = $app->triggerEvent('onContentSearch', array(
