@@ -93,7 +93,7 @@ class JoomlalinksContact extends JObject
                     }
 
                     // convert to SEF
-                    $url = $this->route($id);
+                    $url = self::route($id);
 
                     $items[] = array(
                         'url' => $url,
@@ -103,7 +103,7 @@ class JoomlalinksContact extends JObject
                     );
                 }
 
-                $contacts = self::_contacts($args->id);
+                $contacts = self::getContacts($args->id);
 
                 foreach ($contacts as $contact) {
                     // language
@@ -112,7 +112,7 @@ class JoomlalinksContact extends JObject
                     }
 
                     $id = ContactHelperRoute::getContactRoute($contact->id, $args->id, $language);
-                    $id = $this->route($id);
+                    $id = self::route($id);
 
                     $items[] = array(
                         'id' => $id,
@@ -126,16 +126,18 @@ class JoomlalinksContact extends JObject
         return $items;
     }
 
-    private function route($url)
+    private static function route($url)
     {
-        if ((int) $this->get('sef_url', 0)) {
+        $wf = WFEditorPlugin::getInstance();
+        
+        if ($wf->getParam('joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 
         return $url;
     }
 
-    private static function _contacts($id)
+    private static function getContacts($id)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();

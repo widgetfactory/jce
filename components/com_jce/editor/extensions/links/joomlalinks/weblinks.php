@@ -83,7 +83,7 @@ class JoomlalinksWeblinks extends JObject
                     }
 
                     $items[] = array(
-                        'url' => $this->route($url),
+                        'url' => self::route($url),
                         'id' => $id,
                         'name' => $category->title . ' / ' . $category->alias,
                         'class' => 'folder weblink',
@@ -122,7 +122,7 @@ class JoomlalinksWeblinks extends JObject
                         }
 
                         $items[] = array(
-                            'url' => $this->route($url),
+                            'url' => self::route($url),
                             'id' => $id,
                             'name' => $category->title . ' / ' . $category->alias,
                             'class' => 'folder weblink',
@@ -130,7 +130,7 @@ class JoomlalinksWeblinks extends JObject
                     }
                 }
 
-                $weblinks = self::_weblinks($args->id);
+                $weblinks = self::getWeblinks($args->id);
 
                 foreach ($weblinks as $weblink) {
                     // language
@@ -145,7 +145,7 @@ class JoomlalinksWeblinks extends JObject
                     }
 
                     $items[] = array(
-                        'id' => $this->route($id),
+                        'id' => self::route($id),
                         'name' => $weblink->title . ' / ' . $weblink->alias,
                         'class' => 'file',
                     );
@@ -156,7 +156,7 @@ class JoomlalinksWeblinks extends JObject
         return $items;
     }
 
-    public function _weblinks($id)
+    public static function getWeblinks($id)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -210,9 +210,11 @@ class JoomlalinksWeblinks extends JObject
         return $db->loadObjectList();
     }
 
-    private function route($url)
+    private static function route($url)
     {
-        if ((int) $this->get('sef_url')) {
+        $wf = WFEditorPlugin::getInstance();
+        
+        if ($wf->getParam('joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 

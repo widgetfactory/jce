@@ -52,7 +52,7 @@ class JoomlalinksMenu extends JObject
         switch ($view) {
             // create top-level (non-linkable) menu types
             default:
-                $types = self::_types();
+                $types = self::getMenuTypes();
                 foreach ($types as $type) {
                     $items[] = array(
                         'id' => 'index.php?option=com_menu&view=menu&type=' . $type->id,
@@ -66,7 +66,7 @@ class JoomlalinksMenu extends JObject
                 $type = isset($args->type) ? $args->type : 0;
                 $id = $type ? 0 : $args->id;
 
-                $menus = self::_menu($id, $type);
+                $menus = self::getMenu($id, $type);
 
                 foreach ($menus as $menu) {
                     $class = array();
@@ -98,7 +98,7 @@ class JoomlalinksMenu extends JObject
                             break;
                     }
 
-                    $children = (int) self::_children($menu->id);
+                    $children = (int) self::getChildren($menu->id);
                     $title = isset($menu->name) ? $menu->name : $menu->title;
 
                     if ($children) {
@@ -118,7 +118,7 @@ class JoomlalinksMenu extends JObject
 
                     $items[] = array(
                         'id' => $children ? 'index.php?option=com_menu&view=menu&id=' . $menu->id : $link,
-                        'url' => $this->route($link),
+                        'url' => self::route($link),
                         'name' => $title . ' / ' . $menu->alias,
                         'class' => implode(' ', $class),
                     );
@@ -126,13 +126,13 @@ class JoomlalinksMenu extends JObject
                 break;
             // get menu items
             case 'submenu':
-                $menus = self::_menu($args->id);
+                $menus = self::getMenu($args->id);
                 foreach ($menus as $menu) {
                     if ($menu->type == 'menulink') {
                         //$menu = AdvlinkMenu::_alias($menu->id);
                     }
 
-                    $children = (int) self::_children($menu->id);
+                    $children = (int) self::getChildren($menu->id);
 
                     $title = isset($menu->name) ? $menu->name : $menu->title;
 
@@ -152,7 +152,7 @@ class JoomlalinksMenu extends JObject
                     }
 
                     $items[] = array(
-                        'id' => $this->route($link),
+                        'id' => self::route($link),
                         'name' => $title . ' / ' . $menu->alias,
                         'class' => $children ? 'folder menu' : 'file',
                     );
@@ -209,7 +209,7 @@ class JoomlalinksMenu extends JObject
         return $link;
     }
 
-    private function _types()
+    private static function getMenuTypes()
     {
         $db = JFactory::getDBO();
 
@@ -222,7 +222,7 @@ class JoomlalinksMenu extends JObject
         return $db->loadObjectList();
     }
 
-    private function _alias($id)
+    private static function getAlias($id)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -248,7 +248,7 @@ class JoomlalinksMenu extends JObject
         return $db->loadObject();
     }
 
-    private function _children($id)
+    private static function getChildren($id)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -270,7 +270,7 @@ class JoomlalinksMenu extends JObject
         return $db->loadResult();
     }
 
-    private function _menu($parent = 0, $type = 0)
+    private static function getMenu($parent = 0, $type = 0)
     {
         $db = JFactory::getDBO();
         $user = JFactory::getUser();
@@ -326,9 +326,11 @@ class JoomlalinksMenu extends JObject
         return $link;
     }
 
-    private function route($url)
+    private static function route($url)
     {
-        if ((int) $this->get('sef_url', 0)) {
+        $wf = WFEditorPlugin::getInstance();
+        
+        if ($wf->getParam('joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 
