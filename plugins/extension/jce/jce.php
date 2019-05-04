@@ -22,7 +22,7 @@ class PlgExtensionJce extends JPlugin
      *
      * @since   2.6
      */
-    private function isValid($installer)
+    private function isValidPlugin($installer)
     {
         if (empty($installer->manifest)) {
             return false;
@@ -35,6 +35,40 @@ class PlgExtensionJce extends JPlugin
         return $type === 'plugin' && $group === 'jce';
     }
 
+    public function onExtensionBeforeInstall($method, $type, $manifest, $extension = 0)
+    {
+        if ((string) $type === "file") {
+
+            // get a reference to the current installer
+            $manifestPath = JInstaller::getInstance()->getPath('manifest');
+
+            if (empty($manifestPath)) {
+                return true;
+            }
+
+            // get the filename of the manifest file, eg: pkg_jce_de-DE
+            $element = basename($manifestPath, '.xml');
+
+            // if this matches the current install... 
+            if (strpos($element, 'pkg_jce_') !== false) {
+                // find an existing legacy language install, eg: jce-de-DE
+                $element = str_replace('pkg_jce_', 'jce-', $element);
+
+                $table = JTable::getInstance('extension');
+                $id = $table->find(array('type' => 'file', 'element' => $element));
+
+                if ($id) {
+                    $installer = new JInstaller();
+                    
+                    // try unisntall, if this fails, delete database entry
+                    if (!$installer->uninstall('file', $id)) {
+                        $table->delete($id);
+                    }
+                }
+            }
+        }
+    
+    }
     /**
      * Handle post extension install update sites.
      *
@@ -46,7 +80,7 @@ class PlgExtensionJce extends JPlugin
     public function onExtensionAfterInstall($installer, $eid)
     {
         if ($eid) {
-            if (!$this->isValid($installer)) {
+            if (!$this->isValidPlugin($installer)) {
                 return false;
             }
 
@@ -117,7 +151,7 @@ class PlgExtensionJce extends JPlugin
     public function onExtensionAfterUninstall($installer, $eid, $result)
     {
         if ($eid) {
-            if (!$this->isValid($installer)) {
+            if (!$this->isValidPlugin($installer)) {
                 return false;
             }
 
