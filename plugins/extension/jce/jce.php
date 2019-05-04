@@ -49,7 +49,7 @@ class PlgExtensionJce extends JPlugin
             // get the filename of the manifest file, eg: pkg_jce_de-DE
             $element = basename($manifestPath, '.xml');
 
-            // if this matches the current install... 
+            // if this matches the current install...
             if (strpos($element, 'pkg_jce_') !== false) {
                 // find an existing legacy language install, eg: jce-de-DE
                 $element = str_replace('pkg_jce_', 'jce-', $element);
@@ -59,7 +59,7 @@ class PlgExtensionJce extends JPlugin
 
                 if ($id) {
                     $installer = new JInstaller();
-                    
+
                     // try unisntall, if this fails, delete database entry
                     if (!$installer->uninstall('file', $id)) {
                         $table->delete($id);
@@ -67,7 +67,6 @@ class PlgExtensionJce extends JPlugin
                 }
             }
         }
-    
     }
     /**
      * Handle post extension install update sites.
