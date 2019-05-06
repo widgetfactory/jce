@@ -274,11 +274,11 @@
     min-height: 200px;
 }
 
-.defaultSkin .mceListBox a {
+.defaultSkin .mceListBox button {
     display: block;
 }
 
-.defaultSkin .mceListBox .mceText a {
+.defaultSkin .mceListBox .mceText button {
     padding: 0 4px;
     width: 74px;
     text-align: left;
@@ -290,7 +290,7 @@
     border-radius: 2px 0 0 2px;
 }
 
-.defaultSkin .mceListBox .mceOpen a {
+.defaultSkin .mceListBox .mceOpen button {
     width: 15px;
     height: 30px;
     border: 1px solid #ddd;
@@ -298,16 +298,16 @@
     border-radius: 0 2px 2px 0;
 }
 
-.defaultSkin .mceListBox:hover .mceOpen a {
+.defaultSkin .mceListBox:hover .mceOpen button {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceListBox:hover .mceText a {
+.defaultSkin .mceListBox:hover .mceText button {
     border-color: #ccc;
 }
 
-.defaultSkin .mceListBox .mceOpen a:after {
+.defaultSkin .mceListBox .mceOpen button:after {
     content: "▼";
     display: block;
     font-size: 9px;
@@ -316,26 +316,26 @@
     text-align: center;
 }
 
-.defaultSkin table.mceListBoxEnabled:hover .mceText a,
-.defaultSkin .mceListBoxHover .mceText a,
-.defaultSkin .mceListBoxSelected .mceText a {
+.defaultSkin table.mceListBoxEnabled:hover .mceText button,
+.defaultSkin .mceListBoxHover .mceText button,
+.defaultSkin .mceListBoxSelected .mceText button {
     border: 1px solid #ccc;
     border-right: 0;
     background: #fff
 }
 
-table.mceListBoxEnabled:hover .mceOpen a,
-.defaultSkin .mceListBoxHover .mceOpen a,
-.defaultSkin .mceListBoxSelected .mceOpen a {
+table.mceListBoxEnabled:hover .mceOpen button,
+.defaultSkin .mceListBoxHover .mceOpen button,
+.defaultSkin .mceListBoxSelected .mceOpen button {
     background-color: #fff;
     border: 1px solid #ccc;
 }
 
-.defaultSkin .mceListBoxDisabled .mceOpen a:after {
+.defaultSkin .mceListBoxDisabled .mceOpen button:after {
     color: gray;
 }
 
-.defaultSkin .mceListBoxDisabled .mceText a {
+.defaultSkin .mceListBoxDisabled .mceText button {
     color: gray;
     background-color: transparent;
 }
@@ -350,11 +350,11 @@ table.mceListBoxEnabled:hover .mceOpen a,
     border: 1px solid #ddd;
 }
 
-.mceOldBoxModel .mceListBox .mceText a {
+.mceOldBoxModel .mceListBox .mceText button {
     height: 22px
 }
 
-.defaultSkin .mceOldBoxModel .mceListBox .mceOpen a {
+.defaultSkin .mceOldBoxModel .mceListBox .mceOpen button {
     width: 12px;
     height: 22px;
 }
@@ -424,7 +424,7 @@ select.mceNativeListBox {
 }
 
 .defaultSkin .mceSplitButtonDisabled .mceOpen button:after {
-    color: #ddd;
+    color: #888;
 }
 
 .defaultSkin .mceSplitButton .mceOpen span {
@@ -447,14 +447,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-color: #ccc;
 }
 
-.defaultSkin .mceSplitButtonEnabled:hover .mceText button,
-.defaultSkin .mceSplitButtonEnabled:hover .mceOpen button {
+.defaultSkin .mceSplitButton:hover .mceText button,
+.defaultSkin .mceSplitButton:hover .mceOpen button {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceSplitButtonDisabled .mceAction,
-.defaultSkin .mceSplitButtonDisabled span.mceOpen {
+.defaultSkin .mceSplitButtonDisabled .mceAction {
     opacity: 0.3;
 }
 

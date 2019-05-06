@@ -48,13 +48,13 @@
 }
 
 .o2k7Skin .mceButton,
-.o2k7Skin .mceSplitButton {
+.o2k7Skin .mceSplitButton,
+.o2k7Skin .mceListBox {
     background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
 }
 
-.o2k7Skin .mceButtonEnabled,
-.o2k7Skin .mceButtonEnabled:hover,
-.o2k7Skin .mceButtonEnabled:active,
+.o2k7Skin .mceButton:hover,
+.o2k7Skin .mceButton:active,
 .o2k7Skin .mceButtonActive,
 .o2k7Skin .mceButtonSelected {
     border-color: #9FBBE2;
@@ -67,21 +67,64 @@
 .o2k7Skin .mceButtonEnabled:hover,
 .o2k7Skin .mceButton:hover,
 .o2k7Skin .mceButton.mceButtonSelected,
-.o2k7Skin .mceSplitButton:hover,
 .o2k7Skin .mceButton:active,
 .o2k7Skin .mceSplitButton:active,
-.o2k7Skin .mceListBox .mceOpen button:hover {
+.o2k7Skin .mceSplitButtonSelected .mceSplitButton {
     background: linear-gradient(to bottom, rgba(254, 246, 202, 1) 0%, rgba(255, 211, 78, 1) 50%, rgba(255, 251, 233, 1) 100%);
+}
+
+.o2k7Skin .mceButton.mceButtonDisabled:hover {
+    background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
+}
+
+.o2k7Skin .mceSplitButtonSelected .mceSplitButton .mceText button,
+.o2k7Skin .mceSplitButtonSelected .mceSplitButton .mceOpen button,
+.o2k7Skin .mceSplitButton:hover .mceText button,
+.o2k7Skin .mceSplitButton:hover .mceOpen button {
+    background: linear-gradient(to bottom, rgba(254, 246, 202, 1) 0%, rgba(255, 211, 78, 1) 50%, rgba(255, 251, 233, 1) 100%);
+    border-color: #FFD24E;
+}
+
+.o2k7Skin .mceListBox.mceListBoxSelected .mceText button,
+.o2k7Skin .mceListBox.mceListBoxSelected .mceOpen button,
+.o2k7Skin .mceListBox:hover .mceText button,
+.o2k7Skin .mceListBox:hover .mceOpen button {
+    border-color: #FFD24E;
+}
+
+.o2k7Skin .mceListBox.mceListBoxSelected .mceOpen button,
+.o2k7Skin .mceListBox:hover .mceOpen button {
+    background: linear-gradient(to bottom, rgba(254, 246, 202, 1) 0%, rgba(255, 211, 78, 1) 50%, rgba(255, 251, 233, 1) 100%);
+}
+
+.o2k7Skin .mceSplitButtonDisabled .mceSplitButton:hover .mceText button,
+.o2k7Skin .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen button {
+    background: inherit;
+    border-color: #9FBBE2;
+}
+
+.o2k7Skin .mceListBoxDisabled .mceListBox:hover .mceText button,
+.o2k7Skin .mceListBoxDisabled .mceListBox:hover .mceOpen button {
+    border-color: #9FBBE2;
+}
+
+.o2k7Skin .mceListBoxDisabled .mceListBox:hover .mceOpen button {
+    background: inherit;
 }
 
 .o2k7Skin .mceToolbarRow .mceToolBarItem:first-child {
     margin-left: 2px;
+    border-radius: 2px 0 0 2px;
 }
 
 .o2k7Skin .mceToolbarRow .mceToolBarItem:first-child .mceButton:first-child,
 .o2k7Skin .mceToolbarStart .mceToolBarItem:first-child .mceButton:first-child:hover {
     border-left-width: 1px;
     border-radius: 2px 0 0 2px;
+}
+
+.o2k7Skin .mceToolbarRow .mceToolBarItem:last-child {
+    border-radius: 0 2px 2px 0;
 }
 
 .o2k7Skin .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child,
@@ -128,8 +171,8 @@
     border-width: 0px 1px;
     border-style: solid;
     border-color: #9FBBE2;
-    margin: 0 0 0 -1px;
-    height: 26px;
+    margin: 0 0 0 -2px;
+    height: 32px;
     background: transparent none;
 }
 
@@ -146,7 +189,9 @@
 }
 
 .o2k7Skin .mceSplitButton .mceText button,
-.o2k7Skin .mceSplitButton .mceOpen button {
+.o2k7Skin .mceSplitButton .mceOpen button,
+.o2k7Skin .mceListBox .mceText button,
+.o2k7Skin .mceListBox .mceOpen button {
     border-color: #9FBBE2;
     border-radius: 0;
 }
@@ -179,8 +224,7 @@
     margin: 0
 }
 
-.o2k7Skin .mceSplitButtonDisabled .mceAction,
-.o2k7Skin .mceSplitButtonDisabled .mceOpen {
+.o2k7Skin .mceSplitButtonDisabled .mceAction {
     opacity: 0.3;
 }
 
