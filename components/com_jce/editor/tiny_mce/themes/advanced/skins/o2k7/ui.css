@@ -57,10 +57,9 @@
 .o2k7Skin .mceButton:active,
 .o2k7Skin .mceButtonActive,
 .o2k7Skin .mceButtonSelected {
-    border-color: #9FBBE2;
+    border-color: #FFD24E;
     background-color: #FFD24E;
     border-left-width: 0;
-    border-right-color: #E0E9F6;
 }
 
 .o2k7Skin .mceButton.mceButtonActive,
