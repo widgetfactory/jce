@@ -35,7 +35,7 @@ class WFBrowserPlugin extends WFMediaManager
         $caller = $this->get('caller', 'browser');
 
         // get mediatype from xml
-        $mediatype = $app->input->get('mediatype', $app->input->get('filter', 'files'));
+        $mediatype = $app->input->getString('mediatype', $app->input->getString('filter', 'files'));
 
         // clean filter value
         $mediatype = (string) preg_replace('/[^\w_,]/i', '', $mediatype);
