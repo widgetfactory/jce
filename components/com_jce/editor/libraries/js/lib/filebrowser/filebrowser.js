@@ -287,8 +287,12 @@
                 self._showItemDetails();
             });
 
+            var list_limit = Wf.Cookie.get('wf_' + Wf.getName() + '_limit', this.options.list_limit, function(val) {
+                return !/([0125]+|all)/.test(val) === false;
+            });
+
             // Set list limit selection
-            $('#browser-list-limit-select').val(Wf.Cookie.get('wf_' + Wf.getName() + '_limit') || this.options.list_limit);
+            $('#browser-list-limit-select').val(list_limit);
 
             $('#browser-list-limit-select').change(function () {
                 self._limitcount = 0;
@@ -444,7 +448,10 @@
                 self.refresh(e);
             });
 
-            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details');
+            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 1, function(val) {
+                val = parseInt(val);
+                return val === 0 || val === 1;
+            });
 
             // show details view (hide tree)
             if (parseInt(showDetails) || !this._treeLoaded()) {
@@ -572,7 +579,9 @@
             });*/
 
             // get the sort value from a cookie
-            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '');
+            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '', function(val) {
+                return /[a-z-]+/.test(val);
+            });
 
             $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function() {
                 // reset all
@@ -672,7 +681,7 @@
          * @param {String} src The base url
          */
         _setupDir: function () {
-            var dir = '';
+            var self = this, dir = '';
 
             // get the file src from the widget element
             var src = $(this.element).val();
@@ -705,7 +714,9 @@
 
             // get directory from cookie
             if (!src) {
-                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir') || '';
+                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir', '', function(val) {
+                    return val && Wf.String.safe(val, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === val;
+                });
             }
 
             if (!this._validatePath(dir)) {

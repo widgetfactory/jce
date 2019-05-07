@@ -503,11 +503,13 @@
          *
          * @method get
          * @param {String} n Name of cookie to retrive.
+         * @param {String} s Default value to return.
+         * @param {Function} fn Function to validate cookie value against, return default if false
          * @return {String} Cookie data string.
          * @copyright Copyright 2009, Moxiecode Systems AB
          * @licence GNU / LGPL - http://www.gnu.org/copyleft/lesser.html
          */
-        get: function (n, s) {
+        get: function (n, s, fn) {
             var c = document.cookie,
                 e, p = n + "=",
                 b, v;
@@ -537,6 +539,10 @@
             v = unescape(c.substring(b + p.length, e));
 
             if (typeof v == 'undefined') {
+                return s;
+            }
+
+            if (fn && typeof fn === "function" && !fn(v)) {
                 return s;
             }
 
