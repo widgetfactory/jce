@@ -71,6 +71,8 @@
         safe: function(s, mode, spaces, textcase) {
             mode = mode || 'utf-8';
 
+            spaces = spaces || '_';
+
             // replace spaces with specified character
             s = s.replace(/[\s ]+/g, spaces);
 
