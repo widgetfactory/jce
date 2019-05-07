@@ -715,7 +715,7 @@
             // get directory from cookie
             if (!src) {
                 dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir', '', function(val) {
-                    return val && Wf.String.safe(val, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === val;
+                    return val && self._validatePath(val);
                 });
             }
 
