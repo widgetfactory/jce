@@ -57,21 +57,36 @@
 						if (/on(click|dblclick)/.test(k)) {
 							k = 'data-mce-' + k;
 						}
-
-						if (k === "classes" || k === "classlist") {
-							k = "class";
+						if (k === "classes") {
+							k = 'class';
 						}
-
 						var v = attribs[k];
 
 						if (typeof v !== "undefined") {
 							// clean up class
 							if (k === "class") {
-								v = v.replace(/mce-item-[a-z0-9]+/gi, '').replace(/\s+/, ' ');
-								v = $.trim(v);
+								var elm = this;
+                                // clean value
+                                v = v.replace(/mce-item-(\w+)/gi, '').replace(/\s+/g, ' ');
+                                // trim
+                                v = $.trim(v);
+                                // create array
+                                v = v.split(' ');
+            
+                                $.each(v, function (i, value) {
+                                    value = $.trim(value);
+            
+                                    if (!value || value === ' ') {
+                                        return true;
+                                    }
+            
+                                    if ($('option[value="' + value + '"]', elm).length == 0) {
+                                        $(elm).append(new Option(value, value));
+                                    }
+                                });
 							}
 
-							$(this).val(v);
+							$(this).val(v).change();
 
 							delete attribs[k];
 						}
@@ -138,7 +153,7 @@
 
 			var args = {}, attribs = this.getAttributes(n);
 
-			$(':input').not('#classlist-select, #classes, input[name]').each(function () {
+			$(':input').not('#classes, input[name]').each(function () {
 				var k = $(this).attr('id'),
 					v = $(this).val();
 
@@ -164,6 +179,11 @@
 
 			// get classes value
 			var cls = $('#classes').val();
+			
+			// convert to string if required
+			if ($.type(cls) === 'array') {
+				cls = cls.join(' ');
+			}
 
 			// remove from attributes map
 			delete attribs["class"];

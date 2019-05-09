@@ -79,9 +79,7 @@
         each(fmt.classes, function (value) {
             value = removeVars(value);
 
-            if (!dom.hasClass(previewElm, value)) {
-                dom.addClass(previewElm, value);
-            }
+            dom.addClass(previewElm, value);
         });
 
         // Add the previewElm outside the visual area

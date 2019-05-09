@@ -93,7 +93,7 @@
                 return;
             }
 
-            TinyMCE_Utils.fillClassList('classlist');
+            TinyMCE_Utils.fillClassList('classes');
 
             $('#apply').button({
                 icons: {
@@ -128,7 +128,29 @@
             this.createBrowsers();
 
             // set up datalist
-            $('.uk-datalist select').datalist();
+            $('.uk-datalist, #classes').select2({
+                width: '100%',
+                tags: true,
+                tokenSeparators: [' '],
+                templateResult : function (data) {
+                    if (!data.element) {
+                        return data.text;
+                    }
+
+                    var elm = data.element, styles = elm.getAttribute('data-style');
+
+                    var $wrapper = $('<span />');
+                    $wrapper.addClass(elm.className);
+
+                    if (styles) {
+                        $wrapper.attr('style', styles);
+                    }
+
+                    $wrapper.text(data.text);
+
+                    return $wrapper;
+                }
+            });
 
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
@@ -251,7 +273,7 @@
 
                 $(this).parent('.uk-form-controls, td, span').addClass('uk-form-icon uk-form-icon-both').prepend('<i class="uk-icon-hashtag" />');
 
-                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" aria-label="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).attr('disabled', function() {
+                var $picker = $('<button class="uk-button-link uk-icon-none uk-icon-colorpicker" title="' + self.translate('colorpicker') + '" aria-label="' + self.translate('colorpicker') + '" id="' + id + '_pick"></button>').insertAfter(this).attr('disabled', function () {
                     return $(elm).is(':disabled') ? true : null;
                 });
 
@@ -281,7 +303,7 @@
                     }
 
                     // toggle disabled
-                    $(this).next('.uk-icon-colorpicker').attr('disabled', function() {
+                    $(this).next('.uk-icon-colorpicker').attr('disabled', function () {
                         return elm.disabled ? true : null;
                     });
 
@@ -396,7 +418,7 @@
 
                 $('<button class="uk-icon uk-icon-' + map[filter] + ' uk-button uk-button-link" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></button>').click(function (e) {
                     e.preventDefault();
-                    
+
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {
                         "callback": callback || $(input).attr('id'),
                         "value": input.value,

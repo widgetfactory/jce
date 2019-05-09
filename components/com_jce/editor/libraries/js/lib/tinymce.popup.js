@@ -1,7 +1,7 @@
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
-        var each = tinymce.each, filtered = {};
+        var each = tinymce.each, filtered = {}, PreviewCss = tinymce.util.PreviewCss;
 
         function isAllowedStylesheet(href) {
             var styleselect = tinyMCEPopup.editor.getParam('styleselect_stylesheet');
@@ -156,7 +156,14 @@
                         }
 
                         if (o['class']) {
-                            lst.options[lst.options.length] = new Option(o.title || o['class'], o['class']);
+                            var cls = o['class'];
+                            
+                            var opt = new Option(o.title || cls, cls);
+                            var styles = PreviewCss(ed, {styles: [], attributes: [], classes: cls.split(' ')});
+
+                            opt.setAttribute('data-style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
+                            
+                            lst.options[lst.options.length] = opt;
                         }
                     });
                 }

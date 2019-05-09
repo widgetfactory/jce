@@ -359,6 +359,7 @@
             if (!$(this).parent().hasClass('uk-datalist')) {
                 $(this).wrap('<span class="uk-datalist" />');
             }
+
             var value = $(this).val();
             var input = $(this).siblings('input[type="text"]');
 
@@ -399,7 +400,8 @@
                 }
 
                 // pass value to input and trigger change
-                $(input).val(value);
+                $(input).val(value).change();
+                
                 $(self).trigger('datalist:change');
             });
         });

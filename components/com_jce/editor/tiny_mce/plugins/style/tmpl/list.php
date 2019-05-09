@@ -13,14 +13,14 @@ defined('JPATH_PLATFORM') or die;
 
 <div class="uk-form-row">
   <label class="uk-form-label uk-width-2-10" for="list_type"><?php echo JText::_('WF_STYLES_LIST_TYPE'); ?></label>
-  <div class="uk-form-controls uk-width-4-10 uk-datalist">
-    <select id="list_type" name="list_type"></select>
+  <div class="uk-form-controls uk-width-4-10">
+    <select id="list_type" name="list_type" class="uk-datalist"></select>
   </div>
 </div>
 <div class="uk-form-row">
   <label class="uk-form-label uk-width-2-10" for="list_position"><?php echo JText::_('WF_STYLES_POSITION'); ?></label>
-  <div class="uk-form-controls uk-width-4-10 uk-datalist">
-    <select id="list_position" name="list_position"></select>
+  <div class="uk-form-controls uk-width-4-10">
+    <select id="list_position" name="list_position" class="uk-datalist"></select>
   </div>
 </div>
 <div class="uk-form-row">

@@ -13,12 +13,12 @@ defined('JPATH_PLATFORM') or die;
 
   <div class="uk-grid uk-grid-small">
     <label for="positioning_type" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_POSITIONING_TYPE'); ?></label>
-    <div class="uk-form-controls uk-width-3-10 uk-datalist">
-      <select id="positioning_type"></select>
+    <div class="uk-form-controls uk-width-3-10">
+      <select id="positioning_type" class="uk-datalist"></select>
     </div>
     <label for="positioning_visibility" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_VISIBILITY'); ?></label>
-    <div class="uk-form-controls uk-width-3-10 uk-datalist">
-      <select id="positioning_visibility"></select>
+    <div class="uk-form-controls uk-width-3-10">
+      <select id="positioning_visibility" class="uk-datalist"></select>
     </div>
   </div>
 
@@ -45,8 +45,8 @@ defined('JPATH_PLATFORM') or die;
           <select id="positioning_height_measurement" ></select>
         </div>
         <label for="positioning_overflow" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_OVERFLOW'); ?></label>
-        <div class="uk-form-controls uk-width-2-10 uk-datalist">
-          <select id="positioning_overflow"></select>
+        <div class="uk-form-controls uk-width-2-10">
+          <select id="positioning_overflow" class="uk-datalist"></select>
         </div>
   </div>
 

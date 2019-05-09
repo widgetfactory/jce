@@ -117,8 +117,25 @@
                 $('#align').val(Wf.getAttrib(n, 'align'));
 
                 // Class
-                $('#classes').val(ed.dom.getAttrib(n, 'class'));
-                //$('#classlist').val(ed.dom.getAttrib(n, 'class'));
+                $('#classes').val(function () {
+                    var elm = this, values = ed.dom.getAttrib(n, 'class');
+                    // create array
+                    values = values.split(' ');
+
+                    $.each(values, function (i, value) {
+                        value = $.trim(value);
+
+                        if (!value || value === ' ') {
+                            return true;
+                        }
+
+                        if ($('option[value="' + value + '"]', elm).length == 0) {
+                            $(elm).append(new Option(value, value));
+                        }
+                    });
+
+                    $(elm).val(values).change();
+                });
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
                 $('#id').val(ed.dom.getAttrib(n, 'id'));
@@ -198,9 +215,9 @@
                         self.insertAndClose();
                     }
                 }, {
-                    width: 360,
-                    height: 240
-                });
+                        width: 360,
+                        height: 240
+                    });
             } else {
                 this.insertAndClose();
             }
@@ -245,8 +262,13 @@
                     }
                 }
 
-                if (k == 'classes')
+                if (k == 'classes') {
+                    if ($.type(v) === 'array') {
+                        v = v.join(' ');
+                    }
+
                     k = 'class';
+                }
 
                 args[k] = v;
             });
@@ -342,9 +364,9 @@
                     width: data.width,
                     height: data.height
                 }, {
-                    width: 80,
-                    height: 60
-                });
+                        width: 80,
+                        height: 60
+                    });
 
                 // set preview
                 $('#sample').attr({

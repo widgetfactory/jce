@@ -1,5 +1,6 @@
-@import url('../uikit/uikit.min.css');
-@import url('../jquery/css/jquery-ui.min.css');
+@import url('../vendor/uikit/uikit.min.css');
+@import url('../vendor/jquery/css/jquery-ui.min.css');
+@import url('../vendor/select2/css/select2.min.css');
 @font-face {
   font-family: 'wfeditor';
   src: url('../fonts/wfeditor.woff') format('woff');
@@ -1596,12 +1597,135 @@ input[type="range"]::-ms-thumb {
 .uk-form-label {
     min-width: 32px;
 }
+
+/* remove drop-down indicator in datalist */
+input[list]::-webkit-calendar-picker-indicator,
+input[list]::-webkit-list-button {
+    display: none;
+}
+
+/* Select2 Overrides */
+.select2-container--default .select2-selection--single {
+    border: 1px solid #ddd;
+    border-radius: 2px;
+}
+
+.select2-container .select2-selection--single {
+    height: 32px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 30px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 32px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    /*border-color: #444 transparent transparent;*/
+
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+
+    border: none;
+    height: 100%;
+    width: 32px;
+    left: -10px;
+    top: 0;
+    margin: 0;
+}
+
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    /*border-color: transparent transparent #444 transparent;*/
+
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+
+    border: none;
+    height: 100%;
+    width: 32px;
+    left: -10px;
+    top: 0;
+    margin: 0;
+}
+
+.select2-results__option {
+    height: 2.5rem;
+    padding: 0;
+    line-height: 2.5;
+}
+
+.select2-results__option>span {
+    display: block;
+    padding: 0 0.25rem;
+    margin: 0.25rem;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #eee;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #ddd;
+    border-radius: 2px;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+    height: inherit;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border-color: #ddd;
+    border-radius: 2px;
+}
+
+.select2-dropdown {
+    border-color: #ddd;
+    border-radius: 2px;
+}
+
+.select2-search input[type="search"]:focus {
+    background-color: inherit;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+}
+
+.select2-selection--multiple:after {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0 0.75rem;
+    cursor: default;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* style select */
+select:not([multiple]):not([size]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 20px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+}
 .uk-datalist {
     position: relative;
     display: inline-block;
 }
 
-.uk-form-horizontal .uk-datalist input[type="text"] {
+/*.uk-form-horizontal .uk-datalist input[type="text"] {
     z-index: 1;
     position: relative;
     width: 92.5%;
@@ -1636,7 +1760,9 @@ input[type="range"]::-ms-thumb {
     left: 10px;
     width: 95%;
     width: calc(100% - 10px);
-}
+}*/
+
+.uk-form-horizontal .uk-datalist select {width: 100%;}
 
 .uk-form-icon input.color {
     padding-left: 20px !important;

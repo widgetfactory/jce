@@ -22,15 +22,15 @@ defined('JPATH_PLATFORM') or die;
             </div>
 
       <label for="box_float" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_BOX_FLOAT'); ?></label>
-      <div class="uk-form-controls uk-width-2-10 uk-datalist">
-        <select id="box_float"></select>
+      <div class="uk-form-controls uk-width-2-10">
+        <select id="box_float" class="uk-datalist"></select>
       </div>
     </div>
 
     <div class="uk-grid uk-grid-small">
       <label for="box_height" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_BOX_HEIGHT'); ?></label>
 
-        <div class="uk-form-controls uk-width-2-10 uk-datalist">
+        <div class="uk-form-controls uk-width-2-10">
           <input type="number" id="box_height" onchange="StyleDialog.synch('box_height','positioning_height');" />
         </div>
         <div class="uk-form-controls uk-width-2-10">
@@ -38,8 +38,8 @@ defined('JPATH_PLATFORM') or die;
         </div>
 
       <label for="box_clear" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_BOX_CLEAR'); ?></label>
-      <div class="uk-form-controls uk-width-2-10 uk-datalist">
-        <select id="box_clear"></select>
+      <div class="uk-form-controls uk-width-2-10">
+        <select id="box_clear" class="uk-datalist"></select>
       </div>
     </div>
 

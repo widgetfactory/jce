@@ -305,15 +305,6 @@
             });
 
         },
-        getInfo: function () {
-            return {
-                longname: 'Media',
-                author: 'Ryan Demmer',
-                authorurl: 'https://www.joomlacontenteditor.net',
-                infourl: 'https://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
-        },
 
         /**
          * Convert a URL
@@ -494,131 +485,116 @@
                 placeholder = new Node('img', 1);
             }
 
-            if (n.name === 'script') {
-                if (n.firstChild)
-                    matches = /(JCEMediaObject|write(Flash|ShockWave|QuickTime|RealMedia|WindowsMedia|DivX))/i.exec(n.firstChild.value);
+            name = n.name;
+            var style = Styles.parse(n.attr('style'));
 
-                if (!matches)
-                    return;
+            // get width an height
+            var w = n.attr('width') || style.width || 384;
+            var h = n.attr('height') || style.height || 216;
 
-                type = matches[1].toLowerCase();
-                data = JSON.parse(matches[2]);
-                w = data.width;
-                h = data.height;
+            var type = n.attr('type');
 
+            data = this.createTemplate(n);
+
+            // convert from single embed
+            if (name == 'embed' && type == 'application/x-shockwave-flash') {
                 name = 'object';
-            } else {
-                name = n.name;
-                var style = Styles.parse(n.attr('style'));
 
-                // get width an height
-                var w = n.attr('width')     || style.width  || 384;
-                var h = n.attr('height')    || style.height || 216;
+                data.param = {};
 
-                var type = n.attr('type');
-
-                data = this.createTemplate(n);
-
-                // convert from single embed
-                if (name == 'embed' && type == 'application/x-shockwave-flash') {
-                    name = 'object';
-
-                    data.param = {};
-
-                    // get and assign flash variables
-                    each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function (k) {
-                        var v = n.attr(k);
-
-                        if (v) {
-                            if (k == 'flashvars') {
-                                try {
-                                    v = encodeURIComponent(v);
-                                } catch (e) { }
-                            }
-
-                            data.param[k] = v;
-                        }
-
-                        delete data[k];
-                    });
-                }
-
-                // remove nested children
-                each(['audio', 'embed', 'object', 'video', 'iframe'], function (el) {
-                    each(n.getAll(el), function (node) {
-                        node.remove();
-                    });
-                });
-
-                if (n.attr('classid')) {
-                    classid = n.attr('classid').toUpperCase();
-                }
-
-                if (name == 'object') {
-                    if (!data.data) {
-                        var param = data.param;
-
-                        if (param) {
-                            data.data = param.src || param.url || param.movie || param.source;
-                        }
-                    }
-                } else {
-                    if (!data.src && data.source) {
-                        if (data.source.length > 1) {
-                            data.src = data.source[0].src;
-                        }
-                    }
-                }
-
-                // get type data
-                var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {
-                    name: 'generic'
-                };
-
-                type = lookup.name || type;
-
-                var style = Styles.parse(n.attr('style'));
-
-                // attributes that should be styles
-                each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function (na) {
-                    var v = n.attr(na);
+                // get and assign flash variables
+                each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function (k) {
+                    var v = n.attr(k);
 
                     if (v) {
-                        switch (na) {
-                            case 'bgcolor':
-                                style['background-color'] = v;
-                                break;
-                            case 'align':
-                                if (/^(left|right)$/.test(v)) {
-                                    style['float'] = v;
-                                } else {
-                                    style['vertical-align'] = v;
-                                }
-                                break;
-                            case 'vspace':
-                                style['margin-top'] = v;
-                                style['margin-bottom'] = v;
-                                break;
-                            case 'hspace':
-                                style['margin-left'] = v;
-                                style['margin-right'] = v;
-                                break;
-                            default:
-                                style[na] = v;
-                                break;
+                        if (k == 'flashvars') {
+                            try {
+                                v = encodeURIComponent(v);
+                            } catch (e) { }
                         }
+
+                        data.param[k] = v;
                     }
-                });
 
-                // standard attributes
-                each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
-                    placeholder.attr(at, n.attr(at));
+                    delete data[k];
                 });
+            }
 
-                // add styles
-                if (styles = ed.dom.serializeStyle(style)) {
-                    placeholder.attr('style', styles);
+            // remove nested children
+            each(['audio', 'embed', 'object', 'video', 'iframe'], function (el) {
+                each(n.getAll(el), function (node) {
+                    node.remove();
+                });
+            });
+
+            if (n.attr('classid')) {
+                classid = n.attr('classid').toUpperCase();
+            }
+
+            if (name == 'object') {
+                if (!data.data) {
+                    var param = data.param;
+
+                    if (param) {
+                        data.data = param.src || param.url || param.movie || param.source;
+                    }
                 }
+            } else {
+                if (!data.src && data.source) {
+                    if (data.source.length > 1) {
+                        data.src = data.source[0].src;
+                    }
+                }
+            }
+
+            // get type data
+            var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {
+                name: 'generic'
+            };
+
+            type = lookup.name || type;
+
+            var style = Styles.parse(n.attr('style'));
+
+            // attributes that should be styles
+            each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function (na) {
+                var v = n.attr(na);
+
+                if (v) {
+                    switch (na) {
+                        case 'bgcolor':
+                            style['background-color'] = v;
+                            break;
+                        case 'align':
+                            if (/^(left|right)$/.test(v)) {
+                                style['float'] = v;
+                            } else {
+                                style['vertical-align'] = v;
+                            }
+                            break;
+                        case 'vspace':
+                            style['margin-top'] = v;
+                            style['margin-bottom'] = v;
+                            break;
+                        case 'hspace':
+                            style['margin-left'] = v;
+                            style['margin-right'] = v;
+                            break;
+                        default:
+                            style[na] = v;
+                            break;
+                    }
+                }
+            });
+
+            // standard attributes
+            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
+                placeholder.attr(at, n.attr(at));
+            });
+
+            // add styles
+            if (styles = ed.dom.serializeStyle(style)) {
+                placeholder.attr('style', styles);
             }
 
             o[name] = data;
@@ -654,8 +630,8 @@
 
             // Set data attribute and class
             placeholder.attr({
-                width   : w,
-                height  : h,
+                width: w,
+                height: h,
                 'class': classes.join(' '),
                 'data-mce-json': JSON.serialize(o)
             });

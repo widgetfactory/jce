@@ -19,10 +19,8 @@ defined('JPATH_PLATFORM') or die;
     </div>
     <div class="uk-form-row">
         <label class="uk-form-label uk-width-3-10" for="classes" class="hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
-        <div class="uk-form-controls uk-width-7-10 uk-datalist">
-            <input type="text" id="classes" value="" />
-            <select id="classlist">
-                <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
+        <div class="uk-form-controls uk-width-7-10">
+            <select id="classes" class="uk-datalist" multiple="multiple">
             </select>
         </div>
     </div>
@@ -55,10 +53,8 @@ defined('JPATH_PLATFORM') or die;
     </div>
     <div class="uk-form-row">
         <label class="uk-form-label uk-width-3-10" for="rel" class="hastip" title="<?php echo JText::_('WF_LABEL_REL_DESC'); ?>"><?php echo JText::_('WF_LABEL_REL'); ?></label>
-        <div class="uk-form-controls uk-width-7-10 uk-datalist">
-          <input type="text" id="rel" />
-          <select>
-                <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
+        <div class="uk-form-controls uk-width-7-10">
+          <select id="rel" class="uk-datalist" multiple="multiple">
                 <option value="nofollow">No Follow</option>
                 <option value="alternate">Alternate</option>
                 <option value="designates">Designates</option>

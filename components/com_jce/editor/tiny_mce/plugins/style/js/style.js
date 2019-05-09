@@ -130,8 +130,8 @@
 
             $('#toggle_insert_span').prop('checked', this.applyActionIsInsert);
 
-            this.fillSelect('text_font_list', 'style_font', ed.getParam('theme_advanced_fonts', this.defaults.Fonts), ';', true);
-            this.fillSelect('text_size_list', 'style_font_size', this.defaults.Sizes, ';', true);
+            this.fillSelect('text_font', 'style_font', ed.getParam('theme_advanced_fonts', this.defaults.Fonts), ';', true);
+            this.fillSelect('text_size', 'style_font_size', this.defaults.Sizes, ';', true);
             this.fillSelect('text_size_measurement', 'style_font_size_measurement', this.defaults.Measurement, ';', true);
             this.fillSelect('text_case', 'style_text_case', "capitalize;uppercase;lowercase", ';', true);
             this.fillSelect('text_weight', 'style_font_weight', this.defaults.Weight, ';', true);
@@ -219,8 +219,8 @@
 
             // Setup text fields
 
-            selectByValue('text_font_list', ce.style.fontFamily, true, true);
-            selectByValue('text_size_list', this.getNum(ce.style.fontSize), true, true);
+            selectByValue('text_font', ce.style.fontFamily, true, true);
+            selectByValue('text_size', this.getNum(ce.style.fontSize), true, true);
             selectByValue('text_size_measurement', this.getMeasurement(ce.style.fontSize));
             selectByValue('text_weight', ce.style.fontWeight, true, true);
             selectByValue('text_style', ce.style.fontStyle, true, true);

@@ -3,7 +3,7 @@
     display: inline-block;
 }
 
-.uk-form-horizontal .uk-datalist input[type="text"] {
+/*.uk-form-horizontal .uk-datalist input[type="text"] {
     z-index: 1;
     position: relative;
     width: 92.5%;
@@ -38,7 +38,9 @@
     left: 10px;
     width: 95%;
     width: calc(100% - 10px);
-}
+}*/
+
+.uk-form-horizontal .uk-datalist select {width: 100%;}
 
 .uk-form-icon input.color {
     padding-left: 20px !important;
