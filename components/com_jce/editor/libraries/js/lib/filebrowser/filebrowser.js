@@ -448,7 +448,7 @@
                 self.refresh(e);
             });
 
-            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 1, function(val) {
+            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 0, function(val) {
                 val = parseInt(val);
                 return val === 0 || val === 1;
             });
