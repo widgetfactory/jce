@@ -4,7 +4,7 @@ defined('JPATH_PLATFORM') or die;
 
 JFormHelper::loadFieldClass('list');
 
-class JFormFieldFilesystem extends JFormField
+class JFormFieldFilesystem extends JFormFieldList
 {
     /**
      * The form field type.
@@ -129,12 +129,12 @@ class JFormFieldFilesystem extends JFormField
     {
         $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
 
-        $options = array();
+        $options = parent::getOptions();
 
-        $options[] = array(
+        /*$options[] = array(
             'value' => '',
             'text' => JText::_('WF_OPTION_NOT_SET'),
-        );
+        );*/
 
         $plugins = $this->getPlugins();
 
