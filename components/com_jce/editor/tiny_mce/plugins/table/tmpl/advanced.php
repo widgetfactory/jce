@@ -13,11 +13,8 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <div class="uk-form-row">
     <label for="classlist" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
-    <div class="uk-form-controls uk-width-4-5 uk-datalist">
-        <input type="text" id="classes" />
-        <select id="classlist">
-          <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
-        </select>
+    <div class="uk-form-controls uk-width-4-5">
+        <select id="classes" class="uk-datalist" multiple="multiple"></select>
     </div>
 </div>
 

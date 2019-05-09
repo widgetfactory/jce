@@ -271,27 +271,34 @@
 
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
-        updateClassList: function (cls) {
-            if (!cls) {
+        updateClassList: function (values) {
+            if (!values) {
                 return;
             }
 
-            $('#classlist').val(function () {
-                var n = this,
-                    a = cls.split(' '),
-                    r = [];
+            values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
-                $.each(a, function (i, v) {
-                    if (v.indexOf('mce-item') == -1) {
-                        if ($('option[value="' + v + '"]', n).length == 0) {
-                            $(n).append(new Option(v, v));
-                        }
+            $('#classes').val(function () {
+                var elm = this;
 
-                        r.push(v);
+                // trim
+                values = $.trim(values);
+                // create array
+                values = values.split(' ');
+
+                $.each(values, function (i, value) {
+                    value = $.trim(value);
+
+                    if (!value || value === ' ') {
+                        return true;
+                    }
+
+                    if ($('option[value="' + value + '"]', elm).length == 0) {
+                        $(elm).append(new Option(value, value));
                     }
                 });
 
-                return r;
+                return values;
 
             }).change();
         },
@@ -355,14 +362,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function () {
-                    var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                    self.updateClassList(cls);
-
-                    return cls;
-                }).change();
+                this.updateClassList(ed.dom.getAttrib(elm, 'class'));
 
                 // update style field
                 $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
@@ -416,14 +416,7 @@
                 $('#' + k).val(v);
             });
 
-            $('#classes').val(function () {
-                var cls = ed.dom.getAttrib(elm, 'class');
-                cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                self.updateClassList(cls);
-
-                return cls;
-            }).change();
+            this.updateClassList(ed.dom.getAttrib(elm, 'class'));
 
             $('#rowtype').change(function () {
                 self.setActionforRowType();
@@ -465,14 +458,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function () {
-                    var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                    self.updateClassList(cls);
-
-                    return cls;
-                }).change();
+                this.updateClassList(ed.dom.getAttrib(elm, 'class'));
 
                 $('#celltype').val(elm.nodeName.toLowerCase());
 
@@ -623,6 +609,11 @@
             // get checkbox state, checked=1, otherwise no border
             if ($('#table_border').is(':checkbox')) {
                 border = $('#table_border').is(':checked') ? '1' : '';
+            }
+
+            // update classNames
+            if ($.type(className) === 'array') {
+                className = className.join(' ');
             }
 
             // remove values for html5
@@ -872,6 +863,10 @@
 
                 if (k === "classes") {
                     k = 'class';
+
+                    if ($.type(v) === 'array') {
+                        v = v.join(' ');
+                    }
                 }
 
                 setAttrib(td, k, v);
@@ -1061,6 +1056,10 @@
 
                 if (k === "classes") {
                     k = 'class';
+
+                    if ($.type(v) === 'array') {
+                        v = v.join(' ');
+                    }
                 }
 
                 setAttrib(tr, k, v);
