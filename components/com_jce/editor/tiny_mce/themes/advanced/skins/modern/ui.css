@@ -16,14 +16,16 @@
 .modernSkin .mceListBox .mceText a,
 .modernSkin .mceListBox .mceOpen a {
     border-color: transparent;
+
+    color: rgba(0, 0, 0, 0.7);
 }
 
-.modernSkin .mceButtonEnabled:hover {
+.modernSkin .mceButton:hover {
     border: 1px solid #ddd;
     background-color: #eee;
 }
 
-.modernSkin .mceSplitButtonEnabled:hover .mceText button, .modernSkin .mceSplitButtonEnabled:hover .mceOpen button {
+.modernSkin .mceSplitButton:hover .mceText button, .modernSkin .mceSplitButton:hover .mceOpen button {
     border-color: #ddd;
     background-color: #eee;
 }
@@ -52,4 +54,12 @@
 }
 .modernSkin .mceSplitButton .mceOpen button {
     border-color: transparent;
+}
+
+.modernSkin .mceButtonDialog::before {
+    top: -6px;
+}
+
+.modernSkin .mceColorPreview {
+    outline: 1px solid #eee;
 }

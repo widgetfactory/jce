@@ -307,7 +307,7 @@
                 value += 'Skin';
             }
 
-            $('.editor-layout .mceEditor').attr('class', function (i, value) {
+            $('.editor-layout .mceEditor, .editor-button-pool .mceEditor').attr('class', function (i, value) {
                 return $.trim(value.replace(/([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
             }).addClass('defaultSkin ' + value);
 

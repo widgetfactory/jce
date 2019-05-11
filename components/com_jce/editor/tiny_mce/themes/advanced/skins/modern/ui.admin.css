@@ -1,2 +1,21 @@
 @import url('ui.css');
 @import url('../default/ui.admin.css');
+
+.mceEditor .mceToolBarItem .mceSplitButton .mceIcon {
+    margin: 5px 2px;
+}
+
+.modernSkin .mceToolBarItem .mceButton:not(.mceListBox),
+.modernSkin .mceToolBarItem .mceSplitButton:after {
+    border-color: transparent;
+}
+
+.modernSkin .mceToolBarItem .mceButton:hover {
+    border-color: #ddd;
+    background-color: #eee;
+}
+
+.modernSkin .mceToolBarItem .mceSplitButton:hover:after {
+    border-left-color: #ddd;
+    background-color: #eee;
+}
