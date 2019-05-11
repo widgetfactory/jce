@@ -19,3 +19,26 @@
     border-left-color: #ddd;
     background-color: #eee;
 }
+
+.modernSkin .mceButton span.mce_forecolor,
+.modernSkin .mceButton span.mce_backcolor {
+    line-height: 1em;
+}
+
+.modernSkin span.mce_forecolor:after,
+.modernSkin span.mce_backcolor:after {
+    content: "";
+    width: 16px;
+    height: 4px;
+    outline: 1px solid #eee;
+    display: block;
+    margin: auto;
+}
+
+.modernSkin span.mce_forecolor:after {
+    background-color: black;
+}
+
+.modernSkin span.mce_backcolor:after {
+    background-color: yellow;
+}
