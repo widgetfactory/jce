@@ -110,8 +110,8 @@ defined('JPATH_PLATFORM') or die;
 
                 <label for="border_width" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo JText::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo JText::_('WF_LABEL_WIDTH'); ?></label>
-                <div class="uk-form-controls uk-width-2-10 uk-datalist">
-                    <select id="border_width">
+                <div class="uk-form-controls uk-width-2-10">
+                    <select id="border_width" class="uk-datalist">
                         <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="0">0</option>
                         <option value="1">1</option>

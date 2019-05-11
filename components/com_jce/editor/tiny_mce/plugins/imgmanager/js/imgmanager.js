@@ -134,8 +134,8 @@
                         }
                     });
 
-                    $(elm).val(values).change();
-                });
+                    return values;
+                }).change();
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
                 $('#id').val(ed.dom.getAttrib(n, 'id'));

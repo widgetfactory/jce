@@ -280,8 +280,8 @@
                         }
                     });
 
-                    $(elm).val(values).change();
-                });
+                    return values;
+                }).change();
 
                 $('#target').val(ed.dom.getAttrib(n, 'target'));
 
