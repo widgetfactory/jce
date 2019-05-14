@@ -789,18 +789,27 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 
 .defaultSkin .mceButtonDialog .mceButtonDialogContent label {
     display: block;
+    line-height: 2;
+    vertical-align: middle;
 }
 
 .defaultSkin .mceButtonDialog input[type="text"],
+.defaultSkin .mceButtonDialog textarea,
+.defaultSkin .mceButtonDialog select,
 .defaultSkin .mceListBoxMenu input[type="text"] {
-    height: 26px;
-    width: calc(100% - 5px);
+    height: 32px;
+    width: 100%;
     padding: 2px;
     border: 1px solid #ddd;
     background: #fff;
     color: #444;
     border-radius: 2px;
     box-shadow: inherit;
+    box-sizing: border-box;
+}
+
+.defaultSkin .mceButtonDialog textarea {
+    height: auto;
 }
 
 .defaultSkin .mceMenuItem .mceMenuHtml {
@@ -1506,4 +1515,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mceWordCountLimit {
     font-weight: bold;
     color: #cc0000;
+}
+
+.defaultSkin .mceIcon img {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    left: 2px;
+    position: relative;
+    top: 2px;
 }
