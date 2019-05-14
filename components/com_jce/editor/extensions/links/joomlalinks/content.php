@@ -206,7 +206,7 @@ class JoomlalinksContent extends JObject
         $wf = WFEditorPlugin::getInstance();
 
         // resolve the url from the menu link
-        if ($wf->getParam('joomlalinks.article_resolve_alias', 1)) {
+        if ($wf->getParam('links.joomlalinks.article_resolve_alias', 1)) {
             // get itemid
             preg_match('#Itemid=([\d]+)#', $url, $matches);
             // get link from menu
@@ -234,7 +234,7 @@ class JoomlalinksContent extends JObject
 
         $case = '';
 
-        if ($wf->getParam('joomlalinks.article_alias', 1)) {
+        if ($wf->getParam('links.joomlalinks.article_alias', 1)) {
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $query->charLength('a.alias', '!=', '0');
@@ -263,7 +263,7 @@ class JoomlalinksContent extends JObject
 
         $query->where('a.state = 1');
 
-        if ($wf->getParam('joomlalinks.article_unpublished', 0) == 1) {
+        if ($wf->getParam('links.joomlalinks.article_unpublished', 0) == 1) {
             $query->orWhere('a.state = 0');
         }
 
@@ -302,7 +302,7 @@ class JoomlalinksContent extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
         
-        if ($wf->getParam('joomlalinks.sef_url', 0)) {
+        if ($wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 

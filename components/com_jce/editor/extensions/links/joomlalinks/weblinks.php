@@ -62,7 +62,7 @@ class JoomlalinksWeblinks extends JObject
             // Get all WebLink categories
             default:
             case 'categories':
-                $categories = WFLinkBrowser::getCategory('com_weblinks', 1, $wf->getParam('joomlalinks.category_alias', 1));
+                $categories = WFLinkBrowser::getCategory('com_weblinks', 1, $wf->getParam('links.joomlalinks.category_alias', 1));
 
                 foreach ($categories as $category) {
                     $url = '';
@@ -94,11 +94,11 @@ class JoomlalinksWeblinks extends JObject
                 break;
             // Get all links in the category
             case 'category':
-                $categories = WFLinkBrowser::getCategory('com_weblinks', $args->id, $wf->getParam('joomlalinks.category_alias', 1));
+                $categories = WFLinkBrowser::getCategory('com_weblinks', $args->id, $wf->getParam('links.joomlalinks.category_alias', 1));
 
                 if (count($categories)) {
                     foreach ($categories as $category) {
-                        $children = WFLinkBrowser::getCategory('com_weblinks', $category->id, $wf->getParam('joomlalinks.category_alias', 1));
+                        $children = WFLinkBrowser::getCategory('com_weblinks', $category->id, $wf->getParam('links.joomlalinks.category_alias', 1));
 
                         $url = '';
 
@@ -173,7 +173,7 @@ class JoomlalinksWeblinks extends JObject
 
         $case = '';
 
-        if ((int) $wf->getParam('joomlalinks.weblinks_alias', 1)) {
+        if ((int) $wf->getParam('links.joomlalinks.weblinks_alias', 1)) {
             //sqlsrv changes
             $case_when1 = ' CASE WHEN ';
             $case_when1 .= $dbquery->charLength('a.alias', '!=', '0');
@@ -218,7 +218,7 @@ class JoomlalinksWeblinks extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
         
-        if ($wf->getParam('joomlalinks.sef_url', 0)) {
+        if ($wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 
