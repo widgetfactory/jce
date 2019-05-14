@@ -148,14 +148,6 @@
         "row": 4,
         "core": 1
     },
-    "inlinepopups": {
-        "title": "WF_INLINEPOPUPS_TITLE",
-        "description": "WF_INLINEPOPUPS_DESC",
-        "icon": "",
-        "editable": 0,
-        "row": 4,
-        "core": 1
-    },
     "layer": {
         "title": "WF_LAYER_TITLE",
         "description": "WF_LAYER_DESC",

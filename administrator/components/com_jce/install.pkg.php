@@ -1,6 +1,4 @@
 <?php
-use Gantry\Framework\Exception;
-
 /**
  * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -357,6 +355,11 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/visualblocks/classes',
             $site . '/editor/tiny_mce/plugins/visualchars/classes',
             $site . '/editor/tiny_mce/plugins/xhtmlxtras/classes'
+        );
+
+        // remove inlinepopups
+        $folder['2.7.13'] = array(
+            $site . '/editor/tiny_mce/plugins/inlinepopups'
         );
 
         foreach ($folders as $version => $list) {
