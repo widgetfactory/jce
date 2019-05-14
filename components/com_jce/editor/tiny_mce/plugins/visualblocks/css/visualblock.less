@@ -16,7 +16,7 @@
     nav,
     blockquote,
     address,
-    pre,
+    pre:not([class*="language-"]),
     figure,
     ul,
     ol,
@@ -45,7 +45,7 @@
     nav:before,
     blockquote:before,
     address:before,
-    pre:before,
+    pre:not([class*="language-"]):before,
     figure:before,
     figcaption:before,
     ul:before,
@@ -59,6 +59,7 @@
         margin: 2px 0;
         display: block;
         content: "";
+        line-height: 0;
 
         /*display: block;
         font-weight: 700;
