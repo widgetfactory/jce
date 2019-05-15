@@ -1,0 +1,129 @@
+/* ListBox */
+
+.defaultSkin .mceListBox {
+    display: table;
+}
+
+.defaultSkin .mceListBoxMenu {
+    min-height: 200px;
+}
+
+.defaultSkin .mceListBox button {
+    display: block;
+}
+
+.defaultSkin .mceListBox .mceText button {
+    padding: 0 4px;
+    width: 74px;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-right: 0;
+    background: #fff;
+    line-height: 30px;
+    overflow: hidden;
+    border-radius: 2px 0 0 2px;
+}
+
+.defaultSkin .mceListBox .mceOpen button {
+    width: 15px;
+    height: 30px;
+    border: 1px solid #ddd;
+    text-align: center;
+    border-radius: 0 2px 2px 0;
+}
+
+.defaultSkin .mceListBox:hover .mceOpen button {
+    border-color: #ccc;
+    background-color: #fafafa;
+}
+
+.defaultSkin .mceListBox:hover .mceText button {
+    border-color: #ccc;
+}
+
+.defaultSkin .mceListBox .mceOpen button:after {
+    content: "▼";
+    display: block;
+    font-size: 9px;
+    line-height: 30px;
+    color: #444;
+    text-align: center;
+}
+
+.defaultSkin table.mceListBoxEnabled:hover .mceText button,
+.defaultSkin .mceListBoxHover .mceText button,
+.defaultSkin .mceListBoxSelected .mceText button {
+    border: 1px solid #ccc;
+    border-right: 0;
+    background: #fff
+}
+
+table.mceListBoxEnabled:hover .mceOpen button,
+.defaultSkin .mceListBoxHover .mceOpen button,
+.defaultSkin .mceListBoxSelected .mceOpen button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+.defaultSkin .mceListBoxDisabled .mceOpen button:after {
+    color: gray;
+}
+
+.defaultSkin .mceListBoxDisabled .mceText button {
+    color: gray;
+    background-color: transparent;
+}
+
+.defaultSkin .mceListBoxMenu {
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 2px;
+}
+
+.defaultSkin .mceListBoxMenu .mceMenu {
+    border: 1px solid #ddd;
+}
+
+.mceOldBoxModel .mceListBox .mceText button {
+    height: 22px
+}
+
+.defaultSkin .mceOldBoxModel .mceListBox .mceOpen button {
+    width: 12px;
+    height: 22px;
+}
+
+select.mceNativeListBox {
+    font-size: 7pt;
+    background: #fafafa;
+    border: 1px solid gray;
+    margin-right: 2px;
+}
+
+.defaultSkin .mceListBox .mceOpen,
+.defaultSkin .mceListBox .mceText {
+    float: left;
+}
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 32px;
+    background: url(img/search.png) no-repeat center;
+    opacity: 0.5;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+/* RTL */
+.mceRtl .mceListBox .mceText {
+    text-align: right;
+    padding: 0 4px 0 0
+}

@@ -1,0 +1,57 @@
+/* Button */
+
+.defaultSkin .mceButton {
+    display: block;
+    border: 1px solid #ddd;
+    margin-right: 1px;
+    padding: 5px;
+    -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+    overflow: visible;
+    font: inherit;
+    text-transform: none;
+    box-sizing: border-box;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.defaultSkin .mceButtonEnabled:hover {
+    border: 1px solid #ccc;
+    background-color: #fafafa;
+}
+
+.defaultSkin .mceButtonEnabled:hover .mceIcon {}
+
+.defaultSkin .mceButtonActive,
+.defaultSkin .mceButtonSelected {
+    border: 1px solid #ccc;
+    background-color: #ddd;
+}
+
+.defaultSkin .mceButtonActive .mceIcon,
+.defaultSkin .mceButtonSelected .mceIcon {}
+
+.defaultSkin .mceButtonDisabled .mceIcon {
+    opacity: 0.3;
+}
+
+.defaultSkin .mceButtonLabeled {
+    width: auto
+}
+
+.defaultSkin .mceButtonLabeled .mceIcon {
+    float: left
+}
+
+.defaultSkin .mceButtonLabel {
+    display: block;
+    font-size: 10px;
+    padding: 4px 6px 0 22px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.defaultSkin .mceButtonDisabled .mceButtonLabel {
+    color: #888
+}

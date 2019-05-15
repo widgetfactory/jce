@@ -1,0 +1,24 @@
+.defaultSkin .mce_emotions_icon {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 2em;
+    width: auto;
+    height: auto;
+    min-width: 2em;
+    min-height: 2em;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.defaultSkin .mce_emotions_icon img {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.mce_emotions_icon:hover {
+    background: #eee;
+    border-radius: 3px;
+}

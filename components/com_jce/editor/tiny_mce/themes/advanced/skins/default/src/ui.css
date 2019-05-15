@@ -1,0 +1,431 @@
+/* Reset */
+
+.defaultSkin div,
+.defaultSkin a,
+.defaultSkin button,
+.defaultSkin img,
+.defaultSkin div,
+.defaultSkin iframe,
+.defaultSkin input,
+.defaultSkin label,
+.defaultSkin .mceText {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    white-space: nowrap;
+    text-decoration: none;
+    font-weight: normal;
+    cursor: default;
+    color: #444;
+    vertical-align: baseline;
+    width: auto;
+    border-collapse: separate;
+    text-align: left;
+    box-sizing: initial;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    float: none;
+}
+
+.defaultSkin>div {
+    width: auto;
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    direction: ltr;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+.defaultSkin a:hover,
+.defaultSkin a:link,
+.defaultSkin a:visited,
+.defaultSkin a:active {
+    text-decoration: none;
+    font-weight: normal;
+    cursor: default;
+    color: #000
+}
+
+.defaultSkin iframe {
+    display: block;
+    width: 100%;
+}
+
+.defaultSkin .mceLeft .mceToolbarRow {
+    text-align: left
+}
+
+.defaultSkin .mceRight .mceToolbarRow {
+    text-align: right
+}
+
+.defaultSkin .mceCenter .mceToolbarRow {
+    text-align: center
+}
+
+/* External */
+
+.defaultSkin .mceExternalToolbar {
+    position: absolute;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    display: none;
+}
+
+.defaultSkin .mceExternalToolbar .mceToolbar {
+    padding-right: 13px;
+}
+
+.defaultSkin .mceExternalClose {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 7px;
+    height: 7px;
+    background: url(../../img/icons.png?@@etag@@) -820px 0
+}
+
+/* Layout */
+
+.defaultSkin .mceLayout {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.defaultSkin .mceLayout .mceFirst {
+    border-top: 1px solid #ddd
+}
+
+.defaultSkin .mceLayout .mceLast {
+    border-bottom: 1px solid #ddd
+}
+
+.defaultSkin .mceToolbar {
+    background: #f5f5f5;
+}
+
+.defaultSkin .mceToolbarRow {
+    white-space: normal;
+}
+
+.defaultSkin .mceToolbarRow>div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.defaultSkin .mceToolbarRow .mceToolBarItem {
+    margin: 1px 0 1px 1px;
+    background-color: #f5f5f5;
+}
+
+.defaultSkin .mceIframeContainer {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+.defaultSkin .mceStatusbar {
+    font-size: 9pt;
+    line-height: 32px;
+    overflow: visible;
+    color: #000;
+    display: block;
+    height: 32px;
+    padding: 5px;
+    background: #f5f5f5;
+    box-sizing: border-box;
+}
+
+.defaultSkin .mceStatusbar div {
+    float: left;
+    margin: 2px
+}
+
+.defaultSkin .mceStatusbar .mceResize {
+    display: block;
+    float: right;
+    background: url(../../img/icons.png?@@etag@@) -800px 0;
+    width: 20px;
+    height: 20px;
+    cursor: se-resize;
+    margin: 0;
+}
+
+.defaultSkin .mceStatusbar a:hover {
+    text-decoration: underline
+}
+
+.defaultSkin table.mceToolbar {
+    margin-left: 3px;
+    width: auto !important;
+}
+
+.defaultSkin .mceCenter {
+    text-align: center;
+}
+
+.defaultSkin .mceCenter>div {
+    margin: 0 auto;
+    text-align: left;
+}
+
+.defaultSkin .mceRight>div {
+    margin: 0 0 0 auto;
+}
+
+/* Separator */
+
+.defaultSkin .mceSeparator {
+    width: 1px;
+    height: 26px;
+    margin: 0 3px 0 2px;
+    background: #ddd;
+    display: block;
+}
+
+/* Menu */
+
+.defaultSkin .mceMenu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    border: 1px solid #ddd;
+    direction: ltr;
+    background-color: #fff;
+    border-radius: 2px;
+    min-width: 192px;
+    /* DropMenu button length x 2 */
+}
+
+.defaultSkin .mceNoIcons span.mceIcon {
+    width: 0;
+}
+
+.defaultSkin .mceNoIcons a .mceText {
+    padding-left: 20px
+}
+
+.defaultSkin .mceMenu div {
+    background-color: #fff;
+}
+
+.defaultSkin .mceMenu a,
+.defaultSkin .mceMenu span,
+.defaultSkin .mceMenu {
+    display: block
+}
+
+.defaultSkin .mceMenu div {
+    /*height: 20px*/
+}
+
+.defaultSkin .mceMenu a {
+    position: relative;
+    padding: 0;
+}
+
+.defaultSkin .mceMenu .mceText {
+    position: relative;
+    display: block;
+    cursor: default;
+    margin: 0;
+    padding: 0 32px 0 32px;
+}
+
+.defaultSkin .mceMenu span.mceText,
+.defaultSkin .mceMenu .mcePreview {
+    font-size: 13px;
+    line-height: 32px;
+}
+
+.defaultSkin .mceMenu pre.mceText {
+    font-family: Monospace;
+}
+
+.defaultSkin .mceMenu .mceIcon {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 20px;
+}
+
+.defaultSkin .mceMenu .mceMenuItems {
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
+    height: calc(100% - 37px);
+}
+
+.defaultSkin .mceMenu .mceMenuItemHidden {
+    display: none;
+}
+
+.defaultSkin .mceMenu .mceMenuItemEnabled a:hover,
+.defaultSkin .mceMenu .mceMenuItemActive {
+    background-color: #eee
+}
+
+.defaultSkin .mceMenu .mceMenuItemEnabled .mceTableSplitMenu a:hover {
+    background-color: transparent;
+}
+
+.defaultSkin .mceMenuItemSeparator {
+    background: #ddd;
+    height: 1px
+}
+
+.defaultSkin .mceMenuItemTitle a {
+    border: 0;
+    background: #eee;
+    border-bottom: 1px solid #ddd
+}
+
+.defaultSkin .mceMenuItemTitle span.mceText {
+    color: #000;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.defaultSkin .mceMenuItemDisabled .mceText {
+    color: #888
+}
+
+/*.defaultSkin .mceMenuItemSelected .mceIcon {
+    background: url(img/menu_check.gif)
+}*/
+
+.defaultSkin .mceNoIcons .mceMenuItemSelected a {
+    background: url(img/menu_arrow.gif) no-repeat left center
+}
+
+.defaultSkin .mceMenu span.mceMenuLine {
+    display: none
+}
+
+.defaultSkin .mceMenuItemSub a {
+    background: url(img/menu_arrow.gif) no-repeat center right;
+}
+
+/* Rtl */
+
+.mceRtl .mceMenuItem .mceText {
+    text-align: right
+}
+
+/* Progress,Resize */
+
+.defaultSkin .mceBlocker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    opacity: 0.5;
+    background: #FFF
+}
+
+.defaultSkin .mceProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    background: url(img/progress.gif) no-repeat;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px
+}
+
+.defaultSkin .mcePlaceHolder {
+    border: 1px dotted gray
+}
+
+/* Formats */
+.defaultSkin .mce_formatPreview a {
+    font-size: 10px
+}
+
+.defaultSkin .mce_address span.mceText {
+    font-style: italic
+}
+
+.defaultSkin .mce_pre span.mceText {
+    font-family: monospace
+}
+
+.defaultSkin .mce_h1 span.mceText {
+    font-weight: bolder;
+    font-size: 2em
+}
+
+.defaultSkin .mce_h2 span.mceText {
+    font-weight: bolder;
+    font-size: 1.5em
+}
+
+.defaultSkin .mce_h3 span.mceText {
+    font-weight: bolder;
+    font-size: 1.17em
+}
+
+.defaultSkin .mce_h4 span.mceText {
+    font-weight: bolder;
+    font-size: 1em
+}
+
+.defaultSkin .mce_h5 span.mceText {
+    font-weight: bolder;
+    font-size: .83em
+}
+
+.defaultSkin .mce_h6 span.mceText {
+    font-weight: bolder;
+    font-size: .75em
+}
+/** Path **/
+
+.mcePathRow {
+    overflow: hidden;
+}
+
+.mcePathHidden .mceText {
+    display: none;
+}
+
+.mcePathPath .mceText {
+    cursor: pointer;
+}
+
+.mcePathHidden:after {
+    content: "...";
+    display: inline-block;
+}
+
+.mcePathLabel {
+    position: relative;
+    display: inline-block;
+    min-width: 30px;
+    margin: 0 5px 0 0;
+}
+
+.mcePathPath {
+    display: inline-block;
+}
+
+.defaultSkin .mceStatusbar .mceWordCount {
+    float: right;
+    vertical-align: middle;
+    line-height: 18px;
+}
+
+.defaultSkin .mceWordCountLimit {
+    font-weight: bold;
+    color: #cc0000;
+}
