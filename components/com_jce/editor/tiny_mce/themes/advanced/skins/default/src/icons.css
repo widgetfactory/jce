@@ -15,12 +15,13 @@
 }
 
 .defaultSkin .mceIcon img {
-    width: 16px;
-    height: 16px;
+    vertical-align: middle;
     min-width: 16px;
-    left: 2px;
+    height: auto;
     position: relative;
     top: 2px;
+    left: 2px;
+    cursor: inherit;
 }
 
 .defaultSkin span.mce_bold {
