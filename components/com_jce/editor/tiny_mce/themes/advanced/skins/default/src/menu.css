@@ -1,0 +1,131 @@
+/* Menu */
+
+.defaultSkin .mceMenu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    border: 1px solid #ddd;
+    direction: ltr;
+    background-color: #fff;
+    border-radius: 2px;
+    min-width: 192px;
+    /* DropMenu button length x 2 */
+}
+
+.defaultSkin .mceNoIcons span.mceIcon {
+    width: 0;
+}
+
+.defaultSkin .mceNoIcons a .mceText {
+    padding-left: 20px
+}
+
+.defaultSkin .mceMenu div {
+    background-color: #fff;
+}
+
+.defaultSkin .mceMenu a,
+.defaultSkin .mceMenu span,
+.defaultSkin .mceMenu {
+    display: block
+}
+
+.defaultSkin .mceMenu div {
+    /*height: 20px*/
+}
+
+.defaultSkin .mceMenu a {
+    position: relative;
+    padding: 0;
+}
+
+.defaultSkin .mceMenu .mceText {
+    position: relative;
+    display: block;
+    cursor: default;
+    margin: 0;
+    padding: 0 32px 0 32px;
+}
+
+.defaultSkin .mceMenu span.mceText,
+.defaultSkin .mceMenu .mcePreview {
+    font-size: 13px;
+    line-height: 32px;
+}
+
+.defaultSkin .mceMenu pre.mceText {
+    font-family: Monospace;
+}
+
+.defaultSkin .mceMenu .mceIcon {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 20px;
+}
+
+.defaultSkin .mceMenu .mceMenuItems {
+    height: 100%;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
+    height: calc(100% - 37px);
+}
+
+.defaultSkin .mceMenu .mceMenuItemHidden {
+    display: none;
+}
+
+.defaultSkin .mceMenu .mceMenuItemEnabled a:hover,
+.defaultSkin .mceMenu .mceMenuItemActive {
+    background-color: #eee
+}
+
+.defaultSkin .mceMenu .mceMenuItemEnabled .mceTableSplitMenu a:hover {
+    background-color: transparent;
+}
+
+.defaultSkin .mceMenuItemSeparator {
+    background: #ddd;
+    height: 1px
+}
+
+.defaultSkin .mceMenuItemTitle a {
+    border: 0;
+    background: #eee;
+    border-bottom: 1px solid #ddd
+}
+
+.defaultSkin .mceMenuItemTitle span.mceText {
+    color: #000;
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+.defaultSkin .mceMenuItemDisabled .mceText {
+    color: #888
+}
+
+/*.defaultSkin .mceMenuItemSelected .mceIcon {
+    background: url(img/menu_check.gif)
+}*/
+
+.defaultSkin .mceNoIcons .mceMenuItemSelected a {
+    background: url(img/menu_arrow.gif) no-repeat left center
+}
+
+.defaultSkin .mceMenu span.mceMenuLine {
+    display: none
+}
+
+.defaultSkin .mceMenuItemSub a {
+    background: url(img/menu_arrow.gif) no-repeat center right;
+}
+
+/* Rtl */
+.mceRtl .mceMenuItem .mceText {
+    text-align: right
+}

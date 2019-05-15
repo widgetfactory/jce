@@ -1,0 +1,10 @@
+.defaultSkin .mceStatusbar .mceWordCount {
+    float: right;
+    vertical-align: middle;
+    line-height: 18px;
+}
+
+.defaultSkin .mceWordCountLimit {
+    font-weight: bold;
+    color: #cc0000;
+}

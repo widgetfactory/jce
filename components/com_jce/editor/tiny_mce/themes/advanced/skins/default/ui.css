@@ -55,7 +55,6 @@
     display: block;
     width: 100%;
 }
-
 .defaultSkin .mceLeft .mceToolbarRow {
     text-align: left
 }
@@ -91,7 +90,6 @@
 }
 
 /* Layout */
-
 .defaultSkin .mceLayout {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
@@ -129,6 +127,32 @@
     position: relative;
 }
 
+.defaultSkin .mceToolbar {
+    margin-left: 3px;
+    width: auto !important;
+}
+
+.defaultSkin .mceCenter {
+    text-align: center;
+}
+
+.defaultSkin .mceCenter>div {
+    margin: 0 auto;
+    text-align: left;
+}
+
+.defaultSkin .mceRight>div {
+    margin: 0 0 0 auto;
+}
+
+/* Separator */
+.defaultSkin .mceSeparator {
+    width: 1px;
+    height: 26px;
+    margin: 0 3px 0 2px;
+    background: #ddd;
+    display: block;
+}
 .defaultSkin .mceStatusbar {
     font-size: 9pt;
     line-height: 32px;
@@ -159,35 +183,31 @@
 .defaultSkin .mceStatusbar a:hover {
     text-decoration: underline
 }
+/* Progress,Resize */
 
-.defaultSkin table.mceToolbar {
-    margin-left: 3px;
-    width: auto !important;
+.defaultSkin .mceBlocker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    opacity: 0.5;
+    background: #FFF
 }
 
-.defaultSkin .mceCenter {
-    text-align: center;
+.defaultSkin .mceProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    background: url(img/progress.gif) no-repeat;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px
 }
 
-.defaultSkin .mceCenter>div {
-    margin: 0 auto;
-    text-align: left;
+.defaultSkin .mcePlaceHolder {
+    border: 1px dotted gray
 }
-
-.defaultSkin .mceRight>div {
-    margin: 0 0 0 auto;
-}
-
-/* Separator */
-
-.defaultSkin .mceSeparator {
-    width: 1px;
-    height: 26px;
-    margin: 0 3px 0 2px;
-    background: #ddd;
-    display: block;
-}
-
 /* Menu */
 
 .defaultSkin .mceMenu {
@@ -316,118 +336,8 @@
 }
 
 /* Rtl */
-
 .mceRtl .mceMenuItem .mceText {
     text-align: right
-}
-
-/* Progress,Resize */
-
-.defaultSkin .mceBlocker {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 1000;
-    opacity: 0.5;
-    background: #FFF
-}
-
-.defaultSkin .mceProgress {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 1001;
-    background: url(img/progress.gif) no-repeat;
-    width: 32px;
-    height: 32px;
-    margin: -16px 0 0 -16px
-}
-
-.defaultSkin .mcePlaceHolder {
-    border: 1px dotted gray
-}
-
-/* Formats */
-.defaultSkin .mce_formatPreview a {
-    font-size: 10px
-}
-
-.defaultSkin .mce_address span.mceText {
-    font-style: italic
-}
-
-.defaultSkin .mce_pre span.mceText {
-    font-family: monospace
-}
-
-.defaultSkin .mce_h1 span.mceText {
-    font-weight: bolder;
-    font-size: 2em
-}
-
-.defaultSkin .mce_h2 span.mceText {
-    font-weight: bolder;
-    font-size: 1.5em
-}
-
-.defaultSkin .mce_h3 span.mceText {
-    font-weight: bolder;
-    font-size: 1.17em
-}
-
-.defaultSkin .mce_h4 span.mceText {
-    font-weight: bolder;
-    font-size: 1em
-}
-
-.defaultSkin .mce_h5 span.mceText {
-    font-weight: bolder;
-    font-size: .83em
-}
-
-.defaultSkin .mce_h6 span.mceText {
-    font-weight: bolder;
-    font-size: .75em
-}
-/** Path **/
-
-.mcePathRow {
-    overflow: hidden;
-}
-
-.mcePathHidden .mceText {
-    display: none;
-}
-
-.mcePathPath .mceText {
-    cursor: pointer;
-}
-
-.mcePathHidden:after {
-    content: "...";
-    display: inline-block;
-}
-
-.mcePathLabel {
-    position: relative;
-    display: inline-block;
-    min-width: 30px;
-    margin: 0 5px 0 0;
-}
-
-.mcePathPath {
-    display: inline-block;
-}
-
-.defaultSkin .mceStatusbar .mceWordCount {
-    float: right;
-    vertical-align: middle;
-    line-height: 18px;
-}
-
-.defaultSkin .mceWordCountLimit {
-    font-weight: bold;
-    color: #cc0000;
 }
 /* Button */
 
@@ -1508,6 +1418,86 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .mce_emotions_icon:hover {
     background: #eee;
     border-radius: 3px;
+}
+/** Path **/
+.mcePathRow {
+    overflow: hidden;
+}
+
+.mcePathHidden .mceText {
+    display: none;
+}
+
+.mcePathPath .mceText {
+    cursor: pointer;
+}
+
+.mcePathHidden:after {
+    content: "...";
+    display: inline-block;
+}
+
+.mcePathLabel {
+    position: relative;
+    display: inline-block;
+    min-width: 30px;
+    margin: 0 5px 0 0;
+}
+
+.mcePathPath {
+    display: inline-block;
+}
+.defaultSkin .mceStatusbar .mceWordCount {
+    float: right;
+    vertical-align: middle;
+    line-height: 18px;
+}
+
+.defaultSkin .mceWordCountLimit {
+    font-weight: bold;
+    color: #cc0000;
+}
+/* Formats */
+.defaultSkin .mce_formatPreview a {
+    font-size: 10px
+}
+
+.defaultSkin .mce_address span.mceText {
+    font-style: italic
+}
+
+.defaultSkin .mce_pre span.mceText {
+    font-family: monospace
+}
+
+.defaultSkin .mce_h1 span.mceText {
+    font-weight: bolder;
+    font-size: 2em
+}
+
+.defaultSkin .mce_h2 span.mceText {
+    font-weight: bolder;
+    font-size: 1.5em
+}
+
+.defaultSkin .mce_h3 span.mceText {
+    font-weight: bolder;
+    font-size: 1.17em
+}
+
+.defaultSkin .mce_h4 span.mceText {
+    font-weight: bolder;
+    font-size: 1em
+}
+
+.defaultSkin .mce_h5 span.mceText {
+    font-weight: bolder;
+    font-size: .83em
+}
+
+.defaultSkin .mce_h6 span.mceText {
+    font-weight: bolder;
+    font-size: .75em
 }
 /* Reset */
 
