@@ -1,0 +1,26 @@
+.defaultSkin .mceLayout .mceBranding {
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    background: #eee;
+    padding: 5px 0;
+    display: block;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+    white-space: normal;
+}
+
+.defaultSkin .mceLayout .mceBranding a {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.defaultSkin .mceLayout .mceBranding a:hover {
+    text-decoration: underline
+}
+
+.defaultSkin .mceLayout .mceBranding span {
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+}
