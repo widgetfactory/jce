@@ -1,0 +1,25 @@
+/* Progress,Resize */
+
+.defaultSkin .mceBlocker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    opacity: 0.5;
+    background: #FFF
+}
+
+.defaultSkin .mceProgress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1001;
+    background: url(img/progress.gif) no-repeat;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px
+}
+
+.defaultSkin .mcePlaceHolder {
+    border: 1px dotted gray
+}

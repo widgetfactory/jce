@@ -1,0 +1,98 @@
+.defaultSkin .mceLeft .mceToolbarRow {
+    text-align: left
+}
+
+.defaultSkin .mceRight .mceToolbarRow {
+    text-align: right
+}
+
+.defaultSkin .mceCenter .mceToolbarRow {
+    text-align: center
+}
+
+/* External */
+
+.defaultSkin .mceExternalToolbar {
+    position: absolute;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    display: none;
+}
+
+.defaultSkin .mceExternalToolbar .mceToolbar {
+    padding-right: 13px;
+}
+
+.defaultSkin .mceExternalClose {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 7px;
+    height: 7px;
+    background: url(../../img/icons.png?@@etag@@) -820px 0
+}
+
+/* Layout */
+.defaultSkin .mceLayout {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.defaultSkin .mceLayout .mceFirst {
+    border-top: 1px solid #ddd
+}
+
+.defaultSkin .mceLayout .mceLast {
+    border-bottom: 1px solid #ddd
+}
+
+.defaultSkin .mceToolbar {
+    background: #f5f5f5;
+}
+
+.defaultSkin .mceToolbarRow {
+    white-space: normal;
+}
+
+.defaultSkin .mceToolbarRow>div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.defaultSkin .mceToolbarRow .mceToolBarItem {
+    margin: 1px 0 1px 1px;
+    background-color: #f5f5f5;
+}
+
+.defaultSkin .mceIframeContainer {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+.defaultSkin .mceToolbar {
+    margin-left: 3px;
+    width: auto !important;
+}
+
+.defaultSkin .mceCenter {
+    text-align: center;
+}
+
+.defaultSkin .mceCenter>div {
+    margin: 0 auto;
+    text-align: left;
+}
+
+.defaultSkin .mceRight>div {
+    margin: 0 0 0 auto;
+}
+
+/* Separator */
+.defaultSkin .mceSeparator {
+    width: 1px;
+    height: 26px;
+    margin: 0 3px 0 2px;
+    background: #ddd;
+    display: block;
+}

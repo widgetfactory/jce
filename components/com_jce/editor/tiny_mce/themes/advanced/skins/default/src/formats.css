@@ -1,0 +1,42 @@
+/* Formats */
+.defaultSkin .mce_formatPreview a {
+    font-size: 10px
+}
+
+.defaultSkin .mce_address span.mceText {
+    font-style: italic
+}
+
+.defaultSkin .mce_pre span.mceText {
+    font-family: monospace
+}
+
+.defaultSkin .mce_h1 span.mceText {
+    font-weight: bolder;
+    font-size: 2em
+}
+
+.defaultSkin .mce_h2 span.mceText {
+    font-weight: bolder;
+    font-size: 1.5em
+}
+
+.defaultSkin .mce_h3 span.mceText {
+    font-weight: bolder;
+    font-size: 1.17em
+}
+
+.defaultSkin .mce_h4 span.mceText {
+    font-weight: bolder;
+    font-size: 1em
+}
+
+.defaultSkin .mce_h5 span.mceText {
+    font-weight: bolder;
+    font-size: .83em
+}
+
+.defaultSkin .mce_h6 span.mceText {
+    font-weight: bolder;
+    font-size: .75em
+}
