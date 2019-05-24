@@ -18,10 +18,8 @@
     vertical-align: middle;
     min-width: 16px;
     height: auto;
-    position: relative;
-    top: 2px;
-    left: 2px;
     cursor: inherit;
+    margin: auto;
 }
 
 .defaultSkin span.mce_bold {
@@ -40,11 +38,13 @@
     background-position: -120px 0
 }
 
-.defaultSkin span.mce_undo {
+.defaultSkin span.mce_undo,
+.defaultSkin span.mce_source_undo {
     background-position: -160px 0
 }
 
-.defaultSkin span.mce_redo {
+.defaultSkin span.mce_redo,
+.defaultSkin span.mce_source_redo {
     background-position: -100px 0
 }
 
@@ -56,7 +56,8 @@
     background-position: -20px 0
 }
 
-.defaultSkin span.mce_numlist {
+.defaultSkin span.mce_numlist,
+.defaultSkin span.mce_source_linenumbers {
     background-position: -80px 0
 }
 
@@ -80,7 +81,8 @@
     background-position: -200px 0
 }
 
-.defaultSkin span.mce_indent {
+.defaultSkin span.mce_indent,
+.defaultSkin span.mce_source_format {
     background-position: -400px 0
 }
 
@@ -210,7 +212,8 @@
     background-position: -80px -20px
 }
 
-.defaultSkin span.mce_fullscreen {
+.defaultSkin span.mce_fullscreen,
+.defaultSkin span.mce_source_fullscreen {
     background-position: -100px -20px
 }
 
@@ -226,7 +229,7 @@
     background-position: -160px -20px
 }
 
-.defaultSkin span.mce_absolute {
+.defaultSkin span.mce_layerabsolute {
     background-position: -180px -20px
 }
 
@@ -234,11 +237,11 @@
     background-position: -240px -20px
 }
 
-.defaultSkin span.mce_movebackward {
+.defaultSkin span.mce_layerbackward {
     background-position: -200px -20px
 }
 
-.defaultSkin span.mce_moveforward {
+.defaultSkin span.mce_layerforward {
     background-position: -220px -20px
 }
 
@@ -278,7 +281,8 @@
     background-position: -480px -20px
 }
 
-.defaultSkin span.mce_replace {
+.defaultSkin span.mce_replace,
+.defaultSkin span.mce_source_replace {
     background-position: -500px -20px
 }
 
@@ -380,6 +384,38 @@
 
 .defaultSkin span.mce_ins {
     background-position: -960px -20px
+}
+
+.defaultSkin span.mce_source_highlight {
+    background-position: -140px -40px;
+}
+
+.defaultSkin span.mce_source_wrap {
+    background-position: -100px -40px;
+}
+
+.defaultSkin span.mce_source_search_previous {
+    background-position: -440px -40px;
+}
+
+.defaultSkin span.mce_source_search_next {
+    background-position: -460px -40px;
+}
+
+.defaultSkin span.mce_source_replace_all {
+    background-position: -480px -40px;
+}
+
+.defaultSkin span.mce_source_search_regex {
+    background-position: -500px -40px;
+}
+
+.defaultSkin span.mce_columns {
+    background-position: -520px -40px;
+}
+
+.defaultSkin span.mce_codesample {
+    background-position: -260px 0;
 }
 
 /*.defaultSkin span.mce_pagebreak {background-position:0 -40px}*/
