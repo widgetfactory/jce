@@ -46,7 +46,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                                                     <?php foreach ($button->icon as $icon): ?>
                                                     <div tabindex="-1" class="mceButton <?php echo $button->class; ?>" role="presentation" title="<?php echo $button->title; ?>">
                                                         <?php if ($button->image) : ?>
-                                                            <span class="mceIcon"><img src="<?php echo $button->image; ?>" alt="" /></span>
+                                                            <span class="mceIcon mceIconImage"><img src="<?php echo $button->image; ?>" alt="" /></span>
                                                         <?php else : ?>
                                                             <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
                                                         <?php endif; ?>
@@ -92,7 +92,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                                                     <?php foreach ($plugin->icon as $icon): ?>
                                                         <div tabindex="-1" class="mceButton <?php echo $plugin->class; ?>" role="presentation" title="<?php echo $plugin->title; ?>">
                                                             <?php if ($plugin->image) : ?>
-                                                                <span class="mceIcon"><img src="<?php echo $plugin->image; ?>" alt="" /></span>
+                                                                <span class="mceIcon mceIconImage"><img src="<?php echo $plugin->image; ?>" alt="" /></span>
                                                             <?php else : ?>
                                                                 <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
                                                             <?php endif; ?>
