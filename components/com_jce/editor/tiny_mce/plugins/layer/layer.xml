@@ -9,7 +9,7 @@
 	<copyright>Ryan Demmer</copyright>
 	<license>@@licence@@</license>
 	<description>WF_LAYER_DESC</description>
-	<icon>insertlayer,moveforward,movebackward,absolute</icon>
+	<icon>insertlayer,layerforward,layerbackward,layerabsolute</icon>
 	<help>
 		<topic key="layer.about" title="WF_LAYER_HELP_ABOUT" />
 	</help>
