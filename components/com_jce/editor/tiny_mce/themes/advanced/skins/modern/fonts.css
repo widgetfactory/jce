@@ -33,6 +33,10 @@
     position: absolute;
 }
 
+.modernSkin .mceButton .mceIconImage {
+    line-height: 1;
+}
+
 .mceIcon-xsmall {
     font-size: 0.5rem;
     line-height: 0.5rem;
@@ -176,6 +180,15 @@
     color: #444;
     font-weight: bold;
     font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+.modernSkin span.mce_source_search_regex:before {
+    content: ".*";
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 1em;
+    color: #444;
+    font-weight: bold;
+    line-height: 1;
 }
 
 .modernSkin span.mce_cite:before {
@@ -364,11 +377,27 @@
 
 .modernSkin span.mce_image:before,
 .modernSkin span.mce_imgmanager:before {
-    content: "\e93c";
+  content: "\e941";
 }
 
+.modernSkin span.mce_insertlayer:before {
+  content: "\e92e";
+}
+
+.modernSkin span.mce_layerbackward:before {
+  content: "\ea46";
+}
+
+.modernSkin span.mce_layerforward:before {
+  content: "\ea47";
+}
+
+.modernSkin span.mce_layerabsolute:before {
+    content: "\e908";
+  }
+
 .modernSkin span.mce_imgmanager_ext:before {
-    content: "\e93e";
+    content: "\e93c";
 }
 
 .modernSkin span.mce_film:before,
@@ -447,11 +476,13 @@
     content: "\ea66";
 }
 
-.modernSkin span.mce_undo:before {
+.modernSkin span.mce_undo:before,
+.modernSkin span.mce_source_undo:before {
     content: "\eabc";
 }
 
-.modernSkin span.mce_redo:before {
+.modernSkin span.mce_redo:before,
+.modernSkin span.mce_source_redo:before {
     content: "\eabd";
 }
 
@@ -467,7 +498,8 @@
     content: "\eb33";
 }
 
-.modernSkin span.mce_fullscreen:before {
+.modernSkin span.mce_fullscreen:before,
+.modernSkin span.mce_source_fullscreen:before {
     content: "\eb3b";
 }
 
@@ -484,7 +516,8 @@
     content: "\ebfa";
 }
 
-.modernSkin span.mce_numlist:before {
+.modernSkin span.mce_numlist:before,
+.modernSkin span.mce_source_linenumbers:before {
     content: "\ec55";
 }
 
@@ -561,11 +594,13 @@
     content: "\edc7";
 }
 
-.modernSkin span.mce_arrow-right:before {
+.modernSkin span.mce_arrow_right:before,
+.modernSkin span.mce_source_search_next:before {
     content: "\edcb";
 }
 
-.modernSkin span.mce_arrow-left:before {
+.modernSkin span.mce_arrow_left:before,
+.modernSkin span.mce_source_search_previous:before {
     content: "\edcf";
 }
 
@@ -644,7 +679,8 @@
     content: "\eebb";
 }
 
-.modernSkin span.mce_indent:before {
+.modernSkin span.mce_indent:before,
+.modernSkin span.mce_source_format:before {
     content: "\eebc";
 }
 
@@ -795,19 +831,21 @@
     margin: -1px 0 0 -2px;
 }
 
-.modernSkin span.mce_loop:before {
+.modernSkin span.mce_loop:before,
+.modernSkin span.mce_source_replace_all:before {
     content: "\eda8";
 }
 
-.modernSkin span.mce_exchange:before {
+.modernSkin span.mce_exchange:before,
+.modernSkin span.mce_source_replace:before {
     content: "\ee46";
 }
 
-.modernSkin span.mce_wrap:before {
+.modernSkin span.mce_source_wrap:before {
     content: "\e902";
 }
 
-.modernSkin span.mce_highlight:before {
+.modernSkin span.mce_source_highlight:before {
     content: "\eeab";
 }
 
@@ -822,6 +860,19 @@
 .modernSkin span.mce_visualaid:before {
     content: "\e904";
 }
+
+.modernSkin span.mce_highlight:before,
+.modernSkin span.mce_source_highlight:before {
+  content: "\e924";
+}
+
+.modernSkin span.mce_columns:before {
+  content: "\e905";
+}
+
+.modernSkin span.mce_codesample:before {
+    content: "\e9bb";
+  }
 
 /*.uk-icon-spinner:before {
       content: "";
