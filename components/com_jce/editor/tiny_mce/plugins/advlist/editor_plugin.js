@@ -166,8 +166,6 @@
                         }
                     });
 
-                    menu.add({id: editor.dom.uniqueId(), title: 'advlist.types', 'class': 'mceMenuItemTitle', titleItem: true}).setDisabled(1);
-
                     each(t[name], function(item) {
                         item.id = editor.dom.uniqueId();
 
