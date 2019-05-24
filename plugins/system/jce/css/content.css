@@ -1,0 +1,41 @@
+.wf-columns {
+    display: flex;
+}
+
+.wf-columns > *{
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.wf-columns-wrap {
+    flex-wrap: wrap
+}
+
+.wf-columns-wrap-reverse {
+    flex-wrap: wrap-reverse
+}
+
+.wf-columns-wrap-stretch {
+    align-content: stretch
+}
+
+.wf-columns-wrap-top {
+    align-content: flex-start
+}
+
+.wf-columns-wrap-middle {
+    align-content: center
+}
+
+.wf-columns-wrap-bottom {
+    align-content: flex-end
+}
+
+.wf-columns-wrap-between {
+    align-content: space-between
+}
+
+.wf-columns-wrap-around {
+    align-content: space-around
+}
