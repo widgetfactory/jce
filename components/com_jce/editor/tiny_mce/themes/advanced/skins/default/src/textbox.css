@@ -1,0 +1,21 @@
+.defaultSkin .mceTextBox {
+    height: 32px;
+    line-height: 2;
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #444;
+    border-radius: 2px;
+    box-shadow: inherit;
+    box-sizing: border-box;
+    cursor: text;
+}
+
+.defaultSkin .mceTextBox:focus {
+    border-color: #66afe9;
+    outline: 0;
+    background: #f5fbfe;
+    color: #444;
+    box-shadow: inherit;
+}
