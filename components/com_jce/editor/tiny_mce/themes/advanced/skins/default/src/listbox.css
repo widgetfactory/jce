@@ -106,15 +106,21 @@ select.mceNativeListBox {
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter {
-    padding: 5px;
+    padding: 3px;
     border-bottom: 1px solid #eee;
+}
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter input {
+    height: 2em;
+    line-height: 2em;
+    width: 100%;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter:after {
     content: "";
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 2em;
+    height: 2em;
     background: url(img/search.png) no-repeat center;
     opacity: 0.5;
     position: absolute;

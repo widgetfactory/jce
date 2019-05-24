@@ -1,7 +1,7 @@
 /* Button */
 
 .defaultSkin .mceButton {
-    display: block;
+    display: inline-block;
     border: 1px solid #ddd;
     margin-right: 1px;
     padding: 5px;
