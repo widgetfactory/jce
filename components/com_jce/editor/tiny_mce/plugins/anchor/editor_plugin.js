@@ -260,81 +260,79 @@
             var self = this,
                 ed = this.editor;
 
-            switch (n) {
-                case 'anchor':
-                    var content = DOM.create('div');
-
-                    DOM.add(content, 'h4', {}, ed.getLang('anchor.desc', 'Insert / Edit Anchor'));
-
-                    var input = DOM.add(content, 'input', {
-                        type: 'text',
-                        id: ed.id + '_input_anchor'
-                    });
-
-                    var c = new tinymce.ui.ButtonDialog(cm.prefix + 'anchor', {
-                        title: ed.getLang('anchor.desc', 'Inserts an Anchor'),
-                        'class': 'mce_anchor',
-                        'content': content.innerHTML,
-                        'width': 250,
-                        'buttons': [{
-                            title: ed.getLang('insert', 'Insert'),
-                            id: 'insert',
-                            click: function (e) {
-                                input = DOM.get(ed.id + '_input_anchor');
-                                return self._insertAnchor(input.value);
-                            },
-                            classes: 'mceDialogButtonPrimary',
-                            scope: self
-                        }, {
-                            title: ed.getLang('anchor.remove', 'Remove'),
-                            id: 'remove',
-                            click: function (e) {
-                                if (!DOM.hasClass(e.target, 'disabled')) {
-                                    self._removeAnchor();
-                                }
-
-                                return true;
-                            },
-                            scope: self
-                        }]
-                    }, ed);
-
-                    c.onShowDialog.add(function () {
-                        input = DOM.get(ed.id + '_input_anchor');
-
-                        input.value = '';
-
-                        var label = ed.getLang('insert', 'Insert');
-
-                        var v = self._getAnchor();
-
-                        if (v) {
-                            input.value = v;
-                            label = ed.getLang('update', 'Update');
-                        }
-
-                        c.setActive(!!v);
-
-                        c.setButtonDisabled('remove', !v);
-                        c.setButtonLabel('insert', label);
-
-                        input.focus();
-                    });
-
-                    c.onHideDialog.add(function () {
-                        input.value = '';
-                    });
-
-                    // Remove the menu element when the editor is removed
-                    ed.onRemove.add(function () {
-                        c.destroy();
-                    });
-
-                    return cm.add(c);
-                    break;
+            if (n !== 'anchor') {
+                return null;
             }
 
-            return null;
+            var input, html = '';
+
+            html += '<h4>' + ed.getLang('anchor.desc', 'Insert / Edit Anchor') + '</h4>';
+            html += '<input type="text" id="' + ed.id + '_anchor_input" />';
+
+            var ctrl = new tinymce.ui.PanelButton(cm.prefix + 'anchor', {
+                title: ed.getLang('anchor.desc', 'Inserts an Anchor'),
+                'class': 'mce_anchor',
+                'content': html,
+                'width': 250,
+                'buttons': [
+                    {
+                        title: ed.getLang('insert', 'Insert'),
+                        id: 'insert',
+                        onclick: function (e) {
+                            input = DOM.get(ed.id + '_anchor_input');
+                            return self._insertAnchor(input.value);
+                        },
+                        classes: 'mceButtonPrimary',
+                        scope: self
+                    }, {
+                        title: ed.getLang('anchor.remove', 'Remove'),
+                        id: 'remove',
+                        onclick: function (e) {
+                            if (!DOM.hasClass(e.target, 'disabled')) {
+                                self._removeAnchor();
+                            }
+
+                            return true;
+                        },
+                        scope: self
+                    }
+                ]
+            }, ed);
+
+            ctrl.onShowPanel.add(function () {
+                input = DOM.get(ed.id + '_anchor_input');
+
+                input.value = '';
+
+                var label = ed.getLang('insert', 'Insert');
+
+                var v = self._getAnchor();
+
+                if (v) {
+                    input.value = v;
+                    label = ed.getLang('update', 'Update');
+                }
+
+                ctrl.setActive(!!v);
+
+                ctrl.setButtonDisabled('remove', !v);
+                ctrl.setButtonLabel('insert', label);
+
+                input.focus();
+            });
+
+            ctrl.onHidePanel.add(function () {
+                if (input) {
+                    input.value = '';
+                }
+            });
+
+            // Remove the menu element when the editor is removed
+            ed.onRemove.add(function () {
+                ctrl.destroy();
+            });
+
+            return cm.add(ctrl);
         }
     });
 

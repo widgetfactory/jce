@@ -7,7 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         each = tinymce.each,
@@ -17,7 +17,7 @@
         DELETE = VK.DELETE;
 
     tinymce.create('tinymce.plugins.ArticlePlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var t = this;
 
             t.editor = ed;
@@ -32,7 +32,7 @@
             };
 
             // Register commands
-            ed.addCommand('mceReadMore', function() {
+            ed.addCommand('mceReadMore', function () {
                 if (ed.dom.get('system-readmore')) {
                     alert(ed.getLang('article.readmore_alert', 'There is already a Read More break inserted in this article. Only one such break is permitted. Use a Pagebreak to split the page up further.'));
                     return false;
@@ -41,7 +41,7 @@
                     id: 'system-readmore'
                 });
             });
-            ed.addCommand('mcePageBreak', function(ui, v) {
+            ed.addCommand('mcePageBreak', function (ui, v) {
                 var n = ed.selection.getNode();
 
                 if (isPageBreak(n)) {
@@ -69,14 +69,14 @@
                 }
             });*/
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
                 // Display "a#name" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
-                    ed.theme.onResolveName.add(function(theme, o) {
+                    ed.theme.onResolveName.add(function (theme, o) {
                         var n = o.node,
                             v;
 
@@ -96,7 +96,7 @@
 
             });
 
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function (ed, cm, n) {
                 cm.setActive('readmore', isReadMore(n));
                 cm.setActive('pagebreak', isPageBreak(n));
 
@@ -108,40 +108,40 @@
             });
 
             function _cancelResize() {
-                each(ed.dom.select('hr.mce-item-pagebreak, hr.mce-item-readmore'), function(n) {
-                    n.onresizestart = function() {
+                each(ed.dom.select('hr.mce-item-pagebreak, hr.mce-item-readmore'), function (n) {
+                    n.onresizestart = function () {
                         return false;
                     };
 
-                    n.onbeforeeditfocus = function() {
+                    n.onbeforeeditfocus = function () {
                         return false;
                     };
                 });
             };
 
-            ed.onBeforeSetContent.add(function(ed, o) {
+            ed.onBeforeSetContent.add(function (ed, o) {
                 o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+)>/gi, '<hr$1data-mce-alt="$2"$3>');
             });
-            
-            ed.onPostProcess.add(function(ed, o) {
+
+            ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
-                	o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+)>/gi, '<hr$1alt="$2"$3>');	
+                    o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+)>/gi, '<hr$1alt="$2"$3>');
                 }
             });
 
-            ed.onSetContent.add(function() {
+            ed.onSetContent.add(function () {
                 if (tinymce.isIE) {
                     _cancelResize();
                 }
             });
 
-            ed.onGetContent.add(function() {
+            ed.onGetContent.add(function () {
                 if (tinymce.isIE) {
                     _cancelResize();
                 }
             });
 
-            ed.onKeyDown.add(function(ed, e) {
+            ed.onKeyDown.add(function (ed, e) {
                 if (e.keyCode == BACKSPACE || e.keyCode == DELETE) {
                     var s = ed.selection,
                         n = s.getNode();
@@ -154,9 +154,9 @@
                 }
             });
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
 
-                ed.parser.addNodeFilter('hr', function(nodes) {
+                ed.parser.addNodeFilter('hr', function (nodes) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i],
                             id = node.attr('id') || '',
@@ -175,7 +175,7 @@
                     }
                 });
 
-                ed.serializer.addNodeFilter('hr', function(nodes, name, args) {
+                ed.serializer.addNodeFilter('hr', function (nodes, name, args) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i], cls = node.attr('class') || '';
 
@@ -199,7 +199,7 @@
             });
         },
 
-        _getPageBreak: function() {
+        _getPageBreak: function () {
             var t = this,
                 ed = this.editor,
                 dom = ed.dom,
@@ -216,7 +216,7 @@
             return o;
         },
 
-        _updatePageBreak: function(n, v) {
+        _updatePageBreak: function (n, v) {
             var t = this,
                 ed = this.editor;
 
@@ -229,7 +229,7 @@
             ed.dom.setAttribs(n, v);
         },
 
-        _insertBreak: function(s, args) {
+        _insertBreak: function (s, args) {
             var t = this,
                 ed = this.editor,
                 dom = ed.dom,
@@ -319,98 +319,97 @@
             ed.undoManager.add();
         },
 
-        createControl: function(n, cm) {
+        createControl: function (n, cm) {
             var self = this,
                 ed = this.editor;
 
-            switch (n) {
-                case 'pagebreak':
-                    if (ed.getParam('article_show_pagebreak', true)) {
-
-                        var content = DOM.create('div', {}, '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>');
-                        var n = DOM.add(content, 'div');
-
-                        DOM.add(n, 'label', {
-                            'for': ed.id + '_title'
-                        }, ed.getLang('article.title', 'Title'));
-
-                        var title = DOM.add(n, 'input', {
-                            type: 'text',
-                            id: ed.id + '_title'
-                        });
-
-                        n = DOM.add(content, 'div');
-
-                        DOM.add(n, 'label', {
-                            'for': ed.id + '_alt'
-                        }, ed.getLang('article.alias', 'Alias'));
-
-                        var alt = DOM.add(n, 'input', {
-                            type: 'text',
-                            id: ed.id + '_alt'
-                        });
-
-                        var c = new tinymce.ui.ButtonDialog(cm.prefix + 'pagebreak', {
-                            title: ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak'),
-                            'class': 'mce_pagebreak',
-                            'dialog_class': ed.getParam('skin') + 'Skin',
-                            'content': content,
-                            'width': 250,
-                            buttons: [{
-                                title: ed.getLang('common.insert', 'Insert'),
-                                id: 'insert',
-                                click: function(e) {
-                                    ed.execCommand('mcePageBreak', false, {
-                                        title: title.value,
-                                        alt: alt.value
-                                    });
-
-                                    return true;
-                                },
-                                scope: self
-                            }]
-                        }, ed);
-
-                        c.onShowDialog.add(function() {
-                            var title = DOM.get(ed.id + '_title'),
-                                alt = DOM.get(ed.id + '_alt');
-
-                            title.value = alt.value = '';
-                            var label = ed.getLang('common.insert', 'Insert');
-
-                            var o = self._getPageBreak(),
-                                active = false;
-
-                            if (o) {
-                                title.value = o.title || '';
-                                alt.value = o.alt || '';
-                                label = ed.getLang('common.update', 'Update');
-
-                                active = true;
-                            }
-
-                            c.setActive(active);
-
-                            c.setButtonLabel('insert', label);
-
-                            title.focus();
-                        });
-
-                        c.onHideDialog.add(function() {
-                            title.value = alt.value = '';
-                        });
-
-                        // Remove the menu element when the editor is removed
-                        ed.onRemove.add(function() {
-                            c.destroy();
-                        });
-
-                        return cm.add(c);
-                        break;
-                    }
+            if (n !== 'pagebreak') {
+                return null;
             }
 
-            return null;
+            if (ed.getParam('article_show_pagebreak', true)) {
+
+                var content = DOM.create('div', {}, '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>');
+                var n = DOM.add(content, 'div');
+
+                DOM.add(n, 'label', {
+                    'for': ed.id + '_article_title'
+                }, ed.getLang('article.title', 'Title'));
+
+                var title = DOM.add(n, 'input', {
+                    type: 'text',
+                    id: ed.id + '_article_title'
+                });
+
+                n = DOM.add(content, 'div');
+
+                DOM.add(n, 'label', {
+                    'for': ed.id + '_article_alt'
+                }, ed.getLang('article.alias', 'Alias'));
+
+                var alt = DOM.add(n, 'input', {
+                    type: 'text',
+                    id: ed.id + '_article_alt'
+                });
+
+                var c = new tinymce.ui.PanelButton(cm.prefix + 'pagebreak', {
+                    title: ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak'),
+                    'class': 'mce_pagebreak',
+                    'dialog_class': ed.getParam('skin') + 'Skin',
+                    'content': content,
+                    'width': 250,
+                    buttons: [{
+                        title: ed.getLang('common.insert', 'Insert'),
+                        id: 'insert',
+                        onclick: function (e) {
+                            ed.execCommand('mcePageBreak', false, {
+                                title: title.value,
+                                alt: alt.value
+                            });
+
+                            return true;
+                        },
+                        classes: 'mceButtonPrimary',
+                        scope: self
+                    }]
+                }, ed);
+
+                c.onShowPanel.add(function () {
+                    var title = DOM.get(ed.id + '_article_title'),
+                        alt = DOM.get(ed.id + '_article_alt');
+
+                    title.value = alt.value = '';
+                    var label = ed.getLang('common.insert', 'Insert');
+
+                    var o = self._getPageBreak(),
+                        active = false;
+
+                    if (o) {
+                        title.value = o.title || '';
+                        alt.value = o.alt || '';
+                        label = ed.getLang('common.update', 'Update');
+
+                        active = true;
+                    }
+
+                    c.setActive(active);
+
+                    c.setButtonLabel('insert', label);
+
+                    title.focus();
+                });
+
+                c.onHidePanel.add(function () {
+                    title.value = alt.value = '';
+                });
+
+                // Remove the menu element when the editor is removed
+                ed.onRemove.add(function () {
+                    c.destroy();
+                });
+
+                return cm.add(c);
+            }
         }
     });
     // Register plugin
