@@ -151,7 +151,7 @@
     "layer": {
         "title": "WF_LAYER_TITLE",
         "description": "WF_LAYER_DESC",
-        "icon": "insertlayer,moveforward,movebackward,absolute",
+        "icon": "insertlayer,layerforward,layerbackward,layerabsolute",
         "editable": 0,
         "row": 4,
         "core": 1
@@ -325,7 +325,6 @@
         "core": 1,
         "icon": "emotions",
         "row": 4,
-        "editable": 1,
-        "class": "split-button"
+        "editable": 1
     }
 }
