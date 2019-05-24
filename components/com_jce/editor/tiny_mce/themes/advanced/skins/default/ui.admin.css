@@ -1,6 +1,6 @@
 @import url('ui.css');
 
-.defaultSkin .mceToolBar {
+.defaultSkin .mceToolbar {
 	border: 0 none;
 }
 
@@ -10,7 +10,7 @@
 	background: #fff;
 }
 
-.defaultSkin .mceToolBarItem div {
+.defaultSkin .mceToolbarItem div {
 	display: inline-block;
 }
 
@@ -30,14 +30,14 @@
 	margin: 0;
 }
 
-.mceToolbarRow .mceToolBarItem {
+.mceToolbarRow .mceToolbarItem {
 	font-size: 0;
 	vertical-align: top;
 	line-height: 1;
 }
 
-.mceToolbarRow .mceToolBarItem .mceButton,
-.mceToolbarRow .mceToolBarItem .mceButton .mceIcon {
+.mceToolbarRow .mceToolbarItem .mceButton,
+.mceToolbarRow .mceToolbarItem .mceButton .mceIcon {
 	cursor: move;
 }
 
@@ -55,30 +55,30 @@
 	cursor: move;
 }
 
-.mceEditor .mceToolBarItem .mceListBox,
-.mceEditor .mceToolBarItem .mceSplitButton {
+.mceEditor .mceToolbarItem .mceListBox,
+.mceEditor .mceToolbarItem .mceSplitButton {
 	width: 100%;
 	padding: 0;
 	position: relative;
 	display: inline-block;
 }
 
-.mceEditor .mceToolBarItem .mceListBox .mceIcon {
+.mceEditor .mceToolbarItem .mceListBox .mceIcon {
 	display: none;
 }
 
-.mceEditor .mceToolBarItem .mceSplitButton .mceIcon {
+.mceEditor .mceToolbarItem .mceSplitButton .mceIcon {
 	display: inline-block;
 	margin: 3px 2px;
 }
 
-.mceEditor .mceToolBarItem .mceSplitButton {
+.mceEditor .mceToolbarItem .mceSplitButton {
 	width: 44px;
 	height: auto;
 	text-align: left;
 }
 
-.mceEditor .mceToolBarItem .mceListBox:before {
+.mceEditor .mceToolbarItem .mceListBox:before {
 	content: attr(title);
 	display: inline-block;
 	width: 75px;
@@ -92,8 +92,8 @@
 	text-align: left;
 }
 
-.mceEditor .mceToolBarItem .mceListBox:after,
-.mceEditor .mceToolBarItem .mceSplitButton:after {
+.mceEditor .mceToolbarItem .mceListBox:after,
+.mceEditor .mceToolbarItem .mceSplitButton:after {
 	content: "\25bc";
 	display: inline-block;
 	font-size: 9px;

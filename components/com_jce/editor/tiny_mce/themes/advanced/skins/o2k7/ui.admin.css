@@ -2,7 +2,7 @@
 @import url('ui_silver.css');
 @import url('ui_black.css');
 
-.o2k7Skin .mceToolBar {
+.o2k7Skin .mceToolbar {
 	border: 0 none;
 }
 
@@ -12,12 +12,12 @@
 	background: #fff;
 }
 
-.o2k7Skin .mceToolBarItem div {
+.o2k7Skin .mceToolbarItem div {
 	display: inline-block;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox,
-.o2k7Skin .mceToolBarItem .mceSplitButton {
+.o2k7Skin .mceToolbarItem .mceListBox,
+.o2k7Skin .mceToolbarItem .mceSplitButton {
 	border: 1px solid #ABC6DD;
 	box-sizing: border-box;
 	border-radius: 0;
@@ -26,45 +26,45 @@
 	cursor: move;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox {
+.o2k7Skin .mceToolbarItem .mceListBox {
 	width: 94px;
 	border-radius: 2px;
 }
 
-.o2k7Skin .mceToolBarItem .mceSplitButton {
+.o2k7Skin .mceToolbarItem .mceSplitButton {
 	width: 42px;
 	padding: 5px 2px;
 	border-left-width: 0;
 }
 
-.o2k7Skin .mceToolBarItem .mceSplitButton .mceIcon {
+.o2k7Skin .mceToolbarItem .mceSplitButton .mceIcon {
 	margin: 0;
 }
 
-.o2k7Skin .mceToolBarItemStart .mceSplitButton {
+.o2k7Skin .mceToolbarItemStart .mceSplitButton {
 	border-left-width: 1px;
 }
 
-.o2k7Skin .mceToolBarItemEnd .mceSplitButton {
+.o2k7Skin .mceToolbarItemEnd .mceSplitButton {
 	border-right-width: 1px;
 	border-right-color: #E5EFFD;
 }
 
-.o2k7Skin .mceToolBarItem .mceSplitButton+.mceSplitButton {
+.o2k7Skin .mceToolbarItem .mceSplitButton+.mceSplitButton {
 	margin-left: 0;
 	border-left-width: 0
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem .mceButton+.mceButton {
+.o2k7Skin .mceToolbarRow .mceToolbarItem .mceButton+.mceButton {
 	border-left-width: 0;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox .mceIcon {
+.o2k7Skin .mceToolbarItem .mceListBox .mceIcon {
 	width: 76px;
 	height: auto;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox .mceIcon:before {
+.o2k7Skin .mceToolbarItem .mceListBox .mceIcon:before {
 	display: inline-block;
 	background: #fff;
 	font-size: 12px;
@@ -74,8 +74,8 @@
 	box-sizing: border-box;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox:after,
-.o2k7Skin .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin .mceToolbarItem .mceListBox:after,
+.o2k7Skin .mceToolbarItem .mceSplitButton:after {
 	display: block;
 	position: absolute;
 	right: 0;
@@ -83,7 +83,7 @@
 	border-left: 1px solid #ABC6DD;
 }
 
-.o2k7Skin .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin .mceToolbarItem .mceSplitButton:after {
 	line-height: 30px;
 }
 
@@ -112,19 +112,19 @@
 	border-color: #ABC6DD;
 }
 
-.o2k7Skin .mceToolBarItem .mceListBox:after,
-.o2k7Skin .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin .mceToolbarItem .mceListBox:after,
+.o2k7Skin .mceToolbarItem .mceSplitButton:after {
 	background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
 }
 
 /* Silver */
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox,
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton {
+.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceListBox,
+.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceSplitButton {
 	border-color: #bbb;
 }
 
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceListBox:after,
-.o2k7Skin.o2k7SkinSilver .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceListBox:after,
+.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceSplitButton:after {
 	border-color: #bbb;
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
 }
@@ -147,13 +147,13 @@
 }
 
 /* Black */
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox,
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton {
+.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceListBox,
+.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceSplitButton {
 	border-color: #B0B6BE;
 }
 
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceListBox:after,
-.o2k7Skin.o2k7SkinBlack .mceToolBarItem .mceSplitButton:after {
+.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceListBox:after,
+.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceSplitButton:after {
 	border-color: #535353;
 	background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
@@ -175,10 +175,10 @@
 	border-color: #535353;
 }
 
-.o2k7SkinBlack .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+.o2k7SkinBlack .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
 	border-color: #fff;
 }
 
-.mceEditor .mceToolbar .mceToolBarItem .mceListBox:before {
+.mceEditor .mceToolbar .mceToolbarItem .mceListBox:before {
 	display: block;
 }

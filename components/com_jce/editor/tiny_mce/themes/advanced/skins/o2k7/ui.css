@@ -14,13 +14,13 @@
     background: #E5EFFD
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem {
+.o2k7Skin .mceToolbarRow .mceToolbarItem {
     margin: 1px 0;
     border: 0;
     height: auto;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemListBox {
+.o2k7Skin .mceToolbarRow .mceToolbarItemListBox {
     margin: 1px;
 }
 
@@ -32,7 +32,7 @@
     border-color: #ABC6DD;
 }
 
-.o2k7Skin .mceToolBarItem {
+.o2k7Skin .mceToolbarItem {
     margin: 1px -1px;
 }
 
@@ -111,52 +111,52 @@
     background: inherit;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem:first-child {
+.o2k7Skin .mceToolbarRow .mceToolbarItem:first-child {
     margin-left: 2px;
     border-radius: 2px 0 0 2px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem:first-child .mceButton:first-child,
-.o2k7Skin .mceToolbarStart .mceToolBarItem:first-child .mceButton:first-child:hover {
+.o2k7Skin .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
+.o2k7Skin .mceToolbarStart .mceToolbarItem:first-child .mceButton:first-child:hover {
     border-left-width: 1px;
     border-radius: 2px 0 0 2px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem:last-child {
+.o2k7Skin .mceToolbarRow .mceToolbarItem:last-child {
     border-radius: 0 2px 2px 0;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child,
-.o2k7Skin .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child:hover {
+.o2k7Skin .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.o2k7Skin .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-width: 1px;
     border-radius: 0 2px 2px 0;
     border-right-color: #9FBBE2;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemEnd {
+.o2k7Skin .mceToolbarRow .mceToolbarItemEnd {
     margin-right: 1px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemStart {
+.o2k7Skin .mceToolbarRow .mceToolbarItemStart {
     margin-left: 1px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemEnd .mceButton,
-.o2k7Skin .mceToolbarRow .mceToolBarItemEnd .mceSplitButton .mceOpen button {
+.o2k7Skin .mceToolbarRow .mceToolbarItemEnd .mceButton,
+.o2k7Skin .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
     border-right-color: #ABC6DD;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemEnd .mceSplitButton .mceOpen button {
+.o2k7Skin .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
     border-right-width: 1px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemStart .mceButton,
-.o2k7Skin .mceToolbarRow .mceToolBarItemStart .mceSplitButton .mceText button {
+.o2k7Skin .mceToolbarRow .mceToolbarItemStart .mceButton,
+.o2k7Skin .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
     border-left-color: #ABC6DD;
     border-left-width: 1px;
 }
 
-.o2k7Skin .mceToolbarRow .mceToolBarItemListBox+.mceToolBarItemListBox {
+.o2k7Skin .mceToolbarRow .mceToolbarItemListBox+.mceToolbarItemListBox {
     margin-left: 1px;
 }
 

@@ -12,14 +12,14 @@
 
 /* External */
 
-.defaultSkin .mceExternalToolbar {
+.defaultSkin .mceExternalToolBar {
     position: absolute;
     border: 1px solid #ddd;
     border-bottom: 0;
     display: none;
 }
 
-.defaultSkin .mceExternalToolbar .mceToolbar {
+.defaultSkin .mceExternalToolBar .mceToolbar {
     padding-right: 13px;
 }
 
@@ -59,7 +59,7 @@
     vertical-align: middle;
 }
 
-.defaultSkin .mceToolbarRow .mceToolBarItem {
+.defaultSkin .mceToolbarRow .mceToolbarItem {
     margin: 1px 0 1px 1px;
     background-color: #f5f5f5;
 }
@@ -95,4 +95,12 @@
     margin: 0 3px 0 2px;
     background: #ddd;
     display: block;
+}
+
+.defaultSkin .mceFlex {
+    display: flex;
+}
+
+.defaultSkin .mceFlexAuto {
+    flex: auto;
 }

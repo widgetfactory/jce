@@ -53,27 +53,27 @@
     background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:first-child .mceButton:first-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:first-child .mceButton:first-child:hover {
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child:hover {
     border-left-width: 1px;
     border-radius: 2px 0 0 2px;
     border-left-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child:hover {
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-width: 1px;
     border-radius: 0 2px 2px 0;
     border-right-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItemEnd .mceButton,
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItemEnd .mceSplitButton .mceOpen button {
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceButton,
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
     border-right-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItemStart .mceButton,
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItemStart .mceSplitButton .mceText button {
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceButton,
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
     border-left-color: #B0B6BE;
 }
 
@@ -93,8 +93,8 @@
     border-top-color: #CBCFD4;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child:hover {
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-color: transparent;
 }
 

@@ -5,7 +5,7 @@
     background: #fafafa;
 }
 
-.modernSkin .mceToolbarRow .mceToolBarItem {
+.modernSkin .mceToolbarRow .mceToolbarItem {
     background-color: transparent;
     margin: 2px;
 }
@@ -25,7 +25,8 @@
     background-color: #eee;
 }
 
-.modernSkin .mceSplitButton:hover .mceText button, .modernSkin .mceSplitButton:hover .mceOpen button {
+.modernSkin .mceSplitButton:hover .mceText button,
+.modernSkin .mceSplitButton:hover .mceOpen button {
     border-color: #ddd;
     background-color: #eee;
 }
@@ -44,7 +45,9 @@
     border-right-color: #ddd;
 }
 
-.modernSkin .mceButtonActive, .modernSkin .mceButtonSelected {
+.modernSkin .mceButtonActive,
+.modernSkin .mceButtonSelected,
+.modernSkin .mcePanelButtonActive {
     background-color: #eee;
     border-color: #ddd;
 }
@@ -52,6 +55,7 @@
 .modernSkin .mceSplitButton .mceText button {
     border-color: transparent;
 }
+
 .modernSkin .mceSplitButton .mceOpen button {
     border-color: transparent;
 }
@@ -62,4 +66,85 @@
 
 .modernSkin .mceColorPreview {
     outline: 1px solid #eee;
+}
+
+.modernSkin .mceSplitButtonMenu {
+    margin-top: 4px;
+    position: relative;
+    margin-left: 1px;
+}
+
+.modernSkin .mceSplitButtonMenu:before {
+    content: "";
+    display: block;
+    padding: 3px;
+    position: absolute;
+    width: 40px;
+    top: -6px;
+    background: #fff;
+    left: -1px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.modernSkin .mceSplitButtonSelected .mceSplitButton .mceText button {
+    background: #fff;
+    border-color: #ddd;
+    border-radius: 2px 0 0 0;
+}
+
+.modernSkin .mceSplitButtonSelected .mceSplitButton .mceOpen button {
+    background: #fff;
+    border-color: #ddd;
+    border-left-color: transparent;
+    border-radius: 0 2px 0 0;
+}
+
+.modernSkin .mceColorSplitMenu {
+    padding: 2px;
+    background: #fff;
+}
+
+.modernSkin .mcePanelButtonSelected,
+.modernSkin .mcePanelButtonSelected:hover {
+    border: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.modernSkin .mcePanel::before {
+    background-color: #fff;
+}
+
+.modernSkin .mceListBoxMenu {
+    margin-left: 1px;
+    overflow: inherit;
+    margin-top: 3px;
+}
+
+.modernSkin .mceListBoxSelected .mceText button,
+.modernSkin .mceListBoxSelected:hover .mceText button {
+    background: #fff;
+    border-color: #ddd;
+    border-radius: 2px 0 0 0;
+}
+
+.modernSkin .mceListBoxSelected .mceOpen button,
+.defaultSkin .mceListBoxSelected:hover .mceOpen button {
+    background: #fff;
+    border-color: #ddd;
+    border-left-color: transparent;
+    border-radius: 0 2px 0 0;
+}
+
+.modernSkin .mceListBoxMenu::before {
+    content: "";
+    display: block;
+    padding: 3px;
+    position: absolute;
+    width: 92px;
+    top: -6px;
+    background: #fff;
+    left: -1px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }

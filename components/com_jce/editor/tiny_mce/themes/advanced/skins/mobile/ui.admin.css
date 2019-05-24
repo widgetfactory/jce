@@ -1,6 +1,6 @@
 @import url('ui.css');
 
-.mobileSkin .mceToolBarItem .mceListBox, .mobileSkin .mceToolBarItem .mceSplitButton {
+.mobileSkin .mceToolbarItem .mceListBox, .mobileSkin .mceToolbarItem .mceSplitButton {
 	border-color: #dcdcdc;
 	height: 36px;
 }
@@ -9,34 +9,34 @@
   min-height: 38px;
 }
 
-.mobileSkin .mceToolBarItem .mceButton {
+.mobileSkin .mceToolbarItem .mceButton {
   padding: 7px;
   border-color: #dcdcdc;
 
   background-color: #fafafa;
 }
 
-.mobileSkin .mceToolBarItem .mceListBox {
+.mobileSkin .mceToolbarItem .mceListBox {
   width: 112px;
   padding: 0;
 }
 
-.mobileSkin .mceToolBarItem .mceSplitButton {
+.mobileSkin .mceToolbarItem .mceSplitButton {
     width: 55px;
     padding: 0;
     height: 36px;
 }
 
-.mobileSkin .mceToolBarItem .mceListBox .mceIcon {
+.mobileSkin .mceToolbarItem .mceListBox .mceIcon {
 	width: 92px;
 }
 
-.mobileSkin .mceToolBarItem .mceListBox .mceIcon:before {
+.mobileSkin .mceToolbarItem .mceListBox .mceIcon:before {
   width: 92px;
   line-height: 34px;
 }
 
-.mobileSkin .mceToolBarItem .mceListBox:after, .mobileSkin .mceToolBarItem .mceSplitButton:after {
+.mobileSkin .mceToolbarItem .mceListBox:after, .mobileSkin .mceToolbarItem .mceSplitButton:after {
   line-height: 34px;
   width: 20px;
 	border-color: #dcdcdc;
@@ -60,7 +60,7 @@
 .mobileSkin .mceToolbar .sortableRowHandle .uk-icon {
   margin: 12px 0 0;
 }
-.mobileSkin .mceToolBarItem .mceSeparator {
+.mobileSkin .mceToolbarItem .mceSeparator {
     height: 34px;
     background: #dcdcdc;
 }
@@ -69,7 +69,7 @@
   height: 38px;
 }
 
-.mobileSkin .sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+.mobileSkin .sortableList .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
   height: 36px;
 }
 .mobileSkin .mceLayout, .mobileSkin .mceLayout .mceToolbar {
@@ -83,11 +83,11 @@
     background-color: #fafafa !important;
 }
 
-.mobileSkin .mceToolBarItem .mceListBox::before {
+.mobileSkin .mceToolbarItem .mceListBox::before {
   line-height: 32px;
   width: 90px;
 }
 
-.mobileSkin .mceToolBarItem .mceSplitButton .mceIcon {
+.mobileSkin .mceToolbarItem .mceSplitButton .mceIcon {
   margin: 7px 6px;
 }

@@ -69,14 +69,14 @@
 
 /* External */
 
-.defaultSkin .mceExternalToolbar {
+.defaultSkin .mceExternalToolBar {
     position: absolute;
     border: 1px solid #ddd;
     border-bottom: 0;
     display: none;
 }
 
-.defaultSkin .mceExternalToolbar .mceToolbar {
+.defaultSkin .mceExternalToolBar .mceToolbar {
     padding-right: 13px;
 }
 
@@ -116,7 +116,7 @@
     vertical-align: middle;
 }
 
-.defaultSkin .mceToolbarRow .mceToolBarItem {
+.defaultSkin .mceToolbarRow .mceToolbarItem {
     margin: 1px 0 1px 1px;
     background-color: #f5f5f5;
 }
@@ -152,6 +152,14 @@
     margin: 0 3px 0 2px;
     background: #ddd;
     display: block;
+}
+
+.defaultSkin .mceFlex {
+    display: flex;
+}
+
+.defaultSkin .mceFlexAuto {
+    flex: auto;
 }
 .defaultSkin .mceStatusbar {
     font-size: 9pt;
@@ -339,10 +347,76 @@
 .mceRtl .mceMenuItem .mceText {
     text-align: right
 }
+
+.defaultSkin .mceMenuHtml {
+    position: relative;
+}
+
+.defaultSkin .mceMenuHtml .mceMenuHtmlRow {
+    position: relative;
+    display: flex;
+}
+
+.defaultSkin .mceMenuHtml label {
+    display: block;
+    line-height: 2;
+    vertical-align: middle;
+}
+
+.defaultSkin .mceMenuHtml input[type="text"],
+.defaultSkin .mceMenuHtml textarea,
+.defaultSkin .mceMenuHtml select {
+    height: 32px;
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #444;
+    border-radius: 2px;
+    box-shadow: inherit;
+    box-sizing: border-box;
+}
+
+.defaultSkin .mceMenuHtml textarea {
+    height: auto;
+}
+
+.defaultSkin .mceMenuHtml select:not([multiple]):not([size]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 20px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+}
+
+.defaultSkin .mceMenuHtml input[type="text"]:focus {
+    border-color: #66afe9;
+    outline: 0;
+    background: #f5fbfe;
+    color: #444;
+    box-shadow: inherit;
+}
+
+.defaultSkin .mceLinkMenu {
+    min-width: 220px;
+}
+
+.defaultSkin .mceLinkMenu .mceMenuHtml input {
+    margin-right: 5px;
+}
+
+.defaultSkin .mceLinkMenu .mceMenuHtml .mceButton {
+    position: relative;
+}
+
+.defaultSkin .mceLinkMenu .mceMenuHtml .mceButton .mceIcon {
+    position: static;
+}
 /* Button */
 
 .defaultSkin .mceButton {
-    display: block;
+    display: inline-block;
     border: 1px solid #ddd;
     margin-right: 1px;
     padding: 5px;
@@ -504,15 +578,21 @@ select.mceNativeListBox {
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter {
-    padding: 5px;
+    padding: 3px;
     border-bottom: 1px solid #eee;
+}
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter input {
+    height: 2em;
+    line-height: 2em;
+    width: 100%;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter:after {
     content: "";
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 2em;
+    height: 2em;
     background: url(img/search.png) no-repeat center;
     opacity: 0.5;
     position: absolute;
@@ -524,6 +604,27 @@ select.mceNativeListBox {
 .mceRtl .mceListBox .mceText {
     text-align: right;
     padding: 0 4px 0 0
+}
+.defaultSkin .mceTextBox {
+    height: 32px;
+    line-height: 2;
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #444;
+    border-radius: 2px;
+    box-shadow: inherit;
+    box-sizing: border-box;
+    cursor: text;
+}
+
+.defaultSkin .mceTextBox:focus {
+    border-color: #66afe9;
+    outline: 0;
+    background: #f5fbfe;
+    color: #444;
+    box-shadow: inherit;
 }
 /* SplitButton */
 
@@ -629,6 +730,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     margin: 0;
     border: 1px solid #ddd;
     margin-top: 2px;
+    margin-left: 1px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -639,7 +741,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 }
 
 .defaultSkin .mceSplitButtonMenu .mceMenuItem {
-    margin: 2px;
+    margin: 3px;
 }
 
 /* ColorSplitButton */
@@ -776,10 +878,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     vertical-align: middle;
     min-width: 16px;
     height: auto;
-    position: relative;
-    top: 2px;
-    left: 2px;
     cursor: inherit;
+    margin: auto;
 }
 
 .defaultSkin span.mce_bold {
@@ -798,11 +898,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -120px 0
 }
 
-.defaultSkin span.mce_undo {
+.defaultSkin span.mce_undo,
+.defaultSkin span.mce_source_undo {
     background-position: -160px 0
 }
 
-.defaultSkin span.mce_redo {
+.defaultSkin span.mce_redo,
+.defaultSkin span.mce_source_redo {
     background-position: -100px 0
 }
 
@@ -814,7 +916,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -20px 0
 }
 
-.defaultSkin span.mce_numlist {
+.defaultSkin span.mce_numlist,
+.defaultSkin span.mce_source_linenumbers {
     background-position: -80px 0
 }
 
@@ -838,7 +941,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -200px 0
 }
 
-.defaultSkin span.mce_indent {
+.defaultSkin span.mce_indent,
+.defaultSkin span.mce_source_format {
     background-position: -400px 0
 }
 
@@ -968,7 +1072,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -80px -20px
 }
 
-.defaultSkin span.mce_fullscreen {
+.defaultSkin span.mce_fullscreen,
+.defaultSkin span.mce_source_fullscreen {
     background-position: -100px -20px
 }
 
@@ -984,7 +1089,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -160px -20px
 }
 
-.defaultSkin span.mce_absolute {
+.defaultSkin span.mce_layerabsolute {
     background-position: -180px -20px
 }
 
@@ -992,11 +1097,11 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -240px -20px
 }
 
-.defaultSkin span.mce_movebackward {
+.defaultSkin span.mce_layerbackward {
     background-position: -200px -20px
 }
 
-.defaultSkin span.mce_moveforward {
+.defaultSkin span.mce_layerforward {
     background-position: -220px -20px
 }
 
@@ -1036,7 +1141,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -480px -20px
 }
 
-.defaultSkin span.mce_replace {
+.defaultSkin span.mce_replace,
+.defaultSkin span.mce_source_replace {
     background-position: -500px -20px
 }
 
@@ -1140,6 +1246,38 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -960px -20px
 }
 
+.defaultSkin span.mce_source_highlight {
+    background-position: -140px -40px;
+}
+
+.defaultSkin span.mce_source_wrap {
+    background-position: -100px -40px;
+}
+
+.defaultSkin span.mce_source_search_previous {
+    background-position: -440px -40px;
+}
+
+.defaultSkin span.mce_source_search_next {
+    background-position: -460px -40px;
+}
+
+.defaultSkin span.mce_source_replace_all {
+    background-position: -480px -40px;
+}
+
+.defaultSkin span.mce_source_search_regex {
+    background-position: -500px -40px;
+}
+
+.defaultSkin span.mce_columns {
+    background-position: -520px -40px;
+}
+
+.defaultSkin span.mce_codesample {
+    background-position: -260px 0;
+}
+
 /*.defaultSkin span.mce_pagebreak {background-position:0 -40px}*/
 
 .defaultSkin span.mce_restoredraft {
@@ -1210,9 +1348,9 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin span.mce_microdata {
     background-position: -340px -40px;
 }
-/* Dialog */
+/* Panel */
 
-.defaultSkin .mceButtonDialog {
+.defaultSkin .mcePanel {
     position: absolute;
     left: 1px;
     top: 1px;
@@ -1226,38 +1364,33 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     box-sizing: border-box;
 }
 
-.defaultSkin .mceButtonDialogActive .mceButtonDialog {
-    border-color: #ccc;
-    background-color: #f5fbfe;
+.defaultSkin .mcePanelButtonActive {
+    background-color: #eee;
+    border-color: #ddd;
 }
 
-.defaultSkin .mceButtonDialogActive .mceButtonDialog:before {
-    border-color: #ccc;
-}
-
-.defaultSkin .mceButtonDialog h4 {
+.defaultSkin .mcePanel h4 {
     font-size: 14px;
     color: #444;
     font-weight: bold;
     margin: 0 0 10px 0;
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogContent {
+.defaultSkin .mcePanel .mcePanelContent {
     background-color: #fff;
     font-size: 12px;
     padding: 5px;
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogContent label {
+.defaultSkin .mcePanel .mcePanelContent label {
     display: block;
     line-height: 2;
     vertical-align: middle;
 }
 
-.defaultSkin .mceButtonDialog input[type="text"],
-.defaultSkin .mceButtonDialog textarea,
-.defaultSkin .mceButtonDialog select,
-.defaultSkin .mceListBoxMenu input[type="text"] {
+.defaultSkin .mcePanel input[type="text"],
+.defaultSkin .mcePanel textarea,
+.defaultSkin .mcePanel select {
     height: 32px;
     width: 100%;
     padding: 2px;
@@ -1269,23 +1402,28 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     box-sizing: border-box;
 }
 
-.defaultSkin .mceButtonDialog textarea {
+.defaultSkin .mcePanel textarea {
     height: auto;
 }
 
-.defaultSkin .mceMenuItem .mceMenuHtml {
-    padding: 5px 5px 5px 4px;
+.defaultSkin .mcePanel select:not([multiple]):not([size]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 20px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
 }
 
-.defaultSkin .mceButtonDialog input[type="text"]:focus,
-.defaultSkin .mceListBoxMenu input[type="text"]:focus {
+.defaultSkin .mcePanel input[type="text"]:focus {
     border-color: #66afe9;
     outline: 0;
+    background: #f5fbfe;
     color: #444;
     box-shadow: inherit;
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButton {
+.defaultSkin .mcePanel .mcePanelFooter .mceButton {
     -webkit-appearance: none;
     margin: 0 0 0 5px;
     border: none;
@@ -1306,7 +1444,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     cursor: pointer;
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButton:hover {
+.defaultSkin .mcePanel .mcePanelFooter .mceButton:hover {
     background-color: #fafafa;
     color: #444;
     outline: 0;
@@ -1314,15 +1452,15 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-color: rgba(0, 0, 0, 0.16);
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButtonPrimary {
+.defaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary {
     background-color: #337ab7;
     color: #fff;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, .05);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, .1);
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButton:hover,
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButton:focus {
+.defaultSkin .mcePanel .mcePanelFooter .mceButton:hover,
+.defaultSkin .mcePanel .mcePanelFooter .mceButton:focus {
     background-color: #fafafa;
     color: #444;
     outline: 0;
@@ -1330,20 +1468,20 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-color: rgba(0, 0, 0, .16);
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons .mceDialogButtonPrimary:hover {
+.defaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary:hover {
     background-color: #35b3ee;
     color: #fff;
     border-color: rgba(0, 0, 0, .21);
 }
 
-.defaultSkin .mceButtonDialog .mceButtonDialogButtons {
+.defaultSkin .mcePanel .mcePanelFooter {
     text-align: right;
     background-color: #f5f5f5;
     padding: 10px;
     border-top: 1px solid #ddd;
 }
 
-.defaultSkin .mceButtonDialog:before {
+.defaultSkin .mcePanel:before {
     content: "";
     display: block;
     position: absolute;
@@ -1356,16 +1494,16 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-right: 1px solid #ddd;
 }
 
-.defaultSkin.mce_search .mceButtonDialog label,
-.defaultSkin.mce_search .mceButtonDialog .mceButtonDialogButtons a.mceDialogButton {
+.defaultSkin.mce_search .mcePanel label,
+.defaultSkin.mce_search .mcePanel .mcePanelFooter .mceButton {
     min-width: 70px;
 }
 
-.defaultSkin.mce_search .mceButtonDialog input.search_error {
+.defaultSkin.mce_search .mcePanel input.search_error {
     border-color: red;
 }
 
-.defaultSkin.mce_emotions .mceButtonDialogContent {
+.defaultSkin.mce_emotions .mcePanelContent {
     max-width: 250px;
     white-space: normal;
     text-align: center;
@@ -1499,6 +1637,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mce_h6 span.mceText {
     font-weight: bolder;
     font-size: .75em
+}
+.defaultSkin .mceToolbarSource {
+    margin: 0;
+}
+
+.defaultSkin .mceToolbarSource .mceFlex {
+    justify-content: space-between;
 }
 /* Reset */
 
@@ -1671,9 +1816,9 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     /*height: auto;*/
     height: 100%;
     line-height: 0;
-    border-radius: 3px;
-    border: 1px solid #c8c8c8;
-    box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .mceModalClose {

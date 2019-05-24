@@ -49,20 +49,20 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
 }
 
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton,
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton:hover {
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton,
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:hover {
     border-right-width: 1px;
     border-radius: 0 2px 2px 0;
     border-right-color: #bbb;
 }
 
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItemEnd .mceButton,
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItemEnd .mceSplitButton .mceOpen button {
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItemEnd .mceButton,
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
     border-right-color: #bbb;
 }
 
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItemStart .mceButton,
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItemStart .mceSplitButton .mceText button {
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItemStart .mceButton,
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
     border-left-color: #bbb;
 }
 
@@ -92,8 +92,8 @@
     border-color: #bbb;
 }
 
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child,
-.o2k7SkinSilver .mceToolbarRow .mceToolBarItem:last-child .mceButton:last-child:hover {
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.o2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-color: #bbb;
 }
 
