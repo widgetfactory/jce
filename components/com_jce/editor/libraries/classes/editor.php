@@ -810,7 +810,7 @@ class WFEditor
         $app = JFactory::getApplication();
         $id = 0;
 
-        if ($app->isClient('site')) {
+        if ($app->getClientId() === 0) {
             $menus = $app->getMenu();
             $menu = $menus->getActive();
 
@@ -820,14 +820,7 @@ class WFEditor
         }
 
         $query = $db->getQuery(true);
-
-        if (is_object($query)) {
-            $query->select('id, template')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
-        } else {
-            $query = 'SELECT menuid as id, template'
-                . ' FROM #__templates_menu'
-                . ' WHERE client_id = 0';
-        }
+        $query->select('id, template')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
 
         $db->setQuery($query);
         $templates = $db->loadObjectList();
