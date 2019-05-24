@@ -44,6 +44,7 @@
     include('util/JSONRequest.js');
     include('util/VK.js');
     include('util/Quirks.js');
+    include('util/Preview.js');
 
     // tinymce.html.*
     include('html/Entities.js');
@@ -80,11 +81,13 @@
     include('ui/Button.js');
     include('ui/ListBox.js');
     include('ui/NativeListBox.js');
+    include('ui/TextBox.js');
     include('ui/MenuButton.js');
     include('ui/SplitButton.js');
     include('ui/ColorSplitButton.js');
     include('ui/ToolbarGroup.js');
     include('ui/Toolbar.js');
+    include('ui/PanelButton.js');
 
     // tinymce.*
     include('AddOnManager.js');
