@@ -7,6 +7,14 @@
         "row": 4,
         "core": 1
     },
+    "columns": {
+        "title": "WF_COLUMNS_TITLE",
+        "description": "WF_COLUMNS_DESC",
+        "icon": "columns",
+        "editable": 1,
+        "row": 4,
+        "core": 1
+    },
     "iframe": {
         "title": "WF_IFRAME_TITLE",
         "description": "WF_IFRAME_DESC",
