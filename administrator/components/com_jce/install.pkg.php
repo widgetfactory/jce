@@ -210,6 +210,17 @@ class pkg_jceInstallerScript
                 $extension->publish(null, 0);
             }
         }
+
+        // disable legacy jcefilebrowser quickicon to remove when the install is finished
+        $plugin = $extension->find(array(
+            'type' => 'plugin',
+            'element' => 'jcefilebrowser',
+            'folder' => 'quickicon'
+        ));
+
+        if ($plugin) {
+            $extension->publish(null, 0);
+        }
     }
 
     public function postflight($route, $installer)
@@ -372,9 +383,32 @@ class pkg_jceInstallerScript
                 if (!@is_dir($folder)) {
                     continue;
                 }
-                try {
-                    JFolder::delete($folder);
-                } catch(Exception $e){}
+
+                $files = JFolder::files($folder, '.', false, true, array(), array());
+
+                foreach($files as $file) {
+                    if (!@unlink($file)) {
+                        try {
+                            JFile::delete($file);
+                        } catch(Exception $e){}
+                    }
+                }
+
+                $folders = JFolder::folders($folder, '.', false, true, array(), array());
+
+                foreach($folders as $dir) {
+                    if (!@rmdir($dir)) {
+                        try {
+                            JFolder::delete($dir);
+                        } catch(Exception $e){}
+                    }
+                }
+
+                if (!@rmdir($folder)) {
+                    try {
+                        JFolder::delete($folder);
+                    } catch(Exception $e){}
+                }
             }
         }
 
