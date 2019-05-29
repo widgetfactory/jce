@@ -226,7 +226,7 @@
     background-position: -160px -20px
 }
 
-.defaultSkin span.mce_absolute {
+.defaultSkin span.mce_layerabsolute {
     background-position: -180px -20px
 }
 
@@ -234,11 +234,11 @@
     background-position: -240px -20px
 }
 
-.defaultSkin span.mce_movebackward {
+.defaultSkin span.mce_layerbackward {
     background-position: -200px -20px
 }
 
-.defaultSkin span.mce_moveforward {
+.defaultSkin span.mce_layerforward {
     background-position: -220px -20px
 }
 
