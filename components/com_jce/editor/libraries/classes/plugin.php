@@ -21,6 +21,9 @@ class WFEditorPlugin extends JObject
     // array of alerts
     private $_alerts = array();
 
+    // plugin name
+    protected $name = '';
+
     /**
      * Constructor activating the default information of the class.
      */
@@ -29,25 +32,25 @@ class WFEditorPlugin extends JObject
         // Call parent
         parent::__construct();
 
-        // get plugin name
-        $plugin = JFactory::getApplication()->input->getCmd('plugin');
+        // get plugin name from url, fallback to default name if set
+        $name = JFactory::getApplication()->input->getCmd('plugin', $this->get('name'));
 
         // get name and caller from plugin name
-        if (strpos($plugin, '.') !== false) {
-            $parts = explode('.', $plugin);
+        if (strpos($name, '.') !== false) {
+            $parts = explode('.', $name);
             $plugin = $parts[0];
             $caller = $parts[1];
             // store caller
-            if ($caller !== $plugin) {
+            if ($caller !== $name) {
                 $this->set('caller', $caller);
             }
         }
 
-        // set plugin name
-        $this->set('name', $plugin);
+        // re-set the "name" value
+        $this->set('name', $name);
 
         if (!array_key_exists('base_path', $config)) {
-            $config['base_path'] = WF_EDITOR_PLUGINS . '/' . $plugin;
+            $config['base_path'] = WF_EDITOR_PLUGINS . '/' . $name;
         }
 
         if (!defined('WF_EDITOR_PLUGIN')) {
@@ -55,7 +58,7 @@ class WFEditorPlugin extends JObject
         }
 
         if (!array_key_exists('view_path', $config)) {
-            $config['view_path'] = WF_EDITOR_PLUGIN;
+            $config['view_path'] = $config['base_path'];
         }
 
         if (!array_key_exists('layout', $config)) {
@@ -63,7 +66,7 @@ class WFEditorPlugin extends JObject
         }
 
         if (!array_key_exists('template_path', $config)) {
-            $config['template_path'] = WF_EDITOR_PLUGIN . '/tmpl';
+            $config['template_path'] = $config['base_path'] . '/tmpl';
         }
 
         $this->setProperties($config);
@@ -128,7 +131,7 @@ class WFEditorPlugin extends JObject
 
     protected function getPluginVersion()
     {
-        $manifest = WF_EDITOR_PLUGIN . '/' . $this->get('name') . '.xml';
+        $manifest = $this->get('base_path') . '/' . $this->get('name') . '.xml';
 
         $version = '';
 
@@ -262,9 +265,9 @@ class WFEditorPlugin extends JObject
      *
      * @return array
      */
-    public function getDefaults($defaults = array())
+    public function getDefaults($defaults = array(), $exclude = array())
     {
-        $name = $this->getName();
+        $name   = $this->getName();
         $caller = $this->get('caller');
 
         if ($caller) {
@@ -272,7 +275,7 @@ class WFEditorPlugin extends JObject
         }
 
         // get manifest path
-        $manifest = WF_EDITOR_PLUGIN . '/' . $name . '.xml';
+        $manifest = $this->get('base_path') . '/' . $name . '.xml';
 
         // get parameter defaults
         if (is_file($manifest)) {
@@ -286,11 +289,18 @@ class WFEditorPlugin extends JObject
                     continue;
                 }
 
-                // get parameter default
-                $value = $field->getAttribute('default');
+                if (in_array($key, $exclude)) {
+                    continue;
+                }
 
-                // get stored value, fallback to parameter default
-                $defaults[$key] = $this->getParam($key, $value);
+                // get parameter default value if set, use the specific plugin
+                $value = $this->getParam($name . '.' . $key, '');
+
+                // only use non-empty values
+                if ($value !== '') {
+                    $defaults[$key] = $value;
+                }
+                
             }
         }
 
