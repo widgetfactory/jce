@@ -1,7 +1,7 @@
 (function () {
     var i, base, src, p, li, query = '', it, scripts = [];
     
-    base = '../../../tinymce-muon/jscripts/tiny_mce';
+    base = '../../../tinymce-muon-retina/jscripts/tiny_mce';
 
     function include(u) {
         scripts.push(base + '/classes/' + u);
