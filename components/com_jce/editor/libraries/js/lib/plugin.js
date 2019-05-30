@@ -61,13 +61,6 @@
                 $('#jce').addClass('ie');
             }
 
-            // ie8 flag
-            if (!$.support.cssFloat && document.querySelector) {
-                $('#jce').addClass('ie8');
-
-                $('input[type="number"]').addClass("type-number");
-            }
-
             // create buttons
             $('button#insert, input#insert, button#update, input#update').button({
                 icons: {
@@ -169,18 +162,6 @@
             if (tinyMCEPopup.editor.settings.schema === 'html5-strict' && tinyMCEPopup.editor.settings.validate) {
                 $('.html4').hide().find(':input').prop('disabled', true);
             }
-
-            // flexbox
-            /*$('.uk-flex-item-auto').width(function() {
-                var p = $(this).parent('.uk-flex');
-                var w = 0;
-
-                $(this).siblings().each(function() {
-                    w += $(this).width();
-                });
-
-                return $(p).width() - w;
-            });*/
 
             // initialise repeatable elements
             $('.uk-repeatable').repeatable();
