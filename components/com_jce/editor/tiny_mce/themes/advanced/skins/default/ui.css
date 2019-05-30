@@ -1541,8 +1541,6 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     width: 100%;
     height: 100%;
     opacity: 0.8;
-    -ms-filter: 'alpha(opacity=80)';
-    filter: alpha(opacity=80);
     z-index: 300001;
 }
 
@@ -1564,9 +1562,9 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     vertical-align: middle;
 }
 
-/*.mceLoading .mceModalContent {
-    background: #fff url('../../../themes/advanced/skins/default/img/progress.gif') no-repeat center 45%;
-}*/
+.mceLoading .mceModalContent {
+    background: #fff;
+}
 
 .mceLoading .mceModalContent:before {
     content: "";
