@@ -53,31 +53,13 @@ class JceViewProfile extends JViewLegacy
         parent::display($tpl);
 
         $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jce/media/css/profile.min.css', array('version' => WF_VERSION));
+        $document->addStyleSheet('components/com_jce/media/css/profile.min.css?' . WF_VERSION);
 
-        $document->addScript('components/com_jce/media/js/core.min.js', array('version' => WF_VERSION));
-        $document->addScript('components/com_jce/media/js/profile.min.js', array('version' => WF_VERSION));
+        $document->addScript('components/com_jce/media/js/core.min.js?' . WF_VERSION);
+        $document->addScript('components/com_jce/media/js/profile.min.js?' . WF_VERSION);
 
         // default theme
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css', array('version' => WF_VERSION));
-
-        $colorpickerOptions = array(
-            'parent' => '.ui-jce',
-            'stylesheets' => JceHelperAdmin::getTemplateStyleSheets(),
-            'labels' => array(
-                'title' => JText::_('WF_COLORPICKER_TITLE'),
-                'picker' => JText::_('WF_COLORPICKER_PICKER'),
-                'palette' => JText::_('WF_COLORPICKER_PALETTE'),
-                'named' => JText::_('WF_COLORPICKER_NAMED'),
-                'template' => JText::_('WF_COLORPICKER_TEMPLATE'),
-                'custom' => JText::_('WF_COLORPICKER_CUSTOM'),
-                'color' => JText::_('WF_COLORPICKER_COLOR'),
-                'apply' => JText::_('WF_COLORPICKER_APPLY'),
-                'name' => JText::_('WF_COLORPICKER_NAME'),
-            ),
-        );
-
-        JFactory::getDocument()->addScriptDeclaration('jQuery(document).ready(function($){$(".colorpicker").colorpicker(' . json_encode($colorpickerOptions) . ');});');
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . WF_VERSION);
     }
 
     /**

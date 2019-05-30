@@ -379,8 +379,10 @@ class JceModelProfile extends JModelAdmin
                 if (is_file($plugin->manifest)) {
                     $plugin->form = $this->loadForm('com_jce.profile.' . $plugin->name, $plugin->manifest, array('control' => 'jform[config]', 'load_data' => true), true, '//extension');
 
+                    $fieldsets = $plugin->form->getFieldsets();
+
                     // no parameter fields
-                    if (empty($plugin->form->getFieldsets())) {
+                    if (empty($fieldsets)) {
                         $plugin->form = false;
                         $plugins[$name] = $plugin;
                         continue;
