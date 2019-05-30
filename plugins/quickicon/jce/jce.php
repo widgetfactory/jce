@@ -24,7 +24,7 @@ class plgQuickiconJce extends JPlugin
         $app = JFactory::getApplication();
 
         // only in Admin and only if the component is enabled
-        if ($app->isClient('site') || JComponentHelper::getComponent('com_jce', true)->enabled === false) {
+        if ($app->getClientId() !== 1 || JComponentHelper::getComponent('com_jce', true)->enabled === false) {
             return;
         }
 

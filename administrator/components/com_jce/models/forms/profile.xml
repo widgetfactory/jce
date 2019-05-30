@@ -27,7 +27,7 @@
             </field>
             <field name="components" type="components" multiple="multiple" label="" description="" disabled="true" />
             <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" />
-            <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC"></field>
+            <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC" />
         </fieldset>
     </fields>
     <fields name="config"></fields>

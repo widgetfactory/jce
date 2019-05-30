@@ -9,6 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
+JFormHelper::loadFieldClass('color');
+
 /**
  * Color Form Field class for the Joomla Platform.
  * This implementation is designed to be compatible with HTML5's `<input type="color">`
@@ -16,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @link   http://www.w3.org/TR/html-markup/input.color.html
  * @since  11.3
  */
-class JFormFieldColorPicker extends JFormField
+class JFormFieldColorPicker extends JFormFieldColor
 {
     /**
      * The form field type.

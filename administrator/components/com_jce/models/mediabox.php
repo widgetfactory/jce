@@ -116,22 +116,27 @@ class JceModelMediabox extends JModelForm
      *
      * @return bool True on success
      *
-     * @since    3.0
+     * @since    2.7
      */
     public function save($data)
     {
-        $table = JTable::getInstance('extension');
+        $table = $this->getTable();
 
-        $plugin = JPluginHelper::getPlugin('system', 'jcemediabox');
+        $id = $table->find(array(
+            'type'      => 'plugin',
+            'element'   => 'jcemediabox',
+            'folder'    => 'system'
+        )); 
 
-        if (!$plugin->id) {
+        if (!$id) {
             $this->setError('Invalid plugin');
             return false;
         }
 
         // Load the previous Data
-        if (!$table->load($plugin->id)) {
-            $this->setError($table->getError());
+		if (!$table->load($id))
+		{
+			$this->setError($table->getError());
             return false;
         }
 
