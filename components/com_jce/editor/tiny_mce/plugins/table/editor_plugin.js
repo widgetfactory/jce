@@ -913,15 +913,22 @@
                 i = nodes.length;
                 while (i--) {
                     node = nodes[i];
-                    dom.setAttrib(node, 'data-mce-style', '');
 
                     if ((value = dom.getAttrib(node, 'width'))) {
-                        dom.setStyle(node, 'width', value);
+                        if (typeof value === 'number') {
+                            value += 'px';
+                        }
+  
+                        node.style.width = value;
                         dom.setAttrib(node, 'width', '');
                     }
 
                     if ((value = dom.getAttrib(node, 'height'))) {
-                        dom.setStyle(node, 'height', value);
+                        if (typeof value === 'number') {
+                            value += 'px';
+                        }
+                        
+                        node.style.height = value;
                         dom.setAttrib(node, 'height', '');
                     }
                 }
