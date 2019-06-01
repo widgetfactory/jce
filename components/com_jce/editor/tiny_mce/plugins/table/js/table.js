@@ -146,23 +146,35 @@
 
         var border = false;
 
+        var initialStyles = {
+            'width' : 'medium',
+            'style' : 'none',
+            'color' : 'currentcolor'
+        }; 
+
         // Handle border
         $.each(['width', 'color', 'style'], function (i, k) {
             var v = ed.dom.getStyle($proxy.get(0), 'border-' + k);
 
-            if (v === "") {
-                $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
-                    var sv = ed.dom.getStyle($proxy.get(0), 'border-' + n + '-' + k);
+            $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
+                var name = 'border-' + n + '-' + k, sv = ed.dom.getStyle($proxy.get(0), name);
 
-                    // False or not the same as prev
-                    if (sv !== '' || (sv != v && v !== '')) {
-                        v = '';
-                    }
-                    if (sv) {
-                        v = sv;
-                    }
-                });
-            } else {
+                // reset value for initial style values
+                if (initialStyles[k] === v) {
+                    sv = '';
+                }
+
+                // False or not the same as prev
+                if (sv !== '' || (sv !== v && v !== '')) {
+                    v = '';
+                }
+
+                if (sv !== '') {
+                    v = sv;
+                }
+            });
+
+            if (v !== '') {
                 border = true;
                 // remove style
                 $proxy.css('border-' + k, "");
@@ -199,7 +211,7 @@
 
         // remove -moz and -webkit styles
         for (k in styles) {
-            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0) {
+            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0 || k === 'border-image') {
                 delete styles[k];
             }
         }
