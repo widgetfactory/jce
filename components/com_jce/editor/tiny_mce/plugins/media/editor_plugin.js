@@ -641,10 +641,6 @@
             // add identifier class
             classes.push('mce-item-media mce-item-' + name.toLowerCase());
 
-            if (placeholder.name === "span") {
-                classes.push('mce-item-preview');
-            }
-
             // add type class
             if (type && name !== type.toLowerCase()) {
                 classes.push('mce-item-' + type.split('/').pop().toLowerCase());
@@ -728,6 +724,10 @@
             } else {
                 for (k in n.attributes.map) {
                     v = n.attributes.map[k];
+
+                    if (k === 'width' || k === 'height') {
+                        continue;
+                    }
 
                     switch (k) {
                         case 'poster':
@@ -1041,6 +1041,8 @@
                     }
                 });
 
+                // delete style value
+                delete style[k];
             });
 
             // standard attributes
@@ -1057,8 +1059,12 @@
                 }
             });
 
-            // serialize styles
-            n.attr('style', Styles.serialize(style));
+            // serialize styles 
+            root.style = Styles.serialize(style);
+
+            if (!root.style) {
+                delete root.style;
+            }
 
             // check for XHTML Strict setting
             var strict = ed.getParam('media_strict', true) && /mce-item-(flash|shockwave)/.test(n.attr('class'));
