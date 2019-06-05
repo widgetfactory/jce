@@ -36,7 +36,7 @@
 
                     $elms.slice(1).val(value).change();
 
-                    $(cb).trigger('equalize:change', [$elms.andSelf()]);
+                    $(cb).trigger('equalize:change', [$elms.addBack()]);
                 }
             });
 
@@ -52,7 +52,7 @@
                 }
 
                 // trigger event
-                $(cb).trigger('equalize:change', [$elms.andSelf()]);
+                $(cb).trigger('equalize:change', [$elms.addBack()]);
             });
 
             $(this).on('equalize:update', function () {
