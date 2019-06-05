@@ -257,6 +257,19 @@
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
+
+                ed.onObjectResized.add(function(ed, elm, width, height) {
+                    // store values
+                    ed.dom.setAttrib(elm, 'data-mce-width', width);
+                    ed.dom.setAttrib(elm, 'data-mce-height', height);
+
+                    // remove attributes
+                    ed.dom.removeAttrib(elm, 'width');
+                    ed.dom.removeAttrib(elm, 'height');
+                    
+                    // set as styles
+                    ed.dom.setStyles(elm, {'width' : width, 'height': height}); 
+                });
             });
 
             ed.onNodeChange.add(function (ed, cm, n) {
@@ -304,15 +317,6 @@
                 }
             });
 
-        },
-        getInfo: function () {
-            return {
-                longname: 'Media',
-                author: 'Ryan Demmer',
-                authorurl: 'https://www.joomlacontenteditor.net',
-                infourl: 'https://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         },
 
         /**
@@ -488,137 +492,138 @@
             }
 
             // Create image
-            if (n.name === "iframe" && ed.getParam('media_live_embed')) {
-                placeholder = new Node('span', 1);
-            } else {
-                placeholder = new Node('img', 1);
-            }
+            placeholder = new Node('img', 1);
 
-            if (n.name === 'script') {
-                if (n.firstChild)
-                    matches = /(JCEMediaObject|write(Flash|ShockWave|QuickTime|RealMedia|WindowsMedia|DivX))/i.exec(n.firstChild.value);
+            name = n.name;
+            var style = Styles.parse(n.attr('style'));
 
-                if (!matches)
-                    return;
+            // get width an height
+            var w = n.attr('width') || style.width || 0;
+            var h = n.attr('height') || style.height || 0;
 
-                type = matches[1].toLowerCase();
-                data = JSON.parse(matches[2]);
-                w = data.width;
-                h = data.height;
+            var type = n.attr('type');
 
+            data = this.createTemplate(n);
+
+            // convert from single embed
+            if (name == 'embed' && type == 'application/x-shockwave-flash') {
                 name = 'object';
-            } else {
-                name = n.name;
-                var style = Styles.parse(n.attr('style'));
 
-                // get width an height
-                var w = n.attr('width')     || style.width  || 384;
-                var h = n.attr('height')    || style.height || 216;
+                data.param = {};
 
-                var type = n.attr('type');
-
-                data = this.createTemplate(n);
-
-                // convert from single embed
-                if (name == 'embed' && type == 'application/x-shockwave-flash') {
-                    name = 'object';
-
-                    data.param = {};
-
-                    // get and assign flash variables
-                    each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function (k) {
-                        var v = n.attr(k);
-
-                        if (v) {
-                            if (k == 'flashvars') {
-                                try {
-                                    v = encodeURIComponent(v);
-                                } catch (e) { }
-                            }
-
-                            data.param[k] = v;
-                        }
-
-                        delete data[k];
-                    });
-                }
-
-                // remove nested children
-                each(['audio', 'embed', 'object', 'video', 'iframe'], function (el) {
-                    each(n.getAll(el), function (node) {
-                        node.remove();
-                    });
-                });
-
-                if (n.attr('classid')) {
-                    classid = n.attr('classid').toUpperCase();
-                }
-
-                if (name == 'object') {
-                    if (!data.data) {
-                        var param = data.param;
-
-                        if (param) {
-                            data.data = param.src || param.url || param.movie || param.source;
-                        }
-                    }
-                } else {
-                    if (!data.src && data.source) {
-                        if (data.source.length > 1) {
-                            data.src = data.source[0].src;
-                        }
-                    }
-                }
-
-                // get type data
-                var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {
-                    name: 'generic'
-                };
-
-                type = lookup.name || type;
-
-                var style = Styles.parse(n.attr('style'));
-
-                // attributes that should be styles
-                each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function (na) {
-                    var v = n.attr(na);
+                // get and assign flash variables
+                each(['bgcolor', 'flashvars', 'wmode', 'allowfullscreen', 'allowscriptaccess', 'quality'], function (k) {
+                    var v = n.attr(k);
 
                     if (v) {
-                        switch (na) {
-                            case 'bgcolor':
-                                style['background-color'] = v;
-                                break;
-                            case 'align':
-                                if (/^(left|right)$/.test(v)) {
-                                    style['float'] = v;
-                                } else {
-                                    style['vertical-align'] = v;
-                                }
-                                break;
-                            case 'vspace':
-                                style['margin-top'] = v;
-                                style['margin-bottom'] = v;
-                                break;
-                            case 'hspace':
-                                style['margin-left'] = v;
-                                style['margin-right'] = v;
-                                break;
-                            default:
-                                style[na] = v;
-                                break;
+                        if (k == 'flashvars') {
+                            try {
+                                v = encodeURIComponent(v);
+                            } catch (e) { }
                         }
+
+                        data.param[k] = v;
                     }
-                });
 
-                // standard attributes
-                each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
-                    placeholder.attr(at, n.attr(at));
+                    delete data[k];
                 });
+            }
 
-                // add styles
-                if (styles = ed.dom.serializeStyle(style)) {
-                    placeholder.attr('style', styles);
+            // remove nested children
+            each(['audio', 'embed', 'object', 'video', 'iframe'], function (el) {
+                each(n.getAll(el), function (node) {
+                    node.remove();
+                });
+            });
+
+            if (n.attr('classid')) {
+                classid = n.attr('classid').toUpperCase();
+            }
+
+            if (name == 'object') {
+                if (!data.data) {
+                    var param = data.param;
+
+                    if (param) {
+                        data.data = param.src || param.url || param.movie || param.source;
+                    }
                 }
+            } else {
+                if (!data.src && data.source) {
+                    if (data.source.length > 1) {
+                        data.src = data.source[0].src;
+                    }
+                }
+            }
+
+            // get type data
+            var lookup = this.lookup[classid] || this.lookup[type] || this.lookup[name] || {
+                name: 'generic'
+            };
+
+            type = lookup.name || type;
+
+            var style = Styles.parse(n.attr('style'));
+
+            // attributes that should be styles
+            each(['bgcolor', 'align', 'border', 'vspace', 'hspace'], function (na) {
+                var v = n.attr(na);
+
+                if (v) {
+                    switch (na) {
+                        case 'bgcolor':
+                            style['background-color'] = v;
+                            break;
+                        case 'align':
+                            if (/^(left|right)$/.test(v)) {
+                                style['float'] = v;
+                            } else {
+                                style['vertical-align'] = v;
+                            }
+                            break;
+                        case 'vspace':
+                            style['margin-top'] = v;
+                            style['margin-bottom'] = v;
+                            break;
+                        case 'hspace':
+                            style['margin-left'] = v;
+                            style['margin-right'] = v;
+                            break;
+                        default:
+                            style[na] = v;
+                            break;
+                    }
+                }
+            });
+
+            // standard attributes
+            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
+                placeholder.attr(at, n.attr(at));
+
+                // delete from serializable attributes
+                delete data[at];
+            });
+
+            // add width and height as styles
+            if (w) {
+                if (!/\D/.test(w)) {
+                    w += 'px';
+                }
+
+                style.width = w;
+            }
+
+            if (h) {
+                if (!/\D/.test(h)) {
+                    h += 'px';
+                }
+
+                style.height = h;
+            }
+
+            // add styles
+            if (styles = ed.dom.serializeStyle(style)) {
+                placeholder.attr('style', styles);
             }
 
             o[name] = data;
@@ -654,41 +659,23 @@
 
             // Set data attribute and class
             placeholder.attr({
-                width   : w,
-                height  : h,
                 'class': classes.join(' '),
                 'data-mce-json': JSON.serialize(o)
             });
 
-            if (name === "iframe" && ed.getParam('media_live_embed')) {
-                var preview = new tinymce.html.Node(name, 1);
-
-                var attrs = o.iframe;
-
-                tinymce.extend(attrs, {
-                    src: n.attr('src'),
-                    allowfullscreen: n.attr('allowfullscreen'),
-                    width: n.attr('width') || w,
-                    height: n.attr('height') || h,
-                    frameborder: '0'
-                });
-
-                preview.attr(attrs);
-
-                placeholder.attr({
-                    contentEditable: 'false'
-                });
-
-                var shim = new tinymce.html.Node('span', 1);
-                shim.attr('class', 'mce-item-shim');
-
-                placeholder.append(preview);
-                placeholder.append(shim);
-            } else {
-                placeholder.attr({
-                    'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-                });
+            // add width values back as data-mce-width attribute
+            if (n.attr('width')) {
+                placeholder.attr('data-mce-width', n.attr('width'));
             }
+
+            // add width values back as data-mce-width attribute
+            if (n.attr('height')) {
+                placeholder.attr('data-mce-height', n.attr('height'));
+            }
+
+            placeholder.attr({
+                'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+            });
 
             // Replace the video/object/embed element with a placeholder image containing the data
             n.replace(placeholder);
@@ -1030,8 +1017,16 @@
             var src = root.src || root.data || '';
             var params = root.param || '';
 
+            var style = Styles.parse(n.attr('style'));
+
             each(['width', 'height'], function (k) {
-                v = n.attr(k);
+                v = n.attr('data-mce-' + k);
+
+                // if the value doesn't exist, return
+                if (!v) {
+                    return true;
+                }
+
                 // set width and height but not for audio element
                 if (v && name != 'audio') {
                     if (!root[k] || root[k] != v) {
@@ -1049,7 +1044,7 @@
             });
 
             // standard attributes
-            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'class'], function (at) {
+            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'title', 'class'], function (at) {
                 v = n.attr(at);
 
                 if (at == 'class') {
@@ -1061,6 +1056,9 @@
                     root[at] = v;
                 }
             });
+
+            // serialize styles
+            n.attr('style', Styles.serialize(style));
 
             // check for XHTML Strict setting
             var strict = ed.getParam('media_strict', true) && /mce-item-(flash|shockwave)/.test(n.attr('class'));
