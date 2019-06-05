@@ -15,6 +15,9 @@
     background-position:center;
     background-repeat:no-repeat;
     background-color:#fafafa;
+
+    width: 384px;
+    height: 216px;
 }
 .mce-item-generic {
     min-width   : 50px;
