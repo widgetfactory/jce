@@ -258,9 +258,9 @@
                 e.preventDefault();
             });
 
-            $('.folder-up', '#browser').click(function(e) {
+            $('.folder-up', '#browser').click(function (e) {
                 e.preventDefault();
-                
+
                 var u = self._getPreviousDir();
                 return self._changeDir(u);
             });
@@ -287,7 +287,7 @@
                 self._showItemDetails();
             });
 
-            var list_limit = Wf.Cookie.get('wf_' + Wf.getName() + '_limit', this.options.list_limit, function(val) {
+            var list_limit = Wf.Cookie.get('wf_' + Wf.getName() + '_limit', this.options.list_limit, function (val) {
                 return !/([0125]+|all)/.test(val) === false;
             });
 
@@ -448,7 +448,7 @@
                 self.refresh(e);
             });
 
-            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 0, function(val) {
+            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 0, function (val) {
                 val = parseInt(val);
                 return val === 0 || val === 1;
             });
@@ -480,7 +480,7 @@
             }
 
             // set scrollEvents cancel
-            $('#browser-list').on(scrollEvents, function() {
+            $('#browser-list').on(scrollEvents, function () {
                 $(this).stop();
             });
 
@@ -579,14 +579,14 @@
             });*/
 
             // get the sort value from a cookie
-            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '', function(val) {
+            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '', function (val) {
                 return /[a-z-]+/.test(val);
             });
 
-            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function() {
+            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function () {
                 // reset all
                 $(this).siblings('.asc, .desc').removeClass('desc').addClass('asc');
-                
+
                 var direction = '';
 
                 if ($(this).hasClass('asc')) {
@@ -606,15 +606,15 @@
                 Wf.Cookie.set('wf_' + Wf.getName() + '_sort', self._sortValue);
 
                 self.refresh();
-            }).addClass(function() {
+            }).addClass(function () {
                 if (this.id.indexOf(self._sortValue) === -1) {
                     return 'asc';
                 }
-                
+
                 if (self._sortValue && self._sortValue.charAt(0) === '-') {
                     return 'desc';
                 }
-                
+
                 return 'asc';
             });
         },
@@ -714,7 +714,7 @@
 
             // get directory from cookie
             if (!src) {
-                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir', '', function(val) {
+                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir', '', function (val) {
                     return val && self._validatePath(val);
                 });
             }
@@ -1101,7 +1101,7 @@
          * Set the current directory
          * @param {String} dir
          */
-        _setDir: function (dir) {            
+        _setDir: function (dir) {
             this._dir = '' + dir;
         },
         /**
@@ -1187,11 +1187,11 @@
          */
         load: function (item) {
             var src = "";
-            
+
             // add returned items
             if (item) {
                 this._addReturnedItem(item);
-                
+
                 // pass string value to src
                 src = item.name || item;
             }
@@ -1222,7 +1222,7 @@
          */
         _loadList: function (o) {
             var dir = '';
-            
+
             $('input[name="refresh"]', 'form').remove();
 
             // data error...
@@ -1547,11 +1547,11 @@
                             });
                         }
                     }, {
-                        elements: elements
-                    });
+                            elements: elements
+                        });
                     break;
 
-                    // Cut / Copy operation
+                // Cut / Copy operation
                 case 'copy':
                 case 'cut':
                     this._pasteaction = name;
@@ -1561,7 +1561,7 @@
 
                     break;
 
-                    // Paste the file
+                // Paste the file
                 case 'paste':
                     var fn = (this._pasteaction == 'copy') ? 'copyItem' : 'moveItem';
                     this._setLoader();
@@ -1612,12 +1612,12 @@
                                             self.refresh();
                                         }
                                     }, {
-                                        label: {
-                                            'confirm': self._translate('replace', 'Replace'),
-                                            'cancel': self._translate('cancel', 'Cancel')
-                                        },
-                                        header: false
-                                    });
+                                            label: {
+                                                'confirm': self._translate('replace', 'Replace'),
+                                                'cancel': self._translate('cancel', 'Cancel')
+                                            },
+                                            header: false
+                                        });
                                 } else {
                                     callback(o, dir);
 
@@ -1632,7 +1632,7 @@
 
                     break;
 
-                    // Delete a file or folder
+                // Delete a file or folder
                 case 'delete':
                     var msg = self._translate('delete_item_alert', 'Delete Selected Item(s)');
 
@@ -1660,14 +1660,14 @@
 
                         }
                     }, {
-                        label: {
-                            'confirm': self._translate('delete', 'Delete')
-                        },
-                        header: false
-                    });
+                            label: {
+                                'confirm': self._translate('delete', 'Delete')
+                            },
+                            header: false
+                        });
                     break;
 
-                    // Rename a file or folder
+                // Rename a file or folder
                 case 'rename':
                     var s = this.getSelectedItems(0);
                     var v = Wf.String.basename(list);
@@ -1680,7 +1680,7 @@
                         v = Wf.String.filename(v);
                     }
 
-                    var rename = Wf.Modal.prompt('Rename', function (name, args) {
+                    var renameModal = Wf.Modal.prompt('Rename', function (name, args) {
                         name = Wf.String.safe(name, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
 
                         if (v === name) {
@@ -1730,20 +1730,20 @@
                                 });
 
                                 // close modal
-                                $(rename).trigger('modal.close');
+                                $(renameModal).trigger('modal.close');
                             } else {
-                                $(rename).trigger('modal.close');
+                                $(renameModal).trigger('modal.close');
                             }
                         });
                     }, {
-                        value: v,
-                        header: false,
-                        label: {
-                            'confirm': self._translate('rename', 'Rename')
-                        },
-                        elements: this._getDialogOptions('rename'),
-                        close_on_submit: false
-                    });
+                            value: v,
+                            header: false,
+                            label: {
+                                'confirm': self._translate('rename', 'Rename')
+                            },
+                            elements: this._getDialogOptions('rename'),
+                            close_on_submit: false
+                        });
                     break;
             }
         },
@@ -1836,12 +1836,14 @@
                 }
 
                 if (o.name) {
-                    $(action).click(function (e) {
+                    $(action).on('mousedown.action', function (e) {
                         e.preventDefault();
+                        e.stopImmediatePropagation();
 
                         if ($.type(fn) == 'function') {
                             return fn.call(self, name);
                         }
+
                         return self._trigger(fn, name);
                     });
                 }
@@ -1936,7 +1938,10 @@
                 }
 
                 if (name) {
-                    $(button).click(function () {
+                    $(button).on('mousedown.button', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
                                 $(button).toggleClass('uk-active');
@@ -2363,7 +2368,7 @@
 
                 $('#browser-list').animate({
                     scrollTop: Math.round(top)
-                }, 1500, function() {
+                }, 1500, function () {
                     $(this).off(scrollEvents);
                 });
             }

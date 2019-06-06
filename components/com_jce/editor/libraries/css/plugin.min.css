@@ -893,6 +893,7 @@ html {
 .uk-button .uk-text {
     vertical-align: middle;
     margin-left: 0.25em;
+    cursor: pointer;
 }
 
 
@@ -900,6 +901,7 @@ html {
 
 .uk-modal {
     padding: 10px;
+    background: none;
 }
 
 .uk-modal-dialog {
@@ -1004,8 +1006,9 @@ html {
     opacity: 1;
 }
 
-.uk-modal-dialog .uk-modal-close:hover {
-    opacity: 0.8;
+.uk-modal-dialog .uk-close:hover,
+.uk-modal-dialog .uk-close:focus {
+    opacity: 0.6;
 }
 
 .uk-modal-header h3 {
