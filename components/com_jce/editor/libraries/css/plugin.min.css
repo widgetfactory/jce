@@ -890,6 +890,12 @@ html {
     border-color: #ddd;
 }
 
+.uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success):focus,
+.uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success):hover {
+    color: #444;
+    border-color: #888;
+}
+
 .uk-button-text,
 .uk-button .uk-text {
     vertical-align: middle;
