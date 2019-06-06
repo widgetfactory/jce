@@ -1,4 +1,4 @@
-(function($, Wf) {
+(function ($, Wf) {
     function calculateWidth(n, cw, ch) {
         var ww = $(n).width() - 60,
             wh = $(n).height(),
@@ -16,16 +16,16 @@
      */
     Wf.Modal = {
         counter: 0,
-        _uid: function(p) {
+        _uid: function (p) {
             return (!p ? 'wf_' : p) + (this.counter++);
         },
-        dialog: function(title, data, options) {
+        dialog: function (title, data, options) {
             return this.open(title, options, data);
         },
         /**
          * Basic Dialog
          */
-        open: function(title, options, data) {
+        open: function (title, options, data) {
             var div = document.createElement('div'),
                 footer;
 
@@ -56,6 +56,10 @@
             // add classes to div
             $(div).addClass('uk-modal');
 
+            if ($('.uk-modal-overlay').length === 0) {
+                $(div).append('<div class="uk-modal-overlay uk-position-cover uk-overlay-background" />');
+            }
+
             // create modal
             var modal = $('<div class="uk-modal-dialog" role="dialog" aria-modal="true" aria-label="' + title + '" />').appendTo(div);
 
@@ -83,7 +87,7 @@
 
             var tabindex = 1000;
 
-            $(':input').each(function() {
+            $(':input').each(function () {
                 $(this).attr('tabindex', tabindex);
 
                 tabindex++;
@@ -93,16 +97,20 @@
             if (options.buttons) {
                 footer = $('<div class="uk-modal-footer uk-text-right" />');
 
-                $.each(options.buttons, function(i, o) {
-                    var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '" />').click(function(e) {
+                $.each(options.buttons, function (i, o) {
+                    var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '" />').on('click', function (e) {
                         e.preventDefault();
 
                         if ($.isFunction(o.click)) {
                             o.click.call(this, e);
                         }
+                        // cancel submit
+                    }).on('submit', function(e) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
                     });
 
-                    $.each(o.attributes, function(k, v) {
+                    $.each(o.attributes, function (k, v) {
                         if (k === "class") {
                             $(btn).addClass(v);
                         } else {
@@ -132,17 +140,19 @@
             $(modal).append(footer);
 
             // bind option events
-            $(div).on('modal.open', function(ev) {
+            $(div).on('modal.open', function (ev) {
+                // focus input
+                $('button[autofocus], input[autofocus]', div).focus();
+
                 options.open.call(this, ev);
-                $('[autofocus]', div).focus();
-            }).on('modal.close', function(e, ev) {
+            }).on('modal.close', function (e, ev) {
                 options.beforeclose.call(this, ev);
 
                 $(this).off('modal.open modal.close keyup.modal').removeClass('uk-open');
 
                 $('body').off('keyup.modal');
 
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     $(div).hide().detach();
                 }, 500);
 
@@ -150,39 +160,55 @@
             });
 
             // create click handler
-            $('.uk-modal-close', div).click(function(e) {
+            $('.uk-modal-close', div).on('click', function (e) {
+                // cancel event
+                e.preventDefault();
                 // hide
                 $(div).trigger('modal.close', e);
-                // cancel default behaviour
-                e.preventDefault();
             });
 
             // close on ESC
-            $('body').on('keyup.modal', function(e) {
-                if (e.which === 27) {
+            $('body').on('keyup.modal', function (e) {
+                if (e.keyCode === 27) {
+                    // cancel event
+                    e.preventDefault();
                     // close
                     $(div).trigger('modal.close');
-                    // cancel default behaviour
+                }
+            });
+
+            var $navItems = $(':input:enabled', div).filter(function () {
+                return this.getAttribute('tabindex') >= 0;
+            });
+
+            $(div).on('keydown.modal', function (e) {
+                if (e.keyCode === 9 && $navItems.length) {
+
                     e.preventDefault();
-                    // prevent propogation
-                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    var endIndex = Math.max(0, $navItems.length - 1), idx = $navItems.index(e.target) + 1;
+
+                    if (idx > endIndex) {
+                        idx = 0;
+                    }
+
+                    $navItems.eq(idx).focus();
                 }
             });
 
             // submit on enter
-            $(div).one('keyup.modal', function(e) {
-                if (e.which === 13) {
-                    // cancel default behaviour
+            $(div).on('keyup.modal', function (e) {
+                if (e.keyCode === 13) {
+                    // cancel event
                     e.preventDefault();
-                    // prevent propogation
-                    e.stopPropagation();
 
                     // trigger focused button
                     if ($('button:focus', this).length) {
-                        $(div).find('.uk-modal-dialog button:focus').triggerHandler("click");
+                        $(this).find('.uk-modal-dialog button:focus').triggerHandler("click");
                     } else {
                         // "click" submit button
-                        $(div).find('.uk-modal-dialog button[type="submit"]').triggerHandler("click");
+                        $(this).find('.uk-modal-dialog button[type="submit"]').triggerHandler("click");
                     }
 
                     // close
@@ -200,7 +226,7 @@
 
             $(div).addClass('uk-open').trigger('modal.open').attr('aria-hidden', false);
 
-            $(div).on('modal.assetloaded', function() {
+            $(div).on('modal.assetloaded', function () {
                 $(modal).css('top', ($(div).height() - $(modal).outerHeight()) / 2);
             }).delay(10).trigger('modal.assetloaded');
 
@@ -211,9 +237,8 @@
         /**
          * Confirm Dialog
          */
-        confirm: function(s, cb, options) {
-            var state = false,
-                html = '<p>' + s + '</p>';
+        confirm: function (s, cb, options) {
+            var html = '<p>' + s + '</p>';
 
             options = $.extend(true, {
                 'label': {
@@ -224,27 +249,31 @@
 
             options = $.extend(true, {
                 'classes': 'uk-modal-confirm',
-                buttons: [{
-                    text: options.label.confirm,
-                    icon: 'uk-icon-check',
-                    click: function(e) {
-                        cb.call(this, true);
-                    },
-                    attributes: {
-                        "type": "submit",
-                        "class": "uk-button-primary uk-modal-close",
-                        "autofocus": true
+                buttons: [
+                    {
+                        text: options.label.confirm,
+                        icon: 'uk-icon-check',
+                        click: function (e) {
+                            // execute callback
+                            cb.call(this, true);
+                        },
+                        attributes: {
+                            "type": "submit",
+                            "class": "uk-button-primary uk-modal-close",
+                            "autofocus": true
+                        }
+                    }, {
+                        text: options.label.cancel,
+                        icon: 'uk-icon-close',
+                        click: function (e) {
+                            // execute callback
+                            cb.call(this, false);
+                        },
+                        attributes: {
+                            "class": "uk-modal-close"
+                        }
                     }
-                }, {
-                    text: options.label.cancel,
-                    icon: 'uk-icon-close',
-                    click: function() {
-                        cb.call(this, false);
-                    },
-                    attributes: {
-                        "class": "uk-modal-close"
-                    }
-                }]
+                ]
             }, options || {});
 
             return this.open(Wf.translate('confirm', 'Confirm'), options, html);
@@ -252,7 +281,7 @@
         /**
          * Alert Dialog
          */
-        alert: function(s, options) {
+        alert: function (s, options) {
             var html = '<p>' + s + '</p>';
 
             options = $.extend({ 'label': { 'confirm': Wf.translate('ok', 'Ok') } }, options);
@@ -274,7 +303,7 @@
         /**
          * Prompt Dialog
          */
-        prompt: function(title, cb, options) {
+        prompt: function (title, cb, options) {
             var html = '<div class="uk-form-row">';
 
             options = $.extend(true, {
@@ -318,7 +347,7 @@
                     },
                     text: options.label.confirm,
                     icon: 'uk-icon-check',
-                    click: function(e) {
+                    click: function () {
                         var args = [],
                             $inp = $('#' + options.id + '-input'),
                             v = $inp.val();
@@ -330,7 +359,7 @@
                         }
 
                         if (options.elements) {
-                            $(':input', '#' + options.id).not($inp).each(function() {
+                            $(':input', '#' + options.id).not($inp).each(function () {
                                 args.push($(this).val());
                             });
                         }
@@ -342,12 +371,12 @@
                         }
                     }
                 }],
-                open: function() {
+                open: function () {
                     var n = document.getElementById(options.id + '-input');
 
                     if (n) {
                         // set timeout to trigger after transition
-                        setTimeout(function() {
+                        setTimeout(function () {
                             // focus element
                             n.focus();
 
@@ -366,7 +395,7 @@
         /**
          * Upload Dialog
          */
-        upload: function(options) {
+        upload: function (options) {
             var div = $('<div />').attr('id', 'upload-body').append(
                 '<div id="upload-queue-block" class="uk-placeholder">' +
                 '   <div id="upload-queue"></div>' +
@@ -391,7 +420,10 @@
                     }
                 }, {
                     text: Wf.translate('upload', 'Upload'),
-                    click: function() {
+                    click: function (e) {
+                        // cancel event
+                        e.preventDefault();
+                        // execute callback
                         return options.upload.call();
                     },
                     attributes: {
@@ -413,7 +445,7 @@
         /**
          * IFrame Dialog
          */
-        iframe: function(name, url, options) {
+        iframe: function (name, url, options) {
             var div = document.createElement('div');
 
             function calculateWidth(n) {
@@ -442,7 +474,7 @@
 
             options = $.extend({
                 'classes': 'uk-modal-dialog-large uk-modal-preview',
-                open: function(e) {
+                open: function (e) {
                     var iframe = document.createElement('iframe');
 
                     $(div).addClass('loading');
@@ -451,7 +483,7 @@
                         'src': url,
                         'scrolling': 'auto',
                         'frameborder': 0
-                    }).on('load', function() {
+                    }).on('load', function () {
                         if ($.isFunction(options.onFrameLoad)) {
                             options.onFrameLoad.call(this);
                         }
@@ -473,7 +505,7 @@
         /**
          * Media Dialog
          */
-        media: function(name, url, options) {
+        media: function (name, url, options) {
             var self = this;
             options = options || {};
 
@@ -482,7 +514,7 @@
 
             $.extend(options, {
                 'classes': 'uk-modal-dialog-large uk-modal-preview',
-                open: function(e) {
+                open: function (e) {
                     // image
                     if (/\.(jpg|jpeg|gif|png|webp)/i.test(url)) {
                         $(div).addClass('image-preview loading');
@@ -490,7 +522,7 @@
                         var img = new Image(),
                             loaded = false;
 
-                        img.onload = function() {
+                        img.onload = function () {
                             if (loaded) {
                                 return false;
                             }
@@ -503,11 +535,11 @@
 
                             calculateWidth(e.target, w, h);
 
-                            $('.image-preview').click(function(e) {
+                            $('.image-preview').click(function (e) {
                                 $(e.target).trigger('modal.close', e);
                             });
 
-                            window.setTimeout(function() {
+                            window.setTimeout(function () {
                                 $('.uk-modal').trigger('modal.assetloaded');
                             }, 0);
                         };
@@ -528,7 +560,7 @@
                             $(div).html('<iframe src="' + url + '" frameborder="0"></iframe>').removeClass('big-loader');
                         }
 
-                        $('iframe, object', div).on('load', function() {
+                        $('iframe, object', div).on('load', function () {
                             calculateWidth(e.target, w, h);
 
                             $('.uk-modal').trigger('modal.assetloaded');
@@ -590,7 +622,7 @@
                         // Parses the default mime types
                         // string into a mimes lookup
                         // map
-                        (function(data) {
+                        (function (data) {
                             var items = data.split(/,/),
                                 i, y, ext;
 
@@ -609,7 +641,7 @@
 
                         $.each(
                             mediaTypes,
-                            function(k, v) {
+                            function (k, v) {
                                 if (v.type && v.type == mt) {
                                     type = k;
                                     props = v;
@@ -659,7 +691,7 @@
                                     }
                                     var hasSupport = false;
 
-                                    $.each(support[type], function(k, v) {
+                                    $.each(support[type], function (k, v) {
                                         if ($.inArray(ext, v) !== -1) {
                                             hasSupport = $.support[type] && $.support[type][k] !== false;
                                         }
@@ -698,7 +730,7 @@
                                     break;
                             }
 
-                            $('iframe, object, embed, video, audio', div).on('load loadedmetadata', function() {
+                            $('iframe, object, embed, video, audio', div).on('load loadedmetadata', function () {
                                 $(div).removeClass('loading');
 
                                 calculateWidth(e.target, w, h);
