@@ -862,8 +862,8 @@
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
                     h += '  </a>';
-                    h += '  <span class="uk-width-2-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
-                    h += '  <span class="uk-width-4-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
+                    h += '  <span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
+                    h += '  <span class="uk-width-4-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
                     h += '</li>';
                 });
 
