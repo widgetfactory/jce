@@ -76,8 +76,12 @@
 .mce-item-preview {
     background-color: #fafafa;
     box-sizing: border-box;
-    display: inline-block;
+    display: block;
     position: relative;
+    width: 100%;
+    height: 0;
+    position: relative;
+    cursor: not-allowed;
 }
 .mce-item-preview iframe {
     z-index: 5;

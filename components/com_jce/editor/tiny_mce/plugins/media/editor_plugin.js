@@ -12,8 +12,8 @@
     var each = tinymce.each,
         extend = tinymce.extend,
         JSON = tinymce.util.JSON,
-        Event = tinymce.dom.Event;
-    var Node = tinymce.html.Node;
+        Node = tinymce.html.Node,
+        VK = tinymce.VK;
 
     var Styles = new tinymce.html.Styles();
 
@@ -219,7 +219,7 @@
                 });
 
                 // Convert placeholders to video elements (legacy conversion)
-                ed.serializer.addNodeFilter('img,span', function (nodes, name, args) {
+                ed.serializer.addNodeFilter('img,span,div', function (nodes, name, args) {
                     var i = nodes.length,
                         node, cls;
 
@@ -273,6 +273,25 @@
                 }
             });
 
+            // Remove iframe preview on backspace or delete
+            ed.onKeyDown.add(function (ed, e) {
+                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+                    var node = ed.selection.getNode();
+
+                    if (node) {
+                        if (node.className.indexOf('mce-item-shim') !== -1) {
+                            node = node.parentNode;
+                        }
+
+                        console.log(node);
+
+                        if (node.className.indexOf('mce-item-preview') !== -1) {
+                            ed.dom.remove(node);
+                        }
+                    }
+                }
+            });
+
             ed.onBeforeSetContent.add(function (ed, o) {
                 var h = o.content;
 
@@ -304,6 +323,13 @@
                 }
             });
 
+            /*ed.onObjectResized.add(function(ed, elm, width, height) {
+                var parent = ed.dom.getParent(elm, '.mce-item-media');
+
+                if (parent) {
+                    ed.dom.setStyles(parent, {'width' : width + 'px', 'height' : height + 'px'});
+                } 
+            });*/
         },
 
         /**
@@ -592,6 +618,9 @@
                 placeholder.attr(at, n.attr(at));
             });
 
+            style.width = w + 'px';
+            style.height = h + 'px';
+
             // add styles
             if (styles = ed.dom.serializeStyle(style)) {
                 placeholder.attr('style', styles);
@@ -636,7 +665,7 @@
                 'data-mce-json': JSON.serialize(o)
             });
 
-            if (name === "iframe" && ed.getParam('media_live_embed')) {
+            if (name === "iframe" && ed.getParam('media_live_embed', 1)) {
                 var preview = new tinymce.html.Node(name, 1);
 
                 var attrs = o.iframe;
@@ -649,10 +678,24 @@
                     frameborder: '0'
                 });
 
+                placeholder = new tinymce.html.Node('div', 1);
+
+                /*var styles = {
+                    'max-width' : w + 'px',
+                    'padding-bottom' : (h / w * 100) + '%'
+                };*/
+
+                var styles = {
+                    'width': w + 'px',
+                    'height': h + 'px'
+                }
+
                 preview.attr(attrs);
 
                 placeholder.attr({
-                    contentEditable: 'false'
+                    contentEditable: 'false',
+                    'class': 'mce-item-preview mce-item-media mce-item-' + name,
+                    'style': ed.dom.serializeStyle(styles)
                 });
 
                 var shim = new tinymce.html.Node('span', 1);
@@ -994,6 +1037,17 @@
                 ed = this.editor,
                 dom = ed.dom,
                 cl, props, v;
+
+            if (/mce-item-preview/.test(n.attr('class'))) {
+                if (n.firstChild && n.firstChild.name === "iframe") {
+                    var ifr = n.firstChild.clone();
+
+                    n.empty();
+                    n.replace(ifr);
+
+                    return;
+                }
+            }
 
             var data = JSON.parse(n.attr('data-mce-json'));
             var name = this.getNodeName(n.attr('class'));
