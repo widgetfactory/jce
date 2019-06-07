@@ -1012,7 +1012,7 @@ class WFFileBrowser extends JObject
         $result = new WFFileSystemResult();
 
         // get uploaded file
-        $file = $app->input->files->get('file', array(), 'ARRAY');
+        $file = $app->input->files->get('file', array(), 'raw');
 
         // validate file
         $this->validateUploadedFile($file);
