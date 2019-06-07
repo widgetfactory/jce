@@ -53,21 +53,38 @@
                     wrapper: true
                 });
 
+                // paragraph
+                ed.formatter.register('p', {
+                    block: 'div',
+                    remove: 'all'
+                });
+
                 // div
                 ed.formatter.register('div', {
-                    block: 'div'
+                    block: 'div',
+                    onmatch: function() {
+                        return false;
+                    }
                 });
 
                 // div container
                 ed.formatter.register('div_container', {
                     block: 'div',
-                    wrapper: true
+                    wrapper: true,
+                    onmatch: function() {
+                        return false;
+                    }
                 });
+
                 // span
                 ed.formatter.register('span', {
                     inline: 'span',
-                    remove: 'all'
+                    remove: 'all',
+                    onmatch: function() {
+                        return false;
+                    }
                 });
+
                 // section
                 ed.formatter.register('section', {
                     block: 'section',
@@ -75,6 +92,7 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // article
                 ed.formatter.register('article', {
                     block: 'article',
@@ -82,6 +100,7 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // footer
                 ed.formatter.register('footer', {
                     block: 'footer',
@@ -89,6 +108,7 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // header
                 ed.formatter.register('header', {
                     block: 'header',
@@ -96,6 +116,7 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // nav
                 ed.formatter.register('nav', {
                     block: 'nav',
@@ -103,11 +124,13 @@
                     wrapper: true,
                     merge_siblings: false
                 });
+
                 // code
                 ed.formatter.register('code', {
                     inline: 'code',
                     remove: 'all'
                 });
+
                 // samp
                 ed.formatter.register('samp', {
                     inline: 'samp',
