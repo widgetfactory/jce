@@ -14,6 +14,8 @@ class WFImgManagerPlugin extends WFMediaManager
 {
     public $_filetypes = 'jpg,jpeg,png,gif,webp';
 
+    protected $name = 'imgmanager';
+
     public function __construct($config = array())
     {
         $config['colorpicker'] = true;

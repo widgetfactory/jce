@@ -13,6 +13,8 @@ defined('JPATH_PLATFORM') or die;
 // Link Plugin Controller
 class WFLinkPlugin extends WFEditorPlugin
 {
+    protected $name = 'link';
+    
     public $extensions = array();
     public $popups = array();
     public $tabs = array();

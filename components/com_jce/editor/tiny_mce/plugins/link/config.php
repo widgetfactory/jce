@@ -12,12 +12,18 @@ class WFLinkPluginConfig
 {
     public static function getConfig(&$settings)
     {
-        $wf = WFApplication::getInstance();
+        require_once __DIR__ . '/link.php';
+
+        $plugin = new WFLinkPlugin();
+        $config = $plugin->getDefaults();
 
         // expose globally for use by Autolink and Clipboard
-        $settings['default_link_target'] = $wf->getParam('link.target', '');
+        $settings['default_link_target'] = $plugin->getParam('link.target', '');
+        
+        // expose globally for use by Autolink and Clipboard
+        $settings['autolink_email'] = $plugin->getParam('link.autolink_email', 1, 1);
+        $settings['autolink_url'] = $plugin->getParam('link.autolink_url', 1, 1);
 
-        $settings['autolink_email'] = $wf->getParam('link.autolink_email', 1, 1);
-        $settings['autolink_url'] = $wf->getParam('link.autolink_url', 1, 1);
+        $settings['link'] = $config;
     }
 }

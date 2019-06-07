@@ -132,7 +132,7 @@
         },
         getUploadConfig: function() {
             var ed = this.editor,
-                data = ed.getParam('imgmanager_upload');
+                data = ed.getParam('imgmanager.upload', {});
 
             return data;
         },
