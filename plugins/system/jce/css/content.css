@@ -8,6 +8,14 @@
     max-width: 100%;
 }
 
+.wf-columns > .wf-column {
+    margin-left: 1em;
+}
+
+.wf-columns > .wf-column:first-child {
+    margin-left: inherit;
+}
+
 .wf-columns-wrap {
     flex-wrap: wrap
 }
