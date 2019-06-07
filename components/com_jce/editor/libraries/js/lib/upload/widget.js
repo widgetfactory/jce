@@ -368,15 +368,32 @@
             }
         },
         _createDragDrop: function() {
+            var self = this;
+            
             // remove existing drag placeholder
             $('#upload-queue-drag').remove();
 
             // empty queue
             $('#upload-queue').empty();
 
-            if ($.support.dragdrop) {
-                $('<div id="upload-queue-drag" class="uk-flex uk-flex-center uk-flex-middle uk-text-large uk-height-1-1 uk-text-large"><i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted"></i>' + Wf.translate('upload_drop', 'Drop files here') + '</div>').appendTo('#upload-queue-block').show()
-            }
+            var msg = Wf.translate('upload_drop_details', '%filetypes files up to %max_size in size');
+
+            msg = msg.replace(/%([\w]+)/g, function(match, key) {
+                var value = self.options[key] || '';
+
+                if (key === 'max_size') {
+                    value = Wf.String.formatSize(value * 1024);
+                }
+
+                return value;
+            });
+
+            $('<div id="upload-queue-drag" class="uk-flex uk-flex-center uk-flex-column uk-flex-middle uk-text-large uk-height-1-1 uk-text-large uk-comment">' +
+            '   <div class="uk-comment-header uk-flex">' +
+            '       <i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted uk-comment-avatar"></i><h4 class="uk-comment-title">' + Wf.translate('upload_drop', 'Drop files here') + '</h4>' + 
+            '   </div>' +
+            '   <p class="uk-margin-small uk-comment-meta">' + msg + '</p>' +
+            '</div>').appendTo('#upload-queue-block').show()
         },
         /**
          * Rename a file in the uploader files list
