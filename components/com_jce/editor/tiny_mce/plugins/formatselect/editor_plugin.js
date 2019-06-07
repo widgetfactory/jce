@@ -51,7 +51,7 @@
             });
 
             function isFormat(n) {
-                return tinymce.inArray(nodes, n.nodeName) !== -1;
+                return n.className.indexOf('mce-item') === -1 && tinymce.inArray(nodes, n.nodeName) !== -1;
             }
 
             ed.onNodeChange.add(function (ed, cm, n) {
