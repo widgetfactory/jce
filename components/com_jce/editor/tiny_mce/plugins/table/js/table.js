@@ -146,23 +146,35 @@
 
         var border = false;
 
+        var initialStyles = {
+            'width' : 'medium',
+            'style' : 'none',
+            'color' : 'currentcolor'
+        }; 
+
         // Handle border
         $.each(['width', 'color', 'style'], function (i, k) {
             var v = ed.dom.getStyle($proxy.get(0), 'border-' + k);
 
-            if (v === "") {
-                $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
-                    var sv = ed.dom.getStyle($proxy.get(0), 'border-' + n + '-' + k);
+            $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
+                var name = 'border-' + n + '-' + k, sv = ed.dom.getStyle($proxy.get(0), name);
 
-                    // False or not the same as prev
-                    if (sv !== '' || (sv != v && v !== '')) {
-                        v = '';
-                    }
-                    if (sv) {
-                        v = sv;
-                    }
-                });
-            } else {
+                // reset value for initial style values
+                if (initialStyles[k] === v) {
+                    sv = '';
+                }
+
+                // False or not the same as prev
+                if (sv !== '' || (sv !== v && v !== '')) {
+                    v = '';
+                }
+
+                if (sv !== '') {
+                    v = sv;
+                }
+            });
+
+            if (v !== '') {
                 border = true;
                 // remove style
                 $proxy.css('border-' + k, "");
@@ -199,7 +211,7 @@
 
         // remove -moz and -webkit styles
         for (k in styles) {
-            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0) {
+            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0 || k === 'border-image') {
                 delete styles[k];
             }
         }
@@ -271,34 +283,27 @@
 
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
-        updateClassList: function (values) {
-            if (!values) {
+        updateClassList: function (cls) {
+            if (!cls) {
                 return;
             }
 
-            values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
+            $('#classlist').val(function () {
+                var n = this,
+                    a = cls.split(' '),
+                    r = [];
 
-            $('#classes').val(function () {
-                var elm = this;
+                $.each(a, function (i, v) {
+                    if (v.indexOf('mce-item') == -1) {
+                        if ($('option[value="' + v + '"]', n).length == 0) {
+                            $(n).append(new Option(v, v));
+                        }
 
-                // trim
-                values = $.trim(values);
-                // create array
-                values = values.split(' ');
-
-                $.each(values, function (i, value) {
-                    value = $.trim(value);
-
-                    if (!value || value === ' ') {
-                        return true;
-                    }
-
-                    if ($('option[value="' + value + '"]', elm).length == 0) {
-                        $(elm).append(new Option(value, value));
+                        r.push(v);
                     }
                 });
 
-                return values;
+                return r;
 
             }).change();
         },
@@ -362,7 +367,14 @@
                     $('#' + k).val(v);
                 });
 
-                this.updateClassList(ed.dom.getAttrib(elm, 'class'));
+                $('#classes').val(function () {
+                    var cls = ed.dom.getAttrib(elm, 'class');
+                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
+
+                    self.updateClassList(cls);
+
+                    return cls;
+                }).change();
 
                 // update style field
                 $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
@@ -416,7 +428,14 @@
                 $('#' + k).val(v);
             });
 
-            this.updateClassList(ed.dom.getAttrib(elm, 'class'));
+            $('#classes').val(function () {
+                var cls = ed.dom.getAttrib(elm, 'class');
+                cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
+
+                self.updateClassList(cls);
+
+                return cls;
+            }).change();
 
             $('#rowtype').change(function () {
                 self.setActionforRowType();
@@ -458,7 +477,14 @@
                     $('#' + k).val(v);
                 });
 
-                this.updateClassList(ed.dom.getAttrib(elm, 'class'));
+                $('#classes').val(function () {
+                    var cls = ed.dom.getAttrib(elm, 'class');
+                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
+
+                    self.updateClassList(cls);
+
+                    return cls;
+                }).change();
 
                 $('#celltype').val(elm.nodeName.toLowerCase());
 
@@ -609,11 +635,6 @@
             // get checkbox state, checked=1, otherwise no border
             if ($('#table_border').is(':checkbox')) {
                 border = $('#table_border').is(':checked') ? '1' : '';
-            }
-
-            // update classNames
-            if ($.type(className) === 'array') {
-                className = className.join(' ');
             }
 
             // remove values for html5
@@ -863,10 +884,6 @@
 
                 if (k === "classes") {
                     k = 'class';
-
-                    if ($.type(v) === 'array') {
-                        v = v.join(' ');
-                    }
                 }
 
                 setAttrib(td, k, v);
@@ -1056,10 +1073,6 @@
 
                 if (k === "classes") {
                     k = 'class';
-
-                    if ($.type(v) === 'array') {
-                        v = v.join(' ');
-                    }
                 }
 
                 setAttrib(tr, k, v);
