@@ -491,7 +491,13 @@ abstract class WFUtility
             while (!feof($fp)) {
                 $data .= @fread($fp, 131072);
                 // we can only reliably check for the full <?php tag here (short tags conflict with valid exif xml data), so users are reminded to disable short_open_tag
-                if (stristr($data, '<?php')) {
+                if (stripos($data, '<?php') !== false) {
+                    @unlink($file['tmp_name']);
+                    throw new InvalidArgumentException('The file contains PHP code.');
+                }
+                
+                // check for `__HALT_COMPILER()` phar stub
+                if (stripos($data, '__HALT_COMPILER()') !== false) {
                     @unlink($file['tmp_name']);
                     throw new InvalidArgumentException('The file contains PHP code.');
                 }
