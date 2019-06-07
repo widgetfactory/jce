@@ -495,7 +495,7 @@ abstract class WFUtility
                     @unlink($file['tmp_name']);
                     throw new InvalidArgumentException('The file contains PHP code.');
                 }
-                
+
                 // check for `__HALT_COMPILER()` phar stub
                 if (stripos($data, '__HALT_COMPILER()') !== false) {
                     @unlink($file['tmp_name']);
@@ -532,7 +532,7 @@ abstract class WFUtility
 
         // list of invalid extensions
         $executable = array(
-            'php', 'php3', 'php4', 'php5', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
+            'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'phar', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
             'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh', 'svg'
         );
 
