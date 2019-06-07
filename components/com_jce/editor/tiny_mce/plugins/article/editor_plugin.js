@@ -329,35 +329,23 @@
 
             if (ed.getParam('article_show_pagebreak', true)) {
 
-                var content = DOM.create('div', {}, '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>');
-                var n = DOM.add(content, 'div');
+                var title, alt;
 
-                DOM.add(n, 'label', {
-                    'for': ed.id + '_article_title'
-                }, ed.getLang('article.title', 'Title'));
+                var html = '' +
+                '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>' +
+                '<div class="mcePanelRow">' +
+                '   <label for="' + ed.id + 'article_title">' + ed.getLang('article.title', 'Title') + '</label>' +
+                '   <input type="text" id="' + ed.id + '_article_title" />' +
+                '</div>' +
+                '<div class="mcePanelRow">' +
+                '   <label for="' + ed.id + '_article_alt">' + ed.getLang('article.alias', 'Alias') + '</label>' +
+                '   <input type="text" id="' + ed.id + '_article_alt" />' +
+                '</div>';
 
-                var title = DOM.add(n, 'input', {
-                    type: 'text',
-                    id: ed.id + '_article_title'
-                });
-
-                n = DOM.add(content, 'div');
-
-                DOM.add(n, 'label', {
-                    'for': ed.id + '_article_alt'
-                }, ed.getLang('article.alias', 'Alias'));
-
-                var alt = DOM.add(n, 'input', {
-                    type: 'text',
-                    id: ed.id + '_article_alt'
-                });
-
-                var c = new tinymce.ui.PanelButton(cm.prefix + 'pagebreak', {
-                    title: ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak'),
-                    'class': 'mce_pagebreak',
-                    'dialog_class': ed.getParam('skin') + 'Skin',
-                    'content': content,
-                    'width': 250,
+                var ctrl = cm.createPanelButton('pagebreak', {
+                    title: 'article.pagebreak',
+                    html: html,
+                    width: 250,
                     buttons: [{
                         title: ed.getLang('common.insert', 'Insert'),
                         id: 'insert',
@@ -372,10 +360,10 @@
                         classes: 'mceButtonPrimary',
                         scope: self
                     }]
-                }, ed);
+                });
 
-                c.onShowPanel.add(function () {
-                    var title = DOM.get(ed.id + '_article_title'),
+                ctrl.onShowPanel.add(function () {
+                    title = DOM.get(ed.id + '_article_title'),
                         alt = DOM.get(ed.id + '_article_alt');
 
                     title.value = alt.value = '';
@@ -392,23 +380,27 @@
                         active = true;
                     }
 
-                    c.setActive(active);
+                    ctrl.setActive(active);
 
-                    c.setButtonLabel('insert', label);
+                    ctrl.setButtonLabel('insert', label);
 
-                    title.focus();
+                    window.setTimeout(function() {
+                        title.focus();
+                    }, 10);
                 });
 
-                c.onHidePanel.add(function () {
-                    title.value = alt.value = '';
+                ctrl.onHidePanel.add(function () {
+                    if (title && alt) {
+                        title.value = alt.value = '';
+                    }
                 });
 
                 // Remove the menu element when the editor is removed
                 ed.onRemove.add(function () {
-                    c.destroy();
+                    ctrl.destroy();
                 });
 
-                return cm.add(c);
+                return ctrl;
             }
         }
     });

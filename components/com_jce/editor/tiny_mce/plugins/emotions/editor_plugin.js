@@ -205,12 +205,11 @@
                 return null;
             }
 
-            var ctrl = new tinymce.ui.PanelButton(cm.prefix + 'emotions', {
-                'title': ed.getLang('emotions.desc', 'Insert an Emoticon'),
-                'class': 'mce_emotions',
-                'content': self.content,
-                'width': 250
-            }, ed);
+            var ctrl = cm.createPanelButton('emotions', {
+                title: 'emotions.desc',
+                html: self.content,
+                width: 250
+            });
 
             ctrl.onRenderPanel.add(function () {
                 Event.add(DOM.select('.mcePanelContent', ed.id + '_emotions_panel'), 'click', function (e) {
@@ -241,7 +240,7 @@
                 ctrl.destroy();
             });
 
-            return cm.add(ctrl);
+            return ctrl;
         }
     });
     tinymce.PluginManager.add("emotions", tinymce.plugins.EmotionsPlugin);

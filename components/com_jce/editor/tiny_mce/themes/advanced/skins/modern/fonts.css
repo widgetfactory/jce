@@ -26,7 +26,7 @@
 
     position: relative;
 
-    color: #444;
+    color: #000000;
 }
 
 .modernSkin .mceMenuItem .mceIcon {
@@ -377,24 +377,24 @@
 
 .modernSkin span.mce_image:before,
 .modernSkin span.mce_imgmanager:before {
-  content: "\e941";
+    content: "\e941";
 }
 
 .modernSkin span.mce_insertlayer:before {
-  content: "\e92e";
+    content: "\e92e";
 }
 
 .modernSkin span.mce_layerbackward:before {
-  content: "\ea46";
+    content: "\ea46";
 }
 
 .modernSkin span.mce_layerforward:before {
-  content: "\ea47";
+    content: "\ea47";
 }
 
 .modernSkin span.mce_layerabsolute:before {
     content: "\e908";
-  }
+}
 
 .modernSkin span.mce_imgmanager_ext:before {
     content: "\e93c";
@@ -863,33 +863,25 @@
 
 .modernSkin span.mce_highlight:before,
 .modernSkin span.mce_source_highlight:before {
-  content: "\e924";
+    content: "\e924";
 }
 
 .modernSkin span.mce_columns:before {
-  content: "\e905";
+    content: "\e905";
 }
 
 .modernSkin span.mce_codesample:before {
     content: "\e9bb";
-  }
+}
 
-/*.uk-icon-spinner:before {
-      content: "";
-      background: url('../img/load.gif') no-repeat center;
-      width: 2rem;
-      display: inline-block;
-      height: 2rem;
-  }*/
-
-.uk-icon-spinner::after {
+.modernSkin span.mce_spinner:before {
     content: "";
-    border: 0.25rem solid #444;
-    border-radius: 1rem;
-    height: 1rem;
+    border: 0.125rem solid #444;
+    border-radius: 0.75em;
+    width: 1em;
+    height: 1em;
     opacity: 0;
     display: inline-block;
-    width: 1rem;
     animation: pulsate 1s ease-out;
     animation-iteration-count: infinite;
     vertical-align: top;

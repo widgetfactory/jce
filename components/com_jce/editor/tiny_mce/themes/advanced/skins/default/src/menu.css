@@ -9,8 +9,6 @@
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
-    min-width: 192px;
-    /* DropMenu button length x 2 */
 }
 
 .defaultSkin .mceNoIcons span.mceIcon {
@@ -69,6 +67,10 @@
     height: 100%;
     overflow: auto;
     overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
@@ -134,9 +136,15 @@
     position: relative;
 }
 
-.defaultSkin .mceMenuHtml .mceMenuHtmlRow {
+.defaultSkin .mceMenuHtml .mceToolbarRow {
     position: relative;
     display: flex;
+}
+
+.defaultSkin .mceMenuHtml .mceToolbarColumn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .defaultSkin .mceMenuHtml label {
@@ -157,6 +165,7 @@
     border-radius: 2px;
     box-shadow: inherit;
     box-sizing: border-box;
+    cursor: initial;
 }
 
 .defaultSkin .mceMenuHtml textarea {
@@ -188,10 +197,35 @@
     margin-right: 5px;
 }
 
-.defaultSkin .mceLinkMenu .mceMenuHtml .mceButton {
+.defaultSkin .mceMenuHtml .mceButton {
     position: relative;
 }
 
-.defaultSkin .mceLinkMenu .mceMenuHtml .mceButton .mceIcon {
+.defaultSkin .mceMenuHtml .mceButton .mceIcon {
     position: static;
+}
+
+.defaultSkin .mceButtonMenu {
+    margin: 0;
+    border: 1px solid #ddd;
+    margin-top: 2px;
+    margin-left: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.defaultSkin .mceButtonMenu .mceMenuItem {
+    margin: 3px;
+}
+
+.defaultSkin .mceButtonMenu::before {
+    content: "";
+    display: block;
+    padding: 3px;
+    position: absolute;
+    width: 40px;
+    top: -6px;
+    background: #fff;
+    left: -1px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }

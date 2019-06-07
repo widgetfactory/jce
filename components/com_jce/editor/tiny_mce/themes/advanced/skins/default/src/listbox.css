@@ -22,6 +22,7 @@
     line-height: 30px;
     overflow: hidden;
     border-radius: 2px 0 0 2px;
+    cursor: pointer;
 }
 
 .defaultSkin .mceListBox .mceOpen button {
@@ -30,6 +31,7 @@
     border: 1px solid #ddd;
     text-align: center;
     border-radius: 0 2px 2px 0;
+    cursor: pointer;
 }
 
 .defaultSkin .mceListBox:hover .mceOpen button {
@@ -42,12 +44,16 @@
 }
 
 .defaultSkin .mceListBox .mceOpen button:after {
-    content: "▼";
+    content: "\25BC";
     display: block;
     font-size: 9px;
     line-height: 30px;
     color: #444;
     text-align: center;
+    
+    /*background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;*/
 }
 
 .defaultSkin table.mceListBoxEnabled:hover .mceText button,
@@ -78,6 +84,8 @@ table.mceListBoxEnabled:hover .mceOpen button,
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 2px;
+
+    min-width: calc(100px * 2);
 }
 
 .defaultSkin .mceListBoxMenu .mceMenu {

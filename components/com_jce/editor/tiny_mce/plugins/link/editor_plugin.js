@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM;
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
     tinymce.create('tinymce.plugins.LinkPlugin', {
         init: function (ed, url) {
@@ -85,79 +85,108 @@
                 return null;
             }
 
-            var ctrl = cm.createSplitButton('link', {
-                'title': 'link.desc',
-                'cmd': 'mceLink',
-                'class': 'mce_link'
-            });
-
             var html = '' +
-                '<div class="mceMenuHtmlRow">' +
-                '   <input type="text" id="' + ed.id + '_link_input" aria-label="' + ed.getLang('link.href', 'URL') + '" />' +
-                '   <button id="' + ed.id + '_link_submit" class="mceButton mceButtonLink">' + 
-                '       <span class="mceIcon mce_link"></span>' + 
-                '   </button>' +
-                '   <button id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink mceButtonDisabled">' +
-                '       <span class="mceIcon mce_unlink"></span>' +
-                '   </button>' +
+                '<div class="mceToolbarRow">' +
+                '   <div class="mceToolbarItem">' +
+                '       <input type="text" id="' + ed.id + '_link_input" aria-label="' + ed.getLang('link.href', 'URL') + '" />' +
+                '   </div>' +
+                '   <div class="mceToolbarItem">' +
+                '       <button id="' + ed.id + '_link_submit" class="mceButton mceButtonLink" title="' + ed.getLang('link.insert', 'Insert Link') + '" aria-label="' + ed.getLang('link.insert', 'Insert Link') + '">' + 
+                '           <span class="mceIcon mce_link"></span>' + 
+                '       </button>' +
+                '   </div>' +
+                '   <div class="mceToolbarItem">' +
+                '       <button id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink mceButtonDisabled" title="' + ed.getLang('link.unlink', 'Remove Link') + '" aria-label="' + ed.getLang('link.unlink', 'Remove Link') + '">' +
+                '           <span class="mceIcon mce_unlink"></span>' +
+                '       </button>' +
+                '   </div>' +
                 '</div>';
 
-            function insertLink(value) {
-                ed.execCommand('mceInsertLink', false, value);
+            var ctrl = cm.createPanelButton('link', {
+                title: 'link.desc',
+                cmd: 'mceLink',
+                html: html,
+                onsubmit: function() {
+                    var value = DOM.getValue(ed.id + '_link_input');
+                    insertLink(value);
+                }
+            });
+
+            function insertLink(value) {                
+                if (!value) {
+                    ed.execCommand('unlink', false);
+                    ctrl.hidePanel();
+
+                    return;
+                }
+                
+                var args = {
+                    'href'  : value
+                };
+                
+                // get parameter defaults
+                var params = ed.getParam('link', {});
+
+                // extended args with parameter defaults
+                args = tinymce.extend(args, params);
+
+                // no selection, so create a link from the url
+                if (ed.selection.isCollapsed()) {
+                    ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, value));
+                // apply link to selection
+                } else {
+                    ed.execCommand('mceInsertLink', false, args);
+                }
+
+                ctrl.hidePanel();
             }
 
-            ctrl.onRenderMenu.add(function (c, m) {
-                // patch in onselect for dropmenu
-                m.settings.onselect = function (value) {
+            ctrl.onRenderPanel.add(function (c) {
+                Event.add(ed.id + '_link_submit', 'click', function(e) {
+                    e.preventDefault();
+
+                    if (DOM.hasClass(e.target, 'mceButtonDisabled')) {
+                        return;
+                    }
+
+                    var value = DOM.getValue(ed.id + '_link_input');
                     insertLink(value);
-                    ctrl.hideMenu();
-                };
-
-                m.add({
-                    html: html,
-                    class: 'mceLinkMenu',
-                    onclick: function (e) {
-                        var node = e.target, value = '';
-
-                        if (node.nodeName !== "BUTTON") {
-                            node = DOM.getParent(e.target, 'BUTTON');
-
-                            if (node && !DOM.hasClass(node, 'mceButtonDisabled')) {
-                                
-                                if (DOM.hasClass(node, 'mceButtonLink')) {
-                                    value = DOM.getValue(ed.id + '_link_input');
-                                    insertLink(value);
-                                }
-                                
-                                if (DOM.hasClass(node, 'mceButtonUnlink')) {
-                                    ed.execCommand('unlink', false);
-                                }
-                            }
-                        }
-                    }
                 });
 
-                m.onShowMenu.add(function () {
-                    var selection = ed.selection, value = '';
+                Event.add(ed.id + '_link_unlink', 'click', function(e) {
+                    e.preventDefault();
 
-                    DOM.addClass(ed.id + '_link_unlink', 'mceButtonDisabled');
-
-                    if (!selection.isCollapsed()) {
-                        var node = selection.getNode();
-                        node = ed.dom.getParent(node, 'A') || node;
-
-                        if (node.nodeName === 'A') {
-                            value = node.getAttribute('href');
-
-                            DOM.removeClass(ed.id + '_link_unlink', 'mceButtonDisabled');
-                        }
+                    if (DOM.hasClass(e.target, 'mceButtonDisabled')) {
+                        return;
                     }
-                    // focus input
+
+                    ed.execCommand('unlink', false);
+                });
+            });
+
+            ctrl.onShowPanel.add(function () {
+                var selection = ed.selection, value = '';
+
+                DOM.addClass(ed.id + '_link_unlink', 'mceButtonDisabled');
+
+                if (!selection.isCollapsed()) {
+                    var node = selection.getNode();
+                    node = ed.dom.getParent(node, 'A') || node;
+
+                    if (node.nodeName === 'A') {
+                        value = node.getAttribute('href');
+
+                        DOM.removeClass(ed.id + '_link_unlink', 'mceButtonDisabled');
+                    }
+                }
+
+                // focus input after short timeout
+                window.setTimeout(function(){
                     DOM.get(ed.id + '_link_input').focus();
+                }, 10);
 
-                    // set value
-                    DOM.setValue(ed.id + '_link_input', value);
-                });
+                // set value
+                DOM.setValue(ed.id + '_link_input', value);
             });
 
             return ctrl;

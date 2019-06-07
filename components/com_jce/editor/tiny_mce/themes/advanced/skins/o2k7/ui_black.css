@@ -129,16 +129,20 @@
     border-color: #535353;
 }
 
-.o2k7SkinBlack .mceButtonDialog {
+.o2k7SkinBlack .mcePanel {
     background-color: #535353;
     border-color: #535353;
 }
 
-.o2k7SkinBlack .mceButtonDialog::before {
+.o2k7SkinBlack .mcePanel::before {
     background-color: #B0B6BE;
     border-color: #535353;
 }
 
 .o2k7Skin .mceSplitButtonMenu {
     border-color: #535353;
+}
+
+.o2k7Skin .mceLinkMenu .mceMenuHtml input {
+    border-color: #989FA9;
 }

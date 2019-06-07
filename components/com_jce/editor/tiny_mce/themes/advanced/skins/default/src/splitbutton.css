@@ -31,6 +31,7 @@
     border-right: 0;
     padding: 5px;
     border-radius: 2px 0 0 2px;
+    cursor: pointer;
 }
 
 .defaultSkin .mceSplitButton .mceAction {
@@ -44,10 +45,11 @@
     text-align: center;
     height: 30px;
     border-radius: 0 2px 2px 0;
+    cursor: pointer;
 }
 
 .defaultSkin .mceSplitButton .mceOpen button:after {
-    content: "▼";
+    content: "\25BC";
     display: block;
     font-size: 9px;
     line-height: 30px;
@@ -91,11 +93,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 
 .defaultSkin .mceSplitButtonActive .mceText button {
     border: 1px solid #ccc;
-    background-color: #fafafa;
+    background-color: #ddd;
 }
 
 .defaultSkin .mceSplitButtonActive .mceOpen button {
     border-left: 0;
+    border-color: #ccc;
+    background-color: #ddd;
 }
 
 .defaultSkin .mceSplitButtonMenu {
@@ -104,6 +108,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     margin-top: 2px;
     margin-left: 1px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    min-width: calc(48px * 3);
 }
 
 .defaultSkin .mceMenuItemSub {
@@ -229,4 +235,40 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-color: #fff;
     text-align: center;
     line-height: 20px;
+}
+
+.defaultSkin .mceSplitButtonMenu:before {
+    content: "";
+    display: block;
+    padding: 3px;
+    position: absolute;
+    width: 40px;
+    top: -6px;
+    background: #fff;
+    left: -1px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.defaultSkin .mceSplitButtonSelected .mceSplitButton .mceText button {
+    background: #fff;
+    border-color: #ddd;
+    border-radius: 2px 0 0 0;
+}
+
+.defaultSkin .mceSplitButtonSelected .mceSplitButton .mceOpen button {
+    background: #fff;
+    border-color: #ddd;
+    border-left-color: transparent;
+    border-radius: 0 2px 0 0;
+}
+
+.defaultSkin .mceColorSplitMenu {
+    padding: 2px;
+    background: #fff;
+}
+
+.defaultSkin .mceColumns .mceTableSplitMenu td a {
+    width: 32px;
+    height: 32px;
 }

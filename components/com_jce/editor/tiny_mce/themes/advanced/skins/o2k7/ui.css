@@ -227,17 +227,26 @@
     opacity: 0.3;
 }
 
-.o2k7Skin .mceButtonDialog {
+.o2k7Skin .mcePanel {
     background-color: #E5EFFD;
     border-color: #ABC6DD;
+    left: 0;
 }
 
-.o2k7Skin .mceButtonDialog::before {
+.o2k7Skin .mcePanel::before {
     background-color: #E5EFFD;
     border-color: #ABC6DD;
+    height: 5px;
+    left: -1px;
+    top: -5px;
 }
 
 .o2k7Skin .mceColorSplitMenu .mceMoreColors button:hover {
     border-color: #E0E9F6;
     background-color: #FFD24E;
+}
+
+.o2k7Skin .mceLinkMenu .mceMenuHtml input {
+    border-color: #9FBBE2;
+    border-radius: 2px 0 0 2px;
 }

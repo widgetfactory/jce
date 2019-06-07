@@ -17,12 +17,11 @@
     border-radius: 2px;
 }
 
-.defaultSkin .mceButtonEnabled:hover {
+.defaultSkin .mceButton:hover,
+.defaultSkin .mceButton:focus {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
-
-.defaultSkin .mceButtonEnabled:hover .mceIcon {}
 
 .defaultSkin .mceButtonActive,
 .defaultSkin .mceButtonSelected {
@@ -30,11 +29,8 @@
     background-color: #ddd;
 }
 
-.defaultSkin .mceButtonActive .mceIcon,
-.defaultSkin .mceButtonSelected .mceIcon {}
-
 .defaultSkin .mceButtonDisabled .mceIcon {
-    opacity: 0.3;
+    opacity: 0.38;
 }
 
 .defaultSkin .mceButtonLabeled {

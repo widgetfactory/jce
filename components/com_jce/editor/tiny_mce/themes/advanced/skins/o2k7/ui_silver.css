@@ -101,12 +101,16 @@
     border-color: #bbb;
 }
 
-.o2k7SkinSilver .mceButtonDialog {
+.o2k7SkinSilver .mcePanel {
     background-color: #eee;
     border-color: #bbb;
 }
 
-.o2k7SkinSilver .mceButtonDialog::before {
-    background-color: #eee;
+.o2k7SkinSilver .mcePanel::before {
+    background-color: #fff;
+    border-color: #bbb;
+}
+
+.o2k7Skin .mceLinkMenu .mceMenuHtml input {
     border-color: #bbb;
 }

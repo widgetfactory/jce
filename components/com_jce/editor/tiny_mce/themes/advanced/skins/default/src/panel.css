@@ -19,6 +19,12 @@
     border-color: #ddd;
 }
 
+.defaultSkin .mcePanelButtonSelected,
+.defaultSkin .mcePanelButtonSelected:hover {
+    background-color: #fff;
+    border-color: #ddd;
+}
+
 .defaultSkin .mcePanel h4 {
     font-size: 14px;
     color: #444;
@@ -29,7 +35,12 @@
 .defaultSkin .mcePanel .mcePanelContent {
     background-color: #fff;
     font-size: 12px;
-    padding: 5px;
+    padding: 3px;
+    white-space: normal;
+}
+
+.defaultSkin .mcePanel .mcePanelContent .mceToolbarRow {
+    display: flex;
 }
 
 .defaultSkin .mcePanel .mcePanelContent label {
@@ -50,6 +61,12 @@
     border-radius: 2px;
     box-shadow: inherit;
     box-sizing: border-box;
+}
+
+.defaultSkin .mcePanel input[type="text"],
+.defaultSkin .mcePanel textarea {
+    min-width: 12em;
+    cursor: text;
 }
 
 .defaultSkin .mcePanel textarea {
@@ -118,6 +135,13 @@
     border-color: rgba(0, 0, 0, .16);
 }
 
+.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled,
+.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:hover,
+.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:focus {
+    background: #eee;
+    color: #888;
+}
+
 .defaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary:hover {
     background-color: #35b3ee;
     color: #fff;
@@ -136,12 +160,18 @@
     display: block;
     position: absolute;
     width: 30px;
-    background-color: #fafafa;
+    background-color: #fff;
     height: 6px;
     left: -1px;
     top: -6px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+}
+
+.defaultSkin .mceSplitButtonPanel::before {
+    width: 46px;
+    height: 8px;
+    top: -8px;
 }
 
 .defaultSkin.mce_search .mcePanel label,
@@ -157,4 +187,22 @@
     max-width: 250px;
     white-space: normal;
     text-align: center;
+}
+
+.defaultSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
+    border-right-color: transparent;
+}
+
+.defaultSkin .mcePanelButtonSelected .mceSplitButton .mceOpen button {
+    border-left-color: transparent;
+}
+
+.defaultSkin .mcePanelButtonActive .mceText button {
+    border-color: #ccc;
+    background-color: #ddd;
+}
+
+.defaultSkin .mcePanelButtonActive .mceOpen button {
+    border-color: #ccc;
+    background-color: #ddd;
 }

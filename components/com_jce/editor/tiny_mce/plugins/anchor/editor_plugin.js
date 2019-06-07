@@ -269,12 +269,11 @@
             html += '<h4>' + ed.getLang('anchor.desc', 'Insert / Edit Anchor') + '</h4>';
             html += '<input type="text" id="' + ed.id + '_anchor_input" />';
 
-            var ctrl = new tinymce.ui.PanelButton(cm.prefix + 'anchor', {
-                title: ed.getLang('anchor.desc', 'Inserts an Anchor'),
-                'class': 'mce_anchor',
-                'content': html,
-                'width': 250,
-                'buttons': [
+            var ctrl = cm.createPanelButton('anchor', {
+                title: 'anchor.desc',
+                html: html,
+                width: 250,
+                buttons: [
                     {
                         title: ed.getLang('insert', 'Insert'),
                         id: 'insert',
@@ -288,7 +287,7 @@
                         title: ed.getLang('anchor.remove', 'Remove'),
                         id: 'remove',
                         onclick: function (e) {
-                            if (!DOM.hasClass(e.target, 'disabled')) {
+                            if (!DOM.hasClass(e.target, 'mceButtonDisabled')) {
                                 self._removeAnchor();
                             }
 
@@ -297,7 +296,7 @@
                         scope: self
                     }
                 ]
-            }, ed);
+            });
 
             ctrl.onShowPanel.add(function () {
                 input = DOM.get(ed.id + '_anchor_input');
@@ -332,7 +331,7 @@
                 ctrl.destroy();
             });
 
-            return cm.add(ctrl);
+            return ctrl;
         }
     });
 
