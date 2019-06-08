@@ -42,15 +42,14 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
         static $config;
 
         if (empty($config)) {
-            $params = $this->getParams();
 
             $config = array(
                 // PSpell settings
-                'PSpell.mode' => $params->get('spellchecker.pspell_mode', 'PSPELL_FAST'),
-                'PSpell.spelling' => $params->get('spellchecker.pspell_spelling', ''),
-                'PSpell.jargon' => $params->get('spellchecker.pspell_jargon', ''),
-                'PSpell.encoding' => $params->get('spellchecker.pspell_encoding', ''),
-                'PSpell.dictionary' => JPATH_BASE . '/' . $params->get('spellchecker.pspell_dictionary', ''),
+                'PSpell.mode' => $this->getParam('spellchecker.pspell_mode', 'PSPELL_FAST'),
+                'PSpell.spelling' => $this->getParam('spellchecker.pspell_spelling', ''),
+                'PSpell.jargon' => $this->getParam('spellchecker.pspell_jargon', ''),
+                'PSpell.encoding' => $this->getParam('spellchecker.pspell_encoding', ''),
+                'PSpell.dictionary' => JPATH_BASE . '/' . $this->getParam('spellchecker.pspell_dictionary', ''),
             );
         }
 
@@ -62,11 +61,10 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
         static $instance;
 
         if (!is_object($instance)) {
-            $params = $this->getParams();
             $classname = '';
             $config = array();
 
-            $engine = $params->get('spellchecker.engine', 'browser', 'browser');
+            $engine = $this->getParam('spellchecker.engine', 'browser', 'browser');
 
             if (($engine === 'pspell' || $engine === 'pspellshell') && function_exists('pspell_new')) {
                 $classname = 'PSpell';
@@ -79,7 +77,7 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
             }
 
             if (!empty($classname)) {
-                $file = __DIR__ . '/' . strtolower($classname) . '.php';
+                $file = __DIR__ . '/classes/' . strtolower($classname) . '.php';
 
                 if (is_file($file)) {
                     require_once $file;
