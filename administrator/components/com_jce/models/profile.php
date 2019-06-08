@@ -449,10 +449,6 @@ class JceModelProfile extends JModelAdmin
                                         continue;
                                     }
 
-                                    if (!isset($data->params[$plugin->name][$type][$p->name])) {
-                                        continue;
-                                    }
-
                                     // bind data to the form
                                     $extension->form->bind($data->params[$plugin->name][$type]);
                                 }
