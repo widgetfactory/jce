@@ -43,13 +43,13 @@
         </param-->
 
             <field name="languages" type="text" size="100" default="English=en" label="WF_SPELLCHECKER_PARAM_LANGUAGES" description="WF_SPELLCHECKER_PARAM_LANGUAGES_DESC" showon="engine!:browser" />
-            <field name="pspell_mode" type="text" default="PSPELL_FAST" label="WF_SPELLCHECKER_PARAM_PSPELL_MODE" description="WF_SPELLCHECKER_PARAM_PSPELL_MODE_DESC" showon="engine!:browser" />
-            <field name="pspell_spelling" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_SPELLING" description="WF_SPELLCHECKER_PARAM_PSPELL_SPELLING_DESC" showon="engine!:browser" />
-            <field name="pspell_jargon" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_JARGON" description="WF_SPELLCHECKER_PARAM_PSPELL_JARGON_DESC" showon="engine!:browser" />
-            <field name="pspell_encoding" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_ENCODING" description="WF_SPELLCHECKER_PARAM_PSPELL_ENCODING_DESC" showon="engine!:browser" />
-            <field name="pspell_dictionary" type="text" size="100" default="components/com_jce/editor/tiny_mce/plugins/spellchecker/dictionary.pws" label="WF_SPELLCHECKER_PARAM_PSPELL_DICTIONARY" description="WF_SPELLCHECKER_PARAM_PSPELL_DICTIONARY_DESC" showon="engine!:browser" />
-            <field name="pspellshell_aspell" type="text" default="/usr/bin/aspell" label="WF_SPELLCHECKER_PARAM_PSPELLSHELL" description="WF_SPELLCHECKER_PARAM_PSPELLSHELL_DESC" showon="engine!:browser" />
-            <field name="pspellshell_tmp" type="text" default="/tmp" label="WF_SPELLCHECKER_PARAM_PSPELLSHELL_TMP" description="WF_SPELLCHECKER_PARAM_PSPELLSHELL_TMP_DESC" showon="engine!:browser" />
+            <field name="pspell_mode" type="text" default="PSPELL_FAST" label="WF_SPELLCHECKER_PARAM_PSPELL_MODE" description="WF_SPELLCHECKER_PARAM_PSPELL_MODE_DESC" showon="engine:pspell" />
+            <field name="pspell_spelling" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_SPELLING" description="WF_SPELLCHECKER_PARAM_PSPELL_SPELLING_DESC" showon="engine:pspell" />
+            <field name="pspell_jargon" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_JARGON" description="WF_SPELLCHECKER_PARAM_PSPELL_JARGON_DESC" showon="engine:pspell" />
+            <field name="pspell_encoding" type="text" default="" label="WF_SPELLCHECKER_PARAM_PSPELL_ENCODING" description="WF_SPELLCHECKER_PARAM_PSPELL_ENCODING_DESC" showon="engine:pspell" />
+            <field name="pspell_dictionary" type="text" size="100" default="components/com_jce/editor/tiny_mce/plugins/spellchecker/dictionary.pws" label="WF_SPELLCHECKER_PARAM_PSPELL_DICTIONARY" description="WF_SPELLCHECKER_PARAM_PSPELL_DICTIONARY_DESC" showon="engine:pspell" />
+            <field name="pspellshell_aspell" type="text" default="/usr/bin/aspell" label="WF_SPELLCHECKER_PARAM_PSPELLSHELL" description="WF_SPELLCHECKER_PARAM_PSPELLSHELL_DESC" showon="engine:pspell" />
+            <field name="pspellshell_tmp" type="text" default="/tmp" label="WF_SPELLCHECKER_PARAM_PSPELLSHELL_TMP" description="WF_SPELLCHECKER_PARAM_PSPELLSHELL_TMP_DESC" showon="engine:pspell" />
         </fieldset>
     </fields>
 </extension>
