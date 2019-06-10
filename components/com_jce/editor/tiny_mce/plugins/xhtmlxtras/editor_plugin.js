@@ -123,10 +123,10 @@
                 title: 'xhtmlxtras.ins_desc',
                 cmd: 'mceIns'
             });
-            /*ed.addButton('attribs', {
+            ed.addButton('attribs', {
                 title : 'xhtmlxtras.attribs_desc',
                 cmd : 'mceAttributes'
-            });*/
+            });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
                 n = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
@@ -230,7 +230,7 @@
                     }
                 });
             });
-        },
+        }/*,
 
         createControl: function (n, cm) {
             var self = this,
@@ -281,45 +281,8 @@
                 ctrl.hideMenu();
             }
 
-            /*ctrl.onRenderMenu.add(function (c, m) {
-                // patch in onselect for dropmenu
-                m.settings.onselect = function () {
-                    updateAttributes();
-                };
-
-                m.add({
-                    html: html,
-                    class: 'mceAttribsMenu',
-                    onclick: function (e) {
-                        var node = e.target, name = '', value = '';
-
-                        if (node.nodeName !== "BUTTON") {
-                            node = DOM.getParent(e.target, 'BUTTON');
-
-                            if (node && !DOM.hasClass(node, 'mceButtonDisabled')) {
-
-                                if (DOM.hasClass(node, 'mceButtonAttribs')) {
-                                    updateAttributes();
-                                }
-                            }
-                        }
-                    }
-                });
-
-                m.onShowMenu.add(function () {
-                    // focus input after short timeout
-                    window.setTimeout(function () {
-                        DOM.get(ed.id + '_attribs_name').focus();
-                    }, 10);
-
-                    // re-set values
-                    DOM.setValue(ed.id + '_attribs_name', '');
-                    DOM.setValue(ed.id + '_attribs_value', '');
-                });
-            });*/
-
             return ctrl;
-        }
+        }*/
     });
 
     // Register plugin
