@@ -488,3 +488,50 @@
 .defaultSkin span.mce_microdata {
     background-position: -340px -40px;
 }
+
+.defaultSkin .mce_list_default:before,
+.defaultSkin .mce_list_disc:before {
+    content: "●";
+    line-height: 1em;
+    vertical-align: top;
+}
+.defaultSkin .mce_list_circle:before {
+    content: "○";
+    line-height: 1em;
+    vertical-align: top;
+}
+.defaultSkin .mce_list_square:before {
+    content: "□";
+    line-height: 1em;
+    vertical-align: top;
+}
+
+.defaultSkin .mce_list_lower_alpha::before {
+    content: "a.";
+    line-height: 1em;
+    vertical-align: top;
+}
+
+.defaultSkin .mce_list_lower_greek::before {
+    content: "\03b1.";
+    line-height: 1em;
+    vertical-align: top;
+}
+
+.defaultSkin .mce_list_lower_roman::before {
+    content: "iv.";
+    line-height: 1em;
+    vertical-align: top;
+}
+
+.defaultSkin .mce_list_upper_alpha::before {
+    content: "A.";
+    line-height: 1em;
+    vertical-align: top;
+}
+
+.defaultSkin .mce_list_upper_roman::before {
+    content: "IV.";
+    line-height: 1em;
+    vertical-align: top;
+}

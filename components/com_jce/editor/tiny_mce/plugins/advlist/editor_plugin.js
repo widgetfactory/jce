@@ -169,7 +169,13 @@
                     each(t[name], function(item) {
                         item.id = editor.dom.uniqueId();
 
-                        menu.add({id: item.id, title: item.title, onclick: function() {
+                        var style = item.styles.listStyleType, icon = style.replace(/-/g, '_');
+
+                        menu.add({
+                            id: item.id, 
+                            title: item.title,
+                            icon: 'list_' + icon,
+                            onclick: function() {
                                 format = item;
                                 applyListFormat();
                             }});
