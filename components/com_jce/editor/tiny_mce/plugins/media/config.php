@@ -42,6 +42,6 @@ class WFMediaPluginConfig
         }
 
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], $tags);
-        $settings['media_live_embed'] = $wf->getParam('media.live_embed', 0, 0);
+        $settings['media_live_embed'] = $wf->getParam('media.live_embed', 0);
     }
 }
