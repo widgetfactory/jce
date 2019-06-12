@@ -237,7 +237,14 @@ class JoomlalinksMenu extends JObject
         $query = $db->getQuery(true);
 
         if (is_object($query)) {
-            $query->select('*')->from('#__menu_types')->where('client_id = 0')->order('title');
+            $query->select('*')->from('#__menu_types')->order('title');
+
+            $version = new JVersion();
+            // only Joomla 3.x uses client_id on menu_types
+            if ($version->isCompatible('3.0')) {
+                $query->where('client_id = 0');
+            }
+
         } else {
             $query = 'SELECT * FROM #__menu_types ORDER By title';
         }
