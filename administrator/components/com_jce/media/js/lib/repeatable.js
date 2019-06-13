@@ -7,6 +7,8 @@
             var $repeatable = $(this).parent('.form-field-repeatable-item'), $parent = $repeatable.parent(), $item = $repeatable.clone(true);
             // append
             $parent.append($item);
+            // update
+            $parent.find(':input').change();
         });
 
         $('.form-field-repeatable-remove').on('click', function(e) {
@@ -14,6 +16,8 @@
             var $repeatable = $(this).parent('.form-field-repeatable-item'), $parent = $repeatable.parent();
             // remove
             $repeatable.remove();
+            // update
+            $parent.find(':input').change();
         });
     });
 })(jQuery);
