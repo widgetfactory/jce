@@ -172,6 +172,7 @@
                 if (e.keyCode === 27) {
                     // cancel event
                     e.preventDefault();
+                    e.stopImmediatePropagation();
                     // close
                     $(div).trigger('modal.close');
                 }
