@@ -259,6 +259,10 @@
                 }
 
                 ed.onObjectResized.add(function(ed, elm, width, height) {
+                    if (!isMediaNode(elm)) {
+                        return;
+                    }
+                    
                     // store values
                     ed.dom.setAttrib(elm, 'data-mce-width', width);
                     ed.dom.setAttrib(elm, 'data-mce-height', height);
