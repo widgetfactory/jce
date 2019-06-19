@@ -175,7 +175,6 @@
 }
 
 .mceModalClose {
-    float: none;
     left: auto;
     position: absolute;
     right: 15px;
