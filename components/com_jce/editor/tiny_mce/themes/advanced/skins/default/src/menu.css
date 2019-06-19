@@ -67,10 +67,8 @@
     height: 100%;
     overflow: auto;
     overflow-x: hidden;
-
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
