@@ -870,6 +870,14 @@
     content: "\e905";
 }
 
+.modernSkin span.mce_columns_delete:before {
+    content: "\e906";
+}
+
+.modernSkin span.mce_columns_add:before {
+    content: "\e907";
+}
+
 .modernSkin span.mce_codesample:before {
     content: "\e9bb";
 }

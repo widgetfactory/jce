@@ -414,6 +414,14 @@
     background-position: -520px -40px;
 }
 
+.defaultSkin span.mce_columns_add {
+    background-position: -560px -40px;
+}
+
+.defaultSkin span.mce_columns_delete {
+    background-position: -580px -40px;
+}
+
 .defaultSkin span.mce_codesample {
     background-position: -260px 0;
 }
@@ -487,6 +495,20 @@
 
 .defaultSkin span.mce_microdata {
     background-position: -340px -40px;
+}
+
+.defaultSkin span.mce_plus {
+    background-position: -200px -40px;
+}
+
+.defaultSkin span.mce_cross,
+.defaultSkin span.mce_trash,
+.defaultSkin span.mce_delete {
+    background-position: -220px -40px;
+}
+
+.defaultSkin span.mce_check {
+    background-position: -540px -40px;
 }
 
 .defaultSkin .mce_list_default:before,
