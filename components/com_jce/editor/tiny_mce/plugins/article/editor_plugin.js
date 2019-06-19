@@ -265,17 +265,24 @@
             if (dom.isBlock(n)) {
                 // get the img parent
                 p = dom.getParent(marker, blocks, 'BODY');
+
                 // split paragraphs / divs
                 if (p.nodeName == 'P' || p.nodeName == 'DIV') {
 
-                    // split
-                    dom.split(p, marker);
+                    // if a column...
+                    if (p.className.indexOf('wf-column')) {
+                        var col = dom.getParent(n, '.wf-columns');
+                        dom.insertAfter(marker, col);
+                    } else {
+                        // split
+                        dom.split(p, marker);
 
-                    ns = marker.nextSibling;
+                        ns = marker.nextSibling;
 
-                    if (ns && ns.nodeName == p.nodeName) {
-                        if (/^(\s|&nbsp;|\u00a00)*?$/.test(h) || h == '<br>') {
-                            dom.remove(ns);
+                        if (ns && ns.nodeName == p.nodeName) {
+                            if (/^(\s|&nbsp;|\u00a00)*?$/.test(h) || h == '<br>') {
+                                dom.remove(ns);
+                            }
                         }
                     }
                 } else {
@@ -300,6 +307,7 @@
                         p = marker.parentNode;
                     }
                 }
+
                 ns = marker.nextSibling;
 
                 if (!ns) {
@@ -382,7 +390,8 @@
 
                     ctrl.setActive(active);
 
-                    ctrl.setButtonLabel('insert', label);
+                    // update label
+                    ctrl.panel.setButtonLabel('insert', label);
 
                     window.setTimeout(function() {
                         title.focus();
