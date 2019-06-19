@@ -1,7 +1,7 @@
 /* Panel */
 
 .defaultSkin .mcePanel {
-    position: absolute;
+    position: relative;
     left: 1px;
     top: 1px;
     z-index: 1000;
@@ -168,7 +168,7 @@
     border-right: 1px solid #ddd;
 }
 
-.defaultSkin .mceSplitButtonPanel::before {
+.defaultSkin.mcePanelSplitButton .mcePanel::before {
     width: 46px;
     height: 8px;
     top: -8px;

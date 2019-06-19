@@ -268,7 +268,11 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background: #fff;
 }
 
+.defaultSkin .mceColumns .mceTableSplitMenu {
+    width: 120px;
+}
+
 .defaultSkin .mceColumns .mceTableSplitMenu td a {
-    width: 32px;
+    width: 24px;
     height: 32px;
 }
