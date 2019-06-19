@@ -314,8 +314,11 @@
 
                 ctrl.setActive(!!v);
 
-                ctrl.setButtonDisabled('remove', !v);
-                ctrl.setButtonLabel('insert', label);
+                // update state
+                ctrl.panel.setButtonDisabled('remove', !v);
+                
+                // update label
+                ctrl.panel.setButtonLabel('insert', label);
 
                 input.focus();
             });
