@@ -29,9 +29,12 @@ class PlgSystemJce extends JPlugin
         }
 
         $document = JFactory::getDocument();
-        $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css', array(
-            'version' => 'auto'
-        ));
+        $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css?' . $document->getMediaVersion());
+    }
+
+    public function onWfContentPreview($context, &$article, &$params, $page)
+    {
+        $article->text = '<style type="text/css">@import url("' . JURI::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
     }
 
     /**
