@@ -163,6 +163,7 @@
             $('.uk-modal-close', div).on('click', function (e) {
                 // cancel event
                 e.preventDefault();
+                e.stopImmediatePropagation();
                 // hide
                 $(div).trigger('modal.close', e);
             });
