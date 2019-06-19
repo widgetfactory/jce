@@ -59,6 +59,10 @@
             return s.replace(/\/+/g, '/');
         },
 
+        toASCII: function(string) {
+            return punycode.encode(string, true).replace(/\x2D$/, '');
+        },
+
         _toUnicode: function(s) {
             var c = s.toString(16).toUpperCase();
 
@@ -68,6 +72,7 @@
 
             return '\\u' + c;
         },
+
         safe: function(s, mode, spaces, textcase) {
             mode = mode || 'utf-8';
 
@@ -94,6 +99,10 @@
             }
 
             s = r;
+
+            if (mode === 'ascii') {
+                s = this.toASCII(s);
+            }
 
             // remove multiple period characters
             s = s.replace(/(\.){2,}/g, '');
