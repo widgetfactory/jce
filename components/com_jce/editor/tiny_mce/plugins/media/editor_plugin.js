@@ -705,7 +705,8 @@
             // Set data attribute and class
             placeholder.attr({
                 'class': classes.join(' '),
-                'data-mce-json': JSON.serialize(o)
+                'data-mce-json': JSON.serialize(o),
+                'data-mce-type': name
             });
 
             // add width values back as data-mce-width attribute
