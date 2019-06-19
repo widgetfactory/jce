@@ -87,11 +87,6 @@ class WFFormatselectPluginConfig
             }
 
             $blocks[] = $key;
-
-            // add div container
-            if ($key === 'div') {
-                $list['div_container'] = 'advanced.div_container';
-            }
         }
 
         // Format list / Remove Format
