@@ -12,7 +12,7 @@
 
         }).on('update', function() {
             // trigger change on all inputs
-            $('input[type="hidden"]', this).change();
+            $(':input[name]', this).change();
         }).sortable({
             axis: 'y',
             update: function(event, ui) {
