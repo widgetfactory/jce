@@ -120,7 +120,7 @@
             }
 
             function update(text) {
-                var doc = iframe.contentWindow.document;
+                var doc = iframe.contentWindow.document, css = [];
 
                 // find scripts in content
                 var scripts = /<script[^>]+>[\s\S]*<\/script>/.exec(text);
@@ -133,8 +133,6 @@
                 html += '<base href="' + s.document_base_url + '" />';
                 html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
                 html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
-
-                var css = [self.url + '/css/preview.css'];
 
                 if (ed.settings.compress.css) {
                     css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&layout=preview&context=' + s.context + '&' + s.token + '=1'];
