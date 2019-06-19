@@ -102,7 +102,7 @@
                 '   </div>' +
                 '</div>';
 
-            var ctrl = cm.createPanelButton('link', {
+            var ctrl = cm.createPanelSplitButton('link', {
                 title: 'link.desc',
                 cmd: 'mceLink',
                 html: html,
@@ -141,7 +141,7 @@
                 ctrl.hidePanel();
             }
 
-            ctrl.onRenderPanel.add(function (c) {
+            ctrl.onRenderPanel.add(function () {
                 Event.add(ed.id + '_link_submit', 'click', function(e) {
                     e.preventDefault();
 
