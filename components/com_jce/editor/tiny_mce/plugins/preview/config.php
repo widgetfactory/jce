@@ -13,7 +13,6 @@ class WFPreviewPluginConfig
     public static function getConfig(&$settings)
     {
         $wf = WFApplication::getInstance();
-        $context = $wf->getContext();
-        $settings['extension_id'] = $context;
+        $settings['extension_id'] = $wf->getContext();
     }
 }
