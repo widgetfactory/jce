@@ -381,8 +381,12 @@
             msg = msg.replace(/%([\w]+)/g, function(match, key) {
                 var value = self.options[key] || '';
 
+                if (key === 'filetypes') {
+                    value = '<span class="uk-text-truncate uk-display-block">' + value + '</span>';
+                }
+
                 if (key === 'max_size') {
-                    value = Wf.String.formatSize(value * 1024);
+                    value = '<strong>' + Wf.String.formatSize(value * 1024) + '</strong>';
                 }
 
                 return value;
@@ -392,7 +396,7 @@
             '   <div class="uk-comment-header uk-flex">' +
             '       <i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted uk-comment-avatar"></i><h4 class="uk-comment-title">' + Wf.translate('upload_drop', 'Drop files here') + '</h4>' + 
             '   </div>' +
-            '   <p class="uk-margin-small uk-comment-meta">' + msg + '</p>' +
+            '   <p class="uk-margin-small uk-comment-meta uk-width-1-2 uk-text-center">' + msg + '</p>' +
             '</div>').appendTo('#upload-queue-block').show()
         },
         /**
