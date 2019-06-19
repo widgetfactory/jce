@@ -54,8 +54,7 @@
 .defaultSkin iframe {
     display: block;
     width: 100%;
-}
-.defaultSkin .mceLeft .mceToolbarRow {
+}.defaultSkin .mceLeft .mceToolbarRow {
     text-align: left
 }
 
@@ -159,8 +158,7 @@
 
 .defaultSkin .mceFlexAuto {
     flex: auto;
-}
-.defaultSkin .mceStatusbar {
+}.defaultSkin .mceStatusbar {
     font-size: 9pt;
     line-height: 32px;
     overflow: visible;
@@ -189,8 +187,7 @@
 
 .defaultSkin .mceStatusbar a:hover {
     text-decoration: underline
-}
-/* Progress,Resize */
+}/* Progress,Resize */
 
 .defaultSkin .mceBlocker {
     position: absolute;
@@ -215,7 +212,49 @@
 .defaultSkin .mcePlaceHolder {
     border: 1px dotted gray
 }
-/* Menu */
+
+.defaultSkin .mcePanel.mceContextPanel::before,
+.defaultSkin .mcePanel.mceContextPanel::after {
+    position: absolute;
+    left: 50%;
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    content: "";
+}
+
+.defaultSkin .mcePanel.mceContextPanel::before {
+    top: -9px;
+    border-bottom-color: rgba(0,0,0,0.2);
+    border-width: 0 9px 9px;
+    margin-left: -9px;
+}
+
+.defaultSkin .mcePanel.mceContextPanel::after {
+    top: -8px;
+    border-bottom-color: #fff;
+    border-width: 0 8px 8px;
+    margin-left: -8px;
+}
+
+.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::before {
+    bottom: -9px;
+    border-top-color: rgba(0,0,0,0.2);
+    border-width: 9px 9px 0;
+    margin-left: -9px;
+    top: initial;
+}
+
+.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::after {
+    bottom: -8px;
+    border-top-color: #fff;
+    border-width: 8px 8px 0;
+    margin-left: -8px;
+    top: initial;
+}/* Menu */
 
 .defaultSkin .mceMenu {
     position: absolute;
@@ -284,10 +323,8 @@
     height: 100%;
     overflow: auto;
     overflow-x: hidden;
-
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
@@ -445,8 +482,7 @@
     left: -1px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
-}
-/* Button */
+}/* Button */
 
 .defaultSkin .mceButton {
     display: inline-block;
@@ -498,8 +534,7 @@
 
 .defaultSkin .mceButtonDisabled .mceButtonLabel {
     color: #888
-}
-/* ListBox */
+}/* ListBox */
 
 .defaultSkin .mceListBox {
     display: table;
@@ -641,8 +676,7 @@ select.mceNativeListBox {
 .mceRtl .mceListBox .mceText {
     text-align: right;
     padding: 0 4px 0 0
-}
-.defaultSkin .mceTextBox {
+}.defaultSkin .mceTextBox {
     height: 32px;
     line-height: 2;
     width: 100%;
@@ -662,8 +696,7 @@ select.mceNativeListBox {
     background: #f5fbfe;
     color: #444;
     box-shadow: inherit;
-}
-/* SplitButton */
+}/* SplitButton */
 
 .mceSplitButton {
     height: 20px;
@@ -933,11 +966,14 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background: #fff;
 }
 
-.defaultSkin .mceColumns .mceTableSplitMenu td a {
-    width: 32px;
-    height: 32px;
+.defaultSkin .mceColumns .mceTableSplitMenu {
+    width: 120px;
 }
-.defaultSkin .mceIcon {
+
+.defaultSkin .mceColumns .mceTableSplitMenu td a {
+    width: 24px;
+    height: 32px;
+}.defaultSkin .mceIcon {
     display: block;
     min-width: 20px;
     height: 20px;
@@ -1353,6 +1389,14 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -520px -40px;
 }
 
+.defaultSkin span.mce_columns_add {
+    background-position: -560px -40px;
+}
+
+.defaultSkin span.mce_columns_delete {
+    background-position: -580px -40px;
+}
+
 .defaultSkin span.mce_codesample {
     background-position: -260px 0;
 }
@@ -1428,6 +1472,20 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -340px -40px;
 }
 
+.defaultSkin span.mce_plus {
+    background-position: -200px -40px;
+}
+
+.defaultSkin span.mce_cross,
+.defaultSkin span.mce_trash,
+.defaultSkin span.mce_delete {
+    background-position: -220px -40px;
+}
+
+.defaultSkin span.mce_check {
+    background-position: -540px -40px;
+}
+
 .defaultSkin .mce_list_default:before,
 .defaultSkin .mce_list_disc:before {
     content: "●";
@@ -1473,11 +1531,10 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     content: "IV.";
     line-height: 1em;
     vertical-align: top;
-}
-/* Panel */
+}/* Panel */
 
 .defaultSkin .mcePanel {
-    position: absolute;
+    position: relative;
     left: 1px;
     top: 1px;
     z-index: 1000;
@@ -1644,7 +1701,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-right: 1px solid #ddd;
 }
 
-.defaultSkin .mceSplitButtonPanel::before {
+.defaultSkin.mcePanelSplitButton .mcePanel::before {
     width: 46px;
     height: 8px;
     top: -8px;
@@ -1681,8 +1738,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mcePanelButtonActive .mceOpen button {
     border-color: #ccc;
     background-color: #ddd;
-}
-.defaultSkin .mceLayout .mceBranding {
+}.defaultSkin .mceLayout .mceBranding {
     width: 100%;
     text-align: center;
     line-height: 20px;
@@ -1707,10 +1763,9 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     font-size: inherit;
     line-height: inherit;
     font-family: inherit;
-}
-.defaultSkin .mce_emotions_icon {
+}.defaultSkin .mce_emotions_icon {
     display: inline-block;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 2em;
     width: auto;
     height: auto;
@@ -1731,8 +1786,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .mce_emotions_icon:hover {
     background: #eee;
     border-radius: 3px;
-}
-/** Path **/
+}/** Path **/
 .mcePathRow {
     overflow: hidden;
 }
@@ -1759,8 +1813,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 
 .mcePathPath {
     display: inline-block;
-}
-.defaultSkin .mceStatusbar .mceWordCount {
+}.defaultSkin .mceStatusbar .mceWordCount {
     float: right;
     vertical-align: middle;
     line-height: 18px;
@@ -1769,8 +1822,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mceWordCountLimit {
     font-weight: bold;
     color: #cc0000;
-}
-/* Formats */
+}/* Formats */
 .defaultSkin .mce_formatPreview a {
     font-size: 10px
 }
@@ -1811,15 +1863,13 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mce_h6 span.mceText {
     font-weight: bolder;
     font-size: .75em
-}
-.defaultSkin .mceToolbarSource {
+}.defaultSkin .mceToolbarSource {
     margin: 0;
 }
 
 .defaultSkin .mceToolbarSource .mceFlex {
     justify-content: space-between;
-}
-/* Reset */
+}/* Reset */
 
 .mceModal,
 .mceModal * {
@@ -1996,7 +2046,6 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 }
 
 .mceModalClose {
-    float: none;
     left: auto;
     position: absolute;
     right: 15px;
