@@ -23,3 +23,46 @@
 .defaultSkin .mcePlaceHolder {
     border: 1px dotted gray
 }
+
+.defaultSkin .mcePanel.mceContextPanel::before,
+.defaultSkin .mcePanel.mceContextPanel::after {
+    position: absolute;
+    left: 50%;
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    content: "";
+}
+
+.defaultSkin .mcePanel.mceContextPanel::before {
+    top: -9px;
+    border-bottom-color: rgba(0,0,0,0.2);
+    border-width: 0 9px 9px;
+    margin-left: -9px;
+}
+
+.defaultSkin .mcePanel.mceContextPanel::after {
+    top: -8px;
+    border-bottom-color: #fff;
+    border-width: 0 8px 8px;
+    margin-left: -8px;
+}
+
+.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::before {
+    bottom: -9px;
+    border-top-color: rgba(0,0,0,0.2);
+    border-width: 9px 9px 0;
+    margin-left: -9px;
+    top: initial;
+}
+
+.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::after {
+    bottom: -8px;
+    border-top-color: #fff;
+    border-width: 8px 8px 0;
+    margin-left: -8px;
+    top: initial;
+}
