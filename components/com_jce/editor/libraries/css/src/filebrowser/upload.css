@@ -28,8 +28,8 @@ div#upload-queue-block {
 }
 
 #upload-options .uk-form-row {
-    margin-bottom: 0.5em;
-    margin-top: 0;
+	margin-bottom: 0.5em;
+	margin-top: 0;
 }
 
 .queue-item-loading .queue-item-name input {
@@ -38,20 +38,48 @@ div#upload-queue-block {
 
 .queue-item-loading .queue-item-name .uk-icon:before {
 	content: "";
-	width: 20px;
-	height: 20px;
+	border: 0.25rem solid rgba(0, 0, 0, 0.1);
+	border-left-color: #888;
+	border-radius: 100%;
+	width: 1.125em;
+	height: 1.125em;
+	animation: donut-spin 1.2s linear infinite;
+	box-sizing: border-box;
 	display: inline-block;
-	margin-top: -3px;
-	background: url(../img/load.gif) no-repeat center left;
+	vertical-align: middle;
+	top: -1px;
+	position: relative;
 }
 
-.uk-progress {margin: 5px 0; box-shadow: inherit; background-color: transparent; display: none;}
-.queue-item-loading .uk-progress {display: block;}
-.uk-alert {white-space: normal;margin: 5px 0;}
+@keyframes donut-spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.uk-progress {
+	margin: 5px 0;
+	box-shadow: inherit;
+	background-color: transparent;
+	display: none;
+}
+
+.queue-item-loading .uk-progress {
+	display: block;
+}
+
+.uk-alert {
+	white-space: normal;
+	margin: 5px 0;
+}
 
 .queue-item-size {
-		vertical-align: middle;
-		line-height: 32px;
+	vertical-align: middle;
+	line-height: 32px;
 }
 
 .queue-item .queue-item-name .queue-item-extension {
@@ -86,9 +114,11 @@ div#upload-queue-block {
 	height: 100%;
 }
 
-::-ms-clear {display: none;}
+::-ms-clear {
+	display: none;
+}
 
-.wf-upload-dragover > div {
+.wf-upload-dragover>div {
 	border-width: 2px !important;
 }
 
