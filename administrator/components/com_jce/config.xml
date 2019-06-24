@@ -5,7 +5,6 @@
     </fieldset>
 
     <fieldset name="standard" label="WF_PREFERENCES_STANDARD">
-        <field name="help_url" type="text" size="50" default="https://www.joomlacontenteditor.net" label="WF_HELP_URL" description="WF_HELP_URL_DESC" />
         <field name="feed" type="radio" default="0" label="WF_CPANEL_FEED" description="WF_CPANEL_FEED_DESC" class="btn-group btn-group-yesno">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
