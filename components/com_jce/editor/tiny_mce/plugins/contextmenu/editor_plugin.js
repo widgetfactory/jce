@@ -43,6 +43,10 @@
                 return tinymce.isMac && tinymce.isWebKit;
             };
 
+            var isImage = function (elm) {
+                return elm && elm.nodeName === 'IMG';
+            };
+
             /**
              * This event gets fired when the context menu is shown.
              *
@@ -70,18 +74,18 @@
                  * the context menu we also need to override this expanding so the behavior becomes
                  * normalized. Firefox on os x doesn't expand to the word when using the context menu.
                  */
-                if (isMacWebKit() && e.button === 2 && !isNativeOverrideKeyEvent(e)) {
-                    if (ed.selection.isCollapsed()) {
+                if (isMacWebKit() && e.button === 2 && !isNativeOverrideKeyEvent(e) && ed.selection.isCollapsed()) {                    
+                    if (!isImage(e.target)) {
                         ed.selection.placeCaretAt(e.clientX, e.clientY);
                     }
                 }
 
                 // Select the image if it's clicked. WebKit would other wise expand the selection
-                if (e.target.nodeName == 'IMG') {
+                if (isImage(e.target)) {
                     ed.selection.select(e.target);
                 }
 
-                self._getMenu(ed).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
+                self._getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
                 Event.add(ed.getDoc(), 'click', hideMenu);
 
@@ -122,13 +126,18 @@
             });
         },
 
-        _getMenu: function (ed) {
+        _getMenu: function (ed, e) {
             var self = this,
                 m = self._menu,
                 se = ed.selection,
                 col = se.isCollapsed(),
-                el = se.getNode() || ed.getBody(),
                 am, p;
+
+                var el = e.target;
+
+                if (!el || el.nodeName === "BODY") {
+                    el = se.getNode() || ed.getBody();
+                }
 
             if (m) {
                 m.removeAll();
