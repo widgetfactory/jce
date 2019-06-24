@@ -1662,11 +1662,10 @@
 
                 // Add context menu
                 if (ed && ed.plugins.contextmenu) {
-                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
-                        var sm, se = ed.selection,
-                            el = se.getNode() || ed.getBody();
+                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, el) {
+                        var sm;
 
-                        if (ed.dom.getParent(e, 'td') || ed.dom.getParent(e, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
+                        if (ed.dom.getParent(el, 'td') || ed.dom.getParent(el, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
                             m.add({
                                 title: 'table.desc',
                                 icon: 'table',
@@ -1675,32 +1674,38 @@
                                     action: 'insert'
                                 }
                             });
+
                             m.add({
                                 title: 'table.props_desc',
                                 icon: 'table_props',
                                 cmd: 'mceInsertTable'
                             });
+
                             m.add({
                                 title: 'table.del',
                                 icon: 'delete_table',
                                 cmd: 'mceTableDelete'
                             });
+
                             m.addSeparator();
 
                             // Cell menu
                             sm = m.addMenu({
                                 title: 'table.cell'
                             });
+
                             sm.add({
                                 title: 'table.cell_desc',
                                 icon: 'cell_props',
                                 cmd: 'mceTableCellProps'
                             });
+
                             sm.add({
                                 title: 'table.split_cells_desc',
                                 icon: 'split_cells',
                                 cmd: 'mceTableSplitCells'
                             });
+
                             sm.add({
                                 title: 'table.merge_cells_desc',
                                 icon: 'merge_cells',
@@ -1711,42 +1716,51 @@
                             sm = m.addMenu({
                                 title: 'table.row'
                             });
+
                             sm.add({
                                 title: 'table.row_desc',
                                 icon: 'row_props',
                                 cmd: 'mceTableRowProps'
                             });
+
                             sm.add({
                                 title: 'table.row_before_desc',
                                 icon: 'row_before',
                                 cmd: 'mceTableInsertRowBefore'
                             });
+
                             sm.add({
                                 title: 'table.row_after_desc',
                                 icon: 'row_after',
                                 cmd: 'mceTableInsertRowAfter'
                             });
+
                             sm.add({
                                 title: 'table.delete_row_desc',
                                 icon: 'delete_row',
                                 cmd: 'mceTableDeleteRow'
                             });
+
                             sm.addSeparator();
+                            
                             sm.add({
                                 title: 'table.cut_row_desc',
                                 icon: 'cut',
                                 cmd: 'mceTableCutRow'
                             });
+
                             sm.add({
                                 title: 'table.copy_row_desc',
                                 icon: 'copy',
                                 cmd: 'mceTableCopyRow'
                             });
+
                             sm.add({
                                 title: 'table.paste_row_before_desc',
                                 icon: 'paste',
                                 cmd: 'mceTablePasteRowBefore'
                             }).setDisabled(!clipboardRows);
+
                             sm.add({
                                 title: 'table.paste_row_after_desc',
                                 icon: 'paste',
@@ -1763,11 +1777,13 @@
                                 icon: 'col_before',
                                 cmd: 'mceTableInsertColBefore'
                             });
+
                             sm.add({
                                 title: 'table.col_after_desc',
                                 icon: 'col_after',
                                 cmd: 'mceTableInsertColAfter'
                             });
+
                             sm.add({
                                 title: 'table.delete_col_desc',
                                 icon: 'delete_col',
@@ -1871,9 +1887,8 @@
                 mceInsertTable: function (val) {
                     winMan.open({
                         url: url,
-                        width: 640 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.table_delta_height', 0)),
-                        inline: 1,
+                        width: 800 + parseInt(ed.getLang('table.table_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.table_delta_height', 0)),
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
@@ -1884,10 +1899,9 @@
                 mceTableRowProps: function () {
                     winMan.open({
                         url: url + '&layout=row',
-                        width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
-                        inline: 1,
-                        size: 'mce-modal-landscape-large'
+                        width: 800 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
+                        size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
                         layout: "row"
@@ -1896,10 +1910,9 @@
                 mceTableCellProps: function () {
                     winMan.open({
                         url: url + '&layout=cell',
-                        width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
-                        inline: 1,
-                        size: 'mce-modal-landscape-large'
+                        width: 800 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
+                        size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
                         layout: "cell"
