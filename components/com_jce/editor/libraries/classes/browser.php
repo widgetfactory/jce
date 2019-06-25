@@ -395,20 +395,21 @@ class WFFileBrowser extends JObject
                 // remove leading slash
                 $id = ltrim($item['id'], '/');
 
-                return !in_array($id, $filters);
+                //return !in_array($id, $filters);
 
-                /*foreach($filters as $filter) {
-            // show this folder
-            if ($filter{0} === "+") {
-            return substr($filter, 1) === $id;
-            }
-            // hide this folder
-            if ($filter{0} === "-") {
-            $filter = substr($filter, 1);
-            }
+                foreach ($filters as $filter) {
+                    // show this folder
+                    if ($filter{0} === "+") {
+                        return substr($filter, 1) === $id;
+                    }
 
-            return $filter !== $id;
-            }*/
+                    // hide this folder
+                    if ($filter{0} === "-") {
+                        $filter = substr($filter, 1);
+                    }
+
+                    return $filter !== $id;
+                }
             });
         }
 
@@ -1279,9 +1280,9 @@ class WFFileBrowser extends JObject
                 }
             } else {
                 $data = array(
-                    'name' => basename($result->path)
+                    'name' => basename($result->path),
                 );
-                
+
                 $event = $this->fireEvent('on' . ucfirst($result->type) . 'Rename', array($destination));
 
                 // merge event data with default values
@@ -1376,9 +1377,9 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $data = array(
-                        'name' => $filesystem->toRelative($result->path)
+                        'name' => $filesystem->toRelative($result->path),
                     );
-                    
+
                     $event = $this->fireEvent('on' . ucfirst($result->type) . 'Copy', array($item));
 
                     // merge event data with default values
@@ -1464,9 +1465,9 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $data = array(
-                        'name' => $filesystem->toRelative($result->path)
+                        'name' => $filesystem->toRelative($result->path),
                     );
-                    
+
                     $event = $this->fireEvent('on' . ucfirst($result->type) . 'Move', array($item));
 
                     // merge event data with default values
