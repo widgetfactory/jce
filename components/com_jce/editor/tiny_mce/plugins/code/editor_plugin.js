@@ -16,22 +16,22 @@
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
-        function clean(s) {
-            // remove javascript comments
-            s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
-            s = s.replace(/(\n\/\/ \]\]>)$/g, '');
+    function clean(s) {
+        // remove javascript comments
+        s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
+        s = s.replace(/(\n\/\/ \]\]>)$/g, '');
 
-            // remove css comments
-            s = s.replace(/^(<!--\n)/g, '');
-            s = s.replace(/(\n-->)$/g, '');
+        // remove css comments
+        s = s.replace(/^(<!--\n)/g, '');
+        s = s.replace(/(\n-->)$/g, '');
 
-            //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
-            //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
-            //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
-            //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
+        //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
+        //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
+        //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
+        //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
 
-            return s;
-        }
+        return s;
+    }
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
@@ -77,17 +77,6 @@
                     }
                 });
 
-                ed.parser.addNodeFilter('pre', function (nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i],
-                            cls = node.attr('class');
-
-                        if (/mce-item-curlycode/.test(cls)) {
-                            node.unwrap();
-                        }
-                    }
-                });
-
                 // Convert span placeholders to script elements
                 ed.serializer.addNodeFilter('script,div,span,pre', function (nodes, name, args) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
@@ -102,10 +91,6 @@
                             self._buildStyle(node);
                         }
 
-                        if (name === "pre" && /mce-item-shortcode/.test(cls)) {
-                            node.unwrap();
-                        }
-
                         if (name == 'div' && node.attr('data-mce-type') == 'noscript') {
                             self._buildNoScript(node);
                         }
@@ -114,7 +99,7 @@
 
                 ed.serializer.addNodeFilter('style', function (nodes, name, args) {
                     var node, value = '';
-                    
+
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         node = nodes[i];
 
@@ -180,38 +165,16 @@
                                 o.name = 'php';
                             }
                         }
-
-                        if (o.name === "pre.mce-item-shortcode") {
-                            o.name = 'shortcode';
-                        }
                     });
 
                 }
 
-                if (ed.settings.content_css !== false)
+                if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
+                }
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {
-
-                if (ed.settings.code_protect_shortcode) {
-                    o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function (match, tag, attribs, content) {
-                        var data = '{' + tag + attribs + '}';
-
-                        // if there is content, there must be a closing tag
-                        if (content) {
-                            // encode html-like syntax
-                            if (/</.test(content)) {
-                                content = ed.dom.encode(content);
-                            }
-
-                            data += content;
-                            data += '{/' + tag + '}';
-                        }
-
-                        return '<pre class="mce-item-shortcode">' + data + '</pre>';
-                    });
-                }
 
                 // test for PHP, Script or Style
                 if (/<(\?|script|style)/.test(o.content)) {
