@@ -783,7 +783,9 @@
         // fix table borders
         if (o.wordContent) {
 
-            var borderColors = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
+            var borderColors    = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
+            var borderWidth     = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'];
+
             var positions = ['top', 'right', 'bottom', 'left'];
 
             each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
@@ -814,6 +816,20 @@
                             }
 
                             value = namedColorToHex(value);
+                        }
+
+                        if (name.indexOf('width') !== -1) {                            
+                            if (value === 'initial' || value === 'inherit') {
+                                each(borderWidth, function (str) {
+                                    var val = dom.getStyle(n, str);
+
+                                    if (/(initial|inherit)/.test(val)) {
+                                        return true;
+                                    }
+
+                                    value = val;
+                                });
+                            }
                         }
 
                         // Word uses "medium" as the default border-width
@@ -852,16 +868,24 @@
                 each(styles, function (value, name) {
                     
                     // remove styles with no width value
-                    if (name.indexOf('-width') !== -1 && value === "") {
-                        var prefix = name.replace(/-width/, '');
+                    if (name.indexOf('-width') !== -1) {
+                        
+                        if (value === '') {
+                            var prefix = name.replace(/-width/, '');
 
-                        delete styles[prefix + '-style'];
-                        delete styles[prefix + '-color'];
-                        delete styles[name];
+                            delete styles[prefix + '-style'];
+                            delete styles[prefix + '-color'];
+                            delete styles[name];
+                        }
                     }
 
                     // convert named colors to hex
                     if (name.indexOf('color') !== -1) {
+                        
+                        if (value === 'currentcolor' || value === 'windowtext' || value === 'initial') {
+                            value = '#000000';
+                        }
+                        
                         styles[name] = namedColorToHex(value);
                     }
                 });
