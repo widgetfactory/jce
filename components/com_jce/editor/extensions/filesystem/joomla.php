@@ -549,9 +549,10 @@ class WFJoomlaFileSystem extends WFFileSystem
             // check path does not fall within a restricted folder
             $this->checkRestrictedDirectory($path);
 
-            if (is_file($path)) {
+            // does not appear to be case sensitive...
+            /*if (is_file($path)) {
                 return $result;
-            }
+            }*/
 
             $result->type = 'files';
             $result->state = JFile::move($src, $path);
@@ -559,9 +560,10 @@ class WFJoomlaFileSystem extends WFFileSystem
         } elseif (is_dir($src)) {
             $path = WFUtility::makePath($dir, $dest);
 
-            if (is_dir($path)) {
+            // does not appear to be case sensitive...
+            /*if (is_dir($path)) {
                 return $result;
-            }
+            }*/
 
             $result->type = 'folders';
             $result->state = JFolder::move($src, $path);
