@@ -144,6 +144,7 @@ a.browser {
 
 .nav-tabs .mce-toolbar .mce-btn {
     margin: 2px 2px 0 0;
+    height: 32px;
 }
 
 .nav-tabs .mce-toolbar .mce-list-box,
@@ -169,6 +170,7 @@ a.browser {
     max-width: 200px;
     margin: 5px;
     padding: 5px;
+    display: block;
 }
 
 .checkboxes .mceButton>input {
