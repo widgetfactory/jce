@@ -29,9 +29,12 @@ class JceViewHelp extends JViewLegacy
         $params = JComponentHelper::getParams('com_jce');
 
         $registry = new JRegistry($params);
-        $url = $registry->get('preferences.help.url', 'https://www.joomlacontenteditor.net');
-        $method = $registry->get('preferences.help.method', 'reference');
-        $pattern = $registry->get('preferences.help.pattern', '');
+        $url = $registry->get('preferences.help_url', 'https://www.joomlacontenteditor.net');
+        $method = $registry->get('preferences.help_method', 'reference');
+        $pattern = $registry->get('preferences.help_pattern', '/$1/$2/$3');
+
+        // trim url of trailing slash
+        $url = trim($url, '/');
 
         switch ($method) {
             default:

@@ -5,11 +5,26 @@
     </fieldset>
 
     <fieldset name="standard" label="WF_PREFERENCES_STANDARD">
-        <field name="help_url" type="text" size="50" default="https://www.joomlacontenteditor.net" label="WF_HELP_URL" description="WF_HELP_URL_DESC" />
+        
+        <field name="custom_help" type="radio" default="0" label="WF_HELP_CUSTOM" class="btn-group btn-group-yesno" description="WF_HELP_CUSTOM_DESC">
+          <option value="1">JYES</option>
+          <option value="0">JNO</option>
+        </field>
+        
+        <field name="help_url" type="text" size="50" default="" label="WF_HELP_URL" description="WF_HELP_URL_DESC" showon="custom_help:1" />
+
+        <field name="help_method" type="list" default="reference" label="WF_HELP_URL_METHOD" description="WF_HELP_URL_METHOD_DESC" showon="custom_help:1">
+            <option value="reference">WF_HELP_URL_KEYREFERENCE</option>
+            <option value="sef">WF_HELP_URL_SEF</option>
+        </field>
+
+        <field name="help_pattern" type="text" size="50" default="" hint="/$1/$2/$3" label="WF_HELP_PATTERN" description="WF_HELP_PATTERN_DESC" showon="help_method:sef" />
+        
         <field name="feed" type="radio" default="0" label="WF_CPANEL_FEED" description="WF_CPANEL_FEED_DESC" class="btn-group btn-group-yesno">
             <option value="1">WF_OPTION_YES</option>
             <option value="0">WF_OPTION_NO</option>
         </field>
+
         <field name="feed_limit" type="list" default="2" label="WF_CPANEL_FEED_LIMIT" description="WF_CPANEL_FEED_LIMIT_DESC">
             <option value="1">1</option>
             <option value="2">2</option>
