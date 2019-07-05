@@ -111,9 +111,10 @@
             if (s.theme_advanced_statusbar_location == 'none')
                 s.theme_advanced_statusbar_location = 0;
 
-            if (!ed.settings.compress.css && ed.settings.content_css !== false)
+            if (!ed.settings.compress.css && ed.settings.content_css !== false) {
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
-
+            }
+            
             // Init editor
             ed.onInit.add(function () {
                 if (!ed.settings.readonly) {
@@ -181,10 +182,10 @@
 
             // Load CSS
             if (!ed.settings.compress.css) {
-                DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + "/skins/" + ed.settings.skin + "/ui.css");
+                DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + '/skins/' + ed.settings.skin + '/ui.css');
 
                 if (s.skin_variant) {
-                    DOM.loadCSS(url + "/skins/" + ed.settings.skin + "/ui_" + s.skin_variant + ".css");
+                    DOM.loadCSS(url + '/skins/' + ed.settings.skin + '/ui_' + s.skin_variant + '.css');
                 }
             }
         },
@@ -883,8 +884,8 @@
                 //height: 560,
                 size: 'mce-modal-landscape-full'
             }, {
-                theme_url: this.url
-            });
+                    theme_url: this.url
+                });
         },
 
         _mceNewDocument: function () {
