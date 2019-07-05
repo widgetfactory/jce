@@ -200,7 +200,9 @@ class WFStyleselectPluginConfig
     {
         $string = trim($string, '"');
         $string = trim($string, "'");
-        $string = htmlentities($string, ENT_NOQUOTES, 'UTF-8');
+
+        // convert from stored value
+        $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
         return trim($string);
     }
