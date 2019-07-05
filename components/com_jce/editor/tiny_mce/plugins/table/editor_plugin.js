@@ -1871,9 +1871,8 @@
                 mceInsertTable: function (val) {
                     winMan.open({
                         url: url,
-                        width: 640 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.table_delta_height', 0)),
-                        inline: 1,
+                        width: 800 + parseInt(ed.getLang('table.table_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.table_delta_height', 0)),
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
@@ -1884,10 +1883,9 @@
                 mceTableRowProps: function () {
                     winMan.open({
                         url: url + '&layout=row',
-                        width: 640 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
-                        inline: 1,
-                        size: 'mce-modal-landscape-large'
+                        width: 800 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
+                        size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
                         layout: "row"
@@ -1896,10 +1894,9 @@
                 mceTableCellProps: function () {
                     winMan.open({
                         url: url + '&layout=cell',
-                        width: 640 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 360 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
-                        inline: 1,
-                        size: 'mce-modal-landscape-large'
+                        width: 800 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
+                        height: 450 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
+                        size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
                         layout: "cell"
