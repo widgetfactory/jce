@@ -35,13 +35,7 @@
         return 'wf_' + guid + (counter++).toString(32);
     }
 
-    var supportDragDrop = !!(window.ProgressEvent && window.FileReader && window.FormData) && !tinymce.isOpera;
-
     var mimes = {};
-
-    function toArray(list) {
-        return Array.prototype.slice.call(list || [], 0);
-    }
 
     // Parses the default mime types string into a mimes lookup map (from plupload.js)
     (function (mime_data) {
@@ -208,7 +202,7 @@
             ed.onPreInit.add(function () {
                 // get list of supported plugins
                 each(ed.plugins, function (o, k) {
-                    if (ed.getParam(k + '_upload') && tinymce.is(o.getUploadURL, 'function') && tinymce.is(o.insertUploadedFile, 'function')) {
+                    if (tinymce.is(o.getUploadURL, 'function') && tinymce.is(o.insertUploadedFile, 'function')) {
                         self.plugins.push(o);
                     }
                 });
@@ -216,6 +210,7 @@
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
+
                 // find and convert upload markers
                 ed.parser.addNodeFilter('img', function (nodes) {
                     var i = nodes.length,
@@ -225,6 +220,7 @@
                         node = nodes[i], cls = node.attr('class'), data = node.attr('data-mce-upload-marker');
 
                         if ((cls && cls.indexOf('upload-placeholder') != -1) || data) {
+
                             // no plugins to upload, remove node
                             if (self.plugins.length == 0) {
                                 node.remove();
@@ -234,6 +230,7 @@
                         }
                     }
                 });
+                
                 // remove upload markers
                 ed.serializer.addNodeFilter('img', function (nodes) {
                     var i = nodes.length,
@@ -257,11 +254,6 @@
             });
 
             ed.onInit.add(function () {
-                // check for support
-                if (!supportDragDrop) {
-                    cancel();
-                    return;
-                }
 
                 // no supported plugins
                 if (self.plugins.length == 0) {
@@ -811,15 +803,6 @@
 
             // send the file object
             sendFile(file);
-        },
-        getInfo: function () {
-            return {
-                longname: 'Drag & Drop and Placeholder Upload',
-                author: 'Ryan Demmer',
-                authorurl: 'https://www.joomlacontenteditor.net',
-                infourl: 'https://www.joomlacontenteditor.net',
-                version: '@@version@@'
-            };
         }
     });
 
