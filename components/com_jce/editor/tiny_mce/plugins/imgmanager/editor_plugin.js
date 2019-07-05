@@ -7,9 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     tinymce.create('tinymce.plugins.ImageManager', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             this.editor = ed;
 
             function isMceItem(n) {
@@ -18,7 +18,7 @@
             }
 
             // Register commands
-            ed.addCommand('mceImageManager', function() {
+            ed.addCommand('mceImageManager', function () {
                 // Internal image object like a flash placeholder
                 var n = ed.selection.getNode();
 
@@ -34,8 +34,8 @@
                     popup_css: false,
                     size: 'mce-modal-portrait-full'
                 }, {
-                    plugin_url: url
-                });
+                        plugin_url: url
+                    });
             });
             // Register buttons
             ed.addButton('imgmanager', {
@@ -43,13 +43,13 @@
                 cmd: 'mceImageManager'
             });
 
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function (ed, cm, n) {
                 cm.setActive('imgmanager', n.nodeName == 'IMG' && !isMceItem(n));
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 if (ed && ed.plugins.contextmenu) {
-                    ed.plugins.contextmenu.onContextMenu.add(function(th, m, e) {
+                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
                         m.add({
                             title: 'imgmanager.desc',
                             icon: 'imgmanager',
@@ -58,18 +58,8 @@
                     });
                 }
             });
-
-            /*ed.onBeforeRenderUI.add(function() {
-             var DOM = tinymce.DOM;
-
-             if (ed.getParam('imgmanager_hide_xtd_buttons', true)) {
-             tinymce.each(DOM.select('div.image', 'editor-xtd-buttons'), function(n) {
-             DOM.hide(n.parentNode);
-             });
-             }
-             });*/
         },
-        insertUploadedFile: function(o) {
+        insertUploadedFile: function (o) {
             var ed = this.editor,
                 data = this.getUploadConfig();
 
@@ -106,7 +96,7 @@
                         delete o.style;
                     }
 
-                    tinymce.each(attribs, function(k) {
+                    tinymce.each(attribs, function (k) {
                         if (typeof o[k] !== 'undefined') {
                             args[k] = o[k];
                         }
@@ -118,7 +108,7 @@
 
             return false;
         },
-        getUploadURL: function(file) {
+        getUploadURL: function (file) {
             var ed = this.editor,
                 data = this.getUploadConfig();
 
@@ -130,20 +120,11 @@
 
             return false;
         },
-        getUploadConfig: function() {
+        getUploadConfig: function () {
             var ed = this.editor,
-                data = ed.getParam('imgmanager.upload', {});
+                data = ed.getParam('imgmanager', {});
 
-            return data;
-        },
-        getInfo: function() {
-            return {
-                longname: 'Image Manager',
-                author: 'Ryan Demmer',
-                authorurl: 'https://www.joomlacontenteditor.net',
-                infourl: 'https://www.joomlacontenteditor.net/index2.php?option=com_content&amp;task=findkey&amp;pop=1&amp;lang=en&amp;keyref=imgmanager.about',
-                version: '@@version@@'
-            };
+            return data.upload || {};
         }
     });
     // Register plugin
