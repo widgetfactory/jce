@@ -138,16 +138,21 @@
                         if (keys > 1) {
                             name = fmt.name = fmt.name || 'style_' + (counter++);
 
-                            // make sure all attribute values are strings
+                            // make sure all attribute values are strings and decoded
                             if (fmt.attributes) {
                                 each(fmt.attributes, function(value, key) {
-                                    fmt.attributes[key] = value + '';
+                                    if (key === 'onclick' || key === 'ondblclick') {
+                                        fmt.attributes[key] = 'return false;';
+                                        key = 'data-mce-' + key;
+                                    }
+
+                                    fmt.attributes[key] = ed.dom.decode(value) + '';
                                 });
                             }
 
                             if (fmt.styles) {
                                 each(fmt.styles, function(value, key) {
-                                    fmt.styles[key] = value + '';
+                                    fmt.styles[key] = ed.dom.decode(value) + '';
                                 });
                             }
 
