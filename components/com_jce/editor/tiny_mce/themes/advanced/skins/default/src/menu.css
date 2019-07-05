@@ -72,7 +72,7 @@
 }
 
 .defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
-    height: calc(100% - 37px);
+    height: calc(100% - 30px);
 }
 
 .defaultSkin .mceMenu .mceMenuItemHidden {
