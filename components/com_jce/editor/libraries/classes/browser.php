@@ -341,12 +341,32 @@ class WFFileBrowser extends JObject
 
     protected function checkPathAccess($path)
     {
-        $filter = $this->get('filter');
+        $filters = $this->get('filter');
 
-        if (!empty($filter)) {
+        if (!empty($filters)) {
             $path = ltrim($path, '/');
 
-            return !in_array($path, (array) $filter);
+            foreach ($filters as $filter) {
+                $filter = trim($filter);
+                
+                // show this folder
+                if ($filter{0} === "+") {
+                    $path_parts     = explode('/', $path);
+                    $filter_parts   = explode('/', substr($filter, 1));
+
+                    // filter match
+                    if (!(empty(array_intersect_assoc($filter_parts, $path_parts)))) {
+                        return true;
+                    }
+                    
+                } else if ($filter{0} === "-") {
+                    return $path !== substr($filter, 1);
+                } else {
+                    return $filter !== $path;
+                }
+            }
+
+            return false;
         }
 
         return true;
@@ -387,30 +407,9 @@ class WFFileBrowser extends JObject
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFolders($relative, $filter, $sort);
 
-        $filters = $this->get('filter');
-
-        // remove filtered items
-        if (!empty($filters)) {
-            $list = array_filter($list, function ($item) use ($filters) {
-                // remove leading slash
-                $id = ltrim($item['id'], '/');
-
-                return !in_array($id, $filters);
-
-                /*foreach($filters as $filter) {
-            // show this folder
-            if ($filter{0} === "+") {
-            return substr($filter, 1) === $id;
-            }
-            // hide this folder
-            if ($filter{0} === "-") {
-            $filter = substr($filter, 1);
-            }
-
-            return $filter !== $id;
-            }*/
-            });
-        }
+        $list = array_filter($list, function ($item) {
+            return $this->checkPathAccess($item['id']);
+        });
 
         return $list;
     }
@@ -1279,9 +1278,9 @@ class WFFileBrowser extends JObject
                 }
             } else {
                 $data = array(
-                    'name' => basename($result->path)
+                    'name' => basename($result->path),
                 );
-                
+
                 $event = $this->fireEvent('on' . ucfirst($result->type) . 'Rename', array($destination));
 
                 // merge event data with default values
@@ -1376,9 +1375,9 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $data = array(
-                        'name' => $filesystem->toRelative($result->path)
+                        'name' => $filesystem->toRelative($result->path),
                     );
-                    
+
                     $event = $this->fireEvent('on' . ucfirst($result->type) . 'Copy', array($item));
 
                     // merge event data with default values
@@ -1464,9 +1463,9 @@ class WFFileBrowser extends JObject
                     }
                 } else {
                     $data = array(
-                        'name' => $filesystem->toRelative($result->path)
+                        'name' => $filesystem->toRelative($result->path),
                     );
-                    
+
                     $event = $this->fireEvent('on' . ucfirst($result->type) . 'Move', array($item));
 
                     // merge event data with default values
