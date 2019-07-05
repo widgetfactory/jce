@@ -1,5 +1,5 @@
-@import url('ui.css');
-@import url('../default/ui.admin.css');
+@import url('ui.css?@@etag@@');
+@import url('../default/ui.admin.css?@@etag@@');
 
 .mceEditor .mceToolbarItem .mceSplitButton .mceIcon {
     margin: 5px 2px;

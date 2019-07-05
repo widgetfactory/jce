@@ -1,4 +1,4 @@
-@import url('ui.css');
+@import url('ui.css?@@etag@@');
 
 .defaultSkin .mceToolbar {
 	border: 0 none;

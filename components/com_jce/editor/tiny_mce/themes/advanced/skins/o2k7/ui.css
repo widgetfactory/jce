@@ -1,4 +1,4 @@
-@import url('../default/ui.css');
+@import url('../default/ui.css?@@etag@@');
 
 .o2k7Skin .mceLayout {
     border-left: 1px solid #ABC6DD;

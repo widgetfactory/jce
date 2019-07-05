@@ -1,6 +1,6 @@
-@import url('ui.css');
-@import url('ui_silver.css');
-@import url('ui_black.css');
+@import url('ui.css?@@etag@@');
+@import url('ui_silver.css?@@etag@@');
+@import url('ui_black.css?@@etag@@');
 
 .o2k7Skin .mceToolbar {
 	border: 0 none;
