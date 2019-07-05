@@ -1,49 +1,110 @@
 .wf-columns {
     display: flex;
+    flex-wrap: wrap;
 }
 
-.wf-columns > *{
-    flex-basis: 0;
+.wf-column {
     flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
     max-width: 100%;
+
+    margin-left: 0.5em;
+    box-sizing: border-box;
 }
 
-.wf-columns > .wf-column {
-    margin-left: 1em;
-}
-
-.wf-columns > .wf-column:first-child {
+.wf-column:first-child {
     margin-left: inherit;
 }
 
+.wf-column:last-child {
+    margin-right: inherit;
+}
+
+/* 
+UIKit : uk-flex-wrap
+*/
 .wf-columns-wrap {
     flex-wrap: wrap
 }
 
+/* 
+UIKit : uk-wrap-reverse
+*/
 .wf-columns-wrap-reverse {
     flex-wrap: wrap-reverse
 }
 
+/* 
+UIKit : uk-wrap-stretch
+*/
 .wf-columns-wrap-stretch {
     align-content: stretch
 }
 
+/* 
+UIKit : uk-wrap-top
+*/
 .wf-columns-wrap-top {
     align-content: flex-start
 }
 
+/* 
+UIKit : uk-wrap-middle
+*/
 .wf-columns-wrap-middle {
     align-content: center
 }
 
+/* 
+UIKit : uk-wrap-bottom
+*/
 .wf-columns-wrap-bottom {
     align-content: flex-end
 }
 
+/* 
+UIKit : uk-wrap-between
+*/
 .wf-columns-wrap-between {
     align-content: space-between
 }
 
+/* 
+UIKit : uk-wrap-around
+*/
 .wf-columns-wrap-around {
     align-content: space-around
+}
+
+@media (max-width: 640px) {
+    .wf-columns-stack-small>.wf-column {
+        width: 100%;
+        margin-left: inherit;
+        margin-right: inherit;
+    }
+}
+
+@media (max-width: 960px) {
+    .wf-columns-stack-medium>.wf-column {
+        width: 100%;
+        margin-left: inherit;
+        margin-right: inherit;
+    }
+}
+
+@media (max-width: 1200px) {
+    .wf-columns-stack-large>.wf-column {
+        width: 100%;
+        margin-left: inherit;
+        margin-right: inherit;
+    }
+}
+
+@media (max-width: 1600px) {
+    .wf-columns-stack-xlarge>.wf-column {
+        width: 100%;
+        margin-left: inherit;
+        margin-right: inherit;
+    }
 }
