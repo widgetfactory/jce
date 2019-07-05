@@ -28,6 +28,11 @@ class PlgSystemJce extends JPlugin
             return;
         }
 
+        // only if enabled
+        if ((int) $this->params->get('column_styles', 1) === 0) {
+            return;
+        }
+
         $document = JFactory::getDocument();
         $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css?' . $document->getMediaVersion());
     }

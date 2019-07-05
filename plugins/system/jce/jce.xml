@@ -16,7 +16,19 @@
     <folder>fields</folder>
   </files>
   <languages folder="administrator/language/en-GB">
-      <language tag="en-GB">en-GB.plg_system_jce.ini</language>
-      <language tag="en-GB">en-GB.plg_system_jce.sys.ini</language>
+    <language tag="en-GB">en-GB.plg_system_jce.ini</language>
+    <language tag="en-GB">en-GB.plg_system_jce.sys.ini</language>
   </languages>
+
+  <config>
+    <fields name="params">
+      <fieldset name="options">
+        <field name="column_styles" type="radio" default="1" label="PLG_SYSTEM_JCE_COLUMN_STYLES_LABEL" description="PLG_SYSTEM_JCE_COLUMN_STYLES_DESC" class="btn-group btn-group-yesno">
+          <option value="1">JYES</option>
+          <option value="0">JNO</option>
+        </field>
+      </fieldset>
+    </fields>
+  </config>
+
 </extension>
