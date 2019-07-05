@@ -52,14 +52,17 @@ class JceViewProfile extends JViewLegacy
         //$this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
 
-        $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jce/media/css/profile.min.css?' . WF_VERSION);
+        // version has
+        $hash = md5(WF_VERSION);
 
-        $document->addScript('components/com_jce/media/js/core.min.js?' . WF_VERSION);
-        $document->addScript('components/com_jce/media/js/profile.min.js?' . WF_VERSION);
+        $document = JFactory::getDocument();
+        $document->addStyleSheet('components/com_jce/media/css/profile.min.css?' . $hash);
+
+        $document->addScript('components/com_jce/media/js/core.min.js?' . $hash);
+        $document->addScript('components/com_jce/media/js/profile.min.js?' . $hash);
 
         // default theme
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . WF_VERSION);
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
     }
 
     /**
