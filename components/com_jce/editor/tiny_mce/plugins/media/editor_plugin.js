@@ -20,29 +20,6 @@
     // list of valid child elements
     //var validChildren = '#|address|blockquote|div|dl|fieldset|form|h1|h2|h3|h4|h5|h6|hr|menu|ol|p|pre|table|ul|a|abbr|b|bdo|br|button|cite|code|del|dfn|em|embed|i|iframe|img|input|ins|kbd|label|map|noscript|object|q|s|samp|script|select|small|span|strong|sub|sup|textarea|u|var|#text|#comment|article|aside|details|dialog|figure|header|footer|hgroup|section|nav|audio|canvas|command|datalist|mark|meter|output|progress|time|wbr|video|ruby|bdi|keygen|object';
 
-    function toArray(obj) {
-        var undef, out, i;
-
-        if (obj && !obj.splice) {
-            out = [];
-
-            for (i = 0; true; i++) {
-                if (obj[i])
-                    out[i] = obj[i];
-                else
-                    break;
-            }
-
-            return out;
-        }
-
-        return obj;
-    }
-
-    function ucfirst(s) {
-        return s.charAt(0).toUpperCase() + s.substring(1);
-    }
-
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
@@ -259,6 +236,10 @@
                 }
 
                 ed.onObjectResized.add(function(ed, elm, width, height) {
+                    if (!isMediaNode(elm)) {
+                        return;
+                    }
+                    
                     // store values
                     ed.dom.setAttrib(elm, 'data-mce-width', width);
                     ed.dom.setAttrib(elm, 'data-mce-height', height);
