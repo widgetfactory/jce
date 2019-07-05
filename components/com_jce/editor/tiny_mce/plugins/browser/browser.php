@@ -88,6 +88,10 @@ class WFBrowserPlugin extends WFMediaManager
         $document = WFDocument::getInstance();
         $layout = $app->input->getCmd('layout', 'plugin');
 
+        // update some document variables
+        $document->setName('browser');
+        $document->setTitle(JText::_('WF_BROWSER_TITLE'));
+
         if ($document->get('standalone') == 1) {
             if ($layout === 'plugin') {
                 $document->addScript(array('window.min'), 'plugins');
