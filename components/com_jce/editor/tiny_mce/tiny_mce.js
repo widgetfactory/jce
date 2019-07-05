@@ -63,7 +63,6 @@
     //include('dom/Range.js');
     //include('dom/TridentSelection.js');
     include('dom/Sizzle.js');
-    include('dom/Element.js');
     include('dom/Selection.js');
     include('dom/Serializer.js');
     include('dom/ScriptLoader.js');
@@ -91,6 +90,7 @@
     include('ui/ContextPanel.js');
     include('ui/PanelButton.js');
     include('ui/PanelSplitButton.js');
+    include('ui/ButtonDialog.js');
 
     // tinymce.*
     include('AddOnManager.js');
