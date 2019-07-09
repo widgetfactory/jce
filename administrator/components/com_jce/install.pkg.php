@@ -150,8 +150,14 @@ class pkg_jceInstallerScript
             return true;
         }
 
+        // php version check
+        if (version_compare(PHP_VERSION, '5.6', 'lt')) {
+            throw new RuntimeException('JCE requires PHP 5.6 or later!');
+        }
+
         $jversion = new JVersion();
 
+        // joomla version check
         if (version_compare($jversion->getShortVersion(), '3.6', 'lt')) {
             throw new RuntimeException('JCE requires Joomla 3.6 or later.');
         }
