@@ -1,9 +1,9 @@
-.wf-columns {
+.wf-columns:not(.uk-flex) {
     display: flex;
     flex-wrap: wrap;
 }
 
-.wf-column {
+.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: auto;
@@ -13,11 +13,11 @@
     box-sizing: border-box;
 }
 
-.wf-column:first-child {
+.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto):first-child {
     margin-left: inherit;
 }
 
-.wf-column:last-child {
+.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto):last-child {
     margin-right: inherit;
 }
 
@@ -78,7 +78,7 @@ UIKit : uk-wrap-around
 }
 
 @media (max-width: 640px) {
-    .wf-columns-stack-small>.wf-column {
+    .wf-columns-stack-small>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
@@ -86,7 +86,7 @@ UIKit : uk-wrap-around
 }
 
 @media (max-width: 960px) {
-    .wf-columns-stack-medium>.wf-column {
+    .wf-columns-stack-medium>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
@@ -94,7 +94,7 @@ UIKit : uk-wrap-around
 }
 
 @media (max-width: 1200px) {
-    .wf-columns-stack-large>.wf-column {
+    .wf-columns-stack-large>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
@@ -102,7 +102,7 @@ UIKit : uk-wrap-around
 }
 
 @media (max-width: 1600px) {
-    .wf-columns-stack-xlarge>.wf-column {
+    .wf-columns-stack-xlarge>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
