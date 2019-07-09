@@ -150,10 +150,24 @@ class plgEditorJCE extends JPlugin
         if (empty($id)) {
             $id = $name;
         }
+
+        // Data object for the layout
+		$textarea = new stdClass;
+		$textarea->name    = $name;
+		$textarea->id      = $id;
+		$textarea->class   = 'mce_editable wf-editor';
+		$textarea->cols    = $col;
+		$textarea->rows    = $row;
+		$textarea->width   = $width;
+		$textarea->height  = $height;
+		$textarea->content = $content;
+
+		// Render Editor markup
         $editor = '<div class="editor wf-editor-container mb-2">';
-        $editor .= '  <div class="wf-editor-header"></div>';
-        $editor .= '  <textarea spellcheck="false" id="' . $id . '" name="' . $name . '" cols="' . $col . '" rows="' . $row . '" style="width:' . $width . ';height:' . $height . ';" class="wf-editor mce_editable" wrap="off">' . $content . '</textarea>';
+        $editor .= '<div class="wf-editor-header"></div>';
+		$editor .= JLayoutHelper::render('editor.textarea', $textarea, __DIR__ . '/layouts');
         $editor .= '</div>';
+        
         $editor .= $this->displayButtons($id, $buttons, $asset, $author);
 
         return $editor;
