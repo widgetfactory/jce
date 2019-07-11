@@ -97,6 +97,11 @@ a.browser {
 
 .com_jce .form-horizontal .controls {
     position: relative;
+    margin: 0;
+}
+
+.com_jce .form-horizontal .control-label + .controls {
+    margin-left: 180px;
 }
 
 #tabs-editor .nav-tabs>li>a,
@@ -260,6 +265,27 @@ a.browser {
     z-index: 1000;
 }
 
+.form-field-repeatable-item {
+    display: flex;
+}
+
+.form-field-repeatable-item > button {
+    max-height: 28px;
+}
+
+.form-horizontal .form-field-repeatable-item textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-horizontal .form-field-repeatable-item .control-group {
+    margin: 5px 0 0 0;
+}
+
+.form-horizontal .form-field-repeatable-item .control-group:first-child {
+    margin: 0;
+}
+
 .form-field-repeatable-item .form-field-repeatable-remove {
     display: none;
 }
@@ -273,5 +299,5 @@ a.browser {
 }
 
 .form-field-repeatable-item+.form-field-repeatable-item {
-    margin-top: 5px;
+    padding-top: 10px;
 }
