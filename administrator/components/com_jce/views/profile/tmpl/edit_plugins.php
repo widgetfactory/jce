@@ -60,7 +60,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
             <div class="row-fluid">
 
                 <?php if ($plugin->form) :
-                    $plugin->fieldsname = "";
+                    $plugin->fieldsname = "config";
                     $plugin->name = $plugin->title;
                     $plugin->description = "";
                     echo JLayoutHelper::render('joomla.content.options_default', $plugin);
