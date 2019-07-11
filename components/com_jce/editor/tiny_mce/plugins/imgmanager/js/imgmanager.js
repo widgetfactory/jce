@@ -46,6 +46,11 @@
 
             Wf.init();
 
+            // add change event to record editing
+            $('#alt').change(function() {
+                $(this).addClass('uk-edited');
+            });
+
             if (n && n.nodeName == 'IMG') {
                 // set button
                 $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
@@ -313,10 +318,15 @@
             if ($('#rollover_tab').hasClass('uk-active')) {
                 $('input.focus', '#rollover_tab').val(src);
             } else {
-                name = Wf.String.stripExt(name);
-                name = name.replace(/[-_]+/g, ' ');
+                // add an alt value only if it has not been manually edited
+                if (!$('#alt').hasClass('uk-edited')) {
+                    name = Wf.String.stripExt(name);
+                    // replace underscore and dash with space
+                    name = name.replace(/[-_]+/g, ' ');
+                    
+                    $('#alt').val(name);
+                }
 
-                $('#alt').val(name);
                 $('#onmouseout').val(src);
                 $('#src').val(src);
 
