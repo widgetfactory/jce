@@ -178,15 +178,16 @@
                 }
             });
 
-            var $navItems = $(':input:enabled', div).filter(function () {
-                return this.getAttribute('tabindex') >= 0;
-            });
-
             $(div).on('keydown.modal', function (e) {
-                if (e.keyCode === 9 && $navItems.length) {
+                if (e.keyCode === 9) {
 
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
+                    var $navItems = $(':input:enabled:visible', div).not('input[type="file"]').filter(function () {
+                        return this.getAttribute('tabindex') !== -1;
+                    });
+
+                    if (!$navItems.length) {
+                        return;
+                    }
 
                     var endIndex = Math.max(0, $navItems.length - 1), idx = $navItems.index(e.target) + 1;
 
@@ -195,6 +196,9 @@
                     }
 
                     $navItems.eq(idx).focus();
+
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
                 }
             });
 
