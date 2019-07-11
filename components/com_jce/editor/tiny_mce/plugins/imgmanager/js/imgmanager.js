@@ -91,7 +91,15 @@
                     }
                 });
 
-                $('#alt').val(ed.dom.getAttrib(n, 'alt'));
+                $('#alt').val(function() {
+                    var val = ed.dom.getAttrib(n, 'alt');
+
+                    if (val) {
+                        $(this).addClass('uk-edited');
+                        return val;
+                    }
+                });
+
                 $('#title').val(ed.dom.getAttrib(n, 'title'));
                 // Margin
                 $.each(['top', 'right', 'bottom', 'left'], function () {
