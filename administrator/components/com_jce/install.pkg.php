@@ -150,16 +150,18 @@ class pkg_jceInstallerScript
             return true;
         }
 
+        $requirements = '<a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" title="Editor Requirements" target="_blank" rel="noopener">https://www.joomlacontenteditor.net/support/documentation/editor/requirements</a>';
+
         // php version check
         if (version_compare(PHP_VERSION, '5.6', 'lt')) {
-            throw new RuntimeException('JCE requires PHP 5.6 or later!');
+            throw new RuntimeException('JCE requires PHP 5.6 or later - ' . $requirements);
         }
 
         $jversion = new JVersion();
 
         // joomla version check
         if (version_compare($jversion->getShortVersion(), '3.6', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.6 or later.');
+            throw new RuntimeException('JCE requires Joomla 3.6 or later - ' . $requirements);
         }
 
         $parent = $installer->getParent();
