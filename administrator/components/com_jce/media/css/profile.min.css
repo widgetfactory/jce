@@ -1229,15 +1229,19 @@ a.browser {
     margin: 0;
 }
 
-.form-field-repeatable-item .form-field-repeatable-remove {
+.form-field-repeatable-item .form-field-repeatable-add {
     display: none;
 }
 
-.form-field-repeatable-item+.form-field-repeatable-item .form-field-repeatable-remove {
+.form-field-repeatable-item:first-child .form-field-repeatable-add {
     display: inline-block;
 }
 
-.form-field-repeatable-item+.form-field-repeatable-item .form-field-repeatable-add {
+.form-field-repeatable-item .form-field-repeatable-remove {
+    display: inline-block;
+}
+
+.form-field-repeatable-item:first-child .form-field-repeatable-remove {
     display: none;
 }
 
