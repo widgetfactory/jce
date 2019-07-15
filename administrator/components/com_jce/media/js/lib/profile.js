@@ -226,6 +226,11 @@
                 return;
             }
 
+            // skip name values that are not submittable
+            if (this.name.indexOf('jform') === -1) {
+                return;
+            }
+
             // get name as escaped string
             var name = this.name.replace('!"#$%&()*+,./:;<=>?@[\]^`{|}~', '\\$1', 'g');
 
