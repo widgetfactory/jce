@@ -10,7 +10,7 @@
             $parent.append($item);
 
             // reset id values of all form items and trigger change
-            $parent.find(':input[name]').each(function() {
+            $parent.find(':input[name]').not('input[type="hidden"]').each(function() {
                 var elm = this, $p = $(this).parents('.form-field-repeatable-item'), idx = $p.index(), x = 0;
 
                 $p.find(':input[name]').each(function(i) {
