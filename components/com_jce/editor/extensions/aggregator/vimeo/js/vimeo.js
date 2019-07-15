@@ -21,9 +21,9 @@ WFAggregator.add('vimeo', {
         color: '',
         autoplay: 0,
         loop: 0,
-        portrait: 0,
-        title: 0,
-        byline: 0,
+        //portrait: 0,
+        //title: 0,
+        //byline: 0,
         fullscreen: 1
     },
 
@@ -43,7 +43,7 @@ WFAggregator.add('vimeo', {
      * Get the Media type
      */
     getType: function () {
-        return $('#vimeo_embed').is(':checked') ? 'flash' : 'iframe';
+        return 'iframe';
     },
     /**
      * Check whether a media type is supported
@@ -67,7 +67,6 @@ WFAggregator.add('vimeo', {
         var self = this,
             data = {},
             args = {},
-            type = this.getType(),
             id = '';
 
         // get variables from query string
@@ -89,21 +88,9 @@ WFAggregator.add('vimeo', {
                 return;
             }
 
-            switch (k) {
-                case 'color':
-                    // remove # from color
-                    if (v.charAt(0) == '#') {
-                        v = v.substr(1);
-                    }
-                    break;
-                case 'portrait':
-                case 'title':
-                case 'byline':
-                    if (type == 'flash') {
-                        k = 'show_' + k;
-                    }
-                    break;
-
+            if (k === 'color' && v.charAt(0) === '#') {
+                // remove # from color
+                v = v.substr(1);
             }
 
             args[k] = v;
@@ -119,11 +106,7 @@ WFAggregator.add('vimeo', {
             }
         }
 
-        if (type == 'flash') {
-            src = 'https://vimeo.com/moogaloop.swf?clip_id=' + id;
-        } else {
-            src = 'https://player.vimeo.com/video/' + id;
-        }
+        src = 'https://player.vimeo.com/video/' + id;
 
         // convert args to URL query string
         var query = $.param(args);
@@ -135,23 +118,13 @@ WFAggregator.add('vimeo', {
 
         data.src = src;
 
-        if (type == 'iframe') {
+        $.extend(data, {
+            frameborder: 0
+        });
+
+        if (args.fullscreen !== 0) {
             $.extend(data, {
-                frameborder: 0
-            });
-
-            if (args.fullscreen !== 0) {
-                $.extend(data, {
-                    allowfullscreen: true
-                });
-            }
-
-        } else {
-            $.extend(true, data, {
-                param: {
-                    allowfullscreen: true,
-                    wmode: 'opaque'
-                }
+                allowfullscreen: true
             });
         }
 
@@ -246,6 +219,6 @@ WFAggregator.add('vimeo', {
     setAttributes: function () {
 
     },
-    onSelectFile: function () {},
-    onInsert: function () {}
+    onSelectFile: function () { },
+    onInsert: function () { }
 });
