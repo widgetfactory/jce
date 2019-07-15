@@ -225,11 +225,17 @@
 
             // sort list
             list.sort(function (a, b) {
-                if (a.value < b.value) {
+                var valueA = a.value || '';
+                var valueB = b.value || '';
+                
+                valueA = valueA.toUpperCase();
+                valueB = valueB.toUpperCase();
+                
+                if (valueA < valueB) {
                     return -1;
                 }
 
-                if (b.value < a.value) {
+                if (valueB < valueA) {
                     return 1;
                 }
 
