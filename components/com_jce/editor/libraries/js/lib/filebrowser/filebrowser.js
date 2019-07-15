@@ -921,20 +921,26 @@
             }).on('tree:nodeclick', function (e, node) {
                 self._changeDir($(node).attr('data-id'));
             }).on('tree:nodeload', function (e, node) {
-                $('#tree-body').trigger('tree:toggleloader', node);
-
-                Wf.JSON.request('getTreeItem', $(node).attr('data-id'), function (o) {
-                    if (o && !o.error) {
-                        $('ul:first', node).remove();
-
-                        $('#tree-body').trigger('tree:createnode', [o.folders, node]);
-                        $('#tree-body').trigger('tree:togglenodestate', [node, true]);
-                    }
-                    $('#tree-body').trigger('tree:toggleloader', node);
-                }, this);
-
+                self._refreshTree(node);
             }).tree();
         },
+
+        _refreshTree: function (node) {
+            node = node || $('.uk-tree-root', '#tree-body');
+            
+            $('#tree-body').trigger('tree:toggleloader', node);
+
+            Wf.JSON.request('getTreeItem', $(node).attr('data-id'), function (o) {
+                if (o && !o.error) {
+                    $('ul:first', node).remove();
+
+                    $('#tree-body').trigger('tree:createnode', [o.folders, node]);
+                    $('#tree-body').trigger('tree:togglenodestate', [node, true]);
+                }
+                $('#tree-body').trigger('tree:toggleloader', node);
+            }, this);
+        },
+
         /**
          * Reset the Manager
          */
@@ -1177,6 +1183,8 @@
 
             if (e) {
                 $('form').append('<input type="hidden" name="refresh" value="1" />');
+
+                this._refreshTree();
             }
 
             // get list from server
