@@ -227,19 +227,8 @@
             list.sort(function (a, b) {
                 var valueA = a.value || '';
                 var valueB = b.value || '';
-                
-                valueA = valueA.toUpperCase();
-                valueB = valueB.toUpperCase();
-                
-                if (valueA < valueB) {
-                    return -1;
-                }
 
-                if (valueB < valueA) {
-                    return 1;
-                }
-
-                return 0;
+                return valueA.localeCompare(valueB);
             });
 
             $.each(list, function (i, item) {
