@@ -341,8 +341,12 @@
                     // remove attributes
                     if (ed.getParam('invalid_attributes')) {
                         var s = ed.getParam('invalid_attributes', '');
-
-                        o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), '<$1$4>');
+ 
+                        o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function() {
+                            // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
+                            var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
+                            return '<' + tag + attribs + '>';
+                        });
                     }
                 }
 
