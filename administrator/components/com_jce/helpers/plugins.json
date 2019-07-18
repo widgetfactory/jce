@@ -189,6 +189,14 @@
         "row": 4,
         "core": 1
     },
+    "noneditable": {
+        "title": "WF_NONEDITABLE_TITLE",
+        "description": "WF_NONEDITABLE_DESC",
+        "icon": "noneditable_editable,noneditable_noneditable",
+        "editable": 1,
+        "row": 4,
+        "core": 1
+    },
     "preview": {
         "title": "WF_PREVIEW_TITLE",
         "description": "WF_PREVIEW_DESC",
