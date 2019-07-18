@@ -170,7 +170,14 @@ abstract class JcePluginsHelper
 
                         $row = (int)$xml->attributes()->row;
 
-                        $attribs->row = $row ? $row : 4;
+                        // set row from passed in value or 0
+                        $attribs->row = $row;
+
+                        // if an icon is set and no row, default to 4
+                        if (!empty($attribs->icon) && !$row) {
+                            $attribs->row = 4;
+                        }
+
                         $attribs->description = (string)$xml->description;
                         $attribs->core = 0;
 
