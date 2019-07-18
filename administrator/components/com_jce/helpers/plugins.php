@@ -168,9 +168,13 @@ abstract class JcePluginsHelper
                             $attribs->editable = 1;
                         }
 
-                        $row = (int)$xml->attributes()->row;
+                        $attribs->row = (int)$xml->attributes()->row;
+                        
+                        // default to "4" if row is not set
+                        if (!empty($attribs->icon) && !$attribs->row) {
+                            $attribs->row = 4;
+                        }
 
-                        $attribs->row = $row ? $row : 4;
                         $attribs->description = (string)$xml->description;
                         $attribs->core = 0;
 
