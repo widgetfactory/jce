@@ -72,6 +72,10 @@ class JFormFieldMediaJce extends JFormFieldMedia
             'class'     => $this->element['class'] . ' input-medium wf-media-input'
         );
 
+        if ($this->readonly) {
+            $extraData['class'] .= ' wf-media-input-readonly';
+        }
+
         return array_merge($data, $extraData);
     }
 }
