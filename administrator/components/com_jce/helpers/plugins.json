@@ -192,9 +192,9 @@
     "noneditable": {
         "title": "WF_NONEDITABLE_TITLE",
         "description": "WF_NONEDITABLE_DESC",
-        "icon": "noneditable_editable,noneditable_noneditable",
+        "icon": "",
         "editable": 1,
-        "row": 4,
+        "row": 0,
         "core": 1
     },
     "preview": {
