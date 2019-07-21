@@ -98,7 +98,6 @@
                 theme_more_colors: 1,
                 theme_row_height: 23,
                 theme_resize_horizontal: 1,
-                theme_resizing_use_cookie: 1,
                 theme_font_sizes: "1,2,3,4,5,6,7",
                 theme_font_selector: "span",
                 theme_show_current_color: 0,
@@ -364,8 +363,8 @@
             }
 
             // Store away the size
-            if (store && s.use_state_cookies) {
-                Cookie.setHash("wf_" + ed.id + "_size", {
+            if (store && s.use_state_cookies !== false) {
+                Cookie.setHash("wf_editor_size_" + ed.id, {
                     cw: w,
                     ch: h
                 });
@@ -603,9 +602,9 @@
                     tabIndex: "-1"
                 });
 
-                if (s.theme_resizing_use_cookie) {
+                if (s.use_state_cookies !== false) {
                     ed.onPostRender.add(function () {
-                        var o = Cookie.getHash("wf_" + ed.id + "_size"),
+                        var o = Cookie.getHash("wf_editor_size_" + ed.id),
                             c = DOM.get(ed.id + '_tbl');
 
                         if (!o) {
