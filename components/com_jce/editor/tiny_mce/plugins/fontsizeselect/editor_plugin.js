@@ -30,16 +30,16 @@
                 s.font_size_style_values = "8pt,10pt,12pt,14pt,18pt,24pt,36pt";
             }
 
-            s.theme_advanced_font_sizes = ed.getParam('fontsizeselect_font_sizes', '8pt,10pt,12pt,14pt,18pt,24pt,36pt');
+            s.theme_font_sizes = ed.getParam('fontsizeselect_font_sizes', '8pt,10pt,12pt,14pt,18pt,24pt,36pt');
 
-            if (tinymce.is(s.theme_advanced_font_sizes, 'string')) {
+            if (tinymce.is(s.theme_font_sizes, 'string')) {
                 s.font_size_style_values = tinymce.explode(s.font_size_style_values);
                 s.font_size_classes = tinymce.explode(s.font_size_classes || '');
 
                 // Parse string value
                 var o = {};
-                ed.settings.theme_advanced_font_sizes = s.theme_advanced_font_sizes;
-                each(ed.getParam('theme_advanced_font_sizes', '', 'hash'), function (v, k) {
+                ed.settings.theme_font_sizes = s.theme_font_sizes;
+                each(ed.getParam('theme_font_sizes', '', 'hash'), function (v, k) {
                     var cl;
 
                     if (k == v && v >= 1 && v <= 7) {
@@ -58,7 +58,7 @@
                     };
                 });
 
-                s.theme_advanced_font_sizes = o;
+                s.theme_font_sizes = o;
             }
 
             ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
@@ -146,7 +146,7 @@
             });
 
             if (c) {
-                each(ed.settings.theme_advanced_font_sizes, function (v, k) {
+                each(ed.settings.theme_font_sizes, function (v, k) {
                     var fz = v.fontSize;
 
                     if (fz >= 1 && fz <= 7) {

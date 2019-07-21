@@ -130,7 +130,7 @@
 
             $('#toggle_insert_span').prop('checked', this.applyActionIsInsert);
 
-            this.fillSelect('text_font_list', 'style_font', ed.getParam('theme_advanced_fonts', this.defaults.Fonts), ';', true);
+            this.fillSelect('text_font_list', 'style_font', ed.getParam('theme_fonts', this.defaults.Fonts), ';', true);
             this.fillSelect('text_size_list', 'style_font_size', this.defaults.Sizes, ';', true);
             this.fillSelect('text_size_measurement', 'style_font_size_measurement', this.defaults.Measurement, ';', true);
             this.fillSelect('text_case', 'style_text_case', "capitalize;uppercase;lowercase", ';', true);

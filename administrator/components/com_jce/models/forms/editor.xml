@@ -38,10 +38,6 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="resizing_use_cookie" type="radio" default="1" label="WF_PARAM_EDITOR_RESIZE_COOKIE" description="WF_PARAM_EDITOR_RESIZE_COOKIE_DESC" showon="resizing:1" class="btn-group btn-group-yesno">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
             <field name="toggle" type="list" default="1" label="WF_PARAM_EDITOR_TOGGLE" description="WF_PARAM_EDITOR_TOGGLE_DESC" class="btn-group btn-group-yesno">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

@@ -76,7 +76,7 @@
                 });
             };
 
-            v = s.fontcolor_foreground_colors || s.theme_advanced_text_colors || '';
+            v = s.fontcolor_foreground_colors || s.theme_text_colors || '';
 
             if (v) {
                 o.colors = v;
@@ -122,7 +122,7 @@
                 });
             };
 
-            v = s.fontcolor_background_colors || s.theme_advanced_background_colors || '';
+            v = s.fontcolor_background_colors || s.theme_background_colors || '';
 
             if (v) {
                 o.colors = v;

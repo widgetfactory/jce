@@ -79,40 +79,43 @@
             ed.settings.skin = ed.forcedHighContrastMode ? 'highcontrast' : ed.settings.skin;
 
             // Setup default buttons
-            if (!s.theme_advanced_buttons1) {
+            if (!s.theme_buttons1) {
                 s = extend({
-                    theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect",
-                    theme_advanced_buttons2: "bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code",
-                    theme_advanced_buttons3: "hr,removeformat,visualaid,|,sub,sup,|,charmap"
+                    theme_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect",
+                    theme_buttons2: "bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code",
+                    theme_buttons3: "hr,removeformat,visualaid,|,sub,sup,|,charmap"
                 }, s);
             }
 
             // Default settings
             self.settings = s = extend({
-                theme_advanced_path: true,
-                theme_advanced_toolbar_location: 'top',
-                theme_advanced_blockformats: "p,address,pre,h1,h2,h3,h4,h5,h6",
-                theme_advanced_toolbar_align: "left",
-                theme_advanced_statusbar_location: "bottom",
-                theme_advanced_fonts: "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats",
-                theme_advanced_more_colors: 1,
-                theme_advanced_row_height: 23,
-                theme_advanced_resize_horizontal: 1,
-                theme_advanced_resizing_use_cookie: 1,
-                theme_advanced_font_sizes: "1,2,3,4,5,6,7",
-                theme_advanced_font_selector: "span",
-                theme_advanced_show_current_color: 0,
+                theme_path: true,
+                theme_toolbar_location: 'top',
+                theme_blockformats: "p,address,pre,h1,h2,h3,h4,h5,h6",
+                theme_toolbar_align: "left",
+                theme_statusbar_location: "bottom",
+                theme_fonts: "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats",
+                theme_more_colors: 1,
+                theme_row_height: 23,
+                theme_resize_horizontal: 1,
+                theme_resizing_use_cookie: 1,
+                theme_font_sizes: "1,2,3,4,5,6,7",
+                theme_font_selector: "span",
+                theme_show_current_color: 0,
                 readonly: ed.settings.readonly
             }, s);
 
-            if ((v = s.theme_advanced_path_location) && v != 'none')
-                s.theme_advanced_statusbar_location = s.theme_advanced_path_location;
+            if ((v = s.theme_path_location) && v != 'none') {
+                s.theme_statusbar_location = s.theme_path_location;
+            }
 
-            if (s.theme_advanced_statusbar_location == 'none')
-                s.theme_advanced_statusbar_location = 0;
+            if (s.theme_statusbar_location == 'none') {
+                s.theme_statusbar_location = 0;
+            }
 
-            if (!ed.settings.compress.css && ed.settings.content_css !== false)
+            if (!ed.settings.compress.css && ed.settings.content_css !== false) {
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
+            }
 
             // Init editor
             ed.onInit.add(function () {
@@ -288,7 +291,7 @@
                 });
             }
 
-            if (s.theme_advanced_toolbar_location == 'external') {
+            if (s.theme_toolbar_location == 'external') {
                 o.deltaHeight = 0;
             }
 
@@ -347,22 +350,22 @@
                 ifr = DOM.get(ed.id + '_ifr');
 
             // Boundery fix box
-            w = Math.max(s.theme_advanced_resizing_min_width || 100, w);
-            h = Math.max(s.theme_advanced_resizing_min_height || 100, h);
-            w = Math.min(s.theme_advanced_resizing_max_width || 0xFFFF, w);
-            h = Math.min(s.theme_advanced_resizing_max_height || 0xFFFF, h);
+            w = Math.max(s.theme_resizing_min_width || 100, w);
+            h = Math.max(s.theme_resizing_min_height || 100, h);
+            w = Math.min(s.theme_resizing_max_width || 0xFFFF, w);
+            h = Math.min(s.theme_resizing_max_height || 0xFFFF, h);
 
             // Resize iframe and container
             DOM.setStyle(ifr, 'height', h);
 
-            if (s.theme_advanced_resize_horizontal) {
+            if (s.theme_resize_horizontal) {
                 DOM.setStyle(e.parentNode, 'max-width', w + 'px');
                 DOM.setStyle(ifr, 'max-width', w + 'px');
             }
 
             // Store away the size
-            if (store && s.theme_advanced_resizing_use_cookie) {
-                Cookie.setHash("TinyMCE_" + ed.id + "_size", {
+            if (store && s.use_state_cookies) {
+                Cookie.setHash("wf_" + ed.id + "_size", {
                     cw: w,
                     ch: h
                 });
@@ -383,8 +386,8 @@
         _createLayout: function (s, tb, o, p) {
             var self = this,
                 ed = self.editor,
-                lo = s.theme_advanced_toolbar_location,
-                sl = s.theme_advanced_statusbar_location,
+                lo = s.theme_toolbar_location,
+                sl = s.theme_statusbar_location,
                 n, ic, etb, c;
 
             if (s.readonly) {
@@ -477,10 +480,10 @@
                 ed = self.editor,
                 di, cf = self.editor.controlManager;
 
-            if (s.theme_advanced_disable && !self._disabled) {
+            if (s.theme_disable && !self._disabled) {
                 di = {};
 
-                each(explode(s.theme_advanced_disable), function (v) {
+                each(explode(s.theme_disable), function (v) {
                     di[v] = 1;
                 });
 
@@ -513,12 +516,12 @@
 
             toolbarGroup = cf.createToolbarGroup('toolbargroup', {
                 'name': ed.getLang('advanced.toolbar'),
-                'tab_focus_toolbar': ed.getParam('theme_advanced_tab_focus_toolbar')
+                'tab_focus_toolbar': ed.getParam('theme_tab_focus_toolbar')
             });
 
             self.toolbarGroup = toolbarGroup;
 
-            a = s.theme_advanced_toolbar_align.toLowerCase();
+            a = s.theme_toolbar_align.toLowerCase();
             a = 'mce' + self._ufirst(a);
 
             n = DOM.add(c, 'div', {
@@ -528,31 +531,31 @@
 
             // Create toolbar and add the controls
             for (i = 1;
-                (v = s['theme_advanced_buttons' + i]); i++) {
+                (v = s['theme_buttons' + i]); i++) {
                 toolbarsExist = true;
 
                 tb = cf.createToolbar("toolbar" + i, {
                     'class': 'mceToolbarRow' + i
                 });
 
-                if (s['theme_advanced_buttons' + i + '_add']) {
-                    v += ',' + s['theme_advanced_buttons' + i + '_add'];
+                if (s['theme_buttons' + i + '_add']) {
+                    v += ',' + s['theme_buttons' + i + '_add'];
                 }
 
-                if (s['theme_advanced_buttons' + i + '_add_before']) {
-                    v = s['theme_advanced_buttons' + i + '_add_before'] + ',' + v;
+                if (s['theme_buttons' + i + '_add_before']) {
+                    v = s['theme_buttons' + i + '_add_before'] + ',' + v;
                 }
 
                 self._addControls(v, tb);
 
                 toolbarGroup.add(tb);
 
-                o.deltaHeight -= s.theme_advanced_row_height;
+                o.deltaHeight -= s.theme_row_height;
             }
 
             // Handle case when there are no toolbar buttons and ensure editor height is adjusted accordingly
             if (!toolbarsExist) {
-                o.deltaHeight -= s.theme_advanced_row_height;
+                o.deltaHeight -= s.theme_row_height;
             }
 
             h.push(toolbarGroup.renderHTML());
@@ -583,7 +586,7 @@
                 'class': 'mcePathRow'
             });
 
-            if (s.theme_advanced_path) {
+            if (s.theme_path) {
                 DOM.add(n, 'span', {
                     id: ed.id + '_path_voice',
                     'class': 'mcePathLabel'
@@ -592,7 +595,7 @@
                 DOM.add(n, 'span', {}, '&#160;');
             }
 
-            if (s.theme_advanced_resizing) {
+            if (s.theme_resizing) {
                 DOM.add(td, 'a', {
                     id: ed.id + '_resize',
                     onclick: "return false;",
@@ -600,9 +603,9 @@
                     tabIndex: "-1"
                 });
 
-                if (s.theme_advanced_resizing_use_cookie) {
+                if (s.theme_resizing_use_cookie) {
                     ed.onPostRender.add(function () {
-                        var o = Cookie.getHash("TinyMCE_" + ed.id + "_size"),
+                        var o = Cookie.getHash("wf_" + ed.id + "_size"),
                             c = DOM.get(ed.id + '_tbl');
 
                         if (!o) {
@@ -715,7 +718,7 @@
                 c.setActive(isLink(link));
             }
 
-            if (s.theme_advanced_path && s.theme_advanced_statusbar_location) {
+            if (s.theme_path && s.theme_statusbar_location) {
                 p = DOM.get(ed.id + '_path') || DOM.add(ed.id + '_path_row', 'span', {
                     id: ed.id + '_path',
                     'class': 'mcePathPath'
@@ -883,8 +886,8 @@
                 //height: 560,
                 size: 'mce-modal-landscape-full'
             }, {
-                theme_url: this.url
-            });
+                    theme_url: this.url
+                });
         },
 
         _mceNewDocument: function () {

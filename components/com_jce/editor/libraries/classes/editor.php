@@ -218,15 +218,14 @@ class WFEditor
                 'statusbar_location' => array('bottom', 'bottom', 'string'),
                 'path' => array(1, 1, 'boolean'),
                 'resizing' => array(1, 0, 'boolean'),
-                'resize_horizontal' => array(1, 1, 'boolean'),
-                'resizing_use_cookie' => array(1, 1, 'boolean'),
+                'resize_horizontal' => array(1, 1, 'boolean')
             );
 
             // set rows key to pass to plugin config
             $settings['rows'] = $this->profile->rows;
 
             foreach ($theme as $k => $v) {
-                $settings['theme_advanced_' . $k] = $wf->getParam('editor.' . $k, $v[0], $v[1], $v[2]);
+                $settings['theme_' . $k] = $wf->getParam('editor.' . $k, $v[0], $v[1], $v[2]);
             }
 
             $settings['width'] = $wf->getParam('editor.width');
@@ -265,6 +264,9 @@ class WFEditor
             $settings['toggle'] = $wf->getParam('editor.toggle', 1, 1);
             $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
             $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
+
+            // use cookies to store state
+            $settings['use_state_cookies'] = (bool) $wf->getParam('editor.use_cookies', 1);
 
             // Set active tab
             $settings['active_tab'] = 'wf-editor-' . $wf->getParam('editor.active_tab', 'wysiwyg');
@@ -454,7 +456,7 @@ class WFEditor
     private function getToolbar()
     {
         $wf = WFApplication::getInstance();
-        $rows = array('theme_advanced_buttons1' => '', 'theme_advanced_buttons2' => '', 'theme_advanced_buttons3' => '');
+        $rows = array('theme_buttons1' => '', 'theme_buttons2' => '', 'theme_buttons3' => '');
 
         // we need a profile object and some defined rows
         if (!is_object($this->profile) || empty($this->profile->rows)) {
@@ -537,7 +539,7 @@ class WFEditor
             }
 
             if (!empty($buttons)) {
-                $rows['theme_advanced_buttons' . $i] = implode(',', $buttons);
+                $rows['theme_buttons' . $i] = implode(',', $buttons);
             }
 
             ++$x;

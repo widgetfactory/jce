@@ -331,6 +331,7 @@ class WFMediaManagerBase extends WFEditorPlugin
             'websafe_textcase' => $textcase,
             'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M'),
             'position' => $this->getParam('editor.filebrowser_position', $this->getParam('editor.browser_position', 'bottom')),
+            'use_state_cookies' => $this->getParam('editor.use_cookies', true)
         );
 
         return WFUtility::array_merge_recursive_distinct($base, $config);

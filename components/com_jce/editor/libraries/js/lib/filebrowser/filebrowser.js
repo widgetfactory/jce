@@ -127,7 +127,8 @@
         websafe_spaces: false,
         websafe_textcase: '',
         date_format: '%d/%m/%Y, %H:%M',
-        allow_download: false
+        allow_download: false,
+        use_cookies: true
     };
 
     FileBrowser.prototype = {
@@ -287,9 +288,9 @@
                 self._showItemDetails();
             });
 
-            var list_limit = Wf.Cookie.get('wf_' + Wf.getName() + '_limit', this.options.list_limit, function (val) {
+            var list_limit = self._getState('limit', this.options.list_limit, function(val) {
                 return !/([0125]+|all)/.test(val) === false;
-            });
+            })
 
             // Set list limit selection
             $('#browser-list-limit-select').val(list_limit);
@@ -297,7 +298,7 @@
             $('#browser-list-limit-select').change(function () {
                 self._limitcount = 0;
 
-                Wf.Cookie.set('wf_' + Wf.getName() + '_limit', $(this).val());
+                self._setState('limit', $(this).val());
 
                 self.refresh();
             });
@@ -448,7 +449,7 @@
                 self.refresh(e);
             });
 
-            var showDetails = Wf.Cookie.get('wf_' + Wf.getName() + '_details', 0, function (val) {
+            var showDetails =this._getState('details', 0, function (val) {
                 val = parseInt(val);
                 return val === 0 || val === 1;
             });
@@ -467,7 +468,7 @@
                 $(this).toggleClass('uk-active');
                 $('main').toggleClass('uk-tree-hidden');
 
-                Wf.Cookie.set('wf_' + Wf.getName() + '_details', $('main').hasClass('uk-tree-hidden') ? 1 : 0);
+                self._setState('details', $('main').hasClass('uk-tree-hidden') ? 1 : 0);
             });
 
             if (this.options.expandable) {
@@ -579,7 +580,7 @@
             });*/
 
             // get the sort value from a cookie
-            this._sortValue = Wf.Cookie.get('wf_' + Wf.getName() + '_sort', '', function (val) {
+            this._sortValue = this._getState('sort', '', function(val) {
                 return /[a-z-]+/.test(val);
             });
 
@@ -603,7 +604,7 @@
                 self._sortValue = direction + type;
 
                 // store in a cookie
-                Wf.Cookie.set('wf_' + Wf.getName() + '_sort', self._sortValue);
+                self._setState('sort', self._sortValue);
 
                 self.refresh();
             }).addClass(function () {
@@ -714,7 +715,7 @@
 
             // get directory from cookie
             if (!src) {
-                dir = Wf.Cookie.get('wf_' + Wf.getName() + '_dir', '', function (val) {
+                dir = this._getState('dir', '', function (val) {
                     return val && self._validatePath(val);
                 });
             }
@@ -1147,6 +1148,22 @@
 
             this._getList(dir);
         },
+
+        _setState: function(name, state) {
+            if (this.options.use_state_cookies) {
+                Wf.Cookie.set("wf_" + Wf.getName() + '_' + name, state);
+            }
+        },
+
+        _getState: function(name, def, callback) {
+            if (!this.options.use_state_cookies) {
+                return def;
+            }
+ 
+            callback = callback || function(val) {return val;}
+            return Wf.Cookie.get('wf_' + Wf.getName() + '_' + name, def, callback);
+        },
+
         /**
          * Retrieve a list of files and folders
          * @param {String} src optional src url eg: images/stories/fruit.jpg
@@ -1157,7 +1174,10 @@
 
             // store directory in cookie
             if ((src || this._dir === '')) {
-                Wf.Cookie.set("wf_" + Wf.getName() + '_dir', this._cleanPath(path));
+
+                if (this.options.use_cookies) {
+                    this._setState('dir', this._cleanPath(path));
+                }
             }
 
             // hide all buttons
