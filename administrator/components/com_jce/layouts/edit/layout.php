@@ -42,17 +42,19 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                                     <?php foreach ($groups as $buttons) : ?>
                                         <!--div class="mce-container mce-flow-layout-item mce-btn-group" role="group"-->
                                         <?php foreach ($buttons as $button) : ?>
-                                                <div tabindex="-1" class="mceToolBarItem <?php echo $button->type; ?> mce-widget mce-btn" data-name="<?php echo $button->name; ?>" role="button" aria-label="<?php echo $button->title; ?>" aria-description="<?php echo $button->description; ?>">
-                                                    <?php foreach ($button->icon as $icon): ?>
-                                                    <div tabindex="-1" class="mceButton <?php echo $button->class; ?>" role="presentation" title="<?php echo $button->title; ?>">
-                                                        <?php if ($button->image) : ?>
-                                                            <span class="mceIcon mceIconImage"><img src="<?php echo $button->image; ?>" alt="" /></span>
-                                                        <?php else : ?>
-                                                            <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
-                                                        <?php endif; ?>
+                                                <?php if (!empty($button->icon)) : ?>
+                                                    <div tabindex="-1" class="mceToolBarItem <?php echo $button->type; ?> mce-widget mce-btn" data-name="<?php echo $button->name; ?>" role="button" aria-label="<?php echo $button->title; ?>" aria-description="<?php echo $button->description; ?>">
+                                                        <?php foreach ($button->icon as $icon): ?>
+                                                        <div tabindex="-1" class="mceButton <?php echo $button->class; ?>" role="presentation" title="<?php echo $button->title; ?>">
+                                                            <?php if ($button->image) : ?>
+                                                                <span class="mceIcon mceIconImage"><img src="<?php echo $button->image; ?>" alt="" /></span>
+                                                            <?php else : ?>
+                                                                <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <?php endforeach; ?>
                                                     </div>
-                                                    <?php endforeach; ?>
-                                                </div>
+                                                <?php endif; ?>
                                             <?php endforeach; ?>
                                         <!--/div-->
                                     <?php endforeach; ?>
