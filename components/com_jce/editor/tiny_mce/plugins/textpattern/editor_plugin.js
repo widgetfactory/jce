@@ -194,78 +194,78 @@
             });
 
             patterns = editor.settings.textpattern_patterns || [{
-                    start: '*',
-                    end: '*',
-                    format: 'italic'
-                },
-                {
-                    start: '**',
-                    end: '**',
-                    format: 'bold'
-                },
-                {
-                    start: '~~',
-                    end: '~~',
-                    format: 'strikethrough'
-                },
-                {
-                    start: '`',
-                    end: '`',
-                    format: 'code'
-                },
-                //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
-                {
-                    start: '![',
-                    end: ')',
-                    cmd: 'InsertMarkdownImage',
-                    remove: true
-                },
-                //{ start: '[', end: ')', format: 'markdownlink' },
-                {
-                    start: '#',
-                    format: 'h1'
-                },
-                {
-                    start: '##',
-                    format: 'h2'
-                },
-                {
-                    start: '###',
-                    format: 'h3'
-                },
-                {
-                    start: '####',
-                    format: 'h4'
-                },
-                {
-                    start: '#####',
-                    format: 'h5'
-                },
-                {
-                    start: '######',
-                    format: 'h6'
-                },
-                {
-                    start: '>',
-                    format: 'blockquote'
-                },
-                {
-                    start: '1. ',
-                    cmd: 'InsertOrderedList'
-                },
-                {
-                    start: '* ',
-                    cmd: 'InsertUnorderedList'
-                },
-                {
-                    start: '- ',
-                    cmd: 'InsertUnorderedList'
-                },
-                {
-                    start: '$$',
-                    end: '$$',
-                    cmd: 'InsertCustomTextPattern'
-                }
+                start: '*',
+                end: '*',
+                format: 'italic'
+            },
+            {
+                start: '**',
+                end: '**',
+                format: 'bold'
+            },
+            {
+                start: '~~',
+                end: '~~',
+                format: 'strikethrough'
+            },
+            {
+                start: '`',
+                end: '`',
+                format: 'code'
+            },
+            //{start: '++', end: '++', format: 'iframe', attribute: 'src'},
+            {
+                start: '![',
+                end: ')',
+                cmd: 'InsertMarkdownImage',
+                remove: true
+            },
+            //{ start: '[', end: ')', format: 'markdownlink' },
+            {
+                start: '#',
+                format: 'h1'
+            },
+            {
+                start: '##',
+                format: 'h2'
+            },
+            {
+                start: '###',
+                format: 'h3'
+            },
+            {
+                start: '####',
+                format: 'h4'
+            },
+            {
+                start: '#####',
+                format: 'h5'
+            },
+            {
+                start: '######',
+                format: 'h6'
+            },
+            {
+                start: '>',
+                format: 'blockquote'
+            },
+            {
+                start: '1. ',
+                cmd: 'InsertOrderedList'
+            },
+            {
+                start: '* ',
+                cmd: 'InsertUnorderedList'
+            },
+            {
+                start: '- ',
+                cmd: 'InsertUnorderedList'
+            },
+            {
+                start: '$$',
+                end: '$$',
+                cmd: 'InsertCustomTextPattern'
+            }
             ];
 
             // Returns a sorted patterns list, ordered descending by start length
@@ -306,31 +306,57 @@
                 }
             }
 
+            function sortPatterns(patterns) {
+                return patterns.sort(function (a, b) {
+                    if (a.start.length > b.start.length) {
+                        return -1;
+                    }
+
+                    if (a.start.length < b.start.length) {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+            }
+
+            function isMatchingPattern(pattern, text, offset, delta) {
+                var textEnd = text.substr(offset - pattern.end.length - delta, pattern.end.length);
+                return textEnd === pattern.end;
+            }
+
+            function hasContent(offset, delta, pattern) {
+                return (offset - delta - pattern.end.length - pattern.start.length) > 0;
+            }
+
             // Finds the best matching end pattern
             function findEndPattern(text, offset, delta) {
-                var patterns, pattern, i;
+                var pattern, i;
+                var patterns = getPatterns();
+                var sortedPatterns = sortPatterns(patterns);
 
                 // Find best matching end
-                patterns = getPatterns();
-                for (i = 0; i < patterns.length; i++) {
-                    pattern = patterns[i];
-                    if (pattern.end && text.substr(offset - pattern.end.length - delta, pattern.end.length) == pattern.end) {
+                for (i = 0; i < sortedPatterns.length; i++) {
+                    pattern = sortedPatterns[i];
+                    if (pattern.end !== undefined && isMatchingPattern(pattern, text, offset, delta) && hasContent(offset, delta, pattern)) {
                         return pattern;
                     }
                 }
             }
 
+            function splitContainer(container, pattern, offset, startOffset, delta) {
+                // Split text node and remove start/end from text node
+                container = startOffset > 0 ? container.splitText(startOffset) : container;
+                container.splitText(offset - startOffset - delta);
+                container.deleteData(0, pattern.start.length);
+                container.deleteData(container.data.length - pattern.end.length, pattern.end.length);
+
+                return container;
+            }
+
             // Handles inline formats like *abc* and **abc**
             function applyInlineFormat(space) {
                 var selection, dom, rng, container, offset, startOffset, text, patternRng, pattern, delta, format;
-
-                function splitContainer() {
-                    // Split text node and remove start/end from text node
-                    container = container.splitText(startOffset);
-                    container.splitText(offset - startOffset - delta);
-                    container.deleteData(0, pattern.start.length);
-                    container.deleteData(container.data.length - pattern.end.length, pattern.end.length);
-                }
 
                 selection = editor.selection;
                 dom = editor.dom;
@@ -343,7 +369,7 @@
                 container = rng.startContainer;
                 offset = rng.startOffset;
                 text = container.data;
-                delta = space ? 1 : 0;
+                delta = space === true ? 1 : 0;
 
                 if (container.nodeType != 3) {
                     return;
@@ -351,7 +377,8 @@
 
                 // Find best matching end
                 pattern = findEndPattern(text, offset, delta);
-                if (!pattern) {
+
+                if (pattern === undefined) {
                     return;
                 }
 
@@ -379,33 +406,14 @@
                     return;
                 }
 
-                if (pattern.format) {
-                    format = editor.formatter.get(pattern.format);
+                format = editor.formatter.get(pattern.format);
 
-                    if (format && format[0].inline) {
-                        splitContainer();
+                if (format && format[0].inline) {
+                    container = splitContainer(container, pattern, offset, startOffset, delta);
+                    editor.formatter.apply(pattern.format, {}, container);
 
-                        /*var args = {};
-
-                        if (pattern.attribute) {
-                            var values  = container.data.split(pattern.delim || ',');
-
-                            tinymce.each(tinymce.explode(pattern.attribute), function(attr, i) {
-                                args[attr] = values[i];
-                            });
-                        }*/
-
-                        editor.formatter.apply(pattern.format, {}, container);
-                        return container;
-                    }
-                }
-
-                /*if (pattern.cmd) {
-                    splitContainer();
-
-                    editor.execCommand(pattern.cmd, false, container);
                     return container;
-                }*/
+                }
             }
 
             // Handles block formats like ##abc or 1. abc
