@@ -1,12 +1,9 @@
 .wf-columns:not(.uk-flex) {
     display: flex;
-    flex-wrap: wrap;
 }
 
 .wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
+    flex: 1;
     max-width: 100%;
 
     margin-left: 0.5em;
@@ -77,11 +74,19 @@ UIKit : uk-wrap-around
     align-content: space-around
 }
 
+.wf-columns-stack-small,
+.wf-columns-stack-medium,
+.wf-columns-stack-large {
+    flex-wrap: wrap;
+}
+
 @media (max-width: 640px) {
     .wf-columns-stack-small>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
+
+        flex: auto;
     }
 }
 
@@ -90,6 +95,8 @@ UIKit : uk-wrap-around
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
+
+        flex: auto;
     }
 }
 
@@ -98,6 +105,8 @@ UIKit : uk-wrap-around
         width: 100%;
         margin-left: inherit;
         margin-right: inherit;
+
+        flex: auto;
     }
 }
 

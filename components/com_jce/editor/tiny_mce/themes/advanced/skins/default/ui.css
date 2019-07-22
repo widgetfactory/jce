@@ -1405,6 +1405,10 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     background-position: -580px -40px;
 }
 
+.defaultSkin span.mce_columns_stack {
+    background-position: -600px -40px;
+}
+
 .defaultSkin span.mce_codesample {
     background-position: -260px 0;
 }
