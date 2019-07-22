@@ -469,8 +469,7 @@
      * @param {Object} state
      */
     function setPlugins() {
-        var self = this,
-            plugins = [];
+        var plugins = [];
 
         $('.ui-sortable > .mce-btn', '.editor-layout').each(function () {
             plugins.push($(this).data('name'));
