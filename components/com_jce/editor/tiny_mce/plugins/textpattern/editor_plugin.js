@@ -406,6 +406,10 @@
                     return;
                 }
 
+                if (!pattern.format) {
+                    return;
+                }
+
                 format = editor.formatter.get(pattern.format);
 
                 if (format && format[0].inline) {
