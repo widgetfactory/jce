@@ -11,6 +11,7 @@
     <description>WF_EDITOR_PLUGIN_DESC</description>
     <files folder="plugins/editors/jce">
         <file plugin="jce">jce.php</file>
+        <folder>layouts</folder>
     </files>
     <languages folder="administrator/language/en-GB">
         <language tag="en-GB">en-GB.plg_editors_jce.ini</language>
