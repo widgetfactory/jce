@@ -13,8 +13,12 @@
 
     tinymce.create('tinymce.plugins.VisualBlocks', {
         init: function (ed, url) {
+            var state = false;
+
             // get state from cookie
-            var state = cookie.get('wf_visualblocks_state');
+            if (ed.getParam('use_state_cookies', true)) {
+                state = cookie.get('wf_visualblocks_state');
+            }
 
             if (tinymce.is(state, "string")) {
                 if (state === "null" || state === "false") {
@@ -29,7 +33,10 @@
 
             function toggleVisualBlocks() {
                 ed.controlManager.setActive('visualblocks', state);
-                cookie.set('wf_visualblocks_state', state);
+
+                if (ed.getParam('use_state_cookies', true)) {
+                    cookie.set('wf_visualblocks_state', state);
+                }
 
                 if (!state) {
                     ed.dom.removeClass(ed.getBody(), 'mceVisualBlocks');

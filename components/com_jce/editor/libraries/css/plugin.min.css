@@ -917,6 +917,7 @@ html {
     top: 50%;
     max-height: 100%;
     border-radius: 3px;
+    overflow: hidden;
 }
 
 .uk-modal-prompt,
@@ -938,8 +939,8 @@ html {
 }
 
 .uk-modal-preview .uk-modal-body {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
     margin: auto;
 }
 
@@ -949,8 +950,7 @@ html {
 
 .uk-modal-preview .uk-modal-body .media-preview,
 .uk-modal-preview .uk-modal-body .iframe-preview {
-    padding-bottom: 56.25%;
-    padding-top: 25px;
+    padding-bottom: calc(56.25% - 83px);
     width: 100%;
     height: 0;
     position: relative;
@@ -995,7 +995,7 @@ html {
 
 .uk-modal-header {
     padding: 10px;
-    margin: -10px -10px 10px;
+    margin: -10px -10px 0;
     background: #fff;
     border-bottom: 1px solid #ddd;
     border-radius: 3px 3px 0 0;
@@ -1006,7 +1006,7 @@ html {
 }
 
 .uk-modal-header+.uk-modal-body {
-    padding: 10px 0
+    padding: 10px 0 0 0;
 }
 
 .uk-modal-dialog .uk-modal-close {

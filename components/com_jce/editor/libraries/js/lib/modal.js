@@ -567,7 +567,6 @@
 
                         $('iframe, object', div).on('load', function () {
                             calculateWidth(e.target, w, h);
-
                             $('.uk-modal').trigger('modal.assetloaded');
                         });
                     } else {

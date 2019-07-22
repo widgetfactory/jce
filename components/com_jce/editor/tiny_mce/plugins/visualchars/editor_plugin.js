@@ -5,14 +5,18 @@
  * License: http://www.tinymce.com/license
  */
 (function () {
+    var Cookie = tinymce.util.Cookie;
+    
     tinymce.create('tinymce.plugins.VisualChars', {
         init: function (ed, url) {
-            var self = this;
+            var self = this, state;
 
             self.editor = ed;
 
             // get state from cookie
-            var state = tinymce.util.Cookie.get('wf_visualchars_state');
+            if (ed.getParam('use_state_cookies', true)) {
+                state = Cookie.get('wf_visualchars_state');
+            }
 
             state = tinymce.is(state, 'string') ? parseFloat(state) : ed.getParam('visualchars_default_state', 0);
 
@@ -42,8 +46,8 @@
                 ed.controlManager.setActive('visualchars', state);
                 self._toggleVisualChars(state);
 
-                if (ed.getParam('use_cookies', 1)) {
-                    tinymce.util.Cookie.set('wf_visualchars_state', state ? 1 : 0);
+                if (ed.getParam('use_state_cookies', true)) {
+                    Cookie.set('wf_visualchars_state', state ? 1 : 0);
                 }
             }, self);
 
