@@ -84,7 +84,13 @@ class WFStyleselectPluginConfig
             if (!empty($custom_styles)) {
                 $styles = array();
 
-                $blocks = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
+                $blocks = array(
+                    'section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div'
+                );
+
+                $wrapper = array(
+                    'section', 'nav', 'article', 'aside', 'header', 'footer', 'main', 'div'
+                );
 
                 foreach ((array) $custom_styles as $style) {
                     // clean up title
@@ -122,6 +128,11 @@ class WFStyleselectPluginConfig
                     if (isset($style->element)) {
                         if (in_array($style->element, $blocks)) {
                             $style->block = $style->element;
+
+                            if (in_array($style->element, $wrapper)) {
+                                $style->wrapper = true;
+                            }
+
                         } else {
                             $style->inline = $style->element;
                         }
@@ -136,17 +147,18 @@ class WFStyleselectPluginConfig
                             $style->inline = 'span';
                             $style->selector = '*';
                         }
-                    } else {
+                    }/* else {
                         // match all if not set
                         if (!isset($style->selector)) {
                             $style->selector = '*';
 
+                            
                             // set to element
                             if (isset($style->element)) {
                                 $style->selector = $style->element;
                             }
                         }
-                    }
+                    }*/
 
                     // remove element
                     unset($style->element);
