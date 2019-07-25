@@ -69,7 +69,10 @@ class JFormFieldBlockformats extends JFormFieldCheckboxes
             $data       = array_keys(self::$blockformats);
             $values     = $data;
         } else {
-            $values     = is_array($this->value) ? $this->value : explode(',', $this->value);
+            if (is_string($this->value)) {
+                $this->value = explode(',', $this->value);
+            }
+            $values     = $this->value;
             $data       = array_unique(array_merge($this->value, array_keys(self::$blockformats)));
         }
 
