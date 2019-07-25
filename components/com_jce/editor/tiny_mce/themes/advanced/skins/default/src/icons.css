@@ -22,6 +22,10 @@
     margin: auto;
 }
 
+.defaultSkin .mceIconImage {
+    display: flex;
+}
+
 .defaultSkin span.mce_bold {
     background-position: 0 0
 }
