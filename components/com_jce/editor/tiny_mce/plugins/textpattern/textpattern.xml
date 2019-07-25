@@ -10,6 +10,11 @@
 	<license>@@licence@@</license>
 	<description>WF_TEXTPATTERN_DESC</description>
 	<icon></icon>
+	<fields name="textpattern">
+		<fieldset name="config">
+			<field name="textpattern_custom_patterns" type="keyvalue" default="" label="WF_TEXTPATTERN_CUSTOM" description="WF_TEXTPATTERN_CUSTOM_DESC" />
+		</fieldset>
+	</fields>
 	<help>
 		<topic key="textpattern.about" title="WF_TEXTPATTERN_HELP_ABOUT" />
 	</help>

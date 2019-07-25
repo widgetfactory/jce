@@ -176,16 +176,14 @@
             var custom_patterns = editor.getParam('textpattern_custom_patterns', '', 'hash');
 
             editor.addCommand('InsertCustomTextPattern', function (ui, node) {
-                node = node.replace(/^\$\$|\$\$$/g, '');
-
                 var html;
 
                 if (tinymce.is(custom_patterns, "function")) {
-                    html = custom_patterns(node);
+                    html = '' + custom_patterns(node);
                 }
 
                 if (tinymce.is(custom_patterns, "object")) {
-                    html = custom_patterns[node];
+                    html = custom_patterns[node] || '';
                 }
 
                 if (tinymce.is(html)) {
@@ -264,7 +262,8 @@
             {
                 start: '$$',
                 end: '$$',
-                cmd: 'InsertCustomTextPattern'
+                cmd: 'InsertCustomTextPattern',
+                remove: true
             }
             ];
 
