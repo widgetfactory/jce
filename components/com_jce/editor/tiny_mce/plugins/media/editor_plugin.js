@@ -648,8 +648,16 @@
                 placeholder.attr(at, n.attr(at));
             });
 
-            style.width = w + 'px';
-            style.height = h + 'px';
+            if (/^[\-0-9\.]+$/.test(w)) {
+                w = w + 'px';
+            }
+
+            if (/^[\-0-9\.]+$/.test(h)) {
+                h = h + 'px';
+            }
+
+            style.width = w;
+            style.height = h;
 
             // add styles
             if (styles = ed.dom.serializeStyle(style)) {
