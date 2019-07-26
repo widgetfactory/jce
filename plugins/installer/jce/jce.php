@@ -64,7 +64,7 @@ class plgInstallerJce extends JPlugin
         } catch (RuntimeException $exception) {}
 
         // invalid key
-        if ($response->code === 401) {
+        if (403 == $response->code) {
             $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
