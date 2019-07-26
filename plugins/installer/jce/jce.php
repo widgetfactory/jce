@@ -54,15 +54,14 @@ class plgInstallerJce extends JPlugin
 
         // check validity of the key and display a message if it is invalid / expired
         try
-		{
-			$tmpUri = clone $uri;
-			
+        {
+            $tmpUri = clone $uri;
+
             $tmpUri->setVar('task', 'update.validate');
             $tmpUri->delVar('file');
-			$tmpUrl = $tmpUri->toString();
-			$response = JHttpFactory::getHttp()->get($tmpUrl, array());
-		}
-		catch (RuntimeException $exception){}
+            $tmpUrl = $tmpUri->toString();
+            $response = JHttpFactory::getHttp()->get($tmpUrl, array());
+        } catch (RuntimeException $exception) {}
 
         // invalid key
         if ($response->code === 401) {
