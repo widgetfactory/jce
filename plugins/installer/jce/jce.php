@@ -37,13 +37,17 @@ class plgInstallerJce extends JPlugin
         JLoader::import('joomla.application.component.helper');
         $component = JComponentHelper::getComponent('com_jce');
 
+        // load plugin language for warning messages
+        JFactory::getLanguage()->load('plg_installer_jce', JPATH_ADMINISTRATOR);
+
         $key = $component->params->get('updates_key', '');
 
-        if (empty($key) && strpos($url, 'pkg_jce_pro') !== false) {
-            $language = JFactory::getLanguage();
-            $language->load('plg_installer_jce', JPATH_ADMINISTRATOR);
-
-            $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
+        // if no key is set...
+        if (empty($key)) {
+            // if we are attempting to update JCE Pro, display a notice message
+            if (strpos($url, 'pkg_jce_pro') !== false) {
+                $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
+            }
 
             return true;
         }
@@ -63,7 +67,7 @@ class plgInstallerJce extends JPlugin
             $response = JHttpFactory::getHttp()->get($tmpUrl, array());
         } catch (RuntimeException $exception) {}
 
-        // invalid key
+        // invalid key, display a notice message
         if (403 == $response->code) {
             $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
