@@ -4,6 +4,12 @@
     tinymce.create('tinymce.plugins.BrandingPlugin', {
 
         init: function (ed, url) {
+
+            // turn off branding
+            if (ed.settings.branding === false) {
+                return;
+            }
+            
             ed.onPostRender.add(function () {
                 var container = ed.getContentAreaContainer();
                 DOM.insertAfter(DOM.create('div', {'class' : 'mceBranding'}, 'Powered by JCE Core. <span id="mceBrandingMessage"></span><a href="https://www.joomlacontenteditor.net/purchase" target="_blank" title="Get JCE Pro">JCE Pro</a>'), container);
