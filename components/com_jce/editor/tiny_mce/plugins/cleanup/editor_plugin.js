@@ -419,6 +419,11 @@
 
                     // fix boolean custom attributes
                     o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
+
+                    // Remove empty contents
+                    if (ed.settings.padd_empty_editor) {
+                        o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br \/>[\r\n]*)$/, '');
+                    }
                 }
             });
 
