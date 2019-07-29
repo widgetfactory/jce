@@ -538,30 +538,30 @@
 
 .defaultSkin .mce_list_lower_alpha::before {
     content: "a.";
-    line-height: 1em;
     vertical-align: top;
+    font-size: 0.75em;
 }
 
 .defaultSkin .mce_list_lower_greek::before {
     content: "\03b1.";
-    line-height: 1em;
     vertical-align: top;
+    font-size: 0.75em;
 }
 
 .defaultSkin .mce_list_lower_roman::before {
     content: "iv.";
-    line-height: 1em;
     vertical-align: top;
+    font-size: 0.75em;
 }
 
 .defaultSkin .mce_list_upper_alpha::before {
     content: "A.";
-    line-height: 1em;
     vertical-align: top;
+    font-size: 0.75em;
 }
 
 .defaultSkin .mce_list_upper_roman::before {
     content: "IV.";
-    line-height: 1em;
     vertical-align: top;
+    font-size: 0.75em;
 }
