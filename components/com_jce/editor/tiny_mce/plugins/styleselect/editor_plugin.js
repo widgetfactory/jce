@@ -140,19 +140,30 @@
 
                             // make sure all attribute values are strings and decoded
                             if (fmt.attributes) {
-                                each(fmt.attributes, function(value, key) {
+                                var frag = ed.dom.createFragment('<div ' + tinymce.trim(fmt.attributes) + '></div>');
+                                var attribs = ed.dom.getAttribs(frag.firstChild);
+
+                                fmt.attributes = {};
+                                
+                                each(attribs, function(node) {
+                                    var key = node.name, value = '' + node.value;
+                                    
                                     if (key === 'onclick' || key === 'ondblclick') {
                                         fmt.attributes[key] = 'return false;';
                                         key = 'data-mce-' + key;
                                     }
 
-                                    fmt.attributes[key] = ed.dom.decode(value) + '';
+                                    fmt.attributes[key] = ed.dom.decode(value);
                                 });
                             }
 
                             if (fmt.styles) {
+                                // parse to style object
+                                fmt.styles = ed.dom.parseStyle(fmt.styles);
+                                
                                 each(fmt.styles, function(value, key) {
-                                    fmt.styles[key] = ed.dom.decode(value) + '';
+                                    value = '' + value;
+                                    fmt.styles[key] = ed.dom.decode(value);
                                 });
                             }
 

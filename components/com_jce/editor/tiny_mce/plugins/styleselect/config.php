@@ -117,11 +117,8 @@ class WFStyleselectPluginConfig
                     }
 
                     if (isset($style->styles)) {
-                        $style->styles = self::cleanJSON($style->styles);
-                    }
-
-                    if (isset($style->attributes)) {
-                        $style->attributes = self::cleanJSON($style->attributes, ' ', '=');
+                        // replace comma with semi-colon and remove duplicates
+                        $style->styles = preg_replace('#[,;]+#', ';', $style->styles);
                     }
 
                     // set block or inline element
@@ -217,32 +214,6 @@ class WFStyleselectPluginConfig
         $string = html_entity_decode($string, ENT_COMPAT, 'UTF-8');
 
         return trim($string);
-    }
-
-    protected static function cleanJSON($string, $delim1 = ';', $delim2 = ':')
-    {
-        $ret = array();
-
-        foreach (explode($delim1, $string) as $item) {
-            $item = trim($item);
-
-            // split style at colon
-            $parts = explode($delim2, $item);
-
-            if (count($parts) < 2) {
-                continue;
-            }
-
-            $key = $parts[0];
-            $value = $parts[1];
-
-            $key = self::cleanString($key);
-            $value = self::cleanString($value);
-
-            $ret[$key] = $value;
-        }
-
-        return $ret;
     }
 
     /**
