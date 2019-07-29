@@ -29,7 +29,7 @@ abstract class WfBrowserHelper
         if ($wf->getProfile('browser')) {
             $token = JFactory::getSession()->getFormToken();
 
-            $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
+            $url = JURI::base(true) . '/index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
             if ($element) {
                 $url .= '&element='.$element;
