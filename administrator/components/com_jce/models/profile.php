@@ -582,26 +582,28 @@ class JceModelProfile extends JModelAdmin
     private static function cleanParamData($data)
     {
         // clean up link plugin parameters
-        if (isset($data['link'])) {
-            $params = $data['link'];
+        array_walk($data, function(&$params, $plugin) {
+            if ($plugin === "link") {
+                if (isset($params['dir'])) {
+                    
+                    if (!empty($params['dir']) && empty($params['direction'])) {
+                        $params['direction'] = $params['dir'];
+                    }
 
-            if (isset($params['dir'])) {
-                if (!empty($params['dir']) && empty($params['direction'])) {
-                    $params['direction'] = $params['dir'];
+                    unset($params['dir']);
                 }
-                unset($params['dir']);
             }
 
-            $data['link'] = $params;
-        }
+            if (is_array($params) && WFUtility::is_associative_array($params)) {
+                array_walk($params, function(&$value, $key) {
+                    if (is_string($value) && WFUtility::isJson($value)) {
+                        $value = json_decode($value, true);
+                    }
+                });
+            }
+        });
 
         return $data;
-    }
-
-    private static function isJson($value)
-    {
-        json_decode($value);
-        return json_last_error() == JSON_ERROR_NONE;
     }
 
     /**

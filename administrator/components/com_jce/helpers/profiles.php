@@ -333,9 +333,24 @@ abstract class JceProfilesHelper
                         case 'components':
                             break;
                         case 'params':
+                            if (!empty($value)) {
+                                $data = json_decode($value, true);
+
+                                if (is_array($data)) {
+                                    array_walk($data, function (&$param, $key) {
+                                        if (is_string($param) && WFUtility::isJson($param)) {
+                                            $param = json_decode($param, true);
+                                        }
+                                    });
+                                }
+
+                                $value = json_encode($data);
+                            }
+
                             if (empty($value)) {
                                 $value = "{}";
                             }
+
                             break;
                         case 'rows':
                             break;
