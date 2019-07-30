@@ -79,7 +79,7 @@ class JFormFieldStyleFormat extends JFormField
 
             foreach ($default as $key => $value) {
                 if (array_key_exists($key, $item)) {
-                    $value = $item[$key];
+                    $value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
                 }
 
                 $elements[] = '<div class="styleformat-item-' . $key . '">' . $this->getField($key, $value) . '</div>';
