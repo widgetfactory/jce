@@ -62,6 +62,8 @@ class JFormFieldFonts extends JFormFieldCheckboxes
         
         foreach($items as $text => $value)
         {                                   
+            $value = htmlspecialchars_decode($value, ENT_QUOTES);
+            
             $tmp = array(
                 'value'    => $value,
                 'text'     => JText::alt($text, $fieldname),
