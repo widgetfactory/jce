@@ -579,11 +579,20 @@ abstract class WFUtility
 
     public static function isJson($value)
     {
+        // value must be a string
+        if (!$value || !is_string($value)) {
+            return false;
+        }
+
+        // trim
+        $value = trim($value);
+
         // quick syntax check
-        if (strpos($value, '{') === false && strpos($value, '[') === false) {
+        if (!$value || $value[0] !== '{' || $value[0] !== '[') {
             return false;
         }
         
+        // full check using json_decode
         json_decode($value);
         return json_last_error() == JSON_ERROR_NONE;
     }
