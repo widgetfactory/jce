@@ -587,8 +587,12 @@ abstract class WFUtility
         // trim
         $value = trim($value);
 
+        if (!$value) {
+            return false;
+        }
+
         // quick syntax check
-        if (!$value || $value[0] !== '{' || $value[0] !== '[') {
+        if ($value[0] !== '{' && $value[0] !== '[') {
             return false;
         }
         
