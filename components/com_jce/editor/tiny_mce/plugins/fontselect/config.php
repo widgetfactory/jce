@@ -34,7 +34,9 @@ class WFFontselectPluginConfig
         $fonts = $wf->getParam('fontselect.fonts');
 
         // decode string
-        $fonts = htmlspecialchars_decode($fonts);
+        if (is_string($fonts)) {
+            $fonts = htmlspecialchars_decode($fonts);
+        }
 
         // get fonts using legacy parameters
         if (empty($fonts)) {
