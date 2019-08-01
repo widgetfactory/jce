@@ -7,6 +7,7 @@
 }
 .field-media-wrapper .modal .modal-body iframe[name="field-media-modal"] {
     height: calc(90vh - 54px) !important;
+    max-height: 100vh;
 }
 .field-media-wrapper .modal .modal-footer {
 	display: none;
