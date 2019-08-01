@@ -86,7 +86,9 @@ class WFStyleselectPluginConfig
 
                 $blocks = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
 
-                foreach ((array) $custom_styles as $style) {
+                foreach ((array) $custom_styles as $style) {                    
+                    $style = (object) $style;
+                    
                     // clean up title
                     if (isset($style->title)) {
                         $style->title = self::cleanString($style->title);
