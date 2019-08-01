@@ -92,7 +92,9 @@ class WFStyleselectPluginConfig
                     'section', 'nav', 'article', 'aside', 'header', 'footer', 'main', 'div'
                 );
 
-                foreach ((array) $custom_styles as $style) {
+                foreach ((array) $custom_styles as $style) {                    
+                    $style = (object) $style;
+                    
                     // clean up title
                     if (isset($style->title)) {
                         $style->title = self::cleanString($style->title);
