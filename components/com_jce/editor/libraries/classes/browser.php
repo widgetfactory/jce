@@ -343,6 +343,8 @@ class WFFileBrowser extends JObject
     {
         $filters = $this->get('filter');
 
+        $return = true;
+
         if (!empty($filters)) {
             $path = ltrim($path, '/');
 
@@ -355,21 +357,28 @@ class WFFileBrowser extends JObject
                     $filter_parts   = explode('/', substr($filter, 1));
 
                     // filter match
-                    if (!(empty(array_intersect_assoc($filter_parts, $path_parts)))) {
+                    if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
                         return true;
                     }
-                    
-                } else if ($filter{0} === "-") {
-                    return $path !== substr($filter, 1);
+
+                    $return = false;
+
+                // hide this folder    
                 } else {
-                    return $filter !== $path;
+                    $return = true;
+                    
+                    if ($filter{0} === "-") {
+                        $filter = substr($filter, 1);
+                    }
+
+                    if ($filter === $path) {
+                        return false;
+                    }
                 }
             }
-
-            return false;
         }
 
-        return true;
+        return $return;
     }
 
     public function getBaseDir()
