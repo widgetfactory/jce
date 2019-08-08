@@ -1608,9 +1608,11 @@
                                 });
 
                                 var folders = $.map(o.folders, function (item, i) {
+                                    var name = item.name;
+                                    
                                     return {
-                                        "id": item,
-                                        "name": Wf.String.basename(item)
+                                        "id": name,
+                                        "name": Wf.String.basename(name)
                                     };
                                 });
 
