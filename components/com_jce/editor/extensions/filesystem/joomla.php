@@ -587,6 +587,9 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         $result = new WFFileSystemResult();
 
+        // trim to remove leading slash
+        $file = trim($file, '/');
+
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
@@ -602,8 +605,8 @@ class WFJoomlaFileSystem extends WFFileSystem
         } elseif (is_dir($src)) {
             // Folders cannot be copied into themselves as this creates an infinite copy / paste loop
             if ($file === $destination) {
-                $result->state = false;
                 $result->message = JText::_('WF_MANAGER_COPY_INTO_ERROR');
+                return $result;
             }
 
             $result->type = 'folders';
@@ -628,6 +631,9 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         $result = new WFFileSystemResult();
 
+        // trim to remove leading slash
+        $file = trim($file, '/');
+
         $src = WFUtility::makePath($this->getBaseDir(), $file);
         $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
 
@@ -642,6 +648,12 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $result->type = 'files';
                 $result->state = JFile::move($src, $dest);
             } elseif (is_dir($src)) {
+                // Folders cannot be copied into themselves as this creates an infinite copy / paste loop
+                if ($file === $destination) {
+                    $result->message = JText::_('WF_MANAGER_COPY_INTO_ERROR');
+                    return $result;
+                }
+
                 $result->type = 'folders';
                 $result->state = JFolder::move($src, $dest);
                 $result->path = $dest;
