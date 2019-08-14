@@ -63,7 +63,7 @@ class JFormFieldFiletype extends JFormFieldText
             $values = explode(',', $items[1]);
 
             array_walk($values, function (&$item, $name) {
-                if ($name{0} === '-') {
+                if ($name[0] === '-') {
                     $item = '-' . $item;
                 }
             }, $name);
@@ -101,7 +101,7 @@ class JFormFieldFiletype extends JFormFieldText
         $default = $this->mapValue($this->default);
 
         // remove leading = if any
-        if ($value && $value{0} === '=') {
+        if ($value && $value[0] === '=') {
             $value = substr($value, 1);
         }
 
@@ -130,7 +130,7 @@ class JFormFieldFiletype extends JFormFieldText
 
                 $is_default = isset($default[$group]);
 
-                if (empty($value) || $is_default || (!$is_default && $group{0} !== '-')) {
+                if (empty($value) || $is_default || (!$is_default && $group[0] !== '-')) {
                     $checked = ' checked="checked"';
                 }
 

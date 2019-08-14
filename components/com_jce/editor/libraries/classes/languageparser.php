@@ -79,7 +79,7 @@ class WFLanguageParser extends JObject
             $line = trim($line);
 
             // Ignore empty lines and comments.
-            if (empty($line) || ($line{0} == ';')) {
+            if (empty($line) || ($line[0] == ';')) {
                 continue;
             }
 
@@ -108,7 +108,7 @@ class WFLanguageParser extends JObject
 
                     continue;
                 }
-            } elseif ($line{0} == '[') {
+            } elseif ($line[0] == '[') {
                 continue;
             }
 
