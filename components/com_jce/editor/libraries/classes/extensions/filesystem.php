@@ -116,7 +116,7 @@ class WFFileSystem extends WFExtension
                 // Remove first leading slash
                 $root = ltrim($root, '/');
                 // Force default directory if base param starts with a variable or a . eg $id
-                if (preg_match('/[\.\$]/', $root{0})) {
+                if (preg_match('/[\.\$]/', $root[0])) {
                     $root = 'images';
                 }
 
