@@ -61,13 +61,6 @@
                 $('#jce').addClass('ie');
             }
 
-            // ie8 flag
-            if (!$.support.cssFloat && document.querySelector) {
-                $('#jce').addClass('ie8');
-
-                $('input[type="number"]').addClass("type-number");
-            }
-
             // create buttons
             $('button#insert, input#insert, button#update, input#update').button({
                 icons: {
