@@ -36,10 +36,8 @@ class JFormFieldRepeatable extends JFormField
     protected function getInput()
     {
         $subForm = new JForm($this->name, array('control' => $this->formControl));
-        $xml = $this->element->children()->asXml();
-        $subForm->load($xml);
-
         $children = $this->element->children();
+        $subForm->load($children);
         $subForm->setFields($children);
 
         // And finaly build a main container
@@ -52,12 +50,12 @@ class JFormFieldRepeatable extends JFormField
             $values = explode(',', $values);
         }
 
-        foreach ($values as $index => $value) {
+        $fields = $subForm->getFieldset();
 
-            $fields = $subForm->getFieldset();
-
+        foreach ($values as $value) {
             $class  = '';
 
+            // highlight grouped fields
             if (count($fields) > 1) {
                 $class = ' well';
             }
@@ -70,6 +68,7 @@ class JFormFieldRepeatable extends JFormField
             foreach ($fields as $field) {
                 $field->element['multiple'] = true;
 
+                // substitute for repeatable element
                 $field->element['name'] = (string) $this->element['name'];
 
                 if (is_array($value)) {
