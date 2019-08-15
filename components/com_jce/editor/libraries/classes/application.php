@@ -226,8 +226,15 @@ class WFApplication extends JObject
                 }
 
                 // check component
-                if ($options['option'] !== 'com_jce' && $item->components && in_array($options['option'], explode(',', $item->components)) === false) {
-                    continue;
+                if (!empty($item->components)) {
+                    // no context, and file browser cannot be assigned
+                    if ($options['option'] === 'com_jce') {
+                        continue;
+                    }
+
+                    if (in_array($options['option'], explode(',', $item->components)) === false) {
+                        continue;
+                    }
                 }
 
                 // set device default as 'desktop,tablet,mobile'
