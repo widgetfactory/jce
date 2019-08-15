@@ -207,10 +207,12 @@
                     e.target = n;
 
                     self._setSelectedItems(e, true);
+
                     // get serialized object
-                    var data = self._serializeItemData(n);
-                    // trigger event
-                    self._trigger('onFileClick', [n, data]);
+                    self.serializeItemData(n).then(function (data) {
+                        // trigger event
+                        self._trigger('onFileClick', [n, data]);
+                    });
 
                     return true;
                 }
@@ -245,8 +247,9 @@
                         } else {
                             self._setSelectedItems(e, true);
 
-                            var data = self._serializeItemData(n);
-                            self._trigger('onFileClick', [n, data]);
+                            self.serializeItemData(n).then(function (data) {
+                                self._trigger('onFileClick', null, [n, data]);
+                            });
                         }
 
                         break;
@@ -288,7 +291,7 @@
                 self._showItemDetails();
             });
 
-            var list_limit = self._getState('limit', this.options.list_limit, function(val) {
+            var list_limit = self._getState('limit', this.options.list_limit, function (val) {
                 return !/([0125]+|all)/.test(val) === false;
             })
 
@@ -449,7 +452,7 @@
                 self.refresh(e);
             });
 
-            var showDetails =this._getState('details', 0, function (val) {
+            var showDetails = this._getState('details', 0, function (val) {
                 val = parseInt(val);
                 return val === 0 || val === 1;
             });
@@ -580,7 +583,7 @@
             });*/
 
             // get the sort value from a cookie
-            this._sortValue = this._getState('sort', '', function(val) {
+            this._sortValue = this._getState('sort', '', function (val) {
                 return /[a-z-]+/.test(val);
             });
 
@@ -794,6 +797,10 @@
                     var data = [],
                         classes = [];
 
+                    if (!e.id) {
+                        return true;
+                    }
+
                     $.each(e.properties, function (k, v) {
                         if (v !== '') {
                             data.push('data-' + k + '="' + v + '"');
@@ -819,10 +826,15 @@
 
             }
 
-            if (o.total.files) {
+            if (o.files.length) {
                 $.each(o.files, function (i, e) {
                     var data = [],
                         classes = [];
+
+                    if (!e.id) {
+                        return true;
+                    }
+
                     $.each(e.properties, function (k, v) {
                         if (v !== '') {
                             data.push('data-' + k + '="' + v + '"');
@@ -928,7 +940,7 @@
 
         _refreshTree: function (node) {
             node = node || $('.uk-tree-root', '#tree-body');
-            
+
             $('#tree-body').trigger('tree:toggleloader', node);
 
             Wf.JSON.request('getTreeItem', $(node).attr('data-id'), function (o) {
@@ -1149,18 +1161,18 @@
             this._getList(dir);
         },
 
-        _setState: function(name, state) {
+        _setState: function (name, state) {
             if (this.options.use_state_cookies) {
                 Wf.Cookie.set("wf_" + Wf.getName() + '_' + name, state);
             }
         },
 
-        _getState: function(name, def, callback) {
+        _getState: function (name, def, callback) {
             if (!this.options.use_state_cookies) {
                 return def;
             }
- 
-            callback = callback || function(val) {return val;}
+
+            callback = callback || function (val) { return val; }
             return Wf.Cookie.get('wf_' + Wf.getName() + '_' + name, def, callback);
         },
 
@@ -1287,11 +1299,13 @@
                 $('.limit-left li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
             }
 
-            if (o.folders.length) {
-                dir = Wf.String.encodeURI(Wf.String.dirname(o.folders[0].id) || '/', true);
-            } else if (o.files.length) {
-                dir = Wf.String.encodeURI(Wf.String.dirname(o.files[0].id) || '/', true);
-            }
+            $.each([].concat(o.folders, o.files), function(i, item) {                
+                if (item.id) {
+                    dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
+
+                    return false;
+                }
+            });
 
             if (dir) {
                 this._setDir(dir);
@@ -1608,9 +1622,11 @@
                                 });
 
                                 var folders = $.map(o.folders, function (item, i) {
+                                    var name = item.name;
+                                    
                                     return {
-                                        "id": item,
-                                        "name": Wf.String.basename(item)
+                                        "id": name,
+                                        "name": Wf.String.basename(name)
                                     };
                                 });
 
@@ -2376,9 +2392,9 @@
                                 insert = true;
                                 items = item;
 
-                                var data = self._serializeItemData(item);
-
-                                self._trigger('onFileClick', null, [item, data]);
+                                self.serializeItemData(item).then(function (data) {
+                                    self._trigger('onFileClick', null, [item, data]);
+                                });
                             }
 
                             if (!insert) {
@@ -2404,16 +2420,31 @@
             // Select items and display properties
             this._selectItems(items, true);
         },
-        _serializeItemData: function (item) {
-            var data = {
-                "url": $(item).data("url"),
-                "preview": $(item).data("preview"),
-                "title": $(item).attr("title"),
-                "width": $(item).data("width"),
-                "height": $(item).data("height")
-            };
 
-            return data;
+        serializeItemData: function (item) {
+            var self = this, data = {};
+
+            $.each(['url', 'preview', 'width', 'height'], function (i, key) {
+                data[key] = $(item).data(key) || '';
+            });
+
+            data.title = $(item).attr('title');
+
+            return new Promise(function (resolve, reject) {
+                if (data.url) {
+                    resolve(data);
+                } else {
+                    var path = Wf.String.path(self._dir, data.title);
+
+                    Wf.JSON.request('getFileDetails', [path], function (o) {
+                        if (o && !o.error) {
+                            data = $.extend(data, o);
+                        }
+
+                        resolve(data);
+                    });
+                }
+            });
         },
         /**
          * Serialize the current item selection, add current dir to path
@@ -2496,65 +2527,61 @@
         },
 
         _getMediaProps: function (file) {
-            var deferred = new $.Deferred(),
-                props = {};
-
-            if (!file.type) {
-                deferred.reject();
-            }
-
-            if (file.type === "video" && /\.(mp4|m4v|ogg|ogv|webm)$/i.test(file.preview) && $.support.video) {
-                var video = document.createElement('video');
-
-                video.onloadedmetadata = function () {
-                    props = {
-                        "duration": parseInt(video.duration / 60, 10) + ':' + parseInt(video.duration % 60, 10),
-                        "width": video.videoWidth,
-                        "height": video.videoHeight
-                    };
-
-                    video = null;
-                    deferred.resolve(props);
-                };
-
-                video.src = file.preview;
-
-            } else if (file.type === "audio" && /\.(mp3|oga|ogg)$/i.test(file.preview) && $.support.audio) {
-                var audio = document.createElement('audio');
-
-                audio.onloadedmetadata = function () {
-                    props.duration = parseInt(audio.duration / 60, 10) + ':' + parseInt(audio.duration % 60, 10);
-
-                    audio = null;
-                    deferred.resolve(props);
-                };
-
-                audio.src = file.preview;
-
-            } else if (file.type === "image") {
-                var image = new Image(),
-                    props = {};
-
-                image.onload = function () {
-                    props.width = image.width;
-                    props.height = image.height;
-
-                    deferred.resolve(props);
-                };
-
-                var src = Wf.String.encodeURI(file.preview) + '?' + new Date().getTime();
-
-                if (/:\/\//.test(file.preview) || file.preview.indexOf('?') !== -1) {
-                    src = file.preview;
+            return new Promise(function (resolve, reject) {
+                if (!file.type) {
+                    return reject();
                 }
 
-                image.src = src;
+                if (file.type === "video" && /\.(mp4|m4v|ogg|ogv|webm)$/i.test(file.preview) && $.support.video) {
+                    var props = {}, video = document.createElement('video');
 
-            } else {
-                deferred.reject();
-            }
+                    video.onloadedmetadata = function () {
+                        props = {
+                            "duration": parseInt(video.duration / 60, 10) + ':' + parseInt(video.duration % 60, 10),
+                            "width": video.videoWidth,
+                            "height": video.videoHeight
+                        };
 
-            return deferred;
+                        video = null;
+                        resolve(props);
+                    };
+
+                    video.src = file.preview;
+
+                } else if (file.type === "audio" && /\.(mp3|oga|ogg)$/i.test(file.preview) && $.support.audio) {
+                    var props = {}, audio = document.createElement('audio');
+
+                    audio.onloadedmetadata = function () {
+                        props.duration = parseInt(audio.duration / 60, 10) + ':' + parseInt(audio.duration % 60, 10);
+
+                        audio = null;
+                        resolve(props);
+                    };
+
+                    audio.src = file.preview;
+
+                } else if (file.type === "image") {
+                    var props = {}, image = new Image();
+
+                    image.onload = function () {
+                        props.width = image.width;
+                        props.height = image.height;
+
+                        resolve(props);
+                    };
+
+                    var src = Wf.String.encodeURI(file.preview) + '?' + new Date().getTime();
+
+                    if (/:\/\//.test(file.preview) || file.preview.indexOf('?') !== -1) {
+                        src = file.preview;
+                    }
+
+                    image.src = src;
+
+                } else {
+                    reject();
+                }
+            });
         },
 
         /**
@@ -2572,35 +2599,6 @@
 
             var path = Wf.String.path(this._dir, Wf.String.encodeURI(title));
 
-            // Process properties callback
-            var callback = function () {
-                // Dimensions (will only apply to file items)
-                if ($(item).data('width') && $(item).data('height')) {
-                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + $(item).data('width') + ' x ' + $(item).data('height') + '</div>');
-
-                    // create thumbnail preview
-                    if (mime && mime === "image") {
-                        $('#info-preview').append('<img src="' + $(item).data('preview') + '" alt="" />').removeClass('loading');
-                    }
-                }
-
-                // Duration (will only apply to file items)
-                if ($(item).data('duration')) {
-                    $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + $(item).data('duration') + '</div>');
-                }
-
-                var o = {
-                    "url": $(item).data("url"),
-                    "preview": $(item).data("preview"),
-                    "title": $(item).attr("title"),
-                    "width": $(item).data("width"),
-                    "height": $(item).data("height"),
-                    "selected": $(item).hasClass('selected')
-                };
-
-                self._trigger('onFileDetails', [item, o]);
-            };
-
             var name = title,
                 ext = '';
 
@@ -2616,9 +2614,7 @@
             $(info).addClass('uk-comment uk-height-1-1').append('<div class="uk-comment-header"><h5 class="uk-width-1-1 uk-margin-remove uk-text-bold uk-text-truncate" title="' + name + '">' + name + '</h5><div class="uk-comment-meta">' + ext + ' ' + self._translate(type, Wf.String.ucfirst(type)) + '</div><div class="uk-comment-meta" id="info-properties"><div></div>');
 
             // additional data for file items
-            if ($(item).data('preview')) {
-                $(info).append('<div class="uk-comment-body uk-width-1-1 uk-text-center" id="info-preview"></div>');
-            }
+            $(info).append('<div class="uk-comment-body uk-width-1-1 uk-text-center" id="info-preview"></div>');
 
             // remove the loader and append info
             $('#browser-details-text').removeClass('loading').empty().append(info);
@@ -2673,51 +2669,77 @@
             if (type === "folder") {
                 self._trigger('onFolderDetails', null, item);
             } else {
-                // create preview url
-                var preview = $(item).data('preview') || Wf.String.path(Wf.getURI(), $(item).data('url'));
-                // get mime type
-                mime = getMimeType(ext);
+                // Process properties callback
+                self.serializeItemData(item).then(function (data) {
 
-                // only process mime-types that can have dimensions or duration
-                if (mime) {
-                    // check if image has dimensions
-                    if (mime === "image") {
-                        if ($(item).data('width') && $(item).data('height')) {
-                            return callback();
-                        }
-                    }
-                    // check if video has dimensions and duration
-                    if (mime === "video") {
-                        if ($(item).data('width') && $(item).data('height') && $(item).data('duration')) {
-                            return callback();
-                        }
-                    }
-                    // check that audio has duration
-                    if (mime === "audio") {
-                        if ($(item).data('duration')) {
-                            return callback();
-                        }
-                    }
+                    function callback(data) {
+                        // Dimensions (will only apply to file items)
+                        if (data.width && data.height) {
+                            $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + data.width + ' x ' + data.height + '</div>');
 
-                    self._getMediaProps({
-                        "preview": preview,
-                        "type": mime
-                    }).then(function (o) {
-                        $.each(o, function (k, v) {
-                            $(item).data(k, v);
-                        });
-                        callback();
-                    }, function () {
-                        Wf.JSON.request('getDimensions', [path], function (o) {
-                            if (o && !o.error) {
-                                $.each(o, function (k, v) {
-                                    $(item).data(k, v);
-                                });
+                            // create thumbnail preview
+                            if (mime && mime === "image") {
+                                $('#info-preview').empty().append('<img src="' + data.preview + '" alt="" />').removeClass('loading');
                             }
-                            callback();
-                        });
+                        }
+
+                        // Duration (will only apply to file items)
+                        if (data.duration) {
+                            $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + data.duration + '</div>');
+                        }
+                    }
+
+                    $.each(data, function (key, value) {
+                        $(item).data(key, value);
                     });
-                }
+
+                    // get mime type
+                    mime = getMimeType(ext);
+
+                    // only process mime-types that can have dimensions or duration
+                    if (mime) {
+                        // check if image has dimensions
+                        if (mime === "image") {
+                            if (data.width && data.height) {
+                                return callback(data);
+                            }
+                        }
+                        // check if video has dimensions and duration
+                        if (mime === "video") {
+                            if (data.width && data.height && data.duration) {
+                                return callback(data);
+                            }
+                        }
+                        // check that audio has duration
+                        if (mime === "audio") {
+                            if (data.duration) {
+                                return callback(data);
+                            }
+                        }
+
+                        self._getMediaProps({
+                            "preview": data.preview,
+                            "type": mime
+                        }).then(function (o) {
+                            $.each(o, function (key, value) {
+                                data[key] = value;
+                                $(item).data(data);
+                            });
+
+                            callback(data);
+                        }, function () {
+                            Wf.JSON.request('getDimensions', [path], function (o) {
+                                if (o && !o.error) {
+                                    $.each(o, function (key, value) {
+                                        data[key] = value;
+                                        $(item).data(data);
+                                    });
+                                }
+                                callback(data);
+                            });
+                        });
+                    }
+                });
             }
         }
     };
@@ -2731,21 +2753,19 @@
         $(this).on('filebrowser:insert', function (e, cb) {
             var selected = instance.getSelectedItems();
 
-            var data = $.map(selected, function (item) {
-                return {
-                    "url": $(item).data("url"),
-                    "preview": $(item).data("preview"),
-                    "title": $(item).attr("title"),
-                    "width": $(item).data("width"),
-                    "height": $(item).data("height")
-                };
+            var promises = [];
+
+            $.each(selected, function (i, item) {
+                promises.push(instance.serializeItemData(item));
             });
 
-            if (typeof cb === "function") {
-                cb(selected, data);
-            }
+            Promise.all(promises).then(function (data) {
+                if (typeof cb === "function") {
+                    return cb(selected, data);
+                }
 
-            return data;
+                return data;
+            });
         });
 
         $(this).on('filebrowser:status', function (e, status) {

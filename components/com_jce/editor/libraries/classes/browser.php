@@ -396,10 +396,10 @@ class WFFileBrowser extends JObject
      *
      * @return array list array
      */
-    private function getFiles($relative, $filter = '.', $sort = '')
+    private function getFiles($relative, $filter = '.', $sort = '', $limit = 0, $start = 0)
     {
         $filesystem = $this->getFileSystem();
-        $list = $filesystem->getFiles($relative, $filter, $sort);
+        $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
         return $list;
     }
@@ -411,10 +411,10 @@ class WFFileBrowser extends JObject
      *
      * @return array list array
      */
-    private function getFolders($relative, $filter = '', $sort = '')
+    private function getFolders($relative, $filter = '', $sort = '', $limit = 0, $start = 0)
     {
         $filesystem = $this->getFileSystem();
-        $list = $filesystem->getFolders($relative, $filter, $sort);
+        $list = $filesystem->getFolders($relative, $filter, $sort, $limit, $start);
 
         $list = array_filter($list, function ($item) {
             return $this->checkPathAccess($item['id']);
@@ -471,11 +471,11 @@ class WFFileBrowser extends JObject
         }
 
         // get file list by filter
-        $files = $this->getFiles($dir, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort);
+        $files = $this->getFiles($dir, $name . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $limit, $start);
 
         if (empty($filter) || $filter{0} != '.') {
             // get folder list
-            $folders = $this->getFolders($dir, '^(?i).*' . WFUtility::makeSafe($filter) . '.*', $sort);
+            $folders = $this->getFolders($dir, '^(?i).*' . WFUtility::makeSafe($filter) . '.*', $sort, $limit, $start);
         }
 
         $folderArray = array();
