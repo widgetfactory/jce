@@ -40,7 +40,6 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // Setup plugin XHR callback functions
         $request->setRequest(array($this, 'getDimensions'));
-        $request->setRequest(array($this, 'getFileDetails'));
     }
 
     /**
@@ -102,8 +101,8 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $options = $browser->getProperties();
 
-        // map processed root directory
-        $options['dir'] = $browser->getFileSystem()->getRootDir();
+        // process options array
+        $browser->getFileSystem()->updateOptions($options);
 
         // set global options
         $document->addScriptDeclaration('FileBrowser.options=' . json_encode($options) . ';');

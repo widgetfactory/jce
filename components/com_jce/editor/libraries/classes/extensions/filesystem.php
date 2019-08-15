@@ -68,6 +68,11 @@ class WFFileSystem extends WFExtension
         return $instance;
     }
 
+    public function updateOptions(&$options)
+    {
+        $options['dir'] = $this->getRootDir();
+    }
+
     /**
      * Get the base directory.
      *
