@@ -1,337 +1,427 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright 	Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+(function (tinyMCEPopup) {
 
-//tinyMCEPopup.requireLangPack();
+	function getDefaultCharMap() {
+		return [
+			['160', 'no-break space'],
+			['173', 'soft hyphen'],
+			['34', 'quotation mark'],
+			// finance
+			['162', 'cent sign'],
+			['8364', 'euro sign'],
+			['163', 'pound sign'],
+			['165', 'yen sign'],
+			// signs
+			['169', 'copyright sign'],
+			['174', 'registered sign'],
+			['8482', 'trade mark sign'],
+			['8240', 'per mille sign'],
+			['181', 'micro sign'],
+			['183', 'middle dot'],
+			['8226', 'bullet'],
+			['8230', 'three dot leader'],
+			['8242', 'minutes / feet'],
+			['8243', 'seconds / inches'],
+			['167', 'section sign'],
+			['182', 'paragraph sign'],
+			['223', 'sharp s / ess-zed'],
+			// quotations
+			['8249', 'single left-pointing angle quotation mark'],
+			['8250', 'single right-pointing angle quotation mark'],
+			['171', 'left pointing guillemet'],
+			['187', 'right pointing guillemet'],
+			['8216', 'left single quotation mark'],
+			['8217', 'right single quotation mark'],
+			['8220', 'left double quotation mark'],
+			['8221', 'right double quotation mark'],
+			['8218', 'single low-9 quotation mark'],
+			['8222', 'double low-9 quotation mark'],
+			['60', 'less-than sign'],
+			['62', 'greater-than sign'],
+			['8804', 'less-than or equal to'],
+			['8805', 'greater-than or equal to'],
+			['8211', 'en dash'],
+			['8212', 'em dash'],
+			['175', 'macron'],
+			['8254', 'overline'],
+			['164', 'currency sign'],
+			['166', 'broken bar'],
+			['168', 'diaeresis'],
+			['161', 'inverted exclamation mark'],
+			['191', 'turned question mark'],
+			['710', 'circumflex accent'],
+			['732', 'small tilde'],
+			['176', 'degree sign'],
+			['8722', 'minus sign'],
+			['177', 'plus-minus sign'],
+			['247', 'division sign'],
+			['8260', 'fraction slash'],
+			['215', 'multiplication sign'],
+			['185', 'superscript one'],
+			['178', 'superscript two'],
+			['179', 'superscript three'],
+			['188', 'fraction one quarter'],
+			['189', 'fraction one half'],
+			['190', 'fraction three quarters'],
+			// math / logical
+			['402', 'function / florin'],
+			['8747', 'integral'],
+			['8721', 'n-ary sumation'],
+			['8734', 'infinity'],
+			['8730', 'square root'],
+			['8764', 'similar to'],
+			['8773', 'approximately equal to'],
+			['8776', 'almost equal to'],
+			['8800', 'not equal to'],
+			['8801', 'identical to'],
+			['8712', 'element of'],
+			['8713', 'not an element of'],
+			['8715', 'contains as member'],
+			['8719', 'n-ary product'],
+			['8743', 'logical and'],
+			['8744', 'logical or'],
+			['172', 'not sign'],
+			['8745', 'intersection'],
+			['8746', 'union'],
+			['8706', 'partial differential'],
+			['8704', 'for all'],
+			['8707', 'there exists'],
+			['8709', 'diameter'],
+			['8711', 'backward difference'],
+			['8727', 'asterisk operator'],
+			['8733', 'proportional to'],
+			['8736', 'angle'],
+			// undefined
+			['180', 'acute accent'],
+			['184', 'cedilla'],
+			['170', 'feminine ordinal indicator'],
+			['186', 'masculine ordinal indicator'],
+			['8224', 'dagger'],
+			['8225', 'double dagger'],
+			// alphabetical special chars
+			['192', 'A - grave'],
+			['193', 'A - acute'],
+			['194', 'A - circumflex'],
+			['195', 'A - tilde'],
+			['196', 'A - diaeresis'],
+			['197', 'A - ring above'],
+			['256', 'A - macron'],
+			['198', 'ligature AE'],
+			['199', 'C - cedilla'],
+			['200', 'E - grave'],
+			['201', 'E - acute'],
+			['202', 'E - circumflex'],
+			['203', 'E - diaeresis'],
+			['274', 'E - macron'],
+			['204', 'I - grave'],
+			['205', 'I - acute'],
+			['206', 'I - circumflex'],
+			['207', 'I - diaeresis'],
+			['298', 'I - macron'],
+			['208', 'ETH'],
+			['209', 'N - tilde'],
+			['210', 'O - grave'],
+			['211', 'O - acute'],
+			['212', 'O - circumflex'],
+			['213', 'O - tilde'],
+			['214', 'O - diaeresis'],
+			['216', 'O - slash'],
+			['332', 'O - macron'],
+			['338', 'ligature OE'],
+			['352', 'S - caron'],
+			['217', 'U - grave'],
+			['218', 'U - acute'],
+			['219', 'U - circumflex'],
+			['220', 'U - diaeresis'],
+			['362', 'U - macron'],
+			['221', 'Y - acute'],
+			['376', 'Y - diaeresis'],
+			['562', 'Y - macron'],
+			['222', 'THORN'],
+			['224', 'a - grave'],
+			['225', 'a - acute'],
+			['226', 'a - circumflex'],
+			['227', 'a - tilde'],
+			['228', 'a - diaeresis'],
+			['229', 'a - ring above'],
+			['257', 'a - macron'],
+			['230', 'ligature ae'],
+			['231', 'c - cedilla'],
+			['232', 'e - grave'],
+			['233', 'e - acute'],
+			['234', 'e - circumflex'],
+			['235', 'e - diaeresis'],
+			['275', 'e - macron'],
+			['236', 'i - grave'],
+			['237', 'i - acute'],
+			['238', 'i - circumflex'],
+			['239', 'i - diaeresis'],
+			['299', 'i - macron'],
+			['240', 'eth'],
+			['241', 'n - tilde'],
+			['242', 'o - grave'],
+			['243', 'o - acute'],
+			['244', 'o - circumflex'],
+			['245', 'o - tilde'],
+			['246', 'o - diaeresis'],
+			['248', 'o slash'],
+			['333', 'o macron'],
+			['339', 'ligature oe'],
+			['353', 's - caron'],
+			['249', 'u - grave'],
+			['250', 'u - acute'],
+			['251', 'u - circumflex'],
+			['252', 'u - diaeresis'],
+			['363', 'u - macron'],
+			['253', 'y - acute'],
+			['254', 'thorn'],
+			['255', 'y - diaeresis'],
+			['563', 'y - macron'],
+			['913', 'Alpha'],
+			['914', 'Beta'],
+			['915', 'Gamma'],
+			['916', 'Delta'],
+			['917', 'Epsilon'],
+			['918', 'Zeta'],
+			['919', 'Eta'],
+			['920', 'Theta'],
+			['921', 'Iota'],
+			['922', 'Kappa'],
+			['923', 'Lambda'],
+			['924', 'Mu'],
+			['925', 'Nu'],
+			['926', 'Xi'],
+			['927', 'Omicron'],
+			['928', 'Pi'],
+			['929', 'Rho'],
+			['931', 'Sigma'],
+			['932', 'Tau'],
+			['933', 'Upsilon'],
+			['934', 'Phi'],
+			['935', 'Chi'],
+			['936', 'Psi'],
+			['937', 'Omega'],
+			['945', 'alpha'],
+			['946', 'beta'],
+			['947', 'gamma'],
+			['948', 'delta'],
+			['949', 'epsilon'],
+			['950', 'zeta'],
+			['951', 'eta'],
+			['952', 'theta'],
+			['953', 'iota'],
+			['954', 'kappa'],
+			['955', 'lambda'],
+			['956', 'mu'],
+			['957', 'nu'],
+			['958', 'xi'],
+			['959', 'omicron'],
+			['960', 'pi'],
+			['961', 'rho'],
+			['962', 'final sigma'],
+			['963', 'sigma'],
+			['964', 'tau'],
+			['965', 'upsilon'],
+			['966', 'phi'],
+			['967', 'chi'],
+			['968', 'psi'],
+			['969', 'omega'],
+			// symbols
+			['8501', 'alef symbol'],
+			['982', 'pi symbol'],
+			['8476', 'real part symbol'],
+			['978', 'upsilon - hook symbol'],
+			['8472', 'Weierstrass p'],
+			['8465', 'imaginary part'],
+			// arrows
+			['8592', 'leftwards arrow'],
+			['8593', 'upwards arrow'],
+			['8594', 'rightwards arrow'],
+			['8595', 'downwards arrow'],
+			['8596', 'left right arrow'],
+			['8629', 'carriage return'],
+			['8656', 'leftwards double arrow'],
+			['8657', 'upwards double arrow'],
+			['8658', 'rightwards double arrow'],
+			['8659', 'downwards double arrow'],
+			['8660', 'left right double arrow'],
+			['8756', 'therefore'],
+			['8834', 'subset of'],
+			['8835', 'superset of'],
+			['8836', 'not a subset of'],
+			['8838', 'subset of or equal to'],
+			['8839', 'superset of or equal to'],
+			['8853', 'circled plus'],
+			['8855', 'circled times'],
+			['8869', 'perpendicular'],
+			['8901', 'dot operator'],
+			['8968', 'left ceiling'],
+			['8969', 'right ceiling'],
+			['8970', 'left floor'],
+			['8971', 'right floor'],
+			['9001', 'left-pointing angle bracket'],
+			['9002', 'right-pointing angle bracket'],
+			['9674', 'lozenge'],
+			['9824', 'black spade suit'],
+			['9827', 'black club suit'],
+			['9829', 'black heart suit'],
+			['9830', 'black diamond suit'],
+			['8194', 'en space'],
+			['8195', 'em space'],
+			['8201', 'thin space'],
+			['8204', 'zero width non-joiner'],
+			['8205', 'zero width joiner'],
+			['8206', 'left-to-right mark'],
+			['8207', 'right-to-left mark']
+		];
+	}
 
-var charmap = [
-	['&nbsp;',    '&#160;',  true, 'no-break space'],
-	['&amp;',     '&#38;',   true, 'ampersand'],
-	['&quot;',    '&#34;',   true, 'quotation mark'],
-// finance
-	['&cent;',    '&#162;',  true, 'cent sign'],
-	['&euro;',    '&#8364;', true, 'euro sign'],
-	['&pound;',   '&#163;',  true, 'pound sign'],
-	['&yen;',     '&#165;',  true, 'yen sign'],
-// signs
-	['&copy;',    '&#169;',  true, 'copyright sign'],
-	['&reg;',     '&#174;',  true, 'registered sign'],
-	['&trade;',   '&#8482;', true, 'trade mark sign'],
-	['&permil;',  '&#8240;', true, 'per mille sign'],
-	['&micro;',   '&#181;',  true, 'micro sign'],
-	['&middot;',  '&#183;',  true, 'middle dot'],
-	['&bull;',    '&#8226;', true, 'bullet'],
-	['&hellip;',  '&#8230;', true, 'three dot leader'],
-	['&prime;',   '&#8242;', true, 'minutes / feet'],
-	['&Prime;',   '&#8243;', true, 'seconds / inches'],
-	['&sect;',    '&#167;',  true, 'section sign'],
-	['&para;',    '&#182;',  true, 'paragraph sign'],
-	['&szlig;',   '&#223;',  true, 'sharp s / ess-zed'],
-// quotations
-	['&lsaquo;',  '&#8249;', true, 'single left-pointing angle quotation mark'],
-	['&rsaquo;',  '&#8250;', true, 'single right-pointing angle quotation mark'],
-	['&laquo;',   '&#171;',  true, 'left pointing guillemet'],
-	['&raquo;',   '&#187;',  true, 'right pointing guillemet'],
-	['&lsquo;',   '&#8216;', true, 'left single quotation mark'],
-	['&rsquo;',   '&#8217;', true, 'right single quotation mark'],
-	['&ldquo;',   '&#8220;', true, 'left double quotation mark'],
-	['&rdquo;',   '&#8221;', true, 'right double quotation mark'],
-	['&sbquo;',   '&#8218;', true, 'single low-9 quotation mark'],
-	['&bdquo;',   '&#8222;', true, 'double low-9 quotation mark'],
-	['&lt;',      '&#60;',   true, 'less-than sign'],
-	['&gt;',      '&#62;',   true, 'greater-than sign'],
-	['&le;',      '&#8804;', true, 'less-than or equal to'],
-	['&ge;',      '&#8805;', true, 'greater-than or equal to'],
-	['&ndash;',   '&#8211;', true, 'en dash'],
-	['&mdash;',   '&#8212;', true, 'em dash'],
-	['&macr;',    '&#175;',  true, 'macron'],
-	['&oline;',   '&#8254;', true, 'overline'],
-	['&curren;',  '&#164;',  true, 'currency sign'],
-	['&brvbar;',  '&#166;',  true, 'broken bar'],
-	['&uml;',     '&#168;',  true, 'diaeresis'],
-	['&iexcl;',   '&#161;',  true, 'inverted exclamation mark'],
-	['&iquest;',  '&#191;',  true, 'turned question mark'],
-	['&circ;',    '&#710;',  true, 'circumflex accent'],
-	['&tilde;',   '&#732;',  true, 'small tilde'],
-	['&deg;',     '&#176;',  true, 'degree sign'],
-	['&minus;',   '&#8722;', true, 'minus sign'],
-	['&plusmn;',  '&#177;',  true, 'plus-minus sign'],
-	['&divide;',  '&#247;',  true, 'division sign'],
-	['&frasl;',   '&#8260;', true, 'fraction slash'],
-	['&times;',   '&#215;',  true, 'multiplication sign'],
-	['&sup1;',    '&#185;',  true, 'superscript one'],
-	['&sup2;',    '&#178;',  true, 'superscript two'],
-	['&sup3;',    '&#179;',  true, 'superscript three'],
-	['&frac14;',  '&#188;',  true, 'fraction one quarter'],
-	['&frac12;',  '&#189;',  true, 'fraction one half'],
-	['&frac34;',  '&#190;',  true, 'fraction three quarters'],
-// math / logical
-	['&fnof;',    '&#402;',  true, 'function / florin'],
-	['&int;',     '&#8747;', true, 'integral'],
-	['&sum;',     '&#8721;', true, 'n-ary sumation'],
-	['&infin;',   '&#8734;', true, 'infinity'],
-	['&radic;',   '&#8730;', true, 'square root'],
-	['&sim;',     '&#8764;', false,'similar to'],
-	['&cong;',    '&#8773;', false,'approximately equal to'],
-	['&asymp;',   '&#8776;', true, 'almost equal to'],
-	['&ne;',      '&#8800;', true, 'not equal to'],
-	['&equiv;',   '&#8801;', true, 'identical to'],
-	['&isin;',    '&#8712;', false,'element of'],
-	['&notin;',   '&#8713;', false,'not an element of'],
-	['&ni;',      '&#8715;', false,'contains as member'],
-	['&prod;',    '&#8719;', true, 'n-ary product'],
-	['&and;',     '&#8743;', false,'logical and'],
-	['&or;',      '&#8744;', false,'logical or'],
-	['&not;',     '&#172;',  true, 'not sign'],
-	['&cap;',     '&#8745;', true, 'intersection'],
-	['&cup;',     '&#8746;', false,'union'],
-	['&part;',    '&#8706;', true, 'partial differential'],
-	['&forall;',  '&#8704;', false,'for all'],
-	['&exist;',   '&#8707;', false,'there exists'],
-	['&empty;',   '&#8709;', false,'diameter'],
-	['&nabla;',   '&#8711;', false,'backward difference'],
-	['&lowast;',  '&#8727;', false,'asterisk operator'],
-	['&prop;',    '&#8733;', false,'proportional to'],
-	['&ang;',     '&#8736;', false,'angle'],
-// undefined
-	['&acute;',   '&#180;',  true, 'acute accent'],
-	['&cedil;',   '&#184;',  true, 'cedilla'],
-	['&ordf;',    '&#170;',  true, 'feminine ordinal indicator'],
-	['&ordm;',    '&#186;',  true, 'masculine ordinal indicator'],
-	['&dagger;',  '&#8224;', true, 'dagger'],
-	['&Dagger;',  '&#8225;', true, 'double dagger'],
-// alphabetical special chars
-	['&Agrave;',  '&#192;',  true, 'A - grave'],
-	['&Aacute;',  '&#193;',  true, 'A - acute'],
-	['&Acirc;',   '&#194;',  true, 'A - circumflex'],
-	['&Atilde;',  '&#195;',  true, 'A - tilde'],
-	['&Auml;',    '&#196;',  true, 'A - diaeresis'],
-	['&Aring;',   '&#197;',  true, 'A - ring above'],
-	['&AElig;',   '&#198;',  true, 'ligature AE'],
-	['&Ccedil;',  '&#199;',  true, 'C - cedilla'],
-	['&Egrave;',  '&#200;',  true, 'E - grave'],
-	['&Eacute;',  '&#201;',  true, 'E - acute'],
-	['&Ecirc;',   '&#202;',  true, 'E - circumflex'],
-	['&Euml;',    '&#203;',  true, 'E - diaeresis'],
-	['&Igrave;',  '&#204;',  true, 'I - grave'],
-	['&Iacute;',  '&#205;',  true, 'I - acute'],
-	['&Icirc;',   '&#206;',  true, 'I - circumflex'],
-	['&Iuml;',    '&#207;',  true, 'I - diaeresis'],
-	['&ETH;',     '&#208;',  true, 'ETH'],
-	['&Ntilde;',  '&#209;',  true, 'N - tilde'],
-	['&Ograve;',  '&#210;',  true, 'O - grave'],
-	['&Oacute;',  '&#211;',  true, 'O - acute'],
-	['&Ocirc;',   '&#212;',  true, 'O - circumflex'],
-	['&Otilde;',  '&#213;',  true, 'O - tilde'],
-	['&Ouml;',    '&#214;',  true, 'O - diaeresis'],
-	['&Oslash;',  '&#216;',  true, 'O - slash'],
-	['&OElig;',   '&#338;',  true, 'ligature OE'],
-	['&Scaron;',  '&#352;',  true, 'S - caron'],
-	['&Ugrave;',  '&#217;',  true, 'U - grave'],
-	['&Uacute;',  '&#218;',  true, 'U - acute'],
-	['&Ucirc;',   '&#219;',  true, 'U - circumflex'],
-	['&Uuml;',    '&#220;',  true, 'U - diaeresis'],
-	['&Yacute;',  '&#221;',  true, 'Y - acute'],
-	['&Yuml;',    '&#376;',  true, 'Y - diaeresis'],
-	['&THORN;',   '&#222;',  true, 'THORN'],
-	['&agrave;',  '&#224;',  true, 'a - grave'],
-	['&aacute;',  '&#225;',  true, 'a - acute'],
-	['&acirc;',   '&#226;',  true, 'a - circumflex'],
-	['&atilde;',  '&#227;',  true, 'a - tilde'],
-	['&auml;',    '&#228;',  true, 'a - diaeresis'],
-	['&aring;',   '&#229;',  true, 'a - ring above'],
-	['&aelig;',   '&#230;',  true, 'ligature ae'],
-	['&ccedil;',  '&#231;',  true, 'c - cedilla'],
-	['&egrave;',  '&#232;',  true, 'e - grave'],
-	['&eacute;',  '&#233;',  true, 'e - acute'],
-	['&ecirc;',   '&#234;',  true, 'e - circumflex'],
-	['&euml;',    '&#235;',  true, 'e - diaeresis'],
-	['&igrave;',  '&#236;',  true, 'i - grave'],
-	['&iacute;',  '&#237;',  true, 'i - acute'],
-	['&icirc;',   '&#238;',  true, 'i - circumflex'],
-	['&iuml;',    '&#239;',  true, 'i - diaeresis'],
-	['&eth;',     '&#240;',  true, 'eth'],
-	['&ntilde;',  '&#241;',  true, 'n - tilde'],
-	['&ograve;',  '&#242;',  true, 'o - grave'],
-	['&oacute;',  '&#243;',  true, 'o - acute'],
-	['&ocirc;',   '&#244;',  true, 'o - circumflex'],
-	['&otilde;',  '&#245;',  true, 'o - tilde'],
-	['&ouml;',    '&#246;',  true, 'o - diaeresis'],
-	['&oslash;',  '&#248;',  true, 'o slash'],
-	['&oelig;',   '&#339;',  true, 'ligature oe'],
-	['&scaron;',  '&#353;',  true, 's - caron'],
-	['&ugrave;',  '&#249;',  true, 'u - grave'],
-	['&uacute;',  '&#250;',  true, 'u - acute'],
-	['&ucirc;',   '&#251;',  true, 'u - circumflex'],
-	['&uuml;',    '&#252;',  true, 'u - diaeresis'],
-	['&yacute;',  '&#253;',  true, 'y - acute'],
-	['&thorn;',   '&#254;',  true, 'thorn'],
-	['&yuml;',    '&#255;',  true, 'y - diaeresis'],
-    ['&Alpha;',   '&#913;',  true, 'Alpha'],
-	['&Beta;',    '&#914;',  true, 'Beta'],
-	['&Gamma;',   '&#915;',  true, 'Gamma'],
-	['&Delta;',   '&#916;',  true, 'Delta'],
-	['&Epsilon;', '&#917;',  true, 'Epsilon'],
-	['&Zeta;',    '&#918;',  true, 'Zeta'],
-	['&Eta;',     '&#919;',  true, 'Eta'],
-	['&Theta;',   '&#920;',  true, 'Theta'],
-	['&Iota;',    '&#921;',  true, 'Iota'],
-	['&Kappa;',   '&#922;',  true, 'Kappa'],
-	['&Lambda;',  '&#923;',  true, 'Lambda'],
-	['&Mu;',      '&#924;',  true, 'Mu'],
-	['&Nu;',      '&#925;',  true, 'Nu'],
-	['&Xi;',      '&#926;',  true, 'Xi'],
-	['&Omicron;', '&#927;',  true, 'Omicron'],
-	['&Pi;',      '&#928;',  true, 'Pi'],
-	['&Rho;',     '&#929;',  true, 'Rho'],
-	['&Sigma;',   '&#931;',  true, 'Sigma'],
-	['&Tau;',     '&#932;',  true, 'Tau'],
-	['&Upsilon;', '&#933;',  true, 'Upsilon'],
-	['&Phi;',     '&#934;',  true, 'Phi'],
-	['&Chi;',     '&#935;',  true, 'Chi'],
-	['&Psi;',     '&#936;',  true, 'Psi'],
-	['&Omega;',   '&#937;',  true, 'Omega'],
-	['&alpha;',   '&#945;',  true, 'alpha'],
-	['&beta;',    '&#946;',  true, 'beta'],
-	['&gamma;',   '&#947;',  true, 'gamma'],
-	['&delta;',   '&#948;',  true, 'delta'],
-	['&epsilon;', '&#949;',  true, 'epsilon'],
-	['&zeta;',    '&#950;',  true, 'zeta'],
-	['&eta;',     '&#951;',  true, 'eta'],
-	['&theta;',   '&#952;',  true, 'theta'],
-	['&iota;',    '&#953;',  true, 'iota'],
-	['&kappa;',   '&#954;',  true, 'kappa'],
-	['&lambda;',  '&#955;',  true, 'lambda'],
-	['&mu;',      '&#956;',  true, 'mu'],
-	['&nu;',      '&#957;',  true, 'nu'],
-	['&xi;',      '&#958;',  true, 'xi'],
-	['&omicron;', '&#959;',  true, 'omicron'],
-	['&pi;',      '&#960;',  true, 'pi'],
-	['&rho;',     '&#961;',  true, 'rho'],
-	['&sigmaf;',  '&#962;',  true, 'final sigma'],
-	['&sigma;',   '&#963;',  true, 'sigma'],
-	['&tau;',     '&#964;',  true, 'tau'],
-	['&upsilon;', '&#965;',  true, 'upsilon'],
-	['&phi;',     '&#966;',  true, 'phi'],
-	['&chi;',     '&#967;',  true, 'chi'],
-	['&psi;',     '&#968;',  true, 'psi'],
-	['&omega;',   '&#969;',  true, 'omega'],
-// symbols
-	['&alefsym;', '&#8501;', false,'alef symbol'],
-	['&piv;',     '&#982;',  false,'pi symbol'],
-	['&real;',    '&#8476;', false,'real part symbol'],
-	['&thetasym;','&#977;',  false,'theta symbol'],
-	['&upsih;',   '&#978;',  false,'upsilon - hook symbol'],
-	['&weierp;',  '&#8472;', false,'Weierstrass p'],
-	['&image;',   '&#8465;', false,'imaginary part'],
-// arrows
-	['&larr;',    '&#8592;', true, 'leftwards arrow'],
-	['&uarr;',    '&#8593;', true, 'upwards arrow'],
-	['&rarr;',    '&#8594;', true, 'rightwards arrow'],
-	['&darr;',    '&#8595;', true, 'downwards arrow'],
-	['&harr;',    '&#8596;', true, 'left right arrow'],
-	['&crarr;',   '&#8629;', false,'carriage return'],
-	['&lArr;',    '&#8656;', false,'leftwards double arrow'],
-	['&uArr;',    '&#8657;', false,'upwards double arrow'],
-	['&rArr;',    '&#8658;', false,'rightwards double arrow'],
-	['&dArr;',    '&#8659;', false,'downwards double arrow'],
-	['&hArr;',    '&#8660;', false,'left right double arrow'],
-	['&there4;',  '&#8756;', false,'therefore'],
-	['&sub;',     '&#8834;', false,'subset of'],
-	['&sup;',     '&#8835;', false,'superset of'],
-	['&nsub;',    '&#8836;', false,'not a subset of'],
-	['&sube;',    '&#8838;', false,'subset of or equal to'],
-	['&supe;',    '&#8839;', false,'superset of or equal to'],
-	['&oplus;',   '&#8853;', false,'circled plus'],
-	['&otimes;',  '&#8855;', false,'circled times'],
-	['&perp;',    '&#8869;', false,'perpendicular'],
-	['&sdot;',    '&#8901;', false,'dot operator'],
-	['&lceil;',   '&#8968;', false,'left ceiling'],
-	['&rceil;',   '&#8969;', false,'right ceiling'],
-	['&lfloor;',  '&#8970;', false,'left floor'],
-	['&rfloor;',  '&#8971;', false,'right floor'],
-	['&lang;',    '&#9001;', false,'left-pointing angle bracket'],
-	['&rang;',    '&#9002;', false,'right-pointing angle bracket'],
-	['&loz;',     '&#9674;', true,'lozenge'],
-	['&spades;',  '&#9824;', true,'black spade suit'],
-	['&clubs;',   '&#9827;', true, 'black club suit'],
-	['&hearts;',  '&#9829;', true, 'black heart suit'],
-	['&diams;',   '&#9830;', true, 'black diamond suit'],
-	['&ensp;',    '&#8194;', false,'en space'],
-	['&emsp;',    '&#8195;', false,'em space'],
-	['&thinsp;',  '&#8201;', false,'thin space'],
-	['&zwnj;',    '&#8204;', false,'zero width non-joiner'],
-	['&zwj;',     '&#8205;', false,'zero width joiner'],
-	['&lrm;',     '&#8206;', false,'left-to-right mark'],
-	['&rlm;',     '&#8207;', false,'right-to-left mark'],
-	['&shy;',     '&#173;',  false,'soft hyphen']
-];
+	function isArray(arr) {
+		return Array.isArray(arr);
+	}
 
-tinyMCEPopup.onInit.add(function() {
-	tinyMCEPopup.dom.show('jce');
-	tinyMCEPopup.dom.setHTML('charmapView', renderCharMapHTML());
-});
+	tinyMCEPopup.onInit.add(function () {
+		var editor = tinyMCEPopup.editor, dom = tinyMCEPopup.dom;
+		var win = tinyMCEPopup.getWin(), tinymce = win.tinymce, Entities = tinymce.html.Entities;
 
-function renderCharMapHTML() {
-	var charsPerRow = 20, tdWidth=20, tdHeight=20, i;
-	//var html = '<table border="0" cellspacing="1" cellpadding="0" width="' + (tdWidth*charsPerRow) + '"><tr height="' + tdHeight + '">';
-	var html = '<ul class="charmap">';
-	var cols=-1;
-
-	for (i=0; i<charmap.length; i++) {
-		if (charmap[i][2]==true) {
-			cols++;
-			html += ''
-				+ '<li>'
-				+ '<a role="button" onmouseover="previewChar(\'' + charmap[i][1].substring(1,charmap[i][1].length) + '\',\'' + charmap[i][0].substring(1,charmap[i][0].length) + '\',\'' + charmap[i][3] + '\');" onfocus="previewChar(\'' + charmap[i][1].substring(1,charmap[i][1].length) + '\',\'' + charmap[i][0].substring(1,charmap[i][0].length) + '\',\'' + charmap[i][3] + '\');" href="javascript:void(0)" onclick="insertChar(\'' + charmap[i][1].substring(2,charmap[i][1].length-1) + '\');" onclick="return false;" onmousedown="return false;" title="' + charmap[i][3] + '" aria-label="' + charmap[i][3] + '">'
-				+ charmap[i][1]
-				+ '</a></li>';
-			if ((cols+1) % charsPerRow == 0)
-				html += '</ul><ul class="charmap">';
+		function charmapFilter(charmap) {
+			return charmap.filter(function (item) {
+				return isArray(item) && item.length == 2;
+			});
 		}
-	 }
 
-	if (cols % charsPerRow > 0) {
-		var padd = charsPerRow - (cols % charsPerRow);
-		for (var i=0; i<padd-1; i++)
-			html += '<li>&nbsp;</li>';
-	}
+		function getCharsFromSetting(settingValue) {
+			if (isArray(settingValue)) {
+				return [].concat(charmapFilter(settingValue));
+			}
 
-	html += '</ul>';
+			if (tinymce.is(settingValue, 'object')) {
+				values = [];
 
-	return html;
-}
+				tinymce.each(settingValue, function(value, key) {
+					// encode to numeric
+					key = Entities.encodeNumeric(Entities.decode(key));
+					// clean the key
+					key = key.replace(/\D+/g, '');
+					values.push([key, value]);
+				});
 
-function insertChar(chr) {
-	tinyMCEPopup.execCommand('mceInsertContent', false, '&#' + chr + ';');
+				return values;
+			}
 
-	// Refocus in window
-	if (tinyMCEPopup.isWindow)
-		window.focus();
+			if (typeof settingValue == "function") {
+				return settingValue();
+			}
 
-	tinyMCEPopup.editor.focus();
-	tinyMCEPopup.close();
-}
+			return [];
+		}
 
-function previewChar(codeA, codeB, codeN) {
-	var elmA = document.getElementById('codeA');
-	var elmB = document.getElementById('codeB');
-	var elmV = document.getElementById('codeV');
-	var elmN = document.getElementById('codeN');
+		function extendCharMap(charmap) {
+			var settings = editor.settings;
 
-	if (codeA=='#160;') {
-		elmV.innerHTML = '__';
-	} else {
-		elmV.innerHTML = '&' + codeA;
-	}
+			if (settings.charmap) {
+				charmap = getCharsFromSetting(settings.charmap);
+			}
 
-	elmB.innerHTML = '&amp;' + codeA;
-	elmA.innerHTML = '&amp;' + codeB;
-	elmN.innerHTML = codeN;
-}
+			if (settings.charmap_append) {
+				return [].concat(charmap).concat(getCharsFromSetting(settings.charmap_append));
+			}
+
+			return charmap;
+		}
+
+		function getCharMap() {
+			return extendCharMap(getDefaultCharMap());
+		}
+
+		dom.show('jce');
+		dom.setHTML('charmapView', renderCharMapHTML());
+
+		dom.bind(dom.select('.charmap'), 'mouseover', function (e) {
+			var node = e.target;
+
+			if (node.nodeName !== "BUTTON") {
+				return;
+			}
+
+			var chr = node.getAttribute('data-numeric'), chrA = '#' + chr + ';', chrB = node.getAttribute('data-named'), chrN = node.getAttribute('title');
+			
+			previewChar(chrA, chrB, chrN);
+		});
+
+		dom.bind(dom.select('.charmap'), 'click', function (e) {
+			var node = e.target;
+
+			e.preventDefault();
+
+			if (node.nodeName !== "BUTTON") {
+				return;
+			}
+
+			var chr = node.getAttribute('data-numeric');
+			insertChar(chr);
+		});
+
+		function renderCharMapHTML() {
+			var i;
+
+			var html = '<ul class="charmap">';
+
+			var charmap = getCharMap();
+
+			for (i = 0; i < charmap.length; i++) {
+				if (i < charmap.length) {
+					var chr = charmap[i], chrText = chr ? String.fromCharCode(parseInt(chr[0], 10)) : '&nbsp;';
+					var named = Entities.encodeNamed(chrText), named = named.substring(1);
+
+					html += (
+						'<li title="' + chr[1] + '">' +
+						'<button tabindex="-1" title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
+						chrText +
+						'</button>' +
+						'</li>'
+					);
+				} else {
+					html += '<li></li>';
+				}
+			}
+
+			html += '</ul>';
+
+			return html;
+		}
+
+		function insertChar(chr) {
+			tinyMCEPopup.execCommand('mceInsertContent', false, '&#' + chr + ';');
+
+			tinyMCEPopup.editor.focus();
+			tinyMCEPopup.close();
+		}
+
+		function previewChar(codeA, codeB, codeN) {
+			var elmA = document.getElementById('codeA');
+			var elmB = document.getElementById('codeB');
+			var elmV = document.getElementById('codeV');
+			var elmN = document.getElementById('codeN');
+
+			if (codeA == '#160;') {
+				elmV.innerHTML = '__';
+			} else {
+				elmV.innerHTML = '&' + codeA;
+			}
+
+			elmB.innerHTML = '&amp;' + codeA;
+			elmA.innerHTML = '&amp;' + codeB;
+			elmN.innerHTML = codeN;
+		}
+	});
+})(tinyMCEPopup);

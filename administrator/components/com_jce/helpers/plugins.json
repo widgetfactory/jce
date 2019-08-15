@@ -35,7 +35,7 @@
         "title": "WF_CHARMAP_TITLE",
         "description": "WF_CHARMAP_DESC",
         "icon": "charmap",
-        "editable": 0,
+        "editable": 1,
         "row": 2,
         "core": 1
     },

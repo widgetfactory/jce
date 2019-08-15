@@ -11,6 +11,16 @@
 	<description>WF_CHARMAP_DESC</description>
 	<icon>charmap</icon>
 	<files></files>
+	<fields name="charmap">
+		<fieldset name="config">
+
+			<field name="charmap_append" type="keyvalue" default="" label="WF_CHARMAP_APPEND" description="WF_CHARMAP_APPEND_DESC">
+				<field type="text" name="name" label="WF_CHARMAP_APPEND_CODE" />
+				<field type="text" name="value" label="WF_CHARMAP_APPEND_TEXT" />
+			</field>
+
+		</fieldset>
+	</fields>
 	<languages></languages>
 	<help></help>
 </extension>

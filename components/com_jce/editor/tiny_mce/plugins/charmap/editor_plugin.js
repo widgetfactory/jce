@@ -7,26 +7,26 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
 	var each = tinymce.each;
 
 	tinymce.create('tinymce.plugins.CharacterMap', {
-		init: function(ed, url) {
+		init: function (ed, url) {
 			this.editor = ed;
 
 			// Register commands
-			ed.addCommand('mceCharacterMap', function(v) {
+			ed.addCommand('mceCharacterMap', function (v) {
 				ed.windowManager.open({
 					url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=charmap',
-					width   : 640 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
-					height  : 300 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
+					width: 640 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
+					height: 390 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
 					close_previous: false,
 					inline: true,
-					size: 'mce-modal-landscape-large'
+					//size: 'mce-modal-landscape-xlarge'
 				});
 			});
 		},
-		createControl: function(name, cm) {
+		createControl: function (name, cm) {
 			var self = this,
 				btn, editor = self.editor;
 
@@ -36,14 +36,14 @@
 			}
 
 			if (name === 'charmap') {
-        if (editor.getParam('charmap_custom')) {
+				if (editor.getParam('charmap_custom')) {
 					btn = cm.createSplitButton(name, {
 						title: 'advanced.charmap_desc',
 						cmd: 'mceCharacterMap'
 					});
 
-					btn.onRenderMenu.add(function(btn, menu) {
-						each(editor.getParam('charmap_custom', '', 'hash'), function(v, k) {
+					btn.onRenderMenu.add(function (btn, menu) {
+						each(editor.getParam('charmap_custom', '', 'hash'), function (v, k) {
 							var id = editor.dom.uniqueId();
 
 							v = v.replace(/[^a-z0-9]/gi, '');
@@ -51,7 +51,7 @@
 							menu.add({
 								id: id,
 								title: k + ' &' + v + ';',
-								onclick: function() {
+								onclick: function () {
 									insertChar(v);
 								}
 							});
