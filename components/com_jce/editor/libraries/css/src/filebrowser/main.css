@@ -219,8 +219,8 @@ main > div:last-child {
 
 #browser-list-limit select {
   margin: 0;
-  vertical-align: initial;
   min-width: 60px;
+  max-height: 28px;
 }
 
 #browser-list-limit label {
