@@ -65,20 +65,27 @@ main .uk-navbar {
 
 main > div {
   border: 1px solid #ddd;
-  border-left-width: 0;
   height: 100%;
+
+  border-right-width: 0;
 }
 
 main > div:first-child {
   border-left-width: 1px;
+  border-right-width: 0;
 }
 
 main > div:last-child {
-  max-width: 18rem;
+  width: 32px;
+  border-right-width: 1px;
+}
+
+main > div + div + div {
+  max-width: 18em;
 }
 
 @media (min-width: 960px) {
-  main > div:last-child {
+  main > div + div + div {
     max-width: 20rem;
   }
 }
@@ -89,16 +96,6 @@ main > div:last-child {
 
 .uk-navbar .uk-button.uk-active {
   border-width: 0 1px;
-}
-
-/* Show border on second div */
-
-.uk-tree-hidden > div + div {
-  border-left-width: 1px;
-}
-
-.uk-tree-hidden > div + div + div {
-  border-left-width: 0;
 }
 
 #sort-date,
@@ -717,6 +714,7 @@ ul.item-list li.folder-up {
   min-width: 2em;
   font-size: 16px;
   box-sizing: border-box;
+  padding-top: 32px;
 }
 
 #browser-buttons .button {
