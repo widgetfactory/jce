@@ -31,6 +31,9 @@ abstract class WfBrowserHelper
 
             $url = JURI::base(true) . '/index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
+           // add context
+           $url .= '&context=' . $wf->getContext();
+
             if ($element) {
                 $url .= '&element='.$element;
             }
