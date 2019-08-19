@@ -128,7 +128,7 @@
         websafe_textcase: '',
         date_format: '%d/%m/%Y, %H:%M',
         allow_download: false,
-        use_cookies: true
+        use_state_cookies: true
     };
 
     FileBrowser.prototype = {
@@ -1186,10 +1186,7 @@
 
             // store directory in cookie
             if ((src || this._dir === '')) {
-
-                if (this.options.use_cookies) {
-                    this._setState('dir', this._cleanPath(path));
-                }
+                this._setState('dir', this._cleanPath(path));
             }
 
             // hide all buttons
