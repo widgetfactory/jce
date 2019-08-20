@@ -28,8 +28,8 @@ abstract class WfBrowserHelper
         // check the current user is in a profile
         if ($wf->getProfile('browser')) {
             $token = JFactory::getSession()->getFormToken();
-
-            $url = JURI::base(true) . '/index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
+            
+            $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
            // add context
            $url .= '&context=' . $wf->getContext();
