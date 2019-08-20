@@ -30,7 +30,7 @@ defined('JPATH_PLATFORM') or die;
       </nav>
 
       <main class="uk-grid uk-grid-collapse uk-width-1-1 uk-position-cover uk-flex">
-        <div class="uk-width-3-10 uk-width-large-1-4">
+        <div class="uk-width-3-10 uk-width-large-1-4 uk-hidden-small">
           <div class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-text-center">
               <?php echo JText::_('WF_LABEL_FOLDERS'); ?>
@@ -97,6 +97,7 @@ defined('JPATH_PLATFORM') or die;
           <div class="folder-up" title="Up">
             <button class="uk-button uk-button-link uk-width-1-1 uk-text-left uk-padding-remove" aria-label="Up"><i class="uk-width-1-10 uk-icon uk-icon-undo uk-icon-folder-up"></i>...</button>
           </div>
+
           <div id="browser-list"></div>
 
           <div id="browser-list-limit" class="uk-navbar">
@@ -136,7 +137,7 @@ defined('JPATH_PLATFORM') or die;
 
         </div>
 
-        <div class="uk-width-3-10 uk-position-relative">
+        <div class="uk-width-2-10 uk-position-relative uk-hidden-small">
           <div class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-text-center">
               <?php echo JText::_('WF_LABEL_DETAILS'); ?>
@@ -147,8 +148,6 @@ defined('JPATH_PLATFORM') or die;
               <div id="browser-details-text" class="uk-height-1-1"></div>
               <div id="browser-details-comment"></div>
             </div>
-
-            <div id="browser-buttons" class="uk-text-center"></div>
           </div>
           <div id="browser-details-nav" class="uk-navbar">
             <div class="uk-navbar-content uk-width-1-1 uk-padding-remove">
@@ -163,6 +162,10 @@ defined('JPATH_PLATFORM') or die;
               </ul>
             </div>
           </div>
+        </div>
+
+        <div id="browser-buttons" class="uk-text-center">
+          <div class="uk-navbar uk-width-1-1" role="presentation"><div class="uk-navbar-content"></div></div>
         </div>
     </div>
     </main>
