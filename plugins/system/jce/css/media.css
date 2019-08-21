@@ -1,9 +1,11 @@
 .field-media-wrapper .modal {
     height: 90vh;
 }
-.field-media-wrapper .modal .modal-body {
+.field-media-wrapper .modal div.modal-body {
     max-height: 100% !important;
+    width: auto;
     overflow: hidden;
+    padding: 5px;
 }
 .field-media-wrapper .modal .modal-body iframe[name="field-media-modal"] {
     height: calc(90vh - 54px) !important;
