@@ -15,7 +15,7 @@ abstract class WfBrowserHelper
     public static function getBrowserLink($element = null, $filter = '', $callback = '')
     {
         $app = JFactory::getApplication();
-        
+
         // set $url as empty string
         $url = '';
 
@@ -28,18 +28,18 @@ abstract class WfBrowserHelper
         // check the current user is in a profile
         if ($wf->getProfile('browser')) {
             $token = JFactory::getSession()->getFormToken();
-            
+
             $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
-           // add context
-           $url .= '&context=' . $wf->getContext();
+            // add context
+            $url .= '&context=' . $wf->getContext();
 
             if ($element) {
-                $url .= '&element='.$element;
+                $url .= '&element=' . $element;
             }
 
             if ($filter) {
-                $url .= '&filter='.$filter;
+                $url .= '&filter=' . $filter;
             }
 
             if ($callback) {
