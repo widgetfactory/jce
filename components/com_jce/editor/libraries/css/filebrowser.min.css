@@ -355,10 +355,6 @@ main > div + div + div {
   border-left-width: 1px;
 }
 
-.uk-tree-hidden > div + div + div {
-  border-left-width: 0;
-}
-
 #sort-date,
 #sort-size {
   display: none;

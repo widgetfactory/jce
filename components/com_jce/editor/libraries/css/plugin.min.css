@@ -1386,7 +1386,7 @@ input[type="range"]::-ms-thumb {
 
 @media (max-width: 375px) {
     .uk-hidden-mini {
-        display: none;
+        display: none !important;
     }
 }
 
