@@ -933,7 +933,7 @@ html {
 
 .uk-modal-preview {
     min-height: 120px;
-    min-width: 480px;
+    min-width: 320px;
 }
 
 .uk-modal-preview .uk-modal-body {
@@ -993,7 +993,7 @@ html {
 }
 
 .uk-modal-header {
-    padding: 10px;
+    padding: 10px 38px 10px 10px;
     margin: -10px -10px 10px;
     background: #fff;
     border-bottom: 1px solid #ddd;
@@ -1372,7 +1372,7 @@ input[type="range"]::-ms-thumb {
     }
 }
 
-@media (min-width: 375px) {
+@media (min-width: 414px) {
 
     .uk-form-horizontal .uk-form-label,
     .uk-form-horizontal .uk-form-controls,
@@ -1382,18 +1382,12 @@ input[type="range"]::-ms-thumb {
 }
 
 
-/* Phone portrait and smaller */
+/* Phone portrait and smaller (based on iPhone 6/7/8 Plus) */
 
-@media (max-width: 375px) {
+@media (max-width: 414px) {
     .uk-hidden-mini {
         display: none !important;
     }
-}
-
-
-/* Phone portrait and smaller */
-
-@media (max-width: 375px) {
 
     /* Whole */
     .uk-width-mini-1-1 {

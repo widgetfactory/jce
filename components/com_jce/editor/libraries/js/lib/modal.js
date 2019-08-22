@@ -749,7 +749,7 @@
                 }
             });
 
-            return this.open(Wf.translate('preview', 'Preview') + ' - ' + name, options, div);
+            return this.open(name, options, div);
         }
     };
 })(jQuery, Wf);
