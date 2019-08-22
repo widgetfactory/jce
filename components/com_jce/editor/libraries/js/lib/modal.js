@@ -406,7 +406,7 @@
                 '   <div id="upload-queue"></div>' +
                 '   <input type="file" size="40" tabindex="-1" />' +
                 '</div>' +
-                '<div id="upload-options" class="uk-placeholder">' + (options.elements || '') + '</div>'
+                '<div id="upload-options" class="uk-placeholder uk-placeholder-small">' + (options.elements || '') + '</div>'
             );
 
             // create backup function
