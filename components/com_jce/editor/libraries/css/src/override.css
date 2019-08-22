@@ -670,6 +670,10 @@ input[type="range"]::-ms-thumb {
     .uk-width-mini-9-10 {
         width: 90%;
     }
+
+    .uk-placeholder {
+        padding: 10px;
+    }
 }
 
 .uk-icon-none {

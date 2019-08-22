@@ -480,7 +480,7 @@
             var ext = file.extension.toLowerCase();
             // input
             var input = $('<i class="uk-icon uk-icon-file-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
-            var name = $('<div class="queue-item-name uk-width-4-5 uk-form-icon uk-form-icon-both" />').append(input);
+            var name = $('<div class="queue-item-name uk-width-3-4 uk-width-small-4-5 uk-form-icon uk-form-icon-both" />').append(input);
 
             var buttons = [remove];
 
@@ -502,13 +502,13 @@
             });
 
             // size
-            var size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
+            var size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center uk-hidden-mini" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
 
             // create actions container
-            var actions = $('<div class="queue-item-actions uk-grid uk-grid-collapse uk-width-1-5 uk-text-right" />').appendTo(file.element).append(size).append(buttons);
+            var actions = $('<div class="queue-item-actions uk-flex uk-width-1-4 uk-width-small-1-5 uk-text-right" />').appendTo(file.element).append(size).append(buttons);
             var progress = $('<div class="uk-progress uk-width-1-1"><div class="uk-progress-bar"></div></div>');
 
-            $(file.element).addClass('queue-item uk-width-1-1 uk-grid uk-grid-collapse').appendTo($(self.element)).append([name, actions, progress]);
+            $(file.element).addClass('queue-item uk-width-1-1 uk-flex uk-flex-wrap').appendTo($(self.element)).append([name, actions, progress]);
 
             $('input[type="text"]', file.element).on('change keyup', function(e) {
                 var v = this.value;
