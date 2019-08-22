@@ -137,7 +137,7 @@ html {
 
 .uk-modal-preview {
     min-height: 120px;
-    min-width: 480px;
+    min-width: 320px;
 }
 
 .uk-modal-preview .uk-modal-body {
@@ -584,19 +584,12 @@ input[type="range"]::-ms-thumb {
     }
 }
 
+/* Phone portrait and smaller (based on iPhone 6/7/8 Plus) */
 
-/* Phone portrait and smaller */
-
-@media (max-width: 375px) {
+@media (max-width: 414px) {
     .uk-hidden-mini {
-        display: none;
+        display: none !important;
     }
-}
-
-
-/* Phone portrait and smaller */
-
-@media (max-width: 375px) {
 
     /* Whole */
     .uk-width-mini-1-1 {

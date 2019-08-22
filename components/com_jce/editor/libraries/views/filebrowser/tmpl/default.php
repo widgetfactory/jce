@@ -63,14 +63,14 @@ defined('JPATH_PLATFORM') or die;
               </button>
 
               <!-- Sort Date -->
-              <button class="uk-width-2-10 uk-button uk-padding-remove uk-text-left" id="sort-date" data-sort="modified" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
+              <button class="uk-width-2-10 uk-button uk-padding-remove uk-text-left uk-hidden-mini" id="sort-date" data-sort="modified" data-sort-type="date" aria-labelledby="sort-date-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <label id="sort-data-label" for="sort-date">&nbsp;<?php echo JText::_('WF_LABEL_DATE'); ?></label>
               </button>
 
               <!-- Sort Size -->
-              <button class="uk-width-4-10 uk-button uk-text-left" id="sort-size" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
+              <button class="uk-width-4-10 uk-button uk-text-left uk-hidden-mini" id="sort-size" data-sort="size" data-sort-type="number" aria-labelledby="sort-size-label" aria-hidden="true">
                 <i class="uk-icon-sort-numeric-asc"></i>
                 <i class="uk-icon-sort-numeric-desc"></i>
                 <label id="sort-size-label" for="sort-size">&nbsp;<?php echo JText::_('WF_LABEL_SIZE'); ?></label>
@@ -164,7 +164,9 @@ defined('JPATH_PLATFORM') or die;
           </div>
         </div>
 
-        <div id="browser-buttons" class="uk-text-center"></div>
+        <div id="browser-buttons" class="uk-text-center">
+          <div class="uk-navbar uk-width-1-1" role="presentation"><div class="uk-navbar-content"></div></div>
+        </div>
     </div>
     </main>
     <input type="hidden" name="<?php echo JSession::getFormToken(); ?>" value="1" />

@@ -413,7 +413,7 @@
             options.upload = options.upload || $.noop;
 
             options = $.extend({
-                'classes': 'uk-modal-dialog-large uk-modal-upload',
+                'classes': 'uk-modal-dialog-full uk-modal-upload',
                 resizable: false,
                 buttons: [{
                     text: Wf.translate('browse', 'Add Files'),
@@ -748,7 +748,7 @@
                 }
             });
 
-            return this.open(Wf.translate('preview', 'Preview') + ' - ' + name, options, div);
+            return this.open(name, options, div);
         }
     };
 })(jQuery, Wf);

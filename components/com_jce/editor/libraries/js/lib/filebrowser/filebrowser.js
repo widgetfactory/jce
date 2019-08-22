@@ -819,9 +819,12 @@
                         classes.push(e.classes);
                     }
 
-                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' +
-                        data.join(' ') +
-                        '><label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label><i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i><a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a><span class="uk-width-6-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span></li>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') +'>';
+                    h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
+                    h += '  <i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i>';
+                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a>';
+                    h += '  <span class="uk-width-6-10 uk-item-date uk-hidden-mini">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
+                    h += '</li>';
                 });
 
             }
@@ -875,8 +878,8 @@
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
                     h += '  </a>';
-                    h += '  <span class="uk-width-2-10 uk-item-date">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
-                    h += '  <span class="uk-width-4-10 uk-item-size">' + Wf.String.formatSize(e.properties.size) + '</span>';
+                    h += '  <span class="uk-width-2-10 uk-item-date uk-hidden-mini">' + Wf.String.formatDate(e.properties.modified, self.options.date_format) + '</span>';
+                    h += '  <span class="uk-width-4-10 uk-item-size uk-hidden-mini">' + Wf.String.formatSize(e.properties.size) + '</span>';
                     h += '</li>';
                 });
 

@@ -11,32 +11,32 @@
 defined('JPATH_PLATFORM') or die;
 ?>
 <div class="uk-form-row">
-    <label for="style" class="hastip uk-form-label uk-width-3-10"
+    <label for="style" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_STYLE_DESC'); ?>"><?php echo JText::_('WF_LABEL_STYLE'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="style" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="style" type="text" value=""/></div>
 </div>
 <div class="uk-form-row">
-    <label for="classlist" class="hastip uk-form-label uk-width-3-10"
+    <label for="classlist" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10">
         <select id="classes" class="uk-datalist" multiple="multiple"></select>
     </div>
 </div>
 <div class="uk-form-row">
-    <label for="title" class="hastip uk-form-label uk-width-3-10"
+    <label for="title" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_TITLE_DESC'); ?>"><?php echo JText::_('WF_LABEL_TITLE'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="title" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="title" type="text" value=""/></div>
 </div>
 <div class="uk-form-row">
-    <label for="id" class="hastip uk-form-label uk-width-3-10"
+    <label for="id" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_ID_DESC'); ?>"><?php echo JText::_('WF_LABEL_ID'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="id" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="id" type="text" value=""/></div>
 </div>
 
 <div class="uk-form-row">
-    <label for="dir" class="hastip uk-form-label uk-width-3-10"
+    <label for="dir" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_DIR_DESC'); ?>"><?php echo JText::_('WF_LABEL_DIR'); ?></label>
-    <div class="uk-form-controls uk-width-7-10">
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10">
         <select id="dir">
             <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
             <option value="ltr"><?php echo JText::_('WF_OPTION_LTR'); ?></option>
@@ -46,19 +46,19 @@ defined('JPATH_PLATFORM') or die;
 </div>
 
 <div class="uk-form-row">
-    <label for="lang" class="hastip uk-form-label uk-width-3-10"
+    <label for="lang" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_LANG_DESC'); ?>"><?php echo JText::_('WF_LABEL_LANG'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="lang" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="lang" type="text" value=""/></div>
 </div>
 
 <div class="uk-form-row">
-    <label for="usemap" class="hastip uk-form-label uk-width-3-10"
+    <label for="usemap" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_USEMAP_DESC'); ?>"><?php echo JText::_('WF_LABEL_USEMAP'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="usemap" type="text" value=""/></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="usemap" type="text" value=""/></div>
 </div>
 
 <div class="uk-form-row html4">
-    <label for="longdesc" class="hastip uk-form-label uk-width-3-10"
+    <label for="longdesc" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_LONGDESC_DESC'); ?>"><?php echo JText::_('WF_LABEL_LONGDESC'); ?></label>
-    <div class="uk-form-controls uk-width-7-10"><input id="longdesc" type="text" value="" class="browser html" /></div>
+    <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10"><input id="longdesc" type="text" value="" class="browser html" /></div>
 </div>

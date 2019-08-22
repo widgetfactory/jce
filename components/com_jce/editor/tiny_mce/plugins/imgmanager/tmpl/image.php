@@ -12,31 +12,31 @@ defined('JPATH_PLATFORM') or die;
 ?>
 
 <div class="uk-grid uk-grid-small">
-    <div class="uk-width-4-5">
+    <div class="uk-width-4-5 uk-flex-item-auto">
 
         <div class="uk-grid uk-grid-small">
-            <label for="src" class="hastip uk-form-label uk-width-1-5" title="<?php echo JText::_('WF_LABEL_URL_DESC'); ?>">
+            <label for="src" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5" title="<?php echo JText::_('WF_LABEL_URL_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_URL'); ?>
             </label>
-            <div class="uk-form-controls uk-width-4-5">
+            <div class="uk-form-controls uk-width-1-1 uk-width-small-4-5">
                 <input type="text" id="src" value="" class="filebrowser" required />
             </div>
         </div>
 
         <div class="uk-grid uk-grid-small">
-            <label for="alt" class="hastip uk-form-label uk-width-1-5" title="<?php echo JText::_('WF_LABEL_ALT_DESC'); ?>">
+            <label for="alt" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5" title="<?php echo JText::_('WF_LABEL_ALT_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALT'); ?>
             </label>
-            <div class="uk-form-controls uk-width-4-5">
+            <div class="uk-form-controls uk-width-1-1 uk-width-small-4-5">
                 <input type="text" id="alt" value="" />
             </div>
         </div>
 
         <div class="uk-grid uk-grid-small" id="attributes-dimensions">
-            <label class="hastip uk-form-label uk-width-1-5" title="<?php echo JText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
+            <label class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5" title="<?php echo JText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_DIMENSIONS'); ?>
             </label>
-            <div class="uk-form-controls uk-width-4-5 uk-form-constrain">
+            <div class="uk-form-control uk-width-1-1 uk-width-small-4-5 uk-form-constrain uk-flex">
 
                 <div class="uk-form-controls">
                     <input type="text" id="width" value="" class="uk-text-muted" />
@@ -57,7 +57,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-        <div class="uk-grid uk-grid-small" id="attributes-align">
+        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-align">
             <label for="align" class="hastip uk-form-label uk-width-1-5"
                    title="<?php echo JText::_('WF_LABEL_ALIGN_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALIGN'); ?>
@@ -80,7 +80,7 @@ defined('JPATH_PLATFORM') or die;
                     </select>
                 </div>
             </div>
-            <div class="uk-width-2-5">
+            <div class="uk-width-2-5 uk-hidden-mini">
                 <label for="clear" class="hastip uk-form-label uk-width-3-10"
                        title="<?php echo JText::_('WF_LABEL_CLEAR_DESC'); ?>">
                     <?php echo JText::_('WF_LABEL_CLEAR'); ?>
@@ -193,7 +193,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
     </div>
-    <div class="uk-width-1-5">
+    <div class="uk-width-1-5 uk-hidden-mini">
         <div class="preview">
             <img id="sample" src="<?php echo $this->plugin->image('sample.jpg', 'libraries'); ?>" alt="sample.jpg"/>
             <?php echo JText::_('WF_LOREM_IPSUM'); ?>

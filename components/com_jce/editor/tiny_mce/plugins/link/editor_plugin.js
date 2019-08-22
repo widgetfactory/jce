@@ -45,7 +45,8 @@
                     width: 600 + ed.getLang('link.delta_width', 0),
                     height: 600 + ed.getLang('link.delta_height', 0),
                     inline: 1,
-                    popup_css: false
+                    popup_css: false,
+                    size: 'mce-modal-portrait-large'
                 }, {
                         plugin_url: url
                     });

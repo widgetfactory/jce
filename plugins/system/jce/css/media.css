@@ -3,9 +3,9 @@
 }
 .field-media-wrapper .modal div.modal-body {
     max-height: 100% !important;
-    width: auto;
+    width: 100%;
     overflow: hidden;
-    padding: 5px;
+    padding: 0;
 }
 .field-media-wrapper .modal .modal-body iframe[name="field-media-modal"] {
     height: calc(90vh - 54px) !important;
