@@ -128,7 +128,12 @@ class WFApplication extends JObject
 
             if ($context) {
                 $component = $this->getComponent($context);
-                $option = isset($component->element) ? $component->element : $component->option;
+                $option = $component->element;
+            }
+
+            // reset if com_jce
+            if ($option === 'com_jce') {
+                $option = '';
             }
         }
 
@@ -226,13 +231,8 @@ class WFApplication extends JObject
                 }
 
                 if (!empty($item->components)) {
-                    // no context, and file browser cannot be assigned
-                    if ($options['option'] === 'com_jce') {
-                        continue;
-                    }
-                    
                     // check component
-                    if (in_array($options['option'], explode(',', $item->components)) === false) {
+                    if ($options['option'] && in_array($options['option'], explode(',', $item->components)) === false) {
                         continue;
                     }
                 }
