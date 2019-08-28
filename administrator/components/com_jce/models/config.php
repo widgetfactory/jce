@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -13,10 +13,8 @@ defined('JPATH_PLATFORM') or die;
 // load base model
 jimport('joomla.application.component.modelform');
 
-use Joomla\Utilities\ArrayHelper;
-
 class JceModelConfig extends JModelForm
-{    
+{
     /**
      * Returns a Table object, always creating it.
      *
@@ -41,7 +39,7 @@ class JceModelConfig extends JModelForm
      *
      * @return mixed A JForm object on success, false on failure
      *
-     * @since	1.6
+     * @since    1.6
      */
     public function getForm($data = array(), $loadData = true)
     {
@@ -60,7 +58,7 @@ class JceModelConfig extends JModelForm
      *
      * @return mixed The data for the form
      *
-     * @since	1.6
+     * @since    1.6
      */
     protected function loadFormData()
     {
@@ -74,6 +72,16 @@ class JceModelConfig extends JModelForm
         return $data;
     }
 
+    /* Override to prevent plugins from processing form data */
+    protected function preprocessForm(\JForm $form, $data, $group = 'content')
+    {
+    }
+
+    /* Override to prevent plugins from processing form data */
+    protected function preprocessData($context, &$data, $group = 'content')
+    {
+    }
+
     /**
      * Method to get the configuration data.
      *
@@ -83,21 +91,31 @@ class JceModelConfig extends JModelForm
      *
      * @return array An array containg all global config data
      *
-     * @since	1.6
+     * @since    1.6
      */
     public function getData()
     {
-        // Get the editor data
-        $plugin = JPluginHelper::getPlugin('editors', 'jce');
+        $table = $this->getTable();
+
+        $id = $table->find(array(
+            'type' => 'plugin',
+            'element' => 'jce',
+            'folder' => 'editors',
+        ));
+
+        if (!$table->load($id)) {
+            $this->setError($table->getError());
+            return false;
+        }
 
         // json_decode
-        $json = json_decode($plugin->params, true);
+        $json = json_decode($table->params, true);
 
         if (empty($json)) {
             $json = array();
         }
 
-        array_walk($json, function(&$value, $key) {
+        array_walk($json, function (&$value, $key) {
             if (is_numeric($value)) {
                 $value = $value + 0;
             }
@@ -123,10 +141,10 @@ class JceModelConfig extends JModelForm
         $table = $this->getTable();
 
         $id = $table->find(array(
-            'type'      => 'plugin',
-            'element'   => 'jce',
-            'folder'    => 'editors'
-        )); 
+            'type' => 'plugin',
+            'element' => 'jce',
+            'folder' => 'editors',
+        ));
 
         if (!$id) {
             $this->setError('Invalid plugin');
@@ -134,30 +152,26 @@ class JceModelConfig extends JModelForm
         }
 
         // Load the previous Data
-		if (!$table->load($id))
-		{
-			$this->setError($table->getError());
+        if (!$table->load($id)) {
+            $this->setError($table->getError());
             return false;
         }
 
-		// Bind the data.
-		if (!$table->bind($data))
-		{
-			$this->setError($table->getError());
-            return false;
-		}
-
-		// Check the data.
-		if (!$table->check())
-		{
-			$this->setError($table->getError());
+        // Bind the data.
+        if (!$table->bind($data)) {
+            $this->setError($table->getError());
             return false;
         }
-        
+
+        // Check the data.
+        if (!$table->check()) {
+            $this->setError($table->getError());
+            return false;
+        }
+
         // Store the data.
-		if (!$table->store())
-		{
-			$this->setError($table->getError());
+        if (!$table->store()) {
+            $this->setError($table->getError());
             return false;
         }
 
