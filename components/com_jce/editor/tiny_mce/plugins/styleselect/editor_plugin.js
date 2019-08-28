@@ -139,7 +139,7 @@
                             name = fmt.name = fmt.name || 'style_' + (counter++);
 
                             // make sure all attribute values are strings and decoded
-                            if (fmt.attributes) {
+                            if (tinymce.is(fmt.attributes, 'string')) {
                                 var frag = ed.dom.createFragment('<div ' + tinymce.trim(fmt.attributes) + '></div>');
                                 var attribs = ed.dom.getAttribs(frag.firstChild);
 
@@ -157,7 +157,7 @@
                                 });
                             }
 
-                            if (fmt.styles) {
+                            if (tinymce.is(fmt.styles, 'string')) {
                                 // parse to style object
                                 fmt.styles = ed.dom.parseStyle(fmt.styles);
                                 
