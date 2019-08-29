@@ -15,6 +15,11 @@
     </files>
     <fields name="jcemediabox">
         <fieldset name="jcemediabox">
+            <field name="enable" type="yesno" default="1" label="WF_LABEL_EXTENSION_ENABLE" description="WF_LABEL_EXTENSION_ENABLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            
             <field name="popup_group" type="text" default="" label="WF_POPUPS_JCEMEDIABOX_GROUP" description="WF_POPUPS_JCEMEDIABOX_GROUP_DESC" />
 
             <field name="popup_icon" type="yesno" default="1" label="WF_POPUPS_JCEMEDIABOX_ICON" description="WF_POPUPS_JCEMEDIABOX_ICON_DESC">
