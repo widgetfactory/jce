@@ -12,25 +12,25 @@
 	var each = tinymce.each;
 	tinymce.create('tinymce.plugins.TextCase', {
 		init: function (ed, url) {
-			var t = this;
+			var self = this;
 
 			this.url = url;
 			this.editor = ed;
 
 			ed.addCommand('mceUpperCase', function () {
-				t._upperCase();
+				self._upperCase();
 			});
 
 			ed.addCommand('mceLowerCase', function () {
-				t._lowerCase();
+				self._lowerCase();
 			});
 
-			ed.addCommand('mceCamelCase', function () {
-				t._camelCase();
+			ed.addCommand('mceTitleCase', function () {
+				self._titleCase();
 			});
 
 			ed.addCommand('mceSentenceCase', function () {
-				t._sentenceCase();
+				self._sentenceCase();
 			});
 
 			ed.onNodeChange.add(function (ed, cm, n, co) {
@@ -39,9 +39,8 @@
 		},
 
 		createControl: function (n, cm) {
-			var t = this,
-				ed = t.editor,
-				doc = ed.getDoc();
+			var self = this,
+				ed = self.editor;
 
 			if (n === "textcase") {
 				var c = cm.createSplitButton('textcase', {
@@ -93,10 +92,8 @@
 		},
 
 		_sentenceCase: function () {
-			var t = this,
-				ed = this.editor,
-				s = ed.selection,
-				n = s.getNode();
+			var ed = this.editor,
+				s = ed.selection;
 
 			var text = s.getContent();
 
@@ -109,11 +106,9 @@
 			s.setContent(text);
 		},
 
-		_camelCase: function () {
-			var t = this,
-				ed = this.editor,
-				s = ed.selection,
-				n = s.getNode();
+		_titleCase: function () {
+			var ed = this.editor,
+				s = ed.selection;
 
 			var text = s.getContent();
 
@@ -129,8 +124,7 @@
 
 		_lowerCase: function () {
 			var ed = this.editor,
-				s = ed.selection,
-				n = s.getNode();
+				s = ed.selection;
 
 			var text = s.getContent();
 			s.setContent(text.toLowerCase());
@@ -138,8 +132,7 @@
 
 		_upperCase: function () {
 			var ed = this.editor,
-				s = ed.selection,
-				n = s.getNode();
+				s = ed.selection;
 
 			var text = s.getContent();
 			s.setContent(text.toUpperCase());
