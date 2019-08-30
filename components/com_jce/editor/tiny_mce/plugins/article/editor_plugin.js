@@ -18,10 +18,10 @@
 
     tinymce.create('tinymce.plugins.ArticlePlugin', {
         init: function (ed, url) {
-            var t = this;
+            var self = this;
 
-            t.editor = ed;
-            t.url = url;
+            self.editor = ed;
+            self.url = url;
 
             function isReadMore(n) {
                 return ed.dom.is(n, 'hr.mce-item-readmore');
@@ -37,7 +37,7 @@
                     alert(ed.getLang('article.readmore_alert', 'There is already a Read More break inserted in this article. Only one such break is permitted. Use a Pagebreak to split the page up further.'));
                     return false;
                 }
-                t._insertBreak('readmore', {
+                self._insertBreak('readmore', {
                     id: 'system-readmore'
                 });
             });
@@ -45,9 +45,9 @@
                 var n = ed.selection.getNode();
 
                 if (isPageBreak(n)) {
-                    t._updatePageBreak(n, v);
+                    self._updatePageBreak(n, v);
                 } else {
-                    t._insertBreak('pagebreak', v);
+                    self._insertBreak('pagebreak', v);
                 }
             });
 
@@ -197,6 +197,76 @@
                 });
 
             });
+
+            if (ed.getParam('article_show_pagebreak', true)) {
+
+                ed.addButton('pagebreak', {
+                    title: 'article.pagebreak',
+                    onclick: function () {
+
+                        var html = '' +
+                            '<div class="mceModalRow">' +
+                            '   <label for="' + ed.id + 'article_title">' + ed.getLang('article.title', 'Title') + '</label>' +
+                            '   <div class="mceModalControl">' +
+                            '       <input type="text" id="' + ed.id + '_article_title" autofocus />' +
+                            '   </div>' +
+                            '</div>' +
+                            '<div class="mceModalRow">' +
+                            '   <label for="' + ed.id + '_article_alt">' + ed.getLang('article.alias', 'Alias') + '</label>' +
+                            '   <div class="mceModalControl">' +
+                            '       <input type="text" id="' + ed.id + '_article_alt" />' +
+                            '   </div>' +
+                            '</div>';
+
+                        ed.windowManager.open({
+                            title: ed.getLang('article.pagebreak', 'PageBreak'),
+                            content: html,
+                            size: 'mce-modal-landscape-small',
+                            open: function () {
+                                var label = ed.getLang('common.insert', 'Insert');
+
+                                var title = DOM.get(ed.id + '_article_title');
+                                var alt = DOM.get(ed.id + '_article_alt');
+
+                                var o = self._getPageBreak();
+
+                                if (o) {
+                                    label = ed.getLang('common.update', 'Update');
+
+                                    title.value = o.title || '';
+                                    alt.value = o.alt || '';
+                                }
+
+                                // update label
+                                DOM.setHTML(this.id + '_insert', label);
+
+                                window.setTimeout(function () {
+                                    title.focus();
+                                }, 10);
+                            },
+                            buttons: [
+                                {
+                                    title: ed.getLang('insert', 'Insert'),
+                                    id: 'insert',
+                                    onsubmit: function (e) {
+                                        var title = DOM.getValue(ed.id + '_article_title');
+                                        var alt = DOM.getValue(ed.id + '_article_alt');
+
+                                        ed.execCommand('mcePageBreak', false, {
+                                            title: title,
+                                            alt: alt
+                                        });
+                                    },
+                                    classes: 'primary'
+                                }, {
+                                    title: ed.getLang('cancel', 'Cancel'),
+                                    id: 'cancel'
+                                }
+                            ]
+                        });
+                    }
+                });
+            }
         },
 
         _getPageBreak: function () {
@@ -327,7 +397,7 @@
             ed.undoManager.add();
         },
 
-        createControl: function (n, cm) {
+        /*createControl: function (n, cm) {
             var self = this,
                 ed = this.editor;
 
@@ -340,15 +410,15 @@
                 var title, alt;
 
                 var html = '' +
-                '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>' +
-                '<div class="mcePanelRow">' +
-                '   <label for="' + ed.id + 'article_title">' + ed.getLang('article.title', 'Title') + '</label>' +
-                '   <input type="text" id="' + ed.id + '_article_title" />' +
-                '</div>' +
-                '<div class="mcePanelRow">' +
-                '   <label for="' + ed.id + '_article_alt">' + ed.getLang('article.alias', 'Alias') + '</label>' +
-                '   <input type="text" id="' + ed.id + '_article_alt" />' +
-                '</div>';
+                    '<h4>' + ed.getLang('article.pagebreak', 'Insert / Edit Pagebreak') + '</h4>' +
+                    '<div class="mcePanelRow">' +
+                    '   <label for="' + ed.id + 'article_title">' + ed.getLang('article.title', 'Title') + '</label>' +
+                    '   <input type="text" id="' + ed.id + '_article_title" />' +
+                    '</div>' +
+                    '<div class="mcePanelRow">' +
+                    '   <label for="' + ed.id + '_article_alt">' + ed.getLang('article.alias', 'Alias') + '</label>' +
+                    '   <input type="text" id="' + ed.id + '_article_alt" />' +
+                    '</div>';
 
                 var ctrl = cm.createPanelButton('pagebreak', {
                     title: 'article.pagebreak',
@@ -393,7 +463,7 @@
                     // update label
                     ctrl.panel.setButtonLabel('insert', label);
 
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         title.focus();
                     }, 10);
                 });
@@ -411,7 +481,7 @@
 
                 return ctrl;
             }
-        }
+        }*/
     });
     // Register plugin
     tinymce.PluginManager.add('article', tinymce.plugins.ArticlePlugin);

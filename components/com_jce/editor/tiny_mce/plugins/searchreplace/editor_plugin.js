@@ -288,17 +288,122 @@
             editor.addCommand('mceSearchReplace', function () {
                 last = {};
 
+                var html = '' +
+                    '<div class="mceModalRow">' +
+                    '   <label for="' + editor.id + '_search_string">' + editor.getLang('searchreplace.findwhat', 'Search') + '</label>' +
+                    '   <div class="mceModalControl">' +
+                    '       <input type="text" id="' + editor.id + '_search_string" />' +
+                    '   </div>' +
+                    '   <div class="mceModalControl mceModalFlexNone">' +
+                    '       <button class="mceButton" id="' + editor.id + '_search_prev" title="' + editor.getLang('searchreplace.prev', 'Previous') + '" disabled><i class="mceIcon mce_arrow-up"></i></button>' +
+                    '       <button class="mceButton" id="' + editor.id + '_search_next" title="' + editor.getLang('searchreplace.next', 'Next') + '" disabled><i class="mceIcon mce_arrow-down"></i></button>' +
+                    '   </div>' +
+                    '</div>' +
+                    '<div class="mceModalRow">' +
+                    '   <label for="' + editor.id + '_replace_string">' + editor.getLang('searchreplace.replacewith', 'Replace') + '</label>' +
+                    '   <div class="mceModalControl">' +
+                    '       <input type="text" id="' + editor.id + '_replace_string" />' +
+                    '   </div>' +
+                    '</div>' +
+                    '<div class="mceModalRow">' +
+                    '   <div class="mceModalControl">' +
+                    '       <input id="' + editor.id + '_matchcase" type="checkbox" />' +
+                    '       <label for="' + editor.id + '_matchcase">' + editor.getLang('searchreplace.mcase', 'Match Case') + '</label>' +
+                    '   </div>' +
+                    '   <div class="mceModalControl">' +
+                    '       <input id="' + editor.id + '_wholewords" type="checkbox" />' +
+                    '       <label for="' + editor.id + '_wholewords">' + editor.getLang('searchreplace.wholewords', 'Whole Words') + '</label>' +
+                    '   </div>' +
+                    '</div>';
+
                 editor.windowManager.open({
-                    file: editor.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=searchreplace',
-                    width: 620 + parseInt(editor.getLang('searchreplace.delta_width', 0)),
-                    height: 200 + parseInt(editor.getLang('searchreplace.delta_height', 0)),
-                    inline: 1,
-                    overlay: false
-                }, {
-                    search_string: editor.selection.getContent({
-                        format: 'text'
-                    }),
-                    plugin_url: url
+                    title: editor.getLang('searchreplace.search_desc', 'Search and Replace'),
+                    content: html,
+                    size: 'mce-modal-landscape-small',
+                    overlay: false,
+                    open: function () {
+                        var win = this;
+                        
+                        var search = DOM.get(editor.id + '_search_string');
+
+                        search.value = editor.selection.getContent({
+                            format: 'text'
+                        });
+
+                        DOM.bind(editor.id + '_search_next', 'click', function(e) {
+                            e.preventDefault();
+
+                            editor.execCommand('mceSearchNext', false);
+                        });
+
+                        DOM.bind(editor.id + '_search_prev', 'click', function(e) {
+                            e.preventDefault();
+
+                            editor.execCommand('mceSearchPrev', false);
+                        });
+
+                        window.setTimeout(function () {
+                            search.focus();
+                        }, 10);
+
+                        editor.updateSearchButtonStates.add(function (obj) {
+                            tinymce.each(obj, function(val, key) {
+                                var elm = DOM.get(editor.id + '_search_' + key) || DOM.get(win.id + '_search_' + key);
+
+                                if (!elm) {
+                                    return;
+                                }
+                                
+                                elm.disabled = !!val;
+                            });
+                        });
+                    },
+                    close: function() {
+                        DOM.unbind(editor.id + '_search_next', 'click');
+                        DOM.unbind(editor.id + '_search_prev', 'click');
+
+                        editor.execCommand('mceSearchDone', false);
+                    },
+                    buttons: [
+                        {
+                            title: editor.getLang('find', 'Find'),
+                            id: 'find',
+                            onclick: function (e) {
+                                e.preventDefault();
+                                
+                                var matchcase = DOM.get(editor.id + '_matchcase');
+                                var wholeword = DOM.get(editor.id + '_wholewords');
+
+                                var text = DOM.getValue(editor.id + '_search_string');
+                                
+                                
+                                editor.execCommand('mceSearch', false, {
+                                    "textcase": !!matchcase.checked,
+                                    "text": text,
+                                    "wholeword": !!wholeword.checked
+                                });
+                            },
+                            classes: 'primary'
+                        }, {
+                            title: editor.getLang('replace', 'Replace'),
+                            id: 'search_replace',
+                            onclick: function (e) {
+                                e.preventDefault();
+
+                                var value = DOM.getValue(editor.id + '_replace_string');
+                                editor.execCommand('mceReplace', false, value);
+                            }
+                        }, {
+                            title: editor.getLang('replaceall', 'Replace All'),
+                            id: 'search_replaceall',
+                            onclick: function (e) {
+                                e.preventDefault();
+
+                                var value = DOM.getValue(editor.id + '_replace_string');
+                                editor.execCommand('mceReplaceAll', false, value);
+                            }
+                        }
+                    ]
                 });
             });
 
@@ -378,7 +483,7 @@
             editor.addCommand('mceReplace', function (ui, text) {
                 if (!self.replace(text)) {
                     resetButtonStates();
-                    
+
                     currentIndex = -1;
                     last = {};
                 }
@@ -387,7 +492,7 @@
             editor.addCommand('mceReplaceAll', function (ui, text) {
                 if (!self.replace(text, true, true)) {
                     resetButtonStates();
-                    
+
                     last = {};
                 }
             });

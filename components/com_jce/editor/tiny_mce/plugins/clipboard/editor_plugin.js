@@ -16,6 +16,7 @@
         DomParser = tinymce.html.DomParser,
         Serializer = tinymce.html.Serializer,
         Node = tinymce.html.Node,
+        DOM = tinymce.DOM,
         Entities = tinymce.html.Entities;
 
     var styleProps = [
@@ -797,7 +798,7 @@
 
                         // replace default values with black
                         if (name.indexOf('color') !== -1) {
-                            if (value === 'currentcolor' || value === 'windowtext') {                                
+                            if (value === 'currentcolor' || value === 'windowtext') {
                                 each(borderColors, function (str) {
                                     if (str === name) {
                                         return true;
@@ -836,9 +837,9 @@
                 });
 
                 // convert padding and margin to pixels
-                each(positions, function(pos) {
+                each(positions, function (pos) {
                     var padding = dom.getStyle(n, 'padding-' + pos);
-                    var margin  = dom.getStyle(n, 'margin-' + pos); 
+                    var margin = dom.getStyle(n, 'margin-' + pos);
 
                     if (padding) {
                         styles['padding-' + pos] = convertToPixels(padding);
@@ -850,7 +851,7 @@
                 });
 
                 each(styles, function (value, name) {
-                    
+
                     // remove styles with no width value
                     if (name.indexOf('-width') !== -1 && value === "") {
                         var prefix = name.replace(/-width/, '');
@@ -2630,14 +2631,95 @@
         },
 
         _openWin: function (cmd) {
-            var ed = this.editor;
+            var ed = this.editor, title = '', ctrl;
+
+            var msg = ed.getLang('clipboard.paste_dlg_title', 'Use %s+V on your keyboard to paste text into the window.');
+            msg = msg.replace(/%s/g, tinymce.isMac ? 'CMD' : 'CTRL');
+
+            if (cmd === "mcePaste") {
+                title = ed.getLang('clipboard.paste_desc');
+                ctrl = '<iframe id="' + ed.id + '_paste_content" src="javascript:;" frameborder="0" title="' + msg + '"></iframe>';
+
+            } else {
+                title = ed.getLang('clipboard.paste_text_desc');
+                ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7" autofocus></textarea>';
+            }
+
+            var html = '' +
+                '<div class="mceModalRow mceModalStack">' +
+                '   <label for="' + ed.id + '_paste_content">' + msg + '</label>' +
+                '</div>' +
+                '<div class="mceModalRow">' +
+                '   <div class="mceModalControl">' + ctrl + '</div>' +
+                '</div>';
 
             ed.windowManager.open({
-                file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=clipboard&cmd=' + cmd,
-                width: parseInt(ed.getParam("clipboard_paste_dialog_width", "450")),
-                height: parseInt(ed.getParam("clipboard_paste_dialog_height", "400"))
-            }, {
-                cmd: cmd
+                title: title,
+                content: html,
+                size: 'mce-modal-landscape-medium',
+                open: function () {
+                    var ifr = DOM.get(ed.id + '_paste_content');
+
+                    if (ifr.nodeName !== "IFRAME") {
+                        window.setTimeout(function () {
+                            ifr.focus();
+                        }, 10);
+
+                        return;
+                    }
+
+                    var doc = ifr.contentWindow.document;
+
+                    var css, cssHTML = '';
+
+                    // Force absolute CSS urls
+                    css = tinymce.explode(ed.settings.content_css) || [];
+                    css.push(ed.baseURI.toAbsolute("themes/" + ed.settings.theme + "/skins/" + ed.settings.skin + "/content.css"));
+
+                    cssHTML += '<style type="text/css">body {background-color:white;color:black;text-align:left;}</style>';
+
+                    tinymce.each(css, function (u) {
+                        cssHTML += '<link href="' + ed.documentBaseURI.toAbsolute('' + u) + '" rel="stylesheet" type="text/css" />';
+                    });
+
+                    // Write content into iframe
+                    doc.open();
+                    doc.write('<html><head><base href="' + ed.settings.base_url + '" />' + cssHTML + '</head><body class="mceContentBody" spellcheck="false">&nbsp;</body></html>');
+                    doc.close();
+
+                    doc.designMode = 'on';
+
+                    window.setTimeout(function () {
+                        ifr.contentWindow.focus();
+                    }, 10);
+                },
+                buttons: [
+                    {
+                        title: ed.getLang('common.insert', 'Insert'),
+                        id: 'insert',
+                        onsubmit: function (e) {
+                            var node = DOM.get(ed.id + '_paste_content'), data = {};
+
+                            if (node.nodeName == 'TEXTAREA') {
+                                data.text = node.value;
+                            } else {
+                                var content = node.contentWindow.document.body.innerHTML;
+                                // Remove styles
+                                content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
+                                // trim and assign
+                                data.content = tinymce.trim(content);
+                            }
+
+                            ed.execCommand('mceInsertClipboardContent', false, data);
+                        },
+                        classes: 'primary',
+                        autofocus: true
+                    },
+                    {
+                        title: ed.getLang('common.cancel', 'Cancel'),
+                        id: 'cancel'
+                    }
+                ]
             });
         },
 

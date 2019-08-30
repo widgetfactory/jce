@@ -154,6 +154,66 @@
             ed.onBeforeSetContent.add(function (ed, o) {
                 o.content = o.content.replace(/<a id="([^"]+)"><\/a>/gi, '<a id="$1">\uFEFF</a>');
             });
+
+            ed.addButton('anchor', {
+                title: 'anchor.desc',
+                onclick: function() {
+                    var input;
+
+                    var html = '' +
+                    '<div class="mceModalRow">' +
+                    '   <label for="' + ed.id + '_anchor_input">' + ed.getLang('anchor.name', 'Name') + '</label>' +
+                    '   <div class="mceModalControl">' +
+                    '       <input type="text" id="' + ed.id + '_anchor_input" autofocus />' +
+                    '   </div>' +
+                    '</div>';
+
+                    ed.windowManager.open({
+                        title   : ed.getLang('anchor.desc', 'Anchor'),
+                        content : html,
+                        size: 'mce-modal-landscape-xsmall',
+                        open: function() {
+                            var input = DOM.get(ed.id + '_anchor_input');
+
+                            input.value = '';
+
+                            var label = ed.getLang('insert', 'Insert');
+                            var v = self._getAnchor();
+
+                            if (v) {
+                                input.value = v;
+                                label = ed.getLang('update', 'Update');
+                            }
+
+                            DOM.setHTML(this.id + '_insert', label);
+
+                            window.setTimeout(function () {
+                                input.focus();
+                            }, 10);
+                        },
+                        buttons: [
+                            {
+                                title: ed.getLang('insert', 'Insert'),
+                                id: 'insert',
+                                onsubmit: function (e) {
+                                    self._insertAnchor(DOM.getValue(ed.id + '_anchor_input'));
+                                },
+                                classes: 'primary',
+                                scope: self
+                            }, {
+                                title: ed.getLang('anchor.remove', 'Remove'),
+                                id: 'remove',
+                                onsubmit: function (e) {
+                                    if (!e.target.disabled) {
+                                        self._removeAnchor();
+                                    }
+                                },
+                                scope: self
+                            }
+                        ]
+                    });
+                }
+            });
         },
         _removeAnchor: function (e) {
             var ed = this.editor,
@@ -256,7 +316,7 @@
 
             return true;
         },
-        createControl: function (n, cm) {
+        /*createControl: function (n, cm) {
             var self = this,
                 ed = this.editor;
 
@@ -335,7 +395,7 @@
             });
 
             return ctrl;
-        }
+        }*/
     });
 
     // Register plugin
