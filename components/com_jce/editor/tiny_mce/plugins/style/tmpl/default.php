@@ -15,10 +15,9 @@ $tabs = WFTabs::getInstance();
 <form>
     <?php $tabs->render(); ?>
     <div class="mceActionPanel">
-      <div class="uk-form-row uk-float-left">
-          <input type="checkbox" id="toggle_insert_span" onclick="StyleDialog.toggleApplyAction();" />
-          <label for="toggle_insert_span"><?php echo JText::_('WF_STYLES_TOGGLE_INSERT_SPAN'); ?></label>
-      </div>
+        <div class="uk-form-row uk-float-left">
+            <label for="toggle_insert_span" class="uk-form-label"><input type="checkbox" id="toggle_insert_span" onclick="StyleDialog.toggleApplyAction();" /> <?php echo JText::_('WF_STYLES_TOGGLE_INSERT_SPAN'); ?></label>
+        </div>
 
         <button type="submit" id="insert"><?php echo JText::_('WF_LABEL_UPDATE'); ?></button>
         <button type="button" id="apply"><?php echo JText::_('WF_STYLES_APPLY'); ?></button>
