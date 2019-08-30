@@ -1475,8 +1475,10 @@
                     case "font-style":
                         if (value == "normal") {
                             value = "";
+                            return;
                         }
-                        return;
+
+                        break;
 
                     case "mso-element":
                         // Remove track changes code
