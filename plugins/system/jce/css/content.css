@@ -80,6 +80,18 @@ UIKit : uk-wrap-around
     flex-wrap: wrap;
 }
 
+.wf-columns-align-left {
+    justify-content: flex-start;
+}
+
+.wf-columns-align-center {
+    justify-content: center;
+}
+
+.wf-columns-align-right {
+    justify-content: flex-end;
+}
+
 @media (max-width: 640px) {
     .wf-columns-stack-small>.wf-column:not(.col):not(.uk-flex-1):not(.uk-flex-auto) {
         width: 100%;
