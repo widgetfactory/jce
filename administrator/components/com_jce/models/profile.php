@@ -57,6 +57,11 @@ class JceModelProfile extends JModelAdmin
         return JTable::getInstance($type, $prefix, $config);
     }
 
+    /* Override to prevent plugins from processing form data */
+	protected function preprocessData($context, &$data, $group = 'content')
+	{
+	}
+
     /**
      * Method to allow derived classes to preprocess the form.
      *
