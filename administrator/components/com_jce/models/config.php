@@ -74,6 +74,16 @@ class JceModelConfig extends JModelForm
         return $data;
     }
 
+    /* Override to prevent plugins from processing form data */
+    protected function preprocessForm(\JForm $form, $data, $group = 'content')
+    {
+    }
+
+    /* Override to prevent plugins from processing form data */
+	protected function preprocessData($context, &$data, $group = 'content')
+	{
+	}
+
     /**
      * Method to get the configuration data.
      *
@@ -87,11 +97,21 @@ class JceModelConfig extends JModelForm
      */
     public function getData()
     {
-        // Get the editor data
-        $plugin = JPluginHelper::getPlugin('editors', 'jce');
+        $table = $this->getTable();
+
+        $id = $table->find(array(
+            'type' => 'plugin',
+            'element' => 'jce',
+            'folder' => 'editors',
+        ));
+
+        if (!$table->load($id)) {
+            $this->setError($table->getError());
+            return false;
+        }
 
         // json_decode
-        $json = json_decode($plugin->params, true);
+        $json = json_decode($table->params, true);
 
         if (empty($json)) {
             $json = array();
