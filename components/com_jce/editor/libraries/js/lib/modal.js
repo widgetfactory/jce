@@ -182,11 +182,15 @@
                 if (e.keyCode === 9) {
 
                     var $navItems = $(':input:enabled:visible', div).not('input[type="file"]').filter(function () {
-                        return this.getAttribute('tabindex') !== -1;
+                        return this.getAttribute('tabindex') >= 0;
                     });
 
                     if (!$navItems.length) {
                         return;
+                    }
+
+                    if (e.shiftKey) {
+                        $navItems.reverse();
                     }
 
                     var endIndex = Math.max(0, $navItems.length - 1), idx = $navItems.index(e.target) + 1;
