@@ -282,7 +282,7 @@ class WFPacker extends JObject
 
     protected function compileLess($string, $path)
     {
-        $less = new lessc_parser();
+        $less = new lessc();
         // add file directory
         $less->addImportDir($path);
         // add joomla media folder

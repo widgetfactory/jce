@@ -232,13 +232,15 @@ class WFEditor
             $settings['height'] = $wf->getParam('editor.height');
 
             // assign skin
-            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default', 'default');
+            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern', 'modern');
+
+            // re-assign the "mobile" skin option to "retina / modern"
+            if ($settings['skin'] === 'mobile') {
+                $settings['skin'] = 'modern';
+            }
 
             if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
-                $parts = explode('.', $settings['skin']);
-
-                $settings['skin'] = $parts[0];
-                $settings['skin_variant'] = $parts[1];
+                list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
             }
 
             // classic has been removed
@@ -1019,6 +1021,7 @@ class WFEditor
                 continue;
             }
 
+            // full path
             if (strpos($file, '://') !== false) {
                 $stylesheets[] = $file;
                 continue;
@@ -1027,7 +1030,15 @@ class WFEditor
             // remove leading slash
             $file = ltrim($file, '/');
 
-            if (JFile::exists(JPATH_SITE . '/' . $file)) {
+            $fullpath = JPATH_SITE . '/' . $file;
+
+            if (JFile::exists($fullpath)) {
+                // less
+                if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
+                    $stylesheets[] = $fullpath;
+                    continue;
+                }
+                
                 $etag = '';
 
                 // add etag
