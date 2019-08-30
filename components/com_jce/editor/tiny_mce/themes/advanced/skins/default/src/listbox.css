@@ -5,7 +5,7 @@
 }
 
 .defaultSkin .mceListBoxMenu {
-    min-height: 200px;
+    min-height: 224px;
 }
 
 .defaultSkin .mceListBox button {
@@ -14,20 +14,21 @@
 
 .defaultSkin .mceListBox .mceText button {
     padding: 0 4px;
-    width: 74px;
+    width: 96px;
+    height: 32px;
     text-align: left;
     border: 1px solid #ddd;
     border-right: 0;
     background: #fff;
-    line-height: 30px;
+    line-height: 2;
     overflow: hidden;
     border-radius: 2px 0 0 2px;
     cursor: pointer;
 }
 
 .defaultSkin .mceListBox .mceOpen button {
-    width: 15px;
-    height: 30px;
+    width: 16px;
+    height: 32px;
     border: 1px solid #ddd;
     text-align: center;
     border-radius: 0 2px 2px 0;
@@ -47,7 +48,7 @@
     content: "\25BC";
     display: block;
     font-size: 9px;
-    line-height: 30px;
+    line-height: 32px;
     color: #444;
     text-align: center;
     
@@ -82,7 +83,7 @@ table.mceListBoxEnabled:hover .mceOpen button,
 
 .defaultSkin .mceListBoxMenu {
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 2px;
 
     min-width: calc(100px * 2);
@@ -114,8 +115,8 @@ select.mceNativeListBox {
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter {
-    padding: 2px;
-    background: #f5f5f5;
+    padding: 4px;
+    background: #eee;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter input {
@@ -124,8 +125,9 @@ select.mceNativeListBox {
     width: 100%;
     background: #fff;
     cursor: text;
-    padding: 3px 32px 3px 3px;
+    padding: 4px 32px 4px 4px;
     box-sizing: border-box;
+    border: 0 none;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter:after {
@@ -136,8 +138,8 @@ select.mceNativeListBox {
     background: url(img/search.png) no-repeat center;
     opacity: 0.5;
     position: absolute;
-    top: 3px;
-    right: 3px;
+    top: 4px;
+    right: 4px;
 }
 
 /* RTL */

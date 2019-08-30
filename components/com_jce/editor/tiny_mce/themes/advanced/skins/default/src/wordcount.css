@@ -2,6 +2,11 @@
     float: right;
     vertical-align: middle;
     line-height: 18px;
+    font-size: 14px;
+}
+
+.defaultSkin .mceStatusbar .mceWordCount .mceText {
+    font-size: 14px;
 }
 
 .defaultSkin .mceWordCountLimit {

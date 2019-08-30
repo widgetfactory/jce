@@ -1,33 +1,46 @@
 /* Reset */
 
-.defaultSkin div,
-.defaultSkin a,
-.defaultSkin button,
-.defaultSkin img,
-.defaultSkin div,
-.defaultSkin iframe,
-.defaultSkin input,
-.defaultSkin label,
-.defaultSkin .mceText {
+.defaultSkin * {
+    color: #444;
+    font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     border: 0;
     margin: 0;
     padding: 0;
-    background: transparent;
     white-space: nowrap;
     text-decoration: none;
     font-weight: normal;
-    cursor: default;
-    color: #444;
+    cursor: inherit;
     vertical-align: baseline;
     width: auto;
     border-collapse: separate;
     text-align: left;
-    box-sizing: initial;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
+    box-sizing: border-box;
     float: none;
+}
+
+.defaultSkin select, .defaultSkin textarea, .defaultSkin input[type] {
+    margin: 0;
+    line-height: 1;
+    transition: inherit;
+}
+
+.defaultSkin input {
+    cursor: text;
+}
+
+.defaultSkin label,
+.defaultSkin input,
+.defaultSkin button,
+.defaultSkin select {
+    font-size: 14px;
+}
+
+.defaultSkin input[type="radio"],
+.defaultSkin input[type="checkbox"] {
+    cursor: inherit;
 }
 
 .defaultSkin>div {

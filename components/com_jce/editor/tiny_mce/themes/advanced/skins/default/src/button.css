@@ -4,17 +4,19 @@
     display: inline-block;
     border: 1px solid #ddd;
     margin-right: 1px;
-    padding: 5px;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
     -webkit-appearance: none;
     cursor: pointer;
     outline: none;
     overflow: visible;
-    font: inherit;
     text-transform: none;
     box-sizing: border-box;
     text-decoration: none;
     text-align: center;
     border-radius: 2px;
+    line-height: 1;
 }
 
 .defaultSkin .mceButton:hover,
@@ -43,8 +45,8 @@
 
 .defaultSkin .mceButtonLabel {
     display: block;
-    font-size: 10px;
-    padding: 4px 6px 0 22px;
+    font-size: 14px;
+    padding: 4px 8px 0 24px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 

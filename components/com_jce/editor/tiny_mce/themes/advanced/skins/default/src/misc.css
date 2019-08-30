@@ -70,3 +70,86 @@
 .defaultSkin .mceMenu div[class*="mceFontSize"] {
     margin: 0.125em;
 }
+
+.mceCharacterMap {
+    text-align: center;
+    padding: 0;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    text-align: left;
+}
+
+.mceCharacterMap > div {
+    flex: 1;
+}
+
+.mceCharacterMap > div + div {
+    max-width: 11em;
+    border: 1px solid #ddd;
+} 
+
+.mceCharacterMap ul li button {
+    border: 0;
+    background: #fff;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0;
+    padding: 0;
+    line-height: 1rem;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.mceModal .mceModalContent .mceCharacterMap ul li button {
+    min-width: inherit;
+}
+
+.mceCharacterMap ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mceCharacterMap ul li {
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin: 0 1px 1px 0;
+}
+
+.mceCharacterMapDescription h1 {
+    line-height: 2;
+    font-size: 3em;
+    height: 2em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.mceCharacterMapDescription h3 {
+    line-height: 2em;
+    font-size: 1.25em;
+    height: 2em;
+    text-align: center;
+}
+
+.mceCharacterMapDescription h4 {
+    line-height: 1.5em;
+    font-size: 1em;
+    text-align: center;
+    color: #888;
+}
+
+.mceCharacterMapDescription {
+    font-size: 1em;
+}
+
+.mceCharacterMap ul li:hover,
+.mceCharacterMap ul li:hover button {
+    background: #f5f5f5;
+    color: #444;
+    text-decoration: none;
+}

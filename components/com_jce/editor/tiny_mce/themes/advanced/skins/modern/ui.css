@@ -23,6 +23,12 @@
 .modernSkin .mceMenuItem .mceIcon,
 .modernSkin .mceSplitButton .mceAction {
     color: rgba(0, 0, 0, 0.87);
+    height: 1em;
+    line-height: 1;
+    text-align: center;
+    min-width: 1em;
+    display: inline-block;
+    background: none;
 }
 
 .modernSkin .mceButtonDisabled .mceIcon {
@@ -80,18 +86,16 @@
 .modernSkin .mceSplitButtonMenu {
     margin-top: 4px;
     position: relative;
-    margin-left: 1px;
 }
 
 .modernSkin .mceSplitButtonMenu:before {
     content: "";
     display: block;
-    padding: 3px;
+    padding: 4px;
     position: absolute;
-    width: 40px;
+    width: 38px;
     top: -6px;
     background: #fff;
-    left: -1px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
 }
@@ -144,9 +148,8 @@
 }
 
 .modernSkin .mceListBoxMenu {
-    margin-left: 1px;
     overflow: inherit;
-    margin-top: 3px;
+    margin-top: 4px;
 }
 
 .modernSkin .mceListBoxSelected .mceText button,
@@ -167,9 +170,9 @@
 .modernSkin .mceListBoxMenu::before {
     content: "";
     display: block;
-    padding: 3px;
+    padding: 4px;
     position: absolute;
-    width: 92px;
+    width: 102px;
     top: -6px;
     background: #fff;
     left: -1px;

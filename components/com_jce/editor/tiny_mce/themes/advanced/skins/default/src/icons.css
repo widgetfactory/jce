@@ -1,13 +1,9 @@
-.defaultSkin .mceIcon {
-    display: block;
+.defaultSkin .mceIcon,
+.defaultSkin .mceAction {
+    display: inline-block;
     min-width: 20px;
     height: 20px;
     line-height: 20px;
-}
-
-.defaultSkin .mceIcon,
-.defaultSkin .mceAction {
-    font-size: 1.25em;
 }
 
 .defaultSkin .mceIcon {

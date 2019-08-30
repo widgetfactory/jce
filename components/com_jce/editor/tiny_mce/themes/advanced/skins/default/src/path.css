@@ -9,6 +9,8 @@
 
 .mcePathPath .mceText {
     cursor: pointer;
+    font-size: 12px;
+    line-height: 14px;
 }
 
 .mcePathHidden:after {
@@ -19,8 +21,9 @@
 .mcePathLabel {
     position: relative;
     display: inline-block;
-    min-width: 30px;
+    min-width: 32px;
     margin: 0 5px 0 0;
+    font-size: 14px;
 }
 
 .mcePathPath {
