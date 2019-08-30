@@ -4,13 +4,12 @@
         <fieldset name="features" addfieldpath="/administrator/components/com_categories/models/fields">
             <field name="width" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_WIDTH" description="WF_PARAM_EDITOR_WIDTH_DESC" />
             <field name="height" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_HEIGHT" description="WF_PARAM_EDITOR_HEIGHT_DESC" />
-            <field name="toolbar_theme" type="list" default="default" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
-                <option value="default">WF_LABEL_DEFAULT</option>
+            <field name="toolbar_theme" type="list" default="modern" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
+                <option value="modern">WF_PARAM_EDITOR_SKIN_RETINA</option>
+                <option value="default">WF_PARAM_EDITOR_SKIN_CLASSIC</option>
                 <option value="o2k7">WF_PARAM_EDITOR_SKIN_OFFICE_BLUE</option>
                 <option value="o2k7.silver">WF_PARAM_EDITOR_SKIN_OFFICE_SILVER</option>
                 <option value="o2k7.black">WF_PARAM_EDITOR_SKIN_OFFICE_BLACK</option>
-                <option value="mobile">WF_PARAM_EDITOR_SKIN_MOBILE</option>
-                <option value="modern">Retina</option>
             </field>
             <field name="toolbar_align" type="list" default="left" label="WF_PARAM_EDITOR_TOOLBAR_ALIGN" description="WF_PARAM_EDITOR_TOOLBAR_ALIGN_DESC">
                 <option value="left">WF_OPTION_LEFT</option>
