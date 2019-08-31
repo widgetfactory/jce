@@ -11,10 +11,10 @@
 }
 
 .modernSkin .mceButton,
-.modernSkin .mceSplitButton .mceText a,
-.modernSkin .mceSplitButton .mceOpen a,
-.modernSkin .mceListBox .mceText a,
-.modernSkin .mceListBox .mceOpen a {
+.modernSkin .mceSplitButton .mceText,
+.modernSkin .mceSplitButton .mceOpen,
+.modernSkin .mceListBox .mceText,
+.modernSkin .mceListBox .mceOpen {
     border-color: transparent;
     color: rgba(0, 0, 0, 0.87);
 }
@@ -35,29 +35,39 @@
     opacity: 0.38;
 }
 
-.modernSkin .mceButton:hover {
+.modernSkin .mceButton:hover,
+.modernSkin .mceButton:focus {
     border: 1px solid #ddd;
     background-color: #e6e6e6;
 }
 
-.modernSkin .mceSplitButton:hover .mceText button,
-.modernSkin .mceSplitButton:hover .mceOpen button {
+.modernSkin .mceSplitButton:hover .mceText,
+.modernSkin .mceSplitButton:hover .mceOpen,
+.modernSkin .mceSplitButton:focus .mceText,
+.modernSkin .mceSplitButton:focus .mceOpen {
     border-color: #ddd;
     background-color: #e6e6e6;
 }
 
-.modernSkin .mceListBox .mceText a {
+.modernSkin .mceListBox .mceText {
     border-top-color: #ddd;
     border-bottom-color: #ddd;
     border-left-color: #ddd;
 }
 
-.modernSkin .mceListBox .mceOpen a {
+.modernSkin .mceListBox .mceOpen {
     background-color: #fff;
 
     border-top-color: #ddd;
     border-bottom-color: #ddd;
     border-right-color: #ddd;
+}
+
+.modernSkin .mceListBox .mceOpen:after {
+    color: transparent;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .modernSkin .mceButtonActive,
@@ -67,11 +77,11 @@
     border-color: #ddd;
 }
 
-.modernSkin .mceSplitButton .mceText button {
+.modernSkin .mceSplitButton .mceText {
     border-color: transparent;
 }
 
-.modernSkin .mceSplitButton .mceOpen button {
+.modernSkin .mceSplitButton .mceOpen {
     border-color: transparent;
 }
 
@@ -83,8 +93,16 @@
     outline: 1px solid #e6e6e6;
 }
 
+.modernSkin .mceMenu .mceIcon {
+    top: 0;
+    width: 32px;
+    left: 0;
+    height: 32px;
+    line-height: 2;
+}
+
 .modernSkin .mceSplitButtonMenu {
-    margin-top: 4px;
+    margin-top: 6px;
     position: relative;
 }
 
@@ -100,32 +118,37 @@
     border-right: 1px solid #ddd;
 }
 
-.modernSkin .mceSplitButton.mcePanelButtonSelected,
-.modernSkin .mceSplitButton.mcePanelButtonSelected:hover {
-    border: 0 none;
+.modernSkin .mcePanelButtonSelected,
+.modernSkin .mcePanelButtonSelected:hover {
+    border-color: #ddd;
+    background: #fff;
 }
 
-.modernSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
+.modernSkin .mcePanelButtonSelected .mceText,
+.modernSkin .mcePanelButtonSelected:hover .mceText {
     background: #fff;
     border-color: #ddd;
     border-right-color: transparent;
     border-radius: 2px 0 0 0;
 }
 
-.modernSkin .mcePanelButtonSelected .mceSplitButton .mceOpen button {
+.modernSkin .mcePanelButtonSelected .mceOpen,
+.modernSkin .mcePanelButtonSelected:hover .mceOpen {
     background: #fff;
     border-color: #ddd;
     border-left-color: transparent;
     border-radius: 0 2px 0 0;
 }
 
-.modernSkin .mceSplitButtonSelected .mceSplitButton .mceText button {
+.modernSkin .mceSplitButtonSelected .mceText,
+.modernSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
     border-color: #ddd;
     border-radius: 2px 0 0 0;
 }
 
-.modernSkin .mceSplitButtonSelected .mceSplitButton .mceOpen button {
+.modernSkin .mceSplitButtonSelected .mceOpen,
+.modernSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
     border-color: #ddd;
     border-left-color: transparent;
@@ -137,12 +160,6 @@
     background: #fff;
 }
 
-.modernSkin .mcePanelButtonSelected,
-.modernSkin .mcePanelButtonSelected:hover {
-    border: 1px solid #ddd;
-    background-color: #fff;
-}
-
 .modernSkin .mcePanel::before {
     background-color: #fff;
 }
@@ -152,15 +169,15 @@
     margin-top: 4px;
 }
 
-.modernSkin .mceListBoxSelected .mceText button,
-.modernSkin .mceListBoxSelected:hover .mceText button {
+.modernSkin .mceListBoxSelected .mceText,
+.modernSkin .mceListBoxSelected:hover .mceText {
     background: #fff;
     border-color: #ddd;
     border-radius: 2px 0 0 0;
 }
 
-.modernSkin .mceListBoxSelected .mceOpen button,
-.defaultSkin .mceListBoxSelected:hover .mceOpen button {
+.modernSkin .mceListBoxSelected .mceOpen,
+.defaultSkin .mceListBoxSelected:hover .mceOpen {
     background: #fff;
     border-color: #ddd;
     border-left-color: transparent;

@@ -90,12 +90,11 @@
     border: 1px solid #ddd;
 } 
 
-.mceCharacterMap ul li button {
-    border: 0;
+.mceModal .mceModalContent .mceCharacterMap button {
     background: #fff;
     width: 1.5em;
+    min-width: inherit;
     height: 1.5em;
-    margin: 0;
     padding: 0;
     line-height: 1rem;
     vertical-align: middle;
@@ -103,22 +102,16 @@
     cursor: pointer;
     font-size: 16px;
     text-align: center;
-}
 
-.mceModal .mceModalContent .mceCharacterMap ul li button {
-    min-width: inherit;
-}
-
-.mceCharacterMap ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.mceCharacterMap ul li {
     border: 1px solid #ddd;
     display: inline-block;
     margin: 0 1px 1px 0;
+}
+
+.mceModal .mceModalContent .mceCharacterMap button:hover,
+.mceModal .mceModalContent .mceCharacterMap button:focus {
+    border: 1px solid #ccc;
+    background-color: #e6e6e6;
 }
 
 .mceCharacterMapDescription h1 {

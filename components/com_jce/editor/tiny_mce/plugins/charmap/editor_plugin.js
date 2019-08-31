@@ -325,18 +325,6 @@
 		init: function (ed, url) {
 			this.editor = ed;
 
-			// Register commands
-			/*ed.addCommand('mceCharacterMap', function (v) {
-				ed.windowManager.open({
-					url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=charmap',
-					width: 640 + parseInt(ed.getLang('advanced.charmap_delta_width', 0)),
-					height: 390 + parseInt(ed.getLang('advanced.charmap_delta_height', 0)),
-					close_previous: false,
-					inline: true,
-					//size: 'mce-modal-landscape-xlarge'
-				});
-			});*/
-
 			function extendCharMap(charmap) {
 				var settings = ed.settings;
 	
@@ -358,7 +346,7 @@
 			function renderCharMapHTML() {
 				var i;
 	
-				var html = '<ul>';
+				var html = '';
 	
 				var charmap = getCharMap();
 	
@@ -368,18 +356,16 @@
 						var named = Entities.encodeNamed(chrText), named = named.substring(1);
 	
 						html += (
-							'<li title="' + chr[1] + '">' +
 							'<button tabindex="-1" title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
 							chrText +
-							'</button>' +
-							'</li>'
+							'</button>'
 						);
 					} else {
-						html += '<li></li>';
+						html += '';
 					}
 				}
 	
-				html += '</ul>';
+				html += '';
 	
 				return html;
 			}
@@ -403,7 +389,7 @@
 
 			var html = '' +
 			'<div role="presentation" class="mceCharacterMap mceModalRow">' +
-			'	<div id="' + ed.id + '_charmapView"><!-- Chars will be rendered here --></div>' +
+			'	<div id="' + ed.id + '_charmapView" role="group"></div>' +
 			'	<div class="mceCharacterMapDescription">' +
 			'		<h1 id="' + ed.id + '_charmapCodeV"></h1>' +
 			'		<h4 id="' + ed.id + '_charmapCodeN"></h4>' +
@@ -422,7 +408,7 @@
 						
 						DOM.setHTML(elm, renderCharMapHTML());
 	
-						DOM.bind(DOM.select('ul', elm), 'mouseover', function (e) {
+						DOM.bind(elm, 'mouseover', function (e) {
 							var node = e.target;
 				
 							if (node.nodeName !== "BUTTON") {
@@ -434,7 +420,7 @@
 							previewChar(chrA, chrB, chrN);
 						});
 				
-						DOM.bind(DOM.select('ul', elm), 'click', function (e) {
+						DOM.bind(elm, 'click', function (e) {
 							var node = e.target;
 				
 							e.preventDefault();
@@ -448,6 +434,15 @@
 
 							win.close();
 						});
+
+						new tinymce.ui.KeyboardNavigation({
+							root: elm,
+							items: DOM.select('button', elm),
+							excludeFromTabOrder: false,
+							onCancel: function () {
+								ed.focus();
+							}
+						}, DOM);
 					}
 				});
 			});

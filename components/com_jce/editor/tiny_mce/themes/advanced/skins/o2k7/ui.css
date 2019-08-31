@@ -122,6 +122,20 @@
     border-radius: 2px 0 0 2px;
 }
 
+.o2k7Skin .mceToolbarRow > button:first-child, 
+.o2k7Skin .mceToolbarRow > div:first-child {
+    border-left-width: 1px;
+    margin-left: 2px;
+    border-radius: 2px 0 0 2px;
+}
+
+.o2k7Skin .mceToolbarRow > button:last-child, 
+.o2k7Skin .mceToolbarRow > div:last-child {
+    border-right-width: 1px;
+    border-radius: 0 2px 2px 0;
+    border-right-color: #9FBBE2;
+}
+
 .o2k7Skin .mceToolbarRow .mceToolbarItem:last-child {
     border-radius: 0 2px 2px 0;
 }

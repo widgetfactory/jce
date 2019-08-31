@@ -75,9 +75,6 @@
 
             s = ed.settings;
 
-            ed.forcedHighContrastMode = ed.settings.detect_highcontrast && self._isHighContrast();
-            ed.settings.skin = ed.forcedHighContrastMode ? 'highcontrast' : ed.settings.skin;
-
             // Setup default buttons
             if (!s.theme_buttons1) {
                 s = extend({
@@ -189,16 +186,7 @@
                 }
             }
         },
-        _isHighContrast: function () {
-            var actualColor, div = DOM.add(DOM.getRoot(), 'div', {
-                'style': 'background-color: rgb(171,239,86);'
-            });
 
-            actualColor = (DOM.getStyle(div, 'background-color', true) + '').toLowerCase().replace(/ /g, '');
-            DOM.remove(div);
-
-            return actualColor != 'rgb(171,239,86)' && actualColor != '#abef56';
-        },
         createControl: function (n, cf) {
             var cd, c;
 
@@ -246,16 +234,10 @@
 
             n = p = DOM.create('div', {
                 role: 'application',
-                'aria-labelledby': ed.id + '_voice',
+                'aria-label': s.aria_label,
                 id: ed.id + '_parent',
                 'class': 'mceEditor ' + skin + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
             });
-
-            DOM.add(n, 'span', {
-                'class': 'mceVoiceLabel',
-                'style': 'display:none;',
-                id: ed.id + '_voice'
-            }, s.aria_label);
 
             n = sc = DOM.add(n, 'div', {
                 role: "presentation",
@@ -266,10 +248,6 @@
             ic = self._createLayout(s, n, o, p);
 
             n = o.targetNode;
-
-            DOM.addClass(sc.firstChild, 'mceFirst');
-            DOM.addClass(sc.lastChild, 'mceLast');
-
             DOM.insertAfter(p, n);
 
             Event.add(ed.id + '_path_row', 'click', function (e) {
@@ -280,14 +258,6 @@
                     return false;
                 }
             });
-
-            if (!ed.getParam('accessibility_focus')) {
-                Event.add(DOM.add(p, 'a', {
-                    href: '#'
-                }, '<!-- IE -->'), 'focus', function () {
-                    tinyMCE.get(ed.id).focus();
-                });
-            }
 
             if (s.theme_toolbar_location == 'external') {
                 o.deltaHeight = 0;
@@ -316,11 +286,6 @@
                 }
             });
 
-            /*if (ed.getParam('accessibility_shortcut', 1)) {
-             // alt+0 is the UK recommended shortcut for accessing the list of access controls.
-             ed.addShortcut('alt+0', '', 'mceShortcuts', self);
-             }*/
-
             return {
                 iframeContainer: ic,
                 editorContainer: ed.id + '_parent',
@@ -328,19 +293,13 @@
                 deltaHeight: o.deltaHeight
             };
         },
-        getInfo: function () {
-            return {
-                longname: 'Advanced theme',
-                author: 'Moxiecode Systems AB',
-                authorurl: 'http://tinymce.moxiecode.com',
-                version: tinymce.majorVersion + "." + tinymce.minorVersion
-            };
-        },
+
         resizeBy: function (dw, dh) {
             var e = DOM.get(this.editor.id + '_ifr');
 
             this.resizeTo(e.clientWidth + dw, e.clientHeight + dh);
         },
+
         resizeTo: function (w, h, store) {
             var ed = this.editor,
                 s = this.settings,
@@ -514,16 +473,17 @@
 
             toolbarGroup = cf.createToolbarGroup('toolbargroup', {
                 'name': ed.getLang('advanced.toolbar'),
-                'tab_focus_toolbar': ed.getParam('theme_tab_focus_toolbar')
+                'tab_focus_toolbar': ed.getParam('theme_tab_focus_toolbar'),
+                class: 'Toolbar'
             });
 
             self.toolbarGroup = toolbarGroup;
 
             a = s.theme_toolbar_align.toLowerCase();
-            a = 'mce' + self._ufirst(a);
+            a = cf.classPrefix + self._ufirst(a);
 
-            n = DOM.add(c, 'div', {
-                'class': 'mceToolbar ' + a,
+            DOM.add(c, 'div', {
+                'class': cf.classPrefix + 'Toolbar ' + a,
                 "role": "toolbar"
             });
 
@@ -533,7 +493,8 @@
                 toolbarsExist = true;
 
                 tb = cf.createToolbar("toolbar" + i, {
-                    'class': 'mceToolbarRow' + i
+                    'class': 'mceToolbarRow' + i,
+                    'aria-label': 'Toolbar Row ' + i
                 });
 
                 if (s['theme_buttons' + i + '_add']) {
@@ -565,8 +526,9 @@
                 onfocus: 'tinyMCE.getInstanceById(\'' + ed.id + '\').focus();'
             }, '<!-- IE -->'));
 
-            DOM.setHTML(n, h.join(''));
+            DOM.setHTML(c, h.join(''));
         },
+        
         _addStatusBar: function (tb, o) {
             var n, self = this,
                 ed = self.editor,
@@ -786,8 +748,9 @@
                             break;
                     }
 
-                    if (v = DOM.getAttrib(n, 'id'))
+                    if (v = DOM.getAttrib(n, 'id')) {
                         ti += 'id: ' + v + ' ';
+                    }
 
                     if (v = DOM.getAttrib(n, 'class')) {
                         v = v.replace(/mce-item-[\w]+/g, '');

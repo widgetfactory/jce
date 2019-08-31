@@ -3,7 +3,6 @@
 .defaultSkin .mceButton {
     display: inline-block;
     border: 1px solid #ddd;
-    margin-right: 1px;
     padding: 4px;
     min-width: 32px;
     min-height: 32px;
@@ -19,10 +18,15 @@
     line-height: 1;
 }
 
-.defaultSkin .mceButton:hover,
-.defaultSkin .mceButton:focus {
+.defaultSkin .mceButton:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;
+}
+
+.defaultSkin .mceButton:focus {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    outline: none;
 }
 
 .defaultSkin .mceButtonActive,

@@ -181,7 +181,7 @@
             $(div).on('keydown.modal', function (e) {
                 if (e.keyCode === 9) {
 
-                    var $navItems = $(':input:enabled:visible', div).not('input[type="file"]').filter(function () {
+                    var $navItems = $(':input:visible', div).not('input[type="file"]').filter(function () {
                         return this.getAttribute('tabindex') >= 0;
                     });
 

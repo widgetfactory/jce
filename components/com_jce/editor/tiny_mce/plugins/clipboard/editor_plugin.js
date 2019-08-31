@@ -1475,7 +1475,6 @@
                     case "font-style":
                         if (value == "normal") {
                             value = "";
-                            return;
                         }
 
                         break;

@@ -1,18 +1,14 @@
 /* ListBox */
 
 .defaultSkin .mceListBox {
-    display: table;
+    display: block;
 }
 
 .defaultSkin .mceListBoxMenu {
     min-height: 224px;
 }
 
-.defaultSkin .mceListBox button {
-    display: block;
-}
-
-.defaultSkin .mceListBox .mceText button {
+.defaultSkin .mceListBox .mceText {
     padding: 0 4px;
     width: 96px;
     height: 32px;
@@ -26,7 +22,7 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox .mceOpen button {
+.defaultSkin .mceListBox .mceOpen {
     width: 16px;
     height: 32px;
     border: 1px solid #ddd;
@@ -35,16 +31,23 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox:hover .mceOpen button {
+.defaultSkin .mceListBox .mceOpen,
+.defaultSkin .mceListBox .mceText {
+    float: left;
+}
+
+.defaultSkin .mceListBox:hover .mceOpen,
+.defaultSkin .mceListBox:focus .mceOpen {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceListBox:hover .mceText button {
+.defaultSkin .mceListBox:hover .mceText,
+.defaultSkin .mceListBox:focus .mceText {
     border-color: #ccc;
 }
 
-.defaultSkin .mceListBox .mceOpen button:after {
+.defaultSkin .mceListBox .mceOpen:after {
     content: "\25BC";
     display: block;
     font-size: 9px;
@@ -57,26 +60,22 @@
     background-position: 100% 50%;*/
 }
 
-.defaultSkin table.mceListBoxEnabled:hover .mceText button,
-.defaultSkin .mceListBoxHover .mceText button,
-.defaultSkin .mceListBoxSelected .mceText button {
+.defaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
     background: #fff
 }
 
-table.mceListBoxEnabled:hover .mceOpen button,
-.defaultSkin .mceListBoxHover .mceOpen button,
-.defaultSkin .mceListBoxSelected .mceOpen button {
+.defaultSkin .mceListBoxSelected .mceOpen {
     background-color: #fff;
     border: 1px solid #ccc;
 }
 
-.defaultSkin .mceListBoxDisabled .mceOpen button:after {
+.defaultSkin .mceListBoxDisabled .mceOpen:after {
     color: gray;
 }
 
-.defaultSkin .mceListBoxDisabled .mceText button {
+.defaultSkin .mceListBoxDisabled .mceText {
     color: gray;
     background-color: transparent;
 }
@@ -93,25 +92,11 @@ table.mceListBoxEnabled:hover .mceOpen button,
     border: 1px solid #ddd;
 }
 
-.mceOldBoxModel .mceListBox .mceText button {
-    height: 22px
-}
-
-.defaultSkin .mceOldBoxModel .mceListBox .mceOpen button {
-    width: 12px;
-    height: 22px;
-}
-
 select.mceNativeListBox {
     font-size: 7pt;
     background: #fafafa;
     border: 1px solid gray;
     margin-right: 2px;
-}
-
-.defaultSkin .mceListBox .mceOpen,
-.defaultSkin .mceListBox .mceText {
-    float: left;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter {
@@ -130,7 +115,7 @@ select.mceNativeListBox {
     border: 0 none;
 }
 
-.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
+/*.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
     content: "";
     display: block;
     width: 32px;
@@ -140,6 +125,16 @@ select.mceNativeListBox {
     position: absolute;
     top: 4px;
     right: 4px;
+}*/
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter svg {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    fill:#888;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
 }
 
 /* RTL */

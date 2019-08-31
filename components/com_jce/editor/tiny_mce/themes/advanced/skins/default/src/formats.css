@@ -14,25 +14,21 @@
 .defaultSkin .mce_h1 span.mceText {
     font-weight: bolder;
     font-size: 2em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h2 span.mceText {
     font-weight: bolder;
     font-size: 1.5em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h3 span.mceText {
     font-weight: bolder;
     font-size: 1.17em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h4 span.mceText {
     font-weight: bolder;
     font-size: 1em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h5 span.mceText {

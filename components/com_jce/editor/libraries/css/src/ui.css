@@ -249,7 +249,6 @@ input.colour {
     margin: 0 !important;
     padding: 0;
     width: 100%;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
 .uk-form .uk-form-constrain .uk-constrain-checkbox,

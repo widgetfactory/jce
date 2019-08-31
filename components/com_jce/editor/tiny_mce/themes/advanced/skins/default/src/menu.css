@@ -29,10 +29,6 @@
     display: block
 }
 
-.defaultSkin .mceMenu div {
-    /*height: 20px*/
-}
-
 .defaultSkin .mceMenu a {
     position: relative;
     padding: 0;
@@ -58,7 +54,7 @@
 
 .defaultSkin .mceMenu .mceIcon {
     position: absolute;
-    top: 4px;
+    top: 6px;
     left: 4px;
     width: 20px;
 }

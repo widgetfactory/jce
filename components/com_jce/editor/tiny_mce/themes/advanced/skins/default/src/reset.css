@@ -19,6 +19,7 @@
     text-align: left;
     box-sizing: border-box;
     float: none;
+    outline: none;
 }
 
 .defaultSkin select, .defaultSkin textarea, .defaultSkin input[type] {

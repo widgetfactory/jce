@@ -152,7 +152,7 @@
                             key = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
                         }
 
-                        DOM.add(content, 'div', {
+                        DOM.add(content, 'button', {
                             "class": "mce_emotions_icon",
                             "title": ed.getLang('emotions.' + label, label)
                         }, key);
@@ -208,7 +208,7 @@
             var ctrl = cm.createPanelButton('emotions', {
                 title: 'emotions.desc',
                 html: self.content,
-                width: 250
+                width: 268
             });
 
             ctrl.onRenderPanel.add(function () {
@@ -233,6 +233,19 @@
 
                     ctrl.hidePanel();
                 });
+
+                var elm = DOM.get(ed.id + '_emotions_panel');
+
+                new tinymce.ui.KeyboardNavigation({
+                    root: elm,
+                    items: DOM.select('button', elm),
+                    excludeFromTabOrder: true,
+                    onCancel: function () {
+                        ed.focus();
+                    }
+                }, DOM);
+
+                elm.focus();
             });
 
             // Remove the menu element when the editor is removed

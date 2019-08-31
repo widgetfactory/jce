@@ -19,6 +19,7 @@
     text-align: left;
     box-sizing: border-box;
     float: none;
+    outline: none;
 }
 
 .defaultSkin select, .defaultSkin textarea, .defaultSkin input[type] {
@@ -67,19 +68,7 @@
 .defaultSkin iframe {
     display: block;
     width: 100%;
-}.defaultSkin .mceLeft .mceToolbarRow {
-    text-align: left
-}
-
-.defaultSkin .mceRight .mceToolbarRow {
-    text-align: right
-}
-
-.defaultSkin .mceCenter .mceToolbarRow {
-    text-align: center
-}
-
-/* External */
+}/* External */
 
 .defaultSkin .mceExternalToolBar {
     position: absolute;
@@ -103,34 +92,35 @@
 
 /* Layout */
 .defaultSkin .mceLayout {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-}
-
-.defaultSkin .mceLayout .mceFirst {
-    border-top: 1px solid #ddd
-}
-
-.defaultSkin .mceLayout .mceLast {
-    border-bottom: 1px solid #ddd
+    border: 1px solid #ddd;
 }
 
 .defaultSkin .mceToolbar {
     background: #f5f5f5;
+    padding: 2px;
 }
 
 .defaultSkin .mceToolbarRow {
     white-space: normal;
+    display: flex;
+    align-items: center;
 }
 
-.defaultSkin .mceToolbarRow>div {
-    display: inline-block;
-    vertical-align: middle;
+.defaultSkin .mceLeft .mceToolbarRow {
+    justify-content: flex-start;
 }
 
-.defaultSkin .mceToolbarRow .mceToolbarItem {
-    margin: 1px 0 1px 1px;
-    background-color: #f5f5f5;
+.defaultSkin .mceRight .mceToolbarRow {
+    justify-content: flex-end;
+}
+
+.defaultSkin .mceCenter .mceToolbarRow {
+    justify-content: center
+}
+
+.defaultSkin .mceToolbarRow>div,
+.defaultSkin .mceToolbarRow>button  {
+    margin: 1px 0 1px 2px;
 }
 
 .defaultSkin .mceIframeContainer {
@@ -141,19 +131,6 @@
 
 .defaultSkin .mceToolbar {
     width: auto !important;
-}
-
-.defaultSkin .mceCenter {
-    text-align: center;
-}
-
-.defaultSkin .mceCenter>div {
-    margin: 0 auto;
-    text-align: left;
-}
-
-.defaultSkin .mceRight>div {
-    margin: 0 0 0 auto;
 }
 
 /* Separator */
@@ -292,12 +269,11 @@
     border: 1px solid #ddd;
 } 
 
-.mceCharacterMap ul li button {
-    border: 0;
+.mceModal .mceModalContent .mceCharacterMap button {
     background: #fff;
     width: 1.5em;
+    min-width: inherit;
     height: 1.5em;
-    margin: 0;
     padding: 0;
     line-height: 1rem;
     vertical-align: middle;
@@ -305,22 +281,16 @@
     cursor: pointer;
     font-size: 16px;
     text-align: center;
-}
 
-.mceModal .mceModalContent .mceCharacterMap ul li button {
-    min-width: inherit;
-}
-
-.mceCharacterMap ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.mceCharacterMap ul li {
     border: 1px solid #ddd;
     display: inline-block;
     margin: 0 1px 1px 0;
+}
+
+.mceModal .mceModalContent .mceCharacterMap button:hover,
+.mceModal .mceModalContent .mceCharacterMap button:focus {
+    border: 1px solid #ccc;
+    background-color: #e6e6e6;
 }
 
 .mceCharacterMapDescription h1 {
@@ -385,10 +355,6 @@
     display: block
 }
 
-.defaultSkin .mceMenu div {
-    /*height: 20px*/
-}
-
 .defaultSkin .mceMenu a {
     position: relative;
     padding: 0;
@@ -414,7 +380,7 @@
 
 .defaultSkin .mceMenu .mceIcon {
     position: absolute;
-    top: 4px;
+    top: 6px;
     left: 4px;
     width: 20px;
 }
@@ -588,7 +554,6 @@
 .defaultSkin .mceButton {
     display: inline-block;
     border: 1px solid #ddd;
-    margin-right: 1px;
     padding: 4px;
     min-width: 32px;
     min-height: 32px;
@@ -604,10 +569,15 @@
     line-height: 1;
 }
 
-.defaultSkin .mceButton:hover,
-.defaultSkin .mceButton:focus {
+.defaultSkin .mceButton:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;
+}
+
+.defaultSkin .mceButton:focus {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    outline: none;
 }
 
 .defaultSkin .mceButtonActive,
@@ -640,18 +610,14 @@
 }/* ListBox */
 
 .defaultSkin .mceListBox {
-    display: table;
+    display: block;
 }
 
 .defaultSkin .mceListBoxMenu {
     min-height: 224px;
 }
 
-.defaultSkin .mceListBox button {
-    display: block;
-}
-
-.defaultSkin .mceListBox .mceText button {
+.defaultSkin .mceListBox .mceText {
     padding: 0 4px;
     width: 96px;
     height: 32px;
@@ -665,7 +631,7 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox .mceOpen button {
+.defaultSkin .mceListBox .mceOpen {
     width: 16px;
     height: 32px;
     border: 1px solid #ddd;
@@ -674,16 +640,23 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox:hover .mceOpen button {
+.defaultSkin .mceListBox .mceOpen,
+.defaultSkin .mceListBox .mceText {
+    float: left;
+}
+
+.defaultSkin .mceListBox:hover .mceOpen,
+.defaultSkin .mceListBox:focus .mceOpen {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceListBox:hover .mceText button {
+.defaultSkin .mceListBox:hover .mceText,
+.defaultSkin .mceListBox:focus .mceText {
     border-color: #ccc;
 }
 
-.defaultSkin .mceListBox .mceOpen button:after {
+.defaultSkin .mceListBox .mceOpen:after {
     content: "\25BC";
     display: block;
     font-size: 9px;
@@ -696,26 +669,22 @@
     background-position: 100% 50%;*/
 }
 
-.defaultSkin table.mceListBoxEnabled:hover .mceText button,
-.defaultSkin .mceListBoxHover .mceText button,
-.defaultSkin .mceListBoxSelected .mceText button {
+.defaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
     background: #fff
 }
 
-table.mceListBoxEnabled:hover .mceOpen button,
-.defaultSkin .mceListBoxHover .mceOpen button,
-.defaultSkin .mceListBoxSelected .mceOpen button {
+.defaultSkin .mceListBoxSelected .mceOpen {
     background-color: #fff;
     border: 1px solid #ccc;
 }
 
-.defaultSkin .mceListBoxDisabled .mceOpen button:after {
+.defaultSkin .mceListBoxDisabled .mceOpen:after {
     color: gray;
 }
 
-.defaultSkin .mceListBoxDisabled .mceText button {
+.defaultSkin .mceListBoxDisabled .mceText {
     color: gray;
     background-color: transparent;
 }
@@ -732,25 +701,11 @@ table.mceListBoxEnabled:hover .mceOpen button,
     border: 1px solid #ddd;
 }
 
-.mceOldBoxModel .mceListBox .mceText button {
-    height: 22px
-}
-
-.defaultSkin .mceOldBoxModel .mceListBox .mceOpen button {
-    width: 12px;
-    height: 22px;
-}
-
 select.mceNativeListBox {
     font-size: 7pt;
     background: #fafafa;
     border: 1px solid gray;
     margin-right: 2px;
-}
-
-.defaultSkin .mceListBox .mceOpen,
-.defaultSkin .mceListBox .mceText {
-    float: left;
 }
 
 .defaultSkin .mceListBoxMenu .mceMenuFilter {
@@ -769,7 +724,7 @@ select.mceNativeListBox {
     border: 0 none;
 }
 
-.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
+/*.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
     content: "";
     display: block;
     width: 32px;
@@ -779,6 +734,16 @@ select.mceNativeListBox {
     position: absolute;
     top: 4px;
     right: 4px;
+}*/
+
+.defaultSkin .mceListBoxMenu .mceMenuFilter svg {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    fill:#888;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
 }
 
 /* RTL */
@@ -821,10 +786,10 @@ select.mceNativeListBox {
 .defaultSkin .mceSplitButton .mceText,
 .defaultSkin .mceSplitButton .mceOpen {
     display: inline-block;
+    border: 1px solid #ddd;
 }
 
-.defaultSkin .mceSplitButton .mceText button {
-    border: 1px solid #ddd;
+.defaultSkin .mceSplitButton .mceText {
     border-right: 0;
     border-radius: 2px 0 0 2px;
     cursor: pointer;
@@ -840,16 +805,15 @@ select.mceNativeListBox {
     background-image: url(../../img/icons.png?@@etag@@);
 }
 
-.defaultSkin .mceSplitButton .mceOpen button {
+.defaultSkin .mceSplitButton .mceOpen {
     width: 16px;
-    border: 1px solid #ddd;
     text-align: center;
     height: 32px;
     border-radius: 0 2px 2px 0;
     cursor: pointer;
 }
 
-.defaultSkin .mceSplitButton .mceOpen button:after {
+.defaultSkin .mceSplitButton .mceOpen:after {
     content: "\25BC";
     display: block;
     font-size: 9px;
@@ -858,32 +822,14 @@ select.mceNativeListBox {
     text-align: center;
 }
 
-.defaultSkin .mceSplitButtonDisabled .mceOpen button:after {
+.defaultSkin .mceSplitButtonDisabled .mceOpen:after {
     color: #888;
 }
 
-.defaultSkin .mceSplitButton .mceOpen span {
-    display: none
-}
-
-table.mceSplitButtonEnabled:hover .mceText button,
-.defaultSkin .mceSplitButtonHover .mceText button,
-.defaultSkin .mceSplitButtonSelected .mceAction button {
-    border-color: #ccc;
-    border-right: 0;
-    background-color: #fafafa;
-}
-
-table.mceSplitButtonEnabled:hover .mceOpen button,
-.defaultSkin .mceSplitButtonHover .mceOpen button,
-.defaultSkin .mceSplitButtonSelected .mceOpen button,
-.defaultSkin .mceSplitButtonSelected .mceText button {
-    background-color: #fafafa;
-    border-color: #ccc;
-}
-
-.defaultSkin .mceSplitButton:hover .mceText button,
-.defaultSkin .mceSplitButton:hover .mceOpen button {
+.defaultSkin .mceSplitButton:hover .mceText,
+.defaultSkin .mceSplitButton:hover .mceOpen,
+.defaultSkin .mceSplitButton:focus .mceText,
+.defaultSkin .mceSplitButton:focus .mceOpen {
     border-color: #ccc;
     background-color: #fafafa;
 }
@@ -892,12 +838,12 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     opacity: 0.3;
 }
 
-.defaultSkin .mceSplitButtonActive .mceText button {
-    border: 1px solid #ccc;
+.defaultSkin .mceSplitButtonActive .mceText {
+    border-color: #ccc;
     background-color: #ddd;
 }
 
-.defaultSkin .mceSplitButtonActive .mceOpen button {
+.defaultSkin .mceSplitButtonActive .mceOpen {
     border-left: 0;
     border-color: #ccc;
     background-color: #ddd;
@@ -906,9 +852,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mceSplitButtonMenu {
     margin: 0;
     border: 1px solid #ddd;
-    margin-top: 2px;
+    margin-top: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
     min-width: calc(48px * 3);
 }
 
@@ -923,9 +868,6 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 }
 
 /* ColorSplitButton */
-
-.defaultSkin .mceColorSplitMenu {}
-
 .defaultSkin .mceColorSplitMenu table {
     background: #fff;
 }
@@ -940,20 +882,22 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     height: 24px;
     overflow: hidden;
     border: 1px solid #ddd;
-    box-sizing: border-box;
     text-align: center;
     cursor: pointer;
+    outline: none;
 }
 
-.defaultSkin .mceColorSplitMenu button:hover {
-    border-color: #bbb;
+.defaultSkin .mceColorSplitMenu button:hover,
+.defaultSkin .mceColorSplitMenu button:focus {
+    border-color: #444;
+    outline: none;
 }
 
-.defaultSkin .mceColorSplitMenu td.mceMoreColors {
+.defaultSkin .mceColorSplitMenu .mceMoreColors {
     padding: 1px;
 }
 
-.defaultSkin .mceColorSplitMenu td.mceRemoveColor button:after {
+.defaultSkin .mceColorSplitMenu .mceRemoveColor button:after {
     color: #444;
     display: block;
     font-family: Arial, sans-serif;
@@ -967,16 +911,16 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     margin-left: 1px;
 }
 
-.defaultSkin .mceColorSplitMenu button.mceMoreColors {
+.defaultSkin .mceColorSplitMenu .mceMoreColors button {
     width: 100%;
     height: auto;
     text-align: center;
-    line-height: 30px;
-    border: 1px solid #FFF;
+    line-height: 32px;
+    background: #fff;
     cursor: pointer;
 }
 
-.defaultSkin .mceColorSplitMenu button.mceMoreColors:hover {
+.defaultSkin .mceColorSplitMenu .mceMoreColors:hover button {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
@@ -1040,7 +984,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     display: block;
     padding: 4px;
     position: absolute;
-    width: 40px;
+    width: 38px;
     top: -6px;
     background: #fff;
     left: -1px;
@@ -1048,13 +992,15 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     border-right: 1px solid #ddd;
 }
 
-.defaultSkin .mceSplitButtonSelected .mceSplitButton .mceText button {
+.defaultSkin .mceSplitButtonSelected .mceText,
+.defaultSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
     border-color: #ddd;
     border-radius: 2px 0 0 0;
 }
 
-.defaultSkin .mceSplitButtonSelected .mceSplitButton .mceOpen button {
+.defaultSkin .mceSplitButtonSelected .mceOpen,
+.defaultSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
     border-color: #ddd;
     border-left-color: transparent;
@@ -1895,7 +1841,7 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     font-family: inherit;
 }.defaultSkin .mce_emotions_icon {
     display: inline-block;
-    font-size: 15px;
+    font-size: 16px;
     line-height: 2em;
     width: auto;
     height: auto;
@@ -1906,6 +1852,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
+    -webkit-appearance: none;
+    background: #fff;
 }
 
 .defaultSkin .mce_emotions_icon img {
@@ -1913,7 +1861,8 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
     cursor: pointer;
 }
 
-.mce_emotions_icon:hover {
+.mce_emotions_icon:hover,
+.mce_emotions_icon:focus {
     background: #eee;
     border-radius: 3px;
 }/** Path **/
@@ -1976,25 +1925,21 @@ table.mceSplitButtonEnabled:hover .mceOpen button,
 .defaultSkin .mce_h1 span.mceText {
     font-weight: bolder;
     font-size: 2em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h2 span.mceText {
     font-weight: bolder;
     font-size: 1.5em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h3 span.mceText {
     font-weight: bolder;
     font-size: 1.17em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h4 span.mceText {
     font-weight: bolder;
     font-size: 1em;
-    line-height: 1em;
 }
 
 .defaultSkin .mce_h5 span.mceText {
