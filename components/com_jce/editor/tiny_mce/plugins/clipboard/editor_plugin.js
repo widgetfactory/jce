@@ -1499,7 +1499,8 @@
                         if (value == "normal") {
                             value = "";
                         }
-                        return;
+
+                        break;
 
                     case "mso-element":
                         // Remove track changes code
