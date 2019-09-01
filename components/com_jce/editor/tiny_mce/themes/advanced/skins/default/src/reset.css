@@ -20,6 +20,7 @@
     box-sizing: border-box;
     float: none;
     outline: none;
+    position: relative;
 }
 
 .defaultSkin select, .defaultSkin textarea, .defaultSkin input[type] {

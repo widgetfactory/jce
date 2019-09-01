@@ -14,7 +14,7 @@
 
 .defaultSkin .mceTextBox:focus {
     border-color: #66afe9;
-    outline: 0;
+    outline: none;
     background: #f5fbfe;
     color: #444;
     box-shadow: inherit;

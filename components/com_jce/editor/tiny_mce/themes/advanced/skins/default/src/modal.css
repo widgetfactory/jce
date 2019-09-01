@@ -232,11 +232,7 @@
     opacity: 0.5;
 }
 
-
-/* Alert/Confirm */
-
 .mceModal .mceButton {
-    bottom: 8px;
     min-width: 5em;
     height: 32px;
     line-height: 1;
@@ -448,6 +444,16 @@
     height: auto;
     line-height: 1.5;
     resize: vertical;
+}
+
+.mceModal .mceModalContent input[type]:focus,
+.mceModal .mceModalContent textarea:focus {
+    outline: none;
+    border-color: #66afe9;
+}
+
+.mceModal .mceModalContent input[type="radio"]:focus {
+    border-radius: 100%
 }
 
 .mceModal .mceModalContent label {
