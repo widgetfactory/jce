@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="rowtype">
         <?php echo JText::_('WF_TABLE_ROWTYPE'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
@@ -20,7 +20,7 @@ defined('JPATH_PLATFORM') or die;
             <option value="tfoot"><?php echo JText::_('WF_TABLE_TFOOT'); ?></option>
         </select></div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="align">
         <?php echo JText::_('WF_TABLE_ALIGN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
@@ -31,7 +31,7 @@ defined('JPATH_PLATFORM') or die;
             <option value="right"><?php echo JText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select></div>
 </div>
-<!--div class="uk-form-row">
+<!--div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="valign">
         <?php echo JText::_('WF_TABLE_VALIGN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
@@ -42,7 +42,7 @@ defined('JPATH_PLATFORM') or die;
             <option value="bottom"><?php echo JText::_('WF_TABLE_ALIGN_BOTTOM'); ?></option>
         </select></div>
 </div-->
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="height">
         <?php echo JText::_('WF_TABLE_HEIGHT'); ?></label>
     <div class="uk-form-controls uk-width-7-10">

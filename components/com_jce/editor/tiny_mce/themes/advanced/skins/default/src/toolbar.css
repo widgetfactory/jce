@@ -37,6 +37,11 @@
     align-items: center;
 }
 
+.defaultSkin.mceRtl .mceToolbarRow {
+    justify-content: right;
+    flex-direction: row-reverse;
+}
+
 .defaultSkin .mceLeft .mceToolbarRow {
     justify-content: flex-start;
 }

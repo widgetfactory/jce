@@ -11,19 +11,19 @@
 defined('JPATH_PLATFORM') or die;
 ?>
 
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
   <label class="uk-form-label uk-width-2-10" for="list_type"><?php echo JText::_('WF_STYLES_LIST_TYPE'); ?></label>
   <div class="uk-form-controls uk-width-4-10">
     <select id="list_type" name="list_type" class="uk-datalist"></select>
   </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
   <label class="uk-form-label uk-width-2-10" for="list_position"><?php echo JText::_('WF_STYLES_POSITION'); ?></label>
   <div class="uk-form-controls uk-width-4-10">
     <select id="list_position" name="list_position" class="uk-datalist"></select>
   </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
   <label class="uk-form-label uk-width-2-10" for="list_bullet_image"><?php echo JText::_('WF_STYLES_BULLET_IMAGE'); ?></label>
   <div class="uk-form-controls uk-width-8-10">
     <input id="list_bullet_image" name="list_bullet_image" type="text" class="browser image" />

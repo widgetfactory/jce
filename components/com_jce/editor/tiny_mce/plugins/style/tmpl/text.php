@@ -9,7 +9,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
   <label for="text_font" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_FONT'); ?></label>
     <div class="uk-form-controls uk-width-8-10"><select id="text_font" class="uk-datalist"></select></div>
 </div>
@@ -55,13 +55,13 @@ defined('JPATH_PLATFORM') or die;
               </div>
             </div>
       </div>
-      <div class="uk-form-row">
+      <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="text_color"><?php echo JText::_('WF_STYLES_TEXT_COLOR'); ?></label>
             <div class="uk-form-controls uk-width-2-10">
               <input id="text_color" class="color" type="text" value="" />
             </div>
       </div>
-      <div class="uk-form-row">
+      <div class="uk-form-row uk-grid uk-grid-small">
           <label class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_DECORATION'); ?></label>
           <div class="uk-form-controls uk-width-8-10">
               <input id="text_underline" type="checkbox" />

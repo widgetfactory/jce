@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10" for="contenteditable">
       <?php echo JText::_('WF_LABEL_CONTENTEDITBALE'); ?>
     </label>
@@ -32,7 +32,7 @@ defined('JPATH_PLATFORM') or die;
     </div>
   </div>
 
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10" for="draggable">
       <?php echo JText::_('WF_LABEL_DRAGGABLE'); ?>
     </label>
@@ -54,7 +54,7 @@ defined('JPATH_PLATFORM') or die;
     </div>
   </div>
 
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10" for="hidden">
       <?php echo JText::_('WF_LABEL_HIDDEN'); ?>
     </label>
@@ -73,7 +73,7 @@ defined('JPATH_PLATFORM') or die;
     </div>
   </div>
 
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10" for="spellcheck">
       <?php echo JText::_('WF_LABEL_SPELLCHECK'); ?>
     </label>
@@ -92,7 +92,7 @@ defined('JPATH_PLATFORM') or die;
     </div>
   </div>
 
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <label for="custom_attributes" class="uk-form-label uk-width-2-10">
       <?php echo JText::_('WF_LABEL_OTHER'); ?>
     </label>

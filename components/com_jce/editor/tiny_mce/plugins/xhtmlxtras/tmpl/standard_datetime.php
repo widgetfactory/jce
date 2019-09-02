@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10"
            for="datetime"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_DATETIME'); ?></label>
     <div class="uk-form-controls uk-form-icon uk-form-icon-flip uk-width-8-10">
@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
             <i class="uk-icon-clock-o" onclick="XHTMLXtrasDialog.insertDateTime('datetime');" title="<?php echo JText::_('WF_XHTMLXTRAS_INSERT_DATE'); ?>"></i>
     </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-2-10" for="cite">
         <?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_CITE'); ?>
     </label>

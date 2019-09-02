@@ -9,7 +9,7 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label for="dailymotion_autoPlay" title="<?php echo JText::_('WF_AGGREGATOR_DAILYMOTION_AUTOPLAY_DESC') ?>"
            class="tooltip uk-form-label uk-width-1-5"><?php echo JText::_('WF_AGGREGATOR_DAILYMOTION_AUTOPLAY') ?></label>
     <div class="uk-width-4-5">
@@ -24,7 +24,7 @@ defined('_WF_EXT') or die('RESTRICTED');
         </div>
     </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-1-5"
            title="<?php echo JText::_('WF_AGGREGATOR_DAILYMOTION_SIZE'); ?>"><?php echo JText::_('WF_AGGREGATOR_DAILYMOTION_SIZE'); ?></label>
 

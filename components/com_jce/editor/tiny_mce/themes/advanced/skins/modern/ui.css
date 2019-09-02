@@ -102,7 +102,7 @@
 }
 
 .modernSkin .mceSplitButtonMenu {
-    margin-top: 6px;
+    margin-top: 8px;
     position: relative;
 }
 
@@ -112,7 +112,7 @@
     padding: 4px;
     position: absolute;
     width: 38px;
-    top: -6px;
+    top: -8px;
     background: #fff;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;

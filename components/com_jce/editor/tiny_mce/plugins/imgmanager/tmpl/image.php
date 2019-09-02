@@ -80,7 +80,7 @@ defined('JPATH_PLATFORM') or die;
                     </select>
                 </div>
             </div>
-            <div class="uk-width-2-5 uk-hidden-mini">
+            <div class="uk-width-2-5 uk-hidden-mini uk-grid uk-grid-small">
                 <label for="clear" class="hastip uk-form-label uk-width-3-10"
                        title="<?php echo JText::_('WF_LABEL_CLEAR_DESC'); ?>">
                     <?php echo JText::_('WF_LABEL_CLEAR'); ?>
@@ -142,7 +142,7 @@ defined('JPATH_PLATFORM') or die;
                 <?php echo JText::_('WF_LABEL_BORDER'); ?>
             </label>
 
-            <div class="uk-form-controls uk-width-4-5">
+            <div class="uk-form-controls uk-grid uk-grid-small uk-width-4-5">
                 <div class="uk-form-controls uk-width-0-3 uk-margin-small-top">
                     <input type="checkbox" id="border" />
                 </div>

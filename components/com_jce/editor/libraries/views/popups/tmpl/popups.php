@@ -11,14 +11,14 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-<div class="uk-form-row uk-margin-small-bottom">
+<div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom">
 <label for="popup_list" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_POPUP_TYPE_DESC'); ?>"><?php echo JText::_('WF_POPUP_TYPE'); ?></label>
 	<div class="uk-form-controls uk-width-2-5">
 		<?php echo $this->popups->getPopupList(); ?>
 	</div>
 </div>
 
-<div class="uk-form-row uk-margin-small-bottom" style="display:<?php echo ($this->popups->get('text') === false) ? 'none' : ''?>;">
+<div class="uk-form-row uk-grid uk-grid-small uk-margin-small-bottom" style="display:<?php echo ($this->popups->get('text') === false) ? 'none' : ''?>;">
 	<label for="popup_text" class="hastip uk-form-label uk-width-1-5"
 			title="<?php echo JText::_('WF_POPUP_TEXT_DESC'); ?>"><?php echo JText::_('WF_POPUP_TEXT'); ?></label>
 		<div class="uk-form-controls uk-width-4-5">

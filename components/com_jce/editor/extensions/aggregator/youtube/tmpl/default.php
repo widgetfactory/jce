@@ -9,7 +9,7 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_controls" checked />
       <label for="youtube_controls" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_CONTROLS_DESC') ?>" class="tooltip">
@@ -23,7 +23,7 @@ defined('_WF_EXT') or die('RESTRICTED');
       </label>
     </div>
   </div>
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_autoplay" />
       <label for="youtube_autoplay" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_AUTOPLAY_DESC') ?>" class="tooltip">
@@ -37,7 +37,7 @@ defined('_WF_EXT') or die('RESTRICTED');
       </label>
     </div>
   </div>
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
     <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_modestbranding" checked />
       <label for="youtube_modestbranding" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC') ?>" class="tooltip">
@@ -88,7 +88,7 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
   </div>
 
-  <div class="uk-form-row">
+  <div class="uk-form-row uk-grid uk-grid-small">
         <label for="youtube_params" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS_DESC'); ?>"><?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS'); ?></label>
         <div class="uk-width-4-5" id="youtube_params">
           <div class="uk-form-row uk-repeatable">

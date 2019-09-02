@@ -15,21 +15,21 @@ if ($element == 'del' || $element == 'ins') :
     echo $this->loadTemplate('datetime');
 endif;
 ?>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="title"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_TITLE'); ?></label>
         <div class="uk-form-controls uk-width-8-10"><input id="title" type="text" value="" /></div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="id"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_ID'); ?></label>
         <div class="uk-form-controls uk-width-8-10"><input id="id" type="text" value="" /></div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label for="classlist" class="uk-form-label uk-width-2-10 hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
         <div class="uk-form-controls uk-width-8-10">
             <select id="classes" class="uk-datalist" multiple="multiple"></select>
         </div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="dir"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGDIR'); ?></label>
         <div class="uk-form-controls uk-width-8-10"><select id="dir">
                 <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
@@ -37,7 +37,7 @@ endif;
                 <option value="rtl"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_OPTION_RTL'); ?></option>
             </select></div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="lang"><?php echo JText::_('WF_XHTMLXTRAS_ATTRIBUTE_LABEL_LANGCODE'); ?></label>
         <div class="uk-form-controls uk-width-8-10"><input id="lang" type="text" value="" />
         </div>

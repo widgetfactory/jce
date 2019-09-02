@@ -122,6 +122,10 @@
     flex: 1;
 }
 
+.mceModal .mceModalBody[dir="rtl"] .mceModalHeader h5 {
+    text-align: right;
+}
+
 .mceModal .mceModalMove {
     cursor: move;
 }
@@ -186,6 +190,7 @@
     height: 32px;
     border-radius: 2px;
     cursor: pointer;
+    background: #fff;
 }
 
 .mceModal .mceModalClose:hover,
@@ -448,8 +453,10 @@
 
 .mceModal .mceModalContent input[type]:focus,
 .mceModal .mceModalContent textarea:focus {
-    outline: none;
     border-color: #66afe9;
+    outline: 0;
+    background: #f5fbfe;
+    color: #444;
 }
 
 .mceModal .mceModalContent input[type="radio"]:focus {

@@ -40,6 +40,12 @@
     font-size: 14px;
 }
 
+.defaultSkin button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 .defaultSkin input[type="radio"],
 .defaultSkin input[type="checkbox"] {
     cursor: inherit;
@@ -106,6 +112,11 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+}
+
+.defaultSkin.mceRtl .mceToolbarRow {
+    justify-content: right;
+    flex-direction: row-reverse;
 }
 
 .defaultSkin .mceLeft .mceToolbarRow {
@@ -253,17 +264,15 @@
 }
 
 .mceCharacterMap {
-    text-align: center;
     padding: 0;
-    top: 5px;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    text-align: left;
 }
 
 .mceCharacterMap>div {
     flex: 1;
+}
+
+.mceModal .mceModalBody[dir="rtl"] .mceCharacterMap>div {
+    text-align: right;
 }
 
 .mceCharacterMap>div+div {
@@ -564,6 +573,8 @@
     min-width: 32px;
     min-height: 32px;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     cursor: pointer;
     outline: none;
     overflow: visible;
@@ -771,15 +782,16 @@ select.mceNativeListBox {
 }
 
 .defaultSkin .mceTextBox:focus {
+    box-shadow: inherit;
     border-color: #66afe9;
-    outline: none;
+    outline: 0;
     background: #f5fbfe;
     color: #444;
-    box-shadow: inherit;
 }
 
 .defaultSkin .mceToolbarRow .mceTextBox {
     margin: 1px 0 1px 2px;
+    max-width: 10em;
 }/* SplitButton */
 .defaultSkin .mceSplitButton button {
     height: 32px;
@@ -2096,6 +2108,10 @@ select.mceNativeListBox {
     flex: 1;
 }
 
+.mceModal .mceModalBody[dir="rtl"] .mceModalHeader h5 {
+    text-align: right;
+}
+
 .mceModal .mceModalMove {
     cursor: move;
 }
@@ -2160,6 +2176,7 @@ select.mceNativeListBox {
     height: 32px;
     border-radius: 2px;
     cursor: pointer;
+    background: #fff;
 }
 
 .mceModal .mceModalClose:hover,
@@ -2422,8 +2439,10 @@ select.mceNativeListBox {
 
 .mceModal .mceModalContent input[type]:focus,
 .mceModal .mceModalContent textarea:focus {
-    outline: none;
     border-color: #66afe9;
+    outline: 0;
+    background: #f5fbfe;
+    color: #444;
 }
 
 .mceModal .mceModalContent input[type="radio"]:focus {

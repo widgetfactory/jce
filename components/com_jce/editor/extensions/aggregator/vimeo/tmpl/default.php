@@ -10,7 +10,7 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label for="vimeo_color" title="<?php echo JText::_('WF_AGGREGATOR_VIMEO_COLOR_DESC') ?>"
            class="tooltip uk-form-label uk-width-1-5"><?php echo JText::_('WF_AGGREGATOR_VIMEO_COLOR') ?></label>
 
@@ -19,7 +19,7 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
 
     <label for="vimeo_intro" title="<?php echo JText::_('WF_AGGREGATOR_VIMEO_INTRO_DESC') ?>"
            class="tooltip uk-form-label uk-width-1-5"><?php echo JText::_('WF_AGGREGATOR_VIMEO_INTRO') ?></label>
@@ -38,7 +38,7 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
 </div>
 
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label for="vimeo_special"
            class="uk-form-label uk-width-1-5"><?php echo JText::_('WF_AGGREGATOR_VIMEO_SPECIAL') ?></label>
     <div class="uk-form-controls uk-width-4-5">

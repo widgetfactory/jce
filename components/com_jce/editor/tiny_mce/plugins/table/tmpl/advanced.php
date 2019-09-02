@@ -11,42 +11,42 @@
 defined('JPATH_PLATFORM') or die;
 
 ?>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label for="classlist" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
     <div class="uk-form-controls uk-width-4-5">
         <select id="classes" class="uk-datalist" multiple="multiple"></select>
     </div>
 </div>
 
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-1-5" for="id">
         <?php echo JText::_('WF_TABLE_ID'); ?></label>
     <div class="uk-form-controls uk-width-4-5">
         <input id="id" type="text" value=""/>
     </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-1-5" for="summary">
         <?php echo JText::_('WF_TABLE_SUMMARY'); ?></label>
     <div class="uk-form-controls uk-width-4-5">
         <input id="summary" type="text" value=""/>
     </div>
 </div>
-<div class="uk-form-row">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-1-5" for="style">
             <?php echo JText::_('WF_TABLE_STYLE'); ?></label>
         <div class="uk-form-controls uk-width-4-5">
             <input type="text" id="style" value="" />
         </div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-5" id="langlabel" for="lang">
             <?php echo JText::_('WF_TABLE_LANGCODE'); ?></label>
         <div class="uk-form-controls uk-width-4-5">
             <input id="lang" type="text" value="" class="uk-form-width-small" />
         </div>
     </div>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-5" for="backgroundimage">
             <?php echo JText::_('WF_TABLE_BGIMAGE'); ?></label>
         <div class="uk-form-controls uk-width-4-5">
@@ -56,7 +56,7 @@ defined('JPATH_PLATFORM') or die;
     </div>
     <?php if ($this->plugin->getLayout() == 'table'):
 ?>
-        <div class="uk-form-row">
+        <div class="uk-form-row uk-grid uk-grid-small">
             <label class="uk-form-label uk-width-1-5" for="tframe">
                 <?php echo JText::_('WF_TABLE_FRAME'); ?></label>
             <div class="uk-form-controls uk-width-4-5">
@@ -73,7 +73,7 @@ defined('JPATH_PLATFORM') or die;
                     <option value="border"><?php echo JText::_('WF_TABLE_RULES_BORDER'); ?></option>
                 </select></div>
         </div>
-        <div class="uk-form-row">
+        <div class="uk-form-row uk-grid uk-grid-small">
             <label class="uk-form-label uk-width-1-5" for="rules">
                 <?php echo JText::_('WF_TABLE_RULES'); ?></label>
             <div class="uk-form-controls uk-width-4-5">
@@ -87,7 +87,7 @@ defined('JPATH_PLATFORM') or die;
                 </select></div>
         </div>
     <?php endif; ?>
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-5" for="dir">
             <?php echo JText::_('WF_TABLE_LANGDIR'); ?></label>
         <div class="uk-form-controls uk-width-4-5">
@@ -156,7 +156,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-    <div class="uk-form-row">
+    <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-5" for="bgcolor">
             <?php echo JText::_('WF_TABLE_BGCOLOR'); ?></label>
         <div class="uk-form-controls uk-width-1-5">

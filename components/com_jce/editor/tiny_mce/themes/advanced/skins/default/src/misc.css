@@ -72,17 +72,15 @@
 }
 
 .mceCharacterMap {
-    text-align: center;
     padding: 0;
-    top: 5px;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    text-align: left;
 }
 
 .mceCharacterMap>div {
     flex: 1;
+}
+
+.mceModal .mceModalBody[dir="rtl"] .mceCharacterMap>div {
+    text-align: right;
 }
 
 .mceCharacterMap>div+div {

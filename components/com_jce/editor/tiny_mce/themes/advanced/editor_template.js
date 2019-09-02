@@ -225,6 +225,10 @@
             var skin = "defaultSkin";
 
             if (ed.settings.skin !== "default") {
+                if (ed.settings.skin === 'mobile') {
+                    skin += ' modernSkin';
+                }
+
                 skin += ' ' + ed.settings.skin + 'Skin';
 
                 if (s.skin_variant) {
@@ -232,11 +236,19 @@
                 }
             }
 
+            // add direction
+            if (ed.settings.directionality == "rtl") {
+                skin += ' mceRtl';
+            }
+
+            // store for other uses
+            ed.settings.skin_class = skin;
+
             n = p = DOM.create('div', {
                 role: 'application',
                 'aria-label': s.aria_label,
                 id: ed.id + '_parent',
-                'class': 'mceEditor ' + skin + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
+                'class': 'mceEditor ' + skin
             });
 
             n = sc = DOM.add(n, 'div', {
