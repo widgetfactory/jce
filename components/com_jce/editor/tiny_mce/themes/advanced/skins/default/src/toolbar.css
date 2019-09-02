@@ -33,6 +33,7 @@
 .defaultSkin .mceToolbarRow {
     white-space: normal;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 }
 
