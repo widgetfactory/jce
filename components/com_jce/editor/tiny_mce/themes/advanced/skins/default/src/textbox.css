@@ -19,3 +19,7 @@
     color: #444;
     box-shadow: inherit;
 }
+
+.defaultSkin .mceToolbarRow .mceTextBox {
+    margin: 1px 0 1px 2px;
+}
