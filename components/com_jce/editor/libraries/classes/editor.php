@@ -234,11 +234,6 @@ class WFEditor
             // assign skin
             $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern', 'modern');
 
-            // re-assign the "mobile" skin option to "retina / modern"
-            if ($settings['skin'] === 'mobile') {
-                $settings['skin'] = 'modern';
-            }
-
             if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
                 list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
             }
