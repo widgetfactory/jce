@@ -13,13 +13,14 @@
 }
 
 .defaultSkin .mceTextBox:focus {
+    box-shadow: inherit;
     border-color: #66afe9;
-    outline: none;
+    outline: 0;
     background: #f5fbfe;
     color: #444;
-    box-shadow: inherit;
 }
 
 .defaultSkin .mceToolbarRow .mceTextBox {
     margin: 1px 0 1px 2px;
+    max-width: 10em;
 }

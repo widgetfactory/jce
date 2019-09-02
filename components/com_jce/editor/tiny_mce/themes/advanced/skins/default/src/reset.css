@@ -40,6 +40,12 @@
     font-size: 14px;
 }
 
+.defaultSkin button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
 .defaultSkin input[type="radio"],
 .defaultSkin input[type="checkbox"] {
     cursor: inherit;
