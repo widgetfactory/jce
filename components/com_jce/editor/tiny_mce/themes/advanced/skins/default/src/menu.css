@@ -15,29 +15,29 @@
     width: 0;
 }
 
-.defaultSkin .mceNoIcons a .mceText {
-    padding-left: 20px
+.defaultSkin .mceNoIcons .mceMenuItemOption .mceText {
+    padding-left: 20px;
 }
 
 .defaultSkin .mceMenu div {
     background-color: #fff;
 }
 
-.defaultSkin .mceMenu a,
 .defaultSkin .mceMenu span,
 .defaultSkin .mceMenu {
     display: block
 }
 
-.defaultSkin .mceMenu a {
+.defaultSkin .mceMenu .mceMenuItemOption {
     position: relative;
     padding: 0;
+    cursor: pointer;
 }
 
 .defaultSkin .mceMenu .mceText {
     position: relative;
     display: block;
-    cursor: default;
+    cursor: pointer;
     margin: 0;
     padding: 0 32px 0 32px;
 }
@@ -75,8 +75,8 @@
     display: none;
 }
 
-.defaultSkin .mceMenu .mceMenuItemEnabled a:hover,
-.defaultSkin .mceMenu .mceMenuItemEnabled a:focus,
+.defaultSkin .mceMenu .mceMenuItemEnabled .mceMenuItemOption:hover,
+.defaultSkin .mceMenu .mceMenuItemEnabled .mceMenuItemOption:focus,
 .defaultSkin .mceMenu .mceMenuItemActive {
     background-color: #eee
 }
@@ -90,18 +90,6 @@
     height: 1px
 }
 
-.defaultSkin .mceMenuItemTitle a {
-    border: 0;
-    background: #eee;
-    border-bottom: 1px solid #ddd
-}
-
-.defaultSkin .mceMenuItemTitle span.mceText {
-    color: #000;
-    font-weight: bold;
-    padding: 0 10px;
-}
-
 .defaultSkin .mceMenuItemDisabled .mceText {
     color: #888
 }
@@ -110,15 +98,11 @@
     background: url(img/menu_check.gif)
 }*/
 
-.defaultSkin .mceNoIcons .mceMenuItemSelected a {
+.defaultSkin .mceNoIcons .mceMenuItemSelected .mceMenuItemOption {
     background: url(img/menu_arrow.gif) no-repeat left center
 }
 
-.defaultSkin .mceMenu span.mceMenuLine {
-    display: none
-}
-
-.defaultSkin .mceMenuItemSub a {
+.defaultSkin .mceMenuItemSub .mceMenuItemOption {
     background: url(img/menu_arrow.gif) no-repeat center right;
 }
 
