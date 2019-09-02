@@ -20,6 +20,7 @@
 
 .defaultSkin .mceIconImage {
     display: flex;
+    background: none;
 }
 
 .defaultSkin span.mce_bold {
@@ -518,17 +519,17 @@
 .defaultSkin .mce_list_default:before,
 .defaultSkin .mce_list_disc:before {
     content: "●";
-    line-height: 1em;
+    line-height: 2;
     vertical-align: top;
 }
 .defaultSkin .mce_list_circle:before {
     content: "○";
-    line-height: 1em;
+    line-height: 2;
     vertical-align: top;
 }
 .defaultSkin .mce_list_square:before {
     content: "□";
-    line-height: 1em;
+    line-height: 2;
     vertical-align: top;
 }
 
