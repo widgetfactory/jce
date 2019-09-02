@@ -196,7 +196,13 @@
                                 title: ed.getLang('insert', 'Insert'),
                                 id: 'insert',
                                 onsubmit: function (e) {
-                                    self._insertAnchor(DOM.getValue(ed.id + '_anchor_input'));
+                                    var value = DOM.getValue(ed.id + '_anchor_input');
+
+                                    if (!value) {
+                                        e.cancelSubmit = true;
+                                    }
+                                    
+                                    self._insertAnchor();
                                 },
                                 classes: 'primary',
                                 scope: self
