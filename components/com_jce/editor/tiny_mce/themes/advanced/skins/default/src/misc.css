@@ -147,7 +147,7 @@
     text-decoration: none;
 }
 
-.defaultSkin .mceButton:focus::after,
+/*.defaultSkin .mceButton:focus::after,
 .defaultSkin .mceSplitButton:focus::after,
 .defaultSkin .mceListBox:focus::after {
     content: attr(title);
@@ -165,4 +165,4 @@
     left: -20px;
     top: 36px;
     text-align: center;
-}
+}*/
