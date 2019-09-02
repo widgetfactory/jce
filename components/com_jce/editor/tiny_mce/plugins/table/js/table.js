@@ -67,6 +67,14 @@
         return size;
     }
 
+    function valueToHex(val) {
+        if (!val || val.charAt(0) === '#') {
+            return val;
+        }
+
+        return '#' + val;
+    }
+
     /* Override setStyles function for tables */
     Wf.setStyles = function () {
         var ed = tinyMCEPopup.editor;
@@ -535,7 +543,7 @@
 
                 if (k === "bgcolor" && v) {
                     if (v !== "") {
-                        v = v.charAt(0) === "#" ? v : '#' + v;
+                        v = valueToHex(v);
                     }
 
                     k = 'background-color';
@@ -556,8 +564,8 @@
                                 s = parseInt(s) + 'px';
                             }
 
-                            if (n === "color" && s.charAt(0) !== "#") {
-                                s = '#' + s;
+                            if (n === "color") {
+                                s = valueToHex(s);
                             }
 
                             styles['border-' + n] = s;
@@ -598,7 +606,6 @@
                 align, width, height, className, caption, frame, rules;
             var html = '',
                 capEl, elm;
-            var cellLimit, rowLimit, colLimit;
 
             if (!AutoValidator.validate($('form').get(0))) {
                 tinyMCEPopup.alert(ed.getLang('invalid_data'));
@@ -622,8 +629,8 @@
             lang = $('#lang').val();
             caption = $('#caption').is(':checked');
 
-            borderColor = $('#border_color').val();
-            bgColor = $('#bgcolor').val();
+            borderColor = valueToHex($('#border_color').val());
+            bgColor = valueToHex($('#bgcolor').val());
             background = $('#backgroundimage').val();
 
             // get compile styles attribute value
@@ -850,7 +857,7 @@
             height = $('#height').val();
             align = $('#align').val();
             valign = $('#valign').val();
-            bgColor = $('#bgcolor').val();
+            bgColor = valueToHex($('#bgcolor').val());
 
             // remove values for html5
             if (!isHTML4) {
@@ -1041,7 +1048,7 @@
             height = $('#height').val();
             align = $('#align').val();
             valign = $('#valign').val();
-            bgColor = $('#bgcolor').val();
+            bgColor = valueToHex($('#bgcolor').val());
 
             // remove values for html5
             if (!isHTML4) {
