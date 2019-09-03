@@ -899,8 +899,9 @@ html {
 .uk-button-text,
 .uk-button .uk-text {
     vertical-align: middle;
-    margin-left: 0.25em;
     cursor: pointer;
+    display: inline-block;
+    line-height: 2;
 }
 
 
@@ -1230,6 +1231,12 @@ html {
     border-radius: 2px;
     right: 0.25em;
     box-sizing: border-box;
+}
+
+html[dir="rtl"] .uk-form-icon-flip>[class*="uk-icon-colorpicker"],
+html[dir="rtl"] .uk-form-icon-both>[class*="uk-icon-colorpicker"]:last-child {
+    left: 1em;
+    right: inherit;
 }
 
 .uk-form-icon>[class*="uk-icon-hashtag"] {
@@ -2001,7 +2008,6 @@ input.colour {
     margin: 0 !important;
     padding: 0;
     width: 100%;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
 }
 
 .uk-form .uk-form-constrain .uk-constrain-checkbox,

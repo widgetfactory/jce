@@ -64,7 +64,7 @@ defined('JPATH_PLATFORM') or die;
             </label>
 
             <div class="uk-width-2-5">
-                <div class="uk-form-controls uk-width-9-10">
+                <div class="uk-form-controls uk-width-9-10 uk-grid uk-grid-small">
                     <select id="align">
                         <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
                         <optgroup label="------------">
@@ -80,7 +80,7 @@ defined('JPATH_PLATFORM') or die;
                     </select>
                 </div>
             </div>
-            <div class="uk-width-2-5 uk-hidden-mini uk-grid uk-grid-small">
+            <div class="uk-width-2-5 uk-hidden-mini uk-grid uk-grid-small uk-margin-remove">
                 <label for="clear" class="hastip uk-form-label uk-width-3-10"
                        title="<?php echo JText::_('WF_LABEL_CLEAR_DESC'); ?>">
                     <?php echo JText::_('WF_LABEL_CLEAR'); ?>

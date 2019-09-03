@@ -98,12 +98,12 @@ defined('JPATH_PLATFORM') or die;
             </select></div>
     </div>
 
-    <div class="uk-grid uk-grid-small">
+    <div class="uk-form-row uk-grid uk-grid-small">
             <label for="border" class="hastip uk-form-label uk-width-1-5" title="<?php echo JText::_('WF_LABEL_BORDER_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_BORDER'); ?>
             </label>
 
-            <div class="uk-form-controls uk-width-4-5">
+            <div class="uk-form-controls uk-grid uk-grid-small uk-width-4-5">
                 <div class="uk-form-controls uk-width-0-3 uk-margin-small-top">
                     <input type="checkbox" id="border" />
                 </div>
@@ -111,8 +111,8 @@ defined('JPATH_PLATFORM') or die;
                 <label for="border_width" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left"
                        title="<?php echo JText::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo JText::_('WF_LABEL_WIDTH'); ?></label>
                 <div class="uk-form-controls uk-width-2-10">
-                    <select id="border_width" class="uk-datalist">
-                        <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
+                    <select pattern="[0-9]+" id="border_width" class="uk-datalist">
+                        <option value="inherit"><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -123,7 +123,6 @@ defined('JPATH_PLATFORM') or die;
                         <option value="7">7</option>
                         <option value="8">8</option>
                         <option value="9">9</option>
-                        <option value="inherit"><?php echo JText::_('WF_OPTION_INHERIT'); ?></option>
                         <option value="thin"><?php echo JText::_('WF_OPTION_BORDER_THIN'); ?></option>
                         <option value="medium"><?php echo JText::_('WF_OPTION_BORDER_MEDIUM'); ?></option>
                         <option value="thick"><?php echo JText::_('WF_OPTION_BORDER_THICK'); ?></option>
@@ -134,8 +133,7 @@ defined('JPATH_PLATFORM') or die;
                        title="<?php echo JText::_('WF_LABEL_BORDER_STYLE_DESC'); ?>"><?php echo JText::_('WF_LABEL_STYLE'); ?></label>
                 <div class="uk-form-controls uk-width-2-10">
                     <select id="border_style">
-                        <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
-                        <option value="inherit"><?php echo JText::_('WF_OPTION_INHERIT'); ?></option>
+                        <option value="inherit"><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
                         <option value="none"><?php echo JText::_('WF_OPTION_BORDER_NONE'); ?></option>
                         <option value="solid"><?php echo JText::_('WF_OPTION_BORDER_SOLID'); ?></option>
                         <option value="dashed"><?php echo JText::_('WF_OPTION_BORDER_DASHED'); ?></option>

@@ -56,7 +56,7 @@ defined('JPATH_PLATFORM') or die;
     <legend><?php echo JText::_('WF_STYLES_PLACEMENT'); ?></legend>
 
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-form-row">
         <input type="checkbox" id="positioning_placement_same" checked="checked" onclick="StyleDialog.toggleSame(this,'positioning_placement');" />
         <label for="positioning_placement_same"><?php echo JText::_('WF_STYLES_SAME'); ?></label>
       </div>
@@ -121,7 +121,7 @@ defined('JPATH_PLATFORM') or die;
     <legend><?php echo JText::_('WF_STYLES_CLIP'); ?></legend>
 
 
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-form-row">
         <input type="checkbox" id="positioning_clip_same" checked="checked" onclick="StyleDialog.toggleSame(this,'positioning_clip');" />
         <label for="positioning_clip_same"><?php echo JText::_('WF_STYLES_SAME'); ?></label>
       </div>

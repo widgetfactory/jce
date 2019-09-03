@@ -38,14 +38,14 @@ defined('_WF_EXT') or die('RESTRICTED');
     </div>
   </div>
   <div class="uk-form-row uk-grid uk-grid-small">
-    <div class="uk-width-4-10">
+    <div class="uk-width-4-10 uk-grid uk-grid-collapse">
       <input type="checkbox" id="youtube_modestbranding" checked />
       <label for="youtube_modestbranding" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING') ?>
       </label>
     </div>
 
-    <div class="uk-width-6-10">
+    <div class="uk-width-6-10 uk-grid uk-grid-collapse">
       <label for="youtube_rel" class="uk-form-label uk-width-1-5 tooltip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?>
       </label>
@@ -92,17 +92,17 @@ defined('_WF_EXT') or die('RESTRICTED');
         <label for="youtube_params" class="uk-form-label uk-width-1-5 hastip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS_DESC'); ?>"><?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PARAMS'); ?></label>
         <div class="uk-width-4-5" id="youtube_params">
           <div class="uk-form-row uk-repeatable">
-                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-8-10">
-                      <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_NAME'); ?></label>
-                      <div class="uk-form-controls uk-width-4-10">
+                  <div class="uk-form-controls uk-grid uk-grid-small uk-width-9-10">
+                      <label class="uk-form-label uk-width-1-6"><?php echo JText::_('WF_LABEL_NAME'); ?></label>
+                      <div class="uk-form-controls uk-width-1-3">
                         <input type="text" name="youtube_params_name[]" />
                       </div>
-                      <label class="uk-form-label uk-width-1-10"><?php echo JText::_('WF_LABEL_VALUE'); ?></label>
-                      <div class="uk-form-controls uk-width-4-10">
+                      <label class="uk-form-label uk-width-1-6"><?php echo JText::_('WF_LABEL_VALUE'); ?></label>
+                      <div class="uk-form-controls uk-width-1-3">
                         <input type="text" name="youtube_params_value[]" />
                       </div>
                   </div>
-                  <div class="uk-form-controls uk-width-1-10 uk-margin-small-left">
+                  <div class="uk-form-controls uk-margin-small-left">
                     <button type="button" class="uk-button uk-button-link uk-repeatable-create"><i class="uk-icon-plus"></i></button>
                     <button type="button" class="uk-button uk-button-link uk-repeatable-delete"><i class="uk-icon-trash"></i></button>
                   </div>

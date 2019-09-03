@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
   <div class="uk-width-3-10">
     <fieldset>
       <legend><?php echo JText::_('WF_STYLES_STYLE'); ?></legend>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-form-row">
         <input type="checkbox" id="border_style_same" checked="checked" onclick="StyleDialog.toggleSame(this,'border_style');" />
         <label for="border_style_same"><?php echo JText::_('WF_STYLES_SAME'); ?></label>
       </div>
@@ -50,7 +50,7 @@ defined('JPATH_PLATFORM') or die;
   <div class="uk-width-4-10">
     <fieldset>
       <legend><?php echo JText::_('WF_STYLES_WIDTH'); ?></legend>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-form-row">
         <input type="checkbox" id="border_width_same" checked="checked" onclick="StyleDialog.toggleSame(this,'border_width');" />
         <label for="border_width_same"><?php echo JText::_('WF_STYLES_SAME'); ?></label>
       </div>
@@ -95,7 +95,7 @@ defined('JPATH_PLATFORM') or die;
   <div class="uk-width-3-10">
     <fieldset>
       <legend><?php echo JText::_('WF_STYLES_COLOR'); ?></legend>
-      <div class="uk-form-row uk-grid uk-grid-small">
+      <div class="uk-form-row">
         <input type="checkbox" id="border_color_same" checked="checked" onclick="StyleDialog.toggleSame(this,'border_color');" />
         <label for="border_color_same"><?php echo JText::_('WF_STYLES_SAME'); ?></label>
       </div>
