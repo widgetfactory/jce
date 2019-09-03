@@ -1820,12 +1820,6 @@ select.mceNativeListBox {
     border-color: red;
 }
 
-.defaultSkin.mce_emotions .mcePanelContent {
-    max-width: 250px;
-    white-space: normal;
-    text-align: center;
-}
-
 .defaultSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
     border-right-color: transparent;
 }
@@ -1882,6 +1876,10 @@ select.mceNativeListBox {
     -webkit-user-select: none;
     -webkit-appearance: none;
     background: #fff;
+}
+
+.defaultSkin.mce_emotions .mcePanelContent {
+    white-space: normal;
 }
 
 .defaultSkin .mce_emotions_icon img {

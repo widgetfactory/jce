@@ -189,12 +189,6 @@
     border-color: red;
 }
 
-.defaultSkin.mce_emotions .mcePanelContent {
-    max-width: 250px;
-    white-space: normal;
-    text-align: center;
-}
-
 .defaultSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
     border-right-color: transparent;
 }
