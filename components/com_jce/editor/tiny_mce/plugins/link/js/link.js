@@ -144,7 +144,11 @@
             $('#search-options-button').click(function (e) {
                 e.preventDefault();
 
-                $(this).addClass('uk-active');
+                if ($(this).hasClass('uk-active')) {
+                    $(this).removeClass('uk-active');
+                } else {
+                    $(this).addClass('uk-active');
+                }
 
                 var $p = $('#search-options').parent();
 

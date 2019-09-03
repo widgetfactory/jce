@@ -45,20 +45,6 @@ div#search-browser input[type="radio"] {
     border-bottom-left-radius: 0;
 }
 
-
-/*div#search-browser span#searchbox input#search-input {
-    height: 28px;
-    line-height: 28px;
-    margin: 0;
-    padding: 3px 2px;
-    width: 350px;
-    vertical-align : middle;
-}
-
-#jce.ie8 div#search-browser span#searchbox input#search-input {
-    width : 346px;
-}*/
-
 #search-clear {
     display: none;
 }
@@ -129,7 +115,9 @@ div#search-browser #search-options label {
     min-width: 40px;
 }
 
-#search-options-button {}
+#search-options-button {
+    line-height: 1;
+}
 
 #search-options .search_only ul {
     list-style: none;
