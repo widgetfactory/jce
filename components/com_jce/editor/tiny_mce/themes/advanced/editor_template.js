@@ -17,9 +17,6 @@
         Cookie = tinymce.util.Cookie,
         lastExtID, explode = tinymce.explode;
 
-    // Tell it to load theme specific language pack(s)
-    tinymce.ThemeManager.requireLangPack('advanced');
-
     tinymce.create('tinymce.themes.AdvancedTheme', {
 
         // Control name lookup, format: title, command
@@ -540,7 +537,7 @@
 
             DOM.setHTML(c, h.join(''));
         },
-        
+
         _addStatusBar: function (tb, o) {
             var n, self = this,
                 ed = self.editor,
@@ -855,12 +852,10 @@
             ed.windowManager.open({
                 url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
                 inline: true,
-                //width: 780,
-                //height: 560,
                 size: 'mce-modal-landscape-full'
             }, {
-                    theme_url: this.url
-                });
+                theme_url: this.url
+            });
         },
 
         _mceNewDocument: function () {
