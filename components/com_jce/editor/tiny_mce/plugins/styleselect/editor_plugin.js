@@ -120,6 +120,22 @@
                 // generic class format
                 ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*' });
 
+                function isValidAttribute(name) {
+                    var isvalid = true, invalid = ed.settings.invalid_attributes;
+
+                    if (!invalid) {
+                        return true;
+                    }
+
+                    each(invalid.split(','), function(val) {
+                        if (name === val) {
+                            isvalid = false;
+                        }
+                    });
+
+                    return isvalid;
+                }
+
                 if (formats) {
                     if (typeof formats === "string") {
                         try {
@@ -140,6 +156,8 @@
 
                             // make sure all attribute values are strings and decoded
                             if (tinymce.is(fmt.attributes, 'string')) {
+                                fmt.attributes = ed.dom.decode(fmt.attributes);
+                                
                                 var frag = ed.dom.createFragment('<div ' + tinymce.trim(fmt.attributes) + '></div>');
                                 var attribs = ed.dom.getAttribs(frag.firstChild);
 
@@ -147,6 +165,10 @@
                                 
                                 each(attribs, function(node) {
                                     var key = node.name, value = '' + node.value;
+
+                                    if (!isValidAttribute(key)) {
+                                        return true;
+                                    }
                                     
                                     if (key === 'onclick' || key === 'ondblclick') {
                                         fmt.attributes[key] = 'return false;';
