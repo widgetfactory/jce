@@ -2610,7 +2610,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   /* 1 */
   position: relative;
 }
-.uk-tab > li > a {
+.uk-tab > li > a,
+.uk-tab > li > button {
   display: block;
   padding: 8px 12px 8px 12px;
   border: 1px solid transparent;
@@ -2620,7 +2621,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   border-radius: 2px 2px 0 0;
   text-shadow: 0 1px 0 #fff;
 }
-.uk-tab > li:nth-child(n+2) > a {
+.uk-tab > li:nth-child(n+2) > a,
+.uk-tab > li:nth-child(n+2) > button {
   margin-left: 5px;
 }
 /*
@@ -2631,34 +2633,46 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
  */
 .uk-tab > li > a:hover,
 .uk-tab > li > a:focus,
-.uk-tab > li.uk-open > a {
+.uk-tab > li.uk-open > a,
+.uk-tab > li > button:hover,
+.uk-tab > li > button:focus,
+.uk-tab > li.uk-open > button {
   border-color: rgba(0, 0, 0, 0.06);
   background: #f5f5f5;
   color: #23527c;
   /* 2 */
   outline: none;
+  text-decoration: none;
 }
 .uk-tab > li:not(.uk-active) > a:hover,
 .uk-tab > li:not(.uk-active) > a:focus,
-.uk-tab > li.uk-open:not(.uk-active) > a {
+.uk-tab > li.uk-open:not(.uk-active) > a,
+.uk-tab > li:not(.uk-active) > button:hover,
+.uk-tab > li:not(.uk-active) > button:focus,
+.uk-tab > li.uk-open:not(.uk-active) > button {
   margin-bottom: 1px;
   padding-bottom: 7px;
 }
 /* Active */
-.uk-tab > li.uk-active > a {
+.uk-tab > li.uk-active > a,
+.uk-tab > li.uk-active > button {
   border-color: #ddd;
   border-bottom-color: transparent;
   background: #fff;
   color: #444;
 }
 /* Disabled */
-.uk-tab > li.uk-disabled > a {
+.uk-tab > li.uk-disabled > a,
+.uk-tab > li.uk-disabled > button {
   color: #999;
   cursor: text;
 }
 .uk-tab > li.uk-disabled > a:hover,
 .uk-tab > li.uk-disabled > a:focus,
-.uk-tab > li.uk-disabled.uk-active > a {
+.uk-tab > li.uk-disabled.uk-active > a,
+.uk-tab > li.uk-disabled > button:hover,
+.uk-tab > li.uk-disabled > button:focus,
+.uk-tab > li.uk-disabled.uk-active > button {
   background: none;
   border-color: transparent;
 }
@@ -2667,20 +2681,23 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 .uk-tab-flip > li {
   float: right;
 }
-.uk-tab-flip > li:nth-child(n+2) > a {
+.uk-tab-flip > li:nth-child(n+2) > a,
+.uk-tab-flip > li:nth-child(n+2) > button {
   margin-left: 0;
   margin-right: 5px;
 }
 /* Modifier: 'tab-responsive'
  ========================================================================== */
-.uk-tab > li.uk-tab-responsive > a {
+.uk-tab > li.uk-tab-responsive > a,
+.uk-tab > li.uk-tab-responsive > button {
   margin-left: 0;
   margin-right: 0;
 }
 /*
  * Icon
  */
-.uk-tab-responsive > a:before {
+.uk-tab-responsive > a:before,
+.uk-tab-responsive > button:before {
   content: "\f0c9\00a0";
   font-family: FontAwesome;
 }
@@ -2714,7 +2731,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   position: relative;
   right: -50%;
 }
-.uk-tab-center .uk-tab > li > a {
+.uk-tab-center .uk-tab > li > a,
+.uk-tab-center .uk-tab > li > button {
   text-align: center;
 }
 /* Modifier: 'tab-bottom'
@@ -2727,7 +2745,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   margin-top: -1px;
   margin-bottom: 0;
 }
-.uk-tab-bottom > li > a {
+.uk-tab-bottom > li > a,
+.uk-tab-bottom > li > button {
   padding-top: 8px;
   padding-bottom: 8px;
   border-bottom-width: 1px;
@@ -2735,13 +2754,17 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 }
 .uk-tab-bottom > li:not(.uk-active) > a:hover,
 .uk-tab-bottom > li:not(.uk-active) > a:focus,
-.uk-tab-bottom > li.uk-open:not(.uk-active) > a {
+.uk-tab-bottom > li.uk-open:not(.uk-active) > a,
+.uk-tab-bottom > li:not(.uk-active) > button:hover,
+.uk-tab-bottom > li:not(.uk-active) > button:focus,
+.uk-tab-bottom > li.uk-open:not(.uk-active) > button {
   margin-bottom: 0;
   margin-top: 1px;
   padding-bottom: 8px;
   padding-top: 7px;
 }
-.uk-tab-bottom > li.uk-active > a {
+.uk-tab-bottom > li.uk-active > a,
+.uk-tab-bottom > li.uk-active > button {
   border-top-color: transparent;
   border-bottom-color: #ddd;
 }
@@ -2767,10 +2790,12 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   /* 1 */
   z-index: -1;
 }
-.uk-tab-grid > li:first-child > a {
+.uk-tab-grid > li:first-child > a,
+.uk-tab-grid > li:first-child > button {
   margin-left: 5px;
 }
-.uk-tab-grid > li > a {
+.uk-tab-grid > li > a,
+.uk-tab-grid > li > button {
   text-align: center;
 }
 /*

@@ -238,7 +238,7 @@
                 $('<div class="uk-switcher" />').append($(this).children('div')).appendTo(this);
             }
 
-            $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active');
+            $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active').attr('aria-hidden', false);
 
             $('.uk-tab li', el).click(function (e) {
                 e.preventDefault();
@@ -256,20 +256,21 @@
                 $(el).trigger('tabs.beforeactivate', [tab, panel]);
 
                 // toggle all tabs and panels
-                $(el).children('.uk-tab, .uk-switcher').children().removeClass('uk-active');
+                $(el).children('.uk-tab').children().removeClass('uk-active').attr('aria-selected', false);
+                $(el).children('.uk-switcher').children().removeClass('uk-active').attr('aria-hidden', true);
 
                 // activate tab
-                $(this).addClass('uk-active');
+                $(this).addClass('uk-active').attr('aria-selected', true);
 
                 // activate new panel
-                var panel = $(el).children('.uk-switcher').children().eq($(this).index()).addClass('uk-active').removeClass('uk-tabs-hide').get(0);
+                var panel = $(el).children('.uk-switcher').children().eq($(this).index()).addClass('uk-active').removeClass('uk-tabs-hide').attr('aria-hidden', false).get(0);
 
                 // trigger tab event
                 $(el).trigger('tabs.activate', [this, panel]);
 
                 // kill default events
                 e.preventDefault();
-            }).first().addClass('uk-active');
+            }).first().addClass('uk-active').attr('aria-selected', true);
 
             $(this).data('tabs', true);
         });

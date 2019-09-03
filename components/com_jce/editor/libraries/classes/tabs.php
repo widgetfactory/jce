@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -30,7 +30,7 @@ final class WFTabs extends JObject
         if (array_key_exists('template_path', $config)) {
             $this->addTemplatePath($config['template_path']);
         } else {
-            $this->addTemplatePath($this->get('base_path').'/tmpl');
+            $this->addTemplatePath($this->get('base_path') . '/tmpl');
         }
     }
 
@@ -73,8 +73,8 @@ final class WFTabs extends JObject
     private function loadPanel($panel, $state)
     {
         $view = new WFView(array(
-          'name' => $panel,
-          'layout' => $panel,
+            'name' => $panel,
+            'layout' => $panel,
         ));
 
         // add tab paths
@@ -157,7 +157,7 @@ final class WFTabs extends JObject
 
         // add tabs
         if (count($this->_tabs) > 1) {
-            $output .= '<ul class="uk-tab">'."\n";
+            $output .= '<ul class="uk-tab" role="tablist">' . "\n";
 
             $x = 0;
 
@@ -172,7 +172,7 @@ final class WFTabs extends JObject
                     $class .= ' uk-hidden';
                 }
 
-                $output .= "\t".'<li class="'.$class.'"><a href="#'.$name.'_tab">'.JText::_('WF_TAB_'.strtoupper($name)).'</a></li>'."\n";
+                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link">' . JText::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
                 ++$x;
             }
 
@@ -200,7 +200,7 @@ final class WFTabs extends JObject
                     }
                 }
 
-                $output .= '<div id="'.$key.'_tab" class="'.$class.'">';
+                $output .= '<div id="' . $key . '_tab" class="' . $class . '" role="tabpanel" aria-hidden="true">';
                 $output .= $panel->loadTemplate();
                 $output .= '</div>';
 

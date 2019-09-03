@@ -12,17 +12,17 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <div id="colorpicker">
     <div id="colorpicker_tabs">
-        <ul class="uk-tab">
-            <li class="uk-active"><a href="#colorpicker_picker" aria-controls="colorpicker_picker"><?php echo JText::_('WF_COLORPICKER_PICKER'); ?></a></li>
-            <li><a href="#colorpicker_web" aria-controls="colorpicker_web"><?php echo JText::_('WF_COLORPICKER_PALETTE'); ?></a></li>
-            <li><a href="#colorpicker_named" aria-controls="colorpicker_named"><?php echo JText::_('WF_COLORPICKER_NAMED'); ?></a></li>
-            <li><a href="#colorpicker_template" aria-controls="colorpicker_template"><?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?></a></li>
+        <ul class="uk-tab" role="tablist">
+            <li role="presentation" aria-selected="true" class="uk-active"><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_picker"><?php echo JText::_('WF_COLORPICKER_PICKER'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_web"><?php echo JText::_('WF_COLORPICKER_PALETTE'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_named"><?php echo JText::_('WF_COLORPICKER_NAMED'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_template"><?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?></button></li>
         </ul>
         <div id="tab-content" class="uk-switcher">
-            <div id="colorpicker_picker" title="<?php echo JText::_('WF_COLORPICKER_PICKER'); ?>" data-type="picker" class="uk-active"><!-- Will be filled with color wheel --></div>
-            <div id="colorpicker_web" title="<?php echo JText::_('WF_COLORPICKER_PALETTE'); ?>" data-type="web"><!-- Gets filled with web safe colors--></div>
-            <div id="colorpicker_named" title="<?php echo JText::_('WF_COLORPICKER_NAMED'); ?>" data-type="named"><!-- Gets filled with named colors--></div>
-            <div id="colorpicker_template" title="<?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?>" data-type="template"><!-- Gets filled with template colors--></div>
+            <div id="colorpicker_picker" title="<?php echo JText::_('WF_COLORPICKER_PICKER'); ?>" data-type="picker" class="uk-active" role="tabpanel" aria-hidden="false"><!-- Will be filled with color wheel --></div>
+            <div id="colorpicker_web" title="<?php echo JText::_('WF_COLORPICKER_PALETTE'); ?>" data-type="web" role="tabpanel" aria-hidden="true"><!-- Gets filled with web safe colors--></div>
+            <div id="colorpicker_named" title="<?php echo JText::_('WF_COLORPICKER_NAMED'); ?>" data-type="named" role="tabpanel" aria-hidden="true"><!-- Gets filled with named colors--></div>
+            <div id="colorpicker_template" title="<?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?>" data-type="template" role="tabpanel" aria-hidden="true"><!-- Gets filled with template colors--></div>
         </div>
     </div>
 <input type="hidden" id="tmp_color" />
