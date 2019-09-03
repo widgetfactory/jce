@@ -22,7 +22,7 @@ class JFormFieldStyleFormat extends JFormField
 
     protected $sections = array('section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main');
     protected $grouping = array('p', 'pre', 'blockquote', 'figure', 'figcaption', 'div');
-    protected $textlevel = array('em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data', 'time', 'code', 'var', 'samp', 'kbd', 'sub', 'i', 'b', 'u', 'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'wbr');
+    protected $textlevel = array('a', 'em', 'strong', 'small', 's', 'cite', 'q', 'dfn', 'abbr', 'data', 'time', 'code', 'var', 'samp', 'kbd', 'sub', 'i', 'b', 'u', 'mark', 'ruby', 'rt', 'rp', 'bdi', 'bdo', 'span', 'wbr');
     protected $formelements = array('form', 'input', 'button', 'fieldset', 'legend');
     /*
      * Element type
