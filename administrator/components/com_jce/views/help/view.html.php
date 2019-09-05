@@ -64,7 +64,7 @@ class JceViewHelp extends JViewLegacy
         $options = array(
             'url' => $url,
             'key' => $key,
-            'pattern' => $pattern,
+            'pattern' => $method === "sef" ? $pattern : '',
         );
 
         JHtml::_('jquery.framework');
