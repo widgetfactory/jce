@@ -218,7 +218,9 @@ html {
 
 .uk-modal-dialog .uk-close:hover,
 .uk-modal-dialog .uk-close:focus {
-    opacity: 0.6;
+    color: #444;
+    background:#e5e5e5;
+    border-radius: 3px;
 }
 
 .uk-modal-header h3 {

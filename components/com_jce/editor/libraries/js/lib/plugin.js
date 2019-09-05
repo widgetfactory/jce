@@ -199,6 +199,38 @@
 
             // initialise repeatable elements
             $('.uk-repeatable').repeatable();
+
+            $('body').on('keydown.tab', function (e) {                
+                if (e.keyCode === 9) {
+
+                    // visible inputs and select2 combobox
+                    var $navItems = $(':input:visible, span[role="combobox"]', this).not('input[type="file"]').filter(function () {
+                        return this.getAttribute('tabindex') >= 0;
+                    });
+
+                    if (!$navItems.length) {
+                        return;
+                    }
+
+                    // reset all tabindex values
+                    $navItems.attr('tabindex', 0);
+
+                    if (e.shiftKey) {
+                        $navItems.reverse();
+                    }
+
+                    var endIndex = Math.max(0, $navItems.length - 1), idx = $navItems.index(e.target) + 1;
+
+                    if (idx > endIndex) {
+                        idx = 0;
+                    }
+
+                    $navItems.eq(idx).focus().attr('tabindex', 1);
+
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
+            });
         },
         /**
          * Get the name of the plugin

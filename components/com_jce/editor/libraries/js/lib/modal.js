@@ -85,14 +85,6 @@
             // add body and data
             $('<div class="uk-modal-body uk-overflow-container" id="' + options.id + '" />').appendTo(modal).append(data);
 
-            var tabindex = 1000;
-
-            $(':input').each(function () {
-                $(this).attr('tabindex', tabindex);
-
-                tabindex++;
-            });
-
             // add buttons
             if (options.buttons) {
                 footer = $('<div class="uk-modal-footer uk-text-right" />');
@@ -118,8 +110,6 @@
                         }
                     });
 
-                    $(btn).attr('tabindex', tabindex);
-
                     // add text
                     if (o.text) {
                         $(btn).append('<label class="uk-text" for="' + options.id + '_button_' + i + '">' + o.text + '</label>');
@@ -131,8 +121,6 @@
                     }
 
                     $(footer).append(btn);
-
-                    tabindex++;
                 });
             }
 
@@ -142,7 +130,7 @@
             // bind option events
             $(div).on('modal.open', function (ev) {
                 // focus input
-                $('button[autofocus], input[autofocus]', div).focus();
+                $('input[autofocus], button[autofocus]', div).first().focus();
 
                 options.open.call(this, ev);
             }).on('modal.close', function (e, ev) {
@@ -178,7 +166,7 @@
                 }
             });
 
-            $(div).on('keydown.modal', function (e) {
+            $(div).on('keydown.modal', function (e) {                
                 if (e.keyCode === 9) {
 
                     var $navItems = $(':input:visible', div).not('input[type="file"]').filter(function () {
@@ -188,6 +176,9 @@
                     if (!$navItems.length) {
                         return;
                     }
+
+                    // reset all tabindex values
+                    $navItems.attr('tabindex', 0);
 
                     if (e.shiftKey) {
                         $navItems.reverse();
@@ -199,7 +190,7 @@
                         idx = 0;
                     }
 
-                    $navItems.eq(idx).focus();
+                    $navItems.eq(idx).focus().attr('tabindex', 1);
 
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -334,9 +325,9 @@
             }
 
             if (options.multiline) {
-                html += '<textarea id="' + options.id + '-input" required>' + options.value + '</textarea>';
+                html += '<textarea id="' + options.id + '-input" required autofocus>' + options.value + '</textarea>';
             } else {
-                html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" />';
+                html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus />';
             }
 
             html += '</div>';

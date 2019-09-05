@@ -243,6 +243,8 @@
             $('.uk-tab li', el).click(function (e) {
                 e.preventDefault();
 
+                $(this).find('button').focus();
+
                 // legacy
                 $(el).children('.uk-switcher').children().addClass('uk-tabs-hide');
 
@@ -270,7 +272,40 @@
 
                 // kill default events
                 e.preventDefault();
-            }).first().addClass('uk-active').attr('aria-selected', true);
+            }).first().addClass('uk-active').attr('aria-selected', true).find('button').focus();
+
+            $('body').on('keydown.tabs', function(e) {
+                
+                if ($(e.target).hasClass('uk-button-tab')) {                                        
+                    if (e.keyCode >= 37 && e.keyCode <= 40) {
+                        var parent = e.target.parentNode, $tabItems = $(parent).siblings().addBack();
+
+                        var endIndex = Math.max(0, $tabItems.length - 1), idx = $tabItems.index(parent);
+
+                        if (e.keyCode === 37 || e.keyCode === 38) {
+                            idx--;
+                        }
+
+                        if (e.keyCode === 39 || e.keyCode === 40) {
+                            idx++;
+                        }
+    
+                        if (idx > endIndex) {
+                            idx = 0;
+                        }
+
+                        if (idx < 0) {
+                            idx = endIndex;
+                        }
+    
+                        $tabItems.eq(idx).click();
+
+                        e.preventDefault();
+                    }
+                }
+            });
+
+            
 
             $(this).data('tabs', true);
         });

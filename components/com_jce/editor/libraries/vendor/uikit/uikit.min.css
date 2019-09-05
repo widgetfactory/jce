@@ -2904,6 +2904,10 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
     border-radius: 0 2px 2px 0;
   }
 }
+.uk-tab > li > a:focus,
+.uk-tab > li > button:focus {
+  text-decoration: underline;
+}
 /* ========================================================================
    Component: Thumbnav
  ========================================================================== */
