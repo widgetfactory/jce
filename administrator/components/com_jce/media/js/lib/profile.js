@@ -390,11 +390,6 @@
     }
 
     function fixLayout() {
-        $('.mce-btn').removeClass('mce-first mce-last');
-
-        $('.mce-btn:first-child').addClass('mce-first');
-        $('.mce-btn:last-child').addClass('mce-last');
-
         // remove all empty groups and add new empty group
         $('.editor-layout .mce-btn-group').filter(function () {
             return $(this).children('div').length === 0;
