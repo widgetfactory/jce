@@ -155,6 +155,7 @@
                 o.content = o.content.replace(/<a id="([^"]+)"><\/a>/gi, '<a id="$1">\uFEFF</a>');
             });
 
+            
             ed.addButton('anchor', {
                 title: 'anchor.desc',
                 onclick: function() {
@@ -202,7 +203,7 @@
                                         e.cancelSubmit = true;
                                     }
                                     
-                                    self._insertAnchor();
+                                    self._insertAnchor(value);
                                 },
                                 classes: 'primary',
                                 scope: self
@@ -321,87 +322,7 @@
             ed.nodeChanged();
 
             return true;
-        },
-        /*createControl: function (n, cm) {
-            var self = this,
-                ed = this.editor;
-
-            if (n !== 'anchor') {
-                return null;
-            }
-
-            var input, html = '';
-
-            html += '<h4>' + ed.getLang('anchor.desc', 'Insert / Edit Anchor') + '</h4>';
-            html += '<input type="text" id="' + ed.id + '_anchor_input" />';
-
-            var ctrl = cm.createPanelButton('anchor', {
-                title: 'anchor.desc',
-                html: html,
-                width: 250,
-                buttons: [
-                    {
-                        title: ed.getLang('insert', 'Insert'),
-                        id: 'insert',
-                        onclick: function (e) {
-                            input = DOM.get(ed.id + '_anchor_input');
-                            return self._insertAnchor(input.value);
-                        },
-                        classes: 'mceButtonPrimary',
-                        scope: self
-                    }, {
-                        title: ed.getLang('anchor.remove', 'Remove'),
-                        id: 'remove',
-                        onclick: function (e) {
-                            if (!DOM.hasClass(e.target, 'mceButtonDisabled')) {
-                                self._removeAnchor();
-                            }
-
-                            return true;
-                        },
-                        scope: self
-                    }
-                ]
-            });
-
-            ctrl.onShowPanel.add(function () {
-                input = DOM.get(ed.id + '_anchor_input');
-
-                input.value = '';
-
-                var label = ed.getLang('insert', 'Insert');
-
-                var v = self._getAnchor();
-
-                if (v) {
-                    input.value = v;
-                    label = ed.getLang('update', 'Update');
-                }
-
-                ctrl.setActive(!!v);
-
-                // update state
-                ctrl.panel.setButtonDisabled('remove', !v);
-                
-                // update label
-                ctrl.panel.setButtonLabel('insert', label);
-
-                input.focus();
-            });
-
-            ctrl.onHidePanel.add(function () {
-                if (input) {
-                    input.value = '';
-                }
-            });
-
-            // Remove the menu element when the editor is removed
-            ed.onRemove.add(function () {
-                ctrl.destroy();
-            });
-
-            return ctrl;
-        }*/
+        }
     });
 
     // Register plugin
