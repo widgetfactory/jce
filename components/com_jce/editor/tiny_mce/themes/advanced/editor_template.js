@@ -850,6 +850,7 @@
             var ed = this.editor;
 
             ed.windowManager.open({
+                title: ed.getLang('dlg.help', 'Help'),
                 url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
                 inline: true,
                 size: 'mce-modal-landscape-full'

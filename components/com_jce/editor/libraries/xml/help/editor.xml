@@ -25,12 +25,6 @@
 			<subtopic key="tables.edit" title="WF_EDITOR_HELP_TABLES" />
 			<subtopic key="editor.spellchecker" title="WF_EDITOR_HELP_SPELLCHECKER" />
 		</topic>
-		<topic key="editor.buttons" title="WF_EDITOR_HELP_BUTTONS">
-			<subtopic file="tiny_mce/plugins/advlink/advlink.xml" title="WF_ADVLINK_TITLE" />
-			<subtopic file="tiny_mce/plugins/imgmanager/imgmanager.xml" title="WF_IMGMANAGER_TITLE" />
-			<subtopic file="tiny_mce/plugins/paste/paste.xml" title="WF_PASTE_TITLE" />
-			<subtopic file="tiny_mce/plugins/table/table.xml" title="WF_TABLES_TITLE" />
-		</topic>
 		<topic key="editor.acknowledgements" title="WF_EDITOR_HELP_ACKNOWLEDGEMENTS" />
 		<topic key="editor.licence" title="WF_EDITOR_HELP_LICENCE" />
 	</help>
