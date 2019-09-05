@@ -86,6 +86,7 @@
     include('ui/ColorSplitButton.js');
     include('ui/ToolbarGroup.js');
     include('ui/Toolbar.js');
+    include('ui/Layout.js');
     include('ui/Panel.js');
     include('ui/ContextPanel.js');
     include('ui/PanelButton.js');

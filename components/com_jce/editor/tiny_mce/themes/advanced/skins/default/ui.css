@@ -2497,3 +2497,8 @@ select.mceNativeListBox {
     background-repeat: no-repeat;
     background-position: 100% 50%;
 }
+
+.mceFlexLayout {
+    display: flex;
+    flex-wrap: wrap;
+}
