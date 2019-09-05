@@ -36,12 +36,26 @@
 	line-height: 1;
 }
 
+.mceToolbarRow .mceToolbarItem .mceButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .mceToolbarRow .mceToolbarItem .mceButton,
 .mceToolbarRow .mceToolbarItem .mceButton .mceIcon {
 	cursor: move;
 }
 
-.defaultSkin .mceLayout .mceToolbarRow {
+.mceToolbarRow .mceToolbarItem .mceButton+.mceButton {
+	margin-left: 1px;
+}
+
+.mceEditor .mceToolbarItem .mceSplitButton .mceButton+.mceButton {
+	margin-left: inherit;
+}
+
+.defaultSkin .mceToolbar .mceToolbarRow {
 	font-size: 0;
 	line-height: 1;
 	height: auto;
@@ -51,8 +65,8 @@
 	border: 1px solid #ddd;
 	padding: 1px;
 	margin-bottom: 2px;
-
 	cursor: move;
+	display: block;
 }
 
 .mceEditor .mceToolbarItem .mceListBox,
@@ -69,23 +83,28 @@
 
 .mceEditor .mceToolbarItem .mceSplitButton .mceIcon {
 	display: inline-block;
-	margin: 3px 2px;
+	margin: 4px;
 }
 
 .mceEditor .mceToolbarItem .mceSplitButton {
-	width: 44px;
+	width: 48px;
 	height: 32px;
 	text-align: left;
+	font-size: 0;
+}
+
+.mceEditor .mceToolbarItem .mceListBox {
+	font-size: 0;
 }
 
 .mceEditor .mceToolbarItem .mceListBox:before {
 	content: attr(title);
 	display: inline-block;
-	width: 75px;
+	width: 96px;
 	background: #fff;
-	font-size: 13px;
-	line-height: 28px;
-	padding: 1px 3px;
+	font-size: 14px;
+	line-height: 30px;
+	padding: 0 2px;
 	box-sizing: border-box;
 	overflow: hidden;
 	text-overflow: ellipsis;
