@@ -153,10 +153,10 @@
                         fz = self.sizes[parseInt(fz) - 1] + 'pt';
                     }
 
-                    var lh = Math.max(12, parseInt(fz));
+                    var lh = Math.max(32, parseInt(fz));
 
                     c.add(k, v, {
-                        'style': 'font-size:' + fz + ';line-height:' + lh + 'pt',
+                        'style': 'font-size:' + fz + ';line-height:' + lh + 'px',
                         'class': 'mceFontSize' + (i++) + (' ' + (v['class'] || ''))
                     });
                 });
