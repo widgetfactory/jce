@@ -122,19 +122,26 @@
             });
 
             ed.onPostRender.add(function () {
+                var el = ed.getElement();
+                
                 DOM.setStyle(ed.id + '_tbl', 'width', '');
 
                 var e = DOM.get(ed.id + '_parent'),
                     ifr = DOM.get(ed.id + '_ifr');
 
+                // get dimensions from settings or textarea
+                var width   = s.width || el.style.width;
+                var height  = s.height || el.style.height; 
+
                 // Resize iframe and container
-                if (s.height) {
-                    DOM.setStyle(ifr, 'height', s.height);
+                if (height) {
+                    DOM.setStyle(ifr, 'height', height);
                 }
+
                 // Resize iframe and container
-                if (s.width) {
-                    DOM.setStyle(e.parentNode, 'max-width', s.width + 'px');
-                    DOM.setStyle(ifr, 'max-width', s.width + 'px');
+                if (width) {
+                    DOM.setStyle(e.parentNode, 'max-width', width);
+                    DOM.setStyle(ifr, 'max-width', width);
                 }
             });
 
