@@ -25,6 +25,8 @@ class JceViewProfile extends JViewLegacy
         $this->item = $this->get('Item');
         $this->form = $this->get('Form');
 
+        $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
+
         $this->plugins = $this->get('Plugins');
         $this->rows = $this->get('Rows');
         $this->available = $this->get('AvailableButtons');
@@ -45,11 +47,9 @@ class JceViewProfile extends JViewLegacy
             return false;
         }
 
-        JHtml::_('behavior.modal', 'a.modal_users');
         JHtml::_('jquery.ui', array('core', 'sortable'));
 
         $this->addToolbar();
-        //$this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
 
         // version has

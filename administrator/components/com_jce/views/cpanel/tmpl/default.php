@@ -16,8 +16,8 @@ $canEditPref = $user->authorise('core.admin', 'com_jce');
 ?>
 <div class="ui-jce row row-fluid">
 	<div class="span12 col-md-12">
-        <nav id="wf-cpanel" class="quick-icons">
-			<ul class="unstyled">
+        <nav id="wf-cpanel" class="quick-icons bg-transparent">
+			<ul class="unstyled mb-0 nav flex-wrap row-fluid">
 				<?php echo implode("\n", $this->icons); ?>
 			</ul>
 		</nav>    

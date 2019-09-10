@@ -12,8 +12,9 @@ defined('JPATH_PLATFORM') or die;
 
 $title = JText::_('WF_PROFILES_IMPORT_IMPORT');
 ?>
-
-<div class="upload-profile-container">
-	<input name="profile_file" accept="application/xml" type="file" />
-    <button class="button-import btn btn-small btn-sm btn-outline-primary"><i class="icon-upload" title="<?php echo $title; ?>"></i> <?php echo $title; ?></button>
-</div>
+<joomla-toolbar-button>
+    <div class="upload-profile-container">
+        <input name="profile_file" accept="application/xml" type="file" />
+        <button class="button-import btn btn-small btn-sm btn-outline-primary"><span class="icon-upload text-body" title="<?php echo $title; ?>"></span> <?php echo $title; ?></button>
+    </div>
+</joomla-toolbar-button>

@@ -41,8 +41,7 @@
 
         start = function (e) {
             var dw = $(document).width(),
-                dh = $(document).height(),
-                cursor;
+                dh = $(document).height();
 
             e.preventDefault();
             downButton = e.button;

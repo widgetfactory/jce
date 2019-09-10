@@ -57,7 +57,7 @@ class JFormFieldRepeatable extends JFormField
 
             // highlight grouped fields
             if (count($fields) > 1) {
-                $class = ' well';
+                $class = ' well well-small p-2 bg-light';
             }
             
             $str[] = '<div class="form-field-repeatable-item">';

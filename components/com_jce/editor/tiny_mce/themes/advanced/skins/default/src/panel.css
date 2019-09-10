@@ -172,6 +172,7 @@
     top: -6px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    box-sizing: content-box;
 }
 
 .defaultSkin.mcePanelSplitButton .mcePanel::before {

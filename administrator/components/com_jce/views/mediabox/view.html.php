@@ -32,9 +32,9 @@ class JceViewMediabox extends JViewLegacy
 
         $this->name = JText::_('WF_MEDIABOX');
         $this->fieldsname = "";
+        $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
         $this->addToolbar();
-        //$this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
     }
 

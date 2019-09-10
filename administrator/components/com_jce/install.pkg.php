@@ -72,15 +72,17 @@ class pkg_jceInstallerScript
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
-        $message = '<div id="jce" class="mt-4 p-4 jumbotron jumbotron-fluid hero-unit" style="text-align:left">';
+        $message = '<div id="jce" class="mt-4 mb-4 p-4 card border-dark hero-unit" style="text-align:left;">';
 
-        $message .= '<h2>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h2>';
+        $message .= '<div class="card-header"><h2>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h2></div>';
+        $message .= '<div class="card-body">';
         $message .= JText::_('COM_JCE_XML_DESCRIPTION');
 
         if ((string)$parent->manifest->variant !== 'pro') {
             $message .= file_get_contents(JPATH_ADMINISTRATOR . '/components/com_jce/views/cpanel/tmpl/default_pro.php');
         }
 
+        $message .= '</div>';
         $message .= '</div>';
 
         $parent->set('message', $message);

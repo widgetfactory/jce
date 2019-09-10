@@ -20,7 +20,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 }
 
 ?>
-<div class="control-group">
+<div class="control-group <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
         <label><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT'); ?></label>
     </div>

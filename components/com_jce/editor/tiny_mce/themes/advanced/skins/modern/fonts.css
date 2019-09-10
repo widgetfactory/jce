@@ -154,10 +154,10 @@
     height: 10px;
     text-align: left;
     padding: 4px;
-    color:
-        #444;
+    color: #444;
     font-weight: bold;
     font-family: "Helvetica Neue", Arial, sans-serif;
+    box-sizing: content-box;
 }
 
 .modernSkin span.mce_source_search_regex:before {

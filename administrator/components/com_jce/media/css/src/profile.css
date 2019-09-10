@@ -93,7 +93,7 @@ a.browser {
     overflow: visible;
 }
 
-.com_jce .form-horizontal .control-label {}
+/*.com_jce .form-horizontal .control-label {}
 
 .com_jce .form-horizontal .controls {
     position: relative;
@@ -102,7 +102,7 @@ a.browser {
 
 .com_jce .form-horizontal .control-label + .controls {
     margin-left: 180px;
-}
+}*/
 
 #tabs-editor .nav-tabs>li>a,
 #tabs-plugins .nav-tabs>li>a {
@@ -304,4 +304,9 @@ a.browser {
 
 .form-field-repeatable-item+.form-field-repeatable-item {
     padding-top: 10px;
+}
+
+.form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
+.form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
+    margin: 0;
 }

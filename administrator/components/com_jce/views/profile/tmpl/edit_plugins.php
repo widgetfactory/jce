@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -8,6 +7,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
+
 $plugins = array_values(array_filter($this->plugins, function($plugin) {
     return $plugin->editable && !empty($plugin->form);
 }));

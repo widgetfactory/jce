@@ -32,6 +32,7 @@ class JceViewConfig extends JViewLegacy
 
         $this->name = JText :: _('WF_CONFIG');
         $this->fieldsname = "";
+        $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
         $this->addToolbar();
         //$this->sidebar = JHtmlSidebar::render();

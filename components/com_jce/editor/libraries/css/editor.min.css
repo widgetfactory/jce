@@ -194,6 +194,7 @@
     border: 0 none;
     background: none;
     -webkit-appearance: none;
+    line-height: 1;
 }
 
 .wf-editor-header .wf-editor-toggle>svg {

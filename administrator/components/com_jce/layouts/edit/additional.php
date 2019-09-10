@@ -2,7 +2,7 @@
 $plugins = $displayData->get('additional');
 
 ?>
-<fieldset>
+<fieldset class="<?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <legend><?php echo JText::_('WF_PROFILES_FEATURES_ADDITIONAL'); ?></legend>
     <div class="control-group">
         <div class="control-label"></div>

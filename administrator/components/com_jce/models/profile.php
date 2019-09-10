@@ -383,6 +383,7 @@ class JceModelProfile extends JModelAdmin
 
                 if (is_file($plugin->manifest)) {
                     $plugin->form = $this->loadForm('com_jce.profile.' . $plugin->name, $plugin->manifest, array('control' => 'jform[config]', 'load_data' => true), true, '//extension');
+                    $plugin->formclass = 'options-grid-form options-grid-form-full';
 
                     $fieldsets = $plugin->form->getFieldsets();
 
@@ -438,6 +439,7 @@ class JceModelProfile extends JModelAdmin
 
                                 // load form
                                 $extension->form = $this->loadForm('com_jce.profile.' . implode('.', $path), $p->manifest, array('control' => 'jform[config][' . $plugin->name . '][' . $type . ']', 'load_data' => true), true, '//extension');
+                                $extension->formclass = 'options-grid-form options-grid-form-full';
 
                                 // get fieldsets if any
                                 $fieldsets = $extension->form->getFieldsets();
