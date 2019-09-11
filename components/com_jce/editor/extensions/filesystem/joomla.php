@@ -342,6 +342,11 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function searchFiles($relative, $query = '', $sort = '', $depth = 3)
     {
+        // we can't realistically search recursively with ftp... 
+        if ($this->isFtp()) {
+            return $this->getFiles($relative, $query, $sort);
+        }
+        
         $path = WFUtility::makePath($this->getBaseDir(), $relative);
         $path = WFUtility::fixPath($path);
 
@@ -391,7 +396,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'id' => $id,
                     'url' => $url,
                     'name' => $item,
-                    'writable' => is_writable(WFUtility::makePath($this->getBaseDir(), $item)) || $this->isFtp(),
+                    'writable' => is_writable(WFUtility::makePath($this->getBaseDir(), $item)),
                     'type' => 'files',
                     'extension' => pathinfo($item, PATHINFO_EXTENSION),
                 );
