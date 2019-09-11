@@ -355,6 +355,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->getBaseDir();
         }
 
+        // https://www.php.net/manual/en/class.recursivedirectoryiterator.php#114504
         $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
         $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($query) {
             if ($current->isDir()) {
