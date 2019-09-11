@@ -52,7 +52,7 @@
                 'method': func,
                 'id': uid()
             };
-            
+
             // already registered so abort in favout of new request
             if (instance[func]) {
                 instance[func].abort();
@@ -174,7 +174,10 @@
                     return r;
                 }
             }).fail(function (e, status, txt) {
-                Wf.Modal.alert(status || ('Server Error - ' + txt));
+                // don't show alert for jQuery abort
+                if (status !== "abort") {
+                    Wf.Modal.alert(status || ('Server Error - ' + txt));
+                }
 
                 // clear instance
                 instance[func] = null;
