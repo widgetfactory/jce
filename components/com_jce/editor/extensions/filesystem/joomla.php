@@ -383,17 +383,14 @@ class WFJoomlaFileSystem extends WFFileSystem
             foreach ($list as $item) {
                 $item = WFUtility::convertEncoding($item);
 
-                // create relative file
-                $id = $item;
-
                 // create url
-                $url = WFUtility::makePath($this->getRootDir(), $id, '/');
+                $url = WFUtility::makePath($this->getRootDir(), $item, '/');
 
                 // remove leading slash
                 $url = ltrim($url, '/');
 
                 $data = array(
-                    'id' => $id,
+                    'id' => $item,
                     'url' => $url,
                     'name' => $item,
                     'writable' => is_writable(WFUtility::makePath($this->getBaseDir(), $item)),
