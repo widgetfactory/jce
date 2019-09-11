@@ -92,7 +92,7 @@
             // destroy list
             list = null;
 
-            $(el).trigger('listsort:sort');
+            $(el).trigger('listsort:sort', {'type': type, 'direction': direction});
         }
         function sortDate(a, b) {
             var x = a.value, y = b.value, r = 0, d1 = 0, d2 = 0, t1 = 0, t2 = 0;
