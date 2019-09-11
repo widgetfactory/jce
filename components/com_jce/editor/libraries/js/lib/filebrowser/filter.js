@@ -116,8 +116,8 @@
 				// cancel events
 				e.stopImmediatePropagation();
 				
-				// at least 2 characters required
-				if (v.length === 1) {
+				// at least 3 characters required
+				if (v.length < 3) {
 					return;
 				}
 
