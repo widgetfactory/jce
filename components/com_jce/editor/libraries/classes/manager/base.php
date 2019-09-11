@@ -296,6 +296,14 @@ class WFMediaManagerBase extends WFEditorPlugin
             }
         }
 
+        // fix legacy list limit value
+        $list_limit = $this->getParam('editor.list_limit', 0);
+
+        // convert "all" to 0
+        if (!is_numeric($list_limit)) {
+            $list_limit = 0;
+        }
+
         $base = array(
             'dir' => $dir,
             'filesystem' => $this->getFileSystem(),
@@ -310,7 +318,7 @@ class WFMediaManagerBase extends WFEditorPlugin
                 'remove_exif' => (int) $this->getParam('editor.upload_remove_exif', 0),
             ),
             'folder_tree' => $this->getParam('editor.folder_tree', 1),
-            'list_limit' => $this->getParam('editor.list_limit', 'all'),
+            'list_limit' => $list_limit,
             'features' => array(
                 'upload' => $this->getParam('upload', 1),
                 'folder' => array(
@@ -330,7 +338,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             'websafe_textcase' => $textcase,
             'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M'),
             'position' => $this->getParam('editor.filebrowser_position', $this->getParam('editor.browser_position', 'bottom')),
-            'use_state_cookies' => $this->getParam('editor.use_cookies', true)
+            'use_state_cookies' => $this->getParam('editor.use_cookies', true),
+            'search_depth' => $this->getParam('editor.filebrowser_search_depth', 3)
         );
 
         return WFUtility::array_merge_recursive_distinct($base, $config);

@@ -119,7 +119,7 @@ defined('JPATH_PLATFORM') or die;
                   <option value="25">25</option>
                   <option value="50">50</option>
                   <option value="100">100</option>
-                  <option value="all">
+                  <option value="0">
                     <?php echo JText::_('WF_OPTION_ALL'); ?>
                   </option>
                 </select>
