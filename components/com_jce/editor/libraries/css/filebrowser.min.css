@@ -688,6 +688,7 @@ div#info-comment {
 
 .desc [class*="-desc"] {
   display: inline-block;
+  margin: auto 8px;
 }
 
 .desc [class*="-asc"] {
