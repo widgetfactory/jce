@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2019 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -15,11 +15,11 @@ jimport('joomla.filesystem.file');
 
 class WFJoomlaFileSystem extends WFFileSystem
 {
-    private static $restricted  = array(
-        'administrator','bin','cache','components','cli','includes','language','layouts','libraries','logs','media','modules','plugins','templates','tmp','xmlrpc'
+    private static $restricted = array(
+        'administrator', 'bin', 'cache', 'components', 'cli', 'includes', 'language', 'layouts', 'libraries', 'logs', 'media', 'modules', 'plugins', 'templates', 'tmp', 'xmlrpc',
     );
-    
-    private static $allowroot   = false;
+
+    private static $allowroot = false;
     /**
      * Constructor activating the default information of the class.
      */
@@ -65,7 +65,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     /**
      * Return the full user directory path. Create if required.
      *
-     * @param string	The base path
+     * @param string    The base path
      *
      * @return Full path to folder
      */
@@ -249,7 +249,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $break = false;
 
                 if (self::$allowroot) {
-                    foreach(self::$restricted as $name) {
+                    foreach (self::$restricted as $name) {
                         if (WFUtility::makePath($this->getBaseDir(), $item) === WFUtility::makePath($path, $name)) {
                             $break = true;
                         }
@@ -327,6 +327,76 @@ class WFJoomlaFileSystem extends WFFileSystem
 
                 $properties = self::getFileDetails($data['id'], $x);
 
+                $files[] = array_merge($data, array('properties' => $properties));
+
+                ++$x;
+            }
+        }
+
+        if ($sort) {
+            $files = self::sortItemsByKey($files, $sort);
+        }
+
+        return $files;
+    }
+
+    public function searchFiles($relative, $query = '', $sort = '', $depth = 3)
+    {
+        $path = WFUtility::makePath($this->getBaseDir(), $relative);
+        $path = WFUtility::fixPath($path);
+
+        if (!JFolder::exists($path)) {
+            $relative = '/';
+            $path = $this->getBaseDir();
+        }
+
+        $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
+        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($query) {
+            if ($current->isDir()) {
+                return true;
+            } else {
+                return preg_match("/$query/", $current->getFilename());
+            }
+        });
+
+        $iterator = new RecursiveIteratorIterator($filter);
+        $iterator->setMaxDepth($depth);
+        $list = array();
+
+        foreach ($iterator as $info) {
+            $file = $info->getPathname();
+            $list[] = $this->toRelative($file);
+        }
+
+        $files = array();
+        $x = 1;
+
+        if (!empty($list)) {
+            // Sort alphabetically by default
+            natcasesort($list);
+
+            foreach ($list as $item) {
+                $item = WFUtility::convertEncoding($item);
+
+                // create relative file
+                $id = $item;
+
+                // create url
+                $url = WFUtility::makePath($this->getRootDir(), $id, '/');
+
+                // remove leading slash
+                $url = ltrim($url, '/');
+
+                $data = array(
+                    'id' => $id,
+                    'url' => $url,
+                    'name' => $item,
+                    'writable' => is_writable(WFUtility::makePath($this->getBaseDir(), $item)) || $this->isFtp(),
+                    'type' => 'files',
+                    'extension' => pathinfo($item, PATHINFO_EXTENSION),
+                );
+
+                $properties = self::getFileDetails($data['id'], $x);
                 $files[] = array_merge($data, array('properties' => $properties));
 
                 ++$x;
@@ -456,7 +526,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 }
             }
 
-            $data['preview'] .= '?'.$date;
+            $data['preview'] .= '?' . $date;
 
             return array_merge_recursive($data, $image);
         }
@@ -467,7 +537,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     private function checkRestrictedDirectory($path)
     {
         if (self::$allowroot) {
-            foreach(self::$restricted as $name) {
+            foreach (self::$restricted as $name) {
                 $restricted = WFUtility::makePath($this->getBaseDir(), $name);
 
                 $match = false;
@@ -543,7 +613,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         if (is_file($src)) {
             $ext = JFile::getExt($src);
-            $file = $dest.'.'.$ext;
+            $file = $dest . '.' . $ext;
             $path = WFUtility::makePath($dir, $file);
 
             // check path does not fall within a restricted folder
@@ -551,7 +621,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             // does not appear to be case sensitive...
             /*if (is_file($path)) {
-                return $result;
+            return $result;
             }*/
 
             $result->type = 'files';
@@ -562,7 +632,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             // does not appear to be case sensitive...
             /*if (is_dir($path)) {
-                return $result;
+            return $result;
             }*/
 
             $result->type = 'folders';
@@ -680,7 +750,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         if (@JFolder::create($folder)) {
             $buffer = '<html><body bgcolor="#FFFFFF"></body></html>';
-            JFile::write($folder.'/index.html', $buffer);
+            JFile::write($folder . '/index.html', $buffer);
         } else {
             return false;
         }
@@ -771,12 +841,12 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             while (JFile::exists($dest)) {
                 if (strpos($suffix, '$') !== false) {
-                    $tmpname = $name.str_replace('$', $x, $suffix);
+                    $tmpname = $name . str_replace('$', $x, $suffix);
                 } else {
                     $tmpname .= $suffix;
                 }
 
-                $dest = WFUtility::makePath($path, $tmpname.'.'.$extension);
+                $dest = WFUtility::makePath($path, $tmpname . '.' . $extension);
 
                 ++$x;
             }
@@ -786,9 +856,9 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // create object to pass to joomla event
         $object_file = new JObject(array(
-            'name'      => basename($dest),
-            'tmp_name'  => $src,
-            'filepath'  => $dest
+            'name' => basename($dest),
+            'tmp_name' => $src,
+            'filepath' => $dest,
         ));
 
         // trigger Joomla event before upload
@@ -854,4 +924,25 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         return is_dir($path);
     }
+}
+
+class MyRecursiveFilterIterator extends \RecursiveFilterIterator
+{
+
+    public function accept()
+    {
+        $filename = $this->current()->getFilename();
+        // Skip hidden files and directories.
+        if ($name[0] === '.') {
+            return false;
+        }
+        if (!$this->isDir()) {
+            // Only recurse into intended subdirectories.
+            return $name === 'wanted_dirname';
+        } else {
+            // Only consume files of interest.
+            return strpos($name, 'wanted_filename') === 0;
+        }
+    }
+
 }

@@ -120,7 +120,7 @@
             dialog: null
         },
         viewable: 'jpeg,jpg,gif,png,webp,avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mp3,mp4,m4v,mpeg,ogg,ogv,webm,swf,flv,f4v,xml,dcr,rm,ra,ram,divx,html,htm,txt,rtf,pdf,doc,docx,xls,xlsx,ppt,pptx',
-        list_limit: 'all',
+        list_limit: 0,
         view_mode: 'list',
         expandable: true,
         websafe_mode: 'utf-8',
@@ -292,7 +292,7 @@
             });
 
             var list_limit = self._getState('limit', this.options.list_limit, function (val) {
-                return !/([0125]+|all)/.test(val) === false;
+                return !/([0125]+)/.test(val) === false;
             })
 
             // Set list limit selection
@@ -394,16 +394,16 @@
             }).on('listfilter:find', function (ev, s) {
                 var el = this;
 
-                var limit = $('#browser-list-limit-select').val();
+                /*var limit = $('#browser-list-limit-select').val();
 
                 // if we are not showing all items, get filtered list from server
                 var limit = $('#browser-list-limit-select').val();
                 var count = self._foldercount + self._filecount;
 
                 // if we are not showing all items, get filtered list from server
-                if (limit === 'all' || parseInt(limit) > count) {
+                if (limit == 0 || parseInt(limit) > count) {
                     return $(this).trigger('listfilter:filter', s);
-                }
+                }*/
 
                 if (s) {
                     var prefix = "";
@@ -414,12 +414,6 @@
                         prefix = ".";
                     }
 
-                    // not websafe, bail
-                    if (!self._isWebSafe(s)) {
-                        self.refresh();
-                        return;
-                    }
-
                     // show loading message
                     self._setLoader();
 
@@ -427,24 +421,15 @@
                         $(el).trigger('listfilter:found', [null, $('li.file', '#item-list').get()]);
                     });
 
-                    self._getList('', prefix + s);
+                    self._searchList('', prefix + s);
 
                 } else {
                     self.refresh();
                 }
 
                 return true;
-            }).on('listfilter:found', function (ev, e, items) {
-                // clear button triggered
-                if (e) {
-                    if ($('#browser-list-limit-select').val() === 'all') {
-                        return;
-                    }
-
-                    self.refresh();
-                }
-
-                return true;
+            }).on('listfilter:clear', function (ev) {
+                self.refresh();
             });
 
             // Setup refresh button
@@ -972,6 +957,9 @@
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
 
             $('li', '#browser-details-nav').addClass('uk-invisible').attr('aria-hidden', true).filter('.details-nav-text').empty();
+
+            // clear search flag
+            this.searching = false;
         },
         /**
          * Clear the Paste action
@@ -1196,7 +1184,7 @@
             this._hideButtons($('.button', '#buttons'));
 
             // get list limit
-            this._limit = $('#browser-list-limit-select').val() || this.options.list_limit;
+            this._limit = parseInt($('#browser-list-limit-select').val()) || this.options.list_limit;
 
             // get sort value
             var sort = this._sortValue || '';
@@ -1204,6 +1192,29 @@
             // send request
             Wf.JSON.request('getItems', [path, this._limit, this._limitcount, filter || '', sort], this._loadList, this);
         },
+
+        _searchList: function(src, filter) {
+            // get path from src or stored directory
+            var path = src || this._dir;
+
+            // store directory in cookie
+            if ((src || this._dir === '')) {
+                this._setState('dir', this._cleanPath(path));
+            }
+
+            // hide all buttons
+            this._hideButtons($('.button', '#buttons'));
+
+            // get sort value
+            var sort = this._sortValue || '';
+
+            // set search flag
+            this.searching = true;
+
+            // send request
+            Wf.JSON.request('searchFiles', [path, filter || '', sort], this._loadList, this);
+        },
+
         /**
          * Refresh the file list
          */
@@ -1276,39 +1287,37 @@
                 return false;
             }
 
-            // add unselectable (IE)
-            if (!$.support.cssFloat) {
-                $('#browser-list').attr('unselectable', 'on');
-            }
-
             this._foldercount = o.total.folders;
             this._filecount = o.total.files;
 
-            this._limitend = (o.total.folders + o.total.files) - this._limit;
-            var count = this._limitcount + o.folders.length + o.files.length;
+            if (this._limit) {
+                this._limitend = (o.total.folders + o.total.files) - this._limit;
+                var count = this._limitcount + o.folders.length + o.files.length;
 
-            if (count < (o.total.folders + o.total.files)) {
-                $('.limit-right li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
-            } else {
-                $('.limit-right li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
-            }
-
-            if ((count - this._limit) > 0) {
-                $('.limit-left li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
-            } else {
-                $('.limit-left li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
-            }
-
-            $.each([].concat(o.folders, o.files), function(i, item) {                
-                if (item.id) {
-                    dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
-
-                    return false;
+                if (count < (o.total.folders + o.total.files)) {
+                    $('.limit-right li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
+                } else {
+                    $('.limit-right li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
                 }
-            });
 
-            if (dir) {
-                this._setDir(dir);
+                if ((count - this._limit) > 0) {
+                    $('.limit-left li', '#browser-list-limit').removeClass('uk-invisible').attr('aria-hidden', false);
+                } else {
+                    $('.limit-left li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
+                }
+            }
+
+            if (!this.searching) {
+                $.each([].concat(o.folders, o.files), function(i, item) {                
+                    if (item.id) {
+                        dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
+                        return false;
+                    }
+                });
+    
+                if (dir) {
+                    this._setDir(dir);
+                }
             }
 
             // Add folder-up button
@@ -2428,7 +2437,11 @@
                 data[key] = $(item).data(key) || '';
             });
 
+            // get title from element attribute
             data.title = $(item).attr('title');
+
+            // get item basename
+            data.title = Wf.String.basename(data.title);
 
             return new Promise(function (resolve, reject) {
                 if (data.url) {

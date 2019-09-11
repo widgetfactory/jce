@@ -93,6 +93,8 @@ class WFFileBrowser extends JObject
         $this->setRequest(array($this, 'getTree'));
         $this->setRequest(array($this, 'getTreeItem'));
 
+        $this->setRequest(array($this, 'searchFiles'));
+
         $this->setRequest(array($this, 'upload'));
     }
 
@@ -351,11 +353,11 @@ class WFFileBrowser extends JObject
 
             foreach ($filters as $filter) {
                 $filter = trim($filter);
-                
+
                 // show this folder
                 if ($filter[0] === "+") {
-                    $path_parts     = explode('/', $path);
-                    $filter_parts   = explode('/', substr($filter, 1));
+                    $path_parts = explode('/', $path);
+                    $filter_parts = explode('/', substr($filter, 1));
 
                     // filter match
                     if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
@@ -364,10 +366,10 @@ class WFFileBrowser extends JObject
 
                     $return = false;
 
-                // hide this folder    
+                    // hide this folder
                 } else {
                     $return = true;
-                    
+
                     if ($filter[0] === "-") {
                         $filter = substr($filter, 1);
                     }
@@ -422,6 +424,74 @@ class WFFileBrowser extends JObject
         });
 
         return $list;
+    }
+
+    public function searchFiles($path, $query = '', $sort = '')
+    {
+        $result = array(
+            'folders' => array(),
+            'files' => array(),
+            'total' => array(
+                'folders' => 0,
+                'files' => 0,
+            ),
+        );
+
+        // no query value? bail...
+        if ($query == '') {
+            return $result;
+        }
+
+        $filesystem = $this->getFileSystem();
+
+        if (method_exists($filesystem, 'searchFiles') === false) {
+            return $this->getItems($path, 25, 0, $query, $sort);
+        }
+
+        // trim leading slash
+        $path = ltrim($path, '/');
+
+        // get source dir from path eg: images/stories/fruit.jpg = images/stories
+        $dir = $filesystem->getSourceDir($path);
+
+        $filetypes = (array) $this->getFileTypes('array');
+
+        // copy query
+        $keyword = $query;
+
+        // allow for wildcards 
+        $keyword = str_replace('*', '.*', $keyword);
+            
+        // query filter
+        $keyword = '^(?i).*' . $keyword . '.*';
+
+        if ($query[0] === '.') {
+            // clean query removing leading .
+            $extension = WFUtility::makeSafe($query);
+
+            $filetypes = array_filter($filetypes, function($value) use ($extension) {
+                return $value === $extension;
+            });
+
+            // reset keyword
+            $keyword = '';
+        }
+
+        // clean keyword
+        $keyword = filter_var($keyword, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+
+        // get search depth
+        $depth = (int) $this->get('search_depth', 3);
+
+        $list = $filesystem->searchFiles($path, $keyword . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $depth);
+
+        $result['files'] = $list;
+        $result['total']['files'] = count($list);
+
+        // Fire Event passing result as reference
+        $this->fireEvent('onSearchItems', array(&$result));
+
+        return $result;
     }
 
     /**
@@ -485,7 +555,7 @@ class WFFileBrowser extends JObject
         $items = array_merge($folders, $files);
 
         if ($items) {
-            if (is_numeric($limit)) {
+            if (intval($limit) > 0) {
                 $items = array_slice($items, $start, $limit);
             }
 
@@ -618,8 +688,8 @@ class WFFileBrowser extends JObject
                 . '       <i class="uk-icon uk-icon-home"></i>'
                 . '     </span>'
                 . '     <span class="uk-tree-text">' . JText::_('WF_LABEL_HOME', 'Home') . '</span>'
-                . '   </a>'
-                . ' </div>';
+                    . '   </a>'
+                    . ' </div>';
 
                 $dir = '/';
             }

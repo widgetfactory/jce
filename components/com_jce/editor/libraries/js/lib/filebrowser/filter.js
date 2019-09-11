@@ -83,16 +83,14 @@
 			filter: null
 		}, options);
 
-		var el = this,
-			x = [];
+		var el = this;
 
 		$(options.clear).on('click.listfilter', function (e) {
 			reset();
 
 			$(el).val('');
-			x = [];
 
-			$(el).trigger('listfilter:found', [e, x]);
+			$(el).trigger('listfilter:clear', [e]);
 		});
 
 		// create filter event
@@ -125,7 +123,7 @@
 
 				$(el).trigger('listfilter:find', [v]);
 			});
-		}, 300);
+		}, 500);
 
 		// add keyup and change events to trigger filter
 		$(el).on('keyup.listfilter paste.listfilter cut.listfilter', keyup);
@@ -209,7 +207,7 @@
 
 		function scroll(el) {
 
-			var pos = $(el).position();
+			var pos = $(el).position() || {top: 0};
 			var top = $(options.list).scrollTop();
 
 			$(options.list).css('overflow', 'hidden').animate({
