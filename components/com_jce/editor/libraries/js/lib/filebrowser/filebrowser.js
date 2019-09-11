@@ -394,8 +394,14 @@
             }).on('listfilter:find', function (ev, s) {
                 var el = this;
 
-                /*var limit = $('#browser-list-limit-select').val();
+                var limit = $('#browser-list-limit-select').val();
 
+                // store the limit
+                if (limit) {
+                    self._setState('limit', limit);
+                }
+
+                /*
                 // if we are not showing all items, get filtered list from server
                 var limit = $('#browser-list-limit-select').val();
                 var count = self._foldercount + self._filecount;
@@ -421,6 +427,11 @@
                         $(el).trigger('listfilter:found', [null, $('li.file', '#item-list').get()]);
                     });
 
+                    // reset limit
+                    $('#browser-list-limit-select').prop('disabled', true).val(0);
+                    
+                    self._reset();
+
                     self._searchList('', prefix + s);
 
                 } else {
@@ -429,6 +440,13 @@
 
                 return true;
             }).on('listfilter:clear', function (ev) {
+                var limit = self._getState('limit', self.options.list_limit, function (val) {
+                    return !/([0125]+)/.test(val) === false;
+                })
+    
+                // Set list limit selection
+                $('#browser-list-limit-select').prop('disabled', false).val(limit);
+
                 self.refresh();
             });
 
@@ -960,6 +978,9 @@
 
             // clear search flag
             this.searching = false;
+
+            // clear list limit
+            this._limit = 0;
         },
         /**
          * Clear the Paste action
