@@ -75,6 +75,8 @@ defined('JPATH_PLATFORM') or die;
                 <option value="appendix">Appendix</option>
                 <option value="help">Help</option>
                 <option value="bookmark">Bookmark</option>
+                <option value="sponsored">Sponsored</option>
+                <option value="ugc">User Generated Content</option>
             </select>
         </div>
     </div>
