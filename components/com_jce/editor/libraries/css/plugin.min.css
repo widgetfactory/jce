@@ -937,6 +937,7 @@ html {
 .uk-modal-preview {
     min-height: 120px;
     min-width: 320px;
+    max-width: 640px;
 }
 
 .uk-modal-preview .uk-modal-body {
@@ -978,6 +979,11 @@ html {
     width: 100%;
     height: auto;
     margin: auto;
+}
+
+.uk-modal-preview .uk-modal-body .image-preview:empty {
+    width: 400px;
+    height: 400px;
 }
 
 .uk-modal-preview .uk-modal-body img,
