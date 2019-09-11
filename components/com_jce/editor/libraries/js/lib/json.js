@@ -31,6 +31,8 @@
         return 'wf_' + guid + (counter++).toString(32);
     }
 
+    var instance = {};
+
     Wf.JSON = {
         /**
          * Send JSON request
@@ -50,6 +52,11 @@
                 'method': func,
                 'id': uid()
             };
+            
+            // already registered so abort in favout of new request
+            if (instance[func]) {
+                instance[func].abort();
+            }
 
             callback = callback || $.noop;
 
@@ -114,7 +121,7 @@
                 Wf.Modal.alert(txt);
             }
 
-            $.ajax({
+            instance[func] = $.ajax({
                 "context": scope || this,
                 "url": url,
                 "dataType": "text",
@@ -158,6 +165,9 @@
                     o = { 'error': '' };
                 }
 
+                // clear instance
+                instance[func] = null;
+
                 if ($.isFunction(callback)) {
                     callback.call(scope || this, r);
                 } else {
@@ -165,6 +175,9 @@
                 }
             }).fail(function (e, status, txt) {
                 Wf.Modal.alert(status || ('Server Error - ' + txt));
+
+                // clear instance
+                instance[func] = null;
             });
         }
     }
