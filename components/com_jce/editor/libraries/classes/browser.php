@@ -93,7 +93,7 @@ class WFFileBrowser extends JObject
         $this->setRequest(array($this, 'getTree'));
         $this->setRequest(array($this, 'getTreeItem'));
 
-        $this->setRequest(array($this, 'searchFiles'));
+        $this->setRequest(array($this, 'searchItems'));
 
         $this->setRequest(array($this, 'upload'));
     }
@@ -426,7 +426,7 @@ class WFFileBrowser extends JObject
         return $list;
     }
 
-    public function searchFiles($path, $query = '', $sort = '')
+    public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
         $result = array(
             'folders' => array(),
@@ -445,7 +445,7 @@ class WFFileBrowser extends JObject
         $filesystem = $this->getFileSystem();
 
         if (method_exists($filesystem, 'searchFiles') === false) {
-            return $this->getItems($path, 25, 0, $query, $sort);
+            return $this->getItems($path, $limit, $start, $query, $sort);
         }
 
         // trim leading slash
@@ -483,10 +483,15 @@ class WFFileBrowser extends JObject
         // get search depth
         $depth = (int) $this->get('search_depth', 3);
 
-        $list = $filesystem->searchFiles($path, $keyword . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $depth);
+        $list   = $filesystem->searchFiles($path, $keyword . '\.(?i)(' . implode('|', $filetypes) . ')$', $sort, $depth);
+        $total  = count($list);
+
+        if (intval($limit) > 0) {
+            $list = array_slice($list, $start, $limit);
+        }
 
         $result['files'] = $list;
-        $result['total']['files'] = count($list);
+        $result['total']['files'] = $total;
 
         // Fire Event passing result as reference
         $this->fireEvent('onSearchItems', array(&$result));

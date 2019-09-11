@@ -394,12 +394,12 @@
             }).on('listfilter:find', function (ev, s) {
                 var el = this;
 
-                var limit = $('#browser-list-limit-select').val();
+                /*var limit = $('#browser-list-limit-select').val();
 
                 // store the limit
                 if (limit) {
                     self._setState('limit', limit);
-                }
+                }*/
 
                 /*
                 // if we are not showing all items, get filtered list from server
@@ -428,25 +428,31 @@
                     });
 
                     // reset limit
-                    $('#browser-list-limit-select').prop('disabled', true).val(0);
+                    //$('#browser-list-limit-select').prop('disabled', true).val(0);
                     
                     self._reset();
 
-                    self._searchList('', prefix + s);
+                    // store query
+                    self._searchQuery = prefix + s;
+
+                    self._getList('', self._searchQuery);
 
                 } else {
+                    self._searchQuery = '';
                     self.refresh();
                 }
 
                 return true;
             }).on('listfilter:clear', function (ev) {
-                var limit = self._getState('limit', self.options.list_limit, function (val) {
+                /*var limit = self._getState('limit', self.options.list_limit, function (val) {
                     return !/([0125]+)/.test(val) === false;
                 })
     
                 // Set list limit selection
-                $('#browser-list-limit-select').prop('disabled', false).val(limit);
+                $('#browser-list-limit-select').prop('disabled', false).val(limit);*/
 
+                // clear search query
+                self._searchQuery = '';
                 self.refresh();
             });
 
@@ -562,6 +568,11 @@
             var self = this;
             // Sortables
 
+            // get the sort value from a cookie
+            this._sortValue = this._getState('sort', '', function (val) {
+                return /[a-z-]+/.test(val);
+            });
+
             /*$('#item-list').listsort({
                 fields: {
                     '#sort-ext': {
@@ -581,14 +592,36 @@
                         selector: 'li.file'
                     }
                 }
-            }).on('listsort:sort', function () {
+            }).on('listsort:sort', function (e, args) {
                 self._trigger('onListSort');
-            });*/
 
-            // get the sort value from a cookie
-            this._sortValue = this._getState('sort', '', function (val) {
-                return /[a-z-]+/.test(val);
-            });
+                var direction = '';
+
+                if (args.direction == 'asc') {
+                    direction = '-';
+                } else {
+                    direction = '';
+                }
+
+                var type = 'name';
+
+                if (args.type == 'string') {
+                    type = 'name'
+                }
+
+                if (args.type == 'number') {
+                    type = 'size'
+                }
+
+                self._sortValue = direction + type;
+
+                // store in a cookie
+                self._setState('sort', self._sortValue);
+
+                if (self._limit > 0) {
+                    return self.refresh();
+                }
+            });*/
 
             $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function () {
                 // reset all
@@ -613,6 +646,7 @@
                 self._setState('sort', self._sortValue);
 
                 self.refresh();
+
             }).addClass(function () {
                 if (this.id.indexOf(self._sortValue) === -1) {
                     return 'asc';
@@ -976,9 +1010,6 @@
 
             $('li', '#browser-details-nav').addClass('uk-invisible').attr('aria-hidden', true).filter('.details-nav-text').empty();
 
-            // clear search flag
-            this.searching = false;
-
             // clear list limit
             this._limit = 0;
         },
@@ -1210,30 +1241,14 @@
             // get sort value
             var sort = this._sortValue || '';
 
-            // send request
-            Wf.JSON.request('getItems', [path, this._limit, this._limitcount, filter || '', sort], this._loadList, this);
-        },
+            var method = 'getItems';
 
-        _searchList: function(src, filter) {
-            // get path from src or stored directory
-            var path = src || this._dir;
-
-            // store directory in cookie
-            if ((src || this._dir === '')) {
-                this._setState('dir', this._cleanPath(path));
+            if (filter) {
+                method = 'searchItems';
             }
 
-            // hide all buttons
-            this._hideButtons($('.button', '#buttons'));
-
-            // get sort value
-            var sort = this._sortValue || '';
-
-            // set search flag
-            this.searching = true;
-
             // send request
-            Wf.JSON.request('searchFiles', [path, filter || '', sort], this._loadList, this);
+            Wf.JSON.request(method, [path, this._limit, this._limitcount, filter || '', sort], this._loadList, this);
         },
 
         /**
@@ -1245,14 +1260,20 @@
             // show loading message
             this._setLoader();
 
-            if (e) {
-                $('form').append('<input type="hidden" name="refresh" value="1" />');
+            // event triggered refresh
+            if (typeof e !== 'undefined') {
+                // clear search input
+                $('#search').val('');
 
+                // clear stored search query
+                this._searchQuery = '';
+
+                $('form').append('<input type="hidden" name="refresh" value="1" />');
                 this._refreshTree();
             }
 
-            // get list from server
-            this._getList();
+            // get list from server with query if set
+            this._getList('', this._searchQuery);
         },
         /**
          * Load the browser list
@@ -1328,7 +1349,7 @@
                 }
             }
 
-            if (!this.searching) {
+            if (!this._searchQuery) {
                 $.each([].concat(o.folders, o.files), function(i, item) {                
                     if (item.id) {
                         dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
