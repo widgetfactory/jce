@@ -814,6 +814,13 @@
                     // Ignore
                 }
 
+                // set align by format
+                if (!isHTML4) {
+                    if ($('#align').val()) {
+                        ed.formatter.apply('align' + $('#align').val(), {}, node);
+                    }
+                }
+
                 dom.setAttrib(node, 'data-mce-new', '');
             });
 
