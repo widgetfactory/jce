@@ -53,6 +53,32 @@
     content: "\eca0";
 }
 
+.uk-tree-node li {
+    position: relative;
+}
+
 .uk-tree-node li.anchor {
     padding: 0 0 0 64px;
+}
+
+.uk-tree-node li button.link-preview {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.uk-tree-node li.file:hover button.link-preview,
+.uk-tree-node li.file:focus button.link-preview {
+    visibility: visible;
+    pointer-events: inherit;
+}
+
+.uk-tree a {
+    width: calc(100% - 32px);
+}
+
+.uk-tree-row .uk-tree-text {
+    width: calc(100% - 38px);
 }

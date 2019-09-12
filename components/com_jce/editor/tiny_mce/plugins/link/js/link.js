@@ -94,7 +94,7 @@
 
                 // get node id
                 var id = $(node).attr('data-id') || $(node).attr('id');
-                
+
                 // create query
                 var query = Wf.String.query(Wf.String.unescape(id));
 
@@ -113,6 +113,8 @@
                                 $(self).trigger('tree:createnode', [o.folders, node, false]);
                             }
 
+                            $(node).find('li.file').not('.anchor').append('<button type="button" aria-label="' + ed.getLang('dlg.preview', 'Preview') + '" class="uk-button uk-button-link link-preview"><i class="uk-icon uk-icon-preview" role="presentation"></i></button>');
+
                             $(self).trigger('tree:togglenodestate', [node, true]);
                         } else {
                             Wf.Modal.alert(o.error);
@@ -121,6 +123,20 @@
                     $(self).trigger('tree:toggleloader', node);
                 }, self);
             }).trigger('tree:init');
+
+            $('#link-browser').on('click', 'button.link-preview', function (e) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                var url = $(this).parent().data('id');
+                var title = $(this).parent().attr('aria-label');
+
+                if (url.indexOf('index.php') !== -1) {
+                    url += '&tmpl=component';
+                    url = ed.documentBaseURI.toAbsolute(url, true);
+                }
+
+                Wf.Modal.iframe(title, url, {width: '100%', height: 480});
+            });
 
             /* Search */
             $('#search-button').click(function (e) {
@@ -167,7 +183,7 @@
             });
 
             // trigger search if input has focus
-            $(window).on('keydown', function(e) {
+            $(window).on('keydown', function (e) {
                 if (e.keyCode === 13) {
                     if ($('#search-input').is(':focus')) {
                         self._search();
@@ -198,8 +214,8 @@
                 if (n) {
                     n = ed.dom.getParent(n, 'A') || n;
                     var v = se.getContent({
-                            format: 'text'
-                        }),
+                        format: 'text'
+                    }),
                         shortEnded = ed.schema.getShortEndedElements();
 
                     // reset node in IE if the link is the first element
@@ -267,18 +283,18 @@
                     $('#anchor').val(href);
                 }
 
-                $('#classes').val(function() {
+                $('#classes').val(function () {
                     var elm = this, values = ed.dom.getAttrib(n, 'class');
                     // create array
                     values = values.split(' ');
 
-                    $.each(values, function(i, value) {
+                    $.each(values, function (i, value) {
                         value = $.trim(value);
 
                         if (!value || value === ' ') {
                             return true;
                         }
-                        
+
                         if ($('option[value="' + value + '"]', elm).length == 0) {
                             $(elm).append(new Option(value, value));
                         }
