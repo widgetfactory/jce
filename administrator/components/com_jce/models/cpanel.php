@@ -43,6 +43,10 @@ class JceModelCpanel extends JModelLegacy
             $title = JText::_('WF_' . strtoupper($name));
 
             if ($name === "browser") {
+                if (!JPluginHelper::isEnabled('quickicon', 'jce')) {
+                    continue;
+                }
+                
                 $title = JText::_('WF_' . strtoupper($name) . '_TITLE');
             }
 
