@@ -13,6 +13,10 @@ class JceViewBrowser extends JViewLegacy
      */
     public function display($tpl = null)
     {
+        if (!JPluginHelper::isEnabled('quickicon', 'jce')) {
+            JFactory::getApplication()->redirect('index.php?option=com_jce');
+        }
+        
         $user = JFactory::getUser();
         
         $this->state    = $this->get('State');
