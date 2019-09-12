@@ -356,23 +356,27 @@ class WFJoomlaFileSystem extends WFFileSystem
         }
 
         // https://www.php.net/manual/en/class.recursivedirectoryiterator.php#114504
-        $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
-        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($query) {
+        $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::UNIX_PATHS | FilesystemIterator::SKIP_DOTS | FilesystemIterator::KEY_AS_FILENAME);
+        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($query) {            
+            // skip some system stuff
+            if ($key[0] === '.' || $key === '__MACOSX' || $key === 'index.html') {
+                return false;
+            }
+            
             if ($current->isDir()) {
                 return true;
-            } else {
-                return preg_match("/$query/", $current->getFilename());
             }
+
+            return preg_match("/$query/", $key);
         });
 
         $iterator = new RecursiveIteratorIterator($filter);
         $iterator->setMaxDepth($depth);
-        $list = array();
 
-        foreach ($iterator as $info) {
-            $file = $info->getPathname();
-            $list[] = $this->toRelative($file);
-        }
+        // map relative paths from iterator to list array
+        $list = array_map(function($info) {
+            return $this->toRelative($info->getPathname());
+        }, iterator_to_array($iterator));
 
         $files = array();
         $x = 1;
