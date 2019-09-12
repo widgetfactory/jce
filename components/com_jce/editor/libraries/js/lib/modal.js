@@ -467,6 +467,8 @@
                 cw = Math.min(cw, Math.floor(cw * Math.min(wh / ph, 1)));
 
                 $('.uk-modal-dialog', n).css('max-width', cw - 20 + 'px');
+
+                return cw;
             }
 
             var w = options.width,
@@ -493,7 +495,14 @@
 
                     $(div).addClass('iframe-preview').append(iframe);
 
-                    calculateWidth(e.target, w, h);
+                    w = calculateWidth(e.target, w, h);
+
+                    var ratio = parseFloat((h / w).toFixed(2));
+
+                    if (ratio !== 0.56) {
+                        var pct = Math.floor(h / w * 100);
+                        $(div).css('padding-bottom', 'calc(' + pct + '% - 20px)');
+                    }
                 }
 
             }, options);
