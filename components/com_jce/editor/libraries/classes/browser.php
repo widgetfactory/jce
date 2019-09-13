@@ -426,6 +426,26 @@ class WFFileBrowser extends JObject
         return $list;
     }
 
+    private static function sanitizeSearchTerm($query)
+    {
+        try {
+            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\p{L}\p{N}\s\* ]#u', '', $query);
+        } catch (\Exception $e) {
+            // PCRE replace failed, use ASCII
+            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $query);
+        }
+
+        // PCRE replace failed, use ASCII
+        if (is_null($q) || $q === false) {
+            $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $query);
+        }
+
+        //$q = filter_var($query, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_BACKTICK);
+
+        // trim and return
+        return trim($q);
+    }
+
     public function searchItems($path, $limit = 25, $start = 0, $query = '', $sort = '')
     {
         $result = array(
@@ -457,7 +477,7 @@ class WFFileBrowser extends JObject
         $filetypes = (array) $this->getFileTypes('array');
 
         // copy query
-        $keyword = $query;
+        $keyword = self::sanitizeSearchTerm($query);
 
         // allow for wildcards 
         $keyword = str_replace('*', '.*', $keyword);
@@ -476,9 +496,6 @@ class WFFileBrowser extends JObject
             // reset keyword
             $keyword = '';
         }
-
-        // clean keyword
-        $keyword = filter_var($keyword, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
 
         // get search depth
         $depth = (int) $this->get('search_depth', 3);
