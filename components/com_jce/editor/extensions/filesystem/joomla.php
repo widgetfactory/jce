@@ -367,7 +367,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                 return true;
             }
 
-            return preg_match("/$query/", $key);
+            return preg_match("/$query/u", $key);
         });
 
         $iterator = new RecursiveIteratorIterator($filter);
