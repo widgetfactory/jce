@@ -225,6 +225,22 @@
 				editor.selection.moveToBookmark(bookmark);
 				editor.nodeChanged();
 			}
+		},
+
+		/**
+		 * Returns information about the plugin as a name/value array.
+		 * The current keys are longname, author, authorurl, infourl and version.
+		 *
+		 * @return {Object} Name/value array containing information about the plugin.
+		 */
+		getInfo: function () {
+			return {
+				longname: 'Autolink',
+				author: 'Moxiecode Systems AB',
+				authorurl: 'http://tinymce.moxiecode.com',
+				infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/autolink',
+				version: tinymce.majorVersion + "." + tinymce.minorVersion
+			};
 		}
 	});
 
