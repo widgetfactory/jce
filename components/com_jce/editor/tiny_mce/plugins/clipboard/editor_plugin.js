@@ -1806,7 +1806,7 @@
 
         if (ed.getParam('autolink_url', true)) {
             // find and link url if not already linked
-            content = content.replace(new RegExp('(=["\']|>)?' + ux, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(href=["\'])?' + ux, 'g'), function (a, b, c) {
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
                     var attribs = ['href="' + c + '"'];
@@ -1823,7 +1823,7 @@
         }
 
         if (ed.getParam('autolink_email', true)) {
-            content = content.replace(new RegExp('(=["\']mailto:|>)?' + ex, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(href=["\']mailto:)?' + ex, 'g'), function (a, b, c) {
                 // only if not already a mailto: link
                 if (!b) {
                     return '<a href="mailto:' + c + '">' + c + '</a>';
@@ -2015,6 +2015,7 @@
             ed.onGetClipboardContent = new tinymce.util.Dispatcher(this);
             ed.onPastePreProcess = new tinymce.util.Dispatcher(this);
             ed.onPastePostProcess = new tinymce.util.Dispatcher(this);
+            ed.onPasteBeforeInsert = new tinymce.util.Dispatcher(this);
 
             // process quirks
             if (tinymce.isWebKit) {
@@ -2169,6 +2170,8 @@
                         });
                     }
                 }
+
+                ed.onPasteBeforeInsert.dispatch(self, o);
 
                 self._insert(o.content);
 
