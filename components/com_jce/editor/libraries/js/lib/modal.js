@@ -97,7 +97,7 @@
                             o.click.call(this, e);
                         }
                         // cancel submit
-                    }).on('submit', function(e) {
+                    }).on('submit', function (e) {
                         e.preventDefault();
                         e.stopImmediatePropagation();
                     });
@@ -166,7 +166,7 @@
                 }
             });
 
-            $(div).on('keydown.modal', function (e) {                
+            $(div).on('keydown.modal', function (e) {
                 if (e.keyCode === 9) {
 
                     var $navItems = $(':input:visible', div).not('input[type="file"]').filter(function () {
@@ -251,6 +251,17 @@
                 'classes': 'uk-modal-confirm',
                 buttons: [
                     {
+                        text: options.label.cancel,
+                        icon: 'uk-icon-close',
+                        click: function (e) {
+                            // execute callback
+                            cb.call(this, false);
+                        },
+                        attributes: {
+                            "class": "uk-modal-close"
+                        }
+                    },
+                    {
                         text: options.label.confirm,
                         icon: 'uk-icon-check',
                         click: function (e) {
@@ -261,16 +272,6 @@
                             "type": "submit",
                             "class": "uk-button-primary uk-modal-close",
                             "autofocus": true
-                        }
-                    }, {
-                        text: options.label.cancel,
-                        icon: 'uk-icon-close',
-                        click: function (e) {
-                            // execute callback
-                            cb.call(this, false);
-                        },
-                        attributes: {
-                            "class": "uk-modal-close"
                         }
                     }
                 ]
@@ -339,38 +340,40 @@
 
             options = $.extend(true, {
                 'classes': 'uk-modal-prompt',
-                buttons: [{
-                    attributes: {
-                        "type": "submit",
-                        "class": "uk-button-primary",
-                        "autofocus": true
-                    },
-                    text: options.label.confirm,
-                    icon: 'uk-icon-check',
-                    click: function () {
-                        var args = [],
-                            $inp = $('#' + options.id + '-input'),
-                            v = $inp.val();
+                buttons: [
+                    {
+                        attributes: {
+                            "type": "submit",
+                            "class": "uk-button-primary",
+                            "autofocus": true
+                        },
+                        text: options.label.confirm,
+                        icon: 'uk-icon-check',
+                        click: function () {
+                            var args = [],
+                                $inp = $('#' + options.id + '-input'),
+                                v = $inp.val();
 
-                        if (v === "") {
-                            $inp.focus();
+                            if (v === "") {
+                                $inp.focus();
 
-                            return false;
-                        }
+                                return false;
+                            }
 
-                        if (options.elements) {
-                            $(':input', '#' + options.id).not($inp).each(function () {
-                                args.push($(this).val());
-                            });
-                        }
+                            if (options.elements) {
+                                $(':input', '#' + options.id).not($inp).each(function () {
+                                    args.push($(this).val());
+                                });
+                            }
 
-                        cb.call(this, v, args);
+                            cb.call(this, v, args);
 
-                        if (options.close_on_submit !== false) {
-                            $inp.parents('.uk-modal').trigger('modal.close');
+                            if (options.close_on_submit !== false) {
+                                $inp.parents('.uk-modal').trigger('modal.close');
+                            }
                         }
                     }
-                }],
+                ],
                 open: function () {
                     var n = document.getElementById(options.id + '-input');
 
@@ -410,34 +413,37 @@
             options = $.extend({
                 'classes': 'uk-modal-dialog-full uk-modal-upload',
                 resizable: false,
-                buttons: [{
-                    text: Wf.translate('browse', 'Add Files'),
-                    icon: 'uk-icon-search',
-                    attributes: {
-                        "id": "upload-browse",
-                        "class": "uk-button-success",
-                        "autofocus": true
+                buttons: [
+                    {
+                        text: Wf.translate('close', 'Close'),
+                        icon: 'uk-icon-close',
+                        attributes: {
+                            "class": "uk-modal-close uk-hidden-small"
+                        },
+                    },
+                    {
+                        text: Wf.translate('browse', 'Add Files'),
+                        icon: 'uk-icon-search',
+                        attributes: {
+                            "id": "upload-browse",
+                            "class": "uk-button-success",
+                            "autofocus": true
+                        }
+                    }, {
+                        text: Wf.translate('upload', 'Upload'),
+                        click: function (e) {
+                            // cancel event
+                            e.preventDefault();
+                            // execute callback
+                            return options.upload.call();
+                        },
+                        attributes: {
+                            "id": "upload-start",
+                            "class": "uk-button-primary"
+                        },
+                        icon: 'uk-icon-cloud-upload'
                     }
-                }, {
-                    text: Wf.translate('upload', 'Upload'),
-                    click: function (e) {
-                        // cancel event
-                        e.preventDefault();
-                        // execute callback
-                        return options.upload.call();
-                    },
-                    attributes: {
-                        "id": "upload-start",
-                        "class": "uk-button-primary"
-                    },
-                    icon: 'uk-icon-cloud-upload'
-                }, {
-                    text: Wf.translate('close', 'Close'),
-                    icon: 'uk-icon-close',
-                    attributes: {
-                        "class": "uk-modal-close uk-hidden-small"
-                    },
-                }]
+                ]
             }, options);
 
             return this.open(Wf.translate('upload', 'Upload'), options, div);

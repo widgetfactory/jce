@@ -246,6 +246,10 @@
                             },
                             buttons: [
                                 {
+                                    title: ed.getLang('cancel', 'Cancel'),
+                                    id: 'cancel'
+                                },
+                                {
                                     title: ed.getLang('insert', 'Insert'),
                                     id: 'insert',
                                     onsubmit: function (e) {
@@ -258,9 +262,6 @@
                                         });
                                     },
                                     classes: 'primary'
-                                }, {
-                                    title: ed.getLang('cancel', 'Cancel'),
-                                    id: 'cancel'
                                 }
                             ]
                         });

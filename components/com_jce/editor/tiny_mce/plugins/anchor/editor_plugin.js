@@ -172,7 +172,7 @@
                     ed.windowManager.open({
                         title   : ed.getLang('anchor.desc', 'Anchor'),
                         content : html,
-                        size: 'mce-modal-landscape-xsmall',
+                        size: 'mce-modal-landscape-small',
                         open: function() {
                             var input = DOM.get(ed.id + '_anchor_input');
 
@@ -194,6 +194,16 @@
                         },
                         buttons: [
                             {
+                                title: ed.getLang('anchor.remove', 'Remove'),
+                                id: 'remove',
+                                onsubmit: function (e) {
+                                    if (!e.target.disabled) {
+                                        self._removeAnchor();
+                                    }
+                                },
+                                scope: self
+                            },
+                            {
                                 title: ed.getLang('insert', 'Insert'),
                                 id: 'insert',
                                 onsubmit: function (e) {
@@ -206,15 +216,6 @@
                                     self._insertAnchor(value);
                                 },
                                 classes: 'primary',
-                                scope: self
-                            }, {
-                                title: ed.getLang('anchor.remove', 'Remove'),
-                                id: 'remove',
-                                onsubmit: function (e) {
-                                    if (!e.target.disabled) {
-                                        self._removeAnchor();
-                                    }
-                                },
                                 scope: self
                             }
                         ]

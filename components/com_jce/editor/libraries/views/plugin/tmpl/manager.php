@@ -21,7 +21,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 ?>
 </div>
 <div class="actionPanel uk-modal-footer">
-	<button class="uk-button uk-button-refresh" id="refresh"><?php echo JText::_('WF_LABEL_REFRESH')?></button>
-	<button class="uk-button uk-button-confirm" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
-	<button class="uk-button uk-button-cancel" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
+    <button class="uk-button uk-button-cancel" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
+    <button class="uk-button uk-button-refresh" id="refresh"><?php echo JText::_('WF_LABEL_REFRESH')?></button>
+    <button class="uk-button uk-button-confirm" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
 </div>

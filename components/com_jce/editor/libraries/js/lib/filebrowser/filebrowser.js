@@ -1640,7 +1640,10 @@
                             });
                         }
                     }, {
-                            elements: elements
+                            elements: elements,
+                            label: {
+                                'confirm': self._translate('create', 'Create')
+                            },
                         });
                     break;
 

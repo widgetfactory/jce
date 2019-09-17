@@ -33,7 +33,7 @@ $tabs = WFTabs::getInstance();
 			</select>
 		</div>
 	<?php endif; ?>
-	<button type="submit" id="insert" onclick="TableDialog.insert();"><?php echo JText::_('WF_LABEL_INSERT'); ?></button>
 	<button type="button" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL'); ?></button>
+	<button type="submit" id="insert" onclick="TableDialog.insert();"><?php echo JText::_('WF_LABEL_INSERT'); ?></button>
 	</div>
 </form>
