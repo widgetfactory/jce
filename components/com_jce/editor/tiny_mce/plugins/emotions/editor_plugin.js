@@ -186,7 +186,8 @@
                     success: function (text) {
                         try {
                             icons = JSON.parse(text);
-                        } catch (e) { }
+                        } catch (e) {
+                        }
 
                         // create path
                         path = path.substring(0, path.lastIndexOf('/'));
@@ -207,11 +208,13 @@
 
             var ctrl = cm.createPanelButton('emotions', {
                 title: 'emotions.desc',
-                html: self.content,
+                html: '',
                 width: 268
             });
 
-            ctrl.onRenderPanel.add(function () {
+            ctrl.onRenderPanel.add(function () {                
+                DOM.setHTML(DOM.select('.mcePanelContent', ed.id + '_emotions_panel'), self.content);
+                
                 Event.add(DOM.select('.mcePanelContent', ed.id + '_emotions_panel'), 'click', function (e) {
                     e.preventDefault();
                     ctrl.restoreSelection();
