@@ -1806,7 +1806,7 @@
 
         if (ed.getParam('autolink_url', true)) {
             // find and link url if not already linked
-            content = content.replace(new RegExp('(href=["\'])?' + ux, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(=["\'])?' + ux, 'g'), function (a, b, c) {
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
                     var attribs = ['href="' + c + '"'];
@@ -1823,7 +1823,7 @@
         }
 
         if (ed.getParam('autolink_email', true)) {
-            content = content.replace(new RegExp('(href=["\']mailto:)?' + ex, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(=["\']mailto:)?' + ex, 'g'), function (a, b, c) {
                 // only if not already a mailto: link
                 if (!b) {
                     return '<a href="mailto:' + c + '">' + c + '</a>';
@@ -2699,6 +2699,10 @@
                 },
                 buttons: [
                     {
+                        title: ed.getLang('common.cancel', 'Cancel'),
+                        id: 'cancel'
+                    },
+                    {
                         title: ed.getLang('common.insert', 'Insert'),
                         id: 'insert',
                         onsubmit: function (e) {
@@ -2718,10 +2722,6 @@
                         },
                         classes: 'primary',
                         autofocus: true
-                    },
-                    {
-                        title: ed.getLang('common.cancel', 'Cancel'),
-                        id: 'cancel'
                     }
                 ]
             });
