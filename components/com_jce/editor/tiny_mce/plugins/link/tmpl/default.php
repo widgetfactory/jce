@@ -20,7 +20,7 @@ $tabs = WFTabs::getInstance();
 	<input type="hidden" id="token" name="<?php echo JSession::getFormToken(); ?>" value="1" />
 </form>
 <div class="actionPanel">
-	<button class="button" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
-	<button class="button" id="help"><?php echo JText::_('WF_LABEL_HELP')?></button>
 	<button class="button" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
+	<button class="button" id="help"><?php echo JText::_('WF_LABEL_HELP')?></button>
+	<button class="button" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
 </div>
