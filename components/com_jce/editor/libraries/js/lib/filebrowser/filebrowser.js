@@ -1759,7 +1759,8 @@
                         }
                     }, {
                             label: {
-                                'confirm': self._translate('delete', 'Delete')
+                                'confirm'   : self._translate('delete', 'Delete'),
+                                'cancel'    : self._translate('cancel', 'Cancel')
                             },
                             header: false
                         });
