@@ -469,7 +469,6 @@ span.uk-slider {
 }
 
 .uk-tabs .uk-tab+.uk-switcher {
-    height: 89%;
     height: calc(100% - 45px);
 }
 

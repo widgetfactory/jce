@@ -2091,9 +2091,9 @@ select.mceNativeListBox {
 }
 
 .mceModal .mceModalHeader {
-    padding: 4px 8px;
+    padding: 8px;
     background-color: #fff;
-    border-bottom: 1px solid #ddd;
+    /*border-bottom: 1px solid #ddd;*/
     display: flex;
     align-items: center;
 }
@@ -2123,7 +2123,7 @@ select.mceNativeListBox {
 }
 
 .mceModal .mceModalContentIframe {
-    height: calc(100% - 41px);
+    height: calc(100% - 48px);
 }
 
 .mceModal .mceModalConfirm .mceModalContent,
@@ -2143,10 +2143,11 @@ select.mceNativeListBox {
 .mceModal .mceModalFooter {
     margin: 0;
     padding: 8px;
-    border-top: 1px solid #e5e5e5;
+    /*border-top: 1px solid #e5e5e5;*/
     border-radius: 0 0 2px;
     text-align: right;
-    background-color: #f5f5f5;
+    /*background-color: #f5f5f5;*/
+    background-color: #fff;
 }
 
 .mceModal .mceModalBody {
@@ -2165,7 +2166,8 @@ select.mceNativeListBox {
     /*height: auto;*/
     height: 100%;
     line-height: 0;
-    border-radius: 2px;
+    /*border-radius: 2px;*/
+    border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
@@ -2227,9 +2229,11 @@ select.mceNativeListBox {
     height: 32px;
     line-height: 1;
     background: #fff;
+    /*border-radius: 2px;*/
     border-radius: 2px;
     color: #444;
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
+    border: 1px solid #fff;
     margin: 0 0 0 4px;
     padding: 0 8px;
 }
@@ -2244,6 +2248,7 @@ select.mceNativeListBox {
 .mceModal .mceButton:focus,
 .mceModal .mceButton:hover {
     border-color: #888;
+    background: #fff;
 }
 
 .mceModal .mceButton:disabled,
@@ -2388,7 +2393,7 @@ select.mceNativeListBox {
 .mce-modal-landscape-full .mceModalContentIframe,
 .mce-modal-portrait-full .mceModalContentIframe {
     padding: 0;
-    height: calc(100% - 41px);
+    height: calc(100% - 48px);
 }
 
 .mce-modal-square-xlarge {
@@ -2396,7 +2401,7 @@ select.mceNativeListBox {
 }
 
 .mce-modal-square-xlarge .mceModalContentIframe {
-    padding-bottom: calc(83.46% - 41px);
+    padding-bottom: calc(83.46% - 48px);
 }
 
 .mceModal .mceModalContent input[type="text"],
@@ -2470,7 +2475,7 @@ select.mceNativeListBox {
 
 .mceModal .mceModalContent .mceModalControl {
     flex: 1;
-    margin: 0 4px 0 0;
+    margin: 0;
 }
 
 .mceModal .mceModalContent .mceModalFlexNone {
