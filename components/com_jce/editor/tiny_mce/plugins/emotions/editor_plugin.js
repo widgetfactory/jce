@@ -208,8 +208,7 @@
 
             var ctrl = cm.createPanelButton('emotions', {
                 title: 'emotions.desc',
-                html: '',
-                width: 268
+                html: ''
             });
 
             ctrl.onRenderPanel.add(function () {                
