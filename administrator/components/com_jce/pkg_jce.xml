@@ -26,6 +26,8 @@
         <file type="plugin" id="jce" group="system">plg_system_jce.zip</file>
     </files>
 
+    <dlid prefix="key=" suffix="" />
+
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.pkg_jce.sys.ini</language>
     </languages>
