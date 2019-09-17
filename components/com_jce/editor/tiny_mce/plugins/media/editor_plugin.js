@@ -531,7 +531,7 @@
                 type, name, o = {},
                 data = {},
                 classid = '',
-                styles, matches, placeholder;
+                styles, placeholder;
 
             // If node isn't in document or is child of media node
             if (!n.parent || /^(object|audio|video|embed|iframe)$/.test(n.parent.name)) {
@@ -647,6 +647,13 @@
             each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
                 placeholder.attr(at, n.attr(at));
             });
+
+            // keep internal attributes
+            for (key in n.attributes.map) {
+                if (key.indexOf('data-mce-') !== -1) {
+                    placeholder.attr(key, n.attributes.map[key]);
+                }
+            }
 
             if (/^[\-0-9\.]+$/.test(w)) {
                 w = w + 'px';
@@ -771,9 +778,7 @@
         serializeAttributes: function (n) {
             var ed = this.editor,
                 self = this,
-                dom = this.editor.dom,
                 attribs = {},
-                ti = '',
                 k, v;
 
             if (n != 'iframe' || n != 'param') {
@@ -838,7 +843,11 @@
                             attribs[k] = v.replace(/"/g, "'");
                             break;
                         default:
-                            attribs[k] = v;
+                            // skip internal attributes
+                            if (k.indexOf('data-mce-') === -1) {
+                                attribs[k] = v;
+                            }
+
                             break;
                     }
                 }
