@@ -40,7 +40,11 @@ class plgInstallerJce extends JPlugin
         // load plugin language for warning messages
         JFactory::getLanguage()->load('plg_installer_jce', JPATH_ADMINISTRATOR);
 
-        $key = $component->params->get('updates_key', '');
+        // check if the key has already been set via the dlid field
+        $dlid = $uri->getVar('key', '');
+
+        // check the component params, fallback to the dlid
+        $key = $component->params->get('updates_key', $dlid);
 
         // if no key is set...
         if (empty($key)) {
