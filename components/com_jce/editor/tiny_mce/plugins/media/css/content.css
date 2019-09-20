@@ -83,6 +83,9 @@
     height: auto;
     line-height: 0;
     cursor: not-allowed;
+    outline: initial !important;
+    margin: 0 2px;
+    border: 1px solid #ccc;
 }
 .mce-item-preview iframe {
     z-index: 5;
