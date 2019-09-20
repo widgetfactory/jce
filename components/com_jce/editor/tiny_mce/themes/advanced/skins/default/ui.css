@@ -197,8 +197,18 @@
     left: 0;
     top: 0;
     z-index: 1000;
-    opacity: 0.5;
-    background: #FFF
+    background: #fff;
+    opacity: 0.8;
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .defaultSkin .mceProgress {
@@ -206,10 +216,23 @@
     left: 0;
     top: 0;
     z-index: 1001;
-    background: url(img/progress.gif) no-repeat;
-    width: 32px;
-    height: 32px;
-    margin: -16px 0 0 -16px
+}
+
+.defaultSkin .mceProgress:after {
+    content: "";
+    display: block;
+    border: 0.25rem solid rgba(0, 0, 0, 0.3);
+    border-left-color: #444;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    animation: donut-spin 1.2s linear infinite;
+    z-index: 10001;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -1rem 0 0 -1rem;
+    box-sizing: border-box;
 }
 
 .defaultSkin .mcePlaceHolder {
