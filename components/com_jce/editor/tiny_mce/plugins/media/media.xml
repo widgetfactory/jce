@@ -32,6 +32,10 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+            <field name="live_embed" type="yesno" default="1" label="WF_MEDIA_PARAM_MEDIA_PREVIEW" description="WF_MEDIA_PARAM_MEDIA_PREVIEW_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
         </fieldset>
     </fields>
     <languages></languages>
