@@ -17,9 +17,6 @@
 
     var Styles = new tinymce.html.Styles();
 
-    // list of valid child elements
-    //var validChildren = '#|address|blockquote|div|dl|fieldset|form|h1|h2|h3|h4|h5|h6|hr|menu|ol|p|pre|table|ul|a|abbr|b|bdo|br|button|cite|code|del|dfn|em|embed|i|iframe|img|input|ins|kbd|label|map|noscript|object|q|s|samp|script|select|small|span|strong|sub|sup|textarea|u|var|#text|#comment|article|aside|details|dialog|figure|header|footer|hgroup|section|nav|audio|canvas|command|datalist|mark|meter|output|progress|time|wbr|video|ruby|bdi|keygen|object';
-
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
@@ -134,9 +131,6 @@
             self.editor = ed;
             self.url = url;
 
-            // Parse media types into a lookup table
-            var scriptRegExp = '';
-
             each(mediaTypes, function (v, k) {
                 v.name = k;
 
@@ -153,8 +147,110 @@
 
             self.lookup = lookup;
 
+            /**
+             * Convert a media preview into an image placeholder
+             * @param {Node} preview
+             */
+            function previewToImage(preview) {
+                var ifr = new tinymce.html.DomParser({}, ed.schema).parse(preview.innerHTML);
+                var node = ifr.firstChild;
+
+                var data = self.createTemplate(node);
+
+                var o = { 'iframe': data };
+
+                var attribs = {
+                    src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                    'data-mce-json': JSON.serialize(o),
+                    'data-mce-type': 'iframe'
+                };
+
+                // standard attributes
+                each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'width', 'height', 'class'], function (at) {
+                    attribs[at] = node.attr(at);
+                });
+
+                // dimensions
+                each(['width', 'height'], function (at) {
+                    attribs[at] = node.attr(at);
+                    attribs['data-mce-' + at] = attribs[at];
+                });
+
+                // keep internal attributes
+                for (key in node.attributes.map) {
+                    if (key.indexOf('data-mce-') !== -1) {
+                        attribs[key] = n.attributes.map[key];
+                    }
+                }
+
+                var placeholder = ed.dom.create('img', attribs);
+
+                // add dimensions as styles
+                ed.dom.setStyles(placeholder, {
+                    'width': attribs.width,
+                    'height': attribs.height
+                });
+
+                var sib = preview.nextSibling;
+
+                if (sib && sib.nodeName === 'BR' && sib.getAttribute('data-mce-bogus')) {
+                    ed.dom.remove(sib);
+                }
+
+                ed.dom.addClass(placeholder, 'mce-item-media mce-item-iframe');
+                ed.dom.replace(placeholder, preview);
+
+                return placeholder;
+            }
+            /**
+             * Convert an image placeholder into a media preview
+             * @param {Node} img 
+             */
+            function imageToPreview(img) {
+                // make sure the image is selected
+                ed.selection.select(img);
+
+                var clone = ed.dom.clone(img);
+
+                // remove styles
+                ed.dom.setStyles(clone, { 'width': '', 'height': '' });
+
+                // remove classes
+                ed.dom.removeClass(clone, 'mce-item-media');
+                ed.dom.removeClass(clone, 'mce-item-iframe');
+
+                // get iframe data from the stored json
+                var json = JSON.parse(clone.getAttribute('data-mce-json'));
+                var data = json.iframe || {};
+
+                var attribs = ed.dom.getAttribs(clone);
+
+                for (var i = 0; i < attribs.length; i++) {
+                    var name = attribs[i].nodeName;
+
+                    if (name === "src" || name.indexOf('data-mce-') !== -1) {
+                        continue;
+                    }
+
+                    var value = ed.dom.getAttrib(clone, name);
+
+                    if (value === '') {
+                        continue;
+                    }
+
+                    data[name] = value;
+                }
+
+                // add resized width and height values
+                each(['width', 'height'], function (key) {
+                    data[key] = clone.getAttribute('data-mce-' + key) || clone.getAttribute(key);
+                });
+
+                ed.execCommand('insertMediaHtml', false, { name: 'iframe', data: data });
+            }
+
             function isMediaNode(n) {
-                return n && (ed.dom.is(n, '.mce-item-media') || ed.dom.getParent(n, '.mce-item-media') !== null);
+                return n && (ed.dom.is(n, '.mce-item-media, .mce-item-shim') || ed.dom.getParent(n, '.mce-item-media') !== null);
             }
 
             function isMediaClass(cls) {
@@ -178,12 +274,12 @@
                 invalid = tinymce.explode(invalid, ',');
 
                 // Convert video elements to image placeholder
-                ed.parser.addNodeFilter('object,embed,video,audio,script,iframe', function (nodes) {
+                ed.parser.addNodeFilter('object,embed,video,audio,iframe', function (nodes) {
                     var i = nodes.length,
                         node;
 
                     while (i--) {
-                        node = nodes[i];
+                        node = nodes[i], cls = node.attr('class') || '';
 
                         // if valid node (validate == false)
                         if (tinymce.inArray(invalid, node.name) == -1) {
@@ -235,11 +331,11 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
-                ed.onObjectResized.add(function(ed, elm, width, height) {
+                ed.onObjectResized.add(function (ed, elm, width, height) {
                     if (!isMediaNode(elm)) {
                         return;
                     }
-                    
+
                     // store values
                     ed.dom.setAttrib(elm, 'data-mce-width', width);
                     ed.dom.setAttrib(elm, 'data-mce-height', height);
@@ -247,24 +343,43 @@
                     // remove attributes
                     ed.dom.removeAttrib(elm, 'width');
                     ed.dom.removeAttrib(elm, 'height');
-                    
+
                     // set as styles
-                    ed.dom.setStyles(elm, {'width' : width, 'height': height}); 
+                    ed.dom.setStyles(elm, { 'width': width, 'height': height });
                 });
-            });
 
-            ed.onNodeChange.add(function (ed, cm, n) {
-                var s = isMediaNode(n);
+                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
+                    var node = ed.selection.getNode();
 
-                ed.dom.removeClass(ed.dom.select('.mce-item-selected.mce-item-preview'), 'mce-item-selected');
+                    ed.dom.removeClass(ed.dom.select('.mce-item-selected.mce-item-preview'), 'mce-item-selected');
 
-                if (s) {
-                    var p = ed.dom.getParent(n, '.mce-item-media.mce-item-preview');
+                    if (isMediaNode(node)) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
 
-                    ed.dom.addClass(p, 'mce-item-selected');
+                        var preview = ed.dom.getParent(node, '.mce-item-media.mce-item-preview');
 
-                    ed.selection.select(p);
-                }
+                        if (e.type === 'click' && VK.metaKeyPressed(e)) {
+                            if (node.nodeName === "IMG") {
+                                return imageToPreview(node);
+                            }
+
+                            if (preview) {
+                                preview = previewToImage(preview);
+                            }
+                        }
+
+                        if (preview) {
+                            ed.selection.select(preview);
+                            // add a slight delay before adding selected class to avoid it being removed by the keyup event
+                            window.setTimeout(function () {
+                                ed.dom.addClass(preview, 'mce-item-selected');
+                            }, 10);
+
+
+                        }
+                    }
+                });
             });
 
             // Remove iframe preview on backspace or delete
@@ -315,10 +430,27 @@
                 }
             });
 
+            function updatePreviewSelection(ed) {
+                var nodes = ed.dom.select('.mce-item-preview', ed.getBody());
+
+                if (nodes.length) {
+                    var node = nodes[nodes.length - 1];
+
+                    // for an empty block node, padd with a break
+                    if (node && ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
+                        ed.dom.add(node.parentNode, 'br', { 'data-mce-bogus': '1' });
+                    }
+                }
+            }
+
+            ed.onSetContent.add(function (ed, o) {
+                updatePreviewSelection(ed);
+            });
+
             tinymce.util.MediaEmbed = {
-                dataToHtml: function(name, data, innerHtml) {
+                dataToHtml: function (name, data, innerHtml) {
                     var html = ''
-                    
+
                     if (name === "iframe") {
 
                         if (typeof data === "string") {
@@ -332,7 +464,7 @@
                 }
             };
 
-            ed.addCommand('insertMediaHtml', function(ui, value) {
+            ed.addCommand('insertMediaHtml', function (ui, value) {
                 var data = {}, name = 'iframe', innerHtml = '';
 
                 if (typeof value === 'string') {
@@ -348,19 +480,7 @@
                     skip_undo: 1
                 });
 
-                var nodes = ed.dom.select('.mce-item-preview', ed.getBody());
-
-                if (nodes.length) {
-                    var node = nodes[nodes.length - 1];
-                    // for an empty block node, padd with a break
-                    if (node && ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
-                        ed.dom.add(node.parentNode, 'br', {'data-mce-bogus' : '1'});
-                    }
-
-                    // select and collapse
-                    ed.selection.select(node);
-                    ed.selection.collapse(1);
-                }
+                updatePreviewSelection(ed);
 
                 ed.undoManager.add();
             });
@@ -545,8 +665,8 @@
             var style = Styles.parse(n.attr('style'));
 
             // get width an height
-            var w = n.attr('width') || style.width || 0;
-            var h = n.attr('height') || style.height || 0;
+            var w = n.attr('width') || style.width || '';
+            var h = n.attr('height') || style.height || '';
 
             var type = n.attr('type');
 
@@ -666,11 +786,6 @@
             style.width = w;
             style.height = h;
 
-            // add styles
-            if (styles = ed.dom.serializeStyle(style)) {
-                placeholder.attr('style', styles);
-            }
-
             o[name] = data;
 
             // get classes as array
@@ -698,24 +813,10 @@
                 }
             }
 
-            // Set data attribute and class
-            placeholder.attr({
-                'class': classes.join(' '),
-                'data-mce-json': JSON.serialize(o),
-                'data-mce-type': name
-            });
+            // Set class
+            placeholder.attr('class', tinymce.trim(classes.join(' ')));
 
-            // add width values back as data-mce-width attribute
-            if (n.attr('width')) {
-                placeholder.attr('data-mce-width', n.attr('width'));
-            }
-
-            // add width values back as data-mce-width attribute
-            if (n.attr('height')) {
-                placeholder.attr('data-mce-height', n.attr('height'));
-            }
-
-            if (name === "iframe" && ed.getParam('media_live_embed', 1)) {
+            if (name === "iframe" && (ed.getParam('media_live_embed', 1))) {
                 var preview = new tinymce.html.Node(name, 1);
 
                 var attrs = o.iframe;
@@ -728,12 +829,8 @@
                     frameborder: '0'
                 });
 
-                placeholder = new tinymce.html.Node('span', 1);
-
-                /*var styles = {
-                    'max-width' : w + 'px',
-                    'padding-bottom' : (h / w * 100) + '%'
-                };*/
+                // rename the img node to a span
+                placeholder.name = 'span';
 
                 var styles = {
                     'width': w + 'px',
@@ -745,7 +842,6 @@
                 placeholder.attr({
                     contentEditable: 'false',
                     'class': 'mce-item-preview mce-item-media mce-item-' + name,
-                    //'style': ed.dom.serializeStyle(styles),
                     'data-mce-type': 'preview'
                 });
 
@@ -760,10 +856,30 @@
                 if (n.parent && n.parent.attr('data-mce-preview')) {
                     n.parent.unwrap();
                 }
-
             } else {
                 placeholder.attr({
                     'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                });
+
+                // add styles
+                if (styles = ed.dom.serializeStyle(style)) {
+                    placeholder.attr('style', styles);
+                }
+
+                // add width values back as data-mce-width attribute
+                if (n.attr('width')) {
+                    placeholder.attr('data-mce-width', n.attr('width'));
+                }
+
+                // add width values back as data-mce-width attribute
+                if (n.attr('height')) {
+                    placeholder.attr('data-mce-height', n.attr('height'));
+                }
+
+                // Set data attributes
+                placeholder.attr({
+                    'data-mce-json': JSON.serialize(o),
+                    'data-mce-type': name
                 });
             }
 
@@ -1170,7 +1286,7 @@
             }
 
             // check for XHTML Strict setting
-            var strict = ed.getParam('media_strict', true) && /mce-item-(flash|shockwave)/.test(n.attr('class'));
+            var strict = /mce-item-(flash|shockwave)/.test(n.attr('class'));
 
             // not type attribute set
             if (!root.type) {
@@ -1242,10 +1358,12 @@
                     if (lookup.name !== "generic") {
                         // add src parameter
                         var k = 'src';
+
                         // use url for WindowsMedia
                         if (/mce-item-windowsmedia/.test(n.attr('class'))) {
                             k = 'url';
                         }
+
                         // use source for Silverlight
                         if (/mce-item-silverlight/.test(n.attr('class'))) {
                             k = 'source';
@@ -1291,8 +1409,10 @@
                 root.param = params;
             }
 
-            // create nodes
-            n.replace(this.createNodes(root, parent));
+            var nodes = this.createNodes(root, parent);
+
+            // replace nodes
+            n.replace(nodes);
         },
         getNodeName: function (s) {
             s = /mce-item-(audio|embed|object|video|iframe)/i.exec(s);
@@ -1301,7 +1421,6 @@
                 return s[1].toLowerCase();
             }
         }
-
     });
 
     // Register plugin
