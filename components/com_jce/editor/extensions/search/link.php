@@ -239,7 +239,7 @@ class WFLinkSearchExtension extends WFSearchExtension
             $row->text = SearchHelper::prepareSearchContent($row->text, $needle);
 
             // remove base url
-            if (strpos($row->href, JURI::base(true)) !== false) {
+            if (JURI::base(true) && strpos($row->href, JURI::base(true)) !== false) {
                 $row->href = substr_replace($row->href, '', 0, strlen(JURI::base(true)) + 1);
             }
 
