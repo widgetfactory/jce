@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'wfeditor';
+    src: url('../../../../../libraries/fonts/wfeditor.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.defaultSkin .mceIcon,
+.defaultSkin .mceAction,
+.mceModal .mceIcon {
+    font-family: 'wfeditor';
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1.25em;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    text-align: center;
+    vertical-align: middle;
+    background: none;
+    position: relative;
+    color: #444;
+}
