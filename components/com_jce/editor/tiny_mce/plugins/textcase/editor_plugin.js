@@ -76,13 +76,13 @@
 						}
 					});
 
-					m.add({
+					/*m.add({
 						title: 'textcase.camelcase',
 						icon: 'camelcase',
 						onclick: function () {
 							ed.execCommand('mceCamelCase');
 						}
-					});
+					});*/
 				});
 				// Return the new splitbutton instance
 				return c;
