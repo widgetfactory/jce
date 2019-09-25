@@ -51,7 +51,17 @@
             });
 
             function isFormat(n) {
-                return tinymce.inArray(nodes, n.nodeName) !== -1;
+                // is a block element
+                if (tinymce.inArray(nodes, n.nodeName) !== -1) {
+                    // not a system element
+                    if (n.className) {
+                        return n.className.indexOf('mce-item-') !== -1;
+                    }
+
+                    return true;
+                }
+
+                return false;
             }
 
             ed.onNodeChange.add(function (ed, cm, n) {
