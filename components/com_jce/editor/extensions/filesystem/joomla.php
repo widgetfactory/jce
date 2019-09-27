@@ -899,7 +899,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
 
-        return JFile::read($path);
+        return file_get_contents($path);
     }
 
     public function write($file, $content)
