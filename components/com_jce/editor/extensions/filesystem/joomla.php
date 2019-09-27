@@ -812,7 +812,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         jimport('joomla.filesystem.file');
 
-        $dispatcher = JDispatcher::getInstance();
+        $app = JFactory::getApplication();
 
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
         $dest = WFUtility::makePath($path, $name);
@@ -859,7 +859,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             }
         }
 
-        $dispatcher->trigger('onWfFileSystemBeforeUpload', array(&$src, &$dest));
+        $app->triggerEvent('onWfFileSystemBeforeUpload', array(&$src, &$dest));
 
         // create object to pass to joomla event
         $object_file = new JObject(array(
@@ -869,21 +869,21 @@ class WFJoomlaFileSystem extends WFFileSystem
         ));
 
         // trigger Joomla event before upload
-        $dispatcher->trigger('onContentBeforeSave', array('com_jce.file', &$object_file, true));
+        $app->triggerEvent('onContentBeforeSave', array('com_jce.file', &$object_file, true));
 
         if (JFile::upload($src, $dest, false, true)) {
             $result->state = true;
             $result->path = $dest;
         }
 
-        $dispatcher->trigger('onWfFileSystemAfterUpload', array(&$result));
+        $app->triggerEvent('onWfFileSystemAfterUpload', array(&$result));
 
         // update $object_file
         $object_file->name = basename($result->path);
         $object_file->filepath = $result->path;
 
         // trigger Joomla event after upload
-        $dispatcher->trigger('onContentAfterSave', array('com_jce.file', &$object_file, true));
+        $app->triggerEvent('onContentAfterSave', array('com_jce.file', &$object_file, true));
 
         return $result;
     }
@@ -931,25 +931,4 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         return is_dir($path);
     }
-}
-
-class MyRecursiveFilterIterator extends \RecursiveFilterIterator
-{
-
-    public function accept()
-    {
-        $filename = $this->current()->getFilename();
-        // Skip hidden files and directories.
-        if ($name[0] === '.') {
-            return false;
-        }
-        if (!$this->isDir()) {
-            // Only recurse into intended subdirectories.
-            return $name === 'wanted_dirname';
-        } else {
-            // Only consume files of interest.
-            return strpos($name, 'wanted_filename') === 0;
-        }
-    }
-
 }
