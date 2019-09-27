@@ -55,9 +55,20 @@ class plgInstallerJce extends JPlugin
 
             return true;
         }
+        
+        // get the site domain
+        $domain = rtrim(JURI::root(), '/');
+
+        // remove all but the host
+        $domain = parse_url($domain, PHP_URL_HOST);
 
         // Append the subscription key to the download URL
         $uri->setVar('key', $key);
+        
+        // Append the base64_encoded domain to the download URL
+        $uri->setVar('domain', base64_encode($domain));
+        
+        // create the url string
         $url = $uri->toString();
 
         // check validity of the key and display a message if it is invalid / expired
