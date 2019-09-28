@@ -55,7 +55,7 @@
 
                 // paragraph
                 ed.formatter.register('p', {
-                    block: 'div',
+                    block: 'p',
                     remove: 'all'
                 });
 
