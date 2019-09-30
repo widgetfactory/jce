@@ -196,3 +196,12 @@
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
 }
+
+.modernSkin .mceStatusbar .mceResize span {
+    color: rgba(0, 0, 0, 0.87);
+    text-align: right;
+    display: inline-block;
+    background: none;
+    width: 1em;
+    height: 1em;
+}

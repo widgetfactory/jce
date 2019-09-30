@@ -181,11 +181,15 @@
 .defaultSkin .mceStatusbar .mceResize {
     display: block;
     float: right;
-    background: url(../../img/icons.png?@@etag@@) -800px 0;
-    width: 20px;
-    height: 20px;
     cursor: se-resize;
     margin: 0;
+}
+
+.defaultSkin .mceStatusbar .mceResize span {
+    background: url(../../img/icons.png?@@etag@@) -800px 0;
+    display: block;
+    width: 20px;
+    height: 20px;
 }
 
 .defaultSkin .mceStatusbar a:hover {

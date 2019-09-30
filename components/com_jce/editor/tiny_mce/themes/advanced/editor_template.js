@@ -572,12 +572,12 @@
             }
 
             if (s.theme_resizing) {
-                DOM.add(td, 'a', {
+                DOM.add(td, 'div', {
                     id: ed.id + '_resize',
                     onclick: "return false;",
                     'class': 'mceResize',
                     tabIndex: "-1"
-                });
+                }, '<span class="mceIcon mce_resize"></span>');
 
                 if (s.use_state_cookies !== false) {
                     ed.onPostRender.add(function () {
