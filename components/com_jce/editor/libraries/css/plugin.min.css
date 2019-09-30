@@ -733,7 +733,7 @@
 }
 
 .uk-icon-multiple-images:before {
-  content: "\e941";
+  content: "\e943";
 }
 
 /*.uk-icon-spinner:before {
@@ -921,6 +921,10 @@ html {
     max-height: 100%;
     border-radius: 4px;
     overflow: hidden;
+}
+
+.uk-modal-dialog-full {
+    width: 100%;
 }
 
 .uk-modal-prompt,
