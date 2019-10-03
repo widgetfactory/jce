@@ -125,7 +125,7 @@
                 "video/x-flv,flv," +
                 "video/vnd.rn-realvideo,rv", +
                 "video/3gpp,3gp," +
-                "video/x-matroska,mkv"
+            "video/x-matroska,mkv"
             );
 
             self.editor = ed;
@@ -260,6 +260,10 @@
             ed.onPreInit.add(function () {
                 var invalid = ed.settings.invalid_elements;
 
+                if (!ed.settings.forced_root_block) {
+                    //ed.settings.media_live_embed = false;
+                }
+
                 // keep this for legacy
                 if (ed.settings.schema === "html4") {
                     // iframe
@@ -349,9 +353,18 @@
                 });
 
                 ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-                    var node = ed.selection.getNode();
+                    var node = e.target, sel = ed.selection.getNode();
 
                     ed.dom.removeClass(ed.dom.select('.mce-item-selected.mce-item-preview'), 'mce-item-selected');
+
+                    // edge case where forced_root_block:false
+                    if (node === ed.getBody() && isMediaNode(sel)) {
+                        if (sel.parentNode === node && !sel.nextSibling) {
+                            ed.dom.insertAfter(ed.dom.create('br', {'data-mce-bogus' : 1}), sel);
+                        }
+
+                        return;
+                    }
 
                     if (isMediaNode(node)) {
                         e.preventDefault();
@@ -371,23 +384,29 @@
 
                         if (preview) {
                             ed.selection.select(preview);
+
                             // add a slight delay before adding selected class to avoid it being removed by the keyup event
                             window.setTimeout(function () {
                                 ed.dom.addClass(preview, 'mce-item-selected');
                             }, 10);
-
-
                         }
+
+                        e.preventDefault();
                     }
                 });
             });
 
             // Remove iframe preview on backspace or delete
             ed.onKeyDown.add(function (ed, e) {
-                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-                    var node = ed.selection.getNode();
+                var node = ed.selection.getNode();
 
+                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
                     if (node) {
+
+                        if (node === ed.getBody()) {
+                            node = e.target;
+                        }
+
                         if (node.className.indexOf('mce-item-shim') !== -1) {
                             node = node.parentNode;
                         }
@@ -438,7 +457,9 @@
 
                     // for an empty block node, padd with a break
                     if (node && ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
-                        ed.dom.add(node.parentNode, 'br', { 'data-mce-bogus': '1' });
+                        //ed.dom.add(node.parentNode, 'br', { 'data-mce-bogus': '1' });
+
+                        ed.dom.insertAfter(ed.dom.create('br', {'data-mce-bogus' : 1}), node);
                     }
                 }
             }
@@ -1209,10 +1230,7 @@
          * @return Object / Audio / Video / Embed element
          */
         restoreElement: function (n, args) {
-            var self = this,
-                ed = this.editor,
-                dom = ed.dom,
-                cl, props, v;
+            var self = this, props, v;
 
             if (/mce-item-preview/.test(n.attr('class'))) {
                 if (n.firstChild && n.firstChild.name === "iframe") {
