@@ -917,6 +917,11 @@ input[list]::-webkit-list-button {
     display: block;
     padding: 0 0.25rem;
     margin: 0.25rem;
+
+    overflow: hidden;
+    line-height: 32px;
+    height: 32px;
+    white-space: nowrap;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
