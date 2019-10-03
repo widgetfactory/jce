@@ -439,7 +439,8 @@
 
 .mceModal .mceModalContent input[type]:disabled,
 .mceModal .mceModalContent textarea:disabled,
-.mceModal .mceModalContent select:disabled {
+.mceModal .mceModalContent select:disabled,
+.mceModal .mceModalContent select option:disabled {
     color: #888;
     background: #eee;
     cursor: not-allowed;
