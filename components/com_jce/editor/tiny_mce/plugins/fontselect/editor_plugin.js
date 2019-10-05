@@ -52,6 +52,7 @@
 
             c = ed.controlManager.createListBox('fontselect', {
                 title: 'advanced.fontdefault',
+                max_height: 384,
                 onselect: function(v) {
                     var cur = c.items[c.selectedIndex];
 

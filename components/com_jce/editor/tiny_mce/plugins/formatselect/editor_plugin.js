@@ -96,7 +96,7 @@
 
             c = ed.controlManager.createListBox('formatselect', {
                 title: 'advanced.block',
-                min_height: 200,
+                max_height: 384,
                 onselect: function (v) {
                     ed.execCommand('FormatBlock', false, v);
                     return false;
