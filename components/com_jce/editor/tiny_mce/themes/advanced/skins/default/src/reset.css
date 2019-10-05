@@ -1,6 +1,7 @@
 /* Reset */
 
-.defaultSkin * {
+.mceDefaultSkin *,
+.mceMenu {
     color: #444;
     font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
@@ -23,35 +24,35 @@
     position: relative;
 }
 
-.defaultSkin select, .defaultSkin textarea, .defaultSkin input[type] {
+.mceDefaultSkin select, .mceDefaultSkin textarea, .mceDefaultSkin input[type] {
     margin: 0;
     line-height: 1;
     transition: inherit;
 }
 
-.defaultSkin input {
+.mceDefaultSkin input {
     cursor: text;
 }
 
-.defaultSkin label,
-.defaultSkin input,
-.defaultSkin button,
-.defaultSkin select {
+.mceDefaultSkin label,
+.mceDefaultSkin input,
+.mceDefaultSkin button,
+.mceDefaultSkin select {
     font-size: 14px;
 }
 
-.defaultSkin button {
+.mceDefaultSkin button {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
 }
 
-.defaultSkin input[type="radio"],
-.defaultSkin input[type="checkbox"] {
+.mceDefaultSkin input[type="radio"],
+.mceDefaultSkin input[type="checkbox"] {
     cursor: inherit;
 }
 
-.defaultSkin>div {
+.mceDefaultSkin>div {
     width: auto;
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
@@ -62,17 +63,17 @@
     left: 0;
 }
 
-.defaultSkin a:hover,
-.defaultSkin a:link,
-.defaultSkin a:visited,
-.defaultSkin a:active {
+.mceDefaultSkin a:hover,
+.mceDefaultSkin a:link,
+.mceDefaultSkin a:visited,
+.mceDefaultSkin a:active {
     text-decoration: none;
     font-weight: normal;
     cursor: default;
     color: #000
 }
 
-.defaultSkin iframe {
+.mceDefaultSkin iframe {
     display: block;
     width: 100%;
 }

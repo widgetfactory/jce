@@ -1,7 +1,7 @@
-.defaultSkin .mceToolbarSource {
+.mceDefaultSkin .mceToolbarSource {
     margin: 0;
 }
 
-.defaultSkin .mceToolbarSource .mceFlex {
+.mceDefaultSkin .mceToolbarSource .mceFlex {
     justify-content: space-between;
 }

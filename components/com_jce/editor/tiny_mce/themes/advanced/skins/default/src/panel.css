@@ -1,6 +1,6 @@
 /* Panel */
 
-.defaultSkin .mcePanel {
+.mceDefaultSkin .mcePanel {
     position: relative;
     left: 0;
     top: 0;
@@ -15,49 +15,49 @@
     box-sizing: border-box;
 }
 
-.defaultSkin .mcePanelButtonActive {
+.mceDefaultSkin .mcePanelButtonActive {
     background-color: #eee;
     border-color: #ddd;
 }
 
-.defaultSkin .mcePanelButtonSelected,
-.defaultSkin .mcePanelButtonSelected:hover {
+.mceDefaultSkin .mcePanelButtonSelected,
+.mceDefaultSkin .mcePanelButtonSelected:hover {
     background-color: #fff;
     border-color: #ddd;
 }
 
-.defaultSkin .mcePanelButtonSelected .mceOpen,
-.defaultSkin .mcePanelButtonSelected:hover .mceOpen {
+.mceDefaultSkin .mcePanelButtonSelected .mceOpen,
+.mceDefaultSkin .mcePanelButtonSelected:hover .mceOpen {
     border-left-color: transparent;
 }
 
-.defaultSkin .mcePanel h4 {
+.mceDefaultSkin .mcePanel h4 {
     font-size: 14px;
     color: #444;
     font-weight: bold;
     margin: 0 0 8px 0;
 }
 
-.defaultSkin .mcePanel .mcePanelContent {
+.mceDefaultSkin .mcePanel .mcePanelContent {
     background-color: #fff;
     font-size: 14px;
     padding: 4px;
     white-space: normal;
 }
 
-.defaultSkin .mcePanel .mcePanelContent .mceToolbarRow {
+.mceDefaultSkin .mcePanel .mcePanelContent .mceToolbarRow {
     display: flex;
 }
 
-.defaultSkin .mcePanel .mcePanelContent label {
+.mceDefaultSkin .mcePanel .mcePanelContent label {
     display: block;
     line-height: 2;
     vertical-align: middle;
 }
 
-.defaultSkin .mcePanel input[type="text"],
-.defaultSkin .mcePanel textarea,
-.defaultSkin .mcePanel select {
+.mceDefaultSkin .mcePanel input[type="text"],
+.mceDefaultSkin .mcePanel textarea,
+.mceDefaultSkin .mcePanel select {
     height: 32px;
     width: 100%;
     padding: 2px;
@@ -69,17 +69,17 @@
     box-sizing: border-box;
 }
 
-.defaultSkin .mcePanel input[type="text"],
-.defaultSkin .mcePanel textarea {
+.mceDefaultSkin .mcePanel input[type="text"],
+.mceDefaultSkin .mcePanel textarea {
     min-width: 12em;
     cursor: text;
 }
 
-.defaultSkin .mcePanel textarea {
+.mceDefaultSkin .mcePanel textarea {
     height: auto;
 }
 
-.defaultSkin .mcePanel select:not([multiple]):not([size]) {
+.mceDefaultSkin .mcePanel select:not([multiple]):not([size]) {
     -webkit-appearance: none;
     -moz-appearance: none;
     padding-right: 20px;
@@ -88,7 +88,7 @@
     background-position: 100% 50%;
 }
 
-.defaultSkin .mcePanel input[type="text"]:focus {
+.mceDefaultSkin .mcePanel input[type="text"]:focus {
     border-color: #66afe9;
     outline: 0;
     background: #f5fbfe;
@@ -96,7 +96,7 @@
     box-shadow: inherit;
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButton {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButton {
     -webkit-appearance: none;
     margin: 0 0 0 5px;
     border: none;
@@ -117,7 +117,7 @@
     cursor: pointer;
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButton:hover {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButton:hover {
     background-color: #fafafa;
     color: #444;
     outline: 0;
@@ -125,15 +125,15 @@
     border-color: rgba(0, 0, 0, 0.16);
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary {
     background-color: #337ab7;
     color: #fff;
     box-shadow: inset 0 0 5px rgba(0, 0, 0, .05);
     text-shadow: 0 -1px 0 rgba(0, 0, 0, .1);
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButton:hover,
-.defaultSkin .mcePanel .mcePanelFooter .mceButton:focus {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButton:hover,
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButton:focus {
     background-color: #fafafa;
     color: #444;
     outline: 0;
@@ -141,27 +141,27 @@
     border-color: rgba(0, 0, 0, .16);
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled,
-.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:hover,
-.defaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:focus {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled,
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:hover,
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButtonDisabled:focus {
     background: #eee;
     color: #888;
 }
 
-.defaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary:hover {
+.mceDefaultSkin .mcePanel .mcePanelFooter .mceButtonPrimary:hover {
     background-color: #35b3ee;
     color: #fff;
     border-color: rgba(0, 0, 0, .21);
 }
 
-.defaultSkin .mcePanel .mcePanelFooter {
+.mceDefaultSkin .mcePanel .mcePanelFooter {
     text-align: right;
     background-color: #f5f5f5;
     padding: 10px;
     border-top: 1px solid #ddd;
 }
 
-.defaultSkin .mcePanel:before {
+.mceDefaultSkin .mcePanel:before {
     content: "";
     display: block;
     position: absolute;
@@ -175,35 +175,35 @@
     box-sizing: content-box;
 }
 
-.defaultSkin.mcePanelSplitButton .mcePanel::before {
+.mceDefaultSkin.mcePanelSplitButton .mcePanel::before {
     width: 46px;
     height: 8px;
     top: -8px;
 }
 
-.defaultSkin.mce_search .mcePanel label,
-.defaultSkin.mce_search .mcePanel .mcePanelFooter .mceButton {
+.mceDefaultSkin.mce_search .mcePanel label,
+.mceDefaultSkin.mce_search .mcePanel .mcePanelFooter .mceButton {
     min-width: 70px;
 }
 
-.defaultSkin.mce_search .mcePanel input.search_error {
+.mceDefaultSkin.mce_search .mcePanel input.search_error {
     border-color: red;
 }
 
-.defaultSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
+.mceDefaultSkin .mcePanelButtonSelected .mceSplitButton .mceText button {
     border-right-color: transparent;
 }
 
-.defaultSkin .mcePanelButtonSelected .mceSplitButton .mceOpen button {
+.mceDefaultSkin .mcePanelButtonSelected .mceSplitButton .mceOpen button {
     border-left-color: transparent;
 }
 
-.defaultSkin .mcePanelButtonActive .mceText button {
+.mceDefaultSkin .mcePanelButtonActive .mceText button {
     border-color: #ccc;
     background-color: #ddd;
 }
 
-.defaultSkin .mcePanelButtonActive .mceOpen button {
+.mceDefaultSkin .mcePanelButtonActive .mceOpen button {
     border-color: #ccc;
     background-color: #ddd;
 }

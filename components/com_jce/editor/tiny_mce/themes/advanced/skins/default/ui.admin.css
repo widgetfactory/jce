@@ -1,25 +1,25 @@
 @import url('ui.css?@@etag@@');
 
-.defaultSkin .mceToolbar {
+.mceDefaultSkin .mceToolbar {
 	border: 0 none;
 }
 
-.defaultSkin .mceLayout,
-.defaultSkin .mceLayout .mceToolbar {
+.mceDefaultSkin .mceLayout,
+.mceDefaultSkin .mceLayout .mceToolbar {
 	border: 0 none !important;
 	background: #fff;
 }
 
-.defaultSkin .mceToolbarItem div {
+.mceDefaultSkin .mceToolbarItem div {
 	display: inline-block;
 }
 
-.defaultSkin .mceLayout .mceStatusbar {
+.mceDefaultSkin .mceLayout .mceStatusbar {
 	border: 1px solid #ddd;
 	border-top-width: 0;
 }
 
-.defaultSkin .mceLayout .mceIframeContainer {
+.mceDefaultSkin .mceLayout .mceIframeContainer {
 	background: #fff;
 	width: 100%;
 	position: relative;
@@ -55,7 +55,7 @@
 	margin-left: inherit;
 }
 
-.defaultSkin .mceToolbar .mceToolbarRow {
+.mceDefaultSkin .mceToolbar .mceToolbarRow {
 	font-size: 0;
 	line-height: 1;
 	height: auto;
@@ -126,6 +126,6 @@
 	vertical-align: top;
 }
 
-.defaultSkin .mceStatusbar {
+.mceDefaultSkin .mceStatusbar {
 	line-height: 1;
 }

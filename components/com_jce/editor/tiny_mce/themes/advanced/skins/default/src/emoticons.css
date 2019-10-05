@@ -1,4 +1,4 @@
-.defaultSkin .mce_emotions_icon {
+.mceDefaultSkin .mce_emotions_icon {
     display: inline-block;
     font-size: 16px;
     line-height: 2em;
@@ -15,20 +15,20 @@
     background: #fff;
 }
 
-.defaultSkin.mce_emotions .mcePanel {
+.mceDefaultSkin.mce_emotions .mcePanel {
     display: flex;
     flex-wrap: wrap;
     max-width: 16.75em;
 }
 
-.defaultSkin.mce_emotions .mcePanelContent {
+.mceDefaultSkin.mce_emotions .mcePanelContent {
     white-space: normal;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.defaultSkin .mce_emotions_icon img {
+.mceDefaultSkin .mce_emotions_icon img {
     padding: 5px;
     cursor: pointer;
 }

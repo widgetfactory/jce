@@ -1,4 +1,4 @@
-.defaultSkin .mceStatusbar {
+.mceDefaultSkin .mceStatusbar {
     font-size: 9pt;
     line-height: 32px;
     overflow: visible;
@@ -10,25 +10,25 @@
     box-sizing: border-box;
 }
 
-.defaultSkin .mceStatusbar div {
+.mceDefaultSkin .mceStatusbar div {
     float: left;
     margin: 2px
 }
 
-.defaultSkin .mceStatusbar .mceResize {
+.mceDefaultSkin .mceStatusbar .mceResize {
     display: block;
     float: right;
     cursor: se-resize;
     margin: 0;
 }
 
-.defaultSkin .mceStatusbar .mceResize span {
+.mceDefaultSkin .mceStatusbar .mceResize span {
     background: url(../../img/icons.png?@@etag@@) -800px 0;
     display: block;
     width: 20px;
     height: 20px;
 }
 
-.defaultSkin .mceStatusbar a:hover {
+.mceDefaultSkin .mceStatusbar a:hover {
     text-decoration: underline
 }

@@ -1,6 +1,6 @@
 /* Button */
 
-.defaultSkin .mceButton {
+.mceDefaultSkin .mceButton {
     display: inline-block;
     border: 1px solid #ddd;
     padding: 4px;
@@ -20,42 +20,42 @@
     line-height: 1;
 }
 
-.defaultSkin .mceButton:hover {
+.mceDefaultSkin .mceButton:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceButton:focus {
+.mceDefaultSkin .mceButton:focus {
     border: 1px solid #ccc;
     background-color: #fff;
     outline: none;
 }
 
-.defaultSkin .mceButtonActive,
-.defaultSkin .mceButtonSelected {
+.mceDefaultSkin .mceButtonActive,
+.mceDefaultSkin .mceButtonSelected {
     border: 1px solid #ccc;
     background-color: #ddd;
 }
 
-.defaultSkin .mceButtonDisabled .mceIcon {
+.mceDefaultSkin .mceButtonDisabled .mceIcon {
     opacity: 0.38;
 }
 
-.defaultSkin .mceButtonLabeled {
+.mceDefaultSkin .mceButtonLabeled {
     width: auto
 }
 
-.defaultSkin .mceButtonLabeled .mceIcon {
+.mceDefaultSkin .mceButtonLabeled .mceIcon {
     float: left
 }
 
-.defaultSkin .mceButtonLabel {
+.mceDefaultSkin .mceButtonLabel {
     display: block;
     font-size: 14px;
     padding: 4px 8px 0 24px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.defaultSkin .mceButtonDisabled .mceButtonLabel {
+.mceDefaultSkin .mceButtonDisabled .mceButtonLabel {
     color: #888
 }

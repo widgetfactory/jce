@@ -2,22 +2,22 @@
 @import url('ui_silver.css?@@etag@@');
 @import url('ui_black.css?@@etag@@');
 
-.o2k7Skin .mceToolbar {
+.mceO2k7Skin .mceToolbar {
 	border: 0 none;
 }
 
-.o2k7Skin .mceLayout,
-.o2k7Skin .mceLayout .mceToolbar {
+.mceO2k7Skin .mceLayout,
+.mceO2k7Skin .mceLayout .mceToolbar {
 	border: 0 none !important;
 	background: #fff;
 }
 
-.o2k7Skin .mceToolbarItem div {
+.mceO2k7Skin .mceToolbarItem div {
 	display: inline-block;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox,
-.o2k7Skin .mceToolbarItem .mceSplitButton {
+.mceO2k7Skin .mceToolbarItem .mceListBox,
+.mceO2k7Skin .mceToolbarItem .mceSplitButton {
 	border: 1px solid #ABC6DD;
 	box-sizing: border-box;
 	border-radius: 0;
@@ -26,45 +26,45 @@
 	cursor: move;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox {
+.mceO2k7Skin .mceToolbarItem .mceListBox {
 	width: 94px;
 	border-radius: 2px;
 }
 
-.o2k7Skin .mceToolbarItem .mceSplitButton {
+.mceO2k7Skin .mceToolbarItem .mceSplitButton {
 	width: 42px;
 	padding: 5px 2px;
 	border-left-width: 0;
 }
 
-.o2k7Skin .mceToolbarItem .mceSplitButton .mceIcon {
+.mceO2k7Skin .mceToolbarItem .mceSplitButton .mceIcon {
 	margin: 0;
 }
 
-.o2k7Skin .mceToolbarItemStart .mceSplitButton {
+.mceO2k7Skin .mceToolbarItemStart .mceSplitButton {
 	border-left-width: 1px;
 }
 
-.o2k7Skin .mceToolbarItemEnd .mceSplitButton {
+.mceO2k7Skin .mceToolbarItemEnd .mceSplitButton {
 	border-right-width: 1px;
 	border-right-color: #E5EFFD;
 }
 
-.o2k7Skin .mceToolbarItem .mceSplitButton+.mceSplitButton {
+.mceO2k7Skin .mceToolbarItem .mceSplitButton+.mceSplitButton {
 	margin-left: 0;
 	border-left-width: 0
 }
 
-.o2k7Skin .mceToolbarRow .mceToolbarItem .mceButton+.mceButton {
+.mceO2k7Skin .mceToolbarRow .mceToolbarItem .mceButton+.mceButton {
 	border-left-width: 0;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox .mceIcon {
+.mceO2k7Skin .mceToolbarItem .mceListBox .mceIcon {
 	width: 76px;
 	height: auto;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox .mceIcon:before {
+.mceO2k7Skin .mceToolbarItem .mceListBox .mceIcon:before {
 	display: inline-block;
 	background: #fff;
 	font-size: 12px;
@@ -74,8 +74,8 @@
 	box-sizing: border-box;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox:after,
-.o2k7Skin .mceToolbarItem .mceSplitButton:after {
+.mceO2k7Skin .mceToolbarItem .mceListBox:after,
+.mceO2k7Skin .mceToolbarItem .mceSplitButton:after {
 	display: block;
 	position: absolute;
 	right: 0;
@@ -83,20 +83,20 @@
 	border-left: 1px solid #ABC6DD;
 }
 
-.o2k7Skin .mceToolbarItem .mceSplitButton:after {
+.mceO2k7Skin .mceToolbarItem .mceSplitButton:after {
 	line-height: 30px;
 }
 
-.o2k7Skin .mceLayout .mceStatusbar {
+.mceO2k7Skin .mceLayout .mceStatusbar {
 	border: 1px solid #ABC6DD;
 	border-top-width: 0;
 }
 
-.o2k7Skin .mceLayout .mceLast {
+.mceO2k7Skin .mceLayout .mceLast {
 	border-color: #ABC6DD;
 }
 
-.o2k7Skin .mceLayout .mceIframeContainer {
+.mceO2k7Skin .mceLayout .mceIframeContainer {
 	background: #fff;
 	width: 100%;
 	position: relative;
@@ -107,75 +107,75 @@
 	margin: 0;
 }
 
-.o2k7Skin .mceLayout .mceToolbarRow {
+.mceO2k7Skin .mceLayout .mceToolbarRow {
 	background-color: #E5EFFD;
 	border-color: #ABC6DD;
 }
 
-.o2k7Skin .mceToolbarItem .mceListBox:after,
-.o2k7Skin .mceToolbarItem .mceSplitButton:after {
+.mceO2k7Skin .mceToolbarItem .mceListBox:after,
+.mceO2k7Skin .mceToolbarItem .mceSplitButton:after {
 	background: linear-gradient(to bottom, rgba(229, 239, 253, 1) 0%, rgba(193, 212, 238, 1) 50%, rgba(229, 239, 253, 1) 100%);
 }
 
 /* Silver */
-.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceListBox,
-.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceSplitButton {
+.mceO2k7Skin.mceO2k7SkinSilver .mceToolbarItem .mceListBox,
+.mceO2k7Skin.mceO2k7SkinSilver .mceToolbarItem .mceSplitButton {
 	border-color: #bbb;
 }
 
-.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceListBox:after,
-.o2k7Skin.o2k7SkinSilver .mceToolbarItem .mceSplitButton:after {
+.mceO2k7Skin.mceO2k7SkinSilver .mceToolbarItem .mceListBox:after,
+.mceO2k7Skin.mceO2k7SkinSilver .mceToolbarItem .mceSplitButton:after {
 	border-color: #bbb;
 	background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(221, 221, 221, 1) 51%, rgba(255, 255, 255, 1) 100%);
 }
 
-.o2k7Skin.o2k7SkinSilver .mceLayout .mceStatusbar {
+.mceO2k7Skin.mceO2k7SkinSilver .mceLayout .mceStatusbar {
 	border-color: #bbb;
 }
 
-.o2k7Skin.o2k7SkinSilver .mceLayout .mceLast {
+.mceO2k7Skin.mceO2k7SkinSilver .mceLayout .mceLast {
 	border-color: #bbb;
 }
 
-.o2k7Skin.o2k7SkinSilver .mceLayout .mceIframeContainer {
+.mceO2k7Skin.mceO2k7SkinSilver .mceLayout .mceIframeContainer {
 	border-color: #bbb;
 }
 
-.o2k7SkinSilver .mceLayout .mceToolbarRow {
+.mceO2k7SkinSilver .mceLayout .mceToolbarRow {
 	background-color: #eee;
 	border-color: #bbb;
 }
 
 /* Black */
-.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceListBox,
-.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceSplitButton {
+.mceO2k7Skin.mceO2k7SkinBlack .mceToolbarItem .mceListBox,
+.mceO2k7Skin.mceO2k7SkinBlack .mceToolbarItem .mceSplitButton {
 	border-color: #B0B6BE;
 }
 
-.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceListBox:after,
-.o2k7Skin.o2k7SkinBlack .mceToolbarItem .mceSplitButton:after {
+.mceO2k7Skin.mceO2k7SkinBlack .mceToolbarItem .mceListBox:after,
+.mceO2k7Skin.mceO2k7SkinBlack .mceToolbarItem .mceSplitButton:after {
 	border-color: #535353;
 	background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
-.o2k7Skin.o2k7SkinBlack .mceLayout .mceStatusbar {
+.mceO2k7Skin.mceO2k7SkinBlack .mceLayout .mceStatusbar {
 	border-color: #535353;
 }
 
-.o2k7Skin.o2k7SkinBlack .mceLayout .mceLast {
+.mceO2k7Skin.mceO2k7SkinBlack .mceLayout .mceLast {
 	border-color: #535353;
 }
 
-.o2k7Skin.o2k7SkinBlack .mceLayout .mceIframeContainer {
+.mceO2k7Skin.mceO2k7SkinBlack .mceLayout .mceIframeContainer {
 	border-color: #535353;
 }
 
-.o2k7SkinBlack .mceLayout .mceToolbarRow {
+.mceO2k7SkinBlack .mceLayout .mceToolbarRow {
 	background-color: #535353;
 	border-color: #535353;
 }
 
-.o2k7SkinBlack .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
+.mceO2k7SkinBlack .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
 	border-color: #fff;
 }
 

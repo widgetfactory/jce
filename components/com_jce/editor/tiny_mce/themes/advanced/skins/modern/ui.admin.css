@@ -5,28 +5,28 @@
     margin: 5px 2px;
 }
 
-.modernSkin .mceToolbarItem .mceButton:not(.mceListBox),
-.modernSkin .mceToolbarItem .mceSplitButton:after {
+.mceModernSkin .mceToolbarItem .mceButton:not(.mceListBox),
+.mceModernSkin .mceToolbarItem .mceSplitButton:after {
     border-color: transparent;
 }
 
-.modernSkin .mceToolbarItem .mceButton:hover {
+.mceModernSkin .mceToolbarItem .mceButton:hover {
     border-color: #ddd;
     background-color: #eee;
 }
 
-.modernSkin .mceToolbarItem .mceSplitButton:hover:after {
+.mceModernSkin .mceToolbarItem .mceSplitButton:hover:after {
     border-left-color: #ddd;
     background-color: #eee;
 }
 
-.modernSkin .mceButton span.mce_forecolor,
-.modernSkin .mceButton span.mce_backcolor {
+.mceModernSkin .mceButton span.mce_forecolor,
+.mceModernSkin .mceButton span.mce_backcolor {
     line-height: 1em;
 }
 
-.modernSkin span.mce_forecolor:after,
-.modernSkin span.mce_backcolor:after {
+.mceModernSkin span.mce_forecolor:after,
+.mceModernSkin span.mce_backcolor:after {
     content: "";
     width: 16px;
     height: 4px;
@@ -35,10 +35,10 @@
     margin: auto;
 }
 
-.modernSkin span.mce_forecolor:after {
+.mceModernSkin span.mce_forecolor:after {
     background-color: black;
 }
 
-.modernSkin span.mce_backcolor:after {
+.mceModernSkin span.mce_backcolor:after {
     background-color: yellow;
 }

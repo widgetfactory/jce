@@ -1,15 +1,15 @@
-.defaultSkin .mceStatusbar .mceWordCount {
+.mceDefaultSkin .mceStatusbar .mceWordCount {
     float: right;
     vertical-align: middle;
     line-height: 18px;
     font-size: 14px;
 }
 
-.defaultSkin .mceStatusbar .mceWordCount .mceText {
+.mceDefaultSkin .mceStatusbar .mceWordCount .mceText {
     font-size: 14px;
 }
 
-.defaultSkin .mceWordCountLimit {
+.mceDefaultSkin .mceWordCountLimit {
     font-weight: bold;
     color: #cc0000;
 }

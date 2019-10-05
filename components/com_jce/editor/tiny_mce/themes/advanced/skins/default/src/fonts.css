@@ -5,8 +5,8 @@
     font-style: normal;
 }
 
-.defaultSkin .mceIcon,
-.defaultSkin .mceAction,
+.mceDefaultSkin .mceIcon,
+.mceDefaultSkin .mceAction,
 .mceModal .mceIcon {
     font-family: 'wfeditor';
     font-style: normal;

@@ -1,93 +1,93 @@
 @import url('ui.css');
 
-.mobileSkin .mceToolbarItem .mceListBox, .mobileSkin .mceToolbarItem .mceSplitButton {
+.mceMobileSkin .mceToolbarItem .mceListBox, .mceMobileSkin .mceToolbarItem .mceSplitButton {
 	border-color: #dcdcdc;
 	height: 36px;
 }
 
-.mobileSkin .mceLayout .mceToolbar .mceToolbarRow {
+.mceMobileSkin .mceLayout .mceToolbar .mceToolbarRow {
   min-height: 38px;
 }
 
-.mobileSkin .mceToolbarItem .mceButton {
+.mceMobileSkin .mceToolbarItem .mceButton {
   padding: 7px;
   border-color: #dcdcdc;
 
   background-color: #fafafa;
 }
 
-.mobileSkin .mceToolbarItem .mceListBox {
+.mceMobileSkin .mceToolbarItem .mceListBox {
   width: 112px;
   padding: 0;
 }
 
-.mobileSkin .mceToolbarItem .mceSplitButton {
+.mceMobileSkin .mceToolbarItem .mceSplitButton {
     width: 55px;
     padding: 0;
     height: 36px;
 }
 
-.mobileSkin .mceToolbarItem .mceListBox .mceIcon {
+.mceMobileSkin .mceToolbarItem .mceListBox .mceIcon {
 	width: 92px;
 }
 
-.mobileSkin .mceToolbarItem .mceListBox .mceIcon:before {
+.mceMobileSkin .mceToolbarItem .mceListBox .mceIcon:before {
   width: 92px;
   line-height: 34px;
 }
 
-.mobileSkin .mceToolbarItem .mceListBox:after, .mobileSkin .mceToolbarItem .mceSplitButton:after {
+.mceMobileSkin .mceToolbarItem .mceListBox:after, .mceMobileSkin .mceToolbarItem .mceSplitButton:after {
   line-height: 34px;
   width: 20px;
 	border-color: #dcdcdc;
 }
 
-.mobileSkin .mceLayout .mceStatusbar {
+.mceMobileSkin .mceLayout .mceStatusbar {
 	border-color: #dcdcdc;
 }
 
-.mobileSkin .mceLayout .mceIframeContainer {
+.mceMobileSkin .mceLayout .mceIframeContainer {
 	border-color: #dcdcdc;
 }
-.mobileSkin .mceLayout .mceToolbarRow {
+.mceMobileSkin .mceLayout .mceToolbarRow {
     background-color: #fafafa;
     border-color: #dcdcdc;
 }
 
-.mobileSkin .mceToolbar .sortableRowHandle {
+.mceMobileSkin .mceToolbar .sortableRowHandle {
   height: 42px;
 }
-.mobileSkin .mceToolbar .sortableRowHandle .uk-icon {
+.mceMobileSkin .mceToolbar .sortableRowHandle .uk-icon {
   margin: 12px 0 0;
 }
-.mobileSkin .mceToolbarItem .mceSeparator {
+.mceMobileSkin .mceToolbarItem .mceSeparator {
     height: 34px;
     background: #dcdcdc;
 }
 
-.mobileSkin .sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
+.mceMobileSkin .sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
   height: 38px;
 }
 
-.mobileSkin .sortableList .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
+.mceMobileSkin .sortableList .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
   height: 36px;
 }
-.mobileSkin .mceLayout, .mobileSkin .mceLayout .mceToolbar {
+.mceMobileSkin .mceLayout, .mceMobileSkin .mceLayout .mceToolbar {
     border: 0 none !important;
     background: #fff;
 }
-.mobileSkin .mceLayout .mceFirst, .mobileSkin .mceLayout .mceLast {
+.mceMobileSkin .mceLayout .mceFirst, .mceMobileSkin .mceLayout .mceLast {
     background-color: #fff !important;
 }
-.mobileSkin .mceLayout .mceStatusbar {
+.mceMobileSkin .mceLayout .mceStatusbar {
     background-color: #fafafa !important;
 }
 
-.mobileSkin .mceToolbarItem .mceListBox::before {
+.mceMobileSkin .mceToolbarItem .mceListBox::before {
   line-height: 32px;
   width: 90px;
 }
 
-.mobileSkin .mceToolbarItem .mceSplitButton .mceIcon {
+.mceMobileSkin .mceToolbarItem .mceSplitButton .mceIcon {
   margin: 7px 6px;
 }

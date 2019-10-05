@@ -2,90 +2,90 @@
 
 @import url('../modern/ui.css');
 
-.mobileSkin .mceToolbar {
+.mceMobileSkin .mceToolbar {
   background-color: #f5f5f5;
 }
 
-.mobileSkin .mceButton {
+.mceMobileSkin .mceButton {
   padding: 11px;
   border-color: #dcdcdc;
   background-color: #fafafa;
 }
 
-.mobileSkin .mcePanelContent .mceButton {
+.mceMobileSkin .mcePanelContent .mceButton {
   padding: 4px;
 }
 
-.mobileSkin .mceListBox .mceText {
+.mceMobileSkin .mceListBox .mceText {
   line-height: 40px;
   height: 40px;
   border-color: #dcdcdc;
 }
 
-.mobileSkin .mceListBox .mceOpen {
+.mceMobileSkin .mceListBox .mceOpen {
   height: 40px;
   border-color: #dcdcdc;
   width: 20px;
   background-color: #fafafa;
 }
 
-.mobileSkin .mceSplitButton .mceOpen {
+.mceMobileSkin .mceSplitButton .mceOpen {
   height: 40px;
   border-color: #dcdcdc;
   width: 20px;
   background-color: #fafafa;
 }
 
-.mobileSkin .mceSplitButton .mceText {
+.mceMobileSkin .mceSplitButton .mceText {
   border-color: #dcdcdc;
   background-color: #fafafa;
   height: 40px;
 }
 
-.mobileSkin .mceSplitButtonMenu::before {
+.mceMobileSkin .mceSplitButtonMenu::before {
   width: 42px;
   top: -4px;
 }
 
-.mobileSkin.mcePanelSplitButton .mcePanel::before {
+.mceMobileSkin.mcePanelSplitButton .mcePanel::before {
   width: 50px;
   top: -7px;
 }
 
-.mobileSkin .mceSourceSearch .mceTextBox {
+.mceMobileSkin .mceSourceSearch .mceTextBox {
   line-height: 40px;
   height: 40px;
 }
 
-.mobileSkin .mceIframeContainer {
+.mceMobileSkin .mceIframeContainer {
   border-color: #dcdcdc;
 }
 
-.mobileSkin .mceButtonEnabled:hover, .mobileSkin .mceButtonActive, .mobileSkin .mceButtonSelected {
+.mceMobileSkin .mceButtonEnabled:hover, .mceMobileSkin .mceButtonActive, .mceMobileSkin .mceButtonSelected {
   background-color: #E1F5FE;
   border-color: #81D4FA;
 }
-.mobileSkin .mceColorSplitMenu button.mceMoreColors:hover {
+.mceMobileSkin .mceColorSplitMenu button.mceMoreColors:hover {
     border-color: #81D4FA;
     background-color: #E1F5FE;
 }
-.mobileSkin .mceMenu .mceMenuItemEnabled button:hover, .mobileSkin .mceMenu .mceMenuItemActive {
+.mceMobileSkin .mceMenu .mceMenuItemEnabled button:hover, .mceMobileSkin .mceMenu .mceMenuItemActive {
     background-color: #E1F5FE;
 }
-.mobileSkin .mceTableSplitMenu {
+.mceMobileSkin .mceTableSplitMenu {
   width: 135px;
 }
-.mobileSkin .mceTableSplitMenu table {
+.mceMobileSkin .mceTableSplitMenu table {
   padding: 2px;
 }
-.mobileSkin .mceTableSplitMenu td {
+.mceMobileSkin .mceTableSplitMenu td {
   border-color: #dcdcdc;
 }
-.mobileSkin .mceTableSplitMenu .selected {
+.mceMobileSkin .mceTableSplitMenu .selected {
   background-color: #E1F5FE;
   border-color: #81D4FA;
 }
-.mobileSkin .mceSeparator {
+.mceMobileSkin .mceSeparator {
     height: 34px;
     background: #dcdcdc;
 }

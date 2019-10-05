@@ -1,148 +1,148 @@
-.o2k7SkinBlack .mceLayout {
+.mceO2k7SkinBlack .mceLayout {
     border-left: 1px solid #535353;
     border-right: 1px solid #535353;
 }
 
-.o2k7SkinBlack .mceIframeContainer {
+.mceO2k7SkinBlack .mceIframeContainer {
     border-top: 1px solid #535353;
     border-bottom: 1px solid #535353
 }
 
-.o2k7SkinBlack .mceToolbar {
+.mceO2k7SkinBlack .mceToolbar {
     background: #535353;
 }
 
-.o2k7SkinBlack .mceStatusbar {
+.mceO2k7SkinBlack .mceStatusbar {
     background: #535353;
 }
 
-.o2k7SkinBlack .mceLayout .mceFirst {
+.mceO2k7SkinBlack .mceLayout .mceFirst {
     border-top-color: #535353;
 }
 
-.o2k7SkinBlack .mceLayout .mceLast {
+.mceO2k7SkinBlack .mceLayout .mceLast {
     border-bottom-color: #535353;
 }
 
-.o2k7SkinBlack .mceStatusbar div,
-.o2k7SkinBlack .mceStatusbar .mcePathRow button,
-.o2k7SkinBlack .mceStatusbar .mcePathRow span,
-.o2k7SkinBlack .mceWordCount .mceText {
+.mceO2k7SkinBlack .mceStatusbar div,
+.mceO2k7SkinBlack .mceStatusbar .mcePathRow button,
+.mceO2k7SkinBlack .mceStatusbar .mcePathRow span,
+.mceO2k7SkinBlack .mceWordCount .mceText {
     color: #fff;
 }
 
-.o2k7SkinBlack.mceListBoxMenu .mceMenu {
+.mceO2k7SkinBlack.mceListBoxMenu .mceMenu {
     border-color: #535353;
 }
 
-.o2k7SkinBlack .mceButton,
-.o2k7SkinBlack .mceButtonDisabled:hover {
+.mceO2k7SkinBlack .mceButton,
+.mceO2k7SkinBlack .mceButtonDisabled:hover {
     border-bottom-color: #989FA9;
     background: #535353;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
 }
 
-.o2k7SkinBlack .mceButton,
-.o2k7SkinBlack .mceSplitButton,
-.o2k7SkinBlack .mceListBox .mceOpen button {
+.mceO2k7SkinBlack .mceButton,
+.mceO2k7SkinBlack .mceSplitButton,
+.mceO2k7SkinBlack .mceListBox .mceOpen button {
     background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
-.o2k7SkinBlack .mceButton.mceButtonDisabled:hover {
+.mceO2k7SkinBlack .mceButton.mceButtonDisabled:hover {
     background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child:hover {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child:hover {
     border-left-width: 1px;
     border-radius: 2px 0 0 2px;
     border-left-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-width: 1px;
     border-radius: 0 2px 2px 0;
     border-right-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceButton,
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceButton,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
     border-right-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceButton,
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceButton,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
     border-left-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceText button,
-.o2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceText button,
+.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen button {
     border-bottom-color: #989FA9;
     border-left-color: #B0B6BE;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
 }
 
-.o2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceText button,
-.o2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceOpen button {
+.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceText button,
+.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceOpen button {
     border-bottom-color: #989FA9;
     border-left-color: #B0B6BE;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
 }
 
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
-.o2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
     border-right-color: transparent;
 }
 
-.o2k7SkinBlack .mceSeparator,
-.o2k7SkinBlack .mceToolbarStart,
-.o2k7SkinBlack .mceToolbarEnd {
+.mceO2k7SkinBlack .mceSeparator,
+.mceO2k7SkinBlack .mceToolbarStart,
+.mceO2k7SkinBlack .mceToolbarEnd {
     border-color: #B0B6BE;
     background: #535353;
 }
 
-.o2k7SkinBlack .mceSplitButton .mceText button,
-.o2k7SkinBlack .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButton .mceText button,
+.mceO2k7SkinBlack .mceSplitButton .mceOpen button {
     border-bottom-color: #989FA9;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
     border-left-color: transparent;
 }
 
-.o2k7SkinBlack .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButton .mceOpen button {
     border-left-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceListBox .mceText button {
+.mceO2k7SkinBlack .mceListBox .mceText button {
     border-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceListBox .mceOpen button {
+.mceO2k7SkinBlack .mceListBox .mceOpen button {
     border-color: #B0B6BE;
 }
 
-.o2k7SkinBlack .mceSplitButtonMenu {
+.mceO2k7SkinBlack .mceSplitButtonMenu {
     border-color: #535353;
 }
 
-.o2k7SkinBlack .mcePanel {
+.mceO2k7SkinBlack .mcePanel {
     background-color: #535353;
     border-color: #535353;
 }
 
-.o2k7SkinBlack .mcePanel::before {
+.mceO2k7SkinBlack .mcePanel::before {
     background-color: #B0B6BE;
     border-color: #535353;
 }
 
-.o2k7Skin .mceSplitButtonMenu {
+.mceO2k7Skin .mceSplitButtonMenu {
     border-color: #535353;
 }
 
-.o2k7Skin .mceLinkMenu .mceMenuHtml input {
+.mceO2k7Skin .mceLinkMenu .mceMenuHtml input {
     border-color: #989FA9;
 }

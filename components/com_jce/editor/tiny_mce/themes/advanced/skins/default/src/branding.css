@@ -1,4 +1,4 @@
-.defaultSkin .mceLayout .mceBranding {
+.mceDefaultSkin .mceLayout .mceBranding {
     width: 100%;
     text-align: center;
     line-height: 20px;
@@ -10,16 +10,16 @@
     white-space: normal;
 }
 
-.defaultSkin .mceLayout .mceBranding a {
+.mceDefaultSkin .mceLayout .mceBranding a {
     font-weight: bold;
     cursor: pointer;
 }
 
-.defaultSkin .mceLayout .mceBranding a:hover {
+.mceDefaultSkin .mceLayout .mceBranding a:hover {
     text-decoration: underline
 }
 
-.defaultSkin .mceLayout .mceBranding span {
+.mceDefaultSkin .mceLayout .mceBranding span {
     font-size: inherit;
     line-height: inherit;
     font-family: inherit;
