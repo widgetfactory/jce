@@ -1,4 +1,4 @@
-.defaultSkin .mceTextBox {
+.mceDefaultSkin .mceTextBox {
     height: 32px;
     line-height: 2;
     width: 100%;
@@ -12,7 +12,7 @@
     cursor: text;
 }
 
-.defaultSkin .mceTextBox:focus {
+.mceDefaultSkin .mceTextBox:focus {
     box-shadow: inherit;
     border-color: #66afe9;
     outline: 0;
@@ -20,7 +20,13 @@
     color: #444;
 }
 
-.defaultSkin .mceToolbarRow .mceTextBox {
+.mceDefaultSkin .mceTextBoxDisabled {
+    color: #888;
+    background-color: #eee;
+    cursor: not-allowed;
+}
+
+.mceDefaultSkin .mceToolbarRow .mceTextBox {
     margin: 1px 0 1px 2px;
     max-width: 10em;
 }
