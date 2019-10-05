@@ -226,17 +226,17 @@
                 ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
             }
 
-            var skin = "defaultSkin";
+            var skin = "mceDefaultSkin";
 
             if (ed.settings.skin !== "default") {
                 if (ed.settings.skin === 'mobile') {
-                    skin += ' modernSkin';
+                    skin += ' mceModernSkin';
                 }
 
-                skin += ' ' + ed.settings.skin + 'Skin';
+                skin += ' ' + 'mce' + self._ufirst(ed.settings.skin) + 'Skin';
 
                 if (s.skin_variant) {
-                    skin += ' ' + ed.settings.skin + 'Skin' + self._ufirst(s.skin_variant);
+                    skin += self._ufirst(s.skin_variant);
                 }
             }
 
