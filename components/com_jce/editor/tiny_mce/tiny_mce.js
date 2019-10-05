@@ -73,6 +73,7 @@
     include('ui/KeyboardNavigation.js');
     include('ui/Control.js');
     include('ui/Container.js');
+    include('ui/Form.js');
     include('ui/Separator.js');
     include('ui/MenuItem.js');
     include('ui/Menu.js');
