@@ -1,6 +1,6 @@
 /* Progress,Resize */
 
-.defaultSkin .mceBlocker {
+.mceDefaultSkin .mceBlocker {
     position: absolute;
     left: 0;
     top: 0;
@@ -19,14 +19,14 @@
     }
 }
 
-.defaultSkin .mceProgress {
+.mceDefaultSkin .mceProgress {
     position: absolute;
     left: 0;
     top: 0;
     z-index: 1001;
 }
 
-.defaultSkin .mceProgress:after {
+.mceDefaultSkin .mceProgress:after {
     content: "";
     display: block;
     border: 0.25rem solid rgba(0, 0, 0, 0.3);
@@ -43,12 +43,12 @@
     box-sizing: border-box;
 }
 
-.defaultSkin .mcePlaceHolder {
+.mceDefaultSkin .mcePlaceHolder {
     border: 1px dotted gray
 }
 
-.defaultSkin .mcePanel.mceContextPanel::before,
-.defaultSkin .mcePanel.mceContextPanel::after {
+.mceDefaultSkin .mcePanel.mceContextPanel::before,
+.mceDefaultSkin .mcePanel.mceContextPanel::after {
     position: absolute;
     left: 50%;
     display: block;
@@ -60,21 +60,21 @@
     content: "";
 }
 
-.defaultSkin .mcePanel.mceContextPanel::before {
+.mceDefaultSkin .mcePanel.mceContextPanel::before {
     top: -9px;
     border-bottom-color: rgba(0, 0, 0, 0.2);
     border-width: 0 9px 9px;
     margin-left: -9px;
 }
 
-.defaultSkin .mcePanel.mceContextPanel::after {
+.mceDefaultSkin .mcePanel.mceContextPanel::after {
     top: -8px;
     border-bottom-color: #fff;
     border-width: 0 8px 8px;
     margin-left: -8px;
 }
 
-.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::before {
+.mceDefaultSkin.mceArrowDown .mcePanel.mceContextPanel::before {
     bottom: -9px;
     border-top-color: rgba(0, 0, 0, 0.2);
     border-width: 9px 9px 0;
@@ -82,7 +82,7 @@
     top: initial;
 }
 
-.defaultSkin.mceArrowDown .mcePanel.mceContextPanel::after {
+.mceDefaultSkin.mceArrowDown .mcePanel.mceContextPanel::after {
     bottom: -8px;
     border-top-color: #fff;
     border-width: 8px 8px 0;
@@ -90,7 +90,7 @@
     top: initial;
 }
 
-.defaultSkin .mceMenu div[class*="mceFontSize"] {
+.mceDefaultSkin .mceMenu div[class*="mceFontSize"] {
     margin: 0.125em;
 }
 
@@ -168,9 +168,9 @@
     text-decoration: none;
 }
 
-/*.defaultSkin .mceButton:focus::after,
-.defaultSkin .mceSplitButton:focus::after,
-.defaultSkin .mceListBox:focus::after {
+/*.mceDefaultSkin .mceButton:focus::after,
+.mceDefaultSkin .mceSplitButton:focus::after,
+.mceDefaultSkin .mceListBox:focus::after {
     content: attr(title);
     position: absolute;
     background: #444;
