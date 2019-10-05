@@ -1,16 +1,13 @@
 /* ListBox */
-
-.defaultSkin .mceListBox {
-    display: block;
+.mceDefaultSkin .mceListBox {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
 }
 
-.defaultSkin .mceListBoxMenu {
-    min-height: 224px;
-}
-
-.defaultSkin .mceListBox .mceText {
+.mceDefaultSkin .mceListBox .mceText {
     padding: 0 4px;
-    width: 96px;
+    min-width: 96px;
     height: 32px;
     text-align: left;
     border: 1px solid #ddd;
@@ -22,7 +19,7 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox .mceOpen {
+.mceDefaultSkin .mceListBox .mceOpen {
     width: 16px;
     height: 32px;
     border: 1px solid #ddd;
@@ -31,23 +28,23 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceListBox .mceOpen,
-.defaultSkin .mceListBox .mceText {
+.mceDefaultSkin .mceListBox .mceOpen,
+.mceDefaultSkin .mceListBox .mceText {
     float: left;
 }
 
-.defaultSkin .mceListBox:hover .mceOpen,
-.defaultSkin .mceListBox:focus .mceOpen {
+.mceDefaultSkin .mceListBox:hover .mceOpen,
+.mceDefaultSkin .mceListBox:focus .mceOpen {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceListBox:hover .mceText,
-.defaultSkin .mceListBox:focus .mceText {
+.mceDefaultSkin .mceListBox:hover .mceText,
+.mceDefaultSkin .mceListBox:focus .mceText {
     border-color: #ccc;
 }
 
-.defaultSkin .mceListBox .mceOpen:after {
+.mceDefaultSkin .mceListBox .mceOpen:after {
     content: "\25BC";
     display: block;
     font-size: 9px;
@@ -60,36 +57,37 @@
     background-position: 100% 50%;*/
 }
 
-.defaultSkin .mceListBoxSelected .mceText {
+.mceDefaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
     background: #fff
 }
 
-.defaultSkin .mceListBoxSelected .mceOpen {
+.mceDefaultSkin .mceListBoxSelected .mceOpen {
     background-color: #fff;
     border: 1px solid #ccc;
 }
 
-.defaultSkin .mceListBoxDisabled .mceOpen:after {
+.mceDefaultSkin .mceListBoxDisabled .mceOpen:after {
     color: gray;
 }
 
-.defaultSkin .mceListBoxDisabled .mceText {
+.mceDefaultSkin .mceListBoxDisabled .mceText {
     color: gray;
     background-color: transparent;
 }
 
-.defaultSkin .mceListBoxMenu {
+.mceListBoxMenu {
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 2px;
-
-    min-width: calc(100px * 2);
+    min-width: calc(113px * 2);
+    min-height: 98px;
+    height: auto;
+    max-height: 386px /*(32px *  12 + 2);*/
 }
 
-.defaultSkin .mceListBoxMenu .mceMenu {
-    border: 1px solid #ddd;
+.mceListBoxMenu .mceMenuItems {
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 select.mceNativeListBox {
@@ -99,12 +97,13 @@ select.mceNativeListBox {
     margin-right: 2px;
 }
 
-.defaultSkin .mceListBoxMenu .mceMenuFilter {
+.mceListBoxMenu .mceMenuFilter {
     padding: 4px;
     background: #eee;
+    /*height: calc(100% - 40px);*/
 }
 
-.defaultSkin .mceListBoxMenu .mceMenuFilter input {
+.mceListBoxMenu .mceMenuFilter input {
     height: 32px;
     line-height: 32px;
     width: 100%;
@@ -115,7 +114,7 @@ select.mceNativeListBox {
     border: 0 none;
 }
 
-/*.defaultSkin .mceListBoxMenu .mceMenuFilter:after {
+/*.mceListBoxMenu .mceMenuFilter:after {
     content: "";
     display: block;
     width: 32px;
@@ -127,7 +126,7 @@ select.mceNativeListBox {
     right: 4px;
 }*/
 
-.defaultSkin .mceListBoxMenu .mceMenuFilter svg {
+.mceListBoxMenu .mceMenuFilter svg {
     position: absolute;
     right: 14px;
     top: 14px;
@@ -138,7 +137,7 @@ select.mceNativeListBox {
 }
 
 /* RTL */
-.mceRtl .mceListBox .mceText {
+.mceRtl .mceDefaultSkin .mceListBox .mceText {
     text-align: right;
     padding: 0 4px 0 0
 }

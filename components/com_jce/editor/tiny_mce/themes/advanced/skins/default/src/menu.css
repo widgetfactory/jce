@@ -1,109 +1,110 @@
 /* Menu */
 
-.defaultSkin .mceMenu {
+.mceMenu {
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 1000;
+    z-index: 20000;
     border: 1px solid #ddd;
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
+    overflow: hidden;
+    overflow-y: auto;
+    margin-top: 2px;
 }
 
-.defaultSkin .mceNoIcons span.mceIcon {
-    width: 0;
-}
-
-.defaultSkin .mceNoIcons .mceMenuItemOption .mceText {
-    padding-left: 20px;
-}
-
-.defaultSkin .mceMenu div {
+.mceMenu .mceMenuItems div {
     background-color: #fff;
 }
 
-.defaultSkin .mceMenu span,
-.defaultSkin .mceMenu {
+.mceMenu .mceMenuItems span,
+.mceMenu .mceMenuItems {
     display: block
 }
 
-.defaultSkin .mceMenu .mceMenuItemOption {
+.mceMenu .mceMenuItems .mceMenuItem {
     position: relative;
     padding: 0;
     cursor: pointer;
 }
 
-.defaultSkin .mceMenu .mceText {
+.mceMenu .mceMenuItems .mceText {
     position: relative;
     display: block;
     cursor: pointer;
     margin: 0;
-    padding: 0 32px 0 32px;
+    padding: 0 8px;
     overflow: hidden;
+    width: 100%;
 }
 
-.defaultSkin .mceMenu span.mceText,
-.defaultSkin .mceMenu .mcePreview {
+.mceMenu .mceMenuItems .mceIcon + .mceText {
+    padding: 0 32px 0 40px;
+}
+
+.mceMenu .mceMenuItems .mceText,
+.mceMenu .mceMenuItems .mcePreview {
     font-size: 14px;
     line-height: 32px;
 }
 
-.defaultSkin .mceMenu pre.mceText {
+.mceMenu .mceMenuItems pre.mceText {
     font-family: Monospace;
 }
 
-.defaultSkin .mceMenu .mceIcon {
+.mceMenu .mceMenuItems .mceIcon {
     position: absolute;
     top: 6px;
     left: 4px;
     width: 20px;
 }
 
-.defaultSkin .mceMenu .mceMenuItems {
+.mceMenu .mceMenuItems {
     height: 100%;
-    overflow: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+    margin: 2px;
 }
 
-.defaultSkin .mceMenu .mceMenuFilter+.mceMenuItems {
+.mceMenu .mceMenuFilter + .mceMenuItems {
     height: calc(100% - 40px);
 }
 
-.defaultSkin .mceMenu .mceMenuItemHidden {
+.mceMenu .mceMenuItems .mceMenuItemHidden {
     display: none;
 }
 
-.defaultSkin .mceMenu .mceMenuItemEnabled .mceMenuItemOption:hover,
-.defaultSkin .mceMenu .mceMenuItemEnabled .mceMenuItemOption:focus,
-.defaultSkin .mceMenu .mceMenuItemActive {
+.mceMenu .mceMenuItems .mceMenuItemEnabled:hover,
+.mceMenu .mceMenuItems .mceMenuItemEnabled:focus,
+.mceMenu .mceMenuItems .mceMenuItemActive,
+.mceMenu .mceMenuItems .mceSelected {
     background-color: #eee
 }
 
-.defaultSkin .mceMenu .mceMenuItemEnabled .mceTableSplitMenu a:hover {
+.mceMenu .mceMenuItems .mceMenuItemEnabled .mceTableSplitMenu a:hover {
     background-color: transparent;
 }
 
-.defaultSkin .mceMenuItemSeparator {
+.mceMenu .mceMenuItemsItemSeparator {
     background: #ddd;
     height: 1px
 }
 
-.defaultSkin .mceMenuItemDisabled .mceText {
+.mceMenu .mceMenuItemsItemDisabled .mceText {
     color: #888
 }
 
-/*.defaultSkin .mceMenuItemSelected .mceIcon {
+/*.mceMenu .mceMenuItemsItemSelected .mceIcon {
     background: url(img/menu_check.gif)
 }*/
 
-.defaultSkin .mceNoIcons .mceMenuItemSelected .mceMenuItemOption {
+.mceMenu .mceNoIcons .mceMenuItemSelected .mceMenuItem {
     background: url(img/menu_arrow.gif) no-repeat left center
 }
 
-.defaultSkin .mceMenuItemSub .mceMenuItemOption {
+.mceMenu .mceMenuItemsItemSub .mceMenuItem {
     background: url(img/menu_arrow.gif) no-repeat center right;
 }
 
@@ -112,30 +113,30 @@
     text-align: right
 }
 
-.defaultSkin .mceMenuHtml {
+.mceMenu .mceMenuItems .mceMenuHtml {
     position: relative;
 }
 
-.defaultSkin .mceMenuHtml .mceToolbarRow {
+.ceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
     position: relative;
     display: flex;
 }
 
-.defaultSkin .mceMenuHtml .mceToolbarColumn {
+.mceMenu .mceMenuItems .mceMenuHtml .mceToolbarColumn {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
-.defaultSkin .mceMenuHtml label {
+.mceMenu .mceMenuItems .mceMenuHtml label {
     display: block;
     line-height: 2;
     vertical-align: middle;
 }
 
-.defaultSkin .mceMenuHtml input[type="text"],
-.defaultSkin .mceMenuHtml textarea,
-.defaultSkin .mceMenuHtml select {
+.mceMenu .mceMenuItems .mceMenuHtml input[type="text"],
+.mceMenu .mceMenuItems .mceMenuHtml textarea,
+.mceMenu .mceMenuItems .mceMenuHtml select {
     height: 32px;
     width: 100%;
     padding: 2px;
@@ -148,11 +149,11 @@
     cursor: initial;
 }
 
-.defaultSkin .mceMenuHtml textarea {
+.mceMenu .mceMenuItems .mceMenuHtml textarea {
     height: auto;
 }
 
-.defaultSkin .mceMenuHtml select:not([multiple]):not([size]) {
+.mceMenu .mceMenuItems .mceMenuHtml select:not([multiple]):not([size]) {
     -webkit-appearance: none;
     -moz-appearance: none;
     padding-right: 20px;
@@ -161,7 +162,7 @@
     background-position: 100% 50%;
 }
 
-.defaultSkin .mceMenuHtml input[type="text"]:focus {
+.mceMenu .mceMenuItems .mceMenuHtml input[type="text"]:focus {
     border-color: #66afe9;
     outline: 0;
     background: #f5fbfe;
@@ -169,23 +170,23 @@
     box-shadow: inherit;
 }
 
-.defaultSkin .mceLinkMenu {
+.mceMenu .mceLinkMenu {
     min-width: 220px;
 }
 
-.defaultSkin .mceLinkMenu .mceMenuHtml input {
+.mceMenu .mceLinkMenu .mceMenuHtml input {
     margin-right: 5px;
 }
 
-.defaultSkin .mceMenuHtml .mceButton {
+.mceMenu .mceMenuItems .mceMenuHtml .mceButton {
     position: relative;
 }
 
-.defaultSkin .mceMenuHtml .mceButton .mceIcon {
+.mceMenu .mceMenuItems .mceMenuHtml .mceButton .mceIcon {
     position: static;
 }
 
-.defaultSkin .mceButtonMenu {
+.mceMenu .mceButtonMenu {
     margin: 0;
     border: 1px solid #ddd;
     margin-top: 2px;
@@ -193,11 +194,11 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.defaultSkin .mceButtonMenu .mceMenuItem {
+.mceMenu .mceButtonMenu .mceMenuItem {
     margin: 3px;
 }
 
-.defaultSkin .mceButtonMenu::before {
+.mceMenu .mceButtonMenu::before {
     content: "";
     display: block;
     padding: 3px;
@@ -208,4 +209,8 @@
     left: -1px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+}
+
+.mceMenu .mceModalContent .mceListBox .mceText {
+    width: calc(100% - 32px);
 }

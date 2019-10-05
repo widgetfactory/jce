@@ -1,5 +1,5 @@
 /* SplitButton */
-.defaultSkin .mceSplitButton button {
+.mceDefaultSkin .mceSplitButton button {
     height: 32px;
     display: inline-block;
     text-align: center;
@@ -7,17 +7,17 @@
     width: 32px;
 }
 
-.defaultSkin .mceSplitButton .mceText {
+.mceDefaultSkin .mceSplitButton .mceText {
     float: left;
 }
 
-.defaultSkin .mceSplitButton .mceText,
-.defaultSkin .mceSplitButton .mceOpen {
+.mceDefaultSkin .mceSplitButton .mceText,
+.mceDefaultSkin .mceSplitButton .mceOpen {
     display: inline-block;
     border: 1px solid #ddd;
 }
 
-.defaultSkin .mceSplitButton .mceText {
+.mceDefaultSkin .mceSplitButton .mceText {
     border-right: 0;
     border-radius: 2px 0 0 2px;
     cursor: pointer;
@@ -28,12 +28,12 @@
     justify-content: center;
 }
 
-.defaultSkin .mceSplitButton .mceAction {
+.mceDefaultSkin .mceSplitButton .mceAction {
     width: 20px;
     background-image: url(../../img/icons.png?@@etag@@);
 }
 
-.defaultSkin .mceSplitButton .mceOpen {
+.mceDefaultSkin .mceSplitButton .mceOpen {
     width: 16px;
     text-align: center;
     height: 32px;
@@ -41,7 +41,7 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceSplitButton .mceOpen:after {
+.mceDefaultSkin .mceSplitButton .mceOpen:after {
     content: "\25BC";
     display: block;
     font-size: 9px;
@@ -50,61 +50,58 @@
     text-align: center;
 }
 
-.defaultSkin .mceSplitButtonDisabled .mceOpen:after {
+.mceDefaultSkin .mceSplitButtonDisabled .mceOpen:after {
     color: #888;
 }
 
-.defaultSkin .mceSplitButton:hover .mceText,
-.defaultSkin .mceSplitButton:hover .mceOpen,
-.defaultSkin .mceSplitButton:focus .mceText,
-.defaultSkin .mceSplitButton:focus .mceOpen {
+.mceDefaultSkin .mceSplitButton:hover .mceText,
+.mceDefaultSkin .mceSplitButton:hover .mceOpen,
+.mceDefaultSkin .mceSplitButton:focus .mceText,
+.mceDefaultSkin .mceSplitButton:focus .mceOpen {
     border-color: #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceSplitButtonDisabled .mceAction {
+.mceDefaultSkin .mceSplitButtonDisabled .mceAction {
     opacity: 0.3;
 }
 
-.defaultSkin .mceSplitButtonActive .mceText {
+.mceDefaultSkin .mceSplitButtonActive .mceText {
     border-color: #ccc;
     background-color: #ddd;
 }
 
-.defaultSkin .mceSplitButtonActive .mceOpen {
+.mceDefaultSkin .mceSplitButtonActive .mceOpen {
     border-left: 0;
     border-color: #ccc;
     background-color: #ddd;
 }
 
-.defaultSkin .mceSplitButtonMenu {
-    margin: 0;
-    border: 1px solid #ddd;
-    margin-top: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.mceSplitButtonMenu {
     min-width: calc(48px * 3);
+    margin-top: 3px;
 }
 
-.defaultSkin .mceMenuItemSub {
+.mceDefaultSkin .mceMenuItemSub {
     box-shadow: inherit;
     border: 0;
     margin: 0;
 }
 
-.defaultSkin .mceSplitButtonMenu .mceMenuItem {
-    margin: 4px;
+.mceDefaultSkin .mceSplitButtonMenu .mceMenuItem {
+    margin: 2px;
 }
 
 /* ColorSplitButton */
-.defaultSkin .mceColorSplitMenu table {
+.mceDefaultSkin .mceColorSplitMenu table {
     background: #fff;
 }
 
-.defaultSkin .mceColorSplitMenu td {
+.mceDefaultSkin .mceColorSplitMenu td {
     padding: 1px
 }
 
-.defaultSkin .mceColorSplitMenu button {
+.mceDefaultSkin .mceColorSplitMenu button {
     display: block;
     width: 24px;
     height: 24px;
@@ -115,17 +112,17 @@
     outline: none;
 }
 
-.defaultSkin .mceColorSplitMenu button:hover,
-.defaultSkin .mceColorSplitMenu button:focus {
+.mceDefaultSkin .mceColorSplitMenu button:hover,
+.mceDefaultSkin .mceColorSplitMenu button:focus {
     border-color: #444;
     outline: none;
 }
 
-.defaultSkin .mceColorSplitMenu .mceMoreColors {
+.mceDefaultSkin .mceColorSplitMenu .mceMoreColors {
     padding: 1px;
 }
 
-.defaultSkin .mceColorSplitMenu .mceRemoveColor button:after {
+.mceDefaultSkin .mceColorSplitMenu .mceRemoveColor button:after {
     color: #444;
     display: block;
     font-family: Arial, sans-serif;
@@ -139,7 +136,7 @@
     margin-left: 1px;
 }
 
-.defaultSkin .mceColorSplitMenu .mceMoreColors button {
+.mceDefaultSkin .mceColorSplitMenu .mceMoreColors button {
     width: 100%;
     height: auto;
     text-align: center;
@@ -148,20 +145,20 @@
     cursor: pointer;
 }
 
-.defaultSkin .mceColorSplitMenu .mceMoreColors:hover button {
+.mceDefaultSkin .mceColorSplitMenu .mceMoreColors:hover button {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
 
-.defaultSkin .mceColorPreview {
+.mceDefaultSkin .mceColorPreview {
     width: 16px;
     height: 4px;
     overflow: hidden;
     background: #fafafa;
 }
 
-.defaultSkin .mce_forecolor span.mceAction,
-.defaultSkin .mce_backcolor span.mceAction {
+.mceDefaultSkin .mce_forecolor span.mceAction,
+.mceDefaultSkin .mce_backcolor span.mceAction {
     overflow: hidden;
     height: 15px
 }
@@ -178,16 +175,16 @@
     border-spacing: inherit;
 }
 
-.defaultSkin .mceTableSplitMenu table {
+.mceDefaultSkin .mceTableSplitMenu table {
     padding: 2px;
 }
 
-.defaultSkin .mceTableSplitMenu td {
+.mceDefaultSkin .mceTableSplitMenu td {
     background-color: #fff;
     text-align: center;
 }
 
-.defaultSkin .mceTableSplitMenu td a {
+.mceDefaultSkin .mceTableSplitMenu td a {
     width: 24px;
     height: 24px;
     display: block;
@@ -196,55 +193,42 @@
     margin : 1px;
 }
 
-.defaultSkin .mceTableSplitMenu .selected a {
+.mceDefaultSkin .mceTableSplitMenu .selected a {
     background-color: #337ab7;
     border-color: #2e6da4;
 }
 
-.defaultSkin .mceTableSplitMenu .mceTableGridCount {
+.mceDefaultSkin .mceTableSplitMenu .mceTableGridCount {
     background-color: #fff;
     text-align: center;
-    line-height: 20px;
+    line-height: 32px;
 }
 
-.defaultSkin .mceSplitButtonMenu:before {
-    content: "";
-    display: block;
-    padding: 4px;
-    position: absolute;
-    width: 38px;
-    top: -6px;
-    background: #fff;
-    left: -1px;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-}
-
-.defaultSkin .mceSplitButtonSelected .mceText,
-.defaultSkin .mceSplitButtonSelected:hover .mceText {
+.mceDefaultSkin .mceSplitButtonSelected .mceText,
+.mceDefaultSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
     border-color: #ddd;
     border-radius: 2px 0 0 0;
 }
 
-.defaultSkin .mceSplitButtonSelected .mceOpen,
-.defaultSkin .mceSplitButtonSelected:hover .mceOpen {
+.mceDefaultSkin .mceSplitButtonSelected .mceOpen,
+.mceDefaultSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
     border-color: #ddd;
     border-left-color: transparent;
     border-radius: 0 2px 0 0;
 }
 
-.defaultSkin .mceColorSplitMenu {
+.mceDefaultSkin .mceColorSplitMenu {
     padding: 2px;
     background: #fff;
 }
 
-.defaultSkin .mceColumns .mceTableSplitMenu {
+.mceDefaultSkin .mceColumns .mceTableSplitMenu {
     width: 120px;
 }
 
-.defaultSkin .mceColumns .mceTableSplitMenu td a {
+.mceDefaultSkin .mceColumns .mceTableSplitMenu td a {
     width: 24px;
     height: 32px;
 }
