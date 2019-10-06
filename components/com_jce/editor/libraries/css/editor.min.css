@@ -155,12 +155,14 @@
     box-shadow: inherit;
 }
 
-.wf-editor-header {
+.wf-editor-header,
+.mce-fullscreen .wf-editor-header {
     min-height: 2.5rem;
 }
 
-.mce-fullscreen .wf-editor-header {
-    min-height: 2.5rem;
+.wf-editor-header:empty,
+.mce-fullscreen .wf-editor-header:empty {
+    min-height: inherit;
 }
 
 .wf-editor-tabs {
