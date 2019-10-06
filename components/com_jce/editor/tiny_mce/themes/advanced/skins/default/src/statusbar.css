@@ -10,7 +10,14 @@
     box-sizing: border-box;
 }
 
-.mceDefaultSkin .mceStatusbar div {
+.defaultSkin .mceStatusbar:empty {
+    line-height: inherit;
+    height: inherit;
+    padding: 0;
+    border: 0 none;
+}
+
+.defaultSkin .mceStatusbar div {
     float: left;
     margin: 2px
 }
