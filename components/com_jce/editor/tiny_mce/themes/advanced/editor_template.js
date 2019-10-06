@@ -579,20 +579,18 @@
                 'class': 'mceStatusbar'
             });
 
-            n = DOM.add(n, 'div', {
-                id: ed.id + '_path_row',
-                'role': 'group',
-                'aria-labelledby': ed.id + '_path_voice',
-                'class': 'mcePathRow'
-            });
-
             if (s.theme_path) {
+                n = DOM.add(n, 'div', {
+                    id: ed.id + '_path_row',
+                    'role': 'group',
+                    'aria-labelledby': ed.id + '_path_voice',
+                    'class': 'mcePathRow'
+                });
+                
                 DOM.add(n, 'span', {
                     id: ed.id + '_path_voice',
                     'class': 'mcePathLabel'
                 }, ed.translate('advanced.path') + ': ');
-            } else {
-                DOM.add(n, 'span', {}, '&#160;');
             }
 
             if (s.theme_resizing) {
