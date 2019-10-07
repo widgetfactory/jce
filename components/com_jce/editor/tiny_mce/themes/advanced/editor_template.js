@@ -879,13 +879,12 @@
 
             ed.windowManager.open({
                 url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-                inline: true,
-                //width: 780,
-                //height: 560,
+                width: 780,
+                height: 560,
                 size: 'mce-modal-landscape-full'
             }, {
-                    theme_url: this.url
-                });
+                theme_url: this.url
+            });
         },
 
         _mceNewDocument: function () {

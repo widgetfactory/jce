@@ -25,11 +25,10 @@
 
             ed.windowManager.open({
                 file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=browser' + (args.caller ? '.' + args.caller : '') + (args.filter ? '&filter=' + args.filter : ''),
-                inline: "yes",
                 close_previous: "no",
                 size: 'mce-modal-landscape-full',
-                //width: 896,
-                //height: 707
+                width: 896,
+                height: 707
             }, args);
 
             return false;
