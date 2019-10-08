@@ -244,11 +244,9 @@
     height: 32px;
     line-height: 1;
     background: #fff;
-    /*border-radius: 2px;*/
     border-radius: 2px;
     color: #444;
-    /*border: 1px solid #ddd;*/
-    border: 1px solid #fff;
+    border: 1px solid #ddd;
     margin: 0 0 0 4px;
     padding: 0 8px;
 }
@@ -275,6 +273,16 @@
     cursor: not-allowed;
 }
 
+.mceModal .mceModalFooter .mceButton {
+    border-color: #ddd;
+}
+
+.mceModal .mceModalFooter .mceButton:focus,
+.mceModal .mceModalFooter .mceButton:hover {
+    border-color: #888;
+    background: #fff;
+}
+
 .mceModal .mceButtonDefault {
     border-color: #ddd;
 }
@@ -284,14 +292,14 @@
     border-color: #888;
 }
 
-.mceModal .mceButtonPrimary {
+.mceModal .mceModalFooter .mceButtonPrimary {
     background-color: #337ab7;
     border: 1px solid rgba(0, 0, 0, 0.06);
     color: #fff;
 }
 
-.mceModal .mceButtonPrimary:hover,
-.mceModal .mceButtonPrimary:focus {
+.mceModal .mceModalFooter .mceButtonPrimary:hover,
+.mceModal .mceModalFooter .mceButtonPrimary:focus {
     background-color: #286090;
     color: #fff;
     border-color: rgba(0, 0, 0, .21);

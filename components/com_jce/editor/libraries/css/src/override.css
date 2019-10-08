@@ -89,8 +89,7 @@ html {
 
 .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success) {
     background-color: #fff;
-    /*border-color: #ddd;*/
-    border-color: #fff;
+    border-color: #ddd;
 }
 
 .uk-modal-footer .uk-button:not(.uk-button-primary):not(.uk-button-danger):not(.uk-button-success):focus,
