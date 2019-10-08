@@ -272,6 +272,7 @@
     color: #888;
     background: #f5f5f5;
     border-color: #eee;
+    cursor: not-allowed;
 }
 
 .mceModal .mceButtonDefault {
@@ -496,6 +497,15 @@
 
 .mceModal .mceModalContent .mceModalFlexNone {
     flex: inherit;
+    display: flex;
+}
+
+.mceModal .mceModalContent .mceModalControl button {
+    margin-left: 2px;
+}
+
+.mceModal .mceListBox .mceOpen {
+    min-width: 24px;
 }
 
 .mceModal .mceModalContent .mceModalControl iframe {
