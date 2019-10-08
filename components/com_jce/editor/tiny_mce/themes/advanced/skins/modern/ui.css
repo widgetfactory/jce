@@ -31,6 +31,10 @@
     background: none;
 }
 
+.mceModernSkin .mceButtonPrimary {
+    color: #fff;
+}
+
 .mceModernSkin .mceButtonDisabled .mceIcon {
     opacity: 0.38;
 }
@@ -39,6 +43,13 @@
 .mceModernSkin .mceButton:focus {
     border: 1px solid #ddd;
     background-color: #e6e6e6;
+}
+
+.mceModernSkin .mceButtonPrimary:hover,
+.mceModernSkin .mceButtonPrimary:focus {
+    background-color: #286090;
+    color: #fff;
+    border-color: rgba(0, 0, 0, .21);
 }
 
 .mceModernSkin .mceSplitButton:hover .mceText,
