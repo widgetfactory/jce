@@ -9,6 +9,10 @@
  */
 (function ($, window) {
 
+    function ucfirst(str) {
+        return str.charAt(0).toUpperCase() + str.substring(1);
+    }
+    
     Joomla.submitbutton = function (task) {
         var form = document.getElementById('adminForm');
 
@@ -305,15 +309,17 @@
 
             if (value.indexOf('.') !== -1) {
                 value = value.replace(/([^\.]+)\.([\w]+)/, function (match, skin, variant) {
-                    return skin + 'Skin ' + skin + 'Skin' + (variant.charAt(0).toUpperCase() + variant.substring(1));
+                    skin = 'mce' + ucfirst(skin);
+                    
+                    return skin + 'Skin ' + skin + 'Skin' + (ucfirst(variant));
                 });
             } else {
-                value += 'Skin';
+                value = 'mce' + ucfirst(value) + 'Skin';
             }
 
             $('.editor-layout .mceEditor, .editor-button-pool .mceEditor').attr('class', function (i, value) {
-                return $.trim(value.replace(/([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
-            }).addClass('defaultSkin ' + value);
+                return $.trim(value.replace(/mce([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
+            }).addClass('mceDefaultSkin ' + value);
 
             $('#mce-theme').remove();
 

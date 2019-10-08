@@ -46,7 +46,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
                 $icons .= '<div class="mce-widget mce-btn mceButton ' . $plugin->class . '" title="' . $plugin->title . '"><span class="mce-ico mce-i-' . $icon . ' mceIcon mce_' . $icon . '"></span></div>';
             }
 
-            $title .= '<div class="mceEditor defaultSkin"><div class="mce-container mce-toolbar mceToolbarItem">' . $icons . '</div></div>';
+            $title .= '<div class="mceEditor mceDefaultSkin"><div class="mce-container mce-toolbar mceToolbarItem">' . $icons . '</div></div>';
         }
 
         //echo JHtml::_('bootstrap.addTab', 'profile-plugins', 'profile-plugins-' . $plugin->name, $title); ?>

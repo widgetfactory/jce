@@ -40,7 +40,7 @@ class JFormFieldButtons extends JFormFieldCheckboxes
     {
         $return = parent::setup($element, $value, $group);
 
-        $this->class = trim($this->class . ' defaultSkin');
+        $this->class = trim($this->class . ' mceDefaultSkin');
 
         return $return;
     }

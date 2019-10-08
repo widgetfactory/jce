@@ -170,7 +170,7 @@ a.browser {
     border-radius: 1px;
 }
 
-.defaultSkin.checkboxes .mceButton {
+.mceDefaultSkin.checkboxes .mceButton {
     text-align: left;
     max-width: 200px;
     margin: 5px;

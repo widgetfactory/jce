@@ -29,7 +29,7 @@ $plugins = $displayData->get('Plugins');
                 $icons .= '<div class="mce-widget mce-btn mceButton ' . $plugin->class . '" title="' . $plugin->title . '"><span class="mce-ico mce-i-' . $icon . ' mceIcon mce_' . $icon . '"></span></div>';
             }
 
-            $title .= '<div class="mceEditor defaultSkin"><div class="mce-container mce-toolbar mceToolBarItem">' . $icons . '</div></div>';
+            $title .= '<div class="mceEditor mceDefaultSkin"><div class="mce-container mce-toolbar mceToolBarItem">' . $icons . '</div></div>';
         }
 
         echo JHtml::_('bootstrap.addTab', 'plugins', 'tabs-plugins-' . $plugin->name, $title); ?>

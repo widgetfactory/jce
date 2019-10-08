@@ -33,7 +33,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                 <span><?php echo $width; ?></span>
             </div>
             <!-- Toolbar -->
-            <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout defaultSkin" role="application">
+            <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout mceDefaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout" style="max-width:<?php echo $width; ?>" role="presentation">
                     <div class="mceToolbar sortableList" role="group">
                         <?php foreach ($rows as $key => $groups) : ?>
