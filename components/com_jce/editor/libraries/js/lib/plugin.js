@@ -201,10 +201,9 @@
             ed.windowManager.open({
                 url: tinyMCEPopup.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.settings.language + '&section=editor&category=' + this.getName(),
                 title: tinyMCEPopup.getLang('dlg.help', 'Help'),
-                //width: 896,
-                //height: 768,
+                width: 896,
+                height: 768,
                 size: 'mce-modal-landscape-full',
-                inline: true,
                 close_previous: 0
             });
         },
