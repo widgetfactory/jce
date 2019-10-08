@@ -1,6 +1,7 @@
 /** Path **/
 .mcePathRow {
     overflow: hidden;
+    width: 100%;
 }
 
 .mcePathHidden .mceText {

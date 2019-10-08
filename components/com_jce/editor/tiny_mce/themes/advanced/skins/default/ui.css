@@ -167,11 +167,13 @@
     line-height: 32px;
     overflow: visible;
     color: #000;
-    display: block;
     height: 32px;
     padding: 5px;
     background: #f5f5f5;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .defaultSkin .mceStatusbar:empty {
@@ -182,15 +184,13 @@
 }
 
 .defaultSkin .mceStatusbar div {
-    float: left;
     margin: 2px
 }
 
 .mceDefaultSkin .mceStatusbar .mceResize {
-    display: block;
-    float: right;
     cursor: se-resize;
     margin: 0;
+    order: 3;
 }
 
 .mceDefaultSkin .mceStatusbar .mceResize span {
@@ -608,7 +608,6 @@
 }/* Button */
 
 .mceDefaultSkin .mceButton {
-    display: inline-block;
     border: 1px solid #ddd;
     padding: 4px;
     min-width: 32px;
@@ -1934,6 +1933,7 @@ select.mceNativeListBox {
 }/** Path **/
 .mcePathRow {
     overflow: hidden;
+    width: 100%;
 }
 
 .mcePathHidden .mceText {
@@ -1962,9 +1962,6 @@ select.mceNativeListBox {
 .mcePathPath {
     display: inline-block;
 }.mceDefaultSkin .mceStatusbar .mceWordCount {
-    float: right;
-    vertical-align: middle;
-    line-height: 18px;
     font-size: 14px;
 }
 
@@ -2296,6 +2293,7 @@ select.mceNativeListBox {
     color: #888;
     background: #f5f5f5;
     border-color: #eee;
+    cursor: not-allowed;
 }
 
 .mceModal .mceButtonDefault {
@@ -2520,6 +2518,15 @@ select.mceNativeListBox {
 
 .mceModal .mceModalContent .mceModalFlexNone {
     flex: inherit;
+    display: flex;
+}
+
+.mceModal .mceModalContent .mceModalControl button {
+    margin-left: 2px;
+}
+
+.mceModal .mceListBox .mceOpen {
+    min-width: 24px;
 }
 
 .mceModal .mceModalContent .mceModalControl iframe {

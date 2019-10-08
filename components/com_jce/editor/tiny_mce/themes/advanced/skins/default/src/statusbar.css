@@ -3,11 +3,13 @@
     line-height: 32px;
     overflow: visible;
     color: #000;
-    display: block;
     height: 32px;
     padding: 5px;
     background: #f5f5f5;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .defaultSkin .mceStatusbar:empty {
@@ -18,15 +20,13 @@
 }
 
 .defaultSkin .mceStatusbar div {
-    float: left;
     margin: 2px
 }
 
 .mceDefaultSkin .mceStatusbar .mceResize {
-    display: block;
-    float: right;
     cursor: se-resize;
     margin: 0;
+    order: 3;
 }
 
 .mceDefaultSkin .mceStatusbar .mceResize span {

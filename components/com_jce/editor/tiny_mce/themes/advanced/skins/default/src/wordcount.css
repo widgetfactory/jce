@@ -1,7 +1,4 @@
 .mceDefaultSkin .mceStatusbar .mceWordCount {
-    float: right;
-    vertical-align: middle;
-    line-height: 18px;
     font-size: 14px;
 }
 

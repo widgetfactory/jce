@@ -40,8 +40,6 @@
                         tinymce.DOM.add(row.parentNode, 'div', {
                             'class': 'mceWordCount'
                         }, ed.getLang('wordcount.words', 'Words: ') + '<span id="' + self.id + '" class="mceText">0</span>');
-                } else {
-                    tinymce.DOM.add(id, 'span', {}, '<span id="' + self.id + '">0</span>');
                 }
             });
 
