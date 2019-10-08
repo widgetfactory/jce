@@ -451,6 +451,12 @@
                         v = v.join(' ');
                     }
                 }
+                // select2 returns an array
+                if (k == 'rel') {
+                    if ($.type(v) === 'array') {
+                        v = v.join(' ');
+                    }
+                }
 
                 args[k] = v;
             });
