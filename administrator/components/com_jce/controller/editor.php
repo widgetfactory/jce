@@ -16,13 +16,8 @@ class JceControllerEditor extends JControllerLegacy
 {
     public function execute($task)
     {
-        $app = WFApplication::getInstance();
-
         // check for session token
         JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
-
-        // check a valid profile exists
-        $app->getProfile() or jexit();
 
         $editor = new WFEditor();
 
