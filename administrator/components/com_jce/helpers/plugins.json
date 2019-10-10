@@ -148,6 +148,15 @@
         "row": 4,
         "core": 1
     },
+    "joomla": {
+        "title": "WF_JOOMLABUTTONS_TITLE",
+        "description": "WF_JOOMLABUTTONS_DESC",
+        "icon": "joomla",
+        "editable": 0,
+        "row": 4,
+        "core": 1,
+        "class": "split-button"
+    },
     "layer": {
         "title": "WF_LAYER_TITLE",
         "description": "WF_LAYER_DESC",

@@ -601,6 +601,28 @@ class WFEditor
     }
 
     /**
+     * Determine whether a plugin is loaded
+     *
+     * @param [string] $name
+     * @return boolean
+     */
+    public function hasPlugin($name) {
+        $plugins = $this->getPlugins();
+
+        if (in_array($name, $plugins['core'])) {
+            return true;
+        }
+
+        if (!empty($plugins['external'])) {
+            if (array_key_exists($name, $plugins['external'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return a list of published JCE plugins.
      *
      * @return string list

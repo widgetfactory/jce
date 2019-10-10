@@ -892,6 +892,10 @@
     content: "\e9bb";
 }
 
+.mceModernSkin span.mce_joomla:before {
+    content: "\eab5";
+}
+
 .mceModernSkin span.mce_spinner:before {
     content: "";
     border: 0.125rem solid #444;
