@@ -1,4 +1,7 @@
 /* SplitButton */
+.mceDefaultSkin .mceSplitButton {
+    position: relative;
+}
 .mceDefaultSkin .mceSplitButton button {
     height: 32px;
     display: inline-block;
@@ -79,7 +82,7 @@
 
 .mceSplitButtonMenu {
     min-width: calc(48px * 3);
-    margin-top: 3px;
+    margin-top: 8px;
 }
 
 .mceDefaultSkin .mceMenuItemSub {
@@ -190,7 +193,7 @@
     display: block;
     border: 1px solid #ddd;
     padding: 0;
-    margin : 1px;
+    margin: 1px;
 }
 
 .mceDefaultSkin .mceTableSplitMenu .selected a {
@@ -202,6 +205,21 @@
     background-color: #fff;
     text-align: center;
     line-height: 32px;
+}
+
+.mceDefaultSkin .mceSplitButtonSelected::after {
+    content: "";
+    padding: 3px 0;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -7px;
+    background: #fff;
+    box-sizing: border-box;
+    z-index: 20001;
+    border: 1px solid #ddd;
+    border-top-color:transparent;
+    border-bottom-color:transparent;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceText,

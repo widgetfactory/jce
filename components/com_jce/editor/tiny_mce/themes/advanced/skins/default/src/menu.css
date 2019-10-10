@@ -117,7 +117,7 @@
     position: relative;
 }
 
-.ceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
+.mceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
     position: relative;
     display: flex;
 }

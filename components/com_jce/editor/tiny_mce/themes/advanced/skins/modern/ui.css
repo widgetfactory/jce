@@ -35,7 +35,7 @@
     color: #fff;
 }
 
-.mceModernSkin .mceButtonDisabled .mceIcon {
+.mceModernSkin button:disabled .mceIcon {
     opacity: 0.38;
 }
 
@@ -104,7 +104,7 @@
     outline: 1px solid #e6e6e6;
 }
 
-.mceModernSkin .mceMenuItems .mceIcon {
+.mceModernSkin .mceListBox .mceMenuItems .mceIcon {
     top: 0;
     width: 32px;
     left: 0;

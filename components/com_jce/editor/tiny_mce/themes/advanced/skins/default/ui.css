@@ -509,7 +509,7 @@
     position: relative;
 }
 
-.ceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
+.mceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
     position: relative;
     display: flex;
 }
@@ -838,6 +838,9 @@ select.mceNativeListBox {
     margin: 1px 0 1px 2px;
     max-width: 10em;
 }/* SplitButton */
+.mceDefaultSkin .mceSplitButton {
+    position: relative;
+}
 .mceDefaultSkin .mceSplitButton button {
     height: 32px;
     display: inline-block;
@@ -918,7 +921,7 @@ select.mceNativeListBox {
 
 .mceSplitButtonMenu {
     min-width: calc(48px * 3);
-    margin-top: 3px;
+    margin-top: 8px;
 }
 
 .mceDefaultSkin .mceMenuItemSub {
@@ -1029,7 +1032,7 @@ select.mceNativeListBox {
     display: block;
     border: 1px solid #ddd;
     padding: 0;
-    margin : 1px;
+    margin: 1px;
 }
 
 .mceDefaultSkin .mceTableSplitMenu .selected a {
@@ -1041,6 +1044,21 @@ select.mceNativeListBox {
     background-color: #fff;
     text-align: center;
     line-height: 32px;
+}
+
+.mceDefaultSkin .mceSplitButtonSelected::after {
+    content: "";
+    padding: 3px 0;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -7px;
+    background: #fff;
+    box-sizing: border-box;
+    z-index: 20001;
+    border: 1px solid #ddd;
+    border-top-color:transparent;
+    border-bottom-color:transparent;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceText,
@@ -1616,18 +1634,18 @@ select.mceNativeListBox {
 .mceDefaultSkin .mce_list_default:before,
 .mceDefaultSkin .mce_list_disc:before {
     content: "●";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 .mceDefaultSkin .mce_list_circle:before {
     content: "○";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 .mceDefaultSkin .mce_list_square:before {
     content: "□";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 
 .mceDefaultSkin .mce_list_lower_alpha::before {
@@ -2342,84 +2360,84 @@ select.mceNativeListBox {
     /* 3:4 */
 }
 
-.mce-modal-landscape-128,
-.mce-modal-landscape-xxsmall {
+.mceModal .mce-modal-landscape-128,
+.mceModal .mce-modal-landscape-xxsmall {
     max-width: 128px;
 }
 
-.mce-modal-landscape-256,
-.mce-modal-landscape-xsmall {
+.mceModal .mce-modal-landscape-256,
+.mceModal .mce-modal-landscape-xsmall {
     max-width: 256px;
 }
 
-.mce-modal-landscape-384,
-.mce-modal-landscape-small,
+.mceModal .mce-modal-landscape-384,
+.mceModal .mce-modal-landscape-small,
 .mceModalConfirm,
 .mceModalAlert {
     max-width: 384px;
 }
 
-.mce-modal-landscape-512,
-.mce-modal-landscape-medium {
+.mceModal .mce-modal-landscape-512,
+.mceModal .mce-modal-landscape-medium {
     max-width: 512px;
 }
 
-.mce-modal-landscape-640,
-.mce-modal-landscape-large {
+.mceModal .mce-modal-landscape-640,
+.mceModal .mce-modal-landscape-large {
     max-width: 640px;
 }
 
-.mce-modal-landscape-768,
-.mce-modal-landscape-xlarge {
+.mceModal .mce-modal-landscape-768,
+.mceModal .mce-modal-landscape-xlarge {
     max-width: 768px;
 }
 
-.mce-modal-landscape-896,
-.mce-modal-landscape-xxlarge {
+.mceModal .mce-modal-landscape-896,
+.mceModal .mce-modal-landscape-xxlarge {
     max-width: 896px;
 }
 
-.mce-modal-landscape-1024 {
+.mceModal .mce-modal-landscape-1024 {
     max-width: 1024px;
 }
 
-.mce-modal-landscape-full {
+.mceModal .mce-modal-landscape-full {
     width: calc(100% - 40px);
     height: calc(100vh - 20px);
     padding: 0;
 }
 
-.mce-modal-portrait-128,
-.mce-modal-portrait-xsmall {
+.mceModal .mce-modal-portrait-128,
+.mceModal .mce-modal-portrait-xsmall {
     max-width: 128px;
 }
 
-.mce-modal-portrait-256,
-.mce-modal-portrait-small {
+.mceModal .mce-modal-portrait-256,
+.mceModal .mce-modal-portrait-small {
     max-width: 256px;
 }
 
-.mce-modal-portrait-320 {
+.mceModal .mce-modal-portrait-320 {
     max-width: 320px;
 }
 
-.mce-modal-portrait-384,
-.mce-modal-portrait-medium {
+.mceModal .mce-modal-portrait-384,
+.mceModal .mce-modal-portrait-medium {
     max-width: 384px;
 }
 
-.mce-modal-portrait-512,
-.mce-modal-portrait-large {
+.mceModal .mce-modal-portrait-512,
+.mceModal .mce-modal-portrait-large {
     max-width: 512px;
 }
 
-.mce-modal-portrait-640,
-.mce-modal-portrait-xlarge {
+.mceModal .mce-modal-portrait-640,
+.mceModal .mce-modal-portrait-xlarge {
     max-width: 640px;
 }
 
-.mce-modal-portrait-768,
-.mce-modal-portrait-full {
+.mceModal .mce-modal-portrait-768,
+.mceModal .mce-modal-portrait-full {
     width: calc(100% - 40px);
     height: calc(100vh - 20px);
 
@@ -2427,25 +2445,25 @@ select.mceNativeListBox {
     padding: 0;
 }
 
-.mce-modal-portrait-full {
+.mceModal .mce-modal-portrait-full {
     max-width: 1024px;
 }
 
-.mce-modal-portrait-768 {
+.mceModal .mce-modal-portrait-768 {
     max-width: 768px;
 }
 
-.mce-modal-landscape-full .mceModalContentIframe,
-.mce-modal-portrait-full .mceModalContentIframe {
+.mceModal .mce-modal-landscape-full .mceModalContentIframe,
+.mceModal .mce-modal-portrait-full .mceModalContentIframe {
     padding: 0;
     height: calc(100% - 48px);
 }
 
-.mce-modal-square-xlarge {
+.mceModal .mce-modal-square-xlarge {
     max-width: 896px;
 }
 
-.mce-modal-square-xlarge .mceModalContentIframe {
+.mceModal .mce-modal-square-xlarge .mceModalContentIframe {
     padding-bottom: calc(83.46% - 48px);
 }
 

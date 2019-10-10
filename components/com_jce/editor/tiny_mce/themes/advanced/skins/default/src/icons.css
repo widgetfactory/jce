@@ -519,18 +519,18 @@
 .mceDefaultSkin .mce_list_default:before,
 .mceDefaultSkin .mce_list_disc:before {
     content: "●";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 .mceDefaultSkin .mce_list_circle:before {
     content: "○";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 .mceDefaultSkin .mce_list_square:before {
     content: "□";
-    line-height: 2;
-    vertical-align: top;
+    line-height: 1;
+    display: inline-block;
 }
 
 .mceDefaultSkin .mce_list_lower_alpha::before {
