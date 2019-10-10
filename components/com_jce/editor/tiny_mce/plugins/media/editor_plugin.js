@@ -253,6 +253,10 @@
                 return n && (ed.dom.is(n, '.mce-item-media, .mce-item-shim') || ed.dom.getParent(n, '.mce-item-media') !== null);
             }
 
+            function isIframeMedia(n) {
+                return isMediaNode(n) && ed.dom.getParent(n, '.mce-item-iframe') !== null;
+            }
+
             function isMediaClass(cls) {
                 return cls && /mce-item-(media|flash|shockwave|windowsmedia|quicktime|realmedia|divx|silverlight|audio|video|generic|iframe)/.test(cls);
             }
@@ -366,7 +370,7 @@
                         return;
                     }
 
-                    if (isMediaNode(node)) {
+                    if (isIframeMedia(node)) {
                         e.preventDefault();
                         e.stopImmediatePropagation();
 
