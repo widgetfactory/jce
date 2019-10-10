@@ -48,8 +48,8 @@
                     popup_css: false,
                     size: 'mce-modal-portrait-large'
                 }, {
-                        plugin_url: url
-                    });
+                    plugin_url: url
+                });
             });
             // Register buttons
             /*ed.addButton('link', {
@@ -88,43 +88,42 @@
 
             var html = '' +
                 '<div class="mceToolbarRow">' +
-                '   <div class="mceToolbarItem">' +
+                '   <div class="mceToolbarItem mceFlexAuto">' +
                 '       <input type="text" id="' + ed.id + '_link_input" aria-label="' + ed.getLang('link.href', 'URL') + '" />' +
                 '   </div>' +
                 '   <div class="mceToolbarItem">' +
-                '       <button id="' + ed.id + '_link_submit" class="mceButton mceButtonLink" title="' + ed.getLang('link.insert', 'Insert Link') + '" aria-label="' + ed.getLang('link.insert', 'Insert Link') + '">' + 
-                '           <span class="mceIcon mce_link"></span>' + 
+                '       <button type="button" id="' + ed.id + '_link_submit" class="mceButton mceButtonLink" title="' + ed.getLang('link.insert', 'Insert Link') + '" aria-label="' + ed.getLang('link.insert', 'Insert Link') + '">' +
+                '           <span class="mceIcon mce_link"></span>' +
                 '       </button>' +
                 '   </div>' +
                 '   <div class="mceToolbarItem">' +
-                '       <button id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink mceButtonDisabled" title="' + ed.getLang('link.unlink', 'Remove Link') + '" aria-label="' + ed.getLang('link.unlink', 'Remove Link') + '">' +
+                '       <button type="button" id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink" disabled="disabled" title="' + ed.getLang('link.unlink', 'Remove Link') + '" aria-label="' + ed.getLang('link.unlink', 'Remove Link') + '">' +
                 '           <span class="mceIcon mce_unlink"></span>' +
                 '       </button>' +
                 '   </div>' +
                 '</div>';
 
-            var ctrl = cm.createPanelSplitButton('link', {
+            var ctrl = cm.createSplitButton('link', {
                 title: 'link.desc',
                 cmd: 'mceLink',
-                html: html,
-                onsubmit: function() {
-                    var value = DOM.getValue(ed.id + '_link_input');
+                max_width: 250,
+                onselect: function (value) {
                     insertLink(value);
                 }
             });
 
-            function insertLink(value) {                
+            function insertLink(value) {
                 if (!value) {
                     ed.execCommand('unlink', false);
                     ctrl.hidePanel();
 
                     return;
                 }
-                
+
                 var args = {
-                    'href'  : value
+                    'href': value
                 };
-                
+
                 // get parameter defaults
                 var params = ed.getParam('link', {});
 
@@ -134,60 +133,60 @@
                 // no selection, so create a link from the url
                 if (ed.selection.isCollapsed()) {
                     ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, value));
-                // apply link to selection
+                    // apply link to selection
                 } else {
                     ed.execCommand('mceInsertLink', false, args);
                 }
-
-                ctrl.hidePanel();
             }
 
-            ctrl.onRenderPanel.add(function () {
-                Event.add(ed.id + '_link_submit', 'click', function(e) {
-                    e.preventDefault();
+            ctrl.onRenderMenu.add(function (c, m) {
+                m.add({
+                    onclick: function (e) {
+                        e.preventDefault();
 
-                    if (DOM.hasClass(e.target, 'mceButtonDisabled')) {
-                        return;
-                    }
+                        var n = ed.dom.getParent(e.target, '.mceButton');
 
-                    var value = DOM.getValue(ed.id + '_link_input');
-                    insertLink(value);
+                        if (n.disabled) {
+                            return;
+                        }
+
+                        if (ed.dom.hasClass(n, 'mceButtonLink')) {
+                            var value = DOM.getValue(ed.id + '_link_input');
+                            insertLink(value);
+                        }
+
+                        if (ed.dom.hasClass(n, 'mceButtonUnlink')) {
+                            ed.execCommand('unlink', false);
+                        }
+
+                        m.hideMenu();
+                    },
+                    html: html
                 });
 
-                Event.add(ed.id + '_link_unlink', 'click', function(e) {
-                    e.preventDefault();
+                m.onShowMenu.add(function () {
+                    var selection = ed.selection, value = '';
 
-                    if (DOM.hasClass(e.target, 'mceButtonDisabled')) {
-                        return;
+                    DOM.setAttrib(ed.id + '_link_unlink', 'disabled', 'disabled');
+
+                    if (!selection.isCollapsed()) {
+                        var node = selection.getNode();
+                        node = ed.dom.getParent(node, 'A') || node;
+
+                        if (node.nodeName === 'A') {
+                            value = node.getAttribute('href');
+                            DOM.setAttrib(ed.id + '_link_unlink', 'disabled', null);
+                        }
                     }
 
-                    ed.execCommand('unlink', false);
+                    // focus input after short timeout
+                    window.setTimeout(function () {
+                        DOM.get(ed.id + '_link_input').focus();
+                    }, 10);
+
+                    // set value
+                    DOM.setValue(ed.id + '_link_input', value);
                 });
-            });
-
-            ctrl.onShowPanel.add(function () {
-                var selection = ed.selection, value = '';
-
-                DOM.addClass(ed.id + '_link_unlink', 'mceButtonDisabled');
-
-                if (!selection.isCollapsed()) {
-                    var node = selection.getNode();
-                    node = ed.dom.getParent(node, 'A') || node;
-
-                    if (node.nodeName === 'A') {
-                        value = node.getAttribute('href');
-
-                        DOM.removeClass(ed.id + '_link_unlink', 'mceButtonDisabled');
-                    }
-                }
-
-                // focus input after short timeout
-                window.setTimeout(function(){
-                    DOM.get(ed.id + '_link_input').focus();
-                }, 10);
-
-                // set value
-                DOM.setValue(ed.id + '_link_input', value);
             });
 
             return ctrl;
