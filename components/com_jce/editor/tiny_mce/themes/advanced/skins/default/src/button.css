@@ -58,3 +58,11 @@
 .mceDefaultSkin .mceButtonDisabled .mceButtonLabel {
     color: #888
 }
+
+.mceDefaultSkin button:disabled {
+    cursor: not-allowed;
+}
+
+.mceDefaultSkin button:disabled .mceIcon {
+    opacity: 0.38;
+}

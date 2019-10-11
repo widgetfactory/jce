@@ -209,7 +209,7 @@
 
 .mceDefaultSkin .mceSplitButtonSelected::after {
     content: "";
-    padding: 3px 0;
+    padding: 4px 0;
     width: 100%;
     position: absolute;
     left: 0;
@@ -217,23 +217,24 @@
     background: #fff;
     box-sizing: border-box;
     z-index: 20001;
-    border: 1px solid #ddd;
-    border-top-color:transparent;
-    border-bottom-color:transparent;
+    border: 1px solid #ccc;
+    border-top: 0 none;
+    border-bottom: 0 none;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceText,
 .mceDefaultSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-radius: 2px 0 0 0;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceOpen,
 .mceDefaultSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
-    border-color: #ddd;
-    border-left-color: transparent;
+    border-color: #ccc;
+    border-left: 0 none;
+    padding-left: 1px;
     border-radius: 0 2px 0 0;
 }
 

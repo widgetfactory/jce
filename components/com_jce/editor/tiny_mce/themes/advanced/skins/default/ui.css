@@ -397,13 +397,18 @@
     left: 0;
     top: 0;
     z-index: 20000;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
     overflow: hidden;
     overflow-y: auto;
     margin-top: 2px;
+}
+
+.mceSplitButtonMenu,
+.mceListBoxMenu {
+    border-radius: 0 2px 2px 2px;
 }
 
 .mceMenu .mceMenuItems div {
@@ -664,6 +669,14 @@
 
 .mceDefaultSkin .mceButtonDisabled .mceButtonLabel {
     color: #888
+}
+
+.mceDefaultSkin button:disabled {
+    cursor: not-allowed;
+}
+
+.mceDefaultSkin button:disabled .mceIcon {
+    opacity: 0.38;
 }/* ListBox */
 .mceDefaultSkin .mceListBox {
     display: flex;
@@ -726,12 +739,36 @@
 .mceDefaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
-    background: #fff
+    background: #fff;
+    border-radius: 2px 0 0 0;
 }
 
 .mceDefaultSkin .mceListBoxSelected .mceOpen {
     background-color: #fff;
     border: 1px solid #ccc;
+    border-left: 0;
+    padding-left: 1px;
+    border-radius: 0 2px 0 0;
+}
+
+.mceDefaultSkin .mceListBoxSelected:hover .mceOpen,
+.mceDefaultSkin .mceListBoxSelected:focus .mceOpen {
+    background-color: #fff;
+}
+
+.mceDefaultSkin .mceListBoxSelected::after {
+    content: "";
+    padding: 2px 0;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    background: #fff;
+    box-sizing: border-box;
+    z-index: 20001;
+    border: 1px solid #ccc;
+    border-top: 0 none;
+    border-bottom: 0 none;
 }
 
 .mceDefaultSkin .mceListBoxDisabled .mceOpen:after {
@@ -748,7 +785,8 @@
     min-width: calc(113px * 2);
     min-height: 98px;
     height: auto;
-    max-height: 386px /*(32px *  12 + 2);*/
+    max-height: 386px; /*(32px *  12 + 2);*/
+    margin-top: 2px;
 }
 
 .mceListBoxMenu .mceMenuItems {
@@ -1048,7 +1086,7 @@ select.mceNativeListBox {
 
 .mceDefaultSkin .mceSplitButtonSelected::after {
     content: "";
-    padding: 3px 0;
+    padding: 4px 0;
     width: 100%;
     position: absolute;
     left: 0;
@@ -1056,23 +1094,24 @@ select.mceNativeListBox {
     background: #fff;
     box-sizing: border-box;
     z-index: 20001;
-    border: 1px solid #ddd;
-    border-top-color:transparent;
-    border-bottom-color:transparent;
+    border: 1px solid #ccc;
+    border-top: 0 none;
+    border-bottom: 0 none;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceText,
 .mceDefaultSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-radius: 2px 0 0 0;
 }
 
 .mceDefaultSkin .mceSplitButtonSelected .mceOpen,
 .mceDefaultSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
-    border-color: #ddd;
-    border-left-color: transparent;
+    border-color: #ccc;
+    border-left: 0 none;
+    padding-left: 1px;
     border-radius: 0 2px 0 0;
 }
 
@@ -1542,6 +1581,10 @@ select.mceNativeListBox {
     background-position: -600px -40px;
 }
 
+.mceDefaultSkin span.mce_joomla {
+    background-position: -600px -40px;
+}
+
 .mceDefaultSkin span.mce_codesample {
     background-position: -260px 0;
 }
@@ -1926,13 +1969,13 @@ select.mceNativeListBox {
     background: #fff;
 }
 
-.mceDefaultSkin.mce_emotions .mcePanel {
+.mceDefaultSkin .mceEmoticonsMenu {
     display: flex;
     flex-wrap: wrap;
     max-width: 16.75em;
 }
 
-.mceDefaultSkin.mce_emotions .mcePanelContent {
+.mceDefaultSkin .mceEmoticonsMenu {
     white-space: normal;
     display: flex;
     flex-wrap: wrap;

@@ -5,13 +5,18 @@
     left: 0;
     top: 0;
     z-index: 20000;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     direction: ltr;
     background-color: #fff;
     border-radius: 2px;
     overflow: hidden;
     overflow-y: auto;
     margin-top: 2px;
+}
+
+.mceSplitButtonMenu,
+.mceListBoxMenu {
+    border-radius: 0 2px 2px 2px;
 }
 
 .mceMenu .mceMenuItems div {

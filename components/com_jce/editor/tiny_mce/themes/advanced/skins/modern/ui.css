@@ -35,6 +35,10 @@
     color: #fff;
 }
 
+.mceModernSkin button:disabled {
+    cursor: not-allowed;
+}
+
 .mceModernSkin button:disabled .mceIcon {
     opacity: 0.38;
 }
@@ -56,7 +60,7 @@
 .mceModernSkin .mceSplitButton:hover .mceOpen,
 .mceModernSkin .mceSplitButton:focus .mceText,
 .mceModernSkin .mceSplitButton:focus .mceOpen {
-    border-color: #ddd;
+    border-color: #ccc;
     background-color: #e6e6e6;
 }
 
@@ -153,14 +157,14 @@
 .mceModernSkin .mceSplitButtonSelected .mceText,
 .mceModernSkin .mceSplitButtonSelected:hover .mceText {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-radius: 2px 0 0 0;
 }
 
 .mceModernSkin .mceSplitButtonSelected .mceOpen,
 .mceModernSkin .mceSplitButtonSelected:hover .mceOpen {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-left-color: transparent;
     border-radius: 0 2px 0 0;
 }
@@ -180,14 +184,14 @@
 .mceModernSkin .mceListBoxSelected .mceText,
 .mceModernSkin .mceListBoxSelected:hover .mceText {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-radius: 2px 0 0 0;
 }
 
 .mceModernSkin .mceListBoxSelected .mceOpen,
 .mceDefaultSkin .mceListBoxSelected:hover .mceOpen {
     background: #fff;
-    border-color: #ddd;
+    border-color: #ccc;
     border-left-color: transparent;
     border-radius: 0 2px 0 0;
 }

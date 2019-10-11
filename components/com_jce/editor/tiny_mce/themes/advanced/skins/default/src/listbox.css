@@ -60,12 +60,36 @@
 .mceDefaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
-    background: #fff
+    background: #fff;
+    border-radius: 2px 0 0 0;
 }
 
 .mceDefaultSkin .mceListBoxSelected .mceOpen {
     background-color: #fff;
     border: 1px solid #ccc;
+    border-left: 0;
+    padding-left: 1px;
+    border-radius: 0 2px 0 0;
+}
+
+.mceDefaultSkin .mceListBoxSelected:hover .mceOpen,
+.mceDefaultSkin .mceListBoxSelected:focus .mceOpen {
+    background-color: #fff;
+}
+
+.mceDefaultSkin .mceListBoxSelected::after {
+    content: "";
+    padding: 2px 0;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    background: #fff;
+    box-sizing: border-box;
+    z-index: 20001;
+    border: 1px solid #ccc;
+    border-top: 0 none;
+    border-bottom: 0 none;
 }
 
 .mceDefaultSkin .mceListBoxDisabled .mceOpen:after {
@@ -82,7 +106,8 @@
     min-width: calc(113px * 2);
     min-height: 98px;
     height: auto;
-    max-height: 386px /*(32px *  12 + 2);*/
+    max-height: 386px; /*(32px *  12 + 2);*/
+    margin-top: 2px;
 }
 
 .mceListBoxMenu .mceMenuItems {
