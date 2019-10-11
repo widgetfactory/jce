@@ -206,48 +206,42 @@
                 return null;
             }
 
-            var ctrl = cm.createPanelButton('emotions', {
+            function insertEmoticon(n) {
+                var p = DOM.getParent(n, '.mce_emotions_icon');
+
+                if (p) {
+                    var html = p.innerText;
+
+                    // convert img src to relative and get as innerHTML
+                    if (n.nodeName === "IMG") {
+                        n.setAttribute('src', ed.documentBaseURI.toRelative(n.src));
+                        html = p.innerHTML;
+                    }
+
+                    ed.execCommand('mceInsertContent', false, html);
+                }
+            }
+
+            var ctrl = cm.createSplitButton('emotions', {
                 title: 'emotions.desc',
-                html: ''
+                onselect: function (elm) {
+                    insertEmoticon(elm);
+                }
             });
 
-            ctrl.onRenderPanel.add(function () {                
-                DOM.setHTML(DOM.select('.mcePanelContent', ed.id + '_emotions_panel'), self.content);
-                
-                Event.add(DOM.select('.mcePanelContent', ed.id + '_emotions_panel'), 'click', function (e) {
-                    e.preventDefault();
-                    ctrl.restoreSelection();
-
-                    var n = e.target,
-                        p = DOM.getParent(n, '.mce_emotions_icon');
-
-                    if (p) {
-                        var html = p.innerText;
-
-                        // convert img src to relative and get as innerHTML
-                        if (n.nodeName === "IMG") {
-                            n.setAttribute('src', ed.documentBaseURI.toRelative(n.src));
-                            html = p.innerHTML;
-                        }
-
-                        ed.execCommand('mceInsertContent', false, html);
-                    }
-
-                    ctrl.hidePanel();
+            ctrl.onRenderMenu.add(function (c, m) {
+                m.add({
+                    onclick: function (e) {
+                        e.preventDefault();
+                        insertEmoticon(e.target);
+                        m.hideMenu();
+                    },
+                    html: '<div id="' + ed.id + '_emotions_panel" class="mceEmoticonsMenu"></div>'
                 });
 
-                var elm = DOM.get(ed.id + '_emotions_panel');
-
-                new tinymce.ui.KeyboardNavigation({
-                    root: elm,
-                    items: DOM.select('button', elm),
-                    excludeFromTabOrder: true,
-                    onCancel: function () {
-                        ed.focus();
-                    }
-                }, DOM);
-
-                elm.focus();
+                m.onShowMenu.add(function () {
+                    DOM.setHTML(ed.id + '_emotions_panel', self.content);
+                });
             });
 
             // Remove the menu element when the editor is removed

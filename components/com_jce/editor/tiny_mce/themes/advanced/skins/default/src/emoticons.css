@@ -15,13 +15,13 @@
     background: #fff;
 }
 
-.mceDefaultSkin.mce_emotions .mcePanel {
+.mceDefaultSkin .mceEmoticonsMenu {
     display: flex;
     flex-wrap: wrap;
     max-width: 16.75em;
 }
 
-.mceDefaultSkin.mce_emotions .mcePanelContent {
+.mceDefaultSkin .mceEmoticonsMenu {
     white-space: normal;
     display: flex;
     flex-wrap: wrap;
