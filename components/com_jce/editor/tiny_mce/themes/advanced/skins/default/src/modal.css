@@ -52,6 +52,7 @@
     top: 0;
     width: 100%;
     padding: 8px;
+    z-index: 10002;
 }
 
 .mceModal .mceModalFrame:after {
