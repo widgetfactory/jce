@@ -107,16 +107,14 @@
                 title: 'link.desc',
                 cmd: 'mceLink',
                 max_width: 250,
-                onselect: function (value) {
-                    insertLink(value);
+                onselect: function (elm) {
+                    insertLink(elm.value);
                 }
             });
 
             function insertLink(value) {
                 if (!value) {
                     ed.execCommand('unlink', false);
-                    ctrl.hidePanel();
-
                     return;
                 }
 
@@ -137,6 +135,9 @@
                 } else {
                     ed.execCommand('mceInsertLink', false, args);
                 }
+
+                ed.undoManager.add();
+                ed.nodeChanged();
             }
 
             ctrl.onRenderMenu.add(function (c, m) {
