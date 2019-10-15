@@ -225,6 +225,9 @@ class JceModelProfile extends JModelAdmin
                 $items = explode(',', $group);
                 $buttons = array();
 
+                // remove duplicates
+                $items = array_unique($items);
+
                 for ($x = 0; $x < count($items); ++$x) {
                     $name = $items[$x];
 
@@ -349,6 +352,9 @@ class JceModelProfile extends JModelAdmin
 
             // array or profile plugin items
             $rows = explode(',', $data->plugins);
+
+            // remove duplicates
+            $rows = array_unique($rows);
 
             // only need plugins with xml files
             foreach (JcePluginsHelper::getPlugins() as $name => $plugin) {

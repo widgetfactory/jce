@@ -360,7 +360,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
         $this->addScriptDeclaration('try{WFEditor.init(' . $tinymce . ');}catch(e){console.debug(e);}');
 
@@ -484,14 +484,19 @@ class WFEditor
             $buttons = array();
             $items = explode(',', $lists[$x]);
 
-            foreach ($items as $item) {
-                // set the plugin/command name
-                $name = $item;
-
-                // map legacy values etc.
+            // map legacy values etc.
+            array_walk($items, function(&$item) use ($map) {
                 if (array_key_exists($item, $map)) {
                     $item = $map[$item];
                 }
+            });
+
+            // remove duplicates
+            $items = array_unique($items);
+
+            foreach ($items as $item) {
+                // set the plugin/command name
+                $name = $item;
 
                 // check if button should be in toolbar
                 if ($item !== '|') {
