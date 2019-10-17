@@ -39,7 +39,7 @@ defined('_WF_EXT') or die('RESTRICTED');
             <div class="uk-form-controls uk-width-4-5 uk-form-constrain">
 
                 <div class="uk-form-controls">
-                    <input type="text" id="jcemediabox_popup_width" value="" class="uk-text-muted" />
+                    <input type="text" id="jcemediabox_popup_width" value="" class="uk-text-center" />
                 </div>
 
                 <div class="uk-form-controls">
@@ -47,7 +47,7 @@ defined('_WF_EXT') or die('RESTRICTED');
                 </div>
 
                 <div class="uk-form-controls">
-                    <input type="text" id="jcemediabox_popup_height" value="" class="uk-text-muted" />
+                    <input type="text" id="jcemediabox_popup_height" value="" class="uk-text-center" />
                 </div>
 
                 <label class="uk-form-label">
