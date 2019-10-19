@@ -246,9 +246,6 @@ class WFDocument extends JObject
                 case 'jquery':
                     $pre = $base . 'libraries/vendor/jquery/' . $type;
                     break;
-                case 'select2':
-                    $pre = $base . 'libraries/vendor/select2/' . $type;
-                    break;
                 // TinyMCE folder
                 case 'tiny_mce':
                     $pre = $base . 'tiny_mce';
