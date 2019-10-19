@@ -156,16 +156,6 @@
                 $(div).trigger('modal.close', e);
             });
 
-            // close on ESC
-            $('body').on('keyup.modal', function (e) {
-                if (e.keyCode === 27) {
-                    // cancel event
-                    e.preventDefault();
-                    // close
-                    $(div).trigger('modal.close');
-                }
-            });
-
             $(div).on('keydown.modal', function (e) {
                 if (e.keyCode === 9) {
 
@@ -202,6 +192,7 @@
                 if (e.keyCode === 13) {
                     // cancel event
                     e.preventDefault();
+                    e.stopPropagation();
 
                     // trigger focused button
                     if ($('button:focus', this).length) {

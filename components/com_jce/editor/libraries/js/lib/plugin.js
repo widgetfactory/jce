@@ -216,11 +216,11 @@
                     e.stopPropagation();
 
                     // close an existing modal first
-                    /*if ($('.uk-modal-close').length) {
+                    if ($('.uk-modal-close').length) {
                         $('.uk-modal-close').click();
 
                         return;
-                    }*/
+                    }
 
                     tinyMCEPopup.close();
                 }
