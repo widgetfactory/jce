@@ -47,7 +47,7 @@
             Wf.init();
 
             // add change event to record editing
-            $('#alt').change(function() {
+            $('#alt').change(function () {
                 $(this).addClass('uk-edited');
             });
 
@@ -91,7 +91,7 @@
                     }
                 });
 
-                $('#alt').val(function() {
+                $('#alt').val(function () {
                     var val = ed.dom.getAttrib(n, 'alt');
 
                     if (val) {
@@ -101,6 +101,7 @@
                 });
 
                 $('#title').val(ed.dom.getAttrib(n, 'title'));
+
                 // Margin
                 $.each(['top', 'right', 'bottom', 'left'], function () {
                     $('#margin_' + this).val(Wf.getAttrib(n, 'margin-' + this));
@@ -111,7 +112,7 @@
                     var v = Wf.getAttrib(n, 'border-width');
 
                     if ($('option[value="' + v + '"]', this).length == 0) {
-                        $(this).append(new Option(v, v));
+                        $(this).append(new Option(v, v, false, true));
                     }
 
                     return v;
@@ -119,6 +120,8 @@
 
                 $('#border_style').val(Wf.getAttrib(n, 'border-style'));
                 $('#border_color').val(Wf.getAttrib(n, 'border-color')).change();
+
+                $('#border').change();
 
                 // if no border values set, set defaults
                 if (!$('#border').is(':checked')) {
@@ -205,6 +208,10 @@
             // update equalize
             $('.uk-equalize-checkbox').trigger('equalize:update');
 
+            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
         },
         insert: function () {
             var ed = tinyMCEPopup.editor,
@@ -228,9 +235,9 @@
                         self.insertAndClose();
                     }
                 }, {
-                        width: 360,
-                        height: 240
-                    });
+                    width: 360,
+                    height: 240
+                });
             } else {
                 this.insertAndClose();
             }
@@ -353,7 +360,7 @@
                     name = Wf.String.stripExt(name);
                     // replace underscore and dash with space
                     name = name.replace(/[-_]+/g, ' ');
-                    
+
                     $('#alt').val(name);
                 }
 
@@ -382,9 +389,9 @@
                     width: data.width,
                     height: data.height
                 }, {
-                        width: 80,
-                        height: 60
-                    });
+                    width: 80,
+                    height: 60
+                });
 
                 // set preview
                 $('#sample').attr({

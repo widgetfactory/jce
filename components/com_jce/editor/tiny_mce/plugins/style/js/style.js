@@ -211,6 +211,11 @@
             this.showDisabledControls();
 
             Wf.init();
+
+            $('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
         },
         setupFormData: function () {
             var ed = tinyMCEPopup.editor,

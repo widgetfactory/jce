@@ -138,6 +138,11 @@
 			if (n.nodeName !== "IMG") {
 				$('input.media').parents('.uk-form-row').hide();
 			}
+
+			$('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
 		},
 
 		insert: function () {

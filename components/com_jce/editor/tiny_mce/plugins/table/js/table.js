@@ -266,6 +266,11 @@
                     this.initRow();
                     break;
             }
+
+            $('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
         },
         insert: function () {
             var layout = tinyMCEPopup.getWindowArg('layout', 'table');

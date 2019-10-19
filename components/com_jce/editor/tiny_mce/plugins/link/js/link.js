@@ -272,7 +272,7 @@
                 // Setup form data
                 $('#href').val(href);
                 // attributes
-                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'class', 'charset', 'hreflang', 'target'], function (i, k) {
+                $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'charset', 'hreflang', 'target'], function (i, k) {
                     $('#' + k).val(ed.dom.getAttrib(n, k));
                 });
 
@@ -296,7 +296,7 @@
                         }
 
                         if ($('option[value="' + value + '"]', elm).length == 0) {
-                            $(elm).append(new Option(value, value));
+                            $(elm).append(new Option(value, value, false, true));
                         }
                     });
 
@@ -326,7 +326,7 @@
                         $(this).append(new Option(v, v));
                         $(this).val(v);
                     }
-                });
+                }).change();
 
             } else {
                 Wf.setDefaults(this.settings.defaults);
@@ -336,6 +336,11 @@
             if (ed.settings.schema == 'html5' && ed.settings.validate) {
                 $('#rev').parent().parent().hide();
             }
+
+            $('select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
 
             window.focus();
         },
@@ -451,7 +456,7 @@
                         v = v.join(' ');
                     }
                 }
-                // select2 returns an array
+
                 if (k == 'rel') {
                     if ($.type(v) === 'array') {
                         v = v.join(' ');
