@@ -30,9 +30,7 @@
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
                     width 	: 620 + parseInt(ed.getLang('style.delta_width', 0)),
-                    height 	: 440 + parseInt(ed.getLang('style.delta_height', 0)),
-                    inline 	: 1,
-                    popup_css : false
+                    height 	: 460 + parseInt(ed.getLang('style.delta_height', 0))
                 }, {
                     applyStyleToBlocks : applyStyleToBlocks,
                     plugin_url : url,
