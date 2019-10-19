@@ -33,7 +33,7 @@ $links = $this->plugin->getLinks();
         <?php echo $links->render(); ?>
     </div>
 <?php endif; ?>
-<div class="uk-form-row uk-hidden-mini" id="attributes-anchor">
+<div class="uk-form-row uk-hidden-mini uk-form-row uk-grid uk-grid-small" id="attributes-anchor">
     <label for="anchor" class="uk-form-label uk-width-1-1  uk-width-small-1-5 hastip" title="<?php echo JText::_('WF_LABEL_ANCHORS_DESC'); ?>"><?php echo JText::_('WF_LABEL_ANCHORS'); ?></label>
     <div class="uk-form-controls uk-width-1-1  uk-width-small-4-5" id="anchor_container"></div>
 </div>
