@@ -1,6 +1,5 @@
 @import url('../vendor/uikit/uikit.min.css');
 @import url('../vendor/jquery/css/jquery-ui.min.css');
-@import url('../vendor/select2/css/select2.min.css');
 @font-face {
   font-family: 'wfeditor';
   src: url('../fonts/wfeditor.woff') format('woff');
@@ -1029,7 +1028,7 @@ html {
 .uk-modal-dialog .uk-close:hover,
 .uk-modal-dialog .uk-close:focus {
     color: #444;
-    background:#e5e5e5;
+    background: #e5e5e5;
     border-radius: 2px;
 }
 
@@ -1275,7 +1274,7 @@ html[dir="rtl"] .uk-form-icon-both>[class*="uk-icon-colorpicker"]:last-child {
     visibility: hidden !important;
 }
 
-input[type=range] {
+input[type="range"] {
     -webkit-appearance: none;
     max-width: 100%;
     border-radius: 0;
@@ -1284,7 +1283,7 @@ input[type=range] {
     padding: 0;
 }
 
-input[type='range']::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     background-color: #ecf0f1;
     border: 1px solid #bdc3c7;
@@ -1295,7 +1294,7 @@ input[type='range']::-webkit-slider-thumb {
     margin-top: -1px;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
     -webkit-appearance: none;
     border-radius: 0;
     height: 10px;
@@ -1303,14 +1302,14 @@ input[type=range]::-webkit-slider-runnable-track {
     background-color: #fff;
 }
 
-input[type=range]::-moz-range-track {
+input[type="range"]::-moz-range-track {
     border-radius: 0;
     height: 10px;
     border: 1px solid #bdc3c7;
     background-color: #fff;
 }
 
-input[type=range]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
     background: #ecf0f1;
     border: 1px solid #bdc3c7;
     width: 10px;
@@ -1531,29 +1530,6 @@ input[type="range"]::-ms-thumb {
     content: "\f03e";
 }
 
-.uk-checkbox {
-    border-radius: 2px;
-    border: 1px solid #ddd;
-    width: 16px;
-    height: 16px;
-    font-size: 14px;
-    box-sizing: border-box;
-    background-color: #f1f1f1;
-    position: relative;
-    margin: 0;
-    display: inline-block;
-}
-
-.uk-checkbox input[type="checkbox"] {
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-}
-
 .uk-progress-bar {
     line-height: 20px;
     text-shadow: inherit;
@@ -1603,49 +1579,6 @@ input[type="range"]::-ms-thumb {
     margin-right: 0 !important;
 }
 
-.uk-form input[type="radio"],
-.uk-form input[type="checkbox"] {
-    background: #fff;
-}
-
-/* IE 11 */
-.uk-form input[type="radio"],
-.uk-form input[type="checkbox"] {
-    border: initial;
-    overflow: auto;
-    margin-top: auto;
-    outline: auto;
-    background: auto;
-}
-
-.uk-form input[type="radio"],
-.uk-form input[type="checkbox"] {
-    display: inline-block;
-    height: 16px;
-    width: 16px;
-    border: initial;
-    overflow: hidden;
-    margin-top: initial;
-    vertical-align: middle;
-    -webkit-appearance: checkbox;
-    outline: initial;
-    background: initial;
-}
-
-.uk-form input[type="radio"] {
-    -webkit-appearance: radio;
-}
-
-.uk-form input[type="checkbox"]:checked::before,
-.uk-form input[type="checkbox"]:indeterminate::before {
-    content: "";
-}
-
-.uk-form input[type="radio"]:checked::before {
-    content: "";
-    display: none;
-}
-
 .uk-form-label {
     min-width: 32px;
 }
@@ -1656,119 +1589,6 @@ input[list]::-webkit-list-button {
     display: none;
 }
 
-/* Select2 Overrides */
-.select2-container--default .select2-selection--single {
-    border: 1px solid #ddd;
-    border-radius: 2px;
-}
-
-.select2-container .select2-selection--single {
-    height: 32px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 30px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 32px;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__arrow b {
-    /*border-color: #444 transparent transparent;*/
-
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-    background-repeat: no-repeat;
-    background-position: 100% 50%;
-
-    border: none;
-    height: 100%;
-    width: 32px;
-    left: -10px;
-    top: 0;
-    margin: 0;
-}
-
-.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
-    /*border-color: transparent transparent #444 transparent;*/
-
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-    background-repeat: no-repeat;
-    background-position: 100% 50%;
-
-    border: none;
-    height: 100%;
-    width: 32px;
-    left: -10px;
-    top: 0;
-    margin: 0;
-}
-
-.select2-results__option {
-    height: 2.5rem;
-    padding: 0;
-    line-height: 2.5;
-}
-
-.select2-results__option>span {
-    display: block;
-    padding: 0 0.25rem;
-    margin: 0.25rem;
-
-    overflow: hidden;
-    line-height: 32px;
-    height: 32px;
-    white-space: nowrap;
-}
-
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: #eee;
-}
-
-.select2-container--default.select2-container--focus .select2-selection--multiple {
-    border-color: #ddd;
-    border-radius: 2px;
-}
-
-.select2-container .select2-search--inline .select2-search__field {
-    height: inherit;
-}
-
-.select2-container--default .select2-selection--multiple {
-    border-color: #ddd;
-    border-radius: 2px;
-}
-
-.select2-dropdown {
-    border-color: #ddd;
-    border-radius: 2px;
-}
-
-.select2-search input[type="search"]:focus {
-    background-color: inherit;
-}
-
-.select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-}
-
-.select2-selection--multiple:after {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
-    background-repeat: no-repeat;
-    background-position: 100% 50%;
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding: 0 0.75rem;
-    cursor: default;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-/* style select */
 select:not([multiple]):not([size]) {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1777,63 +1597,159 @@ select:not([multiple]):not([size]) {
     background-repeat: no-repeat;
     background-position: 100% 50%;
 }
-.uk-datalist {
+.uk-datalist-control {
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 1px solid #ddd;
+    width: 100%;
+    border-radius: 2px;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+
+    transition: all 0.2s linear;
+    transition-property: border, background;
 }
 
-/*.uk-form-horizontal .uk-datalist input[type="text"] {
-    z-index: 1;
-    position: relative;
-    width: 92.5%;
-    width: calc(100% - 16px);
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.ie .uk-form-horizontal .uk-datalist input[type="text"] {
-    width: calc(100% - 24px);
-}
-
-.uk-datalist input:focus+select {
-    border: 1px solid #66afe9
-}
-
-.uk-datalist select:focus~input {
-    border-color: #66afe9
-}
-
-:root .uk-form-horizontal .uk-datalist input[type="text"] {
-    border-right-width: 0;
-}
-
-.uk-form-horizontal .uk-datalist select {
-    z-index: 0;
+.uk-datalist-loading:after {
+    display: block;
+    content: attr(data-label-loading);
     position: absolute;
     left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
-.uk-form-horizontal .uk-grid-small .uk-datalist select {
-    left: 10px;
-    width: 95%;
-    width: calc(100% - 10px);
-}*/
-
-.uk-form-horizontal .uk-datalist select {width: 100%;}
-
-.uk-form-icon input.color {
-    padding-left: 20px !important;
-    text-transform: lowercase;
+.uk-datalist-control.uk-focus {
+    border-color: #66afe9;
+    background-color: #f5fbfe;
 }
 
-.uk-form-icon input.color:disabled~span {
-    opacity: 0.5;
+.uk-form .uk-datalist-control input[type="text"] {
+    border: 0 none;
+    width: calc(100% - 2em);
 }
 
-.uk-icon-colorpicker {
-    height: 22px;
+.uk-datalist-combobox {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex: 1;
 }
 
+.uk-datalist-placeholder {
+    height: 32px;
+}
+
+.uk-datalist-dropdown {
+    position: fixed;
+    padding: 0 10px;
+    overflow-x: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+}
+
+.uk-datalist-dropdown li:focus {
+    background-color: #eee;
+    outline: 1px dotted #ccc;
+}
+
+.uk-datalist-dropdown li a {
+    box-sizing: border-box;
+    height: 30px;
+    padding: 5px 15px 5px 30px;
+    position: relative;
+}
+
+.uk-datalist-dropdown li.uk-active a:before {
+    content: "\2713";
+    position: absolute;
+    left: 1em;
+    top: 0.5em;
+}
+
+.uk-datalist-dropdown .uk-nav-header {
+    margin: 0;
+    text-transform: inherit;
+    font-weight: bold;
+    font-size: inherit;
+}
+
+.uk-datalist-dropdown .uk-nav-indent {
+    margin-left: 0.5em;
+}
+
+.uk-datalist-control .uk-datalist-button {
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    border: 0 none;
+    width: 2em;
+
+    transition: all 0.2s linear;
+    transition-property: border, background;
+}
+
+.uk-datalist-control .uk-datalist-placeholder input[readonly] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 1;
+    padding-left: 0.5em;
+}
+
+.uk-datalist-control .uk-datalist-placeholder .uk-datalist-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.uk-datalist-control input:focus+.uk-datalist-button {
+    border-color: #66afe9;
+    background-color: #f5fbfe;
+}
+
+.uk-datalist-control .uk-datalist-button:disabled {
+    background-color: #fafafa;
+}
+
+.uk-datalist-control .uk-datalist-tag {
+    position: relative;
+    height: 28px;
+    min-width: 5em;
+    min-height: inherit;
+    margin: 1px 2px;
+    padding: 0 1.25em 0 0;
+    box-sizing: border-box;
+}
+
+.uk-datalist-control .uk-datalist-tag label {
+    padding-left: 0.25em;
+}
+
+.uk-datalist-control .uk-datalist-tag:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    content: "\00d7";
+    color: #444;
+    line-height: 1.5;
+    font-size: 1.25em;
+    font-weight: 700;
+    height: 100%;
+    width: 1em;
+}
 
 /* Repeatable */
 
@@ -1866,6 +1782,20 @@ select:not([multiple]):not([size]) {
     padding: 10px;
 }
 
+/* Color Picker */
+.uk-form-icon input.color {
+    padding-left: 20px !important;
+    text-transform: lowercase;
+}
+
+.uk-form-icon input.color:disabled~span {
+    opacity: 0.5;
+}
+
+.uk-icon-colorpicker {
+    height: 22px;
+}
+
 input.color,
 input.colour {
     width: 100px;
@@ -1889,7 +1819,8 @@ input.colour {
 .wf-colorpicker-simple {
     height: auto;
     width: inherit;
-    max-width: 100px;;
+    max-width: 100px;
+    ;
     padding: 5px;
 }
 
@@ -1902,7 +1833,7 @@ input.colour {
     margin: 0;
 }
 
-.wf-colorpicker-simple .wf-colorpicker-simple-colors > div {
+.wf-colorpicker-simple .wf-colorpicker-simple-colors>div {
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -1911,13 +1842,11 @@ input.colour {
 }
 
 .wf-colorpicker .uk-tabs {
-    height: 91.6%;
     height: calc(100% - 49px);
     position: relative;
 }
 
 .wf-colorpicker>div {
-    height: 90%;
     height: calc(100% - 10px);
 }
 
@@ -1969,8 +1898,8 @@ input.colour {
     padding: 0;
 }
 
-.wf-colorpicker.uk-tooltip-top::after, 
-.wf-colorpicker.uk-tooltip-top-left::after, 
+.wf-colorpicker.uk-tooltip-top::after,
+.wf-colorpicker.uk-tooltip-top-left::after,
 .wf-colorpicker.uk-tooltip-top-right::after {
     border-top-color: #fff;
 }
@@ -1999,6 +1928,11 @@ input.colour {
 .uk-tooltip p {
     margin: 0;
     color: #fff;
+}
+
+.uk-tooltip h4 {
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 .uk-tooltip .tooltip-arrow {
@@ -2544,24 +2478,6 @@ span.uk-slider {
  * other free or open source software licenses.
  */
 
-span.editable-edit {
-	width: 20px;
-	height: 20px;
-	display: inline-block;
-	cursor:pointer;
-	background: transparent url("../img/icons.png") no-repeat 0 -1080px;
-	vertical-align:middle;
-}
-/**
- * @package   	JCE
- * @copyright 	Copyright (c) 2009-2019 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses.
- */
-
 .uk-tree a {
     display: inline-block;
     /*width: calc(100% - 32px);*/
@@ -2936,3 +2852,71 @@ div#previewblock {
         max-width : 420px;
     }
 }*/
+.uk-form input[type],
+.uk-form select,
+.uk-form textarea {
+  box-sizing: border-box;
+  margin: 0;
+  border-radius: 2px;
+  font: inherit;
+}
+.uk-form input[type="radio"]:checked {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22%23fff%22%20cx%3D%228%22%20cy%3D%228%22%20r%3D%222%22%20%2F%3E%0A%3C%2Fsvg%3E");
+}
+.uk-form input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2211%22%20viewBox%3D%220%200%2014%2011%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23fff%22%20points%3D%2212%201%205%207.5%202%205%201%205.5%205%2010%2013%201.5%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+.uk-form input[type="checkbox"]:indeterminate {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23fff%22%20x%3D%223%22%20y%3D%228%22%20width%3D%2210%22%20height%3D%221%22%20%2F%3E%0A%3C%2Fsvg%3E");
+}
+.uk-form input[type="radio"]:disabled:checked {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22%23999%22%20cx%3D%228%22%20cy%3D%228%22%20r%3D%222%22%20%2F%3E%0A%3C%2Fsvg%3E");
+}
+.uk-form input[type="checkbox"]:disabled:checked {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2211%22%20viewBox%3D%220%200%2014%2011%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23999%22%20points%3D%2212%201%205%207.5%202%205%201%205.5%205%2010%2013%201.5%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+.uk-form input[type="checkbox"]:disabled:indeterminate {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23999%22%20x%3D%223%22%20y%3D%228%22%20width%3D%2210%22%20height%3D%221%22%20%2F%3E%0A%3C%2Fsvg%3E");
+}
+.uk-form input[type="radio"]:checked,
+.uk-form input[type="checkbox"]:checked,
+.uk-form input[type="checkbox"]:indeterminate {
+  background-color: #337ab7;
+  border-color: transparent;
+}
+.uk-form input[type="radio"]:disabled,
+.uk-form input[type="checkbox"]:disabled {
+  background-color: #f8f8f8;
+  border-color: #e5e5e5;
+}
+.uk-form input[type="radio"]:not(:disabled),
+.uk-form input[type="checkbox"]:not(:disabled) {
+  cursor: pointer;
+}
+.uk-form input[type="radio"],
+.uk-form input[type="checkbox"] {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  overflow: hidden;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border: 1px solid #ccc;
+  transition: 0.2s ease-in-out;
+  transition-property: background-color, border;
+}
+.uk-form input[type="checkbox"]:checked::before,
+.uk-form input[type="checkbox"]:indeterminate::before {
+  content: "";
+}
+.uk-form input[type="radio"]:checked::before {
+  content: "";
+  display: none;
+}
+.uk-form input[type="radio"] {
+  border-radius: 50%;
+}

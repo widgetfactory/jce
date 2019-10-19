@@ -1,4 +1,17 @@
 (function ($) {
+    $.fn.borderWidget = function () {
+        $(this).on('click change', function () {
+            var state = this.checked;
+
+            $(this).parents('.uk-form-controls').find(':input').not(this).toggleClass('uk-text-muted', !state).attr('disabled', function () {
+                return !state ? true : null;
+            });
+
+            $(this).trigger('border:change');
+        }).change();
+
+        return this;
+    };
 
     $.fn.checkbox = function () {
         return this.each(function () {
@@ -274,9 +287,9 @@
                 e.preventDefault();
             }).first().addClass('uk-active').attr('aria-selected', true).find('button').focus();
 
-            $('body').on('keydown.tabs', function(e) {
-                
-                if ($(e.target).hasClass('uk-button-tab')) {                                        
+            $('body').on('keydown.tabs', function (e) {
+
+                if ($(e.target).hasClass('uk-button-tab')) {
                     if (e.keyCode >= 37 && e.keyCode <= 40) {
                         var parent = e.target.parentNode, $tabItems = $(parent).siblings().addBack();
 
@@ -289,7 +302,7 @@
                         if (e.keyCode === 39 || e.keyCode === 40) {
                             idx++;
                         }
-    
+
                         if (idx > endIndex) {
                             idx = 0;
                         }
@@ -297,15 +310,13 @@
                         if (idx < 0) {
                             idx = endIndex;
                         }
-    
+
                         $tabItems.eq(idx).click();
 
                         e.preventDefault();
                     }
                 }
             });
-
-            
 
             $(this).data('tabs', true);
         });
@@ -377,70 +388,4 @@
     $.fn.dialog = function () {
         return this;
     };
-
-    $.fn.datalist = function (options) {
-        options = $.extend({
-            "seperator": " "
-        }, options);
-
-        return this.each(function () {
-            var self = this;
-
-            var id = $(this).attr('id');
-
-            $(this).attr('id', id + '-select');
-
-            $(this).parent('.uk-form-controls').addClass('uk-datalist');
-
-            if (!$(this).parent().hasClass('uk-datalist')) {
-                $(this).wrap('<span class="uk-datalist" />');
-            }
-
-            var value = $(this).val();
-            var input = $(this).siblings('input[type="text"]');
-
-            if (input.length === 0) {
-                input = $('<input type="text" />').attr('id', id).insertBefore(this);
-            }
-
-            $(input).prop('disabled', $(this).prop('disabled')).val(value);
-
-            // add external event
-            $(input).change(function () {
-                // get first value if multiple (eg: classlist)
-                var v = this.value,
-                    v = v.split(options.seperator)[0];
-                // pass value to select and trigger change
-                $(self).val(v);
-                $(self).trigger('datalist:change');
-
-                $(self).prop('disabled', $(this).prop('disabled'));
-            });
-
-            $(this).change(function (e) {
-                var value = this.value;
-
-                // only trigger on native handlers, ie: when the select list is actually selected
-                if (e.isTrigger === 3) {
-                    return;
-                }
-
-                // special case for class list
-                if (value && this.id.indexOf('classlist-select') !== -1) {
-                    var $tmp = $('<span/>').addClass($(input).val()).addClass(this.value);
-
-                    // only if passing through a value, ie: Not Set will remove classes
-                    if (value !== "") {
-                        value = $tmp.attr('class');
-                    }
-                }
-
-                // pass value to input and trigger change
-                $(input).val(value).change();
-                
-                $(self).trigger('datalist:change');
-            });
-        });
-    };
-
 })(jQuery);

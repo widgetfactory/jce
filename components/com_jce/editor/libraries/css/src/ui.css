@@ -1,60 +1,156 @@
-.uk-datalist {
+.uk-datalist-control {
     position: relative;
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 1px solid #ddd;
+    width: 100%;
+    border-radius: 2px;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+
+    transition: all 0.2s linear;
+    transition-property: border, background;
 }
 
-/*.uk-form-horizontal .uk-datalist input[type="text"] {
-    z-index: 1;
-    position: relative;
-    width: 92.5%;
-    width: calc(100% - 16px);
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.ie .uk-form-horizontal .uk-datalist input[type="text"] {
-    width: calc(100% - 24px);
-}
-
-.uk-datalist input:focus+select {
-    border: 1px solid #66afe9
-}
-
-.uk-datalist select:focus~input {
-    border-color: #66afe9
-}
-
-:root .uk-form-horizontal .uk-datalist input[type="text"] {
-    border-right-width: 0;
-}
-
-.uk-form-horizontal .uk-datalist select {
-    z-index: 0;
+.uk-datalist-loading:after {
+    display: block;
+    content: attr(data-label-loading);
     position: absolute;
     left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
-.uk-form-horizontal .uk-grid-small .uk-datalist select {
-    left: 10px;
-    width: 95%;
-    width: calc(100% - 10px);
-}*/
-
-.uk-form-horizontal .uk-datalist select {width: 100%;}
-
-.uk-form-icon input.color {
-    padding-left: 20px !important;
-    text-transform: lowercase;
+.uk-datalist-control.uk-focus {
+    border-color: #66afe9;
+    background-color: #f5fbfe;
 }
 
-.uk-form-icon input.color:disabled~span {
-    opacity: 0.5;
+.uk-form .uk-datalist-control input[type="text"] {
+    border: 0 none;
+    width: calc(100% - 2em);
 }
 
-.uk-icon-colorpicker {
-    height: 22px;
+.uk-datalist-combobox {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex: 1;
 }
 
+.uk-datalist-placeholder {
+    height: 32px;
+}
+
+.uk-datalist-dropdown {
+    position: fixed;
+    padding: 0 10px;
+    overflow-x: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .1);
+}
+
+.uk-datalist-dropdown li:focus {
+    background-color: #eee;
+    outline: 1px dotted #ccc;
+}
+
+.uk-datalist-dropdown li a {
+    box-sizing: border-box;
+    height: 30px;
+    padding: 5px 15px 5px 30px;
+    position: relative;
+}
+
+.uk-datalist-dropdown li.uk-active a:before {
+    content: "\2713";
+    position: absolute;
+    left: 1em;
+    top: 0.5em;
+}
+
+.uk-datalist-dropdown .uk-nav-header {
+    margin: 0;
+    text-transform: inherit;
+    font-weight: bold;
+    font-size: inherit;
+}
+
+.uk-datalist-dropdown .uk-nav-indent {
+    margin-left: 0.5em;
+}
+
+.uk-datalist-control .uk-datalist-button {
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    border: 0 none;
+    width: 2em;
+
+    transition: all 0.2s linear;
+    transition-property: border, background;
+}
+
+.uk-datalist-control .uk-datalist-placeholder input[readonly] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 1;
+    padding-left: 0.5em;
+}
+
+.uk-datalist-control .uk-datalist-placeholder .uk-datalist-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.uk-datalist-control input:focus+.uk-datalist-button {
+    border-color: #66afe9;
+    background-color: #f5fbfe;
+}
+
+.uk-datalist-control .uk-datalist-button:disabled {
+    background-color: #fafafa;
+}
+
+.uk-datalist-control .uk-datalist-tag {
+    position: relative;
+    height: 28px;
+    min-width: 5em;
+    min-height: inherit;
+    margin: 1px 2px;
+    padding: 0 1.25em 0 0;
+    box-sizing: border-box;
+}
+
+.uk-datalist-control .uk-datalist-tag label {
+    padding-left: 0.25em;
+}
+
+.uk-datalist-control .uk-datalist-tag:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    content: "\00d7";
+    color: #444;
+    line-height: 1.5;
+    font-size: 1.25em;
+    font-weight: 700;
+    height: 100%;
+    width: 1em;
+}
 
 /* Repeatable */
 
@@ -87,6 +183,20 @@
     padding: 10px;
 }
 
+/* Color Picker */
+.uk-form-icon input.color {
+    padding-left: 20px !important;
+    text-transform: lowercase;
+}
+
+.uk-form-icon input.color:disabled~span {
+    opacity: 0.5;
+}
+
+.uk-icon-colorpicker {
+    height: 22px;
+}
+
 input.color,
 input.colour {
     width: 100px;
@@ -110,7 +220,8 @@ input.colour {
 .wf-colorpicker-simple {
     height: auto;
     width: inherit;
-    max-width: 100px;;
+    max-width: 100px;
+    ;
     padding: 5px;
 }
 
@@ -123,7 +234,7 @@ input.colour {
     margin: 0;
 }
 
-.wf-colorpicker-simple .wf-colorpicker-simple-colors > div {
+.wf-colorpicker-simple .wf-colorpicker-simple-colors>div {
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -132,13 +243,11 @@ input.colour {
 }
 
 .wf-colorpicker .uk-tabs {
-    height: 91.6%;
     height: calc(100% - 49px);
     position: relative;
 }
 
 .wf-colorpicker>div {
-    height: 90%;
     height: calc(100% - 10px);
 }
 
@@ -190,8 +299,8 @@ input.colour {
     padding: 0;
 }
 
-.wf-colorpicker.uk-tooltip-top::after, 
-.wf-colorpicker.uk-tooltip-top-left::after, 
+.wf-colorpicker.uk-tooltip-top::after,
+.wf-colorpicker.uk-tooltip-top-left::after,
 .wf-colorpicker.uk-tooltip-top-right::after {
     border-top-color: #fff;
 }
@@ -220,6 +329,11 @@ input.colour {
 .uk-tooltip p {
     margin: 0;
     color: #fff;
+}
+
+.uk-tooltip h4 {
+    font-size: 1.1em;
+    font-weight: bold;
 }
 
 .uk-tooltip .tooltip-arrow {

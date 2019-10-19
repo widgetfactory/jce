@@ -161,7 +161,7 @@
                             var opt = new Option(o.title || cls, cls);
                             var styles = PreviewCss(ed, {styles: [], attributes: [], classes: cls.split(' ')});
 
-                            opt.setAttribute('data-style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
+                            opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
                             
                             lst.options[lst.options.length] = opt;
                         }

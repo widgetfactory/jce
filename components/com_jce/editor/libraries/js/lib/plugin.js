@@ -117,33 +117,11 @@
 
             // create colour picker widgets
             this.createColourPickers();
+
             // create browser widgets
             this.createBrowsers();
 
-            // set up datalist
-            $('.uk-datalist, #classes').select2({
-                width: '100%',
-                tags: true,
-                tokenSeparators: [' '],
-                templateResult : function (data) {
-                    if (!data.element) {
-                        return data.text;
-                    }
-
-                    var elm = data.element, styles = elm.getAttribute('data-style');
-
-                    var $wrapper = $('<span />');
-                    $wrapper.addClass(elm.className);
-
-                    if (styles) {
-                        $wrapper.attr('style', styles);
-                    }
-
-                    $wrapper.text(data.text);
-
-                    return $wrapper;
-                }
-            });
+            $('.uk-datalist').datalist({loading : self.translate('message_load', 'Loading...')});
 
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
@@ -166,8 +144,6 @@
             // update styles on border change
             $('#border_width, #border_style, #border_color').change(function () {
                 self.updateStyles();
-            }).on('datalist:change', function () {
-                self.updateStyles();
             });
 
             $('#style').change(function () {
@@ -185,22 +161,10 @@
                 $('.html4').hide().find(':input').prop('disabled', true);
             }
 
-            // flexbox
-            /*$('.uk-flex-item-auto').width(function() {
-                var p = $(this).parent('.uk-flex');
-                var w = 0;
-
-                $(this).siblings().each(function() {
-                    w += $(this).width();
-                });
-
-                return $(p).width() - w;
-            });*/
-
             // initialise repeatable elements
             $('.uk-repeatable').repeatable();
 
-            $('body').on('keydown.tab', function (e) {                
+            $('body').on('keydown.tab', function (e) {
                 if (e.keyCode === 9) {
 
                     // visible inputs and select2 combobox
@@ -229,6 +193,36 @@
 
                     e.preventDefault();
                     e.stopImmediatePropagation();
+                }
+            });
+
+            // add scroll event to trigger datalist update
+            $('.uk-tabs-panel').on('scroll.tabs', function(e) {
+                $('select').trigger('datalist:position', e);
+            });
+
+            // prevent backspace out of window
+            $('body').on('keydown.backspace', function (e) {
+                if (!e.target || e.target.nodeName !== 'INPUT') {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
+            });
+
+            // close on esc
+            $('body').on('keyup.esc', function (e) {
+                if (e.keyCode === 27) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // close an existing modal first
+                    /*if ($('.uk-modal-close').length) {
+                        $('.uk-modal-close').click();
+
+                        return;
+                    }*/
+
+                    tinyMCEPopup.close();
                 }
             });
         },

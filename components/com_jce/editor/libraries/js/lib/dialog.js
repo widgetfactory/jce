@@ -1,17 +1,5 @@
 (function($) {
-    $.fn.borderWidget = function() {
-        $(this).on('click change', function() {
-            var state = this.checked;
-
-            $('input[id*="border_"], select[id*="border_"], label[for*="border_"]').toggleClass('uk-text-muted', !state).attr('disabled', function() {
-                return !state ? true : null;
-            }).change();
-
-            $(this).trigger('border:change');
-        }).change();
-
-        return this;
-    };
+    
 
     $.extend(Wf, {
         /**
@@ -211,7 +199,6 @@
                 }
 
                 if (border) {
-                    $('#border').attr('checked', 'checked');
                     $('#border_' + k).val(v);
 
                     $('#border~:input, #border~span, #border~label').attr('disabled', false).toggleClass('uk-text-muted', false);
@@ -220,6 +207,8 @@
                     if (k == 'color') {
                         $('#border_' + k).trigger('pick');
                     }
+
+                    $('#border').prop('checked', true).change();
                 }
             });
 
@@ -265,7 +254,7 @@
                 // remove float and vertical-align
                 $(img).css({ 'float': '', 'vertical-align': '' });
 
-                $('#clear').attr('disabled', true);
+                $('#clear').attr('disabled', true).trigger('datalist:disabled', true);
 
                 $('#margin_left, #margin_right').val('auto');
             } else {
@@ -295,7 +284,7 @@
                     $('#margin_top').siblings('input[type="text"]').val($('#margin_top').val());
                 }
 
-                $('#clear').attr('disabled', !v);
+                $('#clear').attr('disabled', !v).trigger('datalist:disabled', !v);
             }
 
             // Handle clear
