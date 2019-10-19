@@ -353,7 +353,7 @@ WFPopups.addPopup('jcemediabox', {
 
                 v = tinymce.DOM.decode(v);
 
-                $('#jcemediabox_popup_' + k).val(v);
+                $('#jcemediabox_popup_' + k).val(v).change();
 
                 if (k == 'title' || k == 'caption') {
                     $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val(v);
