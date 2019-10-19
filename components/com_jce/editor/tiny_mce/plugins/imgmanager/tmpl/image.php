@@ -155,7 +155,7 @@ defined('JPATH_PLATFORM') or die;
                     title="<?php echo JText::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo JText::_('WF_LABEL_WIDTH'); ?></label>
                 <div class="uk-form-controls uk-width-2-10">
                     <select pattern="[0-9]+" id="border_width" class="uk-datalist">
-                        <option value="inherit"><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
+                        <option value=""></option>
                         <option value="0">0</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
