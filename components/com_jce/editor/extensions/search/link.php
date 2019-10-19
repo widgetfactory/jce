@@ -38,9 +38,10 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         foreach ($plugins as $plugin) {
             if (JPluginHelper::isEnabled('search', $plugin)) {
-                JPluginHelper::importPlugin('search', $plugin);
-
-                $this->enabled[] = $plugin;
+                // check plugin imports correctly - plugin may have a db entry, but is missing files
+                if (JPluginHelper::importPlugin('search', $plugin)) {
+                    $this->enabled[] = $plugin;
+                }
             }
         }
     }
