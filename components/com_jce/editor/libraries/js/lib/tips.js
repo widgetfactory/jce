@@ -155,8 +155,7 @@
                 var h = options.content;
             } else {
                 // Get tooltip text from title
-                var text = $(element).attr('title') || '',
-                    title = '';
+                var h = '', text = $(element).attr('title') || '', title = '';
 
                 // Split tooltip text ie: title::text
                 if (/::/.test(text)) {
@@ -165,9 +164,15 @@
                     text = $.trim(parts[1]);
                 }
 
-                title = title || $(element).attr('title');
+                // use element innerText for title
+                if (!title) {
+                    title = $(element).text();
+                }
 
-                text = $(element).data('content') || text;
+                if (title) {
+                    // Set tooltip title html
+                    h += '<h4>' + title + '</h4>';
+                }
 
                 // Store original title and remove
                 $(element).data('title', $(element).attr('title')).attr('title', '');
@@ -175,17 +180,8 @@
                 // add aria description
                 $(element).attr('aria-describedby', 'uk-tooltip');
 
-                var h = '';
-                
-                // Set tooltip title html
-                if (title) {
-                    h += '<h4>' + title + '</h4>';
-                }
-
                 // Set tooltip text html
-                if (text) {
-                    h += '<div>' + text + '</div>';
-                }
+                h += '<p>' + text + '</p>';
             }
 
             // Set tooltip html
