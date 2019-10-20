@@ -123,15 +123,15 @@
 
             ed.onPostRender.add(function () {
                 var el = ed.getElement();
-                
+
                 DOM.setStyle(ed.id + '_tbl', 'width', '');
 
                 var e = DOM.get(ed.id + '_parent'),
                     ifr = DOM.get(ed.id + '_ifr');
 
                 // get dimensions from settings or textarea
-                var width   = s.width || el.style.width;
-                var height  = s.height || el.style.height; 
+                var width = s.width || el.style.width;
+                var height = s.height || el.style.height;
 
                 // Resize iframe and container
                 if (height) {
@@ -358,10 +358,8 @@
 
         _createLayout: function (s, tb, o, p) {
             var self = this,
-                ed = self.editor,
                 lo = s.theme_toolbar_location,
-                sl = s.theme_statusbar_location,
-                n, ic, etb, c;
+                sl = s.theme_statusbar_location, ic;
 
             if (s.readonly) {
                 ic = DOM.add(tb, 'div', {
@@ -374,56 +372,6 @@
             // Create toolbar container at top
             if (lo == 'top') {
                 self._addToolbars(tb, o);
-            }
-
-            // Create external toolbar
-            if (lo == 'external') {
-                n = c = DOM.create('div', {
-                    style: 'position:relative'
-                });
-                n = DOM.add(n, 'div', {
-                    id: ed.id + '_external',
-                    'class': 'mceExternalToolbar'
-                });
-                DOM.add(n, 'a', {
-                    id: ed.id + '_external_close',
-                    'class': 'mceExternalClose'
-                });
-                n = DOM.add(n, 'div', {
-                    id: ed.id + '_tblext',
-                    cellSpacing: 0,
-                    cellPadding: 0
-                });
-
-                p.insertBefore(c, p.firstChild);
-
-                self._addToolbars(n, o);
-
-                ed.onMouseUp.add(function () {
-                    var e = DOM.get(ed.id + '_external');
-                    DOM.show(e);
-
-                    DOM.hide(lastExtID);
-
-                    var f = Event.add(ed.id + '_external_close', 'click', function () {
-                        DOM.hide(ed.id + '_external');
-                        Event.remove(ed.id + '_external_close', 'click', f);
-
-                        return false;
-                    });
-
-                    DOM.show(e);
-                    DOM.setStyle(e, 'top', 0 - DOM.getRect(ed.id + '_tblext').h - 1);
-
-                    // Fixes IE rendering bug
-                    DOM.hide(e);
-                    DOM.show(e);
-                    e.style.filter = '';
-
-                    lastExtID = ed.id + '_external';
-
-                    e = null;
-                });
             }
 
             if (sl == 'top') {
@@ -535,13 +483,6 @@
 
             h.push(toolbarGroup.renderHTML());
 
-            h.push(DOM.createHTML('a', {
-                href: '#',
-                accesskey: 'z',
-                title: ed.getLang("advanced.toolbar_focus"),
-                onfocus: 'tinyMCE.getInstanceById(\'' + ed.id + '\').focus();'
-            }, '<!-- IE -->'));
-
             DOM.setHTML(c, h.join(''));
         },
 
@@ -562,7 +503,7 @@
                     'aria-labelledby': ed.id + '_path_voice',
                     'class': 'mcePathRow'
                 });
-                
+
                 DOM.add(n, 'span', {
                     id: ed.id + '_path_voice',
                     'class': 'mcePathLabel'
