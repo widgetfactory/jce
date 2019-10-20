@@ -356,7 +356,7 @@
 						var named = Entities.encodeNamed(chrText), named = named.substring(1);
 	
 						html += (
-							'<button tabindex="-1" title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
+							'<button title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
 							chrText +
 							'</button>'
 						);
