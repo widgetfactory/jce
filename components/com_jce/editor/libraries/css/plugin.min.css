@@ -2884,10 +2884,15 @@ div#previewblock {
   background-color: #337ab7;
   border-color: transparent;
 }
-.uk-form input[type="radio"]:disabled,
-.uk-form input[type="checkbox"]:disabled {
-  background-color: #f8f8f8;
-  border-color: #e5e5e5;
+.uk-form input[type="radio"]:focus,
+.uk-form input[type="checkbox"]:focus {
+  border-color: #66afe9;
+  outline: none;
+}
+.uk-form input[type="radio"]:checked:focus,
+.uk-form input[type="checkbox"]:checked:focus,
+.uk-form input[type="checkbox"]:indeterminate:focus {
+  background-color: #0e6dcd;
 }
 .uk-form input[type="radio"]:not(:disabled),
 .uk-form input[type="checkbox"]:not(:disabled) {
