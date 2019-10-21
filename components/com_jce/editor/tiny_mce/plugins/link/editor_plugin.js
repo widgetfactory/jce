@@ -51,11 +51,6 @@
                     plugin_url: url
                 });
             });
-            // Register buttons
-            /*ed.addButton('link', {
-                title : 'link.desc',
-                cmd : 'mceLink'
-            });*/
 
             ed.addShortcut('ctrl+k', 'link.desc', 'mceLink');
 
@@ -72,10 +67,14 @@
             });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
+                var link = isLink(n), anchor = isAnchor(n);
+                
                 // set active if link
-                cm.setActive('link', isLink(n));
+                cm.setActive('unlink', link);
+                cm.setActive('link', link);
                 // set disabled if anchor
-                cm.setDisabled('link', isAnchor(n));
+                cm.setDisabled('link', anchor);
+                cm.setDisabled('unlink', !link);
             });
         },
         createControl: function (n, cm) {
