@@ -17,6 +17,54 @@
         Cookie = tinymce.util.Cookie,
         lastExtID, explode = tinymce.explode;
 
+    function now() {
+        return new Date().getTime();
+    }
+
+    /* A selection of functions from Underscore.js to expand tinymec.util.Tools
+     * http://underscorejs.org
+     * (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+     * Underscore may be freely distributed under the MIT license.
+     */
+
+    // Returns a function, that, as long as it continues to be invoked, will not
+    // be triggered. The function will be called after it stops being called for
+    // N milliseconds. If `immediate` is passed, trigger the function on the
+    // leading edge, instead of the trailing.
+    function debounce(func, wait, immediate) {
+        var timeout, args, context, timestamp, result;
+
+        var later = function () {
+            var last = now() - timestamp;
+
+            if (last < wait && last > 0) {
+                timeout = setTimeout(later, wait - last);
+            } else {
+                timeout = null;
+                if (!immediate) {
+                    result = func.apply(context, args);
+                    if (!timeout)
+                        context = args = null;
+                }
+            }
+        };
+
+        return function () {
+            context = this;
+            args = arguments;
+            timestamp = now();
+            var callNow = immediate && !timeout;
+            if (!timeout)
+                timeout = setTimeout(later, wait);
+            if (callNow) {
+                result = func.apply(context, args);
+                context = args = null;
+            }
+
+            return result;
+        };
+    }
+
     tinymce.create('tinymce.themes.AdvancedTheme', {
 
         // Control name lookup, format: title, command
@@ -489,8 +537,7 @@
         _addStatusBar: function (tb, o) {
             var n, self = this,
                 ed = self.editor,
-                s = self.settings,
-                r, mf, me, td;
+                s = self.settings, td;
 
             n = td = DOM.add(tb, 'div', {
                 'class': 'mceStatusbar'
@@ -520,8 +567,7 @@
 
                 if (s.use_state_cookies !== false) {
                     ed.onPostRender.add(function () {
-                        var o = Cookie.getHash("wf_editor_size_" + ed.id),
-                            c = DOM.get(ed.id + '_tbl');
+                        var o = Cookie.getHash("wf_editor_size_" + ed.id);
 
                         if (!o) {
                             return;
@@ -579,6 +625,23 @@
                         mouseUpHandler1 = Event.add(DOM.doc, 'mouseup', endResize);
                         mouseUpHandler2 = Event.add(ed.getDoc(), 'mouseup', endResize);
                     });
+
+                    if (ed.settings.floating_toolbar) {
+                        var elm = ed.getContainer(), parent = elm.parentNode;
+
+                        Event.add(window, 'scroll', debounce(function () {
+                            if (ed.settings.fullscreen_enabled) {
+                                return;
+                            }
+
+                            if (window.pageYOffset > parent.offsetTop) {
+                                DOM.addClass(elm, 'mceToolbarFixed');
+                            } else {
+                                DOM.removeClass(elm, 'mceToolbarFixed');
+                            }
+                        }, 128));
+
+                    }
                 });
             }
 
@@ -595,7 +658,7 @@
         _nodeChanged: function (ed, cm, n, co, ob) {
             var self = this,
                 p, de = 0,
-                v, c, s = self.settings;
+                v, s = self.settings;
 
             tinymce.each(self.stateControls, function (c) {
                 cm.setActive(c, ed.queryCommandState(self.controls[c][1]));
@@ -612,26 +675,15 @@
                 }
 
                 for (i = 0; i < parents.length; i++) {
-                    if (func(parents[i]))
+                    if (func(parents[i])) {
                         return parents[i];
+                    }
                 }
             }
 
             cm.setActive('visualaid', ed.hasVisual);
             self._updateUndoStatus(ed);
             cm.setDisabled('outdent', !ed.queryCommandState('Outdent'));
-
-            var link = getParent('A');
-            var img = getParent('IMG');
-
-            function isLink(n) {
-                return !!n && (n.href || (n.id || n.name));
-            }
-
-            if (c = cm.get('unlink')) {
-                c.setDisabled(!isLink(link));
-                c.setActive(isLink(link));
-            }
 
             if (s.theme_path && s.theme_statusbar_location) {
                 p = DOM.get(ed.id + '_path') || DOM.add(ed.id + '_path_row', 'span', {

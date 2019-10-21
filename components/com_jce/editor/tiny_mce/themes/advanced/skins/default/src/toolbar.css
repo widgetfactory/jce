@@ -1,23 +1,14 @@
 /* External */
 
-.mceDefaultSkin .mceExternalToolBar {
-    position: absolute;
+.mceToolbarFixed .mceToolbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
     border: 1px solid #ddd;
-    border-bottom: 0;
-    display: none;
-}
-
-.mceDefaultSkin .mceExternalToolBar .mceToolbar {
-    padding-right: 13px;
-}
-
-.mceDefaultSkin .mceExternalClose {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    width: 7px;
-    height: 7px;
-    background: url(../../img/icons.png?@@etag@@) -820px 0
+    border-right: 0;
+    border-left: 0;
+    z-index: 9999;
 }
 
 /* Layout */
