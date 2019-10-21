@@ -26,7 +26,7 @@ class SpellChecker
      *
      * @return {Array} Array of all input arguments
      */
-    protected function &loopback( /* args.. */)
+    protected function loopback( /* args.. */)
     {
         return func_get_args();
     }
@@ -39,7 +39,7 @@ class SpellChecker
      *
      * @return {Array} Array of misspelled words
      */
-    public function &checkWords($lang, $words)
+    public function checkWords($lang, $words)
     {
         return $words;
     }
@@ -52,7 +52,7 @@ class SpellChecker
      *
      * @return {Array} Array of suggestions for the specified word
      */
-    public function &getSuggestions($lang, $word)
+    public function getSuggestions($lang, $word)
     {
         return array();
     }

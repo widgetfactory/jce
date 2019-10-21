@@ -1,12 +1,12 @@
 <?php
 
-require_once (__DIR__ . '/spellchecker.php');
+require_once __DIR__ . '/spellchecker.php';
 
 /**
  * @author Moxiecode
  * @copyright Copyright (c) 2004-2007, Moxiecode Systems AB, All rights reserved
  */
-class pspell extends SpellChecker
+class Pspell extends SpellChecker
 {
     /**
      * Spellchecks an array of words.
@@ -16,9 +16,9 @@ class pspell extends SpellChecker
      *
      * @return {Array} Array of misspelled words
      */
-    public function &checkWords($lang, $words)
+    public function checkWords($lang, $words)
     {
-        $plink = $this->_getPLink($lang);
+        $plink = $this->getPLink($lang);
 
         $outWords = array();
         foreach ($words as $word) {
@@ -38,9 +38,9 @@ class pspell extends SpellChecker
      *
      * @return {Array} Array of suggestions for the specified word
      */
-    public function &getSuggestions($lang, $word)
+    public function getSuggestions($lang, $word)
     {
-        $words = pspell_suggest($this->_getPLink($lang), $word);
+        $words = pspell_suggest($this->getPLink($lang), $word);
 
         for ($i = 0; $i < count($words); ++$i) {
             $words[$i] = utf8_encode($words[$i]);
@@ -52,7 +52,7 @@ class pspell extends SpellChecker
     /**
      * Opens a link for pspell.
      */
-    public function &_getPLink($lang)
+    private function getPLink($lang)
     {
         // Check for native PSpell support
         if (!function_exists('pspell_new')) {
@@ -84,9 +84,9 @@ class pspell extends SpellChecker
      *
      * @return
      */
-    public function &addToDictionary($lang, $word)
+    public function addToDictionary($lang, $word)
     {
-        $plink = $this->_getPLink($lang);
+        $plink = $this->getPLink($lang);
         pspell_add_to_personal($plink, $word);
         pspell_save_wordlist($plink);
 
