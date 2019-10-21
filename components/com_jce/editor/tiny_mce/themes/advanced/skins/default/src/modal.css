@@ -98,7 +98,7 @@
     width: 2rem;
     height: 2rem;
     animation: donut-spin 1.2s linear infinite;
-    z-index: 10001;
+    z-index: 700003;
     position: absolute;
     top: 50%;
     left: 50%;

@@ -83,10 +83,10 @@
     width: 100%;
     position: absolute;
     left: 0;
-    bottom: -3px;
+    bottom: -2px;
     background: #fff;
     box-sizing: border-box;
-    z-index: 20001;
+    z-index: 700011;
     border: 1px solid #ccc;
     border-top: 0 none;
     border-bottom: 0 none;
