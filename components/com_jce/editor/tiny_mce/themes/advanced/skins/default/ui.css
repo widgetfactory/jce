@@ -78,24 +78,15 @@
     width: 100%;
 }/* External */
 
-.mceDefaultSkin .mceExternalToolBar {
-    position: absolute;
+.mceToolbarFixed .mceToolbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
     border: 1px solid #ddd;
-    border-bottom: 0;
-    display: none;
-}
-
-.mceDefaultSkin .mceExternalToolBar .mceToolbar {
-    padding-right: 13px;
-}
-
-.mceDefaultSkin .mceExternalClose {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    width: 7px;
-    height: 7px;
-    background: url(../../img/icons.png?@@etag@@) -820px 0
+    border-right: 0;
+    border-left: 0;
+    z-index: 9999;
 }
 
 /* Layout */
@@ -396,7 +387,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 20000;
+    z-index: 700010 !important;
     border: 1px solid #ccc;
     direction: ltr;
     background-color: #fff;
@@ -2103,7 +2094,7 @@ select.mceNativeListBox {
 
 .mceModal {
     position: absolute;
-    z-index: 10000;
+    z-index: 700000 !important;
     width: 100%;
     height: 100%;
     top: 0;
@@ -2122,7 +2113,7 @@ select.mceNativeListBox {
     width: 100%;
     height: 100%;
     opacity: 0.6;
-    z-index: 10001;
+    z-index: 700001 !important;
 }
 
 .mceModal .mceModalFrame {
@@ -2134,7 +2125,7 @@ select.mceNativeListBox {
     top: 0;
     width: 100%;
     padding: 8px;
-    z-index: 10002;
+    z-index: 700002 !important;
 }
 
 .mceModal .mceModalFrame:after {
@@ -2157,7 +2148,7 @@ select.mceNativeListBox {
     top: 0;
     background: #fff;
     opacity: 0.8;
-    z-index: 10000;
+    z-index: 700003 !important;
     box-sizing: border-box;
 }
 

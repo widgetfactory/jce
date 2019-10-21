@@ -21,7 +21,7 @@
 
 .mceModal {
     position: absolute;
-    z-index: 10000;
+    z-index: 700000 !important;
     width: 100%;
     height: 100%;
     top: 0;
@@ -40,7 +40,7 @@
     width: 100%;
     height: 100%;
     opacity: 0.6;
-    z-index: 10001;
+    z-index: 700001 !important;
 }
 
 .mceModal .mceModalFrame {
@@ -52,7 +52,7 @@
     top: 0;
     width: 100%;
     padding: 8px;
-    z-index: 10002;
+    z-index: 700002 !important;
 }
 
 .mceModal .mceModalFrame:after {
@@ -75,7 +75,7 @@
     top: 0;
     background: #fff;
     opacity: 0.8;
-    z-index: 10000;
+    z-index: 700003 !important;
     box-sizing: border-box;
 }
 
