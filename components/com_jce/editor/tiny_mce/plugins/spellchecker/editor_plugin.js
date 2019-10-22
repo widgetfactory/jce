@@ -176,10 +176,7 @@
                     }).setDisabled(1);
                     self.menuItems = {};
                     each(self.languages, function (v, k) {
-                        var o = {
-                            icon: 1
-                        },
-                            mi;
+                        var o = {}, mi;
 
                         o.onclick = function () {
                             if (v == self.selectedLang) {
@@ -392,7 +389,7 @@
             e = 0; // Fixes IE memory leak
 
             if (!m) {
-                m = ed.controlManager.createDropMenu('spellcheckermenu');
+                m = ed.controlManager.createDropMenu('spellcheckermenu', {keyboard_focus: true});
                 self._menu = m;
             }
 
@@ -425,7 +422,6 @@
                             });
                         });
 
-                        //m.addSeparator();
                     } else
                         m.add({
                             title: 'spellchecker.no_sug',
@@ -433,6 +429,8 @@
                         }).setDisabled(1);
 
                     if (ed.getParam('show_ignore_words', true)) {
+                        m.addSeparator();
+                        
                         ignoreRpc = self.editor.getParam("spellchecker_enable_ignore_rpc", '');
                         m.add({
                             title: 'spellchecker.ignore_word',
@@ -488,7 +486,7 @@
                         });
                     }
 
-                    //m.update();
+                    m.update();
                 });
 
                 p1 = DOM.getPos(ed.getContentAreaContainer());
