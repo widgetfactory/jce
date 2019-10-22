@@ -228,26 +228,24 @@ class JceModelProfile extends JModelAdmin
                 // remove duplicates
                 $items = array_unique($items);
 
-                for ($x = 0; $x < count($items); ++$x) {
-                    $name = $items[$x];
-
-                    if ($name === 'spacer') {
+                foreach ($items as $x => $item) {
+                    if ($item === 'spacer') {
                         unset($items[$x]);
                         continue;
                     }
 
                     // not in the list...
-                    if (empty($name) || array_key_exists($name, $plugins) === false) {
+                    if (empty($item) || array_key_exists($item, $plugins) === false) {
                         continue;
                     }
 
                     // must be assigned...
-                    if (!$plugins[$name]->active) {
+                    if (!$plugins[$item]->active) {
                         continue;
                     }
 
                     // assign icon
-                    $buttons[] = $plugins[$name];
+                    $buttons[] = $plugins[$item];
                 }
 
                 $groups[] = $buttons;
