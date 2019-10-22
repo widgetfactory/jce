@@ -95,6 +95,10 @@
     margin: 2px;
 }
 
+.mceSplitButtonMenu .mceMenuItems .mceSelected {
+    background-color: #ddd;
+}
+
 /* ColorSplitButton */
 .mceDefaultSkin .mceColorSplitMenu table {
     background: #fff;
@@ -213,7 +217,7 @@
     width: 100%;
     position: absolute;
     left: 0;
-    bottom: -6px;
+    bottom: -7px;
     background: #fff;
     box-sizing: border-box;
     z-index: 700011;

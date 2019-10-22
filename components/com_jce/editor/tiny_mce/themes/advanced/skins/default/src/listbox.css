@@ -83,7 +83,7 @@
     width: 100%;
     position: absolute;
     left: 0;
-    bottom: -2px;
+    bottom: -3px;
     background: #fff;
     box-sizing: border-box;
     z-index: 700011;
@@ -108,6 +108,18 @@
     height: auto;
     max-height: 386px; /*(32px *  12 + 2);*/
     margin-top: 2px;
+}
+
+.mceListBoxMenu .mceMenuItems .mceText {
+    padding: 0 8px 0 24px;
+}
+
+.mceListBoxMenu .mceMenuItems .mceSelected:before {
+    content: "\2713";
+    position: absolute;
+    top: 0.5em;
+    left: 0.25em;
+    font-size: 1em;
 }
 
 .mceListBoxMenu .mceMenuItems {

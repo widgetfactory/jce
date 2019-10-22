@@ -12,6 +12,8 @@
     overflow: hidden;
     overflow-y: auto;
     margin-top: 2px;
+
+    min-width: 10em;
 }
 
 .mceSplitButtonMenu,
@@ -44,7 +46,7 @@
     width: 100%;
 }
 
-.mceMenu .mceMenuItems .mceIcon + .mceText {
+.mceMenu .mceMenuItems .mceIcon+.mceText {
     padding: 0 32px 0 40px;
 }
 
@@ -73,7 +75,7 @@
     margin: 2px;
 }
 
-.mceMenu .mceMenuFilter + .mceMenuItems {
+.mceMenu .mceMenuFilter+.mceMenuItems {
     height: calc(100% - 40px);
 }
 
@@ -83,8 +85,7 @@
 
 .mceMenu .mceMenuItems .mceMenuItemEnabled:hover,
 .mceMenu .mceMenuItems .mceMenuItemEnabled:focus,
-.mceMenu .mceMenuItems .mceMenuItemActive,
-.mceMenu .mceMenuItems .mceSelected {
+.mceMenu .mceMenuItems .mceMenuItemActive {
     background-color: #eee
 }
 
@@ -92,9 +93,24 @@
     background-color: transparent;
 }
 
-.mceMenu .mceMenuItemsItemSeparator {
+.mceMenu .mceMenuItems .mceMenuItemTitle {
+    border-bottom: 1px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemTitle:hover {
+    background-color: #f5f5f5;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemTitle .mceText {
+    font-weight: bold;
+    cursor: default;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemSeparator {
     background: #ddd;
-    height: 1px
+    height: 1px;
+    cursor: default;
 }
 
 .mceMenu .mceMenuItemsItemDisabled .mceText {
