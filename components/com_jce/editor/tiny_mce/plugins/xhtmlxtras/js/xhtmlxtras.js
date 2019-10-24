@@ -209,7 +209,7 @@
 				ed.formatter.apply(element.toLowerCase(), args, elm);
 
 				// apply classes
-				ed.dom.addClass(elm, cls);
+				ed.dom.setAttrib(elm, 'class', cls);
 
 				// probably Attributes
 			} else {
