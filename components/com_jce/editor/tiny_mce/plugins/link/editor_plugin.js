@@ -105,7 +105,7 @@
             var ctrl = cm.createSplitButton('link', {
                 title: 'link.desc',
                 cmd: 'mceLink',
-                //max_width: 250,
+                max_width: 264,
                 onselect: function (elm) {
                     insertLink(elm.value);
                 }
