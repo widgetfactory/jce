@@ -171,7 +171,8 @@
         "icon": "link",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "class": "split-button"
     },
     "lists": {
         "title": "WF_LISTS_TITLE",
@@ -342,6 +343,7 @@
         "core": 1,
         "icon": "emotions",
         "row": 4,
-        "editable": 1
+        "editable": 1,
+        "class": "split-button"
     }
 }

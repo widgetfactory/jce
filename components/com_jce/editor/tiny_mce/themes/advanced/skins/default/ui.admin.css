@@ -83,7 +83,7 @@
 
 .mceEditor .mceToolbarItem .mceSplitButton .mceIcon {
 	display: inline-block;
-	margin: 4px;
+	margin: 4px 5px;
 }
 
 .mceEditor .mceToolbarItem .mceSplitButton {
@@ -118,7 +118,7 @@
 	font-size: 9px;
 	line-height: 30px;
 	color: #444;
-	width: 18px;
+	width: 16px;
 	text-align: center;
 	border-left: 1px solid #ddd;
 	box-sizing: border-box;
