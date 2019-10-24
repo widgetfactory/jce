@@ -12,6 +12,10 @@
     position: relative;
 }
 
+#search-browser button {
+    padding: 0 0.5em;
+}
+
 #searchbox {
     position: relative;
 }
@@ -107,7 +111,7 @@ div#search-browser #search-options fieldset {
     padding: 0;
 }
 
-div#search-browser #search-options fieldset div {
+div#search-browser #search-options fieldset > div {
     margin: 5px 0;
 }
 
