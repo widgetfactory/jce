@@ -8,12 +8,7 @@
  * other free or open source software licenses.
  */
 (function() {
-    var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
-        extend = tinymce.extend,
-        each = tinymce.each,
-        Cookie = tinymce.util.Cookie,
-        explode = tinymce.explode;
+    var each = tinymce.each;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function(ed, url) {
