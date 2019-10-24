@@ -223,6 +223,10 @@
 .popover .close::after {
     content: "\00d7";
 }
+
+.popover .popover-content {
+    min-height: 1em;
+}
 .colorpicker+.colorpicker_widget {
     display: inline-block;
     width: 2rem;
@@ -556,7 +560,7 @@ div#previewblock {
   position: relative;
   width: 200px;
   height: 88%;
-  height: calc(70%);
+  height: calc(100% - 30px);
 }
 /**
  * Farbtastic Color Picker 1.2

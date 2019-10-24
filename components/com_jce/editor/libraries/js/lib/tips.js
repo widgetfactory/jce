@@ -157,6 +157,9 @@
                 // Get tooltip text from title
                 var h = '', text = $(element).attr('title') || '', title = '';
 
+                // get text from data-content attribute (popover)
+                text = $(element).data('content') || text;
+
                 // Split tooltip text ie: title::text
                 if (/::/.test(text)) {
                     var parts = text.split('::');
@@ -189,7 +192,7 @@
 
             if ($(element).hasClass('hasPopover')) {
                 $('.uk-tooltip-inner > h4', $tips).addClass('popover-title popover-header');
-                $('.uk-tooltip-inner > div', $tips).addClass('popover-content popover-body');
+                $('.uk-tooltip-inner > p', $tips).addClass('popover-content popover-body');
             }
 
             // Set visible
