@@ -699,16 +699,16 @@
                 DOM.setHTML(p, '');
 
                 getParent(function (n) {
-                    var na = n.nodeName.toLowerCase(),
-                        u, pi, ti = '';
+                    var na = n.nodeName.toLowerCase(), pi, ti = '';
 
                     // Ignore non element and bogus/hidden elements
                     if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mce-item-hidden') || DOM.hasClass(n, 'mce-item-removed') || DOM.hasClass(n, 'mce-item-shim'))
                         return;
 
                     // Handle prefix
-                    if (tinymce.isIE && n.scopeName && n.scopeName !== 'HTML')
+                    if (tinymce.isIE && n.scopeName && n.scopeName !== 'HTML') {
                         na = n.scopeName + ':' + na;
+                    }
 
                     // Remove internal prefix
                     na = na.replace(/mce\:/g, '');
@@ -759,15 +759,17 @@
                         ti += 'id: ' + v + ' ';
                     }
 
-                    if (v = DOM.getAttrib(n, 'class')) {
-                        v = v.replace(/mce-item-[\w]+/g, '');
-                        v = tinymce.trim(v);
+                    if (ed.settings.theme_path_show_classnames) {
+                        if (v = DOM.getAttrib(n, 'class')) {
+                            v = v.replace(/mce-item-[\w]+/g, '');
+                            v = tinymce.trim(v);
 
-                        if (v) {
-                            ti += 'class: ' + v + ' ';
+                            if (v) {
+                                ti += 'class: ' + v + ' ';
 
-                            if (ed.dom.isBlock(n) || na == 'img' || na == 'span') {
-                                na += '.' + v;
+                                if (ed.dom.isBlock(n) || na == 'img' || na == 'span') {
+                                    na += '.' + v;
+                                }
                             }
                         }
                     }
@@ -791,8 +793,6 @@
                         title: ti,
                         'class': 'mcePath_' + (de++)
                     }, '<span class="mceText">' + na + '</span>');
-
-                    // WFEditor - Added mcePath class to path span
 
                     if (p.hasChildNodes()) {
                         p.insertBefore(DOM.create('span', {
