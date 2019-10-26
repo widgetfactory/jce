@@ -90,7 +90,7 @@
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=attributes',
                     width: 640,
-                    height: 500,
+                    height: 520,
                     inline: 1
                 }, {
                         plugin_url: url
