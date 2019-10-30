@@ -129,3 +129,95 @@
 .mceDefaultSkin .mceStatusbar {
 	line-height: 1;
 }
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox, .mceDefaultSkinTouch .mceToolBarItem .mceSplitButton {
+	border-color: #dcdcdc;
+	height: 36px;
+}
+
+.mceDefaultSkinTouch .mceLayout .mceToolbar .mceToolbarRow {
+  min-height: 38px;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceButton {
+  padding: 7px;
+  border-color: #dcdcdc;
+
+  background-color: #fafafa;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox {
+  width: 112px;
+  padding: 0;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceSplitButton {
+    width: 55px;
+    padding: 0;
+    height: 36px;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox .mceIcon {
+	width: 92px;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox .mceIcon:before {
+  width: 92px;
+  line-height: 34px;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox:after, .mceDefaultSkinTouch .mceToolBarItem .mceSplitButton:after {
+  line-height: 34px;
+  width: 20px;
+	border-color: #dcdcdc;
+}
+
+.mceDefaultSkinTouch .mceLayout .mceStatusbar {
+	border-color: #dcdcdc;
+}
+
+.mceDefaultSkinTouch .mceLayout .mceIframeContainer {
+	border-color: #dcdcdc;
+}
+.mceDefaultSkinTouch .mceLayout .mceToolbarRow {
+    background-color: #fafafa;
+    border-color: #dcdcdc;
+}
+
+.mceDefaultSkinTouch .mceToolbar .sortableRowHandle {
+  height: 42px;
+}
+.mceDefaultSkinTouch .mceToolbar .sortableRowHandle .uk-icon {
+  margin: 12px 0 0;
+}
+.mceDefaultSkinTouch .mceToolBarItem .mceSeparator {
+    height: 34px;
+    background: #dcdcdc;
+}
+
+.mceDefaultSkinTouch .sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
+  height: 38px;
+}
+
+.mceDefaultSkinTouch .sortableList .mceToolBarItem.sortableRowItem.ui-sortable-highlight {
+  height: 36px;
+}
+.mceDefaultSkinTouch .mceLayout, .mceDefaultSkinTouch .mceLayout .mceToolbar {
+    border: 0 none !important;
+    background: #fff;
+}
+.mceDefaultSkinTouch .mceLayout .mceFirst, .mceDefaultSkinTouch .mceLayout .mceLast {
+    background-color: #fff !important;
+}
+.mceDefaultSkinTouch .mceLayout .mceStatusbar {
+    background-color: #fafafa !important;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceListBox::before {
+  line-height: 32px;
+  width: 90px;
+}
+
+.mceDefaultSkinTouch .mceToolBarItem .mceSplitButton .mceIcon {
+  margin: 7px 6px;
+}

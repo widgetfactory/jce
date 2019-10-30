@@ -201,7 +201,28 @@ class JceModelProfile extends JModelAdmin
         $data->users    = $users;
         $data->config   = $data->params; 
 
+        $this->processFormData($data->config);
+
         return $data;
+    }
+
+    private function processFormData(&$config)
+    {
+        if (is_string($config)) {
+            $config = json_decode($config, true);
+        }
+
+        if (empty($config)) {
+            return;
+        }
+
+        $config = (object) $config;
+
+        if (!empty($config->editor->toolbar_theme) && $config->editor->toolbar_theme === 'mobile') {
+            $config->editor->toolbar_theme = 'default.touch';
+        }
+
+        $config = (array) $config;
     }
 
     public function getRows()

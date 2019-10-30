@@ -170,6 +170,23 @@ class WFEditor
         return $options;
     }
 
+    private function assignEditorSkin(&$settings) 
+    {
+        if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
+            list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
+        }
+
+        // classic has been removed
+        if ($settings['skin'] === 'classic') {
+            $settings['skin'] = 'default';
+        }
+
+        if ($settings['skin'] === 'mobile') {
+            $settings['skin'] = 'default';
+            $settings['skin_variant'] = 'touch';
+        }
+    }
+
     public function getSettings()
     {
         // get an editor instance
@@ -234,14 +251,7 @@ class WFEditor
             // assign skin
             $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern', 'modern');
 
-            if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
-                list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
-            }
-
-            // classic has been removed
-            if ($settings['skin'] === 'classic') {
-                $settings['skin'] = 'default';
-            }
+            $this->assignEditorSkin($settings);
 
             // get body class if any
             $body_class = $wf->getParam('editor.body_class', '');
