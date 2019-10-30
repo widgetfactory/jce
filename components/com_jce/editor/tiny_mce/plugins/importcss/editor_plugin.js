@@ -31,156 +31,35 @@
     }
 
     tinymce.create('tinymce.plugins.ImportCSS', {
-        convertSelectorToFormat: function (selectorText) {
-            var format, ed = this.editor;
-
-            // empty value
-            if (!selectorText) {
-                return;
-            }
-
-            // Parse simple element.class1, .class1
-            var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(selectorText);
-
-            // no match
-            if (!selector) {
-                return;
-            }
-
-            var elementName = selector[1];
-
-            if (elementName === "body") {
-                return;
-            }
-
-            var classes = selector[2].substr(1).split('.').join(' ');
-            var inlineSelectorElements = tinymce.makeMap('a,img');
-
-            // element.class - Produce block formats
-            if (elementName) {
-                format = {
-                    title: selectorText
-                };
-
-                if (ed.schema.getTextBlockElements()[elementName]) {
-                    // Text block format ex: h1.class1
-                    format.block = elementName;
-                } else if (ed.schema.getBlockElements()[elementName] || inlineSelectorElements[elementName.toLowerCase()]) {
-                    // Block elements such as table.class and special inline elements such as a.class or img.class
-                    format.selector = elementName;
-                } else {
-                    // Inline format strong.class1
-                    format.inline = elementName;
-                }
-            } else if (selector[2]) {
-                // .class - apply to any element
-                format = {
-                    inline: "span",
-                    selector: '*',
-                    title: selectorText.substr(1)
-                };
-            }
-
-            // Append to or override class attribute
-            if (ed.settings.importcss_merge_classes !== false) {
-                format.classes = classes;
-            } else {
-                format.attributes = { "class": classes };
-            }
-
-            return format;
-        },
-        populateStyleSelect: function () {
-            var ed = this.editor,
-                PreviewCss = tinymce.util.PreviewCss;
-
-            var self = this,
-                styleselect = ed.controlManager.get('styleselect');
-
-            // if control does not exist or has been populated, return.
-            if (!styleselect || styleselect.hasClasses) {
-                return;
-            }
-
-            var counter = styleselect.getLength(),
-                selectors = this._import();
-
-            // no classes found, return.
-            if (selectors.length === 0) {
-                return;
-            }
-
-            each(selectors, function (s, idx) {
-                var name = 'style_' + (counter + idx);
-
-                var fmt = self.convertSelectorToFormat(s);
-
-                if (fmt) {
-                    ed.formatter.register(name, fmt);
-
-                    styleselect.add(fmt.title, name, {
-                        style: function () {
-                            return PreviewCss(ed, fmt);
-                        }
-                    });
-                }
-            });
-
-            styleselect.hasClasses = true;
-        },
         init: function (ed, url) {
             this.editor = ed;
-
             var self = this;
 
-            this.classes = [];
-            this.fontface = [];
+            // create an event to use externally
+            ed.onImportCSS = new tinymce.util.Dispatcher();
 
-            ed.onPreInit.add(function (editor) {
-                var styleselect = ed.controlManager.get('styleselect');
-
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
-                    styleselect.onPostRender.add(function (ed, n) {
-                        if (!styleselect.NativeListBox) {
-                            DOM.bind(DOM.get(n.id + '_text'), 'focus mousedown', self.populateStyleSelect, self);
-                            DOM.bind(DOM.get(n.id + '_open'), 'focus mousedown', self.populateStyleSelect, self);
-                        } else {
-                            DOM.bind(DOM.get(n.id, 'focus'), self.populateStyleSelect, self);
-                        }
-                    });
+            ed.onImportCSS.add(function() {
+                if (ed.settings.importcss_classes) {
+                    return;
                 }
-
-                var fontselect = ed.controlManager.get('fontselect');
-
-                if (fontselect) {
-                    fontselect.onPostRender.add(function () {
-                        // font face items not yet created, run import
-                        if (!self.fontface.length || !self.classes.length) {
-                            self._import();
-                        }
-                    });
-                }
+                
+                self._import();
             });
 
-            ed.onNodeChange.add(function () {
-                var styleselect = ed.controlManager.get('styleselect');
-                
-                if (styleselect && !styleselect.hasClasses && ed.getParam('styleselect_stylesheets', true)) {
-                    return self.populateStyleSelect();
-                }
+            // attempt to import when the editor is loaded
+            ed.onLoad.add(function() {
+                ed.onImportCSS.dispatch();
             });
         },
+
         _import: function () {
             var self = this,
                 ed = this.editor,
-                doc = ed.getDoc(),
-                i, lo = {},
-                f = ed.settings.class_filter,
-                ov, href = '',
+                doc = ed.getDoc(), href = '',
                 rules = [],
-                fontface;
+                fonts = false;
 
-            var filtered = {};
+            var fontface = [], filtered = {}, classes = [];
 
             function isAllowedStylesheet(href) {
                 var styleselect = ed.getParam('styleselect_stylesheets');
@@ -256,8 +135,8 @@
                                         return;
                                     }
 
-                                    if (tinymce.inArray(self.classes, v) === -1) {
-                                        self.classes.push(v);
+                                    if (tinymce.inArray(classes, v) === -1) {
+                                        classes.push(v);
                                     }
                                 });
                             }
@@ -269,8 +148,8 @@
                             if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                                 var v = '@import url(' + r.href + ');';
 
-                                if (tinymce.inArray(self.fontface, v) === -1) {
-                                    self.fontface.unshift(v);
+                                if (tinymce.inArray(fontface, v) === -1) {
+                                    fontface.unshift(v);
                                 }
                             }
 
@@ -285,8 +164,8 @@
                             if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {
                                 var v = toAbsolute(r.cssText, href);
 
-                                if (tinymce.inArray(self.fontface, v) === -1) {
-                                    self.fontface.push(v);
+                                if (tinymce.inArray(fontface, v) === -1) {
+                                    fontface.push(v);
                                 }
                             }
                             break;
@@ -295,7 +174,7 @@
             }
 
             // parse stylesheets
-            if (self.classes.length === 0) {
+            if (!classes.length) {
                 try {
                     each(doc.styleSheets, function (styleSheet) {
                         parseCSS(styleSheet);
@@ -304,7 +183,7 @@
             }
 
             // add font-face rules
-            if (self.fontface.length && !fontface) {
+            if (!fontface.length && !fonts) {
                 try {
                     // get document head
                     var head = DOM.doc.getElementsByTagName('head')[0];
@@ -333,18 +212,21 @@
                     // add to head
                     head.appendChild(style);
 
-                    // set fontface flag so we only do this once
-                    fontface = true;
+                    // set fonts flag so we only do this once
+                    fonts = true;
 
                 } catch (e) { }
             }
 
-            // sort alphabetically
-            if (ed.getParam('styleselect_sort', 1)) {
-                self.classes.sort();
-            }
+            // sort and expose if classes have been set
+            if (classes.length) {
+                // sort alphabetically
+                if (ed.getParam('styleselect_sort', 1)) {
+                    classes.sort();
+                }
 
-            return self.classes;
+                ed.settings.importcss_classes = classes;
+            }
         }
     });
     // Register plugin
