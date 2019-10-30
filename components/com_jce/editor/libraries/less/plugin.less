@@ -66,6 +66,13 @@
         background-color: #0e6dcd;
     }
 
+    input[type="radio"]:checked:disabled,
+    input[type="checkbox"]:checked:disabled,
+    input[type="checkbox"]:indeterminate:disabled {
+        background-color:#eee;
+        border-color:#ddd;
+    }
+
     input[type="radio"]:not(:disabled),
     input[type="checkbox"]:not(:disabled) {
         cursor: pointer;
@@ -80,7 +87,7 @@
         vertical-align: middle;
         -webkit-appearance: none;
         -moz-appearance: none;
-        background-color: transparent;
+        background-color: #fff;
         background-repeat: no-repeat;
         background-position: 50% 50%;
         border: 1px solid #ccc;
