@@ -33,7 +33,7 @@
         return found;
     }
 
-    function addSelectValue(field_name, name, value) {        
+    function addSelectValue(field_name, name, value) {
         var s = document.getElementById(field_name);
         var o = new Option(name, value);
         s.options[s.options.length] = o;
@@ -212,7 +212,7 @@
 
             Wf.init();
 
-            $('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');
@@ -470,6 +470,7 @@
         toggleApplyAction: function () {
             this.applyActionIsInsert = !this.applyActionIsInsert;
         },
+
         applyAction: function () {
             var ce = document.getElementById('container'),
                 ed = tinyMCEPopup.editor;
@@ -510,7 +511,11 @@
 
                 ed.dom.setAttrib(nodes, 'style', tinyMCEPopup.editor.dom.serializeStyle(newStyles));
             }
+
+            ed.undoManager.add();
+            ed.nodeChanged();
         },
+
         updateAction: function () {
             this.applyAction();
             tinyMCEPopup.close();
@@ -589,16 +594,18 @@
                 ce.style.paddingRight = $('#box_padding_right').val() + (this.isNum($('#box_padding_right').val()) ? $('#box_padding_right_measurement').val() : "");
                 ce.style.paddingBottom = $('#box_padding_bottom').val() + (this.isNum($('#box_padding_bottom').val()) ? $('#box_padding_bottom_measurement').val() : "");
                 ce.style.paddingLeft = $('#box_padding_left').val() + (this.isNum($('#box_padding_left').val()) ? $('#box_padding_left_measurement').val() : "");
-            } else
+            } else {
                 ce.style.padding = $('#box_padding_top').val() + (this.isNum($('#box_padding_top').val()) ? $('#box_padding_top_measurement').val() : "");
+            }
 
-            if (!$('#box_padding_same').prop('checked')) {
+            if (!$('#box_margin_same').prop('checked')) {
                 ce.style.marginTop = $('#box_margin_top').val() + (this.isNum($('#box_margin_top').val()) ? $('#box_margin_top_measurement').val() : "");
                 ce.style.marginRight = $('#box_margin_right').val() + (this.isNum($('#box_margin_right').val()) ? $('#box_margin_right_measurement').val() : "");
                 ce.style.marginBottom = $('#box_margin_bottom').val() + (this.isNum($('#box_margin_bottom').val()) ? $('#box_margin_bottom_measurement').val() : "");
                 ce.style.marginLeft = $('#box_margin_left').val() + (this.isNum($('#box_margin_left').val()) ? $('#box_margin_left_measurement').val() : "");
-            } else
+            } else {
                 ce.style.margin = $('#box_margin_top').val() + (this.isNum($('#box_margin_top').val()) ? $('#box_margin_top_measurement').val() : "");
+            }
 
             // Build border styles
 
@@ -607,24 +614,27 @@
                 ce.style.borderRightStyle = $('#border_style_right').val();
                 ce.style.borderBottomStyle = $('#border_style_bottom').val();
                 ce.style.borderLeftStyle = $('#border_style_left').val();
-            } else
+            } else {
                 ce.style.borderStyle = $('#border_style_top').val();
+            }
 
             if (!$('#border_width_same').prop('checked')) {
                 ce.style.borderTopWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
                 ce.style.borderRightWidth = $('#border_width_right').val() + (this.isNum($('#border_width_right').val()) ? $('#border_width_right_measurement').val() : "");
                 ce.style.borderBottomWidth = $('#border_width_bottom').val() + (this.isNum($('#border_width_bottom').val()) ? $('#border_width_bottom_measurement').val() : "");
                 ce.style.borderLeftWidth = $('#border_width_left').val() + (this.isNum($('#border_width_left').val()) ? $('#border_width_left_measurement').val() : "");
-            } else
+            } else {
                 ce.style.borderWidth = $('#border_width_top').val() + (this.isNum($('#border_width_top').val()) ? $('#border_width_top_measurement').val() : "");
+            }
 
             if (!$('#border_color_same').prop('checked')) {
                 ce.style.borderTopColor = getColor('#border_color_top');
                 ce.style.borderRightColor = getColor('#border_color_right');
                 ce.style.borderBottomColor = getColor('#border_color_bottom');
                 ce.style.borderLeftColor = getColor('#border_color_left');
-            } else
+            } else {
                 ce.style.borderColor = getColor('#border_color_top');
+            }
 
             // Build list styles
 
@@ -637,11 +647,12 @@
             ce.style.position = $('#positioning_type').val();
             ce.style.visibility = $('#positioning_visibility').val();
 
-            if (ce.style.width == "")
+            if (ce.style.width == "") {
                 ce.style.width = $('#positioning_width').val() + (this.isNum($('#positioning_width').val()) ? $('#positioning_width_measurement').val() : "");
-
-            if (ce.style.height == "")
+            }
+            if (ce.style.height == "") {
                 ce.style.height = $('#positioning_height').val() + (this.isNum($('#positioning_height').val()) ? $('#positioning_height_measurement').val() : "");
+            }
 
             ce.style.zIndex = $('#positioning_zindex').val();
             ce.style.overflow = $('#positioning_overflow').val();
@@ -683,11 +694,12 @@
 
             ce.style.cssText = ce.style.cssText;
         },
+
         isNum: function (s) {
             return new RegExp('[0-9]+', 'g').test(s);
         },
 
-        showDisabledControls: function () {},
+        showDisabledControls: function () { },
 
         fillSelect: function (s, param, dval, sep, em) {
             var i, ar, p, se;
