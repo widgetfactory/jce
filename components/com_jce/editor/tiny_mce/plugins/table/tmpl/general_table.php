@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-    <div class="uk-grid">
+    <div class="uk-form-row uk-grid">
         <label class="uk-form-label uk-width-2-10" for="cols">
             <?php echo JText::_('WF_TABLE_COLS'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
@@ -24,7 +24,7 @@ defined('JPATH_PLATFORM') or die;
         </div>
     </div>
 
-<div class="uk-grid">
+<div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="cellpadding">
         <?php echo JText::_('WF_TABLE_CELLPADDING'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
@@ -37,7 +37,7 @@ defined('JPATH_PLATFORM') or die;
         <input id="cellspacing" type="number" value="" />
     </div>
 </div>
-<div class="uk-grid">
+<div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="align">
         <?php echo JText::_('WF_TABLE_ALIGN'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
@@ -55,7 +55,7 @@ defined('JPATH_PLATFORM') or die;
         <input id="table_border" type="number" value="" />
     </div>
 </div>
-<div class="uk-grid">
+<div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="width">
         <?php echo JText::_('WF_TABLE_WIDTH'); ?></label>
     <div class="uk-form-controls uk-width-3-10">

@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-    <div class="uk-grid">
+    <div class="uk-form-row uk-grid">
         <label class="uk-form-label uk-width-2-10" for="align">
                 <?php echo JText::_('WF_TABLE_ALIGN'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
@@ -32,7 +32,7 @@ defined('JPATH_PLATFORM') or die;
         </div>
     </div>
     
-    <div class="uk-grid">
+    <div class="uk-form-row uk-grid">
         <label class="uk-form-label uk-width-2-10" for="valign">
                 <?php echo JText::_('WF_TABLE_VALIGN'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
@@ -57,7 +57,7 @@ defined('JPATH_PLATFORM') or die;
         </div>
     </div>
 
-    <div class="uk-grid">
+    <div class="uk-form-row uk-grid">
         <label class="uk-form-label uk-width-2-10" for="width">
                 <?php echo JText::_('WF_TABLE_WIDTH'); ?></label>
         <div class="uk-form-controls uk-width-3-10">

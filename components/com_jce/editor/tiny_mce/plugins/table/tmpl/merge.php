@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 ?>
-<div class="uk-grid uk-grid-small">
+<div class="uk-grid uk-grid-small uk-form-row">
     <label class="uk-form-label uk-width-7-10"><?php echo JText::_('WF_TABLE_COLS'); ?>:</label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="number" min="1" id="numcols" value=""/>

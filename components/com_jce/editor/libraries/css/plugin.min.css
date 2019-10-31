@@ -814,6 +814,15 @@ html {
     font-weight: inherit;
     line-height: 32px;
     display: inline-block;
+    margin: 0;
+}
+
+.uk-form-horizontal .uk-grid {
+    align-items: center;
+}
+
+.uk-form-horizontal .uk-grid > .uk-form-label {
+    line-height: 1.25;
 }
 
 .uk-form {
@@ -1106,12 +1115,6 @@ html {
 
 .uk-switcher>.uk-active {
     display: block;
-}
-
-.uk-form-horizontal .uk-form-label {
-    margin: 0;
-    line-height: 32px;
-    display: inline-block;
 }
 
 .uk-comment-header {

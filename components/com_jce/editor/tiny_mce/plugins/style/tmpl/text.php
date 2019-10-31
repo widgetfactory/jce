@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
   <label for="text_font" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_FONT'); ?></label>
     <div class="uk-form-controls uk-width-8-10"><select id="text_font" class="uk-datalist"></select></div>
 </div>
-<div class="uk-grid uk-grid-small">
+<div class="uk-form-row uk-grid uk-grid-small">
     <label for="text_size" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_SIZE'); ?></label>
 
       <div class="uk-form-controls uk-width-2-10">
@@ -28,7 +28,7 @@ defined('JPATH_PLATFORM') or die;
            <div class="uk-form-controls uk-width-7-10"><select id="text_weight"></select></div>
   </div>
 </div>
-      <div class="uk-grid uk-grid-small">
+      <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="text_style"><?php echo JText::_('WF_STYLES_TEXT_STYLE'); ?></label>
             <div class="uk-form-controls uk-width-4-10">
               <select id="text_style" class="uk-datalist"></select>
@@ -40,7 +40,7 @@ defined('JPATH_PLATFORM') or die;
               </div>
           </div>
       </div>
-      <div class="uk-grid uk-grid-small">
+      <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="text_lineheight"><?php echo JText::_('WF_STYLES_TEXT_LINEHEIGHT'); ?></label>
             <div class="uk-form-row uk-width-2-10">
                 <select id="text_lineheight" class="uk-datalist"></select>

@@ -11,9 +11,9 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 
-<div class="uk-grid uk-grid-small">
+<div class="uk-form-row uk-grid uk-grid-small">
     <div class="uk-width-4-5 uk-flex-item-auto">
-        <div class="uk-grid uk-grid-small">
+        <div class="uk-form-row uk-grid uk-grid-small">
             <label for="src" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5"
                 title="<?php echo JText::_('WF_LABEL_URL_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_URL'); ?>
@@ -22,7 +22,7 @@ defined('JPATH_PLATFORM') or die;
                 <input type="text" id="src" value="" class="filebrowser" required />
             </div>
         </div>
-        <div class="uk-grid uk-grid-small">
+        <div class="uk-form-row uk-grid uk-grid-small">
             <label for="alt" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5"
                 title="<?php echo JText::_('WF_LABEL_ALT_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALT'); ?>
@@ -32,7 +32,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-        <div class="uk-grid uk-grid-small" id="attributes-dimensions">
+        <div class="uk-form-row uk-grid uk-grid-small" id="attributes-dimensions">
             <label class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5"
                 title="<?php echo JText::_('WF_LABEL_DIMENSIONS_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_DIMENSIONS'); ?>
@@ -58,12 +58,12 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-align">
+        <div class="uk-hidden-mini uk-grid uk-grid-small uk-form-row" id="attributes-align">
             <label for="align" class="hastip uk-form-label uk-width-1-5"
                 title="<?php echo JText::_('WF_LABEL_ALIGN_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_ALIGN'); ?>
             </label>
-            <div class="uk-grid uk-grid-small uk-width-4-5">
+            <div class="uk-grid uk-grid-small uk-form-row uk-width-4-5">
                 <div class="uk-width-1-2">
                     <div class="uk-form-controls uk-width-9-10">
                         <select id="align">
@@ -99,7 +99,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-margin">
+        <div class="uk-hidden-mini uk-grid uk-grid-small uk-form-row" id="attributes-margin">
             <label for="margin" class="hastip uk-form-label uk-width-1-5"
                 title="<?php echo JText::_('WF_LABEL_MARGIN_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_MARGIN'); ?>
@@ -140,14 +140,14 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
 
-        <div class="uk-hidden-mini uk-grid uk-grid-small" id="attributes-border">
+        <div class="uk-hidden-mini uk-grid uk-grid-small uk-form-row" id="attributes-border">
             <label for="border" class="hastip uk-form-label uk-width-1-5"
                 title="<?php echo JText::_('WF_LABEL_BORDER_DESC'); ?>">
                 <?php echo JText::_('WF_LABEL_BORDER'); ?>
             </label>
 
             <div class="uk-form-controls uk-grid uk-grid-small uk-width-4-5">
-                <div class="uk-form-controls uk-width-0-3 uk-margin-small-top">
+                <div class="uk-form-controls uk-width-0-3">
                     <input type="checkbox" id="border" />
                 </div>
 
