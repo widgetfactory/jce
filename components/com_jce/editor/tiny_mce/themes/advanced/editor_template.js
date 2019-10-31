@@ -274,18 +274,22 @@
                 ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
             }
 
-            var skin = "mceDefaultSkin";
+            // swap "mobile" for default variant
+            if (ed.settings.skin === 'mobile') {
+                ed.settings.skin = 'default';
+                s.skin_variant = 'touch';
+            }
 
+            var skin = 'mce' + self._ufirst(ed.settings.skin) + 'Skin';
+
+            if (s.skin_variant) {
+                // eg: mceDefaultSkinTouch
+                skin += ' ' + skin + self._ufirst(s.skin_variant);
+            }
+
+            // prefix with 'mceDefaultSkin' if not default
             if (ed.settings.skin !== "default") {
-                if (ed.settings.skin === 'mobile') {
-                    skin += ' mceModernSkin';
-                }
-
-                skin += ' ' + 'mce' + self._ufirst(ed.settings.skin) + 'Skin';
-
-                if (s.skin_variant) {
-                    skin += self._ufirst(s.skin_variant);
-                }
+                skin = 'mceDefaultSkin ' + skin;
             }
 
             // add direction
