@@ -216,13 +216,9 @@ class JceModelProfile extends JModelAdmin
             return;
         }
 
-        $config = (object) $config;
-
-        if (!empty($config->editor->toolbar_theme) && $config->editor->toolbar_theme === 'mobile') {
-            $config->editor->toolbar_theme = 'default.touch';
+        if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
+            $config['editor']['toolbar_theme'] = 'default.touch';
         }
-
-        $config = (array) $config;
     }
 
     public function getRows()
