@@ -1404,7 +1404,7 @@
             for (var i = 0; i < elements.length; i++) {
                 node = elements[i];
 
-                if (node.name == 'p' && node.firstChild) {
+                if (node.attr('data-mce-word-list') && node.firstChild) {
                     // Find first text node in paragraph
                     var nodeText = getText(node),
                         type;
@@ -1693,6 +1693,10 @@
 
                 if (/^Mso[\w]+/i.test(className) || editor.getParam('clipboard_paste_strip_class_attributes', 2)) {
                     node.attr('class', null);
+
+                    if (className && className.indexOf('MsoListParagraph') !== -1) {
+                        node.attr('data-mce-word-list', 1);
+                    }
                 }
             }
         });
