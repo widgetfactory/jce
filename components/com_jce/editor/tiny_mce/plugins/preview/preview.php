@@ -62,14 +62,9 @@ class WFPreviewPlugin extends WFEditorPlugin
 
         if ($extension->load($extension_id)) {
             $option = $extension->element;
-
             // process attribs (com_content etc.)
-            if ($extension->attribs) {
-                $params->loadString($extension->attribs);
-            } else {
-                $params->loadString($extension->params);
-            }
-
+            $params->loadString($extension->params);
+            // create context
             $context = $option . '.article';
         }
 
