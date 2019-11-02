@@ -347,6 +347,8 @@ class WFFileBrowser extends JObject
         $return = true;
 
         if (!empty($filters)) {
+            $filesystem = $this->getFileSystem();
+            
             $path = ltrim($path, '/');
 
             foreach ($filters as $filter) {
@@ -354,11 +356,21 @@ class WFFileBrowser extends JObject
                 
                 // show this folder
                 if ($filter[0] === "+") {
-                    $path_parts     = explode('/', $path);
-                    $filter_parts   = explode('/', substr($filter, 1));
+                    $path_parts = explode('/', $path);
+
+                    // remove "+" from filter
+                    $filter = substr($filter, 1);
+
+                    // process path for variables, text case etc. 
+                    $filesystem->processPath($filter);
+
+                    // explode to array
+                    $filter_parts = explode('/', $filter);
 
                     // filter match
                     if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
+                        
+                        
                         return true;
                     }
 
@@ -369,8 +381,12 @@ class WFFileBrowser extends JObject
                     $return = true;
                     
                     if ($filter[0] === "-") {
+                        // remove "-" from filter
                         $filter = substr($filter, 1);
                     }
+
+                    // process path for variables, text case etc. 
+                    $filesystem->processPath($filter);
 
                     if ($filter === $path) {
                         return false;
@@ -401,6 +417,10 @@ class WFFileBrowser extends JObject
     {
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFiles($relative, $filter, $sort);
+
+        $list = array_filter($list, function ($item) {
+            return $this->checkPathAccess(dirname($item['id']));
+        });
 
         return $list;
     }
