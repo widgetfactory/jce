@@ -88,6 +88,54 @@ class WFFileSystem extends WFExtension
         return WFUtility::makePath(JURI::root(true), $this->getRootDir());
     }
 
+    public function processPath(&$path)
+    {
+        $user = JFactory::getUser();
+        $wf = WFApplication::getInstance();
+        $profile = $wf->getProfile();
+
+        jimport('joomla.user.helper');
+
+        $groups = JUserHelper::getUserGroups($user->id);
+
+        // get keys only
+        $groups = array_keys($groups);
+
+        // get the first group
+        $group_id = array_shift($groups);
+
+        if (is_int($group_id)) {
+            // usergroup table
+            $group = JTable::getInstance('Usergroup');
+            $group->load($group_id);
+            // usertype
+            $usertype = $group->title;
+        } else {
+            $usertype = $group_id;
+        }
+
+        // Replace any path variables
+        $pattern = array('/\$id/', '/\$username/', '/\$user(group|type)/', '/\$(group|profile)/', '/\$day/', '/\$month/', '/\$year/');
+        $replace = array($user->id, $user->username, $usertype, $profile->name, date('d'), date('m'), date('Y'));
+        $path = preg_replace($pattern, $replace, $path);
+
+        // split into path parts to preserve /
+        $parts = explode('/', $path);
+
+        $textcase = $wf->getParam('editor.websafe_textcase', '');
+
+        // implode textcase array to create string
+        if (is_array($textcase)) {
+            $textcase = implode(',', $textcase);
+        }
+
+        // clean path parts
+        $parts = WFUtility::makeSafe($parts, $wf->getParam('editor.websafe_mode', 'utf-8'), $wf->getParam('editor.websafe_allow_spaces', '_'), $textcase);
+
+        //join path parts
+        $path = implode('/', $parts);
+    }
+
     /**
      * Return the full user directory path. Create if required.
      *
@@ -100,10 +148,6 @@ class WFFileSystem extends WFExtension
         static $root;
 
         if (!isset($root)) {
-            $user = JFactory::getUser();
-            $wf = WFApplication::getInstance();
-            $profile = $wf->getProfile();
-
             // Get base directory as shared parameter
             $root = $this->get('dir', '');
 
@@ -120,46 +164,7 @@ class WFFileSystem extends WFExtension
                     $root = 'images';
                 }
 
-                jimport('joomla.user.helper');
-
-                $groups = JUserHelper::getUserGroups($user->id);
-
-                // get keys only
-                $groups = array_keys($groups);
-
-                // get the first group
-                $group_id = array_shift($groups);
-
-                if (is_int($group_id)) {
-                    // usergroup table
-                    $group = JTable::getInstance('Usergroup');
-                    $group->load($group_id);
-                    // usertype
-                    $usertype = $group->title;
-                } else {
-                    $usertype = $group_id;
-                }
-
-                // Replace any path variables
-                $pattern = array('/\$id/', '/\$username/', '/\$user(group|type)/', '/\$(group|profile)/', '/\$day/', '/\$month/', '/\$year/');
-                $replace = array($user->id, $user->username, $usertype, $profile->name, date('d'), date('m'), date('Y'));
-                $root = preg_replace($pattern, $replace, $root);
-
-                // split into path parts to preserve /
-                $parts = explode('/', $root);
-
-                $textcase = $wf->getParam('editor.websafe_textcase', '');
-
-                // implode textcase array to create string
-                if (is_array($textcase)) {
-                    $textcase = implode(',', $textcase);
-                }
-
-                // clean path parts
-                $parts = WFUtility::makeSafe($parts, $wf->getParam('editor.websafe_mode', 'utf-8'), $wf->getParam('editor.websafe_allow_spaces', '_'), $textcase);
-
-                //join path parts
-                $root = implode('/', $parts);
+                $this->processPath($root);
             }
         }
 
