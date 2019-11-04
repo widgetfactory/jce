@@ -106,8 +106,8 @@
                 title: 'link.desc',
                 cmd: 'mceLink',
                 max_width: 264,
-                onselect: function (elm) {
-                    insertLink(elm.value);
+                onselect: function (value) {
+                    insertLink(value);
                 }
             });
 
