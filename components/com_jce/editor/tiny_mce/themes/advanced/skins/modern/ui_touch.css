@@ -1,0 +1,55 @@
+@import url('ui.css');
+
+.mceModernSkinTouch .mceToolbar .mceButton {
+  padding: 9px 11px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceListBox .mceText {
+  line-height: 40px;
+  height: 40px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceListBox .mceOpen {
+  height: 40px;
+  width: 20px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceSplitButton .mceOpen {
+  height: 40px;
+  width: 20px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceSplitButton .mceText {
+  height: 40px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceSplitButtonMenu::before {
+  width: 42px;
+  top: -4px;
+}
+
+.mceModernSkinTouch .mceToolbar .mcePanelSplitButton .mcePanel::before {
+  width: 50px;
+  top: -7px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceSourceSearch .mceTextBox {
+  line-height: 40px;
+  height: 40px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceTableSplitMenu {
+  width: 135px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceTableSplitMenu table {
+  padding: 2px;
+}
+
+.mceModernSkinTouch .mceToolbar .mceSeparator {
+    height: 40px;
+}
+
+.mceModernSkinTouch .mceButton span.mce_visualblocks {
+  left: -1px;
+}
