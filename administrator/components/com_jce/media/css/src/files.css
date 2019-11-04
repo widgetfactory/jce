@@ -55,6 +55,7 @@
 }
 
 .file.png,
+.file.apng,
 .file.webp {
     background-position: 0 -180px;
 }
