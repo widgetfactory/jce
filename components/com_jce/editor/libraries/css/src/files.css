@@ -54,6 +54,7 @@
 }
 
 .file.png,
+.file.apng,
 .file.webp {
     background: url(../img/ext.png) no-repeat 0 -180px;
 }
