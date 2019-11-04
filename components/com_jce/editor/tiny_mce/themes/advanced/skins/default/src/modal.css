@@ -480,7 +480,7 @@
 }
 
 .mceModal .mceModalContent label {
-    line-height: 32px;
+    line-height: 1.25;
     width: 96px;
     margin-right: 8px;
 }
@@ -497,6 +497,7 @@
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 8px;
+    align-items: center;
 }
 
 .mceModal .mceModalContent .mceModalControl {

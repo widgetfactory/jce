@@ -2200,6 +2200,8 @@ select.mceNativeListBox {
     height: 100%;
     top: 0;
     left: 0;
+
+    font: normal 13px / 20px -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
 
 .mceModal * {
@@ -2654,7 +2656,7 @@ select.mceNativeListBox {
 }
 
 .mceModal .mceModalContent label {
-    line-height: 32px;
+    line-height: 1.25;
     width: 96px;
     margin-right: 8px;
 }
@@ -2671,6 +2673,7 @@ select.mceNativeListBox {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 8px;
+    align-items: center;
 }
 
 .mceModal .mceModalContent .mceModalControl {
