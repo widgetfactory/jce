@@ -36,6 +36,10 @@
     width: calc(100% - 2em);
 }
 
+.uk-datalist-loading .uk-datalist-combobox input[type="text"]::placeholder {
+    color: #fff
+}
+
 .uk-datalist-combobox {
     position: relative;
     display: flex;
