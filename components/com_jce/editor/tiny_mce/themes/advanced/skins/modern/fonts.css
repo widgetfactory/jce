@@ -197,21 +197,18 @@
     vertical-align: middle;
 }
 
-.mceModernSkin span.mce_del:before {
-    content: "A";
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 1.25em;
-    color: #444;
-    font-weight: bold;
-    text-decoration: line-through #888;
-}
-
+.mceModernSkin span.mce_del:before,
 .mceModernSkin span.mce_ins:before {
     content: "A";
     font-family: 'Times New Roman', Times, serif;
     font-size: 1.25em;
     color: #444;
     font-weight: bold;
+    text-decoration: line-through #888;
+    line-height: inherit;
+}
+
+.mceModernSkin span.mce_ins:before {
     text-decoration: underline #888;
 }
 

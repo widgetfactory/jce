@@ -19,6 +19,12 @@
     line-height: 1;
 }
 
+.mceDefaultSkin .mceButton .mceIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .mceDefaultSkin .mceButton:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;

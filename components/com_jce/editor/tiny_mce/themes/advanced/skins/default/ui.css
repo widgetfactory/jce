@@ -638,6 +638,12 @@
     line-height: 1;
 }
 
+.mceDefaultSkin .mceButton .mceIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .mceDefaultSkin .mceButton:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;
@@ -2200,8 +2206,6 @@ select.mceNativeListBox {
     height: 100%;
     top: 0;
     left: 0;
-
-    font: normal 13px / 20px -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
 
 .mceModal * {
