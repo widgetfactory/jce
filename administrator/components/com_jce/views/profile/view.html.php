@@ -52,7 +52,7 @@ class JceViewProfile extends JViewLegacy
         $this->addToolbar();
         parent::display($tpl);
 
-        // version has
+        // version hash
         $hash = md5(WF_VERSION);
 
         $document = JFactory::getDocument();
