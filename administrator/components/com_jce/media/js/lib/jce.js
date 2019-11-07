@@ -10,10 +10,6 @@
 (function ($) {
  
     function init() {
-        $('.sortable.checkboxes').sortable({
-            "axis": "y"
-        });
-
         // remove loader
         $(document).ready(function () {
             $('.ui-jce').removeClass('loading');

@@ -84,7 +84,11 @@
                 <option value="1">WF_PARAM_CSS_OVERWRITE</option>
                 <option value="2">WF_PARAM_CSS_INHERIT</option>
             </field>
-            <field name="profile_content_css_custom" placeholder="eg: templates/$template/css/content.css" type="textarea" rows="2" cols="55" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" showon="profile_content_css:0[OR]profile_content_css:1" />
+
+            <field name="profile_content_css_custom" type="repeatable" default="" label="WF_PARAM_CSS_CUSTOM" description="WF_PARAM_CSS_CUSTOM_DESC" showon="profile_content_css:0[OR]profile_content_css:1">
+                <field type="text" size="50" hiddenLabel="true" hint="eg: templates/$template/css/content.css" />
+            </field>
+
             <field name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
         </fieldset>
         <fieldset name="editor.filesystem">

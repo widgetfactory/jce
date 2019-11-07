@@ -13,30 +13,21 @@ defined('JPATH_PLATFORM') or die;
 class JceViewConfig extends JViewLegacy
 {
     public $form;
-    public $data;
 
     public function display($tpl = null)
     {
         $document = JFactory::getDocument();
 
-        $form = $this->get('Form');
-        $data = $this->get('Data');
-
-        // Bind the form to the data.
-        if ($form && $data) {
-            $form->bind($data);
-        }
-
-        $this->form = $form;
-        $this->data = $data;
+        $this->form = $this->get('Form');
 
         $this->name = JText :: _('WF_CONFIG');
-        $this->fieldsname = "";
+        $this->fieldsname = "config";
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
         $this->addToolbar();
-        //$this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
+
+        $document->addScript('components/com_jce/media/js/core.min.js?' . md5(WF_VERSION));
     }
 
     /**
