@@ -221,3 +221,7 @@
 .mceDefaultSkinTouch .mceToolBarItem .mceSplitButton .mceIcon {
   margin: 7px 6px;
 }
+
+.checkboxes .mceButton .mceIcon {
+	display: inline-block
+}
