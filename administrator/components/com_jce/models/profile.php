@@ -58,8 +58,27 @@ class JceModelProfile extends JModelAdmin
     }
 
     /* Override to prevent plugins from processing form data */
-	protected function preprocessData($context, &$data, $group = 'content')
+	protected function preprocessData($context, &$data, $group = 'system')
 	{
+        if (!isset($data->config)) {
+            return;
+        }
+
+        $config = $data->config;
+        
+        if (is_string($config)) {
+            $config = json_decode($config, true);
+        }
+
+        if (empty($config)) {
+            return;
+        }
+
+        if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
+            $config['editor']['toolbar_theme'] = 'default.touch';
+        }
+
+        $data->config = $config;
 	}
 
     /**
@@ -112,6 +131,7 @@ class JceModelProfile extends JModelAdmin
             }
         }
 
+        // allow plugins to process form, eg: MediaField etc.
         parent::preprocessForm($form, $data);
     }
 
@@ -199,26 +219,11 @@ class JceModelProfile extends JModelAdmin
         }
 
         $data->users    = $users;
-        $data->config   = $data->params; 
-
-        $this->processFormData($data->config);
+        $data->config   = $data->params;
+        
+        $this->preprocessData('com_jce.profiles', $data);
 
         return $data;
-    }
-
-    private function processFormData(&$config)
-    {
-        if (is_string($config)) {
-            $config = json_decode($config, true);
-        }
-
-        if (empty($config)) {
-            return;
-        }
-
-        if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
-            $config['editor']['toolbar_theme'] = 'default.touch';
-        }
     }
 
     public function getRows()
