@@ -80,8 +80,8 @@ class plgInstallerJce extends JPlugin
 
         // check that it is a valid (non-local) domain and append
         if ($this->isValidDomain($domain)) {
-            // Append the hashed domain to the download URL
-            $uri->setVar('domain', hash('sha256', $domain));
+            // Append the domain to the download URL (base64_encode to avoid it getting mangled in transmission)
+            $uri->setVar('domain', base64_encode($domain));
         }
 
         // create the url string
