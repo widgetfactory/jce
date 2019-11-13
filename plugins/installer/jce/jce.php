@@ -11,20 +11,7 @@ defined('_JEXEC') or die;
  * @since       2.6
  */
 class plgInstallerJce extends JPlugin
-{
-    private function isValidDomain($domain)
-    {
-        if (strtolower($domain) === 'localhost') {
-            return false;
-        }
-
-        if (preg_match('#^(127|10|192|172)\.)#', $domain)) {
-            return false;
-        }
-
-        return true;
-    }
-    
+{    
     /**
      * Handle adding credentials to package download request.
      *
@@ -72,18 +59,6 @@ class plgInstallerJce extends JPlugin
         // Append the subscription key to the download URL
         $uri->setVar('key', $key);
 
-        // get the site domain
-        $domain = rtrim(JURI::root(), '/');
-
-        // remove all but the host
-        $domain = parse_url($domain, PHP_URL_HOST);
-
-        // check that it is a valid (non-local) domain and append
-        if ($this->isValidDomain($domain)) {
-            // Append the domain to the download URL (base64_encode to avoid it getting mangled in transmission)
-            $uri->setVar('domain', base64_encode($domain));
-        }
-
         // create the url string
         $url = $uri->toString();
 
@@ -101,11 +76,6 @@ class plgInstallerJce extends JPlugin
         // invalid key, display a notice message
         if (403 == $response->code) {
             $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
-        }
-
-        // invalid domain, display a notice message
-        if (412 == $response->code) {
-            $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_DOMAIN_INVALID'), 'notice');
         }
 
         return true;
