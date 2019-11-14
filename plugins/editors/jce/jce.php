@@ -190,13 +190,7 @@ class plgEditorJCE extends JPlugin
         }
 
         if (!empty($buttons)) {
-            if ($editor->hasPlugin('joomla')) {
-                $options = array(
-                    'joomla_xtd_buttons' => $this->getXtdButtonsList($id, $buttons, $asset, $author),
-                );
-        
-                JFactory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
-            } else {
+            if (!$editor->hasPlugin('joomla')) {
                 $html .= $this->displayButtons($id, $buttons, $asset, $author);
             }
         }
@@ -206,44 +200,6 @@ class plgEditorJCE extends JPlugin
 
     public function onGetInsertMethod($name)
     {
-    }
-
-    private function getXtdButtonsList($name, $buttons, $asset, $author)
-    {
-        $list = array();
-
-        $buttons = $this->getXtdButtons($name, $buttons, $asset, $author);
-
-        if (!empty($buttons)) {
-            foreach ($buttons as $i => $button) {
-                if ($button->get('name')) {   
-                    
-                    // Set some vars
-                    $name = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
-                    $title = $button->get('text');
-                    $onclick = $button->get('onclick') ?: '';
-                    $icon = $button->get('name');
-
-                    if ($button->get('link') !== '#') {
-                        $href = JUri::base() . $button->get('link');
-                    } else {
-                        $href = '';
-                    }
-
-                    $icon = 'none icon-' . $icon;
-
-                    $list[] = array(
-                        'name' => $name,
-                        'title' => $title,
-                        'icon' => $icon,
-                        'href' => $href,
-                        'onclick' => $onclick
-                    );
-                }
-            }
-        }
-
-        return $list;
     }
 
     private function getXtdButtons($name, $buttons, $asset, $author)
