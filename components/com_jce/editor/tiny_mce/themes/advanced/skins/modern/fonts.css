@@ -885,6 +885,12 @@
     content: "\e90f";
 }
 
+.mceModernSkin span[class*="mce_columns_layout_"]:before {
+    background:#fff;
+    padding: 2px;
+    line-height: 1.25;
+}
+
 .mceModernSkin span.mce_codesample:before {
     content: "\e9bb";
 }
