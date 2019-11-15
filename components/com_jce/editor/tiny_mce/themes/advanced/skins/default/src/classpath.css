@@ -1,0 +1,70 @@
+.mceDefaultSkin .mceClassPath {
+    display: flex;
+    flex-direction: row;
+    height: 32px;
+    align-items: center;
+
+    border-bottom: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceClassPath .mceButton {
+    position: relative;
+    height: 28px;
+    min-width: 5em;
+    min-height: inherit;
+    margin: 1px 2px;
+    padding: 0 1.25em 0 0;
+    box-sizing: border-box;
+}
+
+.mceDefaultSkin .mceClassPath .mceButton label {
+    padding-left: 0.25em;
+}
+
+.mceDefaultSkin .mceClassPath .mceButton:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    content: "\00d7";
+    color: #444;
+    line-height: 1.25;
+    font-size: 1.25em;
+    font-weight: 700;
+    height: 100%;
+    width: 1em;
+}
+.mceDefaultSkin .mceClassPath .mceListBox {
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 2px;
+}
+.mceDefaultSkin .mceClassPath .mceListBox input {
+    width: 100%;
+    height: 28px;
+    padding: 2px;
+    border-radius: 0;
+    box-sizing: border-box;
+    border: 0 none;
+}
+.mceDefaultSkin .mceClassPath .mceListBox .mceOpen {
+    height: 30px;
+}
+.mceDefaultSkin .mceClassPath .mceListBox .mceOpen:after {
+    line-height: 30px;
+}
+/*.mceDefaultSkin .mceClassPath .mceClassPathCombobox button {
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: 100% 50%;
+    border: 0 none;
+    width: 2em;
+
+    transition: all 0.2s linear;
+    transition-property: border, background;
+}*/

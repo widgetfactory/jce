@@ -1,0 +1,35 @@
+.mceForm {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mceFormRow {
+    margin: 2px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.mceFormControl {
+    width: 100%;
+}
+
+.mceFormControl .mceListBox {
+    width: 100%;
+}
+
+.mceFormControl .mceListBox .mceText {
+    width: 100%;
+}
+
+.mceForm .mceFormRow label {
+    min-width: 96px;
+}
+
+.mceFormControl .mceListBox:focus .mceText,
+.mceFormControl .mceListBox:focus .mceOpen {
+    border-color: #66afe9;
+    background: #f5fbfe;
+}
