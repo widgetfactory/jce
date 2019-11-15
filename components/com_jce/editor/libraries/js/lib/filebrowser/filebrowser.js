@@ -181,7 +181,7 @@
             $(list).addClass('item-list').attr({
                 'id': 'item-list',
                 'role': 'listbox'
-            }).bind('click.item-list', function (e) {
+            }).on('click.item-list', function (e) {
                 var n = e.target,
                     p = n.parentNode;
 
@@ -229,10 +229,10 @@
 
                     return true;
                 }
-            }).bind('dblclick.item-list', function (e) {
+            }).on('dblclick.item-list', function (e) {
                 e.preventDefault();
                 return false;
-            }).bind('keydown.item-list', function (e) {
+            }).on('keydown.item-list', function (e) {
                 switch (e.which) {
                     case 13:
                         // get currently selected item
@@ -262,7 +262,7 @@
                 e.preventDefault();
             });
 
-            $('.folder-up', '#browser').click(function (e) {
+            $('.folder-up', '#browser').on('click', function (e) {
                 e.preventDefault();
 
                 var u = self._getPreviousDir();
@@ -270,12 +270,12 @@
             });
 
             // update browser list on scroll
-            $('#browser-list').append(list).bind('scroll.browser-list', function (e) {
+            $('#browser-list').append(list).on('scroll.browser-list', function (e) {
                 self._updateList();
             });
 
             // Item details navigation
-            $('.details-nav-left, .details-nav-right', '#browser-details-nav').click(function (e) {
+            $('.details-nav-left, .details-nav-right', '#browser-details-nav').on('click', function (e) {
                 var $item = $('li.selected.active', '#item-list').removeClass('active');
 
                 if ($(this).hasClass('details-nav-left')) {
@@ -298,7 +298,7 @@
             // Set list limit selection
             $('#browser-list-limit-select').val(list_limit);
 
-            $('#browser-list-limit-select').change(function () {
+            $('#browser-list-limit-select').on('change', function () {
                 self._limitcount = 0;
 
                 self._setState('limit', $(this).val());
@@ -307,7 +307,7 @@
             });
 
             // Browser list navigation
-            $('ul li', '#browser-list-limit').click(function (e) {
+            $('ul li', '#browser-list-limit').on('click', function (e) {
                 e.preventDefault();
 
                 var x = 0,
@@ -332,7 +332,7 @@
             });
 
             // Check All checkbox
-            $('input[type="checkbox"]', '#check-all').click(function (e) {
+            $('input[type="checkbox"]', '#check-all').on('click', function (e) {
                 var el = e.target;
 
                 var s = $(el).is(':checked');
@@ -356,7 +356,7 @@
             // show details button only if folder tree enabled and details enabled
             $('#show-details').toggle(this._treeLoaded());
 
-            $('#show-search').click(function () {
+            $('#show-search').on('click', function () {
                 $('#searchbox').toggleClass('uk-hidden').attr('aria-hidden', function () {
                     return $(this).hasClass('uk-hidden');
                 });
@@ -364,15 +364,15 @@
                 $(this).toggleClass('uk-active');
 
                 if ($(this).hasClass('uk-active')) {
-                    $('#search').focus();
+                    $('#search').trigger('focus');
                 }
             });
 
-            $('#search + .uk-icon').click(function () {
-                $('#search').focus();
+            $('#search + .uk-icon').on('click', function () {
+                $('#search').trigger('focus');
             });
 
-            $('body').click(function (e) {
+            $('body').on('click', function (e) {
                 if ($('#searchbox').hasClass('uk-hidden')) {
                     return;
                 }
@@ -457,7 +457,7 @@
             });
 
             // Setup refresh button
-            $('#refresh').click(function (e) {
+            $('#refresh').on('click', function (e) {
                 self.refresh(e);
             });
 
@@ -476,7 +476,7 @@
             }
 
             // Details button
-            $('#show-details:visible').click(function (e) {
+            $('#show-details:visible').on('click', function (e) {
                 $(this).toggleClass('uk-active');
                 $('main').toggleClass('uk-tree-hidden');
 
@@ -486,7 +486,7 @@
             if (this.options.expandable) {
                 $('#browser').addClass('expandable');
 
-                $('#layout-full-toggle').click(function () {
+                $('#layout-full-toggle').on('click', function () {
                     $('#browser').toggleClass('full-height');
                     self._trigger($('#browser').hasClass('full-height') ? 'onMaximise' : 'onMinimise');
                 });
@@ -623,7 +623,7 @@
                 }
             });*/
 
-            $('#sort-ext, #sort-name, #sort-date, #sort-size').click(function () {
+            $('#sort-ext, #sort-name, #sort-date, #sort-size').on('click', function () {
                 // reset all
                 $(this).siblings('.asc, .desc').removeClass('desc').addClass('asc');
 
@@ -1082,7 +1082,7 @@
             var sw = $status.width();
 
             // add "home" click
-            $('li:first', $pathway).click(function () {
+            $('li:first', $pathway).on('click', function () {
                 self._changeDir('/');
             });
 
@@ -1106,7 +1106,7 @@
                         path = parts.slice(0, i + 1).join('/');
                     }
 
-                    var $item = $('<li title="' + s + '" />').click(function (e) {
+                    var $item = $('<li title="' + s + '" />').on('click', function (e) {
                         self._changeDir(path);
                     }).append('<a>' + s + '</a>').insertBefore($count);
 

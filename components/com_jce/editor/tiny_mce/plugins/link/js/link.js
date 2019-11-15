@@ -51,7 +51,7 @@
 
             tinyMCEPopup.restoreSelection();
 
-            $('button#insert').click(function (e) {
+            $('button#insert').on('click', function (e) {
                 self.insert();
                 e.preventDefault();
             });
@@ -60,7 +60,7 @@
                 $('#href').removeClass('browser');
             }
 
-            $('.email').click(function (e) {
+            $('.email').on('click', function (e) {
                 e.preventDefault();
                 LinkDialog.createEmail();
             });
@@ -139,7 +139,7 @@
             });
 
             /* Search */
-            $('#search-button').click(function (e) {
+            $('#search-button').on('click', function (e) {
                 self._search();
                 e.preventDefault();
             }).button({
@@ -148,7 +148,7 @@
                 }
             });
 
-            $('#search-clear').click(function (e) {
+            $('#search-clear').on('click', function (e) {
                 if ($(this).hasClass('uk-active')) {
                     $(this).removeClass('uk-active');
 
@@ -157,7 +157,7 @@
                 }
             });
 
-            $('#search-options-button').click(function (e) {
+            $('#search-options-button').on('click', function (e) {
                 e.preventDefault();
 
                 if ($(this).hasClass('uk-active')) {
@@ -301,7 +301,7 @@
                     });
 
                     return values;
-                }).change();
+                }).trigger('change');
 
                 $('#target').val(ed.dom.getAttrib(n, 'target'));
 
@@ -326,7 +326,7 @@
                         $(this).append(new Option(v, v));
                         $(this).val(v);
                     }
-                }).change();
+                }).trigger('change');
 
             } else {
                 Wf.setDefaults(this.settings.defaults);
@@ -672,7 +672,7 @@
                         $.each(o, function (i, n) {
                             var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
 
-                            $('<dt class="link uk-margin-small" />').text(n.title).click(function () {
+                            $('<dt class="link uk-margin-small" />').text(n.title).on('click', function () {
                                 self.insertLink(Wf.String.decode(n.link));
                             }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
 
@@ -680,7 +680,7 @@
 
                             if (n.anchors) {
                                 $.each(n.anchors, function (i, a) {
-                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').click(function () {
+                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {
                                         self.insertLink(Wf.String.decode(n.link + '#' + a));
                                     }).appendTo($dl);
                                 });

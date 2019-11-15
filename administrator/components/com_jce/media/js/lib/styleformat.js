@@ -33,7 +33,7 @@
         var init = true;
 
         // create close action
-        $('.styleformat-item-trash', '.styleformat-list').click(function (e) {
+        $('.styleformat-item-trash', '.styleformat-list').on('click', function (e) {
             e.preventDefault();
 
             // if there  is only one item, clear and hide
@@ -54,7 +54,7 @@
         });
 
         // create new action
-        $('.styleformat-item-plus', '.styleformat-list').click(function (e) {
+        $('.styleformat-item-plus', '.styleformat-list').on('click', function (e) {
             e.preventDefault();
             
             var $item = $(this).prev();
@@ -128,13 +128,13 @@
 
             if (!init) {
                 // serialize and return
-                $('input[type="hidden"]', this).first().val(v).change();
+                $('input[type="hidden"]', this).first().val(v).trigger('change');
             }
         });
 
         $('.styleformat').each(function() {
             // trigger input change
-            $('input[type="text"], select', this).change(function () {
+            $('input[type="text"], select', this).on('change', function () {
                 $('div.styleformat-list').trigger('update');
 
                 var title = $('div.styleformat-item-title input', $(this).parents('div.styleformat')),
@@ -153,7 +153,7 @@
 
                     updateStyles(title, v);
                 }
-            }).change();
+            }).trigger('change');
 
             // create collapsible action
             $('.collapse', this).on('click.collapse', function (e) {

@@ -130,7 +130,7 @@
             // bind option events
             $(div).on('modal.open', function (ev) {
                 // focus input
-                $('input[autofocus], button[autofocus]', div).first().focus();
+                $('input[autofocus], button[autofocus]', div).first().trigger('focus');
 
                 options.open.call(this, ev);
             }).on('modal.close', function (e, ev) {
@@ -180,7 +180,7 @@
                         idx = 0;
                     }
 
-                    $navItems.eq(idx).focus().attr('tabindex', 1);
+                    $navItems.eq(idx).trigger('focus').attr('tabindex', 1);
 
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -346,7 +346,7 @@
                                 v = $inp.val();
 
                             if (v === "") {
-                                $inp.focus();
+                                $inp.trigger('focus');
 
                                 return false;
                             }
@@ -541,7 +541,7 @@
 
                             calculateWidth(e.target, w, h);
 
-                            $('.image-preview').click(function (e) {
+                            $('.image-preview').on('click', function (e) {
                                 $(e.target).trigger('modal.close', e);
                             });
 

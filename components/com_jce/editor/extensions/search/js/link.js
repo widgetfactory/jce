@@ -22,7 +22,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
         
         var self = this, el = this.options.element, btn = this.options.button;
         
-        $(btn).click(function(e) {
+        $(btn).on('click', function(e) {
             self.search();
             e.preventDefault();
         }).button({
@@ -31,7 +31,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
             }
         });
 
-        $('#search-clear').click(function(e) {
+        $('#search-clear').on('click', function(e) {
             if($(this).hasClass('uk-active')) {
                 $(this).removeClass('uk-active');
 
@@ -40,7 +40,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
             }
         });
         
-        $('#search-options-button').click(function(e) {
+        $('#search-options-button').on('click', function(e) {
             e.preventDefault();
 
             $(this).addClass('uk-active');
@@ -88,7 +88,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
                         $.each(o, function(i, n) {                        
                             var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
                             
-                            $('<dt class="link uk-margin-small" />').text(n.title).click(function() {
+                            $('<dt class="link uk-margin-small" />').text(n.title).on('click', function() {
                                 if ($.isFunction(self.options.onClick)) {
                                     self.options.onClick.call(this, Wf.String.decode(n.link));
                                 }
@@ -98,7 +98,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
 
                             if (n.anchors) {
                                 $.each(n.anchors, function(i, a) {
-                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').click(function() {
+                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function() {
                                         self.options.onClick.call(this, Wf.String.decode(n.link + '#' + a));
                                     }).appendTo($dl);
                                 });

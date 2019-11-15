@@ -89,7 +89,7 @@
                 });
 
                 // udpate select
-                $(select).change();
+                $(select).trigger('change');
 
                 // remove tag
                 $(tag).remove();
@@ -125,7 +125,7 @@
 
                 // already selected and tagged, clear and focus
                 if (multiple && $.inArray(value, values) > -1) {
-                    $(input).val('').focus();
+                    $(input).val('').trigger('focus');
                     return;
                 }
 
@@ -138,7 +138,7 @@
                     // add new value to select array
                     values.push(value);
                     // focus input
-                    $(input).focus();
+                    $(input).trigger('focus');
                 }
 
                 $(select).val(values);
@@ -162,7 +162,7 @@
                 });
 
                 // trigger change
-                $(select).change();
+                $(select).trigger('change');
             }
 
             function selectMenuItem(e) {                
@@ -195,7 +195,7 @@
                 // update aria
                 $([container, menu]).attr('aria-expanded', 'false');
                 // focus input
-                $(input).focus();
+                $(input).trigger('focus');
             }
 
             function positionMenu() {
@@ -250,7 +250,7 @@
 
                 // return focus to input
                 if (focusIdx < 0) {
-                    $(input).focus();
+                    $(input).trigger('focus');
                     return;
                     // end
                 } else if (focusIdx >= $filtered.length) {
@@ -258,10 +258,10 @@
                 }
 
                 // blur all items
-                $items.blur();
+                $items.trigger('blur');
 
                 // focus item
-                $filtered.eq(focusIdx).attr('tabindex', 0).focus();
+                $filtered.eq(focusIdx).attr('tabindex', 0).trigger('focus');
             }
 
             $(input).on('keydown', function (e) {
@@ -303,7 +303,7 @@
                             e.preventDefault();
 
                             // update value with tag value and focus
-                            $(this).val(val).focus();
+                            $(this).val(val).trigger('focus');
                         }
                         break;
                 }
@@ -372,7 +372,7 @@
 
                     // home
                     if (e.keyCode === 36) {
-                        $(input).focus();
+                        $(input).trigger('focus');
                         e.preventDefault();
                         return;
                     }
@@ -434,7 +434,7 @@
                 // update disabled state
                 $([input, btn]).each(function() {
                     if (!state) {
-                        $(this).removeAttr('disabled');
+                        $(this).prop('disabled', false).removeAttr('disabled');
                     } else {
                         $(this).prop('disabled', true);
                     }

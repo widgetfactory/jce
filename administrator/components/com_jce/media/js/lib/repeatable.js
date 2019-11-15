@@ -25,7 +25,7 @@
 
                 // create new id
                 $(this).attr('id', id + '_' + idx + '_' + x);
-            }).change();
+            }).trigger('change');
 		
             // fix media field
             $item.find('.field-media-wrapper').each(function(){
@@ -40,7 +40,7 @@
             // remove
             $repeatable.remove();
             // update
-            $parent.find(':input').change();
+            $parent.find(':input').trigger('change');
         });
     });
 })(jQuery);

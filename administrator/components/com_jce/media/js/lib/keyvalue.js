@@ -19,7 +19,7 @@
             });
 
             // update hidden input
-            $ctrl.find('input[name*="jform"][type="hidden"]').val(JSON.stringify(items)).change();
+            $ctrl.find('input[name*="jform"][type="hidden"]').val(JSON.stringify(items)).trigger('change');
         });
     });
 })(jQuery);

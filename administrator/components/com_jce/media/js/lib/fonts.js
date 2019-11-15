@@ -53,7 +53,7 @@
             }
 
             // serialize and return
-            $('input[type="hidden"]', this).val(v).change();
+            $('input[type="hidden"]', this).val(v).trigger('change');
         }).sortable({
             axis: 'y',
             items: '.font-item',

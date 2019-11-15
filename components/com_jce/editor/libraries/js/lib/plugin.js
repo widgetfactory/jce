@@ -98,13 +98,13 @@
                 icons: {
                     primary: 'uk-icon-help'
                 }
-            }).click(function (e) {
+            }).on('click', function (e) {
                 e.preventDefault();
                 self.help();
             });
 
             // add button actions
-            $('#cancel').click(function (e) {
+            $('#cancel').on('click', function (e) {
                 tinyMCEPopup.close();
                 e.preventDefault();
             });
@@ -127,12 +127,12 @@
             $('.hastip, .tip, .tooltip').tips();
 
             // set styles events
-            $('#align, #clear, #dir').change(function () {
+            $('#align, #clear, #dir').on('change', function () {
                 self.updateStyles();
             });
 
             // set margin events
-            $('input[id^="margin_"]').change(function () {
+            $('input[id^="margin_"]').on('change', function () {
                 self.updateStyles();
             });
 
@@ -142,11 +142,11 @@
             });
 
             // update styles on border change
-            $('#border_width, #border_style, #border_color').change(function () {
+            $('#border_width, #border_style, #border_color').on('change', function () {
                 self.updateStyles();
             });
 
-            $('#style').change(function () {
+            $('#style').on('change', function () {
                 self.setStyles();
             });
 
@@ -189,7 +189,7 @@
                         idx = 0;
                     }
 
-                    $navItems.eq(idx).focus().attr('tabindex', 1);
+                    $navItems.eq(idx).trigger('focus').attr('tabindex', 1);
 
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -217,7 +217,7 @@
 
                     // close an existing modal first
                     if ($('.uk-modal-close').length) {
-                        $('.uk-modal-close').click();
+                        $('.uk-modal-close').trigger('click');
 
                         return;
                     }
@@ -305,7 +305,7 @@
                     $(this).next('.uk-icon-colorpicker').css('background-color', v);
                 });
 
-                $(this).change(function (e) {
+                $(this).on('change', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -327,7 +327,7 @@
 
                     // fire event
                     $(this).trigger('colorpicker:pick', '#' + v);
-                }).change();
+                }).trigger('change');
 
                 var colorpicker_custom_colors = ed.getParam('colorpicker_custom_colors', '');
                 var colorpicker_type = ed.getParam('colorpicker_type', '');
@@ -361,7 +361,7 @@
                             var col = $(e.target).data('color');
 
                             if (col) {
-                                $(elm).val(col).change();
+                                $(elm).val(col).trigger('change');
                                 $picker.trigger('tooltip:close');
                             }
                         });
@@ -434,7 +434,7 @@
                     'media': 'film'
                 };
 
-                $('<button class="uk-icon uk-icon-' + map[filter] + ' uk-button uk-button-link" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></button>').click(function (e) {
+                $('<button class="uk-icon uk-icon-' + map[filter] + ' uk-button uk-button-link" title="' + self.translate('browse', 'Browse for Files') + '" aria-label="' + self.translate('browse', 'Browse for Files') + '"></button>').on('click', function (e) {
                     e.preventDefault();
 
                     return tinyMCEPopup.execCommand('mceFileBrowser', true, {

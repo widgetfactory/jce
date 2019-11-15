@@ -116,13 +116,13 @@
 
             this.applyActionIsInsert = ed.getParam("edit_css_style_insert_span", false);
 
-            $('#insert').click(function (e) {
+            $('#insert').on('click', function (e) {
                 e.preventDefault();
 
                 self.updateAction();
             });
 
-            $('#apply').click(function (e) {
+            $('#apply').on('click', function (e) {
                 e.preventDefault();
 
                 self.applyAction();
@@ -740,7 +740,7 @@
         toggleSame: function (ce, pre) {
             var s = ce.checked;
 
-            $('#' + pre + '_right, #' + pre + '_bottom, #' + pre + '_left').attr('disabled', s).toggleClass('disabled', s).change();
+            $('#' + pre + '_right, #' + pre + '_bottom, #' + pre + '_left').attr('disabled', s).toggleClass('disabled', s).trigger('change');
             $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s);
         },
         synch: function (fr, to) {

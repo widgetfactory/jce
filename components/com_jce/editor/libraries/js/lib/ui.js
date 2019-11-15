@@ -8,7 +8,7 @@
             });
 
             $(this).trigger('border:change');
-        }).change();
+        }).trigger('change');
 
         return this;
     };
@@ -21,7 +21,7 @@
                 return this;
             }
 
-            $(this).wrap('<i class="uk-checkbox" />').click(function () {
+            $(this).wrap('<i class="uk-checkbox" />').on('click', function () {
                 $(this).parent().toggleClass('uk-icon-check', this.checked);
             }).on('checkbox:check', function () {
                 $(this).parent().toggleClass('uk-icon-check', self.checked);
@@ -37,7 +37,7 @@
                 self = this;
 
             // add icon and click
-            $(self).click(function () {
+            $(self).on('click', function () {
                 var state = this.checked;
 
                 //$(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !state);
@@ -47,7 +47,7 @@
                 if (state) {
                     var value = $elms.first().val();
 
-                    $elms.slice(1).val(value).change();
+                    $elms.slice(1).val(value).trigger('change');
 
                     $(cb).trigger('equalize:change', [$elms.addBack()]);
                 }
@@ -57,11 +57,11 @@
                 $(self).wrap('<i class="uk-equalize uk-icon-lock" />');
             }*/
 
-            $elms.first().change(function () {
+            $elms.first().on('change', function () {
                 var state = $(self).prop('checked');
 
                 if (state) {
-                    $elms.not(this).val(this.value).change();
+                    $elms.not(this).val(this.value).trigger('change');
                 }
 
                 // trigger event
@@ -102,14 +102,14 @@
 
             $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
 
-            $(cb).click(function () {
+            $(cb).on('click', function () {
                 $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
             });
 
             // set tmp values
             $elms.each(function () {
                 $(this).data('tmp', this.value);
-            }).change(function (e) {
+            }).on('change', function (e) {
                 e.stopPropagation();
 
                 var a = this,
@@ -165,12 +165,12 @@
                 $(el).insertAfter($(self).siblings('.uk-repeatable').add(self).last());
             }
 
-            $('.uk-repeatable-create', this).click(function (e) {
+            $('.uk-repeatable-create', this).on('click', function (e) {
                 clone();
                 e.preventDefault();
             });
 
-            $('.uk-repeatable-delete', this).click(function (e) {
+            $('.uk-repeatable-delete', this).on('click', function (e) {
                 $(this).parent().parent().remove();
 
                 e.preventDefault();
@@ -253,10 +253,10 @@
 
             $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active').attr('aria-hidden', false);
 
-            $('.uk-tab li', el).click(function (e) {
+            $('.uk-tab li', el).on('click', function (e) {
                 e.preventDefault();
 
-                $(this).find('button').focus();
+                $(this).find('button').trigger('focus');
 
                 // legacy
                 $(el).children('.uk-switcher').children().addClass('uk-tabs-hide');
@@ -285,7 +285,7 @@
 
                 // kill default events
                 e.preventDefault();
-            }).first().addClass('uk-active').attr('aria-selected', true).find('button').focus();
+            }).first().addClass('uk-active').attr('aria-selected', true).find('button').trigger('focus');
 
             $('body').on('keydown.tabs', function (e) {
 
@@ -311,7 +311,7 @@
                             idx = endIndex;
                         }
 
-                        $tabItems.eq(idx).click();
+                        $tabItems.eq(idx).trigger('click');
 
                         e.preventDefault();
                     }
@@ -333,7 +333,7 @@
         // jQuery UI legacy
         if (typeof options === "string") {
             if (options === "activate" && typeof key !== "undefined") {
-                $('.uk-accordion-title', this).click();
+                $('.uk-accordion-title', this).trigger('click');
             }
             // end here so as not to re-create the button
             return this;
@@ -343,7 +343,7 @@
 
         $(this).children('h3').addClass('uk-accordion-title').next('div').addClass('uk-accordion-content').css(hidden);
 
-        $('.uk-accordion-title', this).click(function (e) {
+        $('.uk-accordion-title', this).on('click', function (e) {
             e.preventDefault();
 
             var tab = this;

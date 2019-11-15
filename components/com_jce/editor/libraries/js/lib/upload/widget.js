@@ -466,7 +466,7 @@
             // status / delete
             var remove = $('<button class="uk-button uk-button-link" />').attr({
                 'title': Wf.translate('delete', 'Delete')
-            }).addClass('queue-item-action').click(function(e) {
+            }).addClass('queue-item-action').on('click', function(e) {
                 e.preventDefault();
 
                 if (self.uploading) {
@@ -486,7 +486,7 @@
 
             // add optional buttons
             $.each(self.options.buttons, function(name, props) {
-                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).click(function(e) {
+                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).on('click', function(e) {
                     if ($(this).hasClass('disabled')) {
                         e.preventDefault();
                         return;
@@ -522,7 +522,7 @@
                 if (e.type === "change") {
                     self._renameFile(file, v + '.' + file.extension);
                 }
-            }).change();
+            }).trigger('change');
 
             self._trigger('fileSelect', file);
         },

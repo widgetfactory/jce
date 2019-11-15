@@ -23,7 +23,7 @@ WFAggregator.add('dailymotion', {
     setup: function() {
         $('#dailymotion_autoPlay').prop('checked', this.params.autoPlay);
 
-        $('#dailymotion_player_size').change(function() {
+        $('#dailymotion_player_size').on('change', function() {
             var v = parseInt(this.value);
             $('#dailymotion_player_size_custom').toggleClass('uk-hidden', !!this.value);
 
@@ -34,7 +34,7 @@ WFAggregator.add('dailymotion', {
 
         });
 
-        $('#dailymotion_player_size_custom').change(function() {
+        $('#dailymotion_player_size_custom').on('change', function() {
             var v = parseInt(this.value);
 
             if (v) {

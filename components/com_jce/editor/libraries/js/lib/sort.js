@@ -18,7 +18,7 @@
             var self = this;
 
             $.each(this.options.fields, function(element, props) {
-            	$(element).addClass('asc').bind('click', function() {
+            	$(element).addClass('asc').on('click', function() {
 	                var direction = 'asc';
  
 	                $(this).toggleClass( function() {

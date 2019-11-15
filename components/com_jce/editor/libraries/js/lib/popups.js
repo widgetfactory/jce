@@ -44,9 +44,9 @@ var WFPopups = WFExtensions.add('Popups', {
             n;
 
         // setup and trigger change
-        $('#popup_list').change(function() {
+        $('#popup_list').on('change', function() {
             self.selectPopup(this.value);
-        }).change();
+        }).trigger('change');
 
         if (!s.isCollapsed()) {
             n = s.getNode();

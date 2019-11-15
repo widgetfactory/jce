@@ -7,33 +7,33 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
+(function ($) {
 
     $.support.canvas = false; //!!document.createElement('canvas').getContext;
 
     // http://www.abeautifulsite.net/blog/2011/11/detecting-mobile-devices-with-javascript/
     var isMobile = {
-        Android: function() {
+        Android: function () {
             return navigator.userAgent.match(/Android/i);
         },
-        BlackBerry: function() {
+        BlackBerry: function () {
             return navigator.userAgent.match(/BlackBerry/i);
         },
-        iOS: function() {
+        iOS: function () {
             return navigator.userAgent.match(/iPhone|iPad|iPod/i);
         },
-        Opera: function() {
+        Opera: function () {
             return navigator.userAgent.match(/Opera Mini/i);
         },
-        Windows: function() {
+        Windows: function () {
             return navigator.userAgent.match(/IEMobile/i);
         },
-        any: function() {
+        any: function () {
             return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
         }
     };
 
-    $.fn.tips = function(options) {
+    $.fn.tips = function (options) {
         options = $.extend({
             speed: 150,
             position: 'top center',
@@ -48,7 +48,7 @@
             trigger: 'hover',
             disabled: ':disabled, .disabled'
         }, options);
-        
+
         /**
          * Initialise the tooltip
          * @param {Object} elements
@@ -61,7 +61,7 @@
                 cancelOnDrag(element);
             }
 
-            $(element).click(function(e) {
+            $(element).on('click', function (e) {
                 e.preventDefault();
 
                 if (options.trigger == 'click' && $(this).is(options.disabled)) {
@@ -88,27 +88,24 @@
                 }
             });
 
-            $(element).on('tooltip:close', function() {
+            $(element).on('tooltip:close', function () {
                 return end(element);
             });
 
             if (options.trigger == 'hover') {
-                $(element).hover(
-                    function(e) {
-                        
-                        if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
-                            return;
-                        }
+                $(element).on('mouseover', function (e) {
 
-                        return start(e, element);
-                    },
-                    function(e) {
-                        if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
-                            return;
-                        }
-                        return end(element);
+                    if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
+                        return;
                     }
-                );
+
+                    return start(e, element);
+                }).on('mouseout', function (e) {
+                    if ($('.uk-tooltip').hasClass('uk-tooltip-sticky') || $(this).hasClass('uk-tooltip-nohover')) {
+                        return;
+                    }
+                    return end(element);
+                });
             }
         }
 
@@ -125,7 +122,7 @@
                     '<div class="arrow"></div>' +
                     '</div>').appendTo(options.parent);
 
-                $('.uk-icon-close', $tips).click(function() {
+                $('.uk-icon-close', $tips).on('click', function () {
                     end();
                 }).hide();
             }
@@ -202,7 +199,7 @@
 
             $(element).trigger('tooltip:show');
 
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $tips.css('visibility', 'visible');
             }, 1);
         }
@@ -241,7 +238,7 @@
         }
 
         function cancelOnDrag(element) {
-            $(element).bind('mousedown', function() {
+            $(element).on('mousedown', function () {
                 $(this).addClass('nohover');
                 // hide tooltip
                 end();
@@ -249,7 +246,7 @@
                 // Store original title and remove
                 $(this).data('title', $(this).attr('title')).attr('title', '');
 
-            }).bind('mouseup', function() {
+            }).on('mouseup', function () {
                 $(this).removeClass('nohover');
 
                 // Restore title
@@ -262,7 +259,7 @@
             $('.uk-icon-close', '.uk-tooltip').show();
 
             // add blur handler
-            $(window).on('click.tooltip-blur', function(e) {
+            $(window).on('click.tooltip-blur', function (e) {
                 var el = $(element).get(0),
                     n = e.target;
 
@@ -353,14 +350,14 @@
                 }
             };
 
-            $.each(position.split(' '), function(i, s) {
+            $.each(position.split(' '), function (i, s) {
                 $tips.addClass(s).addClass('uk-tooltip-' + s);
             });
 
             $tips.css(style[position]);
         }
 
-        return this.each(function() {
+        return this.each(function () {
             init(this);
         });
     };

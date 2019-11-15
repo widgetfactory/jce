@@ -25,7 +25,7 @@
         _init: function() {
             var self = this, el = this.element, x = [];
 
-            $(this.options.clear).click(function(e) {
+            $(this.options.clear).on('click', function(e) {
                 $(this).removeClass('clear');
 
                 self.reset();
@@ -53,7 +53,7 @@
                         }
                     }
                 } else {
-                    $(self.options.clear).click();
+                    $(self.options.clear).trigger('click');
                     $(this).removeClass('working');
                 }
             });

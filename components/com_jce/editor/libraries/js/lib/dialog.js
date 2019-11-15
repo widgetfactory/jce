@@ -208,7 +208,7 @@
                         $('#border_' + k).trigger('pick');
                     }
 
-                    $('#border').prop('checked', true).change();
+                    $('#border').prop('checked', true).trigger('change');
                 }
             });
 
@@ -390,13 +390,13 @@
                 }
 
                 if ($('#' + n).is(':checkbox')) {
-                    $('#' + n).prop('checked', parseFloat(v)); //.change();
+                    $('#' + n).prop('checked', parseFloat(v)); //.trigger('change');
                 } else {
-                    $('#' + n).val(v); //.change();
+                    $('#' + n).val(v); //.trigger('change');
 
                     // update colour
                     if (typeof v === "string" && v.charAt(0) === "#") {
-                        $('#' + n).change();
+                        $('#' + n).trigger('change');
                     }
                 }
             }

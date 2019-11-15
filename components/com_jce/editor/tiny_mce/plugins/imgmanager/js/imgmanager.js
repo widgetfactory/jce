@@ -20,7 +20,7 @@
                 br, el;
 
             // add insert button action
-            $('#insert').click(function (e) {
+            $('#insert').on('click', function (e) {
                 self.insert();
                 e.preventDefault();
             });
@@ -39,7 +39,7 @@
             });
 
             // add focus behaviour to onmoueover / onmouseout
-            $('#onmouseover, #onmouseout').focus(function () {
+            $('#onmouseover, #onmouseout').on('$1', function () {
                 $('#onmouseover, #onmouseout').removeClass('focus');
                 $(this).addClass('focus');
             });
@@ -47,7 +47,7 @@
             Wf.init();
 
             // add change event to record editing
-            $('#alt').change(function () {
+            $('#alt').on('change', function () {
                 $(this).addClass('uk-edited');
             });
 
@@ -119,14 +119,14 @@
                 });
 
                 $('#border_style').val(Wf.getAttrib(n, 'border-style'));
-                $('#border_color').val(Wf.getAttrib(n, 'border-color')).change();
+                $('#border_color').val(Wf.getAttrib(n, 'border-color')).trigger('change');
 
-                $('#border').change();
+                $('#border').trigger('change');
 
                 // if no border values set, set defaults
                 if (!$('#border').is(':checked')) {
                     $.each(['border_width', 'border_style', 'border_color'], function (i, k) {
-                        $('#' + k).val(self.settings.defaults[k]).change();
+                        $('#' + k).val(self.settings.defaults[k]).trigger('change');
                     });
                 }
 
@@ -151,7 +151,7 @@
                     });
 
                     return values;
-                }).change();
+                }).trigger('change');
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
                 $('#id').val(ed.dom.getAttrib(n, 'id'));

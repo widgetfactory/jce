@@ -86,7 +86,7 @@ WFPopups.addPopup('jcemediabox', {
     },
     setup: function() {
         var self = this;
-        $('#jcemediabox_popup_icon').change(function() {
+        $('#jcemediabox_popup_icon').on('change', function() {
             self.setIcon();
         });
 
@@ -353,7 +353,7 @@ WFPopups.addPopup('jcemediabox', {
 
                 v = tinymce.DOM.decode(v);
 
-                $('#jcemediabox_popup_' + k).val(v).change();
+                $('#jcemediabox_popup_' + k).val(v).trigger('change');
 
                 if (k == 'title' || k == 'caption') {
                     $('input[name^="jcemediabox_popup_' + k + '"]').eq(index).val(v);
@@ -527,7 +527,7 @@ WFPopups.addPopup('jcemediabox', {
         var v = $('#jcemediabox_popup_icon').val();
 
         if (parseInt(v)) {
-            $('#jcemediabox_popup_icon_position').removeAttr('disabled');
+            $('#jcemediabox_popup_icon_position').prop('disabled', false).removeAttr('disabled');
         } else {
             $('#jcemediabox_popup_icon_position').attr('disabled', 'disabled');
         }

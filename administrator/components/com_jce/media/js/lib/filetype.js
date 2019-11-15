@@ -65,11 +65,11 @@
             }
 
             // get all checkboxes
-            $('input[type="checkbox"]', this).click(function () {
+            $('input[type="checkbox"]', this).on('click', function () {
                 serialize();
             });
 
-            $('.filetype-edit', this).click(function (e) {
+            $('.filetype-edit', this).on('click', function (e) {
                 e.preventDefault();
                 $('.filetype-list', self).slideToggle();
             });
@@ -85,7 +85,7 @@
                 $(this).siblings('input').val("");
             });
 
-            $('.filetype-add', this).click(function (e) {
+            $('.filetype-add', this).on('click', function (e) {
                 e.preventDefault();
 
                 var $p = $(this).parents('.filetype-item');

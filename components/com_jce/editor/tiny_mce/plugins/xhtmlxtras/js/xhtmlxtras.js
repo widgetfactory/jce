@@ -86,7 +86,7 @@
                                 });
 							}
 
-							$(this).val(v).change();
+							$(this).val(v).trigger('change');
 
 							delete attribs[k];
 						}

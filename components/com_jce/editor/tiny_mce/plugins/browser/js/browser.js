@@ -9,12 +9,12 @@
  */
 (function ($) {
     function init() {
-        $('#insert').click(function (e) {
+        $('#insert').on('click', function (e) {
             e.preventDefault();
             insert();
         });
 
-        $('#cancel').click(function (e) {
+        $('#cancel').on('click', function (e) {
             e.preventDefault();
             tinyMCEPopup.close();
         });

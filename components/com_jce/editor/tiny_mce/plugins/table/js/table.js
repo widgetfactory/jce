@@ -139,7 +139,7 @@
             }
 
             // update form
-            $('#' + k).val(v).change();
+            $('#' + k).val(v).trigger('change');
         });
 
         // table center-align
@@ -201,7 +201,7 @@
             }
 
             if (border) {
-                $('#border').attr('checked', 'checked').change();
+                $('#border').attr('checked', 'checked').trigger('change');
 
                 // add new option for border width
                 if (k === "width") {
@@ -211,7 +211,7 @@
                 }
 
                 // set border value and trigger change
-                $('#border_' + k).val(v).change();
+                $('#border_' + k).val(v).trigger('change');
             }
         });
 
@@ -318,7 +318,7 @@
 
                 return r;
 
-            }).change();
+            }).trigger('change');
         },
         initTable: function () {
             var self = this,
@@ -335,7 +335,7 @@
                 // replace border field with checkbox
                 $('#table_border').replaceWith('<input type="checkbox" id="table_border" value="" />');
 
-                $('#table_border').click(function () {
+                $('#table_border').on('click', function () {
                     this.value = this.checked ? 1 : '';
                 });
             }
@@ -387,10 +387,10 @@
                     self.updateClassList(cls);
 
                     return cls;
-                }).change();
+                }).trigger('change');
 
                 // update style field
-                $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
+                $('#style').val(ed.dom.getAttrib(elm, 'style')).trigger('change');
 
                 this.orgTableWidth = $('#width').val();
                 this.orgTableHeight = $('#height').val();
@@ -417,7 +417,7 @@
             var rowtype = elm.parentNode.nodeName.toLowerCase();
 
             // update style field
-            $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
+            $('#style').val(ed.dom.getAttrib(elm, 'style')).trigger('change');
 
             // update form values
             $.each(['align', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background'], function (i, k) {
@@ -448,11 +448,11 @@
                 self.updateClassList(cls);
 
                 return cls;
-            }).change();
+            }).trigger('change');
 
-            $('#rowtype').change(function () {
+            $('#rowtype').on('change', function () {
                 self.setActionforRowType();
-            }).val(rowtype).change();
+            }).val(rowtype).trigger('change');
 
             // single cell update only
             if (selected.length === 0) {
@@ -471,7 +471,7 @@
             // only update single cells
             if (!dom.hasClass(elm, 'mceSelected')) {
                 // update style field
-                $('#style').val(ed.dom.getAttrib(elm, 'style')).change();
+                $('#style').val(ed.dom.getAttrib(elm, 'style')).trigger('change');
 
                 // update form values
                 $.each(['align', 'valign', 'width', 'height', 'cellpadding', 'cellspacing', 'id', 'summary', 'dir', 'lang', 'bgcolor', 'background', 'scope'], function (i, k) {
@@ -497,7 +497,7 @@
                     self.updateClassList(cls);
 
                     return cls;
-                }).change();
+                }).trigger('change');
 
                 $('#celltype').val(elm.nodeName.toLowerCase());
 

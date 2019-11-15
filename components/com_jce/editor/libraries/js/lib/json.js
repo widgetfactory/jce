@@ -134,7 +134,7 @@
                     // check result - should be object, parse as JSON if string
                     if ($.type(o) === 'string' && isJSON(o)) {
                         // parse string as JSON object
-                        var s = $.parseJSON(o);
+                        var s = JSON.parse(o);
                         // pass if successful
                         if (s) {
                             o = s;

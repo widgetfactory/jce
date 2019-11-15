@@ -260,7 +260,7 @@
                     color = '#' + color;
                 }
 
-                $('#colorpicker_color').change(function() {
+                $('#colorpicker_color').on('change', function() {
                     var v = this.value;
 
                     if (v.substr(0, 1) === "#") {
@@ -273,11 +273,11 @@
                     }
 
                     this.value = v;
-                }).change();
+                }).trigger('change');
 
                 this._createTabs();
 
-                $('#colorpicker_insert').click(function(e) {
+                $('#colorpicker_insert').on('click', function(e) {
                     e.preventDefault();
                     self._insert();
                 });
@@ -344,7 +344,7 @@
 
                     $('#colorpicker_preview_color').css('background-color', color);
 
-                    $('#colorpicker_color').change(function() {
+                    $('#colorpicker_color').on('change', function() {
                         var v = this.value;
 
                         if (v.substr(0, 1) === "#") {
@@ -357,9 +357,9 @@
                         }
 
                         this.value = v;
-                    }).change();
+                    }).trigger('change');
 
-                    $('#colorpicker_insert').click(function(e) {
+                    $('#colorpicker_insert').on('click', function(e) {
                         e.preventDefault();
                         self._insert();
                     });
@@ -470,7 +470,7 @@
             $(this.element).trigger('colorpicker:insert', color);
 
             if (color) {
-                $(this.element).val(color).removeClass('placeholder').change();
+                $(this.element).val(color).removeClass('placeholder').trigger('change');
                 $(this.widget).css('background-color', color);
             }
 
@@ -577,9 +577,9 @@
 
             $(parent).append(h).append('<br style="clear:both;" />').addClass('colorpicker_generated');
 
-            $('span.colorpicker_webblock', parent).click(function() {
+            $('span.colorpicker_webblock', parent).on('click', function() {
                 self._insert();
-            }).mouseover(function() {
+            }).on('mouseover', function() {
                 self._showColor($(this).attr('title'));
             });
 
@@ -618,9 +618,9 @@
 
             $(parent).append(h).append('<br style="clear:both;" />').addClass('colorpicker_generated').append('<div id="colorpicker_colorname">' + this.options.labels.name + '</div>');
 
-            $('span.colorpicker_namedblock', parent).click(function() {
+            $('span.colorpicker_namedblock', parent).on('click', function() {
                 self._insert();
-            }).mouseover(function() {
+            }).on('mouseover', function() {
                 self._showColor($(this).parent('li').css('background-color'), $(this).attr('title'));
             });
 
@@ -700,9 +700,9 @@
 
             $(parent).addClass('colorpicker_generated');
 
-            $('span.colorpicker_templateblock', parent).click(function() {
+            $('span.colorpicker_templateblock', parent).on('click', function() {
                 self._insert();
-            }).mouseover(function() {
+            }).on('mouseover', function() {
                 self._showColor($(this).attr('title'));
             });
 
@@ -972,7 +972,7 @@
         fb.linkTo = function(callback) {
             // Unbind previous nodes
             if (typeof fb.callback == 'object') {
-                $(fb.callback).unbind('keyup', fb.updateValue);
+                $(fb.callback).off('keyup', fb.updateValue);
             }
 
             // Reset color
@@ -983,7 +983,7 @@
                 fb.callback = callback;
             } else if (typeof callback == 'object' || typeof callback == 'string') {
                 fb.callback = $(callback);
-                fb.callback.bind('keyup', fb.updateValue);
+                fb.callback.on('keyup', fb.updateValue);
                 if (fb.callback.get(0).value) {
                     fb.setColor(fb.callback.get(0).value);
                 }
@@ -1090,9 +1090,6 @@
          * Mousedown handler
          */
         fb.mousedown = function(event) {
-
-
-
             // Check which area is being dragged
             var pos = fb.widgetCoords(event);
             fb.circleDrag = Math.max(Math.abs(pos.x), Math.abs(pos.y)) * 2 > fb.square;
@@ -1123,8 +1120,8 @@
          * Touchend handler for iPad, iPhone etc
          */
         fb.touchend = function(event) {
-            $(document).unbind('touchmove', fb.touchmove);
-            $(document).unbind('touchend', fb.touchend);
+            $(document).off('touchmove', fb.touchmove);
+            $(document).off('touchend', fb.touchend);
             document.dragging = false;
             event.preventDefault();
             return false;
@@ -1157,8 +1154,8 @@
          */
         fb.mouseup = function() {
             // Uncapture mouse
-            $(document).unbind('mousemove', fb.mousemove);
-            $(document).unbind('mouseup', fb.mouseup);
+            $(document).off('mousemove', fb.mousemove);
+            $(document).off('mouseup', fb.mouseup);
             document.dragging = false;
         }
 
@@ -1292,20 +1289,20 @@
         }
 
         // Install mousedown handler (the others are set on the document on-demand)
-        $('*', e).mousedown(function(e) {
+        $('*', e).on('mousedown', function(e) {
             // Capture mouse
             if (!document.dragging) {
-                $(document).bind('mousemove', fb.mousemove).bind('mouseup', fb.mouseup);
+                $(document).on('mousemove', fb.mousemove).on('mouseup', fb.mouseup);
                 document.dragging = true;
             }
             fb.mousedown(e);
         });
 
         // TouchStart bound, calls conversion of touchpoints to mousepoints
-        $('*', e).bind("touchstart", function(e) {
+        $('*', e).on("touchstart", function(e) {
             // Capture mouse
             if (!document.dragging) {
-                $(document).bind('touchmove', fb.touchmove).bind('touchend', fb.touchend);
+                $(document).on('touchmove', fb.touchmove).on('touchend', fb.touchend);
                 document.dragging = true;
             }
             fb.mousedown(fb.touchconvert(e));
