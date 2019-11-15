@@ -109,6 +109,8 @@
 .mceCharacterMap>div+div {
     max-width: 11em;
     border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
 }
 
 .mceModal .mceModalContent .mceCharacterMap button {
@@ -129,6 +131,10 @@
     margin: 0 1px 1px 0;
 }
 
+.mceModal .mceModalContent .mceModalRow.mceCharacterMap {
+    align-items: inherit;
+}
+
 .mceModal .mceModalContent .mceCharacterMap button:hover,
 .mceModal .mceModalContent .mceCharacterMap button:focus {
     border: 1px solid #ccc;
@@ -137,10 +143,12 @@
 
 .mceCharacterMapDescription h1 {
     line-height: 2;
-    font-size: 3em;
+    font-size: 5em;
     height: 2em;
     text-align: center;
     vertical-align: middle;
+
+    flex: 1;
 }
 
 .mceCharacterMapDescription h3 {
