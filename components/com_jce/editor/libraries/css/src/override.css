@@ -85,6 +85,10 @@ html {
     text-shadow: inherit;
     box-shadow: inherit;
     line-height: inherit;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .uk-button:active,
