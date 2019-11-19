@@ -533,7 +533,7 @@ abstract class WFUtility
         // list of invalid extensions
         $executable = array(
             'php', 'php3', 'php4', 'php5', 'php6', 'php7', 'phar', 'js', 'exe', 'phtml', 'java', 'perl', 'py', 'asp', 'dll', 'go', 'ade', 'adp', 'bat', 'chm', 'cmd', 'com', 'cpl', 'hta', 'ins', 'isp',
-            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh', 'svg'
+            'jse', 'lib', 'mde', 'msc', 'msp', 'mst', 'pif', 'scr', 'sct', 'shb', 'sys', 'vb', 'vbe', 'vbs', 'vxd', 'wsc', 'wsf', 'wsh', 'svg',
         );
 
         // get file parts, eg: ['image', 'php', 'jpg']
@@ -570,11 +570,23 @@ abstract class WFUtility
      *
      * @return bool True if the array is an associative array
      *
-     * @link    http://www.php.net/manual/en/function.is-array.php#98305
+     * @link    https://www.php.net/manual/en/function.is-array.php#84488
      */
     public static function is_associative_array($array)
     {
-        return is_array($array) && (count($array) == 0 || 0 !== count(array_diff_key($array, array_keys(array_keys($array)))));
+        if (!is_array($array)) {
+            return false;
+        }
+
+        $i = count($array);
+
+        while ($i > 0) {
+            if (!array_key_exists(--$i, $array)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function isJson($value)
@@ -595,7 +607,7 @@ abstract class WFUtility
         if ($value[0] !== '{' && $value[0] !== '[') {
             return false;
         }
-        
+
         // full check using json_decode
         json_decode($value);
         return json_last_error() == JSON_ERROR_NONE;
@@ -629,18 +641,18 @@ abstract class WFUtility
      * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
      * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
      */
-    public static function array_merge_recursive_distinct(array &$array1, array &$array2, $ignore_empty_string = false)
+    public static function array_merge_recursive_distinct(array $array1, array $array2, $ignore_empty_string = false)
     {
         $merged = $array1;
 
-        foreach ($array2 as $key => &$value) {
-            if (self::is_associative_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+        foreach ($array2 as $key => $value) {
+            if (self::is_associative_array($value) && array_key_exists($key, $merged) && self::is_associative_array($merged[$key])) {
                 $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value, $ignore_empty_string);
-            } else {
+            } else {                
                 if (is_null($value)) {
                     continue;
                 }
-                
+
                 if (array_key_exists($key, $merged) && $ignore_empty_string && $value === "") {
                     continue;
                 }
