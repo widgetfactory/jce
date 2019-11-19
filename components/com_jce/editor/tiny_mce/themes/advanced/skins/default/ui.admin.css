@@ -95,6 +95,8 @@
 
 .mceEditor .mceToolbarItem .mceListBox {
 	font-size: 0;
+	max-width: 114px;
+	margin: 0;
 }
 
 .mceEditor .mceToolbarItem .mceListBox:before {
@@ -224,4 +226,9 @@
 
 .checkboxes .mceButton .mceIcon {
 	display: inline-block
+}
+
+.com_jce .nav-link .mce-toolbar .mce-btn, 
+.com_jce .nav-link .mce-toolbar .mce-btn button {
+	cursor: pointer;
 }
