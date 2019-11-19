@@ -676,11 +676,12 @@ class JceModelProfile extends JModelAdmin
                 // add config data
                 if (array_key_exists($item, $data['params'])) {
                     $value = $data['params'][$item];
+                    // clean and add to json array for merging
                     $json[$item] = filter_var_array($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
                 }
             }
 
-            // combine and encode as json string
+            // merge and encode as json string
             $data['params'] = json_encode(WFUtility::array_merge_recursive_distinct($params, $json));
         }
 
