@@ -38,6 +38,15 @@ class WFFontselectPluginConfig
             $fonts = htmlspecialchars_decode($fonts);
         }
 
+        // map for new format, where fonts are saved as an array of an associative array, eg: [['Andale Mono' => 'andale mono,times', 'Arial' => 'arial,helvetica,sans-serif']]
+        if (is_array($fonts)) {
+            foreach($fonts as $key => $value) {
+                if (is_numeric($key)) {
+                    $fonts = $value;
+                }
+            }
+        }
+
         // get fonts using legacy parameters
         if (empty($fonts)) {
             $fonts = self::$fonts;
