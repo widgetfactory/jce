@@ -341,7 +341,7 @@
                 if (p.nodeName == 'P' || p.nodeName == 'DIV') {
 
                     // if a column...
-                    if (p.className.indexOf('wf-column')) {
+                    if (p.className.indexOf('wf-column') !== -1) {
                         var col = dom.getParent(n, '.wf-columns');
                         dom.insertAfter(marker, col);
                     } else {
