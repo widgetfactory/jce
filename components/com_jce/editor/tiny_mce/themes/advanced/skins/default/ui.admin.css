@@ -2,6 +2,7 @@
 
 .mceDefaultSkin .mceToolbar {
 	border: 0 none;
+	padding: 0;
 }
 
 .mceDefaultSkin .mceLayout,
@@ -67,6 +68,11 @@
 	margin-bottom: 2px;
 	cursor: move;
 	display: block;
+}
+
+.mceDefaultSkin .mceToolbar .mceToolbarRow:last-child {
+	margin: 0;
+	border-bottom: 0;
 }
 
 .mceEditor .mceToolbarItem .mceListBox,
