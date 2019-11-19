@@ -48,8 +48,9 @@
                 }
             });
 
+            // pass through array of object
             if (!$.isEmptyObject(data)) {
-                v = JSON.stringify(data);
+               v = JSON.stringify([data]);
             }
 
             // serialize and return
