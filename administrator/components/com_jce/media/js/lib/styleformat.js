@@ -33,14 +33,14 @@
         var init = true;
 
         // create close action
-        $('.styleformat-item-trash', '.styleformat-list').click(function (e) {
+        $('.styleformat-item-trash', '.styleformat-list').on('click', function (e) {
             e.preventDefault();
 
             // if there  is only one item, clear and hide
             if ($('div.styleformat-list div.styleformat').length === 1) {
 
                 // clear inputs and remove styles
-                $('input, select', this.parentNode).val("").removeAttr('style').removeAttr('class');
+                $(this).parents('.styleformat').find(':input').val("").removeAttr('style').removeAttr('class');
                 // hide
                 $(this).parents('.styleformat').hide();
                 // otherwise remove it
@@ -54,7 +54,7 @@
         });
 
         // create new action
-        $('.styleformat-item-plus', '.styleformat-list').click(function (e) {
+        $('.styleformat-item-plus', '.styleformat-list').on('click', function (e) {
             e.preventDefault();
             
             var $item = $(this).prev();
