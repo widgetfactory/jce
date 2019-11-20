@@ -1166,7 +1166,7 @@ html {
 .uk-form-horizontal .uk-form-controls input[type="text"],
 .uk-form-horizontal .uk-form-controls input[type="number"],
 .uk-form-horizontal .uk-form-controls select {
-    line-height: 32px;
+    line-height: 1em;
     height: 32px;
 }
 
@@ -1390,21 +1390,21 @@ input[type="range"]::-ms-thumb {
     }
 
     .uk-form-horizontal .uk-width-1-10 {
-        width: 10%;
+        width: 9.79%;
     }
 
     .uk-form-horizontal .uk-width-2-10,
     .uk-form-horizontal .uk-width-1-5 {
-        width: 20%;
+        width: 19.79%;
     }
 
     .uk-form-horizontal .uk-width-3-10 {
-        width: 30%;
+        width: 29.79%;
     }
 
     .uk-form-horizontal .uk-width-4-10,
     .uk-form-horizontal .uk-width-2-5 {
-        width: 40%;
+        width: 39.79%;
     }
 }
 
@@ -1417,21 +1417,21 @@ input[type="range"]::-ms-thumb {
     }
 
     .uk-form-horizontal .uk-width-small-1-10 {
-        width: 10%;
+        width: 9.79%;
     }
 
     .uk-form-horizontal .uk-width-small-2-10,
     .uk-form-horizontal .uk-width-small-1-5 {
-        width: 20%;
+        width: 19.79%;
     }
 
     .uk-form-horizontal .uk-width-small-3-10 {
-        width: 30%;
+        width: 29.79%;
     }
 
     .uk-form-horizontal .uk-width-small-4-10,
     .uk-form-horizontal .uk-width-small-2-5 {
-        width: 40%;
+        width: 39.79%;
     }
 }
 
