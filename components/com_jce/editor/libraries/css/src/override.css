@@ -592,21 +592,21 @@ input[type="range"]::-ms-thumb {
     }
 
     .uk-form-horizontal .uk-width-1-10 {
-        width: 9.79%;
+        width: 10%;
     }
 
     .uk-form-horizontal .uk-width-2-10,
     .uk-form-horizontal .uk-width-1-5 {
-        width: 19.79%;
+        width: 20%;
     }
 
     .uk-form-horizontal .uk-width-3-10 {
-        width: 29.79%;
+        width: 30%;
     }
 
     .uk-form-horizontal .uk-width-4-10,
     .uk-form-horizontal .uk-width-2-5 {
-        width: 39.79%;
+        width: 40%;
     }
 }
 
@@ -619,21 +619,21 @@ input[type="range"]::-ms-thumb {
     }
 
     .uk-form-horizontal .uk-width-small-1-10 {
-        width: 9.79%;
+        width: 10%;
     }
 
     .uk-form-horizontal .uk-width-small-2-10,
     .uk-form-horizontal .uk-width-small-1-5 {
-        width: 19.79%;
+        width: 20%;
     }
 
     .uk-form-horizontal .uk-width-small-3-10 {
-        width: 29.79%;
+        width: 30%;
     }
 
     .uk-form-horizontal .uk-width-small-4-10,
     .uk-form-horizontal .uk-width-small-2-5 {
-        width: 39.79%;
+        width: 40%;
     }
 }
 
@@ -805,4 +805,8 @@ select:not([multiple]):not([size]) {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;
     background-position: 100% 50%;
+}
+
+.uk-form-row:before, .uk-form-row:after {
+    content: normal;
 }
