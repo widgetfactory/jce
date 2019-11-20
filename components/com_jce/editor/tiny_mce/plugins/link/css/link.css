@@ -57,6 +57,10 @@
     position: relative;
 }
 
+.file .uk-tree-row > a {
+    padding: 0 0 0 32px;
+}
+
 .uk-tree-node li.anchor {
     padding: 0 0 0 64px;
 }
@@ -76,7 +80,7 @@
 }
 
 .uk-tree a {
-    width: calc(100% - 32px);
+    width: calc(100% - 64px);
 }
 
 .uk-tree-row .uk-tree-text {
