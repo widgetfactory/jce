@@ -388,9 +388,9 @@
                 });
 
             } else if (/^\s*www./i.test(v)) {
-                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required http:// prefix?'), function (state) {
+                Wf.Modal.confirm(tinyMCEPopup.getLang('link_dlg.is_external', 'The URL you entered seems to be an external link, do you want to add the required https:// prefix?'), function (state) {
                     if (state) {
-                        $(n).val('http://' + v);
+                        $(n).val('https://' + v);
                     }
                     self.insertAndClose();
                 });
