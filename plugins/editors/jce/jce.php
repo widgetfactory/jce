@@ -181,18 +181,8 @@ class plgEditorJCE extends JPlugin
 
         $editor = self::getEditorInstance();
 
-        $excluded = array('readmore', 'pagebreak', 'image');
-
-        if (!is_array($buttons)) {
-            $buttons = !$buttons ? false : array('readmore', 'pagebreak', 'image');
-        } else {
-            $buttons = array_merge($buttons, $excluded);
-        }
-
-        if (!empty($buttons)) {
-            if (!$editor->hasPlugin('joomla')) {
-                $html .= $this->displayButtons($id, $buttons, $asset, $author);
-            }
+        if (!$editor->hasPlugin('joomla')) {
+            $html .= $this->displayButtons($id, $buttons, $asset, $author);
         }
 
         return $html;
@@ -202,9 +192,9 @@ class plgEditorJCE extends JPlugin
     {
     }
 
-    private function getXtdButtons($name, $buttons, $asset, $author)
+    private function displayButtons($name, $buttons, $asset, $author)
     {
-        $xtdbuttons = array();
+        $return = '';
 
         if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
             $buttonsEvent = new Joomla\Event\Event(
@@ -217,22 +207,13 @@ class plgEditorJCE extends JPlugin
 
             if (method_exists($this, 'getDispatcher')) {
                 $buttonsResult = $this->getDispatcher()->dispatch('getButtons', $buttonsEvent);
-                $xtdbuttons = $buttonsResult['result'];
+                $buttons = $buttonsResult['result'];
             } else {
-                $xtdbuttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
+                $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
             }
-        }
 
-        return $xtdbuttons;
-    }
-
-    private function displayButtons($name, $buttons, $asset, $author)
-    {
-        $buttons = $this->getXtdButtons($name, $buttons, $asset, $author);
-
-        if (!empty($buttons)) {
             // fix some legacy buttons
-            array_walk($buttons, function ($button) {
+            array_walk($buttons, function($button) {
                 $cls = $button->get('class', '');
 
                 if (empty($cls) || strpos($cls, 'btn') === false) {
@@ -240,7 +221,7 @@ class plgEditorJCE extends JPlugin
                     $button->set('class', trim($cls));
                 }
             });
-            
+
             return JLayoutHelper::render('joomla.editors.buttons', $buttons);
         }
     }
