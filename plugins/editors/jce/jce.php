@@ -68,8 +68,8 @@ class plgEditorJCE extends JPlugin
 
         $app->triggerEvent('onBeforeWfEditorLoad');
 
-        $editor     = self::getEditorInstance();
-        $settings   = $editor->getSettings();
+        $editor = self::getEditorInstance();
+        $settings = $editor->getSettings();
 
         $app->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
@@ -183,7 +183,15 @@ class plgEditorJCE extends JPlugin
 
         if (!$editor->hasPlugin('joomla')) {
             $html .= $this->displayButtons($id, $buttons, $asset, $author);
+        } else {
+            $options = array(
+                'joomla_xtd_buttons' => $this->getXtdButtonsList($id, $buttons, $asset, $author),
+            );
+
+            JFactory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
         }
+
+        $this->set('joomla_xtd_buttons', true);
 
         return $html;
     }
@@ -192,10 +200,53 @@ class plgEditorJCE extends JPlugin
     {
     }
 
-    private function displayButtons($name, $buttons, $asset, $author)
+    private function getXtdButtonsList($name, $buttons, $asset, $author)
     {
-        $return = '';
+        $list = array();
 
+        $excluded = array('readmore', 'pagebreak', 'image');
+
+        if (!is_array($buttons)) {
+            $buttons = !$buttons ? false : $excluded;
+        } else {
+            $buttons = array_merge($buttons, $excluded);
+        }
+
+        $buttons = $this->getXtdButtons($name, $buttons, $asset, $author);
+
+        if (!empty($buttons)) {
+            foreach ($buttons as $i => $button) {
+                if ($button->get('name')) {                    
+                    // Set some vars
+                    $name = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
+                    $title = $button->get('text');
+                    $onclick = $button->get('onclick') ?: '';
+                    $icon = $button->get('name');
+
+                    if ($button->get('link') !== '#') {
+                        $href = JUri::base() . $button->get('link');
+                    } else {
+                        $href = '';
+                    }
+
+                    $icon = 'none icon-' . $icon;
+
+                    $list[] = array(
+                        'name' => $name,
+                        'title' => $title,
+                        'icon' => $icon,
+                        'href' => $href,
+                        'onclick' => $onclick,
+                    );
+                }
+            }
+        }
+        return $list;
+    }
+
+    private function getXtdButtons($name, $buttons, $asset, $author)
+    {
+        $xtdbuttons = array();
         if (is_array($buttons) || (is_bool($buttons) && $buttons)) {
             $buttonsEvent = new Joomla\Event\Event(
                 'getButtons',
@@ -204,18 +255,24 @@ class plgEditorJCE extends JPlugin
                     'buttons' => $buttons,
                 ]
             );
-
             if (method_exists($this, 'getDispatcher')) {
                 $buttonsResult = $this->getDispatcher()->dispatch('getButtons', $buttonsEvent);
-                $buttons = $buttonsResult['result'];
+                $xtdbuttons = $buttonsResult['result'];
             } else {
-                $buttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
+                $xtdbuttons = $this->_subject->getButtons($name, $buttons, $asset, $author);
             }
+        }
+        return $xtdbuttons;
+    }
 
+    private function displayButtons($name, $buttons, $asset, $author)
+    {
+        $buttons = $this->getXtdButtons($name, $buttons, $asset, $author);
+
+        if (!empty($buttons)) {
             // fix some legacy buttons
-            array_walk($buttons, function($button) {
+            array_walk($buttons, function ($button) {
                 $cls = $button->get('class', '');
-
                 if (empty($cls) || strpos($cls, 'btn') === false) {
                     $cls .= ' btn';
                     $button->set('class', trim($cls));

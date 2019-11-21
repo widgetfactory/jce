@@ -12,6 +12,11 @@ class WFJoomlaPluginConfig
 {
     public static function getConfig(&$settings)
     {
+        // already set by editor display
+        if (isset($settings['joomla_xtd_buttons'])) {
+            return;
+        }
+        
         $plugins = JPluginHelper::getPlugin('editors-xtd');
 
         $list = array();
