@@ -43,7 +43,7 @@
                     if (href) {
                         href = ed.dom.decode(href);
                         // replace variable with editor id
-                        href = href.replace(/(\$jce)/gi, ed.id);
+                        href = href.replace(/(__jce__)/gi, ed.id);
                     }
 
                     menu.add({

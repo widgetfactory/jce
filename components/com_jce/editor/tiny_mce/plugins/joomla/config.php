@@ -44,7 +44,7 @@ class WFJoomlaPluginConfig
                 continue;
             }
 
-            $button = $plugin->onDisplay('$jce', null, null);
+            $button = $plugin->onDisplay('__jce__', null, null);
 
             if (empty($button)) {
                 continue;
