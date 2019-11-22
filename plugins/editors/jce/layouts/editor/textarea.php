@@ -13,13 +13,11 @@ $data = $displayData;
 
 ?>
 <textarea
-	spellcheck="false" 
+	spellcheck="false"
 	name="<?php echo $data->name; ?>"
 	id="<?php echo $data->id; ?>"
 	cols="<?php echo $data->cols; ?>"
 	rows="<?php echo $data->rows; ?>"
 	style="width: <?php echo $data->width; ?>; height: <?php echo $data->height; ?>;"
 	class="<?php echo empty($data->class) ? 'mce_editable' : $data->class; ?>"
->
-	<?php echo $data->content; ?>
-</textarea>
+><?php echo $data->content; ?></textarea>
