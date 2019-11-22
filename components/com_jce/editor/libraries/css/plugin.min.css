@@ -1767,6 +1767,9 @@ select:not([multiple]):not([size]) {
 }
 
 /* Repeatable */
+.uk-repeatable {
+    display: flex;
+}
 
 .uk-repeatable .uk-repeatable-create,
 .uk-repeatable .uk-repeatable-delete {

@@ -157,6 +157,9 @@
 }
 
 /* Repeatable */
+.uk-repeatable {
+    display: flex;
+}
 
 .uk-repeatable .uk-repeatable-create,
 .uk-repeatable .uk-repeatable-delete {
