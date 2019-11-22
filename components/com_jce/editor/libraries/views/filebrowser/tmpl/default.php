@@ -88,7 +88,7 @@ defined('JPATH_PLATFORM') or die;
               </div>
 
               <div id="searchbox" class="uk-form-icon uk-form-icon-flip uk-hidden uk-flex-item-auto uk-position-absolute uk-position-top" role="popup">
-                <input type="search" id="search" class="uk-width-1-1" />
+                <input type="search" id="search" class="uk-width-1-1" autocomplete="off" spellcheck="false" autocapitalize="off" />
                 <i class="uk-icon uk-icon-cross uk-icon-small"></i>
               </div>
             </div>
