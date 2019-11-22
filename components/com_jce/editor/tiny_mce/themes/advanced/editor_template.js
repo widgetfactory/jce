@@ -763,7 +763,7 @@
                         ti += 'id: ' + v + ' ';
                     }
 
-                    if (ed.settings.theme_path_show_classnames) {
+                    if (ed.settings.theme_path_show_classnames !== false) {
                         if (v = DOM.getAttrib(n, 'class')) {
                             v = v.replace(/mce-item-[\w]+/g, '');
                             v = tinymce.trim(v);
