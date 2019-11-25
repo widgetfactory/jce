@@ -34,6 +34,7 @@
     position: relative;
     padding: 0;
     cursor: pointer;
+    margin: 1px 0;
 }
 
 .mceMenu .mceMenuItems .mceText {
@@ -86,7 +87,11 @@
 .mceMenu .mceMenuItems .mceMenuItemEnabled:hover,
 .mceMenu .mceMenuItems .mceMenuItemEnabled:focus,
 .mceMenu .mceMenuItems .mceMenuItemActive {
-    background-color: #eee
+    background-color: #eee;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemEnabled:focus {
+    outline: 1px dashed #ddd;
 }
 
 .mceMenu .mceMenuItems .mceMenuItemEnabled .mceTableSplitMenu a:hover {

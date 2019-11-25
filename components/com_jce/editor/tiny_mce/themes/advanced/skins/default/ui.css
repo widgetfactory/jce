@@ -425,6 +425,7 @@
     position: relative;
     padding: 0;
     cursor: pointer;
+    margin: 1px 0;
 }
 
 .mceMenu .mceMenuItems .mceText {
@@ -477,7 +478,11 @@
 .mceMenu .mceMenuItems .mceMenuItemEnabled:hover,
 .mceMenu .mceMenuItems .mceMenuItemEnabled:focus,
 .mceMenu .mceMenuItems .mceMenuItemActive {
-    background-color: #eee
+    background-color: #eee;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemEnabled:focus {
+    outline: 1px dashed #ddd;
 }
 
 .mceMenu .mceMenuItems .mceMenuItemEnabled .mceTableSplitMenu a:hover {
@@ -751,7 +756,7 @@
     line-height: 32px;
     color: #444;
     text-align: center;
-    
+
     /*background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;
     background-position: 100% 50%;*/
@@ -806,7 +811,8 @@
     min-width: calc(113px * 2);
     min-height: 98px;
     height: auto;
-    max-height: 386px; /*(32px *  12 + 2);*/
+    max-height: 386px;
+    /*(32px *  12 + 2);*/
     margin-top: 2px;
 }
 
@@ -820,6 +826,9 @@
     top: 0.5em;
     left: 0.25em;
     font-size: 1em;
+    color: #444;
+    font-family: inherit;
+    z-index: 1000;
 }
 
 .mceListBoxMenu .mceMenuItems {
@@ -835,9 +844,30 @@ select.mceNativeListBox {
 }
 
 .mceListBoxMenu .mceMenuFilter {
-    padding: 4px;
-    background: #eee;
-    /*height: calc(100% - 40px);*/
+    border: 1px solid #ddd;
+    width: auto;
+    margin: 0.125em;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-radius: 2px;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.2s linear;
+    transition-property: all;
+    transition-property: border, background;
+    cursor: text;
+}
+
+.mceListBoxMenu .mceMenuFilter .mceMenuFilterInput {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-width: 50%;
+    flex: 1;
 }
 
 .mceListBoxMenu .mceMenuFilter input {
@@ -846,28 +876,48 @@ select.mceNativeListBox {
     width: 100%;
     background: #fff;
     cursor: text;
-    padding: 4px 32px 4px 4px;
+    padding: 4px;
     box-sizing: border-box;
     border: 0 none;
 }
 
-/*.mceListBoxMenu .mceMenuFilter:after {
-    content: "";
-    display: block;
-    width: 32px;
-    height: 32px;
-    background: url(img/search.png) no-repeat center;
-    opacity: 0.5;
+.mceListBoxMenu .mceMenuFilter .mceButton {
+    margin: 0.125em;
+    position: relative;
+    height: 2em;
+    min-width: 5em;
+    min-height: inherit;
+    padding: 0 1.25em 0 0;
+    box-sizing: border-box;
+    background: #eee;
+}
+
+.mceListBoxMenu .mceMenuFilter .mceButton label {
+    padding: 0.25em;
+    cursor: default;
+}
+
+.mceListBoxMenu .mceMenuFilter .mceButton::after {
     position: absolute;
-    top: 4px;
-    right: 4px;
-}*/
+    top: 0;
+    right: 0;
+    display: block;
+    text-align: center;
+    text-indent: 0;
+    content: "\00d7";
+    color: #444;
+    line-height: 1.4;
+    font-size: 1.25em;
+    font-weight: 700;
+    height: 100%;
+    width: 1em;
+}
 
 .mceListBoxMenu .mceMenuFilter svg {
     position: absolute;
     right: 14px;
     top: 14px;
-    fill:#888;
+    fill: #888;
     width: 14px;
     height: 14px;
     vertical-align: middle;
