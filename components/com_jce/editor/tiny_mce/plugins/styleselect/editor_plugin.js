@@ -8,32 +8,29 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each;
+    var each = tinymce.each, grep = tinymce.grep;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
             var self = this;
             this.editor = ed;
 
-            ed.onNodeChange.add(function (ed, cm) {
-                var c = cm.get('styleselect'),
-                    formatNames = [],
-                    matches;
+            ed.onNodeChange.add(function (ed, cm, node) {
+                var ctrl = cm.get('styleselect');
 
-                if (c) {
-                    formatNames = [];
+                if (ctrl) {
+                    var matches = [];
 
-                    each(c.items, function (item) {
-                        formatNames.push(item.value);
+                    each(ctrl.items, function (item) {
+                        if (ed.formatter.matchNode(node, item.value)) {
+                            matches.push(item.value);
+                        }
                     });
 
-                    matches = ed.formatter.matchAll(formatNames);
-                    c.select(matches[0]);
+                    ctrl.select(matches[0]);
 
-                    tinymce.each(matches, function (match, index) {
-                        if (index > 0) {
-                            c.mark(match);
-                        }
+                    each(matches, function (match, i) {
+                        ctrl.mark(match);
                     });
                 }
             });
@@ -125,27 +122,27 @@
                 filter: true,
                 max_height: 384,
                 onselect: function (name) {
-                    var matches, formatNames = [],
-                        removedFormat, node;
-
-                    each(ctrl.items, function (item) {
-                        formatNames.push(item.value);
-                    });
+                    var matches = [], removedFormat, node = ed.selection.getNode();
 
                     ed.focus();
                     ed.undoManager.add();
 
-                    // if no selection, get the current node
+                    // Toggle off the current format(s)
+                    each(ctrl.items, function (item) {
+                        if (ed.formatter.matchNode(node, item.value)) {
+                            matches.push(item.value);
+                        }
+                    });
+
                     if (ed.selection.isCollapsed()) {
                         node = ed.selection.getNode();
                     }
 
-                    // Toggle off the current format(s)
-                    matches = ed.formatter.matchAll(formatNames);
-
-                    tinymce.each(matches, function (match) {
+                    each(matches, function (match) {
                         if (!name || match === name) {
                             if (match) {
+                                // fix some formatter weirdness here - only specify a node if there is no selection...
+                                node = ed.selection.isCollapsed() ? node : null;
                                 ed.formatter.remove(match, {}, node);
                             }
 
@@ -157,11 +154,13 @@
                         // registered style format
                         if (ed.formatter.get(name)) {
                             ed.formatter.apply(name, {}, node);
-                        // custom class
+                            // custom class
                         } else {
                             ed.formatter.apply('classname', { 'value': name }, node);
                         }
                     }
+
+                    ed.selection.getNode().focus();
 
                     ed.undoManager.add();
                     ed.nodeChanged();
@@ -297,24 +296,24 @@
                     if (!ed.settings.importcss_classes) {
                         ed.onImportCSS.dispatch();
                     }
-                    
+
                     // still nothing...
                     if (!Array.isArray(ed.settings.importcss_classes)) {
                         return;
                     }
-                    
+
                     if (ctrl.hasClasses) {
                         return;
                     }
-    
+
                     each(ed.settings.importcss_classes, function (s, idx) {
                         var name = 'style_' + (counter + idx);
-    
+
                         var fmt = self.convertSelectorToFormat(s);
-    
+
                         if (fmt) {
                             ed.formatter.register(name, fmt);
-    
+
                             ctrl.add(fmt.title, name, {
                                 style: function () {
                                     return PreviewCss(ed, fmt);
@@ -322,7 +321,7 @@
                             });
                         }
                     });
-    
+
                     ctrl.hasClasses = true;
                 });
             });
