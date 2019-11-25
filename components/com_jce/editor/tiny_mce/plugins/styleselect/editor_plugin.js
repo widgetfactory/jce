@@ -126,7 +126,7 @@
                 max_height: 384,
                 onselect: function (name) {
                     var matches, formatNames = [],
-                        removedFormat;
+                        removedFormat, node;
 
                     each(ctrl.items, function (item) {
                         formatNames.push(item.value);
@@ -135,14 +135,18 @@
                     ed.focus();
                     ed.undoManager.add();
 
+                    // if no selection, get the current node
+                    if (ed.selection.isCollapsed()) {
+                        node = ed.selection.getNode();
+                    }
+
                     // Toggle off the current format(s)
                     matches = ed.formatter.matchAll(formatNames);
 
                     tinymce.each(matches, function (match) {
                         if (!name || match === name) {
-
                             if (match) {
-                                ed.formatter.remove(match);
+                                ed.formatter.remove(match, {}, node);
                             }
 
                             removedFormat = true;
@@ -152,10 +156,10 @@
                     if (!removedFormat) {
                         // registered style format
                         if (ed.formatter.get(name)) {
-                            ed.formatter.apply(name);
-                            // custom class
+                            ed.formatter.apply(name, {}, node);
+                        // custom class
                         } else {
-                            ed.formatter.apply('classname', { 'value': name });
+                            ed.formatter.apply('classname', { 'value': name }, node);
                         }
                     }
 
