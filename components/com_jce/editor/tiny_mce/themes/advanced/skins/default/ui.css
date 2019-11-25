@@ -153,7 +153,9 @@
 
 .mceDefaultSkin .mceFlexAuto {
     flex: auto;
-}.mceDefaultSkin .mceStatusbar {
+}
+
+.mceDefaultSkin .mceStatusbar {
     font-size: 9pt;
     line-height: 32px;
     overflow: visible;
@@ -655,6 +657,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    max-width: 20px;
 }
 
 .mceDefaultSkin .mceButton:hover {

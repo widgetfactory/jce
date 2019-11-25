@@ -57,12 +57,12 @@
 }
 
 .mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemEnd .mceButton,
-.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
+.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen {
     border-right-color: #bbb;
 }
 
 .mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemStart .mceButton,
-.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
+.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText {
     border-left-color: #bbb;
 }
 
@@ -72,28 +72,30 @@
     border-color: #bbb;
 }
 
-.mceO2k7SkinSilver .mceSplitButton .mceText button,
-.mceO2k7SkinSilver .mceSplitButton .mceOpen button {
+.mceO2k7SkinSilver .mceSplitButton .mceText,
+.mceO2k7SkinSilver .mceSplitButton .mceOpen {
     border-color: #bbb;
 }
 
-.mceO2k7SkinSilver .mceListBox .mceText button,
-.mceO2k7SkinSilver .mceListBox .mceOpen button {
+.mceO2k7SkinSilver .mceListBox .mceText,
+.mceO2k7SkinSilver .mceListBox .mceOpen {
     border-color: #bbb;
 }
 
-.mceO2k7SkinSilver .mceSplitButtonDisabled .mceSplitButton:hover .mceText button,
-.mceO2k7SkinSilver .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen button {
+.mceO2k7SkinSilver .mceSplitButtonDisabled .mceSplitButton:hover .mceText,
+.mceO2k7SkinSilver .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen {
     border-color: #bbb;
 }
 
-.mceO2k7SkinSilver .mceListBoxDisabled .mceListBox:hover .mceText button,
-.mceO2k7SkinSilver .mceListBoxDisabled .mceListBox:hover .mceOpen button {
+.mceO2k7SkinSilver .mceListBoxDisabled .mceListBox:hover .mceText,
+.mceO2k7SkinSilver .mceListBoxDisabled .mceListBox:hover .mceOpen {
     border-color: #bbb;
 }
 
-.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
-.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
+.mceO2k7SkinSilver .mceToolbarRow > button:last-child,
+.mceO2k7SkinSilver .mceToolbarRow > button:last-child:hover,
+.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton,
+.mceO2k7SkinSilver .mceToolbarRow .mceToolbarItem:last-child .mceButton:hover {
     border-right-color: #bbb;
 }
 

@@ -45,7 +45,7 @@
 
 .mceO2k7SkinBlack .mceButton,
 .mceO2k7SkinBlack .mceSplitButton,
-.mceO2k7SkinBlack .mceListBox .mceOpen button {
+.mceO2k7SkinBlack .mceListBox .mceOpen {
     background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
@@ -53,40 +53,42 @@
     background: linear-gradient(to bottom, rgba(203, 207, 212, 1) 0%, rgba(152, 159, 169, 1) 100%);
 }
 
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child,
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:first-child:hover {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:first-child .mceButton:hover {
     border-left-width: 1px;
     border-radius: 2px 0 0 2px;
     border-left-color: #B0B6BE;
 }
 
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child,
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:last-child:hover {
+.mceO2k7SkinBlack .mceToolbarRow > button:last-child,
+.mceO2k7SkinBlack .mceToolbarRow > button:last-child:hover,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton,
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItem:last-child .mceButton:hover {
     border-right-width: 1px;
     border-radius: 0 2px 2px 0;
     border-right-color: #B0B6BE;
 }
 
 .mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceButton,
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemEnd .mceSplitButton .mceOpen {
     border-right-color: #B0B6BE;
 }
 
 .mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceButton,
-.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText button {
+.mceO2k7SkinBlack .mceToolbarRow .mceToolbarItemStart .mceSplitButton .mceText {
     border-left-color: #B0B6BE;
 }
 
-.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceText button,
-.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceText,
+.mceO2k7SkinBlack .mceSplitButtonDisabled .mceSplitButton:hover .mceOpen {
     border-bottom-color: #989FA9;
     border-left-color: #B0B6BE;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
 }
 
-.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceText button,
-.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceOpen button {
+.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceText,
+.mceO2k7SkinBlack .mceListBoxDisabled .mceListBox:hover .mceOpen {
     border-bottom-color: #989FA9;
     border-left-color: #B0B6BE;
     border-right-color: transparent;
@@ -105,23 +107,23 @@
     background: #535353;
 }
 
-.mceO2k7SkinBlack .mceSplitButton .mceText button,
-.mceO2k7SkinBlack .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButton .mceText,
+.mceO2k7SkinBlack .mceSplitButton .mceOpen {
     border-bottom-color: #989FA9;
     border-right-color: transparent;
     border-top-color: #CBCFD4;
     border-left-color: transparent;
 }
 
-.mceO2k7SkinBlack .mceSplitButton .mceOpen button {
+.mceO2k7SkinBlack .mceSplitButton .mceOpen {
     border-left-color: #B0B6BE;
 }
 
-.mceO2k7SkinBlack .mceListBox .mceText button {
+.mceO2k7SkinBlack .mceListBox .mceText {
     border-color: #B0B6BE;
 }
 
-.mceO2k7SkinBlack .mceListBox .mceOpen button {
+.mceO2k7SkinBlack .mceListBox .mceOpen {
     border-color: #B0B6BE;
 }
 
