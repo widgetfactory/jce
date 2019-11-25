@@ -277,26 +277,43 @@ class pkg_jceInstallerScript
 
         if ($route == 'update') {
             $version = (string)$parent->manifest->version;
+            $current_version = (string) $parent->get('current_version');
+            
+            $theme = '';
 
-            // add contextmenu to profiles in 2.7.x TODO - Remove in 2.7.5
-            if ($version && version_compare($version, '2.7.0', '>=') && version_compare($version, '2.7.4', '<')) {
+            // update toolbar_theme for 2.8.0 and 2.8.1 beta
+            if (version_compare($current_version, '2.8.0', '>=') && version_compare($current_version, '2.8.1', '<')) {
+                $theme = 'modern';
+            }
+
+            // update toolbar_theme for 2.7.x
+            if (version_compare($current_version, '2.8', '<')) {
+                $theme = 'default';
+            }
+
+            // update toolbar_theme if one has been set
+            if ($theme) {
+                $table = JTable::getInstance('Profiles', 'JceTable');
+                
                 $db = JFactory::getDBO();
 
-                $query = $db->getQuery(true);
-                $query->select('id')->from('#__wf_profiles')->where('name = ' . $db->Quote('Default') . ' OR id = 1');
-
+                $query->select('*')->from('#__wf_profiles');
                 $db->setQuery($query);
-                $id = $db->loadResult();
+                $profiles = $db->loadObjectList();
 
-                if ($id) {
-                    include_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
+                foreach ($profiles as $profile) {
+                    $data = json_decode($profile->params, true);
 
-                    $plugin = new StdClass;
-                    $plugin->name = 'contextmenu';
-                    $plugin->icon = '';
+                    if ($data && isset($data['editor'])) {
+                        if (empty($data['editor']['toolbar_theme'])) {
+                            $data['editor']['toolbar_theme'] = $theme;
 
-                    // add to profile
-                    JcePluginsHelper::addToProfile($id, $plugin);
+                            if ($table->load($profile->id)) {
+                                $table->params = json_encode($data);
+                                $table->store();
+                            }
+                        }
+                    }
                 }
             }
 
