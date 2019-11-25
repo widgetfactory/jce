@@ -76,7 +76,7 @@
             <published>0</published>
             <ordering>4</ordering>
             <params>
-                <param>{"editor":{"skin":"modern.touch","resizing":"0","resize_horizontal":"0","resizing_use_cookie":"0","toggle":"0","links":{"popups":{"default":"","jcemediabox":{"enable":"0"},"window":{"enable":"0"}}}}}</param>
+                <param>{"editor":{"toolbar_theme":"modern.touch","resizing":"0","resize_horizontal":"0","resizing_use_cookie":"0","toggle":"0","links":{"popups":{"default":"","jcemediabox":{"enable":"0"},"window":{"enable":"0"}}}}}</param>
             </params>
         </profile>
         <profile>
