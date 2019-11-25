@@ -153,9 +153,7 @@
 
 .mceDefaultSkin .mceFlexAuto {
     flex: auto;
-}
-
-.mceDefaultSkin .mceStatusbar {
+}.mceDefaultSkin .mceStatusbar {
     font-size: 9pt;
     line-height: 32px;
     overflow: visible;
@@ -657,7 +655,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 20px;
 }
 
 .mceDefaultSkin .mceButton:hover {
@@ -2095,6 +2092,10 @@ select.mceNativeListBox {
     cursor: pointer;
     font-size: 12px;
     line-height: 14px;
+
+    max-width: 3em;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .mcePathHidden:after {
@@ -2112,30 +2113,47 @@ select.mceNativeListBox {
 
 .mcePathPath {
     display: inline-block;
-}.mceDefaultSkin .mceClassPath {
+}.mceDefaultSkin .mceClassBar {
     display: flex;
     flex-direction: row;
-    height: 32px;
+    min-height: 32px;
     align-items: center;
+    padding: 0 0.25em;
+}
 
+.mceDefaultSkin .mceToolbar + .mceClassBar {
+    border-top: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceIframeContainer + .mceClassBar {
     border-bottom: 1px solid #ddd;
 }
 
-.mceDefaultSkin .mceClassPath .mceButton {
+.mceDefaultSkin .mceClassBar .mceClassBarTags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mceDefaultSkin .mceClassBar .mceButton {
+    margin: 0.125em;
     position: relative;
-    height: 28px;
+    height: 2em;
     min-width: 5em;
     min-height: inherit;
-    margin: 1px 2px;
     padding: 0 1.25em 0 0;
     box-sizing: border-box;
+    background: #eee;
+    font-size: 12px;
 }
 
-.mceDefaultSkin .mceClassPath .mceButton label {
-    padding-left: 0.25em;
+.mceDefaultSkin .mceClassBar .mceButton label {
+    padding: 0.25em;
+    cursor: default;
+    font-size: 1em;
 }
 
-.mceDefaultSkin .mceClassPath .mceButton:before {
+.mceDefaultSkin .mceClassBar .mceButton::after {
     position: absolute;
     top: 0;
     right: 0;
@@ -2144,20 +2162,21 @@ select.mceNativeListBox {
     text-indent: 0;
     content: "\00d7";
     color: #444;
-    line-height: 1.25;
+    line-height: 1.3;
     font-size: 1.25em;
     font-weight: 700;
     height: 100%;
     width: 1em;
 }
-.mceDefaultSkin .mceClassPath .mceListBox {
+
+.mceDefaultSkin .mceClassBar .mceListBox {
     height: 28px;
     display: flex;
     flex-direction: row;
     align-items: center;
     margin: 0 2px;
 }
-.mceDefaultSkin .mceClassPath .mceListBox input {
+.mceDefaultSkin .mceClassBar .mceListBox input {
     width: 100%;
     height: 28px;
     padding: 2px;
@@ -2165,13 +2184,13 @@ select.mceNativeListBox {
     box-sizing: border-box;
     border: 0 none;
 }
-.mceDefaultSkin .mceClassPath .mceListBox .mceOpen {
+.mceDefaultSkin .mceClassBar .mceListBox .mceOpen {
     height: 30px;
 }
-.mceDefaultSkin .mceClassPath .mceListBox .mceOpen:after {
+.mceDefaultSkin .mceClassBar .mceListBox .mceOpen:after {
     line-height: 30px;
 }
-/*.mceDefaultSkin .mceClassPath .mceClassPathCombobox button {
+/*.mceDefaultSkin .mceClassBar .mceClassBarCombobox button {
     background-color: #fff;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;

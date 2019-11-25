@@ -1,5 +1,5 @@
 (function () {
-    var each = tinymce.each, DOM = tinymce.DOM, PreviewCss = tinymce.util.PreviewCss;
+    var DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.ClassPathPlugin', {
 
@@ -64,96 +64,18 @@
         },
 
         init: function (ed, url) {
-            var path, tags, combobox, self = this;
+            var path, tags, self = this;
 
             this.editor = ed;
+
+            // override classnames in path
+            ed.settings.theme_path_show_classnames = false;
 
             ed.onPostRender.add(function () {
                 var container = ed.getContentAreaContainer();
 
                 path        = DOM.create('div', { 'class': 'mceClassPath'});
                 tags        = DOM.create('div', { 'class': 'mceClassPathTags'});
-                combobox    = DOM.create('div', { 'class': 'mceClassPathCombobox'});
-
-                var ctrl = ed.controlManager.createListBox('classpath', {
-                    combobox: true,
-                    max_height: 384,
-                    onselect: function (name) {
-                        var matches, formatNames = [],
-                            removedFormat;
-    
-                        each(ctrl.items, function (item) {
-                            formatNames.push(item.value);
-                        });
-    
-                        ed.focus();
-                        ed.undoManager.add();
-    
-                        // Toggle off the current format(s)
-                        matches = ed.formatter.matchAll(formatNames);
-    
-                        tinymce.each(matches, function (match) {
-                            if (!name || match === name) {
-    
-                                if (match) {
-                                    ed.formatter.remove(match);
-                                }
-    
-                                removedFormat = true;
-                            }
-                        });
-    
-                        if (!removedFormat) {
-                            // registered style format
-                            if (ed.formatter.get(name)) {
-                                ed.formatter.apply(name);
-                                // custom class
-                            } else {
-                                ed.formatter.apply('classname', { 'value': name });
-                            }
-                        }
-    
-                        ed.undoManager.add();
-                        ed.nodeChanged();
-    
-                        return false; // No auto select
-                    }
-                });
-
-                var counter = 0;
-
-                ctrl.onBeforeRenderMenu.add(function () {                    
-                    if (!ed.settings.importcss_classes) {
-                        ed.onImportCSS.dispatch();
-                    }
-                    
-                    // still nothing...
-                    if (!Array.isArray(ed.settings.importcss_classes)) {
-                        return;
-                    }
-                    
-                    if (ctrl.hasClasses) {
-                        return;
-                    }
-    
-                    each(ed.settings.importcss_classes, function (s, idx) {
-                        var name = 'style_' + (counter + idx);
-    
-                        var fmt = self.convertSelectorToFormat(s);
-    
-                        if (fmt) {
-                            ed.formatter.register(name, fmt);
-    
-                            ctrl.add(fmt.title, name, {
-                                style: function () {
-                                    return PreviewCss(ed, fmt);
-                                }
-                            });
-                        }
-                    });
-    
-                    ctrl.hasClasses = true;
-                });
 
                 DOM.bind(tags, 'click', function (e) {
                     e.preventDefault();
@@ -167,16 +89,15 @@
                     if (e.target.nodeName === "BUTTON") {
                         DOM.remove(e.target);
                         ed.dom.removeClass(node, e.target.value);
+
+                        ed.undoManager.add();
+                        ed.nodeChanged();
                     }
                 });
 
                 DOM.add(path, tags);
-                DOM.add(path, combobox);
 
-                DOM.insertAfter(path, container);
-
-                // render and initiate listbox control
-                ctrl.renderTo(combobox);
+                DOM.insertBefore(path, container);
             });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
