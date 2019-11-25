@@ -62,18 +62,14 @@
                 // div
                 ed.formatter.register('div', {
                     block: 'div',
-                    onmatch: function() {
-                        return false;
-                    }
+                    onmatch: ed.settings.forced_root_block ? function() {return false} : false
                 });
 
                 // div container
                 ed.formatter.register('div_container', {
                     block: 'div',
                     wrapper: true,
-                    onmatch: function() {
-                        return false;
-                    }
+                    onmatch: ed.settings.forced_root_block ? function() {return false} : false
                 });
 
                 // span
