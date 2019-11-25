@@ -12,9 +12,9 @@
 	var XHTMLXtrasDialog = {
 		settings: {},
 
-		getAttributes: function(n) {
-			var ed = tinyMCEPopup.editor, nodeName = n.nodeName.toLowerCase();
-			
+		getAttributes: function (n) {
+			var ed = tinyMCEPopup.editor;
+
 			var i, attrs = n.attributes, attribs = {};
 
 			// map all attributes
@@ -50,7 +50,8 @@
 
 				var text = n.textContent || n.innerText || '';
 
-				if (!se.isCollapsed() || text == se.getContent({format: 'text'})) {
+				//if (!se.isCollapsed() || text == se.getContent({format: 'text'})) {
+				if (!$.isEmptyObject(attribs)) {
 					$(':input').each(function () {
 						var k = $(this).attr('id');
 
@@ -66,24 +67,24 @@
 							// clean up class
 							if (k === "class") {
 								var elm = this;
-                                // clean value
-                                v = v.replace(/mce-item-(\w+)/gi, '').replace(/\s+/g, ' ');
-                                // trim
-                                v = $.trim(v);
-                                // create array
-                                v = v.split(' ');
-            
-                                $.each(v, function (i, value) {
-                                    value = $.trim(value);
-            
-                                    if (!value || value === ' ') {
-                                        return true;
-                                    }
-            
-                                    if ($('option[value="' + value + '"]', elm).length == 0) {
-                                        $(elm).append(new Option(value, value));
-                                    }
-                                });
+								// clean value
+								v = v.replace(/mce-item-(\w+)/gi, '').replace(/\s+/g, ' ');
+								// trim
+								v = $.trim(v);
+								// create array
+								v = v.split(' ');
+
+								$.each(v, function (i, value) {
+									value = $.trim(value);
+
+									if (!value || value === ' ') {
+										return true;
+									}
+
+									if ($('option[value="' + value + '"]', elm).length == 0) {
+										$(elm).append(new Option(value, value));
+									}
+								});
 							}
 
 							$(this).val(v).trigger('change');
@@ -98,7 +99,7 @@
 					$.each(attribs, function (k, v) {
 						try {
 							v = decodeURIComponent(v);
-						} catch (e) {}
+						} catch (e) { }
 
 						var repeatable = $('.uk-repeatable').eq(0);
 
@@ -139,10 +140,10 @@
 				$('input.media').parents('.uk-form-row').hide();
 			}
 
-			$('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+			$('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
 
-            // trigger datalist init/update
-            $('.uk-datalist').trigger('datalist:update');
+			// trigger datalist init/update
+			$('.uk-datalist').trigger('datalist:update');
 		},
 
 		insert: function () {
@@ -158,12 +159,20 @@
 
 			var args = {}, attribs = this.getAttributes(n);
 
-			$(':input').not('#classes, input[name]').each(function () {
+			$(':input').not('input[name]').each(function () {
 				var k = $(this).attr('id'),
 					v = $(this).val();
 
 				if (/on(click|dblclick)/.test(k)) {
 					k = 'data-mce-' + k;
+				}
+
+				if (k === 'classes') {
+					k = 'class';
+
+					if ($.type(v) === 'array') {
+						v = v.join(' ');
+					}
 				}
 
 				args[k] = v;
@@ -172,18 +181,19 @@
 			});
 
 			// get custom attributes
-			$('.uk-repeatable').each(function() {
+			$('.uk-repeatable').each(function () {
 				var elements = $('input, select', this);
 				var key = $(elements).eq(0).val(),
 					value = $(elements).eq(1).val();
-	
-				args[key] = value;
 
-				delete attribs[key];
+				if (key) {
+					args[key] = value;
+					delete attribs[key];
+				}
 			});
 
 			// get classes value
-			var cls = $('#classes').val();
+			/*var cls = $('#classes').val();
 			
 			// convert to string if required
 			if ($.type(cls) === 'array') {
@@ -191,10 +201,10 @@
 			}
 
 			// remove from attributes map
-			delete attribs["class"];
+			delete attribs["class"];*/
 
 			// remove any attributes left
-			$.each(attribs, function(key, value) {
+			$.each(attribs, function (key, value) {
 				args[key] = "";
 			});
 
@@ -213,7 +223,7 @@
 
 				// probably Attributes
 			} else {
-				var isTextSelection = !se.isCollapsed() && se.getContent() == se.getContent({format: 'text'});
+				var isTextSelection = !se.isCollapsed() && se.getContent() == se.getContent({ format: 'text' });
 
 				// is a body or text selection
 				if (n == ed.getBody() || isTextSelection) {
@@ -223,7 +233,7 @@
 				} else {
 					ed.dom.setAttribs(n, args);
 					// apply classes
-					ed.dom.addClass(n, cls);
+					//ed.dom.addClass(n, cls);
 				}
 			}
 
