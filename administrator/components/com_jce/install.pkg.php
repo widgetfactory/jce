@@ -430,6 +430,11 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/inlinepopups',
         );
 
+        // remove classpath (renamed to classbar)
+        $folder['2.8.0'] = array(
+            $site . '/editor/tiny_mce/plugins/classpath',
+        );
+
         foreach ($folders as $version => $list) {
             // version check
             if (version_compare($version, $current_version, 'gt')) {
