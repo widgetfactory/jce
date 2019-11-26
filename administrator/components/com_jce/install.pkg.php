@@ -426,12 +426,12 @@ class pkg_jceInstallerScript
         );
 
         // remove inlinepopups
-        $folder['2.7.13'] = array(
+        $folders['2.7.13'] = array(
             $site . '/editor/tiny_mce/plugins/inlinepopups',
         );
 
         // remove classpath / classbar
-        $folder['2.8.0'] = array(
+        $folders['2.8.0'] = array(
             $site . '/editor/tiny_mce/plugins/classpath',
             $site . '/editor/tiny_mce/plugins/classbar',
         );
