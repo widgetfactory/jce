@@ -331,7 +331,9 @@ class WFEditor
                 $settings['invalid_elements'] = array_values($settings['invalid_elements']);
             }
 
-        } // end profile
+        } else {
+            $settings['readonly'] = true;
+        }
 
         // get compression options stylesheet
         $settings['compress'] = $this->getCompressionOptions();
@@ -647,6 +649,16 @@ class WFEditor
                 }
             }
         }
+    }
+
+    /**
+     * Determine whether the editor has a profile assigned
+     *
+     * @return boolean
+     */
+    public function hasProfile()
+    {
+        return is_object($this->profile);
     }
 
     /**
