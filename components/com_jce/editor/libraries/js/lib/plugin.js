@@ -203,7 +203,12 @@
 
             // prevent backspace out of window
             $('body').on('keydown.backspace', function (e) {
-                if (!e.target || e.target.nodeName !== 'INPUT') {
+                if (e.keyCode === 8 && e.target) {
+
+                    if (e.target && (e.target.nodeName === "INPUT" || e.target.nodeName === "SELECT" || e.target.nodeName === "TEXTAREA")) {
+                        return;
+                    }
+
                     e.preventDefault();
                     e.stopImmediatePropagation();
                 }
