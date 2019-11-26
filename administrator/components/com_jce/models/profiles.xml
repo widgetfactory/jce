@@ -31,7 +31,7 @@
             <plugins>formatselect,styleselect,cleanup,fontselect,fontsizeselect,fontcolor,clipboard,lists,textcase,charmap,hr,directionality,fullscreen,print,searchreplace,table,style,xhtmlxtras,visualchars,visualblocks,nonbreaking,anchor,link,imgmanager@@pro_plugins@@,spellchecker,article,spellchecker,article,browser,contextmenu,inlinepopups,media,preview,source</plugins>
             <published>1</published>
             <ordering>1</ordering>
-            <params></params>
+            <params>{"editor":{"toolbar_theme":"modern"}}</params>
         </profile>
         <profile name="Front End">
             <name>Front End</name>
@@ -45,7 +45,7 @@
             <plugins>charmap,contextmenu,inlinepopups,help,clipboard,searchreplace,fullscreen,preview,print,style,textcase,nonbreaking,visualchars,visualblocks,xhtmlxtras,imgmanager,anchor,link,spellchecker,article,lists,formatselect,styleselect,hr</plugins>
             <published>0</published>
             <ordering>2</ordering>
-            <params></params>
+            <params>{"editor":{"toolbar_theme":"modern"}}</params>
         </profile>
         <profile name="Blogger">
             <name>Blogger</name>
@@ -59,7 +59,7 @@
             <plugins>link,imgmanager,article,spellchecker,fullscreen,kitchensink,clipboard,contextmenu,inlinepopups,lists,formatselect,styleselect,textpattern</plugins>
             <published>0</published>
             <ordering>3</ordering>
-            <params>{"editor":{"toggle":"0"}}</params>
+            <params>{"editor":{"toolbar_theme":"modern","toggle":"0"}}</params>
         </profile>
         <profile name="Mobile">
             <name>Mobile</name>
@@ -87,7 +87,7 @@
             <plugins>fullscreen,link,imgmanager,styleselect,inlinepopups,media,textpattern</plugins>
             <published>0</published>
             <ordering>5</ordering>
-            <params></params>
+            <params>{"editor":{"toolbar_theme":"modern"}}</params>
         </profile>
     </profiles>
 </profiles>
