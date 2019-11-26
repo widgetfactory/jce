@@ -96,7 +96,7 @@
                 role: 'application',
                 'aria-labelledby': ed.id + '_voice',
                 id: ed.id + '_parent',
-                'class': 'mceEditor defaultSkin' + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
+                'class': 'mceEditor mceDefaultSkin' + (ed.settings.directionality == "rtl" ? ' mceRtl' : '')
             });
 
             DOM.add(n, 'span', {
@@ -122,15 +122,6 @@
                 editorContainer: ed.id + '_parent',
                 sizeContainer: sc,
                 deltaHeight: -20
-            };
-        },
-
-        getInfo: function() {
-            return {
-                longname: 'Simple theme',
-                author: 'Moxiecode Systems AB',
-                authorurl: 'http://tinymce.moxiecode.com',
-                version: tinymce.majorVersion + "." + tinymce.minorVersion
             };
         }
     });
