@@ -430,9 +430,10 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/inlinepopups',
         );
 
-        // remove classpath (renamed to classbar)
+        // remove classpath / classbar
         $folder['2.8.0'] = array(
             $site . '/editor/tiny_mce/plugins/classpath',
+            $site . '/editor/tiny_mce/plugins/classbar',
         );
 
         foreach ($folders as $version => $list) {
