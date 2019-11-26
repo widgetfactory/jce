@@ -292,7 +292,7 @@ class WFEditor
             $settings['height'] = $wf->getParam('editor.height');
 
             // assign skin - new default is "modern"
-            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern', 'modern');
+            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
 
             $this->assignEditorSkin($settings);
 
