@@ -181,6 +181,11 @@ class plgEditorJCE extends JPlugin
 
         $editor = self::getEditorInstance();
 
+        // no profile assigned or available
+        if (!$editor->hasProfile()) {
+            return $html;
+        }
+
         if (!$editor->hasPlugin('joomla')) {
             $html .= $this->displayButtons($id, $buttons, $asset, $author);
         } else {
