@@ -46,8 +46,8 @@
                 self._import();
             });
 
-            // attempt to import when the editor is loaded
-            ed.onLoad.add(function() {
+            // attempt to import when the editor is initialised
+            ed.onInit.add(function() {
                 ed.onImportCSS.dispatch();
             });
         },

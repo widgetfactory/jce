@@ -8,33 +8,12 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each, grep = tinymce.grep;
+    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
             var self = this;
             this.editor = ed;
-
-            ed.onNodeChange.add(function (ed, cm, node) {
-                var ctrl = cm.get('styleselect');
-
-                if (ctrl) {
-                    var matches = [];
-
-                    each(ctrl.items, function (item) {
-                        if (ed.formatter.matchNode(node, item.value)) {
-                            matches.push(item.value);
-                        }
-                    });
-
-                    ctrl.select(matches[0]);
-
-                    each(matches, function (match, i) {
-                        ctrl.mark(match);
-                    });
-                }
-            });
-
         },
 
         createControl: function (n, cf) {
@@ -114,7 +93,7 @@
         _createStyleSelect: function (n) {
             var self = this,
                 ed = this.editor,
-                ctrl, PreviewCss = tinymce.util.PreviewCss;
+                ctrl;
 
             // Setup style select box
             ctrl = ed.controlManager.createListBox('styleselect', {
@@ -169,10 +148,67 @@
                 }
             });
 
+            var counter = 0;
+
+            function loadClasses() {
+                if (!ed.settings.importcss_classes) {
+                    ed.onImportCSS.dispatch();
+                }
+ 
+                if (!Array.isArray(ed.settings.importcss_classes)) {
+                    return;
+                }
+
+                if (ctrl.hasClasses) {
+                    return;
+                }
+
+                each(ed.settings.importcss_classes, function (s, idx) {
+                    var name = 'style_' + (counter + idx);
+        
+                    var fmt = self.convertSelectorToFormat(s);
+        
+                    if (fmt) {
+                        ed.formatter.register(name, fmt);
+        
+                        ctrl.add(fmt.title, name, {
+                            style: function () {
+                                return PreviewCss(ed, fmt);
+                            }
+                        });
+                    }
+                });
+        
+                if (Array.isArray(ed.settings.importcss_classes)) {
+                    ctrl.hasClasses = true;
+                }
+            }
+
+            ed.onNodeChange.add(function (ed, cm, node) {                
+                var ctrl = cm.get('styleselect');
+
+                if (ctrl) {
+                    loadClasses(ed, ctrl);
+                    
+                    var matches = [];
+
+                    each(ctrl.items, function (item) {
+                        if (ed.formatter.matchNode(node, item.value)) {
+                            matches.push(item.value);
+                        }
+                    });
+
+                    ctrl.select(matches[0]);
+
+                    each(matches, function (match, i) {
+                        ctrl.mark(match);
+                    });
+                }
+            });
+
             // Handle specified format
             ed.onPreInit.add(function () {
-                var counter = 0,
-                    formats = ed.getParam('style_formats'),
+                var formats = ed.getParam('style_formats'),
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
                 // generic class format
@@ -293,36 +329,7 @@
                 }
 
                 ctrl.onBeforeRenderMenu.add(function () {
-                    if (!ed.settings.importcss_classes) {
-                        ed.onImportCSS.dispatch();
-                    }
-
-                    // still nothing...
-                    if (!Array.isArray(ed.settings.importcss_classes)) {
-                        return;
-                    }
-
-                    if (ctrl.hasClasses) {
-                        return;
-                    }
-
-                    each(ed.settings.importcss_classes, function (s, idx) {
-                        var name = 'style_' + (counter + idx);
-
-                        var fmt = self.convertSelectorToFormat(s);
-
-                        if (fmt) {
-                            ed.formatter.register(name, fmt);
-
-                            ctrl.add(fmt.title, name, {
-                                style: function () {
-                                    return PreviewCss(ed, fmt);
-                                }
-                            });
-                        }
-                    });
-
-                    ctrl.hasClasses = true;
+                    loadClasses();
                 });
             });
 
