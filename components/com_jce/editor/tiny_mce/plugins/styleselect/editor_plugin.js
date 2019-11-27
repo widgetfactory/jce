@@ -113,15 +113,14 @@
                         }
                     });
 
-                    if (ed.selection.isCollapsed()) {
-                        node = ed.selection.getNode();
+                    // reset node if there is a selection
+                    if (!ed.selection.isCollapsed()) {
+                        node = null;
                     }
 
                     each(matches, function (match) {
                         if (!name || match === name) {
                             if (match) {
-                                // fix some formatter weirdness here - only specify a node if there is no selection...
-                                node = ed.selection.isCollapsed() ? node : null;
                                 ed.formatter.remove(match, {}, node);
                             }
 
