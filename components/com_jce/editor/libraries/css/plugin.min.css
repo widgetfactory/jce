@@ -822,6 +822,11 @@ html {
     align-items: center;
 }
 
+/* Fix IE11 flex issues */
+.uk-form-horizontal .uk-form-controls {
+    -ms-flex: auto;
+}
+
 .uk-form-horizontal .uk-grid > .uk-form-label {
     line-height: 1.25;
 }
@@ -1366,7 +1371,6 @@ input[type="range"]::-ms-thumb {
         display: none !important;
     }
 }*/
-
 
 /* fix layout in upload dialog */
 
