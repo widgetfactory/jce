@@ -170,11 +170,11 @@
 }
 
 .mceModernSkin span.mce_cite:before {
-    content: "❝❞";
+    content: "\201C...\201D";
     font-family: 'Times New Roman', Times, serif;
-    font-size: 1.25em;
+    font-size: 1em;
     color: #444;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .mceModernSkin span.mce_abbr:before {
@@ -886,7 +886,7 @@
 }
 
 .mceModernSkin span[class*="mce_columns_layout_"]:before {
-    background:#fff;
+    background: #fff;
     padding: 2px;
     line-height: 1.25;
 }
