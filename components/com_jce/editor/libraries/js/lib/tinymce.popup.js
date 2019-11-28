@@ -142,7 +142,12 @@
                 }
 
                 if (ed.getParam('styleselect_stylesheet') !== false) {
-                    var classes = this.getClasses();
+                    var classes = ed.settings.importcss_classes;
+                    
+                    // try extraction
+                    if (!Array.isArray(classes)) {
+                        classes = this.getClasses();
+                    }
 
                     if (classes.length) {
                         cl = cl.concat(classes);
