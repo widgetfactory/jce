@@ -197,7 +197,7 @@ defined('JPATH_PLATFORM') or die;
             </div>
         </div>
     </div>
-    <div class="uk-width-1-5 uk-hidden-mini">
+    <div class="uk-width-1-5 uk-hidden-small">
         <div class="preview">
             <img id="sample" src="<?php echo $this->plugin->image('sample.jpg', 'libraries'); ?>" alt="sample.jpg" />
             <?php echo JText::_('WF_LOREM_IPSUM'); ?>
