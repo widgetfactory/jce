@@ -301,34 +301,34 @@ main .uk-navbar {
   border-bottom-width: 1px;
 }
 
-main > div {
+main>div {
   border: 1px solid #ddd;
   height: 100%;
 
   border-right-width: 0;
 }
 
-main > div:first-child {
+main>div:first-child {
   border-left-width: 1px;
   border-right-width: 0;
 }
 
-main > div:last-child {
+main>div:last-child {
   width: 32px;
   border-right-width: 1px;
 }
 
-main > div + div + div {
+main>div+div+div {
   max-width: 18em;
 }
 
 @media (min-width: 960px) {
-  main > div + div + div {
+  main>div+div+div {
     max-width: 20rem;
   }
 }
 
-.uk-tree-hidden > div:first-child {
+.uk-tree-hidden>div:first-child {
   display: none;
 }
 
@@ -473,7 +473,7 @@ main > div + div + div {
   padding: 0;
 }
 
-.uk-pagination > li > a {
+.uk-pagination>li>a {
   border: 0 none;
   border-radius: 0;
   line-height: 32px;
@@ -572,7 +572,7 @@ main > div + div + div {
   text-decoration: none;
 }
 
-.uk-breadcrumb > li:nth-child(n + 2)::before {
+.uk-breadcrumb>li:nth-child(n + 2)::before {
   margin: 0 5px;
 }
 
@@ -623,8 +623,7 @@ div#browser-message span {
   border: 0;
 }
 
-#searchbox .uk-icon {
-}
+#searchbox .uk-icon {}
 
 /* Tree */
 
@@ -711,7 +710,7 @@ div#info-comment {
   margin: 0;
 }
 
-#browser-details-comment > ul {
+#browser-details-comment>ul {
   padding: 2px 0 0 2px;
 }
 
@@ -803,12 +802,13 @@ div#info-comment {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
 
-.item-list li > * {
+.item-list li>* {
   line-height: 32px;
   vertical-align: middle;
 }
@@ -827,7 +827,7 @@ div#info-comment {
   margin: 0;
 }
 
-.item-list li > .uk-button {
+.item-list li>.uk-button {
   padding: 0px 8px 0px 3px;
 }
 
@@ -973,15 +973,19 @@ ul.item-list li.folder-up {
   text-align: center;
   padding: 0;
   min-height: inherit;
-  display: block;
   line-height: 2em;
   width: 2em;
   height: 2em;
   font-size: inherit;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #browser-buttons .button:hover {
   opacity: 0.6;
+  text-decoration: none;
 }
 
 nav.uk-navbar .uk-button.action {
@@ -995,8 +999,7 @@ nav.uk-navbar .uk-button.action {
 /* Loader */
 
 .uk-dialog div.big-loader {
-  background: url("../../tiny_mce/themes/advanced/skins/default/img/progress.gif")
-    center 50% no-repeat;
+  background: url("../../tiny_mce/themes/advanced/skins/default/img/progress.gif") center 50% no-repeat;
   margin-top: -33px !important;
   width: 100%;
   height: 100%;
@@ -1079,3 +1082,9 @@ nav.uk-navbar .uk-button.action {
   display: none;
 }
 
+
+@media (max-height: 600px) {
+  #browser-buttons .button {
+    height: 1.75em;
+  }
+}
