@@ -818,8 +818,8 @@ html {
     margin: 0;
 }
 
-.uk-form-horizontal .uk-grid .uk-form-row,
-.uk-form-horizontal .uk-grid .uk-form-controls {
+.uk-form-horizontal .uk-form-row,
+.uk-form-horizontal .uk-form-controls {
     align-items: center;
 }
 
