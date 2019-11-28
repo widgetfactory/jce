@@ -25,7 +25,7 @@
 
         var TinyMCE_Utils = {
 
-            classes: [],
+            options: [],
 
             /**
              * Returns a array of all single CSS classes in the document. A single CSS class is a simple
@@ -127,18 +127,18 @@
 
             fillClassList: function (id) {
                 var self = this, ed = tinyMCEPopup.editor,
-                    lst = document.getElementById(id), cls = [], filter = ed.settings.class_filter;
+                    lst = document.getElementById(id), values = [], filter = ed.settings.class_filter;
 
                 if (!lst) {
                     return;
                 }
 
-                if (!self.classes.length) {
+                if (!self.options.length) {
                     if (ed.getParam('styleselect_custom_classes')) {
                         var custom = ed.getParam('styleselect_custom_classes');
 
                         if (custom) {
-                            cls = cls.concat(custom.split(','));
+                            values = values.concat(custom.split(','));
                         }
                     }
 
@@ -166,28 +166,31 @@
                         }
 
                         if (classes.length) {
-                            cls = cls.concat(classes);
+                            values = values.concat(classes);
+                        }
+                    }
+
+                    each(values, function (item) {
+                        // convert custom class to object
+                        if (typeof item === "string" && item) {
+                            item = { "class": item };
                         }
 
-                        self.classes = cls;
-                    }
+                        if (item['class']) {
+                            var val = item['class'];
+                            var opt = new Option(item.title || val, val);
+
+                            var styles = PreviewCss(ed, { styles: [], attributes: [], classes: val.split(' ') });
+                            opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
+
+                            self.options.push(opt);
+                        }
+                    });
                 }
 
-                each(self.classes, function (o) {
-                    if (typeof o === "string" && o) {
-                        o = { "class": o };
-                    }
-
-                    if (o['class']) {
-                        var cls = o['class'];
-
-                        var opt = new Option(o.title || cls, cls);
-                        var styles = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
-
-                        opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
-
-                        lst.options[lst.options.length] = opt;
-                    }
+                // add to select list
+                each(self.options, function (opt) {
+                    lst.options[lst.options.length] = opt;
                 });
             },
 
