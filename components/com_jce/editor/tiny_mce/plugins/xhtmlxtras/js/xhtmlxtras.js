@@ -140,10 +140,10 @@
 				$('input.media').parents('.uk-form-row').hide();
 			}
 
-			$('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
+			/*$('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
 
 			// trigger datalist init/update
-			$('.uk-datalist').trigger('datalist:update');
+			$('.uk-datalist').trigger('datalist:update');*/
 		},
 
 		insert: function () {
@@ -291,6 +291,6 @@
 	};
 
 	window.XHTMLXtrasDialog = XHTMLXtrasDialog;
-
 	tinyMCEPopup.onInit.add(XHTMLXtrasDialog.init, XHTMLXtrasDialog);
+
 })(jQuery);

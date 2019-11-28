@@ -403,7 +403,5 @@
     };
     window.ImageManagerDialog = ImageManagerDialog;
 
-    $(document).ready(function () {
-        ImageManagerDialog.init();
-    });
+    tinyMCEPopup.onInit.add(ImageManagerDialog.init, ImageManagerDialog);
 })(jQuery);

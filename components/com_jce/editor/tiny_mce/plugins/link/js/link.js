@@ -700,10 +700,7 @@
             }, self);
         }
     };
-    $(document).ready(function () {
-        LinkDialog.init();
-    });
-
     window.LinkDialog = LinkDialog;
+    tinyMCEPopup.onInit.add(LinkDialog.init, LinkDialog);
 
 })(jQuery, tinyMCEPopup);
