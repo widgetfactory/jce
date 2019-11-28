@@ -26,6 +26,7 @@
         var TinyMCE_Utils = {
 
             classes: [],
+
             /**
              * Returns a array of all single CSS classes in the document. A single CSS class is a simple
              * rule like ".class" complex ones like "div td.class" will not be added to output.
@@ -125,53 +126,69 @@
             },
 
             fillClassList: function (id) {
-                var ed = tinyMCEPopup.editor,
-                    lst = document.getElementById(id),
-                    v, cl = [''];
+                var self = this, ed = tinyMCEPopup.editor,
+                    lst = document.getElementById(id), cls = [], filter = ed.settings.class_filter;
 
                 if (!lst) {
                     return;
                 }
 
-                if (ed.getParam('styleselect_custom_classes')) {
-                    var custom = ed.getParam('styleselect_custom_classes');
+                if (!self.classes.length) {
+                    if (ed.getParam('styleselect_custom_classes')) {
+                        var custom = ed.getParam('styleselect_custom_classes');
 
-                    if (custom) {
-                        cl = cl.concat(custom.split(','));
-                    }
-                }
-
-                if (ed.getParam('styleselect_stylesheet') !== false) {
-                    var classes = ed.settings.importcss_classes;
-                    
-                    // try extraction
-                    if (!Array.isArray(classes)) {
-                        classes = this.getClasses();
+                        if (custom) {
+                            cls = cls.concat(custom.split(','));
+                        }
                     }
 
-                    if (classes.length) {
-                        cl = cl.concat(classes);
-                    }
-                }
+                    if (ed.getParam('styleselect_stylesheet') !== false) {
+                        var importcss_classes = ed.settings.importcss_classes, classes = [];
 
-                if (cl.length > 0) {
-                    tinymce.each(cl, function (o) {
-                        if (typeof o === "string" && o) {
-                            o = { "class": o };
+                        // try extraction
+                        if (Array.isArray(importcss_classes)) {
+                            each(importcss_classes, function (val) {
+                                val = val.replace(/^\s*|\s*$|^\s\./g, "");
+
+                                var ov = val;
+
+                                val = tinymce._replace(/.*\.([a-z0-9_\-]+).*/i, '$1', val);
+
+                                // Filter classes
+                                if (filter && !(val = filter(val, ov))) {
+                                    return true;
+                                }
+
+                                classes.push({ 'class': val });
+                            });
+                        } else {
+                            classes = this.getClasses();
                         }
 
-                        if (o['class']) {
-                            var cls = o['class'];
-                            
-                            var opt = new Option(o.title || cls, cls);
-                            var styles = PreviewCss(ed, {styles: [], attributes: [], classes: cls.split(' ')});
-
-                            opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
-                            
-                            lst.options[lst.options.length] = opt;
+                        if (classes.length) {
+                            cls = cls.concat(classes);
                         }
-                    });
+
+                        self.classes = cls;
+                    }
                 }
+
+                each(self.classes, function (o) {
+                    if (typeof o === "string" && o) {
+                        o = { "class": o };
+                    }
+
+                    if (o['class']) {
+                        var cls = o['class'];
+
+                        var opt = new Option(o.title || cls, cls);
+                        var styles = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
+
+                        opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
+
+                        lst.options[lst.options.length] = opt;
+                    }
+                });
             },
 
             updateColor: function (parent) {
