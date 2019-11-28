@@ -818,13 +818,9 @@ html {
     margin: 0;
 }
 
-.uk-form-horizontal .uk-grid {
+.uk-form-horizontal .uk-grid .uk-form-row,
+.uk-form-horizontal .uk-grid .uk-form-controls {
     align-items: center;
-}
-
-/* Fix IE11 flex issues */
-.uk-form-horizontal .uk-form-controls {
-    -ms-flex: auto;
 }
 
 .uk-form-horizontal .uk-grid > .uk-form-label {
@@ -1378,9 +1374,10 @@ input[type="range"]::-ms-thumb {
 
     /* IE 11 */
     .uk-form-horizontal .uk-form-controls {
-        margin-left: auto;
+        margin-left: 0;
     }
 
+    /* IE 11 */
     .uk-form-horizontal .uk-form-label {
         width: auto;
     }
