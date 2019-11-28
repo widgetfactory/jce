@@ -153,7 +153,7 @@
                 if (!ed.settings.importcss_classes) {
                     ed.onImportCSS.dispatch();
                 }
- 
+
                 if (!Array.isArray(ed.settings.importcss_classes)) {
                     return;
                 }
@@ -162,33 +162,37 @@
                     return;
                 }
 
-                each(ed.settings.importcss_classes, function (s, idx) {
+                each(ed.settings.importcss_classes, function (item, idx) {
                     var name = 'style_' + (counter + idx);
-        
-                    var fmt = self.convertSelectorToFormat(s);
-        
+
+                    if (typeof item === 'string') {
+                        item = { 'selector': item, 'class': '', 'style': '' };
+                    }
+
+                    var fmt = self.convertSelectorToFormat(item.selector);
+
                     if (fmt) {
                         ed.formatter.register(name, fmt);
-        
+
                         ctrl.add(fmt.title, name, {
                             style: function () {
-                                return PreviewCss(ed, fmt);
+                                return item.style || '';
                             }
                         });
                     }
                 });
-        
+
                 if (Array.isArray(ed.settings.importcss_classes)) {
                     ctrl.hasClasses = true;
                 }
             }
 
-            ed.onNodeChange.add(function (ed, cm, node) {                
+            ed.onNodeChange.add(function (ed, cm, node) {
                 var ctrl = cm.get('styleselect');
 
                 if (ctrl) {
                     loadClasses(ed, ctrl);
-                    
+
                     var matches = [];
 
                     each(ctrl.items, function (item) {

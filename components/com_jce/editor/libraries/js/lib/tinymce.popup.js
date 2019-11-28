@@ -1,7 +1,7 @@
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
-        var each = tinymce.each, filtered = {}, PreviewCss = tinymce.util.PreviewCss;
+        var each = tinymce.each, filtered = {};
 
         function isAllowedStylesheet(href) {
             var styleselect = tinyMCEPopup.editor.getParam('styleselect_stylesheet');
@@ -82,7 +82,7 @@
 
                                         // Remove everything but class name
                                         ov = v;
-                                        v = tinymce._replace(/.*\.([a-z0-9_\-]+).*/i, '$1', v);
+                                        v = v.replace(/.*\.([a-z0-9_\-]+).*/i, '$1')
 
                                         // Filter classes
                                         if (f && !(v = f(v, ov))) {
@@ -133,7 +133,7 @@
                     return;
                 }
 
-                if (!self.options.length) {
+                if (!self.options.length) {                    
                     if (ed.getParam('styleselect_custom_classes')) {
                         var custom = ed.getParam('styleselect_custom_classes');
 
@@ -147,19 +147,15 @@
 
                         // try extraction
                         if (Array.isArray(importcss_classes)) {
-                            each(importcss_classes, function (val) {
-                                val = val.replace(/^\s*|\s*$|^\s\./g, "");
-
-                                var ov = val;
-
-                                val = tinymce._replace(/.*\.([a-z0-9_\-]+).*/i, '$1', val);
+                            each(importcss_classes, function (item) {
+                                var val = item.class, ov = val;
 
                                 // Filter classes
                                 if (filter && !(val = filter(val, ov))) {
                                     return true;
                                 }
 
-                                classes.push({ 'class': val });
+                                classes.push(item);
                             });
                         } else {
                             classes = this.getClasses();
@@ -168,20 +164,28 @@
                         if (classes.length) {
                             values = values.concat(classes);
                         }
+
+                        // remove duplicates
+                        values.filter(function (val, index, self) {
+                            return self.indexOf(val) === index;
+                        });
                     }
 
                     each(values, function (item) {
                         // convert custom class to object
                         if (typeof item === "string" && item) {
-                            item = { "class": item };
+                            item = { 'selector': item, 'class': '', 'style': '' };
                         }
 
-                        if (item['class']) {
-                            var val = item['class'];
-                            var opt = new Option(item.title || val, val);
+                        if (item.class) {
+                            var val = item.class;
+                            var opt = {title : item.title || val, value : val, style : ''}
+   
+                            var styles = item.style || '';
 
-                            var styles = PreviewCss(ed, { styles: [], attributes: [], classes: val.split(' ') });
-                            opt.setAttribute('style', ed.dom.serializeStyle(ed.dom.parseStyle(styles)));
+                            if (styles) {
+                                opt.style = ed.dom.serializeStyle(ed.dom.parseStyle(styles));
+                            }
 
                             self.options.push(opt);
                         }
@@ -190,7 +194,13 @@
 
                 // add to select list
                 each(self.options, function (opt) {
-                    lst.options[lst.options.length] = opt;
+                    var node = new Option(opt.title, opt.value);
+
+                    if (opt.style) {
+                        node.setAttribute('style', opt.style);
+                    }
+                    
+                    lst.options[lst.options.length] = node;
                 });
             },
 

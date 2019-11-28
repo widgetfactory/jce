@@ -9,7 +9,8 @@
  */
 (function () {
     var each = tinymce.each,
-        DOM = tinymce.DOM;
+        DOM = tinymce.DOM,
+        PreviewCss = tinymce.util.PreviewCss;
 
     /* Make a css url absolute
      * @param u URL string
@@ -28,6 +29,24 @@
 
     function isEditorContentCss(url) {
         return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
+    }
+
+    function cleanSelectorText(selectorText) {
+        // Parse simple element.class1, .class1
+        var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(selectorText);
+
+        // no match
+        if (!selector) {
+            return '';
+        }
+
+        var elementName = selector[1];
+
+        if (elementName !== "body") {
+            return selector[2].substr(1).split('.').join(' ');
+        }
+
+        return '';
     }
 
     tinymce.create('tinymce.plugins.ImportCSS', {
@@ -77,13 +96,13 @@
                 return filtered[href];
             }
 
-            function parseCSS(stylesheet) {
+            function parseCSS(stylesheet) {                
                 // IE style imports
                 each(stylesheet.imports, function (r) {
                     if (r.href.indexOf('://fonts.googleapis.com') > 0) {
                         var v = '@import url(' + r.href + ');';
 
-                        if (tinymce.inArray(self.fontface, v) === -1) {
+                        if (self.fontface.indexOf(v) === -1) {
                             self.fontface.unshift(v);
                         }
 
@@ -135,7 +154,7 @@
                                         return;
                                     }
 
-                                    if (tinymce.inArray(classes, v) === -1) {
+                                    if (v && classes.indexOf(v) === -1) {
                                         classes.push(v);
                                     }
                                 });
@@ -148,7 +167,7 @@
                             if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                                 var v = '@import url(' + r.href + ');';
 
-                                if (tinymce.inArray(fontface, v) === -1) {
+                                if (fontface.indexOf(v) === -1) {
                                     fontface.unshift(v);
                                 }
                             }
@@ -164,7 +183,7 @@
                             if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {
                                 var v = toAbsolute(r.cssText, href);
 
-                                if (tinymce.inArray(fontface, v) === -1) {
+                                if (fontface.indexOf(v) === -1) {
                                     fontface.push(v);
                                 }
                             }
@@ -225,7 +244,12 @@
                     classes.sort();
                 }
 
-                ed.settings.importcss_classes = classes;
+                ed.settings.importcss_classes = tinymce.map(classes, function(val) {
+                    var cls = cleanSelectorText(val);
+                    
+                    var style = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
+                    return {'selector' : val, 'class' : cls, 'style' : style};
+                });
             }
         }
     });
