@@ -603,7 +603,7 @@ class WFFileBrowser extends JObject
 
         $items = array_merge($folders, $files);
 
-        if ($items) {
+        if (count($items)) {
             if (intval($limit) > 0) {
                 $items = array_slice($items, $start, $limit);
             }
@@ -612,12 +612,11 @@ class WFFileBrowser extends JObject
                 $item['classes'] = '';
 
                 if ($item['type'] == 'folders') {
-                    $folderArray[] = $item;
-
                     if (empty($item['properties'])) {
                         $item['properties'] = $filesystem->getFolderDetails($item);
                     }
 
+                    $folderArray[] = $item;
                 } else {
                     // check for selected item
                     $item['selected']   = $filesystem->isMatch($item['url'], $path);
