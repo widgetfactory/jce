@@ -1332,6 +1332,8 @@
             this._foldercount = o.total.folders;
             this._filecount = o.total.files;
 
+            $('.limit-right li, .limit-left li', '#browser-list-limit').addClass('uk-invisible').attr('aria-hidden', true);
+
             if (this._limit) {
                 this._limitend = (o.total.folders + o.total.files) - this._limit;
                 var count = this._limitcount + o.folders.length + o.files.length;
