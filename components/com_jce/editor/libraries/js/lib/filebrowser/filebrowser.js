@@ -293,7 +293,7 @@
 
             var list_limit = self._getState('limit', this.options.list_limit, function (val) {
                 return !/([0125]+)/.test(val) === false;
-            })
+            });
 
             // Set list limit selection
             $('#browser-list-limit-select').val(list_limit);
@@ -1236,7 +1236,7 @@
             this._hideButtons($('.button', '#buttons'));
 
             // get list limit
-            this._limit = parseInt($('#browser-list-limit-select').val()) || this.options.list_limit;
+            this._limit = parseInt($('#browser-list-limit-select').val());
 
             // get sort value
             var sort = this._sortValue || '';
