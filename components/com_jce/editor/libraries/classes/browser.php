@@ -525,6 +525,15 @@ class WFFileBrowser extends JObject
             $list = array_slice($list, $start, $limit);
         }
 
+        // get properties for found items
+        array_walk($list, function(&$item) use ($filesystem) {
+            $item['classes']    = '';
+
+            if (empty($item['properties'])) {
+                $item['properties'] = $filesystem->getFileDetails($item);
+            }
+        });
+
         $result['files'] = $list;
         $result['total']['files'] = $total;
 
@@ -601,11 +610,22 @@ class WFFileBrowser extends JObject
 
             foreach ($items as $item) {
                 $item['classes'] = '';
+
                 if ($item['type'] == 'folders') {
                     $folderArray[] = $item;
+
+                    if (empty($item['properties'])) {
+                        $item['properties'] = $filesystem->getFolderDetails($item);
+                    }
+
                 } else {
                     // check for selected item
-                    $item['selected'] = $filesystem->isMatch($item['url'], $path);
+                    $item['selected']   = $filesystem->isMatch($item['url'], $path);
+
+                    if (empty($item['properties'])) {
+                        $item['properties'] = $filesystem->getFileDetails($item);
+                    }
+
                     $fileArray[] = $item;
                 }
             }

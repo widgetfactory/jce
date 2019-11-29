@@ -272,8 +272,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'type' => 'folders',
                 );
 
-                $properties = self::getFolderDetails($data['id']);
-                $folders[] = array_merge($data, array('properties' => $properties));
+                $folders[] = $data;
             }
         }
 
@@ -297,8 +296,6 @@ class WFJoomlaFileSystem extends WFFileSystem
         $list = JFolder::files($path, $filter);
 
         $files = array();
-
-        $x = 1;
 
         if (!empty($list)) {
             // Sort alphabetically by default
@@ -325,11 +322,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'extension' => pathinfo($item, PATHINFO_EXTENSION),
                 );
 
-                $properties = self::getFileDetails($data['id'], $x);
-
-                $files[] = array_merge($data, array('properties' => $properties));
-
-                ++$x;
+                $files[] = $data;
             }
         }
 
@@ -379,7 +372,6 @@ class WFJoomlaFileSystem extends WFFileSystem
         }, iterator_to_array($iterator));
 
         $files = array();
-        $x = 1;
 
         if (!empty($list)) {
             // Sort alphabetically by default
@@ -403,10 +395,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'extension' => pathinfo($item, PATHINFO_EXTENSION),
                 );
 
-                $properties = self::getFileDetails($data['id'], $x);
-                $files[] = array_merge($data, array('properties' => $properties));
-
-                ++$x;
+                $files[] = $data;
             }
         }
 
@@ -428,6 +417,14 @@ class WFJoomlaFileSystem extends WFFileSystem
     public function getFolderDetails($dir)
     {
         clearstatcache();
+
+        if (is_array($dir)) {
+            $dir = isset($dir['id']) ? $dir['id'] : '';
+        }
+
+        if (empty($dir)) {
+            return array();
+        }
 
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
         $date = @filemtime($path);
@@ -496,6 +493,14 @@ class WFJoomlaFileSystem extends WFFileSystem
     public function getFileDetails($file, $count = 1)
     {
         clearstatcache();
+
+        if (is_array($file)) {
+            $file = isset($file['id']) ? $file['id'] : '';
+        }
+
+        if (empty($file)) {
+            return array();
+        }
 
         $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
         $url = WFUtility::makePath($this->getBaseUrl(), rawurldecode($file));
