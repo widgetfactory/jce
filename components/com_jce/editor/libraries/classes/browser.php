@@ -371,8 +371,6 @@ class WFFileBrowser extends JObject
 
                     // filter match
                     if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
-                        
-                        
                         return true;
                     }
 
@@ -421,6 +419,10 @@ class WFFileBrowser extends JObject
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
         $list = array_filter($list, function ($item) {
+            if (empty($item['id'])) {
+                return true;
+            }
+            
             return $this->checkPathAccess(dirname($item['id']));
         });
 
