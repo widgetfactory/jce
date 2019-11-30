@@ -1409,7 +1409,7 @@
                 if ($.isPlainObject(options.elements)) {
                     $.each(options.elements, function (k, v) {
                         if (v.options) {
-                            elements += '<div class="uk-form-row">';
+                            elements += '<div class="uk-form-row uk-placeholder uk-placeholder-small uk-flex">';
                             elements += '<label class="uk-form-label uk-width-1-5" for="' + k + '">' + (v.label || k) + '</label>';
                             elements += '<div class="uk-form-controls uk-width-4-5"><select id="' + k + '" name="' + k + '">';
 
@@ -1426,7 +1426,7 @@
                             elements += '</select></div>';
                             elements += '</div>';
                         } else {
-                            elements += '<div class="uk-form-row"><label class="uk-form-label uk-width-1-5" for="' + k + '">' + v.label || k + '</label><div class="uk-form-controls uk-width-4-5"><input id="' + k + '" type="text" name="' + k + '" value="' + v.value || '' + '" /></div></div>';
+                            elements += '<div class="uk-form-row uk-placeholder uk-placeholder-small uk-flex"><label class="uk-form-label uk-width-1-5" for="' + k + '">' + v.label || k + '</label><div class="uk-form-controls uk-width-4-5"><input id="' + k + '" type="text" name="' + k + '" value="' + v.value || '' + '" /></div></div>';
                         }
                     });
 
