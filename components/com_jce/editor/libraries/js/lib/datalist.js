@@ -21,8 +21,8 @@
     $.fn.datalist = function (settings) {
         settings = $.extend({
             "seperator": " ",
-            "input" : true,
-            "loading" : "Loading..."
+            "input": true,
+            "loading": "Loading..."
         }, settings);
 
         return this.each(function () {
@@ -60,7 +60,7 @@
             // add new menu items if options are updated
             $(select).on('update:option', function (e, option) {
                 var $item;
-                
+
                 if (option.type === "optgroup") {
                     $item = $('<li class="uk-nav-header" tabindex="-1">' + option.text + '</li>');
                 } else {
@@ -138,7 +138,7 @@
                     // add new value to select array
                     values.push(value);
                     // focus input
-                    $(input).trigger('focus');
+                    //$(input).trigger('focus');
                 }
 
                 $(select).val(values);
@@ -165,7 +165,7 @@
                 $(select).trigger('change');
             }
 
-            function selectMenuItem(e) {                
+            function selectMenuItem(e) {
                 e.preventDefault();
 
                 var el = e.target;
@@ -174,7 +174,7 @@
                     el = el.parentNode;
                 }
 
-                var data = {text : el.title, value : el.getAttribute('data-value')};
+                var data = { text: el.title, value: el.getAttribute('data-value') };
 
                 selectItem(data);
             }
@@ -184,7 +184,7 @@
 
             var $items, focusIdx = -1;
 
-            function hideMenu() {
+            function hideMenu(e) {
                 if (!isMenuOpen()) {
                     return;
                 }
@@ -194,8 +194,11 @@
                 focusIdx = -1;
                 // update aria
                 $([container, menu]).attr('aria-expanded', 'false');
-                // focus input
-                $(input).trigger('focus');
+
+                if (e) {
+                    // focus input
+                    $(input).trigger('focus');
+                }
             }
 
             function positionMenu() {
@@ -218,7 +221,7 @@
                 menu.attr('aria-hidden', 'false').parent().addClass('uk-open');
 
                 positionMenu();
-                
+
                 $([container, menu]).attr('aria-expanded', 'true');
 
                 // update items list
@@ -230,7 +233,7 @@
                     values = [values];
                 }
 
-                $items.each(function() {
+                $items.each(function () {
                     var val = this.getAttribute('data-value');
                     $(this).toggleClass('uk-active', $.inArray(val, values) !== -1);
                 });
@@ -244,7 +247,7 @@
                 focusIdx += dir;
 
                 // get filtered list
-                $filtered = $items.filter(':visible').filter(function() {
+                $filtered = $items.filter(':visible').filter(function () {
                     return this.getAttribute('tabindex') > -1;
                 });
 
@@ -275,15 +278,17 @@
                             showMenu();
                             moveFocus(1);
                         } else {
-                            selectItem({value : this.value, text : ''});
-                            hideMenu();
+                            selectItem({ value: this.value, text: '' });
+                            hideMenu(e);
                         }
                         break;
                     // down arrow
                     case 40:
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+
                         showMenu();
                         moveFocus(1);
-                        e.preventDefault();
                         break;
                     // backspace
                     case 8:
@@ -312,16 +317,18 @@
             $(input).on('keyup paste', function (e) {
                 // create tag on space / seperator input
                 if (multiple && e.originalEvent.key === settings.seperator) {
-                    selectItem({value : $.trim(this.value), text : ''});
-                    hideMenu();
+                    selectItem({ value: $.trim(this.value), text: '' });
+                    hideMenu(e);
                 }
 
                 if (specialKeyCodeMap[e.keyCode]) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     return;
                 }
 
                 if (!this.value.length) {
-                    hideMenu();
+                    hideMenu(e);
                 } else {
                     showMenu();
                 }
@@ -335,19 +342,19 @@
                 // clear select
                 if (this.value === "") {
                     $(select).val('');
-                // update select with custom value
+                    // update select with custom value
                 } else {
                     if (!multiple) {
-                        selectItem({text : this.value, value: this.value, selected: true});
+                        selectItem({ text: this.value, value: this.value, selected: true });
                     }
 
                     e.stopPropagation();
                 }
             }).on('focus', function () {
                 $(container).addClass('uk-focus');
-            }).on('blur', function () {
+            }).on('blur', function (e) {
                 $(container).removeClass('uk-focus');
-            }).on('datalist-input:clear', function() {
+            }).on('datalist-input:clear', function () {
                 $('li', menu).show();
             });
 
@@ -356,7 +363,7 @@
                     if (e.keyCode === 13) {
                         selectMenuItem(e);
 
-                        hideMenu();
+                        hideMenu(e);
 
                         e.preventDefault();
                         e.stopPropagation();
@@ -364,7 +371,7 @@
 
                     // esc
                     if (e.keyCode === 27) {
-                        hideMenu();
+                        hideMenu(e);
                         e.preventDefault();
                         e.stopPropagation();
                         return;
@@ -394,12 +401,32 @@
             });
 
             // hide menu if no focus
-            $('body').on('click', function (e) {
+            $('body').on('click keyup', function (e) {
                 if (e.target === $(btn).get(0)) {
                     return;
                 }
 
                 hideMenu();
+
+                if (!settings.input) {
+                    return;
+                }
+
+                // only process on TAB
+                if (e.keyCode && e.keyCode !== 9) {
+                    return;
+                }
+
+                // action is inside the container
+                if (container.find(e.target).length || menu.find(e.target).length) {
+                    return;
+                }
+
+                var val = input.val();
+
+                if (val !== '') {
+                    selectItem({text: val, value : val, select: true});
+                }
             });
 
             $(select).on('datalist:update', function () {
@@ -410,15 +437,15 @@
                     if (this.parentNode.nodeName === "OPTGROUP") {
                         $(this).addClass('uk-nav-indent');
                     }
-                    
-                    var option = { 
-                        value: this.value, 
-                        text: text, 
-                        style: $(this).attr('style') || '', 
+
+                    var option = {
+                        value: this.value,
+                        text: text,
+                        style: $(this).attr('style') || '',
                         selected: this.selected,
                         title: this.title || '',
                         class: $(this).attr('class') || '',
-                        type : this.nodeName.toLowerCase()
+                        type: this.nodeName.toLowerCase()
                     };
 
                     $(select).trigger('update:option', option);
@@ -432,16 +459,16 @@
 
             }).on('datalist:disabled', function (e, state) {
                 // update disabled state
-                $([input, btn]).each(function() {
+                $([input, btn]).each(function () {
                     if (!state) {
                         $(this).prop('disabled', false).removeAttr('disabled');
                     } else {
                         $(this).prop('disabled', true);
                     }
                 });
-            }).on('datalist:position', function() {
+            }).on('datalist:position', function () {
                 positionMenu();
-            }).on('datalist:loading', function() {
+            }).on('datalist:loading', function () {
                 if ($(container).hasClass('uk-datalist-loading')) {
                     $(container).removeClass('uk-datalist-loading');
 
@@ -455,5 +482,4 @@
             }).trigger('datalist:disabled', select.disabled);
         });
     };
-
 })(jQuery);
