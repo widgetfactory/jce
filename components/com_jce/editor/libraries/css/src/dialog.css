@@ -412,7 +412,6 @@ span.uk-slider {
     box-sizing: border-box;
     border: 1px dashed #ddd;
     background-color: #fafafa;
-    min-height: 200px;
 }
 
 .preview h4 {

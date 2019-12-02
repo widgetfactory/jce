@@ -2661,8 +2661,9 @@ select.mceNativeListBox {
 .mceModal .mce-modal-portrait-768,
 .mceModal .mce-modal-portrait-full {
     width: calc(100% - 40px);
+   /* min-height: calc(100vh - 20px);
+    height: auto;*/
     height: calc(100vh - 20px);
-
     max-height: 768px;
     padding: 0;
 }
@@ -2803,6 +2804,21 @@ select.mceNativeListBox {
 .mceFlexLayout {
     display: flex;
     flex-wrap: wrap;
+}
+
+@media (max-height: 640px) {
+    .mceModal .mceModalHeader {
+        padding: 4px 8px;
+    }
+
+    .mceModal .mceModalContentIframe {
+        height: calc(100% - 40px);
+    }
+
+    .mceModal .mce-modal-portrait-full {
+        height: 768px;
+        min-height: calc(100vh - 20px);
+    }
 }.mceForm {
     height: 100%;
     display: flex;

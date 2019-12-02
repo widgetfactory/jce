@@ -4,6 +4,10 @@
     padding-right: 60px !important;
 }
 
+#link_tab {
+    height: 100%;
+}
+
 #link_tab fieldset {
     margin: 10px 0;
     padding: 2px;
@@ -11,9 +15,8 @@
 
 #link-options {
     padding: 5px;
-    margin: 5px 0 5px 0;
-    min-height: 65.4%;
-    min-height: calc(100% - 175px);
+    margin: 5px 0;
+    height: calc(100% - 200px);
     box-sizing: border-box;
 }
 
@@ -21,7 +24,7 @@
     overflow: auto;
     padding: 0 5px;
     box-sizing: border-box;
-    height: 250px;
+    height: calc(100% - 42px);
     margin-top: 5px;
 }
 

@@ -11,7 +11,7 @@ defined('JPATH_PLATFORM') or die;
 
 ?>
 
-<div class="uk-form-row uk-grid uk-grid-small">
+<div class="uk-grid uk-grid-small">
     <div class="uk-width-4-5 uk-flex-item-auto">
         <div class="uk-form-row uk-grid uk-grid-small">
             <label for="src" class="hastip uk-form-label uk-width-1-1 uk-width-small-1-5"
