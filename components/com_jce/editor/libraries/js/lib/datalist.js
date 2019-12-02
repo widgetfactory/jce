@@ -402,18 +402,18 @@
 
             // hide menu if no focus
             $('body').on('click keyup', function (e) {
-                if (e.target === $(btn).get(0)) {
+                if (e.target === btn.get(0)) {
+                    return;
+                }
+
+                // only process on TAB
+                if (e.keyCode && e.keyCode !== 9) {
                     return;
                 }
 
                 hideMenu();
 
                 if (!settings.input) {
-                    return;
-                }
-
-                // only process on TAB
-                if (e.keyCode && e.keyCode !== 9) {
                     return;
                 }
 
