@@ -442,6 +442,10 @@ class WFFileBrowser extends JObject
         $list = $filesystem->getFolders($relative, $filter, $sort, $limit, $start);
 
         $list = array_filter($list, function ($item) {
+            if (empty($item['id'])) {
+                return true;
+            }
+            
             return $this->checkPathAccess($item['id']);
         });
 
