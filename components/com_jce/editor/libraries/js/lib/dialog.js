@@ -1,5 +1,5 @@
-(function($) {
-    
+(function ($) {
+
 
     $.extend(Wf, {
         /**
@@ -8,7 +8,7 @@
          * @param at Attribute name
          * @returns {String|Integer}
          */
-        getAttrib: function(e, at) {
+        getAttrib: function (e, at) {
             var ed = tinyMCEPopup.editor,
                 v, v2;
 
@@ -79,7 +79,7 @@
                 case 'border-style':
                 case 'border-color':
                     v = '';
-                    tinymce.each(['top', 'right', 'bottom', 'left'], function(n) {
+                    tinymce.each(['top', 'right', 'bottom', 'left'], function (n) {
                         s = at.replace(/-/, '-' + n + '-');
                         sv = ed.dom.getStyle(e, s);
                         // False or not the same as prev
@@ -121,20 +121,20 @@
          * Set Margin values for various plugins
          * @param e Init state
          */
-        setMargins: function() {},
+        setMargins: function () { },
         /**
          * Set border input options for various plugins
          */
-        setBorder: function() {},
+        setBorder: function () { },
 
         /**
          * Generic function to set dimensions
          */
-        setDimensions: function() {},
+        setDimensions: function () { },
         /**
          * Set / update styles on a sample image, eg: <img src="image.jpg" id="sample" />
          */
-        setStyles: function() {
+        setStyles: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
                 $img = $('#sample');
@@ -147,7 +147,7 @@
             $img.attr('style', $('#style').val());
 
             // Margin
-            $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
+            $.each(['top', 'right', 'bottom', 'left'], function (i, k) {
                 // need to use tinymce DOMUilts for this because jQuery returns 0px for blank values
                 var v = ed.dom.getStyle($img.get(0), 'margin-' + k);
 
@@ -163,12 +163,12 @@
             var border = false;
 
             // Handle border
-            $.each(['width', 'color', 'style'], function(i, k) {
+            $.each(['width', 'color', 'style'], function (i, k) {
                 // need to use tinymce DOMUilts for this because jQuery returns odd results for blank values
                 var v = ed.dom.getStyle($img.get(0), 'border-' + k);
 
                 if (v == '') {
-                    $.each(['top', 'right', 'bottom', 'left'], function(i, n) {
+                    $.each(['top', 'right', 'bottom', 'left'], function (i, n) {
                         // need to use tinymce DOMUilts for this because jQuery returns odd results for blank values
                         var sv = ed.dom.getStyle($img.get(0), 'border-' + n + '-' + k);
 
@@ -213,7 +213,7 @@
             });
 
             // Align
-            $('#align').val(function() {
+            $('#align').val(function () {
                 var v = $img.css("float") || $img.css("vertical-align");
 
                 if (v) {
@@ -230,40 +230,33 @@
         /**
          * Update styles field with style values from a sample image
          */
-        updateStyles: function() {
-            var ed = tinyMCEPopup.editor,
-                st, v, br, img = $('#sample'),
-                k;
-
-            // no sample image...
-            if (!img.length) {
-                return;
-            }
+        updateStyles: function () {
+            var ed = tinyMCEPopup.editor, v, img = new Image(), preview = $('#sample'), k;
 
             $(img).attr('style', $('#style').val());
-            $(img).attr('dir', $('#dir').val());
+            $(img).add(preview).attr('dir', $('#dir').val());
 
             // Handle align
-            $(img).css('float', '');
+            $(img).add(preview).css('float', '');
 
             v = $('#align').val();
 
             if (v == 'center') {
-                $(img).css({ 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' });
+                $(img).add(preview).css({ 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' });
 
                 // remove float and vertical-align
-                $(img).css({ 'float': '', 'vertical-align': '' });
+                $(img).add(preview).css({ 'float': '', 'vertical-align': '' });
 
                 $('#clear').attr('disabled', true).trigger('datalist:disabled', true);
 
                 $('#margin_left, #margin_right').val('auto');
             } else {
                 if (/(top|middle|bottom)/.test(v)) {
-                    $(img).css("vertical-align", v);
+                    $(img).add(preview).css("vertical-align", v);
                 }
 
                 // remove float etc.
-                $(img).css('float', v).css('display', function() {
+                $(img).add(preview).css('float', v).css('display', function () {
                     if (this.style.display === "block" && this.style.marginLeft === "auto" && this.style.marginRight === "auto") {
                         return "";
                     }
@@ -271,7 +264,7 @@
                     return this.style.display;
                 });
 
-                $('#margin_left, #margin_right').val(function() {
+                $('#margin_left, #margin_right').val(function () {
                     if (this.value === "auto") {
                         return "";
                     }
@@ -292,7 +285,7 @@
 
             if (v) {
                 if (!$('#sample-br').get(0)) {
-                    $(img).after('<br id="sample-br" />');
+                    $(img).add(preview).after('<br id="sample-br" />');
                 }
                 $('#sample-br').css('clear', v);
             } else {
@@ -300,7 +293,7 @@
             }
 
             // Handle border
-            $.each(['width', 'color', 'style'], function(i, k) {
+            $.each(['width', 'color', 'style'], function (i, k) {
                 if ($('#border').is(':checked')) {
                     v = $('#border_' + k).val();
                 } else {
@@ -320,18 +313,18 @@
                     v = '#' + v;
                 }
 
-                $(img).css('border-' + k, v);
+                $(img).add(preview).css('border-' + k, v);
             });
 
             // Margin
-            $.each(['top', 'right', 'bottom', 'left'], function(i, k) {
+            $.each(['top', 'right', 'bottom', 'left'], function (i, k) {
                 v = $('#margin_' + k).val();
 
                 if (v && !/[a-z%]/i.test(v)) {
                     v = v + 'px';
                 }
 
-                $(img).css('margin-' + k, v);
+                $(img).add(preview).css('margin-' + k, v);
             });
 
             var styles = ed.dom.parseStyle($(img).attr('style'));
@@ -339,7 +332,7 @@
             function compressBorder(n) {
                 var s = [];
 
-                $.each(n, function(i, k) {
+                $.each(n, function (i, k) {
                     k = 'border-' + k, v = styles[k];
 
                     if (v == 'none') {
@@ -371,14 +364,14 @@
             // Merge
             $('#style').val(ed.dom.serializeStyle(styles));
         },
-        setDefaults: function(s) {
+        setDefaults: function (s) {
             var n, v;
 
             for (n in s) {
                 if (!n) {
                     continue;
                 }
-                
+
                 v = s[n];
 
                 if (n === "direction") {
