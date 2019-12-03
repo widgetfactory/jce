@@ -147,6 +147,10 @@
                 }
             });
 
+            if (ed.settings.styleselect_stylesheets === false) {
+                ctrl.hasClasses = true;
+            }
+
             var counter = 0;
 
             function loadClasses() {
