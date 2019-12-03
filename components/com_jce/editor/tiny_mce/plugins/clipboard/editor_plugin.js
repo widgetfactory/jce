@@ -2129,6 +2129,10 @@
 
             function pasteText(text) {
                 text = text.replace(/\r\n/g, '\n');
+
+                // encode text to remove html
+                text = ed.dom.encode(text);
+
                 text = new Newlines().convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
 
                 pasteHtml(text);
