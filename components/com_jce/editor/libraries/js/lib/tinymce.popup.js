@@ -27,6 +27,8 @@
 
             options: [],
 
+            classes: [],
+
             /**
              * Returns a array of all single CSS classes in the document. A single CSS class is a simple
              * rule like ".class" complex ones like "div td.class" will not be added to output.
