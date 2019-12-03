@@ -155,19 +155,23 @@
                 var ifr = new tinymce.html.DomParser({}, ed.schema).parse(preview.innerHTML);
                 var node = ifr.firstChild;
 
+                var attribs = {};
                 var data = self.createTemplate(node);
-
-                var o = { 'iframe': data };
-
-                var attribs = {
-                    src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                    'data-mce-json': JSON.serialize(o),
-                    'data-mce-type': 'iframe'
-                };
 
                 // standard attributes
                 each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title', 'width', 'height', 'class'], function (at) {
                     attribs[at] = node.attr(at);
+
+                    // delete from serializable data
+                    delete data[at];
+                });
+
+                var o = { 'iframe': data };
+
+                attribs = tinymce.extend(attribs, {
+                    src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                    'data-mce-json': JSON.serialize(o),
+                    'data-mce-type': 'iframe'
                 });
 
                 // dimensions
