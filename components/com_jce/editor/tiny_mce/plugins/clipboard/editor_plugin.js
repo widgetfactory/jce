@@ -2161,6 +2161,11 @@
                         o.content = o.content.replace(/<p([^>]+)>(&nbsp;|\u00a0)?<\/p>/g, '');
                     }
 
+                    // clean up extra whitespace
+                    if (ed.getParam('clipboard_paste_remove_whitespace')) {
+                        o.content = o.content.replace(/(&nbsp;|\u00a0|\s| ){2,}/g, ' ');
+                    }
+
                     // process regular expression
                     if (ed.getParam('clipboard_paste_filter')) {
                         var re, rules = ed.getParam('clipboard_paste_filter').split(';');
