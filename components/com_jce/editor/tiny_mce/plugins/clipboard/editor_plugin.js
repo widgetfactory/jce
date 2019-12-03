@@ -2707,11 +2707,11 @@
                 },
                 buttons: [
                     {
-                        title: ed.getLang('common.cancel', 'Cancel'),
+                        title: ed.getLang('cancel', 'Cancel'),
                         id: 'cancel'
                     },
                     {
-                        title: ed.getLang('common.insert', 'Insert'),
+                        title: ed.getLang('insert', 'Insert'),
                         id: 'insert',
                         onsubmit: function (e) {
                             var node = DOM.get(ed.id + '_paste_content'), data = {};

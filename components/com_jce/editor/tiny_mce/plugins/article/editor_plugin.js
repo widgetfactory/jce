@@ -223,7 +223,7 @@
                             content: html,
                             size: 'mce-modal-landscape-small',
                             open: function () {
-                                var label = ed.getLang('common.insert', 'Insert');
+                                var label = ed.getLang('insert', 'Insert');
 
                                 var title = DOM.get(ed.id + '_article_title');
                                 var alt = DOM.get(ed.id + '_article_alt');
@@ -231,7 +231,7 @@
                                 var o = self._getPageBreak();
 
                                 if (o) {
-                                    label = ed.getLang('common.update', 'Update');
+                                    label = ed.getLang('update', 'Update');
 
                                     title.value = o.title || '';
                                     alt.value = o.alt || '';
