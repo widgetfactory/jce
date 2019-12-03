@@ -1643,12 +1643,19 @@
         // Filter styles to remove "mso" specific styles and convert some of them
         domParser.addAttributeFilter('style', function (nodes) {
             var i = nodes.length,
-                node;
+                node, style;
 
             while (i--) {
                 node = nodes[i];
 
-                node.attr('style', filterStyles(node, node.attr('style')));
+                style = node.attr('style');
+
+                // check for list (unordered)
+                if (style && style.indexOf('mso-list') !== -1) {
+                    node.attr('data-mce-word-list', 1);
+                }
+
+                node.attr('style', filterStyles(node, style));
 
                 // Remove pointess spans
                 if (node.name == 'span' && node.parent && !node.attributes.length) {
@@ -1675,7 +1682,7 @@
                 if (/^Mso[\w]+/i.test(className) || editor.getParam('clipboard_paste_strip_class_attributes', 2)) {
                     node.attr('class', null);
 
-                    if (className && className.indexOf('MsoListParagraph') !== -1) {
+                    if (className && className.indexOf('MsoList') !== -1) {
                         node.attr('data-mce-word-list', 1);
                     }
                 }
