@@ -132,9 +132,12 @@
                         // registered style format
                         if (ed.formatter.get(name)) {
                             ed.formatter.apply(name, {}, node);
-                            // custom class
+                        // custom class
                         } else {
                             ed.formatter.apply('classname', { 'value': name }, node);
+
+                            // add it to the list
+                            //ctrl.add(name, name);
                         }
                     }
 
