@@ -123,7 +123,6 @@
                             if (match) {
                                 ed.formatter.remove(match, {}, node);
                             }
-
                             removedFormat = true;
                         }
                     });
@@ -134,10 +133,16 @@
                             ed.formatter.apply(name, {}, node);
                         // custom class
                         } else {
-                            ed.formatter.apply('classname', { 'value': name }, node);
+                            node = ed.selection.getNode();
+
+                            if (ed.dom.hasClass(node, name)) {
+                                ed.dom.removeClass(node, name);
+                            } else {
+                                ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
+                            }
 
                             // add it to the list
-                            //ctrl.add(name, name);
+                            ctrl.add(name, name);
                         }
                     }
 
