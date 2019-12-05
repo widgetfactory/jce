@@ -2128,8 +2128,10 @@
             });
 
             function pasteText(text) {
-                text = text.replace(/\r\n/g, '\n');
-
+                // encode text and replace returns
+                text = ed.dom.encode(text).replace(/\r\n/g, '\n');
+                
+                // convert newlines to block elements
                 text = new Newlines().convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
 
                 pasteHtml(text);
