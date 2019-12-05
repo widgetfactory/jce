@@ -871,7 +871,8 @@
                 placeholder.attr({
                     contentEditable: 'false',
                     'class': 'mce-item-preview mce-item-media mce-item-' + name,
-                    'data-mce-type': 'preview'
+                    'data-mce-type': 'preview',
+                    'aria-details': 'Click to enable, CMD + Click to toggle placeholder'
                 });
 
                 var shim = new tinymce.html.Node('span', 1);
