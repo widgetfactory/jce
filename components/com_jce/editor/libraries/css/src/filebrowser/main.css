@@ -844,6 +844,10 @@ nav.uk-navbar .uk-button.action {
   display: none;
 }
 
+.view-mode {
+  display: none;
+}
+
 
 @media (max-height: 600px) {
   #browser-buttons .button {

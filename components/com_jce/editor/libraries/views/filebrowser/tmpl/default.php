@@ -77,6 +77,8 @@ defined('JPATH_PLATFORM') or die;
             </button>
 
             <div class="uk-navbar uk-padding-remove uk-text-right uk-position-top-right">
+              <!-- Toggle Mode -->
+              <button class="uk-button view-mode" id="view-mode" aria-label="View Mode"><i class="uk-icon-list"></i><i class="uk-icon-grid"></i></button>
               <!-- Toggle Details -->
               <button class="uk-button uk-active" id="show-details" aria-label="Toggle Details">
                 <i class="uk-icon-columns details"></i>
