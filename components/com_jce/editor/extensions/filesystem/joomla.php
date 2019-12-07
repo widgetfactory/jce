@@ -225,7 +225,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         return 0;
     }
 
-    public function getFolders($relative, $filter = '', $sort = '')
+    public function getFolders($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         $path = WFUtility::makePath($this->getBaseDir(), $relative);
         $path = WFUtility::fixPath($path);
@@ -235,7 +235,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->getBaseDir();
         }
 
-        $list = JFolder::folders($path, $filter);
+        $list = JFolder::folders($path, $filter, $depth, true);
 
         $folders = array();
 
@@ -244,13 +244,13 @@ class WFJoomlaFileSystem extends WFFileSystem
             natcasesort($list);
 
             foreach ($list as $item) {
-                $item = WFUtility::convertEncoding($item);
+                $name = WFUtility::convertEncoding(basename($item));
 
                 $break = false;
 
                 if (self::$allowroot) {
-                    foreach (self::$restricted as $name) {
-                        if (WFUtility::makePath($this->getBaseDir(), $item) === WFUtility::makePath($path, $name)) {
+                    foreach (self::$restricted as $val) {
+                        if ($item === WFUtility::makePath($path, $val)) {
                             $break = true;
                         }
                     }
@@ -260,16 +260,21 @@ class WFJoomlaFileSystem extends WFFileSystem
                     continue;
                 }
 
-                $id = WFUtility::makePath($relative, $item, '/');
+                $id = WFUtility::makePath($relative, $name, '/');
+
+                if ($depth) {
+                    $id = $this->toRelative($item);
+                    $name = $id;
+                }
 
                 // trim leading slash
                 $id = ltrim($id, '/');
 
                 $data = array(
                     'id' => $id,
-                    'name' => $item,
-                    'writable' => is_writable(WFUtility::makePath($path, $item)) || $this->isFtp(),
-                    'type' => 'folders',
+                    'name' => $name,
+                    'writable' => is_writable($item) || $this->isFtp(),
+                    'type' => 'folders'
                 );
 
                 $folders[] = $data;
@@ -283,7 +288,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         return $folders;
     }
 
-    public function getFiles($relative, $filter = '', $sort = '')
+    public function getFiles($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
         $path = WFUtility::makePath($this->getBaseDir(), $relative);
         $path = WFUtility::fixPath($path);
@@ -293,7 +298,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->getBaseDir();
         }
 
-        $list = JFolder::files($path, $filter);
+        $list = JFolder::files($path, $filter, $depth, true);
 
         $files = array();
 
@@ -302,10 +307,15 @@ class WFJoomlaFileSystem extends WFFileSystem
             natcasesort($list);
 
             foreach ($list as $item) {
-                $item = WFUtility::convertEncoding($item);
+                $name = WFUtility::convertEncoding(basename($item));
 
                 // create relative file
-                $id = WFUtility::makePath($relative, $item, '/');
+                $id = WFUtility::makePath($relative, $name, '/');
+
+                if ($depth) {
+                    $id = $this->toRelative($item);
+                    $name = $id;
+                }
 
                 // create url
                 $url = WFUtility::makePath($this->getRootDir(), $id, '/');
@@ -316,10 +326,10 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $data = array(
                     'id' => $id,
                     'url' => $url,
-                    'name' => $item,
-                    'writable' => is_writable(WFUtility::makePath($path, $item)) || $this->isFtp(),
+                    'name' => $name,
+                    'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'files',
-                    'extension' => pathinfo($item, PATHINFO_EXTENSION),
+                    'extension' => pathinfo($name, PATHINFO_EXTENSION)
                 );
 
                 $files[] = $data;
@@ -333,77 +343,46 @@ class WFJoomlaFileSystem extends WFFileSystem
         return $files;
     }
 
-    public function searchFiles($relative, $query = '', $sort = '', $depth = 3)
+    public function searchItems($relative, $query = '', $filetypes = array(), $sort = '', $depth = 3)
     {
-        // we can't realistically search recursively with ftp... 
+        // we can't realistically search recursively with ftp...
         if ($this->isFtp()) {
-            return $this->getFiles($relative, $query, $sort);
-        }
-        
-        $path = WFUtility::makePath($this->getBaseDir(), $relative);
-        $path = WFUtility::fixPath($path);
-
-        if (!JFolder::exists($path)) {
-            $relative = '/';
-            $path = $this->getBaseDir();
+            return $this->getItems($relative, $query, $sort);
         }
 
-        // https://www.php.net/manual/en/class.recursivedirectoryiterator.php#114504
-        $directory = new RecursiveDirectoryIterator($path, FilesystemIterator::UNIX_PATHS | FilesystemIterator::SKIP_DOTS | FilesystemIterator::KEY_AS_FILENAME);
-        $filter = new RecursiveCallbackFilterIterator($directory, function ($current, $key, $iterator) use ($query) {            
-            // skip some system stuff
-            if ($key[0] === '.' || $key === '__MACOSX' || $key === 'index.html') {
-                return false;
-            }
-            
-            if ($current->isDir()) {
-                return true;
-            }
+        $result = array(
+            'folders'   => array(),
+            'files'     => array()
+        );
 
-            return preg_match("/$query/u", $key);
-        });
+        // get folder list
+        $folders = $this->getFolders($relative, '', 0, 0, $sort, 3);
 
-        $iterator = new RecursiveIteratorIterator($filter);
-        $iterator->setMaxDepth($depth);
-
-        // map relative paths from iterator to list array
-        $list = array_map(function($info) {
-            return $this->toRelative($info->getPathname());
-        }, iterator_to_array($iterator));
-
-        $files = array();
-
-        if (!empty($list)) {
-            // Sort alphabetically by default
-            natcasesort($list);
-
-            foreach ($list as $item) {
-                $item = WFUtility::convertEncoding($item);
-
-                // create url
-                $url = WFUtility::makePath($this->getRootDir(), $item, '/');
-
-                // remove leading slash
-                $url = ltrim($url, '/');
-
-                $data = array(
-                    'id' => $item,
-                    'url' => $url,
-                    'name' => $item,
-                    'writable' => is_writable(WFUtility::makePath($this->getBaseDir(), $item)),
-                    'type' => 'files',
-                    'extension' => pathinfo($item, PATHINFO_EXTENSION),
-                );
-
-                $files[] = $data;
+        // filter based on passed in query
+        foreach($folders as $folder) {
+            if (preg_match("/$query/u", $folder['id'])) {
+                $result['folders'][] = $folder;
             }
         }
 
-        if ($sort) {
-            $files = self::sortItemsByKey($files, $sort);
+        $filter = '';
+
+        // create filter for filetypes
+        if (!empty($filestypes)) {
+             $filter .= '\.(?i)(' . implode('|', $filetypes) . ')$';
         }
 
-        return $files;
+        // get file list
+        $files = $this->getFiles($relative, $filter, 0, 0, $sort, 3);
+
+        // filter based on passed in query
+        foreach($files as $files) {
+            if (preg_match("/$query/u", $files['id'])) {
+                $result['files'][] = $files;
+            }
+        }
+
+        return $result;
     }
 
     /**
