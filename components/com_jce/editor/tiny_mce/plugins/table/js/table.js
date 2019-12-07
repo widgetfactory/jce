@@ -228,6 +228,8 @@
         $('#style').val(ed.dom.serializeStyle(styles));
     };
 
+    Wf.updateStyles = function () {};
+
     var isHTML4 = tinyMCEPopup.editor.settings.schema === "html4";
     var isHTML5 = tinyMCEPopup.editor.settings.schema === "html5-strict";
 
@@ -296,7 +298,7 @@
 
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
-        updateClassList: function (cls) {
+        /*updateClassList: function (cls) {
             if (!cls) {
                 return;
             }
@@ -319,7 +321,7 @@
                 return r;
 
             }).trigger('change');
-        },
+        },*/
         initTable: function () {
             var self = this,
                 ed = tinyMCEPopup.editor;
@@ -384,7 +386,7 @@
                     var cls = ed.dom.getAttrib(elm, 'class');
                     cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
-                    self.updateClassList(cls);
+                    //self.updateClassList(cls);
 
                     return cls;
                 }).trigger('change');
@@ -445,7 +447,7 @@
                 var cls = ed.dom.getAttrib(elm, 'class');
                 cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
-                self.updateClassList(cls);
+                //self.updateClassList(cls);
 
                 return cls;
             }).trigger('change');
@@ -494,7 +496,7 @@
                     var cls = ed.dom.getAttrib(elm, 'class');
                     cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
-                    self.updateClassList(cls);
+                    //self.updateClassList(cls);
 
                     return cls;
                 }).trigger('change');
