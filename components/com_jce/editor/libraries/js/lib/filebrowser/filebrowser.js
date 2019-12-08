@@ -429,7 +429,7 @@
 
                     // reset limit
                     //$('#browser-list-limit-select').prop('disabled', true).val(0);
-                    
+
                     self._reset();
 
                     // store query
@@ -856,7 +856,7 @@
                         classes.push(e.classes);
                     }
 
-                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') +'>';
+                    h += '<li class="uk-grid uk-grid-collapse uk-flex folder ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-folder folder"></i>';
                     h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto uk-text-truncate" href="#">' + e.name + '</a>';
@@ -1352,13 +1352,13 @@
             }
 
             if (!this._searchQuery) {
-                $.each([].concat(o.folders, o.files), function(i, item) {                
+                $.each([].concat(o.folders, o.files), function (i, item) {
                     if (item.id) {
                         dir = Wf.String.encodeURI(Wf.String.dirname(item.id) || '/', true);
                         return false;
                     }
                 });
-    
+
                 if (dir) {
                     this._setDir(dir);
                 }
@@ -1642,11 +1642,11 @@
                             });
                         }
                     }, {
-                            elements: elements,
-                            label: {
-                                'confirm': self._translate('create', 'Create')
-                            },
-                        });
+                        elements: elements,
+                        label: {
+                            'confirm': self._translate('create', 'Create')
+                        },
+                    });
                     break;
 
                 // Cut / Copy operation
@@ -1679,7 +1679,7 @@
 
                                 var folders = $.map(o.folders, function (item, i) {
                                     var name = item.name;
-                                    
+
                                     return {
                                         "id": name,
                                         "name": Wf.String.basename(name)
@@ -1712,12 +1712,12 @@
                                             self.refresh();
                                         }
                                     }, {
-                                            label: {
-                                                'confirm': self._translate('replace', 'Replace'),
-                                                'cancel': self._translate('cancel', 'Cancel')
-                                            },
-                                            header: false
-                                        });
+                                        label: {
+                                            'confirm': self._translate('replace', 'Replace'),
+                                            'cancel': self._translate('cancel', 'Cancel')
+                                        },
+                                        header: false
+                                    });
                                 } else {
                                     callback(o, dir);
 
@@ -1727,7 +1727,7 @@
                                     }
                                 }
                             }
-                        });
+                        }, self, true);
                     });
 
                     break;
@@ -1757,15 +1757,14 @@
                                 }
                                 self.refresh();
                             });
-
                         }
                     }, {
-                            label: {
-                                'confirm'   : self._translate('delete', 'Delete'),
-                                'cancel'    : self._translate('cancel', 'Cancel')
-                            },
-                            header: false
-                        });
+                        label: {
+                            'confirm': self._translate('delete', 'Delete'),
+                            'cancel': self._translate('cancel', 'Cancel')
+                        },
+                        header: false
+                    });
                     break;
 
                 // Rename a file or folder
@@ -1837,14 +1836,14 @@
                             }
                         });
                     }, {
-                            value: v,
-                            header: false,
-                            label: {
-                                'confirm': self._translate('rename', 'Rename')
-                            },
-                            elements: this._getDialogOptions('rename'),
-                            close_on_submit: false
-                        });
+                        value: v,
+                        header: false,
+                        label: {
+                            'confirm': self._translate('rename', 'Rename')
+                        },
+                        elements: this._getDialogOptions('rename'),
+                        close_on_submit: false
+                    });
                     break;
             }
         },

@@ -45,16 +45,18 @@
          * @param callback
          *            Callback function to execute
          * @param scope
-         *            Scope to execute callback in
+         *            Scope to execute the callback in
+         * @param multi
+         *            Allow multiple requests on the same function
          */
-        request: function (func, data, callback, scope) {
+        request: function (func, data, callback, scope, multi) {
             var json = {
                 'method': func,
                 'id': uid()
             };
 
             // already registered so abort in favout of new request
-            if (instance[func]) {
+            if (instance[func] && !multi) {
                 instance[func].abort();
             }
 
