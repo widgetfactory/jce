@@ -525,33 +525,34 @@ class WFFileBrowser extends JObject
 
         $list = $filesystem->searchItems($path, $keyword, $filetypes, $sort, $depth);
 
-        $result['total']['files']   = count($list['files']);
-        $result['total']['folders'] = count($list['folders']);
+        $items = array_merge($list['folders'], $list['files']);
+
+        $result['total']['folder'] = count($list['folders']);
+        $result['total']['files'] = count($list['files']);
 
         if (intval($limit) > 0) {
-            $list = array_slice($list, $start, $limit);
+            $items = array_slice($items, $start, $limit);
         }
 
         // get properties for found items by type
-        foreach($list as $key => $items) {            
-            
-            array_walk($items, function(&$item) use ($key, $filesystem) {
-                if ($key === 'files') {
-                    $item['classes'] = '';
-    
-                    if (empty($item['properties'])) {
-                        $item['properties'] = $filesystem->getFileDetails($item);
-                    }
-                }
-    
-                if ($key === 'folders') {
-                    if (empty($item['properties'])) {
-                        $item['properties'] = $filesystem->getFolderDetails($item);
-                    }
-                }
-            });
+        foreach($items as $item) {            
+            $type = $item['type'];
 
-            $result[$key] = $items;
+            if ($type === 'files') {
+                $item['classes'] = '';
+
+                if (empty($item['properties'])) {
+                    $item['properties'] = $filesystem->getFileDetails($item);
+                }
+            }
+
+            if ($type === 'folders') {
+                if (empty($item['properties'])) {
+                    $item['properties'] = $filesystem->getFolderDetails($item);
+                }
+            }
+
+            $result[$type][] = $item;
         }
 
         // Fire Event passing result as reference
