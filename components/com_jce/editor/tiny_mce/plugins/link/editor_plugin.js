@@ -106,8 +106,8 @@
                 title: 'link.desc',
                 cmd: 'mceLink',
                 max_width: 264,
-                onselect: function (value) {
-                    insertLink(value);
+                onselect: function (node) {
+                    insertLink(node.value);
                 }
             });
 
@@ -117,8 +117,15 @@
                     return;
                 }
 
+                var href = value;
+                
+                // add missing protocol
+                if (/^\s*www\./i.test(href)) {
+                    href = 'https://' + href;
+                }
+
                 var args = {
-                    'href': value
+                    'href': href
                 };
 
                 // get parameter defaults
@@ -126,6 +133,9 @@
 
                 // extended args with parameter defaults
                 args = tinymce.extend(args, params);
+
+                // set default target
+                args['target'] = ed.settings.default_link_target;
 
                 // no selection, so create a link from the url
                 if (ed.selection.isCollapsed()) {
