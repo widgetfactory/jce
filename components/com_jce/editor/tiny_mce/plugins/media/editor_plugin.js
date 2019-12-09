@@ -868,11 +868,14 @@
 
                 preview.attr(attrs);
 
+                var msg = ed.getLang('media.preview_hint', 'Click to activate, %s + Click to toggle placeholder');
+                msg = msg.replace(/%s/g, tinymce.isMac ? 'CMD' : 'CTRL');
+
                 placeholder.attr({
                     contentEditable: 'false',
                     'class': 'mce-item-preview mce-item-media mce-item-' + name,
                     'data-mce-type': 'preview',
-                    'aria-details': 'Click to enable, CMD + Click to toggle placeholder'
+                    'aria-details': msg
                 });
 
                 var shim = new tinymce.html.Node('span', 1);
