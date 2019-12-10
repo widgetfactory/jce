@@ -155,10 +155,10 @@
         var border = false;
 
         var initialStyles = {
-            'width' : 'medium',
-            'style' : 'none',
-            'color' : 'currentcolor'
-        }; 
+            'width': 'medium',
+            'style': 'none',
+            'color': 'currentcolor'
+        };
 
         // Handle border
         $.each(['width', 'color', 'style'], function (i, k) {
@@ -228,7 +228,7 @@
         $('#style').val(ed.dom.serializeStyle(styles));
     };
 
-    Wf.updateStyles = function () {};
+    Wf.updateStyles = function () { };
 
     var isHTML4 = tinyMCEPopup.editor.settings.schema === "html4";
     var isHTML5 = tinyMCEPopup.editor.settings.schema === "html5-strict";
@@ -269,7 +269,7 @@
                     break;
             }
 
-            $('.uk-form-controls select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');
@@ -298,30 +298,30 @@
 
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
-        /*updateClassList: function (cls) {
-            if (!cls) {
-                return;
-            }
+        updateClasses: function (values) {
+            $('#classes').val(function () {
+                var n = this;
 
-            $('#classlist').val(function () {
-                var n = this,
-                    a = cls.split(' '),
-                    r = [];
+                values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
 
-                $.each(a, function (i, v) {
-                    if (v.indexOf('mce-item') == -1) {
-                        if ($('option[value="' + v + '"]', n).length == 0) {
-                            $(n).append(new Option(v, v));
-                        }
+                // create array
+                values = values.split(' ');
 
-                        r.push(v);
+                $.each(values, function (i, value) {
+                    value = $.trim(value);
+
+                    if (!value || value === ' ') {
+                        return true;
+                    }
+
+                    if ($('option[value="' + value + '"]', n).length == 0) {
+                        $(n).append(new Option(value, value, false, true));
                     }
                 });
 
-                return r;
-
+                return values;
             }).trigger('change');
-        },*/
+        },
         initTable: function () {
             var self = this,
                 ed = tinyMCEPopup.editor;
@@ -382,14 +382,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function () {
-                    var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                    //self.updateClassList(cls);
-
-                    return cls;
-                }).trigger('change');
+                this.updateClasses(ed.dom.getAttrib(elm, 'class'));
 
                 // update style field
                 $('#style').val(ed.dom.getAttrib(elm, 'style')).trigger('change');
@@ -443,14 +436,7 @@
                 $('#' + k).val(v);
             });
 
-            $('#classes').val(function () {
-                var cls = ed.dom.getAttrib(elm, 'class');
-                cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                //self.updateClassList(cls);
-
-                return cls;
-            }).trigger('change');
+            this.updateClasses(ed.dom.getAttrib(elm, 'class'));
 
             $('#rowtype').on('change', function () {
                 self.setActionforRowType();
@@ -492,14 +478,7 @@
                     $('#' + k).val(v);
                 });
 
-                $('#classes').val(function () {
-                    var cls = ed.dom.getAttrib(elm, 'class');
-                    cls = cls.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                    //self.updateClassList(cls);
-
-                    return cls;
-                }).trigger('change');
+                this.updateClasses(ed.dom.getAttrib(elm, 'class'));
 
                 $('#celltype').val(elm.nodeName.toLowerCase());
 
@@ -639,6 +618,11 @@
             borderColor = valueToHex($('#border_color').val());
             bgColor = valueToHex($('#bgcolor').val());
             background = $('#backgroundimage').val();
+
+            // fix class values
+            if (className && Array.isArray(className)) {
+                className = className.join(' ');
+            }
 
             // get compile styles attribute value
             style = this.getStyles();
@@ -905,6 +889,10 @@
 
                 if (k === "classes") {
                     k = 'class';
+
+                    if (v && Array.isArray(v)) {
+                        v = v.join(' ');
+                    }
                 }
 
                 setAttrib(td, k, v);
@@ -1094,6 +1082,10 @@
 
                 if (k === "classes") {
                     k = 'class';
+
+                    if (v && Array.isArray(v)) {
+                        v = v.join(' ');
+                    }
                 }
 
                 setAttrib(tr, k, v);
