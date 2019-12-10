@@ -734,6 +734,14 @@
   content: "\e943";
 }
 
+.uk-icon-lock:before {
+  content: "\e98f";
+}
+
+.uk-icon-unlocked:before {
+  content: "\e990";
+}
+
 /*.uk-icon-spinner:before {
     content: "";
     background: url('../img/load.gif') no-repeat center;

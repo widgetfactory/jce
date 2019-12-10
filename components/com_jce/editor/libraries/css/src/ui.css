@@ -389,3 +389,46 @@ input.colour {
 .uk-constrain-container {
     padding-left: 10px;
 }
+
+.uk-constrain-label .uk-icon-lock,
+.uk-constrain-label .uk-icon-unlocked {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .uk-constrain-label {
+        font-size: 0;
+        max-width: 2em;
+        text-align: center;
+
+        position: relative;
+    }
+
+    .uk-constrain-label input {
+        visibility: hidden;
+    }
+
+    .uk-form-constrain label .uk-icon-lock,
+    .uk-form-constrain label .uk-icon-unlocked {
+        position: absolute;
+        left: 0.75em;
+        top: 0.5em;
+        cursor: pointer;
+    }
+
+    .uk-form-constrain label input:disabled + i {
+        color: #888;
+    }
+
+    .uk-form-constrain label .uk-icon-unlocked {
+        display: inherit;
+    }
+
+    .uk-constrain-active label .uk-icon-lock {
+        display: inherit;
+    }
+
+    .uk-constrain-active label .uk-icon-unlocked {
+        display: none;
+    }
+}

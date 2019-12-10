@@ -94,17 +94,21 @@
             var cb = this,
                 $elms = $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]');
 
+                $(this).parent('label').addClass('uk-constrain-label');
+
             $(this).on('constrain:update', function () {
                 $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]').each(function () {
                     $(this).data('tmp', this.value);
                 });
             });
 
-            $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
+            $(this).parents('.uk-form-constrain').toggleClass('uk-constrain-active', this.checked);
 
             $(cb).on('click', function () {
-                $(this).parent('.uk-icon-lock').toggleClass('uk-icon-unlock-alt', !this.checked);
+                $(this).parents('.uk-form-constrain').toggleClass('uk-constrain-active', this.checked);
             });
+
+            $(cb).parent().append('<i class="uk-icon-lock" role="presentation"></i><i class="uk-icon-unlocked" role="presentation"></i>');
 
             // set tmp values
             $elms.each(function () {
