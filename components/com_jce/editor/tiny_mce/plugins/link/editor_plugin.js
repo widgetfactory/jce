@@ -85,6 +85,14 @@
                 return null;
             }
 
+            if (ed.settings.link_quicklink === false) {
+                // Register buttons
+                return cm.createButton('link', {
+                    title : 'link.desc',
+                    cmd : 'mceLink'
+                });
+            }
+
             var html = '' +
                 '<div class="mceToolbarRow">' +
                 '   <div class="mceToolbarItem mceFlexAuto">' +

@@ -24,6 +24,10 @@ class WFLinkPluginConfig
         $settings['autolink_email'] = $plugin->getParam('link.autolink_email', 1, 1);
         $settings['autolink_url'] = $plugin->getParam('link.autolink_url', 1, 1);
 
+        if ($plugin->getParam('link.quicklink', 1, 1) === 0) {
+            $settings['link_quicklink'] = false;
+        }
+
         $settings['link'] = $config;
     }
 }
