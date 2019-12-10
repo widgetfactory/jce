@@ -47,6 +47,10 @@
                 return elm && elm.nodeName === 'IMG';
             };
 
+            var isLink = function (elm) {
+                return elm && elm.nodeName === 'A';
+            };
+
             /**
              * This event gets fired when the context menu is shown.
              *
@@ -81,7 +85,7 @@
                 }
 
                 // Select the image if it's clicked. WebKit would other wise expand the selection
-                if (isImage(e.target)) {
+                if (isImage(e.target) || isLink(e.target)) {
                     ed.selection.select(e.target);
                 }
 
