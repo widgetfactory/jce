@@ -55,9 +55,10 @@
             </field>
         </fieldset>
         <fieldset name="editor.setup">
-            <field name="relative_urls" type="radio" default="1" label="WF_PARAM_RELATIVE" description="WF_PARAM_RELATIVE_DESC" class="btn-group btn-group-yesno">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+            <field name="convert_urls" type="list" default="" label="WF_PARAM_EDITOR_CONVERT_URLS" description="WF_PARAM_EDITOR_CONVERT_URLS_DESC">
+                <option value="">WF_OPTION_NONE</option>
+                <option value="relative">WF_OPTION_RELATIVE</option>
+                <option value="absolute">WF_OPTION_ABSOLUTE</option>
             </field>
             <field name="verify_html" type="list" default="" label="WF_PARAM_CLEANUP" description="WF_PARAM_EDITOR_PROFILE_CLEANUP_DESC" class="btn-group btn-group-yesno">
                 <option value="">WF_OPTION_INHERIT</option>

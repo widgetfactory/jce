@@ -74,8 +74,15 @@ class JceModelProfile extends JModelAdmin
             return;
         }
 
-        if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
-            $config['editor']['toolbar_theme'] = 'default.touch';
+        // editor parameters
+        if (isset($config['editor'])) {
+            if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
+                $config['editor']['toolbar_theme'] = 'default.touch';
+            }
+    
+            if (isset($config['editor']['relative_urls'])) {
+                $config['editor']['convert_urls'] = $config['editor']['relative_urls'] == 0 ? 'absolute' : 'relative';
+            }
         }
 
         $data->config = $config;
