@@ -367,6 +367,7 @@ class WFEditor
                 $value = '';
             }
 
+            // implode standard arrays
             if (is_array($value) && $value === array_values($value)) {
                 $value = implode(',', $value);
             }
@@ -490,6 +491,27 @@ class WFEditor
     }
 
     /**
+     * Check if an icon already exists in a toolbar row
+     *
+     * @param [Array] $rows
+     * @param [Mixed] $icon
+     * @return Boolean
+     */
+    private function rowHasIcon($rows, $icon)
+    {
+        $found = false;
+
+        foreach ($rows as $key => $row) {
+            if (in_array($icon, $row)) {
+                $found = true;
+                break;
+            }
+        }
+
+        return $found;
+    }
+
+    /**
      * Return a list of icons for each JCE editor row.
      *
      * @param string  The number of rows
@@ -499,7 +521,7 @@ class WFEditor
     private function getToolbar()
     {
         $wf = WFApplication::getInstance();
-        $rows = array('theme_buttons1' => '', 'theme_buttons2' => '', 'theme_buttons3' => '');
+        $rows = array('theme_buttons1' => array(), 'theme_buttons2' => array(), 'theme_buttons3' => array());
 
         // we need a profile object and some defined rows
         if (!is_object($this->profile) || empty($this->profile->rows)) {
@@ -508,6 +530,7 @@ class WFEditor
 
         // get plugins
         $plugins = JcePluginsHelper::getPlugins();
+
         // get core commands
         $commands = JcePluginsHelper::getCommands();
 
@@ -526,6 +549,7 @@ class WFEditor
         );
 
         $x = 0;
+
         for ($i = 1; $i <= count($lists); ++$i) {
             $buttons = array();
             $items = explode(',', $lists[$x]);
@@ -571,7 +595,9 @@ class WFEditor
                                     $a[] = $s;
                                 }
                             }
+                            
                             $item = implode(',', $a);
+
                             // remove leading or trailing |
                             $item = trim($item, '|');
                         }
@@ -579,15 +605,19 @@ class WFEditor
                 }
 
                 if (!empty($item)) {
-                    // remove double |
+                    // remove double spacer
                     $item = preg_replace('#(\|,)+#', '|,', $item);
+
+                    if ($this->rowHasIcon($rows, $item)) {
+                        continue;
+                    }
 
                     $buttons[] = $item;
                 }
             }
 
             if (!empty($buttons)) {
-                $rows['theme_buttons' . $i] = implode(',', $buttons);
+                $rows['theme_buttons' . $i] = $buttons;
             }
 
             ++$x;
