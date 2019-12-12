@@ -22,8 +22,8 @@ class WFLinkSearchExtension extends WFSearchExtension
         parent::__construct();
 
         $request = WFRequest::getInstance();
-        $request->setRequest(array($this, 'doSearch'));
 
+        $request->setRequest(array($this, 'doSearch'));
         $request->setRequest(array($this, 'getAreas'));
 
         $wf = WFEditorPlugin::getInstance();

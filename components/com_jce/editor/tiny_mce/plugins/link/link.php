@@ -20,14 +20,15 @@ class WFLinkPlugin extends WFEditorPlugin
     public $tabs = array();
 
     /**
-     * Constructor activating the default information of the class.
+     * Override execute function to intialize links and search
+     *
+     * @return void
      */
-    public function __construct()
-    {
-        parent::__construct();
-
+    public function execute() {
         $this->getLinks();
         $this->getSearch('link');
+
+        parent::execute();
     }
 
     public function display()
