@@ -146,18 +146,17 @@ class WFStyleselectPluginConfig
                             $style->inline = 'span';
                             $style->selector = '*';
                         }
-                    }/* else {
+                    } else {
                         // match all if not set
                         if (!isset($style->selector)) {
                             $style->selector = '*';
 
-                            
                             // set to element
                             if (isset($style->element)) {
                                 $style->selector = $style->element;
                             }
                         }
-                    }*/
+                    }
 
                     // remove element
                     unset($style->element);
