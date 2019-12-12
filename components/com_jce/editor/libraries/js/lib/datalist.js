@@ -401,7 +401,7 @@
             });
 
             // hide menu if no focus
-            $('body').on('click keyup', function (e) {
+            $('body').on('mousedown touchstart keyup', function (e) {
                 // only process on TAB
                 if (e.keyCode && e.keyCode !== 9) {
                     return;
