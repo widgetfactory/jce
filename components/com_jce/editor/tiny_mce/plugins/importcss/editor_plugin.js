@@ -98,7 +98,7 @@
 
             function parseCSS(stylesheet) {                
                 // IE style imports
-                each(stylesheet.imports, function (r) {
+                each(stylesheet.imports, function (r) {                    
                     if (r.href.indexOf('://fonts.googleapis.com') > 0) {
                         var v = '@import url(' + r.href + ');';
 
@@ -137,7 +137,7 @@
                     // Real type or fake it on IE
                     switch (r.type || 1) {
                         // Rule
-                        case 1:
+                        case 1:                        
                             if (!isAllowedStylesheet(stylesheet.href)) {
                                 return true;
                             }
@@ -163,7 +163,7 @@
                             break;
 
                         // Import
-                        case 3:
+                        case 3:                        
                             if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                                 var v = '@import url(' + r.href + ');';
 
