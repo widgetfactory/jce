@@ -159,7 +159,7 @@
 
             self._menu = m;
 
-            m.addSeparator();
+            //m.addSeparator();
 
             am = m.addMenu({
                 title: 'contextmenu.align'
