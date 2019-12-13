@@ -2281,7 +2281,7 @@ select.mceNativeListBox {
 
 .mceModal {
     position: absolute;
-    z-index: 700000 !important;
+    z-index: 700000;
     width: 100%;
     height: 100%;
     top: 0;
@@ -2300,7 +2300,7 @@ select.mceNativeListBox {
     width: 100%;
     height: 100%;
     opacity: 0.6;
-    z-index: 700001 !important;
+    z-index: 700001;
 }
 
 .mceModal .mceModalFrame {
@@ -2312,7 +2312,6 @@ select.mceNativeListBox {
     top: 0;
     width: 100%;
     padding: 8px;
-    z-index: 700002 !important;
 }
 
 .mceModal .mceModalFrame:after {
@@ -2335,7 +2334,7 @@ select.mceNativeListBox {
     top: 0;
     background: #fff;
     opacity: 0.8;
-    z-index: 700003 !important;
+    z-index: 700003;
     box-sizing: border-box;
 }
 
