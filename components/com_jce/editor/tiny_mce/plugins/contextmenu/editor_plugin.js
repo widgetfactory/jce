@@ -153,7 +153,7 @@
             m = ed.controlManager.createDropMenu('contextmenu', {
                 offset_x: p.x + ed.getParam('contextmenu_offset_x', 0),
                 offset_y: p.y + ed.getParam('contextmenu_offset_y', 0),
-                constrain: 1,
+                constrain: true,
                 keyboard_focus: true
             });
 
