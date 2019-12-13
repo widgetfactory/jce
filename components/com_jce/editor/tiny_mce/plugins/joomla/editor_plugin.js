@@ -50,7 +50,7 @@
                         id: ed.dom.uniqueId(),
                         title: item.title,
                         icon: item.icon,
-                        onclick: function () {
+                        onclick: function (e) {                            
                             if (href) {                                
                                 ed.windowManager.open({
                                     file: href,
@@ -65,6 +65,8 @@
                             if (item.onclick) {
                                 new Function(item.onclick).apply();
                             }
+
+                            return false;
                         }
                     });
                 });
