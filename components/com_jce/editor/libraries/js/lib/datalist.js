@@ -177,6 +177,8 @@
                 var data = { text: el.title, value: el.getAttribute('data-value') };
 
                 selectItem(data);
+
+                hideMenu();
             }
 
             // select item on click
@@ -411,6 +413,11 @@
                     return;
                 }
 
+                // action is inside the menu
+                if (menu.find(e.target).length) {
+                    return;
+                }
+
                 hideMenu();
 
                 if (!settings.input) {
@@ -418,7 +425,7 @@
                 }
 
                 // action is inside the container
-                if (container.find(e.target).length || menu.find(e.target).length) {
+                if (container.find(e.target).length) {
                     return;
                 }
 
