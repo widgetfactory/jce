@@ -32,24 +32,15 @@ class WFJoomlaPluginConfig
                 continue;
             }
 
-            JPluginHelper::importPlugin('editors-xtd', $plugin->name, false);
-
-            $className = 'PlgEditorsXtd' . $plugin->name;
-
-            if (!class_exists($className)) {
-                $className = 'PlgButton' . $plugin->name;
-            }
-
-            if (class_exists($className)) {
-                $plugin = new $className($editor, (array) $plugin);
-            }
+            // fully load plugin instance
+            $instance = JPluginHelper::importPlugin('editors-xtd', $plugin->name, true);
 
             // check that the button is valid
-            if (!method_exists($plugin, 'onDisplay')) {
+            if (!$instance || !method_exists($instance, 'onDisplay')) {
                 continue;
             }
 
-            $button = $plugin->onDisplay('__jce__', null, null);
+            $button = $instance->onDisplay('__jce__', null, null);
 
             if (empty($button) || !is_object($button)) {
                 continue;
