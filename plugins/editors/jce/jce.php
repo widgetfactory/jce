@@ -199,8 +199,6 @@ class plgEditorJCE extends JPlugin
             $html .= JLayoutHelper::render('joomla.editors.buttons', array());
         }
 
-        $this->set('joomla_xtd_buttons', true);
-
         return $html;
     }
 
