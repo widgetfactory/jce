@@ -1131,9 +1131,10 @@
                             if (selectedCells.length > 0) {
                                 var parent = dom.getParent(selectedCells[0], 'table');
 
-                                //var allCells = dom.select('td,th', parent);
+                                // select the table if all cells are selected
+                                /*var allCells = dom.select('td,th', parent);
                                 
-                                /*if (selectedCells.length === allCells.length) {
+                                if (selectedCells.length === allCells.length) {
                                     sel.select(parent);
 
                                     dom.removeClass(selectedCells, 'mceSelected');
