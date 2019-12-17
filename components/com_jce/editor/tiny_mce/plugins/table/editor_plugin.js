@@ -918,7 +918,7 @@
                         if (typeof value === 'number') {
                             value += 'px';
                         }
-  
+
                         node.style.width = value;
                         dom.setAttrib(node, 'width', '');
                     }
@@ -927,7 +927,7 @@
                         if (typeof value === 'number') {
                             value += 'px';
                         }
-                        
+
                         node.style.height = value;
                         dom.setAttrib(node, 'height', '');
                     }
@@ -965,17 +965,19 @@
                 }
             });
 
-            // Select whole table is a table border is clicked
-            if (!tinymce.isIE) {
-                ed.onClick.add(function (ed, e) {
-                    e = e.target;
+            // Select whole table if a table border is clicked
+            ed.onClick.add(function (ed, e) {
+                var n = e.target;
 
-                    if (e.nodeName === 'TABLE') {
-                        ed.selection.select(e);
-                        ed.nodeChanged();
-                    }
-                });
-            }
+                if (e.altKey && ed.dom.is(n, 'td,th,caption')) {
+                    n = ed.dom.getParent(n, 'table')
+                }
+
+                if (n.nodeName == 'TABLE') {
+                    ed.selection.select(n);
+                    ed.nodeChanged();
+                }
+            });
 
             ed.onInit.add(function (ed) {
                 var dom = ed.dom,
@@ -1096,7 +1098,7 @@
 
                             do {
                                 // Text node
-                                if (node.nodeType == 3) {                                    
+                                if (node.nodeType == 3) {
                                     if (start) {
                                         rng.setStart(node, 0);
                                     } else {
@@ -1413,7 +1415,7 @@
                         var last = o.node.lastChild;
 
                         if (last && (last.nodeName == "BR" || (last.childNodes.length == 1 &&
-                                (last.firstChild.nodeName == 'BR' || last.firstChild.nodeValue == '\u00a0'))) &&
+                            (last.firstChild.nodeName == 'BR' || last.firstChild.nodeValue == '\u00a0'))) &&
                             last.previousSibling && last.previousSibling.nodeName == "TABLE") {
                             ed.dom.remove(last);
                         }
