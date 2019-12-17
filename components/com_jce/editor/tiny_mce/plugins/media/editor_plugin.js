@@ -1248,6 +1248,9 @@
                 if (n.firstChild && n.firstChild.name === "iframe") {
                     var ifr = n.firstChild.clone();
 
+                    // pass in id (not added in clone!)
+                    ifr.attr('id', n.firstChild.attr('id'));
+
                     n.empty();
                     n.replace(ifr);
 
