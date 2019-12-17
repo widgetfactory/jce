@@ -48,7 +48,11 @@
 
             // add change event to record editing
             $('#alt').on('change', function () {
-                $(this).addClass('uk-edited');
+                if (this.value === '') {
+                    $(this).removeClass('uk-edited');
+                } else {
+                    $(this).addClass('uk-edited');
+                }
             });
 
             if (n && n.nodeName == 'IMG') {
