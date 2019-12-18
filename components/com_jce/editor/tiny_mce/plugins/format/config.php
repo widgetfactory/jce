@@ -45,12 +45,17 @@ class WFFormatPluginConfig
         // Relative urls - legacy
         $relative_urls = $wf->getParam('editor.relative_urls');
 
-        if ($convert_urls === 'relative' || $relative_urls == 1) {
+        // cast numeric string or float to integer
+        if (is_numeric($relative_urls)) {
+            $relative_urls = intval($relative_urls);
+        }
+
+        if ($relative_urls === 1 || $convert_urls === 'relative') {
             $settings['relative_urls'] = true;
         }
 
         // absolute urls
-        if ($convert_urls === 'absolute' || $relative_urls == 0) {
+        if ($relative_urls === 0 || $convert_urls === 'absolute') {
             $settings['relative_urls'] = false;
             $settings['remove_script_host'] = false;
         }
