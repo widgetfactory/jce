@@ -1360,6 +1360,10 @@
                     trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
                 }
 
+                if (currentListNode.name === "ul") {
+                    trimListStart(paragraphNode, /^\s*([\u2022\u00b7\u00a7\u25CF]|\w+\.)/);
+                }
+
                 trimListStart(paragraphNode, /^\u00a0+/);
             }
 
@@ -1367,10 +1371,12 @@
             // altering them in the loop below.
             var elements = [],
                 child = node.firstChild;
+
             while (typeof child !== 'undefined' && child !== null) {
                 elements.push(child);
 
                 child = child.walk();
+
                 if (child !== null) {
                     while (typeof child !== 'undefined' && child.parent !== node) {
                         child = child.walk();
@@ -1381,11 +1387,10 @@
             for (var i = 0; i < elements.length; i++) {
                 node = elements[i];
 
-                //if (node.name == 'p' && node.firstChild) {
-                if (node.attr('data-mce-word-list') && node.firstChild) {
+                if (node.name == 'p' && node.firstChild) {
                     // remove marker
                     node.attr('data-mce-word-list', null);
-                    
+
                     // Find first text node in paragraph
                     var nodeText = getText(node),
                         type;
@@ -1397,16 +1402,18 @@
                     }
 
                     // Detect ordered lists 1., a. or ixv.
-                    if (type = isNumericList(nodeText)) {
-                        // Parse OL start number
-                        var matches = /([0-9]+)\./.exec(nodeText);
-                        var start = 1;
-                        if (matches) {
-                            start = parseInt(matches[1], 10);
-                        }
+                    if (node.attr('data-mce-word-list')) {
+                        if (type = isNumericList(nodeText)) {
+                            // Parse OL start number
+                            var matches = /([0-9]+)\./.exec(nodeText);
+                            var start = 1;
+                            if (matches) {
+                                start = parseInt(matches[1], 10);
+                            }
 
-                        convertParagraphToLi(node, 'ol', start, type);
-                        continue;
+                            convertParagraphToLi(node, 'ol', start, type);
+                            continue;
+                        }
                     }
 
                     // Convert paragraphs marked as lists but doesn't look like anything
@@ -2130,7 +2137,7 @@
             function pasteText(text) {
                 // encode text and replace returns
                 text = ed.dom.encode(text).replace(/\r\n/g, '\n');
-                
+
                 // convert newlines to block elements
                 text = new Newlines().convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
 
