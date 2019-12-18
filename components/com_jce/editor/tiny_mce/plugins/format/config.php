@@ -40,7 +40,7 @@ class WFFormatPluginConfig
             }
         }
 
-        $convert_urls = $wf->getParam('editor.convert_urls', '');
+        $convert_urls = $wf->getParam('editor.convert_urls', 'relative');
 
         // Relative urls - legacy
         $relative_urls = $wf->getParam('editor.relative_urls');

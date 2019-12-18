@@ -55,7 +55,7 @@
             </field>
         </fieldset>
         <fieldset name="editor.setup">
-            <field name="convert_urls" type="list" default="" label="WF_PARAM_EDITOR_CONVERT_URLS" description="WF_PARAM_EDITOR_CONVERT_URLS_DESC">
+            <field name="convert_urls" type="list" default="relative" label="WF_PARAM_EDITOR_CONVERT_URLS" description="WF_PARAM_EDITOR_CONVERT_URLS_DESC">
                 <option value="">WF_OPTION_NONE</option>
                 <option value="relative">WF_OPTION_RELATIVE</option>
                 <option value="absolute">WF_OPTION_ABSOLUTE</option>
