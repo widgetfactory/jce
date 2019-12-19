@@ -25,7 +25,8 @@ abstract class WFUtility
      */
     public static function getExtension($path)
     {
-        return pathinfo($path, PATHINFO_EXTENSION);
+        $dot = strrpos($path, '.') + 1;
+        return substr($path, $dot);
     }
 
     /**
@@ -370,6 +371,15 @@ abstract class WFUtility
     public static function getSize($file)
     {
         return self::formatSize(@filesize($file));
+    }
+
+    public static function mb_basename($path) {
+        // clean
+        $path = self::cleanPath($path, '/');
+        // get last slash
+        $slash = strrpos($path, '/') + 1;
+        // return basename
+        return substr($path, $slash);
     }
 
     public static function convertEncoding($string)

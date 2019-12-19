@@ -244,7 +244,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             natcasesort($list);
 
             foreach ($list as $item) {
-                $name = WFUtility::convertEncoding(basename($item));
+                $name = WFUtility::mb_basename($item);
+                $name = WFUtility::convertEncoding($name);
 
                 $break = false;
 
@@ -264,6 +265,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
                 if ($depth) {
                     $id = $this->toRelative($item);
+                    $id = WFUtility::convertEncoding($id);
                     $name = $id;
                 }
 
@@ -274,7 +276,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'id' => $id,
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
-                    'type' => 'folders'
+                    'type' => 'folders',
                 );
 
                 $folders[] = $data;
@@ -307,13 +309,15 @@ class WFJoomlaFileSystem extends WFFileSystem
             natcasesort($list);
 
             foreach ($list as $item) {
-                $name = WFUtility::convertEncoding(basename($item));
+                $name = WFUtility::mb_basename($item);
+                $name = WFUtility::convertEncoding($name);
 
                 // create relative file
                 $id = WFUtility::makePath($relative, $name, '/');
 
                 if ($depth) {
                     $id = $this->toRelative($item);
+                    $id = WFUtility::convertEncoding($id);
                     $name = $id;
                 }
 
@@ -329,7 +333,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'files',
-                    'extension' => pathinfo($name, PATHINFO_EXTENSION)
+                    'extension' => WFUtility::getExtension($name)
                 );
 
                 $files[] = $data;
@@ -351,15 +355,15 @@ class WFJoomlaFileSystem extends WFFileSystem
         }
 
         $result = array(
-            'folders'   => array(),
-            'files'     => array()
+            'folders' => array(),
+            'files' => array(),
         );
 
         // get folder list
         $folders = $this->getFolders($relative, '', 0, 0, $sort, 3);
 
         // filter based on passed in query
-        foreach($folders as $folder) {
+        foreach ($folders as $folder) {
             if (preg_match("/$query/u", $folder['id'])) {
                 $result['folders'][] = $folder;
             }
@@ -369,14 +373,14 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // create filter for filetypes
         if (!empty($filestypes)) {
-             $filter .= '\.(?i)(' . implode('|', $filetypes) . ')$';
+            $filter .= '\.(?i)(' . implode('|', $filetypes) . ')$';
         }
 
         // get file list
         $files = $this->getFiles($relative, $filter, 0, 0, $sort, 3);
 
         // filter based on passed in query
-        foreach($files as $files) {
+        foreach ($files as $files) {
             if (preg_match("/$query/u", $files['id'])) {
                 $result['files'][] = $files;
             }
@@ -574,7 +578,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->type = 'folders';
 
             if ($this->countFiles($path) > 0 || $this->countFolders($path) > 0) {
-                $result->message = JText::sprintf('WF_MANAGER_FOLDER_NOT_EMPTY', basename($path));
+                $result->message = JText::sprintf('WF_MANAGER_FOLDER_NOT_EMPTY', WFUtility::mb_basename($path));
             } else {
                 $result->state = JFolder::delete($path);
             }
@@ -652,7 +656,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $file = trim($file, '/');
 
         $src = WFUtility::makePath($this->getBaseDir(), $file);
-        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
+        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, WFUtility::mb_basename($file)));
 
         // check destination path does not fall within a restricted folder
         $this->checkRestrictedDirectory($dest);
@@ -696,7 +700,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $file = trim($file, '/');
 
         $src = WFUtility::makePath($this->getBaseDir(), $file);
-        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, basename($file)));
+        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, WFUtility::mb_basename($file)));
 
         // check destination path does not fall within a restricted folder
         $this->checkRestrictedDirectory($dest);
@@ -847,7 +851,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // create object to pass to joomla event
         $object_file = new JObject(array(
-            'name' => basename($dest),
+            'name' => WFUtility::mb_basename($dest),
             'tmp_name' => $src,
             'filepath' => $dest,
         ));
@@ -863,7 +867,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $app->triggerEvent('onWfFileSystemAfterUpload', array(&$result));
 
         // update $object_file
-        $object_file->name = basename($result->path);
+        $object_file->name = WFUtility::mb_basename($result->path);
         $object_file->filepath = $result->path;
 
         // trigger Joomla event after upload
