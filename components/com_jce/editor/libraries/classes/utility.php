@@ -373,13 +373,14 @@ abstract class WFUtility
         return self::formatSize(@filesize($file));
     }
 
-    public static function mb_basename($path) {
+    public static function mb_basename($path)
+    {
         // clean
         $path = self::cleanPath($path, '/');
-        // get last slash
-        $slash = strrpos($path, '/') + 1;
+        // split path
+        $parts = explode('/', $path);
         // return basename
-        return substr($path, $slash);
+        return end($parts);
     }
 
     public static function convertEncoding($string)
@@ -658,7 +659,7 @@ abstract class WFUtility
         foreach ($array2 as $key => $value) {
             if (self::is_associative_array($value) && array_key_exists($key, $merged) && self::is_associative_array($merged[$key])) {
                 $merged[$key] = self::array_merge_recursive_distinct($merged[$key], $value, $ignore_empty_string);
-            } else {                
+            } else {
                 if (is_null($value)) {
                     continue;
                 }
