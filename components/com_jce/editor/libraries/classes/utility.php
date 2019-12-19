@@ -48,19 +48,17 @@ abstract class WFUtility
      */
     public static function getFilename($path)
     {
-        $info = pathinfo($path);
-
-        // basename should be set
-        if (empty($info['basename'])) {
-            return $path;
+        // check if multibyte string, use basename() if not
+        if (function_exists('mb_strlen')) {
+            if (mb_strlen($path) === strlen($path)) {
+                return pathinfo($path, PATHINFO_FILENAME);
+            }
         }
-
-        // "filename" is empty, posssibly due to incorrect locale
-        if (empty($info['filename'])) {
-            return self::stripExtension($info['basename']);
-        }
-
-        return $info['filename'];
+        // get basename
+        $path = self::mb_basename($path);
+        
+        // remove name without extension
+        return self::stripExtension($path);
     }
 
     public static function cleanPath($path, $ds = DIRECTORY_SEPARATOR, $prefix = '')
@@ -373,12 +371,47 @@ abstract class WFUtility
         return self::formatSize(@filesize($file));
     }
 
-    public static function mb_basename($path)
+    /**
+     * Multi-byte-safe dirname replacement.
+     *
+     * @param string $path A Path
+     * @param int $levels The number of parent directories to go up.
+     * @return string The path of a parent directory.
+     */
+    public static function mb_dirname($path, $levels = 1)
     {
+        // check if multibyte string, use dirname() if not
+        if (function_exists('mb_strlen')) {
+            if (mb_strlen($path) === strlen($path)) {
+                return dirname($path, $levels);
+            }
+        }
+
         // clean
         $path = self::cleanPath($path, '/');
+
+        // get last slash position
+        $slash = strrpos($path, '/') + 1;
+
+        // return dirname
+        return substr($path, 0, $slash);
+    }
+
+    public static function mb_basename($path, $ext = '')
+    {
+        // check if multibyte string, use basename() if not
+        if (function_exists('mb_strlen')) {
+            if (mb_strlen($path) === strlen($path)) {
+                return basename($path, $ext);
+            }
+        }
+
+        // clean
+        $path = self::cleanPath($path, '/');
+
         // split path
         $parts = explode('/', $path);
+
         // return basename
         return end($parts);
     }
