@@ -204,6 +204,9 @@
             // Setup Styles
             Wf.updateStyles();
 
+            // trigger border widget
+            $('#border').change();
+
             // update constrain after applying values
             $('.uk-constrain-checkbox').on('constrain:change', function (e, elms) {
                 $(elms).addClass('uk-isdirty');
