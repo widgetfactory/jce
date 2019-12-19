@@ -18,6 +18,56 @@ if (function_exists('mb_internal_encoding')) {
 abstract class WFUtility
 {
     /**
+     * Multi-byte-safe pathinfo replacement.
+     * Drop-in replacement for pathinfo(), but multibyte- and cross-platform-safe.
+     * 
+     * From PHPMailer - https://github.com/PHPMailer/PHPMailer/blob/v6.1.4/src/PHPMailer.php#L4256-L4302
+     *
+     * @see http://www.php.net/manual/en/function.pathinfo.php#107461
+     *
+     * @param string     $path    A filename or path, does not need to exist as a file
+     * @param int|string $options Either a PATHINFO_* constant,
+     *                            or a string name to return only the specified piece
+     *
+     * @return string|array
+     */
+    public static function mb_pathinfo($path, $options = null)
+    {
+        $ret = ['dirname' => '', 'basename' => '', 'extension' => '', 'filename' => ''];
+        $pathinfo = [];
+        if (preg_match('#^(.*?)[\\\\/]*(([^/\\\\]*?)(\.([^.\\\\/]+?)|))[\\\\/.]*$#m', $path, $pathinfo)) {
+            if (array_key_exists(1, $pathinfo)) {
+                $ret['dirname'] = $pathinfo[1];
+            }
+            if (array_key_exists(2, $pathinfo)) {
+                $ret['basename'] = $pathinfo[2];
+            }
+            if (array_key_exists(5, $pathinfo)) {
+                $ret['extension'] = $pathinfo[5];
+            }
+            if (array_key_exists(3, $pathinfo)) {
+                $ret['filename'] = $pathinfo[3];
+            }
+        }
+        switch ($options) {
+            case PATHINFO_DIRNAME:
+            case 'dirname':
+                return $ret['dirname'];
+            case PATHINFO_BASENAME:
+            case 'basename':
+                return $ret['basename'];
+            case PATHINFO_EXTENSION:
+            case 'extension':
+                return $ret['extension'];
+            case PATHINFO_FILENAME:
+            case 'filename':
+                return $ret['filename'];
+            default:
+                return $ret;
+        }
+    }
+    
+    /**
      * Get the file extension from a path
      *
      * @param  string $path The file path
@@ -56,7 +106,7 @@ abstract class WFUtility
         }
         // get basename
         $path = self::mb_basename($path);
-        
+
         // remove name without extension
         return self::stripExtension($path);
     }
@@ -373,6 +423,7 @@ abstract class WFUtility
 
     /**
      * Multi-byte-safe dirname replacement.
+     * https://gist.github.com/tcyrus/257a1ed93c5e115b7b33426d029b5c5f
      *
      * @param string $path A Path
      * @param int $levels The number of parent directories to go up.
