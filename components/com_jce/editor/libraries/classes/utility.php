@@ -20,7 +20,7 @@ abstract class WFUtility
     /**
      * Multi-byte-safe pathinfo replacement.
      * Drop-in replacement for pathinfo(), but multibyte- and cross-platform-safe.
-     * 
+     *
      * From PHPMailer - https://github.com/PHPMailer/PHPMailer/blob/v6.1.4/src/PHPMailer.php#L4256-L4302
      *
      * @see http://www.php.net/manual/en/function.pathinfo.php#107461
@@ -33,8 +33,17 @@ abstract class WFUtility
      */
     public static function mb_pathinfo($path, $options = null)
     {
-        $ret = ['dirname' => '', 'basename' => '', 'extension' => '', 'filename' => ''];
-        $pathinfo = [];
+        // check if multibyte string, use pathname() if not
+        if (function_exists('mb_strlen')) {
+            if (mb_strlen($path) === strlen($path)) {
+                return pathinfo($path, $options);
+            }
+        }
+
+        $ret = array('dirname' => '', 'basename' => '', 'extension' => '', 'filename' => '');
+
+        $pathinfo = array();
+
         if (preg_match('#^(.*?)[\\\\/]*(([^/\\\\]*?)(\.([^.\\\\/]+?)|))[\\\\/.]*$#m', $path, $pathinfo)) {
             if (array_key_exists(1, $pathinfo)) {
                 $ret['dirname'] = $pathinfo[1];
@@ -49,6 +58,7 @@ abstract class WFUtility
                 $ret['filename'] = $pathinfo[3];
             }
         }
+
         switch ($options) {
             case PATHINFO_DIRNAME:
             case 'dirname':
@@ -66,7 +76,7 @@ abstract class WFUtility
                 return $ret;
         }
     }
-    
+
     /**
      * Get the file extension from a path
      *
