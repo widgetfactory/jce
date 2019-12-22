@@ -933,7 +933,7 @@ class WFEditor
         }
 
         $query = $db->getQuery(true);
-        $query->select('id, template')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
+        $query->select('id, template AS name, params')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
 
         $db->setQuery($query);
         $templates = $db->loadObjectList();
@@ -942,14 +942,165 @@ class WFEditor
 
         foreach ($templates as $template) {
             if ($id == $template->id) {
-                array_unshift($assigned, $template->template);
+                array_unshift($assigned, $template);
             } else {
-                $assigned[] = $template->template;
+                $assigned[] = $template;
             }
         }
 
         // return templates
         return $assigned;
+    }
+
+    private static function getGantryTemplateFiles(&$files, $template)
+    {
+        $path = JPATH_SITE . '/templates/' . $template->name;
+        $name = substr($template->name, strpos($template->name, '_') + 1);
+
+        // not a gantry template
+        if (!is_file($path . '/gantry.config.php') && !is_dir($path . '/gantry')) {
+            return false;
+        }
+
+        // try Gantry5 templates
+        $gantry5 = glob($path . '/custom/css-compiled/' . $name . '_*.css');
+        $gantry4 = glob($path . '/css-compiled/master-*.css');
+
+        if (!empty($gantry5)) {  
+            // update url
+            $url =  'templates/' . $template->name . '/custom/css-compiled';
+            // load gantry base files
+            $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
+            $files[] = 'media/gantry5/engines/nucleus/css-compiled/nucleus.css';
+            // load css files
+            $files[] = $url . '/' . basename($gantry5[0]);
+        }
+
+        if (!empty($gantry4)) {  
+            // update url
+            $url =  'templates/' . $template->name . '/css-compiled';
+            // load gantry bootstrap files
+            $files[] = $url . '/bootstrap.css';
+            // load css files
+            $files[] = $url . '/' . basename($gantry4[0]);
+        }
+    }
+
+    private static function getYOOThemeTemplateFiles(&$files, $template)
+    {
+        if (strpos($template->name, 'yoo') === false) {
+            return false;
+        }
+        
+        $path = JPATH_SITE . '/templates/' . $template->name;
+
+        // not a yootheme template
+        if (!is_dir($path . '/warp') && !is_dir($path . '/vendor/yootheme')) {
+            return false;
+        }
+
+        if (is_dir($path . '/warp')) {
+            $file = $path . '/css/theme.css';
+
+            // add base theme.css file
+            if (is_file($file)) {
+                $files[] = 'templates/' . $template->name . '/css/theme.css';
+            }
+
+            // add custom css file
+            if (is_file($path . '/css/custom.css')) {
+                $files[] = 'templates/' . $template->name . '/css/custom.css';
+            }
+        }
+
+        if (is_dir($path . '/vendor/yootheme')) {
+            $files[] = 'templates/' . $template->name . '/css/theme.css';
+
+            // add custom css file
+            if (is_file($path . '/css/custom.css')) {
+                $files[] = 'templates/' . $template->name . '/css/custom.css';
+            }
+        }
+    }
+
+    private static function getHelixTemplateFiles(&$files, $template)
+    {
+
+    }
+
+    private static function getWrightTemplateFiles(&$files, $template)
+    {
+        $path = JPATH_SITE . '/templates/' . $template->name;
+
+        // not a wright template
+        if (!is_dir($path . '/wright')) {
+            return false;
+        }
+
+        // check editor.css file first
+        $file = $path . '/css/editor.css';
+
+        if (is_file($file) && filesize($file) > 0) {
+            $files[] = 'templates/' . $template->name . '/css/editor.css';
+            return true;
+        }
+
+        // add bootstrap
+        $files[] = 'templates/' . $template->name . '/wright/css/bootstrap.min.css';
+
+        $params = new JRegistry($template->params);
+        $style  = $params->get('style', 'default');
+
+        // check style-custom.css file
+        $file = $path . '/css/style-' . $style . '.css';
+
+        // add base theme.css file
+        if (is_file($file)) {
+            $files[] = 'templates/' . $template->name . '/css/style-' . $style . '.css';
+        }
+    }
+
+    private static function getCoreTemplateFiles(&$files, $template)
+    {
+        // Joomla! 1.5 standard
+        $file = 'template.css';
+        $css = array();
+
+        $path = JPATH_SITE . '/templates/' . $template->name . '/css';
+
+        if (!is_dir($path)) {
+            return false;
+        }
+
+        // check for editor.css file
+        if (is_file($path . '/editor.css')) {
+            // empty file...?
+            if (filesize($path . '/editor.css') > 0) {
+                $files[] = 'templates/' . $template->name . '/css/editor.css';
+
+                return true;
+            }
+        }
+ 
+        $css = JFolder::files($path, '(base|core|template|template_css)\.(css|less)$', false, true);
+
+        if (!empty($css)) {
+            // use the first result
+            $file = $css[0];
+        }
+
+        // check for php version, eg: template.css.php
+        if (is_file($path . '/' . $file . '.php')) {
+            $file .= '.php';
+        }
+
+        // get file name only
+        $file = basename($file);
+
+        // check for default css file
+        if (is_file($path . '/' . $file)) {
+            $files[] = 'templates/' . $template->name . '/css/' . $file;
+        }
     }
 
     private static function getTemplateStyleSheetsList($absolute = false)
@@ -973,7 +1124,7 @@ class WFEditor
 
         foreach ($templates as $item) {
             // Template CSS
-            $path = JPATH_SITE . '/templates/' . $item . '/css';
+            $path = JPATH_SITE . '/templates/' . $item->name;
 
             // get the first path that exists
             if (is_dir($path)) {
@@ -981,7 +1132,7 @@ class WFEditor
                 $template = $item;
 
                 // assign url
-                $url = 'templates/' . $template . '/css';
+                $url = 'templates/' . $item->name . '/css';
 
                 break;
             }
@@ -1012,7 +1163,7 @@ class WFEditor
                     }
 
                     // Replace $template variable with site template name
-                    $tmp = str_replace('$template', $template, $tmp);
+                    $tmp = str_replace('$template', $template->name, $tmp);
 
                     // external url
                     if (strpos($tmp, '://') !== false) {
@@ -1043,30 +1194,16 @@ class WFEditor
                 break;
             // Template css (template.css or template_css.css)
             case 1:
-                // Joomla! 1.5 standard
-                $file = 'template.css';
-                $css = array();
+                $files = array();
 
-                if (JFolder::exists($path)) {
-                    $css = JFolder::files($path, '(base|core|theme|template|template_css)\.(css|less)$', false, true);
+                foreach(array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright') as $name) {
+                    $method = 'get' . $name . 'TemplateFiles';
+                    self::$method($files, $template);
                 }
 
-                if (!empty($css)) {
-                    // use the first result
-                    $file = $css[0];
-                }
+                // clean up $files array
+                $files = array_unique($files);
 
-                // check for editor.css file
-                if (JFile::exists($path . '/editor.css')) {
-                    $file = 'editor.css';
-                }
-
-                // check for php version
-                if (JFile::exists($file . '.php')) {
-                    $file = $file . '.php';
-                }
-
-                $files[] = $url . '/' . basename($file);
                 break;
             // Nothing, use editor default
             case 2:
@@ -1093,7 +1230,7 @@ class WFEditor
                     }
 
                     // Replace $template variable with site template name (defaults to 'system')
-                    $tmp = str_replace('$template', $template, $tmp);
+                    $tmp = str_replace('$template', $template->name, $tmp);
 
                     $list = array();
 
