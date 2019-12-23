@@ -78,6 +78,12 @@
                 if (option.selected) {
                     updateComboBox(option);
                 }
+            }).on('change.datalist', function(e, o) {
+                if (o && o.internal) {
+                    return;
+                }
+
+                $(this).trigger('datalist:update');
             });
 
             function removeTag(tag) {
@@ -89,7 +95,7 @@
                 });
 
                 // udpate select
-                $(select).trigger('change');
+                $(select).trigger('change', {internal : true});
 
                 // remove tag
                 $(tag).remove();
@@ -162,7 +168,7 @@
                 });
 
                 // trigger change
-                $(select).trigger('change');
+                $(select).trigger('change', {internal : true});
             }
 
             function selectMenuItem(e) {
