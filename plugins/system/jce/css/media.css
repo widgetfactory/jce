@@ -1,16 +1,30 @@
 .field-media-wrapper .modal {
     height: 90vh;
 }
+
 .field-media-wrapper .modal div.modal-body {
     max-height: 100% !important;
     width: 100%;
     overflow: hidden;
     padding: 0;
 }
+
 .field-media-wrapper .modal .modal-body iframe[name="field-media-modal"] {
     height: calc(90vh - 54px) !important;
     max-height: 100vh;
 }
+
 .field-media-wrapper .modal .modal-footer {
-	display: none;
+    display: none;
+}
+
+/* custom margin and padding on these elements can cause unexpected layout issues with the filebrowser */
+#sbox-window {
+    padding: 5px !important;
+}
+
+#sbox-window #sbox-content,
+#sbox-window #sbox-content iframe {
+    margin: 0 !important;
+    padding: 0 !important;
 }
