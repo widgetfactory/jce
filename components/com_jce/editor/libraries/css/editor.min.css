@@ -47,6 +47,7 @@
 .wf-editor-container {
     position: relative;
     width: 100%;
+    min-width: 280px;
     box-sizing: border-box;
 }
 
