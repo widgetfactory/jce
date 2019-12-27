@@ -415,7 +415,13 @@
                     return;
                 }
 
+                // dropdown button
                 if (e.target === btn.get(0)) {
+                    return;
+                }
+
+                // menu box, including scrollbar
+                if (e.target === menu.get(0)) {
                     return;
                 }
 
