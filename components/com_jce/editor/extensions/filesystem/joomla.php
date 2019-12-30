@@ -349,11 +349,6 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function searchItems($relative, $query = '', $filetypes = array(), $sort = '', $depth = 3)
     {
-        // we can't realistically search recursively with ftp...
-        if ($this->isFtp()) {
-            return $this->getItems($relative, $query, $sort);
-        }
-
         $result = array(
             'folders' => array(),
             'files' => array(),
