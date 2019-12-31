@@ -124,10 +124,12 @@
                 var $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
 
                 if (inst && inst.setValue) {
-                    return inst.setValue(value);
+                    inst.setValue(value);
+                } else {
+                    $(elm).val(value).trigger('change');
                 }
 
-                $(elm).val(value).trigger('change');
+                return true;
             }
 
             function getModalURL() {
@@ -174,7 +176,7 @@
                     $(elm).prop('disabled', false).removeAttr('disabled').removeClass('wf-media-upload-busy');
 
                     try {
-                        var o = JSON.parse(response), error = 'The server returned an invalid JSON response';
+                        var o = JSON.parse(response), error = 'Unable to upload file';
 
                         // valid json
                         if ($.isPlainObject(o)) {
@@ -188,10 +190,8 @@
                                 var files = r.files || [], item = files.length ? files[0] : {};
 
                                 if (item.file) {
-                                    insertFile(item.file);
+                                    return insertFile(item.file);
                                 }
-
-                                return true;
                             }
                         }
 
@@ -202,6 +202,8 @@
                     }
                 }, function () {
                     $(elm).prop('disabled', false).removeAttr('disabled').removeClass('wf-media-upload-busy');
+
+                    return false;
                 });
             }
 
