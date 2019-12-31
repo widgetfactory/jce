@@ -48,6 +48,10 @@
     cursor: pointer;
 }
 
-.wf-media-upload-hover {
-    background: #eee;
+input.wf-media-upload-hover {
+    background-color: #eee;
+}
+
+input.wf-media-upload-busy {
+    background-color: #eee;
 }

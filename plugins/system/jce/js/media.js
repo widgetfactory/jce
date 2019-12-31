@@ -100,20 +100,9 @@
         });
     }
 
-    function insertFile(elm, value) {
-        // Joomla 3.5.x / 4.x Media Field
-        var $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
-
-        if (inst && inst.setValue) {
-            return inst.setValue(value);
-        }
-
-        $(elm).val(value).trigger('change');
-    }
-
     function checkMimeType(file, filter) {
         filter = filter.replace(/[^\w_,]/gi, '').toLowerCase();
-        
+
         var map = {
             'images': 'jpg,jpeg,png,gif,webp',
             'media': 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
@@ -128,22 +117,37 @@
 
     $.fn.WfMediaUpload = function () {
         return this.each(function () {
-            var elm = this;
+            var elm = document.getElementById(this.id) || this;
 
-            function uploadAndInsert(file) {
-                href = $(elm).siblings('a.modal').attr('href');
+            function insertFile(value) {
+                // Joomla 3.5.x / 4.x Media Field
+                var $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
 
-                // no url specified
-                if (!href) {
-                    return false;
+                if (inst && inst.setValue) {
+                    return inst.setValue(value);
                 }
 
+                $(elm).val(value).trigger('change');
+            }
+
+            function getModalURL() {
+                // Joomla 3.5.x / 4.x Media Field
+                var $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
+
+                if (inst && inst.url) {
+                    return inst.url;
+                }
+
+                return $(elm).siblings('a.modal').attr('href');
+            }
+
+            function uploadAndInsert(file) {
                 // not a valid upload
                 if (!file.name) {
                     return false;
                 }
 
-                var params = parseUrl(href), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter'];
+                var url = getModalURL(elm), params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter'];
 
                 if (!checkMimeType(file, params.filter || 'images')) {
                     alert('The selected file is not supported.');
@@ -163,7 +167,12 @@
 
                 url += '&' + $.param(params);
 
+                // set disabled
+                $(elm).prop('disabled', true).addClass('wf-media-upload-busy');
+
                 upload(url, file).then(function (response) {
+                    $(elm).prop('disabled', false).removeAttr('disabled').removeClass('wf-media-upload-busy');
+
                     try {
                         var o = JSON.parse(response), error = 'The server returned an invalid JSON response';
 
@@ -179,7 +188,7 @@
                                 var files = r.files || [], item = files.length ? files[0] : {};
 
                                 if (item.file) {
-                                    insertFile(elm, item.file);
+                                    insertFile(item.file);
                                 }
 
                                 return true;
@@ -191,12 +200,14 @@
                     } catch (e) {
                         alert('The server returned an invalid JSON response');
                     }
+                }, function () {
+                    $(elm).prop('disabled', false).removeAttr('disabled').removeClass('wf-media-upload-busy');
                 });
             }
 
             var $btn = $('<a title="Upload" class="btn wf-media-upload-button" role="button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
 
-            $('input', $btn).on('change', function () {
+            $('input[type="file"]', $btn).on('change', function () {
                 if (this.files) {
                     var file = this.files[0];
 
