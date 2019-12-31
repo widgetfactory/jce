@@ -60,6 +60,11 @@
                                     size: 'mce-modal-landscape-full',
                                     addver: false
                                 });
+                                
+                                // pass the windowManager object as the current Joomla Modal window
+                                if (window.Joomla && window.Joomla.Modal) {
+                                    window.Joomla.Modal.setCurrent(ed.windowManager);
+                                }
                             }
 
                             if (item.onclick) {
