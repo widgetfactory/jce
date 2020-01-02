@@ -235,7 +235,7 @@
         "title": "WF_SOURCE_TITLE",
         "description": "WF_SOURCE_DESC",
         "icon": "",
-        "editable": 0,
+        "editable": 1,
         "row": 0,
         "core": 1
     },
