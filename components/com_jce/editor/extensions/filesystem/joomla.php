@@ -620,6 +620,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->type = 'files';
             $result->state = JFile::move($src, $path);
             $result->path = $path;
+            // include original source path
+            $result->source = $src;
         } elseif (is_dir($src)) {
             $path = WFUtility::makePath($dir, $dest);
 
@@ -631,6 +633,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->type = 'folders';
             $result->state = JFolder::move($src, $path);
             $result->path = $path;
+            // include original source path
+            $result->source = $src;
         }
 
         JFactory::getApplication()->triggerEvent('onWfFileSystemAfterRename', array(&$result));
@@ -665,6 +669,9 @@ class WFJoomlaFileSystem extends WFFileSystem
         if (is_file($src)) {
             $result->type = 'files';
             $result->state = JFile::copy($src, $dest);
+            $result->path = $dest;
+            // include original source path
+            $result->source = $src;
         } elseif (is_dir($src)) {
             // Folders cannot be copied into themselves as this creates an infinite copy / paste loop
             if ($file === $destination) {
@@ -675,6 +682,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->type = 'folders';
             $result->state = JFolder::copy($src, $dest);
             $result->path = $dest;
+            // include original source path
+            $result->source = $src;
         }
 
         JFactory::getApplication()->triggerEvent('onWfFileSystemAfterCopy', array(&$result));
@@ -710,6 +719,9 @@ class WFJoomlaFileSystem extends WFFileSystem
             if (is_file($src)) {
                 $result->type = 'files';
                 $result->state = JFile::move($src, $dest);
+                $result->path = $dest;
+                // include original source path
+                $result->source = $src;
             } elseif (is_dir($src)) {
                 // Folders cannot be copied into themselves as this creates an infinite copy / paste loop
                 if ($file === $destination) {
@@ -720,6 +732,8 @@ class WFJoomlaFileSystem extends WFFileSystem
                 $result->type = 'folders';
                 $result->state = JFolder::move($src, $dest);
                 $result->path = $dest;
+                // include original source path
+                $result->source = $src;
             }
         }
 
