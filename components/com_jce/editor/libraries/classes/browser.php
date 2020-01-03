@@ -419,6 +419,7 @@ class WFFileBrowser extends JObject
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
         $list = array_filter($list, function ($item) {
+            // must have an id set
             if (empty($item['id'])) {
                 return true;
             }
