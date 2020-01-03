@@ -94,7 +94,7 @@
             var isPatternsDirty = true,
                 patterns;
 
-            var use_markdown = !!editor.settings.textpattern_use_markdown;
+            var use_markdown = editor.getParam('textpattern_use_markdown', true);
 
             // load "marked"
             if (use_markdown) {
@@ -560,14 +560,29 @@
 
                 if (editor.plugins.clipboard) {
                     editor.onGetClipboardContent.add(function (ed, clipboard) {
-                        var text = clipboard["text/plain"] || "",
-                            html = clipboard["text/html"] || "";
+                        var text = clipboard["text/plain"] || "";
+
                         // only supports plain text paste
-                        if (text && !html) {
+                        if (text) {
                             markdown = toHtml(text);
 
                             if (markdown !== text) {
                                 clipboard["text/html"] = markdown;
+                            }
+                        }
+                    });
+
+                    editor.onBeforeExecCommand.add(function (editor, cmd, ui, v, o) {
+                        if (cmd === 'mceInsertClipboardContent') {
+                            var text = v.text || '';
+
+                            if (text) {
+                                markdown = toHtml(text);
+
+                                if (markdown !== text) {
+                                    v.content = markdown;
+                                    v.text = '';
+                                }
                             }
                         }
                     });
