@@ -6,7 +6,7 @@
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
- * Adapted for JCE 2.6 / TinyMCE 3.3.x
+ * Adapted for JCE 2.x / TinyMCE 3.3.x
  */
 
 /*global tinymce:true */
@@ -220,27 +220,27 @@
             },
             //{ start: '[', end: ')', format: 'markdownlink' },
             {
-                start: '#',
+                start: '# ',
                 format: 'h1'
             },
             {
-                start: '##',
+                start: '## ',
                 format: 'h2'
             },
             {
-                start: '###',
+                start: '### ',
                 format: 'h3'
             },
             {
-                start: '####',
+                start: '#### ',
                 format: 'h4'
             },
             {
-                start: '#####',
+                start: '##### ',
                 format: 'h5'
             },
             {
-                start: '######',
+                start: '###### ',
                 format: 'h6'
             },
             {
