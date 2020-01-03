@@ -2725,6 +2725,7 @@ select.mceNativeListBox {
     height: auto;
     line-height: 1.5;
     resize: vertical;
+    white-space: pre-wrap;
 }
 
 .mceModal .mceModalContent input[type]:focus,
