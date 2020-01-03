@@ -300,7 +300,10 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = $this->getBaseDir();
         }
 
-        $list = JFolder::files($path, $filter, $depth, true);
+        // excluded files
+        $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html');
+
+        $list = JFolder::files($path, $filter, $depth, true, $exclude);
 
         $files = array();
 
@@ -333,7 +336,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'files',
-                    'extension' => WFUtility::getExtension($name)
+                    'extension' => WFUtility::getExtension($name),
                 );
 
                 $files[] = $data;
