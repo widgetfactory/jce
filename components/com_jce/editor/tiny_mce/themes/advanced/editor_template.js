@@ -484,13 +484,13 @@
                 i, tb, ed = self.editor,
                 s = self.settings,
                 v, cf = ed.controlManager,
-                di, n, h = [],
+                n, h = [],
                 a, toolbarGroup, toolbarsExist = false;
 
             toolbarGroup = cf.createToolbarGroup('toolbargroup', {
                 'name': ed.getLang('advanced.toolbar'),
                 'tab_focus_toolbar': ed.getParam('theme_tab_focus_toolbar'),
-                class: 'Toolbar'
+                class: 'ToolbarGroup'
             });
 
             self.toolbarGroup = toolbarGroup;
@@ -498,7 +498,7 @@
             a = s.theme_toolbar_align.toLowerCase();
             a = cf.classPrefix + self._ufirst(a);
 
-            DOM.add(c, 'div', {
+            n = DOM.add(c, 'div', {
                 'class': cf.classPrefix + 'Toolbar ' + a,
                 "role": "toolbar"
             });
@@ -535,7 +535,7 @@
 
             h.push(toolbarGroup.renderHTML());
 
-            DOM.setHTML(c, h.join(''));
+            DOM.setHTML(n, h.join(''));
         },
 
         _addStatusBar: function (tb, o) {
