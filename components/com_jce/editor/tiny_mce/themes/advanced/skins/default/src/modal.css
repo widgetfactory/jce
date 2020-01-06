@@ -483,7 +483,7 @@
 .mceModal .mceModalContent label {
     line-height: 1.25;
     width: 96px;
-    margin-right: 8px;
+    margin: 0 8px;
 }
 
 .mceModal .mceModalContent .mceModalStack label {
@@ -504,6 +504,8 @@
 .mceModal .mceModalContent .mceModalControl {
     flex: 1;
     margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .mceModal .mceModalContent .mceModalFlexNone {
