@@ -129,13 +129,26 @@
 }
 
 .mceDefaultSkin .mceIframeContainer {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
     position: relative;
 }
 
 .mceDefaultSkin .mceToolbar {
     width: auto !important;
+    border-bottom: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceToolbar:last-child {
+    border-bottom: 0 none;
+    border-top: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceIframeContainer:first-child {
+    border-bottom: 1px solid #ddd;
+    border-bottom: 0 none;
+}
+
+.mceDefaultSkin .mceIframeContainer:last-child {
+    border-top: 1px solid #ddd;
 }
 
 /* Separator */
@@ -165,6 +178,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.mceDefaultSkin .mceStatusbar:first-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceIframeContainer + .mceStatusbar {
+    border-top: 1px solid #ddd;
 }
 
 .defaultSkin .mceStatusbar:empty {
@@ -2743,7 +2764,7 @@ select.mceNativeListBox {
 .mceModal .mceModalContent label {
     line-height: 1.25;
     width: 96px;
-    margin-right: 8px;
+    margin: 0 8px;
 }
 
 .mceModal .mceModalContent .mceModalStack label {
@@ -2764,6 +2785,8 @@ select.mceNativeListBox {
 .mceModal .mceModalContent .mceModalControl {
     flex: 1;
     margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .mceModal .mceModalContent .mceModalFlexNone {

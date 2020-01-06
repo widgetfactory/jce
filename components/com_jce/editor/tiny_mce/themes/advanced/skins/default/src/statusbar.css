@@ -12,6 +12,14 @@
     align-items: center;
 }
 
+.mceDefaultSkin .mceStatusbar:first-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceIframeContainer + .mceStatusbar {
+    border-top: 1px solid #ddd;
+}
+
 .defaultSkin .mceStatusbar:empty {
     line-height: inherit;
     height: inherit;
