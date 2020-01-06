@@ -132,6 +132,8 @@ class WFBrowserPlugin extends WFMediaManager
 
     public function onUpload($file, $relative = '')
     {
+        parent::onUpload($file, $relative);
+        
         $app = JFactory::getApplication();
 
         // inline upload
