@@ -1,6 +1,6 @@
 <?php
 /**
- *  @copyright Copyright (c)2016 - 2019 Ryan Demmer
+ *  @copyright Copyright (c)2016 - 2020 Ryan Demmer
  *  @license GNU General Public License version 2, or later
  */
 defined('_JEXEC') or die;
