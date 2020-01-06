@@ -452,7 +452,7 @@
 .mceModal .mceModalContent select:disabled,
 .mceModal .mceModalContent select option:disabled {
     color: #888;
-    background: #eee;
+    background-color: #eee;
     cursor: not-allowed;
 }
 
@@ -472,7 +472,7 @@
 .mceModal .mceModalContent textarea:focus {
     border-color: #66afe9;
     outline: 0;
-    background: #f5fbfe;
+    background-color: #f5fbfe;
     color: #444;
 }
 
@@ -483,7 +483,7 @@
 .mceModal .mceModalContent label {
     line-height: 1.25;
     width: 96px;
-    margin: 0 8px;
+    margin-right: 8px;
 }
 
 .mceModal .mceModalContent .mceModalStack label {
