@@ -1380,6 +1380,9 @@
             // Build the file / folder list
             this._buildList(o);
 
+            this._resetStatus();
+            this._resetMessage();
+
             // Alternate loadList function
             this._trigger('onAfterBuildList', null, o);
 
@@ -1397,8 +1400,6 @@
             // trigger "load" event on browser list
             $('#browser-list').trigger('load');
 
-            this._resetStatus();
-            this._resetMessage();
             this._trigger('onListComplete');
         },
         _getDialogOptions: function (dialog) {

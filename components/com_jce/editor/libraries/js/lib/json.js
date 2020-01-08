@@ -164,7 +164,7 @@
                         }
                     }
                 } else {
-                    o = { 'error': '' };
+                    showError('The server returned an invalid JSON response.');
                 }
 
                 // clear instance
