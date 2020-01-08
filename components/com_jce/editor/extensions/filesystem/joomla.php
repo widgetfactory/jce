@@ -244,6 +244,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             natcasesort($list);
 
             foreach ($list as $item) {
+                $item = rawurldecode($item);
+                
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
@@ -311,7 +313,9 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Sort alphabetically by default
             natcasesort($list);
 
-            foreach ($list as $item) {
+            foreach ($list as $item) {                
+                $item = rawurldecode($item);
+                
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
