@@ -14,6 +14,39 @@
         init: function (ed, url) {
             var self = this;
             self.editor = ed;
+
+            ed.onInit.add(function() {
+                var jModalCloseCore = window.jModalClose;
+                
+                // Joomla modal override
+                window.jModalClose = function() {
+                    var wm = tinymce.activeEditor.windowManager;
+
+                    // if a windowManager window is open...
+                    if (wm.count) {
+                        return wm.close();
+                    }
+                    
+                    // otherwise treat as a Joomla modal
+                    return jModalCloseCore();
+                };
+
+                if (window.SqueezeBox) {
+                    var SBoxClose = window.SqueezeBox.close;
+
+                    window.SqueezeBox.close = function() {
+                        var wm = tinymce.activeEditor.windowManager;
+
+                        // if a windowManager window is open...
+                        if (wm.count) {
+                            return wm.close();
+                        }
+                        
+                        // otherwise treat as a SqueezeBox modal
+                        return SBoxClose();
+                    };
+                }        
+            });
         },
 
         createControl: function (n, cm) {
