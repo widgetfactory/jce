@@ -27,6 +27,7 @@
     line-height: 1;
     text-align: center;
     min-width: 1em;
+    max-width: inherit;
     background: none;
 }
 
