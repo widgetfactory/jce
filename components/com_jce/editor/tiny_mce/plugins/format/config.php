@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2020 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2020 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -40,30 +40,37 @@ class WFFormatPluginConfig
             }
         }
 
-        $convert_urls = $wf->getParam('editor.convert_urls', 'relative');
+        $convert_urls = $wf->getParam('editor.convert_urls');
 
         // Relative urls - legacy
         $relative_urls = $wf->getParam('editor.relative_urls');
 
-        // cast numeric string or float to integer
-        if (is_numeric($relative_urls)) {
+        // if a legacy value is set as a numeric value, and convert_urls is not, then process legacy value
+        if (is_numeric($relative_urls) && empty($convert_urls)) {
             $relative_urls = intval($relative_urls);
+
+            if ($relative_urls === 1) {
+                $convert_urls = 'relative';
+            }
+
+            if ($relative_urls === 0) {
+                $convert_urls = 'absolute';
+            }
         }
 
-        if ($relative_urls === 1 || $convert_urls === 'relative') {
-            $settings['relative_urls'] = true;
-        }
-
-        // absolute urls
-        if ($relative_urls === 0 || $convert_urls === 'absolute') {
-            $settings['relative_urls'] = false;
-            $settings['remove_script_host'] = false;
-        }
-
-        // mixed urls - the new default
-        if (empty($convert_urls)) {
-            $settings['mixed_urls'] = true;
-            $settings['remove_script_host'] = false;
+        switch ($convert_urls) {
+            default:
+            case 'relative':
+                $settings['relative_urls'] = true;
+                break;
+            case 'absolute':
+                $settings['relative_urls'] = false;
+                $settings['remove_script_host'] = false;
+                break;
+            case 'none':
+                $settings['mixed_urls'] = true;
+                $settings['remove_script_host'] = false;
+                break;
         }
     }
 }

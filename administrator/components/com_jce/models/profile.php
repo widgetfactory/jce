@@ -80,7 +80,7 @@ class JceModelProfile extends JModelAdmin
                 $config['editor']['toolbar_theme'] = 'default.touch';
             }
     
-            if (isset($config['editor']['relative_urls'])) {
+            if (isset($config['editor']['relative_urls']) && !isset($config['editor']['convert_urls'])) {
                 $config['editor']['convert_urls'] = $config['editor']['relative_urls'] == 0 ? 'absolute' : 'relative';
             }
         }
