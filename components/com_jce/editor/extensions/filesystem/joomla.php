@@ -315,12 +315,17 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             foreach ($list as $item) {                
                 $item = rawurldecode($item);
-                
+
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
                 // create relative file
                 $id = WFUtility::makePath($relative, $name, '/');
+
+                // check for file validity - prevent display of files with invalid encoding that have been "cleaned"
+                if (!is_file(WFUtility::makePath($this->getBaseDir(), $id, '/'))) {
+                    continue;
+                }
 
                 if ($depth) {
                     $id = $this->toRelative($item);
