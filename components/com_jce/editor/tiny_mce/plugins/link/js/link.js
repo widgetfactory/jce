@@ -337,7 +337,7 @@
                 $('#rev').parent().parent().hide();
             }
 
-            $('select:not(.uk-datalist)').datalist({'input' : false}).trigger('datalist:update');
+            $('select').datalist().trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');

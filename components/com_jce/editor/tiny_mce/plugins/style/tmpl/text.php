@@ -11,13 +11,13 @@ defined('JPATH_PLATFORM') or die;
 ?>
 <div class="uk-form-row uk-grid uk-grid-small">
   <label for="text_font" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_FONT'); ?></label>
-    <div class="uk-form-controls uk-width-8-10"><select id="text_font" class="uk-datalist"></select></div>
+    <div class="uk-form-controls uk-width-8-10"><input type="text" id="text_font" class="uk-datalist" list="text_font_datalist" /><datalist id="text_font_datalist"></datalist></div>
 </div>
 <div class="uk-form-row uk-grid uk-grid-small">
     <label for="text_size" class="uk-form-label uk-width-2-10"><?php echo JText::_('WF_STYLES_TEXT_SIZE'); ?></label>
 
       <div class="uk-form-controls uk-width-2-10">
-        <select id="text_size" class="uk-datalist"></select>
+        <input type="text" id="text_size" class="uk-datalist" list="text_size_datalist" /><datalist id="text_size_datalist"></datalist>
       </div>
       <div class="uk-form-controls uk-width-2-10">
         <select id="text_size_measurement"></select>
@@ -31,7 +31,7 @@ defined('JPATH_PLATFORM') or die;
       <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="text_style"><?php echo JText::_('WF_STYLES_TEXT_STYLE'); ?></label>
             <div class="uk-form-controls uk-width-4-10">
-              <select id="text_style" class="uk-datalist"></select>
+              <input type="text" id="text_style" class="uk-datalist" list="text_style_datalist" /><datalist id="text_style_datalist"></datalist>
             </div>
           <div class="uk-width-4-10">
             <label class="uk-form-label uk-width-3-10" for="text_variant"><?php echo JText::_('WF_STYLES_TEXT_VARIANT'); ?></label>
@@ -43,7 +43,7 @@ defined('JPATH_PLATFORM') or die;
       <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-2-10" for="text_lineheight"><?php echo JText::_('WF_STYLES_TEXT_LINEHEIGHT'); ?></label>
             <div class="uk-form-row uk-width-2-10">
-                <select id="text_lineheight" class="uk-datalist"></select>
+                <input type="text" id="text_lineheight" class="uk-datalist" list="text_lineheight_datalist" /><datalist id="text_lineheight_datalist"></datalist>
             </div>
             <div class="uk-form-controls uk-width-2-10">
               <select id="text_lineheight_measurement" ></select>

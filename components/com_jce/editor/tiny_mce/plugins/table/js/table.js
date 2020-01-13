@@ -269,7 +269,7 @@
                     break;
             }
 
-            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
+            $('.uk-form-controls select').datalist().trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');
@@ -306,6 +306,9 @@
 
                 // create array
                 values = values.split(' ');
+
+                // update datalist or select
+                n = this.list || n;
 
                 $.each(values, function (i, value) {
                     value = $.trim(value);
@@ -399,6 +402,9 @@
             if (action == "update") {
                 $('#cols, #rows').prop('disabled', true);
             }
+
+            // trigger datalist init/update
+            $('.uk-datalist').trigger('datalist:update');
         },
         initRow: function () {
             var self = this,

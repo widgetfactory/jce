@@ -21,28 +21,28 @@ defined('JPATH_PLATFORM') or die;
     <div class="uk-form-row uk-grid uk-grid-small">
       <label for="border_style_top" class="uk-form-label uk-width-3-10"><?php echo JText::_('WF_STYLES_TOP'); ?></label>
       <div class="uk-form-controls uk-width-7-10">
-        <select id="border_style_top" class="uk-datalist"></select>
+        <input type="text" id="border_style_top" class="uk-datalist" list="border_style_top_datalist" /><datalist id="border_style_top_datalist"></datalist>
       </div>
     </div>
 
     <div class="uk-form-row uk-grid uk-grid-small">
       <label for="border_style_right" class="uk-form-label uk-width-3-10"><?php echo JText::_('WF_STYLES_RIGHT'); ?></label>
       <div class="uk-form-controls uk-width-7-10">
-        <select id="border_style_right" class="uk-datalist"></select>
+        <input type="text" id="border_style_right" class="uk-datalist" list="border_style_right_datalist" /><datalist id="border_style_right_datalist"></datalist>
       </div>
     </div>
 
     <div class="uk-form-row uk-grid uk-grid-small">
       <label for="border_style_bottom" class="uk-form-label uk-width-3-10"><?php echo JText::_('WF_STYLES_BOTTOM'); ?></label>
       <div class="uk-form-controls uk-width-7-10">
-        <select id="border_style_bottom" class="uk-datalist"></select>
+        <input type="text" id="border_style_bottom" class="uk-datalist" list="border_style_bottom_datalist" /><datalist id="border_style_bottom_datalist"></datalist>
       </div>
     </div>
 
     <div class="uk-form-row uk-grid uk-grid-small">
       <label for="border_style_left" class="uk-form-label uk-width-3-10"><?php echo JText::_('WF_STYLES_LEFT'); ?></label>
       <div class="uk-form-controls uk-width-7-10">
-        <select id="border_style_left" class="uk-datalist"></select>
+        <input type="text" id="border_style_left" class="uk-datalist" list="border_style_left_datalist" /><datalist id="border_style_left_datalist"></datalist>
       </div>
     </div>
   </fieldset>
@@ -57,7 +57,7 @@ defined('JPATH_PLATFORM') or die;
 
       <div class="uk-form-row uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10">
-          <select id="border_width_top" class="uk-datalist"></select>
+          <input type="text" id="border_width_top" class="uk-datalist" list="border_width_top_datalist" /><datalist id="border_width_top_datalist"></datalist>
         </div>
         <div class="uk-form-controls uk-width-5-10">
           <select id="border_width_top_measurement" ></select>
@@ -66,7 +66,7 @@ defined('JPATH_PLATFORM') or die;
 
       <div class="uk-form-row uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10">
-          <select id="border_width_right" class="uk-datalist"></select>
+          <input type="text" id="border_width_right" class="uk-datalist" list="border_width_right_datalist" /><datalist id="border_width_right_datalist"></datalist>
         </div>
         <div class="uk-form-controls uk-width-5-10">
           <select id="border_width_right_measurement" ></select>
@@ -75,7 +75,7 @@ defined('JPATH_PLATFORM') or die;
 
       <div class="uk-form-row uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10">
-          <select id="border_width_bottom" class="uk-datalist"></select>
+          <input type="text" id="border_width_bottom" class="uk-datalist" list="border_width_bottom_datalist" /><datalist id="border_width_bottom_datalist"></datalist>
         </div>
         <div class="uk-form-controls uk-width-5-10">
           <select id="border_width_bottom_measurement" ></select>
@@ -84,7 +84,7 @@ defined('JPATH_PLATFORM') or die;
 
       <div class="uk-form-row uk-grid uk-grid-small">
         <div class="uk-form-controls uk-width-5-10">
-          <select id="border_width_left" class="uk-datalist"></select>
+          <input type="text" id="border_width_left" class="uk-datalist" list="border_width_left_datalist" /><datalist id="border_width_left_datalist"></datalist>
         </div>
         <div class="uk-form-controls uk-width-5-10">
           <select id="border_width_left_measurement" ></select>

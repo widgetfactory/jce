@@ -19,7 +19,8 @@ defined('JPATH_PLATFORM') or die;
     <label for="classlist" class="hastip uk-form-label uk-width-1-1 uk-width-small-3-10"
            title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
     <div class="uk-form-controls uk-width-1-1 uk-width-small-7-10">
-        <select id="classes" class="uk-datalist" multiple="multiple"></select>
+        <input type="text" id="classes" class="uk-datalist" multiple="multiple" list="classes_datalist" />
+        <datalist id="classes_datalist"></datalist>
     </div>
 </div>
 <div class="uk-form-row uk-grid uk-grid-small">

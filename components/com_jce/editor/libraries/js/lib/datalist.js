@@ -21,12 +21,16 @@
     $.fn.datalist = function (settings) {
         settings = $.extend({
             "seperator": " ",
-            "input": true,
             "loading": "Loading..."
         }, settings);
 
         return this.each(function () {
             var select = this, options = [], multiple = $(this).prop('multiple'), id = $(this).attr('id');
+
+            // an input node requires an associated datalist
+            if (this.nodeName === 'INPUT' && !this.list) {
+                return false;
+            }
 
             // wrap in control div
             $(this).wrap('<div class="uk-datalist-control" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-owns="' + id + '_datalist_menu" data-label-loading="' + settings.loading + '" />');
@@ -49,7 +53,8 @@
             // wrap combobox elements
             var combobox = $('<div class="uk-datalist-combobox" />').appendTo(container).append([input, btn]);
 
-            if (!settings.input) {
+            // not a datalist
+            if (this.nodeName === 'SELECT') {
                 $(combobox).addClass('uk-datalist-placeholder');
                 $(input).prop('readonly', true).attr('placeholder', '');
             }
@@ -78,7 +83,7 @@
                 if (option.selected) {
                     updateComboBox(option);
                 }
-            }).on('change.datalist', function(e, o) {
+            }).on('change.datalist', function (e, o) {
                 if (o && o.internal) {
                     return;
                 }
@@ -86,16 +91,37 @@
                 $(this).trigger('datalist:update');
             });
 
+            $(select).on('datalist:clear', function () {
+                // clear input
+                $(input).val();
+                // clear menu
+                $('ul', menu).empty();
+            });
+
             function removeTag(tag) {
-                // remove from select values
-                $('option', select).each(function () {
-                    if (this.value === $(tag).val()) {
-                        this.selected = false;
+                var values = $(select).val();
+
+                if (typeof values === 'string') {
+                    values = values.split(settings.seperator);
+                }
+
+                values = values.filter(function(value) {                    
+                    if (value !== $(tag).val()) {
+                        return true;
                     }
                 });
 
+                // remove from select values
+                $(select).val(function() {
+                    if (this.nodeName === 'INPUT') {
+                        return values.join(settings.seperator);
+                    }
+
+                    return values;
+                });
+
                 // udpate select
-                $(select).trigger('change', {internal : true});
+                $(select).trigger('change', { internal: true });
 
                 // remove tag
                 $(tag).remove();
@@ -107,6 +133,19 @@
                 if (multiple) {
                     // clear input and focus
                     $(input).val('');
+
+                    var found = false;
+
+                    // tag already exists
+                    $('button', container).each(function() {
+                        if (this.value === data.value) {
+                            found = true;
+                        }
+                    });
+
+                    if (found) {
+                        return;
+                    }
 
                     $('<button class="uk-button uk-datalist-tag" role="presentation" aria-label="" value="' + data.value + '"><label>' + data.value + '</label></button>').on('click', function (e) {
                         e.preventDefault();
@@ -122,6 +161,10 @@
 
             function selectItem(data) {
                 var values = $(select).val();
+
+                if (typeof values === 'string') {
+                    values = values.split(settings.seperator);
+                }
 
                 if (!Array.isArray(values)) {
                     values = [values];
@@ -143,11 +186,15 @@
                 } else {
                     // add new value to select array
                     values.push(value);
-                    // focus input
-                    //$(input).trigger('focus');
                 }
 
-                $(select).val(values);
+                $(select).val(function () {
+                    if (this.nodeName === 'INPUT') {
+                        return values.join(settings.seperator);
+                    }
+
+                    return values;
+                });
 
                 // filter out original options from set values
                 var i = values.length;
@@ -162,13 +209,16 @@
                     });
                 }
 
+                // get datalist or select
+                var list = select.list || select;
+
                 // create new options from remaining values
                 $.each(values, function (i, val) {
-                    $(select).append(new Option(val, val, false, true));
+                    $(list).append(new Option(val, val, false, true));
                 });
 
                 // trigger change
-                $(select).trigger('change', {internal : true});
+                $(select).trigger('change', { internal: true });
             }
 
             function selectMenuItem(e) {
@@ -446,13 +496,15 @@
                 var val = input.val();
 
                 if (val !== '') {
-                    selectItem({text: val, value : val, select: true});
+                    selectItem({ text: val, value: val, select: true });
                 }
             });
 
             $(select).on('datalist:update', function () {
+                var list = select.list || select;
+
                 // add initial list of menu items
-                $('option, optgroup', this).each(function () {
+                $('option, optgroup', list).each(function () {
                     var text = $(this).attr('label') || $(this).text();
 
                     if (this.parentNode.nodeName === "OPTGROUP") {
@@ -470,11 +522,20 @@
                     };
 
                     $(select).trigger('update:option', option);
-
-                    if (option.type === "option") {
-                        options.push(option);
-                    }
                 });
+
+                // datalist
+                var values = $(this).val();
+
+                if (values) {
+                    if (typeof values === 'string') {
+                        values = values.split(settings.seperator);
+                    }
+                    
+                    $.each(values, function (i, value) {
+                        updateComboBox({value : value});
+                    });
+                }
 
                 $(this).trigger('datalist:disabled', this.disabled);
 

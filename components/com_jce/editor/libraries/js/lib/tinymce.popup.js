@@ -135,6 +135,9 @@
                     return;
                 }
 
+                // datalist element
+                lst = lst.list || lst;
+
                 if (!self.options.length) {                    
                     if (ed.getParam('styleselect_custom_classes')) {
                         var custom = ed.getParam('styleselect_custom_classes');
@@ -202,7 +205,7 @@
                         node.setAttribute('style', opt.style);
                     }
                     
-                    lst.options[lst.options.length] = node;
+                    lst.appendChild(node);
                 });
             },
 

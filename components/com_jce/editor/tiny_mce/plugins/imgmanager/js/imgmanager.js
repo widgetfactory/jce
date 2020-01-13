@@ -138,7 +138,8 @@
 
                 // Class
                 $('#classes').val(function () {
-                    var elm = this, values = ed.dom.getAttrib(n, 'class');
+                    var elm = this, values = ed.dom.getAttrib(n, 'class'), list_id = this.getAttribute('list');
+
                     // create array
                     values = values.split(' ');
 
@@ -149,12 +150,12 @@
                             return true;
                         }
 
-                        if ($('option[value="' + value + '"]', elm).length == 0) {
+                        if ($('option[value="' + value + '"]', $('#' + list_id)).length == 0) {
                             $(elm).append(new Option(value, value));
                         }
                     });
 
-                    return values;
+                    return values.join(' ');
                 }).trigger('change');
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
@@ -215,7 +216,7 @@
             // update equalize
             $('.uk-equalize-checkbox').trigger('equalize:update');
 
-            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
+            $('.uk-form-controls select').datalist().trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');

@@ -11,6 +11,13 @@
             return;
         }
 
+        if (sel.list) {
+            // set input value
+            sel.value = value;
+
+            sel = sel.list;
+        }
+
         var found = false;
 
         for (var i = 0; i < sel.options.length; i++) {
@@ -26,7 +33,7 @@
         if (!found && add_custom && value != '') {
             var option = new Option(value, value);
             option.selected = true;
-            sel.options[sel.options.length] = option;
+            sel.appendChild(option);
             sel.selectedIndex = sel.options.length - 1;
         }
 
@@ -35,8 +42,13 @@
 
     function addSelectValue(field_name, name, value) {
         var s = document.getElementById(field_name);
+        
+        // datalist or select
+        s = s.list || s;
+
         var o = new Option(name, value);
-        s.options[s.options.length] = o;
+
+        s.appendChild(o);
     }
 
     function getColor(n) {
@@ -212,7 +224,7 @@
 
             Wf.init();
 
-            $('.uk-form-controls select:not(.uk-datalist)').datalist({ 'input': false }).trigger('datalist:update');
+            $('.uk-form-controls select').datalist().trigger('datalist:update');
 
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');
