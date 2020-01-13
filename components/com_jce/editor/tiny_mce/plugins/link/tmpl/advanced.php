@@ -54,7 +54,7 @@ defined('JPATH_PLATFORM') or die;
     <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-1  uk-width-small-3-10" for="rel" class="hastip" title="<?php echo JText::_('WF_LABEL_REL_DESC'); ?>"><?php echo JText::_('WF_LABEL_REL'); ?></label>
         <div class="uk-form-controls uk-width-1-1  uk-width-small-7-10">
-          <input type="text" id="rel" class="uk-datalist" list="rel_datalist" />
+          <input type="text" id="rel" class="uk-datalist" list="rel_datalist" multiple />
           <datalist id="rel_datalist">
                 <option value="nofollow">No Follow</option>
                 <option value="alternate">Alternate</option>
