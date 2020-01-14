@@ -14,39 +14,6 @@
         init: function (ed, url) {
             var self = this;
             self.editor = ed;
-
-            ed.onInit.add(function() {
-                var jModalCloseCore = window.jModalClose;
-                
-                // Joomla modal override
-                window.jModalClose = function() {
-                    var wm = tinymce.activeEditor.windowManager;
-
-                    // if a windowManager window is open...
-                    if (wm.count) {
-                        return wm.close();
-                    }
-                    
-                    // otherwise treat as a Joomla modal
-                    return jModalCloseCore();
-                };
-
-                if (window.SqueezeBox) {
-                    var SBoxClose = window.SqueezeBox.close;
-
-                    window.SqueezeBox.close = function() {
-                        var wm = tinymce.activeEditor.windowManager;
-
-                        // if a windowManager window is open...
-                        if (wm.count) {
-                            return wm.close();
-                        }
-                        
-                        // otherwise treat as a SqueezeBox modal
-                        return SBoxClose();
-                    };
-                }        
-            });
         },
 
         createControl: function (n, cm) {
@@ -68,23 +35,27 @@
             });
 
             ctrl.onRenderMenu.add(function (ctrl, menu) {
-                var vp = ed.dom.getViewPort();
-                
+                var ed = ctrl.editor, vp = ed.dom.getViewPort();
+
                 each(plugins, function (item) {
                     var href = item.href || '';
 
                     if (href) {
                         href = ed.dom.decode(href);
+
                         // replace variable with editor id
                         href = href.replace(/(__jce__)/gi, ed.id);
+
+                        // try direct replacement
+                        href = href.replace(/(e_name|editor)=([\w_]+)/gi, '$1=' + ed.id);
                     }
 
                     menu.add({
                         id: ed.dom.uniqueId(),
                         title: item.title,
                         icon: item.icon,
-                        onclick: function (e) {                            
-                            if (href) {                                
+                        onclick: function (e) {
+                            if (href) {
                                 ed.windowManager.open({
                                     file: href,
                                     title: item.title,
@@ -93,7 +64,7 @@
                                     size: 'mce-modal-landscape-full',
                                     addver: false
                                 });
-                                
+
                                 // pass the windowManager object as the current Joomla Modal window
                                 if (window.Joomla && window.Joomla.Modal) {
                                     window.Joomla.Modal.setCurrent(ed.windowManager);
@@ -108,6 +79,39 @@
                         }
                     });
                 });
+
+                if (window.jModalClose) {
+                    var jModalCloseCore = window.jModalClose;
+
+                    // Joomla modal override
+                    window.jModalClose = function () {
+                        var wm = ed.windowManager;
+
+                        // if a windowManager window is open...
+                        if (wm.count) {
+                            return wm.close();
+                        }
+
+                        // otherwise treat as a Joomla modal
+                        return jModalCloseCore();
+                    };
+                }
+
+                if (window.SqueezeBox) {
+                    var SBoxClose = window.SqueezeBox.close;
+
+                    window.SqueezeBox.close = function () {
+                        var wm = ed.windowManager;
+
+                        // if a windowManager window is open...
+                        if (wm.count) {
+                            return wm.close();
+                        }
+
+                        // otherwise treat as a SqueezeBox modal
+                        return SBoxClose();
+                    };
+                }
             });
 
             // Remove the menu element when the editor is removed
