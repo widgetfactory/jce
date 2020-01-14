@@ -91,13 +91,6 @@
                 $(this).trigger('datalist:update');
             });
 
-            $(select).on('datalist:clear', function () {
-                // clear input
-                $(input).val();
-                // clear menu
-                $('ul', menu).empty();
-            });
-
             function removeTag(tag) {
                 var values = $(select).val();
 
@@ -212,7 +205,7 @@
                 // get datalist or select
                 var list = select.list || select;
 
-                // create new options from remaining values
+                // create new options from remaining values and set selected
                 $.each(values, function (i, val) {
                     $(list).append(new Option(val, val, false, true));
                 });
@@ -561,6 +554,11 @@
 
                     $(this).trigger('datalist:disabled', true);
                 }
+            }).on('datalist:clear', function () {
+                // clear input
+                $(input).val();
+                // clear menu
+                $('ul', menu).empty();
             }).trigger('datalist:disabled', select.disabled);
         });
     };
