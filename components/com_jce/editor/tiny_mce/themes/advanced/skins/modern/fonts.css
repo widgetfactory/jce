@@ -66,10 +66,15 @@
     content: "\edcf";
 }
 
-.mceModernSkin .mce_forecolor span.mceAction,
-.mceModernSkin .mce_backcolor span.mceAction {
+.mceModernSkin .mceSplitButton .mce_forecolor .mceAction,
+.mceModernSkin .mceSplitButton .mce_backcolor .mceAction {
     line-height: 1em;
     height: 1.125em;
+    margin-bottom: 2px;
+}
+
+.mceModernSkin .mceSplitButton .mce_backcolor .mceAction {
+    background:#bbb;
 }
 
 .mceModernSkin span.mce_forecolor:before,

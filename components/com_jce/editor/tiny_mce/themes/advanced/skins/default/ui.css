@@ -1140,14 +1140,14 @@ select.mceNativeListBox {
 }
 
 .mceDefaultSkin .mceColorPreview {
-    width: 16px;
+    width: 20px;
     height: 4px;
     overflow: hidden;
     background: #fafafa;
 }
 
-.mceDefaultSkin .mce_forecolor span.mceAction,
-.mceDefaultSkin .mce_backcolor span.mceAction {
+.mceDefaultSkin .mce_forecolor .mceAction,
+.mceDefaultSkin .mce_backcolor .mceAction {
     overflow: hidden;
     height: 15px
 }
