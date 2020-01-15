@@ -20,7 +20,7 @@ defined('JPATH_PLATFORM') or die;
     <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-1  uk-width-small-3-10" for="classes" class="hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
         <div class="uk-form-controls uk-width-1-1  uk-width-small-7-10">
-            <input type="text" id="classes" class="uk-datalist" list="classes_datalist" />
+            <input type="text" id="classes" class="uk-datalist" list="classes_datalist" multiple />
             <datalist id="classes_datalist"></datalist>
         </div>
     </div>
