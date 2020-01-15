@@ -140,16 +140,16 @@
                     return inst.url;
                 }
 
-                return $(elm).siblings('a.modal').attr('href');
+                return $(elm).siblings('a.modal').attr('href') || '';
             }
 
-            function uploadAndInsert(file) {
+            function uploadAndInsert(url, file) {
                 // not a valid upload
                 if (!file.name) {
                     return false;
                 }
 
-                var url = getModalURL(elm), params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter'];
+                var params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter'];
 
                 if (!checkMimeType(file, params.filter || 'images')) {
                     alert('The selected file is not supported.');
@@ -207,6 +207,12 @@
                 });
             }
 
+            var url = getModalURL(elm);
+
+            if (!url) {
+                return false;
+            }
+
             var $btn = $('<a title="Upload" class="btn wf-media-upload-button" role="button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
 
             $('input[type="file"]', $btn).on('change', function () {
@@ -214,7 +220,7 @@
                     var file = this.files[0];
 
                     if (file) {
-                        uploadAndInsert(file);
+                        uploadAndInsert(url, file);
                     }
                 }
             });
@@ -236,7 +242,7 @@
                     var file = dataTransfer.files[0];
 
                     if (file) {
-                        uploadAndInsert(file);
+                        uploadAndInsert(url, file);
                     }
                 }
             });
@@ -248,8 +254,8 @@
 
         $(document).on('subform-row-add', function (event, row) {
             $(row).find('.wf-media-input').removeAttr('readonly');
-        });
+        });  
 
         $('.wf-media-input').WfMediaUpload();
-    });
+    });   
 })(jQuery);
