@@ -55,6 +55,9 @@
                         title: item.title,
                         icon: item.icon,
                         onclick: function (e) {
+                            // store bookmark
+                            ed.lastSelectionBookmark = ed.selection.getBookmark(1);
+                            
                             if (href) {
                                 ed.windowManager.open({
                                     file: href,
