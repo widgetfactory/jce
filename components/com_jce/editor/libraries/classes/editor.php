@@ -1025,7 +1025,36 @@ class WFEditor
 
     private static function getHelixTemplateFiles(&$files, $template)
     {
+        $path = JPATH_SITE . '/templates/' . $template->name;
 
+        if (!is_dir($path . '/scss') && !is_file($path . '/comingsoon.php')) {
+            return false;
+        }
+
+        // check editor.css file first
+        $file = $path . '/css/editor.css';
+
+        if (is_file($file) && filesize($file) > 0) {
+            $files[] = 'templates/' . $template->name . '/css/editor.css';
+            return true;
+        }
+
+        // add bootstrap
+        $files[] = 'templates/' . $template->name . '/css/bootstrap.min.css';
+
+        // add base template.css file
+        $files[] = 'templates/' . $template->name . '/css/template.css';
+
+        $params = new JRegistry($template->params);
+        $preset  = $params->get('preset', '');
+
+        $data = json_decode($preset);
+
+        if ($data) {
+            if (isset($data->preset)) {
+                $files[] = 'templates/' . $template->name . '/css/presets/' . $data->preset . '.css';
+            }
+        }
     }
 
     private static function getWrightTemplateFiles(&$files, $template)
