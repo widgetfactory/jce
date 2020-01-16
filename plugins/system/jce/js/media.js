@@ -134,13 +134,13 @@
 
             function getModalURL() {
                 // Joomla 3.5.x / 4.x Media Field
-                var $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
+                var url = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
 
-                if (inst && inst.url) {
-                    return inst.url;
+                if (inst) {
+                    url = inst.url || inst.getAttribute('data-url');
                 }
 
-                return $(elm).siblings('a.modal').attr('href') || '';
+                return url || $(elm).siblings('a.modal').attr('href') || '';
             }
 
             function uploadAndInsert(url, file) {
