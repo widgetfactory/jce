@@ -79,7 +79,8 @@ defined('JPATH_PLATFORM') or die;
     </div>
     <div class="uk-form-row uk-grid uk-grid-small">
         <label class="uk-form-label uk-width-1-1  uk-width-small-3-10" for="rev" class="hastip" title="<?php echo JText::_('WF_LABEL_REV_DESC'); ?>"><?php echo JText::_('WF_LABEL_REV'); ?></label>
-        <div class="uk-form-controls uk-width-1-1  uk-width-small-7-10"><select id="rev">
+        <div class="uk-form-controls uk-width-1-1  uk-width-small-7-10">
+            <select id="rev">
                 <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
                 <option value="alternate">Alternate</option>
                 <option value="designates">Designates</option>
