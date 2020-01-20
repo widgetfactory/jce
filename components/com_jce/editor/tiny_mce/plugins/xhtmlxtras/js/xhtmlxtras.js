@@ -66,25 +66,10 @@
 						if (typeof v !== "undefined") {
 							// clean up class
 							if (k === "class") {
-								var elm = this;
 								// clean value
 								v = v.replace(/mce-item-(\w+)/gi, '').replace(/\s+/g, ' ');
 								// trim
 								v = $.trim(v);
-								// create array
-								v = v.split(' ');
-
-								$.each(v, function (i, value) {
-									value = $.trim(value);
-
-									if (!value || value === ' ') {
-										return true;
-									}
-
-									if ($('option[value="' + value + '"]', elm).length == 0) {
-										$(elm).append(new Option(value, value));
-									}
-								});
 							}
 
 							$(this).val(v).trigger('change');
@@ -169,10 +154,6 @@
 
 				if (k === 'classes') {
 					k = 'class';
-
-					if ($.type(v) === 'array') {
-						v = v.join(' ');
-					}
 				}
 
 				args[k] = v;
@@ -191,17 +172,6 @@
 					delete attribs[key];
 				}
 			});
-
-			// get classes value
-			/*var cls = $('#classes').val();
-			
-			// convert to string if required
-			if ($.type(cls) === 'array') {
-				cls = cls.join(' ');
-			}
-
-			// remove from attributes map
-			delete attribs["class"];*/
 
 			// remove any attributes left
 			$.each(attribs, function (key, value) {

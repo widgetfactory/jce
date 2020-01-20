@@ -138,24 +138,8 @@
 
                 // Class
                 $('#classes').val(function () {
-                    var elm = this, values = ed.dom.getAttrib(n, 'class'), list_id = this.getAttribute('list');
-
-                    // create array
-                    values = values.split(' ');
-
-                    $.each(values, function (i, value) {
-                        value = $.trim(value);
-
-                        if (!value || value === ' ') {
-                            return true;
-                        }
-
-                        if ($('option[value="' + value + '"]', $('#' + list_id)).length == 0) {
-                            $(elm).append(new Option(value, value));
-                        }
-                    });
-
-                    return values.join(' ');
+                    var values = ed.dom.getAttrib(n, 'class');
+                    return $.trim(values);
                 }).trigger('change');
 
                 $('#style').val(ed.dom.getAttrib(n, 'style'));
@@ -291,10 +275,6 @@
                 }
 
                 if (k == 'classes') {
-                    if ($.type(v) === 'array') {
-                        v = v.join(' ');
-                    }
-
                     k = 'class';
                 }
 

@@ -26,7 +26,8 @@ endif;
 <div class="uk-form-row uk-grid uk-grid-small">
     <label for="classlist" class="uk-form-label uk-width-2-10 hastip" title="<?php echo JText::_('WF_LABEL_CLASSES_DESC'); ?>"><?php echo JText::_('WF_LABEL_CLASSES'); ?></label>
     <div class="uk-form-controls uk-width-8-10">
-        <input type="text" id="classes" class="uk-datalist" list="classes_datalist" /><datalist id="classes_datalist"></datalist>
+        <input type="text" id="classes" class="uk-datalist" list="classes_datalist" multiple />
+        <datalist id="classes_datalist"></datalist>
     </div>
 </div>
 <div class="uk-form-row uk-grid uk-grid-small">

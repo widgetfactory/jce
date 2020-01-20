@@ -299,31 +299,10 @@
             $('#insert').button('option', 'label', tinyMCEPopup.getLang('update', 'Update', true));
         },
         updateClasses: function (values) {
-            $('#classes').val(function () {
-                var n = this;
-
-                values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
-
-                // create array
-                values = values.split(' ');
-
-                // update datalist or select
-                n = this.list || n;
-
-                $.each(values, function (i, value) {
-                    value = $.trim(value);
-
-                    if (!value || value === ' ') {
-                        return true;
-                    }
-
-                    if ($('option[value="' + value + '"]', n).length == 0) {
-                        $(n).append(new Option(value, value, false, true));
-                    }
-                });
-
-                return values;
-            }).trigger('change');
+            values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
+            values = $.trim(values);
+            
+            $('#classes').val(values).trigger('change');
         },
         initTable: function () {
             var self = this,
@@ -625,10 +604,6 @@
             bgColor = valueToHex($('#bgcolor').val());
             background = $('#backgroundimage').val();
 
-            // fix class values
-            if (className && Array.isArray(className)) {
-                className = className.join(' ');
-            }
 
             // get compile styles attribute value
             style = this.getStyles();
@@ -895,10 +870,6 @@
 
                 if (k === "classes") {
                     k = 'class';
-
-                    if (v && Array.isArray(v)) {
-                        v = v.join(' ');
-                    }
                 }
 
                 setAttrib(td, k, v);
@@ -1088,10 +1059,6 @@
 
                 if (k === "classes") {
                     k = 'class';
-
-                    if (v && Array.isArray(v)) {
-                        v = v.join(' ');
-                    }
                 }
 
                 setAttrib(tr, k, v);
