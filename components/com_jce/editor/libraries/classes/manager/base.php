@@ -135,6 +135,10 @@ class WFMediaManagerBase extends WFEditorPlugin
         return $filesystem;
     }
 
+    public function onUpload($file, $relative = '')
+    {
+    }
+
     protected function getID3Instance()
     {
         static $id3;
