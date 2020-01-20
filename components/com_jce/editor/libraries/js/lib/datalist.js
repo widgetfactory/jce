@@ -88,7 +88,7 @@
                     return;
                 }
 
-                $(this).trigger('datalist:update');
+                $(this).trigger('datalist:update', {change: true});
             });
 
             function removeTag(tag) {
@@ -494,29 +494,34 @@
                 }
             });
 
-            $(select).on('datalist:update', function () {
+            $(select).on('datalist:update', function (e, o) {
                 var list = select.list || select;
 
-                // add initial list of menu items
-                $('option, optgroup', list).each(function () {
-                    var text = $(this).attr('label') || $(this).text();
+                o = o || {};
 
-                    if (this.parentNode.nodeName === "OPTGROUP") {
-                        $(this).addClass('uk-nav-indent');
-                    }
+                // do not update on change event
+                if (!o.change) {
+                    // add initial list of menu items
+                    $('option, optgroup', list).each(function () {
+                        var text = $(this).attr('label') || $(this).text();
 
-                    var option = {
-                        value: this.value,
-                        text: text,
-                        style: $(this).attr('style') || '',
-                        selected: this.selected,
-                        title: this.title || '',
-                        class: $(this).attr('class') || '',
-                        type: this.nodeName.toLowerCase()
-                    };
+                        if (this.parentNode.nodeName === "OPTGROUP") {
+                            $(this).addClass('uk-nav-indent');
+                        }
 
-                    $(select).trigger('update:option', option);
-                });
+                        var option = {
+                            value: this.value,
+                            text: text,
+                            style: $(this).attr('style') || '',
+                            selected: this.selected,
+                            title: this.title || '',
+                            class: $(this).attr('class') || '',
+                            type: this.nodeName.toLowerCase()
+                        };
+
+                        $(select).trigger('update:option', option);
+                    });
+                }
 
                 // datalist
                 var values = $(this).val();
