@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
+	<name>WF_AGGREGATOR_VIDEO_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<description>WF_AGGREGATOR_VIDEO_DESC</description>
+	<files>
+		<filename>video.php</filename>
+	</files>
+	<fields name="video">
+		<fieldset name="aggregator.video">
+			<field name="width" type="number" default="560" class="input-small" label="WF_LABEL_WIDTH" description="WF_AGGREGATOR_VIDEO_WIDTH_DESC" />
+			<field name="height" type="number" default="315" class="input-small" label="WF_LABEL_HEIGHT" description="WF_AGGREGATOR_VIDEO_HEIGHT_DESC" />
+
+			<field name="controls" type="yesno" default="1"  label="WF_AGGREGATOR_VIDEO_CONTROLS" description="WF_AGGREGATOR_VIDEO_CONTROLS_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="loop" type="yesno" default="0"  label="WF_AGGREGATOR_VIDEO_LOOP" description="WF_AGGREGATOR_VIDEO_LOOP_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="autoplay" type="yesno" default="0"  label="WF_AGGREGATOR_VIDEO_AUTOPLAY" description="WF_AGGREGATOR_VIDEO_AUTOPLAY_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="mute" type="yesno" default="0"  label="WF_AGGREGATOR_VIDEO_MUTE" description="WF_AGGREGATOR_VIDEO_MUTE_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+	</fields>
+	<plugins></plugins>
+</extension>

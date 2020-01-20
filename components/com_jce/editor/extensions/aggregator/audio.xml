@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
+	<name>WF_AGGREGATOR_AUDIO_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>@@copyright@@</copyright>
+	<license>@@licence@@</license>
+	<description>WF_AGGREGATOR_AUDIO_DESC</description>
+	<files>
+		<filename>audio.php</filename>
+		<folder>audio</folder>
+	</files>
+	<fields name="audio">
+		<fieldset name="aggregator.audio">
+			<field name="controls" type="yesno" default="1"  label="WF_AGGREGATOR_AUDIO_CONTROLS" description="WF_AGGREGATOR_AUDIO_CONTROLS_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="loop" type="yesno" default="0"  label="WF_AGGREGATOR_AUDIO_LOOP" description="WF_AGGREGATOR_AUDIO_LOOP_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="autoplay" type="yesno" default="0"  label="WF_AGGREGATOR_AUDIO_AUTOPLAY" description="WF_AGGREGATOR_AUDIO_AUTOPLAY_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+
+			<field name="mute" type="yesno" default="0"  label="WF_AGGREGATOR_AUDIO_MUTE" description="WF_AGGREGATOR_AUDIO_MUTE_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+		</fieldset>
+	</fields>
+	<plugins></plugins>
+</extension>
