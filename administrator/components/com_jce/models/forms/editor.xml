@@ -7,6 +7,7 @@
             <field name="toolbar_theme" type="list" default="modern" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
                 <option value="modern">WF_PARAM_EDITOR_SKIN_RETINA</option>
                 <option value="modern.touch">WF_PARAM_EDITOR_SKIN_RETINA_TOUCH</option>
+                <!--option value="modern.dark">WF_PARAM_EDITOR_SKIN_RETINA_DARK</option-->
                 <option value="default">WF_PARAM_EDITOR_SKIN_CLASSIC</option>
                 <option value="default.touch">WF_PARAM_EDITOR_SKIN_CLASSIC_TOUCH</option>
                 <option value="o2k7">WF_PARAM_EDITOR_SKIN_OFFICE_BLUE</option>

@@ -1,0 +1,81 @@
+.mceModernSkin .mceToolbar {
+    background: #222f3e;
+}
+
+.mceModernSkin .mceButton .mceIcon,
+.mceModernSkin .mceMenuItem .mceIcon,
+.mceModernSkin .mceSplitButton .mceAction {
+    color: #fff;
+}
+
+.mceModernSkin .mceButton,
+.mceModernSkin .mceSplitButton .mceText,
+.mceModernSkin .mceSplitButton .mceOpen,
+.mceModernSkin .mceListBox .mceText,
+.mceModernSkin .mceListBox .mceOpen {
+    color: #fff;
+}
+
+.mceModernSkin .mceSplitButton .mceOpen::after {
+    color: rgba(255, 255, 255, .5);
+}
+
+.mceModernSkin .mceButtonActive,
+.mceModernSkin .mceButtonSelected,
+.mceModernSkin .mcePanelButtonActive {
+    background-color: #757d87;
+    border-color: transparent;
+}
+
+.mceModernSkin .mceButton:hover,
+.mceModernSkin .mceButton:focus {
+    background-color: #757d87;
+    border-color: transparent;
+}
+
+.mceModernSkin .mceListBox .mceText,
+.mceModernSkin .mceSplitButton .mceText {
+    /* border-top-color: #4a5562;*/
+    border-color: transparent;
+}
+
+.mceModernSkin .mceListBox .mceOpen,
+.mceModernSkin .mceSplitButton .mceOpen {
+    /*background-color: #757d87;*/
+    border-color: transparent;
+}
+
+.mceModernSkin .mceSplitButton:hover .mceText,
+.mceModernSkin .mceSplitButton:focus .mceText {
+    border-color: #4a5562;
+    background-color: #4a5562;
+}
+
+.mceModernSkin .mceSplitButtonActive .mceText,
+.mceModernSkin .mceSplitButtonActive .mceOpen {
+    border-color: #4a5562;
+    background-color: #4a5562;
+}
+
+.mceModernSkin .mceSplitButton:hover .mceOpen,
+.mceModernSkin .mceSplitButton:focus .mceOpen {
+    border-color: #4a5562;
+    background-color: #4a5562;
+}
+
+.mceModernSkin .mceListBox .mceText,
+.mceModernSkin .mceListBox .mceOpen {
+    background-color: transparent;
+    color: #fff;
+}
+
+.mceMenu {
+    background-color: #2b3b4e;
+    border: 1px solid #000;
+    box-shadow: 0 4px 8px 0 rgba(42, 55, 70, .1);
+}
+
+.mceModernSkin .mceSplitButtonSelected::after {
+    background-color: #2b3b4e;
+    border-color: #000;
+}

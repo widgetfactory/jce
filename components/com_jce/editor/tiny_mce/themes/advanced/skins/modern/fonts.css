@@ -115,7 +115,7 @@
     font-family: georgia, palatino, serif;
     font-weight: bold;
     font-size: 1.25em;
-    color: #666;
+    color: rgba(0, 0, 0, 0.6);
     font-style: italic;
     position: absolute;
     right: 0;
@@ -154,12 +154,11 @@
     position: absolute;
     top: 0;
     left: 0;
-    border: 1px dashed #444;
+    border: 1px dashed rgba(0, 0, 0, 0.4);
     width: 10px;
     height: 10px;
     text-align: left;
     padding: 4px;
-    color: #444;
     font-weight: bold;
     font-family: "Helvetica Neue", Arial, sans-serif;
     box-sizing: content-box;
@@ -169,7 +168,6 @@
     content: ".*";
     font-family: Tahoma, Arial, sans-serif;
     font-size: 1em;
-    color: #444;
     font-weight: bold;
     line-height: 1;
 }
@@ -178,7 +176,6 @@
     content: "\201C...\201D";
     font-family: 'Times New Roman', Times, serif;
     font-size: 1em;
-    color: #444;
     font-weight: 600;
 }
 
@@ -186,7 +183,6 @@
     content: "ABBR";
     font-family: Tahoma, Arial, sans-serif;
     font-size: 0.5em;
-    color: #444;
     font-weight: bold;
     line-height: 1;
     vertical-align: middle;
@@ -196,7 +192,6 @@
     content: "A.B.C";
     font-family: Tahoma, Arial, sans-serif;
     font-size: 0.5em;
-    color: #444;
     font-weight: bold;
     line-height: 1;
     vertical-align: middle;
@@ -207,14 +202,13 @@
     content: "A";
     font-family: 'Times New Roman', Times, serif;
     font-size: 1.25em;
-    color: #444;
     font-weight: bold;
-    text-decoration: line-through #888;
+    text-decoration: line-through rgba(0, 0, 0, 0.8);
     line-height: inherit;
 }
 
 .mceModernSkin span.mce_ins:before {
-    text-decoration: underline #888;
+    text-decoration: underline rgba(0, 0, 0, 0.8);
 }
 
 .mceModernSkin span.mce_hashtag:before {
