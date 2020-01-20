@@ -29,7 +29,25 @@ class JFormFieldFonts extends JFormFieldCheckboxes
      */
     protected $forceMultiple = false;
 
-    private static $fonts = array('Andale Mono' => 'andale mono,times', 'Arial' => 'arial,helvetica,sans-serif', 'Arial Black' => 'arial black,avant garde', 'Book Antiqua' => 'book antiqua,palatino', 'Comic Sans MS' => 'comic sans ms,sans-serif', 'Courier New' => 'courier new,courier', 'Georgia' => 'georgia,palatino', 'Helvetica' => 'helvetica', 'Impact' => 'impact,chicago', 'Symbol' => 'symbol', 'Tahoma' => 'tahoma,arial,helvetica,sans-serif', 'Terminal' => 'terminal,monaco', 'Times New Roman' => 'times new roman,times', 'Trebuchet MS' => 'trebuchet ms,geneva', 'Verdana' => 'verdana,geneva', 'Webdings' => 'webdings', 'Wingdings' => 'wingdings,zapf dingbats');
+    private static $fonts = array(
+        'Andale Mono' => 'andale mono,times',
+        'Arial' => 'arial,helvetica,sans-serif',
+        'Arial Black' => 'arial black,avant garde',
+        'Book Antiqua' => 'book antiqua,palatino',
+        'Comic Sans MS' => 'comic sans ms,sans-serif',
+        'Courier New' => 'courier new,courier',
+        'Georgia' => 'georgia,palatino',
+        'Helvetica' => 'helvetica',
+        'Impact' => 'impact,chicago',
+        'Symbol' => 'symbol',
+        'Tahoma' => 'tahoma,arial,helvetica,sans-serif',
+        'Terminal' => 'terminal,monaco',
+        'Times New Roman' => 'times new roman,times',
+        'Trebuchet MS' => 'trebuchet ms,geneva',
+        'Verdana' => 'verdana,geneva',
+        'Webdings' => 'webdings',
+        'Wingdings' => 'wingdings,zapf dingbats',
+    );
 
     /**
      * Allow to override renderer include paths in child fields
@@ -57,31 +75,71 @@ class JFormFieldFonts extends JFormFieldCheckboxes
 
         $fonts = array();
 
-        // map for new format, where fonts are saved as an array of an associative array, eg: [['Andale Mono' => 'andale mono,times', 'Arial' => 'arial,helvetica,sans-serif']]
-        foreach($this->value as $key => $value) {
-            if (is_numeric($key)) {
-                $fonts = $value;
-            } else {
-                $fonts[$key] = $value;
+        // map associative array to array of key value pairs
+        foreach ($this->value as $key => $value) {
+            if (is_numeric($key) && is_array($value)) {
+                $fonts = array_merge($fonts, $value);
+            } else {                
+                $fonts[] = array($key => $value);
             }
         }
 
-        // the full font list, including custom fonts
-        $items = array_merge(self::$fonts, $fonts);
+        // assign emtpy (unchecked) options for unused fonts
+        foreach(self::$fonts as $text => $value) {
+            
+            if (array_key_exists($text, $fonts)) {
+                continue;
+            }
 
-        foreach ($items as $text => $value) {
+            $tmp = array(
+                'value' => $value,
+                'text' => JText::alt($text, $fieldname),
+                'checked' => false,
+                'custom' => false,
+            );
+
+            $options[] = (object) $tmp;
+        }
+
+        foreach ($fonts as $text => $value) {
             $value = htmlspecialchars_decode($value, ENT_QUOTES);
 
             $tmp = array(
-                'value'     => $value,
-                'text'      => JText::alt($text, $fieldname),
-                'checked'   => empty($fonts) ? true : in_array($value, array_values($fonts)),
-                'custom'    => !in_array($value, array_values(self::$fonts)),
+                'value' => $value,
+                'text' => JText::alt($text, $fieldname),
+                'checked' => true,
+                'custom' => !in_array($value, array_values(self::$fonts)),
             );
 
             $options[] = (object) $tmp;
         }
 
         return $options;
+    }
+
+    /**
+     * Method to determine if an array is an associative array.
+     *
+     * @param    array        An array to test
+     *
+     * @return bool True if the array is an associative array
+     *
+     * @link    https://www.php.net/manual/en/function.is-array.php#84488
+     */
+    private static function is_associative_array($array)
+    {
+        if (!is_array($array)) {
+            return false;
+        }
+
+        $i = count($array);
+
+        while ($i > 0) {
+            if (!array_key_exists(--$i, $array)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
