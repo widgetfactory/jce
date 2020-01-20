@@ -1066,26 +1066,6 @@ a.browser {
     display: none;
 }
 
-.wf-repeatable-item:first-of-type .wf-repeatable-remove {
-    display: none;
-}
-
-.wf-repeatable-item {
-    position: relative;
-}
-
-.wf-repeatable .close {
-    font-size: 16px;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-}
-
-.wf-repeatable .wf-repeatable-remove {
-    top: inherit;
-    bottom: 10px;
-}
-
 .nav-tabs .mce-toolbar {
     max-width: 180px;
     white-space: normal;
@@ -1209,48 +1189,6 @@ a.browser {
     z-index: 1000;
 }
 
-.form-field-repeatable-item {
-    display: flex;
-}
-
-.form-field-repeatable-item > button {
-    max-height: 28px;
-}
-
-.form-horizontal .form-field-repeatable-item textarea {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.form-horizontal .form-field-repeatable-item .control-group {
-    margin: 5px 0 0 0;
-}
-
-.form-horizontal .form-field-repeatable-item .control-group:first-child {
-    margin: 0;
-}
-
-.form-field-repeatable-item .form-field-repeatable-add {
-    display: none;
-}
-
-.form-field-repeatable-item:first-child .form-field-repeatable-add {
-    display: inline-block;
-}
-
-.form-field-repeatable-item .form-field-repeatable-remove {
-    display: inline-block;
-}
-
-.form-field-repeatable-item:first-child .form-field-repeatable-remove {
-    display: none;
-}
-
-.form-field-repeatable-item+.form-field-repeatable-item {
-    padding-top: 10px;
-}
-
-.form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
-.form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
-    margin: 0;
+.ui-jce legend {
+    font-size: 1.5em;
 }
