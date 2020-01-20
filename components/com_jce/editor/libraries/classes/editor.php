@@ -962,6 +962,14 @@ class WFEditor
             return false;
         }
 
+        // check editor.css file first
+        $file = $path . '/css/editor.css';
+
+        if (is_file($file) && filesize($file) > 0) {
+            $files[] = 'templates/' . $template->name . '/css/editor.css';
+            return true;
+        }
+
         // try Gantry5 templates
         $gantry5 = glob($path . '/custom/css-compiled/' . $name . '_*.css');
         $gantry4 = glob($path . '/css-compiled/master-*.css');
@@ -969,14 +977,27 @@ class WFEditor
         if (!empty($gantry5)) {  
             // update url
             $url =  'templates/' . $template->name . '/custom/css-compiled';
+
             // load gantry base files
             $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
             $files[] = 'media/gantry5/engines/nucleus/css-compiled/nucleus.css';
+
+            $path = dirname($gantry5[0]);
+            $file = basename($gantry5[0]);
+
             // load css files
-            $files[] = $url . '/' . basename($gantry5[0]);
+            $files[] = $url . '/' . $file;
+
+            // create name of possible custom.css file
+            $custom = str_replace($name, 'custom', $file);
+            
+            // load custom css file if it exists
+            if (is_file($path . '/' . $custom))  {
+                $files[] = $url . '/' . $custom;
+            }
         }
 
-        if (!empty($gantry4)) {  
+        if (!empty($gantry4)) { 
             // update url
             $url =  'templates/' . $template->name . '/css-compiled';
             // load gantry bootstrap files
