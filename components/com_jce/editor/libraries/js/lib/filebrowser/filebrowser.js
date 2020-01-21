@@ -1582,9 +1582,12 @@
 
                             }).on('uploadwidget:uploadstart', function (e, file) {
                                 // add file specific upload data
-                                file.data = $(':input:enabled', file.element).serializeArray();
+                                file.data = $(':input[name]:enabled', file.element).map(function () {
+                                    return { name: this.name, value: this.value };
+                                });
+
                                 // disable fields
-                                $(':input:enabled', file.element).prop('disabled', true);
+                                $(':input[name]:enabled', file.element).prop('disabled', true);
 
                             }).on('uploadwidget:uploadcomplete', function (e, errors) {
                                 $('#upload-submit').disabled = false;
@@ -1605,7 +1608,12 @@
                         },
                         upload: function () {
                             // get form data
-                            var fields = $.merge($('form > :input:enabled').serializeArray(), $(':input:enabled', '#upload-options').serializeArray());
+                            var serialized = $(':input[name]:enabled', '#upload-options').map(function () {
+                                return { name: this.name, value: this.value };
+                            });
+
+                            var fields = $.merge($('form > :input:enabled').serializeArray(), serialized);
+
                             // set current directory
                             fields.push({
                                 "name": "upload-dir",
