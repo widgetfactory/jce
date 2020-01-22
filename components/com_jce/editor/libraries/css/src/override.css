@@ -735,8 +735,6 @@ input[type="range"]::-ms-thumb {
     font-family: inherit;
 }
 
-.uk-icon-thumb-create {}
-
 .uk-icon-thumb-create:before {
     content: "\f03e";
 }

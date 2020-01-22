@@ -1541,8 +1541,6 @@ input[type="range"]::-ms-thumb {
     font-family: inherit;
 }
 
-.uk-icon-thumb-create {}
-
 .uk-icon-thumb-create:before {
     content: "\f03e";
 }
@@ -2010,8 +2008,8 @@ input.colour {
     padding-left: 10px;
 }
 
-.uk-form-constrain label .uk-icon-lock,
-.uk-form-constrain label .uk-icon-unlocked {
+.uk-constrain-label .uk-icon-lock,
+.uk-constrain-label .uk-icon-unlocked {
     display: none;
 }
 

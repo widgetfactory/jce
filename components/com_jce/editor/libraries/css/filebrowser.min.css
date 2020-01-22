@@ -216,7 +216,6 @@ div#upload-queue-block {
 .wf-uploader-element {
 	font-size: 999px;
 	opacity: 0;
-	-ms-filter: "alpha(opacity=0)";
 	position: absolute;
 	right: 0;
 	top: 0;
