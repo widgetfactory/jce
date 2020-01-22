@@ -125,6 +125,7 @@ class PlgSystemJce extends JPlugin
             if (strtolower($type) === 'media') {
                 $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
+                $form->setFieldAttribute($name, 'converted', '1', $group);
                 $hasMedia = true;
             }
         }

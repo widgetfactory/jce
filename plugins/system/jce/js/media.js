@@ -256,6 +256,6 @@
             $(row).find('.wf-media-input').removeAttr('readonly');
         });  
 
-        $('.wf-media-input').WfMediaUpload();
+        $('.wf-media-input-upload').WfMediaUpload();
     });   
 })(jQuery);

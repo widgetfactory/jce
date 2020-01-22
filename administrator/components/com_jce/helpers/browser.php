@@ -14,10 +14,51 @@ abstract class WfBrowserHelper
 {
     public static function getBrowserLink($element = null, $filter = '', $callback = '')
     {
+        $options = self::getMediaFieldOptions(array(
+            'element'   => $element,
+            'filter'    => $filter,
+            'callback'  => $callback
+        ));
+
+        return $options['url'];
+    }
+
+    public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
+    {
+        $options = self::getMediaFieldOptions(array(
+            'element'   => $element,
+            'filter'    => $filter,
+            'callback'  => $callback
+        ));
+
+        return $options['url'];
+    }
+
+    public static function getMediaFieldOptions($options = array())
+    {
+        if (!isset($options['elememt'])) {
+            $options['element'] = null;
+        }
+
+        if (!isset($options['filter'])) {
+            $options['filter'] = 'images';
+        }
+
+        if (!isset($options['callback'])) {
+            $options['callback'] = '';
+        }
+
+        if (!isset($options['converted'])) {
+            $options['converted'] = false;
+        }
+
         $app = JFactory::getApplication();
 
         // set $url as empty string
-        $url = '';
+        $data = array(
+            'url' => '',
+            'upload' => 0
+        );
 
         // load editor class
         require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
@@ -27,31 +68,28 @@ abstract class WfBrowserHelper
 
         // check the current user is in a profile
         if ($wf->getProfile('browser')) {
+            
+            // is conversion enabled?
+            if ($options['converted'] && (int) $wf->getParam('browser.mediafield_conversion', 1) === 0) {
+                return $data;
+            }
+
             $token = JFactory::getSession()->getFormToken();
 
-            $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
+            $data['url'] = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
             // add context
-            $url .= '&context=' . $wf->getContext();
+            $data['url'] .= '&context=' . $wf->getContext();
 
-            if ($element) {
-                $url .= '&element=' . $element;
+            foreach ($options as $key => $value) {
+                if ($value) {
+                    $data['url'] .= '&' . $key . '=' . $value; 
+                }
             }
 
-            if ($filter) {
-                $url .= '&filter=' . $filter;
-            }
-
-            if ($callback) {
-                $url .= '&callback=' . $callback;
-            }
+            $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
         }
 
-        return $url;
-    }
-
-    public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
-    {
-        return self::getBrowserLink($element, $filter, $callback);
+        return $data;
     }
 }

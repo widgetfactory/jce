@@ -62,15 +62,31 @@ class JFormFieldMediaJce extends JFormFieldMedia
         $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css');
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
-        $this->link = WFBrowserHelper::getMediaFieldLink($this->id, $this->mediatype);
+
+        $options = WFBrowserHelper::getMediaFieldOptions(array(
+            'element' => $this->id,
+            'filter' => $this->mediatype,
+            'converted' => (int) $this->element['converted'] ? true : false
+        ));
+
+        $this->link = $options['url'];
 
         // Get the basic field data
         $data = parent::getLayoutData();
+
+        // not a valid file browser link
+        if (!$this->link) {
+            return $data;
+        }
 
         $extraData = array(
             'link'      => $this->link,
             'class'     => $this->element['class'] . ' input-medium wf-media-input'
         );
+
+        if ($options['upload'] === 1) {
+            $extraData['class'] .= ' wf-media-input-upload';
+        }
 
         return array_merge($data, $extraData);
     }
