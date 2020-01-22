@@ -1192,3 +1192,8 @@ a.browser {
 .ui-jce legend {
     font-size: 1.25em;
 }
+
+.ui-jce .row-fluid .form-horizontal .control-label {
+    width: auto;
+    min-width: 160px;
+}
