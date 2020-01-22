@@ -116,7 +116,7 @@ if ($saveOrder)
                                         <?php echo JHtml::_('jgrid.checkedout', $i, $item->checked_out, $item->checked_out_time, 'profiles.', $canCheckin); ?>
                                     <?php endif; ?>
                                     <?php if ($canEdit) : ?>
-                                        <?php $editIcon = $item->checked_out ? '' : '<span class="fa fa-pencil-square mr-2" aria-hidden="true"></span>'; ?>
+                                        <?php $editIcon = $item->checked_out ? '' : '<span class="mr-2" aria-hidden="true"></span>'; ?>
                                         <a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_jce&task=profile.edit&id=' . (int) $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?> <?php echo $this->escape(addslashes($item->name)); ?>">
                                             <?php echo $editIcon; ?><?php echo $item->name; ?></a>
                                     <?php else : ?>
