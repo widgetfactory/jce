@@ -41,7 +41,7 @@ class WFAggregatorExtension_Audio extends WFAggregatorExtension
             'controls' => (int) $plugin->getParam('aggregator.audio.controls', 1),
             'loop' => (int) $plugin->getParam('aggregator.audio.loop', 0),
             'autoplay' => (int) $plugin->getParam('aggregator.audio.autoplay', 0),
-            'mute' => (int) $plugin->getParam('aggregator.audio.mute', 0)
+            'muted' => (int) $plugin->getParam('aggregator.audio.mute', 0)
         );
     }
 }

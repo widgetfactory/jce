@@ -44,7 +44,7 @@ class WFAggregatorExtension_Video extends WFAggregatorExtension
             'controls' => (int) $plugin->getParam('aggregator.video.controls', 1),
             'loop' => (int) $plugin->getParam('aggregator.video.loop', 0),
             'autoplay' => (int) $plugin->getParam('aggregator.video.autoplay', 0),
-            'mute' => (int) $plugin->getParam('aggregator.video.mute', 0)
+            'muted' => (int) $plugin->getParam('aggregator.video.mute', 0)
         );
     }
 }
