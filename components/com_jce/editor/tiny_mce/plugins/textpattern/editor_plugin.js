@@ -560,10 +560,10 @@
 
                 if (editor.plugins.clipboard) {
                     editor.onGetClipboardContent.add(function (ed, clipboard) {
-                        var text = clipboard["text/plain"] || "";
+                        var text = clipboard["text/plain"] || "", html = clipboard["text/html"] || "";
 
                         // only supports plain text paste
-                        if (text) {
+                        if (text && !html) {
                             markdown = toHtml(text);
 
                             if (markdown !== text) {
