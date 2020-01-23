@@ -232,6 +232,7 @@
 
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
+
     var InternalHtml = function () {
         var internalMimeType = 'x-tinymce/html';
         var internalMark = '<!-- ' + internalMimeType + ' -->';
@@ -2553,9 +2554,9 @@
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
 
-                var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
-
                 ed.onGetClipboardContent.dispatch(ed, clipboardContent);
+
+                var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
                 // use plain text
                 if (!internal && isPlainTextPaste(clipboardContent)) {
