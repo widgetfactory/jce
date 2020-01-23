@@ -368,7 +368,7 @@
                     // edge case where forced_root_block:false
                     if (node === ed.getBody() && isMediaNode(sel)) {
                         if (sel.parentNode === node && !sel.nextSibling) {
-                            ed.dom.insertAfter(ed.dom.create('br', {'data-mce-bogus' : 1}), sel);
+                            ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), sel);
                         }
 
                         return;
@@ -467,7 +467,7 @@
                     if (node && ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
                         //ed.dom.add(node.parentNode, 'br', { 'data-mce-bogus': '1' });
 
-                        ed.dom.insertAfter(ed.dom.create('br', {'data-mce-bogus' : 1}), node);
+                        ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), node);
                     }
                 }
             }
@@ -846,7 +846,7 @@
             placeholder.attr('class', tinymce.trim(classes.join(' ')));
 
             if (name === "iframe" && (ed.getParam('media_live_embed', 1))) {
-                var preview = new tinymce.html.Node(name, 1);
+                var preview = new Node(name, 1);
 
                 var attrs = o.iframe;
 
@@ -878,7 +878,7 @@
                     'aria-details': msg
                 });
 
-                var shim = new tinymce.html.Node('span', 1);
+                var shim = new Node('span', 1);
                 shim.attr('class', 'mce-item-shim');
                 shim.attr('data-mce-bogus', '1');
 
@@ -917,7 +917,7 @@
             }
 
             // Replace the video/object/embed element with a placeholder image containing the data
-            n.replace(placeholder);
+            n.replace(placeholder); 
         },
         /**
          * Serialize node attributes into JSON Object
