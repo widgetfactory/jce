@@ -86,6 +86,10 @@
     background-color: #eee;
 }
 
+.mceMenu .mceMenuItems .mceMenuHtml:hover {
+    background-color: #fff;
+}
+
 .mceMenu .mceMenuItems .mceMenuItemEnabled:focus {
     outline: 1px dashed #ddd;
 }
