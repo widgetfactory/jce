@@ -98,7 +98,7 @@
                             self._buildScript(node);
                         }
 
-                        if (name == 'span' && /mce-item-style/.test(cls)) {
+                        if ((name == 'span' || name === 'img') && /mce-item-style/.test(cls)) {
                             self._buildStyle(node);
                         }
 
