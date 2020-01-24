@@ -65,7 +65,7 @@
                 }
 
                 // Convert script elements to span placeholder
-                ed.parser.addNodeFilter('script', function (nodes) {
+                ed.parser.addNodeFilter('script,style', function (nodes) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         self._serializeSpan(nodes[i]);
                     }
@@ -89,7 +89,7 @@
                 });
 
                 // Convert span placeholders to script elements
-                ed.serializer.addNodeFilter('script,div,span,pre,img', function (nodes, name, args) {
+                ed.serializer.addNodeFilter('div,span,pre,img', function (nodes, name, args) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         var node = nodes[i],
                             cls = node.attr('class');
@@ -112,7 +112,7 @@
                     }
                 });
 
-                ed.serializer.addNodeFilter('style', function (nodes, name, args) {
+                /*ed.serializer.addNodeFilter('style', function (nodes, name, args) {
                     var node, value = '';
 
                     for (var i = 0, len = nodes.length; i < len; i++) {
@@ -131,18 +131,8 @@
                         text.raw = true;
                         text.value = tinymce.trim(value);
                         node.append(text);
-
-                        /*var span = new Node('span', 1);
-                        span.attr('class', 'mce-item-' + name);
-                        span.attr('data-mce-type', node.attr('type'));
-
-                        span.append(node);
-
-                        var comment = new Node('#comment', 8);
-                        comment.value = value;
-                        span.append(comment);*/
                     }
-                });
+                });*/
 
                 if (ed.plugins.clipboard) {
                     ed.onPastePreProcess.add(function (ed, o) {
@@ -402,8 +392,14 @@
                 return;
 
             // element text
-            if (n.firstChild) {
+            /*if (n.firstChild) {
                 v = n.firstChild.value;
+            }*/
+
+            var code = n.attr('data-mce-code') || '';
+
+            if (code) {
+                v = unescape(code);
             }
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
