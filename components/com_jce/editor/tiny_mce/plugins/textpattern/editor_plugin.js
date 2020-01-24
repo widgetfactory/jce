@@ -555,7 +555,10 @@
 
             if (use_markdown) {
                 editor.onBeforeSetContent.add(function (ed, o) {
-                    o.content = toHtml(o.content);
+                    // do not process if html
+                    if (o.content.indexOf('<') === -1) {
+                        o.content = toHtml(o.content);
+                    }
                 });
 
                 if (editor.plugins.clipboard) {
