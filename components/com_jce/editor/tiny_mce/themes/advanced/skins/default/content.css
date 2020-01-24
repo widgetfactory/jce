@@ -99,7 +99,7 @@ tr[data-mce-selected] {
     background-color: #b4d7ff !important;
 }
 
-.mceContentBody img[data-mce-selected],
+.mceContentBody img[data-mce-selected]:not([data-mce-type]),
 .mceContentBody table[data-mce-selected] {
     outline: 3px solid #b4d7ff !important;
 }

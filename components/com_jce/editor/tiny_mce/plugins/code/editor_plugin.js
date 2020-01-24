@@ -16,22 +16,22 @@
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
-        function clean(s) {
-            // remove javascript comments
-            s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
-            s = s.replace(/(\n\/\/ \]\]>)$/g, '');
+    function clean(s) {
+        // remove javascript comments
+        s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
+        s = s.replace(/(\n\/\/ \]\]>)$/g, '');
 
-            // remove css comments
-            s = s.replace(/^(<!--\n)/g, '');
-            s = s.replace(/(\n-->)$/g, '');
+        // remove css comments
+        s = s.replace(/^(<!--\n)/g, '');
+        s = s.replace(/(\n-->)$/g, '');
 
-            //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
-            //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
-            //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
-            //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
+        //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
+        //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
+        //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
+        //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
 
-            return s;
-        }
+        return s;
+    }
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
@@ -89,12 +89,12 @@
                 });
 
                 // Convert span placeholders to script elements
-                ed.serializer.addNodeFilter('script,div,span,pre', function (nodes, name, args) {
+                ed.serializer.addNodeFilter('script,div,span,pre,img', function (nodes, name, args) {
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         var node = nodes[i],
                             cls = node.attr('class');
 
-                        if (name == 'span' && /mce-item-script/.test(cls)) {
+                        if ((name == 'span' || name === 'img') && /mce-item-script/.test(cls)) {
                             self._buildScript(node);
                         }
 
@@ -114,7 +114,7 @@
 
                 ed.serializer.addNodeFilter('style', function (nodes, name, args) {
                     var node, value = '';
-                    
+
                     for (var i = 0, len = nodes.length; i < len; i++) {
                         node = nodes[i];
 
@@ -347,8 +347,13 @@
                 return;
 
             // element text
-            if (n.firstChild) {
+            /*if (n.firstChild) {
                 v = n.firstChild.value;
+            }*/
+            var code = n.attr('data-mce-code') || '';
+
+            if (code) {
+                v = unescape(code);
             }
 
             p = JSON.parse(n.attr('data-mce-json')) || {};
@@ -466,23 +471,21 @@
             return true;
         },
         _serializeSpan: function (n) {
-            var self = this,
-                ed = this.editor,
-                doc = ed.getDoc(),
-                dom = ed.dom,
-                v, k, p = {};
+            var ed = this.editor,
+                v, p = {};
 
             if (!n.parent)
                 return;
 
             each(n.attributes, function (at) {
-                if (at.name.indexOf('data-mce-') !== -1)
+                if (at.name === 'type' || at.name.indexOf('data-mce-') !== -1) {
                     return;
+                }
 
                 p[at.name] = at.value;
             });
 
-            var span = new Node('span', 1);
+            /*var span = new Node('span', 1);
 
             span.attr('class', 'mce-item-' + n.name);
             span.attr('data-mce-json', JSON.serialize(p));
@@ -498,7 +501,23 @@
             // padd empty span to prevent it being removed
             span.append(new tinymce.html.Node('#text', 3)).value = '\u00a0';
 
-            n.replace(span);
+            n.replace(span);*/
+
+            var img = new Node('img', 1);
+
+            img.attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+            img.attr('class', 'mce-item-' + n.name);
+            img.attr('data-mce-resize', 'false');
+            img.attr('data-mce-json', JSON.serialize(p));
+            img.attr('data-mce-type', n.attr('data-mce-type') || p.type);
+
+            v = n.firstChild ? n.firstChild.value : '';
+
+            if (v.length) {
+                img.attr('data-mce-code', escape(clean(v)));
+            }
+
+            n.replace(img);
         },
         _serializeNoScript: function (n) {
             var self = this,
