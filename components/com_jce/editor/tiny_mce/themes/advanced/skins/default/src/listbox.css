@@ -108,7 +108,7 @@
     height: auto;
     max-height: 386px;
     /*(32px *  12 + 2);*/
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .mceListBoxMenu .mceMenuItems .mceText {

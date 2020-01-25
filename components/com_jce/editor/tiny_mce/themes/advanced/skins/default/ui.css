@@ -422,7 +422,8 @@
     border-radius: 2px;
     overflow: hidden;
     overflow-y: auto;
-    margin-top: 2px;
+    margin-top: 3px;
+    margin-left: 1px;
 
     min-width: 10em;
 }
@@ -835,7 +836,7 @@
     height: auto;
     max-height: 386px;
     /*(32px *  12 + 2);*/
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .mceListBoxMenu .mceMenuItems .mceText {
@@ -1064,7 +1065,7 @@ select.mceNativeListBox {
 
 .mceSplitButtonMenu {
     min-width: calc(48px * 3);
-    margin-top: 8px;
+    margin-top: 9px;
 }
 
 .mceDefaultSkin .mceMenuItemSub {
