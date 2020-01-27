@@ -515,14 +515,17 @@
             var self = this;
             options = options || {};
 
-            var w, h;
+            var w = options.width, h = options.height;
             var div = document.createElement('div');
 
+            delete options.width;
+            delete options.height;
+
             $.extend(options, {
-                'classes': 'uk-modal-dialog-large uk-modal-preview',
+                classes: 'uk-modal-dialog-large uk-modal-preview',
                 open: function (e) {
                     // image
-                    if (/\.(jpg|jpeg|gif|png|webp)/i.test(url)) {
+                    if (/\.(jpg|jpeg|gif|png|apng|svg|webp)/i.test(url)) {
                         $(div).addClass('image-preview loading');
 
                         var img = new Image(),
@@ -533,7 +536,7 @@
                                 return false;
                             }
 
-                            w = img.width, h = img.height;
+                            w = w || img.width, h = h || img.height;
 
                             $('.image-preview').removeClass('loading').append('<img src="' + url + '" alt="' + Wf.String.basename(url) + '" />').parent().css('max-width', w + 'px');
 

@@ -1474,8 +1474,11 @@
                     var name = Wf.String.basename($item.attr('title'));
 
                     if (this._isViewable(name)) {
-                        if (/\.(jpeg|jpg|gif|png|webp|avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mp3|mp4|m4v|mpeg|ogg|ogv|webm|swf|flv|f4v|xml|dcr|rm|ra|ram|divx|pdf)/i.test(name)) {
-                            Wf.Modal.media(name, url);
+                        if (/\.(jpeg|jpg|gif|png|webp|svg|apng|avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mp3|mp4|m4v|mpeg|ogg|ogv|webm|swf|flv|f4v|xml|dcr|rm|ra|ram|divx|pdf)/i.test(name)) {
+                            
+                            var args = {width : $item.data('width') || 0, height : $item.data('height') || 0};
+                            
+                            Wf.Modal.media(name, url, args);
                         } else {
                             Wf.Modal.iframe(name, url, {
                                 onFrameLoad: function (e) {
@@ -1521,7 +1524,6 @@
 
                                     iframe.contentWindow.document.body.innerHTML = tmpDiv.innerHTML;
                                 }
-
                             });
                         }
                     }
