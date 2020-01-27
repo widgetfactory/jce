@@ -225,7 +225,7 @@
                 }
             });
 
-            $btn.insertAfter(elm);
+            $btn.insertAfter($(elm).siblings('.button-select'));
 
             $(elm).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
                 e.preventDefault();

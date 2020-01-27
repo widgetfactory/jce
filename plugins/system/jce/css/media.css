@@ -29,15 +29,15 @@
     padding: 0 !important;
 }
 
-.wf-media-input + .wf-media-upload-button {
+.wf-media-input ~ .wf-media-upload-button {
     position: relative;
 }
 
-.input-append .wf-media-input + .wf-media-upload-button {
+.input-append .wf-media-input ~ .wf-media-upload-button {
     border-radius: 0;
 }
 
-.wf-media-input + .wf-media-upload-button > input[type="file"] {
+.wf-media-input ~ .wf-media-upload-button > input[type="file"] {
     position: absolute;
     left: 0;
     top: 0;
