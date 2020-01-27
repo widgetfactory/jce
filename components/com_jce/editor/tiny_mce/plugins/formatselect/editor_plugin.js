@@ -55,7 +55,7 @@
                 if (tinymce.inArray(nodes, n.nodeName) !== -1) {
                     // not a system element
                     if (n.className) {
-                        return n.className.indexOf('mce-item-') !== -1;
+                        return n.className.indexOf('mce-item-') === -1;
                     }
 
                     return true;
