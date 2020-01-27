@@ -564,7 +564,6 @@
             if (s.theme_resizing) {
                 DOM.add(td, 'div', {
                     id: ed.id + '_resize',
-                    onclick: "return false;",
                     'class': 'mceResize',
                     tabIndex: "-1"
                 }, '<span class="mceIcon mce_resize"></span>');
