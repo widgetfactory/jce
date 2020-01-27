@@ -172,7 +172,7 @@ final class WFTabs extends JObject
                     $class .= ' uk-hidden';
                 }
 
-                $output .= "\t" . '<li id="' . $name . '_tab" role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1">' . JText::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
+                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1" value="' . $name . '">' . JText::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
                 ++$x;
             }
 
