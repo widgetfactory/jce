@@ -130,15 +130,25 @@
                     if (!removedFormat) {
                         // registered style format
                         if (ed.formatter.get(name)) {
-                            ed.formatter.apply(name, {}, node);
-                        // custom class
+                            //ed.formatter.apply(name, {}, node);
+                            ed.execCommand('ApplyFormat', false, {
+                                name : name,
+                                args : {},
+                                node : node
+                            });
+                            // custom class
                         } else {
                             node = ed.selection.getNode();
 
                             if (ed.dom.hasClass(node, name)) {
                                 ed.dom.removeClass(node, name);
                             } else {
-                                ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
+                                //ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
+                                ed.execCommand('ApplyFormat', false, {
+                                    name : 'classname',
+                                    args : { 'value': name },
+                                    node : ed.selection.isCollapsed() ? node : null
+                                });
                             }
 
                             // add it to the list
