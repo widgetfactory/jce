@@ -2159,7 +2159,7 @@
                     }
 
                     if (o.restrict) {
-                        var re = o.restrict.replace(/,/g, '|');
+                        var re = o.restrict.split(',').join('|');
                         var item = self.getSelectedItems(0);
 
                         if (new RegExp('\\.(' + re + ')$', 'i').test($(item).attr('title'))) {
@@ -2167,7 +2167,6 @@
                         }
                     }
                 });
-
             }
 
             if (this._pasteitems) {
@@ -2194,10 +2193,10 @@
                     }
                 }
 
-                $(button).toggleClass('uk-hidden', !show); //.toggleClass('show', !show);
-
-                if (!show) {
-                    $(button).attr('aria-hidden', false);
+                if (show) {
+                    $(button).removeClass('uk-hidden').removeAttr('aria-hidden');
+                } else {
+                    $(button).addClass('uk-hidden').attr('aria-hidden', false);
                 }
             }
         },
@@ -2564,6 +2563,7 @@
 
             // show relevant buttons
             this._showButtons();
+
             // get item details
             this._getItemDetails();
         },
