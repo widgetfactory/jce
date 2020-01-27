@@ -402,6 +402,18 @@
                         e.preventDefault();
                     }
                 });
+
+                ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
+                    // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
+                    if (cmd && cmd.indexOf('Format') !== -1) {
+                        var node = ed.selection.getNode();
+                        
+                        // if it is a preview node, select the iframe
+                        if (node && ed.dom.hasClass(node, 'mce-item-preview')) {
+                            ed.selection.select(node.firstChild);
+                        }
+                    }
+                });
             });
 
             // Remove iframe preview on backspace or delete
