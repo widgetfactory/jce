@@ -104,7 +104,7 @@ WFPopups.addPopup('jcemediabox', {
      * @param {Object} n Element
      */
     check: function(n) {
-        return /jce(popup|_popup|lightbox)/.test(n.className) || n.getAttribute('data-mediabox');
+        return /(jce(popup|_popup|lightbox)|wfpopup)/.test(n.className) || n.getAttribute('data-mediabox');
     },
     /**
      * Get the MIME Type from a media type value
