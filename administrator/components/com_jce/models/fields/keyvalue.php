@@ -112,7 +112,8 @@ class JFormFieldKeyValue extends JFormField
             $str[] = '</div>';
         }
 
-        $str[] = '<input type="hidden" name="' . $this->name . '" value="" />';
+        $str[] = '<input type="hidden" name="' . $this->name . '" value="' . htmlspecialchars($this->value) . '" />';
+
         return implode("", $str);
     }
 }
