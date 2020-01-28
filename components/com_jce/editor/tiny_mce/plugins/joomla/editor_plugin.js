@@ -57,7 +57,7 @@
                         onclick: function (e) {
                             // store bookmark
                             ed.lastSelectionBookmark = ed.selection.getBookmark(1);
-                            
+
                             if (href) {
                                 ed.windowManager.open({
                                     file: href,
@@ -78,43 +78,52 @@
                                 new Function(item.onclick).apply();
                             }
 
+                            this.setSelected(false);
+
                             return false;
                         }
                     });
                 });
 
+                var jModalCloseCore = function () { };
+
                 if (window.jModalClose) {
-                    var jModalCloseCore = window.jModalClose;
-
-                    // Joomla modal override
-                    window.jModalClose = function () {
-                        var wm = ed.windowManager;
-
-                        // if a windowManager window is open...
-                        if (wm.count) {
-                            return wm.close();
-                        }
-
-                        // otherwise treat as a Joomla modal
-                        return jModalCloseCore();
-                    };
+                    jModalCloseCore = window.jModalClose;
                 }
+
+                // Joomla modal override
+                window.jModalClose = function () {
+                    var wm = ed.windowManager;
+
+                    // if a windowManager window is open...
+                    if (wm.count) {
+                        return wm.close();
+                    }
+
+                    // otherwise treat as a Joomla modal
+                    return jModalCloseCore();
+                };
+
+                var SBoxClose = function () { };
 
                 if (window.SqueezeBox) {
-                    var SBoxClose = window.SqueezeBox.close;
-
-                    window.SqueezeBox.close = function () {
-                        var wm = ed.windowManager;
-
-                        // if a windowManager window is open...
-                        if (wm.count) {
-                            return wm.close();
-                        }
-
-                        // otherwise treat as a SqueezeBox modal
-                        return SBoxClose();
-                    };
+                    SBoxClose = window.SqueezeBox.close;
+                } else {
+                    window.SqueezeBox = {};
                 }
+
+                window.SqueezeBox.close = function () {
+                    var wm = ed.windowManager;
+
+                    // if a windowManager window is open...
+                    if (wm.count) {
+                        return wm.close();
+                    }
+
+                    // otherwise treat as a SqueezeBox modal
+                    return SBoxClose();
+                };
+
             });
 
             // Remove the menu element when the editor is removed
