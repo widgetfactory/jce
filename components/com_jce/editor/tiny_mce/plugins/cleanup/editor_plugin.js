@@ -34,6 +34,30 @@
             }
 
             ed.onPreInit.add(function () {
+                // cleanup data-mce-bogus tags
+                if (ed.settings.remove_trailing_brs === false) {
+                    // Remove bogus elements
+                    ed.serializer.addAttributeFilter('data-mce-bogus', function(nodes, name, args) {
+                        var i = nodes.length, node, textNode
+
+                        while (i--) {
+                            node = nodes[i];
+
+                            if (node.name !== 'br') {
+                                continue;
+                            }
+
+                            if (!node.prev && !node.next) {
+                                textNode = new Node('#text', 3);
+                                textNode.value = '\u00a0';
+                                node.replace(textNode);
+                            } else {
+                                node.remove();
+                            }
+                        }
+                    });
+                }
+                
                 // cleanup tmp attributes
                 ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
                     var i = nodes.length,
