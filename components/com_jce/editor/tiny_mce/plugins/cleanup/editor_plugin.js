@@ -34,6 +34,15 @@
             }
 
             ed.onPreInit.add(function () {
+                // Remove bogus elements
+                ed.serializer.addAttributeFilter('data-mce-caret', function(nodes, name, args) {
+                    var i = nodes.length;
+
+                    while (i--) {
+                        nodes[i].remove();
+                    }
+                });
+                
                 // cleanup data-mce-bogus tags
                 if (ed.settings.remove_trailing_brs === false) {
                     // Remove bogus elements
