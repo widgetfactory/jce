@@ -22,12 +22,14 @@
     float: none;
     outline: none;
     position: relative;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
 }
 
 .mceDefaultSkin select, .mceDefaultSkin textarea, .mceDefaultSkin input[type] {
     margin: 0;
     line-height: 1;
-    transition: inherit;
 }
 
 .mceDefaultSkin input {
