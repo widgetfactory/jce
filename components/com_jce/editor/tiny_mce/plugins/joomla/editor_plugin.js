@@ -37,8 +37,8 @@
             ctrl.onRenderMenu.add(function (ctrl, menu) {
                 var ed = ctrl.editor, vp = ed.dom.getViewPort();
 
-                each(plugins, function (item) {
-                    var href = item.href || '';
+                each(plugins, function (plg) {
+                    var href = plg.href || '';
 
                     if (href) {
                         href = ed.dom.decode(href);
@@ -50,10 +50,10 @@
                         href = href.replace(/(e_name|editor)=([\w_]+)/gi, '$1=' + ed.id);
                     }
 
-                    menu.add({
+                    var item = menu.add({
                         id: ed.dom.uniqueId(),
-                        title: item.title,
-                        icon: item.icon,
+                        title: plg.title,
+                        icon: plg.icon,
                         onclick: function (e) {
                             // store bookmark
                             ed.lastSelectionBookmark = ed.selection.getBookmark(1);
@@ -61,7 +61,7 @@
                             if (href) {
                                 ed.windowManager.open({
                                     file: href,
-                                    title: item.title,
+                                    title: plg.title,
                                     width: Math.max(vp.w - 40, 896),
                                     height: Math.max(vp.h - 40, 707),
                                     size: 'mce-modal-landscape-full',
@@ -74,11 +74,11 @@
                                 }
                             }
 
-                            if (item.onclick) {
-                                new Function(item.onclick).apply();
+                            if (plg.onclick) {
+                                new Function(plg.onclick).apply();
                             }
 
-                            this.setSelected(false);
+                            item.setSelected(false);
 
                             return false;
                         }
