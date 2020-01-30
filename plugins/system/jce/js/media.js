@@ -136,8 +136,12 @@
                 // Joomla 3.5.x / 4.x Media Field
                 var url = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
 
-                if (inst) {
-                    url = inst.url || inst.getAttribute('data-url');
+                if (inst) {                    
+                    if (inst.options) {
+                        url = inst.options.url || '';
+                    } else {
+                        url = inst.url || $(inst).data('url') || '';
+                    }
                 }
 
                 return url || $(elm).siblings('a.modal').attr('href') || '';
@@ -213,9 +217,11 @@
                 return false;
             }
 
-            var $btn = $('<a title="Upload" class="btn wf-media-upload-button" role="button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
+            var $uploadBtn = $('<a title="Upload" class="btn wf-media-upload-button" role="button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
 
-            $('input[type="file"]', $btn).on('change', function () {
+            $('input[type="file"]', $uploadBtn).on('change', function (e) {
+                e.preventDefault();
+                
                 if (this.files) {
                     var file = this.files[0];
 
@@ -225,7 +231,9 @@
                 }
             });
 
-            $btn.insertAfter($(elm).siblings('.button-select'));
+            var $selectBtn = $(elm).parent().find('.button-select');
+
+            $uploadBtn.insertAfter($selectBtn);
 
             $(elm).on('drag dragstart dragend dragover dragenter dragleave drop', function (e) {
                 e.preventDefault();

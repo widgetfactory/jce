@@ -36,7 +36,7 @@ abstract class WfBrowserHelper
 
     public static function getMediaFieldOptions($options = array())
     {
-        if (!isset($options['elememt'])) {
+        if (!isset($options['element'])) {
             $options['element'] = null;
         }
 
