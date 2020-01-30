@@ -158,9 +158,12 @@
             }
 
             ctrl.onRenderMenu.add(function (c, m) {
-                m.add({
+                var item = m.add({
                     onclick: function (e) {
                         e.preventDefault();
+
+                        // remove selected state
+                        item.setSelected(false);
 
                         var n = ed.dom.getParent(e.target, '.mceButton');
 

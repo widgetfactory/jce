@@ -230,9 +230,13 @@
             });
 
             ctrl.onRenderMenu.add(function (c, m) {
-                m.add({
+                var item = m.add({
                     onclick: function (e) {
                         e.preventDefault();
+
+                        // remove selected state
+                        item.setSelected(false);
+
                         insertEmoticon(e.target);
                         m.hideMenu();
                     },
