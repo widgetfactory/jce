@@ -1114,6 +1114,44 @@ class WFEditor
         }
     }
 
+    private static function getSunTemplateFiles(&$files, $template)
+    {
+        $path = JPATH_SITE . '/templates/' . $template->name;
+
+        if (!is_file($path . '/template.defines.php')) {
+            return false;
+        }
+
+        // check for editor.css file
+        $css = self::isEditorStylesheet($path . '/css');
+
+        if ($css) {
+            $files[] = 'templates/' . $template->name . '/css/' . basename($css);
+            return true;
+        }
+
+        // add bootstrap
+        $files[] = 'plugins/system/jsntplframework/assets/3rd-party/bootstrap/css/bootstrap-frontend.min.css';
+
+        // add base template.css file
+        $files[] = 'templates/' . $template->name . '/css/template.css';
+
+        $params = new JRegistry($template->params);
+        $preset  = $params->get('preset', '');
+
+        $data = json_decode($preset);
+
+        if ($data) {
+            if (isset($data->templateColor)) {
+                $files[] = 'templates/' . $template->name . '/css/color/' . $data->templateColor . '.css';
+            }
+
+            if (isset($data->fontStyle) && isset($data->fontStyle->style)) {
+                $files[] = 'templates/' . $template->name . '/css/styles/' . $data->fontStyle->style . '.css';
+            }
+        }
+    }
+
     private static function getWrightTemplateFiles(&$files, $template)
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
@@ -1280,7 +1318,7 @@ class WFEditor
             case 1:
                 $files = array();
 
-                foreach(array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright') as $name) {
+                foreach(array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright', 'Sun') as $name) {
                     $method = 'get' . $name . 'TemplateFiles';
                     self::$method($files, $template);
                 }
