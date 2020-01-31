@@ -1652,15 +1652,15 @@ iframe {
  ========================================================================== */
 .uk-comment-title {
   margin: 5px 0 0 0;
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 1.14rem;
+  line-height: 1.36rem;
 }
 /* Sub-object `uk-comment-meta`
  ========================================================================== */
 .uk-comment-meta {
   margin: 2px 0 0 0;
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 0.78rem;
+  line-height: 1.49rem;
   color: #999;
 }
 /* Sub-object `uk-comment-body`
@@ -8161,12 +8161,12 @@ a.uk-thumbnail:focus {
 /* Size modifiers
  ========================================================================== */
 .uk-text-small {
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 0.78rem;
+  line-height: 1.49rem;
 }
 .uk-text-large {
-  font-size: 17px;
-  line-height: 22px;
+  font-size: 1.28rem;
+  line-height: 1.32rem;
   font-weight: normal;
 }
 /* Weight modifiers
@@ -10309,8 +10309,8 @@ html[dir="rtl"] .uk-slider > * {
   /* 4 */
   background: #333;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 11px;
-  line-height: 16px;
+  font-size: 0.85rem;
+  line-height: 1.46rem;
   border-radius: 3px;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }

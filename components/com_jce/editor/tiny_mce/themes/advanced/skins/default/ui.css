@@ -2693,7 +2693,8 @@ select.mceNativeListBox {
 }
 
 .mceModal .mce-modal-portrait-full {
-    max-width: 1024px;
+    max-width: 1440px;
+    max-height: 810px;
 }
 
 .mceModal .mce-modal-portrait-768 {

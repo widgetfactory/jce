@@ -334,7 +334,7 @@ html {
 
 .uk-comment-meta {
     color: #444;
-    font-size: 13px;
+    font-size: 1rem;
     margin: 0;
     line-height: 20px;
 }
@@ -809,4 +809,11 @@ select:not([multiple]):not([size]) {
 
 .uk-form-row:before, .uk-form-row:after {
     content: normal;
+}
+
+/* Increase font-size for larger windows? */
+@media (min-width: 1400px) {
+    html {
+        font-size: 14px;
+    }
 }
