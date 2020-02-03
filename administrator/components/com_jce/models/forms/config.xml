@@ -39,9 +39,10 @@
                 <option value="0">WF_OPTION_LINEBREAK</option>
             </field>
 
-            <field name="content_style_reset" type="radio" default="0" label="WF_PARAM_EDITOR_STYLE_RESET" description="WF_PARAM_EDITOR_STYLE_RESET_DESC" class="btn-group btn-group-yesno" filter="integer">
+            <field name="content_style_reset" type="list" default="auto" label="WF_PARAM_EDITOR_STYLE_RESET" description="WF_PARAM_EDITOR_STYLE_RESET_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
+                <option value="auto">WF_OPTION_AUTO</option>
             </field>
 
             <field name="content_css" type="list" default="1" label="WF_PARAM_EDITOR_GLOBAL_CSS" description="WF_PARAM_EDITOR_GLOBAL_CSS_DESC" filter="integer">
