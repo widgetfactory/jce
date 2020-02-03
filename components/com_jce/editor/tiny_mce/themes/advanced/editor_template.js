@@ -154,9 +154,6 @@
                 s.theme_statusbar_location = 0;
             }
 
-            if (!ed.settings.compress.css && ed.settings.content_css !== false) {
-                ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
-            }
             // Init editor
             ed.onInit.add(function () {
                 if (!ed.settings.readonly) {
@@ -231,11 +228,21 @@
 
             // Load CSS
             if (!ed.settings.compress.css) {
-                DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + '/skins/' + ed.settings.skin + '/ui.css');
+                // load default skin
+                DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + '/skins/default/ui.css');
+
+                // load extended skin
+                if (ed.settings.skin !== 'default') {
+                    DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + '/skins/' + ed.settings.skin + '/ui.css');
+                }
 
                 if (s.skin_variant) {
                     DOM.loadCSS(url + '/skins/' + ed.settings.skin + '/ui_' + s.skin_variant + '.css');
                 }
+            }
+
+            if (!ed.settings.compress.css && ed.settings.content_css !== false) {
+                ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));
             }
         },
 
@@ -253,6 +260,7 @@
                     value: cd[3]
                 });
         },
+
         execCommand: function (cmd, ui, val) {
             var f = this['_' + cmd];
 
@@ -399,6 +407,7 @@
             // dispatch
             this.onResize.dispatch();
         },
+
         destroy: function () {
             var id = this.editor.id;
 
@@ -406,8 +415,8 @@
             Event.clear(id + '_path_row');
             Event.clear(id + '_external_close');
         },
-        // Internal functions
 
+        // Internal functions
         _createLayout: function (s, tb, o, p) {
             var self = this,
                 lo = s.theme_toolbar_location,
@@ -479,6 +488,7 @@
                 }
             });
         },
+
         _addToolbars: function (c, o) {
             var self = this,
                 i, tb, ed = self.editor,
@@ -651,6 +661,7 @@
             o.deltaHeight -= 21;
             n = tb = null;
         },
+
         _updateUndoStatus: function (ed) {
             var cm = ed.controlManager,
                 um = ed.undoManager;
@@ -658,6 +669,7 @@
             cm.setDisabled('undo', !um.hasUndo() && !um.typing);
             cm.setDisabled('redo', !um.hasRedo());
         },
+
         _nodeChanged: function (ed, cm, n, co, ob) {
             var self = this,
                 p, de = 0,
@@ -839,13 +851,14 @@
                 });
             }
         },
-        // Commands gets called by execCommand
 
+        // Commands gets called by execCommand
         _sel: function (v) {
             this.editor.execCommand('mceSelectNodeDepth', false, v);
         },
+
         /**
-         * WF Editor Custom Help Command
+         * Custom Help Command
          */
         _mceHelp: function () {
             var ed = this.editor;
