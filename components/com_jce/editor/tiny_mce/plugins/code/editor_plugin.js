@@ -59,6 +59,10 @@
             });
 
             ed.onPreInit.add(function () {
+                if (ed.settings.content_css !== false) {
+                    ed.dom.loadCSS(url + "/css/content.css");
+                }
+
                 // allow script URLS, eg: href="javascript:;"
                 if (ed.getParam('code_script')) {
                     ed.settings.allow_script_urls = true;
@@ -177,9 +181,6 @@
                     });
 
                 }
-
-                if (ed.settings.content_css !== false)
-                    ed.dom.loadCSS(url + "/css/content.css");
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {

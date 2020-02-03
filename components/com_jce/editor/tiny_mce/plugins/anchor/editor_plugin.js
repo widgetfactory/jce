@@ -106,13 +106,14 @@
                         }
                     });
                 }
-
-                if (!ed.settings.compress.css)
-                    ed.dom.loadCSS(url + "/css/content.css");
             });
 
             // Pre-init
             ed.onPreInit.add(function () {
+                if (!ed.settings.compress.css) {
+                    ed.dom.loadCSS(url + "/css/content.css");
+                }
+
                 function isAnchorLink(node) {
                     var href = node.attr('href'),
                         name = node.attr('name') || node.attr('id');
@@ -155,25 +156,25 @@
                 o.content = o.content.replace(/<a id="([^"]+)"><\/a>/gi, '<a id="$1">\uFEFF</a>');
             });
 
-            
+
             ed.addButton('anchor', {
                 title: 'anchor.desc',
-                onclick: function() {
+                onclick: function () {
                     var input;
 
                     var html = '' +
-                    '<div class="mceModalRow">' +
-                    '   <label for="' + ed.id + '_anchor_input">' + ed.getLang('anchor.name', 'Name') + '</label>' +
-                    '   <div class="mceModalControl">' +
-                    '       <input type="text" id="' + ed.id + '_anchor_input" autofocus />' +
-                    '   </div>' +
-                    '</div>';
+                        '<div class="mceModalRow">' +
+                        '   <label for="' + ed.id + '_anchor_input">' + ed.getLang('anchor.name', 'Name') + '</label>' +
+                        '   <div class="mceModalControl">' +
+                        '       <input type="text" id="' + ed.id + '_anchor_input" autofocus />' +
+                        '   </div>' +
+                        '</div>';
 
                     ed.windowManager.open({
-                        title   : ed.getLang('anchor.desc', 'Anchor'),
-                        content : html,
+                        title: ed.getLang('anchor.desc', 'Anchor'),
+                        content: html,
                         size: 'mce-modal-landscape-small',
-                        open: function() {
+                        open: function () {
                             var input = DOM.get(ed.id + '_anchor_input');
 
                             input.value = '';
@@ -212,7 +213,7 @@
                                     if (!value) {
                                         e.cancelSubmit = true;
                                     }
-                                    
+
                                     self._insertAnchor(value);
                                 },
                                 classes: 'primary',

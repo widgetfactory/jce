@@ -86,10 +86,6 @@
                 }
             });
 
-            if (ed.settings.content_css !== false) {
-                ed.contentCSS.push(url + '/css/content.css');
-            }
-
             // show menus if enabled
             if (ed.getParam("spellchecker_suggestions", true)) {
                 ed.onClick.add(self._showMenu, self);
@@ -102,6 +98,12 @@
 
             // only required for PHP spellchecker
             if (!self.native_spellchecker) {
+                ed.onPreInit.add(function() {
+                    if (ed.settings.content_css !== false) {
+                        ed.dom.loadCSS(url + "/css/content.css");
+                    }
+                });
+                
                 ed.onBeforeGetContent.add(function () {
                     if (self.active) {
                         self._removeWords();
@@ -129,6 +131,7 @@
 
             // Find selected language
             self.languages = {};
+
             each(ed.getParam('spellchecker_languages', '+English=en,Danish=da,Dutch=nl,Finnish=fi,French=fr,German=de,Italian=it,Polish=pl,Portuguese=pt,Spanish=es,Swedish=sv', 'hash'), function (v, k) {
                 if (k.indexOf('+') === 0) {
                     k = k.substring(1);
@@ -389,7 +392,7 @@
             e = 0; // Fixes IE memory leak
 
             if (!m) {
-                m = ed.controlManager.createDropMenu('spellcheckermenu', {keyboard_focus: true});
+                m = ed.controlManager.createDropMenu('spellcheckermenu', { keyboard_focus: true });
                 self._menu = m;
             }
 
@@ -430,7 +433,7 @@
 
                     if (ed.getParam('show_ignore_words', true)) {
                         m.addSeparator();
-                        
+
                         ignoreRpc = self.editor.getParam("spellchecker_enable_ignore_rpc", '');
                         m.add({
                             title: 'spellchecker.ignore_word',

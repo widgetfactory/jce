@@ -70,10 +70,6 @@
             });*/
 
             ed.onInit.add(function () {
-                if (!ed.settings.compress.css) {
-                    ed.dom.loadCSS(url + "/css/content.css");
-                }
-
                 // Display "a#name" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function (theme, o) {
@@ -155,7 +151,10 @@
             });
 
             ed.onPreInit.add(function () {
-
+                if (!ed.settings.compress.css) {
+                    ed.dom.loadCSS(url + "/css/content.css");
+                }
+                
                 ed.parser.addNodeFilter('hr', function (nodes) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i],
