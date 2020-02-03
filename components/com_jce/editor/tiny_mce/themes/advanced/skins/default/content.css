@@ -108,7 +108,9 @@ h6 {
 .mce-item-table th,
 .mce-item-table caption,
 .mce-item-visualaid {
-  border: 1px dashed #1976d2;
+  border: 1px dashed #757575;
+  /* #1976d2 */
+  border-color: var(--mce-guidelines);
   border-collapse: separate;
   border-spacing: 1px;
 }
@@ -214,7 +216,8 @@ figcaption:empty::after {
   text-align: center;
   display: inline-block;
   width: 100%;
-  color: #888;
+  color: #757575;
+  color: var(--mce-guidelines);
   pointer-events: none;
 }
 figcaption:empty[data-mce-empty]::after {
