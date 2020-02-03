@@ -1,4 +1,3 @@
-@import url('../default/ui.css?@@etag@@');
 @import url('fonts.css?@@etag@@');
 
 .mceModernSkin .mceToolbar {
@@ -17,6 +16,12 @@
 .mceModernSkin .mceListBox .mceOpen {
     border-color: transparent;
     color: rgba(0, 0, 0, 0.87);
+}
+
+.mceModernSkin .mceButton,
+.mceModernSkin .mceSplitButton .mceText,
+.mceModernSkin .mceSplitButton .mceOpen {
+    background-color: transparent;
 }
 
 .mceModernSkin .mceButton .mceIcon,
