@@ -291,14 +291,15 @@ class WFEditorPlugin extends JObject
                     continue;
                 }
 
+                $def = (string) $field->getAttribute('default');
+
                 // get parameter default value if set, use the specific plugin
-                $value = $this->getParam($name . '.' . $key, '');
+                $value = $this->getParam($name . '.' . $key, $def);
 
                 // only use non-empty values
                 if ($value !== '') {
                     $defaults[$key] = $value;
                 }
-                
             }
         }
 
