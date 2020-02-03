@@ -1,4 +1,4 @@
-// out: content.css, sourcemap: false, compress: true
+// out: content.css, sourcemap: false, compress: false
 .mceVisualBlocks {
     p,
     h1,
@@ -25,56 +25,14 @@
     dd {
         margin: 2px 0;
         padding: 2px;
-        border: 1px dashed #1976d2;
+        border: 1px dashed #787679;/*#757575; /* #1976d2 */
+        border-color: var(--mce-guidelines);
         box-sizing: border-box;
-    }
-
-    p:before,
-    h1:before,
-    h2:before,
-    h3:before,
-    h4:before,
-    h5:before,
-    h6:before,
-    aside:before,
-    div:not([class*="mce-"]):not([class*="wf-"]):before,
-    section:before,
-    article:before,
-    header:before,
-    footer:before,
-    nav:before,
-    blockquote:before,
-    address:before,
-    pre:not([class*="language-"]):before,
-    figure:before,
-    figcaption:before,
-    ul:before,
-    ol:before,
-    dl:before,
-    dt:before,
-    dd:before {
-        background: transparent no-repeat left center;
-        background-size: contain;
-        padding: 4px 0;
-        margin: 2px 0;
-        display: block;
-        content: "";
-        line-height: 0;
-
-        /*display: block;
-        font-weight: 700;
-        font-size: 7pt;
-        color: #888;
-        line-height: 1;
-        font-family: -apple-systrem,BlinkMacSystremFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
-        position: relative;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 0.5em 0.25em;*/
     }
 
     figcaption {
-        border: 1px dashed #1976d2;
+        border: 1px dashed #787679;/* #757575; /* #1976d2 */
+        border-color: var(--mce-guidelines);
         padding: 5px;
         margin: 2px 0;
     }
@@ -94,6 +52,6 @@
         margin: -2px 0 0 -38px;
     }
 
-    @import (less) 'base64.less';
-    /*@import (less) 'names.less';*/
+    /*@import (less) 'base64.less';*/
+    @import (less) 'names.less';
 }
