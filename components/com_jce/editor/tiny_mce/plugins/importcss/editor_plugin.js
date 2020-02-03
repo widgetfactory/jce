@@ -49,6 +49,100 @@
         return '';
     }
 
+    var rgba = {}, luma = {}, white = 'rgb(255, 255, 255)';
+
+    function getRGBA(val) {
+        if (!rgba[val]) {
+            var r = 0, b = 0, g = 0, a = 1, values, match
+
+            if (val.indexOf('#') !== -1) {
+                val = val.substr(1);
+
+                // fff -> ffffff
+                if (val.length === 3) {
+                    val += val;
+                }
+
+                values = parseInt(val, 16);
+
+                r = (values >> 16) & 0xFF;
+                g = (values >> 8) & 0xFF;
+                b = (values >> 0) & 0xFF;
+                a = (values >> 24) & 0xFF;
+            } else {
+                // remove spaces
+                val = val.replace(/\s/g, '');
+
+                if (match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val)) {
+                    values = match[1].split(',').map(function (x, i) {
+                        return parseFloat(x);
+                    });
+                }
+
+                if (values) {
+                    r = values[0];
+                    g = values[1];
+                    b = values[2];
+
+                    if (values.length === 4) {
+                        a = values[3] || 1;
+                    }
+                }
+            }
+
+            rgba[val] = { r: r, g: g, b: b, a: a };
+        }
+
+        return rgba[val];
+    }
+
+    // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L75
+    function getLuminance(val) {
+        if (!luma[val]) {
+            var col = getRGBA(val);
+
+            // opacity is set
+            /*if (col.a < 1 && color2) {
+                var col2 = getRGBA(color2);
+
+                col = {
+                    r: ((col2.r - col.r) * col.a) + col.r,
+                    g: ((col2.g - col.g) * col.a) + col.g,
+                    b: ((col2.b - col.b) * col.a) + col.b
+                };
+            }*/
+
+            var RsRGB, GsRGB, BsRGB, R, G, B;
+
+            RsRGB = col.r / 255;
+            GsRGB = col.g / 255;
+            BsRGB = col.b / 255;
+
+            if (RsRGB <= 0.03928) { R = RsRGB / 12.92; } else { R = Math.pow(((RsRGB + 0.055) / 1.055), 2.4); }
+            if (GsRGB <= 0.03928) { G = GsRGB / 12.92; } else { G = Math.pow(((GsRGB + 0.055) / 1.055), 2.4); }
+            if (BsRGB <= 0.03928) { B = BsRGB / 12.92; } else { B = Math.pow(((BsRGB + 0.055) / 1.055), 2.4); }
+
+            luma[val] = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+
+            //luma[val] = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b; // per ITU-R BT.709
+        }
+
+        return luma[val];
+    }
+
+    // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L726
+    function isReadable(color1, color2, wcag2, limit) {
+        var l1 = getLuminance(color1);
+        var l2 = getLuminance(color2);
+
+        var lvl = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+
+        wcag2 = wcag2 || 4.5;
+        limit = limit || 21;
+
+        return lvl >= parseFloat(wcag2) && lvl < parseFloat(limit); // AA
+    }
+
     tinymce.create('tinymce.plugins.ImportCSS', {
         init: function (ed, url) {
             this.editor = ed;
@@ -57,18 +151,85 @@
             // create an event to use externally
             ed.onImportCSS = new tinymce.util.Dispatcher();
 
-            ed.onImportCSS.add(function() {
+            ed.onImportCSS.add(function () {
                 if (ed.settings.importcss_classes) {
                     return;
                 }
-                
+
                 self._import();
             });
 
             // attempt to import when the editor is initialised
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 ed.onImportCSS.dispatch();
+
+                // check for high contrast if not already set in a parameter
+                if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
+                    self._setHighContrastMode();
+                }
+
+                self._setGuideLinesColor();
             });
+        },
+
+        _setHighContrastMode: function() {
+            var ed = this.editor;
+            
+            var bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+
+            if (!bodybg || !color) {
+                return;
+            }
+
+            if (!isReadable(color, bodybg, 3.0)) {
+                ed.dom.addClass(ed.getBody(), 'mceContentReset');
+            }
+        },
+
+        _setGuideLinesColor: function () {
+            var ed = this.editor;
+
+            var shades = ['#000000', '#080808', '#101010', '#181818', '#202020', '#282828', '#303030', '#383838', '#404040', '#484848', '#505050', '#585858', '#606060', '#686868', '#696969', '#707070', '#787878', '#808080', '#888888', '#909090', '#989898', '#A0A0A0', '#A8A8A8', '#A9A9A9', '#B0B0B0', '#B8B8B8', '#BEBEBE', '#C0C0C0', '#C8C8C8', '#D0D0D0', '#D3D3D3', '#D8D8D8', '#DCDCDC', '#E0E0E0', '#E8E8E8', '#F0F0F0', '#F5F5F5', '#F8F8F8', '#FFFFFF'];
+            var color, bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true);
+
+            if (!bodybg) {
+                return;
+            }
+
+            for (var i = 0; i < shades.length; i++) {
+                if (isReadable(shades[i], bodybg, 4.5, 5.0)) {
+                    color = shades[i];
+                    break;
+                }
+            }
+
+            if (color) {
+                // get existing stylesheet
+                var doc = ed.getDoc();
+
+                var style = doc.getElementById('mceVariableStyles');
+
+                if (!style) {
+                    // get document head
+                    var head = doc.getElementsByTagName('head')[0];
+
+                    // create style element
+                    var style = DOM.create('style', {
+                        type: 'text/css',
+                        id: 'mceVariableStyles'
+                    });
+
+                    // add to head
+                    head.appendChild(style);
+                }
+
+                // empty
+                style.innerHTML = style.innerText = '';
+
+                var css = ':root{--mce-guidelines: ' + color + '}';
+
+                style.appendChild(doc.createTextNode(css));
+            }
         },
 
         _import: function () {
@@ -96,9 +257,9 @@
                 return filtered[href];
             }
 
-            function parseCSS(stylesheet) {                
+            function parseCSS(stylesheet) {
                 // IE style imports
-                each(stylesheet.imports, function (r) {                    
+                each(stylesheet.imports, function (r) {
                     if (r.href.indexOf('://fonts.googleapis.com') > 0) {
                         var v = '@import url(' + r.href + ');';
 
@@ -128,6 +289,8 @@
                     if (stylesheet.href) {
                         href = stylesheet.href.substr(0, stylesheet.href.lastIndexOf('/') + 1);
                     }
+
+                    ed.hasStyleSheets = true;
                 } catch (e) {
                     // Firefox fails on rules to remote domain for example: 
                     // @import url(//fonts.googleapis.com/css?family=Pathway+Gothic+One);
@@ -137,7 +300,7 @@
                     // Real type or fake it on IE
                     switch (r.type || 1) {
                         // Rule
-                        case 1:                        
+                        case 1:
                             if (!isAllowedStylesheet(stylesheet.href)) {
                                 return true;
                             }
@@ -163,7 +326,7 @@
                             break;
 
                         // Import
-                        case 3:                        
+                        case 3:
                             if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                                 var v = '@import url(' + r.href + ');';
 
@@ -244,11 +407,11 @@
                     classes.sort();
                 }
 
-                ed.settings.importcss_classes = tinymce.map(classes, function(val) {
+                ed.settings.importcss_classes = tinymce.map(classes, function (val) {
                     var cls = cleanSelectorText(val);
-                    
+
                     var style = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
-                    return {'selector' : val, 'class' : cls, 'style' : style};
+                    return { 'selector': val, 'class': cls, 'style': style };
                 });
             }
         }
