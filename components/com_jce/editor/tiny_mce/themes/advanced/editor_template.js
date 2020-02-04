@@ -227,7 +227,7 @@
             });
 
             // Load CSS
-            if (!ed.settings.compress.css) {
+            /*if (!ed.settings.compress.css) {
                 // load default skin
                 DOM.loadCSS(s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : url + '/skins/default/ui.css');
 
@@ -239,7 +239,7 @@
                 if (s.skin_variant) {
                     DOM.loadCSS(url + '/skins/' + ed.settings.skin + '/ui_' + s.skin_variant + '.css');
                 }
-            }
+            }*/
 
             if (!ed.settings.compress.css && ed.settings.content_css !== false) {
                 ed.contentCSS.push(ed.baseURI.toAbsolute(url + "/skins/" + ed.settings.skin + "/content.css"));

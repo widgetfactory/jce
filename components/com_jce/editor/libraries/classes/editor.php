@@ -351,6 +351,19 @@ class WFEditor
         } else {
             // CSS
             $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
+
+            // load default skin
+            $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/default/ui.css');
+
+            // load other skin
+            if ($settings['skin'] !== 'default') {
+                $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui.css');
+            }
+
+            // load variant
+            if (isset($settings['skin_variant'])) {
+                $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui_' . $settings['skin_variant'] . '.css');
+            }
         }
 
         // set javascript compression script
@@ -359,8 +372,10 @@ class WFEditor
         } else {
             // Tinymce
             $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
+
             // Editor
             $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
+            
             // language
             $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&context=' . $this->context . '&' . $token . '=1');
         }
