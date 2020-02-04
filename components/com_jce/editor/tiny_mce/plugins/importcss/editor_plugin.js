@@ -181,6 +181,11 @@
                 return;
             }
 
+            // if the colours match, may be an error in stylesheet loading
+            if (ed.dom.toHex(bodybg) == ed.dom.toHex(color)) {
+                return;
+            }
+
             if (!isReadable(color, bodybg, 3.0)) {
                 ed.dom.addClass(ed.getBody(), 'mceContentReset');
             }
