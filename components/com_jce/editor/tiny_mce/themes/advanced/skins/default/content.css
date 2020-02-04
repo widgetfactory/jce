@@ -118,7 +118,15 @@ span.mce-item-nbsp,
 span.mce-item-shy {
   font-family: inherit;
   font-size: inherit;
-  background: #ddd url('img/middot.gif') repeat-x center;
+  display: inline-block;
+  min-width: 0.25em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: middle;
+}
+span.mce-item-nbsp:after,
+span.mce-item-shy:after {
+  content: "\00b7";
 }
 td.mceSelected,
 th.mceSelected,
