@@ -14,6 +14,8 @@ tiny_mce/plugins/*
 !tiny_mce/plugins/microdata
 !tiny_mce/plugins/templatemanager
 !tiny_mce/plugins/source
+!tiny_mce/plugins/textpattern
+!tiny_mce/plugins/columns
 
 # config
 !.gitignore
