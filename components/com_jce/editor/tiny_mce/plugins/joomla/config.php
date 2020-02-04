@@ -16,7 +16,7 @@ class WFJoomlaPluginConfig
         if (isset($settings['joomla_xtd_buttons'])) {
             return;
         }
-        
+
         $plugins = JPluginHelper::getPlugin('editors-xtd');
 
         $list = array();
@@ -33,7 +33,23 @@ class WFJoomlaPluginConfig
             }
 
             // fully load plugin instance
-            $instance = JPluginHelper::importPlugin('editors-xtd', $plugin->name, true);
+            JPluginHelper::importPlugin('editors-xtd', $plugin->name, true);
+
+            $className = 'PlgEditorsXtd' . $plugin->name;
+
+            if (!class_exists($className)) {
+                $className = 'PlgButton' . $plugin->name;
+            }
+
+            if (class_exists($className)) {
+                if (class_exists('JEventDispatcher')) {
+                    $dispatcher = JEventDispatcher::getInstance();
+                } else {
+                    $dispatcher = JFactory::getApplication()->getDispatcher();
+                }
+
+                $instance = new $className($dispatcher, (array) $plugin);
+            }
 
             // check that the button is valid
             if (!$instance || !method_exists($instance, 'onDisplay')) {
@@ -52,10 +68,10 @@ class WFJoomlaPluginConfig
             }
 
             // Set some vars
-            $name       = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
-            $title      = $button->get('text');
-            $onclick    = $button->get('onclick', '');
-            $icon       = $button->get('name');
+            $name = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
+            $title = $button->get('text');
+            $onclick = $button->get('onclick', '');
+            $icon = $button->get('name');
 
             if ($button->get('link') !== '#') {
                 $href = JUri::base() . $button->get('link');
