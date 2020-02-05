@@ -507,7 +507,7 @@
                 cmd: 'mceSearchReplace'
             });
 
-            editor.addShortcut('ctrl+f', 'searchreplace.search_desc', function () {
+            editor.addShortcut('meta+f', 'searchreplace.search_desc', function () {
                 return editor.execCommand('mceSearchReplace');
             });
 

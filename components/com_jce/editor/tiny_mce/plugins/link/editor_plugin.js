@@ -52,7 +52,7 @@
                 });
             });
 
-            ed.addShortcut('ctrl+k', 'link.desc', 'mceLink');
+            ed.addShortcut('meta+k', 'link.desc', 'mceLink');
 
             ed.onInit.add(function () {
                 if (ed && ed.plugins.contextmenu) {

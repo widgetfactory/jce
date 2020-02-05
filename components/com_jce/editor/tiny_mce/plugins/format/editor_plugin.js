@@ -41,11 +41,11 @@
                 ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
             });
 
-            ed.addShortcut('ctrl+shift+i', 'italic.desc', function() {
+            ed.addShortcut('meta+shift+i', 'italic.desc', function() {
                 ed.formatter.apply('italic-i');
             });
 
-            ed.addShortcut('ctrl+shift+' + String.fromCharCode(173), 'softhyphen.desc', 'mceSoftHyphen');
+            ed.addShortcut('ctrl+shift+' + 173, 'softhyphen.desc', 'mceSoftHyphen');
 
             ed.onPreInit.add(function (ed) {
                 each(ed.schema.getBlockElements(), function (v, k) {

@@ -163,6 +163,14 @@
                     ed.dom.bind(ed.dom.getRoot(), 'dragend', function () {
                         self._updateUndoStatus(ed);
                     });
+
+                    ed.addShortcut('alt+F10,F10', '', function() {
+                        self.toolbarGroup.focus();
+                    });
+
+                    ed.addShortcut('alt+F11', '', function() {
+                        DOM.get(ed.id + '_path_row').focus();
+                    });
                 }
             });
 
@@ -341,26 +349,6 @@
 
             self.deltaHeight = o.deltaHeight;
             o.targetNode = null;
-
-            ed.onKeyDown.add(function (ed, evt) {
-                var DOM_VK_F10 = 121,
-                    DOM_VK_F11 = 122;
-
-                if (evt.altKey) {
-                    if (evt.keyCode === DOM_VK_F10) {
-                        // Make sure focus is given to toolbar in Safari.
-                        // We can'self do this in IE as it prevents giving focus to toolbar when editor is in a frame
-                        if (tinymce.isWebKit) {
-                            window.focus();
-                        }
-                        self.toolbarGroup.focus();
-                        return Event.cancel(evt);
-                    } else if (evt.keyCode === DOM_VK_F11) {
-                        DOM.get(ed.id + '_path_row').focus();
-                        return Event.cancel(evt);
-                    }
-                }
-            });
 
             return {
                 iframeContainer: ic,

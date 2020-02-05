@@ -35,7 +35,7 @@
                 });
             }
 
-            ed.addShortcut('ctrl+shift+s', 'nonbreaking.desc', 'mceNonBreaking');
+            ed.addShortcut('ctrl+shift+' + 32, 'nonbreaking.desc', 'mceNonBreaking');
         }
     });
 
