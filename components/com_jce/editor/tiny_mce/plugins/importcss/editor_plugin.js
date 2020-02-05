@@ -181,8 +181,10 @@
                 return;
             }
 
+            var hex = ed.dom.toHex(bodybg);
+
             // if the colours match, may be an error in stylesheet loading
-            if (ed.dom.toHex(bodybg) == ed.dom.toHex(color)) {
+            if (hex == ed.dom.toHex(color) && hex === '#000000') {
                 return;
             }
 
