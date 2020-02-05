@@ -436,6 +436,8 @@
 
                 if (k == 'class') {
                     v = $('#classes').val() || '';
+                    // trim
+                    v = $.trim(v);
                 }
 
                 args[k] = v;
