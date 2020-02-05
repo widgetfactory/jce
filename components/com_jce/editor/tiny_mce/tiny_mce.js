@@ -12,14 +12,16 @@
  * This file loads the js files from classes instead of a merged copy.
  */
 
-(function() {
+(function () {
     var i, base, src, p, query = '',
         it, scripts = [];
 
-    base = '../../../tinymce-muon-retina/jscripts/tiny_mce';
+    base = '../../../tinymce-muon-retina/jscripts/tiny_mce/classes';
 
-    function include(u) {
-        scripts.push(base + '/classes/' + u);
+    function include(u, path) {
+        path = path || base;
+
+        scripts.push(path + '/' + u);
     };
 
     function load() {
@@ -108,6 +110,17 @@
     include('Formatter.js');
     include('LegacyInput.js');
     include('EnterKey.js');
+
+    /*include('autolink/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('cleanup/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('code/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('format/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('importcss/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('colorpicker/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('upload/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('figure/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('ui/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('noneditable/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');*/
 
     load();
 }());
