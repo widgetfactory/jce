@@ -172,9 +172,9 @@
             });
         },
 
-        _setHighContrastMode: function() {
+        _setHighContrastMode: function () {
             var ed = this.editor;
-            
+
             var bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
             if (!bodybg || !color) {
@@ -196,21 +196,29 @@
         _setGuideLinesColor: function () {
             var ed = this.editor;
 
-            var shades = ['#000000', '#080808', '#101010', '#181818', '#202020', '#282828', '#303030', '#383838', '#404040', '#484848', '#505050', '#585858', '#606060', '#686868', '#696969', '#707070', '#787878', '#808080', '#888888', '#909090', '#989898', '#A0A0A0', '#A8A8A8', '#A9A9A9', '#B0B0B0', '#B8B8B8', '#BEBEBE', '#C0C0C0', '#C8C8C8', '#D0D0D0', '#D3D3D3', '#D8D8D8', '#DCDCDC', '#E0E0E0', '#E8E8E8', '#F0F0F0', '#F5F5F5', '#F8F8F8', '#FFFFFF'];
-            var color, bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true);
+            var gray = ['#000000', '#080808', '#101010', '#181818', '#202020', '#282828', '#303030', '#383838', '#404040', '#484848', '#505050', '#585858', '#606060', '#686868', '#696969', '#707070', '#787878', '#808080', '#888888', '#909090', '#989898', '#A0A0A0', '#A8A8A8', '#A9A9A9', '#B0B0B0', '#B8B8B8', '#BEBEBE', '#C0C0C0', '#C8C8C8', '#D0D0D0', '#D3D3D3', '#D8D8D8', '#DCDCDC', '#E0E0E0', '#E8E8E8', '#F0F0F0', '#F5F5F5', '#F8F8F8', '#FFFFFF'];
+            var blue = ['#0d47a1', '#1565c0', '#1976d2', '#1e88e5', '#2196f3', '#42a5f5', '#64b5f6', '#90caf9', '#bbdefb'];
+            var guidelines, control, bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true);
 
             if (!bodybg) {
                 return;
             }
 
-            for (var i = 0; i < shades.length; i++) {
-                if (isReadable(shades[i], bodybg, 4.5, 5.0)) {
-                    color = shades[i];
+            for (var i = 0; i < gray.length; i++) {
+                if (isReadable(gray[i], bodybg, 4.5, 5.0)) {
+                    guidelines = gray[i];
                     break;
                 }
             }
 
-            if (color) {
+            for (var i = 0; i < blue.length; i++) {
+                if (isReadable(blue[i], bodybg, 4.5, 5.0)) {
+                    control = blue[i];
+                    break;
+                }
+            }
+
+            if (guidelines || control) {
                 // get existing stylesheet
                 var doc = ed.getDoc();
 
@@ -233,7 +241,17 @@
                 // empty
                 style.innerHTML = style.innerText = '';
 
-                var css = ':root{--mce-guidelines: ' + color + '}';
+                var css = ':root{';
+
+                if (guidelines) {
+                    css += '--mce-guidelines: ' + guidelines + ';';
+                }
+
+                if (control) {
+                    css += '--mce-control-selection: ' + control + ';';
+                }
+
+                css += '}';
 
                 style.appendChild(doc.createTextNode(css));
             }
