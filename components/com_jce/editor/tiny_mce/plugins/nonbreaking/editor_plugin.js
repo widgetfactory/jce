@@ -36,19 +36,7 @@
             }
 
             ed.addShortcut('ctrl+shift+s', 'nonbreaking.desc', 'mceNonBreaking');
-        },
-
-        getInfo : function() {
-            return {
-                longname : 'Nonbreaking space',
-                author : 'Moxiecode Systems AB',
-                authorurl : 'http://tinymce.moxiecode.com',
-                infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/nonbreaking',
-                version : tinymce.majorVersion + "." + tinymce.minorVersion
-            };
         }
-
-        // Private methods
     });
 
     // Register plugin
