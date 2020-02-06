@@ -46,7 +46,7 @@ class WFJoomlaPluginConfig
             $instance = null;
 
             if (class_exists($className)) {
-                $dispatcher = is_subclass_of($editor, 'Joomla\Event\DispatcherAwareInterface') ? $editor->getDispatcher() : $editor;
+                $dispatcher = is_subclass_of($editor, 'Joomla\Event\DispatcherAwareInterface', false) ? $editor->getDispatcher() : $editor;
                 $instance = new $className($dispatcher, (array) $plugin);
             }
 
