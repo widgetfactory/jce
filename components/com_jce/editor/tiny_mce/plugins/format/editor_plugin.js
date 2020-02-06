@@ -18,10 +18,6 @@
             var self = this;
             this.editor = ed;
 
-            function isBlock(n, s) {
-                return ed.dom.isBlock(n);
-            }
-
             // Register buttons
             ed.addButton('italic', {
                 title : 'italic.desc',
@@ -37,15 +33,28 @@
                 }
             });
 
-            ed.addCommand('mceSoftHyphen', function() {
-                ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
-            });
-
             ed.addShortcut('meta+shift+i', 'italic.desc', function() {
                 ed.formatter.apply('italic-i');
             });
 
-            ed.addShortcut('ctrl+shift+' + 173, 'softhyphen.desc', 'mceSoftHyphen');
+            function addSoftHyphenShortcut() {
+                ed.addCommand('mceSoftHyphen', function() {
+                    ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
+                });
+    
+                var keyCode = 189;
+
+                // Firefox seems to use a different keyCode, - instead of _
+                if (tinymce.isGecko) {
+                    keyCode = 173;
+                }
+    
+                ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
+    
+            }
+
+            // add shoft hyphen keyboard shortcut
+            addSoftHyphenShortcut();
 
             ed.onPreInit.add(function (ed) {
                 each(ed.schema.getBlockElements(), function (v, k) {
