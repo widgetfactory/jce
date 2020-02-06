@@ -37,7 +37,7 @@ class WFJoomlaPluginConfig
 
             // create the button class name
             $className = 'PlgEditorsXtd' . $plugin->name;
-            
+
             // or an alternative
             if (!class_exists($className)) {
                 $className = 'PlgButton' . $plugin->name;
@@ -46,7 +46,8 @@ class WFJoomlaPluginConfig
             $instance = null;
 
             if (class_exists($className)) {
-                $instance = new $className($editor, (array) $plugin);
+                $dispatcher = is_subclass_of($editor, 'Joomla\Event\DispatcherAwareInterface') ? $editor->getDispatcher() : $editor;
+                $instance = new $className($dispatcher, (array) $plugin);
             }
 
             // check that the button is valid
