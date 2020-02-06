@@ -132,6 +132,10 @@ span.mce-item-shy:after {
   line-height: 1;
   color: var(--mce-guidelines);
 }
+span.mce-item-shy:after {
+  content: "▪︎";
+  font-weight: bolder;
+}
 img {
   border: 0;
 }
