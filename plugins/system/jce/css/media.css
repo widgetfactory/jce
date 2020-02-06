@@ -54,7 +54,7 @@ input.wf-media-upload-busy {
     background-color: #eee;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1400px) {
     .input-append input.wf-media-input-upload {
         width: 100px;
     }
