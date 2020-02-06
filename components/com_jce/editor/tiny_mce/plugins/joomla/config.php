@@ -35,20 +35,18 @@ class WFJoomlaPluginConfig
             // fully load plugin instance
             JPluginHelper::importPlugin('editors-xtd', $plugin->name, true);
 
+            // create the button class name
             $className = 'PlgEditorsXtd' . $plugin->name;
-
+            
+            // or an alternative
             if (!class_exists($className)) {
                 $className = 'PlgButton' . $plugin->name;
             }
 
-            if (class_exists($className)) {
-                if (class_exists('JEventDispatcher')) {
-                    $dispatcher = JEventDispatcher::getInstance();
-                } else {
-                    $dispatcher = JFactory::getApplication()->getDispatcher();
-                }
+            $instance = null;
 
-                $instance = new $className($dispatcher, (array) $plugin);
+            if (class_exists($className)) {
+                $instance = new $className($editor, (array) $plugin);
             }
 
             // check that the button is valid
