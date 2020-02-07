@@ -320,6 +320,8 @@
             });
 
             ed.onInit.add(function () {
+                var settings = ed.settings;
+                
                 // Display "media" instead of "img" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function (theme, o) {
@@ -403,14 +405,23 @@
                     }
                 });
 
-                ed.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
+                ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
                     // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
                     if (cmd && cmd.indexOf('Format') !== -1) {
                         var node = ed.selection.getNode();
-                        
+
                         // if it is a preview node, select the iframe
                         if (node && ed.dom.hasClass(node, 'mce-item-preview')) {
                             ed.selection.select(node.firstChild);
+                        }
+                    }
+                });
+                
+                // add a br element after an iframe insert if it is to be converted to a media preview
+                ed.selection.onBeforeSetContent.add(function (ed, o) {
+                    if (settings.media_live_embed) {
+                        if (/^<iframe([^>]+)><\/iframe>$/.test(o.content)) {
+                            o.content += '<br data-mce-caret="1" />';
                         }
                     }
                 });
@@ -929,7 +940,7 @@
             }
 
             // Replace the video/object/embed element with a placeholder image containing the data
-            n.replace(placeholder); 
+            n.replace(placeholder);
         },
         /**
          * Serialize node attributes into JSON Object
