@@ -106,6 +106,7 @@ class WFExtension extends JObject
                 }
 
                 $language->load('plg_jce_' . $p->name, JPATH_ADMINISTRATOR);
+                $language->load('plg_jce_' . $p->name, $p->path);
 
                 // add to array
                 $extensions[$p->extension] = $p;
