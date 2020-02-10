@@ -15,7 +15,8 @@
     var each = tinymce.each,
         extend = tinymce.extend,
         JSON = tinymce.util.JSON,
-        RangeUtils = tinymce.dom.RangeUtils;
+        RangeUtils = tinymce.dom.RangeUtils,
+        Dispatcher = tinymce.util.Dispatcher;
 
     var counter = 0;
 
@@ -207,12 +208,23 @@
                     }
                 });
 
+                ed.schema.addCustomElements('~upload[type|width|height|class|style|title|alt]');
+
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
+                // Remove bogus elements
+                ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
+                    var i = nodes.length;
+
+                    while (i--) {
+                        nodes[i].remove();
+                    }
+                });
+
                 // find and convert upload markers
-                ed.parser.addNodeFilter('img', function (nodes) {
+                ed.parser.addNodeFilter('img,upload', function (nodes) {
                     var i = nodes.length,
                         node, cls, data;
 
@@ -230,17 +242,18 @@
                         }
                     }
                 });
-                
+
                 // remove upload markers
-                ed.serializer.addNodeFilter('img', function (nodes) {
+                ed.serializer.addNodeFilter('img,upload', function (nodes) {
                     var i = nodes.length,
                         node, cls;
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class');
-                        if (cls && /mce-item-uploadmarker/.test(cls)) {
+
+                        if (cls && /mce-item-upload-marker/.test(cls)) {
                             // remove marker classes
-                            cls = cls.replace(/(?:^|\s)mce-item-(upload|uploadmarker)(?!\S)/g, '');
+                            cls = cls.replace(/(?:^|\s)mce-item-(upload|upload-marker)(?!\S)/g, '');
                             // add placeholder class
                             cls += ' upload-placeholder';
                             // set class and src
@@ -251,18 +264,9 @@
                         }
                     }
                 });
-            });
-
-            ed.onInit.add(function () {
-
-                // no supported plugins
-                if (self.plugins.length == 0) {
-                    cancel();
-                    return;
-                }
 
                 function bindUploadEvents(ed) {
-                    each(ed.dom.select('img.mce-item-uploadmarker', ed.getBody()), function (n) {
+                    each(ed.dom.select('.mce-item-upload-marker', ed.getBody()), function (n) {
                         if (self.plugins.length == 0) {
                             ed.dom.remove(n);
                         } else {
@@ -286,6 +290,15 @@
                     ed.onFullScreen.add(function (editor) {
                         bindUploadEvents(editor);
                     });
+                }
+            });
+
+            ed.onInit.add(function () {
+
+                // no supported plugins
+                if (self.plugins.length == 0) {
+                    cancel();
+                    return;
                 }
 
                 function cancelEvent(e) {
@@ -330,10 +343,10 @@
             });
 
             // Setup plugin events
-            self.FilesAdded = new tinymce.util.Dispatcher(this);
-            self.UploadProgress = new tinymce.util.Dispatcher(this);
-            self.FileUploaded = new tinymce.util.Dispatcher(this);
-            self.UploadError = new tinymce.util.Dispatcher(this);
+            self.FilesAdded = new Dispatcher(this);
+            self.UploadProgress = new Dispatcher(this);
+            self.FileUploaded = new Dispatcher(this);
+            self.UploadError = new Dispatcher(this);
 
             // default settings
             this.settings = {
@@ -395,29 +408,43 @@
                                     name: file.name
                                 }, item);
 
+                                // select marker
+                                ed.selection.select(n);
+
                                 if (s = u.insertUploadedFile(obj)) {
-                                    var styles = ed.dom.getAttrib(n, 'data-mce-style');
-                                    // transfer styles
-                                    if (styles) {
-                                        // parse to object
-                                        styles = ed.dom.styles.parse(styles);
-                                        // set styles
-                                        ed.dom.setStyles(s, styles);
+
+                                    if (typeof s === 'object' && s.nodeType) {
+                                        // transfer width and height from marker
+                                        if (ed.dom.hasClass(n, 'mce-item-upload-marker')) {
+                                            var styles = ed.dom.getAttrib(n, 'data-mce-style');
+
+                                            // transfer styles
+                                            if (styles) {
+                                                // parse to object
+                                                styles = ed.dom.styles.parse(styles);
+                                                // set styles
+                                                ed.dom.setStyles(s, styles);
+                                            }
+
+                                            // pass through width and height
+                                            if (n.width) {
+                                                ed.dom.setAttrib(s, 'width', n.width);
+                                            }
+
+                                            if (n.height) {
+                                                ed.dom.setAttrib(s, 'height', n.height);
+                                            }
+                                        }
+
+                                        ed.undoManager.add();
+
+                                        // replace marker with new element
+                                        ed.dom.replace(s, n);
                                     }
 
-                                    // transfer width and height if marker
-                                    if (ed.dom.hasClass(n, 'mce-item-uploadmarker')) {
-                                        ed.dom.setAttribs(s, {
-                                            'width': n.width || s.width,
-                                            'height': n.height || s.height
-                                        });
-                                    }
-                                    // replace marker with new element
-                                    if (ed.dom.replace(s, n)) {
-                                        ed.nodeChanged();
+                                    ed.nodeChanged();
 
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
 
@@ -427,8 +454,16 @@
                     } else {
                         return showError();
                     }
+
                     // remove marker
                     ed.dom.remove(n);
+                }
+            });
+
+            self.UploadProgress.add(function (file) {
+                if (file.loaded && file.marker) {
+                    var pct = Math.floor(file.loaded / file.size * 100);
+                    ed.dom.setAttrib(file.marker, 'data-progress', pct);
                 }
             });
 
@@ -463,13 +498,16 @@
             // remove on window scroll
             ed.dom.bind(ed.getWin(), 'scroll', removeUpload);
 
-            var input = dom.get('wf_upload_input');
+            var input = dom.get('wf_upload_input'), btn = dom.get('wf_upload_button');
+
             // create input
-            if (!input) {
+            if (!btn) {
                 var btn = dom.add(dom.doc.body, 'div', {
                     'id': 'wf_upload_button',
+                    'class': 'btn',
+                    'role': 'button',
                     'title': ed.getLang('upload.button_description', 'Click to upload a file')
-                }, '<label for="wf_upload_input">' + ed.getLang('upload.label', 'Upload') + '</label>');
+                }, '<label for="wf_upload_input"><span class="icon-upload"></span>&nbsp;' + ed.getLang('upload.label', 'Upload') + '</label>');
 
                 // create upload input
                 input = dom.add(btn, 'input', {
@@ -503,12 +541,13 @@
                 var zIndex = ed.id == 'mce_fullscreen' ? dom.get('mce_fullscreen_container').style.zIndex : 0;
 
                 dom.setStyles('wf_upload_button', {
-                    'top': y + p2.h / 2 - 27,
-                    'left': x + p2.w / 2 - 54,
+                    'top': y + p2.h / 2 - 16,
+                    'left': x + p2.w / 2 - 50,
                     'display': 'block',
                     'zIndex': zIndex + 1
                 });
 
+                // bind onchange event to input to trigger upload
                 input.onchange = function () {
                     if (input.files) {
                         var file = input.files[0];
@@ -517,7 +556,8 @@
                             file.marker = marker;
 
                             if (self.addFile(file)) {
-                                ed.dom.addClass(marker, 'loading');
+                                // rename to "span" to support css:after
+                                file.marker = ed.dom.rename(marker, 'span');
 
                                 self.upload(file);
                                 removeUpload();
@@ -559,10 +599,12 @@
             if (n.attr('hspace')) {
                 style['margin-left'] = style['margin-right'] = n.attr('hspace');
             }
+
             // convert vspace
             if (n.attr('vspace')) {
                 style['margin-top'] = style['margin-bottom'] = n.attr('vspace');
             }
+
             // convert align
             if (n.attr('align')) {
                 style.float = n.attr('align');
@@ -571,9 +613,11 @@
             if (n.attr('class')) {
                 cls = n.attr('class').replace(/\s*upload-placeholder\s*/, '').split(' ');
             }
+
             // add marker classes
             cls.push('mce-item-upload');
-            cls.push('mce-item-uploadmarker');
+            cls.push('mce-item-upload-marker');
+
             // set attribs
             n.attr({
                 'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
@@ -615,7 +659,6 @@
         addFile: function (file) {
             var ed = this.editor,
                 self = this,
-                fileNames = {},
                 url;
 
             // check for extension in file name, eg. image.php.jpg
@@ -661,25 +704,30 @@
                 self.FilesAdded.dispatch(file);
 
                 if (!file.marker) {
-                    var w = 300,
-                        h = 300;
 
-                    ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" class="mce-item-upload" />', {
+                    ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="__mce_tmp">\uFEFF</span>', {
                         skip_undo: 1
                     });
-                    // get approximate size of image from file size
-                    if (/image\/(gif|png|jpeg|jpg)/.test(file.type)) {
-                        w = h = Math.round(Math.sqrt(file.size));
-                        // set minimum value of 100
-                        w = Math.max(100, w);
-                        h = Math.max(100, h);
-                    }
 
                     var n = ed.dom.get('__mce_tmp');
 
-                    ed.dom.setAttrib(n, 'id', '');
-                    n.style.width = w + "px";
-                    n.style.height = h + "px";
+                    // get approximate size of image from file size
+                    if (/image\/(gif|png|jpeg|jpg)/.test(file.type)) {
+                        w = h = Math.round(Math.sqrt(file.size));
+
+                        // set minimum value of 100
+                        w = Math.max(300, w);
+                        h = Math.max(300, h);
+
+                        ed.dom.setStyles(n, {
+                            width: w,
+                            height: h
+                        });
+
+                        ed.dom.addClass(n, 'mce-item-upload');
+                    } else {
+                        ed.setProgressState(true);
+                    }
 
                     file.marker = n;
                 }
@@ -728,6 +776,9 @@
                     var httpStatus;
 
                     if (xhr.readyState == 4 && self.state !== state.STOPPED) {
+
+                        ed.setProgressState(false);
+
                         // Getting the HTTP status might fail on some Gecko versions
                         try {
                             httpStatus = xhr.status;

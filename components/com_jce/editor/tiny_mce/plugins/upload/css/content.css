@@ -1,37 +1,67 @@
 .mce-item-upload {
-    border:1px dashed #bbb !important;
-    background-position:center;
-    background-repeat:no-repeat;
-    background-color:#fafafa;
-
-    background-image:url(../img/upload.gif);
-
-    display: inline-block;
-    vertical-align: middle;
-    text-align : center;
-
-    min-width: 320px;
-}
-
-.mce-item-upload span.upload-progress {
+    border: 1px dashed #bbb;
+    border-color: var(--mce-guidelines);
+    background-color: rgba(255, 255, 255, 0.8);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 300px;
+    height: 300px;
     position: relative;
     display: inline-block;
-    top: 50%;
-    line-height: 10px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 7pt;
-    vertical-align: baseline;
-    margin: -5px 0 0 0;
-    text-align: center;
-    width: 32px;
-    -moz-user-select : none;
-    -webkit-user-select: none;
-    -ms-user-select : none;
 }
 
-.mce-item-uploadmarker {
-    background-image: url("../img/picture.png");
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
-.mce-item-uploadmarker.loading {
-    background-image: url("../img/upload.gif");
+
+.mce-item-upload::after {
+    content: "";
+    display: block;
+    border: 0.25rem solid rgba(0, 0, 0, 0.1);
+    border-left-color: #888;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    animation: donut-spin 1.2s linear infinite;
+    z-index: 10001;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -16px 0 0 -16px;
+    box-sizing: border-box;
+}
+
+.mce-item-upload-marker {
+    background-image: url('../img/picture.svg');
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-color: rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.mce-item-upload-marker[data-progress] {
+    background-image: none;
+}
+
+.mce-item-upload-marker[data-progress]:before {
+    content: attr(data-progress);
+    display: block;
+    width: 32px;
+    height: 32px;
+    z-index: 10001;
+    position: absolute;
+    top: calc(50% - 16px);
+    left: calc(50% - 16px);
+    font-size: 12px;
+    text-align: center;
+    line-height: 32px;
+    color: var(--mce-guidelines);
+    font-family: apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
 }
