@@ -3,7 +3,7 @@ body {
   overflow: initial !important;
 }
 html[dir] {
-  height: inherit;
+  height: 100%;
 }
 html {
   color: #444;
