@@ -870,6 +870,12 @@
                 }
             }
 
+            ed.onPreInit.add(function() {
+                ed.onSetContent.add(function (ed, e) {
+                    cleanup(true);
+                });
+            });
+
             ed.onPreProcess.add(function (ed, args) {
                 var nodes, i, node, dom = ed.dom,
                     value;
@@ -1007,10 +1013,6 @@
 
                 ed.onKeyUp.add(function (ed, e) {
                     cleanup();
-                });
-
-                ed.onSetContent.add(function (ed, e) {
-                    cleanup(true);
                 });
 
                 function isCellInTable(table, cell) {
