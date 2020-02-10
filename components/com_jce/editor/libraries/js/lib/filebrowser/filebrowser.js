@@ -2500,6 +2500,11 @@
             // get item basename
             data.title = Wf.String.basename(data.title);
 
+            // use a passed in EXIF data desciption value
+            if ($(item).data('description')) {  
+                data.description = $(item).data('description');
+            }
+
             return new Promise(function (resolve, reject) {
                 if (data.url) {
                     resolve(data);
