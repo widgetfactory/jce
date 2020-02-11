@@ -11,10 +11,12 @@
 .mce-item-audio,
 .mce-item-video,
 .mce-item-iframe {
-    outline: 1px dashed #bbb !important;
+    outline: 1.5px dashed #ccc;
+    border-color: var(--mce-guidelines);
     background-position: center;
     background-repeat: no-repeat;
     background-color: #fafafa;
+    background-color: var(--mce-placeholder);
 }
 
 .mce-item-generic {
@@ -91,13 +93,16 @@
 }
 
 .mce-item-preview.mce-item-selected {
-    border: 2px solid #3399ff !important;
-    background-color: #fafafa !important;
+    border: 2px solid #3399ff;
+    border-color: var(--mce-control-selection);
+    background-color: #fafafa;
+    background-color: var(--mce-placeholder);
     outline: none !important;
 }
 
 .mce-item-preview {
     background-color: #fafafa;
+    background-color: var(--mce-placeholder);
     box-sizing: border-box;
     display: inline-block;
     position: relative;
@@ -108,6 +113,7 @@
     outline: initial !important;
     margin: 0 2px;
     border: 1px solid #ccc;
+    border-color: var(--mce-guidelines);
 }
 
 .mce-item-preview iframe {

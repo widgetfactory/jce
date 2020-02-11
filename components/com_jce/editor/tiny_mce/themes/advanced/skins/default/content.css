@@ -3,7 +3,7 @@ body {
   overflow: initial !important;
 }
 html[dir] {
-  height: 100%;
+  height: inherit;
 }
 html {
   color: #444;
@@ -11,6 +11,8 @@ html {
   font-size: 13px;
   background: #fff;
   margin: inherit;
+  caret-color: auto;
+  /*caret-color: var(--mce-guidelines);*/
 }
 body {
   font-family: inherit;
@@ -20,8 +22,8 @@ body {
   margin: inherit;
 }
 .mceContentBody {
-  height: 100%;
-  height: calc(100% - 10px);
+  height: inherit;
+  min-height: 100vh;
   min-width: 90%;
   padding: 5px;
 }

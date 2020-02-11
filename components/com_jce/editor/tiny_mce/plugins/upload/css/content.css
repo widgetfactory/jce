@@ -1,7 +1,8 @@
 .mce-item-upload {
-    border: 1px dashed #bbb;
+    outline: 1.5px dashed #ccc;
     border-color: var(--mce-guidelines);
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #fafafa;
+    background-color: var(--mce-placeholder);
     background-repeat: no-repeat;
     background-position: center;
     width: 300px;
@@ -41,7 +42,8 @@
     background-image: url('../img/picture.svg');
     background-repeat: no-repeat;
     background-size: 24px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #fafafa;
+    background-color: var(--mce-placeholder);
     min-width: 200px;
     min-height: 200px;
 }
