@@ -78,7 +78,7 @@
         "image/png,png," +
         "image/svg+xml,svg svgz," +
         "image/tiff,tiff tif," +
-        "text/plain,asc txt text diff log," +
+        "text/plain,asc txt text diff log md," +
         "text/html,htm html xhtml," +
         "text/css,css," +
         "text/csv,csv," +
@@ -208,9 +208,17 @@
                     }
                 });
 
-                ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
+                // Cleanup callback
+                ed.onBeforeSetContent.add(function (ed, o) {
+                    o.content = o.content.replace(/<\/media>/g, '&nbsp;</media>');
+                });
 
-                ed.schema.addValidElements('+media[*]');
+                // Cleanup callback
+                ed.onPostProcess.add(function (ed, o) {
+                    o.content = o.content.replace(/(&nbsp;|\u00a0)<\/media>/g, '</media>');
+                });
+
+                ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
 
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
@@ -266,7 +274,7 @@
                 });
 
                 // remove upload markers
-                ed.serializer.addNodeFilter('img,upload', function (nodes) {
+                ed.serializer.addNodeFilter('img', function (nodes) {
                     var i = nodes.length,
                         node, cls;
 
@@ -275,14 +283,17 @@
 
                         if (cls && /mce-item-upload-marker/.test(cls)) {
                             // remove marker classes
-                            cls = cls.replace(/(?:^|\s)mce-item-(upload|upload-marker)(?!\S)/g, '');
-                            // add placeholder class
-                            cls += ' upload-placeholder';
+                            cls = cls.replace(/(?:^|\s)(mce-item-)(?!)(upload|upload-marker|upload-placeholder)(?!\S)/g, '')
                             // set class and src
                             node.attr({
-                                'data-mce-src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                                'data-mce-src': '',
+                                'src': '',
                                 'class': tinymce.trim(cls)
                             });
+
+                            // rename
+                            node.name = 'media';
+                            node.shortEnded = false;
                         }
                     }
                 });
@@ -600,8 +611,7 @@
             });
         },
         _createUploadMarker: function (n) {
-            var self = this,
-                ed = this.editor,
+            var ed = this.editor,
                 src = n.attr('src') || '',
                 style = {},
                 styles, cls = [];
@@ -639,6 +649,11 @@
             // add marker classes
             cls.push('mce-item-upload');
             cls.push('mce-item-upload-marker');
+
+            if (n.name === 'media') {
+                n.name = 'img';
+                n.shortEnded = true;
+            }
 
             // set attribs
             n.attr({
