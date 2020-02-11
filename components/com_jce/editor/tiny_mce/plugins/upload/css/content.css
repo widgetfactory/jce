@@ -52,7 +52,7 @@
     background-image: none;
 }
 
-.mce-item-upload-marker[data-progress]:before {
+.mce-item-upload[data-progress]:before {
     content: attr(data-progress);
     display: block;
     width: 32px;
