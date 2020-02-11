@@ -439,12 +439,12 @@ abstract class WFUtility
      * @param int $levels The number of parent directories to go up.
      * @return string The path of a parent directory.
      */
-    public static function mb_dirname($path, $levels = 1)
+    public static function mb_dirname($path)
     {
         // check if multibyte string, use dirname() if not
         if (function_exists('mb_strlen')) {
             if (mb_strlen($path) === strlen($path)) {
-                return dirname($path, $levels);
+                return dirname($path);
             }
         }
 
