@@ -208,7 +208,9 @@
                     }
                 });
 
-                ed.schema.addCustomElements('~upload[type|width|height|class|style|title|alt]');
+                ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
+
+                ed.schema.addValidElements('+media[*]');
 
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
@@ -223,15 +225,35 @@
                     }
                 });
 
+                function isMediaPlaceholder(node) {
+                    if (node.name === 'media') {
+                        return true;
+                    }
+
+                    if (node.name === 'img') {
+                        if (node.attr('data-mce-upload-marker')) {
+                            return true;
+                        }
+
+                        var cls = node.attr('class');
+
+                        if (cls && cls.indexOf('upload-placeholder') != -1) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
                 // find and convert upload markers
-                ed.parser.addNodeFilter('img,upload', function (nodes) {
+                ed.parser.addNodeFilter('img,media', function (nodes) {
                     var i = nodes.length,
-                        node, cls, data;
+                        node;
 
                     while (i--) {
-                        node = nodes[i], cls = node.attr('class'), data = node.attr('data-mce-upload-marker');
+                        node = nodes[i];
 
-                        if ((cls && cls.indexOf('upload-placeholder') != -1) || data) {
+                        if (isMediaPlaceholder(node)) {
 
                             // no plugins to upload, remove node
                             if (self.plugins.length == 0) {
