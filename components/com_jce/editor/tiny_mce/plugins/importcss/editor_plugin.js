@@ -140,10 +140,6 @@
         wcag2 = wcag2 || 4.5;
         limit = limit || 21;
 
-        if (wcag2 < 3.5) {
-            console.log(color1, color2, lvl);
-        }
-
         return lvl >= parseFloat(wcag2) && lvl < parseFloat(limit); // AA
     }
 
