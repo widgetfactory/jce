@@ -5,8 +5,8 @@
     background-color: var(--mce-placeholder);
     background-repeat: no-repeat;
     background-position: center;
-    width: 300px;
-    height: 300px;
+    min-width: 120px;
+    min-height: 120px;
     position: relative;
     display: inline-block;
 }
@@ -44,8 +44,6 @@
     background-size: 24px;
     background-color: #fafafa;
     background-color: var(--mce-placeholder);
-    min-width: 200px;
-    min-height: 200px;
 }
 
 .mce-item-upload-marker[data-progress] {
