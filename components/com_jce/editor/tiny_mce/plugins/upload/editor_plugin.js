@@ -394,8 +394,7 @@
             };
 
             self.FileUploaded.add(function (file, o) {
-                var n = file.marker,
-                    s, w, h;
+                var n = file.marker;
 
                 function showError(error) {
                     ed.windowManager.alert(error || ed.getLang('upload.response_error', 'Invalid Upload Response'));
@@ -435,8 +434,6 @@
 
                         if (file.status == state.DONE) {
                             if (file.uploader) {
-                                var u = file.uploader;
-
                                 var files = r.result.files || [];
                                 var item = files.length ? files[0] : {};
 
@@ -445,44 +442,7 @@
                                     name: file.name
                                 }, item);
 
-                                // select marker
-                                ed.selection.select(n);
-
-                                if (s = u.insertUploadedFile(obj)) {
-
-                                    if (typeof s === 'object' && s.nodeType) {
-                                        // transfer width and height from marker
-                                        if (ed.dom.hasClass(n, 'mce-item-upload-marker')) {
-                                            var styles = ed.dom.getAttrib(n, 'data-mce-style');
-
-                                            // transfer styles
-                                            if (styles) {
-                                                // parse to object
-                                                styles = ed.dom.styles.parse(styles);
-                                                // set styles
-                                                ed.dom.setStyles(s, styles);
-                                            }
-
-                                            // pass through width and height
-                                            if (n.width) {
-                                                ed.dom.setAttrib(s, 'width', n.width);
-                                            }
-
-                                            if (n.height) {
-                                                ed.dom.setAttrib(s, 'height', n.height);
-                                            }
-                                        }
-
-                                        ed.undoManager.add();
-
-                                        // replace marker with new element
-                                        ed.dom.replace(s, n);
-                                    }
-
-                                    ed.nodeChanged();
-
-                                    return true;
-                                }
+                                self._selectAndInsert(file, obj)
                             }
 
                             // remove from list
@@ -513,6 +473,71 @@
 
             });
         },
+
+        _selectAndInsert: function (file, data) {
+            var ed = this.editor, marker = file.marker, uploader = file.uploader;
+
+            // select marker
+            ed.selection.select(marker);
+            var elm = uploader.insertUploadedFile(data);
+
+            if (elm) {
+                // is an element node
+                if (typeof elm === 'object' && elm.nodeType) {
+                    // transfer width and height from marker
+                    if (ed.dom.hasClass(marker, 'mce-item-upload-marker')) {
+                        var styles = ed.dom.getAttrib(marker, 'data-mce-style');
+
+                        var w = marker.width || 0;
+                        var h = marker.height || 0;
+
+                        // transfer styles
+                        if (styles) {
+                            // parse to object
+                            styles = ed.dom.styles.parse(styles);
+
+                            if (styles.width) {
+                                w = styles.width;
+
+                                delete styles.width;
+                            }
+
+                            if (styles.height) {
+                                h = styles.height;
+
+                                delete styles.height;
+                            }
+
+                            // set styles
+                            ed.dom.setStyles(elm, styles);
+                        }
+
+                        // pass through width and height
+                        if (w) {
+                            ed.dom.setAttrib(elm, 'width', w);
+                        }
+
+                        if (h) {
+                            if (w) {
+                                h = '';
+                            }
+
+                            ed.dom.setAttrib(elm, 'height', h);
+                        }
+                    }
+
+                    ed.undoManager.add();
+
+                    // replace marker with new element
+                    ed.dom.replace(elm, marker);
+                }
+
+                ed.nodeChanged();
+
+                return true;
+            }
+        },
+
         /*
          * Bind events to upload marker and create upload input
          * @param marker Marker / Placeholder element
@@ -584,6 +609,13 @@
                     'zIndex': zIndex + 1
                 });
 
+                dom.setStyles('wf_select_button', {
+                    'top': y + p2.h / 2 - 16,
+                    'left': x + p2.w / 2 - 50,
+                    'display': 'block',
+                    'zIndex': zIndex + 1
+                });
+
                 // bind onchange event to input to trigger upload
                 input.onchange = function () {
                     if (input.files) {
@@ -593,6 +625,11 @@
                             file.marker = marker;
 
                             if (self.addFile(file)) {
+                                // add width and height as styles if set
+                                each(['width', 'height'], function (key) {
+                                    ed.dom.setStyle(marker, key, ed.dom.getAttrib(marker, key));
+                                });
+
                                 // rename to "span" to support css:after
                                 file.marker = ed.dom.rename(marker, 'span');
 
@@ -602,6 +639,29 @@
                         }
                     }
                 };
+
+                /*ed.dom.bind(select, 'click', function (e) {
+                    e.preventDefault();
+
+                    ed.execCommand('mceFileBrowser', false, {
+                        callback: function (item, files) {
+                            var obj = files[0], plugin;
+
+                            // find appropriate plugin to insert with
+                            each(self.plugins, function(plg, key) {
+                                if (plg.getUploadURL(obj.title)) {
+                                    plugin = plg;
+
+                                    return true;
+                                }
+                            });
+
+                            if (plugin) {
+                                self._selectAndInsert({ marker: marker, name: obj.title, uploader: plugin }, obj);
+                            }
+                        }
+                    });
+                });*/
             });
 
             // remove upload on mouseout
