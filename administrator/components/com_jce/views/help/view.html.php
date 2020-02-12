@@ -22,6 +22,9 @@ class JceViewHelp extends JViewLegacy
 
         $document = JFactory::getDocument();
 
+        // add template path
+        $this->addTemplatePath(__DIR__ . '/tmpl');
+
         $section = $app->input->getWord('section');
         $category = $app->input->getWord('category');
         $article = $app->input->getWord('article');
@@ -69,8 +72,8 @@ class JceViewHelp extends JViewLegacy
 
         JHtml::_('jquery.framework');
 
-        $document->addScript('components/com_jce/media/js/help.min.js');
-        $document->addStyleSheet('components/com_jce/media/css/help.min.css');
+        $document->addScript(JURI::root(true) . '/components/com_jce/media/js/help.min.js');
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/media/css/help.min.css');
         $document->addScriptDeclaration('jQuery(document).ready(function($){Wf.Help.init(' . json_encode($options) . ');});');
 
         parent::display($tpl);
