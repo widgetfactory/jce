@@ -294,6 +294,10 @@
                             // rename
                             node.name = 'media';
                             node.shortEnded = false;
+                            // remove alt if set
+                            node.attr('alt', null);
+                            // set media type (default to image/jpeg for now)
+                            //node.attr('type', 'image/jpeg');
                         }
                     }
                 });
