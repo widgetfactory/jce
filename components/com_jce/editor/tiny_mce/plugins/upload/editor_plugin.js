@@ -338,6 +338,17 @@
                     return;
                 }
 
+                // Display "a#name" instead of "img" in element path
+                if (ed.theme && ed.theme.onResolveName) {
+                    ed.theme.onResolveName.add(function (theme, o) {
+                        var n = o.node;
+
+                        if (n && n.nodeName === 'IMG' && /mce-item-upload/.test(n.className)) {
+                            o.name = 'placeholder';
+                        }
+                    });
+                }
+
                 function cancelEvent(e) {
                     e.preventDefault();
                     e.stopPropagation();
