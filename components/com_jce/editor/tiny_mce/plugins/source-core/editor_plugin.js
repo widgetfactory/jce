@@ -1,6 +1,5 @@
 (function() {
-    var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event;
+    var DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.SourcePlugin', {
         init: function(ed, url) {
