@@ -904,6 +904,7 @@ select.mceNativeListBox {
     padding: 4px;
     box-sizing: border-box;
     border: 0 none;
+    outline: none;
 }
 
 .mceListBoxMenu .mceMenuFilter .mceButton {
@@ -1090,7 +1091,8 @@ select.mceNativeListBox {
 }
 
 .mceDefaultSkin .mceColorSplitMenu td {
-    padding: 1px
+    padding: 1px;
+    vertical-align: top;
 }
 
 .mceDefaultSkin .mceColorSplitMenu button {

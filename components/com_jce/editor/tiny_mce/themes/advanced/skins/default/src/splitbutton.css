@@ -105,7 +105,8 @@
 }
 
 .mceDefaultSkin .mceColorSplitMenu td {
-    padding: 1px
+    padding: 1px;
+    vertical-align: top;
 }
 
 .mceDefaultSkin .mceColorSplitMenu button {
