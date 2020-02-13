@@ -90,7 +90,7 @@
             unlink: ['unlink_desc', 'unlink'],
             //image : ['image_desc', 'mceImage'],
             cleanup: ['cleanup_desc', 'mceCleanup'],
-            help: ['help_desc', 'mceHelp'],
+            //help: ['help_desc', 'mceHelp'],
             code: ['code_desc', 'mceCodeEditor'],
             //hr: ['hr_desc', 'InsertHorizontalRule'],
             removeformat: ['removeformat_desc', 'RemoveFormat'],
@@ -843,23 +843,6 @@
         // Commands gets called by execCommand
         _sel: function (v) {
             this.editor.execCommand('mceSelectNodeDepth', false, v);
-        },
-
-        /**
-         * Custom Help Command
-         */
-        _mceHelp: function () {
-            var ed = this.editor;
-
-            ed.windowManager.open({
-                title: ed.getLang('dlg.help', 'Help'),
-                url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-                size: 'mce-modal-landscape-full',
-                width: 780,
-                height: 560
-            }, {
-                theme_url: this.url
-            });
         },
 
         _mceNewDocument: function () {

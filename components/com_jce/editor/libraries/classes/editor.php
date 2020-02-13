@@ -761,7 +761,7 @@ class WFEditor
                 });
 
                 // core plugins
-                $core = array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable');
+                $core = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable');
 
                 // load branding plugin
                 if (!WF_EDITOR_PRO) {

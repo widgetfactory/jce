@@ -1,12 +1,4 @@
 {
-    "help": {
-        "title": "WF_HELP_TITLE",
-        "description": "WF_HELP_DESC",
-        "icon": "help",
-        "editable": 0,
-        "row": 1,
-        "core": 1
-    },
     "undo": {
         "title": "WF_UNDO_TITLE",
         "description": "WF_UNDO_DESC",

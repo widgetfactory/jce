@@ -140,6 +140,14 @@
         "row": 3,
         "core": 1
     },
+    "help": {
+        "title": "WF_HELP_TITLE",
+        "description": "WF_HELP_DESC",
+        "icon": "help",
+        "editable": 0,
+        "row": 1,
+        "core": 1
+    },
     "imgmanager": {
         "title": "WF_IMGMANAGER_TITLE",
         "description": "WF_IMGMANAGER_DESC",

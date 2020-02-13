@@ -264,7 +264,7 @@
             var ed = tinyMCEPopup.editor;
 
             ed.windowManager.open({
-                url: ed.getParam('site_url') + 'index.php?option=com_jce&view=help&tmpl=component&lang=' + ed.settings.language + '&section=editor&category=' + this.getName(),
+                url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.settings.language + '&section=editor&category=' + this.getName(),
                 title: ed.getLang('dlg.help', 'Help'),
                 width: 896,
                 height: 768,

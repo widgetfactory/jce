@@ -72,8 +72,8 @@ class JceViewHelp extends JViewLegacy
 
         JHtml::_('jquery.framework');
 
-        $document->addScript(JURI::root(true) . '/components/com_jce/media/js/help.min.js');
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/media/css/help.min.css');
+        $document->addScript(JURI::root(true) . '/components/com_jce/media/js/help.min.js', array('version' => 'auto'));
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/media/css/help.min.css', array('version' => 'auto'));
         $document->addScriptDeclaration('jQuery(document).ready(function($){Wf.Help.init(' . json_encode($options) . ');});');
 
         parent::display($tpl);

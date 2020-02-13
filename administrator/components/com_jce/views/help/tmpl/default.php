@@ -14,7 +14,7 @@ defined('_JEXEC') or die('RESTRICTED');
     <div class="container-fluid">
         <nav>
           <div class="well sidebar-nav">
-            <?php echo $this->model->renderTopics(); ?>
+            <?php echo $this->renderTopics(); ?>
           </div>
         </nav>
         <main>
