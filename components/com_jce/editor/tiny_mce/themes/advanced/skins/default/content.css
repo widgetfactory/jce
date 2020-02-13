@@ -88,7 +88,10 @@ body.mceContentReset td,
 body.mceContentReset th,
 body.mceContentReset h1,
 body.mceContentReset h2,
-body.mceContentReset h3 h4 h5 h6 {
+body.mceContentReset h3,
+body.mceContentReset h4,
+body.mceContentReset h5,
+body.mceContentReset h6 {
   color: #000;
 }
 body[dir="ltr"].mceContentReset {
