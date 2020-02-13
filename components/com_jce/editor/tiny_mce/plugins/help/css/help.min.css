@@ -1,0 +1,123 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2020 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+html {
+    background: #fff none;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.ui-jce {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    right: 0.25rem;
+    bottom: 0.25rem;
+}
+
+nav,
+main {
+    box-sizing: border-box;
+    height: 100%;
+    flex: auto;
+    position: relative;
+
+}
+
+.ui-jce>nav,
+.ui-jce main {
+    padding: 0.5rem;
+}
+
+nav .uk-nav {
+    display: block;
+}
+
+nav .uk-nav-header {
+    padding: 0.5rem;
+}
+
+nav .uk-nav.hidden {
+    display: none;
+}
+
+nav .uk-parent > ul {
+    margin-left: 1.5rem;
+}
+
+nav .uk-list-space > li:nth-child(n+2) {
+    margin-top: 0.25rem;
+}
+
+main {
+    margin: 0;
+    margin-left: 0.5rem;
+    width: 80%;
+}
+
+section {
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 2.5rem;
+    padding: 0.5rem;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+}
+
+.ui-jce .uk-nav li {
+    position: relative;
+}
+
+.ui-jce .uk-nav li a {
+    color: inherit;
+}
+
+.ui-jce header a {
+    color: inherit;
+}
+
+.ui-jce header a:hover {
+    color: #888;
+}
+
+.ui-jce header a:hover,
+.ui-jce header a:visited,
+.ui-jce header a:active {
+    text-decoration: none;
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading > a > span::before {
+    content: "";
+    display: inline-block;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #888;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: donut-spin 1.2s linear infinite;
+    z-index: 10001;
+    box-sizing: border-box;
+}

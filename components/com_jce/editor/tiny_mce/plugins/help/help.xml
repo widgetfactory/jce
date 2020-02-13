@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<extension version="3.4" type="plugin" group="jce" method="upgrade">
+	<name>WF_HELP_TITLE</name>
+	<version>@@version@@</version>
+	<creationDate>@@date@@</creationDate>
+	<author>Ryan Demmer</author>
+	<authorEmail>@@e-mail@@</authorEmail>
+	<authorUrl>https://www.joomlacontenteditor.net/</authorUrl>
+	<copyright>Ryan Demmer</copyright>
+	<license>@@licence@@</license>
+	<description>WF_HELP_DESC</description>
+	<icon>hr</icon>
+	<help></help>
+	<languages></languages>
+</extension>
