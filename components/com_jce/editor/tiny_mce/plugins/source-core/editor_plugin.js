@@ -106,6 +106,9 @@
 
                 DOM.removeClass(container, 'mce-loading');
 
+                // dispatch on show to trigger event - SPPageBuilder
+                ed.onChange.dispatch();
+
             } else {
                 DOM.hide(element);
             }
