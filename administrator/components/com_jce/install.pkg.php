@@ -436,6 +436,11 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/classbar',
         );
 
+        // remove help files
+        $folders['2.8.6'] = array(
+            $admin . '/views/help'
+        );
+
         foreach ($folders as $version => $list) {
             // version check
             if (version_compare($version, $current_version, 'gt')) {
@@ -549,6 +554,14 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/spellchecker/classes/config.php',
             $site . '/editor/tiny_mce/plugins/templatemanager/licence.txt',
             $site . '/editor/tiny_mce/plugins/templatemanager/README',
+        );
+
+        // remove help files
+        $files['2.8.6'] = array(
+            $admin . '/controller/help.php',
+            $admin . '/models/help.php',
+            $admin . '/media/css/help.min.css',
+            $admin . '/media/js/help.min.js'
         );
 
         foreach ($files as $version => $list) {
