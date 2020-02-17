@@ -120,14 +120,14 @@ class WFHelpPlugin extends WFEditorPlugin
                     }
 
                     if (count($subtopics)) {
-                        $result .= '<ul class="uk-nav uk-list-space hidden">';
+                        $result .= '<ul class="uk-nav uk-nav-side uk-list-space hidden">';
                         foreach ($subtopics as $subtopic) {
                             $sub_subtopics = $subtopic->subtopic;
 
                             // if a file is set load it as sub-subtopics
                             if ($file = (string) $subtopic->attributes()->file) {
                                 $result .= '<li class="subtopics uk-parent"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
-                                $result .= '<ul class="uk-nav uk-list-space hidden">';
+                                $result .= '<ul class="uk-nav uk-nav-side uk-list-space hidden">';
                                 $result .= $this->getTopics(WF_EDITOR . '/' . $file);
                                 $result .= '</ul>';
                                 $result .= '</li>';
@@ -135,10 +135,11 @@ class WFHelpPlugin extends WFEditorPlugin
                                 $id = $subtopic->attributes()->key ? ' id="' . (string) $subtopic->attributes()->key . '"' : '';
 
                                 $class = count($sub_subtopics) ? ' class="subtopics uk-parent"' : '';
-                                $result .= '<li' . $class . $id . '><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $icon  = count($sub_subtopics) ? 'uk-icon-copy' : 'uk-icon-file';
+                                $result .= '<li' . $class . $id . '><a href="#"><span class="uk-icon ' . $icon . ' uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
 
                                 if (count($sub_subtopics)) {
-                                    $result .= '<ul class="uk-nav hidden">';
+                                    $result .= '<ul class="uk-nav uk-nav-side hidden">';
                                     foreach ($sub_subtopics as $sub_subtopic) {
                                         $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
                                     }
@@ -204,7 +205,7 @@ class WFHelpPlugin extends WFEditorPlugin
 
         $result = '';
 
-        $result .= '<ul class="uk-nav" id="help-menu"><li class="uk-nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
+        $result .= '<ul class="uk-nav uk-nav-side" id="help-menu"><li class="uk-nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
         $result .= $this->getTopics($file);
         $result .= '</ul>';
 
