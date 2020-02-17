@@ -1069,6 +1069,7 @@ select.mceNativeListBox {
 .mceSplitButtonMenu {
     min-width: calc(48px * 3);
     margin-top: 9px;
+    max-height: 322px;
 }
 
 .mceDefaultSkin .mceMenuItemSub {
