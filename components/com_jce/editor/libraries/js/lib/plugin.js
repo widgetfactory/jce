@@ -109,9 +109,6 @@
                 e.preventDefault();
             });
 
-            // show body
-            $('#jce').addClass('');
-
             // activate tabs
             $('#tabs').tabs();
 
