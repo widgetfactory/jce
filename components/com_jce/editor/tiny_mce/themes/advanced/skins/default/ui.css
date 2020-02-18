@@ -2382,14 +2382,14 @@ select.mceNativeListBox {
     border: 0.25rem solid rgba(0, 0, 0, 0.1);
     border-left-color: #888;
     border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     animation: donut-spin 1.2s linear infinite;
     z-index: 700003;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin: -1rem 0 0 -1rem;
+    margin: -3rem 0 0 -1rem;
     box-sizing: border-box;
 }
 
