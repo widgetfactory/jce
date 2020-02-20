@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once WF_EDITOR_LIBRARIES.'/classes/manager.php';
+require_once WF_EDITOR_LIBRARIES . '/classes/manager.php';
 
 class WFBrowserPlugin extends WFMediaManager
 {
@@ -22,7 +22,7 @@ class WFBrowserPlugin extends WFMediaManager
     public function __construct($config = array())
     {
         $app = JFactory::getApplication();
-        
+
         $config = array(
             'layout' => 'browser',
             'can_edit_images' => 1,
@@ -45,7 +45,7 @@ class WFBrowserPlugin extends WFMediaManager
 
         // get file browser reference
         $browser = $this->getFileBrowser();
-        
+
         // add upload event
         $browser->addEvent('onUpload', array($this, 'onUpload'));
 
@@ -73,10 +73,46 @@ class WFBrowserPlugin extends WFMediaManager
         // set updated filetypes
         $browser->setFileTypes($filetypes);
 
+        $properties = array();
+
+        // get existing upload values
         $upload = $browser->get('upload', array());
         $upload['filetypes'] = $filetypes;
 
-        $browser->setProperties(array('upload' => $upload));
+        // update upload filetypes
+        $properties['upload'] = $upload;
+
+        // get any passed in folder value
+        $folder = $app->input->getString('folder', '');
+
+        if ($folder) {
+            $folder = WFUtility::makeSafe($folder);
+
+            // still intact after clean?
+            if ($folder) {
+                $dir = $browser->get('dir', '');
+
+                if (empty($dir)) {
+                    $dir = 'images';
+                }
+
+                $filesystem = $browser->getFileSystem();
+
+                // process any variables in the path
+                $filesystem->processPath($folder);
+
+                // concat with File Directoy Path...
+                $path = WFUtility::makePath($dir, $folder);
+                // ...and trim
+                $path = trim($path, '/');
+                // set new path
+                $filesystem->setProperties(array('dir' => $path));
+                // update browser
+                $properties['dir'] = $path;
+            }
+        }
+
+        $browser->setProperties($properties);
     }
 
     /**
@@ -85,7 +121,7 @@ class WFBrowserPlugin extends WFMediaManager
     public function display()
     {
         parent::display();
-        
+
         $app = JFactory::getApplication();
 
         $document = WFDocument::getInstance();
@@ -98,9 +134,9 @@ class WFBrowserPlugin extends WFMediaManager
         if ($document->get('standalone') == 1) {
             if ($layout === 'plugin') {
                 $document->addScript(array('window.min'), 'plugins');
-                
-                $callback   = $app->input->getCmd('callback', '');
-                $element    = $app->input->getCmd('fieldid', '');
+
+                $callback = $app->input->getCmd('callback', '');
+                $element = $app->input->getCmd('fieldid', '');
 
                 // Joomla 4 field variable not converted
                 if (!$element || $element === 'field-media-id') {
@@ -108,17 +144,17 @@ class WFBrowserPlugin extends WFMediaManager
                 }
 
                 $settings = array(
-                    'site_url'  => JURI::base(true).'/',
-                    'language'  => WFLanguage::getCode(),
-                    'element'   => $element,
-                    'token'     => JSession::getFormToken(),
+                    'site_url' => JURI::base(true) . '/',
+                    'language' => WFLanguage::getCode(),
+                    'element' => $element,
+                    'token' => JSession::getFormToken(),
                 );
 
                 if ($callback) {
                     $settings['callback'] = $callback;
                 }
 
-                $document->addScriptDeclaration('tinymce.settings='.json_encode($settings).';');
+                $document->addScriptDeclaration('tinymce.settings=' . json_encode($settings) . ';');
             }
 
             $document->addScript(array('popup.min'), 'plugins');
@@ -133,7 +169,7 @@ class WFBrowserPlugin extends WFMediaManager
     public function onUpload($file, $relative = '')
     {
         parent::onUpload($file, $relative);
-        
+
         $app = JFactory::getApplication();
 
         // inline upload
