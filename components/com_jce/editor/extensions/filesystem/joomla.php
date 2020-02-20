@@ -163,7 +163,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $total = 0;
 
         if (strpos($path, $this->getBaseDir()) === false) {
-            $path = WFUtility::makePath($this->getBaseDir(), $path);
+            $path = $this->toAbsolute($path);
         }
 
         if (JFolder::exists($path)) {
@@ -189,7 +189,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         jimport('joomla.filesystem.folder');
 
         if (strpos($path, $this->getBaseDir()) === false) {
-            $path = WFUtility::makePath($this->getBaseDir(), $path);
+            $path = $this->toAbsolute($path);
         }
 
         if (JFolder::exists($path)) {
@@ -213,7 +213,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         jimport('joomla.filesystem.folder');
 
         if (strpos($path, $this->getBaseDir()) === false) {
-            $path = WFUtility::makePath($this->getBaseDir(), $path);
+            $path = $this->toAbsolute($path);
         }
 
         if (JFolder::exists($path)) {
@@ -227,7 +227,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFolders($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), $relative);
+        $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
         if (!JFolder::exists($path)) {
@@ -294,7 +294,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getFiles($relative, $filter = '', $sort = '', $limit = 25, $start = 0, $depth = 0)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), $relative);
+        $path = $this->toAbsolute($relative);
         $path = WFUtility::fixPath($path);
 
         if (!JFolder::exists($path)) {
@@ -416,7 +416,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             return array();
         }
 
-        $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
+        $path = $this->toAbsolute(rawurldecode($dir));
         $date = @filemtime($path);
 
         return array('modified' => $date, 'size' => '');
@@ -433,7 +433,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         }
 
         // directory path relative base directory
-        if (is_dir(WFUtility::makePath($this->getBaseDir(), $path))) {
+        if ($this->is_dir($path)) {
             return $path;
         }
 
@@ -492,7 +492,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             return array();
         }
 
-        $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
+        $path = $this->toAbsolute(rawurldecode($file));
         $url = WFUtility::makePath($this->getBaseUrl(), rawurldecode($file));
 
         $date = @filemtime($path);
@@ -540,7 +540,7 @@ class WFJoomlaFileSystem extends WFFileSystem
     {
         if (self::$allowroot) {
             foreach (self::$restricted as $name) {
-                $restricted = WFUtility::makePath($this->getBaseDir(), $name);
+                $restricted = $this->toAbsolute($name);
 
                 $match = false;
 
@@ -568,7 +568,7 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function delete($src)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), $src);
+        $path = $this->toAbsolute($src);
 
         // get error class
         $result = new WFFileSystemResult();
@@ -606,8 +606,8 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function rename($src, $dest)
     {
-        $src = WFUtility::makePath($this->getBaseDir(), rawurldecode($src));
-        $dir = dirname($src);
+        $path = $this->toAbsolute(rawurldecode($src));
+        $dir = WFUtility::md_dirname($src);
 
         JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeRename', array(&$src, &$dest));
 
@@ -666,8 +666,11 @@ class WFJoomlaFileSystem extends WFFileSystem
         // trim to remove leading slash
         $file = trim($file, '/');
 
-        $src = WFUtility::makePath($this->getBaseDir(), $file);
-        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, WFUtility::mb_basename($file)));
+        $src = $this->toAbsolute($file);
+        // destination relative path
+        $dest = WFUtility::makePath($destination, WFUtility::mb_basename($file));
+        // destination full path
+        $dest = $this->toAbsolute($dest);
 
         // check destination path does not fall within a restricted folder
         $this->checkRestrictedDirectory($dest);
@@ -715,8 +718,11 @@ class WFJoomlaFileSystem extends WFFileSystem
         // trim to remove leading slash
         $file = trim($file, '/');
 
-        $src = WFUtility::makePath($this->getBaseDir(), $file);
-        $dest = WFUtility::makePath($this->getBaseDir(), WFUtility::makePath($destination, WFUtility::mb_basename($file)));
+        $src = $this->toAbsolute($file);
+        // destination relative path
+        $dest = WFUtility::makePath($destination, WFUtility::mb_basename($file));
+        // destination full path
+        $dest = $this->toAbsolute($dest);
 
         // check destination path does not fall within a restricted folder
         $this->checkRestrictedDirectory($dest);
@@ -784,8 +790,10 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function createFolder($dir, $new)
     {
+        // relative new folder path
         $dir = WFUtility::makePath(rawurldecode($dir), $new);
-        $path = WFUtility::makePath($this->getBaseDir(), $dir);
+        // full folder path
+        $path = $this->toAbsolute($dir);
 
         // check path does not fall within a restricted folder
         $this->checkRestrictedDirectory($path);
@@ -801,7 +809,8 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getDimensions($file)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), utf8_decode(rawurldecode($file)));
+        $path = $this->toAbsolute(utf8_decode(rawurldecode($file)));
+
         $data = array(
             'width' => '',
             'height' => '',
@@ -823,7 +832,9 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $app = JFactory::getApplication();
 
-        $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($dir));
+        // full destination directory path
+        $path = $this->toAbsolute(rawurldecode($dir));
+        // full file path
         $dest = WFUtility::makePath($path, $name);
 
         // check destination path does not fall within a restricted folder
@@ -899,21 +910,19 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function exists($path)
     {
-        $path = JPath::clean(WFUtility::makePath($this->getBaseDir(), rawurldecode($path)));
-
-        return is_dir($path) || is_file($path);
+        return $this->is_dir($path) || $this->is_file($path);
     }
 
     public function read($file)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
+        $path = $this->toAbsolute(rawurldecode($file));
 
         return file_get_contents($path);
     }
 
     public function write($file, $content)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), rawurldecode($file));
+        $path = $this->toAbsolute(rawurldecode($file));
 
         // check path does not fall within a restricted folder
         $this->checkRestrictedDirectory($path);
@@ -929,15 +938,13 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function is_file($path)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), $path);
-
+        $path = $this->toAbsolute($path);
         return is_file($path);
     }
 
     public function is_dir($path)
     {
-        $path = WFUtility::makePath($this->getBaseDir(), $path);
-
+        $path = $this->toAbsolute($path);
         return is_dir($path);
     }
 }
