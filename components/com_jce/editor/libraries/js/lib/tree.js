@@ -70,7 +70,7 @@
                 'role': 'tree'
             }).addClass('uk-tree').children('li').attr('aria-level', 1);
 
-            $(parent).on('click', function (e) {
+            $('.uk-tree', parent).on('click', function (e) {
                 var n = e.target,
                     p = $(n).parents('li').get(0);
 
