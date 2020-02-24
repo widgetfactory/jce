@@ -152,9 +152,9 @@ class WFStyleselectPluginConfig
                             $style->selector = '*';
 
                             // set to element
-                            /*if (isset($style->element)) {
+                            if (isset($style->element)) {
                                 $style->selector = $style->element;
-                            }*/
+                            }
                         }
                     }
 
