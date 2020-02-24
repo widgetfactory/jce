@@ -1059,13 +1059,9 @@ class WFEditor
 
     private static function getYOOThemeTemplateFiles(&$files, $template)
     {
-        if (strpos($template->name, 'yoo') === false) {
-            return false;
-        }
-        
         $path = JPATH_SITE . '/templates/' . $template->name;
 
-        // not a yootheme template
+        // not a yootheme / warp template
         if (!is_dir($path . '/warp') && !is_dir($path . '/vendor/yootheme')) {
             return false;
         }
