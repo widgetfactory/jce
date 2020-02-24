@@ -345,7 +345,7 @@ class WFFileBrowser extends JObject
         return false;
     }
 
-    protected function checkPathAccess($path)
+    public function checkPathAccess($path)
     {
         $filters = $this->get('filter');
 

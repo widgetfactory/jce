@@ -105,10 +105,13 @@ class WFBrowserPlugin extends WFMediaManager
                 $path = WFUtility::makePath($dir, $folder);
                 // ...and trim
                 $path = trim($path, '/');
-                // set new path
-                $filesystem->setProperties(array('dir' => $path));
-                // update browser
-                $properties['dir'] = $path;
+
+                if ($browser->checkPathAccess($path)) {
+                    // set new path
+                    $filesystem->setProperties(array('dir' => $path));
+                    // update browser
+                    $properties['dir'] = $path;
+                }
             }
         }
 
