@@ -172,6 +172,10 @@ class WFEditor
 
     private function assignEditorSkin(&$settings)
     {
+        if (empty($settings['skin'])) {
+            $settings['skin'] = 'modern';
+        }
+        
         if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
             list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
         }
@@ -292,7 +296,7 @@ class WFEditor
             $settings['height'] = $wf->getParam('editor.height');
 
             // assign skin - new default is "modern"
-            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
+            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern');
 
             $this->assignEditorSkin($settings);
 
