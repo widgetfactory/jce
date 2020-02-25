@@ -10,7 +10,7 @@
 
 /*global plupload:true */
 
-(function($, Wf) {
+(function ($, Wf) {
 
     function mapIcon(ext) {
         if (/^(flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi|mvk|webm)$/.test(ext)) {
@@ -95,10 +95,10 @@
          * @param {Mixed} args Arguments
          * @returns {void}
          */
-        _trigger: function(ev, args) {
+        _trigger: function (ev, args) {
             $(this.element).trigger('uploadwidget:' + ev.toLowerCase(), args);
         },
-        init: function() {
+        init: function () {
             var self = this;
 
             // clear old uploader
@@ -110,7 +110,7 @@
 
             this._createUploader();
         },
-        _createUploader: function() {
+        _createUploader: function () {
             var self = this;
 
             if (!$.support.xhr2) {
@@ -120,50 +120,50 @@
             this.uploader = new Uploader(this.options);
 
             // on Uploader init
-            this.uploader.on('init', function() {
+            this.uploader.on('init', function () {
                 self._createDragDrop();
                 self._trigger('init');
             });
 
             // on add file
-            this.uploader.on('fileadded', function(e, file) {
+            this.uploader.on('fileadded', function (e, file) {
                 self._createQueue(file);
                 self._trigger('fileadded', file);
             });
 
             // on upload file
-            this.uploader.on('uploadstart', function(e, file) {
+            this.uploader.on('uploadstart', function (e, file) {
                 self._onStart(file);
             });
 
-            this.uploader.on('allcomplete', function() {
+            this.uploader.on('allcomplete', function () {
                 self._onAllComplete();
             });
 
-            this.uploader.on('uploadcomplete', function(e, o) {
+            this.uploader.on('uploadcomplete', function (e, o) {
                 self._onComplete(o);
             });
 
-            this.uploader.on('dragover', function(e, o) {
+            this.uploader.on('dragover', function (e, o) {
                 $(self.options.drop_target).addClass('wf-upload-dragover');
             });
 
-            this.uploader.on('dragleave', function(e, o) {
+            this.uploader.on('dragleave', function (e, o) {
                 $(self.options.drop_target).removeClass('wf-upload-dragover');
             });
 
-            this.uploader.on('drop', function(e, o) {
+            this.uploader.on('drop', function (e, o) {
                 $(self.options.drop_target).removeClass('wf-upload-dragover');
             });
 
-            this.uploader.on('close', function(e, o) {
+            this.uploader.on('close', function (e, o) {
                 self.close();
             });
 
             /**
              * Handle Error
              */
-            this.uploader.on('error', function(up, error) {
+            this.uploader.on('error', function (up, error) {
                 var file = error.file;
 
                 if (typeof error === "string") {
@@ -183,16 +183,16 @@
                 self.errors++;
             });
 
-            this.uploader.on('fileremoved', function(file) {});
+            this.uploader.on('fileremoved', function (file) { });
 
-            this.uploader.on("progress", function(o, file) {
+            this.uploader.on("progress", function (o, file) {
                 self._onProgress(file);
             });
 
             this.uploader.init();
         },
 
-        _showError: function(error, file) {
+        _showError: function (error, file) {
             var self = this;
 
             error = $.extend({ "message": "", "code": 500 }, error);
@@ -228,7 +228,7 @@
                         break;
 
                     case self.FILE_SIZE_ERROR:
-                        details = details.replace(/%([fsm])/g, function($0, $1) {
+                        details = details.replace(/%([fsm])/g, function ($0, $1) {
                             switch ($1) {
                                 case 'f':
                                     return file.name;
@@ -256,11 +256,11 @@
             }
         },
 
-        _onStart: function(file) {
+        _onStart: function (file) {
             this._trigger('uploadstart', file);
             $(file.element).addClass('queue-item-loading').find('input[type="text"]').prop('disabled', true);
         },
-        _isError: function(err) {
+        _isError: function (err) {
             if (err) {
                 if ($.isArray(err)) {
                     return err.length;
@@ -271,7 +271,7 @@
 
             return false;
         },
-        _onComplete: function(o) {
+        _onComplete: function (o) {
             var self = this,
                 file = o.file;
 
@@ -290,14 +290,14 @@
             // trigger callback
             this._trigger('filecomplete', [file, item]);
         },
-        _onAllComplete: function() {
+        _onAllComplete: function () {
             this.uploading = false;
             this._trigger('uploadcomplete', this.getErrorCount());
         },
-        _setProgress: function(el, percent) {
+        _setProgress: function (el, percent) {
             $('.uk-progress-bar', el).css('width', percent + '%').attr('aria-valuenow', percent + '%').text(percent + '%');
         },
-        _onProgress: function(file) {
+        _onProgress: function (file) {
             if (!file.size) {
                 return;
             }
@@ -310,7 +310,7 @@
 
             this._setProgress(file.element, percent);
         },
-        upload: function(args) {
+        upload: function (args) {
             // Only if there are files to upload
             var files = this.uploader.files;
 
@@ -325,8 +325,8 @@
             }
             return false;
         },
-        refresh: function() {},
-        close: function() {
+        refresh: function () { },
+        close: function () {
             if (this.uploader instanceof Uploader) {
                 if (this.uploading) {
                     this.uploader.stop();
@@ -339,19 +339,19 @@
             this.uploader = {};
             this.uploading = false;
         },
-        getErrorCount: function() {
+        getErrorCount: function () {
             return this.errors;
         },
-        isUploading: function() {
+        isUploading: function () {
             return this.uploading;
         },
-        stop: function() {
+        stop: function () {
             this.uploader.stop();
         },
-        start: function() {
+        start: function () {
             this.uploader.start();
         },
-        setStatus: function(s) {
+        setStatus: function (s) {
             var file = this.currentFile;
 
             if (file) {
@@ -367,9 +367,9 @@
                 }
             }
         },
-        _createDragDrop: function() {
+        _createDragDrop: function () {
             var self = this;
-            
+
             // remove existing drag placeholder
             $('#upload-queue-drag').remove();
 
@@ -378,33 +378,36 @@
 
             var msg = Wf.translate('upload_drop_details', '%filetypes files up to %max_size in size');
 
-            msg = msg.replace(/%([\w]+)/g, function(match, key) {
-                var value = self.options[key] || '';
-
-                if (key === 'filetypes') {
-                    value = '<span class="uk-text-truncate uk-display-block">' + value + '</span>';
-                }
-
-                if (key === 'max_size') {
-                    value = '<strong>' + Wf.String.formatSize(value * 1024) + '</strong>';
-                }
-
-                return value;
-            });
+            // must have a variable
+            if (msg.indexOf('%') !== -1) {
+                msg = msg.replace(/%([\w]+)/g, function (match, key) {
+                    var value = self.options[key] || '';
+    
+                    if (key === 'filetypes') {
+                        value = '<span class="uk-text-truncate uk-display-block">' + value + '</span>';
+                    }
+    
+                    if (key === 'max_size') {
+                        value = '<strong>' + Wf.String.formatSize(value * 1024) + '</strong>';
+                    }
+    
+                    return value;
+                });
+            }
 
             $('<div id="upload-queue-drag" class="uk-flex uk-flex-center uk-flex-column uk-flex-middle uk-text-large uk-height-1-1 uk-text-large uk-comment">' +
-            '   <div class="uk-comment-header uk-flex">' +
-            '       <i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted uk-comment-avatar"></i><h4 class="uk-comment-title">' + Wf.translate('upload_drop', 'Drop files here') + '</h4>' + 
-            '   </div>' +
-            '   <p class="uk-margin-small uk-comment-meta uk-width-1-2 uk-text-center">' + msg + '</p>' +
-            '</div>').appendTo('#upload-queue-block').show()
+                '   <div class="uk-comment-header uk-flex">' +
+                '       <i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted uk-comment-avatar"></i><h4 class="uk-comment-title">' + Wf.translate('upload_drop', 'Drop files here') + '</h4>' +
+                '   </div>' +
+                '   <p class="uk-margin-small uk-comment-meta uk-width-1-2 uk-text-center">' + msg + '</p>' +
+                '</div>').appendTo('#upload-queue-block').show()
         },
         /**
          * Rename a file in the uploader files list
          * @param {Object} file File object
          * @param {String} name New name
          */
-        _renameFile: function(file, name) {
+        _renameFile: function (file, name) {
             this.uploader.renameFile(file, name);
             this._trigger('filerename', file);
         },
@@ -412,7 +415,7 @@
          * Remove all files
          * @private
          */
-        _removeFiles: function() {
+        _removeFiles: function () {
             this.uploader.splice();
 
             // reset errors
@@ -427,14 +430,14 @@
          * @returns {Boolean}
          * @private
          */
-        _fileExists: function(file) {
+        _fileExists: function (file) {
             return this.uploader.fileExists(file);
         },
         /**
          * Remove a file from the queue
          * @param {String} file File to remove
          */
-        _removeFile: function(file) {
+        _removeFile: function (file) {
             this._trigger('filedelete', file);
 
             if ($(file.element).hasClass('queue-item-error')) {
@@ -445,7 +448,7 @@
 
             this.uploader.removeFile(file);
         },
-        _createQueue: function(file) {
+        _createQueue: function (file) {
             var self = this;
 
             // get the file title from the file name (without any path)
@@ -466,7 +469,7 @@
             // status / delete
             var remove = $('<button class="uk-button uk-button-link" />').attr({
                 'title': Wf.translate('delete', 'Delete')
-            }).addClass('queue-item-action').on('click', function(e) {
+            }).addClass('queue-item-action').on('click', function (e) {
                 e.preventDefault();
 
                 if (self.uploading) {
@@ -485,8 +488,8 @@
             var buttons = [remove];
 
             // add optional buttons
-            $.each(self.options.buttons, function(name, props) {
-                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).on('click', function(e) {
+            $.each(self.options.buttons, function (name, props) {
+                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).on('click', function (e) {
                     if ($(this).hasClass('disabled')) {
                         e.preventDefault();
                         return;
@@ -510,7 +513,7 @@
 
             $(file.element).addClass('queue-item uk-width-1-1 uk-flex uk-flex-wrap').appendTo($(self.element)).append([name, actions, progress]);
 
-            $('input[type="text"]', file.element).on('change keyup', function(e) {
+            $('input[type="text"]', file.element).on('change keyup', function (e) {
                 var v = this.value;
                 // make web safe
                 v = Wf.String.safe(this.value, self.options.websafe_mode, self.options.websafe_spaces);
@@ -526,7 +529,7 @@
 
             self._trigger('fileSelect', file);
         },
-        _stop: function(file) {
+        _stop: function (file) {
             this.uploader.stop();
 
             $(file.element).removeClass('queue-item-loading');
@@ -534,11 +537,11 @@
     };
 
     // jQuery hook
-    $.fn.uploader = function(options) {
+    $.fn.uploader = function (options) {
         var self = this,
             inst = new UploadWidget(this, options);
 
-        $(this).on('uploadwidget:upload', function(e, data) {
+        $(this).on('uploadwidget:upload', function (e, data) {
             if (inst.isUploading()) {
                 cancel(e);
 
@@ -548,7 +551,7 @@
             inst.upload(data);
         });
 
-        $(this).on('uploadwidget:close', function() {
+        $(this).on('uploadwidget:close', function () {
             inst.close();
         });
 
