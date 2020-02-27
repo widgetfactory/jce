@@ -9,13 +9,18 @@
 }
 
 .mcePathPath .mceText {
-    cursor: pointer;
     font-size: 12px;
     line-height: 14px;
-
     max-width: 3em;
     text-overflow: ellipsis;
     overflow: hidden;
+    opacity: 0.75;
+    cursor: default;
+}
+
+.mcePathPath a .mceText {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .mcePathHidden:after {

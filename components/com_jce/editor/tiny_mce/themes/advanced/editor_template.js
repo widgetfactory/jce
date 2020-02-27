@@ -164,11 +164,11 @@
                         self._updateUndoStatus(ed);
                     });
 
-                    ed.addShortcut('alt+F10,F10', '', function() {
+                    ed.addShortcut('alt+F10,F10', '', function () {
                         self.toolbarGroup.focus();
                     });
 
-                    ed.addShortcut('alt+F11', '', function() {
+                    ed.addShortcut('alt+F11', '', function () {
                         DOM.get(ed.id + '_path_row').focus();
                     });
                 }
@@ -779,31 +779,37 @@
 
                     na = na.replace(/(html:)/g, '');
 
-                    na = {
+                    var args = {
                         name: na,
                         node: n,
                         title: ti
                     };
 
-                    self.onResolveName.dispatch(self, na);
-                    ti = na.title;
-                    na = na.name;
+                    self.onResolveName.dispatch(self, args);
+                    ti = args.title;
+                    na = args.name;
 
-                    pi = DOM.create('a', {
-                        'href': "javascript:;",
-                        role: 'button',
-                        onmousedown: "return false;",
-                        title: ti,
-                        'class': 'mcePath_' + (de++)
-                    }, '<span class="mceText">' + na + '</span>');
+                    pi = DOM.create('span', {
+                        class : 'mceText'
+                    }, na);
+
+                    if (!args.disabled) {
+                        pi = DOM.create('a', {
+                            href: "#",
+                            role: 'button',
+                            title: ti,
+                            class: 'mcePath_' + (de++)
+                        }, pi);
+                    }
 
                     if (p.hasChildNodes()) {
                         p.insertBefore(DOM.create('span', {
                             'aria-hidden': 'true'
                         }, '\u00a0\u00bb '), p.firstChild);
                         p.insertBefore(pi, p.firstChild);
-                    } else
+                    } else {
                         p.appendChild(pi);
+                    }
 
                 }, ed.getBody());
 
