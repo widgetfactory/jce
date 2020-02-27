@@ -74,7 +74,7 @@
                 cm.setActive('link', link);
                 // set disabled if anchor
                 cm.setDisabled('link', anchor);
-                cm.setDisabled('unlink', !link);
+                //cm.setDisabled('unlink', !link);
             });
         },
         createControl: function (n, cm) {
