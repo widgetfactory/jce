@@ -420,6 +420,9 @@
                 // add a br element after an iframe insert if it is to be converted to a media preview
                 ed.selection.onBeforeSetContent.add(function (ed, o) {
                     if (settings.media_live_embed) {
+                        // remove existing caret to prevent duplicates
+                        o.content = o.content.replace(/<br data-mce-caret="1"[^>]+>/gi, '');
+                        // ad a caret br after iframe content
                         if (/^<iframe([^>]+)><\/iframe>$/.test(o.content)) {
                             o.content += '<br data-mce-caret="1" />';
                         }
