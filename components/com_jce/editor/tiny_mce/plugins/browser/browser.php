@@ -82,40 +82,6 @@ class WFBrowserPlugin extends WFMediaManager
         // update upload filetypes
         $properties['upload'] = $upload;
 
-        // get any passed in 'dir' value
-        /*$folder = $app->input->getString('dir', '');
-
-        if ($folder) {
-            // clean
-            $folder = WFUtility::makeSafe($folder);
-
-            // still intact after clean?
-            if ($folder) {
-                $dir = $browser->get('dir', '');
-
-                if (empty($dir)) {
-                    $dir = 'images';
-                }
-
-                $filesystem = $browser->getFileSystem();
-
-                // process any variables in the path
-                $filesystem->processPath($folder);
-
-                // concat with File Directoy Path...
-                $path = WFUtility::makePath($dir, $folder);
-                // ...and trim
-                $path = trim($path, '/');
-
-                if ($browser->checkPathAccess($path)) {
-                    // set new path
-                    $filesystem->setProperties(array('dir' => $path));
-                    // update browser
-                    $properties['dir'] = $path;
-                }
-            }
-        }*/
-
         $browser->setProperties($properties);
     }
 
