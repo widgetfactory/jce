@@ -82,10 +82,11 @@ class WFBrowserPlugin extends WFMediaManager
         // update upload filetypes
         $properties['upload'] = $upload;
 
-        // get any passed in folder value
-        $folder = $app->input->getString('folder', '');
+        // get any passed in 'dir' value
+        /*$folder = $app->input->getString('dir', '');
 
         if ($folder) {
+            // clean
             $folder = WFUtility::makeSafe($folder);
 
             // still intact after clean?
@@ -113,7 +114,7 @@ class WFBrowserPlugin extends WFMediaManager
                     $properties['dir'] = $path;
                 }
             }
-        }
+        }*/
 
         $browser->setProperties($properties);
     }
