@@ -12,28 +12,23 @@
     function ucfirst(str) {
         return str.charAt(0).toUpperCase() + str.substring(1);
     }
-    
+
     Joomla.submitbutton = function (task) {
         var form = document.getElementById('adminForm');
 
-        if (task == 'profile.cancel') {
-            try {
-                Joomla.submitform(task, form);
-            } catch (e) { }
+        form.task.value = task;
 
-            return;
-        }
-
-        // validate form	
-        if (document.formvalidator.isValid(form)) {
+        if (task != 'profile.cancel') {
+            // validate form	
+            if (!document.formvalidator.isValid(form)) {
+                return;
+            }
 
             // trigger onSubmit callback
             onSubmit();
-
-            try {
-                Joomla.submitform(task, form);
-            } catch (e) { }
         }
+
+        form.submit();
     };
 
     $.fn.dragHelper = function (options) {
@@ -310,7 +305,7 @@
             if (value.indexOf('.') !== -1) {
                 value = value.replace(/([^\.]+)\.([\w]+)/, function (match, skin, variant) {
                     skin = 'mce' + ucfirst(skin);
-                    
+
                     return skin + 'Skin ' + skin + 'Skin' + (ucfirst(variant));
                 });
             } else {
