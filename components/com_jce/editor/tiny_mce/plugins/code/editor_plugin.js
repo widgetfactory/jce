@@ -159,9 +159,9 @@
                 // Display "script" instead of "span" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function (theme, o) {
-                        var cls = o.node.className;
+                        var node = o.node, cls = node.className, name = node.nodeName;
 
-                        if (o.name === "span") {
+                        if (name === "SPAN") {
                             if (/mce-item-script/.test(cls)) {
                                 o.name = 'script';
                             }
@@ -170,7 +170,7 @@
                                 o.name = 'style';
                             }
 
-                            if (/mce-item-php/.test(cls)) {
+                            if (/mce(-item-php|Php)/.test(cls)) {
                                 o.name = 'php';
                             }
                         }

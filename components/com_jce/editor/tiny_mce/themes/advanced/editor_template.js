@@ -705,8 +705,9 @@
                     var na = n.nodeName.toLowerCase(), pi, ti = '';
 
                     // Ignore non element and bogus/hidden elements
-                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mce-item-hidden') || DOM.hasClass(n, 'mce-item-removed') || DOM.hasClass(n, 'mce-item-shim'))
+                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mce-item-hidden') || DOM.hasClass(n, 'mce-item-removed') || DOM.hasClass(n, 'mce-item-shim')) {
                         return;
+                    }
 
                     // Handle prefix
                     if (tinymce.isIE && n.scopeName && n.scopeName !== 'HTML') {
@@ -790,7 +791,7 @@
                     na = args.name;
 
                     pi = DOM.create('span', {
-                        class : 'mceText'
+                        class: 'mceText'
                     }, na);
 
                     if (!args.disabled) {
