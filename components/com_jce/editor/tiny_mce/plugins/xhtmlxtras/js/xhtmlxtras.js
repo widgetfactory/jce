@@ -154,6 +154,7 @@
 
 				if (k === 'classes') {
 					k = 'class';
+					v = $.trim(v);
 				}
 
 				args[k] = v;
@@ -188,27 +189,20 @@
 
 				ed.formatter.apply(element.toLowerCase(), args, elm);
 
-				// apply classes
-				ed.dom.addClass(elm, cls);
-
 				// probably Attributes
 			} else {
 				var isTextSelection = !se.isCollapsed() && se.getContent() == se.getContent({ format: 'text' });
 
 				// is a body or text selection
 				if (n == ed.getBody() || isTextSelection) {
-					args['class'] = cls;
 					ed.formatter.apply('attributes', args);
 					// attribute selection
 				} else {
 					ed.dom.setAttribs(n, args);
-					// apply classes
-					//ed.dom.addClass(n, cls);
 				}
 			}
 
 			ed.undoManager.add();
-
 			tinyMCEPopup.close();
 		},
 
