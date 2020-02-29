@@ -1032,7 +1032,7 @@
             $('#browser-message').removeClass('load error');
 
             // set state
-            $('#browser-message').addClass(o.state);
+            $('#browser-message').toggleClass(o.state);
 
             // set message
             $('.message', '#browser-message').html(o.message);
@@ -1707,14 +1707,15 @@
                     $.each(items, function (i, item) {
                         var complete = i === items.length - 1;
 
-                        Wf.JSON.request(fn, [item, dir], function (o) {
+                        Wf.JSON.request(fn, [item, dir], function (o) {                            
                             if (o) {
                                 if (o.confirm) {
                                     Wf.Modal.confirm(self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'), function (state) {
                                         if (state) {
-                                            self._setLoader();
                                             Wf.JSON.request(fn, [item, dir, true], function (o) {
-                                                callback(o, dir);
+                                                if (o && !o.error) {
+                                                    callback(o, dir);
+                                                }
                                             });
                                         }
 
@@ -1736,6 +1737,11 @@
                                         self._clearPaste();
                                         self.refresh();
                                     }
+                                }
+                            } else {
+                                if (complete) {
+                                    self._clearPaste();
+                                    self.refresh();
                                 }
                             }
                         }, self, true);
