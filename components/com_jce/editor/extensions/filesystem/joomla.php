@@ -605,26 +605,21 @@ class WFJoomlaFileSystem extends WFFileSystem
      * @return string $error
      */
     public function rename($src, $dest)
-    {
-        $path = $this->toAbsolute(rawurldecode($src));
-        $dir = WFUtility::md_dirname($src);
+    {       
+        $src = $this->toAbsolute(rawurldecode($src));
+        $dir = WFUtility::mb_dirname($src);
 
         JFactory::getApplication()->triggerEvent('onWfFileSystemBeforeRename', array(&$src, &$dest));
 
         $result = new WFFileSystemResult();
 
         if (is_file($src)) {
-            $ext = JFile::getExt($src);
+            $ext = WFUtility::getExtension($src);
             $file = $dest . '.' . $ext;
             $path = WFUtility::makePath($dir, $file);
 
             // check path does not fall within a restricted folder
             $this->checkRestrictedDirectory($path);
-
-            // does not appear to be case sensitive...
-            /*if (is_file($path)) {
-            return $result;
-            }*/
 
             $result->type = 'files';
             $result->state = JFile::move($src, $path);
@@ -633,11 +628,6 @@ class WFJoomlaFileSystem extends WFFileSystem
             $result->source = $src;
         } elseif (is_dir($src)) {
             $path = WFUtility::makePath($dir, $dest);
-
-            // does not appear to be case sensitive...
-            /*if (is_dir($path)) {
-            return $result;
-            }*/
 
             $result->type = 'folders';
             $result->state = JFolder::move($src, $path);
@@ -858,9 +848,9 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         if ($conflict == 'unique') {
             // get extension
-            $extension = JFile::getExt($name);
+            $extension = WFUtility::getExtension($name);
             // get name without extension
-            $name = JFile::stripExt($name);
+            $name = WFUtility::stripExtension($name);
             // create tmp copy
             $tmpname = $name;
 
