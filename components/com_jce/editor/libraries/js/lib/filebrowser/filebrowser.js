@@ -221,7 +221,7 @@
                     if ($(n).is(':checked')) {
                         // set target to node
                         e.target = n;
-
+                        // set selection
                         self._setSelectedItems(e, true);
                     } else {
                         self._removeSelectedItems([p.parentNode], true);
@@ -2290,7 +2290,11 @@
         getSelectedItems: function (key) {
             var $items = $('li.selected', '#item-list');
 
-            return $items.get(key) || $items;
+            if (typeof key === 'number') {
+                return $items[key] || $items;
+            }
+
+            return $items;
         },
         /**
          * Return selected items by key or all selected items
@@ -2494,35 +2498,32 @@
         },
 
         serializeItemData: function (item) {
-            var self = this, data = {};
-
-            $.each(['url', 'preview', 'width', 'height'], function (i, key) {
-                data[key] = $(item).data(key) || '';
-            });
-
-            // get title from element attribute
-            data.title = $(item).attr('title');
-
-            // get item basename
-            data.title = Wf.String.basename(data.title);
-
-            // use a passed in EXIF data desciption value
-            if ($(item).data('description')) {  
-                data.description = $(item).data('description');
-            }
+            var self = this;
 
             return new Promise(function (resolve, reject) {
-                if (data.url) {
-                    resolve(data);
+                var props = {};
+
+                $.each(['url', 'preview', 'width', 'height', 'description'], function (i, key) {
+                    props[key] = $(item).attr('data-' + key) || '';                    
+                });
+    
+                // get title from element attribute
+                props.title = $(item).attr('title');
+    
+                // get item basename
+                props.title = Wf.String.basename(props.title);
+
+                if (props.url) {
+                    resolve(props);
                 } else {
-                    var path = Wf.String.path(self._dir, data.title);
+                    var path = Wf.String.path(self._dir, props.title);
 
                     Wf.JSON.request('getFileDetails', [path], function (o) {
                         if (o && !o.error) {
-                            data = $.extend(data, o);
+                            props = $.extend(props, o);
                         }
 
-                        resolve(data);
+                        resolve(props);
                     });
                 }
             });
@@ -2835,18 +2836,18 @@
         $(this).on('filebrowser:insert', function (e, cb) {
             var selected = instance.getSelectedItems();
 
-            var promises = [];
+            var promises = [], data = [];
 
-            $.each(selected, function (i, item) {
-                promises.push(instance.serializeItemData(item));
+            $(selected).each(function() {               
+                promises.push(instance.serializeItemData(this));
             });
 
-            Promise.all(promises).then(function (data) {
+            Promise.all(promises).then(function (props) {                                
                 if (typeof cb === "function") {
-                    return cb(selected, data);
+                    return cb(selected, props);
                 }
 
-                return data;
+                return props;
             });
         });
 
