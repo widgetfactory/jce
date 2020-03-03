@@ -279,6 +279,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'folders',
+                    'properties' => $this->getFileDetails($id)
                 );
 
                 $folders[] = $data;
@@ -308,6 +309,9 @@ class WFJoomlaFileSystem extends WFFileSystem
         $list = JFolder::files($path, $filter, $depth, true, $exclude);
 
         $files = array();
+
+        // get the total files in the list
+        $count = count($list);
 
         if (!empty($list)) {
             // Sort alphabetically by default
@@ -346,6 +350,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'files',
                     'extension' => WFUtility::getExtension($name),
+                    'properties' => $this->getFileDetails($id, $count)
                 );
 
                 $files[] = $data;
