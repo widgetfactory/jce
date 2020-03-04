@@ -245,7 +245,10 @@ class WFJoomlaFileSystem extends WFFileSystem
 
             foreach ($list as $item) {
                 $item = rawurldecode($item);
-                
+
+                // clean path to remove multiple slashes
+                $item = WFUtility::cleanPath($item);
+
                 $name = WFUtility::mb_basename($item);
                 $name = WFUtility::convertEncoding($name);
 
@@ -279,7 +282,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'folders',
-                    'properties' => $this->getFileDetails($id)
+                    'properties' => $this->getFileDetails($id),
                 );
 
                 $folders[] = $data;
@@ -317,7 +320,7 @@ class WFJoomlaFileSystem extends WFFileSystem
             // Sort alphabetically by default
             natcasesort($list);
 
-            foreach ($list as $item) {                
+            foreach ($list as $item) {
                 $item = rawurldecode($item);
 
                 $name = WFUtility::mb_basename($item);
@@ -350,7 +353,7 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'files',
                     'extension' => WFUtility::getExtension($name),
-                    'properties' => $this->getFileDetails($id, $count)
+                    'properties' => $this->getFileDetails($id, $count),
                 );
 
                 $files[] = $data;
@@ -610,7 +613,7 @@ class WFJoomlaFileSystem extends WFFileSystem
      * @return string $error
      */
     public function rename($src, $dest)
-    {       
+    {
         $src = $this->toAbsolute(rawurldecode($src));
         $dir = WFUtility::mb_dirname($src);
 
