@@ -430,12 +430,16 @@
                             return showError();
                         }
 
-                        if (!r || !r.result) {
+                        if (!r) {
                             return showError();
                         }
 
-                        if (r.error) {
-                            var txt = r.text || r.error;
+                        if (r.error || !r.result) {
+                            var txt = '';
+
+                            if (r.error) {
+                                txt = r.error.message || '';
+                            }
 
                             ed.windowManager.alert(txt);
                             ed.dom.remove(n);
