@@ -503,6 +503,7 @@
             // trigger init
             this._trigger('onInit', this);
         },
+
         _updateList: function () {
             var self = this;
             // get visible area
@@ -517,6 +518,7 @@
                 }
             });
         },
+
         /**
          * Get the height of the dilaog interface.
          */
@@ -533,6 +535,7 @@
 
             return ih;
         },
+
         /**
          * Resize the browser window
          * @param {String} Interface height.
@@ -553,6 +556,7 @@
             });*/
 
         },
+
         /**
          * Translate a string. Wrapper for $.Plugin translate function
          * @param {String} Language key
@@ -561,6 +565,7 @@
         _translate: function (s, ds) {
             return Wf.translate(s, ds);
         },
+
         /**
          * Setup list sorting for item list
          */
@@ -659,6 +664,7 @@
                 return 'asc';
             });
         },
+
         /**
          *Check if the path is local and /or a valid local file url
          */
@@ -699,6 +705,13 @@
 
             return true;
         },
+
+        _trimPath: function (path) {
+            // convert to string
+            path = '' + path;
+            return path.replace(/^\//, '').replace(/\/$/, '');
+        },
+
         _cleanPath: function (path) {
             if (path) {
                 // make relative
@@ -717,6 +730,7 @@
             }
             return path;
         },
+
         /**
          * Set up the base directory
          * @param {String} src The base url
@@ -786,6 +800,7 @@
                 this._getList(src);
             }
         },
+
         _toggleTree: function (s) {
             // add full-width class to browser
             $('#browser').toggleClass('full-width', !s);
@@ -796,6 +811,7 @@
 
             $('span.size, span.date', '#item-list').attr('aria-hidden', s);
         },
+
         /**
          * Check if a name is websafe
          */
@@ -805,6 +821,7 @@
             // only check lowercase as both upper and lower are websafe
             return name.toLowerCase() === safe.toLowerCase();
         },
+
         _isViewable: function (name) {
             var button = this._getButton('file', 'view');
             var viewable = this.options.viewable;
@@ -815,6 +832,7 @@
 
             return new RegExp('\\.(' + viewable.replace(/,/g, '|') + ')$', 'i').test(name);
         },
+
         _buildList: function (o) {
             var self = this,
                 h = '';
@@ -926,23 +944,19 @@
 
             this._showListDetails();
         },
+
         _showListDetails: function () {
             var s = !$('.layout-icon', '#show-details').hasClass('tree') && this._treeLoaded();
 
             this._toggleTree(s);
         },
+
         /**
          * Check if the Tree option is set and the Tree Class is loaded
          * return Boolean.
          */
         _treeLoaded: function () {
             return this.options.folder_tree && typeof $.fn.tree === "function";
-        },
-
-        _trimPath: function (path) {
-            // convert to string
-            path = '' + path;
-            return path.replace(/^\//, '').replace(/\/$/, '');
         },
 
         /**
@@ -1013,6 +1027,7 @@
             // clear list limit
             this._limit = 0;
         },
+
         /**
          * Clear the Paste action
          */
@@ -1023,6 +1038,7 @@
 
             this._hideButtons($('.paste', '#buttons'));
         },
+
         /**
          * Set a status message
          * @param {String} message
@@ -1037,6 +1053,7 @@
             // set message
             $('.message', '#browser-message').html(o.message);
         },
+
         /**
          * Set a message
          * @param {String} message
@@ -1045,6 +1062,7 @@
         _setMessage: function (message, classname) {
             return true;
         },
+
         /**
          * Sets a loading message
          */
@@ -1054,12 +1072,14 @@
                 state: 'load'
             });
         },
+
         /**
          * Reset the message display
          */
         _resetMessage: function () {
             return true;
         },
+
         /**
          * Reset the status display
          */
@@ -1119,6 +1139,7 @@
                 });
             }
         },
+
         /**
          * Get the parent directory
          * @return {String} s The parent/previous directory.
@@ -1137,6 +1158,7 @@
 
             return s;
         },
+
         /**
          * Add an item to the returnedItems array
          * @return {Object} file The item.
@@ -1148,6 +1170,7 @@
                 this._returnedItems.push(items);
             }
         },
+
         /**
          * Setup the returned file after upload
          * @param {String} file The returning file name.
@@ -1159,6 +1182,7 @@
 
             this._changeDir(Wf.String.dirname(file));
         },
+
         /**
          * Set the current directory
          * @param {String} dir
@@ -1166,18 +1190,21 @@
         _setDir: function (dir) {
             this._dir = '' + dir;
         },
+
         /**
          * Get the base directory
          */
         getBaseDir: function () {
             return this.options.dir;
         },
+
         /**
          * Get the current directory
          */
         getCurrentDir: function () {
             return this._dir;
         },
+
         /**
          Determine whether current directory is root
          */
@@ -1189,6 +1216,7 @@
 
             return s === '';
         },
+
         /**
          * Change Directory
          * @param {String} dir
@@ -1275,6 +1303,7 @@
             // get list from server with query if set
             this._getList('', this._searchQuery);
         },
+        
         /**
          * Load the browser list
          */
@@ -1294,21 +1323,26 @@
 
             this._getList(src);
         },
+
         /**
          * Show an error message
          */
         error: function (error) {
             this._raiseError(error);
         },
+
         startUpload: function () {
             $('#upload-queue').uploader('start');
         },
+
         stopUpload: function () {
             $('#upload-queue').uploader('stop');
         },
+
         setUploadStatus: function (o) {
             $('#upload-queue').uploader('setStatus', o);
         },
+
         /**
          * Load the file/folder list into the container div
          * @param {Object} The folder/file JSON object
@@ -1438,6 +1472,7 @@
 
             return elements;
         },
+
         /**
          * Execute a command
          * @param {String} The command name
@@ -1475,9 +1510,9 @@
 
                     if (this._isViewable(name)) {
                         if (/\.(jpeg|jpg|gif|png|webp|svg|apng|avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mp3|mp4|m4v|mpeg|ogg|ogv|webm|swf|flv|f4v|xml|dcr|rm|ra|ram|divx|pdf)/i.test(name)) {
-                            
-                            var args = {width : $item.data('width') || 0, height : $item.data('height') || 0};
-                            
+
+                            var args = { width: $item.data('width') || 0, height: $item.data('height') || 0 };
+
                             Wf.Modal.media(name, url, args);
                         } else {
                             Wf.Modal.iframe(name, url, {
@@ -1707,7 +1742,7 @@
                     $.each(items, function (i, item) {
                         var complete = i === items.length - 1;
 
-                        Wf.JSON.request(fn, [item, dir], function (o) {                            
+                        Wf.JSON.request(fn, [item, dir], function (o) {
                             if (o) {
                                 if (o.confirm) {
                                     Wf.Modal.confirm(self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'), function (state) {
@@ -1864,6 +1899,7 @@
                     break;
             }
         },
+
         /**
          * Show an error dialog
          * @param {String} error
@@ -1894,6 +1930,7 @@
 
             });
         },
+
         /**
          * Add an array of actions
          * @param {Object} actions
@@ -1906,6 +1943,7 @@
             });
 
         },
+
         /**
          * Add an action to the Manager
          * @param {Object} options
@@ -1970,6 +2008,7 @@
 
             $('#browser-actions').append(action);
         },
+
         /**
          * Get an action by name
          * @param {String} name
@@ -1977,6 +2016,7 @@
         _getAction: function (name) {
             return this._actions[name];
         },
+
         /**
          * Add an array of buttons to the Manager
          * @param {Object} buttons
@@ -2002,6 +2042,7 @@
                 }
             }
         },
+
         /**
          * Add a button to the Manager
          * @param {Object} o Button Object
@@ -2088,6 +2129,7 @@
                 'sticky': o.sticky
             };
         },
+
         /**
          * Hide all buttons
          */
@@ -2099,6 +2141,7 @@
             });
 
         },
+
         /**
          * Hide buttons by type
          * @param {String} type The button type
@@ -2111,6 +2154,7 @@
             });
 
         },
+
         /**
          * Hide a button
          * @param {String} button The button to hide
@@ -2118,6 +2162,7 @@
         _hideButton: function (button) {
             $(button).addClass('uk-hidden').attr('aria-hidden', true);
         },
+
         /**
          * Show all buttons
          * @param {String} type The button type to show
@@ -2181,6 +2226,7 @@
                 this._showPasteButton();
             }
         },
+
         /**
          * Show a button
          * @param {String} button The button to show
@@ -2208,6 +2254,7 @@
                 }
             }
         },
+
         /**
          * Get a button
          * @param {String} type The button type
@@ -2216,12 +2263,14 @@
         _getButton: function (type, name) {
             return this._buttons[type][name] || null;
         },
+
         /**
          * Show the paste button
          */
         _showPasteButton: function () {
             this._showButton($('.button.paste', '#browser-buttons'), true, true);
         },
+
         /**
          * Determine whether an item is selected
          * @param {Object} el The list item
@@ -2229,6 +2278,7 @@
         _isSelectedItem: function (el) {
             return $(el).is('li.selected');
         },
+
         /**
          * Deselect all list items
          */
@@ -2249,6 +2299,7 @@
 
             $('input[type="checkbox"]', '#check-all').prop('checked', false);
         },
+
         /**
          * Select an array of items
          * @param {Array} items The array of items to select
@@ -2269,6 +2320,7 @@
 
             this._trigger('onSelectItems', null, items);
         },
+
         /**
          * Remove items from a selection
          * @param {Array} el Array of elements to remove
@@ -2283,6 +2335,7 @@
 
             this._trigger('onRemoveItems', null, items);
         },
+
         /**
          * Return selected items by key or all selected items
          * @param {String} key Item key
@@ -2296,6 +2349,7 @@
 
             return $items;
         },
+
         /**
          * Return selected items by key or all selected items
          * @param {Array} items Array of items to select
@@ -2303,6 +2357,7 @@
         setSelectedItems: function (items) {
             this._findItem(items);
         },
+
         /**
          * Process a selection click
          * @param {String} e The click event.
@@ -2418,6 +2473,7 @@
                 }
             }
         },
+
         /**
          * Show the selected items' details
          */
@@ -2435,6 +2491,7 @@
                 this._showItemDetails();
             }
         },
+
         /**
          * Find a select an item (file) by name, id or url
          * @param {String} name The file name.
@@ -2504,12 +2561,12 @@
                 var props = {};
 
                 $.each(['url', 'preview', 'width', 'height', 'description'], function (i, key) {
-                    props[key] = $(item).attr('data-' + key) || '';                    
+                    props[key] = $(item).attr('data-' + key) || '';
                 });
-    
+
                 // get title from element attribute
                 props.title = $(item).attr('title');
-    
+
                 // get item basename
                 props.title = Wf.String.basename(props.title);
 
@@ -2528,6 +2585,7 @@
                 }
             });
         },
+
         /**
          * Serialize the current item selection, add current dir to path
          */
@@ -2539,6 +2597,7 @@
             }).get().join(',');
 
         },
+
         /**
          * Show a file /folder properties / details
          */
@@ -2581,6 +2640,7 @@
             // get item details
             this._getItemDetails();
         },
+
         _getDimensions: function (file) {
             var img = new Image();
 
@@ -2838,11 +2898,11 @@
 
             var promises = [], data = [];
 
-            $(selected).each(function() {               
+            $(selected).each(function () {
                 promises.push(instance.serializeItemData(this));
             });
 
-            Promise.all(promises).then(function (props) {                                
+            Promise.all(promises).then(function (props) {
                 if (typeof cb === "function") {
                     return cb(selected, props);
                 }
