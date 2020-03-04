@@ -123,6 +123,7 @@ class WFApplication extends JObject
         $user = JFactory::getUser();
         $option = $this->getComponentOption();
 
+        // find the component if this is called from within the JCE component
         if ($option == 'com_jce') {
             $context = $app->input->getInt('context');
 
@@ -182,6 +183,7 @@ class WFApplication extends JObject
 
         // get the profile variables for the current context
         $options = $this->getProfileVars($plugin);
+
         // create a signature to store
         $signature = serialize($options);
 
@@ -322,21 +324,26 @@ class WFApplication extends JObject
         }
 
         // get plugin name
-        $plugin = $app->input->getCmd('plugin');
+        $plugin = $app->input->getCmd('plugin', '');
 
-        // optional caller, eg: Link
-        $caller = '';
-
-        // get name and caller from plugin name
-        if (strpos($plugin, '.') !== false) {
-            list($plugin, $caller) = explode('.', $plugin);
-
-            if ($caller) {
-                $options['caller'] = $caller;
-            }
+        // reset the plugin value if this is not called from within the JCE component
+        if ($app->input->getCmd('option') !== 'com_jce') {
+            $plugin = '';
         }
 
         if ($plugin) {
+            // optional caller, eg: Link
+            $caller = '';
+            
+            // get name and caller from plugin name
+            if (strpos($plugin, '.') !== false) {
+                list($plugin, $caller) = explode('.', $plugin);
+
+                if ($caller) {
+                    $options['caller'] = $caller;
+                }
+            }
+
             $options['plugin'] = $plugin;
         }
 
