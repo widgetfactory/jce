@@ -172,6 +172,12 @@ class WFEditor
 
     private function assignEditorSkin(&$settings)
     {
+        // get an editor instance
+        $wf = WFApplication::getInstance();
+        
+        // assign skin - new default is "modern"
+        $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
+        
         if (empty($settings['skin'])) {
             $settings['skin'] = 'modern';
         }
@@ -295,9 +301,7 @@ class WFEditor
             $settings['width'] = $wf->getParam('editor.width');
             $settings['height'] = $wf->getParam('editor.height');
 
-            // assign skin - new default is "modern"
-            $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
-
+            // process and assign the editor skin
             $this->assignEditorSkin($settings);
 
             // get body class if any
