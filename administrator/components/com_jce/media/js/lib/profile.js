@@ -28,7 +28,9 @@
             onSubmit();
         }
 
-        form.submit();
+        try {
+            Joomla.submitform(task, form);
+        } catch (e) { }
     };
 
     $.fn.dragHelper = function (options) {
