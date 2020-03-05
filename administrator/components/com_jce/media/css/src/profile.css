@@ -249,6 +249,11 @@ a.browser {
     font-size: 1.25em;
 }
 
+.ui-jce .options-grid-form > legend {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .ui-jce .row-fluid .form-horizontal .control-label {
     width: auto;
     min-width: 160px;
