@@ -12,22 +12,22 @@ defined('JPATH_PLATFORM') or die;
 
 abstract class WfBrowserHelper
 {
-    public static function getBrowserLink($element = null, $filter = '', $callback = '')
+    public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
     {
         $options = self::getMediaFieldOptions(array(
             'element'   => $element,
-            'filter'    => $filter,
+            'mediatype'    => $mediatype,
             'callback'  => $callback
         ));
 
         return $options['url'];
     }
 
-    public static function getMediaFieldLink($element = null, $filter = 'images', $callback = '')
+    public static function getMediaFieldLink($element = null, $mediatype = 'images', $callback = '')
     {
         $options = self::getMediaFieldOptions(array(
             'element'   => $element,
-            'filter'    => $filter,
+            'mediatype' => $mediatype,
             'callback'  => $callback
         ));
 
@@ -40,8 +40,8 @@ abstract class WfBrowserHelper
             $options['element'] = null;
         }
 
-        if (!isset($options['filter'])) {
-            $options['filter'] = 'images';
+        if (!isset($options['mediatype'])) {
+            $options['mediatype'] = 'images';
         }
 
         if (!isset($options['callback'])) {

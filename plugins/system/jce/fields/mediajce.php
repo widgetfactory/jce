@@ -65,7 +65,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
 
         $options = WFBrowserHelper::getMediaFieldOptions(array(
             'element' => $this->id,
-            'filter' => $this->mediatype,
+            'mediatype' => $this->mediatype,
             'converted' => (int) $this->element['converted'] ? true : false
         ));
 
