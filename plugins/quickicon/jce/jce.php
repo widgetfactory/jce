@@ -46,10 +46,8 @@ class plgQuickiconJce extends JPlugin
         $language = JFactory::getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        $filter = $this->params->get('filter', '');
-
         return array(array(
-            'link'      => 'index.php?option=com_jce&view=browser&filter=' . $filter,
+            'link'      => 'index.php?option=com_jce&view=browser',
             'image'     => 'picture fa-file-image-o',
             'access'    => array('jce.browser', 'com_jce'),
             'text'      => JText::_('PLG_QUICKICON_JCE_TITLE'),
