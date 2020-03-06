@@ -70,7 +70,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="compress_cache_validation" type="radio" default="1" label="WF_PARAM_COMPRESS_CACHE_VALIDATION_CACHE" description="WF_PARAM_COMPRESS_CACHE_VALIDATION_DESC" class="btn-group btn-group-yesno" filter="integer">
+            <field name="compress_cache_validation" type="radio" default="1" label="WF_PARAM_COMPRESS_CACHE_VALIDATION" description="WF_PARAM_COMPRESS_CACHE_VALIDATION_DESC" class="btn-group btn-group-yesno" filter="integer">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
