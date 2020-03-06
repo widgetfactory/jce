@@ -75,28 +75,11 @@ class plgEditorJCE extends JPlugin
 
         $editor->render($settings);
 
-        // get media version
-        $version = $document->getMediaVersion();
-
         foreach ($editor->getScripts() as $script) {
-            // add version directly for backwards compatablity
-            if (strpos($script, '?') === false) {
-                $script .= '?' . $version;
-            } else {
-                $script .= '&' . $version;
-            }
-
             $document->addScript($script);
         }
 
         foreach ($editor->getStyleSheets() as $style) {
-            // add version directly for backwards compatablity
-            if (strpos($style, '?') === false) {
-                $style .= '?' . $version;
-            } else {
-                $style .= '&' . $version;
-            }
-
             $document->addStylesheet($style);
         }
 
