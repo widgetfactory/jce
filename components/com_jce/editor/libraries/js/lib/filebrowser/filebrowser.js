@@ -1303,7 +1303,7 @@
             // get list from server with query if set
             this._getList('', this._searchQuery);
         },
-        
+
         /**
          * Load the browser list
          */
@@ -1477,8 +1477,9 @@
          * Execute a command
          * @param {String} The command name
          * @param {String} The command type
+         * @param {String} The event that triggered the action
          */
-        _execute: function (name) {
+        _execute: function (name, type, evt) {
             var self = this;
             var dir = this._dir;
 
@@ -1698,6 +1699,47 @@
                 // Cut / Copy operation
                 case 'copy':
                 case 'cut':
+                    if (name === 'copy' && (evt.metaKey || evt.ctrlKey)) {
+                        var items = this.getSelectedItems(), clip = [];
+
+                        $.each(items, function () {
+                            if (!$(this).hasClass('file')) {
+                                return true;
+                            }
+                            
+                            var url = $(this).data('url');
+
+                            if (url.indexOf('://') === -1) {
+                                url = Wf.String.path(site, url);
+                                url = Wf.URL.toAbsolute(url);
+                            }
+
+                            if (url) {
+                                clip.push(url);
+                            }
+                        });
+
+                        if (clip.length) {
+                            var inp = document.createElement('input'), val = clip.join(',');
+
+                            $(inp).css({ 'position': 'absolute', 'left': -9999 }).attr('readonly', true).appendTo('body').val(val).focus();
+
+                            if (inp.select) {
+                                inp.select();
+
+                                try {
+                                    // copy text
+                                    document.execCommand('copy');
+                                } catch (err) {
+                                }
+                            }
+
+                            $(inp).remove();
+                        }
+
+                        return;
+                    }
+
                     this._pasteaction = name;
                     this._pasteitems = list;
 
@@ -2096,9 +2138,9 @@
                 }
 
                 if (name) {
-                    $(button).on('mousedown.button', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
+                    $(button).on('mousedown.button', function (evt) {
+                        evt.preventDefault();
+                        evt.stopPropagation();
 
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
@@ -2106,7 +2148,7 @@
                             }
 
                             if ($.type(fn) == 'function') {
-                                return fn.call(self, name, type);
+                                return fn.call(self, name, type, evt);
                             }
 
                             return self._trigger(fn, type);
