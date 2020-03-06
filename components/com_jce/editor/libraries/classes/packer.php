@@ -98,6 +98,15 @@ class WFPacker extends JObject
         return $encoding;
     }
 
+    private function getEtag($hash)
+    {
+        if (strpos($hash, '"') !== 0) {
+            $hash = '"' . $hash . '"';
+        }
+
+        return $hash;
+    }
+
     /**
      * Pack and output content based on type.
      *
@@ -159,19 +168,20 @@ class WFPacker extends JObject
 
         // get content hash
         $hash = md5(implode(' ', array_map('basename', $files)) . $content);
+        $etag = $this->getEtag($hash);
 
         // check for sent etag against hash
         if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            $etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
+            $_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
 
-            if ($etag && $etag === $hash) {
+            if ($_etag && $_etag === $etag) {
                 header('HTTP/1.x 304 Not Modified', true);
                 exit(ob_get_clean());
             }
         }
 
         // set etag header
-        header('ETag: ' . $hash);
+        header('ETag: ' . $etag);
 
         // Generate GZIP'd content
         if ($gzip) {
