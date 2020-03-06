@@ -162,12 +162,15 @@ class WFPacker extends JObject
         // trim content
         $content = trim($content);
 
+        // get content hash
+        $hash = md5(implode(' ', array_map('basename', $files)) . $content);
+        // create E-tag
+        $etag = $this->getEtag($hash);
+        // set etag header
+        header('ETag: ' . $etag);
+
         // force browser caching using an E-tag
         if ($cache_validation) {
-            // get content hash
-            $hash = md5(implode(' ', array_map('basename', $files)) . $content);
-            $etag = $this->getEtag($hash);
-
             // check for sent etag against hash
             if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
                 $_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
@@ -177,9 +180,6 @@ class WFPacker extends JObject
                     exit(ob_get_clean());
                 }
             }
-
-            // set etag header
-            header('ETag: ' . $etag);
         }
 
         // Generate GZIP'd content
