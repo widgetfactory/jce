@@ -111,10 +111,11 @@ class WFPacker extends JObject
      * Pack and output content based on type.
      *
      * @param bool|true  $minify
+     * @param bool|true $cache
      * @param bool|false $gzip
-     *                           Contains some code from libraries/joomla/cache/controller/page.php - Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved
+     * Contains some code from libraries/joomla/cache/controller/page.php - Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved
      */
-    public function pack($minify = true, $gzip = false)
+    public function pack($minify = true, $cache_validation = true, $gzip = false)
     {
         $type = $this->getType();
 
@@ -136,11 +137,6 @@ class WFPacker extends JObject
         header('Cache-Control: max-age=0,no-cache');
 
         $files = $this->getFiles();
-
-        $encoding = self::getEncoding();
-
-        $zlib = function_exists('ini_get') && extension_loaded('zlib') && ini_get('zlib.output_compression');
-        $gzip = $gzip && !empty($encoding) && !$zlib && function_exists('gzencode');
 
         $content = $this->getContentStart();
 
@@ -166,27 +162,36 @@ class WFPacker extends JObject
         // trim content
         $content = trim($content);
 
-        // get content hash
-        $hash = md5(implode(' ', array_map('basename', $files)) . $content);
-        $etag = $this->getEtag($hash);
+        // force browser caching using an E-tag
+        if ($cache_validation) {
+            // get content hash
+            $hash = md5(implode(' ', array_map('basename', $files)) . $content);
+            $etag = $this->getEtag($hash);
 
-        // check for sent etag against hash
-        if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            $_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
+            // check for sent etag against hash
+            if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+                $_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
 
-            if ($_etag && $_etag === $etag) {
-                header('HTTP/1.x 304 Not Modified', true);
-                exit(ob_get_clean());
+                if ($_etag && $_etag === $etag) {
+                    header('HTTP/1.x 304 Not Modified', true);
+                    exit(ob_get_clean());
+                }
             }
-        }
 
-        // set etag header
-        header('ETag: ' . $etag);
+            // set etag header
+            header('ETag: ' . $etag);
+        }
 
         // Generate GZIP'd content
         if ($gzip) {
-            header('Content-Encoding: ' . $encoding);
-            $content = gzencode($content, 4, FORCE_GZIP);
+            $encoding = self::getEncoding();
+            
+            $zlib = function_exists('ini_get') && extension_loaded('zlib') && ini_get('zlib.output_compression');
+
+            if (!empty($encoding) && !$zlib && function_exists('gzencode')) {
+                header('Content-Encoding: ' . $encoding);
+                $content = gzencode($content, 4, FORCE_GZIP);
+            }
         }
 
         // stream to client

@@ -56,11 +56,13 @@ class WFEditor
 
     private function addScript($url)
     {
+        $url = $this->addAssetVersion($url);
         $this->scripts[] = $url;
     }
 
     private function addStyleSheet($url)
     {
+        $url = $this->addAssetVersion($url);
         $this->stylesheets[] = $url;
     }
 
@@ -123,6 +125,19 @@ class WFEditor
         }
 
         return self::$instance;
+    }
+
+    private function addAssetVersion($url)
+    {
+        $version = md5(self::getVersion());
+
+        if (strpos($url, '?') === false) {
+            $url .= '?' . $version;
+        } else {
+            $url .= '&' . $version;
+        }
+
+        return $url;
     }
 
     /**
@@ -1563,10 +1578,14 @@ class WFEditor
                     $files[] = WF_EDITOR . '/tiny_mce/themes/' . $theme . '/editor_template' . $suffix . '.js';
                 }
 
-                $core = array('autolink', 'cleanup', 'core', 'code', 'colorpicker', 'upload', 'format');
+                $core = array();//array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'formatselect', 'styleselect', 'cleanup', 'fontselect', 'fontsizeselect', 'fontcolor', 'clipboard', 'lists', 'advlist', 'textcase', 'charmap', 'hr', 'directionality', 'fullscreen', 'print', 'searchreplace', 'table', 'style', 'xhtmlxtras', 'visualchars', 'visualblocks', 'nonbreaking', 'anchor', 'link', 'imgmanager', 'spellchecker', 'article', 'spellchecker', 'article', 'browser', 'contextmenu', 'inlinepopups', 'media', 'preview', 'source', 'wordcount');
 
                 // Add core plugins
                 foreach ($plugins['core'] as $plugin) {
+                    if (in_array($plugin, $core)) {
+                        continue;
+                    }
+                    
                     $files[] = WF_EDITOR_PLUGINS . '/' . $plugin . '/editor_plugin' . $suffix . '.js';
                 }
 
@@ -1655,8 +1674,10 @@ class WFEditor
                 break;
         }
 
+        $cache_validation = (bool) $this->getParam('editor.compress_cache_validation', true);
+
         $packer->setFiles($files);
-        $packer->pack();
+        $packer->pack(true, $cache_validation);
     }
 
     public function loadlanguages()
