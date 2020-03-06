@@ -37,9 +37,7 @@ class WFEditorPlugin extends JObject
 
         // get name and caller from plugin name
         if (strpos($name, '.') !== false) {
-            $parts = explode('.', $name);
-            $plugin = $parts[0];
-            $caller = $parts[1];
+            list($name, $caller) = explode('.', $name);
             // store caller
             if ($caller !== $name) {
                 $this->set('caller', $caller);
