@@ -406,7 +406,7 @@ class WFLanguageParser extends JObject
             $hash = md5($data);
 
             // set etag header
-            header('ETag: ' . $hash);
+            header('ETag: "' . $hash . '"');
 
             echo $data;
 
