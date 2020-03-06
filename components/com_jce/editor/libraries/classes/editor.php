@@ -174,14 +174,14 @@ class WFEditor
     {
         // get an editor instance
         $wf = WFApplication::getInstance();
-        
+
         // assign skin - new default is "modern"
         $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
-        
+
         if (empty($settings['skin'])) {
             $settings['skin'] = 'modern';
         }
-        
+
         if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
             list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
         }
@@ -207,7 +207,7 @@ class WFEditor
     {
         // get an editor instance
         $wf = WFApplication::getInstance();
-        
+
         // Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
 
@@ -224,7 +224,7 @@ class WFEditor
                 $value = '';
 
                 // legacy string
-                if (is_string($userParam)) {                    
+                if (is_string($userParam)) {
                     list($name, $value) = explode(':', $userParam);
                 }
 
@@ -383,7 +383,7 @@ class WFEditor
 
             // Editor
             $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
-            
+
             // language
             $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&context=' . $this->context . '&' . $token . '=1');
         }
@@ -625,7 +625,7 @@ class WFEditor
                                     $a[] = $s;
                                 }
                             }
-                            
+
                             $item = implode(',', $a);
 
                             // remove leading or trailing |
@@ -1016,9 +1016,9 @@ class WFEditor
         $gantry5 = glob($path . '/custom/css-compiled/' . $name . '_*.css');
         $gantry4 = glob($path . '/css-compiled/master-*.css');
 
-        if (!empty($gantry5)) {  
+        if (!empty($gantry5)) {
             // update url
-            $url =  'templates/' . $template->name . '/custom/css-compiled';
+            $url = 'templates/' . $template->name . '/custom/css-compiled';
 
             $path = dirname($gantry5[0]);
             $file = basename($gantry5[0]);
@@ -1048,16 +1048,16 @@ class WFEditor
 
             // create name of possible custom.css file
             $custom = str_replace($name, 'custom', $file);
-            
+
             // load custom css file if it exists
-            if (is_file($path . '/' . $custom))  {
+            if (is_file($path . '/' . $custom)) {
                 $files[] = $url . '/' . $custom;
             }
         }
 
-        if (!empty($gantry4)) { 
+        if (!empty($gantry4)) {
             // update url
-            $url =  'templates/' . $template->name . '/css-compiled';
+            $url = 'templates/' . $template->name . '/css-compiled';
             // load gantry bootstrap files
             $files[] = $url . '/bootstrap.css';
             // load css files
@@ -1129,7 +1129,7 @@ class WFEditor
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
         $params = new JRegistry($template->params);
-        $preset  = $params->get('preset', '');
+        $preset = $params->get('preset', '');
 
         $data = json_decode($preset);
 
@@ -1163,7 +1163,7 @@ class WFEditor
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
         $params = new JRegistry($template->params);
-        $preset  = $params->get('preset', '');
+        $preset = $params->get('preset', '');
 
         $data = json_decode($preset);
 
@@ -1199,7 +1199,7 @@ class WFEditor
         $files[] = 'templates/' . $template->name . '/wright/css/bootstrap.min.css';
 
         $params = new JRegistry($template->params);
-        $style  = $params->get('style', 'default');
+        $style = $params->get('style', 'default');
 
         // check style-custom.css file
         $file = $path . '/css/style-' . $style . '.css';
@@ -1229,7 +1229,7 @@ class WFEditor
             $files[] = 'templates/' . $template->name . '/css/' . basename($css);
             return true;
         }
- 
+
         $css = JFolder::files($path, '(base|core|template|template_css)\.(css|less)$', false, true);
 
         if (!empty($css)) {
@@ -1344,7 +1344,7 @@ class WFEditor
             case 1:
                 $files = array();
 
-                foreach(array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright', 'Sun') as $name) {
+                foreach (array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright', 'Sun') as $name) {
                     $method = 'get' . $name . 'TemplateFiles';
                     self::$method($files, $template);
                 }
@@ -1541,6 +1541,9 @@ class WFEditor
         // toolbar theme
         $toolbar = explode('.', $wf->getParam('editor.toolbar_theme', 'default'));
 
+        // base skin value
+        $skin = $toolbar[0];
+
         switch ($type) {
             case 'language':
                 $files = array();
@@ -1589,7 +1592,7 @@ class WFEditor
                 if ($layout == 'content') {
                     $files = array();
 
-                    $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $toolbar[0] . '/content.css';
+                    $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $skin . '/content.css';
 
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
@@ -1631,7 +1634,11 @@ class WFEditor
 
                     $files[] = WF_EDITOR_LIBRARIES . '/css/editor.min.css';
 
-                    list($skin, $variant) = $toolbar;
+                    $variant = '';
+
+                    if (count($toolbar) > 1) {
+                        $variant = $toolbar[1];
+                    }
 
                     // load 'default'
                     $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/default/ui.css';
