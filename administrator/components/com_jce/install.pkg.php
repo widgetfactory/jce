@@ -373,6 +373,7 @@ class pkg_jceInstallerScript
         $site = JPATH_SITE . '/components/com_jce';
 
         $folders = array();
+        $files = array();
 
         $folders['2.6.38'] = array(
             // admin
@@ -425,6 +426,18 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/xhtmlxtras/classes',
         );
 
+        // remove flexicontent
+        if (!JComponentHelper::isInstalled('com_flexicontent')) {
+            $files['2.7'] = array(
+                $site . '/editor/extensions/links/flexicontentlinks.php',
+                $site . '/editor/extensions/links/flexicontentlinks.xml',
+            );
+
+            $folders['2.7'] = array(
+                $site . '/editor/extensions/links/flexicontentlinks'
+            );
+        }
+
         // remove inlinepopups
         $folders['2.7.13'] = array(
             $site . '/editor/tiny_mce/plugins/inlinepopups',
@@ -440,47 +453,6 @@ class pkg_jceInstallerScript
         $folders['2.8.6'] = array(
             $admin . '/views/help'
         );
-
-        foreach ($folders as $version => $list) {
-            // version check
-            if (version_compare($version, $current_version, 'gt')) {
-                continue;
-            }
-
-            foreach ($list as $folder) {
-                if (!@is_dir($folder)) {
-                    continue;
-                }
-
-                $files = JFolder::files($folder, '.', false, true, array(), array());
-
-                foreach ($files as $file) {
-                    if (!@unlink($file)) {
-                        try {
-                            JFile::delete($file);
-                        } catch (Exception $e) {}
-                    }
-                }
-
-                $folders = JFolder::folders($folder, '.', false, true, array(), array());
-
-                foreach ($folders as $dir) {
-                    if (!@rmdir($dir)) {
-                        try {
-                            JFolder::delete($dir);
-                        } catch (Exception $e) {}
-                    }
-                }
-
-                if (!@rmdir($folder)) {
-                    try {
-                        JFolder::delete($folder);
-                    } catch (Exception $e) {}
-                }
-            }
-        }
-
-        $files = array();
 
         $files['2.6.38'] = array(
             $admin . '/install.php',
@@ -563,6 +535,45 @@ class pkg_jceInstallerScript
             $admin . '/media/css/help.min.css',
             $admin . '/media/js/help.min.js'
         );
+
+        foreach ($folders as $version => $list) {
+            // version check
+            if (version_compare($version, $current_version, 'gt')) {
+                continue;
+            }
+
+            foreach ($list as $folder) {
+                if (!@is_dir($folder)) {
+                    continue;
+                }
+
+                $files = JFolder::files($folder, '.', false, true, array(), array());
+
+                foreach ($files as $file) {
+                    if (!@unlink($file)) {
+                        try {
+                            JFile::delete($file);
+                        } catch (Exception $e) {}
+                    }
+                }
+
+                $folders = JFolder::folders($folder, '.', false, true, array(), array());
+
+                foreach ($folders as $dir) {
+                    if (!@rmdir($dir)) {
+                        try {
+                            JFolder::delete($dir);
+                        } catch (Exception $e) {}
+                    }
+                }
+
+                if (!@rmdir($folder)) {
+                    try {
+                        JFolder::delete($folder);
+                    } catch (Exception $e) {}
+                }
+            }
+        }
 
         foreach ($files as $version => $list) {
             // version check
