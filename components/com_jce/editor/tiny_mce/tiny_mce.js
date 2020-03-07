@@ -111,7 +111,10 @@
     include('LegacyInput.js');
     include('EnterKey.js');
 
-    /*include('autolink/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    /* Core plugins */
+    include('core/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('help/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('autolink/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
     include('cleanup/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
     include('code/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
     include('format/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
@@ -120,7 +123,8 @@
     include('upload/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
     include('figure/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
     include('ui/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
-    include('noneditable/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');*/
+    include('noneditable/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
+    include('branding/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');
 
     load();
 }());

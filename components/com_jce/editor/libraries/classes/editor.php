@@ -35,24 +35,34 @@ class WFEditor
      * @var array
      */
     private $scripts = array();
+
     /**
      * Array of linked style sheets.
      *
      * @var array
      */
     private $stylesheets = array();
+
     /**
      * Array of included style declarations.
      *
      * @var array
      */
     private $styles = array();
+
     /**
      * Array of scripts placed in the header.
      *
      * @var array
      */
     private $javascript = array();
+
+    /**
+     * Array of core plugins
+     * 
+     * @var array
+     */
+    private static $core = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
     private function addScript($url)
     {
@@ -783,14 +793,6 @@ class WFEditor
                     return in_array($item, array_keys($list));
                 });
 
-                // core plugins
-                $core = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable');
-
-                // load branding plugin
-                if (!WF_EDITOR_PRO) {
-                    $core[] = 'branding';
-                }
-
                 // add advlists plugin if lists are loaded
                 if (in_array('lists', $items)) {
                     $items[] = 'advlist';
@@ -808,7 +810,7 @@ class WFEditor
                 self::addDependencies($items);
 
                 // add core plugins
-                $items = array_merge($core, $items);
+                $items = array_merge(self::$core, $items);
 
                 // remove duplicates and empty values
                 $items = array_unique(array_filter($items));
@@ -843,6 +845,10 @@ class WFEditor
 
                 // remove missing plugins
                 $items = array_filter($items, function ($item) {
+                    if (WF_EDITOR_PRO && $item === 'branding') {
+                        return false;
+                    }
+                    
                     return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
                 });
 
@@ -1578,11 +1584,9 @@ class WFEditor
                     $files[] = WF_EDITOR . '/tiny_mce/themes/' . $theme . '/editor_template' . $suffix . '.js';
                 }
 
-                $core = array();//array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'formatselect', 'styleselect', 'cleanup', 'fontselect', 'fontsizeselect', 'fontcolor', 'clipboard', 'lists', 'advlist', 'textcase', 'charmap', 'hr', 'directionality', 'fullscreen', 'print', 'searchreplace', 'table', 'style', 'xhtmlxtras', 'visualchars', 'visualblocks', 'nonbreaking', 'anchor', 'link', 'imgmanager', 'spellchecker', 'article', 'spellchecker', 'article', 'browser', 'contextmenu', 'inlinepopups', 'media', 'preview', 'source', 'wordcount');
-
                 // Add core plugins
                 foreach ($plugins['core'] as $plugin) {
-                    if (in_array($plugin, $core)) {
+                    if (in_array($plugin, self::$core)) {
                         continue;
                     }
                     
