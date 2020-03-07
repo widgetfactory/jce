@@ -117,7 +117,7 @@ class WFApplication extends JObject
         return 0;
     }
 
-    private function getProfileVars($plugin = '')
+    private function getProfileVars()
     {
         $app = JFactory::getApplication();
         $user = JFactory::getUser();
@@ -161,8 +161,7 @@ class WFApplication extends JObject
             'option' => $option,
             'area' => $area,
             'device' => $device,
-            'groups' => $groups,
-            'plugin' => $plugin,
+            'groups' => $groups
         );
     }
 
@@ -182,10 +181,10 @@ class WFApplication extends JObject
         }
 
         // get the profile variables for the current context
-        $options = $this->getProfileVars($plugin);
+        $options = $this->getProfileVars();
 
         // create a signature to store
-        $signature = serialize($options);
+        $signature = md5(serialize($options));
 
         if (!isset(self::$profile[$signature])) {
             $db = JFactory::getDBO();
@@ -202,12 +201,15 @@ class WFApplication extends JObject
             $db->setQuery($query);
             $profiles = $db->loadObjectList();
 
-            if ($id && !empty($profiles)) {
-                // assign profile
-                self::$profile[$signature] = (object) $profiles[0];
+            // nothing found...
+            if (empty($profiles)) {
+                return null;
+            }
 
+            // select and return a specific profile by id
+            if ($id) {
                 // return
-                return self::$profile[$signature];
+                return (object) $profiles[0];
             }
 
             foreach ($profiles as $item) {
@@ -249,7 +251,8 @@ class WFApplication extends JObject
                     continue;
                 }
 
-                if ($options['plugin'] && in_array($options['plugin'], explode(',', $item->plugins)) === false) {
+                // check against passed in plugin value
+                if ($plugin && in_array($plugin, explode(',', $item->plugins)) === false) {
                     continue;
                 }
 
