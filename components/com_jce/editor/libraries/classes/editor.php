@@ -62,7 +62,7 @@ class WFEditor
      * 
      * @var array
      */
-    private static $core = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
+    private static $plugins = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
     private function addScript($url)
     {
@@ -810,7 +810,7 @@ class WFEditor
                 self::addDependencies($items);
 
                 // add core plugins
-                $items = array_merge(self::$core, $items);
+                $items = array_merge(self::$plugins, $items);
 
                 // remove duplicates and empty values
                 $items = array_unique(array_filter($items));
@@ -1586,7 +1586,7 @@ class WFEditor
 
                 // Add core plugins
                 foreach ($plugins['core'] as $plugin) {
-                    if (in_array($plugin, self::$core)) {
+                    if (in_array($plugin, self::$plugins)) {
                         continue;
                     }
                     
