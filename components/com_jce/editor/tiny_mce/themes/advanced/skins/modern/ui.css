@@ -64,9 +64,15 @@
 .mceModernSkin .mceSplitButton:hover .mceText,
 .mceModernSkin .mceSplitButton:hover .mceOpen,
 .mceModernSkin .mceSplitButton:focus .mceText,
-.mceModernSkin .mceSplitButton:focus .mceOpen {
+.mceModernSkin .mceSplitButton:focus .mceOpen,
+.mceModernSkin .mceSplitButtonActive .mceText,
+.mceModernSkin .mceSplitButtonActive .mceOpen {
     border-color: #ccc;
     background-color: #e6e6e6;
+}
+
+.mceModernSkin .mceSplitButtonActive .mceOpen {
+    border-left: 1px solid #ccc;
 }
 
 .mceModernSkin .mceListBox .mceText {
@@ -95,14 +101,6 @@
 .mceModernSkin .mcePanelButtonActive {
     background-color: #e6e6e6;
     border-color: #ddd;
-}
-
-.mceModernSkin .mceSplitButton .mceText {
-    border-color: transparent;
-}
-
-.mceModernSkin .mceSplitButton .mceOpen {
-    border-color: transparent;
 }
 
 .mceModernSkin .mceButtonDialog::before {
