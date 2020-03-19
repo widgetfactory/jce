@@ -32,7 +32,7 @@ body {
   outline: 3px solid #1e88e5;
   outline: 3px solid var(--mce-control-selection);
 }
-.mceContentBody div.mce-resizehandle {
+.mceContentBody .mce-resizehandle {
   position: absolute;
   box-sizing: border-box;
   background-color: #1e88e5;
@@ -41,7 +41,22 @@ body {
   height: 10px;
   z-index: 10000;
   padding: 0;
+  margin: -1px;
+}
+.mceContentBody .mce-resizehandle-ne {
+  cursor: ne-resize;
   margin: -1px 1px;
+}
+.mceContentBody .mce-resizehandle-se {
+  cursor: se-resize;
+  margin: 1px;
+}
+.mceContentBody .mce-resizehandle-nw {
+  cursor: nw-resize;
+}
+.mceContentBody .mce-resizehandle-sw {
+  cursor: sw-resize;
+  margin: 1px -1px;
 }
 .mceContentBody .mce-clonedresizable {
   position: absolute;
@@ -211,18 +226,6 @@ pre.mcePreformatted {
   background: #1e88e5;
   background: var(--mce-control-selection);
   color: #fff;
-}
-.mce-resizehandle-ne {
-  cursor: ne-resize;
-}
-.mce-resizehandlese {
-  cursor: se-resize;
-}
-.mce-resizehandle-nw {
-  cursor: nw-resize;
-}
-.mce-resizehandle-sw {
-  cursor: sw-resize;
 }
 figure {
   display: table;
