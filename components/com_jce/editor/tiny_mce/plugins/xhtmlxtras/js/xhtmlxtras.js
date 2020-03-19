@@ -45,12 +45,9 @@
 
 			Wf.init();
 
-			if (n) {
+			if (n && n !== ed.getBody()) {
 				var attribs = this.getAttributes(n);
 
-				var text = n.textContent || n.innerText || '';
-
-				//if (!se.isCollapsed() || text == se.getContent({format: 'text'})) {
 				if (!$.isEmptyObject(attribs)) {
 					$(':input').each(function () {
 						var k = $(this).attr('id');
