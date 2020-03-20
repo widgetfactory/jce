@@ -2,68 +2,70 @@
 @import url('../default/ui.admin.css?@@etag@@');
 
 .mceModernSkin .mceToolbarItem .mceSplitButton .mceIcon {
-    width: 30px;
-    line-height: 2;
-    vertical-align: middle;
-    height: 2em;
-    margin: 0;
+  width: 30px;
+  max-width: 30px;
+  line-height: 2;
+  vertical-align: middle;
+  height: 2em;
+  margin: 0;
 }
 
 .mceModernSkin .mceToolbarItem .mceButton:not(.mceListBox),
 .mceModernSkin .mceToolbarItem .mceSplitButton:after {
-    border-color: transparent;
+  border-color: transparent;
 }
 
 .mceModernSkin .mceToolbarItem .mceButton:hover,
 .mceModernSkin .mceToolbarItem.ui-sortable-helper .mceButton {
-    border-color: #ddd;
-    background-color: #eee;
+  border-color: #ddd;
+  background-color: #eee;
 }
 
 .mceModernSkin .mceToolbarItem.ui-sortable-helper .mceSplitButton:after,
 .mceModernSkin .mceToolbarItem .mceSplitButton:hover:after {
-    border-left-color: #ddd;
-    background-color: #eee;
+  border-left-color: #ddd;
+  background-color: #eee;
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_forecolor,
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_backcolor {
-    line-height: 1.5;
+  line-height: 1.5;
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_forecolor:after,
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_backcolor:after {
-    content: "";
-    width: 16px;
-    height: 4px;
-    outline: 1px solid #eee;
-    display: block;
-    margin: -3px auto;
+  content: "";
+  width: 16px;
+  height: 4px;
+  outline: 1px solid #eee;
+  display: block;
+  margin: -3px auto;
 }
 
 .mceModernSkin span.mce_forecolor:after {
-    background-color: black;
+  background-color: black;
 }
 
 .mceModernSkin span.mce_backcolor:after {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase {
-    line-height: 1.75;
+  line-height: 1.75;
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase:before {
-    left: 0.25em;
+  left: 0.25em;
 }
 
 .mceModernSkin .mceToolbarItem .mceSplitButton span.mce_textcase:after {
-    right: 0.25em;
+  right: 0.25em;
 }
 
-.mceModernSkinTouch .mceToolbarItem .mceListBox, .mceModernSkinTouch .mceToolbarItem .mceSplitButton {
-	border-color: #dcdcdc;
-	height: 36px;
+.mceModernSkinTouch .mceToolbarItem .mceListBox,
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton {
+  border-color: #dcdcdc;
+  height: 36px;
 }
 
 .mceModernSkinTouch .mceLayout .mceToolbar .mceToolbarRow {
@@ -83,13 +85,13 @@
 }
 
 .mceModernSkinTouch .mceToolbarItem .mceSplitButton {
-    width: 55px;
-    padding: 0;
-    height: 36px;
+  width: 55px;
+  padding: 0;
+  height: 36px;
 }
 
 .mceModernSkinTouch .mceToolbarItem .mceListBox .mceIcon {
-	width: 92px;
+  width: 92px;
 }
 
 .mceModernSkinTouch .mceToolbarItem .mceListBox .mceIcon:before {
@@ -97,33 +99,37 @@
   line-height: 34px;
 }
 
-.mceModernSkinTouch .mceToolbarItem .mceListBox:after, .mceModernSkinTouch .mceToolbarItem .mceSplitButton:after {
+.mceModernSkinTouch .mceToolbarItem .mceListBox:after,
+.mceModernSkinTouch .mceToolbarItem .mceSplitButton:after {
   line-height: 34px;
   width: 20px;
-	border-color: #dcdcdc;
+  border-color: #dcdcdc;
 }
 
 .mceModernSkinTouch .mceLayout .mceStatusbar {
-	border-color: #dcdcdc;
+  border-color: #dcdcdc;
 }
 
 .mceModernSkinTouch .mceLayout .mceIframeContainer {
-	border-color: #dcdcdc;
+  border-color: #dcdcdc;
 }
+
 .mceModernSkinTouch .mceLayout .mceToolbarRow {
-    background-color: #fafafa;
-    border-color: #dcdcdc;
+  background-color: #fafafa;
+  border-color: #dcdcdc;
 }
 
 .mceModernSkinTouch .mceToolbar .sortableRowHandle {
   height: 42px;
 }
+
 .mceModernSkinTouch .mceToolbar .sortableRowHandle .uk-icon {
   margin: 12px 0 0;
 }
+
 .mceModernSkinTouch .mceToolbarItem .mceSeparator {
-    height: 34px;
-    background: #dcdcdc;
+  height: 34px;
+  background: #dcdcdc;
 }
 
 .mceModernSkinTouch .sortableList .mceToolbarRow.sortableListItem.ui-sortable-highlight {
@@ -133,15 +139,20 @@
 .mceModernSkinTouch .sortableList .mceToolbarItem.sortableRowItem.ui-sortable-highlight {
   height: 36px;
 }
-.mceModernSkinTouch .mceLayout, .mceModernSkinTouch .mceLayout .mceToolbar {
-    border: 0 none !important;
-    background: #fff;
+
+.mceModernSkinTouch .mceLayout,
+.mceModernSkinTouch .mceLayout .mceToolbar {
+  border: 0 none !important;
+  background: #fff;
 }
-.mceModernSkinTouch .mceLayout .mceFirst, .mceModernSkinTouch .mceLayout .mceLast {
-    background-color: #fff !important;
+
+.mceModernSkinTouch .mceLayout .mceFirst,
+.mceModernSkinTouch .mceLayout .mceLast {
+  background-color: #fff !important;
 }
+
 .mceModernSkinTouch .mceLayout .mceStatusbar {
-    background-color: #fafafa !important;
+  background-color: #fafafa !important;
 }
 
 .mceModernSkinTouch .mceToolbarItem .mceListBox::before {
