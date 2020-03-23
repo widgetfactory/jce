@@ -81,7 +81,7 @@ body {
   z-index: 10001;
 }
 .mceContentBody img::selection {
-  background: #fff;
+  background-color: #b4d4ff;
 }
 body.mceContentReset {
   background: #fff none !important;
