@@ -257,6 +257,7 @@
                 return;
             }
 
+            // guidelines
             for (var i = 0; i < gray.length; i++) {
                 if (isReadable(gray[i], bodybg, 4.5, 5.0)) {
 
@@ -270,6 +271,7 @@
                 }
             }
 
+            // control element selection
             for (var i = 0; i < blue.length; i++) {
                 if (isReadable(blue[i], bodybg, 4.5, 5.0)) {
                     control = blue[i];
