@@ -445,6 +445,9 @@
     padding: 0;
     cursor: pointer;
     margin: 1px 0;
+    /* override values in some template stylesheets */
+    min-height: inherit;
+    float: inherit;
 }
 
 .mceMenu .mceMenuItems .mceText {
