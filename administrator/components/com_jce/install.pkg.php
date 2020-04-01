@@ -547,9 +547,9 @@ class pkg_jceInstallerScript
                     continue;
                 }
 
-                $files = JFolder::files($folder, '.', false, true, array(), array());
+                $items = JFolder::files($folder, '.', false, true, array(), array());
 
-                foreach ($files as $file) {
+                foreach ($items as $file) {
                     if (!@unlink($file)) {
                         try {
                             JFile::delete($file);
@@ -557,9 +557,9 @@ class pkg_jceInstallerScript
                     }
                 }
 
-                $folders = JFolder::folders($folder, '.', false, true, array(), array());
+                $items = JFolder::folders($folder, '.', false, true, array(), array());
 
-                foreach ($folders as $dir) {
+                foreach ($items as $dir) {
                     if (!@rmdir($dir)) {
                         try {
                             JFolder::delete($dir);
