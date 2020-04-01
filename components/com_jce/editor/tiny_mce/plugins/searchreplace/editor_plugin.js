@@ -70,9 +70,9 @@
 
             txt = '';
 
-            if (isContentEditableFalse(node)) {
+            /*if (isContentEditableFalse(node)) {
                 return '\n';
-            }
+            }*/
 
             if (blockElementsMap[node.nodeName] || shortEndedElementsMap[node.nodeName]) {
                 txt += '\n';
@@ -96,7 +96,8 @@
                 matchIndex = 0;
 
             out: while (true) {
-                if (blockElementsMap[curNode.nodeName] || shortEndedElementsMap[curNode.nodeName] || isContentEditableFalse(curNode)) {
+                //if (blockElementsMap[curNode.nodeName] || shortEndedElementsMap[curNode.nodeName] || isContentEditableFalse(curNode)) {
+                if (blockElementsMap[curNode.nodeName] || shortEndedElementsMap[curNode.nodeName]) {
                     atIndex++;
                 }
 
@@ -144,11 +145,11 @@
                         break; // no more matches
                     }
                 } else if ((!hiddenTextElementsMap[curNode.nodeName] || blockElementsMap[curNode.nodeName]) && curNode.firstChild) {
-                    if (!isContentEditableFalse(curNode)) {
+                    //if (!isContentEditableFalse(curNode)) {
                         // Move down
                         curNode = curNode.firstChild;
                         continue;
-                    }
+                    //}
                 } else if (curNode.nextSibling) {
                     // Move forward:
                     curNode = curNode.nextSibling;
@@ -253,6 +254,7 @@
         }
 
         text = getText(node);
+        
         if (!text) {
             return;
         }
@@ -653,6 +655,18 @@
 
                 node = editor.getBody();
                 nodes = tinymce.grep(tinymce.toArray(node.getElementsByTagName('span')), isMatchSpan);
+
+                // filter nodes so that only those that are contenteditable or within a contenteditable parent can be replaced
+                nodes = tinymce.grep(nodes, function(node) {
+                    var parent = editor.dom.getParent(node, '[contenteditable]');
+
+                    if (parent && parent.contentEditable === 'false') {
+                        return false;
+                    }
+
+                    return node.contentEditable !== 'false';
+                });
+
                 for (i = 0; i < nodes.length; i++) {
                     var nodeIndex = getElmIndex(nodes[i]);
 
