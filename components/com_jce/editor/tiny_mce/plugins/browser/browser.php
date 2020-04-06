@@ -113,6 +113,7 @@ class WFBrowserPlugin extends WFMediaManager
                 }
 
                 $settings = array(
+                    'site_url' => JURI::base(true) . '/',
                     'document_base_url' => JURI::root(),
                     'language' => WFLanguage::getCode(),
                     'element' => $element,
