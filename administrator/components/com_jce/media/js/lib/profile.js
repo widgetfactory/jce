@@ -18,7 +18,10 @@
 
         form.task.value = task;
 
-        if (task != 'profile.cancel') {
+        // disable form inputs for cancel submit
+        if (task == 'profile.cancel') {
+            $('.tab-pane :input[name]').prop('disabled', true);
+        } else {
             // validate form	
             if (!document.formvalidator.isValid(form)) {
                 return;

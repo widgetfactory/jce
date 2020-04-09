@@ -13,4 +13,24 @@ defined('JPATH_PLATFORM') or die;
 
 class JceControllerProfile extends JControllerForm
 {
+    /**
+	 * The URL option for the component.
+	 *
+	 * @var    string
+	 */
+	protected $option = 'com_jce';
+    
+    /**
+	 * The URL view item variable.
+	 *
+	 * @var    string
+	 */
+    protected $view_item = 'profile';
+
+    /**
+	 * The URL view list variable.
+	 *
+	 * @var    string
+	 */
+    protected $view_list = 'profiles';
 }

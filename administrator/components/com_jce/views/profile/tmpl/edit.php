@@ -25,7 +25,7 @@ JText::script('MESSAGE');
 ?>
 <div class="ui-jce loading">
 	<div class="donut"></div>
-	<form action="<?php echo JRoute::_('index.php?option=com_jce&view=profile&layout=edit&id=' . (int) $this->item->id); ?>" id="adminForm" method="post" name="adminForm" class="form-validate">
+	<form action="<?php echo JRoute::_('index.php?option=com_jce'); ?>" id="adminForm" method="post" name="adminForm" class="form-validate">
 		
 	<?php if (!empty( $this->sidebar)) : ?>
 		<div id="j-sidebar-container" class="span2">
@@ -55,6 +55,7 @@ JText::script('MESSAGE');
 					<!-- End Content -->
 			</div>
 			<input type="hidden" name="task" value="" />
+			<input type="hidden" name="id" value="<?php echo $this->item->id;?>" />
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
 	</form>
