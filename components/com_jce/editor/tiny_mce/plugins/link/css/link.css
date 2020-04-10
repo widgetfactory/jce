@@ -89,3 +89,11 @@
 .uk-tree-row .uk-tree-text {
     width: calc(100% - 38px);
 }
+
+.uk-button-link:hover {
+    text-decoration: none;
+}
+
+.uk-icon {
+    pointer-events: none;
+}

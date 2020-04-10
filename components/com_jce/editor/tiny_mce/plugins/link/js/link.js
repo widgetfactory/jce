@@ -71,8 +71,25 @@
             $('#link-browser').tree({
                 collapseTree: true,
                 charLength: 50
-            }).on('tree:nodeclick', function (e, node) {
+            }).on('tree:nodeclick', function (e, evt, node) {
                 var v;
+
+                if ($(evt.target).is('button.link-preview')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    var url = $(node).attr('data-id') || $(node).attr('id');
+                    var title = $(node).attr('aria-label');
+
+                    if (url.indexOf('index.php') !== -1) {
+                        url += '&tmpl=component';
+                        url = ed.documentBaseURI.toAbsolute(url, true);
+                    }
+
+                    Wf.Modal.iframe(title, url, {width: '100%', height: 480});
+
+                    return;
+                }
 
                 if ($(node).hasClass('folder')) {
                     $(this).trigger('tree:togglenode', [e, node]);
@@ -123,20 +140,6 @@
                     $(self).trigger('tree:toggleloader', node);
                 }, self);
             }).trigger('tree:init');
-
-            $('#link-browser').on('click', 'button.link-preview', function (e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                var url = $(this).parent().data('id');
-                var title = $(this).parent().attr('aria-label');
-
-                if (url.indexOf('index.php') !== -1) {
-                    url += '&tmpl=component';
-                    url = ed.documentBaseURI.toAbsolute(url, true);
-                }
-
-                Wf.Modal.iframe(title, url, {width: '100%', height: 480});
-            });
 
             /* Search */
             $('#search-button').on('click', function (e) {
