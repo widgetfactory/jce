@@ -183,7 +183,7 @@
             ed.onKeyUp.addToTop(function (ed, e) {
                 if (e.keyCode === VK.ENTER) {
                     var n = ed.selection.getNode();
-                    if (n.nodeName === 'DIV' && ed.settings.force_p_newlines) {
+                    if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
                         // remove all attributes
                         if (ed.settings.keep_styles === false) {
                             ed.dom.removeAllAttribs(n);
@@ -322,7 +322,7 @@
                 var tag = ed.getParam('forced_root_block', 'p');
 
                 if (!tag) {
-                    tag = ed.getParam('force_p_newlines') ? 'p' : 'br';
+                    tag = ed.getParam('force_block_newlines') ? 'p' : 'br';
                 }
 
                 // prevent default action

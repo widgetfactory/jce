@@ -16,16 +16,20 @@ class WFFormatPluginConfig
 
         $settings['inline_styles'] = $wf->getParam('editor.inline_styles', 1, 1);
 
-        // Paragraph handling
+        // Root block handling
         $forced_root_block = $wf->getParam('editor.forced_root_block', 'p');
 
         // set as boolean if disabled
         if (is_numeric($forced_root_block)) {
             $settings['forced_root_block'] = (bool) intval($forced_root_block);
 
+            if ($settings['forced_root_block'] === false) {
+                $settings['force_block_newlines'] = false;
+            }
+
+            // legacy value
             if ($wf->getParam('editor.force_br_newlines', 0, 0, 'boolean') === false) {
-                // legacy
-                $settings['force_p_newlines'] = $wf->getParam('editor.force_p_newlines', 1, 0, 'boolean');
+                $settings['force_block_newlines'] = $wf->getParam('editor.force_p_newlines', 1, 0, 'boolean');
             }
         } else {
             if (strpos($forced_root_block, '|') !== false) {
@@ -33,7 +37,12 @@ class WFFormatPluginConfig
                 foreach (explode('|', $forced_root_block) as $option) {
                     list($key, $value) = explode(':', $option);
 
-                    $settings[$key] = (bool) $value;
+                    // update legacy key
+                    if ($key === 'force_p_newlines') {
+                        $key = 'force_block_newlines';
+                    }
+
+                    $settings[$key] = is_numeric($value) ? (bool) $value : $value;
                 }
             } else {
                 $settings['forced_root_block'] = $forced_root_block;
