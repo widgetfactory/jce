@@ -84,7 +84,7 @@
                 if ($(n).hasClass('uk-tree-toggle')) {
                     self.toggleNode(e, p);
                 } else {
-                    self._trigger('nodeclick', p);
+                    self._trigger('nodeclick', [e, p]);
                 }
 
                 // remove all active classes from other tree nodes
@@ -293,7 +293,7 @@
                     if (!self._isNode(node.id, parent)) {
                         // title and link html
                         var title = node.name || node.id;
-                        
+
                         // decode name value from title
                         name = Wf.String.decode(title);
 

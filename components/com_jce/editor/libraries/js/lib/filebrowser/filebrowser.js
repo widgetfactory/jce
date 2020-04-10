@@ -985,7 +985,7 @@
                     self._getList(src);
                 });
 
-            }).on('tree:nodeclick', function (e, node) {
+            }).on('tree:nodeclick', function (e, evt, node) {
                 self._changeDir($(node).attr('data-id'));
             }).on('tree:nodeload', function (e, node) {
                 self._refreshTree(node);
