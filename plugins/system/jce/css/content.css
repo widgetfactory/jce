@@ -1,134 +1,105 @@
 .wf-columns {
-    display: flex;
+  display: flex;
 }
-
 .wf-columns .wf-column {
-    max-width: 100%;
-    margin-left: 0.5em;
-    box-sizing: border-box;
+  max-width: 100%;
+  margin-left: 0.5rem;
+  box-sizing: border-box;
 }
-
 .wf-columns .wf-column {
-    flex: 1;
+  flex: 1;
 }
-
 .wf-columns .wf-column:first-child {
-    margin-left: inherit;
+  margin-left: inherit;
 }
-
 .wf-columns .wf-column:last-child {
-    margin-right: inherit;
+  margin-right: inherit;
 }
-
 .wf-columns-stack-small,
 .wf-columns-stack-medium,
 .wf-columns-stack-large {
-    flex-wrap: wrap;
+  flex-wrap: wrap;
 }
-
 .wf-columns-align-left {
-    justify-content: flex-start;
+  justify-content: flex-start;
 }
-
 .wf-columns-align-center {
-    justify-content: center;
+  justify-content: center;
 }
-
 .wf-columns-align-right {
-    justify-content: flex-end;
+  justify-content: flex-end;
 }
-
-.wf-columns-layout-2-1>.wf-column:first-child {
-    width: calc(100% * 2 / 3.001);
-    flex: none;
+.wf-columns-layout-2-1 > .wf-column:first-child {
+  width: calc(100% * 2 / 3.001);
+  flex: none;
 }
-
-.wf-columns-layout-1-2>.wf-column:last-child {
-    width: calc(100% * 2 / 3.001);
-    flex: none;
+.wf-columns-layout-1-2 > .wf-column:last-child {
+  width: calc(100% * 2 / 3.001);
+  flex: none;
 }
-
-.wf-columns-layout-1-1-2>.wf-column:last-child {
-    width: 50%;
-    flex: none;
+.wf-columns-layout-1-1-2 > .wf-column:last-child {
+  width: 50%;
+  flex: none;
 }
-
-.wf-columns-layout-1-2-1>.wf-column:nth-child(2) {
-    width: 50%;
-    flex: none;
+.wf-columns-layout-1-2-1 > .wf-column:nth-child(2) {
+  width: 50%;
+  flex: none;
 }
-
-.wf-columns-layout-2-1-1>.wf-column:first-child {
-    width: 50%;
-    flex: none;
+.wf-columns-layout-2-1-1 > .wf-column:first-child {
+  width: 50%;
+  flex: none;
 }
-
-.wf-columns-layout-1-3>.wf-column:last-child {
-    width: 75%;
-    flex: none;
+.wf-columns-layout-1-3 > .wf-column:last-child {
+  width: 75%;
+  flex: none;
 }
-
-.wf-columns-layout-3-1>.wf-column:first-child {
-    width: 75%;
-    flex: none;
+.wf-columns-layout-3-1 > .wf-column:first-child {
+  width: 75%;
+  flex: none;
 }
-
-.wf-columns-gap-small>.wf-column {
-    margin-left: 0.25em;
+.wf-columns-gap-small > .wf-column {
+  margin-left: 0.25rem;
 }
-
-.wf-columns-gap-medium>.wf-column {
-    margin-left: 0.5em;
+.wf-columns-gap-medium > .wf-column {
+  margin-left: 0.5rem;
 }
-
-.wf-columns-gap-large>.wf-column {
-    margin-left: 1em;
+.wf-columns-gap-large > .wf-column {
+  margin-left: 1rem;
 }
-
-.wf-columns-gap-small>.wf-column:first-child,
-.wf-columns-gap-medium>.wf-column:first-child,
-.wf-columns-gap-large>.wf-column:first-child {
-    margin-left: inherit;
+[class*='wf-columns-gap-'] > .wf-column:first-child {
+  margin-left: inherit;
 }
-
-.wf-columns-gap-none>.wf-column {
-    margin-left: inherit;
+.wf-columns-gap-none > .wf-column {
+  margin-left: inherit;
 }
-
 @media (max-width: 640px) {
-    .wf-columns-stack-small>.wf-column {
-        width: 100%;
-        margin-left: inherit;
-        margin-right: inherit;
-
-        flex: auto !important;
-    }
+  .wf-columns-stack-small > .wf-column {
+    width: 100%;
+    margin-left: inherit;
+    margin-right: inherit;
+    flex: auto !important;
+  }
 }
-
 @media (max-width: 960px) {
-    .wf-columns-stack-medium>.wf-column {
-        width: 100%;
-        margin-left: inherit;
-        margin-right: inherit;
-
-        flex: auto !important;
-    }
+  .wf-columns-stack-medium > .wf-column {
+    width: 100%;
+    margin-left: inherit;
+    margin-right: inherit;
+    flex: auto !important;
+  }
 }
-
 @media (max-width: 1200px) {
-    .wf-columns-stack-large>.wf-column {
-        width: 100%;
-        margin-left: inherit;
-        margin-right: inherit;
-
-        flex: auto !important;
-    }
+  .wf-columns-stack-large > .wf-column {
+    width: 100%;
+    margin-left: inherit;
+    margin-right: inherit;
+    flex: auto !important;
+  }
 }
-
 @media (max-width: 1600px) {
-    .wf-columns-stack-xlarge>.wf-column {
-        width: 100%;
-        margin-left: inherit;
-        margin-right: inherit;
-    }
+  .wf-columns-stack-xlarge > .wf-column {
+    width: 100%;
+    margin-left: inherit;
+    margin-right: inherit;
+  }
 }
