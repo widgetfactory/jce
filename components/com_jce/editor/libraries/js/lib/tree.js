@@ -293,9 +293,9 @@
                     if (!self._isNode(node.id, parent)) {
                         // title and link html
                         var title = node.name || node.id;
-                        // decode
-                        title = Wf.String.decode(title);
-                        name = title;
+                        
+                        // decode name value from title
+                        name = Wf.String.decode(title);
 
                         var url = node.url || '#';
 
