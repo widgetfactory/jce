@@ -297,6 +297,9 @@
                         // decode name value from title
                         name = Wf.String.decode(title);
 
+                        // encode title
+                        title = Wf.String.encode(title);
+
                         var url = node.url || '#';
 
                         if (!node['class']) {
@@ -322,7 +325,7 @@
 
                         html += '</span>';
 
-                        html += '<span class="uk-tree-text uk-margin-small-left uk-text-truncate" title="' + name + '">' + name + '</span>';
+                        html += '<span class="uk-tree-text uk-margin-small-left uk-text-truncate" title="' + title + '">' + name + '</span>';
                         html += '</a></div>';
                         html += '</li>';
 
