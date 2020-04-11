@@ -49,6 +49,7 @@
             <menu view="cpanel" link="option=com_jce">COM_JCE_MENU_CPANEL</menu>
             <menu view="config" link="option=com_jce&amp;view=config">COM_JCE_MENU_CONFIG</menu>
             <menu view="profiles" link="option=com_jce&amp;view=profiles">COM_JCE_MENU_PROFILES</menu>
+            <menu view="profiles" link="option=com_jce&amp;view=browser">COM_JCE_MENU_FILEBROWSER</menu>
         </submenu>
 
         <files folder="administrator/components/com_jce">
