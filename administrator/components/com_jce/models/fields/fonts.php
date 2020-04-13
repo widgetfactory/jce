@@ -78,16 +78,47 @@ class JFormFieldFonts extends JFormFieldCheckboxes
         // map associative array to array of key value pairs
         foreach ($this->value as $key => $value) {
             if (is_numeric($key) && is_array($value)) {
-                $fonts = array_merge($fonts, $value);
-            } else {                
+                $fonts[] = $value;
+            } else {
                 $fonts[] = array($key => $value);
             }
         }
+        // array of font names to exclude from default list
+        $exclude = array();
+        // array of custom font key/value pairs
+        $custom = array();
 
-        // assign emtpy (unchecked) options for unused fonts
-        foreach(self::$fonts as $text => $value) {
+        foreach ($fonts as $font) {
+            list($text) = array_keys($font);
+            list($value) = array_values($font);
+
+            // add to $exclude array
+            $exclude[] = $text;
             
-            if (array_key_exists($text, $fonts)) {
+            $value = htmlspecialchars_decode($value, ENT_QUOTES);
+
+            $isCustom = !in_array($value, array_values(self::$fonts));
+
+            $item = array(
+                'value' => $value,
+                'text' => JText::alt($text, $fieldname),
+                'checked' => true,
+                'custom' => $isCustom,
+            );
+
+            $item = (object) $item;
+
+            if ($isCustom) {
+                $custom[] = $item;
+            } else {
+                $options[] = $item;
+            }
+        }
+
+        // assign empty (unchecked) options for unused fonts
+        foreach (self::$fonts as $text => $value) {
+
+            if (in_array($text, $exclude)) {
                 continue;
             }
 
@@ -101,45 +132,6 @@ class JFormFieldFonts extends JFormFieldCheckboxes
             $options[] = (object) $tmp;
         }
 
-        foreach ($fonts as $text => $value) {
-            $value = htmlspecialchars_decode($value, ENT_QUOTES);
-
-            $tmp = array(
-                'value' => $value,
-                'text' => JText::alt($text, $fieldname),
-                'checked' => true,
-                'custom' => !in_array($value, array_values(self::$fonts)),
-            );
-
-            $options[] = (object) $tmp;
-        }
-
-        return $options;
-    }
-
-    /**
-     * Method to determine if an array is an associative array.
-     *
-     * @param    array        An array to test
-     *
-     * @return bool True if the array is an associative array
-     *
-     * @link    https://www.php.net/manual/en/function.is-array.php#84488
-     */
-    private static function is_associative_array($array)
-    {
-        if (!is_array($array)) {
-            return false;
-        }
-
-        $i = count($array);
-
-        while ($i > 0) {
-            if (!array_key_exists(--$i, $array)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_merge($options, $custom);
     }
 }
