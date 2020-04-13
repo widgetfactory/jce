@@ -50,8 +50,8 @@ $canEditPref = $user->authorise('core.admin', 'com_jce');
                 </dd>
             <?php endif;?>
         </dl>
-        <?php if (!WF_EDITOR_PRO):
-            echo $this->loadTemplate('pro');
+        <?php if (WF_EDITOR_PRO):
+            echo JLayoutHelper::render('message.pro', $this);
         endif;?>
     </div>
 </div>
