@@ -178,10 +178,12 @@ class WFFileSystem extends WFExtension
             if (!empty($root)) {
                 // Convert slashes / Strip double slashes
                 $root = preg_replace('/[\\\\]+/', '/', $root);
+
                 // Remove first leading slash
                 $root = ltrim($root, '/');
-                // Force default directory if base param starts with a variable or a . eg $id
-                if (preg_match('/[\.\$]/', $root[0])) {
+                
+                // Force default directory if base param is now empty or starts with a variable or a . eg $id
+                if (empty($root) || preg_match('/[\.\$]/', $root[0])) {
                     $root = 'images';
                 }
 
