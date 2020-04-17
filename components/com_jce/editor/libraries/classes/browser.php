@@ -175,9 +175,11 @@ class WFFileBrowser extends JObject
 
     public function getFileSystem()
     {
-        static $filesystem;
+        static $filesystem = array();
 
-        if (!is_object($filesystem)) {
+        $fs = $this->get('filesystem', 'joomla');
+
+        if (!isset($filesystem[$fs])) {
             $wf = WFEditorPlugin::getInstance();
 
             $config = array(
@@ -187,10 +189,10 @@ class WFFileBrowser extends JObject
                 'filetypes' => $this->listFileTypes(),
             );
 
-            $filesystem = WFFileSystem::getInstance($this->get('filesystem'), $config);
+            $filesystem[$fs] = WFFileSystem::getInstance($fs, $config);
         }
 
-        return $filesystem;
+        return $filesystem[$fs];
     }
 
     private function getViewable()

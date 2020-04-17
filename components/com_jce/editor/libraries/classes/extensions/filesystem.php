@@ -42,9 +42,9 @@ class WFFileSystem extends WFExtension
      */
     public static function getInstance($type = 'joomla', $config = array())
     {
-        static $instance;
+        static $instance = array();
 
-        if (!is_object($instance)) {
+        if (!isset($instance[$type])) {
             $fs = parent::loadExtensions('filesystem', $type);
 
             // load the default...
@@ -60,13 +60,13 @@ class WFFileSystem extends WFExtension
             $classname = 'WF' . ucfirst($fs->name) . 'FileSystem';
 
             if (class_exists($classname)) {
-                $instance = new $classname($config);
+                $instance[$type] = new $classname($config);
             } else {
-                $instance = new self($config);
+                $instance[$type] = new self($config);
             }
         }
 
-        return $instance;
+        return $instance[$type];
     }
 
     public function updateOptions(&$options)
