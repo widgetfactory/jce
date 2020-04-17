@@ -86,7 +86,7 @@ class pkg_jceInstallerScript
             $message .= JLayoutHelper::render('message.pro');
         } else {
             // show core to pro upgrade message
-            if ($parent->isUpgrade) {
+            if ($parent->isUpgrade()) {
                 $variant = (string) $parent->get('current_variant', 'core');
     
                 if ($variant === "core") {
@@ -172,7 +172,7 @@ class pkg_jceInstallerScript
             }
         }
 
-        return array('version' => $version, 'variant' => $variant);
+        return array($version, $variant);
     }
 
     public function preflight($route, $installer)
