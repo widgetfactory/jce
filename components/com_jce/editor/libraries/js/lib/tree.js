@@ -513,7 +513,7 @@
                 var padding = parseInt($(node).css('padding-left')) + parseInt($(this.element).css('padding-left'));
 
                 var left = $(node).get(0).offsetLeft - padding;
-                var top = $(node).get(0).offsetTop - ($(node).outerHeight() + 2);
+                var top = $(node).get(0).offsetTop - ($('.uk-tree-row', node).outerHeight() + 2);
 
                 // remove active states
                 $(el).find('.uk-tree-active').removeClass('uk-tree-active');
