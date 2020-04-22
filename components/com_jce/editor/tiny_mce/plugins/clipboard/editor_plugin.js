@@ -2475,10 +2475,12 @@
                         "text/html": html
                     });
 
-                    // Unblock events ones we got the contents
+                    // Unblock events once we got the contents
                     dom.unbind(ed.getDoc(), 'mousedown', block);
                     dom.unbind(ed.getDoc(), 'keydown', block);
                 }, 0);
+
+                e.preventDefault();
             }
 
             ed.onKeyDown.add(function (ed, e) {
@@ -2550,6 +2552,29 @@
                 return false;
             }
 
+            function pasteImageData(e) {
+                var dataTransfer = e.clipboardData || e.dataTransfer;
+    
+                function processItems(items) {
+                    var i, item, hadImage = false;
+    
+                    if (items) {
+                        for (i = 0; i < items.length; i++) {
+                            item = items[i];
+    
+                            if (/^image\/(jpeg|png|gif|bmp)$/.test(item.type)) { 
+                                e.preventDefault();
+                                hadImage = true;
+                            }
+                        }
+                    }
+    
+                    return hadImage;
+                }
+    
+                return processItems(dataTransfer.items) || processItems(dataTransfer.files);
+            }
+
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
@@ -2557,6 +2582,14 @@
                 ed.onGetClipboardContent.dispatch(ed, clipboardContent);
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
+
+                if (pasteImageData(e)) {
+                    removePasteBin();
+
+                    pasteHtml('<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-mce-upload-marker="1" />', true);
+
+                    return;
+                }
 
                 // use plain text
                 if (!internal && isPlainTextPaste(clipboardContent)) {
