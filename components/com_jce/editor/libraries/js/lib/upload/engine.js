@@ -374,9 +374,16 @@
         }, options);
 
         this.files = [];
+        var accept = [];
+
+        if (this.options.filetypes.length > 1) {
+            accept = $.map(this.options.filetypes.split(','), function(val) {
+                return '.' + val;
+            });
+        }
 
         // create element
-        this.input = $('<input type="file" />');
+        this.input = $('<input type="file" accept="' + accept.join(',') + '" />');
 
         // style and mark with a class
         $(this.input).addClass('wf-uploader-element');
