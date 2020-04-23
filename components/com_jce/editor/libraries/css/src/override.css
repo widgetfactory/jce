@@ -172,7 +172,7 @@ html {
 
 .uk-modal-preview .uk-modal-body .media-preview,
 .uk-modal-preview .uk-modal-body .iframe-preview {
-    padding-bottom: calc(56.25% - 83px);
+    padding-bottom: 56.25%;
     width: 100%;
     height: 0;
     position: relative;
