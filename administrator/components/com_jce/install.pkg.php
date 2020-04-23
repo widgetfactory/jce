@@ -475,6 +475,11 @@ class pkg_jceInstallerScript
             $admin . '/views/help'
         );
 
+        // remove mediaplayer
+        $folders['2.8.11'] = array(
+            $site . '/editor/libraries/mediaplayer'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',

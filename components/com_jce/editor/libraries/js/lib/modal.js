@@ -657,7 +657,7 @@
                             });
 
                         // video types
-                        if (/^(mp4|m4v|og(g|v)|webm)$/i.test(ext)) {
+                        if (/^(mp4|m4v|og(g|v)|webm|flv|f4v)$/i.test(ext)) {
                             type = 'video';
                             props = {
                                 type: mt
@@ -672,63 +672,16 @@
                             };
                         }
 
-                        // flv
-                        if (/^(flv|f4v)$/i.test(ext)) {
-                            type = 'flv';
-                            props = {};
-                        }
-
-                        var swf = Wf.getURI(true) + 'components/com_jce/editor/libraries/mediaplayer/mediaplayer.swf';
-
                         if (type && props) {
                             switch (type) {
                                 case 'audio':
                                 case 'video':
-                                    var fb, ns = '<p style="margin-left:auto;">' + Wf.translate('media_not_supported', 'Media type not supported by this browser') + '</p>';
-
-                                    var support = {
-                                        video: {
-                                            'h264': ['mp4', 'm4v'],
-                                            'webm': ['webm'],
-                                            'ogg': ['ogv', 'ogg']
-                                        },
-                                        audio: {
-                                            'mp3': ['mp3'],
-                                            'ogg': ['oga', 'ogg']
-                                        }
-                                    }
-                                    var hasSupport = false;
-
-                                    $.each(support[type], function (k, v) {
-                                        if ($.inArray(ext, v) !== -1) {
-                                            hasSupport = $.support[type] && $.support[type][k] !== false;
-                                        }
-                                    });
-
-                                    // HTML5 video
-                                    if (hasSupport) {
-                                        if (type == 'video') {
-                                            $(div).append('<video autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></video>');
-                                        } else {
-                                            $(div).addClass('media-preview-audio').append('<audio autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></audio>');
-                                        }
-                                    } else if (/^m(p3|p4|4v)$/i.test(ext)) {
-                                        url = Wf.URL.toAbsolute(url);
-
-                                        $(div).html('<object type="application/x-shockwave-flash" data="' + swf + '"><param name="movie" value="' + swf + '" /><param name="flashvars" value="controls=true&autoplay=true&src=' + url + '" /></object>');
-
-                                        if (ext == 'mp3') {
-                                            $('object', div).addClass('audio');
-                                        }
+                                    if (type == 'video') {
+                                        $(div).append('<video autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></video>');
                                     } else {
-                                        $(div).html(ns).removeClass('loading');
+                                        $(div).addClass('media-preview-audio').append('<audio autoplay="autoplay" controls="controls" preload="none" type="' + props.type + '" src="' + url + '"></audio>');
                                     }
 
-                                    break;
-                                case 'flv':
-                                    url = Wf.URL.toAbsolute(url);
-
-                                    $(div).append('<object type="application/x-shockwave-flash" data="' + swf + '"><param name="movie" value="' + swf + '" /><param name="flashvars" value="controls=true&autoplay=true&src=' + url + '" /></object>');
                                     break;
                                 case 'flash':
                                     $(div).append('<object type="' + props.type + '" data="' + url + '"><param name="movie" value="' + url + '" /></object>');
@@ -744,6 +697,8 @@
                                 calculateWidth(e.target, w, h);
 
                                 $('.uk-modal').trigger('modal.assetloaded');
+                            }).on('error', function() {
+                                $(div).removeClass('loading');
                             });
                         }
                     }
