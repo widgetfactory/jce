@@ -1,6 +1,6 @@
 .mce-item-upload {
     outline: 1.5px dashed #ccc;
-    border-color: var(--mce-guidelines);
+    outline-color: var(--mce-guidelines);
     background-color: #fafafa;
     background-color: var(--mce-placeholder);
     background-repeat: no-repeat;
@@ -48,7 +48,7 @@
     background-color: var(--mce-placeholder);
 
     min-width: 240px;
-    min-height: 90px;
+    min-height: 240px;
 
     max-width: 100%;
     max-height: 100%;
