@@ -1277,6 +1277,16 @@
                     // pass in id (not added in clone!)
                     ifr.attr('id', n.firstChild.attr('id'));
 
+                    // clean up classes
+                    var cls = ifr.attr('class');
+
+                    if (cls) {
+                        cls = cls.replace(/\s?mce-item-([\w]+)/g, '').replace(/\s+/g, ' ');
+                        cls = tinymce.trim(cls);
+
+                        ifr.attr('class', cls.length > 0 ? cls : null);
+                    }
+
                     n.empty();
                     n.replace(ifr);
 
