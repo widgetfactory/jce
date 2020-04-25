@@ -107,14 +107,14 @@
                             parent = ed.dom.getParent(node, blocks.join(','));
 
                         if (node.nodeName === "IMG") {
-                            if (parent) {
-                                //ed.dom.remove(parent, 1);
-                                ed.dom.add(parent, 'figcaption', {
-                                    'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...')
-                                });
-
-                                ed.dom.replace(ed.dom.create('figure'), parent, 1);
+                            // replace parent paragraph with figure
+                            if (parent.nodeName === 'P' && parent.childNodes.length === 1) {
+                                ed.dom.replace(elm, parent, 1);
                             }
+
+                            ed.dom.add(node.parentNode, 'figcaption', {
+                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...')
+                            });
 
                             ed.dom.setAttrib(elm, 'data-mce-image', 1);
                         }

@@ -234,6 +234,9 @@ figcaption {
   display: table-caption;
   caption-side: bottom;
 }
+figcaption {
+  line-height: 2rem;
+}
 figcaption:empty::after {
   content: "...";
   text-align: center;
