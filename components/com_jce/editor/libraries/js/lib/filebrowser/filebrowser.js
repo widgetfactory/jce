@@ -185,6 +185,10 @@
                 var n = e.target,
                     p = n.parentNode;
 
+                    if ($(n).hasClass('ui-sortable-handle')) {
+                        return;
+                    }
+
                 // move to parent if target is span or i (size, date, thumbnail)
                 if ($(n).is('.uk-icon, span, a, img')) {
                     n = $(n).parents('li').get(0);
