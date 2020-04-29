@@ -121,6 +121,14 @@
             }
 
             function updateComboBox(data) {
+                if (!settings.input && !data.text) {
+                    $('option', select).each(function() {
+                        if (this.value === data.value) {
+                            data.text = $(this).attr('label') || $(this).text();
+                        }
+                    });
+                }
+
                 $(input).val($.trim(data.text || data.value)).trigger('datalist-input:clear');
 
                 if (multiple) {
