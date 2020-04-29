@@ -1104,11 +1104,30 @@ class WFEditor
         }
 
         if (is_dir($path . '/warp')) {
-            $file = $path . '/css/theme.css';
+            $file = 'css/theme.css';
+
+            $config = $path . '/config.json';
+
+            if (is_file($config)) {
+                $data = file_get_contents($config);
+                $json = json_decode($data);
+
+                $style = '';
+
+                if ($json) {
+                    if (!empty($json->layouts->default->style)) {
+                        $style = $json->layouts->default->style;
+                    }
+                }
+
+                if ($style && $style !== 'default') {
+                    $file = 'styles/' . $style . '/css/theme.css';
+                }
+            }
 
             // add base theme.css file
-            if (is_file($file)) {
-                $files[] = 'templates/' . $template->name . '/css/theme.css';
+            if (is_file($path . '/' . $file)) {
+                $files[] = 'templates/' . $template->name . '/' . $file;
             }
 
             // add custom css file
