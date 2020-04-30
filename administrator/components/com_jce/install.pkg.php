@@ -77,11 +77,11 @@ class pkg_jceInstallerScript
 
         // override existing message
         $message  = '';
-        $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark hero-unit" style="text-align:left;">';
-        $message .= '   <div class="card-header"><h2>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h2></div>';
+        $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark well" style="text-align:left;">';
+        $message .= '   <div class="card-header"><h1>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1></div>';
         $message .= '   <div class="card-body">';
-        $message .= JText::_('COM_JCE_XML_DESCRIPTION');
 
+        // variant messates
         if ((string) $parent->manifest->variant != 'pro') {
             $message .= JLayoutHelper::render('message.upgrade');
         } else {
@@ -94,6 +94,8 @@ class pkg_jceInstallerScript
                 }
             }
         }
+
+        $message .= JText::_('COM_JCE_XML_DESCRIPTION');
 
         $message .= '   </div>';
         $message .= '</div>';
