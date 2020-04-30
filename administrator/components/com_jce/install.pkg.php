@@ -73,29 +73,29 @@ class pkg_jceInstallerScript
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
         // set layout base path
-        JLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce';
+        JLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce/layouts';
 
         // override existing message
         $message  = '';
         $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark hero-unit" style="text-align:left;">';
-        $message .= '<div class="card-header"><h2>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h2></div>';
-        $message .= '<div class="card-body">';
+        $message .= '   <div class="card-header"><h2>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h2></div>';
+        $message .= '   <div class="card-body">';
         $message .= JText::_('COM_JCE_XML_DESCRIPTION');
 
-        if ((string) $parent->manifest->variant !== 'pro') {
-            $message .= JLayoutHelper::render('message.pro');
+        if ((string) $parent->manifest->variant != 'pro') {
+            $message .= JLayoutHelper::render('message.upgrade');
         } else {
             // show core to pro upgrade message
             if ($parent->isUpgrade()) {
                 $variant = (string) $parent->get('current_variant', 'core');
     
-                if ($variant === "core") {
-                    $message .= JLayoutHelper::render('message.upgrade');
+                if ($variant == 'core') {
+                    $message .= JLayoutHelper::render('message.welcome');
                 }
             }
         }
 
-        $message .= '</div>';
+        $message .= '   </div>';
         $message .= '</div>';
 
         $parent->set('message', $message);
