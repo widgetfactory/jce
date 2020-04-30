@@ -22,7 +22,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 ?>
 <div class="control-group <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
-        <label><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT'); ?></label>
+        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
     </div>
     <div class="controls">
         <div class="editor-layout">
@@ -78,6 +78,11 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                 </div>
             </div>
         </div>
+    </div>
+    <div class="control-label">
+        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
+    </div>
+    <div class="controls">
         <div class="editor-button-pool">
             <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout defaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout">
