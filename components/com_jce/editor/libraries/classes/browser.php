@@ -1292,6 +1292,9 @@ class WFFileBrowser extends JObject
                 if (empty($result->url)) {
                     $result->url = WFUtility::makePath($filesystem->getRootDir(), WFUtility::makePath($dir, $name));
                 }
+                
+                // trim slashes
+                $result->url = trim($result->url, '/');
 
                 // run events
                 $data = $this->fireEvent('onUpload', array($result->path, $result->url));
