@@ -553,7 +553,7 @@ abstract class WFUtility
         }
 
         // Convert to bytes
-        switch (strtolower($unit)) {
+        switch (strtolower($unit[0])) {
             case 'g':
                 $value = intval($value) * 1073741824;
                 break;
