@@ -1390,7 +1390,7 @@ class WFEditor
                 }
 
                 // clean up $files array
-                $files = array_unique($files);
+                $files = array_unique(array_filter($files));
 
                 break;
             // Nothing, use editor default
@@ -1461,7 +1461,7 @@ class WFEditor
         }
 
         // remove duplicates
-        $files = array_unique($files);
+        $files = array_unique(array_filter($files));
 
         // get the root directory
         $root = $absolute ? JPATH_SITE : JURI::root(true);
@@ -1504,7 +1504,7 @@ class WFEditor
         }
 
         // remove duplicates
-        $stylesheets = array_unique($stylesheets);
+        $stylesheets = array_unique(array_filter($stylesheets));
 
         return $stylesheets;
     }

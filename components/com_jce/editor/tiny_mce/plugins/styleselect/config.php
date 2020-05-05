@@ -85,16 +85,16 @@ class WFStyleselectPluginConfig
                 $styles = array();
 
                 $blocks = array(
-                    'section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div'
+                    'section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'footer', 'address', 'main', 'p', 'pre', 'blockquote', 'figure', 'figcaption', 'div',
                 );
 
                 $wrapper = array(
-                    'section', 'nav', 'article', 'aside', 'header', 'footer', 'main', 'div'
+                    'section', 'nav', 'article', 'aside', 'header', 'footer', 'main', 'div',
                 );
 
-                foreach ((array) $custom_styles as $style) {                    
+                foreach ((array) $custom_styles as $style) {
                     $style = (object) $style;
-                    
+
                     // clean up title
                     if (isset($style->title)) {
                         $style->title = self::cleanString($style->title);
@@ -186,16 +186,16 @@ class WFStyleselectPluginConfig
                 $stylesheet = trim($stylesheet, '/');
                 $etag = '';
 
-                if (is_file(JPATH_SITE.'/'.$stylesheet)) {
+                if (is_file(JPATH_SITE . '/' . $stylesheet)) {
                     // create hash
-                    $etag = '?'.filemtime(JPATH_SITE.'/'.$stylesheet);
+                    $etag = '?' . filemtime(JPATH_SITE . '/' . $stylesheet);
 
                     // explode to array
                     $content_css = explode(',', $settings['content_css']);
-                    $content_css[] = JURI::root(true).'/'.$stylesheet.$etag;
+                    $content_css[] = JURI::root(true) . '/' . $stylesheet . $etag;
 
-                    // remove duplicates
-                    $content_css = array_unique($content_css);
+                    // remove duplicates and empty values
+                    $content_css = array_unique(array_filter($content_css));
 
                     // implode to string
                     $settings['content_css'] = implode(',', $content_css);
@@ -244,7 +244,7 @@ class WFStyleselectPluginConfig
         if (count($remove)) {
             foreach ($fonts as $key => $value) {
                 foreach ($remove as $gone) {
-                    if ($gone && preg_match('/^'.$gone.'=/i', $value)) {
+                    if ($gone && preg_match('/^' . $gone . '=/i', $value)) {
                         // Remove family
                         unset($fonts[$key]);
                     }
