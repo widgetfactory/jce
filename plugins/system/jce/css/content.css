@@ -111,8 +111,6 @@
 [data-wf-columns] > div > figure > video,
 [data-wf-columns] > div > p > img:only-child {
   object-fit: cover;
-  /*height: 100%;
-  width: 100%;*/
 }
 [data-wf-columns] > div > figure {
   margin: 0;
@@ -123,16 +121,16 @@
 [data-wf-columns] > div > figure figcaption {
   text-align: center;
   /*position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%, transparent);
-  color: #fff;*/
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(0deg,rgba(0,0,0,.7),rgba(0,0,0,.3) 70%,transparent);
+    color: #fff;*/
   line-height: 2rem;
 }
 [data-wf-columns] > div > figure > a.wfpopup + figcaption {
   pointer-events: none;
 }
-/*[data-wf-columns] > div > figure > figcaption:empty::after {
-  color: #fff;
+/*[data-wf-columns]>div>figure>figcaption:empty::after {
+    color: #fff;
 }*/
