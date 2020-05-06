@@ -104,12 +104,8 @@
   }
 }
 /* Image gallery */
-[data-wf-columns] > div > img,
-[data-wf-columns] > div > video,
 [data-wf-columns] > div > figure img,
-[data-wf-columns] > div > figure > a.wfpopup,
-[data-wf-columns] > div > figure > video,
-[data-wf-columns] > div > p > img:only-child {
+[data-wf-columns] > div > figure video {
   object-fit: cover;
 }
 [data-wf-columns] > div > figure {
