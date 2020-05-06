@@ -58,6 +58,10 @@
 
             ed.onPreInit.add(function (ed) {
                 each(ed.schema.getBlockElements(), function (v, k) {
+                    if (/\W/.test(k)) {
+                        return true;
+                    }
+                    
                     blocks.push(k.toLowerCase());
                 });
 
