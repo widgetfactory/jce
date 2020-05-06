@@ -2583,7 +2583,7 @@
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
-                if (pasteImageData(e)) {
+                if (!hasHtmlOrText(clipboardContent) && pasteImageData(e)) {
                     removePasteBin();
 
                     pasteHtml('<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-mce-upload-marker="1" />', true);
