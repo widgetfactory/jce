@@ -2479,8 +2479,6 @@
                     dom.unbind(ed.getDoc(), 'mousedown', block);
                     dom.unbind(ed.getDoc(), 'keydown', block);
                 }, 0);
-
-                e.preventDefault();
             }
 
             ed.onKeyDown.add(function (ed, e) {
