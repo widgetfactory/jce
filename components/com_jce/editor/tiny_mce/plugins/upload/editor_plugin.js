@@ -202,9 +202,15 @@
 
             ed.onPreInit.add(function () {
                 // get list of supported plugins
-                each(ed.plugins, function (o, k) {
-                    if (tinymce.is(o.getUploadURL, 'function') && tinymce.is(o.insertUploadedFile, 'function')) {
-                        self.plugins.push(o);
+                each(ed.plugins, function (plg, name) {
+                    if (tinymce.is(plg.getUploadConfig, 'function')) {
+                        
+                        var data = plg.getUploadConfig();
+
+                        if (data.filetypes) {
+                            self.plugins.push(plg);
+                        }
+ 
                     }
                 });
 
@@ -331,7 +337,6 @@
             });
 
             ed.onInit.add(function () {
-
                 // no supported plugins
                 if (self.plugins.length == 0) {
                     cancel();
