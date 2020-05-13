@@ -563,3 +563,22 @@
         min-height: calc(100vh - 20px);
     }
 }
+
+.mceModalContent .mceButton.mceClear {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    font-weight: bold;
+    color: #888;
+}
+
+.mceModalContent .mceButton.mceClear:hover {
+    background-color: transparent;
+    border-color: transparent;
+    color: #444;
+}
+
+.mceModalContent .mceFormControl .mceClear ~ .mceTextBox {
+    padding-right: 32px;
+}
