@@ -59,7 +59,7 @@ class WFImgManagerPlugin extends WFMediaManager
         if ($app->input->getInt('inline', 0) === 1) {
             $result = array(
                 'file' => $relative,
-                'name' => basename($relative),
+                'name' => WFUtility::mb_basename($relative),
             );
 
             if ($this->getParam('always_include_dimensions', 1)) {

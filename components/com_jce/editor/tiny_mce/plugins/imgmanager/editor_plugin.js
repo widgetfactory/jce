@@ -64,7 +64,7 @@
                 data = this.getUploadConfig();
 
             if (data && data.filetypes) {
-                if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(o.file)) {
+                if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(o.name)) {
                     var args = {
                         'src': o.file,
                         'alt': o.alt || o.name,
