@@ -68,6 +68,18 @@
     width: 20px;
 }
 
+.mceMenu .mceMenuItems .mceImage {
+    height: 5rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin-top: 0.5rem;
+}
+
+.mceMenu .mceMenuItems .mceImage + .mceText {
+    text-align: center;
+}
+
 .mceMenu .mceMenuItems {
     height: 100%;
     overflow: hidden;
