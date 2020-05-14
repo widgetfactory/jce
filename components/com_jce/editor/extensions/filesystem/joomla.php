@@ -139,6 +139,8 @@ class WFJoomlaFileSystem extends WFFileSystem
             $path = substr($path, strlen($base));
         }
 
+        $path = WFUtility::cleanPath($path);
+
         return ltrim($path, '/');
     }
 
