@@ -117,7 +117,7 @@
 
     $.fn.WfMediaUpload = function () {
         return this.each(function () {
-            var elm = document.getElementById(this.id) || this;
+            var elm = this;//document.getElementById(this.id) || this;
 
             function insertFile(value) {
                 // Joomla 3.5.x / 4.x Media Field
