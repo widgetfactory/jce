@@ -70,10 +70,6 @@ class PlgSystemJce extends JPlugin
 
         $params = JComponentHelper::getParams('com_jce');
 
-        if ((bool) $params->get('replace_media_manager', 1) === false) {
-            return;
-        }
-
         // get form name.
         $name = $form->getName();
 
@@ -123,9 +119,18 @@ class PlgSystemJce extends JPlugin
             $type = $field->getAttribute('type');
 
             if (strtolower($type) === 'media') {
+                
+                if ((bool) $params->get('replace_media_manager', 1) === false) {
+                    continue;
+                }
+
                 $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
                 $form->setFieldAttribute($name, 'converted', '1', $group);
+                $hasMedia = true;
+            }
+
+            if (strtolower($type) === 'mediajce') {
                 $hasMedia = true;
             }
         }
