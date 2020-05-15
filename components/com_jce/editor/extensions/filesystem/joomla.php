@@ -342,6 +342,9 @@ class WFJoomlaFileSystem extends WFFileSystem
                     $name = $id;
                 }
 
+                // get basename of file name
+                $name = WFUtility::mb_basename($name);
+
                 // create url
                 $url = WFUtility::makePath($this->getRootDir(), $id, '/');
 
