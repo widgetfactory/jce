@@ -72,8 +72,6 @@
                 collapseTree: true,
                 charLength: 50
             }).on('tree:nodeclick', function (e, evt, node) {
-                var v;
-
                 if ($(evt.target).is('button.link-preview')) {
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -96,13 +94,17 @@
                 }
 
                 if (!$(node).hasClass('nolink')) {
-                    v = $('a', node).attr('href');
+                    var url = $('a', node).attr('href'), text = $('a', node).attr('title') || '';
 
-                    if (v == '#') {
-                        v = $(node).attr('data-id') || $(node).attr('id');
+                    if (url == '#') {
+                        url = $(node).attr('data-id') || $(node).attr('id');
                     }
 
-                    self.insertLink(Wf.String.decode(v));
+                    url = Wf.String.decode(url);
+
+                    text = $.trim(text.split('/')[0]);
+
+                    self.insertLink({'url' : url, text : text});
                 }
             }).on('tree:nodeload', function (e, node) {
                 var self = this;
@@ -199,6 +201,11 @@
             // setup popups
             WFPopups.setup();
 
+            // store text value when changed
+            $('#text').on('change', function() {
+                $(this).data('text', this.value);
+            }).data('text', '');
+
             // if there is a selection
             if (!se.isCollapsed()) {
                 n = se.getNode();
@@ -208,9 +215,9 @@
 
                 function setText(state, v) {
                     if (state && v) {
-                        $('#text').val(v).attr('disabled', false);
+                        $('#text').val(v).attr('disabled', false).trigger('change');
                     } else {
-                        $('#text').val('').attr('disabled', true).parents('tr').hide();
+                        $('#text').val('').attr('disabled', true).trigger('change').parents('tr').hide();
                     }
                 }
 
@@ -539,8 +546,13 @@
         setClassList: function (v) {
             $('#classlist').val(v);
         },
-        insertLink: function (v) {
-            $('#href').val(tinyMCEPopup.editor.documentBaseURI.toRelative(v));
+        insertLink: function (args) {
+            var url = tinyMCEPopup.editor.documentBaseURI.toRelative(args.url);
+            $('#href').val(url);
+
+            if ($('#text').data('text') == '') {
+                $('#text').val(args.text);
+            }
         },
         createEmail: function () {
             var ed = tinyMCEPopup.editor,
@@ -653,7 +665,13 @@
                             var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
 
                             $('<dt class="link uk-margin-small" />').text(n.title).on('click', function () {
-                                self.insertLink(Wf.String.decode(n.link));
+                                var url = n.link, text = n.title;
+
+                                url = Wf.String.decode(url);
+
+                                text = $.trim(text.split('/')[0]);
+
+                                self.insertLink({'url' : url, text : text});
                             }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
 
                             $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
