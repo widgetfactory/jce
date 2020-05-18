@@ -463,6 +463,11 @@
             // Setup refresh button
             $('#refresh').on('click', function (e) {
                 self.refresh(e);
+            }).on('button:refresh', function() {
+                $('.uk-icon', this).toggleClass('uk-icon-spinner');
+                $(this).prop('disabled', function() {
+                    return !this.disabled;
+                });
             });
 
             var showDetails = this._getState('details', 0, function (val) {
@@ -1053,6 +1058,8 @@
 
             // set state
             $('#browser-message').toggleClass(o.state);
+
+            $('#refresh').trigger('button:refresh');
 
             // set message
             $('.message', '#browser-message').html(o.message);
