@@ -1827,9 +1827,9 @@
         var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
         var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
 
-        if (ed.getParam('autolink_url', true)) {
+        if (ed.getParam('autolink_url', true)) {            
             // find and link url if not already linked
-            content = content.replace(new RegExp('(=["\'])?' + ux, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(=["\'])?' + ux), function (a, b, c) {                                
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
                     var attribs = ['href="' + c + '"'];
@@ -1846,7 +1846,7 @@
         }
 
         if (ed.getParam('autolink_email', true)) {
-            content = content.replace(new RegExp('(=["\']mailto:)?' + ex, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(=["\']mailto:)?' + ex), function (a, b, c) {
                 // only if not already a mailto: link
                 if (!b) {
                     return '<a href="mailto:' + c + '">' + c + '</a>';
