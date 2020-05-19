@@ -165,22 +165,22 @@
     min-height: inherit;
 }
 
-.wf-editor-tabs {
+.wf-editor-container .wf-editor-tabs {
     width: 100%;
     box-sizing: border-box;
 }
 
-.wf-editor-tabs li {
+.wf-editor-container .wf-editor-tabs li {
     cursor: pointer
 }
 
-.wf-editor-header .wf-editor-tabs {
+.wf-editor-container .wf-editor-header .wf-editor-tabs {
     display: flex;
     justify-content: flex-end;
     margin: 0 0 0.25em 0;
 }
 
-.wf-editor-header .wf-editor-tabs li {
+.wf-editor-container .wf-editor-header .wf-editor-tabs li {
     float: none;
 }
 
