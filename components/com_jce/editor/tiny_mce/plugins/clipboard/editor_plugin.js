@@ -1827,18 +1827,37 @@
         var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
         var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
 
-        if (ed.getParam('autolink_url', true)) {            
+        function createLink(url) {
+            var attribs = ['href="' + url + '"'];
+
+            if (ed.settings.default_link_target) {
+                attribs.push('target="' + ed.settings.default_link_target + '"');
+            }
+
+            return '<a ' + attribs.join(' ') + '>' + url + '</a>';
+        }
+
+        // existing link...
+        if (/^<a([^>]+)>([\s\S]+?)<\/a>$/.test(content)) {
+            return content;
+        }
+
+        if (ed.getParam('autolink_url', true)) {
+
+            if (new RegExp('^' + ux + '$').test(content)) {
+                content = createLink(content);
+
+                return content;
+            }
+
+            // wrap content - this seems to be required to prevent repeats of link conversion
+            content = '<div data-mce-convert="url">' + content + '</div>';
+
             // find and link url if not already linked
-            content = content.replace(new RegExp('(=["\'])?' + ux), function (a, b, c) {                                
+            content = content.replace(new RegExp('(href=["\'])*' + ux, 'g'), function (a, b, c) {
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
-                    var attribs = ['href="' + c + '"'];
-
-                    if (ed.settings.default_link_target) {
-                        attribs.push('target="' + ed.settings.default_link_target + '"');
-                    }
-
-                    return '<a ' + attribs.join(' ') + '>' + c + '</a>';
+                    return createLink(c);
                 }
 
                 return a;
@@ -1846,7 +1865,15 @@
         }
 
         if (ed.getParam('autolink_email', true)) {
-            content = content.replace(new RegExp('(=["\']mailto:)?' + ex), function (a, b, c) {
+            
+            if (new RegExp('^' + ex + '$').test(content)) {
+                return '<a href="mailto:' + content + '">' + content + '</a>';
+            }
+
+            // wrap content - this seems to be required to prevent repeats of link conversion
+            content = '<div data-mce-convert="url">' + content + '</div>';
+            
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (a, b, c) {
                 // only if not already a mailto: link
                 if (!b) {
                     return '<a href="mailto:' + c + '">' + c + '</a>';
@@ -2089,6 +2116,28 @@
                 if (data.content) {
                     pasteHtml(data.content);
                 }
+            });
+
+            ed.onPreInit.add(function () {
+                ed.serializer.addAttributeFilter('data-mce-convert', function (nodes, name) {
+                    var i = nodes.length,
+                        node;
+
+                    while (i--) {
+                        node = nodes[i];
+                        node.unwrap();
+                    }
+                });
+
+                ed.parser.addAttributeFilter('data-mce-convert', function (nodes, name) {
+                    var i = nodes.length,
+                        node;
+
+                    while (i--) {
+                        node = nodes[i];
+                        node.unwrap();
+                    }
+                });
             });
 
             ed.onInit.add(function () {
@@ -2552,24 +2601,24 @@
 
             function pasteImageData(e) {
                 var dataTransfer = e.clipboardData || e.dataTransfer;
-    
+
                 function processItems(items) {
                     var i, item, hadImage = false;
-    
+
                     if (items) {
                         for (i = 0; i < items.length; i++) {
                             item = items[i];
-    
-                            if (/^image\/(jpeg|png|gif|bmp)$/.test(item.type)) { 
+
+                            if (/^image\/(jpeg|png|gif|bmp)$/.test(item.type)) {
                                 e.preventDefault();
                                 hadImage = true;
                             }
                         }
                     }
-    
+
                     return hadImage;
                 }
-    
+
                 return processItems(dataTransfer.items) || processItems(dataTransfer.files);
             }
 
