@@ -26,6 +26,8 @@
                 // create new id
                 $(this).attr('id', id + '_' + idx + '_' + x);
             }).trigger('change');
+
+            $item.find(':input[name]').val('').trigger('change');
 		
             // fix media field
             $item.find('.field-media-wrapper').each(function(){
