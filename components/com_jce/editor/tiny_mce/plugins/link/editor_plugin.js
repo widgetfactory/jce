@@ -142,7 +142,9 @@
                 args = tinymce.extend(args, params);
 
                 // set default target
-                args['target'] = ed.settings.default_link_target;
+                if (ed.settings.default_link_target) {
+                    args['target'] = ed.settings.default_link_target;
+                }
 
                 // no selection, so create a link from the url
                 if (ed.selection.isCollapsed()) {
