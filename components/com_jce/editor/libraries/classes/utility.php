@@ -126,9 +126,12 @@ abstract class WFUtility
         $path = trim(rawurldecode($path));
 
         // check for UNC path on IIS and set prefix
-        if ($ds == '\\' && $path[0] == '\\' && $path[1] == '\\') {
-            $prefix = '\\';
+        if ($ds == '\\' && strlen($path) > 1) {
+            if ($path[0] == '\\' && $path[1] == '\\') {
+                $prefix = '\\';
+            }
         }
+        
         // clean path, removing double slashes, replacing back/forward slashes with DIRECTORY_SEPARATOR
         $path = preg_replace('#[/\\\\]+#', $ds, $path);
 
