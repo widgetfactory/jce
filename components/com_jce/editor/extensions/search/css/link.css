@@ -16,6 +16,10 @@
     padding: 0 0.5em;
 }
 
+#search-browser button .uk-icon {
+    margin: auto;
+}
+
 #searchbox {
     position: relative;
 }
