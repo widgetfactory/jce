@@ -165,7 +165,7 @@
                 if (e.keyCode === 9) {
 
                     // visible inputs and select2 combobox
-                    var $navItems = $(':input:visible, span[role="combobox"]', this).not('input[type="file"]').filter(function () {
+                    var $navItems = $(':input:visible:enabled, span[role="combobox"]', this).not('input[type="file"]').filter(function () {
                         return this.getAttribute('tabindex') >= 0;
                     });
 
