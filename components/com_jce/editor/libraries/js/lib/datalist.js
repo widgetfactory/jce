@@ -411,8 +411,6 @@
                 }
             }).on('focus', function () {
                 $(container).addClass('uk-focus');
-
-                showMenu();
             }).on('blur', function (e) {
                 $(container).removeClass('uk-focus');
             }).on('datalist-input:clear', function () {
