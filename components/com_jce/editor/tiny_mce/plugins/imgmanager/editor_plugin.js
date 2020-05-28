@@ -68,6 +68,7 @@
                     var args = {
                         'src': o.file,
                         'alt': o.alt || o.name,
+                        'loading': 'lazy',
                         'style': {}
                     };
 
