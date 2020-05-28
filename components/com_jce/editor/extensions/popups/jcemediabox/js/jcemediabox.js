@@ -387,12 +387,18 @@ WFPopups.addPopup('jcemediabox', {
         });
 
         // Set type
-        $('#jcemediabox_popup_mediatype').val(this.getMediaType(n));
+        var currentMediaType = this.getMediaType(n);
+
+        $('#jcemediabox_popup_mediatype').val(currentMediaType);
 
         $.extend(data, {
             src: ed.dom.getAttrib(n, 'href'),
             type: ed.dom.getAttrib(n, 'type') || ''
         });
+        
+        if (currentMediaType === 'image') {
+            $.extend(data, { loading: 'lazy' });
+        }
 
         return data;
     },
