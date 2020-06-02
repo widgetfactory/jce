@@ -118,6 +118,10 @@
                 }
             });
 
+            if (!ctrl) {
+                return;
+            }
+
             function insertLink(value) {
                 if (!value) {
                     ed.execCommand('unlink', false);
