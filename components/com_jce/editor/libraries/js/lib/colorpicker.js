@@ -381,7 +381,7 @@
 
             h += '<div id="colorpicker_tabs" class="uk-tabs">';
             h += '<ul class="nav nav-tabs uk-tab">';
-            h += '<li class="active"><a href="#colorpicker_picker" aria-controls="colorpicker_picker" class="active">{#picker}</a></li>';
+            h += '<li><a href="#colorpicker_picker" aria-controls="colorpicker_picker" class="active">{#picker}</a></li>';
             h += '<li><a href="#colorpicker_web" aria-controls="colorpicker_web">{#palette}</a></li>';
             h += '<li><a href="#colorpicker_named" aria-controls="colorpicker_named">{#named}</a></li>';
 
@@ -392,7 +392,7 @@
 
             h += '</ul>';
             h += '<div class="tab-content uk-switcher uk-tabs-panel">';
-            h += '<div id="colorpicker_picker" data-type="picker" class="tab-pane uk-active"></div>';
+            h += '<div id="colorpicker_picker" data-type="picker" class="tab-pane"></div>';
             h += '<div id="colorpicker_web" data-type="web" class="tab-pane"></div>';
             h += '<div id="colorpicker_named" data-type="named" class="tab-pane"></div>';
 
@@ -422,8 +422,16 @@
                 });
             }).tabs();
 
-            // create initial picker
-            self._createpicker($('#colorpicker_picker', '#colorpicker_tabs'));
+            // create initial picker from visible tab
+            var $tab = $('.uk-tab > li:visible', '#colorpicker_tabs').first();
+
+            // ...otherwise use "picker" as default
+            if (!$tab.length) {
+                $tab = $('.uk-tab > li', '#colorpicker_tabs').first();
+            }
+            
+            // initialize with click
+            $tab.addClass('active uk-active').trigger('click');
         },
         /**
          * Close colorpicker on 'blur'
