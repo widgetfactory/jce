@@ -1333,6 +1333,11 @@ class WFEditor
         $global = intval($wf->getParam('editor.content_css', 1));
         $profile = intval($wf->getParam('editor.profile_content_css', 2));
 
+        // no template found???
+        if (empty($template)) {
+            return $stylesheets;
+        }
+
         switch ($global) {
             // Custom template css files
             case 0:
