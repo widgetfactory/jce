@@ -378,7 +378,8 @@
 .mceModernSkin span.mce_file-media:before,
 .mceModernSkin span.mce_file-video:before,
 .mceModernSkin span.mce_media:before,
-.mceModernSkin span.mce_mediamanager:before {
+.mceModernSkin span.mce_mediamanager:before,
+.mceModernSkin span.mce_video:before {
     content: "\e95e";
 }
 
@@ -507,7 +508,8 @@
     content: "\ec6a";
 }
 
-.mceModernSkin span.mce_link:before {
+.mceModernSkin span.mce_link:before,
+.mceModernSkin span.mce_lnk:before {
     content: "\ec98";
 }
 

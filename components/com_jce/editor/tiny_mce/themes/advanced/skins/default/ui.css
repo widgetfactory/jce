@@ -695,7 +695,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
+    margin: auto;
     max-width: 20px;
 }
 
@@ -1376,7 +1376,8 @@ select.mceNativeListBox {
     background-position: -540px 0
 }
 
-.mceDefaultSkin span.mce_link {
+.mceDefaultSkin span.mce_link,
+.mceDefaultSkin span.mce_lnk {
     background-position: -500px 0
 }
 
@@ -1531,7 +1532,8 @@ select.mceNativeListBox {
     background-position: -220px -20px
 }
 
-.mceDefaultSkin span.mce_media {
+.mceDefaultSkin span.mce_media,
+.mceDefaultSkin span.mce_video {
     background-position: -320px -20px
 }
 
@@ -2880,6 +2882,9 @@ select.mceNativeListBox {
     z-index: 1;
     font-weight: bold;
     color: #888;
+
+    background: transparent;
+    border-color: transparent;
 }
 
 .mceModalContent .mceButton.mceClear:hover {
