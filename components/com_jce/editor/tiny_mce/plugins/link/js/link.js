@@ -277,10 +277,12 @@
             if (n && n.nodeName == 'A') {
                 $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
 
-                var href = decodeURIComponent(ed.convertURL(ed.dom.getAttrib(n, 'href')));
+                //var href = decodeURIComponent(ed.convertURL(ed.dom.getAttrib(n, 'href')));
+                var href = ed.convertURL(ed.dom.getAttrib(n, 'href'));
 
                 // Setup form data
                 $('#href').val(href);
+
                 // attributes
                 $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'charset', 'hreflang', 'target'], function (i, k) {
                     $('#' + k).val(ed.dom.getAttrib(n, k));
@@ -558,8 +560,13 @@
             var ed = tinyMCEPopup.editor,
                 fields = '<div class="uk-form-horizontal">';
 
-            $.each(['mailto', 'cc', 'bcc', 'subject'], function (i, k) {
-                fields += '<div class="uk-form-row"><label class="uk-form-label uk-width-3-10" for="email_' + k + '">' + ed.getLang('link_dlg.' + k, k) + '</label><div class="uk-form-controls uk-width-7-10"><textarea id="email_' + k + '"></textarea></div></div>';
+            $.each(['mailto', 'cc', 'bcc', 'subject', 'body'], function (i, name) {
+                fields += '<div class="uk-form-row uk-grid uk-grid-collapse">' +
+                '   <label class="uk-form-label uk-width-3-10" for="email_' + name + '">' + ed.getLang('link_dlg.' + name, name) + '</label>' +
+                '   <div class="uk-form-controls uk-width-7-10">' +
+                '       <textarea id="email_' + name + '"></textarea>' +
+                '   </div>' +
+                '</div>';
             });
 
             fields += '</div>';
@@ -583,7 +590,13 @@
                         var k = s.split('=');
 
                         if (k.length === 2) {
-                            $('#email_' + k[0]).val(k[1]);
+                            var val = k[1];
+                            
+                            try {
+                                val = decodeURIComponent(val);
+                            } catch(e){}
+
+                            $('#email_' + k[0]).val(val);
                         }
                     });
                 },
@@ -592,23 +605,27 @@
                     click: function () {
                         var args = [],
                             errors = 0;
-                        $.each(['mailto', 'cc', 'bcc', 'subject'], function (i, s) {
-                            var v = $('#email_' + s).val();
+                        $.each(['mailto', 'cc', 'bcc', 'subject', 'body'], function (i, key) {
+                            var val = $('#email_' + key).val();
 
-                            if (v) {
-                                v = v.replace(/\n\r/g, '');
+                            if (val) {
+                                val = val.replace(/\n\r/g, '');
 
-                                $.each(v.split(','), function (i, o) {
-                                    if (s !== 'subject') {
-                                        if (!/@/.test(o)) {
+                                $.each(val.split(','), function (i, str) {
+                                    if (/^(mailto|cc|bcc)$/.test(key)) {
+                                        if (!/@/.test(str)) {
                                             var msg = ed.getLang('link_dlg.invalid_email', '%s is not a valid e-mail address!');
-                                            Wf.Modal.alert(msg.replace(/%s/, ed.dom.encode(o)));
+                                            Wf.Modal.alert(msg.replace(/%s/, ed.dom.encode(str)));
                                             errors++;
                                         }
                                     }
                                 });
 
-                                args.push((s == 'mailto') ? v : s + '=' + v);
+                                if (/^(subject|body)$/.test(key)) {
+                                    val = encodeURIComponent(val);
+                                }
+
+                                args.push((key == 'mailto') ? val : key + '=' + val);
                             }
                         });
 
