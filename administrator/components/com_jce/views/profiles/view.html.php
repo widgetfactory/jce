@@ -35,6 +35,11 @@ class JceViewProfiles extends JViewLegacy
 
         JHtml::_('jquery.framework');
 
+        // only in Joomla 3.x
+        if (version_compare(JVERSION, '4', 'lt')) {
+            JHtml::_('formbehavior.chosen', 'select');
+        }
+
         $document = JFactory::getDocument();
         $document->addScript('components/com_jce/media/js/profiles.min.js');
         $document->addStyleSheet('components/com_jce/media/css/profiles.min.css');

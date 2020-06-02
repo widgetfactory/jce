@@ -13,7 +13,7 @@ $plugins = $displayData->get('additional');
                         <label class="checkbox">
                             <input type="checkbox" value="<?php echo $plugin->name; ?>" <?php echo $plugin->active ? ' checked="checked"' : ''; ?>> <?php echo JText::_($plugin->title); ?>
                         </label>
-                        <span class="help-block"><?php echo JText::_($plugin->description); ?></span>
+                        <span class="help-block form-text text-muted w-100"><?php echo JText::_($plugin->description); ?></span>
                     </div>
                 <?php endforeach;?>
             </div>

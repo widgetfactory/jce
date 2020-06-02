@@ -35,7 +35,7 @@
     margin-right: -4px;
     border: 1px solid #dee2e6;
     border-color: transparent #dee2e6 transparent transparent;
-    background: #fff;
+    background: transparent;
     box-shadow: initial;
 }
 
@@ -54,7 +54,7 @@
 }
 
 .ui-jce .tabs-left .nav.nav-tabs .nav-item {
-    background-color: #fff;
+    background-color: transparent;
 }
 
 .ui-jce .tabs-left > .nav-tabs .active > a, 
@@ -62,6 +62,10 @@
 .ui-jce .tabs-left > .nav-tabs .active > a:focus {
     border: 1px solid #dee2e6;
     border-color: #dee2e6 transparent #dee2e6 #dee2e6;
+    background-color: #fff;
+
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .ui-jce .nav.nav-tabs .nav-item:last-of-type .nav-link {

@@ -15,7 +15,6 @@ defined('JPATH_PLATFORM') or die;
 // Load tooltips behavior
 JHtml::_('behavior.formvalidator');
 JHtml::_('behavior.keepalive');
-JHtml::_('formbehavior.chosen', 'select');
 
 // Load JS message titles
 JText::script('ERROR');

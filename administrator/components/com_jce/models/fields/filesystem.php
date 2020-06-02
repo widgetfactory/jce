@@ -67,7 +67,7 @@ class JFormFieldFilesystem extends JFormFieldList
         $html .= '<div class="controls-row">';
 
         $html .= '<div class="control-group">';
-        $html .= JHtml::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options"', 'value', 'text', $value['name']);
+        $html .= JHtml::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
         $html .= '</div>';
 
         $html .= '<div class="filesystem-options clearfix">';

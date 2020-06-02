@@ -248,3 +248,7 @@
 .com_jce .nav-link .mce-toolbar .mce-btn button {
 	cursor: pointer;
 }
+
+.mceLayout .mceStatusbar .mcePathRow {
+    background: inherit;
+}

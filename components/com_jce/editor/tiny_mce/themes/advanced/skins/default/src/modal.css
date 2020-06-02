@@ -571,6 +571,9 @@
     z-index: 1;
     font-weight: bold;
     color: #888;
+
+    background: transparent;
+    border-color: transparent;
 }
 
 .mceModalContent .mceButton.mceClear:hover {

@@ -13,8 +13,6 @@ defined('JPATH_PLATFORM') or die;
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
 JHtml::_('behavior.multiselect');
-JHtml::_('behavior.tabstate');
-JHtml::_('formbehavior.chosen', 'select');
 
 $user       = JFactory::getUser();
 $listOrder	= $this->escape($this->state->get('list.ordering'));
