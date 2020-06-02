@@ -72,7 +72,7 @@
                     };
 
                     // supported attributes
-                    var attribs = ['alt', 'title', 'id', 'dir', 'class', 'usemap', 'style', 'longdesc'];
+                    var attribs = ['alt', 'title', 'id', 'dir', 'class', 'usemap', 'style', 'longdesc', 'loading'];
 
                     // get styles object
                     if (o.styles) {

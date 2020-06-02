@@ -131,6 +131,7 @@ class WFImgManagerPlugin extends WFMediaManager
                     case 'longdesc':
                     case 'style':
                     case 'alt':
+                    case 'loading':
                         if ($k == 'direction') {
                             $k = 'dir';
                         }
