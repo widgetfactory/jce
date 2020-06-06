@@ -1,6 +1,10 @@
 @import url('ui.css?@@etag@@');
 @import url('../default/ui.admin.css?@@etag@@');
 
+.mceModernSkin .mceToolbarRow .mceToolbarItem {
+  height: 32px;
+}
+
 .mceModernSkin .mceToolbarItem .mceSplitButton .mceIcon {
   width: 30px;
   max-width: 30px;
@@ -69,7 +73,7 @@
 }
 
 .mceModernSkinTouch .mceLayout .mceToolbar .mceToolbarRow {
-  min-height: 38px;
+  min-height: 40px;
 }
 
 .mceModernSkinTouch .mceToolbarItem .mceButton {

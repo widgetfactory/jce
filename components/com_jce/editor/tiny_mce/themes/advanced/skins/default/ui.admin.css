@@ -41,6 +41,7 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	vertical-align: middle;
 }
 
 .mceToolbarRow .mceToolbarItem .mceButton,
@@ -60,7 +61,7 @@
 	font-size: 0;
 	line-height: 1;
 	height: auto;
-	min-height: 28px;
+	min-height: 38px;
 	position: relative;
 	background-color: #f5f5f5;
 	border: 1px solid #ddd;
@@ -70,10 +71,10 @@
 	display: block;
 }
 
-.mceDefaultSkin .mceToolbar .mceToolbarRow:last-child {
+/*.mceDefaultSkin .mceToolbar .mceToolbarRow:last-child {
 	margin: 0;
 	border-bottom: 0;
-}
+}*/
 
 .mceEditor .mceToolbarItem .mceListBox,
 .mceEditor .mceToolbarItem .mceSplitButton {

@@ -10,7 +10,7 @@
 defined('JPATH_PLATFORM') or die;
 ?>
 
-<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
+<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
     <div class="ui-jce container-fluid">
         <?php if (!empty($this->sidebar)) : ?>
 	    <div id="j-sidebar-container" class="span2 col-md-2">

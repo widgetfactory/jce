@@ -61,7 +61,9 @@
 .ui-jce .tabs-left > .nav-tabs .active > a:hover, 
 .ui-jce .tabs-left > .nav-tabs .active > a:focus {
     border: 1px solid #dee2e6;
-    border-color: #dee2e6 transparent #dee2e6 #dee2e6;
+    border-color: #dee2e6;
+    border-right-color: transparent;
+
     background-color: #fff;
 
     border-top-right-radius: 0;
