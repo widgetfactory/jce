@@ -1761,7 +1761,8 @@ select.mceNativeListBox {
     background-position: -180px -40px;
 }
 
-.mceDefaultSkin span.mce_mediamanager {
+.mceDefaultSkin span.mce_mediamanager,
+.mceDefaultSkin span.mce_video {
     background-position: -320px -40px;
 }
 
