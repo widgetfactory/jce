@@ -147,6 +147,7 @@
                 $('#dir').val(ed.dom.getAttrib(n, 'dir'));
                 $('#lang').val(ed.dom.getAttrib(n, 'lang'));
                 $('#usemap').val(ed.dom.getAttrib(n, 'usemap'));
+                $('#loading').val(ed.dom.getAttrib(n, 'loading'));
 
                 $('#insert').button('option', 'label', ed.getLang('update', 'Update'));
 
@@ -258,7 +259,7 @@
             };
 
             // set attributes
-            $.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc'], function (i, k) {
+            $.each(['src', 'width', 'height', 'alt', 'title', 'classes', 'style', 'id', 'dir', 'lang', 'usemap', 'longdesc', 'loading'], function (i, k) {
                 v = $('#' + k + ':enabled').val();
 
                 if (k == 'src') {
