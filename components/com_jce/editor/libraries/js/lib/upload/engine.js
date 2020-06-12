@@ -110,7 +110,8 @@
                 } catch (e) {
                     // malformed JSON
                     if (data.indexOf('{') !== -1) {
-                        data = 'The server returned an invalid JSON response.';
+                        //data = 'The server returned an invalid JSON response.';
+                        data = $('<textarea />').html(data).text();
                     }
 
                     this.error(500, data);
