@@ -185,9 +185,9 @@
                 var n = e.target,
                     p = n.parentNode;
 
-                    if ($(n).hasClass('ui-sortable-handle')) {
-                        return;
-                    }
+                if ($(n).hasClass('ui-sortable-handle')) {
+                    return;
+                }
 
                 // move to parent if target is span or i (size, date, thumbnail)
                 if ($(n).is('.uk-icon, span, a, img')) {
@@ -230,6 +230,16 @@
                     } else {
                         self._removeSelectedItems([p.parentNode], true);
                     }
+
+                    p = $(n).parents('li');
+
+                    // get serialized object
+                    self.serializeItemData(p).then(function (data) {
+                        data.state = $(n).is(':checked');
+                        
+                        // trigger event
+                        self._trigger('onFileToggle', [p, data]);
+                    });
 
                     return true;
                 }
@@ -463,9 +473,10 @@
             // Setup refresh button
             $('#refresh').on('click', function (e) {
                 self.refresh(e);
-            }).on('button:refresh', function() {
+            }).on('button:refresh', function () {
                 $('.uk-icon', this).toggleClass('uk-icon-spinner');
-                $(this).prop('disabled', function() {
+
+                $(this).prop('disabled', function () {
                     return !this.disabled;
                 });
             });
@@ -1717,7 +1728,7 @@
                             if (!$(this).hasClass('file')) {
                                 return true;
                             }
-                            
+
                             var url = $(this).data('url');
 
                             if (url.indexOf('://') === -1) {
@@ -2974,6 +2985,10 @@
 
         $(this).on('filebrowser:refresh', function () {
             return instance.refresh();
+        });
+
+        $(this).on('filebrowser:sort', function () {
+            return instance._showItemDetails();
         });
 
         // expose FileBrowser functions
