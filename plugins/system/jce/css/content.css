@@ -127,3 +127,6 @@
 /*[data-wf-columns]>div>figure>figcaption:empty::after {
     color: #fff;
 }*/
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
+}
