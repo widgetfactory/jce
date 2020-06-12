@@ -405,6 +405,8 @@ html {
     line-height: 2em;
     margin: 0;
     top: 0;
+
+    color: #666;
 }
 
 .uk-form-icon-flip>[class*="uk-icon-"],
