@@ -28,6 +28,7 @@
 .uk-navbar .uk-button label {
   font-size: 1rem;
   cursor: pointer;
+  pointer-events: none;
 }
 
 .uk-navbar-content {
