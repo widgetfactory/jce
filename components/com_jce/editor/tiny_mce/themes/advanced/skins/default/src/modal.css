@@ -400,7 +400,7 @@
 .mceModal .mce-modal-portrait-768,
 .mceModal .mce-modal-portrait-full {
     width: calc(100% - 40px);
-   /* min-height: calc(100vh - 20px);
+    /* min-height: calc(100vh - 20px);
     height: auto;*/
     height: calc(100vh - 20px);
     max-height: 768px;
@@ -564,24 +564,52 @@
     }
 }
 
-.mceModalContent .mceButton.mceClear {
+.mceModalContent .mceButton.mceClear,
+.mceModalContent .mceButton.mceButtonPicker {
     position: absolute;
     right: 0;
     top: 0;
     z-index: 1;
-    font-weight: bold;
-    color: #888;
-
     background: transparent;
     border-color: transparent;
 }
 
-.mceModalContent .mceButton.mceClear:hover {
+.mceModalContent .mceButton.mceClear:after {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 1.25em;
+    font-weight: bold;
+    line-height: 1;
+    margin: 0 2px 0 0;
+    text-align: center;
+    text-decoration: none;
+    content: "\00d7";
+    color: #999;
+}
+
+.mceModalContent .mceButton.mceButtonPicker .mceIcon {
+    color: #999;
+}
+
+.mceModalContent .mceButtonPicker+.mceClear {
+    right: 32px;
+}
+
+.mceModalContent .mceButton.mceClear:hover,
+.mceModalContent .mceButton.mceButtonPicker:hover {
     background-color: transparent;
     border-color: transparent;
     color: #444;
 }
 
-.mceModalContent .mceFormControl .mceClear ~ .mceTextBox {
+.mceModalContent .mceButton.mceButtonPicker:hover .mceIcon {
+    color: #444;
+}
+
+.mceModalContent .mceFormControl .mceButton~.mceTextBox {
     padding-right: 32px;
+}
+
+.mceModalContent .mceFormControl .mceButton+.mceButton~.mceTextBox {
+    padding-right: 64px;
 }
