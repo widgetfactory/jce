@@ -19,8 +19,7 @@
                 return /mce-item-/.test(cls);
             }
 
-            // Register commands
-            ed.addCommand('mceImageManager', function () {
+            function openDialog() {
                 // Internal image object like a flash placeholder
                 var n = ed.selection.getNode();
 
@@ -38,6 +37,15 @@
                 }, {
                     plugin_url: url
                 });
+            }
+
+            ed.addCommand('mceImageManager', function () {
+                openDialog();
+            });
+
+            // Register commands
+            ed.addCommand('mceImage', function () {
+                openDialog();
             });
 
             // Register buttons
