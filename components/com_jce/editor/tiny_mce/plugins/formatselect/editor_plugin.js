@@ -47,6 +47,10 @@
 
             // map format options to array of node names
             each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (v, k) {
+                if (k === 'span') {
+                    return;
+                }
+                
                 nodes.push(k.toUpperCase());
             });
 
