@@ -153,9 +153,11 @@
                     return false;
                 }
 
-                var params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter'];
+                var params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter', 'mediatype'];
 
-                if (!checkMimeType(file, params.filter || 'images')) {
+                var filter = params.filter || params.mediatype || 'images'
+
+                if (!checkMimeType(file, filter)) {
                     alert('The selected file is not supported.');
                     return false;
                 }
@@ -265,5 +267,8 @@
         });  
 
         $('.wf-media-input-upload').WfMediaUpload();
+
+        // remove modal heading
+        $('.field-media-wrapper .modal-header h3').html('&nbsp;');
     });   
 })(jQuery);
