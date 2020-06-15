@@ -254,6 +254,16 @@ class WFEditorPlugin extends JObject
     }
 
     /**
+     * Return the plugin name.
+     *
+     * @return string
+     */
+    public function getCaller()
+    {
+        return $this->get('caller');
+    }
+
+    /**
      * Get default values for a plugin.
      * Key / Value pairs will be retrieved from the profile or plugin manifest.
      *
