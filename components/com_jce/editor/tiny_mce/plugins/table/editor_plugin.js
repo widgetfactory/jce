@@ -168,7 +168,7 @@
 
                     // Add something to the inner node
                     if (curNode) {
-                        curNode.innerHTML = tinymce.isIE && !tinymce.isIE11 ? '&nbsp;' : '<br data-mce-bogus="1" />';
+                        curNode.innerHTML = '<br data-mce-bogus="1" />';
                     }
                     return false;
                 }
@@ -870,7 +870,7 @@
                 }
             }
 
-            ed.onPreInit.add(function() {
+            ed.onPreInit.add(function () {
                 ed.onSetContent.add(function (ed, e) {
                     cleanup(true);
                 });
@@ -1403,7 +1403,7 @@
                                     ed.getBody(),
                                     ed.settings.forced_root_block,
                                     ed.settings.forced_root_block_attrs,
-                                    tinymce.isIE && tinymce.isIE < 10 ? '&nbsp;' : '<br data-mce-bogus="1" />'
+                                    '<br data-mce-bogus="1" />'
                                 );
                             } else {
                                 ed.dom.add(ed.getBody(), 'br', {
@@ -2091,11 +2091,9 @@
                     var cols = DOM.select('td.selected', rows[y]).length;
 
                     for (var x = 0; x < cols; x++) {
-                        if (!tinymce.isIE)
-                            html += '<td><br data-mce-bogus="1"/></td>';
-                        else
-                            html += '<td></td>';
+                        html += '<td><br data-mce-bogus="1"/></td>';
                     }
+
                     html += "</tr>";
                 }
                 html += "</table>";

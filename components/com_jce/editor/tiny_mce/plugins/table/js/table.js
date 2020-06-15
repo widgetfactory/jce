@@ -301,7 +301,7 @@
         updateClasses: function (values) {
             values = values.replace(/(?:^|\s)mce-item-(\w+)(?!\S)/g, '');
             values = $.trim(values);
-            
+
             $('#classes').val(values).trigger('change');
         },
         initTable: function () {
@@ -660,9 +660,7 @@
                 if (!capEl && caption) {
                     capEl = elm.ownerDocument.createElement('caption');
 
-                    if (!tinymce.isIE || tinymce.isIE11) {
-                        capEl.innerHTML = '<br data-mce-bogus="1"/>';
-                    }
+                    capEl.innerHTML = '<br data-mce-bogus="1"/>';
 
                     elm.insertBefore(capEl, elm.firstChild);
                 }
@@ -718,22 +716,14 @@
             html += '>';
 
             if (caption) {
-                if (!tinymce.isIE || tinymce.isIE11) {
-                    html += '<caption><br data-mce-bogus="1" /></caption>';
-                } else {
-                    html += '<caption></caption>';
-                }
+                html += '<caption><br data-mce-bogus="1" /></caption>';
             }
 
             for (var y = 0; y < rows; y++) {
                 html += "<tr>";
 
                 for (var x = 0; x < cols; x++) {
-                    if (!tinymce.isIE || tinymce.isIE11) {
-                        html += '<td><br data-mce-bogus="1" /></td>';
-                    } else {
-                        html += '<td></td>';
-                    }
+                    html += '<td><br data-mce-bogus="1" /></td>';
                 }
                 html += "</tr>";
             }
