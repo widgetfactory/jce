@@ -2903,10 +2903,6 @@ select.mceNativeListBox {
     color: #999;
 }
 
-.mceModalContent .mceButtonPicker+.mceClear {
-    right: 32px;
-}
-
 .mceModalContent .mceButton.mceClear:hover,
 .mceModalContent .mceButton.mceButtonPicker:hover {
     background-color: transparent;
@@ -2918,12 +2914,8 @@ select.mceNativeListBox {
     color: #444;
 }
 
-.mceModalContent .mceFormControl .mceButton~.mceTextBox {
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker {
     padding-right: 32px;
-}
-
-.mceModalContent .mceFormControl .mceButton+.mceButton~.mceTextBox {
-    padding-right: 64px;
 }.mceForm {
     height: 100%;
     display: flex;
