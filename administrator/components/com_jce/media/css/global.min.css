@@ -16,6 +16,14 @@
 .ui-jce .checkboxes input {
   float: initial;
 }
+.ui-jce .well-light {
+  background-color: #fafafa;
+}
+.ui-jce .form-field-container legend {
+  line-height: 2em;
+  font-size: 1.25em;
+  font-weight: bold;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
