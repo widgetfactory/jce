@@ -54,6 +54,179 @@
 
             ed.addShortcut('meta+k', 'link.desc', 'mceLink');
 
+            var urlCtrl, textCtrl;
+
+            function createLink(data) {
+                var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'A');
+
+                if (!data.url) {
+                    if (anchor && anchor.nodeName === 'A') {
+                        ed.execCommand('unlink', false);
+                    }
+
+                    return false;
+                }
+
+                if (!data.text) {
+                    return false;
+                }
+
+                // add missing protocol
+                if (/^\s*www\./i.test(data.url)) {
+                    data.url = 'https://' + data.url;
+                }
+
+                var args = {
+                    'href': data.url,
+                    'target': '_blank'
+                };
+
+                // set default target
+                if (ed.settings.default_link_target) {
+                    args['target'] = ed.settings.default_link_target;
+                }
+
+                // no selection, so create a link from the url
+                if (ed.selection.isCollapsed()) {
+                    ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, data.text));
+                    // apply link to selection
+                } else {
+                    ed.execCommand('mceInsertLink', false, args);
+
+                    if (anchor && anchor.nodeName === 'A') {
+                        anchor.textContent = data.text;
+                    }
+                }
+
+                ed.undoManager.add();
+                ed.nodeChanged();
+            }
+
+            ed.onPreInit.add(function () {
+                var params = ed.getParam('link', {});
+                
+                if (params.simplelink !== true) {
+                    return;
+                }
+
+                var cm = ed.controlManager, form = cm.createForm('link_form');
+
+                urlCtrl = cm.createTextBox('link_url', {
+                    label: ed.getLang('url', 'URL'),
+                    name: 'url',
+                    clear: true,
+                    attributes: {
+                        required: true
+                    }
+                });
+
+                form.add(urlCtrl);
+
+                textCtrl = cm.createTextBox('link_text', {
+                    label: ed.getLang('link.text', 'Text'),
+                    name: 'text',
+                    clear: true,
+                    attributes: {
+                        required: true
+                    }
+                });
+
+                form.add(textCtrl);
+
+                // Register commands
+                ed.addCommand('mceLink', function () {
+                    ed.windowManager.open({
+                        title: ed.getLang('link.desc', 'Link'),
+                        items: [form],
+                        size: 'mce-modal-landscape-small',
+                        open: function () {
+                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', text = '', state = true;
+
+                            if (!ed.selection.isCollapsed()) {
+                                if (node) {
+                                    node = ed.dom.getParent(node, 'A') || node;
+
+                                    text = ed.selection.getContent({
+                                        format: 'text'
+                                    });
+
+                                    src = ed.dom.getAttrib(node, 'href');
+
+                                    if (src) {
+                                        label = ed.getLang('update', 'Update');
+                                    }
+
+                                    var shortEnded = ed.schema.getShortEndedElements();
+
+                                    // reset node in IE if the link is the first element
+                                    if (tinymce.isIE || tinymce.isIE11) {
+                                        var start = ed.selection.getStart(),
+                                            end = ed.selection.getEnd();
+
+                                        if (start === end && start.nodeName === "A") {
+                                            node = start;
+                                        }
+                                    }
+
+                                    // node is a link
+                                    if (node.nodeName === "A") {
+                                        var nodes = node.childNodes,
+                                            i;
+
+                                        if (nodes.length === 0) {
+                                            state = false;
+                                        } else {
+                                            for (i = nodes.length - 1; i >= 0; i--) {
+                                                if (nodes[i].nodeType !== 3) {
+                                                    state = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        // selection is a shortEnded element, eg: img
+                                    } else if (shortEnded[node.nodeName]) {
+                                        state = false;
+                                        // selection contains some html
+                                    } else if (/</.test(ed.selection.getContent())) {
+                                        state = false;
+                                    }
+                                }
+                            }
+
+                            urlCtrl.value(src);
+
+                            textCtrl.value(text);
+                            textCtrl.setDisabled(!state);
+
+                            window.setTimeout(function () {
+                                urlCtrl.focus();
+                            }, 10);
+
+                            DOM.setHTML(this.id + '_insert', label);
+                        },
+                        buttons: [
+                            {
+                                title: ed.getLang('common.cancel', 'Cancel'),
+                                id: 'cancel'
+                            },
+                            {
+                                title: ed.getLang('insert', 'Insert'),
+                                id: 'insert',
+                                onsubmit: function (e) {
+                                    var data = form.submit();
+
+                                    Event.cancel(e);
+
+                                    createLink(data);
+                                },
+                                classes: 'primary',
+                                scope: self
+                            }
+                        ]
+                    });
+                });
+            });
+
             ed.onInit.add(function () {
                 if (ed && ed.plugins.contextmenu) {
                     ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
@@ -68,7 +241,7 @@
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
                 var link = isLink(n), anchor = isAnchor(n);
-                
+
                 // set active if link
                 cm.setActive('unlink', link);
                 cm.setActive('link', link);
@@ -84,11 +257,13 @@
                 return null;
             }
 
-            if (ed.settings.link_quicklink === false) {
+            var params = ed.getParam('link', {});
+
+            if (params.quicklink === false || params.simplelink === true) {
                 // Register buttons
                 return cm.createButton('link', {
-                    title : 'link.desc',
-                    cmd : 'mceLink'
+                    title: 'link.desc',
+                    cmd: 'mceLink'
                 });
             }
 
@@ -122,46 +297,6 @@
                 return;
             }
 
-            function insertLink(value) {
-                if (!value) {
-                    ed.execCommand('unlink', false);
-                    return;
-                }
-
-                var href = value;
-                
-                // add missing protocol
-                if (/^\s*www\./i.test(href)) {
-                    href = 'https://' + href;
-                }
-
-                var args = {
-                    'href': href
-                };
-
-                // get parameter defaults
-                var params = ed.getParam('link', {});
-
-                // extended args with parameter defaults
-                args = tinymce.extend(args, params);
-
-                // set default target
-                if (ed.settings.default_link_target) {
-                    args['target'] = ed.settings.default_link_target;
-                }
-
-                // no selection, so create a link from the url
-                if (ed.selection.isCollapsed()) {
-                    ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, value));
-                    // apply link to selection
-                } else {
-                    ed.execCommand('mceInsertLink', false, args);
-                }
-
-                ed.undoManager.add();
-                ed.nodeChanged();
-            }
-
             ctrl.onRenderMenu.add(function (c, m) {
                 var item = m.add({
                     onclick: function (e) {
@@ -178,7 +313,7 @@
 
                         if (ed.dom.hasClass(n, 'mceButtonLink')) {
                             var value = DOM.getValue(ed.id + '_link_input');
-                            insertLink(value);
+                            createLink({url : value, text : value});
                         }
 
                         if (ed.dom.hasClass(n, 'mceButtonUnlink')) {

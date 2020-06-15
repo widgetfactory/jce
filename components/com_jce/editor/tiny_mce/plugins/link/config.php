@@ -15,7 +15,11 @@ class WFLinkPluginConfig
         require_once __DIR__ . '/link.php';
 
         $plugin = new WFLinkPlugin();
-        $config = $plugin->getDefaults();
+        $attributes = $plugin->getDefaults();
+
+        $config = array(
+            'attributes' => $plugin->getDefaults()
+        );
 
         // expose globally for use by Autolink and Clipboard
         $settings['default_link_target'] = $plugin->getParam('link.target', '');
@@ -25,7 +29,11 @@ class WFLinkPluginConfig
         $settings['autolink_url'] = $plugin->getParam('link.autolink_url', 1, 1);
 
         if ($plugin->getParam('link.quicklink', 1) == 0) {
-            $settings['link_quicklink'] = false;
+            $config['quicklink'] = false;
+        }
+
+        if ($plugin->getParam('link.simplelink', 0) == 1) {
+            $config['simplelink'] = true;
         }
 
         $settings['link'] = $config;

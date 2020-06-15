@@ -31,6 +31,7 @@
                     <option value="ltr">WF_OPTION_LTR</option>
                     <option value="rtl">WF_OPTION_RTL</option>
                 </field>
+
                 <field type="text" name="hreflang" default="" size="50" label="WF_LABEL_HREFLANG" description="WF_LABEL_HREFLANG_DESC" />
                 <field type="text" name="lang" default="" size="50" label="WF_LABEL_LANG" description="WF_LABEL_LANG_DESC" />
                 <field type="text" name="charset" default="" size="50" label="WF_LABEL_CHARSET" description="WF_LABEL_CHARSET_DESC" />
@@ -76,10 +77,60 @@
                 <field type="text" name="accesskey" default="" size="50" label="WF_LABEL_ACCESSKEY" description="WF_LABEL_ACCESSKEY_DESC" />
             </fieldset>
 
-            <field name="file_browser" type="yesno" default="1" label="WF_LINK_PARAM_FILE_BROWSER" description="WF_LINK_PARAM_FILE_BROWSER_DESC">
+            <field name="file_browser" type="yesno" default="1" label="WF_LINK_PARAM_FILE_BROWSER" description="WF_LINK_PARAM_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+
+            <!--field type="container" label="WF_PARAM_FILE_BROWSER_OPTIONS" showon="file_browser:1">
+                <field name="dir" type="text" default="" size="50" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
+                <field name="max_size" class="input-small" hint="1024" max="" type="uploadmaxsize" step="128" label="WF_PARAM_UPLOAD_SIZE" description="WF_PARAM_UPLOAD_SIZE_DESC" />
+                <field name="extensions" type="extension" class="extensions create" default="windowsmedia=avi,wmv,wm,asf,asx,wmx,wvx;quicktime=mov,qt,mpg,mpeg;flash=swf;shockwave=dcr;real=rm,ra,ram;divx=divx;video=mp4,ogv,ogg,webm;audio=mp3,ogg,webm,wav,m4a;silverlight=xap" label="WF_PARAM_EXTENSIONS" description="WF_PARAM_EXTENSIONS_DESC" />
+                <field name="filesystem" type="filesystem" default="" label="WF_PARAM_FILESYSTEM" description="WF_PARAM_FILESYSTEM_DESC">
+                    <option value="">WF_OPTION_INHERIT</option>
+                </field>
+
+                <field name="upload" type="yesno" default="1" label="WF_PARAM_UPLOAD" description="WF_PARAM_UPLOAD_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="folder_new" type="yesno" default="1" label="WF_PARAM_FOLDER_CREATE" description="WF_PARAM_FOLDER_CREATE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="folder_delete" type="yesno" default="1" label="WF_PARAM_FOLDER_DELETE" description="WF_PARAM_FOLDER_DELETE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="folder_rename" type="yesno" default="1" label="WF_PARAM_FOLDER_RENAME" description="WF_PARAM_FOLDER_RENAME_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="folder_move" type="yesno" default="1" label="WF_PARAM_FOLDER_PASTE" description="WF_PARAM_FOLDER_PASTE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="file_delete" type="yesno" default="1" label="WF_PARAM_FILE_DELETE" description="WF_PARAM_FILE_DELETE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="file_rename" type="yesno" default="1" label="WF_PARAM_FILE_RENAME" description="WF_PARAM_FILE_RENAME_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                
+                <field name="file_move" type="yesno" default="1" label="WF_PARAM_FILE_PASTE" description="WF_PARAM_FILE_PASTE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </field-->
+
             <field name="tabs_advanced" type="yesno" default="1" label="WF_LINK_PARAM_TAB_ADVANCED" description="WF_LINK_PARAM_TAB_ADVANCED_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
