@@ -25,6 +25,14 @@ class WFImgmanagerPluginConfig
             );
         }
 
+        if ($plugin->getParam('simpleimage', 1) == 1) {
+            $config['simpleimage'] = true;
+
+            if ($plugin->getParam('simpleimage_filebrowser', 1) == 1) {
+                $config['simpleimage_filebrowser'] = true;
+            }
+        }
+
         $settings['imgmanager'] = $config;
     }
 }
