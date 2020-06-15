@@ -260,7 +260,8 @@
 .mceModernSkin span.mce_file-ogg:before,
 .mceModernSkin span.mce_file-ogv:before,
 .mceModernSkin span.mce_file-webm:before,
-.mceModernSkin span.mce_file-video:before {
+.mceModernSkin span.mce_file-video:before,
+.mceModernSkin span.mce_video:before {
     content: "\e9b5";
 }
 
@@ -375,11 +376,8 @@
 }
 
 .mceModernSkin span.mce_film:before,
-.mceModernSkin span.mce_file-media:before,
-.mceModernSkin span.mce_file-video:before,
 .mceModernSkin span.mce_media:before,
-.mceModernSkin span.mce_mediamanager:before,
-.mceModernSkin span.mce_video:before {
+.mceModernSkin span.mce_mediamanager:before {
     content: "\e95e";
 }
 
@@ -400,7 +398,8 @@
 .mceModernSkin span.mce_file-svg:before,
 .mceModernSkin span.mce_file-tiff:before,
 .mceModernSkin span.mce_file-image:before,
-.mceModernSkin span.mce_file-picture:before {
+.mceModernSkin span.mce_file-picture:before,
+.mceModernSkin span.mce_img:before {
     content: "\e9af";
 }
 
@@ -898,6 +897,11 @@
 
 .mceModernSkin span.mce_joomla:before {
     content: "\eab5";
+}
+
+.mceModernSkin span.mce_file_link:before,
+.mceModernSkin span.mce_lnk:before {
+  content: "\e910";
 }
 
 .mceModernSkin span.mce_spinner:before {
