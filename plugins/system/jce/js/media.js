@@ -111,6 +111,7 @@
         };
 
         var mimes = map[filter] || filter;
+        var name = file.name.toLowerCase();
 
         return new RegExp('\.(' + mimes.split(',').join('|') + ')$', 'i').test(file.name);
     }
