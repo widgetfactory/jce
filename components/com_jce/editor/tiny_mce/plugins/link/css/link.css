@@ -56,6 +56,16 @@
     content: "\eca0";
 }
 
+.uk-tree {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.uk-tree li {
+    flex: 1 0 auto;
+    width: 100%;
+}
+
 .uk-tree-node li {
     position: relative;
 }
