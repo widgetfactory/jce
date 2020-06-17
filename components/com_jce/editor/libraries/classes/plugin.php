@@ -271,7 +271,7 @@ class WFEditorPlugin extends JObject
      *
      * @return array
      */
-    public function getDefaults($defaults = array(), $exclude = array())
+    public function getDefaults($fieldset = 'defaults', $options = array())
     {
         $name   = $this->getName();
         $caller = $this->get('caller');
@@ -280,13 +280,33 @@ class WFEditorPlugin extends JObject
             $name = $caller;
         }
 
+        $defaults   = array();
+        $exclude    = array();
+
+        if (isset($options['defaults'])) {
+            $defaults = $options['defaults'];
+        }
+
+        if (isset($options['exclude'])) {
+            $exclude = $options['exclude'];
+        }
+
         // get manifest path
         $manifest = $this->get('base_path') . '/' . $name . '.xml';
 
+        // use the plugin name as the form if
+        $form_id = $name;
+
+        if (isset($options['manifest'])) {
+            $manifest = $options['manifest'];
+            // create extension specific form id
+            $form_id .= '.' . basename($manifest, '.xml');
+        }
+
         // get parameter defaults
-        if (is_file($manifest)) {
-            $form   = JForm::getInstance('com_jce.plugin.' . $name, $manifest, array('load_data' => false), true, '//extension');
-            $fields = $form->getFieldset('defaults');
+        if (is_file($manifest)) {            
+            $form   = JForm::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
+            $fields = $form->getFieldset($fieldset);
             
             foreach($fields as $field) {
                 $key = $field->getAttribute('name');
