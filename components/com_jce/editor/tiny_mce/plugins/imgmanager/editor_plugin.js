@@ -8,11 +8,13 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event;
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend;
 
     tinymce.create('tinymce.plugins.ImageManager', {
         init: function (ed, url) {
             this.editor = ed;
+
+            var self = this;
 
             function isMceItem(n) {
                 var cls = ed.dom.getAttrib(n, 'class', '');
@@ -39,6 +41,75 @@
                 });
             }
 
+            function getImageProps(value) {
+                return new Promise(function (resolve, reject) {
+
+                    if (!value) {
+                        return resolve();
+                    }
+
+                    var img = new Image();
+
+                    img.onload = function () {
+                        resolve({width : img.width, height : img.height});
+                    };
+
+                    img.onerror = function () {
+                        reject();
+                    };
+
+                    img.src = ed.documentBaseURI.toAbsolute(value);
+                });
+            }
+
+            function insertImage(args) {
+                var node = ed.selection.getNode();
+
+                if (node && node.nodeName === 'IMG') {
+                    ed.dom.setAttribs(node, args);
+                } else {
+                    ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
+                        skip_undo: 1
+                    });
+
+                    node = ed.dom.get('__mce_tmp');
+
+                    ed.dom.setAttribs(node, args);
+                    ed.dom.setAttrib(node, 'id', '');
+                }
+
+                ed.selection.select(node);
+
+                ed.undoManager.add();
+                ed.nodeChanged();
+            }
+
+            function getDataAndInsert(args) {
+                var params = ed.getParam('imgmanager', {});
+
+                return new Promise(function (resolve, reject) {
+
+                    if (params.always_include_dimensions) {
+                        ed.setProgressState(true);
+                        
+                        getImageProps(args.src).then(function (data) {
+                            ed.setProgressState(false);
+
+                            // insert with passed in data
+                            insertImage(extend(args, data));
+
+                            resolve();
+                        }, function () {
+                            ed.setProgressState(false);
+                            reject();
+                        });
+                    } else {
+                        insertImage(args);
+                        resolve();
+                    }
+                });
+            }
+
             ed.addCommand('mceImageManager', function () {
                 openDialog();
             });
@@ -61,7 +132,7 @@
             ed.onPreInit.add(function () {
                 var params = ed.getParam('imgmanager', {});
 
-                if (params.simpleimage !== true) {
+                if (params.basic_dialog !== true) {
                     return;
                 }
 
@@ -73,7 +144,7 @@
                     clear: true
                 };
 
-                if (params.simpleimage_filebrowser) {
+                if (params.basic_dialog_filebrowser) {
                     tinymce.extend(args, {
                         picker: true,
                         picker_icon: 'image',
@@ -84,6 +155,10 @@
                                     if (data.length) {
                                         var src = data[0].url, title = data[0].title;
                                         urlCtrl.value(src);
+
+                                        // clean up title by removing extension
+                                        title = title.replace(/\.[^.]+$/i, '');
+
                                         descriptionCtrl.value(title);
 
                                         window.setTimeout(function () {
@@ -91,7 +166,7 @@
                                         }, 10);
                                     }
                                 },
-                                filter: 'images'
+                                filter: params.filetypes || 'images'
                             });
                         }
                     });
@@ -109,12 +184,12 @@
 
                 form.add(descriptionCtrl);
 
-                captionCtrl = cm.createCheckBox('image_caption', {
+                /*captionCtrl = cm.createCheckBox('image_caption', {
                     label: ed.getLang('image.caption', 'Caption'),
                     name: 'caption'
                 });
 
-                form.add(captionCtrl);
+                form.add(captionCtrl);*/
 
                 // Register commands
                 ed.addCommand('mceImage', function () {
@@ -143,7 +218,10 @@
 
                             urlCtrl.value(src);
                             descriptionCtrl.value(alt);
-                            captionCtrl.checked(caption);
+
+                            if (captionCtrl) {
+                                captionCtrl.checked(caption);
+                            }
 
                             window.setTimeout(function () {
                                 urlCtrl.focus();
@@ -173,48 +251,37 @@
                                         return false;
                                     }
 
-                                    if (node && node.nodeName === 'IMG') {
-                                        ed.dom.setAttribs(node, {
-                                            src: data.url,
-                                            alt: data.alt
-                                        });
-                                    } else {
-                                        ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
-                                            skip_undo: 1
-                                        });
+                                    var args = {
+                                        src: data.url,
+                                        alt: data.alt
+                                    };
 
-                                        node = ed.dom.get('__mce_tmp');
+                                    args = extend(args, self.getAttributes(params.attributes || {}));
 
-                                        ed.dom.setAttribs(node, {
-                                            src: data.url,
-                                            alt: data.alt
-                                        });
+                                    getDataAndInsert(args).then(function () {
+                                        node = ed.selection.getNode()
 
-                                        ed.dom.setAttrib(node, 'id', '');
-                                    }
+                                        if (captionCtrl) {
+                                            var figcaption = ed.dom.getNext(node, 'figcaption');
 
-                                    ed.selection.select(node);
-                                    var figcaption = ed.dom.getNext(node, 'figcaption');
+                                            if (data.caption && data.alt) {
+                                                if (!figcaption) {
+                                                    ed.selection.select(node);
 
-                                    if (data.caption && data.alt) {
-                                        if (!figcaption) {
-                                            ed.selection.select(node);
-
-                                            ed.formatter.apply('figure', {
-                                                'caption': data.alt
-                                            });
-                                        } else {
-                                            figcaption.textContent = data.alt;
+                                                    ed.formatter.apply('figure', {
+                                                        'caption': data.alt
+                                                    });
+                                                } else {
+                                                    figcaption.textContent = data.alt;
+                                                }
+                                            } else {
+                                                if (figcaption) {
+                                                    ed.dom.remove(figcaption.parentNode, 1);
+                                                    ed.dom.remove(figcaption);
+                                                }
+                                            }
                                         }
-                                    } else {
-                                        if (figcaption) {
-                                            ed.dom.remove(figcaption.parentNode, 1);
-                                            ed.dom.remove(figcaption);
-                                        }
-                                    }
-
-                                    ed.undoManager.add();
-                                    ed.nodeChanged();
+                                    });
                                 },
                                 classes: 'primary',
                                 scope: self
@@ -237,6 +304,45 @@
             });
         },
 
+        getAttributes: function (data) {
+            var ed = this.editor;
+
+            var attr = { 'style': {} };
+
+            // supported attributes
+            var supported = ['alt', 'title', 'id', 'dir', 'class', 'usemap', 'style', 'longdesc', 'loading'];
+
+            // get styles object
+            if (data.styles) {
+                // serialize to string and parse to object
+                var s = ed.dom.parseStyle(ed.dom.serializeStyle(data.styles));
+
+                // extend args.style object
+                tinymce.extend(attr.style, s);
+
+                delete data.styles;
+            }
+
+            // get style attribute
+            if (data.style) {
+                // parse to object
+                var style = ed.dom.parseStyle(data.style);
+
+                // extend args.style object
+                tinymce.extend(attr.style, style);
+
+                delete data.style;
+            }
+
+            tinymce.each(supported, function (key) {
+                if (tinymce.is(data[key])) {
+                    attr[key] = data[key];
+                }
+            });
+
+            return attr;
+        },
+
         insertUploadedFile: function (o) {
             var ed = this.editor,
                 data = this.getUploadConfig();
@@ -249,36 +355,7 @@
                         'style': {}
                     };
 
-                    // supported attributes
-                    var attribs = ['alt', 'title', 'id', 'dir', 'class', 'usemap', 'style', 'longdesc', 'loading'];
-
-                    // get styles object
-                    if (o.styles) {
-                        // serialize to string and parse to object
-                        var s = ed.dom.parseStyle(ed.dom.serializeStyle(o.styles));
-
-                        // extend args.style object
-                        tinymce.extend(args.style, s);
-
-                        delete o.styles;
-                    }
-
-                    // get style attribute
-                    if (o.style) {
-                        // parse to object
-                        var s = ed.dom.parseStyle(o.style);
-
-                        // extend args.style object
-                        tinymce.extend(args.style, s);
-
-                        delete o.style;
-                    }
-
-                    tinymce.each(attribs, function (k) {
-                        if (typeof o[k] !== 'undefined') {
-                            args[k] = o[k];
-                        }
-                    });
+                    args = extend(args, this.getAttributes(data));
 
                     return ed.dom.create('img', args);
                 }

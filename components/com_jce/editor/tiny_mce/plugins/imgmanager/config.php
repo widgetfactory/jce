@@ -18,19 +18,26 @@ class WFImgmanagerPluginConfig
 
         $config = array();
 
+        $filetypes = $plugin->getFileTypes();
+
         if ($plugin->getParam('inline_upload', 1)) {
             $config['upload'] = array(
                 'max_size' => $plugin->getParam('max_size', 1024),
-                'filetypes' => $plugin->getFileTypes(),
+                'filetypes' => $filetypes,
             );
         }
 
-        if ($plugin->getParam('simpleimage', 0) == 1) {
-            $config['simpleimage'] = true;
+        if ($plugin->getParam('basic_dialog', 0) == 1) {
+            $config['basic_dialog'] = true;
 
-            if ($plugin->getParam('simpleimage_filebrowser', 1) == 1) {
-                $config['simpleimage_filebrowser'] = true;
+            if ($plugin->getParam('basic_dialog_filebrowser', 1) == 1) {
+                $config['basic_dialog_filebrowser'] = true;
+                $config['filetypes'] = $filetypes;
             }
+
+            $config['always_include_dimensions'] = $plugin->getParam('always_include_dimensions', 0);
+
+            $config['attributes'] = $plugin->getAtttributes();
         }
 
         $settings['imgmanager'] = $config;
