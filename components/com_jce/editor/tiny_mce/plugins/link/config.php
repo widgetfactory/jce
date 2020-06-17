@@ -32,8 +32,8 @@ class WFLinkPluginConfig
             $config['quicklink'] = false;
         }
 
-        if ($plugin->getParam('link.simplelink', 0) == 1) {
-            $config['simplelink'] = true;
+        if ($plugin->getParam('link.basic_dialog', 0) == 1) {
+            $config['basic_dialog'] = true;
         }
 
         $settings['link'] = $config;

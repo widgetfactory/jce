@@ -105,7 +105,7 @@
             ed.onPreInit.add(function () {
                 var params = ed.getParam('link', {});
                 
-                if (params.simplelink !== true) {
+                if (params.basic_dialog !== true) {
                     return;
                 }
 
@@ -259,7 +259,7 @@
 
             var params = ed.getParam('link', {});
 
-            if (params.quicklink === false || params.simplelink === true) {
+            if (params.quicklink === false || params.basic_dialog === true) {
                 // Register buttons
                 return cm.createButton('link', {
                     title: 'link.desc',

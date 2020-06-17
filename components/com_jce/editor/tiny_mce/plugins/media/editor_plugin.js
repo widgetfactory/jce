@@ -1004,7 +1004,9 @@
                         case 'seamless':
                         // needed for Youtube iframes!
                         case 'allowfullscreen':
-                            attribs[k] = k;
+                            if (!!v) {
+                                attribs[k] = k;
+                            }
                             break;
                         case 'frameborder':
                             // remove in html5

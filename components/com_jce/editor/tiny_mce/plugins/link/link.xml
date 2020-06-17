@@ -77,7 +77,17 @@
                 <field type="text" name="accesskey" default="" size="50" label="WF_LABEL_ACCESSKEY" description="WF_LABEL_ACCESSKEY_DESC" />
             </fieldset>
 
-            <field name="file_browser" type="yesno" default="1" label="WF_LINK_PARAM_FILE_BROWSER" description="WF_LINK_PARAM_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
+            <field name="file_browser" type="yesno" default="1" label="WF_URL_FILE_BROWSER" description="WF_URL_FILE_BROWSER_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="basic_dialog" type="yesno" default="0" label="WF_PARAM_BASIC_DIALOG" description="WF_PARAM_BASIC_DIALOG_DESC" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="quicklink" type="yesno" default="1" label="WF_LINK_QUICKLINK" description="WF_LINK_QUICKLINK_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
@@ -130,18 +140,21 @@
                     <option value="0">JNO</option>
                 </field>
             </field-->
+            <field type="container" label="WF_PARAM_FILE_BROWSER_OPTIONS" showon="basic_dialog:0">
+                <field name="tabs_advanced" type="yesno" default="1" label="WF_LINK_PARAM_TAB_ADVANCED" description="WF_LINK_PARAM_TAB_ADVANCED_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
 
-            <field name="tabs_advanced" type="yesno" default="1" label="WF_LINK_PARAM_TAB_ADVANCED" description="WF_LINK_PARAM_TAB_ADVANCED_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-            <field name="attributes_anchor" type="yesno" default="1" label="WF_LINK_SHOW_ANCHOR" description="WF_LINK_SHOW_ANCHOR_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-            <field name="attributes_target" type="yesno" default="1" label="WF_LINK_SHOW_TARGET" description="WF_LINK_SHOW_TARGET_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+                <field name="attributes_anchor" type="yesno" default="1" label="WF_LINK_SHOW_ANCHOR" description="WF_LINK_SHOW_ANCHOR_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="attributes_target" type="yesno" default="1" label="WF_LINK_SHOW_TARGET" description="WF_LINK_SHOW_TARGET_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
             </field>
 
             <field name="autolink_email" type="yesno" default="1" label="WF_LINK_AUTOLINK_EMAIL" description="WF_LINK_AUTOLINK_EMAIL_DESC">
@@ -150,11 +163,6 @@
             </field>
 
             <field name="autolink_url" type="yesno" default="1" label="WF_LINK_AUTOLINK_URL" description="WF_LINK_AUTOLINK_URL_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="quicklink" type="yesno" default="1" label="WF_LINK_QUICKLINK" description="WF_LINK_QUICKLINK_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
