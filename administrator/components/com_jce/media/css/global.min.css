@@ -24,6 +24,9 @@
   font-size: 1.25em;
   font-weight: bold;
 }
+.ui-jce .controls .form-field-container:not(.inset) {
+  margin-left: -180px;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;

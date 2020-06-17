@@ -258,3 +258,7 @@ a.browser {
     width: auto;
     min-width: 160px;
 }
+
+.ui-jce .row-fluid .form-horizontal .control-label:empty {
+    min-width: inherit;
+}

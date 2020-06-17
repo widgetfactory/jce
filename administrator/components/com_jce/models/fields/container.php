@@ -68,7 +68,11 @@ class JFormFieldContainer extends JFormField
 
         $fields = $subForm->getFieldset();
 
-        $str[] = '<div class="form-field-container well well-small well-light p-4 bg-white">';
+        if ($this->class === 'inset') {
+            $this->class .= ' well well-small well-light p-4 bg-white';
+        }
+
+        $str[] = '<div class="form-field-container ' . $this->class . '">';
         $str[] = '  <fieldset class="form-field-container-group">';
 
         if ($this->element['label']) {
