@@ -1355,6 +1355,9 @@ class WFEditor
                         continue;
                     }
 
+                    // clean slashes
+                    $tmp = preg_replace('#[/\\\\]+#', '/', $tmp);
+
                     // Replace $template variable with site template name
                     $tmp = str_replace('$template', $template->name, $tmp);
 
@@ -1421,6 +1424,9 @@ class WFEditor
                     if (empty($tmp)) {
                         continue;
                     }
+
+                    // clean slashes
+                    $tmp = preg_replace('#[/\\\\]+#', '/', $tmp);
 
                     // Replace $template variable with site template name (defaults to 'system')
                     $tmp = str_replace('$template', $template->name, $tmp);
