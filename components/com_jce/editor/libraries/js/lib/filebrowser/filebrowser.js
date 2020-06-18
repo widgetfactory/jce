@@ -473,12 +473,14 @@
             // Setup refresh button
             $('#refresh').on('click', function (e) {
                 self.refresh(e);
-            }).on('button:refresh', function () {
-                $('.uk-icon', this).toggleClass('uk-icon-spinner');
-
-                $(this).prop('disabled', function () {
-                    return !this.disabled;
-                });
+            }).on('button:refresh', function (e, state) {                
+                if (state) {
+                    $('.uk-icon', this).addClass('uk-icon-spinner');
+                    $(this).prop('disabled', true);
+                } else {
+                    $('.uk-icon', this).removeClass('uk-icon-spinner');
+                    $(this).prop('disabled', false);
+                }
             });
 
             var showDetails = this._getState('details', 0, function (val) {
@@ -1070,7 +1072,7 @@
             // set state
             $('#browser-message').toggleClass(o.state);
 
-            $('#refresh').trigger('button:refresh');
+            $('#refresh').trigger('button:refresh', [o.state]);
 
             // set message
             $('.message', '#browser-message').html(o.message);
