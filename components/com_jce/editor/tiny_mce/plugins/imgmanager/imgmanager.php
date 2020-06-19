@@ -51,7 +51,7 @@ class WFImgManagerPlugin extends WFMediaManager
         $document->addScriptDeclaration('ImageManagerDialog.settings=' . json_encode($this->getSettings()) . ';');
     }
 
-    public function getAtttributes()
+    public function getAttributes()
     {
         $defaults = $this->getDefaults();
 
@@ -158,7 +158,9 @@ class WFImgManagerPlugin extends WFMediaManager
                 }
             }
 
-            $result = array_merge($result, $this->getAttributes());
+            $attribs = $this->getAttributes();
+
+            $result = array_merge($result, );
 
             return $result;
         }
