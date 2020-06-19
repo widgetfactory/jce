@@ -552,7 +552,7 @@
             var url = tinyMCEPopup.editor.documentBaseURI.toRelative(args.url);
             $('#href').val(url);
 
-            if ($('#text').data('text') == '') {
+            if ($('#text').data('text') == '' && !$('#text').prop('disabled')) {
                 $('#text').val(args.text);
             }
         },
