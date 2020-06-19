@@ -158,9 +158,7 @@ class WFImgManagerPlugin extends WFMediaManager
                 }
             }
 
-            $attribs = $this->getAttributes();
-
-            $result = array_merge($result, );
+            $result = array_merge($result, $this->getAttributes());
 
             return $result;
         }
