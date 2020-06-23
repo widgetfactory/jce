@@ -16,16 +16,18 @@
 
             var self = this;
 
-            function isMceItem(n) {
-                var cls = ed.dom.getAttrib(n, 'class', '');
-                return /mce-item-/.test(cls);
+            function isMceItem(node) {
+                return node.className.indexOf('mce-item-') !== -1;
+            }
+
+            function isImage(node) {
+                return node && node.nodeName === "IMG" && !isMceItem(node);
             }
 
             function openDialog() {
-                // Internal image object like a flash placeholder
-                var n = ed.selection.getNode();
+                var node = ed.selection.getNode();
 
-                if (n.nodeName == 'IMG' && isMceItem(n)) {
+                if (!isImage(node)) {
                     return;
                 }
 
@@ -51,7 +53,7 @@
                     var img = new Image();
 
                     img.onload = function () {
-                        resolve({width : img.width, height : img.height});
+                        resolve({ width: img.width, height: img.height });
                     };
 
                     img.onerror = function () {
@@ -91,7 +93,7 @@
 
                     if (params.always_include_dimensions) {
                         ed.setProgressState(true);
-                        
+
                         getImageProps(args.src).then(function (data) {
                             ed.setProgressState(false);
 
@@ -193,6 +195,12 @@
 
                 // Register commands
                 ed.addCommand('mceImage', function () {
+                    var node = ed.selection.getNode();
+
+                    if (!isImage(node)) {
+                        return;
+                    }
+
                     ed.windowManager.open({
                         title: ed.getLang('image.desc', 'Image'),
                         items: [form],
