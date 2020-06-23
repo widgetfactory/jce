@@ -29,6 +29,8 @@ class WFClipboardPluginConfig
         $settings['clipboard_paste_text'] = $wf->getParam('clipboard.paste_text', 1, 1, 'boolean');
         $settings['clipboard_paste_html'] = $wf->getParam('clipboard.paste_html', 1, 1, 'boolean');
 
+        $settings['clipboard_paste_allow_event_attributes'] = $wf->getParam('clipboard.paste_allow_event_attributes', 0, 0, 'boolean');
+
         $settings['clipboard_paste_process_footnotes'] = $wf->getParam('clipboard.paste_process_footnotes', 'convert', 'convert');
         $settings['clipboard_paste_upload_images'] = $wf->getParam('clipboard.paste_upload_images', 0, 0);
 

@@ -17,7 +17,8 @@
         Serializer = tinymce.html.Serializer,
         Node = tinymce.html.Node,
         DOM = tinymce.DOM,
-        Entities = tinymce.html.Entities;
+        Entities = tinymce.html.Entities,
+        Dispatcher = tinymce.util.Dispatcher;
 
     var styleProps = [
         'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
@@ -1865,14 +1866,14 @@
         }
 
         if (ed.getParam('autolink_email', true)) {
-            
+
             if (new RegExp('^' + ex + '$').test(content)) {
                 return '<a href="mailto:' + content + '">' + content + '</a>';
             }
 
             // wrap content - this seems to be required to prevent repeats of link conversion
             content = '<div data-mce-convert="url">' + content + '</div>';
-            
+
             content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (a, b, c) {
                 // only if not already a mailto: link
                 if (!b) {
@@ -2059,13 +2060,13 @@
             this.pasteAsPlainText = false;
 
             // Setup plugin events
-            self.onPreProcess = new tinymce.util.Dispatcher(this);
-            self.onPostProcess = new tinymce.util.Dispatcher(this);
+            self.onPreProcess = new Dispatcher(this);
+            self.onPostProcess = new Dispatcher(this);
 
-            ed.onGetClipboardContent = new tinymce.util.Dispatcher(this);
-            ed.onPastePreProcess = new tinymce.util.Dispatcher(this);
-            ed.onPastePostProcess = new tinymce.util.Dispatcher(this);
-            ed.onPasteBeforeInsert = new tinymce.util.Dispatcher(this);
+            ed.onGetClipboardContent = new Dispatcher(this);
+            ed.onPastePreProcess = new Dispatcher(this);
+            ed.onPastePostProcess = new Dispatcher(this);
+            ed.onPasteBeforeInsert = new Dispatcher(this);
 
             // process quirks
             if (tinymce.isWebKit) {
@@ -2083,20 +2084,14 @@
             // Register default handlers
             self.onPreProcess.add(function (self, o) {
                 preProcess(self, o);
-            });
 
-            self.onPostProcess.add(function (self, o) {
-                postProcess(self, o);
-            });
-
-            // Register optional preprocess handler
-            self.onPreProcess.add(function (pl, o) {
                 ed.onPastePreProcess.dispatch(ed, o);
                 ed.execCallback('paste_preprocess', pl, o);
             });
 
-            // Register optional postprocess
-            self.onPostProcess.add(function (pl, o) {
+            self.onPostProcess.add(function (self, o) {
+                postProcess(self, o);
+                
                 ed.onPastePostProcess.dispatch(ed, o);
                 ed.execCallback('paste_postprocess', pl, o);
             });
@@ -2194,6 +2189,21 @@
                 pasteHtml(text);
             }
 
+            function sanitizePastedHTML(html) {
+                var parser = new DomParser({allow_event_attributes: !!ed.settings.clipboard_paste_allow_event_attributes}, ed.schema);
+
+                // Strip elements
+                parser.addNodeFilter('meta,svg,script,noscript', function(nodes) {
+                    each(nodes, function(node) {
+                        node.remove();
+                    });
+                });
+
+                var fragment = parser.parse(html, { forced_root_block: false, isRootContent: true });
+
+                return new Serializer({ validate: ed.settings.validate }, ed.schema).serialize(fragment);
+            }
+
             function pasteHtml(content, internal) {
                 // create object to process
                 var o = {
@@ -2210,6 +2220,9 @@
                     if (ed.getParam('clipboard_paste_convert_urls', true)) {
                         o.content = convertURLs(ed, o.content);
                     }
+
+                    // sanitize html
+                    o.content = sanitizePastedHTML(content);
 
                     // Create DOM structure
                     o.node = ed.dom.create('div', 0, o.content);
@@ -2251,7 +2264,7 @@
                     }
                 }
 
-                ed.onPasteBeforeInsert.dispatch(self, o);
+                ed.onPasteBeforeInsert.dispatch(ed, o);
 
                 self._insert(o.content);
 
