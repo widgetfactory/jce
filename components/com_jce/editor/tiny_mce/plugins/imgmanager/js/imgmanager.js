@@ -157,12 +157,12 @@
                 // onmouseover / onmouseout
                 $('#onmouseout').val(src);
 
-                $.each(['onmouseover', 'onmouseout'], function () {
-                    v = ed.dom.getAttrib(n, this);
-                    v = $.trim(v);
-                    v = v.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
-                    v = ed.convertURL(v);
-                    $('#' + this).val(v);
+                $.each(['onmouseover', 'onmouseout'], function (i, key) {
+                    var val = ed.dom.getAttrib(n, key.replace('on', 'data-'));
+                    val = $.trim(val);
+                    val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
+                    val = ed.convertURL(val);
+                    $('#' + key).val(val);
                 });
 
                 br = n.nextSibling;
@@ -289,8 +289,12 @@
                 out = $('#onmouseout').val();
 
             if (over && out) {
-                args.onmouseover = "this.src='" + ed.convertURL(over) + "';";
-                args.onmouseout = "this.src='" + ed.convertURL(out) + "';";
+                args = $.extend(args, {
+                    'data-mouseover': ed.convertURL(over),
+                    'data-mouseout': ed.convertURL(out),
+                    'onmouseover': "this.src='" + ed.convertURL(over) + "';",
+                    'onmouseout': "this.src='" + ed.convertURL(out) + "';"
+                });
             }
 
             el = ed.selection.getNode();
