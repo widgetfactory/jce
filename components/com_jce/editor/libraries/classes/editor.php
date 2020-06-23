@@ -212,11 +212,11 @@ class WFEditor
         }
 
         // classic has been removed
-        if ($settings['skin'] === 'classic') {
+        if ($settings['skin'] == 'classic') {
             $settings['skin'] = 'default';
         }
 
-        if ($settings['skin'] === 'mobile') {
+        if ($settings['skin'] == 'mobile') {
             $settings['skin'] = 'default';
             $settings['skin_variant'] = 'touch';
         }
@@ -389,7 +389,7 @@ class WFEditor
             $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/default/ui.css');
 
             // load other skin
-            if ($settings['skin'] !== 'default') {
+            if ($settings['skin'] != 'default') {
                 $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui.css');
             }
 
@@ -418,7 +418,7 @@ class WFEditor
         // process settings
         array_walk($settings, function (&$value, $key) {
             // remove 'rows' key from $settings
-            if ($key === "rows") {
+            if ($key == "rows") {
                 $value = '';
             }
 
@@ -439,11 +439,11 @@ class WFEditor
             }
 
             // convert stringified booleans to booleans
-            if ($value === 'true') {
+            if ($value == 'true') {
                 $value = true;
             }
 
-            if ($value === 'false') {
+            if ($value == 'false') {
                 $value = false;
             }
         });
@@ -845,7 +845,7 @@ class WFEditor
 
                 // remove missing plugins
                 $items = array_filter($items, function ($item) {
-                    if (WF_EDITOR_PRO && $item === 'branding') {
+                    if (WF_EDITOR_PRO && $item == 'branding') {
                         return false;
                     }
                     
@@ -974,7 +974,7 @@ class WFEditor
         $app = JFactory::getApplication();
         $id = 0;
 
-        if ($app->getClientId() === 0) {
+        if ($app->getClientId() == 0) {
             $menus = $app->getMenu();
             $menu = $menus->getActive();
 
@@ -1497,7 +1497,7 @@ class WFEditor
             // check file exits before loading
             if (JFile::exists($fullpath)) {
                 // less
-                if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
+                if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
                     $stylesheets[] = $fullpath;
                     continue;
                 }

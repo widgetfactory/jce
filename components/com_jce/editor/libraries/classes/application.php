@@ -435,14 +435,14 @@ class WFApplication extends JObject
                 $value = $fallback;
 
                 // if fallback is empty, revert to system default if it is non-empty
-                if ($fallback === '' && $default !== '') {
+                if ($fallback == '' && $default != '') {
                     $value = $default;
 
                     // reset $default to prevent clearing
                     $default = '';
                 }
             // parameter is set, but is empty, but fallback is not (inherited values)
-            } else if ($fallback !== '') {
+            } else if ($fallback != '') {
                 $value = $fallback;
             }
         }
