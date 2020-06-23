@@ -17,6 +17,64 @@
 
     var Styles = new tinymce.html.Styles();
 
+    var sanitize = function (editor, html) {
+        var writer = new tinymce.html.Writer();
+        var blocked;
+
+        new tinymce.html.SaxParser({
+            validate: false,
+            allow_conditional_comments: false,
+            special: 'script,noscript',
+
+            comment: function (text) {
+                writer.comment(text);
+            },
+
+            cdata: function (text) {
+                writer.cdata(text);
+            },
+
+            text: function (text, raw) {
+                writer.text(text, raw);
+            },
+
+            start: function (name, attrs, empty) {
+                blocked = true;
+
+                if (name === 'script' || name === 'noscript' || name === 'svg') {
+                    return;
+                }
+
+                for (var i = attrs.length - 1; i >= 0; i--) {
+                    var attrName = attrs[i].name;
+
+                    if (attrName.indexOf('on') === 0) {
+                        delete attrs.map[attrName];
+                        attrs.splice(i, 1);
+                    }
+
+                    if (attrName === 'style') {
+                        attrs[i].value = editor.dom.serializeStyle(editor.dom.parseStyle(attrs[i].value), name);
+                    }
+                }
+
+                writer.start(name, attrs, empty);
+
+                blocked = false;
+            },
+
+            end: function (name) {
+                if (blocked) {
+                    return;
+                }
+
+                writer.end(name);
+            }
+        }, new tinymce.html.Schema({})).parse(html);
+
+        return writer.getContent();
+    };
+
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
@@ -819,7 +877,7 @@
             });
 
             // standard attributes
-            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'style', 'title'], function (at) {
+            each(['id', 'lang', 'dir', 'tabindex', 'xml:lang', 'title'], function (at) {
                 placeholder.attr(at, n.attr(at));
             });
 
@@ -887,11 +945,6 @@
                 // rename the img node to a span
                 placeholder.name = 'span';
 
-                var styles = {
-                    'width': w + 'px',
-                    'height': h + 'px'
-                }
-
                 preview.attr(attrs);
 
                 var msg = ed.getLang('media.preview_hint', 'Click to activate, %s + Click to toggle placeholder');
@@ -920,11 +973,6 @@
                     'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
                 });
 
-                // add styles
-                if (styles = ed.dom.serializeStyle(style)) {
-                    placeholder.attr('style', styles);
-                }
-
                 // add width values back as data-mce-width attribute
                 if (n.attr('width')) {
                     placeholder.attr('data-mce-width', n.attr('width'));
@@ -940,6 +988,11 @@
                     'data-mce-json': JSON.serialize(o),
                     'data-mce-type': name
                 });
+            }
+
+            // add styles
+            if (styles = ed.dom.serializeStyle(style)) {
+                placeholder.attr('style', styles);
             }
 
             // Replace the video/object/embed element with a placeholder image containing the data
@@ -992,6 +1045,16 @@
                 for (k in n.attributes.map) {
                     v = n.attributes.map[k];
 
+                    // skip events
+                    if (k.indexOf('on') === 0) {
+                        break;
+                    }
+
+                    // skip internal attributes
+                    if (k.indexOf('data-mce-') === 0) {
+                        break;
+                    }
+
                     switch (k) {
                         case 'poster':
                         case 'src':
@@ -1020,11 +1083,7 @@
                             attribs[k] = v.replace(/"/g, "'");
                             break;
                         default:
-                            // skip internal attributes
-                            if (k.indexOf('data-mce-') === -1) {
-                                attribs[k] = v;
-                            }
-
+                            attribs[k] = v;
                             break;
                     }
                 }
@@ -1168,6 +1227,11 @@
                 return;
             }
 
+            // skip event attributes
+            if (k.indexOf('on') === 0) {
+                return;
+            }
+
             if (nn == 'param') {
                 switch (k) {
                     case 'flashvars':
@@ -1224,7 +1288,9 @@
                     case 'html':
                         var html = new Node('#text', 3);
                         html.raw = true;
-                        html.value = (n.value ? n.value : '') + dom.decode(v);
+                        // decode and sanitize html
+                        v = sanitize(ed, dom.decode(v));
+                        html.value = (n.value ? n.value : '') + v;
                         n.append(html);
                         break;
                     default:
