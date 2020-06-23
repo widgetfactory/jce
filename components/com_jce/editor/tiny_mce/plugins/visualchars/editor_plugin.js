@@ -127,6 +127,7 @@
 
                 for (i = 0; i < nodeList.length; i++) {
                     nodeValue = nodeList[i].nodeValue;
+                    nodeValue = ed.dom.encode(nodeValue);
                     nodeValue = nodeValue.replace(visualCharsRegExp, wrapCharWithSpan);
 
                     div = ed.dom.create('div', null, nodeValue);
