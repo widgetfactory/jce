@@ -200,6 +200,9 @@
             if ($.type(error.message) === "array") {
                 error.message = error.message.join("\n");
             }
+            
+            // encode as text
+            error.message = $('<textarea />').html(error.message).text();
 
             // create language key from message
             var msg = error.message.replace(/[^a-z_ ]/gi, '').replace(/\s+/g, '_').toLowerCase();
