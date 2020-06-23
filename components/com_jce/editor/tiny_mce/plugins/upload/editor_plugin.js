@@ -428,11 +428,11 @@
                             r = JSON.parse(data);
                         } catch (e) {
                             // malformed JSON
-                            if (data.indexOf('{') !== -1) {
+                            if (data.indexOf('{') !== -1) {                        
                                 data = 'The server returned an invalid JSON response.';
                             }
 
-                            return showError();
+                            return showError(data);
                         }
 
                         if (!r) {
