@@ -34,19 +34,70 @@
             }
 
             ed.onPreInit.add(function () {
+                function cleanEventAttribute(val) {
+                    val = tinymce.trim(val);
+
+                    if (val) {
+                        val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
+                    }
+
+                    return val;
+                }
+
+                // update event effects
+                ed.serializer.addNodeFilter('img', function (nodes) {
+                    var i = nodes.length;
+
+                    while (i--) {
+                        var node = nodes[i], mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
+
+                        if (!mouseover) {
+                            continue;
+                        }
+
+                        node.attr('data-mouseover', cleanEventAttribute(mouseover));
+                        node.attr('onmouseover', null);
+
+                        if (mouseout) {
+                            node.attr('data-mouseout', cleanEventAttribute(mouseout));
+                            node.attr('onmouseout', null);
+                        }
+
+
+                    }
+                });
+
+                ed.parser.addNodeFilter('img', function (nodes) {
+                    var i = nodes.length;
+
+                    while (i--) {
+                        var node = nodes[i], mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
+
+                        if (!mouseover) {
+                            continue;
+                        }
+
+                        node.attr('onmouseover', "this.src='" + ed.convertURL(mouseover) + "';");
+
+                        if (mouseout) {
+                            node.attr('onmouseout', "this.src='" + ed.convertURL(mouseout) + "';");
+                        }
+                    }
+                });
+
                 // Remove bogus elements
-                ed.serializer.addAttributeFilter('data-mce-caret', function(nodes, name, args) {
+                ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
                     var i = nodes.length;
 
                     while (i--) {
                         nodes[i].remove();
                     }
                 });
-                
+
                 // cleanup data-mce-bogus tags
                 if (ed.settings.remove_trailing_brs === false) {
                     // Remove bogus elements
-                    ed.serializer.addAttributeFilter('data-mce-bogus', function(nodes, name, args) {
+                    ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes, name, args) {
                         var i = nodes.length, node, textNode
 
                         while (i--) {
@@ -66,7 +117,7 @@
                         }
                     });
                 }
-                
+
                 // cleanup tmp attributes
                 ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
                     var i = nodes.length,
@@ -88,8 +139,29 @@
                         node.attr('data-mce-tmp', null);
                     }
                 });
-                
+
+                function removeEventAttributes() {
+                    // remove all event attributes
+                    each(ed.schema.elements, function (elm) {
+                        // no attributes on this element
+                        if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
+                            return true;
+                        }
+
+                        each(elm.attributes, function (obj, name) {
+                            if (name.indexOf('on') === 0) {
+                                delete elm.attributes[name];
+                                elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+                            }
+                        });
+                    });
+                }
+
                 if (ed.settings.verify_html !== false) {
+                    if (ed.settings.allow_event_attributes === false) {
+                        removeEventAttributes();
+                    }
+
                     // add support for "bootstrap" icons
                     var elements = ed.schema.elements;
 
@@ -134,12 +206,12 @@
                         function attrFilter(value, expr, check) {
                             return !expr ? !!check :
                                 expr === "=" ? value === check :
-                                expr === "*=" ? value.indexOf(check) >= 0 :
-                                expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
-                                expr === "!=" ? value != check :
-                                expr === "^=" ? value.indexOf(check) === 0 :
-                                expr === "$=" ? value.substr(value.length - check.length) === check :
-                                false;
+                                    expr === "*=" ? value.indexOf(check) >= 0 :
+                                        expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
+                                            expr === "!=" ? value != check :
+                                                expr === "^=" ? value.indexOf(check) === 0 :
+                                                    expr === "$=" ? value.substr(value.length - check.length) === check :
+                                                        false;
                         }
 
                         function replaceAttributeValue(nodes, name, expr, check) {
@@ -270,7 +342,7 @@
                 });
 
                 // disable onclick etc.
-                ed.parser.addAttributeFilter('onclick,ondblclick', function (nodes, name) {
+                ed.parser.addAttributeFilter('onclick,ondblclick,onmousedown,onmouseup', function (nodes, name) {
                     var i = nodes.length,
                         node;
 
@@ -282,7 +354,7 @@
                     }
                 });
 
-                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick', function (nodes, name) {
+                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick,data-mce-onmousedown,data-mce-onmouseup', function (nodes, name) {
                     var i = nodes.length,
                         node, k;
 
@@ -374,8 +446,8 @@
                     // remove attributes
                     if (ed.getParam('invalid_attributes')) {
                         var s = ed.getParam('invalid_attributes', '');
- 
-                        o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function() {
+
+                        o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function () {
                             // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
                             var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
                             return '<' + tag + attribs + '>';
@@ -425,7 +497,7 @@
                     }
 
                     // clean empty tags
-                    o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function(match, tag, attribs) {
+                    o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
                         // remove data-mce-empty attribute
                         attribs = attribs.replace('data-mce-empty="1"', '');
                         // return empty tag
