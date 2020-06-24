@@ -62,7 +62,7 @@ class WFEditor
      * 
      * @var array
      */
-    private static $plugins = array('core', 'help', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
+    private static $plugins = array('core', 'help', 'autolink', 'cleanup', 'code', 'effects', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
     private function addScript($url)
     {
@@ -207,7 +207,7 @@ class WFEditor
             $settings['skin'] = 'modern';
         }
 
-        if ($settings['skin'] && strpos($settings['skin'], '.') !== false) {
+        if (strpos($settings['skin'], '.') !== false) {
             list($settings['skin'], $settings['skin_variant']) = explode('.', $settings['skin']);
         }
 
