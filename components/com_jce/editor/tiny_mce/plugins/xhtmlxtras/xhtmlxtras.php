@@ -19,7 +19,16 @@ class WFXHTMLXtrasPlugin extends WFEditorPlugin
 
     public function isHTML5()
     {
-        return $this->getParam('editor.schema', 'mixed') !== 'html4';
+        return $this->getParam('editor.schema', 'mixed') != 'html4';
+    }
+
+    private function allowEvents()
+    {
+        if ((bool) $this->getParam('editor.allow_javascript')) {
+            return true;
+        }
+
+        return (bool) $this->getParam('editor.allow_event_attributes');
     }
 
     /**
@@ -43,7 +52,7 @@ class WFXHTMLXtrasPlugin extends WFEditorPlugin
 
         $tabs->addTab('standard', 1, array('plugin' => $this));
 
-        if ($element == 'attributes') {
+        if ($element == 'attributes' && $this->allowEvents()) {
             $tabs->addTab('events');
         }
     }
