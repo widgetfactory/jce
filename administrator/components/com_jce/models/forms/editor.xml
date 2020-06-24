@@ -183,7 +183,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="allow_event_attributes" type="yesno" default="1" label="WF_PARAM_ALLOW_EVENT_ATTRIBUTES" description="WF_PARAM_ALLOW_EVENT_ATTRIBUTES_DESC">
+            <field name="allow_event_attributes" type="yesno" default="0" label="WF_PARAM_ALLOW_EVENT_ATTRIBUTES" description="WF_PARAM_ALLOW_EVENT_ATTRIBUTES_DESC" showon="allow_javascript:0">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
