@@ -34,57 +34,6 @@
             }
 
             ed.onPreInit.add(function () {
-                function cleanEventAttribute(val) {
-                    val = tinymce.trim(val);
-
-                    if (val) {
-                        val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
-                    }
-
-                    return val;
-                }
-
-                // update event effects
-                ed.serializer.addNodeFilter('img', function (nodes) {
-                    var i = nodes.length;
-
-                    while (i--) {
-                        var node = nodes[i], mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
-
-                        if (!mouseover) {
-                            continue;
-                        }
-
-                        node.attr('data-mouseover', cleanEventAttribute(mouseover));
-                        node.attr('onmouseover', null);
-
-                        if (mouseout) {
-                            node.attr('data-mouseout', cleanEventAttribute(mouseout));
-                            node.attr('onmouseout', null);
-                        }
-
-
-                    }
-                });
-
-                ed.parser.addNodeFilter('img', function (nodes) {
-                    var i = nodes.length;
-
-                    while (i--) {
-                        var node = nodes[i], mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
-
-                        if (!mouseover) {
-                            continue;
-                        }
-
-                        node.attr('onmouseover', "this.src='" + ed.convertURL(mouseover) + "';");
-
-                        if (mouseout) {
-                            node.attr('onmouseout', "this.src='" + ed.convertURL(mouseout) + "';");
-                        }
-                    }
-                });
-
                 // Remove bogus elements
                 ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
                     var i = nodes.length;
@@ -158,7 +107,7 @@
                 }
 
                 if (ed.settings.verify_html !== false) {
-                    if (ed.settings.allow_event_attributes === false) {
+                    if (ed.settings.allow_event_attributes !== true) {
                         removeEventAttributes();
                     }
 

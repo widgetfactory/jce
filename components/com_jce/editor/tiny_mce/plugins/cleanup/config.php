@@ -100,6 +100,11 @@ class WFCleanupPluginConfig
         $settings['invalid_attributes'] = $wf->getParam('editor.invalid_attributes', 'dynsrc,lowsrc', 'dynsrc,lowsrc', 'string', true);
         $settings['invalid_attribute_values'] = $wf->getParam('editor.invalid_attribute_values', '', '', 'string', true);
 
-        $settings['allow_event_attributes'] = $wf->getParam('editor.allow_event_attributes', 1, 1, 'boolean');
+        $allow_script = $wf->getParam('editor.allow_javascript', 0, 0, 'boolean');
+
+        // if scripts are allowed, then allow event attributes
+        if ($allow_script || (bool) $wf->getParam('editor.allow_event_attributes')) {
+            $settings['allow_event_attributes'] = true;
+        }
     }
 }
