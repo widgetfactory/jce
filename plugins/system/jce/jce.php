@@ -34,10 +34,6 @@ class PlgSystemJce extends JPlugin
         if ((int) $this->params->get('column_styles', 1)) {
             $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css?' . $document->getMediaVersion());
         }
-
-        if ((int) $this->params->get('event_effects', 1)) {
-            $document->addScript(JURI::root(true) . '/plugins/system/jce/js/jce.js?' . $document->getMediaVersion());
-        }
     }
 
     public function onWfContentPreview($context, &$article, &$params, $page)
