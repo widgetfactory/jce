@@ -294,8 +294,13 @@ class WFEditorPlugin extends JObject
         // get manifest path
         $manifest = $this->get('base_path') . '/' . $name . '.xml';
 
-        // use the plugin name as the form if
+        // use the plugin name as the form
         $form_id = $name;
+
+        // parameter group
+        if (isset($options['group'])) {
+            $name .= '.' . $options['group'];
+        }
 
         if (isset($options['manifest'])) {
             $manifest = $options['manifest'];
@@ -404,16 +409,10 @@ class WFEditorPlugin extends JObject
                     break;
             }
         }
-
+        
+        // styles object
         if (!empty($styles)) {
-            if (!empty($attribs['style'])) {
-                // explode passed in style value to array
-                $attribs['style'] = explode(';', $attribs['style']);
-                // merge with specific styles array
-                $styles = array_merge($attribs['style'], $styles);
-            }
-
-            $attribs['style'] = $styles;
+            $attribs['styles'] = $styles;
         }
 
         return $attribs;
