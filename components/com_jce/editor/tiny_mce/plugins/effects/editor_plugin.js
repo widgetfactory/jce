@@ -8,7 +8,8 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each;
+    var each = tinymce.each, DomParser = tinymce.html.DomParser,
+        Serializer = tinymce.html.Serializer;
 
     tinymce.create('tinymce.plugins.EffectsPlugin', {
         init: function (ed, url) {
@@ -26,12 +27,57 @@
             }
 
             ed.onPreInit.add(function () {
+                ed.onBeforeSetContent.add(function (ed, o) {
+
+                    if (o.content.indexOf('onmouseover=') === -1) {
+                        return;
+                    }
+
+                    var parser = new DomParser({ validate: false }, ed.schema);
+
+                    parser.addAttributeFilter('onmouseover', function (nodes) {
+                        var i = nodes.length;
+
+                        while (i--) {
+                            var node = nodes[i];
+
+                            if (node.name !== 'img') {
+                                continue;
+                            }
+
+                            var mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
+
+                            if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+                                continue;
+                            }
+
+                            node.attr('data-mouseover', cleanEventAttribute(mouseover));
+                            node.attr('onmouseover', null);
+
+                            if (mouseout && mouseout.indexOf('this.src') === 0) {
+                                node.attr('data-mouseout', cleanEventAttribute(mouseout));
+                                node.attr('onmouseout', null);
+                            }
+                        }
+                    });
+
+                    var fragment = parser.parse(o.content, { forced_root_block: false, isRootContent: true });
+
+                    o.content = new Serializer({ validate: false }, ed.schema).serialize(fragment);
+                });
+
                 // update event effects
-                ed.serializer.addNodeFilter('img', function (nodes) {
+                ed.parser.addAttributeFilter('onmouseover', function (nodes) {
                     var i = nodes.length;
 
                     while (i--) {
-                        var node = nodes[i], mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
+                        var node = nodes[i];
+
+                        if (node.name !== 'img') {
+                            continue;
+                        }
+
+                        var mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
 
                         if (!mouseover || mouseover.indexOf('this.src') !== 0) {
                             continue;
@@ -47,20 +93,28 @@
                     }
                 });
 
-                ed.parser.addNodeFilter('img', function (nodes) {
+                ed.serializer.addAttributeFilter('data-mouseover', function (nodes) {
                     var i = nodes.length;
 
                     while (i--) {
-                        var node = nodes[i], mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
+                        var node = nodes[i];
+
+                        if (node.name !== 'img') {
+                            continue;
+                        }
+
+                        var mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
 
                         if (!mouseover) {
                             continue;
                         }
 
-                        node.attr('onmouseover', "this.src='" + ed.convertURL(mouseover) + "';");
+                        node.attr('onmouseover', "this.src='" + mouseover + "';");
+                        node.attr('data-mouseover', null);
 
                         if (mouseout) {
-                            node.attr('onmouseout', "this.src='" + ed.convertURL(mouseout) + "';");
+                            node.attr('onmouseout', "this.src='" + mouseout + "';");
+                            node.attr('data-mouseout', null);
                         }
                     }
                 });

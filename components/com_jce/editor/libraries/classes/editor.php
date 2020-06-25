@@ -62,7 +62,7 @@ class WFEditor
      * 
      * @var array
      */
-    private static $plugins = array('core', 'help', 'autolink', 'cleanup', 'code', 'effects', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
+    private static $plugins = array('core', 'help', 'autolink', 'effects', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
     private function addScript($url)
     {
@@ -439,11 +439,11 @@ class WFEditor
             }
 
             // convert stringified booleans to booleans
-            if ($value == 'true') {
+            if (is_string($value) && $value == 'true') {
                 $value = true;
             }
 
-            if ($value == 'false') {
+            if (is_string($value) && $value == 'false') {
                 $value = false;
             }
         });
