@@ -402,7 +402,7 @@ class WFEditorPlugin extends JObject
                         $key = 'class';
                     }
 
-                    if ($value != '') {
+                    if ($value !== '') {
                         $attribs[$key] = $value;
                     }
 
