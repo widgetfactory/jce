@@ -80,7 +80,7 @@ class WFImgManagerPlugin extends WFMediaManager
                 }
             }
 
-            $result = array_merge($result, $this->getAttributes());
+            $result = array_merge($result, array('attributes' => $this->getDefaultAttributes()));
 
             return $result;
         }

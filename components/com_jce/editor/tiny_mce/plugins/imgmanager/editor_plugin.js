@@ -320,31 +320,29 @@
             // supported attributes
             var supported = ['alt', 'title', 'id', 'dir', 'class', 'usemap', 'style', 'longdesc', 'loading'];
 
-            // get styles object
-            if (data.styles) {
-                // serialize to string and parse to object
-                var s = ed.dom.parseStyle(ed.dom.serializeStyle(data.styles));
+            var attribs = data.attributes || {};
 
-                // extend args.style object
-                tinymce.extend(attr.style, s);
-
-                delete data.styles;
+            // get style attribute string and parse to object
+            if (attribs.style && tinymce.is(attribs.style, 'string')) {
+                // parse to object
+                attribs.style = ed.dom.parseStyle(attribs.style);
             }
 
-            // get style attribute
-            if (data.style) {
-                // parse to object
-                var style = ed.dom.parseStyle(data.style);
+            // get styles object
+            if (attribs.styles && tinymce.is(attribs.styles, 'object')) {
+                // extend style object
+                attribs.style = extend(attribs.styles, attribs.style || {});
 
-                // extend args.style object
-                tinymce.extend(attr.style, style);
+                delete attribs.styles;
+            }
 
-                delete data.style;
+            if (attribs.style) {
+                attribs.style = ed.dom.serializeStyle(attribs.style);
             }
 
             tinymce.each(supported, function (key) {
-                if (tinymce.is(data[key])) {
-                    attr[key] = data[key];
+                if (tinymce.is(attribs[key])) {
+                    attr[key] = attribs[key];
                 }
             });
 
@@ -363,7 +361,7 @@
                         'style': {}
                     };
 
-                    args = extend(args, this.getAttributes(data));
+                    args = extend(args, this.getAttributes(o));
 
                     return ed.dom.create('img', args);
                 }
