@@ -684,8 +684,7 @@
 
     function preProcess(self, o) {
         var ed = self.editor,
-            h = o.content,
-            rb;
+            h = o.content;
 
         // Process away some basic content
         h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
@@ -700,31 +699,6 @@
 
         if (o.wordContent) {
             h = WordFilter(ed, h);
-        }
-
-        // remove attributes
-        if (ed.getParam('clipboard_paste_remove_attributes')) {
-            var attribs = ed.getParam('clipboard_paste_remove_attributes').split(',');
-            h = h.replace(new RegExp(' (' + attribs.join('|') + ')="([^"]+)"', 'gi'), '');
-        }
-
-        // replace double linebreaks with paragraphs, empty paragraphs may be removed later
-        /*if (rb = ed.getParam('forced_root_block')) {
-            var blocks = '';
-            // only split if a double break exists
-            if (h.indexOf('<br><br>') != -1) {
-                // convert marker to paragraphs
-                tinymce.each(h.split('<br><br>'), function (block) {
-                    blocks += '<' + rb + '>' + block + '</' + rb + '>';
-                });
-
-                h = blocks;
-            }
-        }*/
-
-        // Remove all spans
-        if (ed.getParam('clipboard_paste_remove_spans')) {
-            h = h.replace(/<\/?(span)[^>]*>/gi, '');
         }
 
         // convert some tags if cleanup is off
@@ -1855,7 +1829,7 @@
             content = '<div data-mce-convert="url">' + content + '</div>';
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('(href=["\'])*' + ux, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('((href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)=["\'])*' + ux, 'gi'), function (a, b, c) {                
                 // only if not already a link, ie: b != =" or >
                 if (!b) {
                     return createLink(c);
@@ -2086,14 +2060,14 @@
                 preProcess(self, o);
 
                 ed.onPastePreProcess.dispatch(ed, o);
-                ed.execCallback('paste_preprocess', pl, o);
+                ed.execCallback('paste_preprocess', self, o);
             });
 
             self.onPostProcess.add(function (self, o) {
                 postProcess(self, o);
-                
+
                 ed.onPastePostProcess.dispatch(ed, o);
-                ed.execCallback('paste_postprocess', pl, o);
+                ed.execCallback('paste_postprocess', self, o);
             });
 
             self.pasteText = ed.getParam('clipboard_paste_text', 1);
@@ -2190,14 +2164,40 @@
             }
 
             function sanitizePastedHTML(html) {
-                var parser = new DomParser({allow_event_attributes: !!ed.settings.clipboard_paste_allow_event_attributes}, ed.schema);
+                var parser = new DomParser({ allow_event_attributes: !!ed.settings.clipboard_paste_allow_event_attributes }, ed.schema);
 
                 // Strip elements
-                parser.addNodeFilter('meta,svg,script,noscript', function(nodes) {
-                    each(nodes, function(node) {
-                        node.remove();
-                    });
+                parser.addNodeFilter('meta,svg,script,noscript', function (nodes) {
+                    var i = nodes.length;
+
+                    while (i--) {
+                        nodes[i].remove();
+                    }
                 });
+
+                // remove spans
+                if (ed.getParam('clipboard_paste_remove_spans')) {
+                    parser.addNodeFilter('span', function (nodes, name) {
+                        var i = nodes.length;
+
+                        while (i--) {
+                            nodes[i].remove();
+                        }
+                    });
+                }
+
+                // remove attributes
+                var remove_attribs = ed.getParam('clipboard_paste_remove_attributes');
+
+                if (remove_attribs) {
+                    parser.addAttributeFilter(remove_attribs, function (nodes, name) {
+                        var i = nodes.length;
+
+                        while (i--) {
+                            nodes[i].attr(name, null);
+                        }
+                    });
+                }
 
                 var fragment = parser.parse(html, { forced_root_block: false, isRootContent: true });
 
@@ -2216,16 +2216,16 @@
                     // Execute pre process handlers
                     self.onPreProcess.dispatch(self, o);
 
+                    // sanitize content
+                    o.content = sanitizePastedHTML(o.content);
+
                     // convert urls in content
                     if (ed.getParam('clipboard_paste_convert_urls', true)) {
                         o.content = convertURLs(ed, o.content);
                     }
 
-                    // sanitize html
-                    o.content = sanitizePastedHTML(content);
-
                     // Create DOM structure
-                    o.node = ed.dom.create('div', 0, o.content);
+                    o.node = ed.dom.create('div', { style: 'display:none' }, o.content);
 
                     // Execute post process handlers
                     self.onPostProcess.dispatch(self, o);
