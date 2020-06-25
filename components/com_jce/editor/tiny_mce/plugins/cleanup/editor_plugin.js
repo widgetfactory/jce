@@ -107,7 +107,7 @@
                 }
 
                 if (ed.settings.verify_html !== false) {
-                    if (ed.settings.allow_event_attributes !== true) {
+                    if (!ed.settings.allow_event_attributes) {
                         removeEventAttributes();
                     }
 
