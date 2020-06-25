@@ -251,6 +251,10 @@
                                     break;
                                 }
                             }
+                            // allow editing of file text
+                            if (nodes.length === 1 && ed.dom.is(nodes[0], 'span.wf_text')) {
+                                state = true;
+                            }
                         }
                         // selection is a shortEnded element, eg: img
                     } else if (shortEnded[n.nodeName]) {
