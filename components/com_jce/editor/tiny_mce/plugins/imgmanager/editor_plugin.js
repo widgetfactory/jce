@@ -27,7 +27,7 @@
             function openDialog() {
                 var node = ed.selection.getNode();
 
-                if (!isImage(node)) {
+                if (isMceItem(node)) {
                     return;
                 }
 
@@ -197,7 +197,7 @@
                 ed.addCommand('mceImage', function () {
                     var node = ed.selection.getNode();
 
-                    if (!isImage(node)) {
+                    if (isMceItem(node)) {
                         return;
                     }
 
