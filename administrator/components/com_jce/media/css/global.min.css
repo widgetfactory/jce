@@ -27,6 +27,9 @@
 .ui-jce .controls .form-field-container:not(.inset) {
   margin-left: -180px;
 }
+.ui-jce fieldset.checkboxes {
+  display: flex;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
