@@ -10,6 +10,56 @@
 (function () {
     var DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
+    function createLink(ed, data) {
+        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'A');
+
+        if (typeof data === 'string') {
+            data = {url : data, text : data};
+        }
+
+        if (!data.url) {
+            if (anchor && anchor.nodeName === 'A') {
+                ed.execCommand('unlink', false);
+            }
+
+            return false;
+        }
+
+        if (!data.text) {
+            return false;
+        }
+
+        // add missing protocol
+        if (/^\s*www\./i.test(data.url)) {
+            data.url = 'https://' + data.url;
+        }
+
+        var args = {
+            'href': data.url,
+            'target': '_blank'
+        };
+
+        // set default target
+        if (ed.settings.default_link_target) {
+            args['target'] = ed.settings.default_link_target;
+        }
+
+        // no selection, so create a link from the url
+        if (ed.selection.isCollapsed()) {
+            ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, data.text));
+            // apply link to selection
+        } else {
+            ed.execCommand('mceInsertLink', false, args);
+
+            if (anchor && anchor.nodeName === 'A') {
+                anchor.textContent = data.text;
+            }
+        }
+
+        ed.undoManager.add();
+        ed.nodeChanged();
+    }
+
     tinymce.create('tinymce.plugins.LinkPlugin', {
         init: function (ed, url) {
             this.editor = ed;
@@ -55,52 +105,6 @@
             ed.addShortcut('meta+k', 'link.desc', 'mceLink');
 
             var urlCtrl, textCtrl;
-
-            function createLink(data) {
-                var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'A');
-
-                if (!data.url) {
-                    if (anchor && anchor.nodeName === 'A') {
-                        ed.execCommand('unlink', false);
-                    }
-
-                    return false;
-                }
-
-                if (!data.text) {
-                    return false;
-                }
-
-                // add missing protocol
-                if (/^\s*www\./i.test(data.url)) {
-                    data.url = 'https://' + data.url;
-                }
-
-                var args = {
-                    'href': data.url,
-                    'target': '_blank'
-                };
-
-                // set default target
-                if (ed.settings.default_link_target) {
-                    args['target'] = ed.settings.default_link_target;
-                }
-
-                // no selection, so create a link from the url
-                if (ed.selection.isCollapsed()) {
-                    ed.execCommand('mceInsertContent', false, ed.dom.createHTML('a', args, data.text));
-                    // apply link to selection
-                } else {
-                    ed.execCommand('mceInsertLink', false, args);
-
-                    if (anchor && anchor.nodeName === 'A') {
-                        anchor.textContent = data.text;
-                    }
-                }
-
-                ed.undoManager.add();
-                ed.nodeChanged();
-            }
 
             ed.onPreInit.add(function () {
                 var params = ed.getParam('link', {});
@@ -217,7 +221,7 @@
 
                                     Event.cancel(e);
 
-                                    createLink(data);
+                                    createLink(ed, data);
                                 },
                                 classes: 'primary',
                                 scope: self
@@ -289,7 +293,7 @@
                 cmd: 'mceLink',
                 max_width: 264,
                 onselect: function (node) {
-                    insertLink(node.value);
+                    createLink(ed, node.value);
                 }
             });
 
@@ -313,7 +317,7 @@
 
                         if (ed.dom.hasClass(n, 'mceButtonLink')) {
                             var value = DOM.getValue(ed.id + '_link_input');
-                            createLink({url : value, text : value});
+                            createLink(ed, {url : value, text : value});
                         }
 
                         if (ed.dom.hasClass(n, 'mceButtonUnlink')) {
