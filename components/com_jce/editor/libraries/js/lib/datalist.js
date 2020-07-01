@@ -184,6 +184,7 @@
                 // update with single value
                 if (!multiple) {
                     values = [value];
+
                 } else {
                     // add new value to select array
                     values.push(value);
@@ -239,7 +240,9 @@
             }
 
             // select item on click
-            $(menu).on('click', selectMenuItem);
+            $(menu).on('mousedown click touchstart', function(e) {
+                selectMenuItem(e);
+            });
 
             var $items, focusIdx = -1;
 
@@ -460,7 +463,7 @@
             });
 
             // hide menu if no focus
-            $('body').on('mousedown touchstart keyup', function (e) {                
+            $('body').on('mousedown touchstart keyup', function (e) {                                
                 // only process on TAB
                 if (e.keyCode && e.keyCode !== 9) {
                     return;
