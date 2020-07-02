@@ -54,13 +54,6 @@ class JFormFieldMediaJce extends JFormFieldMedia
      */
     public function getLayoutData()
     {
-        // Include jQuery
-        JHtml::_('jquery.framework');
-
-        $document = JFactory::getDocument();
-        $document->addScript(JURI::root(true) . '/plugins/system/jce/js/media.js', array('version' => 'auto'));
-        $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css', array('version' => 'auto'));
-
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
         $options = WFBrowserHelper::getMediaFieldOptions(array(

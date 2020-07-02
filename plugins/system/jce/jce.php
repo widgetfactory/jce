@@ -137,6 +137,13 @@ class PlgSystemJce extends JPlugin
         // form has a converted media field
         if ($hasMedia) {
             $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
+
+            // Include jQuery
+            JHtml::_('jquery.framework');
+
+            $document = JFactory::getDocument();
+            $document->addScript(JURI::root(true) . '/plugins/system/jce/js/media.js', array('version' => 'auto'));
+            $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css', array('version' => 'auto'));
         }
 
         return true;
