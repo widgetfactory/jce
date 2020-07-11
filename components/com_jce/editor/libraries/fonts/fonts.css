@@ -302,7 +302,8 @@
 .uk-icon-file-svg:before,
 .uk-icon-file-tiff:before,
 .uk-icon-file-image:before,
-.uk-icon-file-picture:before {
+.uk-icon-file-picture:before,
+.uk-icon-file-avif:before {
   content: "\e9af";
 }
 
