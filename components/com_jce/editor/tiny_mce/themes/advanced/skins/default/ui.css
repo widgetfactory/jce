@@ -3,7 +3,7 @@
 .mceDefaultSkin *,
 .mceMenu {
     color: #444;
-    font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -29,7 +29,9 @@
     min-height: auto;
 }
 
-.mceDefaultSkin select, .mceDefaultSkin textarea, .mceDefaultSkin input[type] {
+.mceDefaultSkin select,
+.mceDefaultSkin textarea,
+.mceDefaultSkin input[type] {
     margin: 0;
     line-height: 1;
 }
