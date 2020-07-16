@@ -79,6 +79,10 @@
 
 					// process remaining attributes
 					$.each(attribs, function (k, v) {
+						if (k === 'data-mouseover' || k === 'data-mouseout' || k.indexOf('on') === 0) {
+							return true;
+						}
+						
 						try {
 							v = decodeURIComponent(v);
 						} catch (e) { }
