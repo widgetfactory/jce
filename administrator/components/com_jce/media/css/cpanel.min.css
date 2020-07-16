@@ -54,6 +54,7 @@
     width: 100%;
     height: auto;
     margin: 0;
+    color: inherit;
 }
 
 .ui-jce .quick-icons [class^="icon-"]::before,
