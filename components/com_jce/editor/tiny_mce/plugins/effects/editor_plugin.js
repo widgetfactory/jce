@@ -16,31 +16,16 @@
             var self = this;
             this.editor = ed;
 
-            function cleanEventAttribute(val) {
-                val = tinymce.trim(val);
-
-                if (val) {
-                    val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
-                }
-
-                return val;
+            if (ed.settings.allow_event_attributes || ed.settings.code_script) {
+                return;
             }
 
-            function cleanAndEncode(value) {
-                if (!value) {
+            function cleanEventAttribute(val) {
+                if (!val) {
                     return '';
                 }
-
-                // clean to get image url 
-                value = cleanEventAttribute(value);
-
-                /*try {
-                    value = encodeURI(value);
-                } catch (e) {
-                    return '';
-                }*/
-
-                return value;
+                
+                return val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
             }
 
             ed.onPreInit.add(function () {
@@ -68,7 +53,7 @@
                                 continue;
                             }
 
-                            mouseover = cleanAndEncode(mouseover);
+                            mouseover = cleanEventAttribute(mouseover);
 
                             // remove attribute
                             node.attr('onmouseover', null);
@@ -82,7 +67,7 @@
 
                             if (mouseout && mouseout.indexOf('this.src') === 0) {
 
-                                mouseout = cleanAndEncode(mouseout);
+                                mouseout = cleanEventAttribute(mouseout);
 
                                 // remove attribute
                                 node.attr('onmouseout', null);
@@ -118,13 +103,13 @@
                             continue;
                         }
 
-                        mouseover = cleanAndEncode(mouseover);
+                        mouseover = cleanEventAttribute(mouseover);
 
                         node.attr('data-mouseover', mouseover);
                         node.attr('onmouseover', null);
 
                         if (mouseout && mouseout.indexOf('this.src') === 0) {
-                            mouseout = cleanAndEncode(mouseout);
+                            mouseout = cleanEventAttribute(mouseout);
 
                             node.attr('data-mouseout', mouseout);
                             node.attr('onmouseout', null);
@@ -144,7 +129,7 @@
 
                         var mouseover = node.attr('data-mouseover'), mouseout = node.attr('data-mouseout');
 
-                        mouseover = cleanAndEncode(mouseover);
+                        mouseover = cleanEventAttribute(mouseover);
 
                         node.attr('data-mouseover', null);
                         node.attr('data-mouseout', null);
@@ -155,10 +140,10 @@
 
                         node.attr('onmouseover', "this.src='" + mouseover + "';");
 
-                        mouseout = cleanAndEncode(mouseout);
+                        mouseout = cleanEventAttribute(mouseout);
 
                         if (mouseout) {
-                            node.attr('onmouseout', "this.src='" + cleanAndEncode(mouseout) + "';");
+                            node.attr('onmouseout', "this.src='" + mouseout + "';");
                         }
                     }
                 });
@@ -174,51 +159,30 @@
                 });
             });
 
-            function isValidImage(value) {
-                return new Promise(function(resolve, reject) {
-                    var img = new Image();
-
-                    img.onload = function () {
-                        resolve();
-                    };
-
-                    img.onerror = function () {
-                        reject();
-                    };
-
-                    img.src = ed.documentBaseURI.toAbsolute(value);
-                });
-            }
-
             function bindMouseoverEvent(ed) {
                 // bind rollover event
                 function bindEvent(elm, name, value) {                    
                     ed.dom.bind(elm, name, function () {
-                        value = elm.getAttribute('data-' + name);
+                        value = value || elm.getAttribute('data-' + name);
                         elm.setAttribute('src', value);
                     });
                 }
 
                 each(ed.dom.select('img[data-mouseover]'), function (elm) {
-                    var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout') || src;
+                    var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 
                     if (!src || !mouseover) {
                         return true;
                     }
 
-                    isValidImage(mouseover).then(function() {
-                        // add events
-                        bindEvent(elm, 'mouseover', mouseover);
+                    // add events
+                    bindEvent(elm, 'mouseover');
 
-                        isValidImage(mouseover).then(function() {
-                            bindEvent(elm, 'mouseout', mouseout);
-                        }, function() {
-                            elm.removeAttribute('data-mouseout');
-                        });
-                    }, function() {
-                        elm.removeAttribute('data-mouseover');
-                        elm.removeAttribute('data-mouseout');
-                    });
+                    if (mouseout) {
+                        bindEvent(elm, 'mouseout');
+                    } else {
+                        bindEvent(elm, 'mouseout', src);
+                    }
                 });
             }
         }
