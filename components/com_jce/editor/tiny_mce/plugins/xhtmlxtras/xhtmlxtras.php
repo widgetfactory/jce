@@ -22,15 +22,6 @@ class WFXHTMLXtrasPlugin extends WFEditorPlugin
         return $this->getParam('editor.schema', 'mixed') != 'html4';
     }
 
-    private function allowEvents()
-    {
-        if ((bool) $this->getParam('editor.allow_javascript')) {
-            return true;
-        }
-
-        return (bool) $this->getParam('editor.allow_event_attributes');
-    }
-
     /**
      * Display the plugin.
      */
