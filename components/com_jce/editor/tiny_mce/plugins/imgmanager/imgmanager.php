@@ -42,7 +42,10 @@ class WFImgManagerPlugin extends WFMediaManager
         // Add tabs
         $tabs->addTab('image', 1, array('plugin' => $this));
 
-        $tabs->addTab('rollover', $this->getParam('tabs_rollover', 1));
+        if ($this->allowEvents()) {
+            $tabs->addTab('rollover', $this->getParam('tabs_rollover', 1));
+        }
+
         $tabs->addTab('advanced', $this->getParam('tabs_advanced', 1));
 
         $document->addScript(array('imgmanager'), 'plugins');

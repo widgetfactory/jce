@@ -158,9 +158,13 @@
                 $('#onmouseout').val(src);
 
                 $.each(['onmouseover', 'onmouseout'], function (i, key) {
-                    var val = ed.dom.getAttrib(n, key.replace('on', 'data-'));
+                    // get value from data-* attributes
+                    var val = ed.dom.getAttrib(n, key);
+                    // trim whitespace
                     val = $.trim(val);
-                    val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1');
+                    // clean url
+                    val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
+                    // convert to relative
                     val = ed.convertURL(val);
                     $('#' + key).val(val);
                 });
@@ -290,10 +294,8 @@
 
             if (over && out) {
                 args = $.extend(args, {
-                    'data-mouseover': ed.convertURL(over),
-                    'data-mouseout': ed.convertURL(out),
-                    'onmouseover': "this.src='" + ed.convertURL(over) + "';",
-                    'onmouseout': "this.src='" + ed.convertURL(out) + "';"
+                    'onmouseover': ed.convertURL(over),
+                    'onmouseout': ed.convertURL(out)
                 });
             }
 
