@@ -409,7 +409,7 @@ class WFEditorPlugin extends JObject
                     break;
             }
         }
-        
+
         // styles object
         if (!empty($styles)) {
             $attribs['styles'] = $styles;
@@ -591,5 +591,14 @@ class WFEditorPlugin extends JObject
     public function checkAccess($option, $default = 0)
     {
         return (bool) $this->getParam($option, $default);
+    }
+
+    protected function allowEvents()
+    {
+        if ((bool) $this->getParam('editor.allow_javascript')) {
+            return true;
+        }
+
+        return (bool) $this->getParam('editor.allow_event_attributes');
     }
 }
