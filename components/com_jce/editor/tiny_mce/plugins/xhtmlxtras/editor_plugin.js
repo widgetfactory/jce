@@ -19,10 +19,7 @@
             ed.addCommand('mceCite', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=cite',
-                    width: 480 + parseInt(ed.getLang('xhtmlxtras.cite_delta_width', 0)),
-                    height: 340 + parseInt(ed.getLang('xhtmlxtras.cite_delta_height', 0)),
-                    inline: 1,
-                    size: 'mce-modal-portrait-medium'
+                    size: 'mce-modal-square-large'
                 }, {
                         plugin_url: url,
                         element: 'cite'
@@ -33,10 +30,7 @@
             ed.addCommand('mceAcronym', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=acronym',
-                    width: 480 + parseInt(ed.getLang('xhtmlxtras.acronym_delta_width', 0)),
-                    height: 340 + parseInt(ed.getLang('xhtmlxtras.acronym_delta_height', 0)),
-                    inline: 1,
-                    size: 'mce-modal-portrait-medium'
+                    size: 'mce-modal-square-large'
                 }, {
                         plugin_url: url,
                         element: 'acronym'
@@ -47,10 +41,7 @@
             ed.addCommand('mceAbbr', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=abbr',
-                    width: 480 + parseInt(ed.getLang('xhtmlxtras.abbr_delta_width', 0)),
-                    height: 340 + parseInt(ed.getLang('xhtmlxtras.abbr_delta_height', 0)),
-                    inline: 1,
-                    size: 'mce-modal-portrait-medium'
+                    size: 'mce-modal-square-large'
                 }, {
                         plugin_url: url,
                         element: 'abbr'
@@ -61,10 +52,7 @@
             ed.addCommand('mceDel', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=del',
-                    width: 480 + parseInt(ed.getLang('xhtmlxtras.del_delta_width', 0)),
-                    height: 380 + parseInt(ed.getLang('xhtmlxtras.del_delta_height', 0)),
-                    inline: 1,
-                    size: 'mce-modal-portrait-medium'
+                    size: 'mce-modal-square-large'
                 }, {
                         plugin_url: url,
                         element: 'del'
@@ -75,10 +63,7 @@
             ed.addCommand('mceIns', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=ins',
-                    width: 480 + parseInt(ed.getLang('xhtmlxtras.ins_delta_width', 0)),
-                    height: 380 + parseInt(ed.getLang('xhtmlxtras.ins_delta_height', 0)),
-                    inline: 1,
-                    size: 'mce-modal-portrait-medium'
+                    size: 'mce-modal-square-large'
                 }, {
                         plugin_url: url,
                         element: 'ins'
@@ -89,9 +74,7 @@
             ed.addCommand('mceAttributes', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=attributes',
-                    width: 640,
-                    height: 520,
-                    inline: 1
+                    size: 'mce-modal-portrait-large'
                 }, {
                         plugin_url: url
                     });

@@ -16,11 +16,9 @@
             ed.addCommand('mceColorPicker', function(ui, v) {
                 ed.windowManager.open({
                     url     : ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=colorpicker',
-                    width   : 365 + parseInt(ed.getLang('advanced.colorpicker_delta_width', 0)),
-                    height  : 320 + parseInt(ed.getLang('advanced.colorpicker_delta_height', 0)),
+                    width   : 365,
+                    height  : 320,
                     close_previous : false,
-                    inline : true,
-                    popup_css : false
                 }, {
                     input_color : v.color,
                     func        : v.func

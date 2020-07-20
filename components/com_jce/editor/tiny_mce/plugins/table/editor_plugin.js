@@ -1876,8 +1876,6 @@
                 mceInsertTable: function (val) {
                     winMan.open({
                         url: url,
-                        width: 800 + parseInt(ed.getLang('table.table_delta_width', 0)),
-                        height: 450 + parseInt(ed.getLang('table.table_delta_height', 0)),
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
@@ -1888,8 +1886,6 @@
                 mceTableRowProps: function () {
                     winMan.open({
                         url: url + '&layout=row',
-                        width: 800 + parseInt(ed.getLang('table.rowprops_delta_width', 0)),
-                        height: 450 + parseInt(ed.getLang('table.rowprops_delta_height', 0)),
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
@@ -1899,8 +1895,6 @@
                 mceTableCellProps: function () {
                     winMan.open({
                         url: url + '&layout=cell',
-                        width: 800 + parseInt(ed.getLang('table.cellprops_delta_width', 0)),
-                        height: 450 + parseInt(ed.getLang('table.cellprops_delta_height', 0)),
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,

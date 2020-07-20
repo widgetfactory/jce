@@ -17,9 +17,7 @@
                 ed.windowManager.open({
                     title: ed.getLang('dlg.help', 'Help'),
                     url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-                    size: 'mce-modal-landscape-full',
-                    width: 896,
-                    height: 768
+                    size: 'mce-modal-landscape-full'
                 });
             });
 

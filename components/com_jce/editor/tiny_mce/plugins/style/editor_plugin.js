@@ -29,8 +29,7 @@
 
                 ed.windowManager.open({
                     file 	: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
-                    width 	: 620 + parseInt(ed.getLang('style.delta_width', 0)),
-                    height 	: 460 + parseInt(ed.getLang('style.delta_height', 0))
+                    size    : 'mce-modal-landscape-xxlarge' 
                 }, {
                     applyStyleToBlocks : applyStyleToBlocks,
                     plugin_url : url,
