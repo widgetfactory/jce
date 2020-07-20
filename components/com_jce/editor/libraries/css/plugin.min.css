@@ -304,7 +304,8 @@
 .uk-icon-file-svg:before,
 .uk-icon-file-tiff:before,
 .uk-icon-file-image:before,
-.uk-icon-file-picture:before {
+.uk-icon-file-picture:before,
+.uk-icon-file-avif:before {
   content: "\e9af";
 }
 
@@ -1108,8 +1109,14 @@ html {
 }
 
 .uk-form legend {
-    padding-bottom: 5px;
     font-size: 14px;
+    line-height: 32px;
+    padding-bottom: 0;
+    font-weight: 600;
+}
+
+.uk-form legend:after {
+    border: 0 none;
 }
 
 .uk-form input[type="radio"],
