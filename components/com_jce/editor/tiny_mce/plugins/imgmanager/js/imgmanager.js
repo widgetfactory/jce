@@ -294,8 +294,8 @@
 
             if (over && out) {
                 args = $.extend(args, {
-                    'onmouseover': ed.convertURL(over),
-                    'onmouseout': ed.convertURL(out)
+                    'onmouseover': "this.src='" + ed.convertURL(over) + "';",
+                    'onmouseout': "this.src='" + ed.convertURL(out) + "';"
                 });
             }
 
