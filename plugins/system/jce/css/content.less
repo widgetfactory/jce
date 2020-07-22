@@ -1,0 +1,142 @@
+// out: content.css, sourcemap: false, compress: true
+.wf-columns {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.wf-columns .wf-column {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.wf-columns .wf-column {
+    flex: 1;
+}
+
+.wf-columns-stack-small,
+.wf-columns-stack-medium,
+.wf-columns-stack-large {
+    flex-wrap: wrap;
+}
+
+.wf-columns-align-left {
+    justify-content: flex-start;
+}
+
+.wf-columns-align-center {
+    justify-content: center;
+}
+
+.wf-columns-align-right {
+    justify-content: flex-end;
+}
+
+.wf-columns-layout-2-1>.wf-column:first-child {
+    width: calc(100% * 2 / 3.001);
+    flex: none;
+}
+
+.wf-columns-layout-1-2>.wf-column:last-child {
+    width: calc(100% * 2 / 3.001);
+    flex: none;
+}
+
+.wf-columns-layout-1-1-2>.wf-column:last-child {
+    width: 50%;
+    flex: none;
+}
+
+.wf-columns-layout-1-2-1>.wf-column:nth-child(2) {
+    width: 50%;
+    flex: none;
+}
+
+.wf-columns-layout-2-1-1>.wf-column:first-child {
+    width: 50%;
+    flex: none;
+}
+
+.wf-columns-layout-1-3>.wf-column:last-child {
+    width: 75%;
+    flex: none;
+}
+
+.wf-columns-layout-3-1>.wf-column:first-child {
+    width: 75%;
+    flex: none;
+}
+
+.wf-columns-gap-small {
+    gap: 0.25rem;
+}
+
+.wf-columns-gap-medium {
+    gap: 0.5rem;
+}
+
+.wf-columns-gap-large {
+    gap: 1rem;
+}
+
+.wf-columns-gap-none {
+    gap: 0;
+}
+
+@media (max-width: 640px) {
+    .wf-columns-stack-small>.wf-column {
+        width: 100%;
+        flex: auto !important;
+    }
+}
+
+@media (max-width: 960px) {
+    .wf-columns-stack-medium>.wf-column {
+        width: 100%;
+        flex: auto !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .wf-columns-stack-large>.wf-column {
+        width: 100%;
+        flex: auto !important;
+    }
+}
+
+@media (max-width: 1600px) {
+    .wf-columns-stack-xlarge>.wf-column {
+        width: 100%;
+    }
+}
+
+/* Image gallery */
+[data-wf-columns]>div>figure img,
+[data-wf-columns]>div>figure video {
+    object-fit: cover;
+    height: calc(100% - 2rem);
+}
+
+[data-wf-columns]>div>figure {
+    margin: 0;
+    display: block;
+    position: relative;
+    height: 100%;
+}
+
+[data-wf-columns]>div>figure figcaption {
+    text-align: center;
+    line-height: 2rem;
+    display: inline-block;
+    width: 100%;
+}
+
+[data-wf-columns]>div>figure>a.wfpopup+figcaption {
+    pointer-events: none;
+}
+
+/*[data-wf-columns]>div>figure>figcaption:empty::after {
+    color: #fff;
+}*/
+
+@import url('mixins.less');
+@import url('compat.less');
