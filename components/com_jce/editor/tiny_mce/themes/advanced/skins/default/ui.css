@@ -2736,6 +2736,14 @@ select.mceNativeListBox {
     height: calc(100% - 48px);
 }
 
+.mceModal .mce-modal-square-medium {
+    max-width: 512px;
+}
+
+.mceModal .mce-modal-square-medium .mceModalContentIframe {
+    padding-bottom: calc(83.46% - 48px);
+}
+
 .mceModal .mce-modal-square-large {
     max-width: 640px;
 }
