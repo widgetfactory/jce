@@ -1829,13 +1829,13 @@
             content = '<div data-mce-convert="url">' + content + '</div>';
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('((href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)=["\'])*' + ux, 'gi'), function (a, b, c) {                
+            content = content.replace(new RegExp('((href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)=["\'])*' + ux, 'gi'), function (match, attrib, name, url) {                                
                 // only if not already a link, ie: b != =" or >
-                if (!b) {
-                    return createLink(c);
+                if (!attrib) {
+                    return createLink(url);
                 }
 
-                return a;
+                return match;
             });
         }
 
@@ -1848,13 +1848,13 @@
             // wrap content - this seems to be required to prevent repeats of link conversion
             content = '<div data-mce-convert="url">' + content + '</div>';
 
-            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (a, b, c) {
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {
                 // only if not already a mailto: link
-                if (!b) {
-                    return '<a href="mailto:' + c + '">' + c + '</a>';
+                if (!attrib) {
+                    return '<a href="mailto:' + email + '">' + email + '</a>';
                 }
 
-                return a;
+                return match;
             });
         }
 
