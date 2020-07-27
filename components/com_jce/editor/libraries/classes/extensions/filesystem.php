@@ -124,8 +124,8 @@ class WFFileSystem extends WFExtension
             }
 
             // Replace any path variables
-            $path_pattern = array('/\$id/', '/\$username/', '/\$user(group|type)/', '/\$(group|profile)/', '/\$day/', '/\$month/', '/\$year/');
-            $path_replacement = array($user->id, $user->username, $usertype, $profile->name, date('d'), date('m'), date('Y'));
+            $path_pattern = array('/\$id/', '/\$username/', '/\$name/', '/\$user(group|type)/', '/\$(group|profile)/', '/\$day/', '/\$month/', '/\$year/');
+            $path_replacement = array($user->id, $user->username, $user->name, $usertype, $profile->name, date('d'), date('m'), date('Y'));
 
             $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
 
