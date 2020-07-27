@@ -1668,6 +1668,15 @@
                     if (className && className.indexOf('MsoList') !== -1) {
                         node.attr('data-mce-word-list', 1);
                     }
+
+                    if (className && /\s*Mso(Foot|End)note\s*/.test(className)) {
+                        var parent = node.parent;
+
+                        // replace footnote span with <sup>
+                        if (parent && parent.name === 'a') {
+                            node.name = 'sup';
+                        }
+                    }
                 }
             }
         });
@@ -1755,7 +1764,7 @@
             while (i--) {
                 node = nodes[i];
 
-                if (node.parent && !node.attributes.length) {
+                if (node.parent && !node.attributes.length) {                    
                     node.unwrap();
                 }
             }
