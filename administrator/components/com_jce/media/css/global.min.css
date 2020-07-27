@@ -30,6 +30,9 @@
 .ui-jce fieldset.checkboxes {
   display: flex;
 }
+.ui-jce fieldset.checkboxes.buttons {
+  flex-direction: column;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;

@@ -1204,7 +1204,3 @@ a.browser {
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
 }
-
-/*.ui-jce .row-fluid .form-horizontal .control-label:empty + .controls {
-    margin-left: inherit;
-}*/
