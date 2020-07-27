@@ -1676,6 +1676,11 @@
                         if (parent && parent.name === 'a') {
                             node.name = 'sup';
                         }
+                        
+                        // remove additional span tags
+                        if (node.name === 'span' && !node.attributes.length) {
+                            node.unwrap();
+                        }
                     }
                 }
             }
