@@ -175,7 +175,11 @@
             });
 
             $('.uk-repeatable-delete', this).on('click', function (e) {
-                $(this).parent().parent().remove();
+                var $elm = $(this).parent().parent();
+                
+                $elm.remove();
+
+                $(self).trigger('repeatable:delete', [self, $elm.get(0)]);
 
                 e.preventDefault();
             });
