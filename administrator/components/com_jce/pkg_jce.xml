@@ -14,6 +14,7 @@
             <![CDATA[https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce@@pro@@.xml]]>
         </server>
     </updateservers>
+    @@dlid@@
     <scriptfile>install.pkg.php</scriptfile>
     <files folder="packages">
         <file type="component" id="com_jce">com_jce.zip</file>
@@ -25,9 +26,7 @@
         <file type="plugin" id="jce" group="quickicon">plg_quickicon_jce.zip</file>
         <file type="plugin" id="jce" group="system">plg_system_jce.zip</file>
     </files>
-
-    <dlid prefix="key=" suffix="" />
-
+    
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.pkg_jce.sys.ini</language>
     </languages>
