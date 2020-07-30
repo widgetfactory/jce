@@ -250,10 +250,11 @@ class pkg_jceInstallerScript
     {
         $app = JFactory::getApplication();
         $extension = JTable::getInstance('extension');
+        $parent = $installer->getParent();
 
         JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
-        $plugin = JPluginHelper::getPlugin('extension', 'joomla');
+        /*$plugin = JPluginHelper::getPlugin('extension', 'joomla');
 
         if ($plugin) {
             $parent = $installer->getParent();
@@ -274,7 +275,7 @@ class pkg_jceInstallerScript
                 // install
                 $app->triggerEvent('onExtensionAfterInstall', array($parent, $package_id));
             }
-        }
+        }*/
 
         // remove legacy jcefilebrowser quickicon
         $plugin = JPluginHelper::getPlugin('quickicon', 'jcefilebrowser');
