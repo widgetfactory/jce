@@ -384,6 +384,7 @@
 
             return true;
         },
+
         _buildStyle: function (n) {
             var self = this,
                 ed = this.editor,
@@ -446,6 +447,7 @@
 
             return true;
         },
+
         _buildNoScript: function (n) {
             var self = this,
                 ed = this.editor,
@@ -467,6 +469,7 @@
 
             return true;
         },
+
         _serializeSpan: function (n) {
             var ed = this.editor,
                 v, p = {};
