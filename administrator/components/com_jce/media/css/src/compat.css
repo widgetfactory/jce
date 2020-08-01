@@ -3,20 +3,22 @@
     margin-left: -7.5px;
 }
 
-.ui-jce .checkboxes.inline .checkbox {
-    display: inline-block;
-    padding-right: 20px;
+.ui-jce .checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.ui-jce .checkboxes .checkbox {
-    padding-left: 0;
+.ui-jce .checkboxes.inline {
+    flex-direction: row;
 }
 
 .ui-jce .checkboxes .checkbox input {
     margin: 3px 0.3125rem 0 0;
 }
 
-.ui-jce .checkboxes.sortable .checkbox {
+.ui-jce .checkboxes.sortable .checkbox,
+.ui-jce .checkboxes.sortable .form-check {
     display: block;
     padding: 0.5rem;
     border: 1px solid #ccc;
@@ -24,6 +26,7 @@
     max-width: 300px;
     box-sizing: border-box;
     background-color: #fff;
+    margin: 0;
 }
 
 .ui-jce .buttons .mce-btn {background-color: #fff;}

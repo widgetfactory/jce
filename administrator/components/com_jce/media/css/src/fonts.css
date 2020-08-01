@@ -1,6 +1,5 @@
 .ui-jce .fontlist {
     position: relative;
-    display: block;
     list-style: none outside none;
     margin: 0 !important;
     min-width: 200px;
@@ -15,12 +14,17 @@
 .ui-jce .fontlist .font-item-plus {
     border: 1px solid #ccc;
     padding: 5px 10px;
-    margin: 2px 0;
     max-width: 400px;
     position: relative;
     background-color: #fff;
     width: 100%;
     box-sizing: border-box;
+    margin: 0;
+}
+
+.ui-jce .fontlist .font-item-highlight.sortable-placeholder{
+    max-width: 400px;
+    padding: 5px 10px;
 }
 
 .ui-jce .fontlist .font-item-plus {

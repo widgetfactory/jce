@@ -153,14 +153,15 @@ a.browser {
 .mceDefaultSkin.checkboxes .mceButton {
     text-align: left;
     max-width: 200px;
-    margin: 5px;
     padding: 5px;
     display: block;
+    cursor: default;
 }
 
-.checkboxes .mceButton>input {
+.checkboxes .mceButton>input[type="checkbox"] {
     vertical-align: middle;
     line-height: 20px;
+    margin: 0 3px;
 }
 
 .checkboxes .mceButton .mceIcon,
@@ -267,7 +268,6 @@ a.browser {
     border: 1px dashed #ccc;
     background-color: #fafafa;
     min-height: 32px;
-    margin: 5px 0;
     display: block;
     padding: 0.5rem;
     cursor: move;

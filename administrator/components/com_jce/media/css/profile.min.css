@@ -485,7 +485,6 @@ dd.file.notsafe {
 }
 .ui-jce .fontlist {
     position: relative;
-    display: block;
     list-style: none outside none;
     margin: 0 !important;
     min-width: 200px;
@@ -500,12 +499,17 @@ dd.file.notsafe {
 .ui-jce .fontlist .font-item-plus {
     border: 1px solid #ccc;
     padding: 5px 10px;
-    margin: 2px 0;
     max-width: 400px;
     position: relative;
     background-color: #fff;
     width: 100%;
     box-sizing: border-box;
+    margin: 0;
+}
+
+.ui-jce .fontlist .font-item-highlight.sortable-placeholder{
+    max-width: 400px;
+    padding: 5px 10px;
 }
 
 .ui-jce .fontlist .font-item-plus {
@@ -547,7 +551,6 @@ dd.file.notsafe {
 .ui-jce .blockformats .blockformat-item {
     border: 1px solid #ccc;
     padding: 5px;
-    margin: 2px 0;
     min-width: 200px;
     max-width: 300px;
     position: relative;
@@ -1083,14 +1086,15 @@ a.browser {
 .mceDefaultSkin.checkboxes .mceButton {
     text-align: left;
     max-width: 200px;
-    margin: 5px;
     padding: 5px;
     display: block;
+    cursor: default;
 }
 
-.checkboxes .mceButton>input {
+.checkboxes .mceButton>input[type="checkbox"] {
     vertical-align: middle;
     line-height: 20px;
+    margin: 0 3px;
 }
 
 .checkboxes .mceButton .mceIcon,
@@ -1197,7 +1201,6 @@ a.browser {
     border: 1px dashed #ccc;
     background-color: #fafafa;
     min-height: 32px;
-    margin: 5px 0;
     display: block;
     padding: 0.5rem;
     cursor: move;
