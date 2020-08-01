@@ -12,7 +12,7 @@
     <icon>numlist,bullist</icon>
     <fields name="lists">
         <fieldset name="config">
-            <field name="number_styles" class="sortable" type="checkboxes" default="default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman" label="WF_NUMLIST_STYLES" description="WF_NUMLIST_STYLES_DESC">
+            <field name="number_styles" type="sortablecheckboxes" default="default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman" label="WF_NUMLIST_STYLES" description="WF_NUMLIST_STYLES_DESC">
                 <option value="default">WF_OPTION_DEFAULT</option>
                 <option value="lower-alpha">WF_LISTS_LOWER_ALPHA</option>
                 <option value="lower-greek">WF_LISTS_LOWER_GREEK</option>
@@ -20,7 +20,7 @@
                 <option value="upper-alpha">WF_LISTS_UPPER_ALPHA</option>
                 <option value="upper-roman">WF_LISTS_UPPER_ROMAN</option>
             </field>
-            <field name="bullet_styles" class="sortable" type="checkboxes" default="default,circle,disc,square" label="WF_BULLIST_STYLES" description="WF_BULLIST_STYLES_DESC">
+            <field name="bullet_styles" type="sortablecheckboxes" default="default,circle,disc,square" label="WF_BULLIST_STYLES" description="WF_BULLIST_STYLES_DESC">
                 <option value="default">WF_OPTION_DEFAULT</option>
                 <option value="circle">WF_LISTS_CIRCLE</option>
                 <option value="disc">WF_LISTS_DISC</option>
