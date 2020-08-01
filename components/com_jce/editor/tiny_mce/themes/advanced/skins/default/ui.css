@@ -1829,32 +1829,37 @@ select.mceNativeListBox {
 
 .mceDefaultSkin .mce_list_lower_alpha::before {
     content: "a.";
-    vertical-align: top;
-    font-size: 0.75em;
+    font-size: 1em;
+    font-family: "times new roman,times";
+    line-height: 1.25;
 }
 
 .mceDefaultSkin .mce_list_lower_greek::before {
     content: "\03b1.";
-    vertical-align: top;
-    font-size: 0.75em;
+    font-size: 1em;
+    font-family: "times new roman,times";
+    line-height: 1.25;
 }
 
 .mceDefaultSkin .mce_list_lower_roman::before {
     content: "iv.";
-    vertical-align: top;
-    font-size: 0.75em;
+    font-size: 1em;
+    font-family: "times new roman,times";
+    line-height: 1.25;
 }
 
 .mceDefaultSkin .mce_list_upper_alpha::before {
     content: "A.";
-    vertical-align: top;
-    font-size: 0.75em;
+    font-size: 1em;
+    font-family: "times new roman,times";
+    line-height: 1.25;
 }
 
 .mceDefaultSkin .mce_list_upper_roman::before {
     content: "IV.";
-    vertical-align: top;
-    font-size: 0.75em;
+    font-size: 1em;
+    font-family: "times new roman,times";
+    line-height: 1.25;
 }/* Panel */
 
 .mceDefaultSkin .mcePanel {
