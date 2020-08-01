@@ -262,3 +262,15 @@ a.browser {
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
 }
+
+.ui-jce .checkboxes .sortable-placeholder {
+    border: 1px dashed #ccc;
+    background-color: #fafafa;
+    min-height: 32px;
+    margin: 5px 0;
+    display: block;
+    padding: 0.5rem;
+    cursor: move;
+    max-width: 300px;
+    box-sizing: border-box;
+}

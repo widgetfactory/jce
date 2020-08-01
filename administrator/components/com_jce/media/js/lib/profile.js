@@ -209,16 +209,16 @@
         });
 
         // set up change event for extensions options
-        $('#jform_components_select input').change(function () {
+        $('#jform_components_select input').on('change', function () {
             if (!this.checked) {
                 return;
             }
 
             $('#jform_components').prop('disabled', $(this).val() == 0).trigger('liszt:updated').trigger('chosen:updated');
-        }).change();
+        }).trigger('change');
 
         // add "isdirty" class to each input on change
-        $('#profile-features :input[name], #profile-editor :input[name], #profile-plugins :input[name]').change(function () {
+        $('#profile-features :input[name], #profile-editor :input[name], #profile-plugins :input[name]').on('change', function () {
             // skip on init
             if (skip) {
                 return;
@@ -379,6 +379,18 @@
             $(this).addClass('active show');
 
             $('.tab-content .tab-pane', $container).removeClass('active show').eq(idx).addClass('active show');
+        });
+
+        // add sortable to checkboxes
+        $('.checkboxes.sortable').sortable({
+            axis: 'y',
+            placeholder: "sortable-placeholder",
+            start: function(event, ui) {
+                $(ui.placeholder).height($(ui.item).height()).width($(ui.item).width());
+            },
+            update: function (event, ui) {
+                $('input', ui.item).trigger('change');
+            }
         });
 
         $('.ui-jce').removeClass('loading');

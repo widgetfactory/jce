@@ -27,12 +27,6 @@
 .ui-jce .controls .form-field-container:not(.inset) {
   margin-left: -180px;
 }
-.ui-jce fieldset.checkboxes {
-  display: flex;
-}
-.ui-jce fieldset.checkboxes.buttons {
-  flex-direction: column;
-}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
@@ -57,6 +51,8 @@
     border: 1px solid #ccc;
     cursor: move;
     max-width: 300px;
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
 .ui-jce .buttons .mce-btn {background-color: #fff;}
