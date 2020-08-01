@@ -69,7 +69,7 @@
             update: function (event, ui) {
                 $('.fontlist').trigger('update');
             },
-            placeholder: "font-item-highlight",
+            placeholder: "font-item-highlight sortable-placeholder",
             start: function (event, ui) {
                 $(ui.placeholder).height($(ui.item).height()).width($(ui.item).width());
             }

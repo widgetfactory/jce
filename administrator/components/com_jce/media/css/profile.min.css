@@ -505,6 +505,7 @@ dd.file.notsafe {
     position: relative;
     background-color: #fff;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .ui-jce .fontlist .font-item-plus {
@@ -525,12 +526,6 @@ dd.file.notsafe {
     height: 28px;
 }
 
-.ui-jce .fontlist .font-item-highlight,
-.ui-jce .fontlist .ui-sortable-helper {
-    border: 1px dashed #ccc;
-    padding: 5px 10px;
-}
-
 .ui-jce .fontlist>div,
 .ui-jce .fontlist label {
     cursor: move;
@@ -549,8 +544,7 @@ dd.file.notsafe {
     position: relative;
 }
 
-.ui-jce .blockformats .blockformat-item,
-.ui-jce .blockformats .blockformat-item.blockformat-highlight {
+.ui-jce .blockformats .blockformat-item {
     border: 1px solid #ccc;
     padding: 5px;
     margin: 2px 0;
@@ -558,6 +552,7 @@ dd.file.notsafe {
     max-width: 300px;
     position: relative;
     background-color: #fff;
+    box-sizing: border-box;
 }
 
 .ui-jce .blockformats .blockformat-item {
@@ -577,13 +572,6 @@ dd.file.notsafe {
 
 .ui-jce .blockformats .blockformat-item input {
     margin: 8px 10px;
-}
-
-.ui-jce .blockformats .blockformat-item.blockformat-highlight {
-    border-style: dashed;
-    min-height: 20px;
-    margin: 5px 0;
-    background-color: #f5f5f5;
 }
 
 /* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
@@ -1203,4 +1191,16 @@ a.browser {
 
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
+}
+
+.ui-jce .checkboxes .sortable-placeholder {
+    border: 1px dashed #ccc;
+    background-color: #fafafa;
+    min-height: 32px;
+    margin: 5px 0;
+    display: block;
+    padding: 0.5rem;
+    cursor: move;
+    max-width: 300px;
+    box-sizing: border-box;
 }

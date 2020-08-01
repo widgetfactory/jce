@@ -22,6 +22,8 @@
     border: 1px solid #ccc;
     cursor: move;
     max-width: 300px;
+    box-sizing: border-box;
+    background-color: #fff;
 }
 
 .ui-jce .buttons .mce-btn {background-color: #fff;}

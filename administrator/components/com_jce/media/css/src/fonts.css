@@ -20,6 +20,7 @@
     position: relative;
     background-color: #fff;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .ui-jce .fontlist .font-item-plus {
@@ -38,12 +39,6 @@
     line-height: 2rem;
     width: 28px;
     height: 28px;
-}
-
-.ui-jce .fontlist .font-item-highlight,
-.ui-jce .fontlist .ui-sortable-helper {
-    border: 1px dashed #ccc;
-    padding: 5px 10px;
 }
 
 .ui-jce .fontlist>div,
