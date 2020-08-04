@@ -77,8 +77,10 @@
                 'name': name
             };
 
-            if (window.Joomla && window.Joomla.getOptions) {
-                var token = window.Joomla.getOptions('csrf.token') || '';
+            var Joomla = window.Joomla || {};
+
+            if (Joomla.getOptions) {
+                var token = Joomla.getOptions('csrf.token') || '';
 
                 if (token) {
                     args[token] = 1;
