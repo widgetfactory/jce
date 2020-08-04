@@ -1999,6 +1999,8 @@
             });
         }
 
+        editor.onGetClipboardContent.dispatch(editor, content);
+
         return content;
     }
 
@@ -2652,8 +2654,6 @@
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
-
-                ed.onGetClipboardContent.dispatch(ed, clipboardContent);
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
