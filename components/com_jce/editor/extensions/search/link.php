@@ -31,17 +31,30 @@ class WFLinkSearchExtension extends WFSearchExtension
         // get plugins
         $plugins = $wf->getParam('search.link.plugins', array());
 
+        $default = array('categories', 'contacts', 'content', 'newsfeeds', 'weblinks', 'tags');
+
         // use tested defaults
-        if (empty($plugins)) {
-            $plugins = array('categories', 'contacts', 'content', 'newsfeeds', 'weblinks', 'tags');
-        }
+        $plugins = empty($plugins) ? $default : $plugins;
 
         foreach ($plugins as $plugin) {
-            if (JPluginHelper::isEnabled('search', $plugin)) {
-                // check plugin imports correctly - plugin may have a db entry, but is missing files
-                if (JPluginHelper::importPlugin('search', $plugin)) {
-                    $this->enabled[] = $plugin;
+            // plugin must be enabled
+            if (!JPluginHelper::isEnabled('search', $plugin)) {
+                continue;
+            }
+
+            // create component name from plugin - special case for "contacts"
+            if (in_array($plugin, $default)) {
+                $component = ($plugin == 'contacts') ? 'com_contact' : 'com_' . $plugin;
+
+                // check for associated component
+                if (!JComponentHelper::isEnabled($component)) {
+                    continue;
                 }
+            }
+
+            // check plugin imports correctly - plugin may have a db entry, but is missing files
+            if (JPluginHelper::importPlugin('search', $plugin)) {
+                $this->enabled[] = $plugin;
             }
         }
     }
