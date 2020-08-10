@@ -8,19 +8,19 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
-    var each = tinymce.each, undef;
+(function () {
+    var each = tinymce.each, DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
     tinymce.create('tinymce.plugins.AdvListPlugin', {
-        init: function(ed, url) {
-            var t = this;
+        init: function (ed, url) {
+            var self = this;
 
-            t.editor = ed;
+            self.editor = ed;
 
             function buildFormats(str) {
                 var formats = [];
 
-                each(str.split(/,/), function(type) {
+                each(str.split(/,/), function (type) {
                     var title = type.replace(/-/g, '_');
 
                     if (type === 'default') {
@@ -42,28 +42,28 @@
             var numlist = ed.getParam("advlist_number_styles", "default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
 
             if (numlist) {
-                t.numlist = buildFormats(numlist);
+                self.numlist = buildFormats(numlist);
             }
 
             var bullist = ed.getParam("advlist_bullet_styles", "default,circle,disc,square");
 
             if (bullist) {
-                t.bullist = buildFormats(bullist);
+                self.bullist = buildFormats(bullist);
             }
         },
-        createControl: function(name, cm) {
-            var t = this, btn, format, editor = t.editor;
+        createControl: function (name, cm) {
+            var self = this, btn, format, editor = self.editor;
 
             if (name == 'numlist' || name == 'bullist') {
 
-                if (t[name] && t[name][0].title === 'advlist.def') {
-                    format = t[name][0];
+                if (self[name] && self[name][0].title === 'advlist.def') {
+                    format = self[name][0];
                 }
 
                 function hasFormat(node, format) {
                     var state = true;
 
-                    each(format.styles, function(value, name) {
+                    each(format.styles, function (value, name) {
                         // Format doesn't match
                         if (editor.dom.getStyle(node, name) != value) {
                             state = false;
@@ -97,12 +97,98 @@
                     editor.focus();
                 }
 
+                function openDialog() {
+                    var form = cm.createForm('numlist_form');
+
+                    form.empty();
+
+                    var start_ctrl = cm.createTextBox('numlist_start_ctrl', {
+                        label: editor.getLang('advlist.start', 'Start'),
+                        name: 'start',
+                        subtype: 'number',
+                        attributes: {
+                            min: '1'
+                        }
+                    });
+
+                    form.add(start_ctrl);
+
+                    var reversed_ctrl = cm.createCheckBox('numlist_reversed_ctrl', {
+                        label: editor.getLang('advlist.reversed', 'Reversed'),
+                        name: 'reversed'
+                    });
+
+                    form.add(reversed_ctrl);
+
+                    editor.windowManager.open({
+                        title: editor.getLang('advlist.numlist', 'Ordered List'),
+                        items: [form],
+                        size: 'mce-modal-landscape-small',
+                        open: function () {
+                            var label = editor.getLang('update', 'Update'), node = editor.selection.getNode();
+
+                            var list = editor.dom.getParent(node, 'ol');
+
+                            if (list) {
+                                start_ctrl.value(editor.dom.getAttrib(list, 'start') || 1);
+                                reversed_ctrl.checked(!!editor.dom.getAttrib(list, 'reversed'));
+                            }
+
+                            DOM.setHTML(this.id + '_insert', label);
+                        },
+                        buttons: [
+                            {
+                                title: editor.getLang('common.remove', 'Remove'),
+                                id: 'remove',
+                                onclick: function() {
+                                    applyListFormat();
+                                    this.close();
+                                }
+                            },
+                            {
+                                title: editor.getLang('common.cancel', 'Cancel'),
+                                id: 'cancel'
+                            },
+                            {
+                                title: editor.getLang('insert', 'Insert'),
+                                id: 'insert',
+                                onsubmit: function (e) {
+                                    var data = form.submit();
+                                    Event.cancel(e);
+
+                                    var list = editor.dom.getParent(editor.selection.getNode(), 'ol');
+
+                                    if (!list) {
+                                        return;
+                                    }
+
+                                    each(data, function(value, key) {
+                                        if (!value) {
+                                            value = null;
+                                        }
+                                         
+                                        if (key == 'start' && value == '1') {
+                                            value = null;
+                                        }
+
+                                        console.log(key, value);
+
+                                        editor.dom.setAttrib(list, key, value);
+                                    });
+                                },
+                                classes: 'primary',
+                                scope: self
+                            }
+                        ]
+                    });
+                }
+
                 // disabled
-                if (!t[name]) {
+                if (!self[name]) {
                     btn = cm.createButton(name, {
                         title: 'advanced.' + name + '_desc',
                         'class': 'mce_' + name,
-                        onclick: function() {
+                        onclick: function () {
                             applyListFormat();
                         }
                     });
@@ -113,33 +199,41 @@
                 btn = cm.createSplitButton(name, {
                     title: 'advanced.' + name + '_desc',
                     'class': 'mce_' + name,
-                    onclick: function() {
+                    onclick: function () {
+                        if (name === 'numlist') {
+                            var list = editor.dom.getParent(editor.selection.getNode(), 'ol');
+
+                            if (list) {
+                                return openDialog();
+                            }
+                        }
+
                         applyListFormat();
                     }
                 });
 
-                btn.onRenderMenu.add(function(btn, menu) {
-                    menu.onHideMenu.add(function() {
-                        if (t.bookmark) {
-                            editor.selection.moveToBookmark(t.bookmark);
-                            t.bookmark = 0;
+                btn.onRenderMenu.add(function (btn, menu) {
+                    menu.onHideMenu.add(function () {
+                        if (self.bookmark) {
+                            editor.selection.moveToBookmark(self.bookmark);
+                            self.bookmark = 0;
                         }
                     });
 
-                    menu.onShowMenu.add(function() {
+                    menu.onShowMenu.add(function () {
                         var dom = editor.dom, list = dom.getParent(editor.selection.getNode(), 'ol,ul'), fmtList;
 
                         if (list || format) {
-                            fmtList = t[name];
+                            fmtList = self[name];
 
                             // Unselect existing items
-                            each(menu.items, function(item) {
+                            each(menu.items, function (item) {
                                 var state = true;
 
                                 item.setSelected(0);
 
                                 if (list && !item.isDisabled()) {
-                                    each(fmtList, function(fmt) {
+                                    each(fmtList, function (fmt) {
                                         if (fmt.id == item.id) {
                                             if (!hasFormat(list, fmt)) {
                                                 state = false;
@@ -162,37 +256,29 @@
 
                         // IE looses it's selection so store it away and restore it later
                         if (tinymce.isIE) {
-                            t.bookmark = editor.selection.getBookmark(1);
+                            self.bookmark = editor.selection.getBookmark(1);
                         }
                     });
 
-                    each(t[name], function(item) {
+                    each(self[name], function (item) {
                         item.id = editor.dom.uniqueId();
 
                         var style = item.styles.listStyleType, icon = style.replace(/-/g, '_');
 
                         menu.add({
-                            id: item.id, 
+                            id: item.id,
                             title: item.title,
                             icon: 'list_' + icon,
-                            onclick: function() {
+                            onclick: function () {
                                 format = item;
                                 applyListFormat();
-                            }});
+                            }
+                        });
                     });
                 });
 
                 return btn;
             }
-        },
-        getInfo: function() {
-            return {
-                longname: 'Advanced lists',
-                author: 'Moxiecode Systems AB',
-                authorurl: 'http://tinymce.moxiecode.com',
-                infourl: 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/advlist',
-                version: tinymce.majorVersion + "." + tinymce.minorVersion
-            };
         }
     });
 
