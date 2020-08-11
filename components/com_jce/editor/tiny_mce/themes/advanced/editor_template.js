@@ -790,26 +790,28 @@
                     ti = args.title;
                     na = args.name;
 
-                    pi = DOM.create('span', {
-                        class: 'mceText'
-                    }, na);
+                    if (na) {
+                        pi = DOM.create('span', {
+                            class: 'mceText'
+                        }, na);
 
-                    if (!args.disabled) {
-                        pi = DOM.create('a', {
-                            href: "#",
-                            role: 'button',
-                            title: ti,
-                            class: 'mcePath_' + (de++)
-                        }, pi);
-                    }
+                        if (!args.disabled) {
+                            pi = DOM.create('a', {
+                                href: "#",
+                                role: 'button',
+                                title: ti,
+                                class: 'mcePath_' + (de++)
+                            }, pi);
+                        }
 
-                    if (p.hasChildNodes()) {
-                        p.insertBefore(DOM.create('span', {
-                            'aria-hidden': 'true'
-                        }, '\u00a0\u00bb '), p.firstChild);
-                        p.insertBefore(pi, p.firstChild);
-                    } else {
-                        p.appendChild(pi);
+                        if (p.hasChildNodes()) {
+                            p.insertBefore(DOM.create('span', {
+                                'aria-hidden': 'true'
+                            }, '\u00a0\u00bb '), p.firstChild);
+                            p.insertBefore(pi, p.firstChild);
+                        } else {
+                            p.appendChild(pi);
+                        }
                     }
 
                 }, ed.getBody());
