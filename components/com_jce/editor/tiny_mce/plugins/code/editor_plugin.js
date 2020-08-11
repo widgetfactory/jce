@@ -44,6 +44,30 @@
                 return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp, style[data-mce-type="text/css"]');
             }
 
+            function processShortcode(html) {
+                return html.replace(/(?:<pre[^>]*>)?\{([\w-]+)\b([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function (match, tag, attribs, content) {
+                    // already encased in <pre> tag
+                    if (match.charAt(0) !== '{') {
+                        return match;
+                    }
+
+                    var data = '{' + tag + attribs + '}';
+
+                    // if there is content, there must be a closing tag
+                    if (content) {
+                        // encode html-like syntax
+                        if (/</.test(content)) {
+                            content = ed.dom.encode(content);
+                        }
+
+                        data += content;
+                        data += '{/' + tag + '}';
+                    }
+
+                    return '<pre data-mce-shortcode="1" class="mce-item-shortcode">' + data + '</pre>';
+                });
+            }
+
             ed.onNodeChange.add(function (ed, cm, n, co) {
                 ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
 
@@ -91,6 +115,12 @@
                         }
                     }
                 });
+
+                if (ed.settings.code_protect_shortcode !== false) {
+                    ed.selection.onBeforeSetContent.add(function (ed, o) {
+                        o.content = processShortcode(o.content);
+                    });
+                }
 
                 // Convert span placeholders to script elements
                 ed.serializer.addNodeFilter('div,span,pre,img', function (nodes, name, args) {
@@ -151,6 +181,10 @@
                                 return '<pre>' + ed.dom.encode(a) + '</pre>';
                             });
                         }
+
+                        if (ed.settings.code_protect_shortcode !== false) {
+                            o.content = processShortcode(o.content);
+                        }
                     });
                 }
             });
@@ -161,7 +195,7 @@
                     ed.theme.onResolveName.add(function (theme, o) {
                         var node = o.node, cls = node.className, name = node.nodeName;
 
-                        if (name === "SPAN") {
+                        if (name === 'SPAN') {
                             if (/mce-item-script/.test(cls)) {
                                 o.name = 'script';
                             }
@@ -175,33 +209,26 @@
                             }
                         }
 
-                        if (o.name === "pre.mce-item-shortcode") {
-                            o.name = 'shortcode';
+                        if (name === 'PRE') {
+                            if (cls.indexOf('mce-item-shortcode') !== -1) {
+                                o.name = 'shortcode';
+                            }
                         }
                     });
+                }
 
+                // enter in a pre element results in a new paragraph
+                if (ed.settings.code_protect_shortcode !== false) {
+                    ed.settings.br_in_pre = false;
                 }
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {
 
-                if (ed.settings.code_protect_shortcode) {
-                    o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function (match, tag, attribs, content) {
-                        var data = '{' + tag + attribs + '}';
-
-                        // if there is content, there must be a closing tag
-                        if (content) {
-                            // encode html-like syntax
-                            if (/</.test(content)) {
-                                content = ed.dom.encode(content);
-                            }
-
-                            data += content;
-                            data += '{/' + tag + '}';
-                        }
-
-                        return '<pre class="mce-item-shortcode">' + data + '</pre>';
-                    });
+                if (ed.settings.code_protect_shortcode !== false) {
+                    if (ed.settings.code_protect_shortcode !== false) {
+                        o.content = processShortcode(o.content);
+                    }
                 }
 
                 // test for PHP, Script or Style
