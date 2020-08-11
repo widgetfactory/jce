@@ -2951,7 +2951,7 @@ select.mceNativeListBox {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 32px;
+    min-height: 32px;
 }
 
 .mceFormControl {
