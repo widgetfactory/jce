@@ -125,6 +125,11 @@
     z-index: 1000;
 }
 
+.mceListBoxMenu .mceMenuItems .mceHasIcon.mceSelected:before {
+    left: inherit;
+    right: 0.5em;
+}
+
 .mceListBoxMenu .mceMenuItems {
     overflow: hidden;
     overflow-y: auto;
