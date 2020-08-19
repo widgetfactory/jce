@@ -984,7 +984,7 @@ class WFEditor
         }
 
         $query = $db->getQuery(true);
-        $query->select('id, template AS name, params')->from('#__template_styles')->where(array('client_id = 0', "home = '1'"));
+        $query->select('id, template AS name, params, home')->from('#__template_styles')->where(array('client_id = 0'));
 
         $db->setQuery($query);
         $templates = $db->loadObjectList();
@@ -992,10 +992,15 @@ class WFEditor
         $assigned = array();
 
         foreach ($templates as $template) {
+            // default template
+            if ((string) $template->home == '1') {
+                $assigned[] = $template;
+                continue;
+            }
+
+            // assigned template
             if ($id == $template->id) {
                 array_unshift($assigned, $template);
-            } else {
-                $assigned[] = $template;
             }
         }
 
@@ -1318,10 +1323,6 @@ class WFEditor
             if (is_dir($path)) {
                 // assign template
                 $template = $item;
-
-                // assign url
-                $url = 'templates/' . $item->name . '/css';
-
                 break;
             }
         }
