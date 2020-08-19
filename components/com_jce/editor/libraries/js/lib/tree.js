@@ -484,7 +484,10 @@
         },
         _encode: function (s) {
             // decode first in case already encoded
-            s = decodeURIComponent(s);
+            try {
+                s = decodeURIComponent(s);
+            } catch(e) {}
+            
             // encode but decode backspace
             return encodeURIComponent(s).replace(/%2F/gi, '\/');
         },
