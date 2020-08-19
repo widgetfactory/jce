@@ -110,6 +110,8 @@
                         var node = ed.selection.getNode(),
                             parent = ed.dom.getParent(node, blocks.join(','));
 
+                            vars = vars || {};
+
                         if (node.nodeName === "IMG") {
                             // replace parent paragraph with figure
                             if (parent && parent.nodeName === 'P' && parent.childNodes.length === 1) {
