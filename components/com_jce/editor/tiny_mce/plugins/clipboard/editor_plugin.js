@@ -1676,7 +1676,7 @@
                         if (parent && parent.name === 'a') {
                             node.name = 'sup';
                         }
-                        
+
                         // remove additional span tags
                         if (node.name === 'span' && !node.attributes.length) {
                             node.unwrap();
@@ -1769,7 +1769,7 @@
             while (i--) {
                 node = nodes[i];
 
-                if (node.parent && !node.attributes.length) {                    
+                if (node.parent && !node.attributes.length) {
                     node.unwrap();
                 }
             }
@@ -1814,7 +1814,12 @@
     function convertURLs(ed, content) {
 
         var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
-        var ux = '((news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
+        var ux = '((?:news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
+
+        var attribs = '(href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)';
+
+        var attribRe = '(?:' + attribs + '=["\'])'; // match attribute before url, eg: href="url"
+        var bracketRe = '(?:\}|\].*?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
         function createLink(url) {
             var attribs = ['href="' + url + '"'];
@@ -1827,15 +1832,15 @@
         }
 
         // existing link...
-        if (/^<a([^>]+)>([\s\S]+?)<\/a>$/.test(content)) {
+        var decoded = ed.dom.decode(content);
+
+        if (/^<a([^>]+)>([\s\S]+?)<\/a>$/.test(decoded)) {
             return content;
         }
 
         if (ed.getParam('autolink_url', true)) {
-
             if (new RegExp('^' + ux + '$').test(content)) {
                 content = createLink(content);
-
                 return content;
             }
 
@@ -1843,13 +1848,19 @@
             content = '<div data-mce-convert="url">' + content + '</div>';
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('((href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)=["\'])*' + ux, 'gi'), function (match, attrib, name, url) {                                
-                // only if not already a link, ie: b != =" or >
-                if (!attrib) {
-                    return createLink(url);
+            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, attrib, url) {
+                // attribute of existing link
+                if (attrib) {
+                    return match;
                 }
 
-                return match;
+                // bracket
+                if (extra == '}' || extra == ']' || extra == '](') {
+                    return match;
+                }
+
+                // only if not already a link or shortcode
+                return createLink(url);
             });
         }
 
@@ -1862,7 +1873,7 @@
             // wrap content - this seems to be required to prevent repeats of link conversion
             content = '<div data-mce-convert="url">' + content + '</div>';
 
-            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {                
                 // only if not already a mailto: link
                 if (!attrib) {
                     return '<a href="mailto:' + email + '">' + email + '</a>';
@@ -2228,7 +2239,7 @@
                 };
 
                 // only process externally sourced content
-                if (!internal) {
+                if (!internal) {                    
                     // Execute pre process handlers
                     self.onPreProcess.dispatch(self, o);
 
