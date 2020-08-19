@@ -45,13 +45,25 @@
             }
 
             function processShortcode(html) {
-                return html.replace(/(?:<pre[^>]*>)?\{([\w-]+)\b([^\}]*?)\}(?:([\s\S]+?)\{\/\1\})?/g, function (match, tag, attribs, content) {
-                    // already encased in <pre> tag
-                    if (match.charAt(0) !== '{') {
+                // skip stuff like {1} etc.
+                if (html.length < 4) {
+                    return html;
+                }
+
+                return html.replace(/(?:<(?:pre|code|samp)[^>]*>)?(?:\{|\[)([\w-]+)\b([^(\}\])]*?)(?:\}|\])(?:([\s\S]+?)(?:\{|\])\/\1(?:\}|\]))?/g, function (match, tag, attribs, content) {                    
+                    // already encased in <pre>, <code> or <samp> tag
+                    if (match.charAt(0) !== '{' && match.charAt(0) !== '[') {
                         return match;
                     }
 
-                    var data = '{' + tag + attribs + '}';
+                    var start = match.charAt(0), end = (start == '[') ? ']' : '}';
+
+                    if (start == '[' && !content) {
+                        return match;
+                    }
+
+                    // create opening tag, eg: {position}
+                    var data = start + tag + attribs + end;
 
                     // if there is content, there must be a closing tag
                     if (content) {
@@ -61,10 +73,14 @@
                         }
 
                         data += content;
-                        data += '{/' + tag + '}';
+
+                        // end tag, eg: {/position}
+                        data += start + '/' + tag + end;
+
+
                     }
 
-                    return '<pre data-mce-shortcode="1" class="mce-item-shortcode">' + data + '</pre>';
+                    return '<pre data-mce-shortcode="1">' + data + '</pre>';
                 });
             }
 
@@ -105,17 +121,6 @@
                     }
                 });
 
-                ed.parser.addNodeFilter('pre', function (nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i],
-                            cls = node.attr('class');
-
-                        if (/mce-item-curlycode/.test(cls)) {
-                            node.unwrap();
-                        }
-                    }
-                });
-
                 if (ed.settings.code_protect_shortcode !== false) {
                     ed.selection.onBeforeSetContent.add(function (ed, o) {
                         o.content = processShortcode(o.content);
@@ -136,13 +141,18 @@
                             self._buildStyle(node);
                         }
 
-                        if (name === "pre" && /mce-item-shortcode/.test(cls)) {
-                            node.unwrap();
-                        }
-
                         if (name == 'div' && node.attr('data-mce-type') == 'noscript') {
                             self._buildNoScript(node);
                         }
+                    }
+                });
+
+                ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
+                    var i = nodes.length, node;
+
+                    while (i--) {
+                        node = nodes[i];
+                        node.unwrap();
                     }
                 });
 
@@ -181,10 +191,6 @@
                                 return '<pre>' + ed.dom.encode(a) + '</pre>';
                             });
                         }
-
-                        if (ed.settings.code_protect_shortcode !== false) {
-                            o.content = processShortcode(o.content);
-                        }
                     });
                 }
             });
@@ -209,10 +215,8 @@
                             }
                         }
 
-                        if (name === 'PRE') {
-                            if (cls.indexOf('mce-item-shortcode') !== -1) {
-                                o.name = 'shortcode';
-                            }
+                        if (node.getAttribute('data-mce-shortcode')) {
+                            o.name = 'shortcode';
                         }
                     });
                 }
@@ -226,9 +230,7 @@
             ed.onBeforeSetContent.add(function (ed, o) {
 
                 if (ed.settings.code_protect_shortcode !== false) {
-                    if (ed.settings.code_protect_shortcode !== false) {
-                        o.content = processShortcode(o.content);
-                    }
+                    o.content = processShortcode(o.content);
                 }
 
                 // test for PHP, Script or Style

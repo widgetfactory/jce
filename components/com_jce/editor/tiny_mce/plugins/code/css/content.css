@@ -3,66 +3,60 @@
 .mce-item-script,
 .mce-item-style,
 style[data-mce-type="text/css"] {
-    display: inline-block;
-    width: 20px;
-    height: 22px;
-    background-image: url(../../../../libraries/img/ext.png);
-    background-repeat: no-repeat;
-    user-select: all;
-    -webkit-user-select: all;
-    -webkit-user-modify: read-only;
-    -moz-user-select: all;
-    -moz-user-modify: read-only;
-    cursor: pointer;
-    letter-spacing: normal;
-    word-spacing: normal;
-    text-indent: -9999px;
-    margin: 0;
-    padding: 0;
-    border: 0 none;
+  display: inline-block;
+  width: 20px;
+  height: 22px;
+  background-image: url(../../../../libraries/img/ext.png);
+  background-repeat: no-repeat;
+  user-select: all;
+  -webkit-user-select: all;
+  -webkit-user-modify: read-only;
+  -moz-user-select: all;
+  -moz-user-modify: read-only;
+  cursor: pointer;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-indent: -9999px;
+  margin: 0;
+  padding: 0;
+  border: 0 none;
 }
-
 .mce-item-php,
 .mcePhp {
-    background-position: 0 -100px;
+  background-position: 0 -100px;
 }
-
 .mce-item-script {
-    background-position: 0 -220px;
+  background-position: 0 -220px;
 }
-
 .mce-item-style,
 style[data-mce-type="text/css"] {
-    background-position: 0 -420px;
+  background-position: 0 -420px;
 }
-
 .mce-item-script.mce-item-selected,
 .mce-item-style.mce-item-selected,
 .mce-item-php.mce-item-selected,
 .mcePhp.mce-item-selected,
 style.mce-item-selected {
-    background-color: #b4d4ff;
-    border: 0 none;
+  background-color: #b4d4ff;
+  border: 0 none;
 }
-
-.mceVisualBlocks pre[data-mce-shortcode]:before {
-    content: "SHORTCODE";
+.mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before {
+  content: "SHORTCODE";
 }
-
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
-pre[data-mce-shortcode] {
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    color: #444;
-    background-color: #f5f2f0;
-    margin: 0;
-    padding: 0.5rem;
-    border: 1px dashed #ccc;
-    border-radius: 2px;
-    line-height: 1;
-}
-
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode] {
-    margin: 0;
-    padding: 0.25rem;
-    line-height: 1.5;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+  color: #444;
+  background-color: #f5f2f0;
+  margin: 2px 0;
+  padding: 0.5rem;
+  border: 1px dashed #ccc;
+  border-radius: 2px;
+  line-height: 1;
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-shortcode] {
+  margin: 2px 0;
+  padding: 0.25rem;
+  line-height: 1.5;
 }
