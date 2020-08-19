@@ -2746,26 +2746,25 @@ select.mceNativeListBox {
     height: calc(100% - 48px);
 }
 
-.mceModal .mce-modal-square-medium {
-    max-width: 512px;
+.mceModal .mce-modal-square-small {
+    max-width: 384px;
 }
 
-.mceModal .mce-modal-square-medium .mceModalContentIframe {
-    padding-bottom: calc(83.46% - 48px);
+.mceModal .mce-modal-square-medium {
+    max-width: 512px;
 }
 
 .mceModal .mce-modal-square-large {
     max-width: 640px;
 }
 
-.mceModal .mce-modal-square-large .mceModalContentIframe {
-    padding-bottom: calc(83.46% - 48px);
-}
-
 .mceModal .mce-modal-square-xlarge {
     max-width: 896px;
 }
 
+.mceModal .mce-modal-square-medium .mceModalContentIframe,
+.mceModal .mce-modal-square-small .mceModalContentIframe, 
+.mceModal .mce-modal-square-large .mceModalContentIframe,
 .mceModal .mce-modal-square-xlarge .mceModalContentIframe {
     padding-bottom: calc(83.46% - 48px);
 }
