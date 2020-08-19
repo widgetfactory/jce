@@ -8,3 +8,54 @@
 @supports (-webkit-hyphens:none) {
     .flex_gap();
 }
+
+/* UIKit */
+[data-wf-columns] {
+    &.uk-flex {
+        gap: @gap-small;
+    }
+    
+    &.uk-flex-gap-small {
+        gap: @gap-small;
+    }
+    
+    &.uk-flex-gap-medium {
+        gap: @gap-medium;
+    }
+    
+    &.uk-flex-gap-large {
+        gap: @gap-large;
+    }
+    
+    &.uk-flex-gap-none {
+        gap: 0;
+    }
+}
+
+/* Bootstrap */
+[data-wf-columns] {
+    &.row {
+        gap: @gap-small;
+        margin: 0;
+    }
+    
+    &.row > [class*="col"] {
+        padding: 0;
+    }
+
+    &.flex-sm-gap {
+        gap: @gap-small;
+    }
+    
+    &.flex-md-gap {
+        gap: @gap-medium;
+    }
+    
+    &.flex-lg-gap {
+        gap: @gap-large;
+    }
+    
+    &.flex-gap-none {
+        gap: 0;
+    }
+}

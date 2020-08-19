@@ -1,7 +1,16 @@
 // out: content.css, sourcemap: false, compress: true
+
+// Variables
+
+@gap-small: 0.5rem;
+@gap-medium: 1rem;
+@gap-large: 2rem;
+
+//
+
 .wf-columns {
     display: flex;
-    gap: 0.5rem;
+    gap: @gap-medium;
 }
 
 .wf-columns .wf-column {
@@ -67,15 +76,15 @@
 }
 
 .wf-columns-gap-small {
-    gap: 0.25rem;
+    gap: @gap-small;
 }
 
 .wf-columns-gap-medium {
-    gap: 0.5rem;
+    gap: @gap-medium;
 }
 
 .wf-columns-gap-large {
-    gap: 1rem;
+    gap: @gap-large;
 }
 
 .wf-columns-gap-none {

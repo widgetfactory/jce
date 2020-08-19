@@ -1,61 +1,145 @@
 .flex_gap() {
     .wf-columns .wf-column {
-        margin-left: 0.5rem;
-    }
+        margin-left: @gap-medium;
 
-    .wf-columns .wf-column:first-child {
-        margin-left: inherit;
-    }
+        &:first-child {
+            margin-left: inherit;
+        }
 
-    .wf-columns .wf-column:last-child {
-        margin-right: inherit;
+        &:last-child {
+            margin-right: inherit;
+        }
     }
 
     @media (max-width: 640px) {
-        .wf-columns-stack-small>.wf-column {
-            margin-left: inherit;
-            margin-right: inherit;
-            margin-top: 0.5rem;
-        }
+        .wf-columns-stack-small {
 
-        .wf-columns-stack-small>.wf-column:first-child {
-            margin-top: inherit;
+            .wf-column {
+                margin-left: inherit;
+                margin-right: inherit;
+                margin-top: @gap-medium;
+
+                &:first-child {
+                    margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-small {
+                .wf-column {
+                    margin-top: @gap-small;
+                }
+            }
+
+            &.wf-columns-gap-medium {
+                .wf-column {
+                    margin-top: @gap-medium;
+                }
+            }
+
+            &.wf-columns-gap-large {
+                .wf-column {
+                    margin-top: @gap-large;
+                }
+            }
         }
     }
 
     @media (max-width: 960px) {
-        .wf-columns-stack-medium>.wf-column {
-            margin-left: inherit;
-            margin-right: inherit;
-            margin-top: 0.5rem;
-        }
+        .wf-columns-stack-medium {
 
-        .wf-columns-stack-medium>.wf-column:first-child {
-            margin-top: inherit;
+            .wf-column {
+                margin-left: inherit;
+                margin-right: inherit;
+                margin-top: @gap-medium;
+
+                &:first-child {
+                    margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-small {
+                .wf-column {
+                    margin-top: @gap-small;
+                }
+            }
+
+            &.wf-columns-gap-medium {
+                .wf-column {
+                    margin-top: @gap-medium;
+                }
+            }
+
+            &.wf-columns-gap-large {
+                .wf-column {
+                    margin-top: @gap-large;
+                }
+            }
         }
     }
 
     @media (max-width: 1200px) {
-        .wf-columns-stack-large>.wf-column {
-            margin-left: inherit;
-            margin-right: inherit;
-            margin-top: 0.5rem;
-        }
+        .wf-columns-stack-large {
 
-        .wf-columns-stack-large>.wf-column:first-child {
-            margin-top: inherit;
+            .wf-column {
+                margin-left: inherit;
+                margin-right: inherit;
+                margin-top: @gap-medium;
+
+                &:first-child {
+                    margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-small {
+                .wf-column {
+                    margin-top: @gap-small;
+                }
+            }
+
+            &.wf-columns-gap-medium {
+                .wf-column {
+                    margin-top: @gap-medium;
+                }
+            }
+
+            &.wf-columns-gap-large {
+                .wf-column {
+                    margin-top: @gap-large;
+                }
+            }
         }
     }
 
     @media (max-width: 1600px) {
-        .wf-columns-stack-xlarge>.wf-column {
-            margin-left: inherit;
-            margin-right: inherit;
-            margin-top: 0.5rem;
-        }
+        .wf-columns-stack-xlarge {
 
-        .wf-columns-stack-xlarge>.wf-column:first-child {
-            margin-top: inherit;
+            .wf-column {
+                margin-left: inherit;
+                margin-right: inherit;
+                margin-top: @gap-medium;
+
+                &:first-child {
+                    margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-small {
+                .wf-column {
+                    margin-top: @gap-small;
+                }
+            }
+
+            &.wf-columns-gap-medium {
+                .wf-column {
+                    margin-top: @gap-medium;
+                }
+            }
+
+            &.wf-columns-gap-large {
+                .wf-column {
+                    margin-top: @gap-large;
+                }
+            }
         }
     }
 }
