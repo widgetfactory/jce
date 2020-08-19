@@ -59,7 +59,7 @@ class WFEditor
 
     /**
      * Array of core plugins
-     * 
+     *
      * @var array
      */
     private static $plugins = array('core', 'help', 'autolink', 'effects', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'figure', 'ui', 'noneditable', 'branding');
@@ -848,7 +848,7 @@ class WFEditor
                     if (WF_EDITOR_PRO && $item == 'branding') {
                         return false;
                     }
-                    
+
                     return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
                 });
 
@@ -1298,8 +1298,8 @@ class WFEditor
 
         // set default url as empty value
         $url = '';
-        // set default tempalte as empty value
-        $template = '';
+        // set default template as empty value
+        $template = (object) array('name' => '');
         // use editor default styles
         $styles = '';
         // stylesheets
@@ -1332,11 +1332,6 @@ class WFEditor
 
         $global = intval($wf->getParam('editor.content_css', 1));
         $profile = intval($wf->getParam('editor.profile_content_css', 2));
-
-        // no template found???
-        if (empty($template)) {
-            return $stylesheets;
-        }
 
         switch ($global) {
             // Custom template css files
@@ -1494,7 +1489,6 @@ class WFEditor
 
             $fullpath = JPATH_SITE . '/' . $file;
 
-            // check file exits before loading
             if (JFile::exists($fullpath)) {
                 // less
                 if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
@@ -1502,15 +1496,7 @@ class WFEditor
                     continue;
                 }
 
-                $etag = '';
-
-                // add etag
-                if ($absolute === false) {
-                    // create hash
-                    //$etag = '?' . filemtime(JPATH_SITE . '/' . $file);
-                }
-
-                $stylesheets[] = $root . '/' . $file . $etag;
+                $stylesheets[] = $root . '/' . $file;
             }
         }
 
@@ -1619,7 +1605,7 @@ class WFEditor
                     if (in_array($plugin, self::$plugins)) {
                         continue;
                     }
-                    
+
                     $files[] = WF_EDITOR_PLUGINS . '/' . $plugin . '/editor_plugin' . $suffix . '.js';
                 }
 
