@@ -171,8 +171,6 @@
                                             value = null;
                                         }
 
-                                        console.log(key, value);
-
                                         editor.dom.setAttrib(list, key, value);
                                     });
                                 },
