@@ -40,11 +40,7 @@ style.mce-item-selected {
   background-color: #b4d4ff;
   border: 0 none;
 }
-.mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before {
-  content: "SHORTCODE";
-}
-.mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
-.mceContentBody.mceVisualBlocks pre[data-mce-shortcode] {
+.mceContentBody pre[data-mce-shortcode] {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 1rem;
   color: #444;
@@ -59,4 +55,7 @@ style.mce-item-selected {
   margin: 2px 0;
   padding: 0.25rem;
   line-height: 1.5;
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before {
+  content: "SHORTCODE";
 }
