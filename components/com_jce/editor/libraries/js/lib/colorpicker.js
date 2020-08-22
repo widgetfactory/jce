@@ -251,6 +251,11 @@
 
                 var color = $(this.element).val() || '#000000';
 
+                // named color
+                if (!/\d/.test(color)) {
+                    color = this._namedToHex(color);
+                }
+
                 // convert color
                 if (/rgb/.test(color)) {
                     color = this._rgbToHex(color);
@@ -259,6 +264,9 @@
                 if (color && color.indexOf('#') === -1) {
                     color = '#' + color;
                 }
+
+                // update element
+                $(this.element).val(color);
 
                 $('#colorpicker_color').on('change', function() {
                     var v = this.value;
@@ -483,6 +491,19 @@
             }
 
             this._close();
+        },
+
+        _namedToHex: function(value) {
+            var color = '';
+
+            $.each(this._named, function(name, hex) {
+                if (name.toLowerCase() === value.toLowerCase()) {
+                    color = hex;
+                    return true;
+                }
+            });
+
+            return color;
         },
         /**
          * Convert RGB color value to Hex value
