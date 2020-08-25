@@ -322,6 +322,36 @@
             function isMediaClass(cls) {
                 return cls && /mce-item-(media|flash|shockwave|windowsmedia|quicktime|realmedia|divx|silverlight|audio|video|generic|iframe)/.test(cls);
             }
+            
+            /**
+             * Check that a node is valid to be processed, ie: must have a url of some sort
+             * @param {tinymce.html.Node} node 
+             */
+            function isValidNode(node) {
+                var name = node.name;
+
+                if (name == 'iframe' && !node.attr('src')) {
+                    return false;
+                }
+
+                if (name == 'embed' && !node.attr('src')) {
+                    return false;
+                }
+
+                if (name == 'object' && !node.attr('data')) {
+                    return false;
+                }
+
+                if (name == 'video' || name == 'audio') {
+                    if (!node.attr('src')) {
+                        if (node.getAll('source').length == 0) {
+                            return false;
+                        }
+                    }
+                }
+ 
+                return true;
+            }
 
             ed.onPreInit.add(function () {
                 var invalid = ed.settings.invalid_elements;
@@ -350,6 +380,11 @@
 
                     while (i--) {
                         node = nodes[i], cls = node.attr('class') || '';
+
+                        if (!isValidNode(node)) {
+                            node.remove();
+                            continue;
+                        }
 
                         // if valid node (validate == false)
                         if (tinymce.inArray(invalid, node.name) == -1) {
