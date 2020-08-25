@@ -973,7 +973,8 @@ class WFEditor
         $db = JFactory::getDBO();
         $app = JFactory::getApplication();
         $id = 0;
-
+        
+        // only process when front-end editing
         if ($app->getClientId() == 0) {
             $menus = $app->getMenu();
             $menu = $menus->getActive();
