@@ -103,6 +103,10 @@
                 onselect: function (name) {
                     var matches = [], removedFormat, node = ed.selection.getNode();
 
+                    if (node === ed.getBody()) {
+                        return false;
+                    }
+
                     ed.focus();
                     ed.undoManager.add();
 
@@ -113,9 +117,21 @@
                         }
                     });
 
-                    // reset node if there is a selection
+                    function isTextSelection() {
+                        var rng = ed.selection.getRng();
+
+                        if (!rng || !rng.startContainer || !rng.endContainer) {
+                            return false;
+                        }
+
+                        return rng.startContainer.nodeType === 3 && rng.endContainer.nodeType === 3;
+                    }
+
+                    // reset node if there is a text only selection
                     if (!ed.selection.isCollapsed()) {
-                        node = null;
+                        if (isTextSelection()) {
+                            node = null;
+                        }
                     }
 
                     each(matches, function (match) {
@@ -142,6 +158,8 @@
 
                             if (ed.dom.hasClass(node, name)) {
                                 ed.dom.removeClass(node, name);
+                                // fire nodechange on custom format
+                                ed.nodeChanged();
                             } else {
                                 //ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
                                 ed.execCommand('ApplyFormat', false, {
@@ -156,10 +174,7 @@
                         }
                     }
 
-                    ed.selection.getNode().focus();
-
                     ed.undoManager.add();
-                    ed.nodeChanged();
 
                     return false; // No auto select
                 }
