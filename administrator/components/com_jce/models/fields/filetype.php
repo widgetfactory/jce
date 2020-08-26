@@ -62,11 +62,11 @@ class JFormFieldFiletype extends JFormFieldText
             $name = $items[0];
             $values = explode(',', $items[1]);
 
-            array_walk($values, function (&$item, $name) {
-                if ($name[0] === '-') {
+            array_walk($values, function (&$item) use ($name) {
+                if ($name === '-') {
                     $item = '-' . $item;
                 }
-            }, $name);
+            });
 
             $data[$name] = $values;
         }
