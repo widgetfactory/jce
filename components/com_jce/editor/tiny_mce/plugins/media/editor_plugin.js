@@ -339,7 +339,9 @@
                 }
 
                 if (name == 'object' && !node.attr('data')) {
-                    return false;
+                    if (node.getAll('param').length == 0) {
+                        return false;
+                    }
                 }
 
                 if (name == 'video' || name == 'audio') {
