@@ -11,8 +11,7 @@
     var each = tinymce.each,
         JSON = tinymce.util.JSON,
         Node = tinymce.html.Node,
-        Entities = tinymce.html.Entities;
-    var VK = tinymce.VK,
+        VK = tinymce.VK,
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
@@ -45,12 +44,19 @@
             }
 
             function processShortcode(html) {
+                var tagName = 'pre', rng = ed.selection.getRng();
+
+                // process mixed code as inline using <code> tags
+                if (html.charAt(0) !== '{' || (rng && rng.startOffset > 1)) {
+                    tagName = 'code';
+                }
+
                 // skip stuff like {1} etc.
-                if (html.length < 4) {
+                if (html.charAt(0) == '{' && html.length < 4) {
                     return html;
                 }
 
-                return html.replace(/(?:<(?:pre|code|samp)[^>]*>)?(?:\{|\[)([\w-]+)\b([^(\}\])]*?)(?:\}|\])(?:([\s\S]+?)(?:\{|\])\/\1(?:\}|\]))?/g, function (match, tag, attribs, content) {                    
+                return html.replace(/(?:<(?:pre|code|samp)[^>]*>)?(?:\{|\[)([\w-]+)\b([^(\}\])]*?)(?:\}|\])(?:([\s\S]+?)(?:\{|\])\/\1(?:\}|\]))?/g, function (match, tag, attribs, content) {
                     // already encased in <pre>, <code> or <samp> tag
                     if (match.charAt(0) !== '{' && match.charAt(0) !== '[') {
                         return match;
@@ -76,11 +82,9 @@
 
                         // end tag, eg: {/position}
                         data += start + '/' + tag + end;
-
-
                     }
 
-                    return '<pre data-mce-shortcode="1">' + data + '</pre>';
+                    return '<' + tagName + ' data-mce-shortcode="1">' + data + '</' + tagName + '>';
                 });
             }
 

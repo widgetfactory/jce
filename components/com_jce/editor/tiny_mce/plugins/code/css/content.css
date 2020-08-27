@@ -40,20 +40,24 @@ style.mce-item-selected {
   background-color: #b4d4ff;
   border: 0 none;
 }
-.mceContentBody pre[data-mce-shortcode] {
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-  font-size: 1rem;
+.mceContentBody pre[data-mce-shortcode],
+.mceContentBody code[data-mce-shortcode] {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 1em;
   color: #444;
   background-color: #f5f2f0;
   margin: 2px 0;
-  padding: 0.5rem;
+  padding: 8px;
   border: 1px dashed #ccc;
   border-radius: 2px;
   line-height: 1;
 }
+.mceContentBody code[data-mce-shortcode] {
+  padding: 2px;
+}
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode] {
   margin: 2px 0;
-  padding: 0.25rem;
+  padding: 2px;
   line-height: 1.5;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before {
