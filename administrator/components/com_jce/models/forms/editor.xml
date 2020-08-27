@@ -188,7 +188,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="protect_shortcode" type="yesno" default="1" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
+            <field name="protect_shortcode" type="yesno" default="0" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>

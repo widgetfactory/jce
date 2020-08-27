@@ -121,7 +121,7 @@
                     }
                 });
 
-                if (ed.settings.code_protect_shortcode !== false) {
+                if (ed.settings.code_protect_shortcode) {
                     ed.selection.onBeforeSetContent.add(function (ed, o) {
                         o.content = processShortcode(o.content);
                     });
@@ -222,14 +222,14 @@
                 }
 
                 // enter in a pre element results in a new paragraph
-                if (ed.settings.code_protect_shortcode !== false) {
+                if (ed.settings.code_protect_shortcode) {
                     ed.settings.br_in_pre = false;
                 }
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {
 
-                if (ed.settings.code_protect_shortcode !== false) {
+                if (ed.settings.code_protect_shortcode) {
                     o.content = processShortcode(o.content);
                 }
 

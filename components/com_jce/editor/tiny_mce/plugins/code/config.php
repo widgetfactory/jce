@@ -24,7 +24,7 @@ class WFCodePluginConfig
 
         $settings['code_cdata'] = $wf->getParam('editor.cdata', 1, 1, 'boolean');
 
-        $settings['code_protect_shortcode'] = $wf->getParam('editor.protect_shortcode', 1, 1, 'boolean');
+        $settings['code_protect_shortcode'] = $wf->getParam('editor.protect_shortcode', 0, 0, 'boolean');
 
         $remove = array();
 
