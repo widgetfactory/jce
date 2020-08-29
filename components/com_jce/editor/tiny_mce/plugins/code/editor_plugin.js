@@ -43,12 +43,39 @@
                 return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp, style[data-mce-type="text/css"]');
             }
 
-            function processShortcode(html) {
-                var tagName = 'pre', rng = ed.selection.getRng();
+            ed.addCommand('InsertShortCode', function (ui, html) {
+                if (ed.settings.code_protect_shortcode) {
+                    html = processShortcode(html, 'pre');
 
-                // process mixed code as inline using <code> tags
-                if (html.charAt(0) !== '{' || (rng && rng.startOffset > 1)) {
-                    tagName = 'code';
+                    if (tinymce.is(html)) {
+                        ed.execCommand('mceReplaceContent', false, html);
+                    }
+                }
+
+                return false;
+            });
+
+            ed.onPreInit.add(function () {
+                if (ed.plugins.textpattern) {
+                    ed.plugins.textpattern.addPattern({
+                        start: '{',
+                        end: '}',
+                        cmd: 'InsertShortCode',
+                        remove: true
+                    });
+                }
+            });
+
+            function processShortcode(html, tagName) {
+                var rng = ed.selection.getRng();
+
+                if (!tagName) {
+                    tagName = 'pre';
+
+                    // process mixed code as inline using <code> tags
+                    if (html.charAt(0) !== '{' || (rng && rng.startOffset > 1)) {
+                        tagName = 'code';
+                    }
                 }
 
                 // skip stuff like {1} etc.
