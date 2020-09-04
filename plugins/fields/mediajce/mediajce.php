@@ -21,7 +21,7 @@ JForm::addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
  */
 class PlgFieldsMediaJce extends FieldsPlugin
 {
-    public function onCustomFieldsPrepareDom($field, DOMElement $parent, JForm $form)
+    public function onCustomFieldsPrepareDom($field, $parent, $form)
     {
         $fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
         return $fieldNode;
