@@ -24,11 +24,6 @@
         s = s.replace(/^(<!--\n)/g, '');
         s = s.replace(/(\n-->)$/g, '');
 
-        //s = s.replace(/(<!--\[CDATA\[|\]\]-->)/gi, '\n');
-        //s = s.replace(/^[\r\n]*|[\r\n]*$/g, '');
-        //s = s.replace(/^\s*(\/\/\s*<!--|\/\/\s*<!\[CDATA\[|<!--|<!\[CDATA\[)[\r\n]*/gi, '');
-        //s = s.replace(/\s*(\/\/\s*\]\]>|\/\/\s*-->|\]\]>|-->|\]\]-->)\s*$/g, '');
-
         return s;
     }
 
@@ -63,7 +58,21 @@
                         cmd: 'InsertShortCode',
                         remove: true
                     });
+
+                    ed.plugins.textpattern.addPattern({
+                        start: ' {',
+                        end: '}',
+                        format: 'shortcode',
+                        remove: false
+                    });
                 }
+
+                ed.formatter.register('shortcode', {
+                    inline: 'code',
+                    attributes: {
+                        'data-mce-shortcode': '1'
+                    }
+                });
             });
 
             function processShortcode(html, tagName) {
@@ -83,20 +92,18 @@
                     return html;
                 }
 
-                return html.replace(/(?:<(?:pre|code|samp)[^>]*>)?(?:\{|\[)([\w-]+)\b([^(\}\])]*?)(?:\}|\])(?:([\s\S]+?)(?:\{|\])\/\1(?:\}|\]))?/g, function (match, tag, attribs, content) {
+                return html.replace(/(?:[^\{]*)?(?:\{)([\w-]+)\b([^(\}\])]*?)(?:\})(?:([\s\S]+?)(?:\{)\/\1(?:\}))?/g, function (match, tag, attribs, content) {
                     // already encased in <pre>, <code> or <samp> tag
-                    if (match.charAt(0) !== '{' && match.charAt(0) !== '[') {
-                        return match;
-                    }
+                    if (match.charAt(0) !== '{') {
+                        if (/^<(pre|code|samp)/i.test(match)) {
+                            return match;
+                        }
 
-                    var start = match.charAt(0), end = (start == '[') ? ']' : '}';
-
-                    if (start == '[' && !content) {
-                        return match;
+                        tagName = 'code';
                     }
 
                     // create opening tag, eg: {position}
-                    var data = start + tag + attribs + end;
+                    var data = '{' + tag + attribs + '}';
 
                     // if there is content, there must be a closing tag
                     if (content) {
@@ -108,10 +115,17 @@
                         data += content;
 
                         // end tag, eg: {/position}
-                        data += start + '/' + tag + end;
+                        data += '{' + '/' + tag + '}';
                     }
 
-                    return '<' + tagName + ' data-mce-shortcode="1">' + data + '</' + tagName + '>';
+                    var prefix = '';
+
+                    // get matched text before curly bracker
+                    if (match.charAt(0) !== '{') {
+                        prefix = match.substring(0, match.indexOf('{'));
+                    }
+
+                    return prefix + '<' + tagName + ' data-mce-shortcode="1">' + data + '</' + tagName + '>';
                 });
             }
 
