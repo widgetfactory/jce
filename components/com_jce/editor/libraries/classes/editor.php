@@ -285,6 +285,7 @@ class WFEditor
             'directionality' => WFLanguage::getDir(),
             'theme' => 'none',
             'plugins' => '',
+            'skin' => 'default'
         );
 
         // if a profile is set
