@@ -178,7 +178,7 @@
             }];
 
             ed.onKeyDown.add(function (ed, e) {
-                if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP) && e.altKey) {
+                if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
                     // clear blocks
                     self._clearBlocks(ed, e);
                 }
@@ -343,7 +343,7 @@
                 // create element
                 var el = ed.dom.create(tag, {}, '\u00a0');
 
-                if (e.keyCode === VK.ENTER) {
+                if (e.keyCode === VK.ENTER || e.keyCode === VK.DOWN) {
                     // insert after parent element
                     ed.dom.insertAfter(el, block);
                 } else {
