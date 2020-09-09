@@ -12,7 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 class WFPacker extends JObject
 {
-    const IMPORT_RX = '#@import.*?["\']([^"\']+)["\'].*?;#i';
+    const IMPORT_RX = '#@import.*?(?:\(([^\)]+)\);|(?:[\'"]([^\'"]+)[\'"]);)#i'; // match @import url('...'); or @import '...'; or @import "...";
 
     protected $files = array();
     protected $type = 'javascript';
