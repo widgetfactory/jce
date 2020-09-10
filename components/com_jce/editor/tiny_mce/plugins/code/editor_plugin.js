@@ -92,14 +92,17 @@
                     return html;
                 }
 
-                return html.replace(/(?:[^\{]*)?(?:\{)([\w-]+)\b([^(\}\])]*?)(?:\})(?:([\s\S]+?)(?:\{)\/\1(?:\}))?/g, function (match, tag, attribs, content) {
-                    // already encased in a tag
+                return html.replace(/(?:.*?)?(?:\{)([\w-]+)\b([^(\}\])]*?)(?:\})(?:([\s\S]+?)(?:\{)\/\1(?:\}))?/g, function (match, tag, attribs, content) {                   
+                    
                     if (match.charAt(0) !== '{') {
-                        if (/^<[\w-]+/i.test(match)) {
+                        // already encased in a tag, eg: <div>{code}</div>
+                        if (/^<[^>]+>\{/i.test(match)) {                            
                             return match;
                         }
 
                         tagName = 'code';
+                    } else {
+                        tagName = 'pre';
                     }
 
                     // create opening tag, eg: {position}
