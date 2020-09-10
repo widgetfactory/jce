@@ -68,7 +68,7 @@
                 }
 
                 ed.formatter.register('shortcode', {
-                    inline: 'code',
+                    inline: 'span',
                     attributes: {
                         'data-mce-shortcode': '1'
                     }
@@ -83,7 +83,7 @@
 
                     // process mixed code as inline using <code> tags
                     if (html.charAt(0) !== '{' || (rng && rng.startOffset > 1)) {
-                        tagName = 'code';
+                        tagName = 'span';
                     }
                 }
 
@@ -92,15 +92,14 @@
                     return html;
                 }
 
-                return html.replace(/(?:.*?)?(?:\{)([\w-]+)\b([^(\}\])]*?)(?:\})(?:([\s\S]+?)(?:\{)\/\1(?:\}))?/g, function (match, tag, attribs, content) {                   
-                    
-                    if (match.charAt(0) !== '{') {
+                return html.replace(/(?:.*?)?(?:\{)([\w-]+)(.*?)(?:\})(?:(.*?)(?:\{\/\1\}))?(?:.*)/g, function (match, tag, attribs, content) {  
+                    if (match.charAt(0) !== '{') {                        
                         // already encased in a tag, eg: <div>{code}</div>
                         if (/^<[^>]+>\{/i.test(match)) {                            
                             return match;
                         }
 
-                        tagName = 'code';
+                        tagName = 'span';
                     } else {
                         tagName = 'pre';
                     }
@@ -196,10 +195,25 @@
                 });
 
                 ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
-                    var i = nodes.length, node;
+                    var i = nodes.length, node, value = '';
 
                     while (i--) {
                         node = nodes[i];
+
+                        if (node.firstChild) {
+                            value = node.firstChild.value;
+                            value = ed.dom.decode(value);
+
+                            node.empty();
+                        }
+
+                        if (value) {
+                            var text = new Node('#text', 3);
+                            text.raw = true;
+                            text.value = tinymce.trim(value);
+                            node.append(text);
+                        }
+
                         node.unwrap();
                     }
                 });

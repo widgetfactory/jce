@@ -41,7 +41,9 @@ style.mce-item-selected {
   border: 0 none;
 }
 .mceContentBody pre[data-mce-shortcode],
-.mceContentBody code[data-mce-shortcode] {
+.mceContentBody div[data-mce-shortcode],
+.mceContentBody code[data-mce-shortcode],
+.mceContentBody span[data-mce-shortcode] {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 1em;
   color: #444;
@@ -52,14 +54,17 @@ style.mce-item-selected {
   border-radius: 2px;
   line-height: 1;
 }
-.mceContentBody code[data-mce-shortcode] {
+.mceContentBody code[data-mce-shortcode],
+.mceContentBody span[data-mce-shortcode] {
   padding: 2px;
 }
-.mceContentBody.mceVisualBlocks pre[data-mce-shortcode] {
+.mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
+.mceContentBody.mceVisualBlocks div[data-mce-shortcode] {
   margin: 2px 0;
   padding: 2px;
   line-height: 1.5;
 }
-.mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before {
+.mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before,
+.mceContentBody.mceVisualBlocks div[data-mce-shortcode]:before {
   content: "SHORTCODE";
 }
