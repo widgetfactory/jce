@@ -93,9 +93,9 @@
                 }
 
                 return html.replace(/(?:[^\{]*)?(?:\{)([\w-]+)\b([^(\}\])]*?)(?:\})(?:([\s\S]+?)(?:\{)\/\1(?:\}))?/g, function (match, tag, attribs, content) {
-                    // already encased in <pre>, <code> or <samp> tag
+                    // already encased in a tag
                     if (match.charAt(0) !== '{') {
-                        if (/^<(pre|code|samp)/i.test(match)) {
+                        if (/^<[\w-]+/i.test(match)) {
                             return match;
                         }
 
