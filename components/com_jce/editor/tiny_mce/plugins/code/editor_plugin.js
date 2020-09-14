@@ -40,7 +40,7 @@
 
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
-                    html = processShortcode(html, 'pre');
+                    html = processShortcode(html, 'pre', true);
 
                     if (tinymce.is(html)) {
                         ed.execCommand('mceReplaceContent', false, html);
@@ -50,58 +50,23 @@
                 return false;
             });
 
-            ed.onPreInit.add(function () {
-                if (ed.plugins.textpattern) {
-                    ed.plugins.textpattern.addPattern({
-                        start: '{',
-                        end: '}',
-                        cmd: 'InsertShortCode',
-                        remove: true
-                    });
-
-                    ed.plugins.textpattern.addPattern({
-                        start: ' {',
-                        end: '}',
-                        format: 'shortcode',
-                        remove: false
-                    });
-                }
-
-                ed.formatter.register('shortcode', {
-                    inline: 'span',
-                    attributes: {
-                        'data-mce-shortcode': '1'
-                    }
-                });
-            });
-
-            function processShortcode(html, tagName) {
-                var rng = ed.selection.getRng();
-
-                if (!tagName) {
-                    tagName = 'pre';
-
-                    // process mixed code as inline using <code> tags
-                    if (html.charAt(0) !== '{' || (rng && rng.startOffset > 1)) {
-                        tagName = 'span';
-                    }
-                }
-
-                // skip stuff like {1} etc.
-                if (html.charAt(0) == '{' && html.length < 4) {
+            function processShortcode(html, tagName, encode) {
+                // quick check to see if we should proceed
+                if (html.indexOf('{') === -1) {
                     return html;
                 }
 
-                return html.replace(/(?:.*?)?(?:\{)([\w-]+)(.*?)(?:\})(?:(.*?)(?:\{\/\1\}))?(?:.*)/g, function (match, tag, attribs, content) {  
-                    if (match.charAt(0) !== '{') {                        
-                        // already encased in a tag, eg: <div>{code}</div>
-                        if (/^<[^>]+>\{/i.test(match)) {                            
-                            return match;
-                        }
+                // skip stuff like {1} etc.
+                if (html.charAt(0) == '{' && html.length < 3) {
+                    return html;
+                }
 
-                        tagName = 'span';
-                    } else {
-                        tagName = 'pre';
+                tagName = tagName || 'span';
+
+                return html.replace(/(?:>?)(?:\{)([\/\w-]+)(.*?)(?:\})(?:(.*?)(?:\{\/\1\}))?/g, function (match, tag, attribs, content) {  
+                    // already wrapped in a tag
+                    if (match.charAt(0) === '>') {                        
+                        return match;
                     }
 
                     // create opening tag, eg: {position}
@@ -109,25 +74,17 @@
 
                     // if there is content, there must be a closing tag
                     if (content) {
-                        // encode html-like syntax
-                        if (/</.test(content)) {
+                        // encode html tags if required
+                        if (encode && /</.test(content)) {
                             content = ed.dom.encode(content);
                         }
-
+                        
                         data += content;
-
                         // end tag, eg: {/position}
                         data += '{' + '/' + tag + '}';
                     }
 
-                    var prefix = '';
-
-                    // get matched text before curly bracker
-                    if (match.charAt(0) !== '{') {
-                        prefix = match.substring(0, match.indexOf('{'));
-                    }
-
-                    return prefix + '<' + tagName + ' data-mce-shortcode="1">' + data + '</' + tagName + '>';
+                    return '<' + tagName + ' data-mce-shortcode="1" data-mce-type="shortcode">' + data + '</' + tagName + '>';
                 });
             }
 
@@ -149,6 +106,29 @@
                 if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
+
+                if (ed.plugins.textpattern && ed.settings.code_protect_shortcode) {
+                    ed.plugins.textpattern.addPattern({
+                        start: '{',
+                        end: '}',
+                        cmd: 'InsertShortCode',
+                        remove: true
+                    });
+
+                    ed.plugins.textpattern.addPattern({
+                        start: ' {',
+                        end: '}',
+                        format: 'shortcode',
+                        remove: false
+                    });
+                }
+
+                ed.formatter.register('shortcode', {
+                    inline: 'span',
+                    attributes: {
+                        'data-mce-shortcode': '1'
+                    }
+                });
 
                 // allow script URLS, eg: href="javascript:;"
                 if (ed.getParam('code_script')) {
@@ -195,50 +175,41 @@
                 });
 
                 ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
-                    var i = nodes.length, node, value = '';
+                    var i = nodes.length, node;
 
                     while (i--) {
                         node = nodes[i];
 
-                        if (node.firstChild) {
-                            value = node.firstChild.value;
-                            value = ed.dom.decode(value);
-
-                            node.empty();
-                        }
-
-                        if (value) {
-                            var text = new Node('#text', 3);
-                            text.raw = true;
-                            text.value = tinymce.trim(value);
-                            node.append(text);
+                        // append newline to the end of shortcode blocks
+                        if (node.name === 'pre') {
+                            var newline = new Node('#text', 3);
+                            newline.raw = true;
+                            newline.value = '\n';
+                            node.append(newline);
                         }
 
                         node.unwrap();
                     }
                 });
 
-                /*ed.serializer.addNodeFilter('style', function (nodes, name, args) {
-                    var node, value = '';
+                ed.parser.addAttributeFilter('data-mce-shortcode', function (nodes) {
+                    var i = nodes.length, node, parent;
+                    
+                    while (i--) {
+                        node = nodes[i], parent = node.parent;
 
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        node = nodes[i];
-
-                        node.attr('type', node.attr('data-mce-type') || 'text/css');
-
-                        if (node.firstChild) {
-                            value = node.firstChild.value;
-                            value = clean(value);
-
-                            node.empty();
+                        if (node.parent) {
+                            // rename shortcode blocks to <pre>
+                            if (parent.name === 'body' || parent.firstChild === node) {
+                                node.name = 'pre';
+                            }
+                            // prevent nesting
+                            if (parent.attr('data-mce-shortcode')) {
+                                node.unwrap();
+                            }
                         }
-
-                        var text = new Node('#text', 3);
-                        text.raw = true;
-                        text.value = tinymce.trim(value);
-                        node.append(text);
                     }
-                });*/
+                });
 
                 if (ed.plugins.clipboard) {
                     ed.onPastePreProcess.add(function (ed, o) {
@@ -292,7 +263,10 @@
             ed.onBeforeSetContent.add(function (ed, o) {
 
                 if (ed.settings.code_protect_shortcode) {
-                    o.content = processShortcode(o.content);
+                    // only process content on "load"
+                    if (o.content && o.load) {
+                        o.content = processShortcode(o.content);
+                    }                    
                 }
 
                 // test for PHP, Script or Style

@@ -40,10 +40,7 @@ style.mce-item-selected {
   background-color: #b4d4ff;
   border: 0 none;
 }
-.mceContentBody pre[data-mce-shortcode],
-.mceContentBody div[data-mce-shortcode],
-.mceContentBody code[data-mce-shortcode],
-.mceContentBody span[data-mce-shortcode] {
+.mceContentBody [data-mce-shortcode] {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 1em;
   color: #444;
@@ -54,8 +51,8 @@ style.mce-item-selected {
   border-radius: 2px;
   line-height: 1;
 }
-.mceContentBody code[data-mce-shortcode],
-.mceContentBody span[data-mce-shortcode] {
+.mceContentBody span[data-mce-shortcode],
+.mceContentBody code[data-mce-shortcode] {
   padding: 2px;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
