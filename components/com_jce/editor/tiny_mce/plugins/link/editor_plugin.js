@@ -35,8 +35,7 @@
         }
 
         var args = {
-            'href': data.url,
-            'target': '_blank'
+            'href': data.url
         };
 
         // set default target
