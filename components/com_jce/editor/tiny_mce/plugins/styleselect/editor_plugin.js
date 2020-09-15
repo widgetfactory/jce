@@ -103,7 +103,17 @@
                 onselect: function (name) {
                     var matches = [], removedFormat, node = ed.selection.getNode();
 
-                    if (node === ed.getBody()) {
+                    function isTextSelection() {
+                        var rng = ed.selection.getRng();
+
+                        if (!rng || !rng.startContainer || !rng.endContainer) {
+                            return false;
+                        }
+
+                        return rng.startContainer.nodeType === 3 && rng.endContainer.nodeType === 3 && !rng.collapsed;
+                    }
+
+                    if (node === ed.getBody() && !isTextSelection()) {
                         return false;
                     }
 
@@ -116,16 +126,6 @@
                             matches.push(item.value);
                         }
                     });
-
-                    function isTextSelection() {
-                        var rng = ed.selection.getRng();
-
-                        if (!rng || !rng.startContainer || !rng.endContainer) {
-                            return false;
-                        }
-
-                        return rng.startContainer.nodeType === 3 && rng.endContainer.nodeType === 3;
-                    }
 
                     // reset node if there is a text only selection
                     if (!ed.selection.isCollapsed()) {
