@@ -2208,7 +2208,7 @@
                         var i = nodes.length;
 
                         while (i--) {
-                            nodes[i].remove();
+                            nodes[i].unwrap();
                         }
                     });
                 }
