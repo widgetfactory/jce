@@ -73,7 +73,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
         }
 
         $extraData = array(
-            'link'      => $this->link,
+            'link'      => JURI::base(true) . '/' . $this->link,
             'class'     => $this->element['class'] . ' input-medium wf-media-input'
         );
 
