@@ -120,7 +120,7 @@ class WFStyleselectPluginConfig
 
                     if (isset($style->styles)) {
                         // replace comma with semi-colon and remove duplicates
-                        $style->styles = preg_replace('#[,;]+#', ';', $style->styles);
+                        $style->styles = preg_replace('#[;]+#', ';', $style->styles);
                     }
 
                     // set block or inline element
