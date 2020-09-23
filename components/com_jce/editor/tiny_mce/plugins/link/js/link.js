@@ -84,7 +84,7 @@
                         url = ed.documentBaseURI.toAbsolute(url, true);
                     }
 
-                    Wf.Modal.iframe(title, url, {width: '100%', height: 480});
+                    Wf.Modal.iframe(title, url, { width: '100%', height: 480 });
 
                     return;
                 }
@@ -104,7 +104,7 @@
 
                     text = $.trim(text.split('/')[0]);
 
-                    self.insertLink({'url' : url, text : text});
+                    self.insertLink({ 'url': url, text: text });
                 }
             }).on('tree:nodeload', function (e, node) {
                 var self = this;
@@ -202,7 +202,7 @@
             WFPopups.setup();
 
             // store text value when changed
-            $('#text').on('change', function() {
+            $('#text').on('change', function () {
                 $(this).data('text', this.value);
             }).data('text', '');
 
@@ -223,10 +223,12 @@
 
                 if (n) {
                     n = ed.dom.getParent(n, 'A') || n;
+
                     var v = se.getContent({
                         format: 'text'
-                    }),
-                        shortEnded = ed.schema.getShortEndedElements();
+                    });
+
+                    var shortEnded = ed.schema.getShortEndedElements();
 
                     // reset node in IE if the link is the first element
                     if (tinymce.isIE || tinymce.isIE11) {
@@ -431,7 +433,7 @@
         insertAndClose: function () {
             tinyMCEPopup.restoreSelection();
 
-            var self = ed = tinyMCEPopup.editor,
+            var ed = tinyMCEPopup.editor,
                 se = ed.selection,
                 n = se.getNode(),
                 args = {},
@@ -488,7 +490,7 @@
                     ed.execCommand('mceInsertLink', false, {
                         'href': args.href,
                         'data-mce-tmp': '1'
-                    });
+                    }, { skip_undo: 1 });
                 }
 
                 // restore styles
@@ -510,6 +512,11 @@
                     }
 
                     if (txt) {
+                        // update the text on the selected node, not the anchor
+                        if (n.nodeName !== 'A') {
+                            elm = n;
+                        }
+
                         if ("innerText" in elm) {
                             elm.innerText = txt;
                         } else {
@@ -566,11 +573,11 @@
 
             $.each(['mailto', 'cc', 'bcc', 'subject', 'body'], function (i, name) {
                 fields += '<div class="uk-form-row uk-grid uk-grid-collapse">' +
-                '   <label class="uk-form-label uk-width-3-10" for="email_' + name + '">' + ed.getLang('link_dlg.' + name, name) + '</label>' +
-                '   <div class="uk-form-controls uk-width-7-10">' +
-                '       <textarea id="email_' + name + '"></textarea>' +
-                '   </div>' +
-                '</div>';
+                    '   <label class="uk-form-label uk-width-3-10" for="email_' + name + '">' + ed.getLang('link_dlg.' + name, name) + '</label>' +
+                    '   <div class="uk-form-controls uk-width-7-10">' +
+                    '       <textarea id="email_' + name + '"></textarea>' +
+                    '   </div>' +
+                    '</div>';
             });
 
             fields += '</div>';
@@ -595,10 +602,10 @@
 
                         if (k.length === 2) {
                             var val = k[1];
-                            
+
                             try {
                                 val = decodeURIComponent(val);
-                            } catch(e){}
+                            } catch (e) { }
 
                             $('#email_' + k[0]).val(val);
                         }
@@ -692,7 +699,7 @@
 
                                 text = $.trim(text.split('/')[0]);
 
-                                self.insertLink({'url' : url, text : text});
+                                self.insertLink({ 'url': url, text: text });
                             }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
 
                             $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
