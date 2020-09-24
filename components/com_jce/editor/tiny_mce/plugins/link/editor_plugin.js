@@ -241,6 +241,13 @@
             ed.onNodeChange.add(function (ed, cm, n, co) {
                 var link = isLink(n), anchor = isAnchor(n);
 
+                // remove existing selections
+                ed.dom.removeAttrib(ed.dom.select('a'), 'data-mce-selected');
+
+                if (link) {
+                    ed.dom.setAttrib(ed.dom.getParent(n, 'a[href]'), 'data-mce-selected', 'inline-boundary');
+                }
+
                 // set active if link
                 cm.setActive('unlink', link);
                 cm.setActive('link', link);
