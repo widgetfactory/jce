@@ -41,6 +41,49 @@
         return newRel.length ? toString(newRel) : null;
     };
 
+    var anchorElm;
+
+    // A selection of useful utilities borrowed from https://github.com/tinymce/tinymce/blob/develop/modules/tinymce/src/plugins/link/main/ts/core/Utils.ts
+    var isAnchor = function (elm) { return elm && elm.nodeName.toLowerCase() === 'a'; };
+
+    var hasFileSpan = function (elm) { return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1 };
+
+    var collectNodesInRange = function (rng, predicate) {
+        if (rng.collapsed) {
+            return [];
+        }
+        else {
+            var contents = rng.cloneContents();
+            var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
+            var elements = [];
+            var current = contents.firstChild;
+            do {
+                if (predicate(current)) {
+                    elements.push(current);
+                }
+            } while ((current = walker.next()));
+            return elements;
+        }
+    };
+
+    var isOnlyTextSelected = function (ed) {
+        // Allow anchor and inline text elements to be in the selection but nothing else
+        var inlineTextElements = ed.schema.getTextInlineElements();
+        var isElement = function (elm) {
+            return elm.nodeType === 1 && !isAnchor(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+        };
+        // Collect all non inline text elements in the range and make sure no elements were found
+        var elements = collectNodesInRange(ed.selection.getRng(), isElement);
+        return elements.length === 0;
+    };
+
+    var trimCaretContainers = function (text) { return text.replace(/\uFEFF/g, ''); };
+
+    var getAnchorText = function (selection, anchorElm) {
+        var text = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({ format: 'text' });
+        return trimCaretContainers(text);
+    };
+
     var LinkDialog = {
         settings: {},
         init: function () {
@@ -201,101 +244,59 @@
             // setup popups
             WFPopups.setup();
 
+            // init dialog
+            Wf.init();
+
             // store text value when changed
             $('#text').on('change', function () {
                 $(this).data('text', this.value);
             }).data('text', '');
 
-            // if there is a selection
-            if (!se.isCollapsed()) {
-                n = se.getNode();
+            var state = isOnlyTextSelected(ed);
 
-                var state = true,
-                    v = '';
-
-                function setText(state, v) {
-                    if (state && v) {
-                        $('#text').val(v).attr('disabled', false).trigger('change');
-                    } else {
-                        $('#text').val('').attr('disabled', true).trigger('change').parents('tr').hide();
-                    }
+            function setText(state, txt) {
+                if (state && txt) {
+                    $('#text').val(txt).attr('disabled', false).trigger('change');
+                } else {
+                    $('#text').val('').attr('disabled', true).trigger('change').parents('tr').hide();
                 }
-
-                if (n) {
-                    n = ed.dom.getParent(n, 'A') || n;
-
-                    var v = se.getContent({
-                        format: 'text'
-                    });
-
-                    var shortEnded = ed.schema.getShortEndedElements();
-
-                    // reset node in IE if the link is the first element
-                    if (tinymce.isIE || tinymce.isIE11) {
-                        var start = se.getStart(),
-                            end = se.getEnd();
-
-                        if (start === end && start.nodeName === "A") {
-                            n = start;
-                        }
-                    }
-
-                    // node is a link
-                    if (n.nodeName === "A") {
-                        var nodes = n.childNodes,
-                            i;
-                        if (nodes.length === 0) {
-                            state = false;
-                        } else {
-                            for (i = nodes.length - 1; i >= 0; i--) {
-                                if (nodes[i].nodeType !== 3) {
-                                    state = false;
-                                    break;
-                                }
-                            }
-                            // allow editing of file text
-                            if (nodes.length === 1 && ed.dom.is(nodes[0], 'span.wf_text')) {
-                                state = true;
-                            }
-                        }
-                        // selection is a shortEnded element, eg: img
-                    } else if (shortEnded[n.nodeName]) {
-                        state = false;
-                        // selection contains some html
-                    } else if (/</.test(se.getContent())) {
-                        state = false;
-                    }
-                }
-
-                // set text value and state
-                setText(state, v);
             }
 
-            Wf.init();
+            // get the anchor element from the selection node
+            anchorElm = ed.dom.getParent(se.getStart(), 'a[href]');
 
-            // Enable / disable attributes
-            $.each(this.settings.attributes, function (k, v) {
-                if (parseInt(v) === 0) {
-                    $('#attributes-' + k).hide();
+            if (isAnchor(anchorElm)) {
+                // select the anchor node so it is updated correctly
+                se.select(anchorElm);
+                
+                // reset node in IE if the link is the first element
+                if (tinymce.isIE) {
+                    var start = se.getStart(),
+                        end = se.getEnd();
+
+                    if (start === end && start.nodeName === "A") {
+                        anchorElm = start;
+                    }
                 }
-            });
 
-            if (n && n.nodeName == 'A') {
+                // allow editing of File Manager text
+                if (hasFileSpan(anchorElm)) {
+                    state = true;
+                }
+
                 $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
 
-                //var href = decodeURIComponent(ed.convertURL(ed.dom.getAttrib(n, 'href')));
-                var href = ed.convertURL(ed.dom.getAttrib(n, 'href'));
+                var href = ed.convertURL(ed.dom.getAttrib(anchorElm, 'href'));
 
                 // Setup form data
                 $('#href').val(href);
 
                 // attributes
                 $.each(['title', 'id', 'style', 'dir', 'lang', 'tabindex', 'accesskey', 'charset', 'hreflang', 'target'], function (i, k) {
-                    $('#' + k).val(ed.dom.getAttrib(n, k));
+                    $('#' + k).val(ed.dom.getAttrib(anchorElm, k));
                 });
 
-                $('#dir').val(ed.dom.getAttrib(n, 'dir'));
-                $('#rev').val(ed.dom.getAttrib(n, 'rev'), true);
+                $('#rev').val(ed.dom.getAttrib(anchorElm, 'rev'), true);
 
                 if (href.charAt(0) == '#') {
                     $('#anchor').val(href);
@@ -303,21 +304,19 @@
 
                 // Class
                 $('#classes').val(function () {
-                    var values = ed.dom.getAttrib(n, 'class');
+                    var values = ed.dom.getAttrib(anchorElm, 'class');
                     return $.trim(values);
                 }).trigger('change');
 
-                $('#target').val(ed.dom.getAttrib(n, 'target'));
-
                 // check for popups
-                var data = WFPopups.getPopup(n) || {};
+                var data = WFPopups.getPopup(anchorElm) || {};
 
                 // process rel after popups as it is used by MediaBox
                 $('#rel').val(function () {
                     var v = data.rel;
 
                     if ($.type(v) !== "string") {
-                        v = ed.dom.getAttrib(n, 'rel');
+                        v = ed.dom.getAttrib(anchorElm, 'rel');
                     }
 
                     if (!v) {
@@ -330,10 +329,23 @@
 
                     return v;
                 }).trigger('change');
-
             } else {
+                // set defaults
                 Wf.setDefaults(this.settings.defaults);
             }
+
+            // get anchor or selected element text
+            var txt = getAnchorText(se, isAnchor(anchorElm) ? anchorElm : null) || ''
+
+            // set text value and state
+            setText(state, txt);
+
+            // Enable / disable attributes
+            $.each(this.settings.attributes, function (k, v) {
+                if (parseInt(v) === 0) {
+                    $('#attributes-' + k).hide();
+                }
+            });
 
             // hide HTML4 only attributes
             if (ed.settings.schema == 'html5' && ed.settings.validate) {
@@ -347,6 +359,7 @@
 
             window.focus();
         },
+
         getAnchorListHTML: function (id, target) {
             var ed = tinyMCEPopup.editor,
                 name;
@@ -402,11 +415,11 @@
                 this.insertAndClose();
             }
         },
+
         insert: function () {
             tinyMCEPopup.restoreSelection();
 
-            var ed = tinyMCEPopup.editor,
-                se = ed.selection;
+            var ed = tinyMCEPopup.editor;
 
             if ($('#href').val() == '') {
                 Wf.Modal.alert(ed.getLang('link_dlg.no_href', 'A URL is required. Please select a link or enter a URL'), {
@@ -418,7 +431,7 @@
                 return false;
             }
 
-            if (se.isCollapsed() && $('#text').not(':disabled').val() == '') {
+            if (ed.selection.isCollapsed() && $('#text').not(':disabled').val() == '') {
                 Wf.Modal.alert(ed.getLang('link_dlg.no_text', 'Please enter some text for the link'), {
                     "close": function () {
                         $('#text').focus();
@@ -435,11 +448,24 @@
 
             var ed = tinyMCEPopup.editor,
                 se = ed.selection,
-                n = se.getNode(),
+                node = se.getStart(),
                 args = {},
                 el;
 
             var attribs = ['href', 'title', 'target', 'id', 'style', 'class', 'rel', 'rev', 'charset', 'hreflang', 'dir', 'lang', 'tabindex', 'accesskey', 'type'];
+
+            function updateText(elm, txt) {
+                // update the selected node so as not to overwrite with anchor text
+                if (elm.firstChild && elm.firstChild.nodeType === 1) {
+                    elm = elm.firstChild;
+                }
+
+                if ("innerText" in elm) {
+                    elm.innerText = txt;
+                } else {
+                    elm.textContent = txt;
+                }
+            }
 
             tinymce.each(attribs, function (k) {
                 var v = $('#' + k).val();
@@ -480,8 +506,8 @@
                 // create link on selection or update existing link
             } else {
                 // update link
-                if (n && n.nodeName === "A") {
-                    ed.dom.setAttribs(n, {
+                if (isAnchor(node)) {
+                    ed.dom.setAttribs(node, {
                         'href': args.href,
                         'data-mce-tmp': '1'
                     });
@@ -494,7 +520,7 @@
                 }
 
                 // restore styles
-                ed.dom.setAttrib(n, 'style', ed.dom.getAttrib(n, 'data-mce-style'));
+                ed.dom.setAttrib(node, 'style', ed.dom.getAttrib(node, 'data-mce-style'));
 
                 // get link
                 var elms = ed.dom.select('a[data-mce-tmp]');
@@ -513,15 +539,7 @@
 
                     if (txt) {
                         // update the text on the selected node, not the anchor
-                        if (n.nodeName !== 'A') {
-                            elm = n;
-                        }
-
-                        if ("innerText" in elm) {
-                            elm.innerText = txt;
-                        } else {
-                            elm.textContent = txt;
-                        }
+                        updateText(elm, txt);
                     }
                 });
 
