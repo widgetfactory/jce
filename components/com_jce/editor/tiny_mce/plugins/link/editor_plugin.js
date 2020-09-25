@@ -10,24 +10,79 @@
 (function () {
     var DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
-    function createLink(ed, data) {
-        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'A');
+    // A selection of useful utilities borrowed from https://github.com/tinymce/tinymce/blob/develop/modules/tinymce/src/plugins/link/main/ts/core/Utils.ts
+    var isAnchor = function (elm) { return elm && elm.nodeName.toLowerCase() === 'a'; };
+    var hasFileSpan = function (elm) { return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1 };
 
-        if (typeof data === 'string') {
-            data = {url : data, text : data};
+    var collectNodesInRange = function (rng, predicate) {
+        if (rng.collapsed) {
+            return [];
+        }
+        else {
+            var contents = rng.cloneContents();
+            var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
+            var elements = [];
+            var current = contents.firstChild;
+            do {
+                if (predicate(current)) {
+                    elements.push(current);
+                }
+            } while ((current = walker.next()));
+            return elements;
+        }
+    };
+
+    var isOnlyTextSelected = function (ed) {
+        // Allow anchor and inline text elements to be in the selection but nothing else
+        var inlineTextElements = ed.schema.getTextInlineElements();
+        var isElement = function (elm) {
+            return elm.nodeType === 1 && !isAnchor(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+        };
+        // Collect all non inline text elements in the range and make sure no elements were found
+        var elements = collectNodesInRange(ed.selection.getRng(), isElement);
+        return elements.length === 0;
+    };
+
+    var trimCaretContainers = function (text) { return text.replace(/\uFEFF/g, ''); };
+
+    var getAnchorText = function (selection, anchorElm) {
+        var text = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({ format: 'text' });
+        return trimCaretContainers(text);
+    };
+
+    var updateTextContent = function(elm, text) {
+        // update the selected node so as not to overwrite with anchor text
+        if (elm.firstChild && elm.firstChild.nodeType === 1) {
+            elm = elm.firstChild;
         }
 
+        if ("innerText" in elm) {
+            elm.innerText = text;
+        } else {
+            elm.textContent = text;
+        }
+    }
+
+    function createLink(ed, data) {
+        var node = ed.selection.getStart(), anchor = ed.dom.getParent(node, 'a[href]');
+
+        if (typeof data === 'string') {
+            data = { url: data, text: data };
+        }
+
+        // remove the link if no url
         if (!data.url) {
-            if (anchor && anchor.nodeName === 'A') {
+            if (isAnchor(node)) {
                 ed.execCommand('unlink', false);
             }
 
             return false;
         }
 
-        if (!data.text) {
-            return false;
-        }
+        var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
+
+        // use passed in text value or node text or url
+        data.text = data.text || text || data.url;
 
         // add missing protocol
         if (/^\s*www\./i.test(data.url)) {
@@ -50,8 +105,8 @@
         } else {
             ed.execCommand('mceInsertLink', false, args);
 
-            if (anchor && anchor.nodeName === 'A') {
-                anchor.textContent = data.text;
+            if (isAnchor(anchor)) {
+                updateTextContent(anchor, data.text);
             }
         }
 
@@ -63,23 +118,6 @@
         init: function (ed, url) {
             this.editor = ed;
             this.url = url;
-
-            function isLink(n) {
-                // no node specified
-                if (!n) {
-                    return false;
-                }
-
-                // get link
-                n = ed.dom.getParent(n, 'A');
-
-                // is a link but not an anchor
-                return n && isAnchor(n) === false;
-            }
-
-            function isAnchor(n) {
-                return ed.dom.hasClass(n, 'mce-item-anchor');
-            }
 
             // Register commands
             ed.addCommand('mceLink', function () {
@@ -103,7 +141,7 @@
 
             ed.onPreInit.add(function () {
                 var params = ed.getParam('link', {});
-                
+
                 if (params.basic_dialog !== true) {
                     return;
                 }
@@ -139,58 +177,38 @@
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
-                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', text = '', state = true;
+                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getStart(), src = '';
+                            var state = isOnlyTextSelected(ed);
 
-                            if (!ed.selection.isCollapsed()) {
-                                if (node) {
-                                    node = ed.dom.getParent(node, 'A') || node;
+                            node = ed.dom.getParent(node, 'a[href]');
 
-                                    text = ed.selection.getContent({
-                                        format: 'text'
-                                    });
+                            if (node) {
+                                ed.selection.select(node);
 
-                                    src = ed.dom.getAttrib(node, 'href');
+                                src = ed.dom.getAttrib(node, 'href');
 
-                                    if (src) {
-                                        label = ed.getLang('update', 'Update');
-                                    }
+                                if (src) {
+                                    label = ed.getLang('update', 'Update');
+                                }
 
-                                    var shortEnded = ed.schema.getShortEndedElements();
+                                // reset node in IE if the link is the first element
+                                if (tinymce.isIE) {
+                                    var start = ed.selection.getStart(),
+                                        end = ed.selection.getEnd();
 
-                                    // reset node in IE if the link is the first element
-                                    if (tinymce.isIE || tinymce.isIE11) {
-                                        var start = ed.selection.getStart(),
-                                            end = ed.selection.getEnd();
-
-                                        if (start === end && start.nodeName === "A") {
-                                            node = start;
-                                        }
-                                    }
-
-                                    // node is a link
-                                    if (node.nodeName === "A") {
-                                        var nodes = node.childNodes,
-                                            i;
-
-                                        if (nodes.length === 0) {
-                                            state = false;
-                                        } else {
-                                            for (i = nodes.length - 1; i >= 0; i--) {
-                                                if (nodes[i].nodeType !== 3) {
-                                                    state = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        // selection is a shortEnded element, eg: img
-                                    } else if (shortEnded[node.nodeName]) {
-                                        state = false;
-                                        // selection contains some html
-                                    } else if (/</.test(ed.selection.getContent())) {
-                                        state = false;
+                                    if (start === end && start.nodeName === "A") {
+                                        node = start;
                                     }
                                 }
+
+                                // allow editing of File Manager text
+                                if (hasFileSpan(node)) {
+                                    state = true;
+                                }
                             }
+
+                            // get anchor or selected element text
+                            var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || ''
 
                             urlCtrl.value(src);
 
@@ -239,13 +257,13 @@
             });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
-                var link = isLink(n), anchor = isAnchor(n);
+                var link = ed.dom.getParent(n, 'a[href]'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
 
                 // remove existing selections
                 ed.dom.removeAttrib(ed.dom.select('a'), 'data-mce-selected');
 
                 if (link) {
-                    ed.dom.setAttrib(ed.dom.getParent(n, 'a[href]'), 'data-mce-selected', 'inline-boundary');
+                    ed.dom.setAttrib(link, 'data-mce-selected', 'inline-boundary');
                 }
 
                 // set active if link
@@ -256,8 +274,7 @@
             });
         },
         createControl: function (n, cm) {
-            var self = this,
-                ed = this.editor;
+            var ed = this.editor;
 
             if (n !== 'link') {
                 return null;
@@ -319,7 +336,7 @@
 
                         if (ed.dom.hasClass(n, 'mceButtonLink')) {
                             var value = DOM.getValue(ed.id + '_link_input');
-                            createLink(ed, {url : value, text : value});
+                            createLink(ed, { url: value, text: '' });
                         }
 
                         if (ed.dom.hasClass(n, 'mceButtonUnlink')) {
@@ -336,14 +353,13 @@
 
                     DOM.setAttrib(ed.id + '_link_unlink', 'disabled', 'disabled');
 
-                    if (!selection.isCollapsed()) {
-                        var node = selection.getNode();
-                        node = ed.dom.getParent(node, 'A') || node;
+                    var node = selection.getStart();
+                    node = ed.dom.getParent(node, 'a[href]');
 
-                        if (node.nodeName === 'A') {
-                            value = node.getAttribute('href');
-                            DOM.setAttrib(ed.id + '_link_unlink', 'disabled', null);
-                        }
+                    if (isAnchor(node)) {
+                        selection.select(node);
+                        value = node.getAttribute('href');
+                        DOM.setAttrib(ed.id + '_link_unlink', 'disabled', null);
                     }
 
                     // focus input after short timeout
@@ -357,7 +373,17 @@
             });
 
             return ctrl;
-        }
+        },
+
+        isAnchor: isAnchor,
+
+        hasFileSpan: hasFileSpan,
+
+        isOnlyTextSelected: isOnlyTextSelected,
+
+        getAnchorText: getAnchorText,
+
+        updateTextContent: updateTextContent
     });
 
     // Register plugin
