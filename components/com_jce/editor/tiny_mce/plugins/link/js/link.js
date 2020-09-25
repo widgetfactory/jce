@@ -43,54 +43,14 @@
 
     var anchorElm;
 
-    // A selection of useful utilities borrowed from https://github.com/tinymce/tinymce/blob/develop/modules/tinymce/src/plugins/link/main/ts/core/Utils.ts
-    var isAnchor = function (elm) { return elm && elm.nodeName.toLowerCase() === 'a'; };
-
-    var hasFileSpan = function (elm) { return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1 };
-
-    var collectNodesInRange = function (rng, predicate) {
-        if (rng.collapsed) {
-            return [];
-        }
-        else {
-            var contents = rng.cloneContents();
-            var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
-            var elements = [];
-            var current = contents.firstChild;
-            do {
-                if (predicate(current)) {
-                    elements.push(current);
-                }
-            } while ((current = walker.next()));
-            return elements;
-        }
-    };
-
-    var isOnlyTextSelected = function (ed) {
-        // Allow anchor and inline text elements to be in the selection but nothing else
-        var inlineTextElements = ed.schema.getTextInlineElements();
-        var isElement = function (elm) {
-            return elm.nodeType === 1 && !isAnchor(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
-        };
-        // Collect all non inline text elements in the range and make sure no elements were found
-        var elements = collectNodesInRange(ed.selection.getRng(), isElement);
-        return elements.length === 0;
-    };
-
-    var trimCaretContainers = function (text) { return text.replace(/\uFEFF/g, ''); };
-
-    var getAnchorText = function (selection, anchorElm) {
-        var text = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({ format: 'text' });
-        return trimCaretContainers(text);
-    };
-
     var LinkDialog = {
         settings: {},
         init: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
-                se = ed.selection,
-                n, el;
+                se = ed.selection, el;
+
+            var api = ed.plugins.link;
 
             tinyMCEPopup.restoreSelection();
 
@@ -252,7 +212,7 @@
                 $(this).data('text', this.value);
             }).data('text', '');
 
-            var state = isOnlyTextSelected(ed);
+            var state = api.isOnlyTextSelected(ed);
 
             function setText(state, txt) {
                 if (state && txt) {
@@ -265,10 +225,10 @@
             // get the anchor element from the selection node
             anchorElm = ed.dom.getParent(se.getStart(), 'a[href]');
 
-            if (isAnchor(anchorElm)) {
+            if (api.isAnchor(anchorElm)) {
                 // select the anchor node so it is updated correctly
                 se.select(anchorElm);
-                
+
                 // reset node in IE if the link is the first element
                 if (tinymce.isIE) {
                     var start = se.getStart(),
@@ -280,7 +240,7 @@
                 }
 
                 // allow editing of File Manager text
-                if (hasFileSpan(anchorElm)) {
+                if (api.hasFileSpan(anchorElm)) {
                     state = true;
                 }
 
@@ -335,7 +295,7 @@
             }
 
             // get anchor or selected element text
-            var txt = getAnchorText(se, isAnchor(anchorElm) ? anchorElm : null) || ''
+            var txt = api.getAnchorText(se, api.isAnchor(anchorElm) ? anchorElm : null) || ''
 
             // set text value and state
             setText(state, txt);
@@ -452,20 +412,9 @@
                 args = {},
                 el;
 
+            var api = ed.plugins.link;
+
             var attribs = ['href', 'title', 'target', 'id', 'style', 'class', 'rel', 'rev', 'charset', 'hreflang', 'dir', 'lang', 'tabindex', 'accesskey', 'type'];
-
-            function updateText(elm, txt) {
-                // update the selected node so as not to overwrite with anchor text
-                if (elm.firstChild && elm.firstChild.nodeType === 1) {
-                    elm = elm.firstChild;
-                }
-
-                if ("innerText" in elm) {
-                    elm.innerText = txt;
-                } else {
-                    elm.textContent = txt;
-                }
-            }
 
             tinymce.each(attribs, function (k) {
                 var v = $('#' + k).val();
@@ -506,7 +455,7 @@
                 // create link on selection or update existing link
             } else {
                 // update link
-                if (isAnchor(node)) {
+                if (api.isAnchor(node)) {
                     ed.dom.setAttribs(node, {
                         'href': args.href,
                         'data-mce-tmp': '1'
@@ -539,7 +488,7 @@
 
                     if (txt) {
                         // update the text on the selected node, not the anchor
-                        updateText(elm, txt);
+                        api.updateTextContent(elm, txt);
                     }
                 });
 
