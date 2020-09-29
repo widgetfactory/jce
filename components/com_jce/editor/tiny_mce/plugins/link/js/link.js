@@ -408,7 +408,7 @@
 
             var ed = tinyMCEPopup.editor,
                 se = ed.selection,
-                node = se.getStart(),
+                node = se.getNode(),
                 args = {},
                 el;
 

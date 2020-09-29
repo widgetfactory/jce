@@ -64,7 +64,7 @@
     }
 
     function createLink(ed, data) {
-        var node = ed.selection.getStart(), anchor = ed.dom.getParent(node, 'a[href]');
+        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'a[href]');
 
         if (typeof data === 'string') {
             data = { url: data, text: data };
