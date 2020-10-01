@@ -238,7 +238,7 @@
                 }
             });
 
-            var $selectBtn = $(elm).parent().find('.button-select');
+            var $selectBtn = $(elm).parent().find('.button-select, .modal.btn');
 
             $uploadBtn.insertAfter($selectBtn);
 
