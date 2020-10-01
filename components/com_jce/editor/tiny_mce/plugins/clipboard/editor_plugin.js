@@ -1848,9 +1848,9 @@
             content = '<div data-mce-convert="url">' + content + '</div>';
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, attrib, url) {
+            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
                 // attribute of existing link
-                if (attrib) {
+                if (new RegExp(attribRe, 'gi').test(extra)) {
                     return match;
                 }
 
