@@ -40,7 +40,8 @@ style.mce-item-selected {
   background-color: #b4d4ff;
   border: 0 none;
 }
-.mceContentBody [data-mce-shortcode] {
+.mceContentBody [data-mce-shortcode],
+.mceContentBody [data-mce-php] {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 1em;
   color: #444;
@@ -51,12 +52,18 @@ style.mce-item-selected {
   border-radius: 2px;
   line-height: 1;
 }
+.mceContentBody [data-mce-php] {
+  background-color: #E2E4EF;
+  border-color: #4F5B93;
+}
 .mceContentBody span[data-mce-shortcode],
-.mceContentBody code[data-mce-shortcode] {
+.mceContentBody code[data-mce-shortcode],
+.mceContentBody span[data-mce-php] {
   padding: 2px;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
-.mceContentBody.mceVisualBlocks div[data-mce-shortcode] {
+.mceContentBody.mceVisualBlocks div[data-mce-shortcode],
+.mceContentBody.mceVisualBlocks pre[data-mce-php] {
   margin: 2px 0;
   padding: 2px;
   line-height: 1.5;
@@ -64,4 +71,8 @@ style.mce-item-selected {
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode]:before,
 .mceContentBody.mceVisualBlocks div[data-mce-shortcode]:before {
   content: "SHORTCODE";
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-php]:before {
+  content: "PHP";
+  color: #4F5B93;
 }
