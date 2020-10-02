@@ -359,6 +359,13 @@
 
                         return '<' + b + c + '>';
                     });
+
+                    // shortcode content will be encoded as text, so decode
+                    if (ed.settings.code_protect_shortcode) {
+                        o.content = o.content.replace(/\{(.*)\}/gi, function (match, content) {
+                            return '{' + ed.dom.decode(content) + '}';
+                        });
+                    }
                 }
             });
 
