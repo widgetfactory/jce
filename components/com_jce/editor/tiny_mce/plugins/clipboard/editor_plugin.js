@@ -1819,7 +1819,7 @@
         var attribs = '(href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)';
 
         var attribRe = '(?:' + attribs + '=["\'])'; // match attribute before url, eg: href="url"
-        var bracketRe = '(?:\}|\].*?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
+        var bracketRe = '(?:\{|\].*?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
         function createLink(url) {
             var attribs = ['href="' + url + '"'];
@@ -1848,14 +1848,8 @@
             content = '<div data-mce-convert="url">' + content + '</div>';
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
-                // attribute of existing link
-                if (new RegExp(attribRe, 'gi').test(extra)) {
-                    return match;
-                }
-
-                // bracket
-                if (extra == '}' || extra == ']' || extra == '](') {
+            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, attr, url) {
+                if (extra) {
                     return match;
                 }
 
