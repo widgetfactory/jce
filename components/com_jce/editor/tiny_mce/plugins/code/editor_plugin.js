@@ -63,28 +63,13 @@
 
                 tagName = tagName || 'span';
 
-                return html.replace(/(?:>?)(?:\{)([\/\w-]+)(.*?)(?:\})(?:(.*?)(?:\{\/\1\}))?/g, function (match, tag, attribs, content) {  
+                return html.replace(/(?:>?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
                     // already wrapped in a tag
-                    if (match.charAt(0) === '>') {                        
+                    if (match.charAt(0) === '>') {
                         return match;
                     }
 
-                    // create opening tag, eg: {position}
-                    var data = '{' + tag + attribs + '}';
-
-                    // if there is content, there must be a closing tag
-                    if (content) {
-                        // encode html tags if required
-                        if (encode && /</.test(content)) {
-                            content = ed.dom.encode(content);
-                        }
-                        
-                        data += content;
-                        // end tag, eg: {/position}
-                        data += '{' + '/' + tag + '}';
-                    }
-
-                    return '<' + tagName + ' data-mce-shortcode="1" data-mce-type="shortcode">' + data + '</' + tagName + '>';
+                    return '<' + tagName + ' data-mce-shortcode="1" data-mce-type="shortcode">' + match + '</' + tagName + '>';
                 });
             }
 
@@ -194,7 +179,7 @@
 
                 ed.parser.addAttributeFilter('data-mce-shortcode', function (nodes) {
                     var i = nodes.length, node, parent;
-                    
+
                     while (i--) {
                         node = nodes[i], parent = node.parent;
 
@@ -266,7 +251,7 @@
                     // only process content on "load"
                     if (o.content && o.load) {
                         o.content = processShortcode(o.content);
-                    }                    
+                    }
                 }
 
                 // test for PHP, Script or Style
