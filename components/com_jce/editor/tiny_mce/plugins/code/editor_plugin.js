@@ -63,9 +63,9 @@
 
                 tagName = tagName || 'span';
 
-                return html.replace(/(?:>?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+                return html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
                     // already wrapped in a tag
-                    if (match.charAt(0) === '>') {
+                    if (match.charAt(1) === '>') {
                         return match;
                     }
 
