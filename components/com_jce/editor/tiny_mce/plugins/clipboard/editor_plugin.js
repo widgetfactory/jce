@@ -1865,7 +1865,7 @@
             // wrap content - this seems to be required to prevent repeats of link conversion
             content = '<div data-mce-convert="url">' + content + '</div>';
 
-            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {                
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {
                 // only if not already a mailto: link
                 if (!attrib) {
                     return '<a href="mailto:' + email + '">' + email + '</a>';
@@ -2231,7 +2231,7 @@
                 };
 
                 // only process externally sourced content
-                if (!internal) {                    
+                if (!internal) {
                     // Execute pre process handlers
                     self.onPreProcess.dispatch(self, o);
 
@@ -2654,11 +2654,30 @@
                 return processItems(dataTransfer.items) || processItems(dataTransfer.files);
             }
 
+            function isPasteInPre(ed) {
+                var node = ed.selection.getNode();
+                return ed.settings.html_paste_in_pre !== false && node && node.nodeName === 'PRE';
+            }
+
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
+
+                if (isPasteInPre(ed)) {
+                    var html = clipboardContent['text/html'] || '', text = clipboardContent['text/plain'];
+
+                    // encode
+                    text = ed.dom.encode(text);
+
+                    if (html && !text) {
+                        text = ed.dom.encode(html);
+                    }
+
+                    e.preventDefault();
+                    return ed.selection.setContent(text, {no_events: true});
+                }
 
                 if (!hasHtmlOrText(clipboardContent) && pasteImageData(e)) {
                     removePasteBin();
