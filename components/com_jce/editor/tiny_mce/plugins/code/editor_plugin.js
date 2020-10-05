@@ -12,18 +12,6 @@
         Node = tinymce.html.Node,
         VK = tinymce.VK;
 
-    function clean(s) {
-        // remove javascript comments
-        s = s.replace(/^(\/\/ <!\[CDATA\[)/gi, '');
-        s = s.replace(/(\n\/\/ \]\]>)$/g, '');
-
-        // remove css comments
-        s = s.replace(/^(<!--\n)/g, '');
-        s = s.replace(/(\n-->)$/g, '');
-
-        return s;
-    }
-
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
             this.editor = ed;
@@ -133,7 +121,7 @@
                 }
 
                 var boolAttrs = ed.schema.getBoolAttrs();
-                
+
                 // store block elements from schema map
                 each(ed.schema.getBlockElements(), function (block, blockName) {
                     blockElements.push(blockName);
