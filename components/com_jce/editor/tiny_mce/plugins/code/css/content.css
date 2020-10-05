@@ -101,7 +101,6 @@ style.mce-item-selected {
   width: 100%;
   min-height: 2rem;
   border-radius: 2px;
-  resize: vertical;
   background-color: #fff;
   overflow-y: auto;
   padding: 8px;
