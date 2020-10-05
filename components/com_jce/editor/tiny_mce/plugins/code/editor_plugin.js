@@ -9,11 +9,8 @@
  */
 (function () {
     var each = tinymce.each,
-        JSON = tinymce.util.JSON,
         Node = tinymce.html.Node,
-        VK = tinymce.VK,
-        BACKSPACE = VK.BACKSPACE,
-        DELETE = VK.DELETE;
+        VK = tinymce.VK;
 
     function clean(s) {
         // remove javascript comments
@@ -29,14 +26,10 @@
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
-            var self = this;
-
             this.editor = ed;
             this.url = url;
 
-            function isCode(n) {
-                return ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mcePhp, style[data-mce-type="text/css"]');
-            }
+            var blockElements = [];
 
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
@@ -73,17 +66,63 @@
                 });
             }
 
-            ed.onNodeChange.add(function (ed, cm, n, co) {
-                ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
+            function handleEnterInPre(ed, node) {
+                var parents = ed.dom.getParents(node, blockElements.join(','));
 
-                if (isCode(n)) {
-                    ed.dom.addClass(n, 'mce-item-selected');
+                // set defualt content and get the element to use
+                var newBlockName = ed.settings.forced_root_block || 'p';
+
+                // reset if force_block_newlines is false (linebreak on enter)
+                if (ed.settings.force_block_newlines === false) {
+                    newBlockName = 'br';
                 }
-            });
+
+                // get the first block in the collection
+                var block = parents[parents.length - 1];
+
+                // skip if it is the body
+                if (block === ed.getBody()) {
+                    return;
+                }
+
+                // create element
+                var elm = ed.dom.create(newBlockName, {}, '\u00a0');
+
+                // insert after parent element
+                ed.dom.insertAfter(elm, block);
+
+                var rng = ed.selection.getRng();
+
+                rng.setStart(elm, 0);
+                rng.setEnd(elm, 0);
+
+                ed.selection.setRng(rng);
+                ed.selection.scrollIntoView(elm);
+            }
 
             ed.onKeyDown.add(function (ed, e) {
-                if (e.keyCode === BACKSPACE || e.keyCode === DELETE) {
-                    self._removeCode(e);
+                if (e.keyCode == VK.ENTER) {
+                    var node = ed.selection.getNode();
+
+                    if (node.nodeName === 'PRE') {
+                        if (e.altKey || e.shiftKey || node.getAttribute('data-mce-shortcode')) {
+                            handleEnterInPre(ed, node);
+                        } else {
+                            ed.execCommand("InsertLineBreak", false, e);
+                        }
+
+                        // prevent default action
+                        e.preventDefault();
+                    }
+                }
+
+                // Check for tab but not ctrl/cmd+tab since it switches browser tabs
+                if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
+                    var node = ed.selection.getNode();
+
+                    if (node.nodeName === 'PRE') {
+                        ed.selection.setContent('\t', { no_events: true });
+                    }
                 }
             });
 
@@ -91,6 +130,13 @@
                 if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
+
+                var boolAttrs = ed.schema.getBoolAttrs();
+                
+                // store block elements from schema map
+                each(ed.schema.getBlockElements(), function (block, blockName) {
+                    blockElements.push(blockName);
+                });
 
                 if (ed.plugins.textpattern && ed.settings.code_protect_shortcode) {
                     ed.plugins.textpattern.addPattern({
@@ -116,20 +162,43 @@
                 });
 
                 // allow script URLS, eg: href="javascript:;"
-                if (ed.getParam('code_script')) {
+                if (ed.settings.code_script) {
                     ed.settings.allow_script_urls = true;
                 }
 
                 // Convert script elements to span placeholder
-                ed.parser.addNodeFilter('script,style', function (nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        self._serializeSpan(nodes[i]);
-                    }
-                });
+                ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
+                    var i = nodes.length,
+                        node;
 
-                ed.parser.addNodeFilter('noscript', function (nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        self._serializeNoScript(nodes[i]);
+                    while (i--) {
+                        var node = nodes[i];
+
+                        var pre = new Node('pre', 1);
+                        pre.attr({ 'data-mce-code': node.name });
+
+                        var type = node.attr('type');
+
+                        if (type) {
+                            node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
+                        }
+
+                        each(node.attributes, function (attr) {
+                            if (boolAttrs[attr.name] && attr.value != 'false') {
+                                attr.value = attr.name;
+                            }
+                        });
+
+                        // serialize to string
+                        var value = new tinymce.html.Serializer({ validate: false }).serialize(node, { no_events: true });
+                        // trim
+                        value = tinymce.trim(value);
+
+                        var text = new Node('#text', 3);
+                        text.value = tinymce.trim(value);
+                        pre.append(text);
+
+                        node.replace(pre);
                     }
                 });
 
@@ -138,26 +207,6 @@
                         o.content = processShortcode(o.content);
                     });
                 }
-
-                // Convert span placeholders to script elements
-                ed.serializer.addNodeFilter('div,span,pre,img', function (nodes, name, args) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        var node = nodes[i],
-                            cls = node.attr('class');
-
-                        if ((name == 'span' || name === 'img') && /mce-item-script/.test(cls)) {
-                            self._buildScript(node);
-                        }
-
-                        if ((name == 'span' || name === 'img') && /mce-item-style/.test(cls)) {
-                            self._buildStyle(node);
-                        }
-
-                        if (name == 'div' && node.attr('data-mce-type') == 'noscript') {
-                            self._buildNoScript(node);
-                        }
-                    }
-                });
 
                 ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
                     var i = nodes.length, node;
@@ -197,40 +246,39 @@
                 });
 
                 if (ed.plugins.clipboard) {
-                    ed.onPastePreProcess.add(function (ed, o) {
-                        if (ed.settings.preformat_code_on_paste) {
-                            o.content = o.content.replace(/<(script|style)([^>]+)>([\s\S]+?)<\/\1>/gi, function (a, b) {
-                                a = a.replace(/<br\/?>/gi, '\n');
-                                return '<pre>' + ed.dom.encode(a) + '</pre>';
-                            });
+                    ed.onGetClipboardContent.add(function (ed, content) {
+                        var text = content['text/plain'] || '';
 
-                            o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (a, b, c) {
-                                a = a.replace(/<br\/?>/gi, '\n');
-                                return '<pre>' + ed.dom.encode(a) + '</pre>';
-                            });
+                        if (text) {
+                            if (text.indexOf('<script') !== -1 || text.indexOf('<style') !== -1) {
+                                var value = tinymce.trim(text);
+
+                                value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+                                    match = match.replace(/<br[^>]*?>/gi, '\n');
+                                    return '<pre data-mce-code="' + type + '">' + ed.dom.encode(match) + '</pre>';
+                                });
+
+                                value = value.replace(/<\?(php)?([\s\S]*?)\?>/gi, function (match) {
+                                    match = match.replace(/<br[^>]*?>/gi, '\n');
+                                    return '<pre data-mce-code="php">' + ed.dom.encode(match) + '</pre>';
+                                });
+
+                                content['text/plain'] = '';
+                                content['text/html'] = content['x-tinymce/html'] = value;
+                            }
                         }
                     });
                 }
             });
 
             ed.onInit.add(function () {
-                // Display "script" instead of "span" in element path
+                // Display "script" instead of "pre" in element path
                 if (ed.theme && ed.theme.onResolveName) {
                     ed.theme.onResolveName.add(function (theme, o) {
-                        var node = o.node, cls = node.className, name = node.nodeName;
+                        var node = o.node;
 
-                        if (name === 'SPAN') {
-                            if (/mce-item-script/.test(cls)) {
-                                o.name = 'script';
-                            }
-
-                            if (/mce-item-style/.test(cls)) {
-                                o.name = 'style';
-                            }
-
-                            if (/mce(-item-php|Php)/.test(cls)) {
-                                o.name = 'php';
-                            }
+                        if (node.getAttribute('data-mce-code')) {
+                            o.name = node.getAttribute('data-mce-code');
                         }
 
                         if (node.getAttribute('data-mce-shortcode')) {
@@ -238,15 +286,9 @@
                         }
                     });
                 }
-
-                // enter in a pre element results in a new paragraph
-                if (ed.settings.code_protect_shortcode) {
-                    ed.settings.br_in_pre = false;
-                }
             });
 
             ed.onBeforeSetContent.add(function (ed, o) {
-
                 if (ed.settings.code_protect_shortcode) {
                     // only process content on "load"
                     if (o.content && o.load) {
@@ -292,7 +334,6 @@
                             });
                             return '<textarea' + b + '>' + c + '</textarea>';
                         });
-
                     }
 
                     // PHP code within an element
@@ -304,23 +345,8 @@
                     });
 
                     // PHP code other
-                    o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, '<span class="mcePhp" data-mce-type="php"><!--$2-->\u00a0</span>');
-
-                    // padd empty script tags
-                    o.content = o.content.replace(/<script([^>]+)><\/script>/gi, '<script$1>\u00a0</script>');
-
-                    // protect style and script tags from forced_root_block
-                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function (a, b, c) {
-                        if (c.indexOf('data-mce-type') === -1) {
-                            if (c.indexOf('type') === -1) {
-                                var type = (b === "script") ? "javascript" : "css";
-                                c += ' data-mce-type="text/' + type + '"';
-                            } else {
-                                c = c.replace(/type="([^"]+)"/i, 'data-mce-type="$1"');
-                            }
-                        }
-
-                        return '<' + b + c + '>';
+                    o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+                        return '<pre data-mce-code="php">' + ed.dom.encode(match) + '</pre>';
                     });
                 }
             });
@@ -328,7 +354,7 @@
             ed.onPostProcess.add(function (ed, o) {
                 if (o.get && !o.source) {
                     // Process converted php
-                    if (/(mce-item-php|mcePhp|data-mce-php|\{php:start\})/.test(o.content)) {
+                    if (/(data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
                         o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
@@ -346,19 +372,7 @@
                         o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
-
-                        // other
-                        o.content = o.content.replace(/<span class="mcePhp"><!--([\s\S]*?)-->(&nbsp;|\u00a0)?<\/span>/g, function (a, b, c) {
-                            return '<?php' + ed.dom.decode(b) + '?>';
-                        });
                     }
-
-                    // remove data-mce-type
-                    o.content = o.content.replace(/<(script|style)([^>]*)>/gi, function (a, b, c) {
-                        c = c.replace(/\s?data-mce-type="[^"]+"/gi, "");
-
-                        return '<' + b + c + '>';
-                    });
 
                     // shortcode content will be encoded as text, so decode
                     if (ed.settings.code_protect_shortcode) {
@@ -366,239 +380,23 @@
                             return '{' + ed.dom.decode(content) + '}';
                         });
                     }
+
+                    // decode code snippets
+                    o.content = o.content.replace(/\<pre([^>]+?)>([\s\S]*?)<\/pre>/gi, function (match, attr, content) {
+                        // not the droids etc.
+                        if (attr.indexOf('data-mce-code') === -1) {
+                            return match;
+                        }
+
+                        // replace linebreaks with newline
+                        content = content.replace(/<br[^>]*?>/gi, '\n');
+
+                        // decode content
+                        return ed.dom.decode(content);
+                    });
                 }
             });
 
-        },
-        _removeCode: function (e) {
-            var ed = this.editor,
-                s = ed.selection,
-                n = s.getNode();
-
-            if (ed.dom.is(n, '.mce-item-script, .mce-item-style, .mce-item-php, .mce-item-php, style[data-mce-type="text/css"]')) {
-                ed.undoManager.add();
-
-                ed.dom.remove(n);
-
-                if (e) {
-                    e.preventDefault();
-                }
-            }
-        },
-
-        _buildScript: function (n) {
-            var self = this,
-                ed = this.editor,
-                v, node, text, p;
-
-            if (!n.parent)
-                return;
-
-            // element text
-            /*if (n.firstChild) {
-                v = n.firstChild.value;
-            }*/
-            var code = n.attr('data-mce-code') || '';
-
-            if (code) {
-                v = unescape(code);
-            }
-
-            p = JSON.parse(n.attr('data-mce-json')) || {};
-
-            p.type = n.attr('data-mce-type') || p.type || 'text/javascript';
-
-            node = new Node('script', 1);
-
-            if (v) {
-
-                v = tinymce.trim(v);
-
-                if (v) {
-                    text = new Node('#text', 3);
-                    text.raw = true;
-                    // add cdata
-                    if (p.type === "text/javascript") {
-                        v = clean(tinymce.trim(v));
-                    }
-                    text.value = v;
-                    node.append(text);
-                }
-            }
-
-            each(p, function (v, k) {
-                if (k === "type") {
-                    v = v.replace(/mce-/, '');
-                }
-
-                node.attr(k, v);
-            });
-
-            // set data-mce-type
-            node.attr('data-mce-type', p.type);
-
-            n.replace(node);
-
-            return true;
-        },
-
-        _buildStyle: function (n) {
-            var self = this,
-                ed = this.editor,
-                v, node, text, p;
-
-            if (!n.parent)
-                return;
-
-            // element text
-            /*if (n.firstChild) {
-                v = n.firstChild.value;
-            }*/
-
-            var code = n.attr('data-mce-code') || '';
-
-            if (code) {
-                v = unescape(code);
-            }
-
-            p = JSON.parse(n.attr('data-mce-json')) || {};
-
-            if (!p.type) {
-                p.type = 'text/css';
-            }
-
-            node = new Node('style', 1);
-
-            if (v) {
-
-                v = tinymce.trim(v);
-
-                if (v) {
-                    text = new Node('#text', 3);
-                    text.raw = true;
-                    v = clean(tinymce.trim(v));
-                    text.value = v;
-                    node.append(text);
-                }
-            }
-
-            // add scoped attribute
-            /*if (n.parent.name === 'head') {
-                p.scoped = null;
-            } else {
-                p.scoped = "scoped";
-            }*/
-
-            each(p, function (v, k) {
-                if (k === "type") {
-                    v = v.replace(/mce-/, '');
-                }
-
-                node.attr(k, v);
-            });
-
-            // set data-mce-type
-            node.attr('data-mce-type', p.type);
-
-            n.replace(node);
-
-            return true;
-        },
-
-        _buildNoScript: function (n) {
-            var self = this,
-                ed = this.editor,
-                p, node;
-
-            if (!n.parent)
-                return;
-
-            p = JSON.parse(n.attr('data-mce-json')) || {};
-
-            node = new Node('noscript', 1);
-
-            each(p, function (v, k) {
-                node.attr(k, v);
-            });
-
-            n.wrap(node);
-            n.unwrap();
-
-            return true;
-        },
-
-        _serializeSpan: function (n) {
-            var ed = this.editor,
-                v, p = {};
-
-            if (!n.parent)
-                return;
-
-            each(n.attributes, function (at) {
-                if (at.name === 'type' || at.name.indexOf('data-mce-') !== -1) {
-                    return;
-                }
-
-                p[at.name] = at.value;
-            });
-
-            /*var span = new Node('span', 1);
-
-            span.attr('class', 'mce-item-' + n.name);
-            span.attr('data-mce-json', JSON.serialize(p));
-            span.attr('data-mce-type', n.attr('data-mce-type') || p.type);
-
-            v = n.firstChild ? n.firstChild.value : '';
-
-            if (v.length) {
-                var text = new Node('#comment', 8);
-                text.value = clean(v);
-                span.append(text);
-            }
-            // padd empty span to prevent it being removed
-            span.append(new tinymce.html.Node('#text', 3)).value = '\u00a0';
-
-            n.replace(span);*/
-
-            var img = new Node('img', 1);
-
-            img.attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
-            img.attr('class', 'mce-item-' + n.name);
-            img.attr('data-mce-resize', 'false');
-            img.attr('data-mce-json', JSON.serialize(p));
-            img.attr('data-mce-type', n.attr('data-mce-type') || p.type);
-
-            v = n.firstChild ? n.firstChild.value : '';
-
-            if (v.length) {
-                img.attr('data-mce-code', escape(clean(v)));
-            }
-
-            n.replace(img);
-        },
-        _serializeNoScript: function (n) {
-            var self = this,
-                ed = this.editor,
-                dom = ed.dom,
-                v, k, p = {};
-
-            if (!n.parent)
-                return;
-
-            each(n.attributes, function (at) {
-                if (at.name == 'type')
-                    return;
-
-                p[at.name] = at.value;
-            });
-
-            var div = new Node('div', 1);
-
-            div.attr('data-mce-json', JSON.serialize(p));
-            div.attr('data-mce-type', n.name);
-
-            n.wrap(div);
-            n.unwrap();
         }
     });
     // Register plugin

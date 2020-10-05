@@ -40,9 +40,8 @@ style.mce-item-selected {
   background-color: #b4d4ff;
   border: 0 none;
 }
-.mceContentBody [data-mce-shortcode],
-.mceContentBody [data-mce-php] {
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+.mceContentBody [data-mce-shortcode] {
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   font-size: 1em;
   color: #444;
   background-color: #f5f2f0;
@@ -52,18 +51,12 @@ style.mce-item-selected {
   border-radius: 2px;
   line-height: 1;
 }
-.mceContentBody [data-mce-php] {
-  background-color: #E2E4EF;
-  border-color: #4F5B93;
-}
 .mceContentBody span[data-mce-shortcode],
-.mceContentBody code[data-mce-shortcode],
-.mceContentBody span[data-mce-php] {
+.mceContentBody code[data-mce-shortcode] {
   padding: 2px;
 }
 .mceContentBody.mceVisualBlocks pre[data-mce-shortcode],
-.mceContentBody.mceVisualBlocks div[data-mce-shortcode],
-.mceContentBody.mceVisualBlocks pre[data-mce-php] {
+.mceContentBody.mceVisualBlocks div[data-mce-shortcode] {
   margin: 2px 0;
   padding: 2px;
   line-height: 1.5;
@@ -72,7 +65,89 @@ style.mce-item-selected {
 .mceContentBody.mceVisualBlocks div[data-mce-shortcode]:before {
   content: "SHORTCODE";
 }
-.mceContentBody.mceVisualBlocks pre[data-mce-php]:before {
-  content: "PHP";
+.mceContentBody div[data-mce-code] {
+  position: relative;
+}
+.mceContentBody div[data-mce-code] textarea {
+  border: 1px solid #eee;
+  width: 100%;
+  min-height: 3rem;
+  border-radius: 2px;
+  box-shadow: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+  background-color: #fff;
+}
+.mceContentBody pre[data-mce-code] {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
+  cursor: inherit;
+  vertical-align: baseline;
+  border-collapse: separate;
+  text-align: left;
+  box-sizing: border-box;
+  float: none;
+  outline: none;
+  position: relative;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  text-transform: inherit;
+  font-style: normal;
+  letter-spacing: normal;
+  box-shadow: inherit;
+  transition: inherit;
+  border: 1px solid #eee;
+  width: 100%;
+  min-height: 2rem;
+  border-radius: 2px;
+  resize: vertical;
+  background-color: #fff;
+  overflow-y: auto;
+  padding: 8px;
+  color: #444;
+  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  white-space: pre-wrap;
+  word-wrap: normal;
+  word-break: normal;
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-code] {
+  border: 1px solid #eee;
+  padding: 8px;
+}
+.mceContentBody div[data-mce-code]:before,
+.mceContentBody pre[data-mce-code]:before {
+  display: block;
+  position: inherit;
+  font-weight: 700;
+  font-size: 10px;
+  color: #787679;
+  color: var(--mce-guidelines);
+  line-height: 0;
+  font-family: -apple-systrem, BlinkMacSystremFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  content: attr(data-mce-code);
+  background: #eee;
+  padding: 4px;
+  line-height: 1;
+  width: 2.5rem;
+  text-align: center;
+  left: -8px;
+  top: -8px;
+}
+.mceContentBody pre[data-mce-code="php"]:before {
+  background-color: #E2E4EF;
+  color: #4F5B93;
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-code]:before {
+  content: attr(data-mce-code);
+  width: 2.5rem;
+  padding: 4px;
+  font-size: 10px;
+  line-height: 1;
+  text-align: center;
+  margin: 0;
+}
+.mceContentBody.mceVisualBlocks pre[data-mce-code="php"]:before {
+  background-color: #E2E4EF;
   color: #4F5B93;
 }
