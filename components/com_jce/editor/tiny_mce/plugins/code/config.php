@@ -22,8 +22,6 @@ class WFCodePluginConfig
         $settings['code_script'] = $wf->getParam('editor.allow_javascript', 0, 0, 'boolean');
         $settings['code_style'] = $wf->getParam('editor.allow_css', 0, 0, 'boolean');
 
-        $settings['code_cdata'] = $wf->getParam('editor.cdata', 1, 1, 'boolean');
-
         $settings['code_protect_shortcode'] = $wf->getParam('editor.protect_shortcode', 0, 0, 'boolean');
 
         $remove = array();
