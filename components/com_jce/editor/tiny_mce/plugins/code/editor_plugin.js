@@ -122,6 +122,7 @@
 
                     if (node.nodeName === 'PRE') {
                         ed.selection.setContent('\t', { no_events: true });
+                        e.preventDefault();
                     }
                 }
             });
