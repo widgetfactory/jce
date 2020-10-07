@@ -144,7 +144,7 @@
 			for (var i = 0, ln = s.length; i < ln; i++) {
 				var ch = s[i];
 				// only process on possible restricted characters or utf-8 letters/numbers
-				if (/[^\w\.\-~\s \/]/i.test(ch)) {
+				if (/[^\w\.\-\s \/]/i.test(ch)) {
 					ch = '\\u' + ch.charCodeAt(0);
 				}
 				str += ch;
@@ -166,7 +166,7 @@
 				matcher = new RegExp(escapeRegExChars(s), "ui");
 			}
 
-			if (/[\u0000-\u1FFF\.\-~\s ]/i.test(s)) {
+			if (/[\u0000-\u1FFF\.\-\s ]/i.test(s)) {
 				$(options.selector, options.list).each(function () {
 					var match = false;
 
