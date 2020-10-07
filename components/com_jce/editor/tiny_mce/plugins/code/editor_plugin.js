@@ -31,7 +31,7 @@
                 return false;
             });
 
-            function processShortcode(html, tagName, encode) {
+            function processShortcode(html, tagName) {
                 // quick check to see if we should proceed
                 if (html.indexOf('{') === -1) {
                     return html;
@@ -52,6 +52,11 @@
 
                     return '<' + tagName + ' data-mce-shortcode="1" data-mce-type="shortcode">' + match + '</' + tagName + '>';
                 });
+            }
+
+            function createCodePre(data, type) {
+                type = type || 'script';
+                return '<pre data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</pre>';
             }
 
             function handleEnterInPre(ed, node) {
@@ -92,7 +97,7 @@
                 if (e.keyCode == VK.ENTER) {
                     var node = ed.selection.getNode();
 
-                    if (node.nodeName === 'PRE') {
+                    if (node.nodeName === 'PRE') {                        
                         if (e.altKey || e.shiftKey || node.getAttribute('data-mce-shortcode')) {
                             handleEnterInPre(ed, node);
                         } else {
@@ -118,6 +123,7 @@
             ed.onPreInit.add(function () {
                 if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
+                    ed.dom.loadCSS(url + "/css/prism.css");
                 }
 
                 var boolAttrs = ed.schema.getBoolAttrs();
@@ -164,7 +170,7 @@
                         var node = nodes[i];
 
                         var pre = new Node('pre', 1);
-                        pre.attr({ 'data-mce-code': node.name });
+                        pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
 
                         var type = node.attr('type');
 
@@ -218,14 +224,24 @@
                 ed.parser.addAttributeFilter('data-mce-shortcode', function (nodes) {
                     var i = nodes.length, node, parent;
 
+                    function isBody(parent) {
+                        return parent.name === 'body';
+                    }
+
                     while (i--) {
                         node = nodes[i], parent = node.parent;
 
                         if (node.parent) {
                             // rename shortcode blocks to <pre>
-                            if (parent.name === 'body' || parent.firstChild === node) {
+                            if (isBody(parent) || parent.firstChild === node) {
                                 node.name = 'pre';
+
+                                // if parent is empty except for the shortcode pre, replace the parent with the pre
+                                if (parent.lastChild === parent.firstChild && !isBody(parent)) {
+                                    parent.replace(node);
+                                }
                             }
+
                             // prevent nesting
                             if (parent.attr('data-mce-shortcode')) {
                                 node.unwrap();
@@ -236,22 +252,33 @@
 
                 if (ed.plugins.clipboard) {
                     ed.onGetClipboardContent.add(function (ed, content) {
-                        var text = content['text/plain'] || '';
+                        var text = content['text/plain'] || '', value;
+
+                        // trim text
+                        text = tinymce.trim(text);
 
                         if (text) {
-                            if (text.indexOf('<script') !== -1 || text.indexOf('<style') !== -1) {
-                                var value = tinymce.trim(text);
+                            if (/^\{.+\}$/gi.test(text)) {
+                                value = processShortcode(text, 'pre');
+                            }
+
+                            // script / style
+                            if (/^<(\?|script|style)/.test(text)) {
+                                value = text;
 
                                 value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
                                     match = match.replace(/<br[^>]*?>/gi, '\n');
-                                    return '<pre data-mce-code="' + type + '">' + ed.dom.encode(match) + '</pre>';
+                                    return createCodePre(match, type);
                                 });
 
                                 value = value.replace(/<\?(php)?([\s\S]*?)\?>/gi, function (match) {
                                     match = match.replace(/<br[^>]*?>/gi, '\n');
-                                    return '<pre data-mce-code="php">' + ed.dom.encode(match) + '</pre>';
+                                    return createCodePre(match, 'php');
                                 });
+                            }
 
+                            // update with processed text
+                            if (value) {
                                 content['text/plain'] = '';
                                 content['text/html'] = content['x-tinymce/html'] = value;
                             }
@@ -335,7 +362,7 @@
 
                     // PHP code other
                     o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-                        return '<pre data-mce-code="php">' + ed.dom.encode(match) + '</pre>';
+                        return createCodePre(match, 'php');
                     });
                 }
             });
@@ -385,7 +412,6 @@
                     });
                 }
             });
-
         }
     });
     // Register plugin
