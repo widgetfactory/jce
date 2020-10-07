@@ -499,7 +499,7 @@
          * @return {String} The escaped string
          */
         _escape: function (s) {
-            return s.replace(/'/, '%27');
+            return s.replace(/'/g, '%27');
         },
 
         /**
