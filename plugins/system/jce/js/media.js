@@ -68,7 +68,7 @@
             var name = file.target_name || file.name;
 
             // remove some common characters
-            name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
+            name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
 
             var args = {
                 'method': 'upload',
