@@ -11,7 +11,6 @@
 (function (tinymce) {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
-        is = tinymce.is,
         each = tinymce.each,
         VK = tinymce.VK,
         TreeWalker = tinymce.dom.TreeWalker;
@@ -916,25 +915,19 @@
 
                 // Convert width and height attributes to styles
                 nodes = dom.select('table, td, th', args.node);
+
                 i = nodes.length;
+
                 while (i--) {
                     node = nodes[i];
 
                     if ((value = dom.getAttrib(node, 'width'))) {
-                        if (typeof value === 'number') {
-                            value += 'px';
-                        }
-
-                        node.style.width = value;
+                        dom.setStyle(node, 'width', value);
                         dom.setAttrib(node, 'width', '');
                     }
 
                     if ((value = dom.getAttrib(node, 'height'))) {
-                        if (typeof value === 'number') {
-                            value += 'px';
-                        }
-
-                        node.style.height = value;
+                        dom.setStyle(node, 'height', value);
                         dom.setAttrib(node, 'height', '');
                     }
                 }
