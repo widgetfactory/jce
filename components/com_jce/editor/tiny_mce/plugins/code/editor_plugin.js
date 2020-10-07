@@ -10,7 +10,9 @@
 (function () {
     var each = tinymce.each,
         Node = tinymce.html.Node,
-        VK = tinymce.VK;
+        VK = tinymce.VK,
+        DomParser = tinymce.html.DomParser,
+        Serializer = tinymce.html.Serializer;
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
@@ -97,7 +99,7 @@
                 if (e.keyCode == VK.ENTER) {
                     var node = ed.selection.getNode();
 
-                    if (node.nodeName === 'PRE') {                        
+                    if (node.nodeName === 'PRE') {
                         if (e.altKey || e.shiftKey || node.getAttribute('data-mce-shortcode')) {
                             handleEnterInPre(ed, node);
                         } else {
@@ -184,7 +186,8 @@
                         });
 
                         // serialize to string
-                        var value = new tinymce.html.Serializer({ validate: false }).serialize(node, { no_events: true });
+                        var value = new Serializer({ validate: false }).serialize(node, { no_events: true });
+
                         // trim
                         value = tinymce.trim(value);
 
@@ -203,10 +206,18 @@
                 }
 
                 ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
-                    var i = nodes.length, node;
+                    var i = nodes.length, node, child;
 
                     while (i--) {
                         node = nodes[i];
+
+                        child = node.firstChild;
+
+                        if (!child || !child.value) {
+                            node.remove();
+                        }
+
+                        parseAndAppend(node, child.value);
 
                         // append newline to the end of shortcode blocks
                         if (node.name === 'pre') {
@@ -216,6 +227,34 @@
                             node.append(newline);
                         }
 
+                        node.unwrap();
+                    }
+                });
+
+                function parseAndAppend(node, content) {
+                    var parser = new DomParser({}, ed.schema);
+                    var fragment = parser.parse(content, { forced_root_block: false, isRootContent: true });
+
+                    // empty pre
+                    node.empty();
+
+                    // append parsed code fragment
+                    node.append(fragment);
+                }
+
+                ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
+                    var i = nodes.length, node, child;
+
+                    while (i--) {
+                        node = nodes[i], child = node.firstChild;
+
+                        if (!child || !child.value) {
+                            node.remove();
+                        }
+
+                        parseAndAppend(node, child.value);
+
+                        // unwrap pre to remove
                         node.unwrap();
                     }
                 });
@@ -388,27 +427,6 @@
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
                     }
-
-                    // shortcode content will be encoded as text, so decode
-                    if (ed.settings.code_protect_shortcode) {
-                        o.content = o.content.replace(/\{(.*)\}/gi, function (match, content) {
-                            return '{' + ed.dom.decode(content) + '}';
-                        });
-                    }
-
-                    // decode code snippets
-                    o.content = o.content.replace(/\<pre([^>]+?)>([\s\S]*?)<\/pre>/gi, function (match, attr, content) {
-                        // not the droids etc.
-                        if (attr.indexOf('data-mce-code') === -1) {
-                            return match;
-                        }
-
-                        // replace linebreaks with newline
-                        content = content.replace(/<br[^>]*?>/gi, '\n');
-
-                        // decode content
-                        return ed.dom.decode(content);
-                    });
                 }
             });
         }
