@@ -82,13 +82,13 @@
             s = s.replace(/[\s ]+/g, spaces);
 
             // remove some common characters
-            s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]/g, '');
+            s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
             var r = '';
 
             for (var i = 0, ln = s.length; i < ln; i++) {
                 var ch = s[i];
                 // only process on possible restricted characters or utf-8 letters/numbers
-                if (/[^\w\.\-~\s ]/.test(ch)) {
+                if (/[^\w\.\-\s ]/.test(ch)) {
                     // skip any character less than 127, eg: &?@* etc.
                     if (this._toUnicode(ch.charCodeAt(0)) < '\\u007F') {
                         continue;
