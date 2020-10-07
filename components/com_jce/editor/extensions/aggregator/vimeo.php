@@ -51,6 +51,7 @@ class WFAggregatorExtension_Vimeo extends WFAggregatorExtension
             'byline' => (int) $plugin->getParam('aggregator.vimeo.byline', 0),
             'portrait' => (int) $plugin->getParam('aggregator.vimeo.portrait', 0),
             'fullscreen' => (int) $plugin->getParam('aggregator.vimeo.fullscreen', 1),
+            'dnt' => (int) $plugin->getParam('aggregator.vimeo.dnt', 0),
         );
     }
 }

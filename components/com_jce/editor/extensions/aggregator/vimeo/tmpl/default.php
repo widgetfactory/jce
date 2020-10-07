@@ -54,5 +54,9 @@ defined('_WF_EXT') or die('RESTRICTED');
     <input type="checkbox" id="vimeo_fullscreen" checked="checked"/>
     <label for="vimeo_fullscreen" title="<?php echo JText::_('WF_AGGREGATOR_VIMEO_FULLSCREEN_DESC') ?>"
            class="tooltip"><?php echo JText::_('WF_AGGREGATOR_VIMEO_FULLSCREEN') ?></label>
+
+        <input type="checkbox" id="vimeo_dnt" />
+    <label for="vimeo_dnt" title="<?php echo JText::_('WF_AGGREGATOR_VIMEO_DNT_DESC') ?>"
+           class="tooltip"><?php echo JText::_('WF_AGGREGATOR_VIMEO_DNT') ?></label>
         </div>
 </div>

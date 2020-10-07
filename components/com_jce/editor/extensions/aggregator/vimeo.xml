@@ -58,6 +58,11 @@
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
+
+			<field name="dnt" type="yesno" default="0" label="WF_AGGREGATOR_VIMEO_DNT" description="WF_AGGREGATOR_VIMEO_DNT_DESC">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
 		</fieldset>
 	</fields>
 	<plugins></plugins>

@@ -24,7 +24,8 @@ WFAggregator.add('vimeo', {
         //portrait: 0,
         //title: 0,
         //byline: 0,
-        fullscreen: 1
+        fullscreen: 1,
+        dnt: 0
     },
 
     setup: function () {
@@ -169,7 +170,7 @@ WFAggregator.add('vimeo', {
             }
         }
 
-        $.each(['portrait', 'title', 'byline', 'autoplay', 'loop'], function (i, s) {
+        $.each(['portrait', 'title', 'byline', 'autoplay', 'loop', 'dnt'], function (i, s) {
             var v = query[s] || 0;
 
             // transfer value
