@@ -123,7 +123,6 @@
             ed.onPreInit.add(function () {
                 if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
-                    ed.dom.loadCSS(url + "/css/prism.css");
                 }
 
                 var boolAttrs = ed.schema.getBoolAttrs();
