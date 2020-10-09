@@ -33,7 +33,6 @@
         'footer' : 'advanced.footer',
         'nav' : 'advanced.nav',
         'figure': 'advanced.figure',
-        //'figcaption': 'advanced.figcaption',
         'dt': 'advanced.dt',
         'dd': 'advanced.dd'
     };
@@ -46,12 +45,12 @@
             var nodes = [];
 
             // map format options to array of node names
-            each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (v, k) {
-                if (k === 'span') {
+            each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (value, key) {
+                if (key === 'span') {
                     return;
                 }
                 
-                nodes.push(k.toUpperCase());
+                nodes.push(key.toUpperCase());
             });
 
             function isFormat(n) {
@@ -79,6 +78,10 @@
 
                     if (p && p.nodeName) {
                         value = p.nodeName.toLowerCase();
+
+                        if (value === 'pre') {
+                            value = p.getAttribute('data-mce-code') || p.getAttribute('data-mce-type') || value;
+                        }
                     }
 
                     // select value
@@ -94,11 +97,10 @@
         },
 
         _createBlockFormats: function () {
-            var self = this,
-                ed = this.editor,
-                c, PreviewCss = tinymce.util.PreviewCss;
+            var ed = this.editor,
+                ctrl, PreviewCss = tinymce.util.PreviewCss;
 
-            c = ed.controlManager.createListBox('formatselect', {
+                ctrl = ed.controlManager.createListBox('formatselect', {
                 title: 'advanced.block',
                 max_height: 384,
                 onselect: function (v) {
@@ -107,20 +109,20 @@
                 }
             });
 
-            if (c) {
-                each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (v, k) {
-                    c.add(ed.translate(v, k), k, {
-                        'class': 'mce_formatPreview mce_' + k,
+            if (ctrl) {
+                each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (value, key) {
+                    ctrl.add(ed.translate(value, key), key, {
+                        'class': 'mce_formatPreview mce_' + key,
                         style: function () {
                             return PreviewCss(ed, {
-                                'block': k
+                                'block': key
                             });
                         }
                     });
                 });
             }
 
-            return c;
+            return ctrl;
         }
     });
 
