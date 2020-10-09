@@ -52,16 +52,26 @@
                         return match;
                     }
 
-                    return '<' + tagName + ' data-mce-shortcode="1" data-mce-type="shortcode">' + match + '</' + tagName + '>';
+                    return createShortcodePre(match, tagName);
                 });
             }
 
-            function createCodePre(data, type) {
-                type = type || 'script';
-                return '<pre data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</pre>';
+            function createShortcodePre(data, tag) {
+                tag = tag || 'pre';
+                return '<' + tag + ' data-mce-code="shortcode" data-mce-type="shortcode">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
-            function handleEnterInPre(ed, node) {
+            function createCodePre(data, type, tag) {
+                type = type || 'script';
+                tag = tag || 'pre';
+                return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</' + tag + '>';
+            }
+
+            function contentIsShortcode(value) {
+                return value && value.charAt(0) === '{' && value.charAt(value.length - 1) === '}';
+            }
+
+            function handleEnterInPre(ed, node, before) {
                 var parents = ed.dom.getParents(node, blockElements.join(','));
 
                 // set defualt content and get the element to use
@@ -73,7 +83,7 @@
                 }
 
                 // get the first block in the collection
-                var block = parents[parents.length - 1];
+                var block = parents.shift();
 
                 // skip if it is the body
                 if (block === ed.getBody()) {
@@ -84,7 +94,11 @@
                 var elm = ed.dom.create(newBlockName, {}, '\u00a0');
 
                 // insert after parent element
-                ed.dom.insertAfter(elm, block);
+                if (before) {
+                    block.parentNode.insertBefore(elm, block);
+                } else {
+                    ed.dom.insertAfter(elm, block);
+                }
 
                 var rng = ed.selection.getRng();
 
@@ -100,22 +114,49 @@
                     var node = ed.selection.getNode();
 
                     if (node.nodeName === 'PRE') {
-                        if (e.altKey || e.shiftKey || node.getAttribute('data-mce-shortcode')) {
-                            handleEnterInPre(ed, node);
-                        } else {
-                            ed.execCommand("InsertLineBreak", false, e);
-                        }
+                        var type = node.getAttribute('data-mce-code') || '';
 
-                        // prevent default action
+                        if (type) {
+                            if (type === 'shortcode') {
+                                if (e.shiftKey) {
+                                    ed.execCommand("InsertLineBreak", false, e);
+                                } else {
+                                    handleEnterInPre(ed, node);
+                                }
+
+                                e.preventDefault();
+                                return;
+                            }
+
+                            if (e.altKey || e.shiftKey) {
+                                handleEnterInPre(ed, node);
+                            } else {
+                                ed.execCommand("InsertLineBreak", false, e);
+                            }
+
+                            // prevent default action
+                            e.preventDefault();
+                        }
+                    }
+
+                    if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
+                        handleEnterInPre(ed, node);
                         e.preventDefault();
                     }
+                }
+
+                if (e.keyCode == VK.UP && e.altKey) {
+                    var node = ed.selection.getNode();
+
+                    handleEnterInPre(ed, node, true);
+                    e.preventDefault();
                 }
 
                 // Check for tab but not ctrl/cmd+tab since it switches browser tabs
                 if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
                     var node = ed.selection.getNode();
 
-                    if (node.nodeName === 'PRE') {
+                    if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
                         ed.selection.setContent('\t', { no_events: true });
                         e.preventDefault();
                     }
@@ -126,6 +167,40 @@
                 if (ed.settings.content_css !== false) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
+
+                var ctrl = ed.controlManager.get('formatselect');
+
+                if (ctrl) {
+                    each(['script', 'style', 'php', 'shortcode'], function (key) {
+                        if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
+                            ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
+
+                            ed.formatter.register('shortcode', {
+                                block: 'pre',
+                                attributes: {
+                                    'data-mce-code': 'shortcode'
+                                }
+                            });
+
+                            return true;
+                        }
+
+                        if (ed.getParam('code_' + key)) {
+                            ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
+
+                            ed.formatter.register(key, {
+                                block: 'pre',
+                                attributes: {
+                                    'data-mce-code': key,
+                                    'data-mce-contenteditable': 'false',
+                                    'contenteditable': 'plaintext-only'
+                                }
+                            });
+                        }
+                    });
+                }
+
+                ed.schema.addValidElements('+php[*]');
 
                 var boolAttrs = ed.schema.getBoolAttrs();
 
@@ -145,21 +220,27 @@
                     ed.plugins.textpattern.addPattern({
                         start: ' {',
                         end: '}',
-                        format: 'shortcode',
+                        format: 'inline-shortcode',
                         remove: false
                     });
                 }
 
-                ed.formatter.register('shortcode', {
+                ed.formatter.register('inline-shortcode', {
                     inline: 'span',
                     attributes: {
-                        'data-mce-shortcode': '1'
+                        'data-mce-code': 'shortcode'
                     }
                 });
 
                 // allow script URLS, eg: href="javascript:;"
                 if (ed.settings.code_script) {
                     ed.settings.allow_script_urls = true;
+                }
+
+                if (ed.settings.code_protect_shortcode) {
+                    ed.selection.onBeforeSetContent.add(function (ed, o) {
+                        o.content = processShortcode(o.content);
+                    });
                 }
 
                 // Convert script elements to span placeholder
@@ -185,8 +266,19 @@
                             }
                         });
 
+                        // remove any shortcode spans that are added to json-like syntax in code blocks
+                        if (node.firstChild) {
+                            node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
+                                if (attr.indexOf('data-mce-code="shortcode"') === -1) {
+                                    return match;
+                                }
+
+                                return ed.dom.decode(content);
+                            });
+                        }
+
                         // serialize to string
-                        var value = new Serializer({ validate: false }).serialize(node, { no_events: true });
+                        var value = new Serializer({ validate: false }).serialize(node);
 
                         // trim
                         value = tinymce.trim(value);
@@ -199,77 +291,31 @@
                     }
                 });
 
-                if (ed.settings.code_protect_shortcode) {
-                    ed.selection.onBeforeSetContent.add(function (ed, o) {
-                        o.content = processShortcode(o.content);
-                    });
-                }
-
-                ed.serializer.addAttributeFilter('data-mce-shortcode', function (nodes, name) {
-                    var i = nodes.length, node, child;
-
-                    while (i--) {
-                        node = nodes[i];
-
-                        child = node.firstChild;
-
-                        if (!child || !child.value) {
-                            node.remove();
-                        }
-
-                        parseAndAppend(node, child.value);
-
-                        // append newline to the end of shortcode blocks
-                        if (node.name === 'pre') {
-                            var newline = new Node('#text', 3);
-                            newline.raw = true;
-                            newline.value = '\n';
-                            node.append(newline);
-                        }
-
-                        node.unwrap();
-                    }
-                });
-
-                function parseAndAppend(node, content) {
-                    var parser = new DomParser({}, ed.schema);
-                    var fragment = parser.parse(content, { forced_root_block: false, isRootContent: true });
-
-                    // empty pre
-                    node.empty();
-
-                    // append parsed code fragment
-                    node.append(fragment);
-                }
-
-                ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-                    var i = nodes.length, node, child;
-
-                    while (i--) {
-                        node = nodes[i], child = node.firstChild;
-
-                        if (!child || !child.value) {
-                            node.remove();
-                        }
-
-                        parseAndAppend(node, child.value);
-
-                        // unwrap pre to remove
-                        node.unwrap();
-                    }
-                });
-
-                ed.parser.addAttributeFilter('data-mce-shortcode', function (nodes) {
+                ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
                     var i = nodes.length, node, parent;
 
                     function isBody(parent) {
                         return parent.name === 'body';
                     }
 
+                    function isValidCode(type) {
+                        return type === 'shortcode' || type === 'php';
+                    }
+
                     while (i--) {
                         node = nodes[i], parent = node.parent;
 
-                        if (node.parent) {
+                        if (!isValidCode(node.attr(name))) {
+                            continue;
+                        }
+
+                        if (parent) {
+                            // don't process shortcode in code blocks
+                            if (parent.attr(name)) {
+                                node.unwrap();
+                                continue;
+                            }
+
                             // rename shortcode blocks to <pre>
                             if (isBody(parent) || parent.firstChild === node) {
                                 node.name = 'pre';
@@ -278,12 +324,78 @@
                                 if (parent.lastChild === parent.firstChild && !isBody(parent)) {
                                     parent.replace(node);
                                 }
+                            } else {
+                                if (node === parent.lastChild) {
+                                    var nbsp = new Node('#text', 3);
+                                    nbsp.value = '\u00a0';
+
+                                    parent.append(nbsp);
+                                }
+                            }
+                        }
+                    }
+                });
+
+                ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
+                    var i = nodes.length, node, child;
+
+                    function isInlineCode(type) {
+                        return type === 'shortcode' || type === 'php';
+                    }
+
+                    while (i--) {
+                        node = nodes[i], child = node.firstChild;
+
+                        // pre node is empty, remove
+                        if (node.isEmpty()) {
+                            node.remove();
+                        }
+
+                        // get the code block type, eg: script, shortcode, style, php
+                        var type = node.attr(name) || false;
+
+                        // inline shortcode span
+                        if (node.name === 'span' && isInlineCode(type)) {
+                            continue;
+                        }
+
+                        var newNode = node.clone();
+
+                        do {
+                            var value = child.value;
+
+                            // trim value
+                            value = tinymce.trim(value);
+
+                            // code block is shortcode but content is not wrapped in {}
+                            if (type === 'shortcode' && !contentIsShortcode(value)) {
+                                value = '{' + value + '}';
                             }
 
-                            // prevent nesting
-                            if (parent.attr('data-mce-shortcode')) {
-                                node.unwrap();
+                            // code block is php but content is not wrapped in tags
+                            if (type === 'php' && !/^<\?(php)?/.test(value)) {
+                                value = '<?php ' + value + ' ?>';
                             }
+
+                            if (value) {
+                                var parser = new DomParser({}, ed.schema);
+                                var fragment = parser.parse(value, { forced_root_block: type });
+                                newNode.append(fragment);
+                            }
+                        } while (child = child.next);
+
+                        node.replace(newNode);
+
+                        if (type === 'shortcode') {
+                            // append newline to the end of shortcode blocks
+                            if (newNode.name === 'pre') {
+                                var newline = new Node('#text', 3);
+                                newline.raw = true;
+                                newline.value = '\n';
+                                newNode.append(newline);
+                            }
+
+                            newNode.unwrap();
                         }
                     }
                 });
@@ -296,6 +408,13 @@
                         text = tinymce.trim(text);
 
                         if (text) {
+                            var node = ed.selection.getNode();
+
+                            // don't process into PRE tags
+                            if (node && node.nodeName === 'PRE') {
+                                return;
+                            }
+
                             if (/^\{.+\}$/gi.test(text)) {
                                 value = processShortcode(text, 'pre');
                             }
@@ -333,10 +452,6 @@
 
                         if (node.getAttribute('data-mce-code')) {
                             o.name = node.getAttribute('data-mce-code');
-                        }
-
-                        if (node.getAttribute('data-mce-shortcode')) {
-                            o.name = 'shortcode';
                         }
                     });
                 }
@@ -400,7 +515,7 @@
 
                     // PHP code other
                     o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-                        return createCodePre(match, 'php');
+                        return createCodePre(match, 'php', 'span');
                     });
                 }
             });
@@ -427,6 +542,30 @@
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
                     }
+
+                    // shortcode content will be encoded as text, so decode
+                    if (ed.settings.code_protect_shortcode) {
+                        o.content = o.content.replace(/\{(.*)\}/gi, function (match, content) {
+                            return '{' + ed.dom.decode(content) + '}';
+                        });
+                    }
+
+                    // decode code snippets
+                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
+                        // not the droids etc.
+                        if (attr.indexOf('data-mce-code') === -1) {
+                            return match;
+                        }
+
+                        // trim content
+                        content = tinymce.trim(content);
+
+                        // replace linebreaks with newline
+                        content = content.replace(/<br[^>]*?>/gi, '\n');
+
+                        // decode content
+                        return ed.dom.decode(content);
+                    });
                 }
             });
         }
