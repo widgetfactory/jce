@@ -19,7 +19,7 @@
             this.editor = ed;
             this.url = url;
 
-            var blockElements = [];
+            var blockElements = [], schema = new tinymce.html.Schema({ schema: 'mixed' });
 
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
@@ -53,6 +53,17 @@
                     }
 
                     return createShortcodePre(match, tagName);
+                });
+            }
+
+            function processXML(content) {
+                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+                    // check generic HTML schema
+                    if (schema.isValid(tag)) {
+                        return match;
+                    }
+
+                    return createCodePre(match, 'xml');
                 });
             }
 
@@ -171,7 +182,7 @@
                 var ctrl = ed.controlManager.get('formatselect');
 
                 if (ctrl) {
-                    each(['script', 'style', 'php', 'shortcode'], function (key) {
+                    each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
                         if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
                             ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
 
@@ -199,8 +210,6 @@
                         }
                     });
                 }
-
-                ed.schema.addValidElements('+php[*]');
 
                 var boolAttrs = ed.schema.getBoolAttrs();
 
@@ -337,11 +346,7 @@
                 });
 
                 ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-                    var i = nodes.length, node, child;
-
-                    function isInlineCode(type) {
-                        return type === 'shortcode' || type === 'php';
-                    }
+                    var i = nodes.length, node, child, root_block = false;
 
                     while (i--) {
                         node = nodes[i], child = node.firstChild;
@@ -352,11 +357,21 @@
                         }
 
                         // get the code block type, eg: script, shortcode, style, php
-                        var type = node.attr(name) || false;
+                        var type = node.attr(name);
 
-                        // inline shortcode span
-                        if (node.name === 'span' && isInlineCode(type)) {
+                        // skip xml
+                        if (type === 'xml') {
                             continue;
+                        }
+
+                        // skip inline code span (php or shortcode)
+                        if (node.name === 'span' && (type === 'shortcode' || type === 'php')) {
+                            continue;
+                        }
+
+                        // set the root block type for script and style tags so the parser does the work wrapping free text
+                        if (type === 'script' || type === 'style') {
+                            root_block = type;
                         }
 
                         var newNode = node.clone();
@@ -378,10 +393,12 @@
                             }
 
                             if (value) {
-                                var parser = new DomParser({}, ed.schema);
-                                var fragment = parser.parse(value, { forced_root_block: type });
+                                var parser = new DomParser({ validate: false });
+                                var fragment = parser.parse(value, { forced_root_block: root_block });
+
                                 newNode.append(fragment);
                             }
+
                         } while (child = child.next);
 
                         node.replace(newNode);
@@ -415,14 +432,18 @@
                                 return;
                             }
 
-                            if (/^\{.+\}$/gi.test(text)) {
-                                value = processShortcode(text, 'pre');
+                            value = text;
+
+                            if (/^\{.+\}$/gi.test(text) && ed.settings.code_protect_shortcode) {
+                                value = processShortcode(value, 'pre');
+                            }
+
+                            if (ed.settings.code_allow_custom_xml) {
+                                value = processXML(value);
                             }
 
                             // script / style
-                            if (/^<(\?|script|style)/.test(text)) {
-                                value = text;
-
+                            if (/^<(\?|script|style)/.test(value)) {
                                 value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
                                     match = match.replace(/<br[^>]*?>/gi, '\n');
                                     return createCodePre(match, type);
@@ -435,7 +456,7 @@
                             }
 
                             // update with processed text
-                            if (value) {
+                            if (value !== text) {
                                 content['text/plain'] = '';
                                 content['text/html'] = content['x-tinymce/html'] = value;
                             }
@@ -462,6 +483,13 @@
                     // only process content on "load"
                     if (o.content && o.load) {
                         o.content = processShortcode(o.content);
+                    }
+                }
+
+                if (ed.settings.code_allow_custom_xml) {
+                    // only process content on "load"
+                    if (o.content && o.load) {
+                        o.content = processXML(o.content);
                     }
                 }
 
