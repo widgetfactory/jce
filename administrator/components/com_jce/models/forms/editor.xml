@@ -157,6 +157,7 @@
             <field name="total_files" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_LIMIT" description="WF_PARAM_TOTAL_FILES_LIMIT_DESC" />
             <field name="total_size" type="number" default="" class="input-small" step="1" label="WF_PARAM_TOTAL_FILES_SIZE_LIMIT" description="WF_PARAM_TOTAL_FILES_SIZE_LIMIT_DESC" />
         </fieldset>
+
         <fieldset name="editor.advanced">
             <field name="invalid_elements" type="text" size="50" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC" />
             <field name="invalid_attributes" type="text" size="50" default="dynsrc,lowsrc" label="WF_PARAM_INVALID_ATTRIBUTES" description="WF_PARAM_INVALID_ATTRIBUTES_DESC" />
@@ -170,32 +171,35 @@
 
             <field type="spacer" hr="true" />
 
-            <field name="allow_javascript" type="yesno" default="0" label="WF_PARAM_JAVASCRIPT" description="WF_PARAM_JAVASCRIPT_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+            <field type="container" class="alert alert-warning" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING">
+
+                <field name="allow_javascript" type="yesno" default="0" label="WF_PARAM_JAVASCRIPT" description="WF_PARAM_JAVASCRIPT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_css" type="yesno" default="0" label="WF_PARAM_CSS" description="WF_PARAM_CSS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_php" type="yesno" default="0" label="WF_PARAM_PHP" description="WF_PARAM_PHP_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
+                <field name="allow_custom_xml" type="yesno" default="0" label="WF_PARAM_ALLOW_CUSTOM_XML" description="WF_PARAM_ALLOW_CUSTOM_XML_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
             </field>
 
-            <field name="allow_css" type="yesno" default="0" label="WF_PARAM_CSS" description="WF_PARAM_CSS_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="allow_php" type="yesno" default="0" label="WF_PARAM_PHP" description="WF_PARAM_PHP_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="allow_custom_xml" type="yesno" default="0" label="WF_PARAM_ALLOW_CUSTOM_XML" description="WF_PARAM_ALLOW_CUSTOM_XML_DESC">
+            <field name="protect_shortcode" type="yesno" default="0" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
 
             <field name="allow_event_attributes" type="yesno" default="0" label="WF_PARAM_ALLOW_EVENT_ATTRIBUTES" description="WF_PARAM_ALLOW_EVENT_ATTRIBUTES_DESC" showon="allow_javascript:0">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="protect_shortcode" type="yesno" default="0" label="WF_PARAM_PROTECT_SHORTCODE" description="WF_PARAM_PROTECT_SHORTCODE_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
