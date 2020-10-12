@@ -1,4 +1,7 @@
-(function($, Wf) {
+(function ($, Wf) {
+
+    var asciiMap = { "192": "A", "193": "A", "194": "A", "195": "A", "196": "A", "197": "A", "198": "AE", "199": "C", "200": "E", "201": "E", "202": "E", "203": "E", "204": "I", "205": "I", "206": "I", "207": "I", "208": "D", "209": "N", "210": "O", "211": "O", "212": "O", "213": "O", "214": "O", "216": "O", "217": "U", "218": "U", "219": "U", "220": "U", "221": "Y", "223": "s", "224": "a", "225": "a", "226": "a", "227": "a", "228": "a", "229": "a", "230": "ae", "231": "c", "232": "e", "233": "e", "234": "e", "235": "e", "236": "i", "237": "i", "238": "i", "239": "i", "241": "n", "242": "o", "243": "o", "244": "o", "245": "o", "246": "o", "248": "o", "249": "u", "250": "u", "251": "u", "252": "u", "253": "y", "255": "y", "256": "A", "257": "a", "258": "A", "259": "a", "260": "A", "261": "a", "262": "C", "263": "c", "264": "C", "265": "c", "266": "C", "267": "c", "268": "C", "269": "c", "270": "D", "271": "d", "272": "D", "273": "d", "274": "E", "275": "e", "276": "E", "277": "e", "278": "E", "279": "e", "280": "E", "281": "e", "282": "E", "283": "e", "284": "G", "285": "g", "286": "G", "287": "g", "288": "G", "289": "g", "290": "G", "291": "g", "292": "H", "293": "h", "294": "H", "295": "h", "296": "I", "297": "i", "298": "I", "299": "i", "300": "I", "301": "i", "302": "I", "303": "i", "304": "I", "305": "i", "306": "IJ", "307": "ij", "308": "J", "309": "j", "310": "K", "311": "k", "313": "L", "314": "l", "315": "L", "316": "l", "317": "L", "318": "l", "319": "L", "320": "l", "321": "l", "322": "l", "323": "N", "324": "n", "325": "N", "326": "n", "327": "N", "328": "n", "329": "n", "332": "O", "333": "o", "334": "O", "335": "o", "336": "O", "337": "o", "338": "OE", "339": "oe", "340": "R", "341": "r", "342": "R", "343": "r", "344": "R", "345": "r", "346": "S", "347": "s", "348": "S", "349": "s", "350": "S", "351": "s", "352": "S", "353": "s", "354": "T", "355": "t", "356": "T", "357": "t", "358": "T", "359": "t", "360": "U", "361": "u", "362": "U", "363": "u", "364": "U", "365": "u", "366": "U", "367": "u", "368": "U", "369": "u", "370": "U", "371": "u", "372": "W", "373": "w", "374": "Y", "375": "y", "376": "Y", "377": "Z", "378": "z", "379": "Z", "380": "z", "381": "Z", "382": "z", "383": "s", "402": "f", "416": "O", "417": "o", "431": "U", "432": "u", "461": "A", "462": "a", "463": "I", "464": "i", "465": "O", "466": "o", "467": "U", "468": "u", "469": "U", "470": "u", "471": "U", "472": "u", "473": "U", "474": "u", "475": "U", "476": "u", "506": "A", "507": "a", "508": "AE", "509": "ae", "510": "O", "511": "o" };
+
     /**
      * String functions
      */
@@ -8,7 +11,7 @@
          * More info at: http://phpjs.org
          * php.js is copyright 2011 Kevin van Zonneveld.
          */
-        basename: function(s) {
+        basename: function (s) {
             return s.replace(/^.*[\/\\]/g, '');
         },
         /**
@@ -16,23 +19,23 @@
          * More info at: http://phpjs.org
          * php.js is copyright 2011 Kevin van Zonneveld.
          */
-        dirname: function(s) {
+        dirname: function (s) {
             if (/[\\\/]+/.test(s)) {
                 return s.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '');
             }
 
             return '';
         },
-        filename: function(s) {
+        filename: function (s) {
             return this.stripExt(this.basename(s));
         },
-        getExt: function(s) {
+        getExt: function (s) {
             return s.substring(s.length, s.lastIndexOf('.') + 1);
         },
-        stripExt: function(s) {
+        stripExt: function (s) {
             return s.replace(/\.[^.]+$/i, '');
         },
-        pathinfo: function(s) {
+        pathinfo: function (s) {
             var info = {
                 'basename': this.basename(s),
                 'dirname': this.dirname(s),
@@ -41,29 +44,31 @@
             };
             return info;
         },
-        path: function(a, b) {
+        path: function (a, b) {
             if ($.type(a) === "array") {
                 return this.clean(a.join('/'));
             }
 
             return this.clean(a + '/' + b);
         },
-        clean: function(s) {
+        clean: function (s) {
             if (s.indexOf('://') !== -1) {
-              var parts = s.split('://');
+                var parts = s.split('://');
 
-              parts[1] = parts[1].replace(/\/+/g, '/');
-              return parts.join('://');
+                parts[1] = parts[1].replace(/\/+/g, '/');
+                return parts.join('://');
             }
 
             return s.replace(/\/+/g, '/');
         },
 
-        toASCII: function(string) {
-            return punycode.encode(string, true).replace(/\x2D$/, '');
+        toASCII: function (string) {
+            return string.replace(/([^\w\.\-\s ])/gi, function (str) {
+                return asciiMap[str.charCodeAt(0)] || '';
+            });
         },
 
-        _toUnicode: function(s) {
+        _toUnicode: function (s) {
             var c = s.toString(16).toUpperCase();
 
             while (c.length < 4) {
@@ -73,7 +78,7 @@
             return '\\u' + c;
         },
 
-        safe: function(s, mode, spaces, textcase) {
+        safe: function (s, mode, spaces, textcase) {
             mode = mode || 'utf-8';
 
             spaces = spaces || '_';
@@ -83,6 +88,7 @@
 
             // remove some common characters
             s = s.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
             var r = '';
 
             for (var i = 0, ln = s.length; i < ln; i++) {
@@ -130,7 +136,7 @@
 
             return s;
         },
-        query: function(s) {
+        query: function (s) {
             var p = {};
 
             s = this.decode(s);
@@ -150,7 +156,7 @@
 
             var pairs = s.replace(/&amp;/g, '&').split('&');
 
-            $.each(pairs, function() {
+            $.each(pairs, function () {
                 var pair = this.split('=');
                 p[pair[0]] = pair[1];
             });
@@ -162,7 +168,7 @@
          *
          * Copyright 2010, Moxiecode Systems AB
          */
-        encode: function(s) {
+        encode: function (s) {
             var baseEntities = {
                 '"': '&quot;',
                 "'": '&#39;',
@@ -170,7 +176,7 @@
                 '>': '&gt;',
                 '&': '&amp;'
             };
-            return ('' + s).replace(/[<>&\"\']/g, function(chr) {
+            return ('' + s).replace(/[<>&\"\']/g, function (chr) {
                 return baseEntities[chr] || chr;
             });
 
@@ -180,7 +186,7 @@
          *
          * Copyright 2010, Moxiecode Systems AB
          */
-        decode: function(s) {
+        decode: function (s) {
             var reverseEntities = {
                 '&lt;': '<',
                 '&gt;': '>',
@@ -188,7 +194,7 @@
                 '&quot;': '"',
                 '&apos;': "'"
             };
-            return s.replace(/&(#)?([\w]+);/g, function(all, numeric, value) {
+            return s.replace(/&(#)?([\w]+);/g, function (all, numeric, value) {
                 if (numeric)
                     return String.fromCharCode(value);
 
@@ -196,13 +202,13 @@
             });
 
         },
-        escape: function(s) {
+        escape: function (s) {
             return encodeURI(s);
         },
-        unescape: function(s) {
+        unescape: function (s) {
             return decodeURI(s);
         },
-        encodeURI: function(s, preserve_urls) {
+        encodeURI: function (s, preserve_urls) {
             // don't encode local file links
             if (s && s.indexOf('file://') === 0) {
                 return s;
@@ -211,14 +217,14 @@
             s = encodeURIComponent(decodeURIComponent(s)).replace(/%2F/g, '/');
 
             if (preserve_urls) {
-                s = s.replace(/%(21|2A|27|28|29|3B|3A|40|26|3D|2B|24|2C|3F|25|23|5B|5D)/g, function(a, b) {
+                s = s.replace(/%(21|2A|27|28|29|3B|3A|40|26|3D|2B|24|2C|3F|25|23|5B|5D)/g, function (a, b) {
                     return String.fromCharCode(parseInt(b, 16));
                 });
             }
 
             return s;
         },
-        buildURI: function(s) {
+        buildURI: function (s) {
             // add http if necessary
             if (/^\s*www\./.test(s)) {
                 s = 'http://' + s;
@@ -236,7 +242,7 @@
          * @author Moxiecode
          * @copyright Copyright 2004-2008, Moxiecode Systems AB, All rights reserved.
          */
-        toHex: function(color) {
+        toHex: function (color) {
             var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
 
             var rgb = color.replace(re, "$1,$2,$3").split(',');
@@ -258,7 +264,7 @@
          * @author Moxiecode
          * @copyright Copyright  2004-2008, Moxiecode Systems AB, All rights reserved.
          */
-        toRGB: function(color) {
+        toRGB: function (color) {
             if (color.indexOf('#') != -1) {
                 color = color.replace(new RegExp('[^0-9A-F]', 'gi'), '');
 
@@ -270,10 +276,10 @@
             }
             return color;
         },
-        ucfirst: function(s) {
+        ucfirst: function (s) {
             return s.charAt(0).toUpperCase() + s.substring(1);
         },
-        formatSize: function(s, int) {
+        formatSize: function (s, int) {
             if (!s) {
                 return "";
             }
@@ -313,7 +319,7 @@
          * @return Formatted Date / Time
          * @copyright Copyright 2009, Moxiecode Systems AB
          */
-        formatDate: function(time, fmt) {
+        formatDate: function (time, fmt) {
             var date = new Date(time * 1000);
 
             fmt = fmt || '%d/%m/%Y, %H:%M';
