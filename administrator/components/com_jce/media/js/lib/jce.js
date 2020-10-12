@@ -17,9 +17,20 @@
     }
 
     $.fn.popover = function () {
-        return $(this).tips();
+        /*return $(this).tips();*/
+        return this;
     }
-    
     // run init when the doc is ready
-    $(document).ready(init);
+    $(document).ready(function() {
+        $('label.hasPopover').each(function() {
+            
+            if (!$(this).data('content')) {
+                return true;
+            }
+            
+            $(this).parent('.control-label').siblings('.controls').append('<small class="description">' + $(this).data('content') + '</small>');
+        });
+
+        init();
+    });
 })(jQuery);

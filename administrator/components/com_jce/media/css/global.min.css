@@ -23,9 +23,18 @@
   line-height: 2em;
   font-size: 1.25em;
   font-weight: bold;
+  border: 0 none;
+  color: inherit;
 }
 .ui-jce .controls .form-field-container:not(.inset) {
   margin-left: -180px;
+}
+.ui-jce .control-group .description {
+  display: block;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  background: rgba(0, 0, 0, 0.03);
+  margin: 0.5rem 0;
 }
 .ui-jce .row {
     margin-right: -7.5px;
