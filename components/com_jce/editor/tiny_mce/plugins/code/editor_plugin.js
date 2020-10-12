@@ -58,9 +58,22 @@
 
             function processXML(content) {
                 return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+                    if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
+                        return match;
+                    }
+
+                    if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
+                        return match;
+                    }
+                    
                     // check generic HTML schema
                     if (schema.isValid(tag)) {
                         return match;
+                    }
+
+                    if (ed.settings.code_validate_xml === true) {
+                        var fragment = parser.parse(match, { forced_root_block: false, isRootContent: true });
+                        match = new Serializer({ validate: ed.settings.validate }, ed.schema).serialize(fragment);
                     }
 
                     return createCodePre(match, 'xml');
@@ -346,10 +359,10 @@
                 });
 
                 ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-                    var i = nodes.length, node, child, root_block = false;
+                    var i = nodes.length, node, child;
 
                     while (i--) {
-                        node = nodes[i], child = node.firstChild;
+                        node = nodes[i], child = node.firstChild, root_block = false;
 
                         // pre node is empty, remove
                         if (node.isEmpty()) {
