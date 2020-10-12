@@ -51,7 +51,7 @@ class JFormFieldContainer extends JFormField
     {
         $group = $this->group;
         
-        $subForm    = new JForm('', array('control' => $this->formControl . '[' . $group . ']'));
+        $subForm    = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
         $children   = $this->element->children();
 
         $subForm->load($children);
@@ -59,9 +59,14 @@ class JFormFieldContainer extends JFormField
 
         $data = $this->form->getData()->toObject();
 
-        if (isset($data->$group)) {
-            $subForm->bind($data->$group);
+        // extract relevant data level using group
+        foreach (explode('.', $group) as $key) {
+            if (isset($data->$key)) {
+                $data = $data->$key;
+            }
         }
+
+        $subForm->bind($data);
 
         // And finaly build a main container
         $str = array();
@@ -80,6 +85,13 @@ class JFormFieldContainer extends JFormField
             $text = $this->translateLabel ? JText::_($text) : $text;
             
             $str[] = '<legend>' . $text . '</legend>';
+        }
+
+        if ($this->element['description']) {
+            $text = $this->element['description'];
+            $text = $this->translateLabel ? JText::_($text) : $text;
+            
+            $str[] = '<p>' . $text . '</p>';
         }
 
         foreach ($fields as $field) {
