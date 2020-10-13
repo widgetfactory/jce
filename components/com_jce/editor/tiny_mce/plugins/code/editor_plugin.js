@@ -60,26 +60,19 @@
             function validateXml(xml) {
                 var html = [];
 
-                // check that the element is not invalid
-                function isValidElement(name) {
-                    if (!htmlSchema.isValid(name)) {
-                        return true;
-                    }
-                    
-                    return ed.schema.isValid(name);
-                }
-
-                function isValidAttribute(tag, name) {
+                // check that the element or attribute is not invalid
+                function isValid(tag, attr) {
+                    // is an xml tag
                     if (!htmlSchema.isValid(tag)) {
                         return true;
                     }
                     
-                    return ed.schema.isValid(tag, name);
+                    return ed.schema.isValid(tag, attr);
                 }
 
                 new SaxParser({
                     start: function (name, attrs, empty) {
-                        if (!isValidElement(name)) {
+                        if (!isValid(name)) {
                             return;
                         }
                         
@@ -89,7 +82,7 @@
                             for (i = 0, l = attrs.length; i < l; i++) {
                                 attr = attrs[i];
 
-                                if (!isValidAttribute(name, attr.name)) {
+                                if (!isValid(name, attr.name)) {
                                     continue;
                                 }
 
@@ -118,7 +111,7 @@
                     },
 
                     end: function (name) {
-                        if (!isValidElement(name)) {
+                        if (!isValid(name)) {
                             return;
                         }
                         
@@ -493,9 +486,9 @@
                                     var n = items.length;
 
                                     while (n--) {
-                                        each(items[n].attributes, function(name) {
-                                            if (ed.schema.isValid(type, name) === false) {
-                                                items[n].attr(name, null);
+                                        each(items[n].attributes, function(attr) {                                            
+                                            if (ed.schema.isValid(type, attr.name) === false) {
+                                                items[n].attr(attr.name, null);
                                             }
                                         });
                                     }
