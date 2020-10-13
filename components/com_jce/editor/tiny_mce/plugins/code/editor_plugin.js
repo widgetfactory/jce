@@ -12,14 +12,15 @@
         Node = tinymce.html.Node,
         VK = tinymce.VK,
         DomParser = tinymce.html.DomParser,
-        Serializer = tinymce.html.Serializer;
+        Serializer = tinymce.html.Serializer,
+        SaxParser = tinymce.html.SaxParser;
 
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
             this.editor = ed;
             this.url = url;
 
-            var blockElements = [], schema = new tinymce.html.Schema({ schema: 'mixed' });
+            var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed' }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
 
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
@@ -56,6 +57,57 @@
                 });
             }
 
+            function validateXml(xml) {
+                var html = [];
+
+                new SaxParser({
+                    start: function (name, attrs, empty) {
+                        html.push('<', name);
+
+                        if (attrs) {
+                            for (i = 0, l = attrs.length; i < l; i++) {
+                                attr = attrs[i];
+
+                                // skip event attributes
+                                if (ed.settings.allow_event_attributes !== true) {
+                                    if (attr.name.indexOf('on') === 0) {
+                                        continue;
+                                    }
+                                }
+
+                                html.push(' ', attr.name, '="', ed.dom.encode('' + attr.value, true), '"');
+                            }
+                        }
+
+                        if (!empty) {
+                            html[html.length] = '>';
+                        } else {
+                            html[html.length] = ' />';
+                        }
+                    },
+
+                    text: function (value) {
+                        if (value.length > 0) {
+                            html[html.length] = value;
+                        }
+                    },
+
+                    end: function (name) {
+                        html.push('</', name, '>');
+                    },
+
+                    cdata: function (text) {
+                        html.push('<![CDATA[', text, ']]>');
+                    },
+
+                    comment: function (text) {
+                        html.push('<!--', text, '-->');
+                    }
+                }, xmlSchema).parse(xml);
+
+                return html.join('');
+            }
+
             function processXML(content) {
                 return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
                     if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
@@ -65,15 +117,14 @@
                     if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
                         return match;
                     }
-                    
+
                     // check generic HTML schema
-                    if (schema.isValid(tag)) {
+                    if (htmlSchema.isValid(tag)) {
                         return match;
                     }
 
-                    if (ed.settings.code_validate_xml === true) {
-                        var fragment = parser.parse(match, { forced_root_block: false, isRootContent: true });
-                        match = new Serializer({ validate: ed.settings.validate }, ed.schema).serialize(fragment);
+                    if (ed.settings.code_validate_xml !== false) {
+                        match = validateXml(match);
                     }
 
                     return createCodePre(match, 'xml');
@@ -288,10 +339,10 @@
                             }
                         });
 
-                        // remove any shortcode spans that are added to json-like syntax in code blocks
+                        // remove any code spans that are added to json-like syntax in code blocks
                         if (node.firstChild) {
                             node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
-                                if (attr.indexOf('data-mce-code="shortcode"') === -1) {
+                                if (attr.indexOf('data-mce-code') === -1) {
                                     return match;
                                 }
 
@@ -407,6 +458,20 @@
 
                             if (value) {
                                 var parser = new DomParser({ validate: false });
+
+                                // validate attributes
+                                parser.addNodeFilter(type, function(items) {
+                                    var n = items.length;
+
+                                    while (n--) {
+                                        each(items[n].attributes, function(name) {
+                                            if (ed.schema.isValid(type, name) === false) {
+                                                items[n].attr(name, null);
+                                            }
+                                        });
+                                    }
+                                });
+
                                 var fragment = parser.parse(value, { forced_root_block: root_block });
 
                                 newNode.append(fragment);
