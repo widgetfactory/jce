@@ -60,13 +60,38 @@
             function validateXml(xml) {
                 var html = [];
 
+                // check that the element is not invalid
+                function isValidElement(name) {
+                    if (!htmlSchema.isValid(name)) {
+                        return true;
+                    }
+                    
+                    return ed.schema.isValid(name);
+                }
+
+                function isValidAttribute(tag, name) {
+                    if (!htmlSchema.isValid(tag)) {
+                        return true;
+                    }
+                    
+                    return ed.schema.isValid(tag, name);
+                }
+
                 new SaxParser({
                     start: function (name, attrs, empty) {
+                        if (!isValidElement(name)) {
+                            return;
+                        }
+                        
                         html.push('<', name);
 
                         if (attrs) {
                             for (i = 0, l = attrs.length; i < l; i++) {
                                 attr = attrs[i];
+
+                                if (!isValidAttribute(name, attr.name)) {
+                                    continue;
+                                }
 
                                 // skip event attributes
                                 if (ed.settings.allow_event_attributes !== true) {
@@ -93,6 +118,10 @@
                     },
 
                     end: function (name) {
+                        if (!isValidElement(name)) {
+                            return;
+                        }
+                        
                         html.push('</', name, '>');
                     },
 
