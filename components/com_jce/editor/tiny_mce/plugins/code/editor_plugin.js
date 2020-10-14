@@ -635,11 +635,6 @@
                         o.content = o.content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
                     }
 
-                    // don't process further in source code mode
-                    if (o.source) {
-                        return;
-                    }
-
                     // PHP code within an attribute
                     o.content = o.content.replace(/\="([^"]+?)"/g, function (a, b) {
                         b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
@@ -675,7 +670,7 @@
             });
 
             ed.onPostProcess.add(function (ed, o) {
-                if (o.get && !o.source) {
+                if (o.get) {
                     // Process converted php
                     if (/(data-mce-php|\{php:start\})/.test(o.content)) {
                         // attribute value
