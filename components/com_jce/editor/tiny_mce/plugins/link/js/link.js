@@ -215,10 +215,10 @@
             var state = api.isOnlyTextSelected(ed);
 
             function setText(state, txt) {
-                if (state && txt) {
+                if (state) {
                     $('#text').val(txt).attr('disabled', false).trigger('change');
                 } else {
-                    $('#text').val('').attr('disabled', true).trigger('change').parents('tr').hide();
+                    $('#text').val('').attr('disabled', true).trigger('change');
                 }
             }
 
@@ -295,7 +295,7 @@
             }
 
             // get anchor or selected element text
-            var txt = api.getAnchorText(se, api.isAnchor(anchorElm) ? anchorElm : null) || ''
+            var txt = api.getAnchorText(se, api.isAnchor(anchorElm) ? anchorElm : null) || '';
 
             // set text value and state
             setText(state, txt);
