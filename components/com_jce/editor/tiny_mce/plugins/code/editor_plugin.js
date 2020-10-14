@@ -34,6 +34,11 @@
                 return false;
             });
 
+            /**
+             * Detect and process shortcode in an html string
+             * @param {String} html 
+             * @param {String} tagName
+             */
             function processShortcode(html, tagName) {
                 // quick check to see if we should proceed
                 if (html.indexOf('{') === -1) {
@@ -45,6 +50,7 @@
                     return html;
                 }
 
+                // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
                 tagName = tagName || 'span';
 
                 return html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
@@ -57,6 +63,10 @@
                 });
             }
 
+            /**
+             * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
+             * @param {String} xml 
+             */
             function validateXml(xml) {
                 var html = [];
 
@@ -130,21 +140,28 @@
                 return html.join('');
             }
 
+            /**
+             * Detect and process xml tags
+             * @param {String} content
+             */
             function processXML(content) {
                 return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+                    // check if svg is allowed
                     if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
                         return match;
                     }
 
+                    // check if mathml is allowed
                     if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
                         return match;
                     }
 
-                    // check generic HTML schema
+                    // check if the tags is part of the generic HTML schema, return if true
                     if (htmlSchema.isValid(tag)) {
                         return match;
                     }
 
+                    // validate xml by default to remove event attributes and invalid nested html
                     if (ed.settings.code_validate_xml !== false) {
                         match = validateXml(match);
                     }
@@ -153,19 +170,34 @@
                 });
             }
 
+            /**
+             * Create a shortcode pre. This differs from the code pre as it is still contenteditable
+             * @param {String} data 
+             * @param {String} tag 
+             */
             function createShortcodePre(data, tag) {
                 tag = tag || 'pre';
                 return '<' + tag + ' data-mce-code="shortcode" data-mce-type="shortcode">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
+            /**
+             * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
+             * @param {String} data
+             * @param {String} type  
+             * @param {String} tag 
+             */
             function createCodePre(data, type, tag) {
                 type = type || 'script';
                 tag = tag || 'pre';
                 return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
-            function contentIsShortcode(value) {
-                return value && value.charAt(0) === '{' && value.charAt(value.length - 1) === '}';
+            /**
+             * Quick check to see if a string is shortcode, eg: {code}
+             * @param {String} str
+             */
+            function contentIsShortcode(str) {
+                return str && str.charAt(0) === '{' && str.charAt(str.length - 1) === '}';
             }
 
             function handleEnterInPre(ed, node, before) {
@@ -297,8 +329,6 @@
                     });
                 }
 
-                var boolAttrs = ed.schema.getBoolAttrs();
-
                 // store block elements from schema map
                 each(ed.schema.getBlockElements(), function (block, blockName) {
                     blockElements.push(blockName);
@@ -354,12 +384,6 @@
                         if (type) {
                             node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
                         }
-
-                        each(node.attributes, function (attr) {
-                            if (boolAttrs[attr.name] && attr.value != 'false') {
-                                attr.value = attr.name;
-                            }
-                        });
 
                         // remove any code spans that are added to json-like syntax in code blocks
                         if (node.firstChild) {
@@ -481,18 +505,20 @@
                             if (value) {
                                 var parser = new DomParser({ validate: false });
 
-                                // validate attributes
-                                parser.addNodeFilter(type, function(items) {
-                                    var n = items.length;
-
-                                    while (n--) {
-                                        each(items[n].attributes, function(attr) {                                            
-                                            if (ed.schema.isValid(type, attr.name) === false) {
-                                                items[n].attr(attr.name, null);
-                                            }
-                                        });
-                                    }
-                                });
+                                // validate attributes of script and style tags
+                                if (type === 'script' || type === 'style') {
+                                    parser.addNodeFilter(type, function(items) {
+                                        var n = items.length;
+    
+                                        while (n--) {
+                                            each(items[n].attributes, function(attr) {                                            
+                                                if (ed.schema.isValid(type, attr.name) === false) {
+                                                    items[n].attr(attr.name, null);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
 
                                 var fragment = parser.parse(value, { forced_root_block: root_block });
 
