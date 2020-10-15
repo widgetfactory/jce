@@ -93,7 +93,7 @@
                     if (isXmlElement(tag)) {
                         return true;
                     }
-                    
+
                     return ed.schema.isValid(tag, attr);
                 }
 
@@ -102,7 +102,7 @@
                         if (!isValid(name)) {
                             return;
                         }
-                        
+
                         html.push('<', name);
 
                         if (attrs) {
@@ -141,7 +141,7 @@
                         if (!isValid(name)) {
                             return;
                         }
-                        
+
                         html.push('</', name, '>');
                     },
 
@@ -475,6 +475,14 @@
                 ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
                     var i = nodes.length, node, child;
 
+                    function createTextNode(value) {
+                        var text = new Node('#text', 3);
+                        text.raw = true;
+                        text.value = value;
+
+                        return text;
+                    }
+
                     while (i--) {
                         node = nodes[i], child = node.firstChild, root_block = false;
 
@@ -506,29 +514,16 @@
                         do {
                             var value = child.value;
 
-                            // trim value
-                            value = tinymce.trim(value);
-
-                            // code block is shortcode but content is not wrapped in {}
-                            if (type === 'shortcode' && !contentIsShortcode(value)) {
-                                value = '{' + value + '}';
-                            }
-
-                            // code block is php but content is not wrapped in tags
-                            if (type === 'php' && !/^<\?(php)?/.test(value)) {
-                                value = '<?php ' + value + ' ?>';
-                            }
-
-                            if (value) {
+                            if (value) {                                
                                 var parser = new DomParser({ validate: false });
 
                                 // validate attributes of script and style tags
                                 if (type === 'script' || type === 'style') {
-                                    parser.addNodeFilter(type, function(items) {
+                                    parser.addNodeFilter(type, function (items) {
                                         var n = items.length;
-    
+
                                         while (n--) {
-                                            each(items[n].attributes, function(attr) {                                            
+                                            each(items[n].attributes, function (attr) {
                                                 if (ed.schema.isValid(type, attr.name) === false) {
                                                     items[n].attr(attr.name, null);
                                                 }
@@ -538,25 +533,36 @@
                                 }
 
                                 var fragment = parser.parse(value, { forced_root_block: root_block });
-
                                 newNode.append(fragment);
                             }
-
                         } while (child = child.next);
 
                         node.replace(newNode);
 
                         if (type === 'shortcode') {
-                            // append newline to the end of shortcode blocks
                             if (newNode.name === 'pre') {
-                                var newline = new Node('#text', 3);
-                                newline.raw = true;
-                                newline.value = '\n';
+                                // add opening bracket if missing
+                                if (newNode.firstChild.value !== '{') {
+                                    var openBracket = createTextNode('{');
+                                    newNode.insert(openBracket, newNode.firstChild, true);
+                                }
+
+                                // add closing bracket if missing
+                                if (newNode.lastChild.value !== '{') {
+                                    var closeBracket = createTextNode('}');
+                                    newNode.append(closeBracket);
+                                }
+
+                                // append newline to the end of shortcode blocks
+                                var newline = createTextNode('\n');
                                 newNode.append(newline);
                             }
 
+                            // unwrap to text as further processing is not needed
                             newNode.unwrap();
                         }
+
+                        console.log(newNode);
                     }
                 });
 
@@ -730,7 +736,16 @@
                         content = content.replace(/<br[^>]*?>/gi, '\n');
 
                         // decode content
-                        return ed.dom.decode(content);
+                        content = ed.dom.decode(content);
+
+                        // add missing tags in php
+                        if (attr.indexOf('data-mce-code="php"') !== -1) {
+                            if (!/^<\?(php)?([\s\S]+?)\?>$/.test(content)) {
+                                content = '<?php ' + content + ' ?>';
+                            }
+                        }
+                        
+                        return content;
                     });
                 }
             });
