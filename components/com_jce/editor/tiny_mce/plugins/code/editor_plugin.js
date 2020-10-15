@@ -20,7 +20,7 @@
             this.editor = ed;
             this.url = url;
 
-            var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed' }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
+            var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed', invalid_elements: ed.settings.invalid_elements }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
 
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
@@ -64,6 +64,23 @@
             }
 
             /**
+             * Check whether a tag is a defined invalid element
+             * @param {String} name 
+             */
+            function isInvalidElement(name) {
+                var invalid_elements = ed.settings.invalid_elements.split(',');
+                return tinymce.inArray(invalid_elements, name) !== -1;
+            }
+
+            /**
+             * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
+             * @param {String} name 
+             */
+            function isXmlElement(name) {
+                return !htmlSchema.isValid(name) && !isInvalidElement(name);
+            }
+
+            /**
              * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
              * @param {String} xml 
              */
@@ -72,8 +89,8 @@
 
                 // check that the element or attribute is not invalid
                 function isValid(tag, attr) {
-                    // is an xml tag
-                    if (!htmlSchema.isValid(tag)) {
+                    // is an xml tag and is not an invalid_element
+                    if (isXmlElement(tag)) {
                         return true;
                     }
                     
@@ -157,7 +174,7 @@
                     }
 
                     // check if the tags is part of the generic HTML schema, return if true
-                    if (htmlSchema.isValid(tag)) {
+                    if (!isXmlElement(tag)) {
                         return match;
                     }
 
