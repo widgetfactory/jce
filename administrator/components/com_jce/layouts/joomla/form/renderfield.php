@@ -33,7 +33,7 @@ $rel   = empty($options['rel']) ? '' : ' ' . $options['rel'];
 		<div class="control-label"><?php echo $label; ?></div>
 	<?php endif; ?>
 	<div class="controls"><?php echo $input; ?></div>
-	<?php if (isset($options['description'])) : ?>
+	<?php if (!empty($options['description'])) : ?>
 		<small class="description"><?php echo JText::_($options['description']);?></small>
 	<?php endif; ?>
 </div>
