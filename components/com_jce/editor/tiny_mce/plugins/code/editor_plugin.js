@@ -445,6 +445,13 @@
                             continue;
                         }
 
+                        var value = node.firstChild.value;
+
+                        // replace linebreaks with newlines
+                        if (value) {
+                            node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
+                        }
+
                         if (parent) {
                             // don't process shortcode in code blocks
                             if (parent.attr(name)) {
@@ -461,6 +468,7 @@
                                     parent.replace(node);
                                 }
                             } else {
+                                // add whitespace after the span so a cursor can be set
                                 if (node === parent.lastChild) {
                                     var nbsp = new Node('#text', 3);
                                     nbsp.value = '\u00a0';
@@ -481,6 +489,10 @@
                         text.value = value;
 
                         return text;
+                    }
+
+                    function isXmlNode(node) {
+                        return !/(shortcode|php)/.test(node.attr('data-mce-code'));
                     }
 
                     while (i--) {
@@ -509,31 +521,35 @@
                             root_block = type;
                         }
 
-                        var newNode = node.clone();
+                        var newNode = node.clone(true);
 
                         do {
-                            var value = child.value;
+                            if (isXmlNode(node)) {
+                                var value = child.value;
 
-                            if (value) {                                
-                                var parser = new DomParser({ validate: false });
+                                newNode.empty();
 
-                                // validate attributes of script and style tags
-                                if (type === 'script' || type === 'style') {
-                                    parser.addNodeFilter(type, function (items) {
-                                        var n = items.length;
+                                if (value) {
+                                    var parser = new DomParser({ validate: false });
 
-                                        while (n--) {
-                                            each(items[n].attributes, function (attr) {
-                                                if (ed.schema.isValid(type, attr.name) === false) {
-                                                    items[n].attr(attr.name, null);
-                                                }
-                                            });
-                                        }
-                                    });
+                                    // validate attributes of script and style tags
+                                    if (type === 'script' || type === 'style') {
+                                        parser.addNodeFilter(type, function (items) {
+                                            var n = items.length;
+
+                                            while (n--) {
+                                                each(items[n].attributes, function (attr) {
+                                                    if (ed.schema.isValid(type, attr.name) === false) {
+                                                        items[n].attr(attr.name, null);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+
+                                    var fragment = parser.parse(value, { forced_root_block: root_block });
+                                    newNode.append(fragment);
                                 }
-
-                                var fragment = parser.parse(value, { forced_root_block: root_block });
-                                newNode.append(fragment);
                             }
                         } while (child = child.next);
 
@@ -561,8 +577,6 @@
                             // unwrap to text as further processing is not needed
                             newNode.unwrap();
                         }
-
-                        console.log(newNode);
                     }
                 });
 
@@ -687,6 +701,9 @@
 
                     // PHP code other
                     o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+                        // replace newlines with <br /> so they are preserved inside the span
+                        match = match.replace(/\n/g, '<br />');
+                        // create code span
                         return createCodePre(match, 'php', 'span');
                     });
                 }
@@ -744,7 +761,7 @@
                                 content = '<?php ' + content + ' ?>';
                             }
                         }
-                        
+
                         return content;
                     });
                 }
