@@ -5,7 +5,7 @@
   margin-left: -20px;
 }
 .ui-jce label {
-  max-width: 10rem;
+  max-width: 12rem;
 }
 .ui-jce .radio label,
 .ui-jce .checkbox label,
@@ -25,6 +25,7 @@
   font-weight: bold;
   border: 0 none;
   color: inherit;
+  margin: 0;
 }
 .ui-jce .controls .form-field-container:not(.inset) {
   margin-left: -180px;
@@ -35,6 +36,8 @@
   padding: 1rem 0.5rem;
   background: rgba(0, 0, 0, 0.03);
   margin: 0.5rem 0;
+  font-size: 90%;
+  box-sizing: border-box;
 }
 .ui-jce .row {
     margin-right: -7.5px;

@@ -97,7 +97,7 @@ class JFormFieldKeyValue extends JFormField
                 // reset name
                 $field->name = $name;
 
-                $str[] = $field->renderField();
+                $str[] = $field->renderField(array('description' => $field->description));
                 
                 $n++;
             }

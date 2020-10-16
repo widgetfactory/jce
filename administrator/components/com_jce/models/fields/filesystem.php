@@ -87,7 +87,7 @@ class JFormFieldFilesystem extends JFormFieldList
                 $fields = $form->getFieldset('filesystem.' . $plugin->name);
 
                 foreach ($fields as $field) {
-                     $html .= $field->renderField();
+                    $html .= $field->renderField(array('description' => $field->description));
                 }
 
                 $html .= '</div>';

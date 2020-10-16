@@ -21,7 +21,7 @@ defined('JPATH_PLATFORM') or die;
 	    <div id="j-main-container">
         <?php endif; ?>
             <fieldset class="adminform panelform">
-                <?php echo JLayoutHelper::render('joomla.content.options_default', $this);?>
+                <?php echo JLayoutHelper::render('joomla.content.options_default', $this, WF_ADMINISTRATOR);?>
             </fieldset>
         </div>
     </div>

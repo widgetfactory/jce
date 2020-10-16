@@ -91,11 +91,14 @@ class JFormFieldContainer extends JFormField
             $text = $this->element['description'];
             $text = $this->translateLabel ? JText::_($text) : $text;
             
-            $str[] = '<p>' . $text . '</p>';
+            $str[] = '<small class="description">' . $text . '</small>';
+
+            // reset description
+            $this->description = '';
         }
 
         foreach ($fields as $field) {
-            $str[] = $field->renderField();
+            $str[] = $field->renderField(array('description' => $field->description));
         }
 
         $str[] = '  </fieldset>';

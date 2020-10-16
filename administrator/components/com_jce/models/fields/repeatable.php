@@ -87,7 +87,7 @@ class JFormFieldRepeatable extends JFormField
                     $field->name .= '[]';
                 }
 
-                $str[] = $field->renderField();
+                $str[] = $field->renderField(array('description' => $field->description));
                 
                 $n++;
             }
