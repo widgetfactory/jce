@@ -284,14 +284,14 @@ class WFJoomlaFileSystem extends WFFileSystem
                     'name' => $name,
                     'writable' => is_writable($item) || $this->isFtp(),
                     'type' => 'folders',
-                    'properties' => $this->getFileDetails($id),
+                    'properties' => $this->getFolderDetails($id),
                 );
 
                 $folders[] = $data;
             }
         }
 
-        if ($sort) {
+        if ($sort && strpos($sort, 'extension') === false) {
             $folders = self::sortItemsByKey($folders, $sort);
         }
 
