@@ -34,6 +34,31 @@
                 return false;
             });
 
+            function processOnInsert(value) {
+                if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
+                    value = processShortcode(value);
+                }
+
+                if (ed.settings.code_allow_custom_xml) {
+                    value = processXML(value);
+                }
+
+                // script / style
+                if (/<(\?|script|style)/.test(value)) {
+                    value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+                        match = match.replace(/<br[^>]*?>/gi, '\n');
+                        return createCodePre(match, type);
+                    });
+
+                    value = value.replace(/<\?(php)?([\s\S]*?)\?>/gi, function (match) {
+                        match = match.replace(/<br[^>]*?>/gi, '\n');
+                        return createCodePre(match, 'php', 'span');
+                    });
+                }
+
+                return value;
+            }
+
             /**
              * Detect and process shortcode in an html string
              * @param {String} html 
@@ -330,6 +355,11 @@
 
                             return true;
                         }
+                        
+                        // map settings value to simplified key
+                        if (key === 'xml') {
+                            ed.settings['code_xml'] = !!ed.settings.code_allow_custom_xml;
+                        }
 
                         if (ed.getParam('code_' + key)) {
                             ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
@@ -379,11 +409,11 @@
                     ed.settings.allow_script_urls = true;
                 }
 
-                if (ed.settings.code_protect_shortcode) {
-                    ed.selection.onBeforeSetContent.add(function (ed, o) {
+                ed.selection.onBeforeSetContent.add(function (sel, o) {                    
+                    if (ed.settings.code_protect_shortcode) {
                         o.content = processShortcode(o.content);
-                    });
-                }
+                    }
+                });
 
                 // Convert script elements to span placeholder
                 ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
@@ -555,24 +585,10 @@
 
                         node.replace(newNode);
 
-                        if (type === 'shortcode') {
-                            if (newNode.name === 'pre') {
-                                // add opening bracket if missing
-                                if (newNode.firstChild.value !== '{') {
-                                    var openBracket = createTextNode('{');
-                                    newNode.insert(openBracket, newNode.firstChild, true);
-                                }
-
-                                // add closing bracket if missing
-                                if (newNode.lastChild.value !== '{') {
-                                    var closeBracket = createTextNode('}');
-                                    newNode.append(closeBracket);
-                                }
-
-                                // append newline to the end of shortcode blocks
-                                var newline = createTextNode('\n');
-                                newNode.append(newline);
-                            }
+                        if (type === 'shortcode' && newNode.name === 'pre') {
+                            // append newline to the end of shortcode blocks
+                            var newline = createTextNode('\n');
+                            newNode.append(newline);
 
                             // unwrap to text as further processing is not needed
                             newNode.unwrap();
@@ -595,28 +611,7 @@
                                 return;
                             }
 
-                            value = text;
-
-                            if (/^\{.+\}$/gi.test(text) && ed.settings.code_protect_shortcode) {
-                                value = processShortcode(value, 'pre');
-                            }
-
-                            if (ed.settings.code_allow_custom_xml) {
-                                value = processXML(value);
-                            }
-
-                            // script / style
-                            if (/^<(\?|script|style)/.test(value)) {
-                                value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-                                    match = match.replace(/<br[^>]*?>/gi, '\n');
-                                    return createCodePre(match, type);
-                                });
-
-                                value = value.replace(/<\?(php)?([\s\S]*?)\?>/gi, function (match) {
-                                    match = match.replace(/<br[^>]*?>/gi, '\n');
-                                    return createCodePre(match, 'php');
-                                });
-                            }
+                            value = processOnInsert(text);
 
                             // update with processed text
                             if (value !== text) {
