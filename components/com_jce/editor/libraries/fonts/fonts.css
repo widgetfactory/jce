@@ -743,6 +743,46 @@
   content: "\e990";
 }
 
+.uk-icon-code-highlight:before {
+  content: "\e924";
+}
+
+.uk-icon-code-linenumbers:before {
+  content: "\ec55";
+}
+
+.uk-icon-code-search-next:before {
+    content: "\edcb";
+}
+
+.uk-icon-code-search-previous:before {
+    content: "\edcf";
+}
+
+.uk-icon-code-format:before {
+  content: "\eebc";
+}
+
+.uk-icon-code-replace-all:before {
+  content: "\eda8";
+}
+
+.uk-icon-code-replace:before {
+  content: "\ee46";
+}
+
+.uk-icon-code-wrap:before {
+  content: "\e902";
+}
+
+.uk-icon-code-search-regex:before {
+  content: ".*";
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1;
+}
+
 /*.uk-icon-spinner:before {
     content: "";
     background: url('../img/load.gif') no-repeat center;
@@ -775,6 +815,7 @@
   box-sizing: border-box;
   display: inline-block;
   vertical-align: middle;
+  line-height: 1;
 }
 
 @keyframes donut-spin {

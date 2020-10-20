@@ -2131,7 +2131,8 @@
                 'rename': 'edit',
                 'preview': 'preview',
                 'view': 'preview',
-                'image-editor': 'crop'
+                'image-editor': 'crop',
+                'text-editor': 'file-xml'
             };
 
             // only create button type once

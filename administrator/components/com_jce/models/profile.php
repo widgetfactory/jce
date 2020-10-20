@@ -166,7 +166,7 @@ class JceModelProfile extends JModelAdmin
         }
 
         // pro manifest
-        $manifest = WF_EDITOR_LIBRARIES . '/pro/xml/image.xml';
+        $manifest = WF_EDITOR_LIBRARIES . '/pro/xml/pro.xml';
 
         // load pro manifest
         if (is_file($manifest)) {
