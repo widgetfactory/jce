@@ -472,7 +472,7 @@ class WFDocument extends JObject
 
         // set layout
         if ($app->input->getWord('layout')) {
-            $query['layout'] = $app->input->getWord('layout');
+            $query['layout'] = $app->input->getCmd('layout');
         }
 
         // set standalone mode (for File Browser etc)
