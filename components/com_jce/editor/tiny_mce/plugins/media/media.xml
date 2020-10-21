@@ -12,9 +12,11 @@
     <icon></icon>
     <fields name="media">
         <fieldset name="config">
-            <field name="iframes" type="yesno" default="0" label="WF_MEDIA_PARAM_IFRAMES" description="WF_MEDIA_PARAM_IFRAMES_DESC">
+            <field name="iframes" type="list" default="0" label="WF_MEDIA_PARAM_IFRAMES" description="WF_MEDIA_PARAM_IFRAMES_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
+                <option value="2">WF_MEDIA_PARAM_IFRAMES_LOCAL</option>
+                <option value="3">WF_MEDIA_PARAM_IFRAMES_SUPPORTED_MEDIA</option>
             </field>
             <field name="audio" type="yesno" default="1" label="WF_MEDIA_PARAM_AUDIO" description="WF_MEDIA_PARAM_AUDIO_DESC">
                 <option value="1">JYES</option>

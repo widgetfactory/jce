@@ -18,6 +18,14 @@ class WFMediaPluginConfig
 
         if ($wf->getParam('media.iframes', 0)) {
             $tags[] = 'iframe';
+
+            if ((int) $wf->getParam('media.iframes') == 2) {
+                $settings['iframes_allow_local'] = true;
+            }
+
+            if ((int) $wf->getParam('media.iframes') == 3) {
+                $settings['iframes_allow_supported'] = true;
+            }
         }
 
         if ($wf->getParam('media.audio', 1)) {

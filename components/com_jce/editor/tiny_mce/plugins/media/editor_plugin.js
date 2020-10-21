@@ -17,6 +17,97 @@
 
     var Styles = new tinymce.html.Styles();
 
+    function isSupportedMedia(url) {
+        // youtube
+        if (/youtu(\.)?be(.+)?\/(.+)/.test(url)) {
+            return 'youtube';
+        }
+        // vimeo
+        if (/vimeo(.+)?\/(.+)/.test(url)) {
+            return 'vimeo';
+        }
+        // Dailymotion
+        if (/dai\.?ly(motion)?(\.com)?/.test(url)) {
+            return 'dailymotion';
+        }
+        // Scribd
+        if (/scribd\.com\/(.+)/.test(url)) {
+            return 'scribd';
+        }
+        // Slideshare
+        if (/slideshare\.net\/(.+)\/(.+)/.test(url)) {
+            return 'slideshare';
+        }
+        // Soundcloud
+        if (/soundcloud\.com\/(.+)/.test(url)) {
+            return 'soundcloud';
+        }
+        // Spotify
+        if (/spotify\.com\/(.+)/.test(url)) {
+            return 'spotify';
+        }
+        // TED
+        if (/ted\.com\/talks\/(.+)/.test(url)) {
+            return 'ted';
+        }
+        // Twitch
+        if (/twitch\.tv\/(.+)/.test(url)) {
+            return 'twitch';
+        }
+        // Facebook
+        if (/www\.facebook\.com\/(.+)?(posts|videos)\/(.+)/.test(url)) {
+            return 'facebook';
+        }
+        // Instagram
+        if (/instagr\.?am(.+)?\/(.+)/.test(url)) {
+            return 'instagram';
+        }
+
+        return false;
+    }
+
+    var isAbsoluteUrl = function (url) {
+        return url && (url.indexOf('://') > 0 || url.indexOf('//') === 0);
+    };
+
+    var isLocalUrl = function(editor, url) {        
+        if (isAbsoluteUrl(url)) {            
+            // try and convert to relative
+            var relative = editor.documentBaseURI.toRelative(url);
+
+            // is result still absolute?
+            return isAbsoluteUrl(relative) === false;
+        }
+        
+        return true;
+    };
+
+    var validateIframe = function(editor, node) {
+        var src = node.attr('src');
+
+        if (!src) {
+            return false;
+        }
+
+        if (editor.settings.iframes_allow_supported) {
+            if (isLocalUrl(editor, src)) {
+                return true;
+            }
+            
+            if (isSupportedMedia(src) !== false) {
+                return true;
+            }
+
+            return false;
+        }
+        
+        if (editor.settings.iframes_allow_local) {
+            return isLocalUrl(editor, src);
+        }
+
+        return true;
+    };
+
     var sanitize = function (editor, html) {
         var writer = new tinymce.html.Writer();
         var blocked;
@@ -386,6 +477,11 @@
                         if (!isValidNode(node)) {
                             node.remove();
                             continue;
+                        }
+
+                        // mark iframe for removal if invalid
+                        if (node.name === 'iframe' && validateIframe(ed, node) === false) {
+                            invalid.push('iframe');
                         }
 
                         // if valid node (validate == false)
