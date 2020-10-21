@@ -39,6 +39,9 @@
   font-size: 90%;
   box-sizing: border-box;
 }
+.ui-jce .control-group .chzn-container {
+  min-width: 260px;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
