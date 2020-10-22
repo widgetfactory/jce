@@ -1717,6 +1717,9 @@
                         label: {
                             'confirm': self._translate('create', 'Create')
                         },
+                        validate: function(value) {
+                            return value && Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === value;
+                        }
                     });
                     break;
 
@@ -1960,7 +1963,10 @@
                             'confirm': self._translate('rename', 'Rename')
                         },
                         elements: this._getDialogOptions('rename'),
-                        close_on_submit: false
+                        close_on_submit: false,
+                        validate: function(value) {
+                            return value && Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === value;
+                        }
                     });
                     break;
             }

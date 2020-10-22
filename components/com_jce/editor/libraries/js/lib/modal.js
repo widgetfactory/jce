@@ -131,7 +131,6 @@
             $(div).on('modal.open', function (ev) {
                 // focus input
                 $('input[autofocus], button[autofocus]', div).first().trigger('focus');
-
                 options.open.call(this, ev);
             }).on('modal.close', function (e, ev) {
                 options.beforeclose.call(this, ev);
@@ -329,7 +328,9 @@
                 html += options.elements;
             }
 
-            options = $.extend(true, {
+            var onOpen = options.open || function(){};
+
+            options = $.extend(true, options, {
                 'classes': 'uk-modal-prompt',
                 buttons: [
                     {
@@ -366,6 +367,9 @@
                     }
                 ],
                 open: function () {
+                    // call passed in open function
+                    onOpen.call(this, {target: this});
+
                     var n = document.getElementById(options.id + '-input');
 
                     if (n) {
@@ -373,6 +377,12 @@
                         setTimeout(function () {
                             // focus element
                             n.focus();
+
+                            if (options.validate) {
+                                $(n).on('change keyup', function(e) {
+                                    $(n).toggleClass('uk-form-danger', !options.validate(n.value));
+                                });
+                            }
 
                             // fix cursor position in Firefox
                             if (n.nodeName === "INPUT" && n.setSelectionRange && n.value) {
@@ -382,7 +392,7 @@
                     }
                 }
 
-            }, options);
+            });
 
             return this.open(title, options, html);
         },
