@@ -93,10 +93,20 @@ class JceController extends JControllerLegacy
 
         // Get and render the view.
         if ($view) {
+            
+            if ($vName != "cpanel") {
+                // use "profiles" for validating "profile" view
+                if ($vName == "profile") {
+                    $vName = "profiles";
+                }
 
-            if ($vName !== "cpanel" && !$user->authorise('jce.' . $vName, 'com_jce')) {
-                throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+                if (!$user->authorise('jce.' . $vName, 'com_jce')) {
+                    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+                }
             }
+            
+            // reset view name
+            $vName = $view->getName();
 
             // Get the model for the view.
             $model = $this->getModel($vName, 'JceModel', array('name' => $vName));
