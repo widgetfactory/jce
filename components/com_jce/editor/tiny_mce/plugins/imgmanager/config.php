@@ -35,8 +35,7 @@ class WFImgmanagerPluginConfig
                 $config['filetypes'] = $filetypes;
             }
 
-            $config['always_include_dimensions'] = $plugin->getParam('always_include_dimensions', 1, 1, 'boolean');
-
+            $config['always_include_dimensions'] = (bool) $plugin->getParam('always_include_dimensions', 1);
             $config['attributes'] = $plugin->getDefaultAttributes();
         }
 

@@ -100,7 +100,7 @@ class WFImgManagerPlugin extends WFMediaManager
                 'margin' => $this->getParam('attributes_margin', 1),
                 'border' => $this->getParam('attributes_border', 1),
             ),
-            'always_include_dimensions' => $this->getParam('always_include_dimensions', 1)
+            'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1)
         );
 
         return parent::getSettings($settings);
