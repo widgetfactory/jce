@@ -45,15 +45,21 @@
 
                 // script / style
                 if (/<(\?|script|style)/.test(value)) {
+                    // remove script
+                    if (!ed.getParam('code_script')) {
+                        value = value.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+                    }
+                    // remove style
+                    if (!ed.getParam('code_style')) {
+                        value = value.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+                    }
+
                     value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
                         match = match.replace(/<br[^>]*?>/gi, '\n');
                         return createCodePre(match, type);
                     });
 
-                    value = value.replace(/<\?(php)?([\s\S]*?)\?>/gi, function (match) {
-                        match = match.replace(/<br[^>]*?>/gi, '\n');
-                        return createCodePre(match, 'php', 'span');
-                    });
+                    value = processPhp(value);
                 }
 
                 return value;
@@ -86,6 +92,50 @@
 
                     return createShortcodePre(match, tagName);
                 });
+            }
+
+            function processPhp(content) {
+                // Remove PHP if not enabled
+                if (!ed.getParam('code_php')) {
+                    return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
+                }
+
+                // PHP code within an attribute
+                content = content.replace(/\="([^"]+?)"/g, function (a, b) {
+                    b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+                        return '{php:start}' + ed.dom.encode(z) + '{php:end}';
+                    });
+
+                    return '="' + b + '"';
+                });
+
+                // PHP code within a textarea
+                if (/<textarea/.test(content)) {
+                    content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+                        c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+                            return '{php:start}' + ed.dom.encode(z) + '{php:end}';
+                        });
+                        return '<textarea' + b + '>' + c + '</textarea>';
+                    });
+                }
+
+                // PHP code within an element
+                content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
+                    if (b.charAt(b.length) !== ' ') {
+                        b += ' ';
+                    }
+                    return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
+                });
+
+                // PHP code other
+                content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+                    // replace newlines with <br /> so they are preserved inside the span
+                    match = match.replace(/\n/g, '<br />');
+                    // create code span
+                    return createCodePre(match, 'php', 'span');
+                });
+
+                return content;
             }
 
             /**
@@ -355,7 +405,7 @@
 
                             return true;
                         }
-                        
+
                         // map settings value to simplified key
                         if (key === 'xml') {
                             ed.settings['code_xml'] = !!ed.settings.code_allow_custom_xml;
@@ -409,7 +459,7 @@
                     ed.settings.allow_script_urls = true;
                 }
 
-                ed.selection.onBeforeSetContent.add(function (sel, o) {                    
+                ed.selection.onBeforeSetContent.add(function (sel, o) {
                     if (ed.settings.code_protect_shortcode) {
                         o.content = processShortcode(o.content);
                     }
@@ -662,45 +712,7 @@
                         o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
                     }
 
-                    // Remove PHP if not enabled
-                    if (!ed.getParam('code_php')) {
-                        o.content = o.content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
-                    }
-
-                    // PHP code within an attribute
-                    o.content = o.content.replace(/\="([^"]+?)"/g, function (a, b) {
-                        b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                            return '{php:start}' + ed.dom.encode(z) + '{php:end}';
-                        });
-
-                        return '="' + b + '"';
-                    });
-
-                    // PHP code within a textarea
-                    if (/<textarea/.test(o.content)) {
-                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-                            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                                return '{php:start}' + ed.dom.encode(z) + '{php:end}';
-                            });
-                            return '<textarea' + b + '>' + c + '</textarea>';
-                        });
-                    }
-
-                    // PHP code within an element
-                    o.content = o.content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
-                        if (b.charAt(b.length) !== ' ') {
-                            b += ' ';
-                        }
-                        return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
-                    });
-
-                    // PHP code other
-                    o.content = o.content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-                        // replace newlines with <br /> so they are preserved inside the span
-                        match = match.replace(/\n/g, '<br />');
-                        // create code span
-                        return createCodePre(match, 'php', 'span');
-                    });
+                    o.content = processPhp(o.content);
                 }
             });
 
