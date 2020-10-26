@@ -342,6 +342,14 @@
                 }
             });
 
+            if (data.width) {
+                attr.width = data.width;
+            }
+
+            if (data.height) {
+                attr.height = data.height;
+            }
+
             return attr;
         },
 
