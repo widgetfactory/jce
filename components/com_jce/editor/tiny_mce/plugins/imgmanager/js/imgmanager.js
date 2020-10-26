@@ -272,7 +272,7 @@
                 }
 
                 if (k == 'width' || k == 'height') {
-                    if (self.settings.always_include_dimensions) {
+                    if (self.settings.always_include_dimensions !== false) {
                         v = $('#' + k).val();
                     } else {
                         v = $('#' + k + '.uk-isdirty').val() || '';

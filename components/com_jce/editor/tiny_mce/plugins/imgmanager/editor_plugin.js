@@ -87,7 +87,7 @@
 
                 return new Promise(function (resolve, reject) {
 
-                    if (params.always_include_dimensions) {
+                    if (params.always_include_dimensions !== false) {
                         ed.setProgressState(true);
 
                         getImageProps(args.src).then(function (data) {
