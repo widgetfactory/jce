@@ -50,7 +50,7 @@
         return trimCaretContainers(text);
     };
 
-    var updateTextContent = function(elm, text) {
+    var updateTextContent = function (elm, text) {
         // update the selected node so as not to overwrite with anchor text
         if (elm.firstChild && elm.firstChild.nodeType === 1) {
             elm = elm.firstChild;
@@ -312,7 +312,7 @@
                 cmd: 'mceLink',
                 max_width: 264,
                 onselect: function (node) {
-                    createLink(ed, node.value);
+                    createLink(ed, { url: node.value, text: '' });
                 }
             });
 
