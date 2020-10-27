@@ -223,7 +223,7 @@
             }
 
             // get the anchor element from the selection node
-            anchorElm = ed.dom.getParent(se.getStart(), 'a[href]');
+            anchorElm = ed.dom.getParent(se.getNode(), 'a[href]');
 
             if (api.isAnchor(anchorElm)) {
                 // select the anchor node so it is updated correctly

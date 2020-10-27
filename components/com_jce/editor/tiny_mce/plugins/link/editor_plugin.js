@@ -177,7 +177,7 @@
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
-                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getStart(), src = '';
+                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '';
                             var state = isOnlyTextSelected(ed);
 
                             node = ed.dom.getParent(node, 'a[href]');
@@ -353,8 +353,7 @@
 
                     DOM.setAttrib(ed.id + '_link_unlink', 'disabled', 'disabled');
 
-                    var node = selection.getStart();
-                    node = ed.dom.getParent(node, 'a[href]');
+                    node = ed.dom.getParent(selection.getNode(), 'a[href]');
 
                     if (isAnchor(node)) {
                         selection.select(node);
