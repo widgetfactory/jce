@@ -15,6 +15,39 @@
         Serializer = tinymce.html.Serializer,
         SaxParser = tinymce.html.SaxParser;
 
+    function isOnlyChild(node) {
+        var parent = node.parent, child = parent.firstChild, count = 0;
+
+        if (child) {
+            do {
+                if (child.type === 1) {
+                    // Ignore bogus elements
+                    if (child.attributes.map['data-mce-type'] || child.attributes.map['data-mce-bogus']) {
+                        continue;
+                    }
+
+                    if (child === node) {
+                        continue;
+                    }
+
+                    count++;
+                }
+
+                // Keep comments
+                if (child.type === 8) {
+                    count++;
+                }
+
+                // Keep non whitespace text nodes
+                if ((child.type === 3 && !/^[ \t\r\n]*$/.test(child.value))) {
+                    count++;
+                }
+            } while ((child = child.next));
+        }
+
+        return count === 0;
+    }
+
     tinymce.create('tinymce.plugins.CodePlugin', {
         init: function (ed, url) {
             this.editor = ed;
@@ -34,9 +67,16 @@
                 return false;
             });
 
-            function processOnInsert(value) {
+            function processOnInsert(value, node) {
                 if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
-                    value = processShortcode(value);
+                    var tagName;
+
+                    // an empty block container, so insert as <pre>
+                    if (node && ed.dom.isEmpty(node)) {
+                        tagName = 'pre';
+                    }
+
+                    value = processShortcode(value, tagName);
                 }
 
                 if (ed.settings.code_allow_custom_xml) {
@@ -284,14 +324,6 @@
                 return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
-            /**
-             * Quick check to see if a string is shortcode, eg: {code}
-             * @param {String} str
-             */
-            function contentIsShortcode(str) {
-                return str && str.charAt(0) === '{' && str.charAt(str.length - 1) === '}';
-            }
-
             function handleEnterInPre(ed, node, before) {
                 var parents = ed.dom.getParents(node, blockElements.join(','));
 
@@ -420,6 +452,12 @@
                                     'data-mce-code': key,
                                     'data-mce-contenteditable': 'false',
                                     'contenteditable': 'plaintext-only'
+                                },
+                                onformat: function (elm, fmt, vars) {
+                                    // replace linebreaks with newlines
+                                    each(ed.dom.select('br', elm), function(br) {
+                                        ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
+                                    });
                                 }
                             });
                         }
@@ -538,18 +576,13 @@
                                 node.unwrap();
                                 continue;
                             }
-
+                            
                             // rename shortcode blocks to <pre>
-                            if (isBody(parent) || parent.firstChild === node) {
+                            if (isBody(parent) || isOnlyChild(node)) {                                
                                 node.name = 'pre';
-
-                                // if parent is empty except for the shortcode pre, replace the parent with the pre
-                                if (parent.lastChild === parent.firstChild && !isBody(parent)) {
-                                    parent.replace(node);
-                                }
                             } else {
                                 // add whitespace after the span so a cursor can be set
-                                if (node === parent.lastChild) {
+                                if (node.name = 'span' && node === parent.lastChild) {
                                     var nbsp = new Node('#text', 3);
                                     nbsp.value = '\u00a0';
 
@@ -661,7 +694,7 @@
                                 return;
                             }
 
-                            value = processOnInsert(text);
+                            value = processOnInsert(text, node);
 
                             // update with processed text
                             if (value !== text) {
