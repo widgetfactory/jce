@@ -994,6 +994,14 @@ html {
     width: 350px;
 }
 
+.uk-modal-prompt input[aria-invalid] + .uk-form-help-block {
+    display: none;
+}
+
+.uk-modal-prompt input[aria-invalid="true"] + .uk-form-help-block {
+    display: block;
+}
+
 
 /*.uk-modal-preview {
     margin-top: 20px;

@@ -319,6 +319,10 @@
                 html += '<textarea id="' + options.id + '-input" required autofocus>' + options.value + '</textarea>';
             } else {
                 html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus />';
+
+                /*if (options.validate) {
+                    html += '<p class="uk-form-help-block uk-text-error">' + Wf.translate('dlg.bad_name', 'The value entered is invalid') + '</p>';
+                }*/
             }
 
             html += '</div>';
@@ -346,9 +350,8 @@
                                 $inp = $('#' + options.id + '-input'),
                                 v = $inp.val();
 
-                            if (v === "") {
+                            if (v === "" || $inp.attr('aria-invalid') == 'true') {
                                 $inp.trigger('focus');
-
                                 return false;
                             }
 
@@ -378,10 +381,17 @@
                             // focus element
                             n.focus();
 
+                            function validateInput(n) {
+                                var isValid = options.validate(n.value);
+                                $(n).toggleClass('uk-form-danger', !isValid).attr('aria-invalid', !isValid);
+                            }
+
                             if (options.validate) {
                                 $(n).on('change keyup', function(e) {
-                                    $(n).toggleClass('uk-form-danger', !options.validate(n.value));
+                                    validateInput(n);
                                 });
+
+                                validateInput(n);
                             }
 
                             // fix cursor position in Firefox
