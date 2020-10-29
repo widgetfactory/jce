@@ -295,7 +295,7 @@
          * Prompt Dialog
          */
         prompt: function (title, cb, options) {
-            var html = '<div class="uk-form-row">';
+            var html = '<div class="uk-form-row uk-grid">';
 
             options = $.extend(true, {
                 'id': 'dialog-prompt',
