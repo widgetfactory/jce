@@ -321,7 +321,7 @@
                 html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus />';
 
                 if (options.validate) {
-                    html += '<p class="uk-form-help-block uk-text-danger" role="alert"></p>';
+                    html += '<p class="uk-form-help-block uk-text-danger uk-margin" role="alert"></p>';
                 }
             }
 
