@@ -152,7 +152,7 @@ a.browser {
 
 .mceDefaultSkin.checkboxes .mceButton {
     text-align: left;
-    max-width: 200px;
+    max-width: 250px;
     padding: 5px;
     display: block;
     cursor: default;
@@ -250,9 +250,11 @@ a.browser {
     font-size: 1.25em;
 }
 
+/* Joomla 4 */
 .ui-jce .options-grid-form > legend {
     font-size: 1.5em;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 3em;
 }
 
 .ui-jce .row-fluid .form-horizontal .control-label {
@@ -262,6 +264,8 @@ a.browser {
 
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
+    padding: 0;
+    width: 0;
 }
 
 .ui-jce .checkboxes .sortable-placeholder {

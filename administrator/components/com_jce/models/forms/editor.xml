@@ -169,9 +169,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field type="spacer" hr="true" />
-
-            <field type="container" class="alert alert-warning" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING">
+            <field type="container" class="alert alert-warning p-4 bg-light" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING">
 
                 <field name="allow_javascript" type="yesno" default="0" label="WF_PARAM_JAVASCRIPT" description="WF_PARAM_JAVASCRIPT_DESC">
                     <option value="1">JYES</option>

@@ -941,6 +941,12 @@ html[dir="rtl"] .form-horizontal .control-label {
  * other free or open source software licenses.
  */
 
+ /* Joomla 4 */
+ :root {
+    --warning : #fff0d0;
+    --warning-border: #ffb514;
+ }
+
 .extensions-select.radio {
     padding: 0;
 }
@@ -1085,7 +1091,7 @@ a.browser {
 
 .mceDefaultSkin.checkboxes .mceButton {
     text-align: left;
-    max-width: 200px;
+    max-width: 250px;
     padding: 5px;
     display: block;
     cursor: default;
@@ -1183,9 +1189,11 @@ a.browser {
     font-size: 1.25em;
 }
 
+/* Joomla 4 */
 .ui-jce .options-grid-form > legend {
     font-size: 1.5em;
-    font-weight: bold;
+    font-weight: 700;
+    line-height: 3em;
 }
 
 .ui-jce .row-fluid .form-horizontal .control-label {
@@ -1195,6 +1203,7 @@ a.browser {
 
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
+    padding: 0;
 }
 
 .ui-jce .checkboxes .sortable-placeholder {

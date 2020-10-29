@@ -13,6 +13,10 @@
     max-width: 12rem;
 }
 
+.ui-jce .control-label label {
+    width: 12rem;
+}
+
 .ui-jce .radio label,
 .ui-jce .checkbox label,
 .ui-jce .radio,
@@ -37,8 +41,18 @@
     margin: 0;
 }
 
-.ui-jce .controls .form-field-container:not(.inset) {
-    margin-left: -180px;
+.ui-jce .form-horizontal .control-group {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+ 
+.ui-jce .form-horizontal .controls {
+    margin-left: inherit;
+}
+
+.ui-jce .form-horizontal .control-label + .controls {
+    width: calc(100% - 12.5rem);
 }
 
 .ui-jce .control-group .description {
