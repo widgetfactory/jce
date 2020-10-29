@@ -442,6 +442,14 @@ html {
     right: inherit;
 }
 
+.uk-form-icon .uk-icon-none {
+    top: 0;
+    font-size: 1em;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    width: 3em;
+}
 
 /*.uk-form-icon-flip > .uk-icon, .uk-form-icon-both > .uk-icon {
   width: 20px;
