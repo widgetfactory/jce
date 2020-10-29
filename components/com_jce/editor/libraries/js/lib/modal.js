@@ -318,7 +318,7 @@
             if (options.multiline) {
                 html += '<textarea id="' + options.id + '-input" required autofocus>' + options.value + '</textarea>';
             } else {
-                html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus />';
+                html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus aria-invalid="false" />';
 
                 if (options.validate) {
                     html += '<p class="uk-form-help-block uk-text-danger uk-margin" role="alert"></p>';
