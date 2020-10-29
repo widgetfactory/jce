@@ -50,6 +50,11 @@ class JFormFieldContainer extends JFormField
     protected function getInput()
     {
         $group = $this->group;
+
+        // subfields require JCE Pro
+        if ($this->element['pro'] && !WF_EDITOR_PRO) {
+            return "";
+        }
         
         $subForm    = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
         $children   = $this->element->children();
