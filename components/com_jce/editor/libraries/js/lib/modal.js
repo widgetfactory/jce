@@ -320,9 +320,9 @@
             } else {
                 html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus />';
 
-                /*if (options.validate) {
-                    html += '<p class="uk-form-help-block uk-text-error">' + Wf.translate('dlg.bad_name', 'The value entered is invalid') + '</p>';
-                }*/
+                if (options.validate) {
+                    html += '<p class="uk-form-help-block uk-text-danger" role="alert"></p>';
+                }
             }
 
             html += '</div>';
@@ -332,7 +332,7 @@
                 html += options.elements;
             }
 
-            var onOpen = options.open || function(){};
+            var onOpen = options.open || function () { };
 
             options = $.extend(true, options, {
                 'classes': 'uk-modal-prompt',
@@ -371,7 +371,7 @@
                 ],
                 open: function () {
                     // call passed in open function
-                    onOpen.call(this, {target: this});
+                    onOpen.call(this, { target: this });
 
                     var n = document.getElementById(options.id + '-input');
 
@@ -381,13 +381,50 @@
                             // focus element
                             n.focus();
 
+                            function findInputDifference(stringA, stringB) {
+                                function diff(a, b) {
+                                    return a.filter(function (i) {
+                                        return !(b.indexOf(i) > -1);
+                                    });
+                                }
+
+                                var invalid = diff(stringA.split(''), stringB.split(''));
+
+                                return invalid.join('');
+                            }
+
                             function validateInput(n) {
-                                var isValid = options.validate(n.value);
+                                var isValid = false, diff = '';
+
+                                if (!n.value) {
+                                    return;
+                                }
+
+                                var msg = Wf.translate('invalid_value', 'The value is invalid %s');
+                                var value = options.validate(n.value);
+
+                                if (value) {
+                                    diff = findInputDifference(n.value, value);
+
+                                    // no difference found, input is valid
+                                    if (!diff) {
+                                        isValid = true;
+                                    }
+                                }
+
                                 $(n).toggleClass('uk-form-danger', !isValid).attr('aria-invalid', !isValid);
+
+                                $(n).next('[role="alert"]').text(function () {
+                                    if (isValid) {
+                                        return '';
+                                    }
+
+                                    return msg.replace('%s', diff ? ': ' + diff : '');
+                                });
                             }
 
                             if (options.validate) {
-                                $(n).on('change keyup', function(e) {
+                                $(n).on('change keyup', function (e) {
                                     validateInput(n);
                                 });
 
@@ -717,7 +754,7 @@
                                 calculateWidth(e.target, w, h);
 
                                 $('.uk-modal').trigger('modal.assetloaded');
-                            }).on('error', function() {
+                            }).on('error', function () {
                                 $(div).removeClass('loading');
                             });
                         }

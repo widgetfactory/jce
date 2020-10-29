@@ -1718,7 +1718,11 @@
                             'confirm': self._translate('create', 'Create')
                         },
                         validate: function(value) {
-                            return value && Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === value;
+                            if (!value) {
+                                return false;
+                            }
+                            
+                            return Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                         }
                     });
                     break;
@@ -1965,7 +1969,11 @@
                         elements: this._getDialogOptions('rename'),
                         close_on_submit: false,
                         validate: function(value) {
-                            return value && Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase) === value;
+                            if (!value) {
+                                return false;
+                            }
+                            
+                            return Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                         }
                     });
                     break;
