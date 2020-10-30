@@ -55,6 +55,14 @@
 
             var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed', invalid_elements: ed.settings.invalid_elements }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
 
+            // should code blocks be used?
+            var code_blocks = ed.settings.code_use_blocks !== false;
+
+            // allow script URLS, eg: href="javascript:;"
+            if (ed.settings.code_allow_script) {
+                ed.settings.allow_script_urls = true;
+            }
+
             ed.addCommand('InsertShortCode', function (ui, html) {
                 if (ed.settings.code_protect_shortcode) {
                     html = processShortcode(html, 'pre', true);
@@ -86,11 +94,11 @@
                 // script / style
                 if (/<(\?|script|style)/.test(value)) {
                     // remove script
-                    if (!ed.getParam('code_script')) {
+                    if (!ed.settings.code_allow_script) {
                         value = value.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
                     }
                     // remove style
-                    if (!ed.getParam('code_style')) {
+                    if (!ed.settings.code_allow_style) {
                         value = value.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
                     }
 
@@ -136,7 +144,7 @@
 
             function processPhp(content) {
                 // Remove PHP if not enabled
-                if (!ed.getParam('code_php')) {
+                if (!ed.settings.code_allow_php) {
                     return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
                 }
 
@@ -309,7 +317,7 @@
              */
             function createShortcodePre(data, tag) {
                 tag = tag || 'pre';
-                return '<' + tag + ' data-mce-code="shortcode" data-mce-type="shortcode">' + ed.dom.encode(data) + '</' + tag + '>';
+                return '<' + tag + ' data-mce-code="shortcode" data-mce-type="code">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
             /**
@@ -319,9 +327,24 @@
              * @param {String} tag 
              */
             function createCodePre(data, type, tag) {
+                // "protect" code if we are not using code blocks
+                if (code_blocks === false) {
+
+                    // leave code intact if validate is false
+                    /*if (!ed.settings.validate && type !== 'php') {
+                        return data;
+                    }
+                    
+                    return '<!--mce:protected ' + escape(data) + '-->';*/
+
+                    data = data.replace(/<br[^>]*?>/gi, '\n');
+
+                    return '<span data-mce-type="placeholder" data-mce-code="' + type + '" contenteditable="false" title="' + ed.dom.encode(data) + '"><!--mce:protected ' + escape(data) + '--></span>';
+                }
+
                 type = type || 'script';
                 tag = tag || 'pre';
-                return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only">' + ed.dom.encode(data) + '</' + tag + '>';
+                return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only" data-mce-type="code">' + ed.dom.encode(data) + '</' + tag + '>';
             }
 
             function handleEnterInPre(ed, node, before) {
@@ -414,6 +437,17 @@
                         e.preventDefault();
                     }
                 }
+
+                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+                    var node = ed.selection.getNode();
+
+                    if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
+                        ed.undoManager.add();
+
+                        ed.dom.remove(node);
+                        e.preventDefault();
+                    }
+                }
             });
 
             ed.onPreInit.add(function () {
@@ -421,12 +455,48 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
+                function isCodePlaceholder(node) {
+                    return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code');
+                }
+
+                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
+                    var node = e.target, sel = ed.selection.getNode();
+
+                    ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
+
+                    // edge case where forced_root_block:false
+                    if (node === ed.getBody() && isCodePlaceholder(sel)) {
+                        if (sel.parentNode === node && !sel.nextSibling) {
+                            ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), sel);
+                        }
+
+                        return;
+                    }
+
+                    if (isCodePlaceholder(node)) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+
+                        ed.selection.select(node);
+
+                        // add a slight delay before adding selected class to avoid it being removed by the keyup event
+                        window.setTimeout(function () {
+                            ed.dom.addClass(node, 'mce-item-selected');
+                        }, 10);
+
+                        e.preventDefault();
+                    }
+                });
+
                 var ctrl = ed.controlManager.get('formatselect');
 
                 if (ctrl) {
                     each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
+                        // control element title
+                        var title = ed.getLang('code.' + key, key);
+
                         if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
-                            ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
+                            ctrl.add(title, key, { class: 'mce-code-' + key });
 
                             ed.formatter.register('shortcode', {
                                 block: 'pre',
@@ -440,11 +510,11 @@
 
                         // map settings value to simplified key
                         if (key === 'xml') {
-                            ed.settings['code_xml'] = !!ed.settings.code_allow_custom_xml;
+                            ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
                         }
 
-                        if (ed.getParam('code_' + key)) {
-                            ctrl.add('code.' + key, key, { class: 'mce-code-' + key });
+                        if (ed.getParam('code_allow_' + key) && code_blocks) {
+                            ctrl.add(title, key, { class: 'mce-code-' + key });
 
                             ed.formatter.register(key, {
                                 block: 'pre',
@@ -455,7 +525,7 @@
                                 },
                                 onformat: function (elm, fmt, vars) {
                                     // replace linebreaks with newlines
-                                    each(ed.dom.select('br', elm), function(br) {
+                                    each(ed.dom.select('br', elm), function (br) {
                                         ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
                                     });
                                 }
@@ -492,11 +562,6 @@
                     }
                 });
 
-                // allow script URLS, eg: href="javascript:;"
-                if (ed.settings.code_script) {
-                    ed.settings.allow_script_urls = true;
-                }
-
                 ed.selection.onBeforeSetContent.add(function (sel, o) {
                     if (ed.settings.code_protect_shortcode) {
                         o.content = processShortcode(o.content);
@@ -508,13 +573,13 @@
                     var i = nodes.length,
                         node;
 
+                    // only in code blocks
+                    /*if (!code_blocks) {
+                        return;
+                    }*/
+
                     while (i--) {
-                        var node = nodes[i];
-
-                        var pre = new Node('pre', 1);
-                        pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
-
-                        var type = node.attr('type');
+                        var node = nodes[i], type = node.attr('type');
 
                         if (type) {
                             node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
@@ -531,14 +596,46 @@
                             });
                         }
 
+                        if (!code_blocks) {
+                            var value = '';
+
+                            if (node.firstChild) {
+                                value = tinymce.trim(node.firstChild.value);
+                            }
+
+                            var placeholder = Node.create('span', {
+                                'data-mce-code': node.name,
+                                'contenteditable': 'false',
+                                'data-mce-type': 'placeholder',
+                                title: ed.dom.encode(value)
+                            });
+
+                            each(node.attributes, function (attr) {
+                                placeholder.attr('data-mce-p-' + attr.name, attr.value);
+                            });
+
+                            if (value) {
+                                var text = new Node('#comment', 8);
+                                text.value = 'mce:protected ' + escape(value) + '';
+                                placeholder.append(text);
+                            }
+
+                            node.replace(placeholder);
+
+                            continue;
+                        }
+
                         // serialize to string
                         var value = new Serializer({ validate: false }).serialize(node);
 
                         // trim
                         value = tinymce.trim(value);
 
+                        var pre = new Node('pre', 1);
+                        pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
+
                         var text = new Node('#text', 3);
-                        text.value = tinymce.trim(value);
+                        text.value = value;
                         pre.append(text);
 
                         node.replace(pre);
@@ -559,6 +656,10 @@
                     while (i--) {
                         node = nodes[i], parent = node.parent;
 
+                        if (node.attr('data-mce-type') && node.attr('data-mce-type') == 'placeholder') {
+                            continue;
+                        }
+
                         if (!isValidCode(node.attr(name))) {
                             continue;
                         }
@@ -576,9 +677,9 @@
                                 node.unwrap();
                                 continue;
                             }
-                            
+
                             // rename shortcode blocks to <pre>
-                            if (isBody(parent) || isOnlyChild(node)) {                                
+                            if (isBody(parent) || isOnlyChild(node)) {
                                 node.name = 'pre';
                             } else {
                                 // add whitespace after the span so a cursor can be set
@@ -611,21 +712,49 @@
                     while (i--) {
                         node = nodes[i], child = node.firstChild, root_block = false;
 
+                        // get the code block type, eg: script, shortcode, style, php
+                        var type = node.attr(name);
+
+                        // skip inline code span (php or shortcode)
+                        if (node.name === 'span') {
+                            if (type === 'script' || type === 'style') {
+                                var elm = new Node(type, 1);
+
+                                for (var key in node.attributes.map) {
+                                    var value = node.attributes.map[key];
+
+                                    if (key.indexOf('data-mce-p-') !== -1) {
+                                        key = key.substr(11);
+                                    } else {
+                                        value = null;
+                                    }
+
+                                    elm.attr(key, value);
+                                };
+
+                                var child = node.firstChild;
+
+                                if (child && child.value) {
+                                    var text = new Node('#text', 3);
+                                    text.raw = true;
+                                    text.value = '\n' + unescape(child.value) + '\n';
+
+                                    elm.append(text);
+                                }
+
+                                node.replace(elm);
+                            }
+
+                            continue;
+                        }
+
                         // pre node is empty, remove
                         if (node.isEmpty()) {
                             node.remove();
                         }
 
-                        // get the code block type, eg: script, shortcode, style, php
-                        var type = node.attr(name);
-
                         // skip xml
                         if (type === 'xml') {
-                            continue;
-                        }
-
-                        // skip inline code span (php or shortcode)
-                        if (node.name === 'span' && (type === 'shortcode' || type === 'php')) {
                             continue;
                         }
 
@@ -737,11 +866,11 @@
                 // test for PHP, Script or Style
                 if (/<(\?|script|style)/.test(o.content)) {
                     // Remove javascript if not enabled
-                    if (!ed.getParam('code_script')) {
+                    if (!ed.settings.code_allow_script) {
                         o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
                     }
 
-                    if (!ed.getParam('code_style')) {
+                    if (!ed.settings.code_allow_style) {
                         o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
                     }
 

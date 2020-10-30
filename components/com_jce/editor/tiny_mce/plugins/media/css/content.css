@@ -114,6 +114,7 @@
     margin: 0 2px;
     border: 1px solid #ccc;
     border-color: var(--mce-guidelines);
+    overflow: hidden;
 }
 
 .mce-item-preview iframe {
