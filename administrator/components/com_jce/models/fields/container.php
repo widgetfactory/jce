@@ -52,7 +52,7 @@ class JFormFieldContainer extends JFormField
         $group = $this->group;
 
         // subfields require JCE Pro
-        if ($this->element['pro'] && !WF_EDITOR_PRO) {
+        if (isset($this->element['pro']) && !WF_EDITOR_PRO) {
             return "";
         }
         
