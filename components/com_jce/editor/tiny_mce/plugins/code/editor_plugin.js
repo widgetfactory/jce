@@ -15,6 +15,14 @@
         Serializer = tinymce.html.Serializer,
         SaxParser = tinymce.html.SaxParser;
 
+    function createTextNode(value, raw) {
+        var text = new Node('#text', 3);
+        text.raw = raw !== false ? true : false;
+        text.value = value;
+
+        return text;
+    }
+
     function isOnlyChild(node) {
         var parent = node.parent, child = parent.firstChild, count = 0;
 
@@ -179,6 +187,7 @@
                 content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
                     // replace newlines with <br /> so they are preserved inside the span
                     match = match.replace(/\n/g, '<br />');
+
                     // create code span
                     return createCodePre(match, 'php', 'span');
                 });
@@ -316,8 +325,10 @@
              * @param {String} tag 
              */
             function createShortcodePre(data, tag) {
-                tag = tag || 'pre';
-                return '<' + tag + ' data-mce-code="shortcode" data-mce-type="code">' + ed.dom.encode(data) + '</' + tag + '>';
+                return ed.dom.createHTML(tag || 'pre', {
+                    'data-mce-code': 'shortcode',
+                    'data-mce-type': 'code'
+                }, ed.dom.encode(data));
             }
 
             /**
@@ -329,22 +340,23 @@
             function createCodePre(data, type, tag) {
                 // "protect" code if we are not using code blocks
                 if (code_blocks === false) {
-
-                    // leave code intact if validate is false
-                    /*if (!ed.settings.validate && type !== 'php') {
-                        return data;
-                    }
-                    
-                    return '<!--mce:protected ' + escape(data) + '-->';*/
-
+                    // convert linebreaks to newlines
                     data = data.replace(/<br[^>]*?>/gi, '\n');
 
-                    return '<span data-mce-type="placeholder" data-mce-code="' + type + '" contenteditable="false" title="' + ed.dom.encode(data) + '"><!--mce:protected ' + escape(data) + '--></span>';
+                    // create placeholder span
+                    return ed.dom.createHTML('span', {
+                        'data-mce-code': type || 'script',
+                        'data-mce-type': 'placeholder',
+                        'contenteditable': 'false'
+                    }, '<!--mce:protected ' + escape(data) + '-->');
                 }
 
-                type = type || 'script';
-                tag = tag || 'pre';
-                return '<' + tag + ' data-mce-code="' + type + '" data-mce-contenteditable="false" contenteditable="plaintext-only" data-mce-type="code">' + ed.dom.encode(data) + '</' + tag + '>';
+                return ed.dom.createHTML(tag || 'pre', {
+                    'data-mce-code': type || 'script',
+                    'data-mce-type': 'code',
+                    'data-mce-contenteditable': 'false',
+                    'contenteditable': 'plaintext-only'
+                }, ed.dom.encode(data));
             }
 
             function handleEnterInPre(ed, node, before) {
@@ -456,7 +468,7 @@
                 }
 
                 function isCodePlaceholder(node) {
-                    return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code');
+                    return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
                 }
 
                 ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
@@ -573,11 +585,6 @@
                     var i = nodes.length,
                         node;
 
-                    // only in code blocks
-                    /*if (!code_blocks) {
-                        return;
-                    }*/
-
                     while (i--) {
                         var node = nodes[i], type = node.attr('type');
 
@@ -615,8 +622,7 @@
                             });
 
                             if (value) {
-                                var text = new Node('#comment', 8);
-                                text.value = 'mce:protected ' + escape(value) + '';
+                                var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
                                 placeholder.append(text);
                             }
 
@@ -634,8 +640,12 @@
                         var pre = new Node('pre', 1);
                         pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
 
-                        var text = new Node('#text', 3);
+                        /*var text = new Node('#text', 3);
                         text.value = value;
+
+                        pre.append(text);*/
+
+                        var text = createTextNode(value, false);
                         pre.append(text);
 
                         node.replace(pre);
@@ -656,7 +666,8 @@
                     while (i--) {
                         node = nodes[i], parent = node.parent;
 
-                        if (node.attr('data-mce-type') && node.attr('data-mce-type') == 'placeholder') {
+                        // don't process placeholders
+                        if (node.attr('data-mce-type') == 'placeholder') {
                             continue;
                         }
 
@@ -681,12 +692,10 @@
                             // rename shortcode blocks to <pre>
                             if (isBody(parent) || isOnlyChild(node)) {
                                 node.name = 'pre';
-                            } else {
+                            } else {                                
                                 // add whitespace after the span so a cursor can be set
-                                if (node.name = 'span' && node === parent.lastChild) {
-                                    var nbsp = new Node('#text', 3);
-                                    nbsp.value = '\u00a0';
-
+                                if (node.name == 'span' && node === parent.lastChild) {
+                                    var nbsp = createTextNode('\u00a0');
                                     parent.append(nbsp);
                                 }
                             }
@@ -696,14 +705,6 @@
 
                 ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
                     var i = nodes.length, node, child;
-
-                    function createTextNode(value) {
-                        var text = new Node('#text', 3);
-                        text.raw = true;
-                        text.value = value;
-
-                        return text;
-                    }
 
                     function isXmlNode(node) {
                         return !/(shortcode|php)/.test(node.attr('data-mce-code'));
@@ -735,9 +736,11 @@
                                 var child = node.firstChild;
 
                                 if (child && child.value) {
-                                    var text = new Node('#text', 3);
+                                    /*var text = new Node('#text', 3);
                                     text.raw = true;
-                                    text.value = '\n' + unescape(child.value) + '\n';
+                                    text.value = '\n' + unescape(child.value) + '\n';*/
+
+                                    var text = createTextNode('\n' + unescape(child.value) + '\n');
 
                                     elm.append(text);
                                 }
