@@ -25,7 +25,7 @@ class WFCodePluginConfig
         $settings['code_protect_shortcode'] = $wf->getParam('editor.protect_shortcode', 0, 0, 'boolean');
         $settings['code_allow_custom_xml'] = $wf->getParam('editor.allow_custom_xml', 0, 0, 'boolean');
 
-        $settings['code_use_blocks'] = $wf->getParam('editor.code_use_blocks', 1, 1, 'boolean');
+        $settings['code_use_blocks'] = $wf->getParam('editor.code_blocks', 1, 1, 'boolean');
 
         $remove = array();
 
