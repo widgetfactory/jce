@@ -2720,6 +2720,8 @@
 
                     pasteText(text);
                     e.preventDefault();
+
+                    return;
                 }
 
                 // use html from clipboard API
