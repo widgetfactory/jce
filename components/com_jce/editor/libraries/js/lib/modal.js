@@ -320,9 +320,9 @@
             } else {
                 html += '<input id="' + options.id + '-input" type="text" value="' + options.value + '" required autofocus aria-invalid="false" />';
 
-                if (options.validate) {
+                /*if (options.validate) {
                     html += '<p class="uk-form-help-block uk-text-danger uk-margin" role="alert"></p>';
-                }
+                }*/
             }
 
             html += '</div>';
@@ -350,7 +350,7 @@
                                 $inp = $('#' + options.id + '-input'),
                                 v = $inp.val();
 
-                            if (v === "" || $inp.attr('aria-invalid') == 'true') {
+                            if (v === "") {
                                 $inp.trigger('focus');
                                 return false;
                             }
@@ -414,13 +414,13 @@
 
                                 $(n).toggleClass('uk-form-danger', !isValid).attr('aria-invalid', !isValid);
 
-                                $(n).next('[role="alert"]').text(function () {
+                                /*$(n).next('[role="alert"]').text(function () {
                                     if (isValid) {
                                         return '';
                                     }
 
                                     return msg.replace('%s', diff ? ': ' + diff : '');
-                                });
+                                });*/
                             }
 
                             if (options.validate) {
