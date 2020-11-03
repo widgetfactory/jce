@@ -1829,6 +1829,14 @@
             return '<a ' + attribs.join(' ') + '>' + url + '</a>';
         }
 
+        function wrapContent(content) {
+            if (content.indexOf('data-mce-convert="url"') === -1) {
+                return '<div data-mce-convert="url">' + content + '</div>';
+            }
+
+            return content;
+        }
+
         // existing link...
         var decoded = ed.dom.decode(content);
 
@@ -1843,10 +1851,10 @@
             }
 
             // wrap content - this seems to be required to prevent repeats of link conversion
-            content = '<div data-mce-convert="url">' + content + '</div>';
+            content = wrapContent(content);
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
+            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {                
                 if (extra) {
                     return match;
                 }
@@ -1863,9 +1871,9 @@
             }
 
             // wrap content - this seems to be required to prevent repeats of link conversion
-            content = '<div data-mce-convert="url">' + content + '</div>';
+            content = wrapContent(content);
 
-            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {                
                 // only if not already a mailto: link
                 if (!attrib) {
                     return '<a href="mailto:' + email + '">' + email + '</a>';
@@ -2224,6 +2232,10 @@
             }
 
             function pasteHtml(content, internal) {
+                if (!content) {
+                    return;
+                }
+                
                 // create object to process
                 var o = {
                     content: content,
@@ -2699,17 +2711,15 @@
                     return true;
                 }
 
-                // use plain text
+                // use plain text (don't return so pastebin is used on Windows?)
                 if (!internal && isPlainTextPaste(clipboardContent)) {
-                    e.preventDefault();
                     var text = clipboardContent["text/plain"];
 
                     // set pasteAsPlainText state
                     self.pasteAsPlainText = true;
 
                     pasteText(text);
-
-                    return true;
+                    e.preventDefault();
                 }
 
                 // use html from clipboard API
