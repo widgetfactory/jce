@@ -117,6 +117,7 @@ class WFEditor
         // set profile
         $this->profile = $wf->getProfile($config['plugin'], $config['id']);
 
+        // set context
         $this->context = $wf->getContext();
     }
 
@@ -124,7 +125,7 @@ class WFEditor
      * Returns a reference to a editor object.
      *
      * This method must be invoked as:
-     *         <pre>  $browser =WFEditor::getInstance();</pre>
+     *         <pre>  $editor =WFEditor::getInstance();</pre>
      *
      * @return JCE The editor object
      */
@@ -150,6 +151,17 @@ class WFEditor
         return $url;
     }
 
+    public function init()
+    {
+        $settings = $this->getSettings();
+
+        JFactory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
+
+        $this->render($settings);
+
+        return $this;
+    }
+
     /**
      * Legacy function to build the editor
      *
@@ -157,11 +169,10 @@ class WFEditor
      */
     public function buildEditor()
     {
-        $this->render($this->getSettings());
-        return $this->getOutput();
+        $this->init()->getOutput();
     }
 
-    /**
+     /**
      * Legacy function to get the editor settings
      *
      * @return array
@@ -276,21 +287,28 @@ class WFEditor
         // get editor version
         $version = self::getVersion();
 
+        // get form token
+        $token = JSession::getFormToken();
+
         $settings = array(
             'token' => JSession::getFormToken(),
-            'etag' => md5($version),
-            'context' => $this->context,
             'base_url' => JURI::root(),
             'language' => WFLanguage::getCode(),
             'directionality' => WFLanguage::getDir(),
             'theme' => 'none',
             'plugins' => '',
-            'skin' => 'default'
+            'skin' => 'default',
+            'query' => array(
+                $token => 1,
+                'context' => $this->context,
+            ),
         );
 
         // if a profile is set
         if (is_object($this->profile)) {
             jimport('joomla.filesystem.folder');
+
+            $settings['query']['profile_id'] = $this->profile->id;
 
             $settings = array_merge($settings, array('theme' => 'advanced'), $this->getToolbar());
 
@@ -381,7 +399,7 @@ class WFEditor
 
         // set css compression
         if ($settings['compress']['css']) {
-            $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&context=' . $this->context . '&' . $token . '=1');
+            $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&' . http_build_query((array) $settings['query']));
         } else {
             // CSS
             $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
@@ -402,7 +420,7 @@ class WFEditor
 
         // set javascript compression script
         if ($settings['compress']['javascript']) {
-            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&context=' . $this->context . '&' . $token . '=1');
+            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
         } else {
             // Tinymce
             $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
@@ -411,7 +429,7 @@ class WFEditor
             $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
 
             // language
-            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&context=' . $this->context . '&' . $token . '=1');
+            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
         }
 
         $this->getCustomConfig($settings);
@@ -974,7 +992,7 @@ class WFEditor
         $db = JFactory::getDBO();
         $app = JFactory::getApplication();
         $id = 0;
-        
+
         // only process when front-end editing
         if ($app->getClientId() == 0) {
             $menus = $app->getMenu();
