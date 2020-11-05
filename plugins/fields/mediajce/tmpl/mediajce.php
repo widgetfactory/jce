@@ -22,12 +22,15 @@ if (!$data) {
 }
 
 
-$class = (string) $fieldParams->get('media_class', '');
-$type = (string) $fieldParams->get('mediatype', 'images');
-$text = (string) $fieldParams->get('media_description', '');
+$class  = (string) $fieldParams->get('media_class', '');
+$target = (string) $fieldParams->get('media_target', '');
+$type   = (string) $fieldParams->get('mediatype', 'images');
+$text   = (string) $fieldParams->get('media_description', '');
+
+$attribs = array();
 
 if ($class) {
-    $class = ' class="' . htmlentities($class, ENT_COMPAT, 'UTF-8', true) . '"';
+    $attribs[] = 'class="' . htmlentities($class, ENT_COMPAT, 'UTF-8', true) . '"';
 }
 
 if ($text) {
@@ -75,11 +78,21 @@ foreach ($value as $path) {
     // set text as basename if not an image
     if (!$text && $type !== "images") {
         $text = basename($path);
+
+        if ($target) {
+            if ($target == 'download') {
+                $target = ' download="' . $path . '"';
+            } else {
+                $target = ' target="' . $target . '"';
+            }
+
+            $attribs[] = $target;
+        }
     }
 
     $buffer .= sprintf($element,
         htmlentities($path, ENT_COMPAT, 'UTF-8', true),
-        $class,
+        implode(' ', $attribs),
         $text
     );
 }
