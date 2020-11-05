@@ -412,9 +412,11 @@
                                     }
                                 }
 
-                                $(n).toggleClass('uk-form-danger', !isValid).attr('aria-invalid', !isValid);
+                                $(n).attr('aria-invalid', !isValid);
 
-                                /*$(n).next('[role="alert"]').text(function () {
+                                /*$(n).toggleClass('uk-form-danger', !isValid).attr('aria-invalid', !isValid);
+
+                                $(n).next('[role="alert"]').text(function () {
                                     if (isValid) {
                                         return '';
                                     }
