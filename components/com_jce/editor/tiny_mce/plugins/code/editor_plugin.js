@@ -140,7 +140,7 @@
                 // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
                 tagName = tagName || 'span';
 
-                return html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+                html = html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
                     // already wrapped in a tag
                     if (match.charAt(1) === '>') {
                         return match;
@@ -148,6 +148,8 @@
 
                     return createShortcodePre(match, tagName);
                 });
+
+                return html;
             }
 
             function processPhp(content) {
@@ -327,7 +329,8 @@
             function createShortcodePre(data, tag) {
                 return ed.dom.createHTML(tag || 'pre', {
                     'data-mce-code': 'shortcode',
-                    'data-mce-type': 'code'
+                    'data-mce-type': 'code',
+                    'data-mce-tag' : data.indexOf('{/' === -1) ? 'start' : 'end'
                 }, ed.dom.encode(data));
             }
 
@@ -574,9 +577,11 @@
                     }
                 });
 
-                ed.selection.onBeforeSetContent.add(function (sel, o) {
+                ed.selection.onBeforeSetContent.add(function (sel, o) {                    
                     if (ed.settings.code_protect_shortcode) {
-                        o.content = processShortcode(o.content);
+                        if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
+                            o.content = processShortcode(o.content);
+                        }
                     }
                 });
 
@@ -692,6 +697,11 @@
                             // rename shortcode blocks to <pre>
                             if (isBody(parent) || isOnlyChild(node)) {
                                 node.name = 'pre';
+
+                                // unwrap block element
+                                if (!isBody(parent)) {
+                                    parent.unwrap();
+                                }
                             } else {                                
                                 // add whitespace after the span so a cursor can be set
                                 if (node.name == 'span' && node === parent.lastChild) {
@@ -716,8 +726,9 @@
                         // get the code block type, eg: script, shortcode, style, php
                         var type = node.attr(name);
 
-                        // skip inline code span (php or shortcode)
+                        // skip inline code span (php or shortcode)...
                         if (node.name === 'span') {
+                            // ...but process script placeholders
                             if (type === 'script' || type === 'style') {
                                 var elm = new Node(type, 1);
 
@@ -736,12 +747,7 @@
                                 var child = node.firstChild;
 
                                 if (child && child.value) {
-                                    /*var text = new Node('#text', 3);
-                                    text.raw = true;
-                                    text.value = '\n' + unescape(child.value) + '\n';*/
-
                                     var text = createTextNode('\n' + unescape(child.value) + '\n');
-
                                     elm.append(text);
                                 }
 
