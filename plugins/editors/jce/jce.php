@@ -69,11 +69,7 @@ class plgEditorJCE extends JPlugin
         $app->triggerEvent('onBeforeWfEditorLoad');
 
         $editor = self::getEditorInstance();
-        $settings = $editor->getSettings();
-
-        $app->triggerEvent('onBeforeWfEditorRender', array(&$settings));
-
-        $editor->render($settings);
+        $editor->init();
 
         foreach ($editor->getScripts() as $script) {
             $document->addScript($script);
