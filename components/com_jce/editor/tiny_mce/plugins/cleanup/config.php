@@ -65,7 +65,7 @@ class WFCleanupPluginConfig
                 $value = $extended_elements[$i];
 
                 // clean up value
-                $value = preg_replace('#[^\w_\[\]\*@\|\/!=\:\?+\#]#', '', $value);
+                $value = preg_replace('#[^a-zA-Z0-9_\-\[\]\*@\|\/!=\:\?+\#]#', '', $value);
 
                 $pos = strpos($value, '[');
 
