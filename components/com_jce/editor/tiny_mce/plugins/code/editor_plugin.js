@@ -140,7 +140,7 @@
                 // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
                 tagName = tagName || 'span';
 
-                html = html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+                return html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
                     // already wrapped in a tag
                     if (match.charAt(1) === '>') {
                         return match;
@@ -148,8 +148,6 @@
 
                     return createShortcodePre(match, tagName);
                 });
-
-                return html;
             }
 
             function processPhp(content) {
@@ -296,7 +294,7 @@
              * @param {String} content
              */
             function processXML(content) {
-                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {                    
                     // check if svg is allowed
                     if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
                         return match;
@@ -329,8 +327,7 @@
             function createShortcodePre(data, tag) {
                 return ed.dom.createHTML(tag || 'pre', {
                     'data-mce-code': 'shortcode',
-                    'data-mce-type': 'code',
-                    'data-mce-tag' : data.indexOf('{/' === -1) ? 'start' : 'end'
+                    'data-mce-type': 'code'
                 }, ed.dom.encode(data));
             }
 
@@ -577,13 +574,28 @@
                     }
                 });
 
-                ed.selection.onBeforeSetContent.add(function (sel, o) {                    
+                ed.selection.onBeforeSetContent.add(function (sel, o) {
                     if (ed.settings.code_protect_shortcode) {
                         if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
                             o.content = processShortcode(o.content);
                         }
                     }
                 });
+
+                /*ed.parser.addNodeFilter('#text', function (nodes) {
+                    var i = nodes.length,
+                        node;
+
+                    while (i--) {
+                        var node = nodes[i];
+
+                        if (new RegExp(shortcodeRe).test(node.value)) {
+                            var pre = new Node('pre', 1);
+                            pre.attr({ 'data-mce-code': 'shortcode', 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
+                            node.wrap(pre);
+                        }
+                    }
+                });*/
 
                 // Convert script elements to span placeholder
                 ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
@@ -645,11 +657,6 @@
                         var pre = new Node('pre', 1);
                         pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
 
-                        /*var text = new Node('#text', 3);
-                        text.value = value;
-
-                        pre.append(text);*/
-
                         var text = createTextNode(value, false);
                         pre.append(text);
 
@@ -702,7 +709,7 @@
                                 if (!isBody(parent)) {
                                     parent.unwrap();
                                 }
-                            } else {                                
+                            } else {
                                 // add whitespace after the span so a cursor can be set
                                 if (node.name == 'span' && node === parent.lastChild) {
                                     var nbsp = createTextNode('\u00a0');
@@ -772,37 +779,43 @@
                             root_block = type;
                         }
 
-                        var newNode = node.clone(true);
+                        var newNode = node.clone(true), text = '';
 
                         do {
                             if (isXmlNode(node)) {
-                                var value = child.value;
-
-                                newNode.empty();
+                                var value = child.name == 'br' ? '\n' : child.value;
 
                                 if (value) {
-                                    var parser = new DomParser({ validate: false });
-
-                                    // validate attributes of script and style tags
-                                    if (type === 'script' || type === 'style') {
-                                        parser.addNodeFilter(type, function (items) {
-                                            var n = items.length;
-
-                                            while (n--) {
-                                                each(items[n].attributes, function (attr) {
-                                                    if (ed.schema.isValid(type, attr.name) === false) {
-                                                        items[n].attr(attr.name, null);
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-
-                                    var fragment = parser.parse(value, { forced_root_block: root_block });
-                                    newNode.append(fragment);
+                                    text += value;
                                 }
                             }
                         } while (child = child.next);
+
+                        if (text) {
+                            newNode.empty();
+
+                            var parser = new DomParser({ validate: false });
+
+                            // validate attributes of script and style tags
+                            if (type === 'script' || type === 'style') {
+                                parser.addNodeFilter(type, function (items) {
+                                    var n = items.length;
+
+                                    while (n--) {
+                                        each(items[n].attributes, function (attr) {
+                                            if (ed.schema.isValid(type, attr.name) === false) {
+                                                items[n].attr(attr.name, null);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+                            // parse text and process
+                            var fragment = parser.parse(text, { forced_root_block: root_block });
+                            // append fragment to <pre> clone
+                            newNode.append(fragment);
+                        }
 
                         node.replace(newNode);
 
