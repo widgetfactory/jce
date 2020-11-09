@@ -101,17 +101,14 @@
 
                 // script / style
                 if (/<(\?|script|style)/.test(value)) {
-                    // remove script
-                    if (!ed.settings.code_allow_script) {
-                        value = value.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
-                    }
-                    // remove style
-                    if (!ed.settings.code_allow_style) {
-                        value = value.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
-                    }
-
+                    // process script and style tags
                     value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+                        if (!ed.getParam('code_allow_' + type)) {
+                            return '';
+                        }
+
                         match = match.replace(/<br[^>]*?>/gi, '\n');
+                        
                         return createCodePre(match, type);
                     });
 
@@ -159,7 +156,7 @@
                 // PHP code within an attribute
                 content = content.replace(/\="([^"]+?)"/g, function (a, b) {
                     b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                        return '{php:start}' + ed.dom.encode(z) + '{php:end}';
+                        return '[php:start]' + ed.dom.encode(z) + '[php:end]';
                     });
 
                     return '="' + b + '"';
@@ -169,7 +166,7 @@
                 if (/<textarea/.test(content)) {
                     content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
                         c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                            return '{php:start}' + ed.dom.encode(z) + '{php:end}';
+                            return '[php:start]' + ed.dom.encode(z) + '[php:end]';
                         });
                         return '<textarea' + b + '>' + c + '</textarea>';
                     });
@@ -294,7 +291,7 @@
              * @param {String} content
              */
             function processXML(content) {
-                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {                    
+                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
                     // check if svg is allowed
                     if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
                         return match;
@@ -581,21 +578,6 @@
                         }
                     }
                 });
-
-                /*ed.parser.addNodeFilter('#text', function (nodes) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        var node = nodes[i];
-
-                        if (new RegExp(shortcodeRe).test(node.value)) {
-                            var pre = new Node('pre', 1);
-                            pre.attr({ 'data-mce-code': 'shortcode', 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
-                            node.wrap(pre);
-                        }
-                    }
-                });*/
 
                 // Convert script elements to span placeholder
                 ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
@@ -903,9 +885,9 @@
             ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
                     // Process converted php
-                    if (/(data-mce-php|\{php:start\})/.test(o.content)) {
+                    if (/(data-mce-php|\[php:start\])/.test(o.content)) {
                         // attribute value
-                        o.content = o.content.replace(/\{php:\s?start\}([^\{]+)\{php:\s?end\}/g, function (a, b) {
+                        o.content = o.content.replace(/\[php:\s?start\]([^\[]]+)\[php:\s?end\]/g, function (a, b) {
                             return '<?php' + ed.dom.decode(b) + '?>';
                         });
 
