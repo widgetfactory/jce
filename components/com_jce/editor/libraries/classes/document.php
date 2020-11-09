@@ -330,13 +330,13 @@ class WFDocument extends JObject
     public function removeScript($file, $root = 'libraries')
     {
         $file = $this->buildScriptPath($file, $root);
-        unset($this->_scripts[$file]);
+        unset($this->scripts[$file]);
     }
 
     public function removeCss($file, $root = 'libraries')
     {
         $file = $this->buildStylePath($file, $root);
-        unset($this->_styles[$file]);
+        unset($this->styles[$file]);
     }
 
     public function buildScriptPath($file, $root)
@@ -352,6 +352,8 @@ class WFDocument extends JObject
         $file = trim($file, '/');
         // create path
         $file = $this->getBaseURL($root, 'js') . '/' . $file;
+        // remove duplicate slashes
+        $file = preg_replace('#[/\\\\]+#', '/', $file);
 
         return $file;
     }
@@ -369,6 +371,8 @@ class WFDocument extends JObject
         $file = trim($file, '/');
         // create path
         $file = $this->getBaseURL($root, 'css') . '/' . $file;
+        // remove duplicate slashes
+        $file = preg_replace('#[/\\\\]+#', '/', $file);
 
         return $file;
     }
@@ -390,11 +394,11 @@ class WFDocument extends JObject
         foreach ($files as $file) {
             // external link
             if (strpos($file, '://') !== false || strpos($file, 'index.php?option=com_jce') !== false) {
-                $this->_scripts[$file] = $type;
+                $this->scripts[$file] = $type;
             } else {
                 $file = $this->buildScriptPath($file, $root);
                 // store path
-                $this->_scripts[$file] = $type;
+                $this->scripts[$file] = $type;
             }
         }
     }
@@ -416,32 +420,32 @@ class WFDocument extends JObject
         foreach ($files as $file) {
             $url = $this->buildStylePath($file, $root);
             // store path
-            $this->_styles[$url] = $type;
+            $this->styles[$url] = $type;
         }
     }
 
     public function addScriptDeclaration($content, $type = 'text/javascript')
     {
-        if (!isset($this->_script[strtolower($type)])) {
-            $this->_script[strtolower($type)] = $content;
+        if (!isset($this->script[strtolower($type)])) {
+            $this->script[strtolower($type)] = $content;
         } else {
-            $this->_script[strtolower($type)] .= chr(13) . $content;
+            $this->script[strtolower($type)] .= chr(13) . $content;
         }
     }
 
     private function getScriptDeclarations()
     {
-        return $this->_script;
+        return $this->script;
     }
 
     private function getScripts()
     {
-        return $this->_scripts;
+        return $this->scripts;
     }
 
     private function getStyleSheets()
     {
-        return $this->_styles;
+        return $this->styles;
     }
 
     /**
@@ -450,9 +454,9 @@ class WFDocument extends JObject
     private function setHead($data)
     {
         if (is_array($data)) {
-            $this->_head = array_merge($this->_head, $data);
+            $this->head = array_merge($this->head, $data);
         } else {
-            $this->_head[] = $data;
+            $this->head[] = $data;
         }
     }
 
@@ -471,22 +475,13 @@ class WFDocument extends JObject
         $query['plugin'] = $name;
 
         // set layout
-        if ($app->input->getWord('layout')) {
-            $query['layout'] = $app->input->getCmd('layout');
-        }
+        $query['layout'] = $app->input->getCmd('layout');
 
         // set standalone mode (for File Browser etc)
-        if ($this->get('standalone') == 1) {
-            $query['standalone'] = 1;
-        }
+        $query['standalone'] = $this->get('standalone');
 
-        // get context hash
-        $context = $app->input->getInt('context');
-
-        // set component id
-        if ($context) {
-            $query['context'] = $context;
-        }
+        // set context id
+        $query['context'] = $app->input->getInt('context');
 
         // get token
         $token = JSession::getFormToken();
@@ -497,7 +492,9 @@ class WFDocument extends JObject
         $output = array();
 
         foreach ($query as $key => $value) {
-            $output[] = $key . '=' . $value;
+            if ($value) {
+                $output[] = $key . '=' . $value;
+            }
         }
 
         return implode('&', $output);
@@ -538,11 +535,11 @@ class WFDocument extends JObject
         if ($this->get('compress_css', 0)) {
             $file = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack', 'type' => 'css'));
             // add hash
-            $file .= '&' . $this->getHash(array_keys($this->_styles));
+            $file .= '&' . $this->getHash(array_keys($this->styles));
 
             $output .= "\t\t<link href=\"" . $file . "\" rel=\"stylesheet\" type=\"text/css\" />\n";
         } else {
-            foreach ($this->_styles as $src => $type) {
+            foreach ($this->styles as $src => $type) {
                 $hash = $this->getHash($src);
 
                 // only add stamp to static stylesheets
@@ -558,11 +555,11 @@ class WFDocument extends JObject
         if ($this->get('compress_javascript', 0)) {
             $script = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack'));
             // add hash
-            $script .= '&' . $this->getHash(array_keys($this->_scripts));
+            $script .= '&' . $this->getHash(array_keys($this->scripts));
 
             $output .= "\t\t<script data-cfasync=\"false\" type=\"text/javascript\" src=\"" . $script . "\"></script>\n";
         } else {
-            foreach ($this->_scripts as $src => $type) {
+            foreach ($this->scripts as $src => $type) {
                 $hash = $this->getHash($src);
 
                 // only add stamp to static stylesheets
@@ -575,12 +572,12 @@ class WFDocument extends JObject
         }
 
         // Script declarations
-        foreach ($this->_script as $type => $content) {
+        foreach ($this->script as $type => $content) {
             $output .= "\t\t<script data-cfasync=\"false\" type=\"" . $type . '">' . $content . '</script>';
         }
 
         // Other head data
-        foreach ($this->_head as $head) {
+        foreach ($this->head as $head) {
             $output .= "\t" . $head . "\n";
         }
 
@@ -589,12 +586,12 @@ class WFDocument extends JObject
 
     public function setBody($data = '')
     {
-        $this->_body = $data;
+        $this->body = $data;
     }
 
     private function getBody()
     {
-        return $this->_body;
+        return $this->body;
     }
 
     private function loadData()
