@@ -59,6 +59,10 @@
     padding-top: 10px;
 }
 
+.form-horizontal .form-field-repeatable-item-group {
+    width: 100%;
+}
+
 .form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
 .form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
     margin: 0;
