@@ -17,35 +17,35 @@ class WFDocument extends JObject
      *
      * @var array
      */
-    private $_scripts = array();
+    private $scripts = array();
 
     /**
      * Array of scripts placed in the header.
      *
      * @var array
      */
-    private $_script = array();
+    private $script = array();
 
     /**
      * Array of linked style sheets.
      *
      * @var array
      */
-    private $_styles = array();
+    private $styles = array();
 
     /**
      * Array of head items.
      *
      * @var array
      */
-    private $_head = array();
+    private $head = array();
 
     /**
      * Body content.
      *
      * @var array
      */
-    private $_body = '';
+    private $body = '';
 
     /**
      * Document title.
