@@ -85,6 +85,11 @@ class JceModelProfile extends JModelAdmin
             }
         }
 
+        // decode config values for display
+        array_walk_recursive($config, function(&$value) {
+            $value = htmlspecialchars_decode($value);
+        });
+
         $data->config = $config;
 	}
 
@@ -717,7 +722,7 @@ class JceModelProfile extends JModelAdmin
                 if (array_key_exists($item, $data['params'])) {
                     $value = $data['params'][$item];
                     // clean and add to json array for merging
-                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
                 }
             }
 
