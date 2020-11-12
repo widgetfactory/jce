@@ -30,11 +30,11 @@
   color: inherit;
   margin: 0;
 }
-/*.ui-jce .form-horizontal .control-group {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}*/
+.ui-jce .form-horizontal .control-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 .ui-jce .form-horizontal .controls {
   margin-left: inherit;
 }
@@ -49,6 +49,9 @@
   margin: 0.5rem 0;
   font-size: 90%;
   box-sizing: border-box;
+}
+.ui-jce .control-group .help-block {
+  width: 100%;
 }
 .ui-jce .control-group .chzn-container {
   min-width: 260px;
@@ -446,11 +449,17 @@
     bottom: 10px;
 }
 
+.form-field-repeatable {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
 .form-field-repeatable-item {
     display: flex;
 }
 
-.form-field-repeatable-item > button {
+.form-field-repeatable-item>button {
     max-height: 28px;
 }
 
@@ -487,12 +496,12 @@
     padding-top: 10px;
 }
 
-.form-horizontal .form-field-repeatable-item-group {
+/*.form-horizontal .form-field-repeatable-item-group {
     width: 100%;
-}
+}*/
 
 .form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
-.form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
+.form-horizontal .form-field-repeatable-item .control-group .sr-only+.controls {
     margin: 0;
 }
 /**

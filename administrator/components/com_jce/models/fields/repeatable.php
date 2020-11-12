@@ -52,6 +52,8 @@ class JFormFieldRepeatable extends JFormField
 
         $fields = $subForm->getFieldset();
 
+        $str[] = '<div class="form-field-repeatable">';
+
         foreach ($values as $value) {
             $class  = '';
 
@@ -101,6 +103,8 @@ class JFormFieldRepeatable extends JFormField
 
             $str[] = '</div>';
         }
+
+        $str[] = '</div>';
 
         return implode("", $str);
     }

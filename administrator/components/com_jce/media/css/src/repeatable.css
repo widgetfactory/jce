@@ -18,11 +18,17 @@
     bottom: 10px;
 }
 
+.form-field-repeatable {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
 .form-field-repeatable-item {
     display: flex;
 }
 
-.form-field-repeatable-item > button {
+.form-field-repeatable-item>button {
     max-height: 28px;
 }
 
@@ -59,11 +65,11 @@
     padding-top: 10px;
 }
 
-.form-horizontal .form-field-repeatable-item-group {
+/*.form-horizontal .form-field-repeatable-item-group {
     width: 100%;
-}
+}*/
 
 .form-horizontal .form-field-repeatable-item .control-group .controls:first-child,
-.form-horizontal .form-field-repeatable-item .control-group .sr-only + .controls {
+.form-horizontal .form-field-repeatable-item .control-group .sr-only+.controls {
     margin: 0;
 }

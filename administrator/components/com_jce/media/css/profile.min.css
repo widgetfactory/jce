@@ -941,12 +941,6 @@ html[dir="rtl"] .form-horizontal .control-label {
  * other free or open source software licenses.
  */
 
- /* Joomla 4 */
- :root {
-    --warning : #fff0d0;
-    --warning-border: #ffb514;
- }
-
 .extensions-select.radio {
     padding: 0;
 }
@@ -1204,6 +1198,7 @@ a.browser {
 .ui-jce .row-fluid .form-horizontal .control-label:empty {
     min-width: inherit;
     padding: 0;
+    width: 0;
 }
 
 .ui-jce .checkboxes .sortable-placeholder {
