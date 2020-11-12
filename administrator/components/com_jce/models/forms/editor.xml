@@ -159,6 +159,16 @@
         </fieldset>
 
         <fieldset name="editor.advanced">
+            <field type="container" label="WF_PARAM_STARTUP_CONTENT" description="WF_PARAM_STARTUP_CONTENT_DESC">
+				<field type="mediajce" name="startup_content_url" size="30" mediatype="html,htm,txt" default="" label="WF_PARAM_STARTUP_CONTENT_URL" description="WF_PARAM_STARTUP_CONTENT_URL_DESC" />
+
+				<field type="spacer" label="WF_LABEL_OR" />
+
+				<field type="textarea" name="startup_content_html" filter="html" rows="2" cols="3" class="input-xlarge" default="" label="WF_PARAM_STARTUP_CONTENT_HTML" spellcheck="false" description="WF_PARAM_STARTUP_CONTENT_HTML_DESC" />
+            </field>
+
+            <field type="spacer" />
+            
             <field name="invalid_elements" type="text" size="50" default="" label="WF_PARAM_NO_ELEMENTS" description="WF_PARAM_NO_ELEMENTS_DESC" />
             <field name="invalid_attributes" type="text" size="50" default="dynsrc,lowsrc" label="WF_PARAM_INVALID_ATTRIBUTES" description="WF_PARAM_INVALID_ATTRIBUTES_DESC" />
             <field name="invalid_attribute_values" type="text" size="50" default="" label="WF_PARAM_INVALID_ATTRIBUTE_VALUES" description="WF_PARAM_INVALID_ATTRIBUTE_VALUES_DESC" />
