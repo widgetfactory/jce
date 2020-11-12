@@ -16,14 +16,17 @@ class WFMediaPluginConfig
 
         $tags = array();
 
-        if ($wf->getParam('media.iframes', 0)) {
+        $allow_iframes = (int) $wf->getParam('media.iframes', 0);
+
+        if ($allow_iframes) {
             $tags[] = 'iframe';
 
-            if ((int) $wf->getParam('media.iframes') == 2) {
+            // may be overwritten by mediamanager config - ../mediamanager/config.php
+            if ($allow_iframes == 2) {
                 $settings['iframes_allow_local'] = true;
             }
 
-            if ((int) $wf->getParam('media.iframes') == 3) {
+            if ($allow_iframes == 3) {
                 $settings['iframes_allow_supported'] = true;
             }
         }
