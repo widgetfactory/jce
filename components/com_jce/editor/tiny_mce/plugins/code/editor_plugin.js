@@ -579,6 +579,17 @@
                     }
                 });
 
+                // remove paragraph parent of a pre block
+                ed.selection.onSetContent.add(function (sel, o) {
+                    each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function(elm) {
+                        var p = ed.dom.getParent(elm, 'p');
+
+                        if (p && p.childNodes.length === 1) {
+                            ed.dom.remove(p, 1);
+                        }
+                    });
+                });
+
                 // Convert script elements to span placeholder
                 ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
                     var i = nodes.length,
@@ -678,7 +689,7 @@
 
                         if (parent) {
                             // don't process shortcode in code blocks
-                            if (parent.attr(name)) {
+                            if (parent.attr(name)) {                                
                                 node.unwrap();
                                 continue;
                             }
@@ -686,11 +697,6 @@
                             // rename shortcode blocks to <pre>
                             if (isBody(parent) || isOnlyChild(node)) {
                                 node.name = 'pre';
-
-                                // unwrap block element
-                                if (!isBody(parent)) {
-                                    parent.unwrap();
-                                }
                             } else {
                                 // add whitespace after the span so a cursor can be set
                                 if (node.name == 'span' && node === parent.lastChild) {
@@ -928,11 +934,10 @@
                         // decode content
                         content = ed.dom.decode(content);
 
-                        // add missing tags in php
+                        // remove and replace <?php?> tags
                         if (attr.indexOf('data-mce-code="php"') !== -1) {
-                            if (!/^<\?(php)?([\s\S]+?)\?>$/.test(content)) {
-                                content = '<?php ' + content + ' ?>';
-                            }
+                            content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
+                            content = '<?php\n' + tinymce.trim(content) + '\n?>';
                         }
 
                         return content;
