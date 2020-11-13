@@ -160,7 +160,7 @@
 
         <fieldset name="editor.advanced">
             <field type="container" label="WF_PARAM_STARTUP_CONTENT" description="WF_PARAM_STARTUP_CONTENT_DESC">
-				<field type="mediajce" name="startup_content_url" size="30" mediatype="html,htm,txt" default="" label="WF_PARAM_STARTUP_CONTENT_URL" description="WF_PARAM_STARTUP_CONTENT_URL_DESC" />
+				<field type="mediajce" name="startup_content_url" size="30" mediatype="html,htm,txt,md" default="" label="WF_PARAM_STARTUP_CONTENT_URL" description="WF_PARAM_STARTUP_CONTENT_URL_DESC" />
 
 				<field type="spacer" label="WF_LABEL_OR" />
 
