@@ -12,13 +12,25 @@
 
     tinymce.create('tinymce.plugins.CorePLugin', {
         init: function (ed, url) {
-            var contentLoaded = false;
+            var contentLoaded = false, elm = ed.getElement();
+
+            function isEmpty() {
+                if (elm.nodeName === 'TEXTAREA') {
+                    return elm.value == '';
+                } else {
+                    return elm.innerHTML == '';
+                }
+            }
 
             function insertContent(value) {
                 value = Entities.decode(value);
 
                 if (value) {                    
-                    ed.getElement().value = value;
+                    if (elm.nodeName === 'TEXTAREA') {
+                        elm.value = value;
+                    } else {
+                        elm.innerHTML = value;
+                    }
                 }
 
                 return true;
@@ -28,8 +40,8 @@
 
             ed.onBeforeRenderUI.add(function() {
                 // load content on first startup
-                if (startup_content_html) {
-                    if (!contentLoaded && !ed.getElement().value) {
+                if (startup_content_html && elm) {
+                    if (!contentLoaded && isEmpty()) {
                         contentLoaded = true;
                         return insertContent(startup_content_html);
                     }
