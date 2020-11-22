@@ -24,6 +24,12 @@ class JceViewConfig extends JViewLegacy
         $this->fieldsname = "config";
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
+        $params = JComponentHelper::getParams('com_jce');
+
+        if ($params->get('inline_help', 1)) {
+            $this->formclass .= ' form-help-inline';
+        }
+
         $this->addToolbar();
         parent::display($tpl);
 

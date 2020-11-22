@@ -5,72 +5,107 @@
     position: relative;
 }*/
 
-.ui-jce.row {
-    margin-left: -20px;
-}
+.ui-jce {
+    &.row {
+        margin-left: -20px;
+    }
 
-.ui-jce label {
-    max-width: 12rem;
-}
+    label {
+        max-width: 12rem;
+    }
 
-.ui-jce .control-label label {
-    width: 12rem;
-}
+    .control-label label {
+        width: 12rem;
+    }
 
-.ui-jce .radio label,
-.ui-jce .checkbox label,
-.ui-jce .radio,
-.ui-jce .checkbox {
-    display: inline-block;
-}
+    .radio label,
+    .checkbox label,
+    .radio,
+    .checkbox {
+        display: inline-block;
+    }
 
-.ui-jce .checkboxes input {
-    float: initial;
-}
+    .checkboxes input {
+        float: initial;
+    }
 
-.ui-jce .well-light {
-    background-color: #fafafa;
-}
+    .well-light {
+        background-color: #fafafa;
+    }
 
-.ui-jce .form-field-container legend {
-    line-height: 2em;
-    font-size: 1.25em;
-    font-weight: bold;
-    border: 0 none;
-    color: inherit;
-    margin: 0;
-}
+    .form-field-container legend {
+        line-height: 2em;
+        font-size: 1.25em;
+        font-weight: bold;
+        border: 0 none;
+        color: inherit;
+        margin: 0;
+    }
 
-.ui-jce .form-horizontal .control-group {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
- 
-.ui-jce .form-horizontal .controls {
-    margin-left: inherit;
-}
+    .form-horizontal .control-group {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 
-.ui-jce .form-horizontal .control-label + .controls {
-    width: calc(100% - 12.5rem);
-}
+    .form-horizontal .controls {
+        margin-left: inherit;
+    }
 
-.ui-jce .control-group .description {
-    display: block;
-    width: 100%;
-    padding: 1rem 0.5rem;
-    background: rgba(0, 0, 0, 0.03);
-    margin: 0.5rem 0;
-    font-size: 90%;
-    box-sizing: border-box;
-}
+    .form-horizontal .control-label+.controls {
+        width: calc(100% - 12.5rem);
+    }
 
-.ui-jce .control-group .help-block {
-    width: 100%;
-}
+    .control-group {
+        .description {
+            display: block;
+            width: 100%;
+            padding: 1rem 0.5rem;
+            background: rgba(0, 0, 0, 0.03);
+            margin: 0.5rem 0;
+            font-size: 90%;
+            box-sizing: border-box;
+        }
 
-.ui-jce .control-group .chzn-container {
-    min-width: 260px;
+        .help-block {
+            width: 100%;
+        }
+
+        .chzn-container {
+            min-width: 260px;
+        }
+    }
+
+    .form-horizontal {
+        .control-label {
+            width: auto;
+            min-width: 160px;
+
+            &:empty {
+                min-width: inherit;
+                padding: 0;
+                width: 0;
+            }
+        }
+    }
+
+    .control-group {
+        .controls + .description {
+            display: none;
+        }
+    }
+
+    .form-help-inline {
+        .control-group {
+            .controls + .description {
+                display: block;
+            }
+
+            .control-label {
+                cursor: default;
+            }
+        }
+    }
 }
 
 @import (inline) "../css/src/compat.css";

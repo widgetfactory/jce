@@ -27,6 +27,12 @@ class JceViewProfile extends JViewLegacy
 
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
+        $params = JComponentHelper::getParams('com_jce');
+
+        if ($params->get('inline_help', 1)) {
+            $this->formclass .= ' form-help-inline';
+        }
+
         $this->plugins = $this->get('Plugins');
         $this->rows = $this->get('Rows');
         $this->available = $this->get('AvailableButtons');

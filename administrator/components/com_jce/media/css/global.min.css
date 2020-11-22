@@ -56,6 +56,24 @@
 .ui-jce .control-group .chzn-container {
   min-width: 260px;
 }
+.ui-jce .form-horizontal .control-label {
+  width: auto;
+  min-width: 160px;
+}
+.ui-jce .form-horizontal .control-label:empty {
+  min-width: inherit;
+  padding: 0;
+  width: 0;
+}
+.ui-jce .control-group .controls + .description {
+  display: none;
+}
+.ui-jce .form-help-inline .control-group .controls + .description {
+  display: block;
+}
+.ui-jce .form-help-inline .control-group .control-label {
+  cursor: default;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;

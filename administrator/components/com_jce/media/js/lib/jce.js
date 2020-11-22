@@ -22,6 +22,10 @@
 
     // run init when the doc is ready
     $(document).ready(function() {
+        // add popover tips if help is not inline
+
+        $('.form-horizontal', '.ui-jce').not('.form-help-inline').find('.hasPopover').tips();
+
         init();
     });
 })(jQuery);

@@ -33,6 +33,11 @@
             <option value="5">5</option>
         </field>
 
+        <field name="inline_help" type="radio" default="1" label="WF_ADMIN_INLINE_HELP" description="WF_ADMIN_INLINE_HELP_DESC" class="btn-group btn-group-yesno">
+            <option value="1">WF_OPTION_YES</option>
+            <option value="0">WF_OPTION_NO</option>
+        </field>
+
         <field name="replace_media_manager" type="radio" default="1" label="WF_CPANEL_REPLACE_MEDIAMANAGER_LABEL" class="btn-group btn-group-yesno" description="WF_CPANEL_REPLACE_MEDIAMANAGER_DESCRIPTION">
           <option value="1">JYES</option>
           <option value="0">JNO</option>
