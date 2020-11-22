@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 256" width="1024" height="256">
+    <title>Audio</title>
+    <g>
+        <text x="512" y="176" style='font-family:-apple-systrem,BlinkMacSystremFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;font-weight:bold;font-size:128px;fill:#444;stroke:none;'>Audio</text>
+        <path d="M480 0h32v368c0 44.183-50.145 80-112 80s-112-35.817-112-80c0-44.184 50.145-80 112-80 31.342 0 59.671 9.2 80 24.020v-184.020l-256 56.889v247.111c0 44.183-50.144 80-112 80s-112-35.817-112-80c0-44.184 50.144-80 112-80 31.342 0 59.671 9.2 80 24.020v-312.020l288-64z" fill="#44"></path>
+    </g>
+</svg>
