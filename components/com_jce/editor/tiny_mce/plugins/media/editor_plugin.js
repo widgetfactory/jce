@@ -318,7 +318,7 @@
         "video/x-flv,flv," +
         "video/vnd.rn-realvideo,rv", +
         "video/3gpp,3gp," +
-        "video/x-matroska,mkv"
+    "video/x-matroska,mkv"
     );
 
     each(mediaTypes, function (value, key) {
@@ -408,12 +408,24 @@
             node.attr('autoplay', null);
         }
 
+        var canResize = function (node) {
+            if (node.name === 'video') {
+                return 'proportional';
+            }
+
+            if (node.name === 'iframe') {
+                return 'true';
+            }
+
+            return 'false';
+        }
+
         previewWrapper = Node.create('span', {
             'contentEditable': 'false',
             'data-mce-object': name,
             'class': 'mce-object-preview mce-object-' + name,
             'aria-details': msg,
-            'data-mce-resize': 'true'
+            'data-mce-resize': canResize(node)
         });
 
         previewNode = Node.create(name, {
@@ -423,7 +435,7 @@
         retainAttributesAndInnerHtml(editor, node, previewNode);
 
         shimNode = Node.create('span', {
-            'class' : 'mce-object-shim'
+            'class': 'mce-object-shim'
         });
 
         previewWrapper.append(previewNode);
@@ -651,7 +663,7 @@
             classes = sourceNode.attr('class').split(' ');
         }
 
-        var props = lookup[sourceNode.attr('type')] || lookup[sourceNode.attr('classid')] || {name : sourceNode.name};
+        var props = lookup[sourceNode.attr('type')] || lookup[sourceNode.attr('classid')] || { name: sourceNode.name };
 
         // add identifier class
         classes.push('mce-object mce-object-' + props.name);
@@ -682,7 +694,7 @@
                 if (targetNode.name === 'img') {
                     name = 'data-mce-p-' + name;
                 }
-                
+
                 targetNode.attr(name, node.attr('src'));
 
                 node.remove();
@@ -693,10 +705,10 @@
         if (!sourceNode.attr('data') && sourceNode.name === 'object') {
             var params = sourceNode.getAll('param');
 
-            each(params, function(param) {
+            each(params, function (param) {
                 if (param.attr('name') === 'src' || param.attr('name') === 'url') {
                     targetNode.attr({
-                        'data-mce-p-data' : param.attr('value')
+                        'data-mce-p-data': param.attr('value')
                     });
 
                     param.remove();
@@ -709,7 +721,7 @@
         // Place the inner HTML contents inside an escaped attribute
         // This enables us to copy/paste the fake object
         if (sourceNode.firstChild) {
-            innerHtml = new tinymce.html.Serializer({inner : true}).serialize(sourceNode);
+            innerHtml = new tinymce.html.Serializer({ inner: true }).serialize(sourceNode);
         }
 
         if (innerHtml) {
@@ -821,14 +833,27 @@
             ed.onInit.add(function () {
                 var settings = ed.settings;
 
-                // Display "media" instead of "img" in element path
                 ed.theme.onResolveName.add(function (theme, o) {
                     var n = o.node;
 
                     if (n) {
-                        var name = n.getAttribute('data-mce-object');
+                        var cls = ed.dom.getAttrib(n, 'class', '');
 
-                        if (name) {
+                        if (cls.indexOf('mce-object-') !== -1) {
+                            var match = /mce-object-(video|audio|iframe)/i.exec(cls);
+
+                            name = match ? match[0] : 'media';
+                            
+                            var src = n.getAttribute('src') || n.getAttribute('data-mce-p-src') || '';
+
+                            if (src) {
+                                var str = isSupportedMedia(ed, src) || '';
+
+                                if (str) {
+                                    name = ucfirst(str);
+                                }
+                            }
+
                             o.name = name;
                         }
                     }
@@ -865,7 +890,7 @@
                     ed.dom.removeAttrib(ed.dom.select('[data-mce-selected].mce-object-preview'), 'data-mce-selected');
 
                     // pause all video and audio in preview elements
-                    each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function(elm) {
+                    each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function (elm) {
                         elm.pause();
                     });
 
@@ -886,15 +911,13 @@
                         }
 
                         if (preview) {
-                            ed.selection.select(preview);
+                            ed.selection.select(preview.firstChild);
 
                             // add a slight delay before adding selected class to avoid it being removed by the keyup event
                             window.setTimeout(function () {
                                 ed.dom.setAttrib(preview, 'data-mce-selected', '2');
                             }, 10);
                         }
-
-                        e.preventDefault();
                     }
                 });
 
@@ -911,13 +934,6 @@
                                 v.node = node.firstChild;
                             }
                         }
-                    }
-                });
-
-                ed.onNodeChange.add(function(ed, cm, node) {
-                    // if it is a preview node, select the iframe
-                    if (node && ed.dom.hasClass(node, 'mce-object-preview')) {
-                        ed.selection.select(node.firstChild);
                     }
                 });
 
@@ -958,8 +974,8 @@
             });
 
             function updatePreviewSelection(ed) {
-                each(ed.dom.select('.mce-object-preview', ed.getBody()), function(node) {
-                    
+                each(ed.dom.select('.mce-object-preview', ed.getBody()), function (node) {
+
                     // for an empty block node, padd with a break
                     if (ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
                         ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), node);
