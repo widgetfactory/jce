@@ -27,7 +27,7 @@ abstract class WFLanguage
      */
     public static function getDir()
     {
-        $language = JFactory::getLanguage();
+        /*$language = JFactory::getLanguage();
 
         $tag = self::getTag();
 
@@ -35,7 +35,9 @@ abstract class WFLanguage
             return $language->isRTL() ? 'rtl' : 'ltr';
         }
 
-        return 'ltr';
+        return 'ltr';*/
+
+        return JFactory::getLanguage()->isRTL() ? 'rtl' : 'ltr';
     }
 
     /**

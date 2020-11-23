@@ -276,6 +276,17 @@ class WFEditor
         }
     }
 
+    private function isSkinRtl()
+    {
+        $language = JFactory::getLanguage();
+
+        if ($language->getTag() === WFLanguage::getTag()) {
+            return $language->isRTL();
+        }
+        
+        return false;
+    }
+
     public function getSettings()
     {
         // get an editor instance
@@ -416,6 +427,10 @@ class WFEditor
             if (isset($settings['skin_variant'])) {
                 $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui_' . $settings['skin_variant'] . '.css');
             }
+        }
+
+        if ($this->isSkinRtl()) {
+            $settings['skin_directionality'] = 'rtl';
         }
 
         // set javascript compression script
@@ -1371,17 +1386,17 @@ class WFEditor
                         continue;
                     }
 
-                    // clean slashes
-                    $tmp = preg_replace('#[/\\\\]+#', '/', $tmp);
-
-                    // Replace $template variable with site template name
-                    $tmp = str_replace('$template', $template->name, $tmp);
-
                     // external url
                     if (strpos($tmp, '://') !== false) {
                         $files[] = $tmp;
                         continue;
                     }
+
+                    // clean slashes
+                    $tmp = preg_replace('#[/\\\\]+#', '/', $tmp);
+
+                    // Replace $template variable with site template name
+                    $tmp = str_replace('$template', $template->name, $tmp);
 
                     $file = JPATH_SITE . '/' . $tmp;
                     $list = array();

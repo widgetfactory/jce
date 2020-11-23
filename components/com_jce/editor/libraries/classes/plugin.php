@@ -140,6 +140,17 @@ class WFEditorPlugin extends JObject
         return $version;
     }
 
+    protected function isRtl()
+    {
+        $language = JFactory::getLanguage();
+
+        if ($language->getTag() === WFLanguage::getTag()) {
+            return $language->isRTL();
+        }
+        
+        return false;
+    }
+
     protected function initialize()
     {
         $app = JFactory::getApplication();
@@ -162,7 +173,7 @@ class WFEditorPlugin extends JObject
             'title' => JText::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
             'language' => WFLanguage::getTag(),
-            'direction' => WFLanguage::getDir(),
+            'direction' => $this->isRtl() ? 'rtl' : 'ltr',
             'compress_javascript' => $this->getParam('editor.compress_javascript', 0),
             'compress_css' => $this->getParam('editor.compress_css', 0),
         ));

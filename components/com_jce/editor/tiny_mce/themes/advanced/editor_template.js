@@ -309,7 +309,7 @@
             }
 
             // add direction
-            if (ed.settings.directionality == "rtl") {
+            if (ed.settings.skin_directionality == "rtl") {
                 skin += ' mceRtl';
             }
 
