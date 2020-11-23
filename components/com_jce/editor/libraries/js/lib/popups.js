@@ -98,10 +98,9 @@ var WFPopups = WFExtensions.add('Popups', {
      * Get the assigned popup if any from the selected node
      * @param {Object} n Anchor Element / Node
      */
-    getPopup: function(n, index) {
+    getPopup: function(n, callback, index) {
         var self = this,
-            ed = tinyMCEPopup.editor,
-            popup, popups = this.getPopups();
+            ed = tinyMCEPopup.editor;
 
         if (n.nodeName != 'A') {
             n = ed.dom.getParent(n, 'a');
@@ -118,7 +117,7 @@ var WFPopups = WFExtensions.add('Popups', {
             this.selectPopup(this.popup);
 
             // Process attributes
-            return this.getAttributes(n, index);
+            return this.getAttributes(n, index, callback);
         }
 
         return '';
@@ -218,16 +217,21 @@ var WFPopups = WFExtensions.add('Popups', {
      * Apply currently selected popup attributes to link element
      * @param {Object} n Link element / node
      */
-    getAttributes: function(n, index) {
-        var ed = tinyMCEPopup.editor,
-            k, v, at, data;
+    getAttributes: function(n, callback, index) {
+        var ed = tinyMCEPopup.editor, data;
 
         if (n || n.nodeName != 'A') {
             n = ed.dom.getParent(n, 'a');
         }
 
+        // default callback function returns passed in value
+        callback = callback || function(val) {return val};
+
+        // default index value
+        index = index || 0;
+
         if (n && this.isPopup(n)) {
-            data = this._call('getAttributes', [n, index]);
+            data = this._call('getAttributes', [n, index, callback]);
         }
 
         return data;
@@ -245,8 +249,8 @@ var WFPopups = WFExtensions.add('Popups', {
      */
     createPopup: function(n, args, index) {
         var self = this,
-            ed = tinyMCEPopup.editor,
-            o, el;
+            ed = tinyMCEPopup.editor;
+
         args = args || {};
 
         // Popup option is enabled
@@ -263,8 +267,7 @@ var WFPopups = WFExtensions.add('Popups', {
                 // set popup attributes
                 this.setAttributes(n, args, index);
             } else {
-                var se = ed.selection,
-                    marker;
+                var se = ed.selection;
 
                 // no selection
                 if (se.isCollapsed()) {

@@ -252,18 +252,11 @@ WFPopups.addPopup('jcemediabox', {
      * Get popup parameters
      * @param {Object} n Popup node
      */
-    getAttributes: function(n, index) {
+    getAttributes: function(n, index, callback) {
         var ed = tinyMCEPopup.editor,
             data = {},
             rv, v;
 
-        // set default index
-        index = index || 0;
-
-        // set default index
-        index = index || 0;
-
-        var title = ed.dom.getAttrib(n, 'title');
         var rel = ed.dom.getAttrib(n, 'rel');
 
         // No icon
@@ -362,6 +355,27 @@ WFPopups.addPopup('jcemediabox', {
             }
         });
 
+        // add standard values
+        $.each(['href', 'type', 'data-mediabox-width', 'data-mediabox-height'], function(i, name) {
+            var val = ed.dom.getAttrib(n, name);
+
+            if (val) {
+                // remap href
+                if (name === 'href') {
+                    name = 'src';
+                }
+
+                if (name.indexOf('data-mediabox-') === 0) {
+                    name = name.substr(14);
+                }
+                
+                data[name] = val;
+            }
+        });
+
+        // process data through passed in callback
+        data = callback(data);
+
         var x = 0;
 
         // process remaining data values as params
@@ -388,24 +402,6 @@ WFPopups.addPopup('jcemediabox', {
 
         // Set type
         $('#jcemediabox_popup_mediatype').val(this.getMediaType(n));
-
-        // add standard values
-        $.each(['href', 'type', 'data-mediabox-width', 'data-mediabox-height'], function(i, name) {
-            var val = ed.dom.getAttrib(n, name);
-
-            if (val) {
-                // remap href
-                if (name === 'href') {
-                    name = 'src';
-                }
-
-                if (name.indexOf('data-mediabox-') === 0) {
-                    name = name.substr(14);
-                }
-                
-                data[name] = val;
-            }
-        });
 
         return data;
     },
@@ -473,7 +469,7 @@ WFPopups.addPopup('jcemediabox', {
         data = $.extend(data, args.data || {});
 
         // set type
-        var mt = $('#jcemediabox_popup_mediatype').val() || n.type || data.type || '';
+        var mt = $('#jcemediabox_popup_mediatype').val() || n.type || args.type || '';
 
         // get image type
         if (mt == "image") {
