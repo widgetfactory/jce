@@ -2823,7 +2823,6 @@ select.mceNativeListBox {
 .mceModal .mceModalContent label {
     line-height: 1.25;
     width: 96px;
-    margin-right: 8px;
 }
 
 .mceModal .mceModalContent .mceModalStack label {
@@ -2837,8 +2836,9 @@ select.mceNativeListBox {
 .mceModal .mceModalContent .mceModalRow {
     display: flex;
     flex-wrap: wrap;
-    margin-bottom: 8px;
     align-items: center;
+    gap: 4px;
+    min-height: 32px;
 }
 
 .mceModal .mceModalContent .mceModalControl {
@@ -2947,10 +2947,10 @@ select.mceNativeListBox {
     height: 100%;
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
 .mceFormRow {
-    margin: 2px 0;
     display: flex;
     flex-direction: row;
     justify-content: center;

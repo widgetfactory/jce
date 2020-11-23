@@ -291,6 +291,7 @@
                 last = {};
 
                 var html = '' +
+                    '<div class="mceForm">' +
                     '<div class="mceModalRow">' +
                     '   <label for="' + editor.id + '_search_string">' + editor.getLang('searchreplace.findwhat', 'Search') + '</label>' +
                     '   <div class="mceModalControl">' +
@@ -316,6 +317,7 @@
                     '       <input id="' + editor.id + '_wholewords" type="checkbox" />' +
                     '       <label for="' + editor.id + '_wholewords">' + editor.getLang('searchreplace.wholewords', 'Whole Words') + '</label>' +
                     '   </div>' +
+                    '</div>'+
                     '</div>';
 
                 editor.windowManager.open({
