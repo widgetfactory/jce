@@ -16,18 +16,18 @@
 
             var self = this;
 
-            function isMceItem(node) {
-                return node.className.indexOf('mce-item-') !== -1;
+            function isMediaObject(node) {
+                return node.getAttribute('data-mce-object');
             }
 
             function isImage(node) {
-                return node && node.nodeName === "IMG" && !isMceItem(node);
+                return node && node.nodeName === "IMG" && !isMediaObject(node);
             }
 
             function openDialog() {
                 var node = ed.selection.getNode();
 
-                if (isMceItem(node)) {
+                if (isMediaObject(node)) {
                     return;
                 }
 
@@ -124,7 +124,7 @@
             });
 
             ed.onNodeChange.add(function (ed, cm, n) {
-                cm.setActive('imgmanager', n.nodeName == 'IMG' && !isMceItem(n));
+                cm.setActive('imgmanager', isImage(n));
             });
 
             ed.onPreInit.add(function () {
@@ -193,7 +193,7 @@
                 ed.addCommand('mceImage', function () {
                     var node = ed.selection.getNode();
 
-                    if (isMceItem(node)) {
+                    if (isMediaObject(node)) {
                         return;
                     }
 
