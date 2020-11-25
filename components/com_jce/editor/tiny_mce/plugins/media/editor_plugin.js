@@ -570,7 +570,6 @@
         }
 
         node.replace(elm);
-
         node.empty();
     };
 
@@ -840,9 +839,14 @@
                         var cls = ed.dom.getAttrib(n, 'class', '');
 
                         if (cls.indexOf('mce-object-') !== -1) {
+                            if (cls.indexOf('mce-object-preview') !== -1) {
+                                o.name = '';
+                                return;
+                            }
+                            
                             var match = /mce-object-(video|audio|iframe)/i.exec(cls);
 
-                            name = match ? match[0] : 'media';
+                            name = match ? match[1] : 'media';
                             
                             var src = n.getAttribute('src') || n.getAttribute('data-mce-p-src') || '';
 
@@ -869,6 +873,8 @@
                     }
 
                     if (ed.dom.hasClass(elm, 'mce-object-preview')) {
+                        ed.dom.setStyles(elm, { 'width': '', 'height': '' });
+
                         elm = elm.firstChild;
                     }
 
