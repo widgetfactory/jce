@@ -704,14 +704,26 @@
                 getParent(function (n) {
                     var na = n.nodeName.toLowerCase(), pi, ti = '';
 
-                    // Ignore non element and bogus/hidden elements
-                    if (n.nodeType != 1 || na === 'br' || n.getAttribute('data-mce-bogus') || DOM.hasClass(n, 'mce-item-hidden') || DOM.hasClass(n, 'mce-item-removed') || DOM.hasClass(n, 'mce-item-shim')) {
+                    var cls = n.className || '';
+
+                    // Ignore non element 
+                    if (n.nodeType != 1) {
                         return;
                     }
 
-                    // Handle prefix
-                    if (tinymce.isIE && n.scopeName && n.scopeName !== 'HTML') {
-                        na = n.scopeName + ':' + na;
+                    // Ignore bogus/hidden elements
+                    if (n.getAttribute('data-mce-bogus')) {
+                        return
+                    }
+
+                    // ignore linebreaks
+                    if (na === 'br') {
+                        return;
+                    }
+
+                    // ignore internal item/object
+                    if (/mce-(item|object)-(hidden|removed|shim)/i.test(cls)) {
+                        return;
                     }
 
                     // Remove internal prefix
@@ -787,6 +799,7 @@
                     };
 
                     self.onResolveName.dispatch(self, args);
+
                     ti = args.title;
                     na = args.name;
 
