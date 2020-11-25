@@ -1456,6 +1456,12 @@ class WFEditor
                         continue;
                     }
 
+                    // external url
+                    if (strpos($tmp, '://') !== false) {
+                        $list[] = $tmp;
+                        continue;
+                    }
+
                     // clean slashes
                     $tmp = preg_replace('#[/\\\\]+#', '/', $tmp);
 
@@ -1463,12 +1469,6 @@ class WFEditor
                     $tmp = str_replace('$template', $template->name, $tmp);
 
                     $list = array();
-
-                    // external url
-                    if (strpos($tmp, '://') !== false) {
-                        $list[] = $tmp;
-                        continue;
-                    }
 
                     $file = JPATH_SITE . '/' . $tmp;
 
