@@ -13,7 +13,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
 }));
 
 ?>
-<div class="form-horizontal tabbable tabs-left flex-column">
+<div class="<?php echo $this->formclass;?> tabbable tabs-left flex-column">
     <?php //echo JHtml::_('bootstrap.startTabSet', 'profile-plugins', array('active' => 'profile-plugins-' . $plugins[0]->name));?>
 
     <ul class="nav nav-tabs" id="profile-plugins-tabs">
