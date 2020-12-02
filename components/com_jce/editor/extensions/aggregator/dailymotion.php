@@ -45,4 +45,27 @@ class WFAggregatorExtension_Dailymotion extends WFAggregatorExtension
             'height' => $plugin->getParam('aggregator.dailymotion.height', 270),
         );
     }
+
+    public function getEmbedData($data, $url)
+    {
+        $params = $this->getParams();
+
+        $default = array(
+            'width'     => 480,
+            'height'    => 270
+        );
+
+        foreach($params as $name => $value) {
+            if (isset($default[$name]) && $value === $default[$name]) {
+                continue;
+            }
+            
+            if ($name === 'width' || $name == 'height') {
+                $data[$name] = $value;
+                continue;
+            }
+        }
+        
+        return $data;
+    }
 }
