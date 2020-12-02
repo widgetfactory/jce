@@ -44,4 +44,30 @@ class WFAggregatorExtension_Audio extends WFAggregatorExtension
             'muted' => (int) $plugin->getParam('aggregator.audio.mute', 0)
         );
     }
+
+    public function getEmbedData($data, $url)
+    {
+        $params = $this->getParams();
+
+        $default = array(
+            'controls' => 1,
+            'loop' => 0,
+            'autoplay' => 0,
+            'muted' => 0
+        );
+
+        foreach($params as $name => $value) {
+            if ($default[$name] === $value) {
+                continue;
+            }
+            
+            if ($value !== '') {
+                $data[$name] = $value;
+            }
+        }
+
+        $data['src'] = $url;
+
+        return $data;
+    }
 }
