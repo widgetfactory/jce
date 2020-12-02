@@ -95,7 +95,7 @@ WFAggregator.add('youtube', {
                 v = $(this).is(':checked') ? 1 : 0;
             }
 
-            if (self.props[k] === v || v === '') {
+            if (self.props[k] == v || v === '') {
                 return;
             }
 
