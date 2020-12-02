@@ -130,8 +130,9 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         $view = $this->getView(array('name' => 'search', 'layout' => 'search'));
 
-        $view->assign('searchareas', self::getAreas());
-        $view->assign('lists', $lists);
+        $view->searchareas = self::getAreas();
+        $view->lists = $lists;
+        
         $view->display();
     }
 

@@ -82,7 +82,8 @@ class WFPopupsExtension extends WFExtension
         // Add popup tab and assign popups reference to document
         if (count($this->getPopups())) {
             $tabs->addTab('popups');
-            $tabs->getPanel('popups')->assign('popups', $this);
+            $panel = $tabs->getPanel('popups');
+            $panel->popups = $this;
         }
     }
 
@@ -150,7 +151,7 @@ class WFPopupsExtension extends WFExtension
             ));
 
             $instance = $this->getPopupExtension($popup->name);
-            $view->assign('popup', $instance);
+            $view->popup = $instance;
 
             if (file_exists($popup->path . '/tmpl/default.php')) {
                 ob_start();

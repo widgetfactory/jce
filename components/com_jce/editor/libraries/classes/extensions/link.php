@@ -91,7 +91,7 @@ class WFLinkExtension extends WFExtension
         }
 
         $view = $this->getView(array('name' => 'links', 'layout' => 'links'));
-        $view->assign('list', implode("\n", $list));
+        $view->list = implode("\n", $list);
         $view->display();
     }
 

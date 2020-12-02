@@ -83,7 +83,7 @@ final class WFTabs extends JObject
         }
 
         // assign panel state to view
-        $view->assign('state', (int) $state);
+        $view->state = (int) $state;
 
         return $view;
     }
@@ -113,7 +113,9 @@ final class WFTabs extends JObject
 
             // array is not empty and is associative
             if (!empty($values) && array_values($values) !== $values) {
-                $panel->assign($values);
+                foreach($values as $key => $value) {
+                    $panel->$key = $value;
+                }
             }
         }
     }

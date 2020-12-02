@@ -97,7 +97,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $browser = $this->getFileBrowser();
 
         $browser->display();
-        $view->assign('filebrowser', $browser);
+        $view->filebrowser = $browser;
 
         $options = $browser->getProperties();
 

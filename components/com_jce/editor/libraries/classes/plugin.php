@@ -108,7 +108,7 @@ class WFEditorPlugin extends JObject
             ));
         }
 
-        $view->assign('plugin', $this);
+        $view->plugin = $this;
 
         return $view;
     }
