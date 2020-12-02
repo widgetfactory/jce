@@ -21,17 +21,12 @@ WFAggregator.add('vimeo', {
         color: '',
         autoplay: 0,
         loop: 0,
-        //portrait: 0,
-        //title: 0,
-        //byline: 0,
         fullscreen: 1,
         dnt: 0
     },
 
     setup: function () {
         $('#vimeo_embed').toggle(this.params.embed);
-
-        var self = this;
 
         $.each(this.params, function (k, v) {
             $('#vimeo_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
@@ -85,7 +80,7 @@ WFAggregator.add('vimeo', {
                 v = $(this).is(':checked') ? 1 : 0;
             }
 
-            if (self.props[k] === v || v === '') {
+            if (self.props[k] == v || v === '') {
                 return;
             }
 
