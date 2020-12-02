@@ -14,14 +14,16 @@
         Node = tinymce.html.Node,
         VK = tinymce.VK;
 
-    var Styles = new tinymce.html.Styles(), htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
+    var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
 
+    // media that can be previewed, eg: audio, video, iframe
+    function isPreviewMedia(type) {
+        return type === 'iframe' || type === 'video' || type === 'audio';
+    }
+
+    // media that use the <object> tag, eg: flash, quicktime etc.
     function isObjectEmbed(type) {
-        if (type === 'iframe' || type === 'video' || type === 'audio') {
-            return false;
-        }
-
-        return true;
+        return !isPreviewMedia(type);
     }
 
     function isSupportedMedia(url) {
@@ -88,38 +90,6 @@
 
         return true;
     };
-
-    /**
-     * Convert a URL
-     */
-    function convertUrl(editor, url, force_absolute) {
-        var settings = editor.settings,
-            converter = settings.url_converter,
-            scope = settings.url_converter_scope || self;
-
-        if (!url)
-            return url;
-
-        var parts, query = '',
-            n = url.indexOf('?');
-
-        if (n === -1) {
-            url = url.replace(/&amp;/g, '&');
-            n = url.indexOf('&');
-        }
-
-        if (n > 0) {
-            query = url.substring(n + 1, url.length), url = url.substr(0, n);
-        }
-
-        if (force_absolute) {
-            url = editor.documentBaseURI.toAbsolute(url);
-        } else {
-            url = converter.call(scope, url, 'src', 'object');
-        }
-
-        return url + (query ? '?' + query : '');
-    }
 
     var validateIframe = function (editor, node) {
         var src = node.attr('src');
@@ -414,6 +384,10 @@
             }
 
             if (node.name === 'iframe') {
+                if (isSupportedMedia(node.attr('src'))) {
+                    return 'proportional';
+                }
+                
                 return 'true';
             }
 
@@ -638,6 +612,12 @@
             attrName = attribs[ai].name;
             attrValue = attribs[ai].value;
 
+            // when converting from preview to placeholder
+            if (attrName === 'data-mce-html') {
+                targetNode.attr(attrName, attrValue);
+                continue;
+            }
+
             // node uses img placeholder, so store element specific attributes
             if (targetNode.name === 'img' && (!htmlSchema.isValid('img', attrName) || attrName == 'src')) {
                 attrName = 'data-mce-p-' + attrName;
@@ -781,6 +761,182 @@
         };
     };
 
+    function parseHTML(value) {
+        var nodes = [];
+
+        new tinymce.html.SaxParser({
+            start(name, attrs) {
+                if (name === "source" && attrs.map) {
+                    nodes.push({ 'name': name, 'value': attrs.map.src });
+                } else if (name === "param") {
+                    nodes.push({ 'name': name, 'value': attrs.map });
+                } else if (name === "embed") {
+                    nodes.push({ 'name': name, 'value': attrs.map });
+                }
+            }
+        }).parse(value);
+
+        var settings = {
+            invalid_elements: 'source,param,embed',
+            forced_root_block: false,
+            validate: true
+        };
+
+        // create new schema
+        var schema = new tinymce.html.Schema(settings);
+
+        // clean content
+        var content = new tinymce.html.Serializer(settings, schema).serialize(new tinymce.html.DomParser(settings, schema).parse(value));
+
+        nodes.push({ 'name': 'html', 'value': content });
+
+        return nodes;
+    }
+
+    function isUrlValue(name) {
+        return tinymce.inArray(['src', 'data', 'movie', 'url', 'source'], name) !== -1;
+    }
+
+    function htmlToData(ed, mediatype, html) {
+        var data = {};
+        
+        try {
+            html = unescape(html);
+        } catch (e) {
+        }
+
+        var nodes = parseHTML(html);
+
+        each(nodes, function (node, i) {
+            if (node.name === "source") {
+                // create empty source array
+                if (!data['source']) {
+                    data['source'] = [];
+                }
+                
+                var val = ed.convertURL(node.value);
+
+                data['source'].push(val);
+            } else if (node.name === "param") {
+                if (isUrlValue(node.value.name)) {
+                    node.value.value = ed.convertURL(node.value.value);
+                }
+
+                data[node.value.name] = node.value.value;
+            } else {
+                data['html'] = node.value;
+            }
+        });
+
+        return data;
+    }
+
+    var getMediaData = function (ed) {
+        var data = {}, mediatype;
+        var node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
+
+        // validate node
+        if (!node) {
+            return data;
+        }
+
+        // get media node in preview
+        if (node.className.indexOf('mce-object-preview') !== -1) {
+            node = node.firstChild;
+        }
+
+        // mediatype
+        mediatype = node.getAttribute('data-mce-object') || node.nodeName.toLowerCase();
+
+        // get html
+        var html = ed.dom.getAttrib(node, 'data-mce-html');
+
+        if (html) {
+            extend(data, htmlToData(ed, mediatype, html));
+        }
+
+        var i, attribs = node.attributes;
+
+        // set src value
+        data['src'] = ed.dom.getAttrib(node, 'data-mce-p-src') || ed.dom.getAttrib(node, 'data-mce-p-data') || ed.dom.getAttrib(node, 'src');
+        
+        // convert url
+        data['src'] = ed.convertURL(data['src']);
+
+        for (i = attribs.length - 1; i >= 0; i--) {
+            var attrib = attribs.item(i),
+                name = attrib.name,
+                value;
+
+            // get value from element
+            value = ed.dom.getAttrib(node, name);
+
+            if (name.indexOf('data-mce-p-') !== -1) {
+                name = name.substr(11);
+            }
+
+            // skip these as we will use the "src" key instead
+            if (name === "data" || name === "src") {
+                continue;
+            }
+
+            // skip type, codebase etc.
+            if (name === "type" || name === "codebase" || name === "classid") {
+                continue;
+            }
+
+            // convert poster url
+            if (name === "poster") {
+                value = ed.convertURL(value);
+            }
+
+            // special case for flashvars
+            if (name === 'flashvars') {
+                value = decodeURIComponent(value);
+            }
+
+            // skip internal attributes
+            if (name.indexOf('data-mce-') !== -1) {
+                continue;
+            }
+
+            data[name] = value;
+        }
+
+        return data;
+    };
+
+    var updateMedia = function(ed, data) {
+        var attribs = {}, node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
+
+        var nodeName = node.nodeName.toLowerCase();
+
+        // get iframe node
+        if (node.className.indexOf('mce-object-preview') !== -1) {
+            nodeName = node.getAttribute('data-mce-object');
+            node = ed.dom.select(nodeName, node);
+        }
+
+        each(data, function (value, name) {
+            if (name === 'html' && value) {
+                attribs['data-mce-html'] = escape(value);
+
+                return true;
+            }
+
+            // use prefix attributes for placeholder
+            if (nodeName === 'img' && (!htmlSchema.isValid(nodeName, name) || name === 'src')) {
+                attribs['data-mce-p-' + name] = value;
+
+                return true;
+            }
+
+            attribs[name] = value;
+        });
+
+        ed.dom.setAttribs(node, attribs);
+    };
+
     tinymce.create('tinymce.plugins.MediaPlugin', {
         init: function (ed, url) {
             var self = this;
@@ -843,11 +999,11 @@
                                 o.name = '';
                                 return;
                             }
-                            
+
                             var match = /mce-object-(video|audio|iframe)/i.exec(cls);
 
                             name = match ? match[1] : 'media';
-                            
+
                             var src = n.getAttribute('src') || n.getAttribute('data-mce-p-src') || '';
 
                             if (src) {
@@ -1029,7 +1185,15 @@
 
                 ed.undoManager.add();
             });
-        }
+        },
+
+        getMediaData: function () {
+            return getMediaData(this.editor);
+        },
+
+        updateMedia: function (data) {
+            return updateMedia(this.editor, data);
+        },
     });
 
     // Register plugin
