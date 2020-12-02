@@ -765,7 +765,7 @@
         var nodes = [];
 
         new tinymce.html.SaxParser({
-            start(name, attrs) {
+            start: function(name, attrs) {
                 if (name === "source" && attrs.map) {
                     nodes.push({ 'name': name, 'value': attrs.map.src });
                 } else if (name === "param") {
