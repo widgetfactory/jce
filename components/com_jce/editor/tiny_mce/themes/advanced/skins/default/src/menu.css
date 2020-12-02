@@ -162,6 +162,7 @@
 .mceMenu .mceMenuItems .mceMenuHtml .mceToolbarRow {
     position: relative;
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .mceMenu .mceMenuItems .mceMenuHtml .mceToolbarColumn {
