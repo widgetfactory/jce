@@ -1074,15 +1074,29 @@ class WFEditor
         }
 
         // try Gantry5 templates
-        $gantry5 = glob($path . '/custom/css-compiled/' . $name . '_*.css');
-        $gantry4 = glob($path . '/css-compiled/master-*.css');
+        $gantry5 = $path . '/custom/css-compiled';
+        $gantry4 = $path . '/css-compiled';
 
-        if (!empty($gantry5)) {
+        if (is_dir($gantry5)) {
+            $items = array();
+            
+            $files = glob($gantry5 . '/' . $name . '_*.css');
+
+            foreach($files as $file) {
+                $items[filemtime($file)] = $file;
+            }
+
+            // sort by modified time key
+            ksort($items, SORT_NUMERIC);
+
+            // get the last item in the array
+            $item = end($items);
+                        
             // update url
             $url = 'templates/' . $template->name . '/custom/css-compiled';
 
-            $path = dirname($gantry5[0]);
-            $file = basename($gantry5[0]);
+            $path = dirname($item);
+            $file = basename($item);
 
             // check for editor.css file
             $css = self::isEditorStylesheet($path);
@@ -1116,13 +1130,27 @@ class WFEditor
             }
         }
 
-        if (!empty($gantry4)) {
+        if (is_dir($gantry4)) {
+            $items = array();
+            
+            $files = glob($gantry4 . '/master-*.css');
+
+            foreach($files as $file) {
+                $items[filemtime($file)] = $file;
+            }
+
+            // sort by modified time key
+            ksort($items, SORT_NUMERIC);
+
+            // get the last item in the array
+            $item = end($items);
+            
             // update url
             $url = 'templates/' . $template->name . '/css-compiled';
             // load gantry bootstrap files
             $files[] = $url . '/bootstrap.css';
             // load css files
-            $files[] = $url . '/' . basename($gantry4[0]);
+            $files[] = $url . '/' . basename($item);
         }
     }
 
