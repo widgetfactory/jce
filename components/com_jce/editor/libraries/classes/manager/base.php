@@ -212,8 +212,8 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         $data = array();
 
-        // images
-        if (preg_match('#\.(jpg|jpeg|png|gif|bmp|wbmp|tif|tiff|psd|ico)$#i', $file)) {
+        // images and flash
+        if (preg_match('#\.(jpg|jpeg|png|apng|gif|bmp|wbmp|tif|tiff|psd|ico|webp)$#i', $file)) {
             list($data['width'], $data['height']) = getimagesize($path);
 
             return $data;
