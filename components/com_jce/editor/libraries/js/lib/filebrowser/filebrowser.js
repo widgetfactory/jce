@@ -25,7 +25,7 @@
     })(
         "video,flv|mp4|m4v|webm|ogg|ogv|mov|wmv|avi," +
         "audio,mp3|ogg|oga|webm|m4a," +
-        "image,jpg|jpeg|png|gif|png|svg|bmp|tiff|webp," +
+        "image,jpg|jpeg|apng|png|gif|png|svg|bmp|tiff|webp," +
         "text,txt|htm|html," +
         "word,doc|docx|dot|dotx," +
         "excel,xls|xlsx," +
@@ -262,7 +262,7 @@
                             self._setSelectedItems(e, true);
 
                             self.serializeItemData(n).then(function (data) {
-                                self._trigger('onFileClick', null, [n, data]);
+                                self._trigger('onFileClick', [n, data]);
                             });
                         }
 
@@ -2607,7 +2607,7 @@
                                 items = item;
 
                                 self.serializeItemData(item).then(function (data) {
-                                    self._trigger('onFileClick', null, [item, data]);
+                                    self._trigger('onFileClick', [item, data]);
                                 });
                             }
 
@@ -2900,7 +2900,7 @@
                         // Dimensions (will only apply to file items)
                         if (data.width && data.height) {
                             $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + data.width + ' x ' + data.height + '</div>');
-
+                            
                             // create thumbnail preview
                             if (mime && mime === "image") {
                                 $('#info-preview').empty().append('<img src="' + data.preview + '" alt="" />').removeClass('loading');
@@ -2911,6 +2911,8 @@
                         if (data.duration) {
                             $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-duration">' + tinyMCEPopup.getLang('dlg.duration', 'Duration') + ': ' + data.duration + '</div>');
                         }
+
+                        self._trigger('onFileDetails', [item, data]);
                     }
 
                     $.each(data, function (key, value) {
