@@ -12,7 +12,10 @@
     var each = tinymce.each,
         extend = tinymce.extend,
         Node = tinymce.html.Node,
-        VK = tinymce.VK;
+        VK = tinymce.VK,
+        Serializer = tinymce.html.Serializer,
+        DomParser = tinymce.html.DomParser,
+        SaxParser = tinymce.html.SaxParser;
 
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
 
@@ -207,6 +210,43 @@
         return true;
     }
 
+    function parseHTML(value) {
+        var nodes = [];
+
+        new SaxParser({
+            start: function(name, attrs) {                
+                if (name === "source" && attrs.map) {
+                    nodes.push({ 'name': name, 'value': attrs.map });
+                } else if (name === "param") {
+                    nodes.push({ 'name': name, 'value': attrs.map });
+                } else if (name === "embed") {
+                    nodes.push({ 'name': name, 'value': attrs.map });
+                }
+            }
+        }).parse(value);
+
+        var settings = {
+            invalid_elements: 'source,param,embed',
+            forced_root_block: false,
+            verify_html: true,
+            validate: true
+        };
+
+        // create new schema
+        var schema = new tinymce.html.Schema(settings);
+
+        // clean content
+        var content = new Serializer(settings, schema).serialize(new DomParser(settings, schema).parse(value));
+
+        nodes.push({ 'name': 'html', 'value': content });
+
+        return nodes;
+    }
+
+    function isUrlValue(name) {
+        return tinymce.inArray(['src', 'data', 'movie', 'url', 'source'], name) !== -1;
+    }
+
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
@@ -288,7 +328,7 @@
         "video/x-flv,flv," +
         "video/vnd.rn-realvideo,rv", +
         "video/3gpp,3gp," +
-    "video/x-matroska,mkv"
+        "video/x-matroska,mkv"
     );
 
     each(mediaTypes, function (value, key) {
@@ -523,14 +563,54 @@
 
         elm.attr(attribs);
 
-        // Inject innerhtml
+        // process innerHTML to nodes and append
         var html = node.attr('data-mce-html');
 
         if (html) {
-            var innerNode = new Node('#text', 3);
-            innerNode.raw = true;
-            innerNode.value = sanitize(editor, unescape(html));
-            elm.append(innerNode);
+            var childNodes = parseHTML(unescape(html));
+
+            each(childNodes, function(child) {
+                var inner;
+                
+                if (child.name === 'html') {
+                    var inner = new Node('#text', 3);
+                    inner.raw = true;
+                    inner.value = sanitize(editor, child.value);
+                    elm.append(inner);
+                } else {
+                    var inner = new Node(child.name, 1);
+
+                    // short ended for <param /> and <source />
+                    if (child.name != 'embed') {
+                        inner.shortEnded = true;
+                    }
+
+                    each(child.value, function(val, key) {
+                        if (htmlSchema.isValid(inner.name, key)) {
+                            inner.attr(key, val);
+                        }
+                    });
+
+                    elm.append(inner);
+                }
+            });
+        }
+
+        // add embed for some object media
+        if (tag === 'object' && elm.getAll('embed').length === 0 && elm.attr('type') !== 'application/x-shockwave-flash') {
+            var embed = new Node('embed', 1);
+
+            each(attribs, function(value, name) {
+                if (name === 'data') {
+                    embed.attr('src', value);
+                }
+                
+                if (htmlSchema.isValid('embed', name)) {
+                    embed.attr(name, value);
+                }
+            });
+
+            elm.append(embed);
         }
 
         return elm;
@@ -612,6 +692,10 @@
             attrName = attribs[ai].name;
             attrValue = attribs[ai].value;
 
+            if (attrName.indexOf('data-mce') !== -1) {
+                continue;
+            }
+
             // when converting from preview to placeholder
             if (attrName === 'data-mce-html') {
                 targetNode.attr(attrName, attrValue);
@@ -639,7 +723,7 @@
         var classes = [];
 
         if (sourceNode.attr('class')) {
-            classes = sourceNode.attr('class').split(' ');
+            classes = sourceNode.attr('class').replace(/mce-(\S+)/g, '').replace(/\s+/g, ' ').trim().split(' ');
         }
 
         var props = lookup[sourceNode.attr('type')] || lookup[sourceNode.attr('classid')] || { name: sourceNode.name };
@@ -680,21 +764,23 @@
             }
         }
 
-        // no data attribute set, use <param> node
-        if (!sourceNode.attr('data') && sourceNode.name === 'object') {
-            var params = sourceNode.getAll('param');
+        if (sourceNode.name === 'object') {            
+            // no data attribute set, use <param> node
+            if (!sourceNode.attr('data')) {
+                var params = sourceNode.getAll('param');
 
-            each(params, function (param) {
-                if (param.attr('name') === 'src' || param.attr('name') === 'url') {
-                    targetNode.attr({
-                        'data-mce-p-data': param.attr('value')
-                    });
+                each(params, function (param) {
+                    if (param.attr('name') === 'src' || param.attr('name') === 'url') {
+                        targetNode.attr({
+                            'data-mce-p-data': param.attr('value')
+                        });
 
-                    param.remove();
-
-                    return false;
-                }
-            });
+                        return false;
+                    }
+                });
+            }
+            // set media type
+            targetNode.attr('data-mce-p-type', props.type);
         }
 
         // Place the inner HTML contents inside an escaped attribute
@@ -760,42 +846,6 @@
             }
         };
     };
-
-    function parseHTML(value) {
-        var nodes = [];
-
-        new tinymce.html.SaxParser({
-            start: function(name, attrs) {
-                if (name === "source" && attrs.map) {
-                    nodes.push({ 'name': name, 'value': attrs.map.src });
-                } else if (name === "param") {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                } else if (name === "embed") {
-                    nodes.push({ 'name': name, 'value': attrs.map });
-                }
-            }
-        }).parse(value);
-
-        var settings = {
-            invalid_elements: 'source,param,embed',
-            forced_root_block: false,
-            validate: true
-        };
-
-        // create new schema
-        var schema = new tinymce.html.Schema(settings);
-
-        // clean content
-        var content = new tinymce.html.Serializer(settings, schema).serialize(new tinymce.html.DomParser(settings, schema).parse(value));
-
-        nodes.push({ 'name': 'html', 'value': content });
-
-        return nodes;
-    }
-
-    function isUrlValue(name) {
-        return tinymce.inArray(['src', 'data', 'movie', 'url', 'source'], name) !== -1;
-    }
 
     function htmlToData(ed, mediatype, html) {
         var data = {};
