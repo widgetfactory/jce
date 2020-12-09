@@ -207,6 +207,8 @@ class WFLinkSearchExtension extends WFSearchExtension
             $searchphrase = 'exact';
         }
 
+        $searchphrase = $app->input->post->getWord('searchphrase', $searchphrase);
+
         // get passed through ordering
         $ordering = $app->input->post->getWord('ordering', $ordering);
 
