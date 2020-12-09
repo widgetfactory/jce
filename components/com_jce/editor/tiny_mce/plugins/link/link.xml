@@ -92,16 +92,14 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field type="container" showon="basic_dialog:0">
-                <field name="autolink_email" type="yesno" default="1" label="WF_LINK_AUTOLINK_EMAIL" description="WF_LINK_AUTOLINK_EMAIL_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+            <field name="autolink_email" type="yesno" default="1" label="WF_LINK_AUTOLINK_EMAIL" description="WF_LINK_AUTOLINK_EMAIL_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
 
-                <field name="autolink_url" type="yesno" default="1" label="WF_LINK_AUTOLINK_URL" description="WF_LINK_AUTOLINK_URL_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
+            <field name="autolink_url" type="yesno" default="1" label="WF_LINK_AUTOLINK_URL" description="WF_LINK_AUTOLINK_URL_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
             </field>
 
             <!--field type="container" label="WF_PARAM_FILE_BROWSER_OPTIONS" showon="file_browser:1">
