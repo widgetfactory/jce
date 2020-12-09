@@ -919,7 +919,7 @@
                     }
 
                     // decode code snippets
-                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
+                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {                        
                         // not the droids etc.
                         if (attr.indexOf('data-mce-code') === -1) {
                             return match;
@@ -928,11 +928,11 @@
                         // trim content
                         content = tinymce.trim(content);
 
-                        // replace linebreaks with newline
-                        content = content.replace(/<br[^>]*?>/gi, '\n');
-
                         // decode content
                         content = ed.dom.decode(content);
+
+                        // replace linebreaks with newline
+                        content = content.replace(/<br[^>]*?>/gi, '\n');
 
                         // remove and replace <?php?> tags
                         if (attr.indexOf('data-mce-code="php"') !== -1) {
