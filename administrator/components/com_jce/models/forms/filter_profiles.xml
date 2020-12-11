@@ -58,7 +58,7 @@
 		</field>
 
 		<field
-			name="types"
+			name="usergroups"
 			type="usergrouplist"
 			label="WF_PROFILES_GROUPS"
 			description="WF_PROFILES_GROUPS_DESC"

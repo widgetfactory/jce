@@ -86,6 +86,53 @@ class JceModelProfiles extends JModelList
     }
 
     /**
+	 * Method to get an array of data items.
+	 *
+	 * @return  mixed  An array of data items on success, false on failure.
+	 *
+	 * @since   1.6
+	 */
+	public function getItems()
+	{
+        $items = parent::getItems();
+
+        // Filter by device
+        $device = $this->getState('filter.device');
+        
+        // Filter by component
+        $components = $this->getState('filter.components');
+        
+        // Filter by user groups
+		$usergroups = $this->getState('filter.usergroups');
+
+        $items = array_filter($items, function($item) use ($device, $components, $usergroups) {
+            $state = true;
+
+            if ($device) {
+                $state = in_array($device, explode(',', $item->device));
+            }
+
+            if ($components) {
+                $state = in_array($components, explode(',', $item->components));
+            }
+
+            if ($usergroups) {
+                $state = in_array($usergroups, explode(',', $item->types));
+            }
+
+            return $state;
+        });
+
+        // Get a storage key.
+        $store = $this->getStoreId();
+        
+        // update cache store
+        $this->cache[$store] = $items;
+
+        return $items;
+	}
+
+    /**
      * Build an SQL query to load the list data.
      *
      * @return  JDatabaseQuery
@@ -103,7 +150,7 @@ class JceModelProfiles extends JModelList
         $query->select(
             $this->getState(
                 'list.select',
-                'id, name, description, ordering, published, checked_out, checked_out_time'
+                '*'
             )
         );
 
@@ -128,22 +175,6 @@ class JceModelProfiles extends JModelList
 		{
 			$query->where($db->quoteName('area') . ' = ' . (int) $area);
         }
-        
-        // Filter by device
-		$device = $this->getState('filter.device');
-
-		if ($device)
-		{
-			$query->where($db->quoteName('device') . ' = ' . $db->quote($device));
-		}
-        
-        // Filter by component
-		$components = $this->getState('filter.components');
-
-		if (is_numeric($components))
-		{
-			$query->where($db->quoteName('components') . ' = ' . (int) $components);
-		}
 
         // Filter by search in title
         $search = $this->getState('filter.search');
