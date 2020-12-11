@@ -9,6 +9,20 @@ class JceViewProfiles extends JViewLegacy
     protected $pagination;
     protected $state;
 
+    protected function isEmpty()
+    {
+        // Create a new query object.
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        // Select the required fields from the table.
+        $query->select('COUNT(id)')->from($db->quoteName('#__wf_profiles'));
+
+        $db->setQuery($query);
+
+        return $db->loadResult() == 0;
+    }
+
     /**
      * Display the view.
      */
@@ -18,6 +32,7 @@ class JceViewProfiles extends JViewLegacy
         $this->pagination = $this->get('Pagination');
         $this->state = $this->get('State');
         $this->filterForm = $this->get('FilterForm');
+        $this->activeFilters = $this->get('ActiveFilters');
 
         $this->params = JComponentHelper::getParams('com_jce');
 
@@ -28,7 +43,7 @@ class JceViewProfiles extends JViewLegacy
             return false;
         }
 
-        if (empty($this->items)) {
+        if ($this->isEmpty()) {
             $link = JHTML::link('index.php?option=com_jce&task=profiles.repair&' . JSession::getFormToken() . '=1', JText::_('WF_DB_CREATE_RESTORE'), array('class' => 'wf-profiles-repair'));
             JFactory::getApplication()->enqueueMessage(JText::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
         }

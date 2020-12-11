@@ -79,6 +79,8 @@ class JceModelProfiles extends JModelList
     {
         // Compile the store id.
         $id .= ':' . $this->getState('filter.search');
+        $id .= ':' . $this->getState('filter.published');
+		$id .= ':' . $this->getState('filter.components');
 
         return parent::getStoreId($id);
     }
@@ -106,7 +108,42 @@ class JceModelProfiles extends JModelList
         );
 
         $query->from($db->quoteName('#__wf_profiles'));
-        $query->where('(' . $db->quoteName('published') . ' IN (0, 1))');
+
+        // Filter by published state
+		$published = $this->getState('filter.published');
+
+		if (is_numeric($published))
+		{
+			$query->where($db->quoteName('published') . ' = ' . (int) $published);
+		}
+		elseif ($published === '')
+		{
+			$query->where('(' . $db->quoteName('published') . ' = 0 OR ' . $db->quoteName('published') . ' = 1)');
+        }
+
+        // Filter by area
+		$area = (int) $this->getState('filter.area');
+
+		if ($area)
+		{
+			$query->where($db->quoteName('area') . ' = ' . (int) $area);
+        }
+        
+        // Filter by device
+		$device = $this->getState('filter.device');
+
+		if ($device)
+		{
+			$query->where($db->quoteName('device') . ' = ' . $db->quote($device));
+		}
+        
+        // Filter by component
+		$components = $this->getState('filter.components');
+
+		if (is_numeric($components))
+		{
+			$query->where($db->quoteName('components') . ' = ' . (int) $components);
+		}
 
         // Filter by search in title
         $search = $this->getState('filter.search');
