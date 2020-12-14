@@ -67,15 +67,6 @@
             ed.onInit.add(function(ed) {
                 ed.controlManager.setActive('kitchensink', state);
             });
-        },
-        getInfo: function() {
-            return {
-                longname: 'Kitchen Sink',
-                author: 'Ryan Demmer',
-                authorurl: 'https://www.joomlacontenteditor.net/',
-                infourl: 'https://www.joomlacontenteditor.net/',
-                version: '@@version@@'
-            };
         }
     });
 
