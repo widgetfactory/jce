@@ -168,11 +168,15 @@ class plgEditorJCE extends JPlugin
         if (!$editor->hasPlugin('joomla')) {
             $html .= $this->displayButtons($id, $buttons, $asset, $author);
         } else {
-            $options = array(
-                'joomla_xtd_buttons' => $this->getXtdButtonsList($id, $buttons, $asset, $author),
-            );
+            $list = $this->getXtdButtonsList($id, $buttons, $asset, $author);
 
-            JFactory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
+            if (!empty($list)) {
+                $options = array(
+                    'joomla_xtd_buttons' => $list
+                );
+
+                JFactory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
+            }
 
             // render empty container for dynamic buttons
             $html .= JLayoutHelper::render('joomla.editors.buttons', array());
