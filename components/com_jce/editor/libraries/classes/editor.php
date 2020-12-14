@@ -287,6 +287,17 @@ class WFEditor
         return false;
     }
 
+    private function getLanguageDirection()
+    {
+        $user = JFactory::getUser();
+        $params = JComponentHelper::getParams('com_languages');
+        $locale = $user->getParam('language', $params->get('site', 'en-GB'));
+
+        $language = JLanguage::getInstance($locale);
+
+        return $language->isRTL() ? 'rtl' : 'ltr';
+    }
+
     public function getSettings()
     {
         // get an editor instance
@@ -305,7 +316,7 @@ class WFEditor
             'token' => JSession::getFormToken(),
             'base_url' => JURI::root(),
             'language' => WFLanguage::getCode(),
-            'directionality' => WFLanguage::getDir(),
+            'directionality' => $this->getLanguageDirection(),
             'theme' => 'none',
             'plugins' => '',
             'skin' => 'default',
