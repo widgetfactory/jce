@@ -1717,11 +1717,8 @@
                     href = editor.convertURL(href);
                 }
 
-                if (href && href.indexOf('file://') === 0) {
-                    href = href.split('#')[1];
-                    if (href) {
-                        href = '#' + href;
-                    }
+                if (href && href.indexOf('#') !== -1) {
+                    href = href.substr(href.indexOf('#'));
                 }
 
                 if (!href && !name) {
