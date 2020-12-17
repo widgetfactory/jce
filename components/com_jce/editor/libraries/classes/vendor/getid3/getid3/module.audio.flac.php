@@ -14,7 +14,9 @@
 //                                                            ///
 /////////////////////////////////////////////////////////////////
 
-
+if (!defined('GETID3_INCLUDEPATH')) { // prevent path-exposing attacks that access modules directly on public webservers
+	exit;
+}
 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'module.audio.ogg.php', __FILE__, true);
 
 /**
@@ -52,7 +54,7 @@ class getid3_flac extends getid3_handler
 		do {
 			$BlockOffset   = $this->ftell();
 			$BlockHeader   = $this->fread(4);
-			$LBFBT         = getid3_lib::BigEndian2Int(substr($BlockHeader, 0, 1));
+			$LBFBT         = getid3_lib::BigEndian2Int(substr($BlockHeader, 0, 1));  // LBFBT = LastBlockFlag + BlockType
 			$LastBlockFlag = (bool) ($LBFBT & 0x80);
 			$BlockType     =        ($LBFBT & 0x7F);
 			$BlockLength   = getid3_lib::BigEndian2Int(substr($BlockHeader, 1, 3));
@@ -63,6 +65,11 @@ class getid3_flac extends getid3_handler
 				break;
 			}
 			if ($BlockLength < 1) {
+				if ($BlockTypeText != 'reserved') {
+					// probably supposed to be zero-length
+					$this->warning('METADATA_BLOCK_HEADER.BLOCK_LENGTH ('.$BlockTypeText.') at offset '.$BlockOffset.' is zero bytes');
+					continue;
+				}
 				$this->error('METADATA_BLOCK_HEADER.BLOCK_LENGTH ('.$BlockLength.') at offset '.$BlockOffset.' is invalid');
 				break;
 			}
@@ -173,7 +180,7 @@ class getid3_flac extends getid3_handler
 		if (isset($info['flac']['STREAMINFO']['audio_signature'])) {
 
 			if ($info['flac']['STREAMINFO']['audio_signature'] === str_repeat("\x00", 16)) {
-                $this->warning('FLAC STREAMINFO.audio_signature is null (known issue with libOggFLAC)');
+				$this->warning('FLAC STREAMINFO.audio_signature is null (known issue with libOggFLAC)');
 			}
 			else {
 				$info['md5_data_source'] = '';
