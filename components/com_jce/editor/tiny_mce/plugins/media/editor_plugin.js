@@ -214,7 +214,7 @@
         var nodes = [];
 
         new SaxParser({
-            start: function(name, attrs) {                
+            start: function (name, attrs) {
                 if (name === "source" && attrs.map) {
                     nodes.push({ 'name': name, 'value': attrs.map });
                 } else if (name === "param") {
@@ -328,7 +328,7 @@
         "video/x-flv,flv," +
         "video/vnd.rn-realvideo,rv", +
         "video/3gpp,3gp," +
-        "video/x-matroska,mkv"
+    "video/x-matroska,mkv"
     );
 
     each(mediaTypes, function (value, key) {
@@ -427,7 +427,7 @@
                 if (isSupportedMedia(node.attr('src'))) {
                     return 'proportional';
                 }
-                
+
                 return 'true';
             }
 
@@ -569,9 +569,9 @@
         if (html) {
             var childNodes = parseHTML(unescape(html));
 
-            each(childNodes, function(child) {
+            each(childNodes, function (child) {
                 var inner;
-                
+
                 if (child.name === 'html') {
                     var inner = new Node('#text', 3);
                     inner.raw = true;
@@ -585,7 +585,7 @@
                         inner.shortEnded = true;
                     }
 
-                    each(child.value, function(val, key) {
+                    each(child.value, function (val, key) {
                         if (htmlSchema.isValid(inner.name, key)) {
                             inner.attr(key, val);
                         }
@@ -600,11 +600,11 @@
         if (tag === 'object' && elm.getAll('embed').length === 0 && elm.attr('type') !== 'application/x-shockwave-flash') {
             var embed = new Node('embed', 1);
 
-            each(attribs, function(value, name) {
+            each(attribs, function (value, name) {
                 if (name === 'data') {
                     embed.attr('src', value);
                 }
-                
+
                 if (htmlSchema.isValid('embed', name)) {
                     embed.attr(name, value);
                 }
@@ -707,11 +707,7 @@
                 attrName = 'data-mce-p-' + attrName;
             }
 
-            if (attrName.indexOf('data-mce-') !== -1) {
-                targetNode.attr(attrName, attrValue);
-            }
-
-            if (htmlSchema.isValid(targetNode.name, attrName)) {
+            if (attrName.indexOf('data-mce-') !== -1 || htmlSchema.isValid(targetNode.name, attrName)) {
                 targetNode.attr(attrName, attrValue);
             }
         }
@@ -764,7 +760,7 @@
             }
         }
 
-        if (sourceNode.name === 'object') {            
+        if (sourceNode.name === 'object') {
             // no data attribute set, use <param> node
             if (!sourceNode.attr('data')) {
                 var params = sourceNode.getAll('param');
@@ -779,7 +775,7 @@
                     }
                 });
             }
-            // set media type
+            // media type
             targetNode.attr('data-mce-p-type', props.type);
         }
 
@@ -849,7 +845,7 @@
 
     function htmlToData(ed, mediatype, html) {
         var data = {};
-        
+
         try {
             html = unescape(html);
         } catch (e) {
@@ -863,8 +859,8 @@
                 if (!data['source']) {
                     data['source'] = [];
                 }
-                
-                var val = ed.convertURL(node.value);
+
+                var val = ed.convertURL(node.value.src);
 
                 data['source'].push(val);
             } else if (node.name === "param") {
@@ -909,7 +905,7 @@
 
         // set src value
         data['src'] = ed.dom.getAttrib(node, 'data-mce-p-src') || ed.dom.getAttrib(node, 'data-mce-p-data') || ed.dom.getAttrib(node, 'src');
-        
+
         // convert url
         data['src'] = ed.convertURL(data['src']);
 
@@ -956,7 +952,7 @@
         return data;
     };
 
-    var updateMedia = function(ed, data) {
+    var updateMedia = function (ed, data) {
         var attribs = {}, node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
 
         var nodeName = node.nodeName.toLowerCase();
@@ -985,7 +981,19 @@
         });
 
         ed.dom.setAttribs(node, attribs);
+
+        // update style dimensions
+        each(['width', 'height'], function (key) {
+            if (attribs[key]) {
+                ed.dom.setStyle(node, key, attribs[key]);
+            }
+        });
     };
+
+    function isMediaObject(ed, node) {
+        node = node || ed.selection.getNode();
+        return ed.dom.getParent(node, '[data-mce-object]')
+    }
 
     tinymce.create('tinymce.plugins.MediaPlugin', {
         init: function (ed, url) {
@@ -1174,12 +1182,11 @@
                             node = e.target;
                         }
 
-                        if (node.className.indexOf('mce-object-shim') !== -1) {
-                            node = node.parentNode;
-                        }
-
-                        if (node.className.indexOf('mce-object-preview') !== -1) {
+                        if (isMediaNode(node)) {
+                            node = ed.dom.getParent(node, '[data-mce-object]') || node;
                             ed.dom.remove(node);
+
+                            ed.nodeChanged();
                         }
                     }
                 }
@@ -1244,6 +1251,10 @@
         updateMedia: function (data) {
             return updateMedia(this.editor, data);
         },
+
+        isMediaObject: function (node) {
+            return isMediaObject(this.editor, node);
+        }
     });
 
     // Register plugin
