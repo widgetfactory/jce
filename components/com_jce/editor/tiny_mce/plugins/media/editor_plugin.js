@@ -1002,8 +1002,8 @@
             self.editor = ed;
             self.url = url;
 
-            function isMediaNode(n) {
-                return n && ed.dom.getParent(n, '[data-mce-object]') !== null;
+            function isMediaNode(node) {
+                return node && isMediaObject(ed, node);
             }
 
             ed.onPreInit.add(function () {
@@ -1047,22 +1047,20 @@
                 var settings = ed.settings;
 
                 ed.theme.onResolveName.add(function (theme, o) {
-                    var n = o.node;
+                    var node, name;
 
-                    if (n) {
-                        var cls = ed.dom.getAttrib(n, 'class', '');
+                    if (node = ed.dom.getParent(o.node, '[data-mce-object]')) {
+                        name = node.getAttribute('data-mce-object');
 
-                        if (cls.indexOf('mce-object-') !== -1) {
-                            if (cls.indexOf('mce-object-preview') !== -1) {
-                                o.name = '';
-                                return;
-                            }
+                        // skip processing as we are using the parent node
+                        if (o.node !== node) {
+                            return;
+                        }
 
-                            var match = /mce-object-(video|audio|iframe)/i.exec(cls);
+                        if (node.nodeName !== 'IMG') {
+                            node = ed.dom.select('iframe,audio,video', node);
 
-                            name = match ? match[1] : 'media';
-
-                            var src = n.getAttribute('src') || n.getAttribute('data-mce-p-src') || '';
+                            var src = ed.dom.getAttrib(node, 'src') || ed.dom.getAttrib(node, 'data-mce-p-src') || '';
 
                             if (src) {
                                 var str = isSupportedMedia(ed, src) || '';
@@ -1071,9 +1069,13 @@
                                     name = ucfirst(str);
                                 }
                             }
-
-                            o.name = name;
                         }
+
+                        if (name === 'object') {
+                            name = 'media';
+                        }
+
+                        o.name = name;
                     }
                 });
 
@@ -1147,11 +1149,14 @@
                         var node = ed.selection.getNode();
 
                         // if it is a preview node, select the iframe
-                        if (node && ed.dom.hasClass(node, 'mce-object-preview')) {
-                            ed.selection.select(node.firstChild);
+                        if (isMediaNode(node)) {
+                            if (node.nodeName !== 'IMG') {
+                                node = node.firstChild;
+                                ed.selection.select(node);
+                            }
 
                             if (tinymce.is(v, 'object')) {
-                                v.node = node.firstChild;
+                                v.node = node;
                             }
                         }
                     }
@@ -1163,7 +1168,7 @@
                         // remove existing caret to prevent duplicates
                         o.content = o.content.replace(/<br data-mce-caret="1"[^>]+>/gi, '');
 
-                        // ad a caret br after iframe content
+                        // add a caret br after iframe content
                         if (/^<(iframe|video|audio)([^>]+)><\/(iframe|video|audio)>$/.test(o.content)) {
                             o.content += '<br data-mce-caret="1" />';
                         }
@@ -1208,7 +1213,7 @@
 
             tinymce.util.MediaEmbed = {
                 dataToHtml: function (name, data, innerHtml) {
-                    var html = ''
+                    var html = '';
 
                     if (name === "iframe" || name === "video" || name === "audio") {
                         if (typeof data === "string") {
