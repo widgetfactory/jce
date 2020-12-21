@@ -76,4 +76,6 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 		    <label for="<?php echo $oid; ?>" class="checkbox"><?php echo $option->text; ?></label>
         </div>
 	<?php endforeach; ?>
+
+	<input type="hidden" name="<?php echo $name;?>" value="" />
 </fieldset>
