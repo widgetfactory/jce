@@ -13,8 +13,7 @@
  */
 
 (function () {
-    var i, base, src, p, query = '',
-        it, scripts = [];
+    var base, scripts = [];
 
     base = '../../../tinymce-muon-retina/jscripts/tiny_mce/classes';
 
