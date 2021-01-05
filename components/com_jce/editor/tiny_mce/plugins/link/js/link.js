@@ -674,7 +674,9 @@
                             if (n.anchors) {
                                 $.each(n.anchors, function (i, a) {
                                     $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {
-                                        self.insertLink(Wf.String.decode(n.link + '#' + a));
+                                        var url = Wf.String.decode(n.link) + '#' + a;
+                                        
+                                        self.insertLink({ 'url': url, text: a });
                                     }).appendTo($dl);
                                 });
                             }
