@@ -47,6 +47,23 @@
                     }
                 }
             });
+
+            // special quotes shortcute
+            ed.onKeyUp.add(function(ed, e) {
+                // default is CTRL + SHIFT + ' and “text”
+                var keyCode = 222, quoted = '&ldquo;{$selection}&rdquo;';
+                
+                // use different keyCode for German quotes, eg: „text“
+                if (ed.settings.language == 'de') {
+                    keyCode = 50;
+                    quoted = '&bdquo;{$selection}&ldquo;';
+                }
+                
+                if (e.keyCode == keyCode && e.shiftKey && e.ctrlKey) {
+                    ed.undoManager.add();
+                    ed.execCommand('mceReplaceContent', false, quoted);
+                }
+            });
         }
     });
 
