@@ -58,7 +58,7 @@
                     quoted = '&bdquo;{$selection}&ldquo;';
                 }
 
-                if ((e.key == "'" || e.key == '"') &&e.shiftKey && e.ctrlKey) {
+                if ((e.key === '\u0027' || e.key == '\u0022') &&e.shiftKey && e.ctrlKey) {
                     ed.undoManager.add();
                     ed.execCommand('mceReplaceContent', false, quoted);
                 }
