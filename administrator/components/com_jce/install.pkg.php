@@ -483,6 +483,11 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/mediaplayer'
         );
 
+        // delete img folder in Image Manager Extended
+        $folders['2.9.1'] = array(
+            $site . '/editor/tiny_mce/plugins/imgmanager_ext/img'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',
