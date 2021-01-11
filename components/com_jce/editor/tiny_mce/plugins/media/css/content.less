@@ -9,59 +9,59 @@ img.mce-object {
     background-color: var(--mce-placeholder);
 
     background-size: 256px;
-    
+
     &.mce-object-generic {
         min-width: 50px;
         min-height: 50px;
     }
-    
+
     &.mce-object-generic,
     &.mce-object-embed {
         background-image: url(../img/generic.svg);
         background-size: 16px;
     }
-    
+
     &.mce-object-shockwave {
         background-image: url(../img/shockwave.svg);
     }
-    
+
     &.mce-object-flash {
         background-image: url(../img/swf.svg);
     }
-    
+
     &.mce-object-quicktime {
         background-image: url(../img/quicktime.svg);
     }
-    
+
     &.mce-object-windowsmedia {
         background-image: url(../img/windowsmedia.svg);
     }
-    
+
     &.mce-object-realmedia {
         background-image: url(../img/real.svg);
     }
-    
+
     &.mce-object-divx {
         background-image: url(../img/video.svg);
     }
-    
+
     &.mce-object-silverlight {
         background-image: url(../img/video.svg);
     }
-    
+
     &.mce-object-pdf {
         background-image: url(../img/pdf.svg);
     }
-    
+
     &.mce-object-iframe {
         background-image: url(../img/iframe.svg);
     }
-    
+
     &.mce-object-audio {
         background-image: url(../img/audio.svg);
         background-size: 128px;
 
-         /* default for Chrome */
+        /* default for Chrome */
         width: 300px;
         height: 54px;
 
@@ -75,7 +75,7 @@ img.mce-object {
             height: 31px;
         }
     }
-    
+
     &.mce-object-video {
         background-image: url(../img/video.svg);
         background-size: 128px;
@@ -97,6 +97,9 @@ img.mce-object {
     border: 1px solid #ccc;
     border-color: var(--mce-guidelines);
     overflow: hidden;
+
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 14px;
 
     &[data-mce-selected] {
         border: 2px solid #3399ff;
@@ -135,7 +138,9 @@ img.mce-object {
     }
 
     &.mce-object-audio::after {
-        font-size: 85%;
+        font-size: 0.75em;
+        line-height: 1;
+        top: calc(50% - 0.5em);
     }
 }
 
@@ -150,6 +155,12 @@ img.mce-object {
     display: block;
 }
 
-[data-mce-selected].mce-object-preview:not(.mce-resizing) .mce-object-shim {
-    display: none;
+[data-mce-selected].mce-object-preview {
+
+    &:not(.mce-resizing) {
+        .mce-object-shim {
+            display: none;
+        }
+    }
+
 }
