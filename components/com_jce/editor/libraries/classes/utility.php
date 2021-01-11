@@ -477,7 +477,13 @@ abstract class WFUtility
         $parts = explode('/', $path);
 
         // return basename
-        return end($parts);
+        $path = end($parts);
+
+        if ($ext === '.' . self::getExtension($path)) {
+            $path = self::stripExtension($path);
+        }
+    
+        return $path;
     }
 
     public static function convertEncoding($string)
