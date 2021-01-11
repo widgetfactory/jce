@@ -503,6 +503,11 @@
                 var styleObject = editor.dom.parseStyle(value);
 
                 tinymce.each(['width', 'height'], function (key) {
+                    // transfer value
+                    if (!attribs[key]) {
+                        attribs[key] = parseInt(styleObject[key]);
+                    }
+
                     // delete style value
                     delete styleObject[key];
                 });
@@ -1066,7 +1071,7 @@
                                 var str = isSupportedMedia(ed, src) || '';
 
                                 if (str) {
-                                    name = ucfirst(str);
+                                    name = str[0].toUpperCase() + str.slice(1);
                                 }
                             }
                         }
