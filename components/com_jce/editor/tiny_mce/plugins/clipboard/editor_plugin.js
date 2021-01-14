@@ -1364,9 +1364,6 @@
                 node = elements[i];
 
                 if (node.name == 'p' && node.firstChild) {
-                    // remove marker
-                    node.attr('data-mce-word-list', null);
-
                     // Find first text node in paragraph
                     var nodeText = getText(node),
                         type;
@@ -1379,6 +1376,10 @@
 
                     // Detect ordered lists 1., a. or ixv.
                     if (node.attr('data-mce-word-list')) {
+
+                        // remove marker
+                        node.attr('data-mce-word-list', null);
+
                         if (type = isNumericList(nodeText)) {
                             // Parse OL start number
                             var matches = /([0-9]+)\./.exec(nodeText);
@@ -1633,8 +1634,8 @@
 
                 style = node.attr('style');
 
-                // check for list (unordered)
-                if (style && style.indexOf('mso-list') !== -1) {
+                // check for fake list (unordered)
+                if (style && style.indexOf('mso-list') !== -1 && node.name !== 'li') {
                     node.attr('data-mce-word-list', 1);
                 }
 
@@ -1665,7 +1666,7 @@
                 if (/^Mso[\w]+/i.test(className) || editor.getParam('clipboard_paste_strip_class_attributes', 2)) {
                     node.attr('class', null);
 
-                    if (className && className.indexOf('MsoList') !== -1) {
+                    if (className && className.indexOf('MsoList') !== -1 && node.name !== 'li') {
                         node.attr('data-mce-word-list', 1);
                     }
 
@@ -1851,7 +1852,7 @@
             content = wrapContent(content);
 
             // find and link url if not already linked
-            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {                
+            content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
                 if (extra) {
                     return match;
                 }
@@ -1870,7 +1871,7 @@
             // wrap content - this seems to be required to prevent repeats of link conversion
             content = wrapContent(content);
 
-            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {                
+            content = content.replace(new RegExp('(href=["\']mailto:)*' + ex, 'g'), function (match, attrib, email) {
                 // only if not already a mailto: link
                 if (!attrib) {
                     return '<a href="mailto:' + email + '">' + email + '</a>';
@@ -2232,7 +2233,7 @@
                 if (!content) {
                     return;
                 }
-                
+
                 // create object to process
                 var o = {
                     content: content,
