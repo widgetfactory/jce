@@ -1,8 +1,5 @@
 /* https://www.google.com/design/spec/style/color.html#color-color-palette */
 
-@import url('ui.css');
-/*@import url('fonts.css');*/
-
 .mceDefaultSkinTouch .mceToolbar {
   background-color: #f5f5f5;
 }
