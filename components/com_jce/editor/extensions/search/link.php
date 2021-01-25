@@ -323,8 +323,6 @@ class WFLinkSearchExtension extends WFSearchExtension
             }
 
             $areas[$area][] = $result;
-
-            //$results[] = $result;
         }
 
         if (!empty($areas)) {
