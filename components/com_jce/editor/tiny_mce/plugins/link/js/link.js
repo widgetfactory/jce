@@ -650,45 +650,50 @@
 
             Wf.JSON.request('doSearch', {
                 'json': [query]
-            }, function (o) {
-                if (o && !o.error) {
+            }, function (results) {
+                if (results && !results.error) {
 
                     $('#search-result').empty();
 
-                    if (o.length) {
-                        $.each(o, function (i, n) {
-                            var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
+                    if (results.length) {
+                        $.each(results, function (i, values) {
+                            $.each(values, function (name, items) {
+                                $('<h3 class="uk-margin-top uk-margin-left uk-text-bold">' + name + '</h3>').appendTo('#search-result');
 
-                            $('<dt class="link uk-margin-small" />').text(n.title).on('click', function () {
-                                var url = n.link, text = n.title;
+                                $.each(items, function (i, item) {
+                                    var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
 
-                                url = Wf.String.decode(url);
+                                    $('<dt class="link uk-margin-small" />').text(item.title).on('click', function () {
+                                        var url = item.link, text = item.title;
 
-                                text = $.trim(text.split('/')[0]);
+                                        url = Wf.String.decode(url);
 
-                                self.insertLink({ 'url': url, text: text });
-                            }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
+                                        text = $.trim(text.split('/')[0]);
 
-                            $('<dd class="text">' + n.text + '</dd>').appendTo($dl);
+                                        self.insertLink({ 'url': url, text: text });
+                                    }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
 
-                            if (n.anchors) {
-                                $.each(n.anchors, function (i, a) {
-                                    $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {
-                                        var url = Wf.String.decode(n.link) + '#' + a;
+                                    $('<dd class="text">' + item.text + '</dd>').appendTo($dl);
+
+                                    if (item.anchors) {
+                                        $.each(item.anchors, function (i, a) {
+                                            $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {
+                                                var url = Wf.String.decode(item.link) + '#' + a;
                                         
-                                        self.insertLink({ 'url': url, text: a });
-                                    }).appendTo($dl);
+                                                self.insertLink({ 'url': url, text: a });
+                                            }).appendTo($dl);
+                                        });
+                                    }
                                 });
-                            }
+                            });
                         });
 
                         $('dl:odd', '#search-result').addClass('odd');
-
                     }
                     $('#search-options-button').trigger('close');
                     $('#search-result').height($p.parent().height() - $p.outerHeight() - 5).show();
                 } else {
-                    Wf.Modal.alert(o.error || 'The server return an invalid response');
+                    Wf.Modal.alert(results.error || 'The server return an invalid response');
                 }
                 $('#search-browser').removeClass('loading');
                 $('#search-clear').addClass('uk-active');

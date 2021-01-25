@@ -136,6 +136,31 @@ class WFLinkSearchExtension extends WFSearchExtension
         $view->display();
     }
 
+    private static function getSearchAreaFromUrl($url)
+    {
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        if (empty($query)) {
+            return "";
+        }
+
+        parse_str($query, $values);
+
+        if (!array_key_exists('option', $values)) {
+            return "";
+        }
+
+        $language = JFactory::getLanguage();
+
+        $option = $values['option'];
+        
+        // load system language file
+        $language->load($option.'.sys', JPATH_ADMINISTRATOR);
+        $language->load($option, JPATH_ADMINISTRATOR);
+
+        return JText::_($option);
+    }
+
     /**
      * Process search.
      *
@@ -236,11 +261,19 @@ class WFLinkSearchExtension extends WFSearchExtension
         // get first 10
         $rows = array_slice($rows, 0, $limit);
 
+        $areas = array();
+
         for ($i = 0, $count = count($rows); $i < $count; ++$i) {
             $row = &$rows[$i];
 
             if (empty($row->href) || empty($row->text)) {
                 continue;
+            }
+
+            $area = self::getSearchAreaFromUrl($row->href);
+
+            if (!isset($areas[$area])) {
+                $areas[$area] = array();
             }
 
             $result = new StdClass;
@@ -289,7 +322,13 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $result->anchors = $row->anchors;
             }
 
-            $results[] = $result;
+            $areas[$area][] = $result;
+
+            //$results[] = $result;
+        }
+
+        if (!empty($areas)) {
+            $results[] = $areas;
         }
 
         return $results;
