@@ -19,8 +19,8 @@
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="width" type="number" default="400" class="input-small" label="WF_LABEL_WIDTH" description="WF_AGGREGATOR_DAILYMOTION_WIDTH_DESC" />
-			<field name="height" type="number" default="225" class="input-small" label="WF_LABEL_HEIGHT" description="WF_AGGREGATOR_DAILYMOTION_HEIGHT_DESC" />
+			<field name="width" type="number" default="400" class="input-small" label="WF_LABEL_WIDTH" />
+			<field name="height" type="number" default="225" class="input-small" label="WF_LABEL_HEIGHT" />
 		</fieldset>
 	</fields>
 	<plugins></plugins>
