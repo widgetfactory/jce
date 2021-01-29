@@ -150,7 +150,7 @@
                     <option value="0">JNO</option>
                 </field>
             </field-->
-            <field type="container" label="WF_PARAM_FILE_BROWSER_OPTIONS" showon="basic_dialog:0">
+            <field type="container" label="" showon="basic_dialog:0">
                 <field name="tabs_advanced" type="yesno" default="1" label="WF_LINK_PARAM_TAB_ADVANCED" description="WF_LINK_PARAM_TAB_ADVANCED_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
