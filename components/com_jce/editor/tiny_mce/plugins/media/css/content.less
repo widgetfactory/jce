@@ -137,6 +137,22 @@ img.mce-object {
         pointer-events: none;
     }
 
+    &.mce-object-audio {
+        /* default for Chrome */
+        width: 300px;
+        height: 54px;
+
+        &.mce-object-agent-gecko {
+            width: 270px;
+            height: 40px;
+        }
+
+        &.mce-object-agent-safari {
+            width: 250px;
+            height: 31px;
+        }
+    }
+
     &.mce-object-audio::after {
         font-size: 0.75em;
         line-height: 1;
