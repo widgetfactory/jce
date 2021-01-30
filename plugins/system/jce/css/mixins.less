@@ -1,13 +1,39 @@
 .flex_gap() {
-    .wf-columns .wf-column {
-        margin-left: @gap-medium;
-
-        &:first-child {
-            margin-left: inherit;
+    .wf-columns {
+        .wf-column {
+            margin-left: @gap-medium;
+    
+            &:first-child {
+                margin-left: inherit;
+            }
+    
+            &:last-child {
+                margin-right: inherit;
+            }
         }
+    }
 
-        &:last-child {
-            margin-right: inherit;
+    .wf-columns-gap-small {
+        .wf-column {
+            margin-left: @gap-small;
+        }
+    }
+    
+    .wf-columns-gap-medium {
+        .wf-column {
+            margin-left: @gap-medium;
+        }
+    }
+    
+    .wf-columns-gap-large {
+        .wf-column {
+            margin-left: @gap-large;
+        }
+    }
+    
+    .wf-columns-gap-none {
+        .wf-column {
+            margin-left: inherit;
         }
     }
 
@@ -21,6 +47,12 @@
 
                 &:first-child {
                     margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-none {
+                .wf-column {
+                    margin-top: inherit;
                 }
             }
 
@@ -57,6 +89,12 @@
                 }
             }
 
+            &.wf-columns-gap-none {
+                .wf-column {
+                    margin-top: inherit;
+                }
+            }
+
             &.wf-columns-gap-small {
                 .wf-column {
                     margin-top: @gap-small;
@@ -90,6 +128,12 @@
                 }
             }
 
+            &.wf-columns-gap-none {
+                .wf-column {
+                    margin-top: inherit;
+                }
+            }
+
             &.wf-columns-gap-small {
                 .wf-column {
                     margin-top: @gap-small;
@@ -120,6 +164,12 @@
 
                 &:first-child {
                     margin-top: inherit !important;
+                }
+            }
+
+            &.wf-columns-gap-none {
+                .wf-column {
+                    margin-top: inherit;
                 }
             }
 
