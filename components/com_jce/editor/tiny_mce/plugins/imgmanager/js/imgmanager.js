@@ -347,8 +347,12 @@
                 name = data.title,
                 src = data.url;
 
-            if ($('#rollover_tab').hasClass('uk-active')) {
-                $('input.focus', '#rollover_tab').val(src);
+            if (tab === "rollover_tab") {
+                if ($('#onmouseout').val() === '') {
+                    $('#onmouseout').val(src);
+                } else {
+                    $('input.uk-active', '#rollover_tab').val(src);
+                }
             } else {
                 // add an alt value only if it has not been manually edited
                 if (!$('#alt').hasClass('uk-edited')) {
