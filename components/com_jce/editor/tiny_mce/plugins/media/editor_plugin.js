@@ -383,6 +383,8 @@
     };
 
     var placeholderToPreview = function (editor, node) {
+        var name;
+        
         var placeholder = new Node('img', 1);
         placeholder.shortEnded = true;
 
@@ -503,6 +505,11 @@
                 var styleObject = editor.dom.parseStyle(value);
 
                 tinymce.each(['width', 'height'], function (key) {
+                    // skip processing in audio element
+                    if (tag === 'audio') {
+                        return true;
+                    }
+                    
                     // transfer value
                     if (!attribs[key]) {
                         attribs[key] = parseInt(styleObject[key]);
@@ -600,6 +607,9 @@
                 }
             });
         }
+
+        // remove html attribute
+        elm.attr('data-mce-html', null);
 
         // add embed for some object media
         if (tag === 'object' && elm.getAll('embed').length === 0 && elm.attr('type') !== 'application/x-shockwave-flash') {
