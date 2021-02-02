@@ -51,7 +51,7 @@ var WFPopups = WFExtensions.add('Popups', {
         // setup and trigger change
         $('#popup_list').on('change', function () {
             self.selectPopup(this.value);
-            options.change();
+            options.change(this.value);
         }).on('popup:remove', function (e, n) {
             options.remove(n);
         }).trigger('change');
