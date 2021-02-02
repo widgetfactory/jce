@@ -38,10 +38,20 @@
                 }
             });
 
-            // add focus behaviour to onmoueover / onmouseout
-            $('#onmouseover, #onmouseout').on('$1', function () {
-                $('#onmouseover, #onmouseout').removeClass('focus');
-                $(this).addClass('focus');
+            // add persistent-focus
+            $('#onmouseover, #onmouseout').addClass('uk-persistent-focus').on('click focus', function () {
+                $('#onmouseover, #onmouseout').removeClass('uk-active');
+
+                $(this).addClass('uk-active');
+            });
+
+            // set up body click to retain input focus
+            $('body').on('click.persistent-focus', function (e) {
+                if ($(e.target).is('.uk-persistent-focus, li.file') || $(e.target).parents('li.file').length) {
+                    return;
+                }
+
+                $('.uk-persistent-focus').removeClass('uk-active');
             });
 
             Wf.init();
@@ -347,7 +357,10 @@
                 name = data.title,
                 src = data.url;
 
-            if (tab === "rollover_tab") {
+            // get active tab
+            var tab = $('.uk-tabs-panel > .uk-active').attr('id');
+
+            if (tab == "rollover_tab") {
                 $('input.uk-active', '#rollover_tab').or('#onmouseout').val(src);
             } else {
                 // add an alt value only if it has not been manually edited
