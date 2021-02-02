@@ -23,6 +23,6 @@ defined('JPATH_PLATFORM') or die;
 		<?php echo JText::_('WF_LABEL_MOUSEOUT'); ?>
 	</label>
 	<div class="uk-form-controls uk-width-1-1 uk-width-small-7-10">
-		<input id="onmouseout" type="text" value="" />
+		<input id="onmouseout" type="text" value="" autofocus />
 	</div>
 </div>
