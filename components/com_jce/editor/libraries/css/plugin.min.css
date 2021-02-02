@@ -1322,8 +1322,8 @@ html {
 .uk-form-icon-flip>[class*="uk-icon-colorpicker"],
 .uk-form-icon-both>[class*="uk-icon-colorpicker"]:last-child {
     background-color: #fff;
-    width: 1.5em;
-    height: 1.5em;
+    width: 2em;
+    height: 2em;
     top: 0.25em;
     border-radius: 2px;
     right: 0.25em;
