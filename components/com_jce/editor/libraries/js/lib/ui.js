@@ -1,4 +1,9 @@
 (function ($) {
+    // jQuery or selector - https://github.com/byrichardpowell/jquery-or
+    $.fn.or = function( fallbackSelector ) {
+		return this.length ? this : $( fallbackSelector || 'body' );
+	};
+    
     $.fn.borderWidget = function () {
         $(this).on('click change', function () {
             var state = this.checked;
@@ -264,7 +269,7 @@
             $('.uk-tab li', el).on('click', function (e) {
                 e.preventDefault();
 
-                $(this).find('button').trigger('focus');
+                $(this).find('[autofocus]').trigger('focus');
 
                 // legacy
                 $(el).children('.uk-switcher').children().addClass('uk-tabs-hide');
