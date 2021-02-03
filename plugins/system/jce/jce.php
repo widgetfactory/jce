@@ -37,17 +37,36 @@ class PlgSystemJce extends JPlugin
         $app->redirect($options['url']);
     }
 
+    private function isEditorEnabled()
+    {
+        $config = JFactory::getConfig();
+        $user = JFactory::getUser();
+
+        if (!JPluginHelper::getPlugin('editors', 'jce')) {
+            return false;
+        }
+
+        if ($user->getParam('editor', $config->get('editor')) !== 'jce') {
+            return false;
+        }
+
+        return true;
+    }
+
     public function onAfterRoute()
     {
         $app = JFactory::getApplication();
 
-        if ($app->input->get('option') == 'com_media') {
-            if ($app->input->get('asset')) {
+        if ($app->input->getCmd('option') == 'com_media') {
+            if ($app->input->getWord('asset') && $app->input->getWord('tmpl') == 'component') {
 
-                $params = JComponentHelper::getParams('com_jce');
+                if ($this->isEditorEnabled()) {
+                    $params = JComponentHelper::getParams('com_jce');
 
-                if ((bool) $params->get('replace_media_manager', 1)) {
-                    $this->redirectMedia();
+                    if ((bool) $params->get('replace_media_manager', 1) == true) {
+                        // redirect to file browser
+                        $this->redirectMedia();
+                    }
                 }
             }
         }
@@ -123,14 +142,7 @@ class PlgSystemJce extends JPlugin
             }
         }
 
-        $config = JFactory::getConfig();
-        $user = JFactory::getUser();
-
-        if ($user->getParam('editor', $config->get('editor')) !== 'jce') {
-            return true;
-        }
-
-        if (!JPluginHelper::getPlugin('editors', 'jce')) {
+        if (!$this->isEditorEnabled()) {
             return true;
         }
 
