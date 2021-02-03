@@ -265,10 +265,10 @@
     };
 
     $(document).ready(function ($) {
-        $('.wf-media-input').removeAttr('readonly');
+        $('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
 
         $(document).on('subform-row-add', function (event, row) {
-            $(row).find('.wf-media-input').removeAttr('readonly');
+            $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
         });
 
         $('.wf-media-input-upload').WfMediaUpload();

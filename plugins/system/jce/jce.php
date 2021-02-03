@@ -19,6 +19,40 @@ class PlgSystemJce extends JPlugin
         return $this->onContentPrepareForm($form, $data);
     }
 
+    private function redirectMedia()
+    {
+        $app = JFactory::getApplication();
+
+        require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
+
+        $id = $app->input->get('fieldid');
+        $mediatpye = $app->input->get('view', 'images');
+
+        $options = WFBrowserHelper::getMediaFieldOptions(array(
+            'element' => $id,
+            'converted' => true,
+            'mediatype' => $mediatype,
+        ));
+
+        $app->redirect($options['url']);
+    }
+
+    public function onAfterRoute()
+    {
+        $app = JFactory::getApplication();
+
+        if ($app->input->get('option') == 'com_media') {
+            if ($app->input->get('asset')) {
+
+                $params = JComponentHelper::getParams('com_jce');
+
+                if ((bool) $params->get('replace_media_manager', 1)) {
+                    $this->redirectMedia();
+                }
+            }
+        }
+    }
+
     public function onAfterDispatch()
     {
         $app = JFactory::getApplication();
@@ -118,7 +152,7 @@ class PlgSystemJce extends JPlugin
             $type = $field->getAttribute('type');
 
             if (strtolower($type) === 'media') {
-                
+
                 if ((bool) $params->get('replace_media_manager', 1) === false) {
                     continue;
                 }
@@ -133,7 +167,7 @@ class PlgSystemJce extends JPlugin
                 $hasMedia = true;
             }
         }
-        
+
         // form has a converted media field
         if ($hasMedia) {
             $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
