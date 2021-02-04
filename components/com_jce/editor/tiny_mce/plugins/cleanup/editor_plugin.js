@@ -371,7 +371,8 @@
                     content = new tinymce.html.Serializer({
                         validate: true
                     }, schema).serialize(new tinymce.html.DomParser({
-                        validate: true
+                        validate: true,
+                        allow_event_attributes: !!ed.settings.allow_event_attributes
                     }, schema).parse(content));
 
                     ed.setContent(content, {
