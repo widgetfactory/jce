@@ -1069,6 +1069,7 @@
 
                         // skip processing as we are using the parent node
                         if (o.node !== node) {
+                            o.name = '';
                             return;
                         }
 
