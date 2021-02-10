@@ -12,6 +12,9 @@
 
     tinymce.create('tinymce.plugins.CorePLugin', {
         init: function (ed, url) {
+            // command store
+            var store;
+            
             var contentLoaded = false, elm = ed.getElement();
 
             function isEmpty() {
@@ -25,7 +28,7 @@
             function insertContent(value) {
                 value = Entities.decode(value);
 
-                if (value) {                    
+                if (value) {
                     if (elm.nodeName === 'TEXTAREA') {
                         elm.value = value;
                     } else {
@@ -38,7 +41,7 @@
 
             var startup_content_html = ed.settings.startup_content_html || '';
 
-            ed.onBeforeRenderUI.add(function() {
+            ed.onBeforeRenderUI.add(function () {
                 // load content on first startup
                 if (startup_content_html && elm) {
                     if (!contentLoaded && isEmpty()) {
@@ -49,19 +52,37 @@
             });
 
             // special quotes shortcute
-            ed.onKeyUp.add(function(ed, e) {
+            ed.onKeyUp.add(function (ed, e) {
                 // default is CTRL + SHIFT + ' and “text”
                 var quoted = '&ldquo;{$selection}&rdquo;';
-                
+
                 // use different keyCode for German quotes, eg: „text“
                 if (ed.settings.language == 'de') {
                     quoted = '&bdquo;{$selection}&ldquo;';
                 }
 
-                if ((e.key === '\u0027' || e.key == '\u0022') &&e.shiftKey && e.ctrlKey) {
+                if ((e.key === '\u0027' || e.key == '\u0022') && e.shiftKey && e.ctrlKey) {
                     ed.undoManager.add();
                     ed.execCommand('mceReplaceContent', false, quoted);
                 }
+            });
+
+            ed.onExecCommand.add(function (ed, cmd, ui, val, args) {
+                if (cmd == 'Undo' || cmd == 'Redo' || cmd == 'mceReApply' || cmd == 'mceRepaint') {
+                    return;
+                }
+
+                store = { cmd: cmd, ui: ui, value: val, args: args };
+            });
+
+            ed.addShortcut('ctrl+alt+z', '', 'mceReApply');
+
+            ed.addCommand('mceReApply', function () {
+                if (!store || !store.cmd) {
+                    return;
+                }
+
+                return ed.execCommand(store.cmd, store.ui, store.value, store.args);
             });
         }
     });
