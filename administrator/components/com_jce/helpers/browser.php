@@ -34,6 +34,20 @@ abstract class WfBrowserHelper
         return $options['url'];
     }
 
+    private static function getBaseUrl()
+    {
+    	$app = JFactory::getApplication();
+    	$base = JURI::root(true);
+
+        if ($app->isAdmin()) {
+            $base .= '/administrator';
+        }
+            
+        $base = rtrim($base, '/');
+        
+        return $base;
+    }
+
     public static function getMediaFieldOptions($options = array())
     {
         if (!isset($options['element'])) {
@@ -76,7 +90,7 @@ abstract class WfBrowserHelper
 
             $token = JFactory::getSession()->getFormToken();
 
-            $data['url'] = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
+            $data['url'] = self::getBaseUrl() . '/index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
             // add context
             $data['url'] .= '&context=' . $wf->getContext();
