@@ -221,12 +221,14 @@
                     nodes.push({ 'name': name, 'value': attrs.map });
                 } else if (name === "embed") {
                     nodes.push({ 'name': name, 'value': attrs.map });
+                } else if (name === "track") {
+                    nodes.push({ 'name': name, 'value': attrs.map });
                 }
             }
         }).parse(value);
 
         var settings = {
-            invalid_elements: 'source,param,embed',
+            invalid_elements: 'source,param,embed,track',
             forced_root_block: false,
             verify_html: true,
             validate: true
@@ -509,6 +511,10 @@
                     if (tag === 'audio') {
                         return true;
                     }
+
+                    if (!styleObject[key]) {
+                        return true;
+                    }
                     
                     // transfer value
                     if (!attribs[key]) {
@@ -604,6 +610,10 @@
                     });
 
                     elm.append(inner);
+
+                    if (inner.name == 'source' && inner.attr('src') == elm.attr('src')) {
+                        elm.attr('src', null);
+                    }
                 }
             });
         }
@@ -727,8 +737,13 @@
             }
         }
 
-        style.width = /^[0-9.]+$/.test(width) ? (width + 'px') : width;
-        style.height = /^[0-9.]+$/.test(height) ? (height + 'px') : height;
+        if (width) {
+            style.width = /^[0-9.]+$/.test(width) ? (width + 'px') : width;
+        }
+
+        if (height) {
+            style.height = /^[0-9.]+$/.test(height) ? (height + 'px') : height;
+        }
 
         // get classes as array
         var classes = [];
@@ -770,8 +785,6 @@
                 }
 
                 targetNode.attr(name, node.attr('src'));
-
-                node.remove();
             }
         }
 
