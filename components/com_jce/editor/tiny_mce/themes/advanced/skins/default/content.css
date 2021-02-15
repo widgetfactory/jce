@@ -83,6 +83,33 @@ body {
 .mceContentBody img::selection {
   background-color: #b4d4ff;
 }
+.mceContentBody .mce-visual-caret {
+  position: absolute;
+  background-color: black;
+  background-color: currentcolor;
+}
+.mceContentBody .mce-visual-caret-hidden {
+  display: none;
+}
+.mceContentBody *[data-mce-caret] {
+  position: absolute;
+  left: -1000px;
+  right: auto;
+  top: 0;
+  margin: 0;
+  padding: 0;
+}
+.mceContentBody .mce-offscreen-selection {
+  position: absolute;
+  left: -9999999999px;
+  max-width: 1000000px;
+}
+.mceContentBody .mce-content-body *[contentEditable=false] {
+  cursor: default;
+}
+.mceContentBody .mce-content-body *[contentEditable=true] {
+  cursor: text;
+}
 body.mceContentReset {
   background: #fff none !important;
   color: #000 !important;

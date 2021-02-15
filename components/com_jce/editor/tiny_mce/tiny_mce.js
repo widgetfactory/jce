@@ -47,6 +47,9 @@
     include('util/Quirks.js');
     include('util/Preview.js');
 
+    include('util/Arr.js');
+	include('util/Fun.js');
+
     // tinymce.html.*
     include('html/Entities.js');
     include('html/Styles.js');
@@ -56,6 +59,10 @@
     include('html/DomParser.js');
     include('html/Serializer.js');
     include('html/Writer.js');
+
+	// tinymce.geom.*
+	include('geom/ClientRect.js');
+	include('geom/Rect.js');
 
     // tinymce.dom.*
     include('dom/EventUtils.js');
@@ -70,6 +77,25 @@
     include('dom/StyleSheetLoader.js');
     include('dom/RangeUtils.js');
     include('dom/ControlSelection.js');
+
+    include('dom/NodeType.js');
+    include('dom/Dimensions.js');
+
+    // tinymce.text.*
+	include('text/ExtendingChar.js');
+	include('text/Zwsp.js');
+
+	// tinymce.caret.*
+	include('caret/CaretBookmark.js');
+    include('caret/CaretContainer.js');
+	include('caret/CaretCandidate.js');
+	include('caret/CaretContainerRemove.js');
+	include('caret/CaretPosition.js');
+	include('caret/CaretUtils.js');
+	include('caret/CaretWalker.js');
+	include('caret/FakeCaret.js');
+	include('caret/LineUtils.js');
+	include('caret/LineWalker.js');
 
     // tinymce.ui.*
     include('ui/KeyboardNavigation.js');
@@ -103,6 +129,10 @@
     include('EditorManager.js');
     include('Editor.js');
     include('Editor.Events.js');
+
+    include('InsertList.js');
+    include('InsertContent.js');
+
     include('EditorCommands.js');
     include('UndoManager.js');
     include('ForceBlocks.js');
@@ -111,6 +141,8 @@
     include('Formatter.js');
     include('LegacyInput.js');
     include('EnterKey.js');
+
+    include('SelectionOverrides.js');
 
     /* Core plugins */
     include('core/editor_plugin.js', '../components/com_jce/editor/tiny_mce/plugins');

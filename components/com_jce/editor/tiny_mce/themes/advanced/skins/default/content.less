@@ -55,16 +55,16 @@ body {
         cursor: ne-resize;
         margin: -1px 1px;
     }
-    
+
     .mce-resizehandle-se {
         cursor: se-resize;
         margin: 1px;
     }
-    
+
     .mce-resizehandle-nw {
         cursor: nw-resize;
     }
-    
+
     .mce-resizehandle-sw {
         cursor: sw-resize;
         margin: 1px -1px;
@@ -97,6 +97,40 @@ body {
     img::selection {
         background-color: #b4d4ff;
     }
+
+    .mce-visual-caret {
+        position: absolute;
+        background-color: black;
+        background-color: currentcolor;
+    }
+
+    .mce-visual-caret-hidden {
+        display: none;
+    }
+
+    *[data-mce-caret] {
+        position: absolute;
+        left: -1000px;
+        right: auto;
+        top: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mce-offscreen-selection {
+        position: absolute;
+        left: -9999999999px;
+        max-width: 1000000px;
+    }
+
+    .mce-content-body *[contentEditable=false] {
+        cursor: default;
+    }
+
+    .mce-content-body *[contentEditable=true] {
+        cursor: text;
+    }
+
 }
 
 body.mceContentReset {
