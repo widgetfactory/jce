@@ -126,8 +126,7 @@ WFAggregator.add('dailymotion', {
         return data;
     },
     setValues: function(data) {
-        var self = this,
-            src = data.src || data.data || '',
+        var self = this, src = data.src || data.data || '',
             id = '';
 
         if (!src) {
@@ -137,7 +136,13 @@ WFAggregator.add('dailymotion', {
         var query = Wf.String.query(src);
 
         // add extracted values to data
-        $.extend(data, query);
+        $.each(query, function(key, val) {
+            if (self.props[key] == val) {
+                return true;
+            }
+
+            data['dailymotion_' + key] = val;
+        });
 
         // replace &amp; with &
         src = src.replace(/&amp;/g, '&');

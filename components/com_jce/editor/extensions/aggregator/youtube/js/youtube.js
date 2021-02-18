@@ -182,8 +182,7 @@ WFAggregator.add('youtube', {
         return o;
     },
     setValues: function(data) {
-        var self = this,
-            id = '',
+        var self = this, id = '',
             src = data.src || data.data || '',
             query = {};
 
@@ -200,8 +199,6 @@ WFAggregator.add('youtube', {
             // split query
             query = Wf.String.query(u.query);
         }
-
-        data = $.extend(data, query);
 
         // https url
         src = src.replace(/^(http:)?\/\//, 'https://');
@@ -221,45 +218,30 @@ WFAggregator.add('youtube', {
             }
         }
 
-        // decode playlist
-        if (data.playlist) {
-            data.playlist = decodeURIComponent(data.playlist);
-        }
-
-        // reset playlist if it is the same as the id
-        if (data.playlist === id) {
-            data.playlist = null;
-        }
-
-        // remove wmode
-        if (query.wmode) {
-            delete query.wmode;
-        }
-
-        var x = 0;
-
-        // process remaining values as params
-        $.each(query, function(k, v) {
-            if (typeof self.props[k] == 'undefined') {
-
-                try {
-                    v = decodeURIComponent(v);
-                } catch (e) {}
-
-                var n = $('.uk-repeatable', '#youtube_params').eq(0);
-
-                if (x > 0) {
-                    $(n).clone(true).appendTo($(n).parent());
-                }
-
-                var elements = $('.uk-repeatable', '#youtube_params').eq(x).find('input, select');
-
-                $(elements).eq(0).val(k);
-                $(elements).eq(1).val(v);
-
-                delete data[k];
+        // process values
+        $.each(query, function(key, val) {
+            try {
+                val = decodeURIComponent(val);
+            } catch (e) {}
+    
+            // skip playlist if it is the same as the id
+            if (key == 'playlist' && val == id) {
+                return true;
             }
-            x++;
+    
+            // skip wmode
+            if (key == 'wmode') {
+                return true;
+            }
+
+            // skip default
+            if (self.props[key] === val) {
+                return true;
+            }
+
+            data['youtube_' + key] = val;
+
+            delete data[key];
         });
 
         // process url

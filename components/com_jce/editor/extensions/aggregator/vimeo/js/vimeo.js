@@ -127,8 +127,7 @@ WFAggregator.add('vimeo', {
         return data;
     },
     setValues: function (data) {
-        var self = this,
-            src = data.src || data.data || '',
+        var self = this, src = data.src || data.data || '',
             id = '';
 
         if (!src) {
@@ -137,15 +136,12 @@ WFAggregator.add('vimeo', {
 
         var query = Wf.String.query(src);
 
-        // add extracted values to data
-        $.extend(data, query);
-
         // replace &amp; with &
         src = src.replace(/&amp;/g, '&');
 
         // legacy embed method
         if (/moogaloop.swf/.test(src)) {
-            data['embed'] = true;
+            data['vimeo_embed'] = true;
 
             // get id from clip_id
             id = query['clip_id'];
@@ -165,27 +161,21 @@ WFAggregator.add('vimeo', {
             }
         }
 
-        $.each(['portrait', 'title', 'byline', 'autoplay', 'loop', 'dnt'], function (i, s) {
-            var v = query[s] || 0;
-
-            // transfer value
-            data[s] = v;
-        });
-
-        // add additional parameter fields
-        $.each(query, function (k, v) {
-            if (typeof self.props[k] == 'undefined') {
-                $('#vimeo_options table').append('<tr><td><label for="vimeo_' + k + '">' + k + '</label><input type="text" id="vimeo_' + k + '" value="' + v + '" /></td></tr>');
+        $.each(query, function(key, val) {
+            // skip default
+            if (self.props[key] === val) {
+                return true;
             }
+
+            if (key == 'color' && val.charAt(0) !== '#') {
+                val = '#' + val;
+            }
+            
+            data['vimeo_' + key] = val;
         });
 
         // simplify url
         src = 'https://vimeo.com/' + id;
-
-        // add # to color
-        if (data['color'] && data['color'].charAt(0) != '#') {
-            data['color'] = '#' + data['color'];
-        }
 
         data.src = src;
 
