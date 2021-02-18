@@ -68,18 +68,18 @@
     include('dom/EventUtils.js');
     include('dom/TreeWalker.js');
     include('dom/DOMUtils.js');
-    //include('dom/Range.js');
-    //include('dom/TridentSelection.js');
+
+    include('dom/NodeType.js');
+    include('dom/Dimensions.js');
+
     include('dom/Sizzle.js');
+    include('dom/ScrollIntoView.js');
     include('dom/Selection.js');
     include('dom/Serializer.js');
     include('dom/ScriptLoader.js');
     include('dom/StyleSheetLoader.js');
     include('dom/RangeUtils.js');
     include('dom/ControlSelection.js');
-
-    include('dom/NodeType.js');
-    include('dom/Dimensions.js');
 
     // tinymce.text.*
 	include('text/ExtendingChar.js');
