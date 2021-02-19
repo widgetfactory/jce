@@ -43,6 +43,7 @@ JLoader::register('WFSearchExtension', WF_EDITOR_CLASSES . '/extensions/search.p
 JLoader::register('WFMediaManagerBase', WF_EDITOR_CLASSES . '/manager/base.php');
 JLoader::register('WFMediaManager', WF_EDITOR_CLASSES . '/manager.php');
 JLoader::register('WFFileBrowser', WF_EDITOR_CLASSES . '/browser.php');
+JLoader::register('Wf_Mobile_Detect', WF_EDITOR_CLASSES . '/mobile.php');
 
 JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php');
 JLoader::register('JceEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
