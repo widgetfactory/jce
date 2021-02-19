@@ -56,11 +56,13 @@ class JFormFieldMediaJce extends JFormFieldMedia
     {
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
-        $options = WFBrowserHelper::getMediaFieldOptions(array(
+        $config = array(
             'element' => $this->id,
             'mediatype' => $this->mediatype,
             'converted' => (int) $this->element['converted'] ? true : false
-        ));
+        );
+
+        $options = WFBrowserHelper::getMediaFieldOptions($config);
 
         $this->link = $options['url'];
 

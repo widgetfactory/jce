@@ -88,8 +88,10 @@ abstract class WfBrowserHelper
 
             $data['url'] = self::getUrl();
 
-            // add context
-            $data['url'] .= '&context=' . $wf->getContext();
+            // add default context
+            if (!isset($options['context'])) {
+                $options['context'] = $wf->getContext();
+            }
 
             foreach ($options as $key => $value) {
                 if ($value) {
