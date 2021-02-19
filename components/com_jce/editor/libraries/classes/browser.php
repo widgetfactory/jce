@@ -237,7 +237,7 @@ class WFFileBrowser extends JObject
                 // create flattened array, eg: ["jpg", "jpeg", "gif", "png"]
                 if ($format === 'array' || $format === 'list') {
                     $data = array_merge($data, array_map('strtolower', $items));
-                // create associative array, eg:  or ["images" => ["jpg", "jpeg", "gif", "png"]]
+                    // create associative array, eg:  or ["images" => ["jpg", "jpeg", "gif", "png"]]
                 } else {
                     $data[$type] = $items;
                 }
@@ -256,7 +256,7 @@ class WFFileBrowser extends JObject
 
         // return array
         $data = array_values($data);
-        
+
         return $data;
     }
 
@@ -355,12 +355,17 @@ class WFFileBrowser extends JObject
 
         if (!empty($filters)) {
             $filesystem = $this->getFileSystem();
-            
-            $path = ltrim($path, '/');
+
+            // remove slashes
+            $path = trim($path, '/');
 
             foreach ($filters as $filter) {
+                // remove whitespace
                 $filter = trim($filter);
-                
+
+                // remove slashes
+                $filter = trim($filter, '/');
+
                 // show this folder
                 if ($filter[0] === "+") {
                     $path_parts = explode('/', $path);
@@ -368,7 +373,7 @@ class WFFileBrowser extends JObject
                     // remove "+" from filter
                     $filter = substr($filter, 1);
 
-                    // process path for variables, text case etc. 
+                    // process path for variables, text case etc.
                     $filesystem->processPath($filter);
 
                     // explode to array
@@ -381,16 +386,35 @@ class WFFileBrowser extends JObject
 
                     $return = false;
 
-                // hide this folder    
+                // hide this folder
                 } else {
                     $return = true;
-                    
+
+                    if ($filter[0] === "*") {
+                        // remove "-" from filter
+                        $filter = substr($filter, 1);
+
+                        // process path for variables, text case etc.
+                        $filesystem->processPath($filter);
+
+                        // explode to array
+                        $path_parts = explode('/', $path);
+
+                        // explode to array
+                        $filter_parts = explode('/', $filter);
+
+                        // filter match
+                        if (false === empty(array_intersect($filter_parts, $path_parts))) {
+                            return false;
+                        }
+                    }
+
                     if ($filter[0] === "-") {
                         // remove "-" from filter
                         $filter = substr($filter, 1);
                     }
 
-                    // process path for variables, text case etc. 
+                    // process path for variables, text case etc.
                     $filesystem->processPath($filter);
 
                     if ($filter === $path) {
@@ -428,7 +452,7 @@ class WFFileBrowser extends JObject
             if (empty($item['id'])) {
                 return true;
             }
-            
+
             return $this->checkPathAccess(dirname($item['id']));
         });
 
@@ -451,7 +475,7 @@ class WFFileBrowser extends JObject
             if (empty($item['id'])) {
                 return true;
             }
-            
+
             return $this->checkPathAccess($item['id']);
         });
 
@@ -509,9 +533,9 @@ class WFFileBrowser extends JObject
         // copy query
         $keyword = self::sanitizeSearchTerm($query);
 
-        // allow for wildcards 
+        // allow for wildcards
         $keyword = str_replace('*', '.*', $keyword);
-            
+
         // query filter
         $keyword = '^(?i).*' . $keyword . '.*';
 
@@ -519,7 +543,7 @@ class WFFileBrowser extends JObject
             // clean query removing leading .
             $extension = WFUtility::makeSafe($query);
 
-            $filetypes = array_filter($filetypes, function($value) use ($extension) {
+            $filetypes = array_filter($filetypes, function ($value) use ($extension) {
                 return $value === $extension;
             });
 
@@ -541,7 +565,7 @@ class WFFileBrowser extends JObject
         }
 
         // get properties for found items by type
-        foreach($items as $item) {            
+        foreach ($items as $item) {
             $type = $item['type'];
 
             if ($type === 'files') {
@@ -1292,7 +1316,7 @@ class WFFileBrowser extends JObject
                 if (empty($result->url)) {
                     $result->url = WFUtility::makePath($filesystem->getRootDir(), WFUtility::makePath($dir, $name));
                 }
-                
+
                 // trim slashes
                 $result->url = trim($result->url, '/');
 
