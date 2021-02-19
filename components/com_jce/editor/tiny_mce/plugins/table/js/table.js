@@ -99,6 +99,11 @@
         $.each(['background-image', 'width', 'height', 'border-spacing', 'border-collapse', 'vertical-align', 'background-color', 'text-align', 'float'], function (i, k) {
             var v = ed.dom.getStyle(proxy, k);
 
+            // skip blank values
+            if (v == '') {
+                return true;
+            }
+
             // delete all values
             $proxy.css(k, "");
 
