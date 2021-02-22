@@ -732,6 +732,11 @@
                 attrName = 'data-mce-p-' + attrName;
             }
 
+            // suppress events
+            if (attrName.indexOf('on') === 0 && editor.settings.allow_event_attributes) {
+                attrName = 'data-mce-p-' + attrName;
+            }
+
             if (attrName.indexOf('data-mce-') !== -1 || htmlSchema.isValid(targetNode.name, attrName)) {
                 targetNode.attr(attrName, attrValue);
             }
