@@ -200,8 +200,8 @@ WFAggregator.add('youtube', {
             query = Wf.String.query(u.query);
         }
 
-        // https url
-        src = src.replace(/^(http:)?\/\//, 'https://');
+        // rebuild src
+        src = 'https://' + u.host + '' + u.path;
 
         if (src.indexOf('youtube-nocookie') !== -1) {
             data.privacy = 1;
