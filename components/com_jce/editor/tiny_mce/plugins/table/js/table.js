@@ -815,14 +815,8 @@
             }
 
             function setAttrib(elm, name, value) {
-                if (cells.length === 1 || value) {
+                if (cells.length === 1 || tinymce.is(value)) {
                     dom.setAttrib(elm, name, value);
-                }
-            }
-
-            function setStyle(elm, name, value) {
-                if (cells.length === 1 || value) {
-                    dom.setStyle(elm, name, value);
                 }
             }
 
@@ -896,6 +890,7 @@
 
             return td;
         },
+
         updateCells: function () {
             var self = this,
                 el, ed = tinyMCEPopup.editor,
@@ -989,6 +984,7 @@
             inst.execCommand('mceEndUndoLevel');
             tinyMCEPopup.close();
         },
+
         updateRow: function (tr, skip_id, skip_parent) {
             var self = this,
                 ed = tinyMCEPopup.editor,
@@ -1007,14 +1003,8 @@
             }
 
             function setAttrib(elm, name, value) {
-                if (rows.length === 1 || value) {
+                if (rows.length === 1 || tinymce.is(value)) {
                     dom.setAttrib(elm, name, value);
-                }
-            }
-
-            function setStyle(elm, name, value) {
-                if (rows.length === 1 || value) {
-                    dom.setStyle(elm, name, value);
                 }
             }
 
