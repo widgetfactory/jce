@@ -264,11 +264,30 @@
         });
     };
 
+    function updateMediaUrl(row) {
+        var id = $(row).find('.field-media-input').attr('id');
+
+        if (!id) {
+            return;
+        }
+
+        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id;
+
+        // update url
+        $(row).find('.field-media-wrapper').data('url', url);
+    }
+
     $(document).ready(function ($) {
         $('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
 
-        $(document).on('subform-row-add', function (event, row) {
+        $(document).on('subform-row-add', function (evt, row) {
             $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
+
+            updateMediaUrl(row);
+        });
+
+        $('.field-media-input').parents('.subform-repeatable-group').each(function(i, row) {
+            updateMediaUrl(row);
         });
 
         $('.wf-media-input-upload').WfMediaUpload();
