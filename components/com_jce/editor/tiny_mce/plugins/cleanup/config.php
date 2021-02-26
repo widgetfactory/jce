@@ -22,6 +22,8 @@ class WFCleanupPluginConfig
         // keep &nbsp;
         $nbsp = (bool) $wf->getParam('editor.keep_nbsp', 1);
 
+        $settings['keep_nbsp'] = $nbsp;
+
         // use named encoding with limited entities set if raw/utf-8 and keep_nbsp === true
         if ($settings['entity_encoding'] === 'raw' && $nbsp) {
             $settings['entity_encoding'] = 'named';
