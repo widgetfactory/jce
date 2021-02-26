@@ -1683,6 +1683,11 @@
                             node.unwrap();
                         }
                     }
+
+                    // blockquote
+                    if (className && /\s*MsoQuote\s*/.test(className)) {
+                        node.name = 'blockquote';
+                    }
                 }
             }
         });
