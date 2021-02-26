@@ -34,7 +34,9 @@ class PlgSystemJce extends JPlugin
             'mediatype' => $mediatype,
         ));
 
-        $app->redirect($options['url']);
+        if (!empty($options['url'])) {
+            $app->redirect($options['url']);
+        }
     }
 
     private function isEditorEnabled()
