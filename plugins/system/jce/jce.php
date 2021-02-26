@@ -58,7 +58,7 @@ class PlgSystemJce extends JPlugin
         $app = JFactory::getApplication();
 
         if ($app->input->getCmd('option') == 'com_media') {
-            if ($app->input->getWord('asset') && $app->input->getWord('tmpl') == 'component') {
+            if ($app->input->getWord('tmpl') == 'component' && $app->input->getWord('view') == 'images' && $app->input->getWord('asset') && !$app->input->getCmd('task', '')) {
 
                 if ($this->isEditorEnabled()) {
                     $params = JComponentHelper::getParams('com_jce');
