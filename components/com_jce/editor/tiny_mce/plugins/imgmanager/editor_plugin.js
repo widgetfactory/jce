@@ -17,7 +17,7 @@
             var self = this;
 
             function isMediaObject(node) {
-                return node.getAttribute('data-mce-object');
+                return node.getAttribute('data-mce-object') || node.getAttribute('data-mce-type');
             }
 
             function isImage(node) {
