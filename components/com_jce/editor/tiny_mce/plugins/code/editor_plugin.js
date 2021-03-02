@@ -108,7 +108,7 @@
                         }
 
                         match = match.replace(/<br[^>]*?>/gi, '\n');
-                        
+
                         return createCodePre(match, type);
                     });
 
@@ -341,18 +341,18 @@
                     data = data.replace(/<br[^>]*?>/gi, '\n');
 
                     // create placeholder span
-                    return ed.dom.createHTML('span', {
+                    return ed.dom.createHTML('img', {
+                        src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                        'data-mce-resize': 'false',
                         'data-mce-code': type || 'script',
                         'data-mce-type': 'placeholder',
-                        'contenteditable': 'false'
-                    }, '<!--mce:protected ' + escape(data) + '-->');
+                        'data-mce-value': escape(data)
+                    });
                 }
 
                 return ed.dom.createHTML(tag || 'pre', {
                     'data-mce-code': type || 'script',
-                    'data-mce-type': 'code',
-                    'data-mce-contenteditable': 'false',
-                    'contenteditable': 'plaintext-only'
+                    'data-mce-type': 'code'
                 }, ed.dom.encode(data));
             }
 
@@ -528,9 +528,7 @@
                             ed.formatter.register(key, {
                                 block: 'pre',
                                 attributes: {
-                                    'data-mce-code': key,
-                                    'data-mce-contenteditable': 'false',
-                                    'contenteditable': 'plaintext-only'
+                                    'data-mce-code': key
                                 },
                                 onformat: function (elm, fmt, vars) {
                                     // replace linebreaks with newlines
@@ -581,7 +579,7 @@
 
                 // remove paragraph parent of a pre block
                 ed.selection.onSetContent.add(function (sel, o) {
-                    each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function(elm) {
+                    each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
                         var p = ed.dom.getParent(elm, 'p');
 
                         if (p && p.childNodes.length === 1) {
@@ -620,10 +618,11 @@
                                 value = tinymce.trim(node.firstChild.value);
                             }
 
-                            var placeholder = Node.create('span', {
+                            var placeholder = Node.create('img', {
+                                src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
                                 'data-mce-code': node.name,
-                                'contenteditable': 'false',
                                 'data-mce-type': 'placeholder',
+                                'data-mce-resize': 'false',
                                 title: ed.dom.encode(value)
                             });
 
@@ -632,8 +631,10 @@
                             });
 
                             if (value) {
-                                var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
-                                placeholder.append(text);
+                                placeholder.attr('data-mce-value', escape(value));
+
+                                //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
+                                //placeholder.append(text);
                             }
 
                             node.replace(placeholder);
@@ -648,7 +649,7 @@
                         value = tinymce.trim(value);
 
                         var pre = new Node('pre', 1);
-                        pre.attr({ 'data-mce-code': node.name, 'data-mce-contenteditable': 'false', 'contenteditable': 'plaintext-only' });
+                        pre.attr({ 'data-mce-code': node.name });
 
                         var text = createTextNode(value, false);
                         pre.append(text);
@@ -689,7 +690,7 @@
 
                         if (parent) {
                             // don't process shortcode in code blocks
-                            if (parent.attr(name)) {                                
+                            if (parent.attr(name)) {
                                 node.unwrap();
                                 continue;
                             }
@@ -716,38 +717,34 @@
                     }
 
                     while (i--) {
-                        node = nodes[i], child = node.firstChild, root_block = false;
+                        node = nodes[i], root_block = false;
 
                         // get the code block type, eg: script, shortcode, style, php
                         var type = node.attr(name);
 
-                        // skip inline code span (php or shortcode)...
-                        if (node.name === 'span') {
-                            // ...but process script placeholders
-                            if (type === 'script' || type === 'style') {
-                                var elm = new Node(type, 1);
+                        if (node.name === 'img') {
+                            var elm = new Node(type, 1);
 
-                                for (var key in node.attributes.map) {
-                                    var value = node.attributes.map[key];
+                            for (var key in node.attributes.map) {
+                                var value = node.attributes.map[key];
 
-                                    if (key.indexOf('data-mce-p-') !== -1) {
-                                        key = key.substr(11);
-                                    } else {
-                                        value = null;
-                                    }
-
-                                    elm.attr(key, value);
-                                };
-
-                                var child = node.firstChild;
-
-                                if (child && child.value) {
-                                    var text = createTextNode('\n' + unescape(child.value) + '\n');
-                                    elm.append(text);
+                                if (key.indexOf('data-mce-p-') !== -1) {
+                                    key = key.substr(11);
+                                } else {
+                                    value = null;
                                 }
 
-                                node.replace(elm);
+                                elm.attr(key, value);
+                            };
+
+                            var value = node.attr('data-mce-value');
+
+                            if (value) {
+                                var text = createTextNode('\n' + unescape(value) + '\n');
+                                elm.append(text);
                             }
+
+                            node.replace(elm);
 
                             continue;
                         }
@@ -767,17 +764,19 @@
                             root_block = type;
                         }
 
-                        var newNode = node.clone(true), text = '';
+                        var child = node.firstChild, newNode = node.clone(true), text = '';
 
-                        do {
-                            if (isXmlNode(node)) {
-                                var value = child.name == 'br' ? '\n' : child.value;
+                        if (child) {
+                            do {
+                                if (isXmlNode(node)) {
+                                    var value = child.name == 'br' ? '\n' : child.value;
 
-                                if (value) {
-                                    text += value;
+                                    if (value) {
+                                        text += value;
+                                    }
                                 }
-                            }
-                        } while (child = child.next);
+                            } while (child = child.next);
+                        }
 
                         if (text) {
                             newNode.empty();
@@ -919,7 +918,7 @@
                     }
 
                     // decode code snippets
-                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {                        
+                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
                         // not the droids etc.
                         if (attr.indexOf('data-mce-code') === -1) {
                             return match;
