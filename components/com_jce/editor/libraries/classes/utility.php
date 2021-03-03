@@ -559,18 +559,25 @@ abstract class WFUtility
 
         if (isset($matches[2])) {
             $unit = $matches[2];
+
+            // extract first character only, eg: g, m, k
+            if ($unit) {
+                $unit = strtolower($unit[0]);
+            }
         }
 
+        $value = intval($value);
+
         // Convert to bytes
-        switch (strtolower($unit[0])) {
+        switch ($unit) {
             case 'g':
-                $value = intval($value) * 1073741824;
+                $value = $value * 1073741824;
                 break;
             case 'm':
-                $value = intval($value) * 1048576;
+                $value = $value * 1048576;
                 break;
             case 'k':
-                $value = intval($value) * 1024;
+                $value = $value * 1024;
                 break;
         }
 
