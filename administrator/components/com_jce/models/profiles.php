@@ -242,6 +242,10 @@ class JceModelProfiles extends JModelList
                 }
             }
 
+            // default
+            $table->checked_out = 0;
+            $table->checked_out_time = '0000-00-00 00:00:00';
+
             // Check the data.
             if (!$table->check()) {
                 $this->setError($table->getError());
