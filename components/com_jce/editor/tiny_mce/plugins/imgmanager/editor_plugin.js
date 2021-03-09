@@ -8,21 +8,100 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend;
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each;
+
+    var counter = 0;
+
+    /**
+     Generates an unique ID.
+     @method uid
+     @return {String} Virtually unique id.
+     */
+    function uid() {
+        var guid = new Date().getTime().toString(32),
+            i;
+
+        for (i = 0; i < 5; i++) {
+            guid += Math.floor(Math.random() * 65535).toString(32);
+        }
+
+        return 'wf_' + guid + (counter++).toString(32);
+    }
+
+    function isMediaObject(node) {
+        return node.getAttribute('data-mce-object') || node.getAttribute('data-mce-type');
+    }
+
+    function isImage(node) {
+        return node && node.nodeName === "IMG" && !isMediaObject(node);
+    }
+
+    function uploadFile(url, file) {
+        return new Promise(function (resolve, reject) {
+            var xhr = new XMLHttpRequest,
+                formData = new FormData();
+
+            var settings = tinymce.settings;
+
+            // progress
+            if (xhr.upload) {
+                xhr.upload.onprogress = function (e) {
+                    if (e.lengthComputable) {
+                        file.loaded = Math.min(file.size, e.loaded);
+                    }
+                };
+            }
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status === 200) {
+                        resolve(xhr.responseText);
+                    } else {
+                        reject();
+                    }
+
+                    file = formData = null; // Free memory
+                }
+            };
+
+            // get name
+            var name = file.target_name || file.name;
+
+            // remove some common characters
+            name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+            var args = {
+                'method': 'upload',
+                'id': uid(),
+                'inline': 1,
+                'component_id': settings.component_id,
+                'name': name
+            };
+
+            args[settings.token] = '1';
+
+            xhr.open("post", url, true);
+
+            // set xhr request header
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            // Add multipart params
+            each(args, function (value, key) {
+                formData.append(key, value);
+            });
+
+            // Add file and send it
+            formData.append('file', file);
+
+            xhr.send(formData);
+        });
+    }
 
     tinymce.create('tinymce.plugins.ImageManager', {
         init: function (ed, url) {
             this.editor = ed;
 
             var self = this;
-
-            function isMediaObject(node) {
-                return node.getAttribute('data-mce-object') || node.getAttribute('data-mce-type');
-            }
-
-            function isImage(node) {
-                return node && node.nodeName === "IMG" && !isMediaObject(node);
-            }
 
             function openDialog() {
                 var node = ed.selection.getNode();
@@ -145,6 +224,7 @@
                 if (params.basic_dialog_filebrowser) {
                     tinymce.extend(args, {
                         picker: true,
+                        picker_label: 'dlg.browse',
                         picker_icon: 'image',
                         onpick: function () {
                             ed.execCommand('mceFileBrowser', true, {
@@ -166,6 +246,61 @@
                                 },
                                 filter: params.filetypes || 'images'
                             });
+                        }
+                    });
+                }
+
+                if (params.upload) {
+                    extend(args, {
+                        upload_label: 'upload.label',
+                        upload_accept: params.upload.filetypes.join(','),
+                        upload: function (e, file) {
+                            if (file && file.name) {
+                                var url = self.getUploadURL(file);
+
+                                if (!url) {
+                                    ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                                    return false;
+                                }
+
+                                // set disabled
+                                urlCtrl.setDisabled(true);
+
+                                uploadFile(url, file).then(function (response) {
+                                    urlCtrl.setDisabled(false);
+
+                                    try {
+                                        var o = JSON.parse(response), error = 'Unable to upload file';
+
+                                        // valid json
+                                        if (tinymce.is(o, 'object')) {
+                                            if (o.error) {
+                                                error = o.error.message || error;
+                                            }
+
+                                            var r = o.result;
+
+                                            if (r) {
+                                                var files = r.files || [], item = files.length ? files[0] : {};
+
+                                                if (item.file) {
+                                                    urlCtrl.value(item.file);
+
+                                                    return true;
+                                                }
+                                            }
+                                        }
+
+                                        ed.windowManager.alert(error);
+
+                                    } catch (e) {
+                                        ed.windowManager.alert('The server returned an invalid JSON response');
+                                    }
+                                }, function () {
+                                    urlCtrl.setDisabled(false);
+                                    return false;
+                                });
+                            }
                         }
                     });
                 }
