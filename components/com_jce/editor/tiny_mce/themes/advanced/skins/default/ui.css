@@ -2978,11 +2978,15 @@ select.mceNativeListBox {
 
 .mceModalContent .mceButton.mceButtonUpload input[type="file"] {
     position: absolute;
-    left: 0;
     top: 0;
-    width: 4em;
-    height: 4em;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    -webkit-appearance: none;
     opacity: 0;
+    cursor: pointer;
+    font-size: 500px;
 }.mceForm {
     height: 100%;
     display: flex;
