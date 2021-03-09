@@ -789,7 +789,11 @@
                                     var n = items.length;
 
                                     while (n--) {
-                                        each(items[n].attributes, function (attr) {
+                                        each(items[n].attributes, function (attr, i) {
+                                            if (!attr) {
+                                                return true;
+                                            }
+                                            
                                             if (ed.schema.isValid(type, attr.name) === false) {
                                                 items[n].attr(attr.name, null);
                                             }
