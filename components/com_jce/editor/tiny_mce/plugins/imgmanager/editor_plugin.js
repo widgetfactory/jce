@@ -253,7 +253,7 @@
                 if (params.upload) {
                     extend(args, {
                         upload_label: 'upload.label',
-                        upload_accept: params.upload.filetypes.join(','),
+                        upload_accept: params.upload.filetypes,
                         upload: function (e, file) {
                             if (file && file.name) {
                                 var url = self.getUploadURL(file);
