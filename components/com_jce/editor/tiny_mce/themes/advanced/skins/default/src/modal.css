@@ -580,13 +580,16 @@
 }
 
 .mceModalContent .mceButton.mceClear,
-.mceModalContent .mceButton.mceButtonPicker {
+.mceModalContent .mceButton.mceButtonPicker,
+.mceModalContent .mceButton.mceButtonUpload {
     position: absolute;
     right: 0;
     top: 0;
     z-index: 1;
     background: transparent;
     border-color: transparent;
+
+    min-width: inherit;
 }
 
 .mceModalContent .mceButton.mceClear:after {
@@ -602,21 +605,61 @@
     color: #999;
 }
 
-.mceModalContent .mceButton.mceButtonPicker .mceIcon {
+.mceModalContent .mceButton.mceButtonPicker .mceIcon,
+.mceModalContent .mceButton.mceButtonUpload .mceIcon {
     color: #999;
 }
 
+.mceModalContent .mceButton.mceButtonUpload .mceIcon {
+    font-size: 0.75em;
+    display: block;
+    line-height: 2.25;
+    height: 100%;
+}
+
 .mceModalContent .mceButton.mceClear:hover,
-.mceModalContent .mceButton.mceButtonPicker:hover {
+.mceModalContent .mceButton.mceButtonPicker:hover,
+.mceModalContent .mceButton.mceButtonUpload:hover {
     background-color: transparent;
     border-color: transparent;
     color: #444;
 }
 
-.mceModalContent .mceButton.mceButtonPicker:hover .mceIcon {
+.mceModalContent .mceButton.mceButtonPicker:hover .mceIcon,
+.mceModalContent .mceButton.mceButtonUpload:hover .mceIcon {
     color: #444;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker {
+.mceModalContent .mceButton.mceButtonPicker + .mceButton.mceButtonUpload {
+    right: 32px;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker,
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload {
     padding-right: 32px;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker.mceUrlBoxUpload {
+    padding-right: 64px;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUploadHover {
+    background-color: #eee;
+}
+
+.mceModalContent .mceButton.mceButtonUpload {
+    overflow: hidden;
+}
+
+.mceModalContent .mceButton.mceButtonUpload input[type="file"] {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    -webkit-appearance: none;
+    opacity: 0;
+    cursor: pointer;
+    font-size: 500px;
 }
