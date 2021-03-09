@@ -74,11 +74,10 @@
                 'method': 'upload',
                 'id': uid(),
                 'inline': 1,
-                'component_id': settings.component_id,
                 'name': name
             };
 
-            args[settings.token] = '1';
+            extend(args, settings.query);
 
             xhr.open("post", url, true);
 
