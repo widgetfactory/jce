@@ -207,7 +207,7 @@
                         
                         var data = plg.getUploadConfig();
 
-                        if (data.filetypes) {
+                        if (data.inline && data.filetypes) {
                             self.plugins.push(plg);
                         }
  
