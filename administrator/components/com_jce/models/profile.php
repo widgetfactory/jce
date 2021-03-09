@@ -779,7 +779,7 @@ class JceModelProfile extends JModelAdmin
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
 
-        $private = array('id', 'checked_out', 'checked_out_time');
+        $validFields = array('name', 'description', 'users', 'types', 'components', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
 
         foreach ($ids as $id) {
             $table = $this->getTable();
@@ -794,8 +794,8 @@ class JceModelProfile extends JModelAdmin
             $fields = $table->getProperties();
 
             foreach ($fields as $key => $value) {
-                // skip some stuff
-                if (in_array($key, $private)) {
+                // only allow a subset of fields
+                if (false == in_array($key, $validFields)) {
                     continue;
                 }
 
