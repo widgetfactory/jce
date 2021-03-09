@@ -871,11 +871,10 @@
             var args = {
                 'method': 'upload',
                 'id': uid(),
-                'inline': 1,
-                'component_id': ed.settings.component_id
+                'inline': 1
             };
 
-            args[ed.settings.token] = '1';
+            extend(args, ed.settings.query);
 
             var url = file.upload_url;
 
