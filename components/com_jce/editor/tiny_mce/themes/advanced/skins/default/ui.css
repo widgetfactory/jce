@@ -1726,6 +1726,10 @@ select.mceNativeListBox {
     background-position: -600px -40px;
 }
 
+.mceDefaultSkin span.mce_upload {
+    background-position: -620px -40px;
+}
+
 .mceDefaultSkin span.mce_codesample {
     background-position: -260px 0;
 }
@@ -2936,10 +2940,7 @@ select.mceNativeListBox {
 }
 
 .mceModalContent .mceButton.mceButtonUpload .mceIcon {
-    font-size: 0.75em;
-    display: block;
-    line-height: 2.25;
-    height: 100%;
+    margin: 25% auto;
 }
 
 .mceModalContent .mceButton.mceClear:hover,

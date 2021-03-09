@@ -433,6 +433,10 @@
     background-position: -600px -40px;
 }
 
+.mceDefaultSkin span.mce_upload {
+    background-position: -620px -40px;
+}
+
 .mceDefaultSkin span.mce_codesample {
     background-position: -260px 0;
 }

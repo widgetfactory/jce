@@ -220,3 +220,11 @@
     width: 1em;
     height: 1em;
 }
+
+.mceModernSkin .mceModalContent .mceButtonUpload .mceIcon {
+    font-size: 0.75em;
+    display: block;
+    line-height: 2.25;
+    height: 100%;
+    margin: auto;
+}
