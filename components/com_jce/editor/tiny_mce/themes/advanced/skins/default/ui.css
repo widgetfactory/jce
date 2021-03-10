@@ -1870,6 +1870,10 @@ select.mceNativeListBox {
     font-size: 1em;
     font-family: "times new roman,times";
     line-height: 1.25;
+}
+
+.mceDefaultSkin .mce_spinner {
+    background: url(img/load.gif?@@etag@@) no-repeat 0 0;
 }/* Panel */
 
 .mceDefaultSkin .mcePanel {
@@ -2941,6 +2945,18 @@ select.mceNativeListBox {
 
 .mceModalContent .mceButton.mceButtonUpload .mceIcon {
     margin: 25% auto;
+}
+
+.mceModalContent .mceButton.mceButtonUpload .mce_spinner {
+    display: none;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_upload {
+    display: none;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_spinner {
+    display: flex;
 }
 
 .mceModalContent .mceButton.mceClear:hover,

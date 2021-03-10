@@ -263,10 +263,10 @@
                                 }
 
                                 // set disabled
-                                urlCtrl.setDisabled(true);
+                                urlCtrl.setLoading(true);
 
                                 uploadFile(url, file).then(function (response) {
-                                    urlCtrl.setDisabled(false);
+                                    urlCtrl.setLoading(false);
 
                                     try {
                                         var o = JSON.parse(response), error = 'Unable to upload file';
@@ -296,7 +296,7 @@
                                         ed.windowManager.alert('The server returned an invalid JSON response');
                                     }
                                 }, function () {
-                                    urlCtrl.setDisabled(false);
+                                    urlCtrl.setLoading(false);
                                     return false;
                                 });
                             }

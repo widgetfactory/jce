@@ -578,3 +578,7 @@
     font-family: "times new roman,times";
     line-height: 1.25;
 }
+
+.mceDefaultSkin .mce_spinner {
+    background: url(img/load.gif?@@etag@@) no-repeat 0 0;
+}

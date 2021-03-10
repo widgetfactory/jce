@@ -614,6 +614,18 @@
     margin: 25% auto;
 }
 
+.mceModalContent .mceButton.mceButtonUpload .mce_spinner {
+    display: none;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_upload {
+    display: none;
+}
+
+.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_spinner {
+    display: flex;
+}
+
 .mceModalContent .mceButton.mceClear:hover,
 .mceModalContent .mceButton.mceButtonPicker:hover,
 .mceModalContent .mceButton.mceButtonUpload:hover {
