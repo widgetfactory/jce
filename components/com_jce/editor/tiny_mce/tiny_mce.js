@@ -130,8 +130,8 @@
     include('Editor.js');
     include('Editor.Events.js');
 
-    include('InsertList.js');
-    include('InsertContent.js');
+    //include('InsertList.js');
+    //include('InsertContent.js');
 
     include('EditorCommands.js');
     include('UndoManager.js');
