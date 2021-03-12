@@ -2686,6 +2686,8 @@
             function getContentAndInsert(ed, e) {
                 var clipboardContent = getClipboardContent(ed, e);
 
+                removePasteBin();
+
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
                 if (isPasteInPre(ed)) {
@@ -2744,7 +2746,6 @@
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
                 if (getContentAndInsert(ed, e) === true) {
-                    removePasteBin();
                     return;
                 }
 
