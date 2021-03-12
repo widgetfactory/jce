@@ -106,9 +106,6 @@
             var query = '',
                 args = {};
 
-            // set token
-            args[ed.settings.token] = 1;
-
             tinymce.extend(args, {
                 'data': ed.getContent(),
                 'id': uid()
@@ -134,10 +131,10 @@
                 html += '<meta http-equiv="X-UA-Compatible" content="IE=7" />';
                 html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 
-                if (ed.settings.compress.css) {
-                    css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&layout=preview&context=' + s.context + '&' + s.token + '=1'];
+                if (s.compress.css) {
+                    css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&layout=preview&' + s.query];
                 } else {
-                    css = tinymce.explode(ed.settings.content_css);
+                    css = tinymce.explode(s.content_css);
                 }
 
                 tinymce.each(css, function(url) {
@@ -164,7 +161,7 @@
 
             // load preview data
             tinymce.util.XHR.send({
-                url: s.site_url + 'index.php?option=com_jce&task=plugin.display&plugin=preview&context=' + s.context + '&extension_id=' + s.extension_id,
+                url: s.site_url + 'index.php?option=com_jce&task=plugin.display&plugin=preview&' + tinymce.query,
                 data: 'json=' + JSON.stringify({
                     'method': 'showPreview'
                 }) + '&' + query,

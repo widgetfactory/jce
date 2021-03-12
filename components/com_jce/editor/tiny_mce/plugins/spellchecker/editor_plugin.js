@@ -552,11 +552,9 @@
                 params: p
             };
 
-            var query = '&' + ed.settings.token + '=1';
-
             tinymce.util.XHR.send({
-                url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.rpc&plugin=spellchecker&' + ed.settings.token + '=1&context=' + ed.settings.context,
-                data: 'json=' + JSON.stringify(args) + query,
+                url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.rpc&plugin=spellchecker&' + ed.settings.query,
+                data: 'json=' + JSON.stringify(args),
                 content_type: 'application/x-www-form-urlencoded',
                 success: function (o) {
                     var c;
