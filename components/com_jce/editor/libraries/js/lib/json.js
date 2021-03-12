@@ -99,9 +99,6 @@
 
             var url = document.location.href;
 
-            // strip token
-            url = url.replace(/&wf([a-z0-9]+)=1/, '');
-
             // replace task
             url = url.replace(/task=plugin.display/, 'task=plugin.rpc');
 
