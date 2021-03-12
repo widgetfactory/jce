@@ -1182,7 +1182,7 @@ class WFFileBrowser extends JObject
     public function upload()
     {
         // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
         // check for feature access
         if (!$this->checkFeature('upload')) {
