@@ -232,6 +232,11 @@
                     el = el.parentNode;
                 }
 
+                // must be a list item
+                if (el.nodeName !== "LI") {
+                    return;
+                }
+
                 var data = { text: el.title, value: el.getAttribute('data-value') };
 
                 selectItem(data);
@@ -469,18 +474,20 @@
                     return;
                 }
 
+                var elm = e.target;
+
                 // dropdown button
-                if (e.target === btn.get(0)) {
+                if (elm == btn.get(0)) {
                     return;
                 }
 
                 // menu box, including scrollbar
-                if (e.target === menu.get(0)) {
+                if (elm == menu.get(0)) {
                     return;
                 }
 
                 // action is inside the menu
-                if (menu.find(e.target).length) {
+                if (menu.find(elm).length) {
                     return;
                 }
 
@@ -492,7 +499,7 @@
                 }
 
                 // action is inside the container
-                if (container.find(e.target).length) {
+                if (container.find(elm).length) {
                     return;
                 }
 
