@@ -77,7 +77,8 @@
                 'name': name
             };
 
-            extend(args, settings.query);
+            // add query
+            url += '&' + settings.query;
 
             xhr.open("post", url, true);
 

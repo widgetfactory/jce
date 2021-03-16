@@ -874,9 +874,10 @@
                 'inline': 1
             };
 
-            extend(args, ed.settings.query);
-
             var url = file.upload_url;
+
+            // add query
+            url += '&' + ed.settings.query;
 
             function sendFile(bin) {
                 var xhr = new XMLHttpRequest,
