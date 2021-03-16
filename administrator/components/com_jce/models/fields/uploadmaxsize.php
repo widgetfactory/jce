@@ -119,6 +119,10 @@ class JFormFieldUploadMaxSize extends JFormFieldNumber
                 break;
         }
 
-        return (int) $value . ' ' . $unit;
+        if ($unit) {
+            return (int) $value . ' ' . $unit;
+        }
+
+        return 0;
     }
 }
