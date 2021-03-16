@@ -67,13 +67,13 @@
             return 'twitch';
         }
         // Facebook
-        if (/www\.facebook\.com\/(.+)?(posts|videos)\/(.+)/.test(url)) {
+        /*if (/www\.facebook\.com\/(.+)?(posts|videos)\/(.+)/.test(url)) {
             return 'facebook';
         }
         // Instagram
         if (/instagr\.?am(.+)?\/(.+)/.test(url)) {
             return 'instagram';
-        }
+        }*/
 
         return false;
     }
