@@ -123,14 +123,18 @@ body {
         max-width: 1000000px;
     }
 
-    .mce-content-body *[contentEditable=false] {
+    *[contentEditable=false]:not([data-mce-object]) {
         cursor: default;
     }
 
-    .mce-content-body *[contentEditable=true] {
+    *[contentEditable=true] {
         cursor: text;
     }
 
+    *[contentEditable="false"][data-mce-selected] {
+        outline: 2px solid #2d8ac7;
+        outline: 2px solid var(--mce-control-selection);
+    }
 }
 
 body.mceContentReset {

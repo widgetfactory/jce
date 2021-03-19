@@ -104,11 +104,15 @@ body {
   left: -9999999999px;
   max-width: 1000000px;
 }
-.mceContentBody .mce-content-body *[contentEditable=false] {
+.mceContentBody *[contentEditable=false]:not([data-mce-object]) {
   cursor: default;
 }
-.mceContentBody .mce-content-body *[contentEditable=true] {
+.mceContentBody *[contentEditable=true] {
   cursor: text;
+}
+.mceContentBody *[contentEditable="false"][data-mce-selected] {
+  outline: 2px solid #2d8ac7;
+  outline: 2px solid var(--mce-control-selection);
 }
 body.mceContentReset {
   background: #fff none !important;
