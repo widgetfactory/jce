@@ -386,7 +386,7 @@
 
     var placeholderToPreview = function (editor, node) {
         var name;
-        
+
         var placeholder = new Node('img', 1);
         placeholder.shortEnded = true;
 
@@ -515,7 +515,7 @@
                     if (!styleObject[key]) {
                         return true;
                     }
-                    
+
                     // transfer value
                     if (!attribs[key]) {
                         attribs[key] = parseInt(styleObject[key]);
@@ -1140,39 +1140,38 @@
                     ed.dom.setStyles(elm, { 'width': width, 'height': height });
                 });
 
-                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-                    var node = e.target;
+                ed.dom.bind(ed.getDoc(), 'mousedown touchstart keydown', function (e) {
+                    var node = ed.dom.getParent(e.target, '.mce-object-preview');
 
-                    ed.dom.removeAttrib(ed.dom.select('[data-mce-selected].mce-object-preview'), 'data-mce-selected');
+                    if (node) {
+                        window.setTimeout(function() {
+                            node.setAttribute('data-mce-selected', '2');
+                        }, 100);
+
+                        // prevent bubbling up to DragDropOverrides
+                        e.stopImmediatePropagation();
+
+                        if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
+                            return previewToPlaceholder(ed, node);
+                        }
+
+                        return;
+                    }
+                });
+
+                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
+                    var node = ed.selection.getNode();
 
                     // pause all video and audio in preview elements
                     each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function (elm) {
                         elm.pause();
                     });
 
-                    if (isMediaNode(node)) {
-                        var preview = ed.dom.getParent(node, '.mce-object-preview');
-
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
-
-                        if (e.type === 'click' && VK.metaKeyPressed(e)) {
-                            if (node.nodeName === "IMG") {
+                    if (node) {
+                        if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
+                            if (e.type === 'click' && VK.metaKeyPressed(e)) {
                                 return placeholderToPreview(ed, node);
                             }
-
-                            if (preview) {
-                                preview = previewToPlaceholder(ed, preview);
-                            }
-                        }
-
-                        if (preview) {
-                            ed.selection.select(preview.firstChild);
-
-                            // add a slight delay before adding selected class to avoid it being removed by the keyup event
-                            window.setTimeout(function () {
-                                ed.dom.setAttrib(preview, 'data-mce-selected', '2');
-                            }, 10);
                         }
                     }
                 });
