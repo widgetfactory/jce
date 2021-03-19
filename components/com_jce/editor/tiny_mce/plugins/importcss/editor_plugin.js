@@ -170,6 +170,14 @@
 
                 self._setGuideLinesColor();
             });
+
+            ed.onFocus.add(function(ed) {
+                if (ed._hasGuidelines) {
+                    return;
+                }
+
+                self._setGuideLinesColor();
+            });
         },
 
         _setHighContrastMode: function () {
@@ -251,11 +259,13 @@
                 '#e3f2fd'
             ];
 
-            var guidelines = '#787878', control = '#1e88e5', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
-
+            var guidelines = '#787878', control = '#1e88e5', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);         
+            
             if (!bodybg) {
                 return;
             }
+
+            ed._hasGuidelines = true;
 
             // guidelines
             for (var i = 0; i < gray.length; i++) {
@@ -280,28 +290,6 @@
             }
 
             if (guidelines || control) {
-                // get existing stylesheet
-                var doc = ed.getDoc();
-
-                var style = doc.getElementById('mceVariableStyles');
-
-                if (!style) {
-                    // get document head
-                    var head = doc.getElementsByTagName('head')[0];
-
-                    // create style element
-                    var style = DOM.create('style', {
-                        type: 'text/css',
-                        id: 'mceVariableStyles'
-                    });
-
-                    // add to head
-                    head.appendChild(style);
-                }
-
-                // empty
-                style.innerHTML = style.innerText = '';
-
                 var css = ':root{';
 
                 if (guidelines) {
@@ -318,7 +306,7 @@
 
                 css += '}';
 
-                style.appendChild(doc.createTextNode(css));
+                ed.dom.addStyle(css);
             }
         },
 
