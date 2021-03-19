@@ -286,7 +286,7 @@
             }
         };
 
-        var setClipboardData = function (evt, data, fallback, done) {
+        var setClipboardData = function (evt, data, fallback, done) {            
             if (setHtml5Clipboard(evt.clipboardData, data.html, data.text)) {
                 evt.preventDefault();
                 done();
@@ -2313,6 +2313,9 @@
                 // get html content
                 content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
 
+                // unmark content
+                content = InternalHtml.unmark(content);
+
                 // trim
                 content = trimHtml(content);
 
@@ -2587,6 +2590,17 @@
                 if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed && e.keyCode == 67)) {
                     e.preventDefault();
                     return false;
+                }
+
+                // trigger events
+                if (VK.metaKeyPressed) {
+                    if (e.keyCode == 67) {
+                        ed.onCopy.dispatch(ed, e);
+                    }
+    
+                    if (e.keyCode == 88) {
+                        ed.onCut.dispatch(ed, e);
+                    }
                 }
 
                 // Ctrl+V or Shift+Insert
