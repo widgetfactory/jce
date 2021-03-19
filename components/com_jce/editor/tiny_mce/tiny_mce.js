@@ -72,14 +72,7 @@
     include('dom/NodeType.js');
     include('dom/Dimensions.js');
 
-    include('dom/Sizzle.js');
-    include('dom/ScrollIntoView.js');
-    include('dom/Selection.js');
-    include('dom/Serializer.js');
-    include('dom/ScriptLoader.js');
-    include('dom/StyleSheetLoader.js');
     include('dom/RangeUtils.js');
-    include('dom/ControlSelection.js');
 
     // tinymce.text.*
 	include('text/ExtendingChar.js');
@@ -96,6 +89,17 @@
 	include('caret/FakeCaret.js');
 	include('caret/LineUtils.js');
 	include('caret/LineWalker.js');
+
+    include('dom/Sizzle.js');
+    include('dom/ScrollIntoView.js');
+    include('dom/BookmarkManager.js');
+    include('dom/ControlSelection.js');
+    include('dom/Selection.js');
+    include('dom/Serializer.js');
+    include('dom/ScriptLoader.js');
+    include('dom/StyleSheetLoader.js');
+
+    include('dom/FocusManager.js');
 
     // tinymce.ui.*
     include('ui/KeyboardNavigation.js');
@@ -127,6 +131,7 @@
     // tinymce.*
     include('AddOnManager.js');
     include('EditorManager.js');
+    include('EditorFocus.js');
     include('Editor.js');
     include('Editor.Events.js');
 
