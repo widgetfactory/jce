@@ -259,7 +259,7 @@
                 '#e3f2fd'
             ];
 
-            var guidelines = '#787878', control = '#1e88e5', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);         
+            var guidelines = '#787878', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);         
             
             if (!bodybg) {
                 return;
@@ -302,6 +302,7 @@
 
                 if (control) {
                     css += '--mce-control-selection: ' + control + ';';
+                    css += '--mce-control-selection-bg: ' + controlbg + ';';
                 }
 
                 css += '}';
