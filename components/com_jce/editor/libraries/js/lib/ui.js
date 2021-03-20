@@ -130,9 +130,6 @@
                     h = $(b).val(),
                     tw = $(a).data('tmp');
 
-                // trigger change
-                $(cb).trigger('constrain:change', [$elms]);
-
                 if (w && h && tw) {
                     // ignore percentage values
                     if (w.indexOf('%') !== -1 || h.indexOf('%') !== -1) {
@@ -147,6 +144,9 @@
                 }
 
                 $(a).data('tmp', w);
+
+                // trigger change
+                $(cb).trigger('constrain:change', [$elms]);
             });
         });
     };
