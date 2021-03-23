@@ -26,7 +26,7 @@ class PlgSystemJce extends JPlugin
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
         $id = $app->input->get('fieldid');
-        $mediatpye = $app->input->get('view', 'images');
+        $mediatype = $app->input->get('view', 'images');
 
         $options = WFBrowserHelper::getMediaFieldOptions(array(
             'element' => $id,
