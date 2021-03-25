@@ -252,30 +252,9 @@ class pkg_jceInstallerScript
         $extension = JTable::getInstance('extension');
         $parent = $installer->getParent();
 
+        $db = JFactory::getDBO();
+
         JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
-
-        /*$plugin = JPluginHelper::getPlugin('extension', 'joomla');
-
-        if ($plugin) {
-            $parent = $installer->getParent();
-
-            // find and remove package
-            $component_id = $extension->find(array('type' => 'component', 'element' => 'com_jce'));
-
-            if ($component_id) {
-                $app->triggerEvent('onExtensionAfterUninstall', array($parent, $component_id, true));
-            }
-
-            // find and remove package
-            $package_id = $extension->find(array('type' => 'package', 'element' => 'pkg_jce'));
-
-            if ($package_id) {
-                // remove
-                $app->triggerEvent('onExtensionAfterUninstall', array($parent, $package_id, true));
-                // install
-                $app->triggerEvent('onExtensionAfterInstall', array($parent, $package_id));
-            }
-        }*/
 
         // remove legacy jcefilebrowser quickicon
         $plugin = JPluginHelper::getPlugin('quickicon', 'jcefilebrowser');
@@ -303,6 +282,23 @@ class pkg_jceInstallerScript
                 if (is_dir($branding)) {
                     JFolder::delete($branding);
                 }
+
+                // clean up updates sites
+                $query = $db->getQuery(true);
+
+                $query->select('update_site_id')->from('#__update_sites');
+                $query->where($db->qn('location') . ' = ' . $db->q('https://cdn.joomlacontenteditor.net/updates/xml/editor/pkg_jce.xml'));
+                $db->setQuery($query);
+                $id = $db->loadResult();
+
+                if ($id) {
+                    JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_installer/models');
+                    $model = JModelLegacy::getInstance('Updatesites', 'InstallerModel');
+
+                    if ($model) {
+                        $model->delete(array($id));
+                    }
+                }
             }
 
             $theme = '';
@@ -321,7 +317,6 @@ class pkg_jceInstallerScript
             if ($theme) {
                 $table = JTable::getInstance('Profiles', 'JceTable');
 
-                $db = JFactory::getDBO();
                 $query = $db->getQuery(true);
 
                 $query->select('*')->from('#__wf_profiles');
