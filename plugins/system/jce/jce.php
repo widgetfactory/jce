@@ -142,7 +142,13 @@ class PlgSystemJce extends JPlugin
             }
         }
 
+        // editor not enabled
         if (!$this->isEditorEnabled()) {
+            return true;
+        }
+
+        // media replacement disabled
+        if ((bool) $params->get('replace_media_manager', 1) === false) {
             return true;
         }
 
@@ -164,10 +170,6 @@ class PlgSystemJce extends JPlugin
             $type = $field->getAttribute('type');
 
             if (strtolower($type) === 'media') {
-
-                if ((bool) $params->get('replace_media_manager', 1) === false) {
-                    continue;
-                }
 
                 $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
