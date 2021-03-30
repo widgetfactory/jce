@@ -495,7 +495,8 @@
                 key = key.substr(9);
             }
 
-            if (!editor.schema.isValid(tag, key)) {
+            // skip invalid tags but not custom dash attributes, eg: data-* or uk-* etc.
+            if (!editor.schema.isValid(tag, key) && key.indexOf('-') === -1) {
                 continue;
             }
 
@@ -717,14 +718,17 @@
             attrName = attribs[ai].name;
             attrValue = attribs[ai].value;
 
-            if (attrName.indexOf('data-mce') !== -1) {
-                continue;
-            }
-
             // when converting from preview to placeholder
             if (attrName === 'data-mce-html') {
                 targetNode.attr(attrName, attrValue);
                 continue;
+            }
+
+            // skip internal attributes but not placeholder attributes
+            if (attrName.indexOf('data-mce') !== -1) {
+                if (attrName.indexOf('data-mce-p-') === -1) {
+                    continue;
+                }
             }
 
             // node uses img placeholder, so store element specific attributes
@@ -737,7 +741,13 @@
                 attrName = 'data-mce-p-' + attrName;
             }
 
-            if (attrName.indexOf('data-mce-') !== -1 || htmlSchema.isValid(targetNode.name, attrName)) {
+            // allow for data-* and custom dash attributes, eg: uk-*
+            if (attrName.indexOf('-') !== -1) {
+                targetNode.attr(attrName, attrValue);
+                continue;
+            }
+
+            if (htmlSchema.isValid(targetNode.name, attrName)) {
                 targetNode.attr(attrName, attrValue);
             }
         }
