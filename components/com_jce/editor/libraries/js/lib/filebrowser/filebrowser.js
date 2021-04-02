@@ -2725,11 +2725,11 @@
         _getDimensions: function (file) {
             var img = new Image();
 
-            if (!$(file).data('url')) {
+            if (!$(file).data('preview')) {
                 return;
             }
 
-            var src = Wf.String.path(Wf.getURI(), $(file).data('url'));
+            var src = $(file).data('preview');
 
             $(file).addClass('loading disabled').children('span.checkbox').addClass('disabled');
 
