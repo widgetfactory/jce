@@ -293,15 +293,15 @@
             var html = '' +
                 '<div class="mceToolbarRow">' +
                 '   <div class="mceToolbarItem mceFlexAuto">' +
-                '       <input type="text" id="' + ed.id + '_link_input" aria-label="' + ed.getLang('link.href', 'URL') + '" />' +
+                '       <input type="text" id="' + ed.id + '_link_input" aria-label="' + ed.getLang('dlg.url', 'URL') + '" />' +
                 '   </div>' +
                 '   <div class="mceToolbarItem">' +
-                '       <button type="button" id="' + ed.id + '_link_submit" class="mceButton mceButtonLink" title="' + ed.getLang('link.insert', 'Insert Link') + '" aria-label="' + ed.getLang('link.insert', 'Insert Link') + '">' +
+                '       <button type="button" id="' + ed.id + '_link_submit" class="mceButton mceButtonLink" title="' + ed.getLang('advanced.link_desc', 'Insert Link') + '" aria-label="' + ed.getLang('link.insert', 'Insert Link') + '">' +
                 '           <span class="mceIcon mce_link"></span>' +
                 '       </button>' +
                 '   </div>' +
                 '   <div class="mceToolbarItem">' +
-                '       <button type="button" id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink" disabled="disabled" title="' + ed.getLang('link.unlink', 'Remove Link') + '" aria-label="' + ed.getLang('link.unlink', 'Remove Link') + '">' +
+                '       <button type="button" id="' + ed.id + '_link_unlink" class="mceButton mceButtonUnlink" disabled="disabled" title="' + ed.getLang('advanced.unlink_desc', 'Remove Link') + '" aria-label="' + ed.getLang('advanced.unlink_desc', 'Remove Link') + '">' +
                 '           <span class="mceIcon mce_unlink"></span>' +
                 '       </button>' +
                 '   </div>' +

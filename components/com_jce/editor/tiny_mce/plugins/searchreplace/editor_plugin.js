@@ -370,7 +370,7 @@
                     },
                     buttons: [
                         {
-                            title: editor.getLang('find', 'Find'),
+                            title: editor.getLang('searchreplace.find', 'Find'),
                             id: 'find',
                             onclick: function (e) {
                                 e.preventDefault();
@@ -389,7 +389,7 @@
                             },
                             classes: 'primary'
                         }, {
-                            title: editor.getLang('replace', 'Replace'),
+                            title: editor.getLang('searchreplace.replace', 'Replace'),
                             id: 'search_replace',
                             onclick: function (e) {
                                 e.preventDefault();
@@ -398,7 +398,7 @@
                                 editor.execCommand('mceReplace', false, value);
                             }
                         }, {
-                            title: editor.getLang('replaceall', 'Replace All'),
+                            title: editor.getLang('searchreplace.replaceall', 'Replace All'),
                             id: 'search_replaceall',
                             onclick: function (e) {
                                 e.preventDefault();

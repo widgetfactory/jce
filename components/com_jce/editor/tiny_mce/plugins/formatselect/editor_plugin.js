@@ -111,7 +111,7 @@
 
             if (ctrl) {
                 each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (value, key) {
-                    ctrl.add(ed.translate(value, key), key, {
+                    ctrl.add(ed.getLang(value, key), key, {
                         'class': 'mce_formatPreview mce_' + key,
                         style: function () {
                             return PreviewCss(ed, {

@@ -121,7 +121,7 @@
                     form.add(reversed_ctrl);
 
                     editor.windowManager.open({
-                        title: editor.getLang('advlist.numlist', 'Ordered List'),
+                        title: editor.getLang('advanced.numlist_desc', 'Ordered List'),
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
@@ -138,7 +138,7 @@
                         },
                         buttons: [
                             {
-                                title: editor.getLang('common.remove', 'Remove'),
+                                title: editor.getLang('remove', 'Remove'),
                                 id: 'remove',
                                 onclick: function() {
                                     applyListFormat();
@@ -146,7 +146,7 @@
                                 }
                             },
                             {
-                                title: editor.getLang('common.cancel', 'Cancel'),
+                                title: editor.getLang('cancel', 'Cancel'),
                                 id: 'cancel'
                             },
                             {

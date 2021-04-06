@@ -20,7 +20,7 @@
 
             // Register buttons
             ed.addButton('italic', {
-                title : 'italic.desc',
+                title : 'advanced.italic_desc',
                 onclick : function(e) {
                     e.preventDefault();
                     

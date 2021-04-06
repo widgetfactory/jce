@@ -216,7 +216,7 @@
                 var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, captionCtrl;
 
                 var args = {
-                    label: ed.getLang('url', 'URL'),
+                    label: ed.getLang('dlg.url', 'URL'),
                     name: 'url',
                     clear: true
                 };
@@ -224,7 +224,7 @@
                 if (params.basic_dialog_filebrowser) {
                     tinymce.extend(args, {
                         picker: true,
-                        picker_label: 'dlg.browse',
+                        picker_label: 'browse',
                         picker_icon: 'image',
                         onpick: function () {
                             ed.execCommand('mceFileBrowser', true, {
@@ -310,7 +310,7 @@
                 form.add(urlCtrl);
 
                 descriptionCtrl = cm.createTextBox('image_description', {
-                    label: ed.getLang('image.description', 'Description'),
+                    label: ed.getLang('dlg.description', 'Description'),
                     name: 'alt',
                     clear: true
                 });
@@ -333,7 +333,7 @@
                     }
 
                     ed.windowManager.open({
-                        title: ed.getLang('image.desc', 'Image'),
+                        title: ed.getLang('imgmanager.desc', 'Image'),
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
@@ -371,7 +371,7 @@
                         },
                         buttons: [
                             {
-                                title: ed.getLang('common.cancel', 'Cancel'),
+                                title: ed.getLang('cancel', 'Cancel'),
                                 id: 'cancel'
                             },
                             {
