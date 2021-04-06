@@ -307,14 +307,7 @@ class WFLanguageParser extends JObject
 
     private function getFilter()
     {
-        switch ($this->get('mode')) {
-            case 'editor':
-                return '(dlg|_dlg)$';
-                break;
-            case 'plugin':
-                return '';
-                break;
-        }
+        return '';
     }
 
     public function load($files = array())
