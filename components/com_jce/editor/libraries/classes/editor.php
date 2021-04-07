@@ -1259,6 +1259,43 @@ class WFEditor
         }
     }
 
+    private static function getJoomlArtTemplateFiles(&$files, $template)
+    {
+        $path = JPATH_SITE . '/templates/' . $template->name;
+
+        if (!is_dir($path . '/scss') && !is_file($path . '/templateInfo.php')) {
+            return false;
+        }
+
+        // check for editor.css file
+        $css = self::isEditorStylesheet($path . '/css');
+
+        if ($css) {
+            $files[] = 'templates/' . $template->name . '/css/' . basename($css);
+            return true;
+        }
+
+        // add base template.css file
+        $files[] = 'templates/' . $template->name . '/css/template.css';
+
+        $items = array();
+            
+        $files = glob(JPATH_SITE . '/media/t4/css/*.css');
+
+        foreach($files as $file) {
+            $items[filemtime($file)] = $file;
+        }
+
+        // sort by modified time key
+        ksort($items, SORT_NUMERIC);
+
+        // get the last item in the array
+        $item = end($items);
+
+        // add compiled css file
+        $files[] = 'media/t4/css/' . basename($item);
+    }
+
     private static function getSunTemplateFiles(&$files, $template)
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
@@ -1462,7 +1499,7 @@ class WFEditor
             case 1:
                 $files = array();
 
-                foreach (array('Core', 'Gantry', 'YOOTheme', 'Helix', 'Wright', 'Sun') as $name) {
+                foreach (array('Core', 'Gantry', 'YOOTheme', 'Helix', 'JoomlArt', 'Wright', 'Sun') as $name) {
                     $method = 'get' . $name . 'TemplateFiles';
                     self::$method($files, $template);
                 }
