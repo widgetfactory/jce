@@ -8,7 +8,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
-defined('_JEXEC') or die('RESTRICTED');
+defined('JPATH_PLATFORM') or die('RESTRICTED');
 ?>
 <div class="ui-jce uk-flex">
     <nav class="uk-panel uk-panel-box uk-height-1-1">

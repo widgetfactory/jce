@@ -8,7 +8,7 @@
  * other free or open source software licenses
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 $this->name = JText::_('WF_PROFILES_EDITOR_FILESYSTEM');
 $this->fieldsname = 'editor.filesystem';

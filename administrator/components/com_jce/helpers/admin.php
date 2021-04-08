@@ -1,6 +1,6 @@
 <?php
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Admin helper.
