@@ -1229,7 +1229,7 @@ class WFEditor
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
-        if (!is_dir($path . '/scss') && !is_file($path . '/comingsoon.php')) {
+        if (!is_file($path . '/comingsoon.php')) {
             return false;
         }
 
@@ -1263,7 +1263,7 @@ class WFEditor
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
-        if (!is_dir($path . '/scss') && !is_file($path . '/templateInfo.php')) {
+        if (!is_file($path . '/templateInfo.php')) {
             return false;
         }
 
