@@ -380,6 +380,11 @@ WFPopups.addPopup('jcemediabox', {
 
         // process remaining data values as params
         $.each(data, function(k, v) {
+            // skip "src"
+            if (k == 'src') {
+                return true;
+            }
+            
             if (v !== '') {
 
                 try {
@@ -483,6 +488,7 @@ WFPopups.addPopup('jcemediabox', {
         if (data.type) {
             delete data.type;
         }
+
         // get rel attribute value
         var rel = ed.dom.getAttrib(n, 'rel', '');
 
@@ -512,6 +518,11 @@ WFPopups.addPopup('jcemediabox', {
 
         // set data to data-mediabox attributes
         $.each(data, function(k, v) {
+            // already set as href attribute
+            if (k == 'src') {
+                return true;
+            }
+            
             ed.dom.setAttrib(n, 'data-mediabox-' + k, v);
         });
 
