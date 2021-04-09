@@ -26,6 +26,7 @@ body {
   min-height: calc(100vh - 10px);
   min-width: 90%;
   padding: 5px;
+  /* Force img tags to display inline to override template element styles */
 }
 .mceContentBody img {
   display: inline;
