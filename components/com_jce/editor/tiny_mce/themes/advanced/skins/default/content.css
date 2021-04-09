@@ -27,6 +27,9 @@ body {
   min-width: 90%;
   padding: 5px;
 }
+.mceContentBody img {
+  display: inline;
+}
 .mceContentBody img[data-mce-selected]:not([data-mce-type]),
 .mceContentBody table[data-mce-selected] {
   outline: 3px solid #1e88e5;
