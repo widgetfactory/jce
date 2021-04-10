@@ -395,7 +395,7 @@
                                         alt: data.alt
                                     };
 
-                                    args = extend(args, self.getAttributes(params.attributes || {}));
+                                    args = extend(args, self.getAttributes(params));
 
                                     getDataAndInsert(args).then(function () {
                                         node = ed.selection.getNode()
