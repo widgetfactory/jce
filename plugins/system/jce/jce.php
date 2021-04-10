@@ -196,4 +196,24 @@ class PlgSystemJce extends JPlugin
 
         return true;
     }
+
+    public function onBeforeWfEditorLoad()
+    {
+        $items = glob(__DIR__ . '/template/*.php');
+
+        $dispatcher = JEventDispatcher::getInstance();
+
+        foreach($items as $item) {
+            $name = basename($item, '.php');
+
+            $className = 'WfTemplate' . ucfirst($name);
+
+            require_once($item);
+
+			if (class_exists($className)) {
+                // Instantiate and register the event
+				new $className($dispatcher);
+            }
+        }
+    }
 }
