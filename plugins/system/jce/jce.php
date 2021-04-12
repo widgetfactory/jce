@@ -199,7 +199,7 @@ class PlgSystemJce extends JPlugin
 
     public function onBeforeWfEditorLoad()
     {
-        $items = glob(__DIR__ . '/template/*.php');
+        $items = glob(__DIR__ . '/templates/*.php');
 
         $dispatcher = JEventDispatcher::getInstance();
 
