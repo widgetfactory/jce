@@ -21,7 +21,7 @@ $plugins = $displayData->get('Plugins');
         $icons = '';
         $title = '';
 
-        $title .= '<p>' . JText::_($plugin->title, true) . '</p>';
+        $title .= '<p>' . $plugin->title . '</p>';
         
         if (!empty($plugin->icon)) {
 

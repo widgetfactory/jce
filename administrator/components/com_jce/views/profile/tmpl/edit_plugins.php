@@ -38,7 +38,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
         $icons = '';
         $title = '';
 
-        $title .= '<p>' . JText::_($plugin->title, true) . '</p>';
+        $title .= '<p>' . $plugin->title . '</p>';
         
         if (!empty($plugin->icon)) {
 
