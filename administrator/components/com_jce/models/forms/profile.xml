@@ -9,7 +9,6 @@
                 <option value="0">JUNPUBLISHED</option>
             </field>
             <field name="ordering" type="Profileordering" label="JFIELD_ORDERING_LABEL" description="JFIELD_ORDERING_DESC"/>
-            <field name="id" type="number" label="JGLOBAL_FIELD_ID_LABEL" description="JGLOBAL_FIELD_ID_DESC" class="readonly" size="10" default="0" readonly="true" />
         </fieldset>
         <fieldset name="assignment" addfieldpath="/administrator/components/com_categories/models/fields">
             <field name="area" type="checkboxes" multiple="multiple" class="inline" label="WF_PROFILES_AREA" description="WF_PROFILES_AREA_DESC" default="">
