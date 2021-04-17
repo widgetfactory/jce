@@ -842,3 +842,7 @@ select:not([multiple]):not([size]) {
         font-size: 14px;
     }
 }
+
+.uk-tooltip {
+    max-width: 20rem;
+}

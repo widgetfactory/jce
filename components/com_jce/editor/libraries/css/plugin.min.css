@@ -1690,6 +1690,10 @@ select:not([multiple]):not([size]) {
         font-size: 14px;
     }
 }
+
+.uk-tooltip {
+    max-width: 20rem;
+}
 .uk-datalist-control {
     position: relative;
     display: flex;
