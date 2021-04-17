@@ -2935,12 +2935,12 @@ select.mceNativeListBox {
     text-align: center;
     text-decoration: none;
     content: "\00d7";
-    color: #999;
+    color: #666;
 }
 
 .mceModalContent .mceButton.mceButtonPicker .mceIcon,
 .mceModalContent .mceButton.mceButtonUpload .mceIcon {
-    color: #999;
+    color: #666;
 }
 
 .mceModalContent .mceButton.mceButtonUpload .mceIcon {
