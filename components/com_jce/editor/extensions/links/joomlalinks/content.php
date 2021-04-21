@@ -47,12 +47,13 @@ class JoomlalinksContent extends JObject
 
     public function getLinks($args)
     {
-        require_once JPATH_SITE . '/components/com_content/helpers/route.php';
-
         $items = array();
         $view = isset($args->view) ? $args->view : '';
 
         $language = '';
+
+        // create a new RouteHelper instance
+        $router = new JHelperRoute();
 
         switch ($view) {
             // get top-level categories
@@ -75,7 +76,7 @@ class JoomlalinksContent extends JObject
                         $language = $category->language;
                     }
 
-                    $id = ContentHelperRoute::getCategoryRoute($category->id, $args->id, $language);
+                    $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
 
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::getMenuLink($id);
@@ -97,8 +98,7 @@ class JoomlalinksContent extends JObject
                             $language = $article->language;
                         }
 
-                        $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
-
+                        $id = $router->getRoute($article->slug, 'com_content.article', '', $language, $article->catslug);
                         $id = self::route($id);
 
                         $items[] = array(
@@ -139,7 +139,7 @@ class JoomlalinksContent extends JObject
                         }
 
                         $url = '';
-                        $id = ContentHelperRoute::getCategoryRoute($category->id, $language);
+                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
 
                         // get sub-categories
                         if (count($sub)) {
@@ -174,8 +174,7 @@ class JoomlalinksContent extends JObject
                         $language = $article->language;
                     }
 
-                    $id = ContentHelperRoute::getArticleRoute($article->slug, $article->catslug, $language);
-
+                    $id = $router->getRoute($article->slug, 'com_content.article', '', $language, $article->catslug);
                     $id = self::route($id);
 
                     $items[] = array(

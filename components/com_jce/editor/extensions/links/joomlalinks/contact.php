@@ -52,7 +52,8 @@ class JoomlalinksContact extends JObject
 
         $language = '';
 
-        require_once JPATH_SITE . '/components/com_contact/helpers/route.php';
+        // create a new RouteHelper instance
+        $router = new JHelperRoute();
 
         switch ($view) {
             default:
@@ -63,7 +64,9 @@ class JoomlalinksContact extends JObject
                     if (isset($category->language)) {
                         $language = $category->language;
                     }
-                    $url = ContactHelperRoute::getCategoryRoute($category->id, $language);
+
+                    $url = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
+                    
                     // convert to SEF
                     $url = self::route($url);
 
@@ -87,9 +90,9 @@ class JoomlalinksContact extends JObject
                     }
 
                     if ($children) {
-                        $id = ContactHelperRoute::getCategoryRoute($category->id, $language);
+                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
                     } else {
-                        $id = ContactHelperRoute::getCategoryRoute($category->slug, $language);
+                        $id = JHelperRoute::getCategoryRoute($category->slug, $language, 'com_contact');
                     }
 
                     // convert to SEF
@@ -111,7 +114,7 @@ class JoomlalinksContact extends JObject
                         $language = $contact->language;
                     }
 
-                    $id = ContactHelperRoute::getContactRoute($contact->id, $args->id, $language);
+                    $id = $router->getRoute($args->id, 'com_contact.contact', '', $language, $contact->id);
                     $id = self::route($id);
 
                     $items[] = array(

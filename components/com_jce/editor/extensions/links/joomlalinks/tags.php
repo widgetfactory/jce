@@ -54,6 +54,9 @@ class JoomlalinksTags extends JObject
 
         $language = '';
 
+        // create a new RouteHelper instance
+        $router = new JHelperRoute();
+
         $tags = array();
 
         if (!isset($args->id)) {
@@ -70,8 +73,7 @@ class JoomlalinksTags extends JObject
                     $language = $tag->language;
                 }
 
-                $id = TagsHelperRoute::getTagRoute($tag->id);
-
+                $id = $router->getRoute($tag->id, 'com_tags.tags', '', $language);
                 $id = $this->route($id);
 
                 $items[] = array(
