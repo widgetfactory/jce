@@ -111,7 +111,6 @@ section[role="tabpanel"] .wf-editor-container {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* Joomla 4 */
 }
 .wf-editor-header:empty {
   min-height: inherit;
@@ -157,11 +156,12 @@ section[role="tabpanel"] .wf-editor-container {
 .wf-editor-header joomla-tab {
   width: 100%;
 }
-.wf-editor-header joomla-tab > ul a[role=tab] {
+/* Joomla 4 */
+.joomla4 joomla-tab > ul a[role=tab] {
   border-radius: 0;
 }
-.wf-editor-header joomla-tab > ul a[role=tab]:hover,
-.wf-editor-header joomla-tab > ul a[role=tab][active] {
+.joomla4 joomla-tab > ul a[role=tab]:hover,
+.joomla4 joomla-tab > ul a[role=tab][active] {
   margin: 0;
 }
 .mce-fullscreen .mce-resizehandle {
