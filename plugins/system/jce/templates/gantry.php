@@ -6,7 +6,7 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateGantry extends JEvent
+class WfTemplateGantry extends JPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
     {                        

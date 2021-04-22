@@ -6,7 +6,7 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateAstroid extends JEvent
+class WfTemplateAstroid extends JPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
     {                        
