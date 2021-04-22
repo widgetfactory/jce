@@ -160,7 +160,7 @@
 
                 var params = parseUrl(url), url = 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter', 'mediatype'];
 
-                var filter = params.filter || params.mediatype || 'images'
+                var filter = params.filter || params.mediatype || 'images';
 
                 if (!checkMimeType(file, filter)) {
                     alert('The selected file is not supported.');
@@ -270,8 +270,14 @@
         if (!id) {
             return;
         }
+        
+        var params = {}, dataUrl = $(row).find('.field-media-wrapper').data('url');
 
-        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id;
+        if (dataUrl) {
+            params = parseUrl(dataUrl);
+        }
+
+        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + params.mediatype || 'images';
 
         // update url
         $(row).find('.field-media-wrapper').data('url', url);

@@ -26,7 +26,7 @@ class PlgSystemJce extends JPlugin
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
         $id = $app->input->get('fieldid');
-        $mediatype = $app->input->get('view', 'images');
+        $mediatype = $app->input->get('mediatype', $app->input->get('view', 'images'));
 
         $options = WFBrowserHelper::getMediaFieldOptions(array(
             'element' => $id,
@@ -201,7 +201,13 @@ class PlgSystemJce extends JPlugin
     {
         $items = glob(__DIR__ . '/templates/*.php');
 
-        $dispatcher = JEventDispatcher::getInstance();
+        $app = JFactory::getApplication();
+
+        if (method_exists($app, 'getDispatcher')) {
+            $dispatcher = JFactory::getApplication()->getDispatcher();
+        } else {
+            $dispatcher = JEventDispatcher::getInstance();
+        }
 
         foreach($items as $item) {
             $name = basename($item, '.php');
