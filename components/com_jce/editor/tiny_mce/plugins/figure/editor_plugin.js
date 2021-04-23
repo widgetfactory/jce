@@ -30,14 +30,14 @@
                         if (node.getAll('figcaption').length === 0) {
                             var figcaption = new Node('figcaption', 1);
                             figcaption.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
-                            //figcaption.attr('contenteditable', true);
+                            figcaption.attr('contenteditable', true);
 
                             node.append(figcaption);
                         }
 
                         if (node.getAll('img').length) {
                             node.attr('data-mce-image', '1');
-                            //node.attr('contenteditable', 'false');
+                            node.attr('contenteditable', 'false');
                         }
                     }
                 });
@@ -53,7 +53,7 @@
                             node.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
                         }
                         // make editable
-                        //node.attr('contenteditable', 'true');
+                        node.attr('contenteditable', 'true');
                     }
                 });
 
@@ -98,7 +98,7 @@
                     if (/\W/.test(k)) {
                         return true;
                     }
-                    
+
                     blocks.push(k.toLowerCase());
                 });
 
@@ -110,7 +110,7 @@
                         var node = ed.selection.getNode(),
                             parent = ed.dom.getParent(node, blocks.join(','));
 
-                            vars = vars || {};
+                        vars = vars || {};
 
                         if (node.nodeName === "IMG") {
                             // replace parent paragraph with figure
@@ -119,32 +119,15 @@
                             }
 
                             ed.dom.add(node.parentNode, 'figcaption', {
-                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...')
+                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+                                'contenteditable': 'true'
                             }, vars.caption || '');
 
-                            ed.dom.setAttrib(elm, 'data-mce-image', 1);
+                            ed.dom.setAttribs(elm, {
+                                'data-mce-image': 1,
+                                'contenteditable': false
+                            });
                         }
-                    }
-                });
-
-                each(['alignleft', 'aligncenter', 'alignright'], function (action) {
-                    var formats = ed.formatter.get(action);
-
-                    if (formats.length) {
-                        each(formats, function (fmt) {
-                            if (/img/.test(fmt.selector)) {
-                                fmt.onformat = function (elm) {
-
-                                    var parent = ed.dom.getParent(elm, 'FIGURE');
-
-                                    if (parent) {
-                                        ed.formatter.remove(action, parent);
-
-                                        ed.formatter.apply(action, {}, parent);
-                                    }
-                                };
-                            }
-                        });
                     }
                 });
 
@@ -159,6 +142,7 @@
 
                                 if (fig) {
                                     ed.dom.remove(ed.dom.select('figcaption', fig));
+                                    ed.dom.remove(fig, 1);
                                 }
                             }
 
@@ -193,8 +177,8 @@
                 ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
                     var se = ed.selection,
                         n = se.getNode();
-                    
-                    switch(cmd) {
+
+                    switch (cmd) {
                         case 'JustifyRight':
                         case 'JustifyLeft':
                         case 'JustifyCenter':
@@ -219,6 +203,17 @@
                         container = rng.startContainer;
                         offset = rng.startOffset;
                         collapsed = rng.collapsed;
+
+                        if (container.nodeName === 'FIGURE') {
+                            var node = ed.selection.getNode();
+
+                            if (node.nodeName === 'IMG') {
+                                ed.dom.remove(container);
+                                ed.nodeChanged();
+                                e.preventDefault();
+                                return;
+                            }
+                        }
 
                         // override delete if the figcaption is empty
                         if (container.nodeName == 'FIGCAPTION' && (!container.nodeValue || container.nodeValue.length === 0)) {

@@ -1,5 +1,8 @@
 .mceVisualBlocks {
   /*@import (less) 'base64.less';*/
+  /*figcaption:before {
+    content: "FIGCAPTION";
+}*/
 }
 .mceVisualBlocks p,
 .mceVisualBlocks h1,
@@ -68,7 +71,6 @@
 .mceVisualBlocks address:before,
 .mceVisualBlocks pre:not([class*="language-"]):before,
 .mceVisualBlocks figure:before,
-.mceVisualBlocks figcaption:before,
 .mceVisualBlocks ul:before,
 .mceVisualBlocks ol:before,
 .mceVisualBlocks dl:before,
@@ -183,7 +185,4 @@
 }
 .mceVisualBlocks figure:before {
   content: "FIGURE";
-}
-.mceVisualBlocks figcaption:before {
-  content: "FIGCAPTION";
 }
