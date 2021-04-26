@@ -87,6 +87,8 @@
                 format.attributes = { "class": classes };
             }
 
+            format.ceFalseOverride = true;
+
             return format;
         },
 
@@ -252,7 +254,7 @@
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
                 // generic class format
-                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*' });
+                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*', ceFalseOverride : true});
 
                 function isValidAttribute(name) {
                     var isvalid = true, invalid = ed.settings.invalid_attributes;
@@ -349,7 +351,8 @@
                             fmt = {
                                 //inline: 'span',
                                 classes: val,
-                                selector: '*'
+                                selector: '*',
+                                ceFalseOverride: true
                             };
 
                             ed.formatter.register(name, fmt);
