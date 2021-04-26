@@ -322,10 +322,14 @@ pre.mcePreformatted {
 figure {
     display: table;
 
+    margin-block-start: inherit;
+    margin-block-end: inherit;
+    margin-inline-start: inherit;
+    margin-inline-end: inherit;
+
     figcaption {
         display: block;
         caption-side: bottom;
-        line-height: 2rem;
     
         &:empty::after {
             content: "...";

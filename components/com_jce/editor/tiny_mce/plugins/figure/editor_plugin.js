@@ -106,28 +106,33 @@
                     block: 'figure',
                     remove: 'all',
                     wrapper: true,
+                    ceFalseOverride: true,
+                    deep: false,
                     onformat: function (elm, fmt, vars, node) {
-                        var node = ed.selection.getNode(),
-                            parent = ed.dom.getParent(node, blocks.join(','));
-
+                        node = node || ed.selection.getNode();
                         vars = vars || {};
 
-                        if (node.nodeName === "IMG") {
+                        if (node && node.nodeName === "IMG") {
+                            var parent = parent = ed.dom.getParent(node, blocks.join(','));
+                            
                             // replace parent paragraph with figure
                             if (parent && parent.nodeName === 'P' && parent.childNodes.length === 1) {
                                 ed.dom.replace(elm, parent, 1);
                             }
 
-                            ed.dom.add(node.parentNode, 'figcaption', {
-                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
-                                'contenteditable': 'true'
-                            }, vars.caption || '');
-
                             ed.dom.setAttribs(elm, {
                                 'data-mce-image': 1,
                                 'contenteditable': false
                             });
+
+                            ed.dom.add(elm, 'figcaption', {
+                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+                                'contenteditable': true
+                            }, vars.caption || '');
                         }
+                    },
+                    onremove: function(node) {
+                        ed.dom.remove(ed.dom.select('figcaption', node));
                     }
                 });
 
@@ -136,28 +141,6 @@
                         n = se.getNode();
 
                     switch (cmd) {
-                        case 'FormatBlock':
-                            if (v === 'figure') {
-                                var fig = ed.dom.getParent(n, 'figure');
-
-                                if (fig) {
-                                    ed.dom.remove(ed.dom.select('figcaption', fig));
-                                    ed.dom.remove(fig, 1);
-                                }
-                            }
-
-                            break;
-
-                        case 'mceToggleFormat':
-                            if (v === 'figure') {
-                                var fig = ed.dom.getParent(n, 'figure');
-
-                                if (fig) {
-                                    ed.dom.remove(ed.dom.select('figcaption', fig));
-                                }
-                            }
-                            break;
-
                         case 'JustifyRight':
                         case 'JustifyLeft':
                         case 'JustifyCenter':
@@ -175,8 +158,7 @@
                 });
 
                 ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
-                    var se = ed.selection,
-                        n = se.getNode();
+                    var n = ed.selection.getNode();
 
                     switch (cmd) {
                         case 'JustifyRight':
@@ -186,7 +168,7 @@
                                 var img = ed.dom.select('IMG', n);
 
                                 if (img.length) {
-                                    se.select(img[0]);
+                                    ed.selection.select(img[0]);
                                 }
                             }
                             break;
@@ -204,6 +186,7 @@
                         offset = rng.startOffset;
                         collapsed = rng.collapsed;
 
+                        // remove figure and children if the img is selected
                         if (container.nodeName === 'FIGURE') {
                             var node = ed.selection.getNode();
 
@@ -215,8 +198,8 @@
                             }
                         }
 
-                        // override delete if the figcaption is empty
-                        if (container.nodeName == 'FIGCAPTION' && (!container.nodeValue || container.nodeValue.length === 0)) {
+                        // override delete only if the figcaption is empty, so it is not itself removed
+                        if (container.nodeName == 'FIGCAPTION' && (!container.nodeValue || container.nodeValue.length === 0) && container.childNodes.length === 0) {
                             e.preventDefault();
                         }
 
