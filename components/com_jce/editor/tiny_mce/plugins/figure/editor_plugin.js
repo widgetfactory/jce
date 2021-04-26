@@ -10,8 +10,7 @@
 (function () {
     var VK = tinymce.VK,
         Node = tinymce.html.Node,
-        each = tinymce.each,
-        map = tinymce.map;
+        each = tinymce.each;
     var blocks = [];
 
     tinymce.create('tinymce.plugins.Figure', {
