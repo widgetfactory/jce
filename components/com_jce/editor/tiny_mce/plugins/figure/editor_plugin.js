@@ -105,33 +105,25 @@
                 ed.formatter.register('figure', {
                     block: 'figure',
                     remove: 'all',
-                    wrapper: true,
                     ceFalseOverride: true,
                     deep: false,
                     onformat: function (elm, fmt, vars, node) {
                         node = node || ed.selection.getNode();
                         vars = vars || {};
 
-                        if (node && node.nodeName === "IMG") {
-                            var parent = parent = ed.dom.getParent(node, blocks.join(','));
-                            
-                            // replace parent paragraph with figure
-                            if (parent && parent.nodeName === 'P' && parent.childNodes.length === 1) {
-                                ed.dom.replace(elm, parent, 1);
-                            }
-
+                        if (ed.dom.select('img,video,iframe', elm)) {
                             ed.dom.setAttribs(elm, {
                                 'data-mce-image': 1,
                                 'contenteditable': false
                             });
-
+    
                             ed.dom.add(elm, 'figcaption', {
                                 'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
                                 'contenteditable': true
                             }, vars.caption || '');
                         }
                     },
-                    onremove: function(node) {
+                    onremove: function (node) {
                         ed.dom.remove(ed.dom.select('figcaption', node));
                     }
                 });
