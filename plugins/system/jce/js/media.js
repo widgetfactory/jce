@@ -265,25 +265,28 @@
     };
 
     function updateMediaUrl(row) {
-        var id = $(row).find('.field-media-input').attr('id');
+        $(row).find('.field-media-wrapper').each(function() {
+            var id = $(this).find('.field-media-input').attr('id');
+            
+            if (!id) {
+                return true;
+            }
+            
+            var params = {}, dataUrl = $(this).data('url');
+    
+            if (dataUrl) {
+                params = parseUrl(dataUrl);
+            }
 
-        if (!id) {
-            return;
-        }
-        
-        var params = {}, dataUrl = $(row).find('.field-media-wrapper').data('url');
-
-        if (dataUrl) {
-            params = parseUrl(dataUrl);
-        }
-        // set mediatype or default to "images"
-        var mediatype = params.mediatype || 'images';
-
-        // create url
-        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
-
-        // update url
-        $(row).find('.field-media-wrapper').data('url', url);
+            // set mediatype or default to "images"
+            var mediatype = params.mediatype || 'images';
+    
+            // create url
+            var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
+    
+            // update url
+            $(this).data('url', url);
+        });
     }
 
     $(document).ready(function ($) {
