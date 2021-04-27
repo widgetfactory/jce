@@ -276,8 +276,11 @@
         if (dataUrl) {
             params = parseUrl(dataUrl);
         }
+        // set mediatype or default to "images"
+        var mediatype = params.mediatype || 'images';
 
-        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + params.mediatype || 'images';
+        // create url
+        var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
 
         // update url
         $(row).find('.field-media-wrapper').data('url', url);
