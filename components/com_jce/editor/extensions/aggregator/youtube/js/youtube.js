@@ -204,7 +204,7 @@ WFAggregator.add('youtube', {
         src = 'https://' + u.host + '' + u.path;
 
         if (src.indexOf('youtube-nocookie') !== -1) {
-            data.privacy = 1;
+            data['youtube_privacy'] = 1;
         }
 
         if (query.v) {
