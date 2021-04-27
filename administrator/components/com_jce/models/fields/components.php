@@ -41,6 +41,7 @@ class JFormFieldComponents extends JFormFieldList
             'com_checkin',
             'com_config',
             'com_cpanel',
+            'com_fields',
             'com_finder',
             'com_installer',
             'com_languages',
