@@ -26,7 +26,7 @@ class WfTemplateGantry extends JPlugin
         if (is_dir($gantry5)) {
             $items = array();
             
-            $files = glob($gantry5 . '/' . $name . '_*.css');
+            $files = glob($gantry5 . '/' . $name . '_[0-9]*.css');
 
             foreach($files as $file) {
                 $items[filemtime($file)] = $file;
