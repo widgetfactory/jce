@@ -438,12 +438,25 @@
             return 'false';
         }
 
+        var styles = {}, styleVal = editor.dom.parseStyle(node.attr('style'));
+
+        each(['width', 'height'], function(key) {
+            val = node.attr(key) || styleVal[key] || '';
+
+            if (val && !/(%|[a-z]{1,3})$/.test(val)) {
+                val += 'px';
+            }
+
+            styles[key] = val;
+        });
+
         previewWrapper = Node.create('span', {
             'contentEditable': 'false',
             'data-mce-object': name,
             'class': 'mce-object-preview mce-object-' + name,
             'aria-details': msg,
-            'data-mce-resize': canResize(node)
+            'data-mce-resize': canResize(node),
+            'style' : editor.dom.serializeStyle(styles)
         });
 
         previewNode = Node.create(name, {
@@ -504,7 +517,7 @@
                 value = cleanClassValue(value);
             }
 
-            if (key === 'style' && value) {
+            /*if (key === 'style' && value) {
                 var styleObject = editor.dom.parseStyle(value);
 
                 tinymce.each(['width', 'height'], function (key) {
@@ -530,7 +543,7 @@
 
                 // remove if empty
                 value = value || null;
-            }
+            }*/
 
             if (key === 'src' || key === 'poster' || key === 'data') {
                 value = editor.convertURL(value);
@@ -996,14 +1009,18 @@
     };
 
     var updateMedia = function (ed, data) {
-        var attribs = {}, node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
+        var preview, attribs = {}, node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
 
         var nodeName = node.nodeName.toLowerCase();
 
-        // get iframe node
+        ed.dom.removeClass(node, 'mce-object-preview-block');
+
+        // get iframe/video node
         if (node.className.indexOf('mce-object-preview') !== -1) {
             nodeName = node.getAttribute('data-mce-object');
             node = ed.dom.select(nodeName, node);
+            // get parent
+            preview = ed.dom.getParent(node, '[data-mce-object]');
         }
 
         each(data, function (value, name) {
@@ -1029,6 +1046,10 @@
         each(['width', 'height'], function (key) {
             if (attribs[key]) {
                 ed.dom.setStyle(node, key, attribs[key]);
+                // update parent
+                if (preview) {
+                    ed.dom.setStyle(preview, key, attribs[key]);
+                }
             }
         });
     };
