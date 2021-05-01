@@ -58,15 +58,12 @@ class plgEditorJCE extends JPlugin
      */
     public function onInit()
     {
-        $app = JFactory::getApplication();
         $language = JFactory::getLanguage();
 
         $document = JFactory::getDocument();
 
         $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
         $language->load('com_jce', JPATH_ADMINISTRATOR);
-
-        $app->triggerEvent('onBeforeWfEditorLoad');
 
         $editor = self::getEditorInstance();
         $editor->init();
