@@ -1331,15 +1331,27 @@
         /**
          * Load the browser list
          */
-        load: function (item) {
-            var src = "";
+        load: function (items) {
+            var self = this, src = "";
 
             // add returned items
-            if (item) {
-                this._addReturnedItem(item);
+            if (items) {
+                if ($.type(items) == 'string') {
+                    items = [items];
+                }
 
-                // pass string value to src
-                src = item.name || item;
+                $.each(items, function(i, item) {
+                    if ($.type(item) == 'string') {
+                        item = {name : item};
+                    }
+
+                    self._addReturnedItem(item);
+
+                    // pass value of first item to src
+                    if (i == 0) {
+                        src = item.name;
+                    }
+                });                
             }
 
             // show loading message
