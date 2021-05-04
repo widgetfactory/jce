@@ -120,7 +120,7 @@ class plgEditorJCE extends JPlugin
      * @vars int The number of rows for the editor area
      * @vars mixed Can be boolean or array.
      */
-    public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null)
+    public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
         if (empty($id)) {
             $id = $name;
