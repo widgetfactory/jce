@@ -110,16 +110,22 @@ class plgEditorJCE extends JPlugin
     }
 
     /**
-     * JCE WYSIWYG Editor - display the editor.
-     *
-     * @vars string The name of the editor area
-     * @vars string The content of the field
-     * @vars string The width of the editor area
-     * @vars string The height of the editor area
-     * @vars int The number of columns for the editor area
-     * @vars int The number of rows for the editor area
-     * @vars mixed Can be boolean or array.
-     */
+	 * JCE WYSIWYG Editor - Display the editor area.
+	 *
+	 * @param   string   $name     The name of the editor area.
+	 * @param   string   $content  The content of the field.
+	 * @param   string   $width    The width of the editor area.
+	 * @param   string   $height   The height of the editor area.
+	 * @param   int      $col      The number of columns for the editor area.
+	 * @param   int      $row      The number of rows for the editor area.
+	 * @param   boolean  $buttons  True and the editor buttons will be displayed.
+	 * @param   string   $id       An optional ID for the textarea. If not supplied the name is used.
+	 * @param   string   $asset    The object asset
+	 * @param   object   $author   The author.
+	 * @param   array    $params   Associative array of editor parameters.
+	 *
+	 * @return  string
+	 */
     public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
         if (empty($id)) {
@@ -130,6 +136,7 @@ class plgEditorJCE extends JPlugin
         if (is_numeric($width)) {
             $width .= 'px';
         }
+
         if (is_numeric($height)) {
             $height .= 'px';
         }
