@@ -1202,7 +1202,7 @@ class WFEditor
 
                     // external url
                     if (strpos($tmp, '://') !== false) {
-                        $list[] = $tmp;
+                        $custom[] = $tmp;
                         continue;
                     }
 
