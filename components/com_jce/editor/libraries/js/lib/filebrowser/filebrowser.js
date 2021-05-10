@@ -236,7 +236,7 @@
                     // get serialized object
                     self.serializeItemData(p).then(function (data) {
                         data.state = $(n).is(':checked');
-                        
+
                         // trigger event
                         self._trigger('onFileToggle', [p, data]);
                     });
@@ -473,7 +473,7 @@
             // Setup refresh button
             $('#refresh').on('click', function (e) {
                 self.refresh(e);
-            }).on('button:refresh', function (e, state) {                
+            }).on('button:refresh', function (e, state) {
                 if (state) {
                     $('.uk-icon', this).addClass('uk-icon-spinner');
                     $(this).prop('disabled', true);
@@ -1340,9 +1340,9 @@
                     items = [items];
                 }
 
-                $.each(items, function(i, item) {
+                $.each(items, function (i, item) {
                     if ($.type(item) == 'string') {
-                        item = {name : item};
+                        item = { name: item };
                     }
 
                     self._addReturnedItem(item);
@@ -1351,7 +1351,7 @@
                     if (i == 0) {
                         src = item.name;
                     }
-                });                
+                });
             }
 
             // show loading message
@@ -1729,11 +1729,11 @@
                         label: {
                             'confirm': self._translate('create', 'Create')
                         },
-                        validate: function(value) {
+                        validate: function (value) {
                             if (!value) {
                                 return false;
                             }
-                            
+
                             return Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                         }
                     });
@@ -1980,11 +1980,11 @@
                         },
                         elements: this._getDialogOptions('rename'),
                         close_on_submit: false,
-                        validate: function(value) {
+                        validate: function (value) {
                             if (!value) {
                                 return false;
                             }
-                            
+
                             return Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                         }
                     });
@@ -2796,6 +2796,29 @@
 
                     audio.src = file.preview;
 
+                } else if (file.type === "video" && /\.(wmv|avi|mov)$/i.test(file.preview) && $.support.video) {
+                    var props = {}, video = document.createElement('video');
+
+                    document.body.appendChild(video);
+
+                    video.style.position = 'absolute';
+                    video.style.left = '-10000px';
+
+                    var timer = setTimeout(function () {
+
+                        if (video && video.clientWidth) {
+                            props.duration = '';
+                            props.width = video.clientWidth;
+                            props.height = video.clientHeight;
+
+                            clearTimeout(timer);
+                            document.body.removeChild(video);
+                            video = null;
+                            resolve(props);
+                        }
+                    }, 100);
+
+                    video.src = file.preview;
                 } else if (file.type === "image") {
                     var props = {}, image = new Image();
 
@@ -2912,7 +2935,7 @@
                         // Dimensions (will only apply to file items)
                         if (data.width && data.height) {
                             $('.uk-comment-header', info).append('<div class="uk-comment-meta" id="info-dimensions">' + self._translate('dimensions', 'Dimensions') + ': ' + data.width + ' x ' + data.height + '</div>');
-                            
+
                             // create thumbnail preview
                             if (mime && mime === "image") {
                                 $('#info-preview').empty().append('<img src="' + data.preview + '" alt="" />').removeClass('loading');
