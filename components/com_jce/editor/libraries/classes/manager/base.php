@@ -139,70 +139,6 @@ class WFMediaManagerBase extends WFEditorPlugin
     {
     }
 
-    protected function getID3Instance()
-    {
-        static $id3;
-        if (!is_object($id3)) {
-            if (!class_exists('getID3')) {
-                $app = JFactory::getApplication();
-                // set tmp directory
-                define('GETID3_TEMP_DIR', $app->getCfg('tmp_path'));
-
-                require_once WF_EDITOR_LIBRARIES . '/classes/vendor/getid3/getid3/getid3.php';
-            }
-
-            $id3 = new getID3();
-        }
-
-        return $id3;
-    }
-
-    protected function id3Data($path)
-    {
-        jimport('joomla.filesystem.file');
-        clearstatcache();
-
-        $meta = array('width' => '', 'height' => '', 'time' => '', 'x' => '', 'y' => '');
-
-        $ext = JFile::getExt($path);
-
-        $filesize = null;
-
-        // limit filesize for flv and webm
-        if (preg_match('#\.(flv|f4v|webm)$#i', $path)) {
-            $filesize = 128;
-        }
-
-        // Initialize getID3 engine
-        $id3 = $this->getID3Instance();
-        // Get information from the file
-        $fileinfo = @$id3->analyze($path, $filesize);
-        getid3_lib::CopyTagsToComments($fileinfo);
-
-        // Output results
-        if (isset($fileinfo['video'])) {
-            $meta['width'] = isset($fileinfo['video']['resolution_x']) ? round($fileinfo['video']['resolution_x']) : 100;
-            $meta['height'] = isset($fileinfo['video']['resolution_y']) ? round($fileinfo['video']['resolution_y']) : 100;
-        }
-
-        if (isset($fileinfo['playtime_string'])) {
-            $meta['time'] = $fileinfo['playtime_string'];
-        }
-
-        if ($ext == 'swf' && $meta['x'] == '') {
-            $size = @getimagesize($path);
-            $meta['width'] = round($size[0]);
-            $meta['height'] = round($size[1]);
-        }
-
-        if ($ext == 'wmv' && $meta['x'] == '') {
-            $meta['width'] = round($fileinfo['asf']['video_media']['1']['image_width']);
-            $meta['height'] = round(($fileinfo['asf']['video_media']['1']['image_height']));
-        }
-
-        return $meta;
-    }
-
     public function getDimensions($file)
     {
         $browser = $this->getFileBrowser();
@@ -213,7 +149,7 @@ class WFMediaManagerBase extends WFEditorPlugin
         $data = array();
 
         // images and flash
-        if (preg_match('#\.(jpg|jpeg|png|apng|gif|bmp|wbmp|tif|tiff|psd|ico|webp)$#i', $file)) {
+        if (preg_match('#\.(jpg|jpeg|png|apng|gif|bmp|wbmp|tif|tiff|psd|ico|webp|swf)$#i', $file)) {
             list($data['width'], $data['height']) = getimagesize($path);
 
             return $data;
@@ -235,20 +171,6 @@ class WFMediaManagerBase extends WFEditorPlugin
 
                     return $data;
                 }
-            }
-        }
-
-        // video and audio
-        if (preg_match('#\.(avi|wmv|wm|asf|asx|wmx|wvx|mov|qt|mpg|mpeg|m4a|swf|dcr|rm|ra|ram|divx|mp4|ogv|ogg|webm|flv|f4v|mp3|ogg|wav|xap)$#i', $file)) {
-
-            // only process local files
-            if ($filesystem->get('local')) {
-                $data = $this->id3Data($path);
-                $data['duration'] = preg_match('/([0-9]+):([0-9]+)/', $data['time']) ? $data['time'] : '--:--';
-
-                unset($data['time']);
-
-                return $data;
             }
         }
 

@@ -483,6 +483,11 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/imgmanager_ext/img'
         );
 
+        // remove getid3
+        $folders['2.9.7'] = array(
+            $site . '/editor/libraries/classes/vendor/getid3'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',
