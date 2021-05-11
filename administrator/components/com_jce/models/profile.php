@@ -532,8 +532,9 @@ class JceModelProfile extends JModelAdmin
                     $value = implode(',', filter_var_array($value, FILTER_SANITIZE_STRING));
                     break;
                 case 'area':
-                    if (is_array($value)) {
-                        if (count($value) === 2) {
+                    if (is_array($value)) {                        
+                        // for simplicity, set multiple area selections as "0"
+                        if (count($value) > 1) {
                             $value = 0;
                         } else {
                             $value = $value[0];
