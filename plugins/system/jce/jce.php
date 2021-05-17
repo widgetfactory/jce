@@ -85,7 +85,7 @@ class PlgSystemJce extends JPlugin
 
         // only if enabled
         if ((int) $this->params->get('column_styles', 1)) {
-            $hash = md5_file(__FILE__);
+            $hash = md5_file(__DIR__ . '/css/content.css');
             $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css?' . $hash);
         }
     }
