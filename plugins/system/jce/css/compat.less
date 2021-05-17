@@ -4,8 +4,8 @@
     .flex_gap();
 }
 
-/* Safari 11+ */
-@supports (-webkit-hyphens:none) {
+/* Safari < 14.1 */
+@supports (not (scale: -1)) and (-webkit-hyphens:none)  {
     .flex_gap();
 }
 
