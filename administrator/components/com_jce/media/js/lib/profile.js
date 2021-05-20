@@ -501,20 +501,22 @@
     function setParams(plugins) {
         var $tabs = $('#profile-plugins-tabs > .nav-item');
 
+        // hide and deactivate all tabs and panels
         $tabs.removeClass('hide active').each(function (i) {
             var name = $(this).children('[href]').attr('href').replace('#profile-plugins-', '');
 
             var s = $.inArray(name, plugins) != -1;
 
-            // disable forms in tab panel
-            $('input[name], select[name]', '#profile-plugins-' + name).prop('disabled', !s);
+            // hide panel and disable forms
+            $('#profile-plugins-' + name).removeClass('show active').find('input[name], select[name]').prop('disabled', !s);
 
             if (!s) {
                 $(this).addClass('hide');
             }
         });
 
-        $tabs.not('.hide').first().addClass('active');
+        // show first tab pane
+        $tabs.not('.hide').first().addClass('active').trigger('click');
     }
 
     $(document).ready(function () {

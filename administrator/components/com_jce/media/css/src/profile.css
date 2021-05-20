@@ -278,3 +278,7 @@ a.browser {
     max-width: 300px;
     box-sizing: border-box;
 }
+
+.ui-jce .hide {
+    display: none;
+}
