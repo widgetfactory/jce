@@ -118,10 +118,12 @@ class JceController extends JControllerLegacy
             // Push document object into the view.
             $view->document = $document;
 
-            // Load the submenu.
-            require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/admin.php';
-
-            JceHelperAdmin::addSubmenu($vName);
+            // only for Joomla 3.x
+            if (version_compare(JVERSION, '4', 'lt')) {
+                // Load the submenu.
+                require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/admin.php';
+                JceHelperAdmin::addSubmenu($vName);
+            }
 
             $document->addStyleSheet('components/com_jce/media/css/global.min.css?' . md5(WF_VERSION));
 
