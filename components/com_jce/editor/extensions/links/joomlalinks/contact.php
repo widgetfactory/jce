@@ -114,7 +114,7 @@ class JoomlalinksContact extends JObject
                         $language = $contact->language;
                     }
 
-                    $id = $router->getRoute($args->id, 'com_contact.contact', '', $language, $contact->id);
+                    $id = $router->getRoute($contact->id, 'com_contact.contact', '', $language, $args->id);
                     $id = self::route($id);
 
                     $items[] = array(
