@@ -517,7 +517,7 @@
                 value = cleanClassValue(value);
             }
 
-            /*if (key === 'style' && value) {
+            if (key === 'style' && value) {
                 var styleObject = editor.dom.parseStyle(value);
 
                 tinymce.each(['width', 'height'], function (key) {
@@ -530,20 +530,17 @@
                         return true;
                     }
 
-                    // transfer value
-                    if (!attribs[key]) {
-                        attribs[key] = parseInt(styleObject[key]);
+                    // if the attribute value exists, remove the style value
+                    if (tinymce.is(node.attr(key))) {
+                        delete styleObject[key];
                     }
-
-                    // delete style value
-                    delete styleObject[key];
                 });
 
                 value = editor.dom.serializeStyle(styleObject);
 
                 // remove if empty
                 value = value || null;
-            }*/
+            }
 
             if (key === 'src' || key === 'poster' || key === 'data') {
                 value = editor.convertURL(value);
