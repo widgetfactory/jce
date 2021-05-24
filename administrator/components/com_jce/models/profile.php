@@ -533,6 +533,9 @@ class JceModelProfile extends JModelAdmin
                     break;
                 case 'area':
                     if (is_array($value)) {                        
+                        // remove empty value
+                        $value = array_filter($value, 'strlen');
+                        
                         // for simplicity, set multiple area selections as "0"
                         if (count($value) > 1) {
                             $value = 0;
