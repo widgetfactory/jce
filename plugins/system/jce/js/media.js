@@ -265,27 +265,41 @@
     };
 
     function updateMediaUrl(row) {
-        $(row).find('.field-media-wrapper').each(function() {
+        $(row).find('.field-media-wrapper').add(row).each(function () {
+            // only subform and custom elements
+            if ($(this).find('.wf-media-input-upload').length) {
+                return true;
+            }
+
             var id = $(this).find('.field-media-input').attr('id');
-            
+
             if (!id) {
                 return true;
             }
-            
+
             var params = {}, dataUrl = $(this).data('url');
-    
+
             if (dataUrl) {
                 params = parseUrl(dataUrl);
             }
 
             // set mediatype or default to "images"
             var mediatype = params.mediatype || 'images';
-    
+
             // create url
             var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
-    
+
             // update url
             $(this).data('url', url);
+
+            // update custom element
+            if (this.url) {
+                this.url = url;
+                // create new iframe
+                var ifrHtml = '<iframe src="' + url + '" class="iframe" title="" width="100%" height="100%"></iframe>';
+                // update attributes
+                $(this).find('.joomla-modal').attr('data-url', url).attr('data-iframe', ifrHtml);
+            }
         });
     }
 
@@ -293,12 +307,25 @@
         $('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
 
         $(document).on('subform-row-add', function (evt, row) {
+            // get original event from jQuery
+            var originalEvent = evt.originalEvent;
+
+            // check for detail object, should contain the row
+            if (originalEvent && originalEvent.detail) {
+                row = originalEvent.detail.row || row;
+            }
+
             $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
 
             updateMediaUrl(row);
         });
 
-        $('.field-media-input').parents('.subform-repeatable-group').each(function(i, row) {
+        $('.field-media-input').parents('.subform-repeatable-group').each(function (i, row) {
+            updateMediaUrl(row);
+        });
+
+        // joomla custom attribute
+        $('joomla-field-media').each(function (i, row) {
             updateMediaUrl(row);
         });
 
