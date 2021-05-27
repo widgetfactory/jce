@@ -15,7 +15,6 @@
 
     tinymce.create('tinymce.plugins.Figure', {
         init: function (ed, url) {
-            var self = this;
             this.editor = ed;
 
             ed.onPreInit.add(function (ed) {
@@ -107,7 +106,6 @@
                     ceFalseOverride: true,
                     deep: false,
                     onformat: function (elm, fmt, vars, node) {
-                        node = node || ed.selection.getNode();
                         vars = vars || {};
 
                         if (ed.dom.select('img,video,iframe', elm)) {
@@ -115,7 +113,7 @@
                                 'data-mce-image': 1,
                                 'contenteditable': false
                             });
-    
+
                             ed.dom.add(elm, 'figcaption', {
                                 'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
                                 'contenteditable': true
