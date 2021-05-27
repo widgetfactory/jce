@@ -41,6 +41,11 @@ class plgEditorJCE extends JPlugin
 
             // pass config to WFEditor
             $config = (array) $this->getProperties();
+            
+            // filter to only allow "id" or "plugin"
+            $config = array_filter($config, function($key) {
+                return $key == 'id' || $key == 'plugin';
+            }, ARRAY_FILTER_USE_KEY);
 
             // create editor
             $instance = new WFEditor($config);
