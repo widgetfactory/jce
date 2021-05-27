@@ -142,8 +142,12 @@
             function insertImage(args) {
                 var node = ed.selection.getNode();
 
-                if (node && node.nodeName === 'IMG') {
-                    ed.dom.setAttribs(node, args);
+                if (isImage(node)) {
+                    // only update src and alt
+                    ed.dom.setAttribs(node, {
+                        'src' : args.src,
+                        'alt' : args.alt || ''
+                    });
                 } else {
                     ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
                         skip_undo: 1
@@ -339,7 +343,7 @@
                         open: function () {
                             var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', alt = '', caption = false;
 
-                            if (node && node.nodeName === 'IMG') {
+                            if (isImage(node)) {
                                 var src = ed.dom.getAttrib(node, 'src');
 
                                 if (src) {
@@ -383,7 +387,7 @@
                                     Event.cancel(e);
 
                                     if (!data.url) {
-                                        if (node && node.nodeName === 'IMG') {
+                                        if (isImage(node)) {
                                             ed.dom.remove(node);
                                         }
 
@@ -398,7 +402,7 @@
                                     args = extend(args, self.getAttributes(params));
 
                                     getDataAndInsert(args).then(function () {
-                                        node = ed.selection.getNode()
+                                        node = ed.selection.getNode();
 
                                         if (captionCtrl) {
                                             var figcaption = ed.dom.getNext(node, 'figcaption');
