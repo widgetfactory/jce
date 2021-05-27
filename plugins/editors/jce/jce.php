@@ -31,7 +31,7 @@ class plgEditorJCE extends JPlugin
         parent::__construct($subject, $config);
     }
 
-    protected static function getEditorInstance()
+    protected function getEditorInstance()
     {
         static $instance;
 
@@ -39,8 +39,11 @@ class plgEditorJCE extends JPlugin
             // load base file
             require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
+            // pass config to WFEditor
+            $config = (array) $this->getProperties();
+
             // create editor
-            $instance = new WFEditor();
+            $instance = new WFEditor($config);
         }
 
         return $instance;
@@ -65,7 +68,7 @@ class plgEditorJCE extends JPlugin
         $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        $editor = self::getEditorInstance();
+        $editor = $this->getEditorInstance();
         $editor->init();
 
         foreach ($editor->getScripts() as $script) {
@@ -164,7 +167,7 @@ class plgEditorJCE extends JPlugin
         $html .= JLayoutHelper::render('editor.textarea', $textarea, __DIR__ . '/layouts');
         $html .= '</div>';
 
-        $editor = self::getEditorInstance();
+        $editor = $this->getEditorInstance();
 
         // no profile assigned or available
         if (!$editor->hasProfile()) {
