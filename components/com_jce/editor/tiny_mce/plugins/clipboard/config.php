@@ -14,9 +14,9 @@ class WFClipboardPluginConfig
     {
         $wf = WFApplication::getInstance();
 
-        $settings['clipboard_paste_dialog_width'] = $wf->getParam('clipboard.paste_dialog_width', 450, 450);
+        /*$settings['clipboard_paste_dialog_width'] = $wf->getParam('clipboard.paste_dialog_width', 450, 450);
         $settings['clipboard_paste_dialog_height'] = $wf->getParam('clipboard.paste_dialog_height', 400, 400);
-        $settings['clipboard_paste_use_dialog'] = $wf->getParam('clipboard.paste_use_dialog', 0, 0, 'boolean');
+        $settings['clipboard_paste_use_dialog'] = $wf->getParam('clipboard.paste_use_dialog', 0, 0, 'boolean');*/
         $settings['clipboard_paste_force_cleanup'] = $wf->getParam('clipboard.paste_force_cleanup', 0, 0, 'boolean');
         $settings['clipboard_paste_strip_class_attributes'] = $wf->getParam('clipboard.paste_strip_class_attributes', 2, 2);
         $settings['clipboard_paste_remove_styles'] = $wf->getParam('clipboard.paste_remove_styles', 1, 1, 'boolean');

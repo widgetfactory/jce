@@ -286,7 +286,7 @@
             }
         };
 
-        var setClipboardData = function (evt, data, fallback, done) {            
+        var setClipboardData = function (evt, data, fallback, done) {
             if (setHtml5Clipboard(evt.clipboardData, data.html, data.text)) {
                 evt.preventDefault();
                 done();
@@ -2597,7 +2597,7 @@
                     if (e.keyCode == 67) {
                         ed.onCopy.dispatch(ed, e);
                     }
-    
+
                     if (e.keyCode == 88) {
                         ed.onCut.dispatch(ed, e);
                     }
@@ -2812,27 +2812,23 @@
                     var doc = ed.getDoc(),
                         failed;
 
-                    // just open the window
-                    if (ed.getParam('clipboard_paste_use_dialog')) {
+                    // open the window
+                    try {
+                        // set plain text mode
+                        self.pasteAsPlainText = (cmd === "mcePasteText");
+
+                        doc.execCommand('Paste', false, null);
+                    } catch (e) {
+                        failed = true;
+                    }
+
+                    // Chrome reports the paste command as supported however older IE:s will return false for cut/paste
+                    if (!doc.queryCommandEnabled('Paste')) {
+                        failed = true;
+                    }
+
+                    if (failed) {
                         return self._openWin(cmd);
-                    } else {
-                        try {
-                            // set plain text mode
-                            self.pasteAsPlainText = (cmd === "mcePasteText");
-
-                            doc.execCommand('Paste', false, null);
-                        } catch (e) {
-                            failed = true;
-                        }
-
-                        // Chrome reports the paste command as supported however older IE:s will return false for cut/paste
-                        if (!doc.queryCommandEnabled('Paste')) {
-                            failed = true;
-                        }
-
-                        if (failed) {
-                            return self._openWin(cmd);
-                        }
                     }
                 });
             });
