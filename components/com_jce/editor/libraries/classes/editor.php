@@ -110,15 +110,15 @@ class WFEditor
             $config['plugin'] = '';
         }
 
-        if (!isset($config['id'])) {
-            $config['id'] = 0;
+        if (!isset($config['profile_id'])) {
+            $config['profile_id'] = 0;
         }
 
         // trigger event
         $app->triggerEvent('onBeforeWfEditorLoad');
 
         // set profile
-        $this->profile = $wf->getProfile($config['plugin'], $config['id']);
+        $this->profile = $wf->getProfile($config['plugin'], $config['profile_id']);
 
         // set context
         $this->context = $wf->getContext();
