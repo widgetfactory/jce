@@ -1062,6 +1062,11 @@ class WFEditor
         // check for editor.css file and return first one found
         $file = $path . '/editor.css';
 
+        // editor.css only contains basic styles...
+        if (preg_match('#\/cassiopeia\/#', $path)) {
+            return false;
+        }
+
         if (is_file($file) && filesize($file) > 0) {
             return $file;
         }
