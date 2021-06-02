@@ -219,7 +219,11 @@ class PlgSystemJce extends JPlugin
 
 			if (class_exists($className)) {
                 // Instantiate and register the event
-				new $className($dispatcher);
+				$plugin = new $className($dispatcher);
+
+				if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
+                    $plugin->registerListeners();
+				}
             }
         }
     }
