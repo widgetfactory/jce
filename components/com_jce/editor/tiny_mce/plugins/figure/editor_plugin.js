@@ -175,8 +175,10 @@
                         offset = rng.startOffset;
                         collapsed = rng.collapsed;
 
+                        container = ed.dom.getParent(container, 'FIGURE');
+
                         // remove figure and children if the img is selected
-                        if (container.nodeName === 'FIGURE') {
+                        if (container) {
                             var node = ed.selection.getNode();
 
                             if (node.nodeName === 'IMG') {
@@ -185,22 +187,22 @@
                                 e.preventDefault();
                                 return;
                             }
-                        }
 
-                        // override delete only if the figcaption is empty, so it is not itself removed
-                        if (container.nodeName == 'FIGCAPTION' && (!container.nodeValue || container.nodeValue.length === 0) && container.childNodes.length === 0) {
-                            e.preventDefault();
-                        }
-
-                        if (container.nodeType === 3 && (!collapsed && !offset)) {
-                            var figcaption = ed.dom.getParent(container, 'FIGCAPTION');
-
-                            if (figcaption) {
-                                while (figcaption.firstChild) {
-                                    figcaption.removeChild(figcaption.firstChild);
-                                }
-
+                            // override delete only if the figcaption is empty, so it is not itself removed
+                            if (node.nodeName == 'FIGCAPTION' && (!node.nodeValue || node.nodeValue.length === 0) && node.childNodes.length === 0) {
                                 e.preventDefault();
+                            }
+
+                            if (node.nodeType === 3 && (!collapsed && !offset)) {
+                                var figcaption = ed.dom.getParent(node, 'FIGCAPTION');
+
+                                if (figcaption) {
+                                    while (figcaption.firstChild) {
+                                        figcaption.removeChild(figcaption.firstChild);
+                                    }
+
+                                    e.preventDefault();
+                                }
                             }
                         }
                     }
