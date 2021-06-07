@@ -179,6 +179,10 @@ class WFApplication extends JObject
         // get the profile variables for the current context
         $options = $this->getProfileVars();
 
+        // add plugin to options array
+        $options['plugin'] = $plugin;
+
+        // assign profile_id to simple variable
         if (isset($options['profile_id'])) {
             $id = (int) $options['profile_id'];
         }
