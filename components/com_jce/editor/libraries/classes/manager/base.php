@@ -189,6 +189,7 @@ class WFMediaManagerBase extends WFEditorPlugin
 
         // implode textcase array to create string
         if (is_array($textcase)) {
+            $textcase = array_filter($textcase, 'strlen');
             $textcase = implode(',', $textcase);
         }
         
