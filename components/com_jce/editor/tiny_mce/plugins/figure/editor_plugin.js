@@ -36,6 +36,10 @@
                         if (node.getAll('img').length) {
                             node.attr('data-mce-image', '1');
                             node.attr('contenteditable', 'false');
+
+                            each(node.getAll('img'), function(img) {
+                                img.attr('data-mce-contenteditable', 'true');
+                            });
                         }
                     }
                 });
@@ -61,8 +65,11 @@
 
                     while (i--) {
                         node = nodes[i];
-
                         node.attr('contenteditable', null);
+
+                        each(node.getAll('img'), function(img) {
+                            img.attr('data-mce-contenteditable', null);
+                        });
                     }
                 });
 
@@ -87,7 +94,6 @@
 
                     while (i--) {
                         node = nodes[i];
-
                         node.attr(name, null);
                     }
                 });
@@ -113,6 +119,9 @@
                                 'data-mce-image': 1,
                                 'contenteditable': false
                             });
+
+                            // set fake contenteditable for img element
+                            ed.dom.setAttrib(ed.dom.select('img', elm), 'data-mce-contenteditable', 'true');
 
                             ed.dom.add(elm, 'figcaption', {
                                 'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
