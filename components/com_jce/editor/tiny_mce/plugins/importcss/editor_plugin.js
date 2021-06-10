@@ -152,7 +152,7 @@
             ed.onImportCSS = new tinymce.util.Dispatcher();
 
             ed.onImportCSS.add(function () {
-                if (ed.settings.importcss_classes) {
+                if (tinymce.is(ed.settings.importcss_classes)) {
                     return;
                 }
 
@@ -365,9 +365,7 @@
                     }
 
                     // get stylesheet href
-                    if (stylesheet.href) {
-                        href = stylesheet.href.substr(0, stylesheet.href.lastIndexOf('/') + 1);
-                    }
+                    href = href.substr(0, href.lastIndexOf('/') + 1);
 
                     ed.hasStyleSheets = true;
                 } catch (e) {
