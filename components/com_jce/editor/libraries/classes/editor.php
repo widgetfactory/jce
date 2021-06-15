@@ -13,7 +13,7 @@ defined('JPATH_PLATFORM') or die;
 class WFEditor
 {
     // Editor instance
-    protected static $instance;
+    protected static $instances;
 
     /**
      * Profile object.
@@ -134,11 +134,13 @@ class WFEditor
      */
     public static function getInstance($config = array())
     {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($config);
+        $signature = md5(serialize($config));
+
+        if (empty(self::$instances[$signature])) {
+            self::$instances[$signature] = new self($config);
         }
 
-        return self::$instance;
+        return self::$instances[$signature];
     }
 
     private function addAssetVersion($url)
@@ -175,7 +177,7 @@ class WFEditor
         $this->init()->getOutput();
     }
 
-     /**
+    /**
      * Legacy function to get the editor settings
      *
      * @return array
@@ -286,7 +288,7 @@ class WFEditor
         if ($language->getTag() === WFLanguage::getTag()) {
             return $language->isRTL();
         }
-        
+
         return false;
     }
 
