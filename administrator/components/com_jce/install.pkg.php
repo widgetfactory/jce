@@ -488,6 +488,11 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/classes/vendor/getid3'
         );
 
+        // remove old logo
+        $files['2.9.9'] = array(
+            $admin . '/media/img/logo.png'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',

@@ -43,7 +43,7 @@
     </install>
 
     <administration>
-        <menu view="cpanel" img="components/com_jce/media/img/menu/logo.png" link="option=com_jce">COM_JCE</menu>
+        <menu view="cpanel" img="components/com_jce/media/img/logo.svg" link="option=com_jce">COM_JCE</menu>
 
         <submenu>
             <menu view="cpanel" link="option=com_jce">COM_JCE_MENU_CPANEL</menu>
