@@ -985,6 +985,11 @@ html {
     overflow: hidden;
 }
 
+.uk-open .uk-modal-dialog {
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
 .uk-modal-dialog-full {
     width: 100%;
 }
@@ -1644,7 +1649,6 @@ input[type="range"]::-ms-thumb {
 
 .uk-inline-help .uk-modal-dialog {
     height: 100%;
-    top: 0;
 }
 
 .uk-inline-help .uk-modal-dialog iframe {

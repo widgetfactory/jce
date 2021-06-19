@@ -216,9 +216,9 @@
 
             $(div).addClass('uk-open').trigger('modal.open').attr('aria-hidden', false);
 
-            $(div).on('modal.assetloaded', function () {
+            /*$(div).on('modal.assetloaded', function () {
                 $(modal).css('top', ($(div).height() - $(modal).outerHeight()) / 2);
-            }).delay(10).trigger('modal.assetloaded');
+            }).delay(10).trigger('modal.assetloaded');*/
 
             // return modal div element
             return div;
