@@ -65,12 +65,8 @@
             // additional POST data to add (will not be parsed by PHP json parser)
             var args = {};
 
-            // get form input data (including token)
-            var fields = $(':input', 'form').serializeArray();
-
-            $.each(fields, function (i, field) {
-                args[field.name] = field.value;
-            });
+            // get form input data (including token) as serialized string
+            var fields = $(':input', 'form').serialize();
 
             // if data is a string or array
             if ($.type(data) === 'string' || $.type(data) === 'array') {
@@ -95,6 +91,11 @@
                 }
 
                 $.extend(args, data);
+            }
+
+            // add passed in data to form fields
+            if (!$.isEmptyObject(args)) {
+                fields += '&' + args;
             }
 
             var url = document.location.href;
@@ -125,7 +126,7 @@
                 "url": url,
                 "dataType": "text",
                 "method": "post",
-                "data": "json=" + JSON.stringify(json) + '&' + $.param(args)
+                "data": "json=" + JSON.stringify(json) + '&' + fields
             }).done(function (o) {
                 var r;
 
