@@ -330,8 +330,13 @@ class JoomlalinksMenu extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
         
-        if ($wf->getParam('links.joomlalinks.sef_url', 0)) {
+        if ((bool) $wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
+        }
+
+        // remove Itemid
+        if ((bool) $wf->getParam('links.joomlalinks.itemid', 0) === false) {
+            $url = WFLinkBrowser::removeItemId($url);
         }
 
         return $url;

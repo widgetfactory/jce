@@ -61,6 +61,10 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+            <field name="itemid" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_ITEMID" description="WF_LINKS_JOOMLALINKS_ITEMID_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
             <field name="sef_url" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_SEF_URL" description="WF_LINKS_JOOMLALINKS_SEF_URL_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

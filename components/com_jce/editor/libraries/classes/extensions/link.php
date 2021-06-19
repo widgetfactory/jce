@@ -245,6 +245,13 @@ class WFLinkExtension extends WFExtension
         return $url;
     }
 
+    public static function removeItemId($url)
+    {
+        $url = preg_replace('#&Itemid=[0-9]+#', '', $url);
+
+        return $url;
+    }
+
     /**
      * XML encode a string.
      *
