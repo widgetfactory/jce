@@ -135,6 +135,7 @@ html {
     max-height: 100%;
     border-radius: 4px;
     overflow: hidden;
+    transform: translateY(-100%);
 }
 
 .uk-open .uk-modal-dialog {
@@ -849,4 +850,12 @@ select:not([multiple]):not([size]) {
 
 .uk-tooltip {
     max-width: 20rem;
+}
+
+.uk-form-striped.uk-form-row:nth-of-type(even) {
+    background: #fafafa;
+}
+
+.uk-panel-box-secondary {
+    border: 0 none;
 }
