@@ -1515,10 +1515,6 @@ input[type="range"]::-ms-thumb {
     .uk-form-horizontal .uk-width-small-2-5 {
         width: 40%;
     }
-
-    .uk-form-horizontal .uk-width-1-4 {
-        width: 25%;
-    }
 }
 
 /* Phone portrait and smaller (based on iPhone 6/7/8 Plus) */
@@ -1705,7 +1701,11 @@ select:not([multiple]):not([size]) {
 }
 
 .uk-form-striped.uk-form-row:nth-of-type(even) {
-    background: #fafafa;
+    background: #f5f5f5;
+}
+
+.uk-panel-box {
+    padding: 0.5rem;
 }
 
 .uk-panel-box-secondary {
