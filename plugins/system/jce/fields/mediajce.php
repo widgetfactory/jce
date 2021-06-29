@@ -76,7 +76,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
 
         $extraData = array(
             'link'      => $this->link,
-            'class'     => $this->element['class'] . ' input-medium wf-media-input'
+            'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
         );
 
         if ($options['upload'] === 1) {
