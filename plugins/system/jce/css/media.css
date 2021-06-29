@@ -1,5 +1,4 @@
-.field-media-wrapper .modal,
-.field-media-wrapper.wf-media-input-wrapper .modal {
+div[data-url].field-media-wrapper > div.modal {
     height: 90vh;
 }
 
