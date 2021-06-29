@@ -95,7 +95,7 @@
 
             // add passed in data to form fields
             if (!$.isEmptyObject(args)) {
-                fields += '&' + args;
+                fields += '&' + $.param(args);
             }
 
             var url = document.location.href;
