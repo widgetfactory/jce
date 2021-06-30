@@ -6,6 +6,7 @@
 }
 .ui-jce label {
   max-width: 12rem;
+  min-width: 6rem;
 }
 .ui-jce .control-label label {
   width: 12rem;
