@@ -54,10 +54,9 @@ class JoomlalinksWeblinks extends JObject
             require_once JPATH_SITE . '/includes/application.php';
         }
 
-        $language = '';
+        require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
 
-        // create a new RouteHelper instance
-        $router = new JHelperRoute();
+        $language = '';
 
         switch ($args->view) {
             // Get all WebLink categories
@@ -68,16 +67,21 @@ class JoomlalinksWeblinks extends JObject
                 foreach ($categories as $category) {
                     $url = '';
 
-                    // language
-                    if (isset($category->language)) {
-                        $language = $category->language;
-                    }
+                    if (method_exists('WeblinksHelperRoute', 'getCategoryRoute')) {
+                        // language
+                        if (isset($category->language)) {
+                            $language = $category->language;
+                        }
 
-                    $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_weblinks');
+                        $id = WeblinksHelperRoute::getCategoryRoute($category->id, $language);
 
-                    if (strpos($id, 'index.php?Itemid=') !== false) {
-                        $url = $id;
-                        $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
+                        if (strpos($id, 'index.php?Itemid=') !== false) {
+                            $url = $id;
+                            $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
+                        }
+                    } else {
+                        $itemid = WFLinkBrowser::getItemId('com_weblinks', array('categories' => null, 'category' => $category->id));
+                        $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id . $itemid;
                     }
 
                     $items[] = array(
@@ -101,16 +105,21 @@ class JoomlalinksWeblinks extends JObject
                         if ($children) {
                             $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
                         } else {
-                            // language
-                            if (isset($category->language)) {
-                                $language = $category->language;
-                            }
+                            if (method_exists('WeblinksHelperRoute', 'getCategoryRoute')) {
+                                // language
+                                if (isset($category->language)) {
+                                    $language = $category->language;
+                                }
 
-                            $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_weblinks');
+                                $id = WeblinksHelperRoute::getCategoryRoute($category->id, $language);
 
-                            if (strpos($id, 'index.php?Itemid=') !== false) {
-                                $url = $id;
-                                $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
+                                if (strpos($id, 'index.php?Itemid=') !== false) {
+                                    $url = $id;
+                                    $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id;
+                                }
+                            } else {
+                                $itemid = WFLinkBrowser::getItemId('com_weblinks', array('categories' => null, 'category' => $category->id));
+                                $id = 'index.php?option=com_weblinks&view=category&id=' . $category->id . $itemid;
                             }
                         }
 
@@ -131,8 +140,11 @@ class JoomlalinksWeblinks extends JObject
                         $language = $weblink->language;
                     }
 
-                    $id  = $router->getRoute($weblink->id, 'com_weblinks.weblink', '', $language, $weblink->catslug);
-                    $id .= '&task=weblink.go';
+                    $id = WeblinksHelperRoute::getWeblinkRoute($weblink->slug, $weblink->catslug, $language);
+
+                    if (defined('JPATH_PLATFORM')) {
+                        $id .= '&task=weblink.go';
+                    }
 
                     $items[] = array(
                         'id' => self::route($id),
@@ -206,12 +218,12 @@ class JoomlalinksWeblinks extends JObject
     {
         $wf = WFEditorPlugin::getInstance();
         
-        if ((bool) $wf->getParam('links.joomlalinks.sef_url', 0)) {
+        if ($wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkBrowser::route($url);
         }
 
         // remove Itemid
-        if ((bool) $wf->getParam('links.joomlalinks.itemid', 0) === false) {
+        if ((bool) $wf->getParam('links.joomlalinks.itemid', 1) === false) {
             $url = WFLinkBrowser::removeItemId($url);
         }
 
