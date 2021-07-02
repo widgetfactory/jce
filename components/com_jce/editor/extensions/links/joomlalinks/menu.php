@@ -335,7 +335,7 @@ class JoomlalinksMenu extends JObject
         }
 
         // remove Itemid
-        if ((bool) $wf->getParam('links.joomlalinks.itemid', 0) === false) {
+        if ((bool) $wf->getParam('links.joomlalinks.itemid', 1) === false) {
             $url = WFLinkBrowser::removeItemId($url);
         }
 
