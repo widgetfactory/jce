@@ -54,6 +54,10 @@
             });
 
             function isFormat(n) {
+                if (n.getAttribute('data-mce-bogus')) {
+                    return false;
+                }
+                
                 // is a block element
                 if (tinymce.inArray(nodes, n.nodeName) !== -1) {
                     // not a system element

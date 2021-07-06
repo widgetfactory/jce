@@ -302,15 +302,19 @@
                     contenteditable: "false",
                     "data-mce-bogus": "all"
                 });
+
                 var inner = editor.dom.create('div', {
-                    contenteditable: "true"
+                    contenteditable: "true",
+                    "data-mce-bogus" : "all"
                 }, markedHtml);
+
                 editor.dom.setStyles(outer, {
                     position: 'fixed',
                     left: '-3000px',
                     width: '1000px',
                     overflow: 'hidden'
                 });
+                
                 outer.appendChild(inner);
                 editor.dom.add(editor.getBody(), outer);
 
