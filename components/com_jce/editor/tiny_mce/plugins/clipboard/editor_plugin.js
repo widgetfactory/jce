@@ -2580,20 +2580,20 @@
                 }, 0);
             }
 
-            ed.onKeyDown.add(function (ed, e) {
+            ed.onKeyDown.add(function (ed, e) {                
                 // block events
-                if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed && e.keyCode == 88)) {
+                if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed(e) && e.keyCode == 88)) {
                     e.preventDefault();
                     return false;
                 }
 
-                if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed && e.keyCode == 67)) {
+                if (!ed.getParam('clipboard_allow_copy', 1) && (VK.metaKeyPressed(e) && e.keyCode == 67)) {
                     e.preventDefault();
                     return false;
                 }
 
                 // trigger events
-                if (VK.metaKeyPressed) {
+                if (VK.metaKeyPressed(e)) {
                     if (e.keyCode == 67) {
                         ed.onCopy.dispatch(ed, e);
                     }
