@@ -271,7 +271,7 @@
         };
 
         var setHtml5Clipboard = function (clipboardData, html, text) {
-            if (hasWorkingClipboardApi(clipboardData)) {
+            if (hasWorkingClipboardApi(clipboardData)) {                
                 try {
                     clipboardData.clearData();
                     clipboardData.setData('text/html', html);
@@ -345,7 +345,7 @@
         };
 
         var cut = function (editor, evt) {
-            /*if (editor.selection.isCollapsed() === false) {
+            if (editor.selection.isCollapsed() === false) {
                 setClipboardData(evt, getData(editor), fallback(editor), function () {
                     // Chrome fails to execCommand from another execCommand with this message:
                     // "We don't execute document.execCommand() this time, because it is called recursively.""
@@ -353,7 +353,7 @@
                         editor.execCommand('Delete');
                     }, 0);
                 });
-            }*/
+            }
         };
 
         var copy = function (editor, evt) {
