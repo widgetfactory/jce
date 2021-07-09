@@ -1172,6 +1172,8 @@
                     var node = ed.dom.getParent(e.target, '.mce-object-preview');
 
                     if (node) {
+                        ed.selection.select(node);
+                        
                         window.setTimeout(function() {
                             node.setAttribute('data-mce-selected', '2');
                         }, 100);
