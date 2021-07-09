@@ -2596,17 +2596,6 @@
                     return false;
                 }
 
-                // trigger events
-                if (VK.metaKeyPressed(e)) {
-                    if (e.keyCode == 67) {
-                        ed.onCopy.dispatch(ed, e);
-                    }
-    
-                    if (e.keyCode == 88) {
-                        ed.onCut.dispatch(ed, e);
-                    }
-                }
-
                 // Ctrl+V or Shift+Insert
                 if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
                     // Prevent undoManager keydown handler from making an undo level with the pastebin in it
