@@ -735,6 +735,12 @@
                 continue;
             }
 
+            // internal attribute for pasted media
+            if (attrName === 'data-mce-clipboard-media') {
+                targetNode.attr(attrName, attrValue);
+                continue;
+            }
+
             // skip internal attributes but not placeholder attributes
             if (attrName.indexOf('data-mce') !== -1) {
                 if (attrName.indexOf('data-mce-p-') === -1) {
@@ -1015,23 +1021,30 @@
 
         // get iframe/video node
         if (node.className.indexOf('mce-object-preview') !== -1) {
+            // set preview parent
+            preview = node;
+
+            // get the media node name
             nodeName = node.getAttribute('data-mce-object');
+
+            // transfer reference to media node
             node = ed.dom.select(nodeName, node);
-            // get parent
-            preview = ed.dom.getParent(node, '[data-mce-object]');
         }
 
         each(data, function (value, name) {
             if (name === 'html' && value) {
                 attribs['data-mce-html'] = escape(value);
+                return true;
+            }
 
+            // clean up iframe, video and audio attributes
+            if (nodeName !== 'img' && !htmlSchema.isValid(nodeName, name)) {
                 return true;
             }
 
             // use prefix attributes for placeholder
             if (nodeName === 'img' && (!htmlSchema.isValid(nodeName, name) || name === 'src')) {
                 attribs['data-mce-p-' + name] = value;
-
                 return true;
             }
 
