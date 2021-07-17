@@ -1821,7 +1821,6 @@
                                 $('#tree-body').trigger('tree:createnode', [folders, dir]);
                             }
                         }
-                        self._trigger('onPaste');
                     }
 
                     $.each(items, function (i, item) {
@@ -1857,6 +1856,10 @@
                                         self._clearPaste();
                                         self.refresh();
                                     }
+
+                                    var result = o.folders.length ? o.folders[0].name : o.files[0].name;
+
+                                    self._trigger('onPaste', [fn, item, result]);
                                 }
                             } else {
                                 if (complete) {
@@ -1944,7 +1947,7 @@
                                                 $('#tree-body').trigger('tree:renamenode', [list, item]);
                                             }
 
-                                            self._trigger('onFolderRename', null, list, item);
+                                            self._trigger('onFolderRename', [list, item]);
                                         }
 
                                         // add extension to file name
@@ -1954,7 +1957,7 @@
 
                                         // file rename successful
                                         if (o.files.length) {
-                                            self._trigger('onFileRename', null, item);
+                                            self._trigger('onFileRename', [list, item]);
                                         }
 
                                         if (item) {
