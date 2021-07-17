@@ -14,6 +14,9 @@
         init: function (ed, url) {
             // command store
             var store;
+
+            // media update event
+            ed.onUpdateMedia = new tinymce.util.Dispatcher();
             
             var contentLoaded = false, elm = ed.getElement();
 
