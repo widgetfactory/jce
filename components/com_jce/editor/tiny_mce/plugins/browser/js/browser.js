@@ -19,7 +19,7 @@
             tinyMCEPopup.close();
         });
 
-        var src = tinyMCEPopup.getWindowArg('value');
+        var ed = tinyMCEPopup.editor, src = tinyMCEPopup.getWindowArg('value');
 
         Wf.init();
 
@@ -28,12 +28,32 @@
         }
 
         if (src) {
-            src = tinyMCEPopup.editor.convertURL(src);
+            src = ed.convertURL(src);
             $('.uk-button-text', '#insert').text(tinyMCEPopup.getLang('update', 'Update', true));
+        }
+
+        function updateMedia(before, after) {
+            if (ed.onUpdateMedia) {
+                var basedir = $.fn.filebrowser.getbasedir();
+
+                before = Wf.String.path(basedir, before);
+                after  = Wf.String.path(basedir, after);
+                
+                ed.onUpdateMedia.dispatch(ed, {before : before, after : after});
+            }
         }
 
         $('[data-filebrowser]').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {
             selectFile(data);
+        }).on('filebrowser:onfilerename filebrowser:onfolderrename', function(e, before, after) {
+            updateMedia(before, after);
+        }).on('filebrowser:onpaste', function(e, type, before, after) {
+            // only on cut/paste
+            if (type != 'moveItem') {
+                return;
+            }
+            
+            updateMedia(before, after);
         });
     }
 
