@@ -188,6 +188,17 @@
                 Wf.setDefaults(this.settings.defaults);
             }
 
+            function updateMedia(before, after) {
+                if (ed.onUpdateMedia) {
+                    var basedir = $.fn.filebrowser.getbasedir();
+    
+                    before = Wf.String.path(basedir, before);
+                    after  = Wf.String.path(basedir, after);
+                    
+                    ed.onUpdateMedia.dispatch(ed, {before : before, after : after});
+                }
+            }
+
             if (ed.settings.filebrowser_position === "external") {
                 Wf.createBrowsers($('#src'), function (files) {
                     var file = files.shift();
@@ -198,6 +209,15 @@
                     self.selectFile(file, data);
                 }).on('filebrowser:onfileinsert', function (e, file, data) {
                     self.selectFile(file, data);
+                }).on('filebrowser:onfilerename filebrowser:onfolderrename', function(e, before, after) {
+                    updateMedia(before, after);
+                }).on('filebrowser:onpaste', function(e, type, before, after) {
+                    // only on cut/paste
+                    if (type != 'moveItem') {
+                        return;
+                    }
+                    
+                    updateMedia(before, after);
                 });
             }
 
