@@ -211,6 +211,24 @@
             });
 
             ed.onPreInit.add(function () {
+                ed.onUpdateMedia.add(function(ed, o) {
+                    each(ed.dom.select('img'), function(elm) {
+                        var src = elm.getAttribute('src');
+
+                        src = src.substring(0, src.indexOf('?'));
+                        
+                        if (src == o.before) {
+                            var after = o.after, stamp = '?' + new Date().getTime();
+                            
+                            if (isSupportedImage(after) && after.indexOf('?') === -1) {
+                                after += stamp;
+                            }
+                            
+                            ed.dom.setAttribs(elm, {'src' : after, 'data-mce-src' : o.after});
+                        }
+                    });
+                });
+                
                 var params = ed.getParam('imgmanager', {});
 
                 if (params.basic_dialog !== true) {
