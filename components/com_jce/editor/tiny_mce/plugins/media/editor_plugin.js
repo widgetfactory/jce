@@ -75,6 +75,31 @@
             return 'instagram';
         }*/
 
+        // Video
+        if (/\.(mp4|ogv|ogg|webm)$/.test(url)) {
+            return 'video';
+        }
+
+        // Audio
+        if (/\.(mp3|ogg|webm|wav|m4a|aiff)$/.test(url)) {
+            return 'audio';
+        }
+
+        // Quicktime
+        if (/\.(mov|qt|mpg|mpeg|m4a|aiff)$/.test(url)) {
+            return 'quicktime';
+        }
+
+        // Flash
+        if (/\.swf$/.test(url)) {
+            return 'flash';
+        }
+
+        // Quicktime
+        if (/\.(avi|wmv|wm|asf|asx|wmx|wvx)$/.test(url)) {
+            return 'windowsmedia';
+        }
+
         return false;
     }
 
@@ -1083,6 +1108,11 @@
 
             ed.onPreInit.add(function () {
                 ed.onUpdateMedia.add(function (ed, o) {
+                    // only updating audio/video
+                    if (!isSupportedMedia(o.before)) {
+                        return;
+                    }
+                    
                     each(ed.dom.select('video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object'), function (elm) {
                         var src = elm.getAttribute('src');
 
