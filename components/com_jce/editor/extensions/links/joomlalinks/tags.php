@@ -73,7 +73,7 @@ class JoomlalinksTags extends JObject
                     $language = $tag->language;
                 }
 
-                $id = $router->getRoute($tag->id, 'com_tags.tags', '', $language);
+                $id = $router->getRoute($tag->slug, 'com_tags.tags', '', $language);
                 $id = $this->route($id);
 
                 $items[] = array(
