@@ -440,7 +440,7 @@
 
         var styles = {}, styleVal = editor.dom.parseStyle(node.attr('style'));
 
-        each(['width', 'height'], function(key) {
+        each(['width', 'height'], function (key) {
             val = node.attr(key) || styleVal[key] || '';
 
             if (val && !/(%|[a-z]{1,3})$/.test(val)) {
@@ -457,7 +457,7 @@
             'class': 'mce-object-preview mce-object-' + name,
             'aria-details': msg,
             'data-mce-resize': canResize(node),
-            'style' : editor.dom.serializeStyle(styles)
+            'style': editor.dom.serializeStyle(styles)
         });
 
         previewNode = Node.create(name, {
@@ -1012,8 +1012,8 @@
         return data;
     };
 
-    var updateMedia = function (ed, data) {
-        var preview, attribs = {}, node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
+    var updateMedia = function (ed, data, elm) {
+        var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), '[data-mce-object]');
 
         var nodeName = node.nodeName.toLowerCase();
 
@@ -1028,7 +1028,7 @@
             nodeName = node.getAttribute('data-mce-object');
 
             // transfer reference to media node
-            node = ed.dom.select(nodeName, node);
+            node = ed.dom.select(nodeName, node)[0];
         }
 
         each(data, function (value, name) {
@@ -1082,11 +1082,48 @@
             }
 
             ed.onPreInit.add(function () {
-                var invalid = ed.settings.invalid_elements;
+                ed.onUpdateMedia.add(function (ed, o) {
+                    each(ed.dom.select('video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object'), function (elm) {
+                        var src = elm.getAttribute('src');
 
-                if (!ed.settings.forced_root_block) {
-                    //ed.settings.media_live_embed = false;
-                }
+                        // get src for placeholder img
+                        if (elm.nodeName === 'IMG') {
+                            src = elm.getAttribute('data-mce-p-src');
+                        }
+
+                        // check value in <source> element
+                        if (elm.nodeName === 'VIDEO' || elm.nodeName === 'AUDIO') {
+                            var html = elm.getAttribute('data-mce-html');
+
+                            if (html) {
+                                var tmp = ed.dom.create(elm.nodeName, {}, unescape(html));
+
+                                each(tmp.childNodes, function (el) {
+                                    if (el.nodeName == 'SOURCE') {
+                                        if (el.getAttribute('src') == o.before) {
+                                            el.setAttribute('src', o.after);
+                                        }
+                                    }
+                                });
+
+                                elm.setAttribute('data-mce-html', escape(tmp.innerHTML))
+                            }
+
+                            // update poster value
+                            var poster = elm.getAttribute('poster');
+
+                            if (poster && poster == o.before) {
+                                elm.setAttribute('poster', o.after);
+                            }
+                        }
+
+                        if (src == o.before) {
+                            updateMedia(ed, { src: o.after }, elm);
+                        }
+                    });
+                });
+
+                var invalid = ed.settings.invalid_elements;
 
                 // keep this for legacy
                 if (ed.settings.schema === "html4") {
@@ -1187,8 +1224,8 @@
 
                     if (node) {
                         ed.selection.select(node);
-                        
-                        window.setTimeout(function() {
+
+                        window.setTimeout(function () {
                             node.setAttribute('data-mce-selected', '2');
                         }, 100);
 
