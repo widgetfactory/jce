@@ -1,7 +1,10 @@
 /* CSS file for advimage plugin popup */
 
 #href {
-    padding-right: 60px !important;
+    padding-right: 2px !important;
+    width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #link_tab {
