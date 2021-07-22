@@ -8,7 +8,11 @@
  * other free or open source software licenses.
  */
 (function () {
-    var Entities = tinymce.html.Entities;
+    var Entities = tinymce.html.Entities, each = tinymce.each;
+
+    function isSupportedImage(value) {
+        return /\.(jpg|jpeg|png|gif|webp|avif|svg)$/.test(value);
+    }
 
     tinymce.create('tinymce.plugins.CorePLugin', {
         init: function (ed, url) {
@@ -86,6 +90,59 @@
                 }
 
                 return ed.execCommand(store.cmd, store.ui, store.value, store.args);
+            });
+
+            ed.onPreInit.add(function () {
+                ed.onUpdateMedia.add(function (ed, o) {
+
+                    function updateSrcSet(elm, o) {
+                        // srcset
+                        var srcset = elm.getAttribute('srcset');
+
+                        if (srcset) {
+                            var sets = srcset.split(',');
+
+                            for(var i = 0; i < sets.length; i++) {
+                                var values = sets[i].trim().split(' ');
+
+                                if (o.before == values[0]) {
+                                    values[0] = o.after;
+                                }
+
+                                sets[i] = values.join(' ');
+                            }
+
+                            elm.setAttribute('srcset', sets.join(','));
+                        }
+                    }
+                    
+                    each(ed.dom.select('img,poster'), function (elm) {
+                        var src = elm.getAttribute('src');
+                        var val = src.substring(0, src.indexOf('?'));
+
+                        if (val == o.before) {
+                            var after = o.after, stamp = '?' + new Date().getTime();
+
+                            if (src.indexOf('?') !== -1 && after.indexOf('?') === -1) {
+                                after += stamp;
+                            }
+
+                            ed.dom.setAttribs(elm, { 'src': after, 'data-mce-src': o.after });
+                        }
+
+                        if (elm.getAttribute('srcset')) {
+                            updateSrcSet(elm, o);
+                        }
+                    });
+
+                    each(ed.dom.select('a[href]'), function (elm) {
+                        var href = ed.dom.getAttrib(elm, 'href');
+
+                        if (href == o.before) {
+                            ed.dom.setAttribs(elm, { 'href': o.after, 'data-mce-href': o.after });
+                        }
+                    });
+                });
             });
         }
     });
