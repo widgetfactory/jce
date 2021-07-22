@@ -118,7 +118,7 @@
             // create browser widgets
             this.createBrowsers();
 
-            $('.uk-datalist').datalist({loading : self.translate('message_load', 'Loading...')});
+            $('.uk-datalist').datalist({ loading: self.translate('message_load', 'Loading...') });
 
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
@@ -194,7 +194,7 @@
             });
 
             // add scroll event to trigger datalist update
-            $('.uk-tabs-panel').on('scroll.tabs', function(e) {
+            $('.uk-tabs-panel').on('scroll.tabs', function (e) {
                 $('select').trigger('datalist:position', e);
             });
 
@@ -227,6 +227,34 @@
                     tinyMCEPopup.close();
                 }
             });
+
+            if (!standalone) {
+                var ed = tinyMCEPopup.editor;
+
+                if (ed.onUpdateMedia) {
+                    function updateMedia(before, after) {
+                        var basedir = $.fn.filebrowser.getbasedir();
+
+                        before = Wf.String.path(basedir, before);
+                        after = Wf.String.path(basedir, after);
+
+                        ed.onUpdateMedia.dispatch(ed, { before: before, after: after });
+                    }
+
+                    $(window).ready(function () {
+                        $('[data-filebrowser]').on('filebrowser:onfilerename filebrowser:onfolderrename', function (e, before, after) {
+                            updateMedia(before, after);
+                        }).on('filebrowser:onpaste', function (e, type, before, after) {
+                            // only on cut/paste
+                            if (type != 'moveItem') {
+                                return;
+                            }
+
+                            updateMedia(before, after);
+                        });
+                    });
+                }
+            }
         },
         /**
          * Get the name of the plugin

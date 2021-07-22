@@ -36,6 +36,10 @@
         return node && node.nodeName === "IMG" && !isMediaObject(node);
     }
 
+    function isSupportedImage(value) {
+        return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
+    }
+
     function uploadFile(url, file) {
         return new Promise(function (resolve, reject) {
             var xhr = new XMLHttpRequest,
@@ -145,8 +149,8 @@
                 if (isImage(node)) {
                     // only update src and alt
                     ed.dom.setAttribs(node, {
-                        'src' : args.src,
-                        'alt' : args.alt || ''
+                        'src': args.src,
+                        'alt': args.alt || ''
                     });
                 } else {
                     ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
@@ -211,24 +215,6 @@
             });
 
             ed.onPreInit.add(function () {
-                ed.onUpdateMedia.add(function(ed, o) {
-                    each(ed.dom.select('img'), function(elm) {
-                        var src = elm.getAttribute('src');
-
-                        src = src.substring(0, src.indexOf('?'));
-                        
-                        if (src == o.before) {
-                            var after = o.after, stamp = '?' + new Date().getTime();
-                            
-                            if (isSupportedImage(after) && after.indexOf('?') === -1) {
-                                after += stamp;
-                            }
-                            
-                            ed.dom.setAttribs(elm, {'src' : after, 'data-mce-src' : o.after});
-                        }
-                    });
-                });
-                
                 var params = ed.getParam('imgmanager', {});
 
                 if (params.basic_dialog !== true) {
