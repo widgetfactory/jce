@@ -8,7 +8,6 @@
  * other free or open source software licenses.
  */
 (function ($) {
-
     var ImageManagerDialog = {
         settings: {},
         init: function () {
@@ -167,16 +166,17 @@
                 // onmouseover / onmouseout
                 $('#onmouseout').val(src);
 
-                $.each(['onmouseover', 'onmouseout'], function (i, key) {
+                $.each(['mouseover', 'mouseout'], function (i, key) {
                     // get value from data-* attributes
-                    var val = ed.dom.getAttrib(n, key);
+                    var val = ed.dom.getAttrib(n, 'data-' + key);
                     // trim whitespace
                     val = $.trim(val);
                     // clean url
                     val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
                     // convert to relative
                     val = ed.convertURL(val);
-                    $('#' + key).val(val);
+                    // update value with on prefix
+                    $('#on' + key).val(val);
                 });
 
                 br = n.nextSibling;
@@ -186,17 +186,6 @@
                 }
             } else {
                 Wf.setDefaults(this.settings.defaults);
-            }
-
-            function updateMedia(before, after) {
-                if (ed.onUpdateMedia) {
-                    var basedir = $.fn.filebrowser.getbasedir();
-    
-                    before = Wf.String.path(basedir, before);
-                    after  = Wf.String.path(basedir, after);
-                    
-                    ed.onUpdateMedia.dispatch(ed, {before : before, after : after});
-                }
             }
 
             if (ed.settings.filebrowser_position === "external") {
@@ -209,15 +198,6 @@
                     self.selectFile(file, data);
                 }).on('filebrowser:onfileinsert', function (e, file, data) {
                     self.selectFile(file, data);
-                }).on('filebrowser:onfilerename filebrowser:onfolderrename', function(e, before, after) {
-                    updateMedia(before, after);
-                }).on('filebrowser:onpaste', function(e, type, before, after) {
-                    // only on cut/paste
-                    if (type != 'moveItem') {
-                        return;
-                    }
-                    
-                    updateMedia(before, after);
                 });
             }
 
@@ -324,8 +304,8 @@
 
             if (over && out) {
                 args = $.extend(args, {
-                    'onmouseover': "this.src='" + ed.convertURL(over) + "';",
-                    'onmouseout': "this.src='" + ed.convertURL(out) + "';"
+                    'data-mouseover': ed.convertURL(over),
+                    'data-mouseout': ed.convertURL(out)
                 });
             }
 
@@ -350,10 +330,11 @@
                     }
                 }
             } else {
-                ed.execCommand('mceInsertContent', false, '<img id="__mce_tmp" src="" />', {
+                ed.execCommand('mceInsertContent', false, ed.dom.createHTML('img', $.extend({}, args, {id : '__mce_tmp'})), {
                     skip_undo: 1
                 });
-                el = ed.dom.get('__mce_tmp');
+
+                var el = ed.dom.get('__mce_tmp');
 
                 if (!$('#clear').is(':disabled') && $('#clear').val() !== '') {
                     br = ed.dom.create('br');
@@ -361,8 +342,8 @@
                     ed.dom.insertAfter(br, el);
                 }
 
-                ed.dom.setAttribs('__mce_tmp', args);
-                ed.dom.setAttrib('__mce_tmp', 'id', '');
+                // update id value
+                ed.dom.setAttrib(el, 'id', args.id);
             }
 
             ed.undoManager.add();
