@@ -16,10 +16,6 @@
             var self = this;
             this.editor = ed;
 
-            if (ed.settings.allow_event_attributes || ed.settings.code_script) {
-                return;
-            }
-
             function cleanEventAttribute(val) {
                 if (!val) {
                     return '';
@@ -157,17 +153,27 @@
                 ed.onSetContent.add(function () {
                     bindMouseoverEvent(ed);
                 });
+
+                ed.onUpdateMedia.add(function (ed, o) {               
+                    each(ed.dom.select('img[data-mouseover]'), function (elm) {
+                        var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+
+                        if (!mouseover) {
+                            return true;
+                        }
+
+                        if (mouseover == o.before) {
+                           elm.setAttribute('data-mouseover', o.after);
+                        }
+
+                        if (mouseout == o.before) {
+                            elm.setAttribute('data-mouseout', o.after);
+                         }
+                    });
+                });
             });
 
             function bindMouseoverEvent(ed) {
-                // bind rollover event
-                function bindEvent(elm, name, value) {                    
-                    ed.dom.bind(elm, name, function () {
-                        value = value || elm.getAttribute('data-' + name);
-                        elm.setAttribute('src', value);
-                    });
-                }
-
                 each(ed.dom.select('img[data-mouseover]'), function (elm) {
                     var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 
@@ -175,14 +181,13 @@
                         return true;
                     }
 
-                    // add events
-                    bindEvent(elm, 'mouseover');
+                    elm.onmouseover = function() {
+                        elm.setAttribute('src', elm.getAttribute('data-mouseover'));
+                    };
 
-                    if (mouseout) {
-                        bindEvent(elm, 'mouseout');
-                    } else {
-                        bindEvent(elm, 'mouseout', src);
-                    }
+                    elm.onmouseout = function() {
+                        elm.setAttribute('src', elm.getAttribute('data-mouseout') || src);
+                    };
                 });
             }
         }
