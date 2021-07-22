@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
                 <?php echo JText::_('WF_LABEL_URL'); ?>
             </label>
             <div class="uk-form-controls uk-width-1-1 uk-width-small-4-5">
-                <input type="text" id="src" value="" class="filebrowser" required />
+                <input type="text" id="src" value="" class="filebrowser" data-filebrowser required />
             </div>
         </div>
         <div class="uk-form-row uk-grid uk-grid-small">
