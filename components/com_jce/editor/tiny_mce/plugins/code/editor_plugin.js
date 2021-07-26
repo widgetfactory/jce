@@ -137,7 +137,17 @@
                 // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
                 tagName = tagName || 'span';
 
-                return html.replace(/(?:([a-z0-9]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+                // shortcode blocks eg: {article}html{/article}
+                html = html.replace(/(?:([a-z0-9"]>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\2\}/g, function (match) {                                            
+                    // already wrapped in a tag
+                    if (match.charAt(1) === '>') {
+                        return match;
+                    }
+
+                    return createShortcodePre(match, tagName);
+                });
+
+                return html.replace(/(?:([a-z0-9"]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {                                        
                     // already wrapped in a tag
                     if (match.charAt(1) === '>') {
                         return match;
@@ -322,6 +332,8 @@
              * @param {String} tag 
              */
             function createShortcodePre(data, tag) {
+                data = data.replace(/[\n\r]/gi, '<br />');
+                
                 return ed.dom.createHTML(tag || 'pre', {
                     'data-mce-code': 'shortcode',
                     'data-mce-type': 'code'
@@ -810,7 +822,7 @@
 
                         node.replace(newNode);
 
-                        if (type === 'shortcode' && newNode.name === 'pre') {
+                        if (type === 'shortcode' && newNode.name === 'pre') {                            
                             // append newline to the end of shortcode blocks
                             var newline = createTextNode('\n');
                             newNode.append(newline);
@@ -916,7 +928,7 @@
 
                     // shortcode content will be encoded as text, so decode
                     if (ed.settings.code_protect_shortcode) {
-                        o.content = o.content.replace(/\{(.*)\}/gi, function (match, content) {
+                        o.content = o.content.replace(/\{([\s\S]+)\}/gi, function (match, content) {
                             return '{' + ed.dom.decode(content) + '}';
                         });
                     }
