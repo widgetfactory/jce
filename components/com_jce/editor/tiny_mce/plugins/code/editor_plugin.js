@@ -138,7 +138,7 @@
                 tagName = tagName || 'span';
 
                 // shortcode blocks eg: {article}html{/article}
-                html = html.replace(/(?:([a-z0-9"]>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\2\}/g, function (match) {                                            
+                html = html.replace(/(?:(<(code|pre|samp).*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {                                            
                     // already wrapped in a tag
                     if (match.charAt(1) === '>') {
                         return match;
