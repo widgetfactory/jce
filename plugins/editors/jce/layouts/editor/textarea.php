@@ -14,6 +14,7 @@ $data = $displayData;
 ?>
 <textarea
 	spellcheck="false"
+	autocomplete="off"
 	name="<?php echo $data->name; ?>"
 	id="<?php echo $data->id; ?>"
 	cols="<?php echo $data->cols; ?>"
