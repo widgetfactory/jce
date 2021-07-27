@@ -138,18 +138,19 @@
                 tagName = tagName || 'span';
 
                 // shortcode blocks eg: {article}html{/article}
-                html = html.replace(/(?:(<(code|pre|samp).*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {                                            
+                html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {                                            
                     // already wrapped in a tag
-                    if (match.charAt(1) === '>') {
+                    if (match.charAt(0) === '<') {
                         return match;
                     }
 
                     return createShortcodePre(match, tagName);
                 });
 
-                return html.replace(/(?:([a-z0-9"]>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {                                        
+                // inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
+                return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {                                                            
                     // already wrapped in a tag
-                    if (match.charAt(1) === '>') {
+                    if (match.charAt(0) === '<') {
                         return match;
                     }
 
