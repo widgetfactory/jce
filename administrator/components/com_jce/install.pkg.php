@@ -180,7 +180,7 @@ class pkg_jceInstallerScript
     public function preflight($route, $installer)
     {
         // skip on uninstall etc.
-        if ($route === "remove") {
+        if ($route == 'remove' || $route == 'uninstall') {
             return true;
         }
 
