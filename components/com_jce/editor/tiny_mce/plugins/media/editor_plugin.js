@@ -122,11 +122,11 @@
     var validateIframe = function (editor, node) {
         var src = node.attr('src');
 
-        if (!src) {
-            return false;
-        }
-
         if (editor.settings.iframes_allow_supported) {
+            if (!src) {
+                return false;
+            }
+            
             if (isLocalUrl(editor, src)) {
                 return true;
             }
@@ -139,6 +139,10 @@
         }
 
         if (editor.settings.iframes_allow_local) {
+            if (!src) {
+                return false;
+            }
+            
             return isLocalUrl(editor, src);
         }
 
