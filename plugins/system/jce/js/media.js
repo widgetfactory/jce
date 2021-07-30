@@ -224,7 +224,7 @@
                 return false;
             }
 
-            var $uploadBtn = $('<a title="Upload" class="btn wf-media-upload-button" role="button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
+            var $uploadBtn = $('<a title="Upload" role="button" class="btn btn-outline-secondary wf-media-upload-button" aria-label="Upload"><i role="presentation" class="icon-upload"></i><input type="file" aria-hidden="true" /></a>');
 
             $('input[type="file"]', $uploadBtn).on('change', function (e) {
                 e.preventDefault();

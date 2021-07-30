@@ -29,9 +29,11 @@ div[data-url].field-media-wrapper > div.modal {
     padding: 0 !important;
 }
 
-.input-append a[role="button"].wf-media-upload-button {
+.input-append a[role="button"].wf-media-upload-button,
+.input-group a[role="button"].wf-media-upload-button {
     position: relative;
     border-radius: 0;
+    overflow: hidden;
 }
 
 .wf-media-upload-button > input[type="file"] {
