@@ -139,7 +139,7 @@ section[role="tabpanel"] .wf-editor-container {
     .wf-editor-tabs {
         display: flex;
         justify-content: flex-end;
-        margin: 0 0 0.25em 0;
+        margin: 0 0 0.25rem 0;
     }
 
     .wf-editor-toggle {
@@ -179,18 +179,41 @@ section[role="tabpanel"] .wf-editor-container {
 
     joomla-tab {
         width: 100%;
+
+        ul {
+            justify-content: right;
+            width: 100%;
+        }
+
+        button {
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            border: 0 none;
+            background: transparent none;
+
+            &.btn-link  {
+                color: inherit;
+
+                &:hover,
+                &:focus,
+                &:active {
+                    text-decoration: none;
+                }
+            }
+        }
     }
 }
 
 /* Joomla 4 */
 .joomla4 {
     joomla-tab {
-        >ul a[role=tab] {
-            border-radius: 0;
-    
-            &:hover,
-            &[active] {
-                margin: 0;
+        div[role="tablist"] {
+            border-bottom: 1px solid#ddd;
+
+            ul {
+                margin: 0 0 1px 0;
+                border-bottom: none;
             }
         }
     }
