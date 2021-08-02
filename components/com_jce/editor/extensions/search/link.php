@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2021 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -10,10 +10,61 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\String\StringHelper;
+
 class WFLinkSearchExtension extends WFSearchExtension
 {
     private $enabled = array();
-    
+
+    protected function loadDefaultAdpater($plugin)
+    {
+        $app = JFactory::getApplication();
+        
+        // create component name from plugin - special case for "contacts"
+        $component = ($plugin == 'contacts') ? 'com_contact' : 'com_' . $plugin;
+
+        // check for associated component
+        if (!JComponentHelper::isEnabled($component)) {
+            return;
+        }
+
+        $adapter = __DIR__ . '/adapter/' . $plugin . '/' . $plugin . '.php';
+
+        if (!is_file($adapter)) {
+            return;
+        }
+
+        require_once $adapter;
+
+        // create classname, eg: PlgSearchContent
+        $className = 'PlgSearch' . ucfirst($plugin);
+
+        if (!class_exists($className)) {
+            return;
+        }
+
+        // simple plugin config
+        $config = array(
+            'name' => $plugin,
+            'type' => 'search',
+            'params' => array(
+                'search_limit' => 10
+            ),
+        );
+
+        // Joomla 4
+        if (method_exists($app, 'getDispatcher')) {
+            $dispatcher = $app->getDispatcher();
+            $instance = new $className($dispatcher, (array) $config);
+            $instance->registerListeners();
+        } else {
+            $dispatcher = JEventDispatcher::getInstance();
+            $instance = new $className($dispatcher, (array) $config);
+        }
+
+        $this->enabled[] = $plugin;
+    }
+
     /**
      * Constructor activating the default information of the class.
      */
@@ -31,25 +82,24 @@ class WFLinkSearchExtension extends WFSearchExtension
         // get plugins
         $plugins = $wf->getParam('search.link.plugins', array());
 
-        $default = array('categories', 'contacts', 'content', 'newsfeeds', 'weblinks', 'tags');
+        // default core search plugins
+        $default = array('categories', 'contacts', 'content', 'weblinks', 'tags');
 
-        // use tested defaults
-        $plugins = empty($plugins) ? $default : $plugins;
+        if (empty($plugins)) {
+            $plugins = $default;
+        }
 
+        // check and load external search plugins
         foreach ($plugins as $plugin) {
-            // plugin must be enabled
-            if (!JPluginHelper::isEnabled('search', $plugin)) {
+            // process core search plugins
+            if (in_array($plugin, $default)) {
+                $this->loadDefaultAdpater($plugin);
                 continue;
             }
 
-            // create component name from plugin - special case for "contacts"
-            if (in_array($plugin, $default)) {
-                $component = ($plugin == 'contacts') ? 'com_contact' : 'com_' . $plugin;
-
-                // check for associated component
-                if (!JComponentHelper::isEnabled($component)) {
-                    continue;
-                }
+            // plugin must be enabled
+            if (!JPluginHelper::isEnabled('search', $plugin)) {
+                continue;
             }
 
             // check plugin imports correctly - plugin may have a db entry, but is missing files
@@ -100,6 +150,61 @@ class WFLinkSearchExtension extends WFSearchExtension
     }
 
     /*
+     * Truncate search text
+     * This method uses portions of components/com_finder/views/search/tmpl/default_result.php
+     * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+     */
+    private function truncateText($text, $searchword)
+    {
+        // Calculate number of characters to display around the result
+        $term_length = StringHelper::strlen($searchword);
+
+        $lang = JFactory::getLanguage();
+        $desc_length = $lang->getSearchDisplayedCharactersNumber();
+
+        $pad_length = $term_length < $desc_length ? (int) floor(($desc_length - $term_length) / 2) : 0;
+
+        // Find the position of the search term
+        $pos = $term_length ? StringHelper::strpos(StringHelper::strtolower($text), StringHelper::strtolower($searchword)) : false;
+
+        // Find a potential start point
+        $start = ($pos && $pos > $pad_length) ? $pos - $pad_length : 0;
+
+        // Find a space between $start and $pos, start right after it.
+        $space = StringHelper::strpos($text, ' ', $start > 0 ? $start - 1 : 0);
+        $start = ($space && $space < $pos) ? $space + 1 : $start;
+
+        $text = JHtml::_('string.truncate', StringHelper::substr($text, $start), $desc_length, false);
+
+        return $text;
+    }
+
+    /*
+     * Prepare search content by clean and truncating
+     * This method uses portions of SearchHelper::prepareSearchContent from administrator/components/com_search/helpers/search.php
+     * @copyright Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+     */
+    public function prepareSearchContent($text, $searchword)
+    {
+        // Replace line breaking tags with whitespace.
+        $text = preg_replace("'<(br[^/>]*?/|hr[^/>]*?/|/(div|h[1-6]|li|p|td))>'si", ' ', $text);
+
+        // clean text
+        $text = filter_var($text, FILTER_SANITIZE_STRING);
+
+        // remove shortcode
+        $text = preg_replace('#{.+?}#', '', $text);
+
+        // truncate text based around searchword
+        $text = $this->truncateText(strip_tags($text), $searchword);
+
+        // highlight searchword
+        $text = preg_replace('#\b(' . preg_quote($searchword, '#') . ')\b#i', '<mark>$1</mark>', $text);
+
+        return $text;
+    }
+
+    /*
      * Render Search fields
      * This method uses portions of SearchViewSearch::display from components/com_search/views/search/view.html.php
      * @copyright Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
@@ -132,7 +237,7 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         $view->searchareas = self::getAreas();
         $view->lists = $lists;
-        
+
         $view->display();
     }
 
@@ -153,9 +258,9 @@ class WFLinkSearchExtension extends WFSearchExtension
         $language = JFactory::getLanguage();
 
         $option = $values['option'];
-        
+
         // load system language file
-        $language->load($option.'.sys', JPATH_ADMINISTRATOR);
+        $language->load($option . '.sys', JPATH_ADMINISTRATOR);
         $language->load($option, JPATH_ADMINISTRATOR);
 
         return JText::_($option);
@@ -165,8 +270,7 @@ class WFLinkSearchExtension extends WFSearchExtension
      * Process search.
      *
      * @param type $query Search query
-     *
-     * @return array Rerach Results
+     * @return array Search Results
      *
      * This method uses portions of SearchController::search from components/com_search/controller.php
      *
@@ -175,9 +279,9 @@ class WFLinkSearchExtension extends WFSearchExtension
     public function doSearch($query)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         $results = array();
-        
+
         if (empty($query)) {
             return $results;
         }
@@ -193,27 +297,24 @@ class WFLinkSearchExtension extends WFSearchExtension
             preg_match('#^(' . implode('|', $areas) . ')\:(.+)#', $query, $matches);
 
             if ($matches) {
-                $area   = array($matches[1]);
-                $query  = $matches[2];
+                $area = array($matches[1]);
+                $query = $matches[2];
             }
         }
 
         if (!class_exists('JSite')) {
             // Load JSite class
-            JLoader::register('JSite', JPATH_SITE.'/includes/application.php');
+            JLoader::register('JSite', JPATH_SITE . '/includes/application.php');
         }
 
         $app = JFactory::getApplication('site');
         $filter = JFilterInput::getInstance();
         $router = $app::getRouter('site');
 
-        // get SearchHelper
-        require_once JPATH_ADMINISTRATOR.'/components/com_search/helpers/search.php';
-
         // get router mode
-        $sef 	= (int) $wf->getParam('search.link.sef_url', 0);
-        
-        $limit 	= (int) $wf->getParam('search.link.limit', 50);
+        $sef = (int) $wf->getParam('search.link.sef_url', 0);
+
+        $limit = (int) $wf->getParam('search.link.limit', 50);
 
         // set router off so a raw url is returned by the Search plugin
         if ($router) {
@@ -223,8 +324,8 @@ class WFLinkSearchExtension extends WFSearchExtension
         // slashes cause errors, <> get stripped anyway later on. # causes problems.
         $searchword = trim(str_replace(array('#', '>', '<', '\\'), '', $filter->clean($query)));
 
-        $ordering       = null;
-        $searchphrase   = 'all';
+        $ordering = null;
+        $searchphrase = 'all';
 
         // if searchword enclosed in double quotes, strip quotes and do exact match
         if (substr($searchword, 0, 1) == '"' && substr($searchword, -1) == '"') {
@@ -257,7 +358,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         foreach ($searches as $search) {
             $rows = array_merge((array) $rows, (array) $search);
         }
-        
+
         // get first 10
         $rows = array_slice($rows, 0, $limit);
 
@@ -270,7 +371,7 @@ class WFLinkSearchExtension extends WFSearchExtension
                 continue;
             }
 
-            $area = self::getSearchAreaFromUrl($row->href);
+            $area = isset($row->section) ? $row->section : self::getSearchAreaFromUrl($row->href);
 
             if (!isset($areas[$area])) {
                 $areas[$area] = array();
@@ -290,7 +391,8 @@ class WFLinkSearchExtension extends WFSearchExtension
             // get anchors if any...
             $row->anchors = self::getAnchors($row->text);
 
-            $row->text = SearchHelper::prepareSearchContent($row->text, $needle);
+            // prepare and truncate search text
+            $row->text = $this->prepareSearchContent($row->text, $needle);
 
             // remove base url
             if (JURI::base(true) && strpos($row->href, JURI::base(true)) !== false) {
@@ -314,9 +416,9 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $row->href = str_replace('/administrator/', '/', $url);
             }
 
-            $result->title  = $row->title;
-            $result->text   = $row->text;
-            $result->link   = $row->href;
+            $result->title = $row->title;
+            $result->text = $row->text;
+            $result->link = $row->href;
 
             if (!empty($row->anchors)) {
                 $result->anchors = $row->anchors;

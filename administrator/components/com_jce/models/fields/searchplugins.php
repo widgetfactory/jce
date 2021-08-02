@@ -46,4 +46,43 @@ class JFormFieldSearchPlugins extends JFormFieldPlugins
 
 		return $return;
 	}
+
+	/**
+     * Method to get a list of options for a list input.
+     *
+     * @return array An array of JHtml options
+     *
+     * @since   11.4
+     */
+    protected function getOptions()
+    {
+        $options = array();
+		$default = JFolder::folders(JPATH_SITE . '/components/com_jce/editor/extensions/search/adapter');
+
+        /*foreach (parent::getOptions() as $item) {
+            if (in_array($item->value, $default)) {
+				continue;
+			}
+
+			// skip "newsfeeds"
+			if ($item->value == 'newsfeeds') {
+				continue;
+			}
+
+            $options[] = $item;
+        }*/
+
+		foreach ($default as $name) {
+			$option = new StdClass;
+
+            $option->text = JText::_('PLG_SEARCH_' . strtoupper($name), true);
+            $option->disable = '';
+            $option->value = $name;
+
+			$options[] = $option;
+		}
+
+        // Merge any additional options in the XML definition.
+        return $options;
+    }
 }
