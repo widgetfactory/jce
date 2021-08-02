@@ -19,7 +19,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="plugins" type="searchplugins" multiple="true" label="WF_PARAM_LINK_SEARCH_PLUGINS" description="WF_PARAM_LINK_SEARCH_PLUGINS_DESC" default="categories,contacts,content,newsfeeds,weblinks,tags" />
+            <field name="plugins" type="searchplugins" multiple="true" label="WF_PARAM_LINK_SEARCH_PLUGINS" description="WF_PARAM_LINK_SEARCH_PLUGINS_DESC" default="categories,contacts,content,weblinks,tags" layout="joomla.form.field.list-fancy-select" />
             <field name="remove_alias" type="yesno" default="0" label="WF_LINK_SEARCH_REMOVE_ALIAS" description="WF_LINK_SEARCH_REMOVE_ALIAS_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
