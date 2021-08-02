@@ -23,7 +23,6 @@ class PlgSearchContacts extends JPlugin
 	 * Load the language file on instantiation.
 	 *
 	 * @var    boolean
-	 * @since  3.1
 	 */
 	protected $autoloadLanguage = true;
 

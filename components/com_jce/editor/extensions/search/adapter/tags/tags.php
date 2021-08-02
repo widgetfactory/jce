@@ -1,18 +1,22 @@
 <?php
-
 /**
- * @package     Joomla.Plugin
- * @subpackage  Search.tags
+ * @copyright     Copyright (c) 2009-2021 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
+ * Adapted from the Joomla Search.tags plugin - plugins/search/tags/tags.php
  * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ *
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses
  */
-defined('_JEXEC') or die;
+
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Tags search plugin.
  *
- * @since  3.3
  */
 class PlgSearchTags extends JPlugin
 {
@@ -20,7 +24,6 @@ class PlgSearchTags extends JPlugin
 	 * Load the language file on instantiation.
 	 *
 	 * @var    boolean
-	 * @since  3.3
 	 */
 	protected $autoloadLanguage = true;
 
@@ -29,7 +32,6 @@ class PlgSearchTags extends JPlugin
 	 *
 	 * @return  array  An array of search areas.
 	 *
-	 * @since   3.3
 	 */
 	public function onContentSearchAreas()
 	{

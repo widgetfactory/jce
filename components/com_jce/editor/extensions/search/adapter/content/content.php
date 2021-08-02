@@ -17,7 +17,6 @@ defined('JPATH_PLATFORM') or die;
 /**
  * Content search plugin.
  *
- * @since  1.6
  */
 class PlgSearchContent extends JPlugin
 {
@@ -26,7 +25,6 @@ class PlgSearchContent extends JPlugin
      *
      * @return  array  An array of search areas.
      *
-     * @since   1.6
      */
     public function onContentSearchAreas()
     {
@@ -49,7 +47,6 @@ class PlgSearchContent extends JPlugin
      *
      * @return  array  Search results.
      *
-     * @since   1.6
      */
     public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
     {
@@ -194,7 +191,7 @@ class PlgSearchContent extends JPlugin
                 $router = new JHelperRoute();
 
                 foreach ($rows as $key => $row) {
-                    $rows[$key]->href = $router->getRoute($row->slug, 'com_content.article', '', $row->language, $row->catid);
+                    $rows[$key]->href = $router->getRoute($row->slug, 'com_content.article', '', $row->language, $row->catslug);
                 }
             }
         }

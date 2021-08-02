@@ -1,20 +1,24 @@
 <?php
 /**
- * @package     Joomla.Administrator
- * @subpackage  Weblinks
+ * @copyright     Copyright (c) 2009-2021 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * Adapted from the Joomla Search.weblinks plugin - plugins/search/weblinks/weblinks.php
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ *
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses
  */
 
-defined('_JEXEC') or die;
+defined('JPATH_PLATFORM') or die;
 
 require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
 
 /**
  * Weblinks search plugin.
  *
- * @since  1.6
  */
 class PlgSearchWeblinks extends JPlugin
 {
@@ -22,7 +26,6 @@ class PlgSearchWeblinks extends JPlugin
 	 * Load the language file on instantiation.
 	 *
 	 * @var    boolean
-	 * @since  3.1
 	 */
 	protected $autoloadLanguage = true;
 
@@ -31,7 +34,6 @@ class PlgSearchWeblinks extends JPlugin
 	 *
 	 * @return  array  An array of search areas.
 	 *
-	 * @since   1.6
 	 */
 	public function onContentSearchAreas()
 	{
