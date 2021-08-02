@@ -57,9 +57,9 @@ class JFormFieldSearchPlugins extends JFormFieldPlugins
     protected function getOptions()
     {
         $options = array();
-		$default = JFolder::folders(JPATH_SITE . '/components/com_jce/editor/extensions/search/adapter');
+		$default = explode(',', $this->default);
 
-        /*foreach (parent::getOptions() as $item) {
+        foreach (parent::getOptions() as $item) {
             if (in_array($item->value, $default)) {
 				continue;
 			}
@@ -70,12 +70,16 @@ class JFormFieldSearchPlugins extends JFormFieldPlugins
 			}
 
             $options[] = $item;
-        }*/
+        }
 
 		foreach ($default as $name) {
+			if (!is_dir(JPATH_SITE . '/components/com_jce/editor/extensions/search/adapter/' . $name)) {
+				continue;
+			}
+
 			$option = new StdClass;
 
-            $option->text = JText::_('PLG_SEARCH_' . strtoupper($name), true);
+            $option->text = JText::_('PLG_SEARCH_' . strtoupper($name) . '_' . strtoupper($name), true);
             $option->disable = '';
             $option->value = $name;
 
