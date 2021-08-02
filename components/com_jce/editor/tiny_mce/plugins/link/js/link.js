@@ -693,7 +693,8 @@
                     $('#search-options-button').trigger('close');
                     $('#search-result').height($p.parent().height() - $p.outerHeight() - 5).show();
                 } else {
-                    Wf.Modal.alert(results.error || 'The server return an invalid response');
+                    var error = results ? results.error : 'The server return an invalid response';
+                    Wf.Modal.alert(error);
                 }
                 $('#search-browser').removeClass('loading');
                 $('#search-clear').addClass('uk-active');
