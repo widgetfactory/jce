@@ -28,20 +28,24 @@ class WfTemplateGantry extends JPlugin
             $url = 'templates/' . $template->name . '/custom/css-compiled';
 
             // editor.css file
-            $css = $gantry5 . '/editor.css';
+            $editor_css = $gantry5 . '/editor.css';
 
             // check for editor.css file
-            if (is_file($css) && filesize($css) > 0) {
-                $files[] = $url . '/' . basename($css);
+            if (is_file($editor_css) && filesize($editor_css) > 0) {
+                $files[] = $url . '/' . basename($editor_css);
                 return true;
             }
+
+            // load gantry base files
+            $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
+            $files[] = 'media/gantry5/engines/nucleus/css-compiled/nucleus.css';
 
             $items  = array();
             $custom = array();
 
-            $files = glob($gantry5 . '/*_[0-9]*.css');
+            $list = glob($gantry5 . '/*_[0-9]*.css');
 
-            foreach ($files as $file) {
+            foreach ($list as $file) {
                 if (strpos(basename($file), 'custom_') !== false) {
                     $custom[filemtime($file)] = $file;
                 } else {
@@ -49,21 +53,19 @@ class WfTemplateGantry extends JPlugin
                 }
             }
 
-            // sort items by modified time key
-            ksort($items, SORT_NUMERIC);
+            if (!empty($items)) {
+                // sort items by modified time key
+                ksort($items, SORT_NUMERIC);
 
-            // get the last item in the array
-            $item = end($items);
+                // get the last item in the array
+                $item = end($items);
 
-            $path = dirname($item);
-            $file = basename($item);
+                $path = dirname($item);
+                $file = basename($item);
 
-            // load gantry base files
-            $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
-            $files[] = 'media/gantry5/engines/nucleus/css-compiled/nucleus.css';
-
-            // load css files
-            $files[] = $url . '/' . $file;
+                // load css files
+                $files[] = $url . '/' . $file;
+            }
 
             // load custom css file if it exists
             if (!empty($custom)) {
