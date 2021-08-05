@@ -9,7 +9,7 @@ defined('JPATH_BASE') or die;
 class WfTemplateGantry extends JPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
-    {                        
+    {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
         // not a gantry template
@@ -24,31 +24,39 @@ class WfTemplateGantry extends JPlugin
         $gantry4 = $path . '/css-compiled';
 
         if (is_dir($gantry5)) {
-            $items = array();
-            
-            $files = glob($gantry5 . '/' . $name . '_[0-9]*.css');
+            // update url
+            $url = 'templates/' . $template->name . '/custom/css-compiled';
 
-            foreach($files as $file) {
-                $items[filemtime($file)] = $file;
+            // editor.css file
+            $css = $gantry5 . '/editor.css';
+
+            // check for editor.css file
+            if (is_file($css) && filesize($css) > 0) {
+                $files[] = $url . '/' . basename($css);
+                return true;
             }
 
-            // sort by modified time key
+            $items  = array();
+            $custom = array();
+
+            $files = glob($gantry5 . '/*_[0-9]*.css');
+
+            foreach ($files as $file) {
+                if (strpos(basename($file), 'custom_') !== false) {
+                    $custom[filemtime($file)] = $file;
+                } else {
+                    $items[filemtime($file)] = $file;
+                }
+            }
+
+            // sort items by modified time key
             ksort($items, SORT_NUMERIC);
 
             // get the last item in the array
             $item = end($items);
-                        
-            // update url
-            $url = 'templates/' . $template->name . '/custom/css-compiled';
 
             $path = dirname($item);
             $file = basename($item);
-
-            // check for editor.css file
-            if (is_file($path) && filesize($path) > 0) {
-                $files[] = $url . '/' . basename($css);
-                return true;
-            }
 
             // load gantry base files
             $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
@@ -57,36 +65,42 @@ class WfTemplateGantry extends JPlugin
             // load css files
             $files[] = $url . '/' . $file;
 
-            // create name of possible custom.css file
-            $custom = str_replace($name, 'custom', $file);
-
             // load custom css file if it exists
-            if (is_file($path . '/' . $custom)) {
-                $files[] = $url . '/' . $custom;
+            if (!empty($custom)) {
+                // sort custom by modified time key
+                ksort($custom, SORT_NUMERIC);
+                
+                // get the last custom file in the array
+                $custom_file = end($custom);
+                // create custom file url
+                $files[] = $url . '/' . basename($custom_file);
             }
         }
 
         if (is_dir($gantry4)) {
-            $items = array();
-            
-            $list = glob($gantry4 . '/master-*.css');
-
-            foreach($list as $file) {
-                $items[filemtime($file)] = $file;
-            }
-
-            // sort by modified time key
-            ksort($items, SORT_NUMERIC);
-
-            // get the last item in the array
-            $item = end($items);
-            
             // update url
             $url = 'templates/' . $template->name . '/css-compiled';
             // load gantry bootstrap files
             $files[] = $url . '/bootstrap.css';
-            // load css files
-            $files[] = $url . '/' . basename($item);
+
+            $items = array();
+
+            $list = glob($gantry4 . '/master-*.css');
+
+            if (!empty($list)) {
+                foreach ($list as $file) {
+                    $items[filemtime($file)] = $file;
+                }
+
+                // sort by modified time key
+                ksort($items, SORT_NUMERIC);
+
+                // get the last item in the array
+                $item = end($items);
+
+                // load css files
+                $files[] = $url . '/' . basename($item);
+            }
         }
     }
 }
