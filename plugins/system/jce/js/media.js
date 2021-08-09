@@ -331,7 +331,7 @@
             updateMediaUrl(row);
         });
 
-        // other
+        // other - removed as it seems to cause some issues
         /*$('.wf-media-input').not('.wf-media-input-active').each(function (i, row) {
             updateMediaUrl($(this).parents('.field-media-wrapper'));
         });*/
