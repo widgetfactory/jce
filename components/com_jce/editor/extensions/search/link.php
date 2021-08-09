@@ -16,7 +16,7 @@ class WFLinkSearchExtension extends WFSearchExtension
 {
     private $enabled = array();
 
-    protected function loadDefaultAdpater($plugin)
+    protected function loadDefaultAdapter($plugin)
     {
         $app = JFactory::getApplication();
         
@@ -93,7 +93,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         foreach ($plugins as $plugin) {
             // process core search plugins
             if (in_array($plugin, $default)) {
-                $this->loadDefaultAdpater($plugin);
+                $this->loadDefaultAdapter($plugin);
                 continue;
             }
 
