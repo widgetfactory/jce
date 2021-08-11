@@ -286,7 +286,7 @@
             }
 
             // set mediatype or default to "images"
-            var mediatype = params.mediatype || 'images';
+            var mediatype = params.mediatype || params.view || 'images';
 
             // create url
             var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
