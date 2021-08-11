@@ -118,7 +118,7 @@ class JceModelCpanel extends JModelLegacy
             $version = (string) $xml->version;
 
             if (WF_EDITOR_PRO) {
-                $version = '<span class="badge badge-info badge-primary">Pro</span>&nbsp;' . $version;
+                $version = '<span class="badge badge-info badge-primary bg-primary">Pro</span>&nbsp;' . $version;
             }
         }
 
