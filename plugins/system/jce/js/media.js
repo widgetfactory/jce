@@ -306,7 +306,23 @@
     }
 
     $(document).ready(function ($) {
-        $('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
+        $('.field-media-wrapper').find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
+
+        // other - removed as it seems to cause some issues
+        /*$('.field-media-wrapper').find('.wf-media-input:not(.wf-media-input-active)').each(function (i, row) {
+            updateMediaUrl($(this).parents('.field-media-wrapper'));
+
+            $(this).addClass('wf-media-input-upload');
+        });*/
+
+        $('.field-media-input').parents('.subform-repeatable-group').each(function (i, row) {
+            updateMediaUrl(row);
+        });
+
+        // joomla custom attribute
+        $('joomla-field-media').each(function (i, row) {
+            updateMediaUrl(row);
+        });
 
         $(document).on('subform-row-add', function (evt, row) {
             // get original event from jQuery
@@ -321,22 +337,6 @@
 
             updateMediaUrl(row);
         });
-
-        $('.field-media-input').parents('.subform-repeatable-group').each(function (i, row) {
-            updateMediaUrl(row);
-        });
-
-        // joomla custom attribute
-        $('joomla-field-media').each(function (i, row) {
-            updateMediaUrl(row);
-        });
-
-        // other - removed as it seems to cause some issues
-        /*$('div[data-url^="index.php?option=com_media"] .wf-media-input').not('.wf-media-input-active').each(function (i, row) {
-            updateMediaUrl($(this).parents('.field-media-wrapper'));
-
-            $(this).addClass('wf-media-input-upload');
-        });*/
 
         $('.wf-media-input-upload').WfMediaUpload();
 
