@@ -332,8 +332,10 @@
         });
 
         // other - removed as it seems to cause some issues
-        /*$('.wf-media-input').not('.wf-media-input-active').each(function (i, row) {
+        /*$('div[data-url^="index.php?option=com_media"] .wf-media-input').not('.wf-media-input-active').each(function (i, row) {
             updateMediaUrl($(this).parents('.field-media-wrapper'));
+
+            $(this).addClass('wf-media-input-upload');
         });*/
 
         $('.wf-media-input-upload').WfMediaUpload();
