@@ -24,7 +24,7 @@
                 <option value="0">WF_PROFILES_COMPONENTS_ALL</option>
                 <option value="1">WF_PROFILES_COMPONENTS_SELECT</option>
             </field>
-            <field name="components" type="components" multiple="multiple" label="" description="" disabled="true" />
+            <field name="components" type="components" multiple="multiple" label="" description="" disabled="true" layout="joomla.form.field.list-fancy-select" />
             <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" layout="joomla.form.field.list-fancy-select" />
             <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC" />
         </fieldset>

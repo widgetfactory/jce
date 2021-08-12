@@ -214,7 +214,21 @@
                 return;
             }
 
-            $('#jform_components').prop('disabled', $(this).val() == 0).trigger('liszt:updated').trigger('chosen:updated');
+            var state = parseInt($(this).val());
+
+            $('#jform_components').prop('disabled', state == 0).trigger('liszt:updated').trigger('chosen:updated');
+            
+            $('#jform_components').parents('joomla-field-fancy-select').each(function() {
+                if (!this.choicesInstance) {
+                    return;
+                }
+                
+                if (!state) {
+                    this.choicesInstance.disable();
+                } else {
+                    this.choicesInstance.enable();
+                }
+            });          
         }).trigger('change');
 
         // add "isdirty" class to each input on change
