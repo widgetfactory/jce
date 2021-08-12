@@ -389,10 +389,10 @@
 
             var idx = $(this).index(), $container = $(this).parent().parent('.tabbable');
 
-            $(this).parent().children('.active').removeClass('active show');
+            $(this).parent().children('.active').removeClass('active show hide');
             $(this).addClass('active show');
 
-            $('.tab-content .tab-pane', $container).removeClass('active show').eq(idx).addClass('active show');
+            $('.tab-content .tab-pane', $container).removeClass('active show hide').eq(idx).addClass('active show');
         });
 
         // add sortable to checkboxes

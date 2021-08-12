@@ -8,13 +8,14 @@
 
 .ui-jce .fontlist input[type="checkbox"] {
     margin: 5px 10px;
+    width: auto;
 }
 
 .ui-jce .fontlist .font-item,
 .ui-jce .fontlist .font-item-plus {
     border: 1px solid #ccc;
     padding: 5px 10px;
-    max-width: 400px;
+    max-width: 480px;
     position: relative;
     background-color: #fff;
     width: 100%;
@@ -22,8 +23,12 @@
     margin: 0;
 }
 
+.ui-jce .fontlist .font-item > div {
+    padding: 0 5px 0 0;
+}
+
 .ui-jce .fontlist .font-item-highlight.sortable-placeholder{
-    max-width: 400px;
+    max-width: 480px;
     padding: 5px 10px;
 }
 
@@ -36,6 +41,11 @@
     font-size: 1.2rem;
     vertical-align: middle;
     line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .fontlist .font-item-plus span {
+    text-align: right;
 }
 
 .ui-jce .fontlist .font-item-plus .icon {
@@ -51,7 +61,7 @@
 }
 
 .ui-jce .fontlist .font-item input[type="text"] {
-    margin: 0 2px 0 0;
+    margin: 0;
     float: none;
 }
 

@@ -43,6 +43,11 @@
     font-size: 1.2rem;
     vertical-align: middle;
     line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .styleformat-list .styleformat-item-plus span {
+    text-align: right;
 }
 
 .ui-jce .styleformat-list .styleformat-item-plus .icon {

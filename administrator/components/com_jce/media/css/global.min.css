@@ -19,6 +19,7 @@
 }
 .ui-jce .checkboxes input {
   float: initial;
+  margin-left: 0;
 }
 .ui-jce .well-light {
   background-color: #fafafa;
@@ -74,6 +75,9 @@
 }
 .ui-jce .form-help-inline .control-group .control-label {
   cursor: default;
+}
+.ui-jce .form-check input[type="radio"] {
+  vertical-align: middle;
 }
 .ui-jce .row {
     margin-right: -7.5px;
