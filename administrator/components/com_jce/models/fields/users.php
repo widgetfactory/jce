@@ -33,45 +33,37 @@ class JFormFieldUsers extends JFormFieldUser
 
 		$options = $this->getOptions();
 
-		$name  = $this->name;
+		$name = $this->name;
 
 		// clear name
 		$this->name = "";
 
+		// set onchange to update 
 		$this->onchange = "(function(){WfSelectUsers();})();";
 
-		$html  = $this->getRenderer($this->layout)->render($this->getLayoutData());
+		// remove autocomplete
+		$this->autocomplete = false;
 
+		// clear value
+		$this->value = "";
+
+		$html  = $this->getRenderer($this->layout)->render($this->getLayoutData());
 		$html  .= '<div class="users-select">';
 
-		$html  .= '<select name="' . $name . '" id="' . $this->id . '_select" class="custom-select" multiple>';
+		// add "joomla-field-fancy-select" manually for Joomla 4
+		$html .= '<joomla-field-fancy-select placeholder="...">';
+		$html .= '<select name="' . $name . '" id="' . $this->id . '_select" class="custom-select" data-placeholder="..." multiple>';
 		
 		foreach ($options as $option) {
 			$html  .= '<option value="' . $option->value . '" selected>' . $option->text . '</option>';
 		}
 
-		$html  .= '</select>';
-
-		$html  .= '</div>';
+		$html .= '</select>';
+		$html .= '</joomla-field-fancy-select>';
+		$html .= '</div>';
 
 		return $html;
 
-	}
-	
-	/**
-	 * Get the data that is going to be passed to the layout
-	 *
-	 * @return  array
-	 *
-	 * @since   3.5
-	 */
-	public function getLayoutData()
-	{
-		// clear value
-		$this->value = json_encode($this->value);
-		
-		// Get the basic field data
-		return parent::getLayoutData();
 	}
 
     /**
@@ -95,29 +87,36 @@ class JFormFieldUsers extends JFormFieldUser
      */
     protected function getOptions()
     {
-        $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
-
 		$options = array();
 		
 		if (empty($this->value)) {
 			return $options;
 		}
 
-		$this->value = json_decode($this->value);
+		$fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
+		$table = JTable::getInstance('user');
 
-        foreach ($this->value as $user) {
+		// clean value
+		$this->value = str_replace('"', '', $this->value);
 
-            $tmp = array(
-                'value' => $user->value,
-                'text' => JText::alt($user->text, $fieldname),
-                'selected' => true,
-            );
+        foreach (explode(',', $this->value) as $id) {
+            if (empty($id)) {
+				continue;
+			}
+			
+			if ($table->load((int) $id)) {
+                $text = htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8');
+				$text = JText::alt($text, $fieldname);
 
-            // Add the option object to the result set.
-            $options[] = (object) $tmp;
+				$tmp = array(
+					'value' => $id,
+					'text' => $text
+				);
+	
+				// Add the option object to the result set.
+				$options[] = (object) $tmp;
+            }
         }
-
-        reset($options);
 
         return $options;
     }

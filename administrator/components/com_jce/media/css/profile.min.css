@@ -322,6 +322,11 @@ dd.file.notsafe {
     font-size: 1.2rem;
     vertical-align: middle;
     line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .styleformat-list .styleformat-item-plus span {
+    text-align: right;
 }
 
 .ui-jce .styleformat-list .styleformat-item-plus .icon {
@@ -493,13 +498,14 @@ dd.file.notsafe {
 
 .ui-jce .fontlist input[type="checkbox"] {
     margin: 5px 10px;
+    width: auto;
 }
 
 .ui-jce .fontlist .font-item,
 .ui-jce .fontlist .font-item-plus {
     border: 1px solid #ccc;
     padding: 5px 10px;
-    max-width: 400px;
+    max-width: 480px;
     position: relative;
     background-color: #fff;
     width: 100%;
@@ -507,8 +513,12 @@ dd.file.notsafe {
     margin: 0;
 }
 
+.ui-jce .fontlist .font-item > div {
+    padding: 0 5px 0 0;
+}
+
 .ui-jce .fontlist .font-item-highlight.sortable-placeholder{
-    max-width: 400px;
+    max-width: 480px;
     padding: 5px 10px;
 }
 
@@ -521,6 +531,11 @@ dd.file.notsafe {
     font-size: 1.2rem;
     vertical-align: middle;
     line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .fontlist .font-item-plus span {
+    text-align: right;
 }
 
 .ui-jce .fontlist .font-item-plus .icon {
@@ -536,7 +551,7 @@ dd.file.notsafe {
 }
 
 .ui-jce .fontlist .font-item input[type="text"] {
-    margin: 0 2px 0 0;
+    margin: 0;
     float: none;
 }
 
@@ -914,23 +929,26 @@ html[dir="rtl"] .form-horizontal .control-label {
     font-weight: bold;
 }*/
 .ui-jce .users-select {
-   position: relative;
-   margin: 10px 0;
-}
-/*
-.ui-jce .users-select select, .ui-jce .users-select .chzn-container, .ui-jce .users-select .input-append {
-    float: left;
+    position: relative;
+    margin: 10px 0;
 }
 
-.ui-jce .users-select .input-append input[type="text"] {
-    display: none;
+.ui-jce joomla-field-user+.users-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: calc(100% - 48px);
 }
 
-.ui-jce .users-select .chzn-container-multi .chzn-choices {
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select {
+    width: 100%;
+}
+
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select .choices__inner {
+    border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border-top-right-radius: 0; 
 }
-*/
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.

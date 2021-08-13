@@ -112,6 +112,20 @@
     .form-check input[type="radio"] {
         vertical-align: middle;
     }
+
+    .choices.is-disabled .choices__inner {
+        padding: 0;
+
+        input[type="text"] {
+            width: 100% !important;
+            height: 100%;
+            padding: .5rem 1rem;
+
+            &::placeholder {
+                color: #aaa;
+            }
+        }
+    }
 }
 
 @import (inline) "../css/src/compat.css";

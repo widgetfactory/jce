@@ -20,13 +20,16 @@
                 <option value="tablet">WF_PROFILES_DEVICE_TABLET</option>
                 <option value="desktop">WF_PROFILES_DEVICE_DESKTOP</option>
             </field>
-            <field name="components_select" type="radio" label="WF_PROFILES_COMPONENTS" description="WF_PROFILES_COMPONENTS_DESC" class="extensions-select" default="0">
+
+            <field name="components_select" type="radio" label="WF_PROFILES_COMPONENTS" description="" class="extensions-select" default="0">
                 <option value="0">WF_PROFILES_COMPONENTS_ALL</option>
                 <option value="1">WF_PROFILES_COMPONENTS_SELECT</option>
             </field>
-            <field name="components" type="components" multiple="multiple" label="" description="" disabled="true" layout="joomla.form.field.list-fancy-select" />
+            <field name="components" type="components" multiple="multiple" label="" description="WF_PROFILES_COMPONENTS_DESC" disabled="true" layout="joomla.form.field.list-fancy-select" />
+
             <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" layout="joomla.form.field.list-fancy-select" />
             <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC" />
+
         </fieldset>
     </fields>
     <fields name="config"></fields>

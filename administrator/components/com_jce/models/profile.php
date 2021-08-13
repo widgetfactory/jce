@@ -215,22 +215,7 @@ class JceModelProfile extends JModelAdmin
             $data->components_select = 1;
         }
 
-        $data->types = explode(',', $data->types);
-
-        $table = JTable::getInstance('user');
-        $users = array();
-
-        foreach (explode(',', $data->users) as $id) {
-            if ($table->load((int) $id)) {
-                $user = new StdClass();
-                $user->value = $id;
-                $user->text = htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8');
-
-                $users[] = $user;
-            }
-        }
-
-        $data->users    = $users;
+        $data->types    = explode(',', $data->types);
         $data->config   = $data->params;
         
         $this->preprocessData('com_jce.profiles', $data);

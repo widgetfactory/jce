@@ -1,18 +1,21 @@
 .ui-jce .users-select {
-   position: relative;
-   margin: 10px 0;
-}
-/*
-.ui-jce .users-select select, .ui-jce .users-select .chzn-container, .ui-jce .users-select .input-append {
-    float: left;
+    position: relative;
+    margin: 10px 0;
 }
 
-.ui-jce .users-select .input-append input[type="text"] {
-    display: none;
+.ui-jce joomla-field-user+.users-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: calc(100% - 48px);
 }
 
-.ui-jce .users-select .chzn-container-multi .chzn-choices {
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select {
+    width: 100%;
+}
+
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select .choices__inner {
+    border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    border-top-right-radius: 0; 
 }
-*/
