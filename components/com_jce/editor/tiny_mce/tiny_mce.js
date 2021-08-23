@@ -42265,7 +42265,7 @@
 	                });
 
 	                ed.onKeyDown.add(function (ed, e) {
-	                    var isDelete, rng, container;
+	                    var isDelete, rng, container, offset, collapsed;
 
 	                    isDelete = e.keyCode == VK.DELETE;
 
