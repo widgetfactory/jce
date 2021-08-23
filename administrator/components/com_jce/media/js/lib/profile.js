@@ -209,27 +209,15 @@
         });
 
         // set up change event for extensions options
-        /*$('#jform_components_select input').on('change', function () {
+        $('#jform_components_select input').on('change', function () {
             if (!this.checked) {
                 return;
             }
 
             var state = parseInt($(this).val());
+            $('#jform_components').parents('.control-group').toggle(!!state); 
 
-            $('#jform_components').prop('disabled', state == 0).trigger('liszt:updated').trigger('chosen:updated');
-            
-            $('#jform_components').parents('joomla-field-fancy-select').each(function() {
-                if (!this.choicesInstance) {
-                    return;
-                }
-                
-                if (!state) {
-                    this.choicesInstance.disable();
-                } else {
-                    this.choicesInstance.enable();
-                }
-            });          
-        }).trigger('change');*/
+        }).trigger('change');
 
         // add "isdirty" class to each input on change
         $('#profile-features :input[name], #profile-editor :input[name], #profile-plugins :input[name]').on('change', function () {
