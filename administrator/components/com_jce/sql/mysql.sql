@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS `#__wf_profiles` (
     `plugins` text NOT NULL,
     `published` tinyint(3) NOT NULL,
     `ordering` int(11) NOT NULL,
-    `checked_out` int(11) NOT NULL,
-    `checked_out_time` datetime NOT NULL,
+    `checked_out` int unsigned,
+    `checked_out_time` datetime NULL DEFAULT NULL,
     `params` text NOT NULL,
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8;
