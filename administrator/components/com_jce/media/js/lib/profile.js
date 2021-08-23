@@ -209,7 +209,7 @@
         });
 
         // set up change event for extensions options
-        $('#jform_components_select input').on('change', function () {
+        /*$('#jform_components_select input').on('change', function () {
             if (!this.checked) {
                 return;
             }
@@ -229,7 +229,7 @@
                     this.choicesInstance.enable();
                 }
             });          
-        }).trigger('change');
+        }).trigger('change');*/
 
         // add "isdirty" class to each input on change
         $('#profile-features :input[name], #profile-editor :input[name], #profile-plugins :input[name]').on('change', function () {
