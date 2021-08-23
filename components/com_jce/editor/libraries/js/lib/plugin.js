@@ -565,48 +565,24 @@
     };
 
     /**
-     * Cookie Functions
-     */
-    Wf.Cookie = {
+      * Cookie Functions
+      */
+    Wf.Storage = {
         /**
-         * Gets the raw data of a cookie by name.
+         * Gets the raw data of a sessionStorage item by name.
          *
          * @method get
-         * @param {String} n Name of cookie to retrive.
+         * @param {String} n Name of item to retrive.
          * @param {String} s Default value to return.
-         * @param {Function} fn Function to validate cookie value against, return default if false
-         * @return {String} Cookie data string.
-         * @copyright Copyright 2009, Moxiecode Systems AB
-         * @licence GNU / LGPL - http://www.gnu.org/copyleft/lesser.html
+         * @param {Function} fn Function to validate value against, return default if false
+         * @return {String} Data string.
          */
         get: function (n, s, fn) {
-            var c = document.cookie,
-                e, p = n + "=",
-                b, v;
-
-            // Strict mode
-            if (!c) {
+            if (!window.sessionStorage) {
                 return s;
             }
 
-            b = c.indexOf("; " + p);
-
-            if (b == -1) {
-                b = c.indexOf(p);
-
-                if (b != 0) {
-                    return s;
-                }
-            } else {
-                b += 2;
-            }
-            e = c.indexOf(";", b);
-
-            if (e == -1) {
-                e = c.length;
-            }
-
-            v = unescape(c.substring(b + p.length, e));
+            var val = sessionStorage.getItem(n);
 
             if (typeof v == 'undefined') {
                 return s;
@@ -616,27 +592,33 @@
                 return s;
             }
 
+            if (v === 'null') {
+                return null;
+            }
+
+            if (v === 'true') {
+                return true;
+            }
+
+            if (v === 'false') {
+                return false;
+            }
+
             return v;
         },
         /**
-         * Sets a raw cookie string.
+         * Sets a raw sessionStorage string.
          *
          * @method set
-         * @param {String} n Name of the cookie.
-         * @param {String} v Raw cookie data.
-         * @param {Date} e Optional date object for the expiration of the cookie.
-         * @param {String} p Optional path to restrict the cookie to.
-         * @param {String} d Optional domain to restrict the cookie to.
-         * @param {String} s Is the cookie secure or not.
-         * @copyright Copyright 2009, Moxiecode Systems AB
-         * @licence GNU / LGPL - http://www.gnu.org/copyleft/lesser.html
+         * @param {String} n Name of the item.
+         * @param {String} v Raw item data.
          */
-        set: function (n, v, e, p, d, s) {
-            document.cookie = n + "=" + escape(v) +
-                ((e) ? "; expires=" + e.toGMTString() : "") +
-                ((p) ? "; path=" + escape(p) : "") +
-                ((d) ? "; domain=" + d : "") +
-                ((s) ? "; secure" : "");
+        set: function (n, v) {
+            if (!window.sessionStorage) {
+                return;
+            }
+
+            sessionStorage.setItem(n, v);
         }
 
     };

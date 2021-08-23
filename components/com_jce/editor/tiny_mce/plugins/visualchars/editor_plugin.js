@@ -15,7 +15,7 @@
 
             // get state from cookie
             if (ed.getParam('use_state_cookies', true)) {
-                state = Cookie.get('wf_visualchars_state');
+                state = Storage.get('wf_visualchars_state');
             }
 
             state = tinymce.is(state, 'string') ? parseFloat(state) : ed.getParam('visualchars_default_state', 0);
@@ -47,7 +47,7 @@
                 self._toggleVisualChars(state);
 
                 if (ed.getParam('use_state_cookies', true)) {
-                    Cookie.set('wf_visualchars_state', state ? 1 : 0);
+                    Storage.set('wf_visualchars_state', state ? 1 : 0);
                 }
             }, self);
 

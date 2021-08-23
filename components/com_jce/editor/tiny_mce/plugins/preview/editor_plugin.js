@@ -61,7 +61,7 @@
             var preview = DOM.get(ed.id + '_editor_preview');
             var iframe = DOM.get(ed.id + '_editor_preview_iframe');
 
-            var o = tinymce.util.Cookie.getHash("TinyMCE_" + ed.id + "_size");
+            var o = tinymce.util.Storage.getHash("TinyMCE_" + ed.id + "_size");
 
             if (o && o.height) {
                 ifrHeight = o.height;

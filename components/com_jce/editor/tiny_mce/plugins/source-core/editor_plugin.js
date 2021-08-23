@@ -95,7 +95,7 @@
             // get editor iframe height
             var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
 
-            var o = tinymce.util.Cookie.getHash("TinyMCE_" + ed.id + "_size");
+            var o = tinymce.util.Storage.getHash("TinyMCE_" + ed.id + "_size");
 
             if (o && o.height) {
                 ifrHeight = o.height;

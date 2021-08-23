@@ -1258,7 +1258,7 @@
 
         _setState: function (name, state) {
             if (this.options.use_state_cookies) {
-                Wf.Cookie.set("wf_" + Wf.getName() + '_' + name, state);
+                Wf.Storage.set("wf_" + Wf.getName() + '_' + name, state);
             }
         },
 
@@ -1268,7 +1268,7 @@
             }
 
             callback = callback || function (val) { return val; }
-            return Wf.Cookie.get('wf_' + Wf.getName() + '_' + name, def, callback);
+            return Wf.Storage.get('wf_' + Wf.getName() + '_' + name, def, callback);
         },
 
         /**
