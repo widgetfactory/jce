@@ -20140,6 +20140,7 @@
 				elm.id = id;
 				elm.type = 'text/javascript';
 				elm.src = tinymce._addVer(url);
+				elm.defer = true;
 
 				// Add onload listener for non IE browsers since IE9
 				// fires onload event before the script is parsed and executed
@@ -38286,5 +38287,4206 @@
 	  };
 
 	})(tinymce);
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var Entities = tinymce.html.Entities, each = tinymce.each;
+
+	    tinymce.PluginManager.add('core', function (ed, url) {
+	        // command store
+	        var store;
+
+	        // media update event
+	        ed.onUpdateMedia = new tinymce.util.Dispatcher();
+	        
+	        var contentLoaded = false, elm = ed.getElement();
+
+	        function isEmpty() {
+	            if (elm.nodeName === 'TEXTAREA') {
+	                return elm.value == '';
+	            } else {
+	                return elm.innerHTML == '';
+	            }
+	        }
+
+	        function insertContent(value) {
+	            value = Entities.decode(value);
+
+	            if (value) {
+	                if (elm.nodeName === 'TEXTAREA') {
+	                    elm.value = value;
+	                } else {
+	                    elm.innerHTML = value;
+	                }
+	            }
+
+	            return true;
+	        }
+
+	        var startup_content_html = ed.settings.startup_content_html || '';
+
+	        ed.onBeforeRenderUI.add(function () {
+	            // load content on first startup
+	            if (startup_content_html && elm) {
+	                if (!contentLoaded && isEmpty()) {
+	                    contentLoaded = true;
+	                    return insertContent(startup_content_html);
+	                }
+	            }
+	        });
+
+	        // special quotes shortcute
+	        ed.onKeyUp.add(function (ed, e) {
+	            // default is CTRL + SHIFT + ' and “text”
+	            var quoted = '&ldquo;{$selection}&rdquo;';
+
+	            // use different keyCode for German quotes, eg: „text“
+	            if (ed.settings.language == 'de') {
+	                quoted = '&bdquo;{$selection}&ldquo;';
+	            }
+
+	            if ((e.key === '\u0027' || e.key == '\u0022') && e.shiftKey && e.ctrlKey) {
+	                ed.undoManager.add();
+	                ed.execCommand('mceReplaceContent', false, quoted);
+	            }
+	        });
+
+	        ed.onExecCommand.add(function (ed, cmd, ui, val, args) {
+	            if (cmd == 'Undo' || cmd == 'Redo' || cmd == 'mceReApply' || cmd == 'mceRepaint') {
+	                return;
+	            }
+
+	            store = { cmd: cmd, ui: ui, value: val, args: args };
+	        });
+
+	        ed.addShortcut('ctrl+alt+z', '', 'mceReApply');
+
+	        ed.addCommand('mceReApply', function () {
+	            if (!store || !store.cmd) {
+	                return;
+	            }
+
+	            return ed.execCommand(store.cmd, store.ui, store.value, store.args);
+	        });
+
+	        ed.onPreInit.add(function () {
+	            ed.onUpdateMedia.add(function (ed, o) {
+
+	                function updateSrcSet(elm, o) {
+	                    // srcset
+	                    var srcset = elm.getAttribute('srcset');
+
+	                    if (srcset) {
+	                        var sets = srcset.split(',');
+
+	                        for(var i = 0; i < sets.length; i++) {
+	                            var values = sets[i].trim().split(' ');
+
+	                            if (o.before == values[0]) {
+	                                values[0] = o.after;
+	                            }
+
+	                            sets[i] = values.join(' ');
+	                        }
+
+	                        elm.setAttribute('srcset', sets.join(','));
+	                    }
+	                }
+	                
+	                each(ed.dom.select('img,poster'), function (elm) {
+	                    var src = elm.getAttribute('src');
+	                    var val = src.substring(0, src.indexOf('?'));
+
+	                    if (val == o.before) {
+	                        var after = o.after, stamp = '?' + new Date().getTime();
+
+	                        if (src.indexOf('?') !== -1 && after.indexOf('?') === -1) {
+	                            after += stamp;
+	                        }
+
+	                        ed.dom.setAttribs(elm, { 'src': after, 'data-mce-src': o.after });
+	                    }
+
+	                    if (elm.getAttribute('srcset')) {
+	                        updateSrcSet(elm, o);
+	                    }
+	                });
+
+	                each(ed.dom.select('a[href]'), function (elm) {
+	                    var href = ed.dom.getAttrib(elm, 'href');
+
+	                    if (href == o.before) {
+	                        ed.dom.setAttribs(elm, { 'href': o.after, 'data-mce-href': o.after });
+	                    }
+	                });
+	            });
+	        });
+	    });
+	})();
+
+	/**
+	 * @package    JCE
+	 * @copyright    Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+
+	    tinymce.create('tinymce.plugins.HelpPlugin', {
+	        init: function (ed, url) {
+	            this.editor = ed;
+
+	            ed.addCommand('mceHelp', function () {
+	                ed.windowManager.open({
+	                    title: ed.getLang('dlg.help', 'Help'),
+	                    url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
+	                    size: 'mce-modal-landscape-full'
+	                });
+	            });
+
+	            // Register buttons
+	            ed.addButton('help', {
+	                title: 'dlg.help',
+	                cmd: 'mceHelp'
+	            });
+	        }
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('help', tinymce.plugins.HelpPlugin);
+	})();
+
+	/**
+	 * editor_plugin_src.js
+	 *
+	 * Copyright 2011, Moxiecode Systems AB
+	 * Released under LGPL License.
+	 *
+	 * License: http://www.tinymce.com/license
+	 * Contributing: http://tinymce.moxiecode.com/contributing
+	 */
+
+	(function () {
+		var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+
+		tinymce.create('tinymce.plugins.AutolinkPlugin', {
+			/**
+			 * Initializes the plugin, this will be executed after the plugin has been created.
+			 * This call is done before the editor instance has finished it's initialization so use the onInit event
+			 * of the editor instance to intercept that event.
+			 *
+			 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
+			 * @param {string} url Absolute URL to where the plugin is located.
+			 */
+
+			init: function (ed, url) {
+				var t = this;
+
+				if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
+					return;
+				}
+
+				if (ed.settings.autolink_pattern) {
+					AutoLinkPattern = ed.settings.autolink_pattern;
+				}
+
+				ed.onAutoLink = new tinymce.util.Dispatcher(this);
+
+				// Add a key down handler
+				ed.onKeyDown.addToTop(function (ed, e) {
+					if (e.keyCode == 13)
+						return t.handleEnter(ed);
+				});
+
+				// Internet Explorer has built-in automatic linking for most cases
+				if (tinyMCE.isIE)
+					return;
+
+				ed.onKeyPress.add(function (ed, e) {
+					if (e.which == 41)
+						return t.handleEclipse(ed);
+				});
+
+				// Add a key up handler
+				ed.onKeyUp.add(function (ed, e) {
+					if (e.keyCode == 32)
+						return t.handleSpacebar(ed);
+				});
+			},
+
+			handleEclipse: function (ed) {
+				this.parseCurrentLine(ed, -1, '(', true);
+			},
+
+			handleSpacebar: function (ed) {
+				this.parseCurrentLine(ed, 0, '', true);
+			},
+
+			handleEnter: function (ed) {
+				this.parseCurrentLine(ed, -1, '', false);
+			},
+
+			parseCurrentLine: function (editor, endOffset, delimiter) {
+				var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
+
+				function scopeIndex(container, index) {
+					if (index < 0) {
+						index = 0;
+					}
+
+					if (container.nodeType == 3) {
+						var len = container.data.length;
+
+						if (index > len) {
+							index = len;
+						}
+					}
+
+					return index;
+				}
+
+				function setStart(container, offset) {
+					if (container.nodeType != 1 || container.hasChildNodes()) {
+						rng.setStart(container, scopeIndex(container, offset));
+					} else {
+						rng.setStartBefore(container);
+					}
+				}
+
+				function setEnd(container, offset) {
+					if (container.nodeType != 1 || container.hasChildNodes()) {
+						rng.setEnd(container, scopeIndex(container, offset));
+					} else {
+						rng.setEndAfter(container);
+					}
+				}
+
+				// Never create a link when we are inside a link
+				if (editor.selection.getNode().tagName == 'A') {
+					return;
+				}
+
+				// We need at least five characters to form a URL,
+				// hence, at minimum, five characters from the beginning of the line.
+				rng = editor.selection.getRng(true).cloneRange();
+				if (rng.startOffset < 5) {
+					// During testing, the caret is placed between two text nodes.
+					// The previous text node contains the URL.
+					prev = rng.endContainer.previousSibling;
+					if (!prev) {
+						if (!rng.endContainer.firstChild || !rng.endContainer.firstChild.nextSibling) {
+							return;
+						}
+
+						prev = rng.endContainer.firstChild.nextSibling;
+					}
+
+					len = prev.length;
+					setStart(prev, len);
+					setEnd(prev, len);
+
+					if (rng.endOffset < 5) {
+						return;
+					}
+
+					end = rng.endOffset;
+					endContainer = prev;
+				} else {
+					endContainer = rng.endContainer;
+
+					// Get a text node
+					if (endContainer.nodeType != 3 && endContainer.firstChild) {
+						while (endContainer.nodeType != 3 && endContainer.firstChild) {
+							endContainer = endContainer.firstChild;
+						}
+
+						// Move range to text node
+						if (endContainer.nodeType == 3) {
+							setStart(endContainer, 0);
+							setEnd(endContainer, endContainer.nodeValue.length);
+						}
+					}
+
+					if (rng.endOffset == 1) {
+						end = 2;
+					} else {
+						end = rng.endOffset - 1 - endOffset;
+					}
+				}
+
+				start = end;
+
+				do {
+					// Move the selection one character backwards.
+					setStart(endContainer, end >= 2 ? end - 2 : 0);
+					setEnd(endContainer, end >= 1 ? end - 1 : 0);
+					end -= 1;
+					rngText = rng.toString();
+
+					// Loop until one of the following is found: a blank space, &nbsp;, delimiter, (end-2) >= 0
+				} while (rngText != ' ' && rngText !== '' && rngText.charCodeAt(0) != 160 && (end - 2) >= 0 && rngText != delimiter);
+
+				if (rng.toString() == delimiter || rng.toString().charCodeAt(0) == 160) {
+					setStart(endContainer, end);
+					setEnd(endContainer, start);
+					end += 1;
+				} else if (rng.startOffset === 0) {
+					setStart(endContainer, 0);
+					setEnd(endContainer, start);
+				} else {
+					setStart(endContainer, end);
+					setEnd(endContainer, start);
+				}
+
+				// Exclude last . from word like "www.site.com."
+				text = rng.toString();
+				if (text.charAt(text.length - 1) == '.') {
+					setEnd(endContainer, start - 1);
+				}
+
+				text = rng.toString();
+				matches = text.match(AutoLinkPattern);
+
+				if (matches) {
+					if (matches[1] == 'www.') {
+						matches[1] = 'https://www.';
+					} else if (/@$/.test(matches[1]) && !/^mailto:/.test(matches[1])) {
+						matches[1] = 'mailto:' + matches[1];
+					}
+
+					if (matches[1].indexOf('http') !== -1) {
+						if (!editor.getParam('autolink_url', true)) {
+							return;
+						}
+					}
+
+					if (matches[1].indexOf('mailto:') !== -1) {
+						if (!editor.getParam('autolink_email', true)) {
+							return;
+						}
+					}
+
+					bookmark = editor.selection.getBookmark();
+
+					editor.selection.setRng(rng);
+					editor.execCommand('createlink', false, matches[1] + matches[2]);
+
+					var node = editor.selection.getNode();
+
+					if (editor.settings.default_link_target) {
+						editor.dom.setAttrib(node, 'target', editor.settings.default_link_target);
+					}
+
+					editor.onAutoLink.dispatch(editor, {node: node});
+
+					editor.selection.moveToBookmark(bookmark);
+					editor.nodeChanged();
+				}
+			}
+		});
+
+		// Register plugin
+		tinymce.PluginManager.add('autolink', tinymce.plugins.AutolinkPlugin);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var each = tinymce.each,
+	        Node = tinymce.html.Node;
+
+	    function split(str, delim) {
+	        return str.split(delim || ',');
+	    }
+
+	    // list of HTML tags
+	    var tags = [
+	        'a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'bgsound', 'big', 'blink', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'command', 'content', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'element', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'header', 'hgroup', 'hr', 'html', 'i', 'iframe', 'image', 'img', 'input', 'ins', 'isindex', 'kbd', 'keygen', 'label', 'legend', 'li', 'link', 'listing', 'main', 'map', 'mark', 'marquee', 'menu', 'menuitem', 'meta', 'meter', 'multicol', 'nav', 'nobr', 'noembed', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'picture', 'plaintext', 'pre', 'progress', 'q', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp', 'script', 'section', 'select', 'shadow', 'slot', 'small', 'source', 'spacer', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr', 'xmp'
+	    ];
+
+	    var fontIconRe = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon)-([\w-]+)([^"]*)"([^>]*)><\/\1>/gi;
+	    var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
+
+	    tinymce.create('tinymce.plugins.CleanupPlugin', {
+	        init: function (ed, url) {
+	            var self = this;
+	            this.editor = ed;
+
+	            // set validate value to verify_html value
+	            if (ed.settings.verify_html === false) {
+	                ed.settings.validate = false;
+	            }
+
+	            ed.onPreInit.add(function () {
+	                // Remove bogus elements
+	                ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
+	                    var i = nodes.length;
+
+	                    while (i--) {
+	                        nodes[i].remove();
+	                    }
+	                });
+
+	                // cleanup data-mce-bogus tags
+	                if (ed.settings.remove_trailing_brs === false) {
+	                    // Remove bogus elements
+	                    ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes, name, args) {
+	                        var i = nodes.length, node, textNode;
+
+	                        while (i--) {
+	                            node = nodes[i];
+
+	                            if (node.name !== 'br') {
+	                                continue;
+	                            }
+
+	                            if (!node.prev && !node.next) {
+	                                textNode = new Node('#text', 3);
+	                                textNode.value = '\u00a0';
+	                                node.replace(textNode);
+	                            } else {
+	                                node.remove();
+	                            }
+	                        }
+	                    });
+	                }
+
+	                // cleanup tmp attributes
+	                ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        node.attr('data-mce-tmp', null);
+	                    }
+	                });
+
+	                // cleanup tmp attributes
+	                ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        node.attr('data-mce-tmp', null);
+	                    }
+	                });
+
+	                function removeEventAttributes() {
+	                    // remove all event attributes
+	                    each(ed.schema.elements, function (elm) {
+	                        // no attributes on this element
+	                        if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
+	                            return true;
+	                        }
+
+	                        each(elm.attributes, function (obj, name) {
+	                            if (name.indexOf('on') === 0) {
+	                                delete elm.attributes[name];
+	                                elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+	                            }
+	                        });
+	                    });
+	                }
+
+	                if (ed.settings.verify_html !== false) {
+	                    if (!ed.settings.allow_event_attributes) {
+	                        removeEventAttributes();
+	                    }
+
+	                    // add support for "bootstrap" icons
+	                    var elements = ed.schema.elements;
+
+	                    // allow empty elements. There really is no need to remove them...
+	                    each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
+	                        if (elements[name]) {
+	                            elements[name].removeEmpty = false;
+	                        }
+	                    });
+
+	                    if (!ed.getParam('pad_empty_tags', true)) {
+	                        each(elements, function (v, k) {
+	                            if (v.paddEmpty) {
+	                                v.paddEmpty = false;
+	                            }
+	                        });
+	                    }
+
+	                    if (!ed.getParam('table_pad_empty_cells', true)) {
+	                        elements['th'].paddEmpty = false;
+	                        elements['td'].paddEmpty = false;
+	                    }
+
+	                    each(elements, function (v, k) {
+	                        // custom element
+	                        if (tinymce.inArray(tags, k) === -1) {
+	                            ed.schema.addCustomElements(k);
+	                        }
+	                    });
+	                }
+
+	                // only if "Cleanup HTML" enabled
+	                if (ed.settings.verify_html !== false) {
+	                    // Invalid Attribute Values cleanup
+	                    var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
+
+	                    if (invalidAttribValue) {
+	                        /**
+	                         * adapted from https://github.com/tinymce/tinymce/blob/master/src/core/src/main/js/ui/Selector.js 
+	                         * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+	                         */
+	                        function attrFilter(value, expr, check) {
+	                            return !expr ? !!check :
+	                                expr === "=" ? value === check :
+	                                    expr === "*=" ? value.indexOf(check) >= 0 :
+	                                        expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
+	                                            expr === "!=" ? value != check :
+	                                                expr === "^=" ? value.indexOf(check) === 0 :
+	                                                    expr === "$=" ? value.substr(value.length - check.length) === check :
+	                                                        false;
+	                        }
+
+	                        function replaceAttributeValue(nodes, name, expr, check) {
+	                            var i = nodes.length,
+	                                node;
+
+	                            while (i--) {
+	                                node = nodes[i];
+
+	                                var value = node.attr(name);
+
+	                                if (!value) {
+	                                    continue;
+	                                }
+
+	                                // remove attribute if it matches expression
+	                                if (!expr || attrFilter(value, expr, check)) {
+	                                    node.attr(name, null);
+	                                    // remove temp attribute
+	                                    if (name === 'src' || name === 'href' || name === 'style') {
+	                                        node.attr('data-mce-' + name, null);
+	                                    }
+
+	                                    // remove <a> nodes without attributes
+	                                    if (node.name === "a" && !node.attributes.length) {
+	                                        node.unwrap();
+	                                    }
+	                                }
+	                            }
+	                        }
+
+	                        each(tinymce.explode(invalidAttribValue), function (item) {
+	                            var matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
+
+	                            if (matches && matches.length == 5) {
+	                                var tag = matches[1],
+	                                    attrib = matches[2],
+	                                    expr = matches[3],
+	                                    value = matches[4];
+
+	                                // remove the entire attribute   
+	                                if (attrib && !expr && !value) {
+	                                    expr = '';
+	                                }
+
+	                                if (typeof expr !== "undefined") {
+	                                    // all tags
+	                                    if (tag == '*') {
+	                                        ed.parser.addAttributeFilter(attrib, function (nodes, name) {
+	                                            replaceAttributeValue(nodes, name, expr, value);
+	                                        });
+	                                        ed.serializer.addAttributeFilter(attrib, function (nodes, name) {
+	                                            replaceAttributeValue(nodes, name, expr, value);
+	                                        });
+	                                        // specific tag
+	                                    } else {
+	                                        ed.parser.addNodeFilter(tag, function (nodes, name) {
+	                                            replaceAttributeValue(nodes, attrib, expr, value);
+	                                        });
+	                                        ed.serializer.addNodeFilter(tag, function (nodes, name) {
+	                                            replaceAttributeValue(nodes, attrib, expr, value);
+	                                        });
+	                                    }
+	                                }
+	                            }
+	                        });
+	                    }
+	                }
+
+	                ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    if (ed.schema.isValidChild('body', name)) {
+	                        while (i--) {
+	                            node = nodes[i];
+	                            node.remove();
+	                        }
+	                    }
+	                });
+
+	                ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    if (ed.schema.isValidChild('body', name)) {
+	                        while (i--) {
+	                            node = nodes[i];
+
+	                            // don't remove system spans
+	                            if (name === 'span' && node.attr('data-mce-type')) {
+	                                continue;
+	                            }
+
+	                            node.unwrap();
+	                        }
+	                    }
+	                });
+
+	                // try and keep empty a tags that are not anchors, process bootstrap icons
+	                ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node, cls;
+
+	                    while (i--) {
+	                        node = nodes[i], cls = (node.attr('class') || name === "li");
+	                        // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
+	                        if (cls && !node.firstChild) {
+	                            node.attr('data-mce-empty', '1');
+	                            node.append(new Node('#text', '3')).value = '\u00a0';
+	                        }
+	                    }
+	                });
+
+	                // cleanup padded "bootstrap" tags
+	                ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node, fc;
+
+	                    while (i--) {
+	                        node = nodes[i], fc = node.firstChild;
+	                        node.attr('data-mce-empty', null);
+
+	                        if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
+	                            fc.remove();
+	                        }
+	                    }
+	                });
+
+	                // disable onclick etc.
+	                ed.parser.addAttributeFilter('onclick,ondblclick,onmousedown,onmouseup', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+
+	                        node.attr('data-mce-' + name, node.attr(name));
+	                        node.attr(name, 'return false;');
+	                    }
+	                });
+
+	                ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick,data-mce-onmousedown,data-mce-onmouseup', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node, k;
+
+	                    while (i--) {
+	                        node = nodes[i], k = name.replace('data-mce-', '');
+
+	                        node.attr(k, node.attr(name));
+	                        node.attr(name, null);
+	                    }
+	                });
+
+	                ed.serializer.addNodeFilter('br', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    if (i) {
+	                        while (i--) {
+	                            node = nodes[i];
+
+	                            // parent node is body
+	                            if (node.parent && node.parent.name === "body" && !node.prev) {
+	                                node.remove();
+	                            }
+	                        }
+	                    }
+	                });
+
+	                // remove br in Gecko
+	                ed.parser.addNodeFilter('br', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    if (i) {
+	                        while (i--) {
+	                            node = nodes[i];
+
+	                            // parent node is body
+	                            if (node.parent && node.parent.name === "body" && !node.prev) {
+	                                node.remove();
+	                            }
+	                        }
+	                    }
+	                });
+	            });
+
+	            // run cleanup with default settings
+	            if (ed.settings.verify_html === false) {
+	                ed.addCommand('mceCleanup', function () {
+	                    var s = ed.settings,
+	                        se = ed.selection,
+	                        bm;
+	                    bm = se.getBookmark();
+
+	                    var content = ed.getContent({
+	                        cleanup: true
+	                    });
+
+	                    // set verify to true
+	                    s.verify_html = true;
+
+	                    // create new schema
+	                    var schema = new tinymce.html.Schema(s);
+
+	                    // clean content
+	                    content = new tinymce.html.Serializer({
+	                        validate: true
+	                    }, schema).serialize(new tinymce.html.DomParser({
+	                        validate: true,
+	                        allow_event_attributes: !!ed.settings.allow_event_attributes
+	                    }, schema).parse(content));
+
+	                    ed.setContent(content, {
+	                        cleanup: true
+	                    });
+
+	                    se.moveToBookmark(bm);
+	                });
+	            }
+
+	            // Cleanup callback
+	            ed.onBeforeSetContent.add(function (ed, o) {
+	                // remove br tag added by Firefox
+	                o.content = o.content.replace(/^<br>/, '');
+
+	                // Geshi
+	                o.content = self.convertFromGeshi(o.content);
+
+	                // only if "Cleanup HTML" enabled
+	                if (ed.settings.validate) {
+	                    // remove attributes
+	                    if (ed.getParam('invalid_attributes')) {
+	                        var s = ed.getParam('invalid_attributes', '');
+
+	                        o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function () {
+	                            // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
+	                            var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
+	                            return '<' + tag + attribs + '>';
+	                        });
+	                    }
+	                }
+
+	                // pad bootstrap icons
+	                o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
+
+	                // padd some empty tags
+	                o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
+
+	                // padd list elements
+	                o.content = o.content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
+	            });
+
+	            // Cleanup callback
+	            ed.onPostProcess.add(function (ed, o) {
+	                if (o.set) {
+	                    // Geshi
+	                    o.content = self.convertFromGeshi(o.content);
+	                }
+	                if (o.get) {
+	                    // Geshi
+	                    o.content = self.convertToGeshi(o.content);
+
+	                    // Remove empty jcemediabox / jceutilities anchors
+	                    o.content = o.content.replace(/<a([^>]*)class="jce(box|popup|lightbox|tooltip|_tooltip)"([^>]*)><\/a>/gi, '');
+	                    // Remove span elements with jcemediabox / jceutilities classes
+	                    o.content = o.content.replace(/<span class="jce(box|popup|lightbox|tooltip|_tooltip)">(.*?)<\/span>/gi, '$2');
+	                    // legacy mce stuff
+	                    o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
+
+	                    if (ed.settings.validate === false) {
+	                        // fix body content
+	                        o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
+
+	                        if (!ed.getParam('remove_tag_padding')) {
+	                            // pad empty elements
+	                            o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+	                        }
+	                    }
+
+	                    if (!ed.getParam('table_pad_empty_cells', true)) {
+	                        o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+	                    }
+
+	                    // clean empty tags
+	                    o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
+	                        // remove data-mce-empty attribute
+	                        attribs = attribs.replace('data-mce-empty="1"', '');
+	                        // return empty tag
+	                        return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+	                    });
+
+	                    // clean empty list tags
+	                    o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
+
+	                    // remove padding on div (legacy)
+	                    if (ed.getParam('remove_div_padding')) {
+	                        o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
+	                    }
+
+	                    // remove padding on everything
+	                    if (ed.getParam('pad_empty_tags', true) === false) {
+	                        o.content = o.content.replace(paddedRx, '<$1$2></$1>');
+	                    }
+
+	                    // convert multiple consecutive non-breaking spaces
+	                    if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
+	                        o.content = o.content.replace(/\u00a0/g, '&nbsp;');
+	                    }
+
+	                    // fix boolean custom attributes
+	                    o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
+
+	                    // Remove empty contents
+	                    if (ed.settings.padd_empty_editor) {
+	                        o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br \/>[\r\n]*)$/, '');
+	                    }
+	                }
+	            });
+
+	            ed.onSaveContent.add(function (ed, o) {
+	                // Convert entities to characters
+	                if (ed.getParam('cleanup_pluginmode')) {
+
+	                    var entities = {
+	                        '&#39;': "'",
+	                        '&amp;': '&',
+	                        '&quot;': '"',
+	                        '&apos;': "'"
+	                    };
+
+	                    o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
+	                        return entities[a];
+	                    });
+	                }
+	            });
+
+	            // Register buttons
+	            ed.addButton('cleanup', {
+	                title: 'advanced.cleanup_desc',
+	                cmd: 'mceCleanup'
+	            });
+	        },
+	        convertFromGeshi: function (h) {
+	            h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
+	                var attr = '';
+
+	                if (c && /\w/.test(c)) {
+	                    attr = c.split(' ').join(' data-geshi-');
+	                }
+
+	                return '<pre data-geshi-lang="' + b + '"' + attr + '>' + d + '</pre>';
+	            });
+
+	            return h;
+	        },
+	        convertToGeshi: function (h) {
+	            h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
+	                var s = b + d;
+	                s = s.replace(/data-geshi-/gi, '').replace(/\s+/g, ' ').replace(/\s$/, '');
+
+	                return '<pre xml:lang="' + c + '"' + s + '>' + e + '</pre>';
+	            });
+
+	            return h;
+	        }
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('cleanup', tinymce.plugins.CleanupPlugin);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var each = tinymce.each,
+	        Node = tinymce.html.Node,
+	        VK = tinymce.VK,
+	        DomParser = tinymce.html.DomParser,
+	        Serializer = tinymce.html.Serializer,
+	        SaxParser = tinymce.html.SaxParser;
+
+	    function createTextNode(value, raw) {
+	        var text = new Node('#text', 3);
+	        text.raw = raw !== false ? true : false;
+	        text.value = value;
+
+	        return text;
+	    }
+
+	    function isOnlyChild(node) {
+	        var parent = node.parent, child = parent.firstChild, count = 0;
+
+	        if (child) {
+	            do {
+	                if (child.type === 1) {
+	                    // Ignore bogus elements
+	                    if (child.attributes.map['data-mce-type'] || child.attributes.map['data-mce-bogus']) {
+	                        continue;
+	                    }
+
+	                    if (child === node) {
+	                        continue;
+	                    }
+
+	                    count++;
+	                }
+
+	                // Keep comments
+	                if (child.type === 8) {
+	                    count++;
+	                }
+
+	                // Keep non whitespace text nodes
+	                if ((child.type === 3 && !/^[ \t\r\n]*$/.test(child.value))) {
+	                    count++;
+	                }
+	            } while ((child = child.next));
+	        }
+
+	        return count === 0;
+	    }
+
+	    tinymce.create('tinymce.plugins.CodePlugin', {
+	        init: function (ed, url) {
+	            this.editor = ed;
+	            this.url = url;
+
+	            var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed', invalid_elements: ed.settings.invalid_elements }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
+
+	            // should code blocks be used?
+	            var code_blocks = ed.settings.code_use_blocks !== false;
+
+	            // allow script URLS, eg: href="javascript:;"
+	            if (ed.settings.code_allow_script) {
+	                ed.settings.allow_script_urls = true;
+	            }
+
+	            ed.addCommand('InsertShortCode', function (ui, html) {
+	                if (ed.settings.code_protect_shortcode) {
+	                    html = processShortcode(html, 'pre');
+
+	                    if (tinymce.is(html)) {
+	                        ed.execCommand('mceReplaceContent', false, html);
+	                    }
+	                }
+
+	                return false;
+	            });
+
+	            function processOnInsert(value, node) {
+	                if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
+	                    var tagName;
+
+	                    // an empty block container, so insert as <pre>
+	                    if (node && ed.dom.isEmpty(node)) {
+	                        tagName = 'pre';
+	                    }
+
+	                    value = processShortcode(value, tagName);
+	                }
+
+	                if (ed.settings.code_allow_custom_xml) {
+	                    value = processXML(value);
+	                }
+
+	                // script / style
+	                if (/<(\?|script|style)/.test(value)) {
+	                    // process script and style tags
+	                    value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+	                        if (!ed.getParam('code_allow_' + type)) {
+	                            return '';
+	                        }
+
+	                        match = match.replace(/<br[^>]*?>/gi, '\n');
+
+	                        return createCodePre(match, type);
+	                    });
+
+	                    value = processPhp(value);
+	                }
+
+	                return value;
+	            }
+
+	            /**
+	             * Detect and process shortcode in an html string
+	             * @param {String} html 
+	             * @param {String} tagName
+	             */
+	            function processShortcode(html, tagName) {
+	                // quick check to see if we should proceed
+	                if (html.indexOf('{') === -1) {
+	                    return html;
+	                }
+
+	                // skip stuff like {1} etc.
+	                if (html.charAt(0) == '{' && html.length < 3) {
+	                    return html;
+	                }
+
+	                // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
+	                tagName = tagName || 'span';
+
+	                // shortcode blocks eg: {article}html{/article}
+	                html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {                                            
+	                    // already wrapped in a tag
+	                    if (match.charAt(0) === '<') {
+	                        return match;
+	                    }
+
+	                    return createShortcodePre(match, tagName);
+	                });
+
+	                // inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
+	                return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {                                                            
+	                    // already wrapped in a tag
+	                    if (match.charAt(0) === '<') {
+	                        return match;
+	                    }
+
+	                    return createShortcodePre(match, tagName);
+	                });
+	            }
+
+	            function processPhp(content) {
+	                // Remove PHP if not enabled
+	                if (!ed.settings.code_allow_php) {
+	                    return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
+	                }
+
+	                // PHP code within an attribute
+	                content = content.replace(/\="([^"]+?)"/g, function (a, b) {
+	                    b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+	                        return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+	                    });
+
+	                    return '="' + b + '"';
+	                });
+
+	                // PHP code within a textarea
+	                if (/<textarea/.test(content)) {
+	                    content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+	                        c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+	                            return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+	                        });
+	                        return '<textarea' + b + '>' + c + '</textarea>';
+	                    });
+	                }
+
+	                // PHP code within an element
+	                content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
+	                    if (b.charAt(b.length) !== ' ') {
+	                        b += ' ';
+	                    }
+	                    return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
+	                });
+
+	                // PHP code other
+	                content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+	                    // replace newlines with <br /> so they are preserved inside the span
+	                    match = match.replace(/\n/g, '<br />');
+
+	                    // create code span
+	                    return createCodePre(match, 'php', 'span');
+	                });
+
+	                return content;
+	            }
+
+	            /**
+	             * Check whether a tag is a defined invalid element
+	             * @param {String} name 
+	             */
+	            function isInvalidElement(name) {
+	                var invalid_elements = ed.settings.invalid_elements.split(',');
+	                return tinymce.inArray(invalid_elements, name) !== -1;
+	            }
+
+	            /**
+	             * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
+	             * @param {String} name 
+	             */
+	            function isXmlElement(name) {
+	                return !htmlSchema.isValid(name) && !isInvalidElement(name);
+	            }
+
+	            /**
+	             * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
+	             * @param {String} xml 
+	             */
+	            function validateXml(xml) {
+	                var html = [];
+
+	                // check that the element or attribute is not invalid
+	                function isValid(tag, attr) {
+	                    // is an xml tag and is not an invalid_element
+	                    if (isXmlElement(tag)) {
+	                        return true;
+	                    }
+
+	                    return ed.schema.isValid(tag, attr);
+	                }
+
+	                new SaxParser({
+	                    start: function (name, attrs, empty) {
+	                        if (!isValid(name)) {
+	                            return;
+	                        }
+
+	                        html.push('<', name);
+
+	                        if (attrs) {
+	                            for (i = 0, l = attrs.length; i < l; i++) {
+	                                attr = attrs[i];
+
+	                                if (!isValid(name, attr.name)) {
+	                                    continue;
+	                                }
+
+	                                // skip event attributes
+	                                if (ed.settings.allow_event_attributes !== true) {
+	                                    if (attr.name.indexOf('on') === 0) {
+	                                        continue;
+	                                    }
+	                                }
+
+	                                html.push(' ', attr.name, '="', ed.dom.encode('' + attr.value, true), '"');
+	                            }
+	                        }
+
+	                        if (!empty) {
+	                            html[html.length] = '>';
+	                        } else {
+	                            html[html.length] = ' />';
+	                        }
+	                    },
+
+	                    text: function (value) {
+	                        if (value.length > 0) {
+	                            html[html.length] = value;
+	                        }
+	                    },
+
+	                    end: function (name) {
+	                        if (!isValid(name)) {
+	                            return;
+	                        }
+
+	                        html.push('</', name, '>');
+	                    },
+
+	                    cdata: function (text) {
+	                        html.push('<![CDATA[', text, ']]>');
+	                    },
+
+	                    comment: function (text) {
+	                        html.push('<!--', text, '-->');
+	                    }
+	                }, xmlSchema).parse(xml);
+
+	                return html.join('');
+	            }
+
+	            /**
+	             * Detect and process xml tags
+	             * @param {String} content
+	             */
+	            function processXML(content) {
+	                return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+	                    // check if svg is allowed
+	                    if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
+	                        return match;
+	                    }
+
+	                    // check if mathml is allowed
+	                    if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
+	                        return match;
+	                    }
+
+	                    // check if the tags is part of the generic HTML schema, return if true
+	                    if (!isXmlElement(tag)) {
+	                        return match;
+	                    }
+
+	                    // validate xml by default to remove event attributes and invalid nested html
+	                    if (ed.settings.code_validate_xml !== false) {
+	                        match = validateXml(match);
+	                    }
+
+	                    return createCodePre(match, 'xml');
+	                });
+	            }
+
+	            /**
+	             * Create a shortcode pre. This differs from the code pre as it is still contenteditable
+	             * @param {String} data 
+	             * @param {String} tag 
+	             */
+	            function createShortcodePre(data, tag) {
+	                data = data.replace(/[\n\r]/gi, '<br />');
+	                
+	                return ed.dom.createHTML(tag || 'pre', {
+	                    'data-mce-code': 'shortcode',
+	                    'data-mce-type': 'code'
+	                }, ed.dom.encode(data));
+	            }
+
+	            /**
+	             * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
+	             * @param {String} data
+	             * @param {String} type  
+	             * @param {String} tag 
+	             */
+	            function createCodePre(data, type, tag) {
+	                // "protect" code if we are not using code blocks
+	                if (code_blocks === false) {
+	                    // convert linebreaks to newlines
+	                    data = data.replace(/<br[^>]*?>/gi, '\n');
+
+	                    // create placeholder span
+	                    return ed.dom.createHTML('img', {
+	                        src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+	                        'data-mce-resize': 'false',
+	                        'data-mce-code': type || 'script',
+	                        'data-mce-type': 'placeholder',
+	                        'data-mce-value': escape(data)
+	                    });
+	                }
+
+	                return ed.dom.createHTML(tag || 'pre', {
+	                    'data-mce-code': type || 'script',
+	                    'data-mce-type': 'code'
+	                }, ed.dom.encode(data));
+	            }
+
+	            function handleEnterInPre(ed, node, before) {
+	                var parents = ed.dom.getParents(node, blockElements.join(','));
+
+	                // set defualt content and get the element to use
+	                var newBlockName = ed.settings.forced_root_block || 'p';
+
+	                // reset if force_block_newlines is false (linebreak on enter)
+	                if (ed.settings.force_block_newlines === false) {
+	                    newBlockName = 'br';
+	                }
+
+	                // get the first block in the collection
+	                var block = parents.shift();
+
+	                // skip if it is the body
+	                if (block === ed.getBody()) {
+	                    return;
+	                }
+
+	                // create element
+	                var elm = ed.dom.create(newBlockName, {}, '\u00a0');
+
+	                // insert after parent element
+	                if (before) {
+	                    block.parentNode.insertBefore(elm, block);
+	                } else {
+	                    ed.dom.insertAfter(elm, block);
+	                }
+
+	                var rng = ed.selection.getRng();
+
+	                rng.setStart(elm, 0);
+	                rng.setEnd(elm, 0);
+
+	                ed.selection.setRng(rng);
+	                ed.selection.scrollIntoView(elm);
+	            }
+
+	            ed.onKeyDown.add(function (ed, e) {
+	                if (e.keyCode == VK.ENTER) {
+	                    var node = ed.selection.getNode();
+
+	                    if (node.nodeName === 'PRE') {
+	                        var type = node.getAttribute('data-mce-code') || '';
+
+	                        if (type) {
+	                            if (type === 'shortcode') {
+	                                if (e.shiftKey) {
+	                                    ed.execCommand("InsertLineBreak", false, e);
+	                                } else {
+	                                    handleEnterInPre(ed, node);
+	                                }
+
+	                                e.preventDefault();
+	                                return;
+	                            }
+
+	                            if (e.altKey || e.shiftKey) {
+	                                handleEnterInPre(ed, node);
+	                            } else {
+	                                ed.execCommand("InsertLineBreak", false, e);
+	                            }
+
+	                            // prevent default action
+	                            e.preventDefault();
+	                        }
+	                    }
+
+	                    if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
+	                        handleEnterInPre(ed, node);
+	                        e.preventDefault();
+	                    }
+	                }
+
+	                if (e.keyCode == VK.UP && e.altKey) {
+	                    var node = ed.selection.getNode();
+
+	                    handleEnterInPre(ed, node, true);
+	                    e.preventDefault();
+	                }
+
+	                // Check for tab but not ctrl/cmd+tab since it switches browser tabs
+	                if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
+	                    var node = ed.selection.getNode();
+
+	                    if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
+	                        ed.selection.setContent('\t', { no_events: true });
+	                        e.preventDefault();
+	                    }
+	                }
+
+	                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+	                    var node = ed.selection.getNode();
+
+	                    if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
+	                        ed.undoManager.add();
+
+	                        ed.dom.remove(node);
+	                        e.preventDefault();
+	                    }
+	                }
+	            });
+
+	            ed.onPreInit.add(function () {
+	                if (ed.settings.content_css !== false) {
+	                    ed.dom.loadCSS(url + "/css/content.css");
+	                }
+
+	                function isCodePlaceholder(node) {
+	                    return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
+	                }
+
+	                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
+	                    var node = e.target, sel = ed.selection.getNode();
+
+	                    ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
+
+	                    // edge case where forced_root_block:false
+	                    if (node === ed.getBody() && isCodePlaceholder(sel)) {
+	                        if (sel.parentNode === node && !sel.nextSibling) {
+	                            ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), sel);
+	                        }
+
+	                        return;
+	                    }
+
+	                    if (isCodePlaceholder(node)) {
+	                        e.preventDefault();
+	                        e.stopImmediatePropagation();
+
+	                        ed.selection.select(node);
+
+	                        // add a slight delay before adding selected class to avoid it being removed by the keyup event
+	                        window.setTimeout(function () {
+	                            ed.dom.addClass(node, 'mce-item-selected');
+	                        }, 10);
+
+	                        e.preventDefault();
+	                    }
+	                });
+
+	                var ctrl = ed.controlManager.get('formatselect');
+
+	                if (ctrl) {
+	                    each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
+	                        // control element title
+	                        var title = ed.getLang('code.' + key, key);
+
+	                        if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
+	                            ctrl.add(title, key, { class: 'mce-code-' + key });
+
+	                            ed.formatter.register('shortcode', {
+	                                block: 'pre',
+	                                attributes: {
+	                                    'data-mce-code': 'shortcode'
+	                                }
+	                            });
+
+	                            return true;
+	                        }
+
+	                        // map settings value to simplified key
+	                        if (key === 'xml') {
+	                            ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
+	                        }
+
+	                        if (ed.getParam('code_allow_' + key) && code_blocks) {
+	                            ctrl.add(title, key, { class: 'mce-code-' + key });
+
+	                            ed.formatter.register(key, {
+	                                block: 'pre',
+	                                attributes: {
+	                                    'data-mce-code': key
+	                                },
+	                                onformat: function (elm, fmt, vars) {
+	                                    // replace linebreaks with newlines
+	                                    each(ed.dom.select('br', elm), function (br) {
+	                                        ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
+	                                    });
+	                                }
+	                            });
+	                        }
+	                    });
+	                }
+
+	                // store block elements from schema map
+	                each(ed.schema.getBlockElements(), function (block, blockName) {
+	                    blockElements.push(blockName);
+	                });
+
+	                if (ed.plugins.textpattern && ed.settings.code_protect_shortcode) {
+	                    ed.plugins.textpattern.addPattern({
+	                        start: '{',
+	                        end: '}',
+	                        cmd: 'InsertShortCode',
+	                        remove: true
+	                    });
+
+	                    ed.plugins.textpattern.addPattern({
+	                        start: ' {',
+	                        end: '}',
+	                        format: 'inline-shortcode',
+	                        remove: false
+	                    });
+	                }
+
+	                ed.formatter.register('inline-shortcode', {
+	                    inline: 'span',
+	                    attributes: {
+	                        'data-mce-code': 'shortcode'
+	                    }
+	                });
+
+	                ed.selection.onBeforeSetContent.add(function (sel, o) {
+	                    if (ed.settings.code_protect_shortcode) {
+	                        if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
+	                            o.content = processShortcode(o.content);
+	                        }
+	                    }
+	                });
+
+	                // remove paragraph parent of a pre block
+	                ed.selection.onSetContent.add(function (sel, o) {
+	                    each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
+	                        var p = ed.dom.getParent(elm, 'p');
+
+	                        if (p && p.childNodes.length === 1) {
+	                            ed.dom.remove(p, 1);
+	                        }
+	                    });
+	                });
+
+	                // Convert script elements to span placeholder
+	                ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        var node = nodes[i], type = node.attr('type');
+
+	                        if (type) {
+	                            node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
+	                        }
+
+	                        // remove any code spans that are added to json-like syntax in code blocks
+	                        if (node.firstChild) {
+	                            node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
+	                                if (attr.indexOf('data-mce-code') === -1) {
+	                                    return match;
+	                                }
+
+	                                return ed.dom.decode(content);
+	                            });
+	                        }
+
+	                        if (!code_blocks) {
+	                            var value = '';
+
+	                            if (node.firstChild) {
+	                                value = tinymce.trim(node.firstChild.value);
+	                            }
+
+	                            var placeholder = Node.create('img', {
+	                                src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+	                                'data-mce-code': node.name,
+	                                'data-mce-type': 'placeholder',
+	                                'data-mce-resize': 'false',
+	                                title: ed.dom.encode(value)
+	                            });
+
+	                            each(node.attributes, function (attr) {
+	                                placeholder.attr('data-mce-p-' + attr.name, attr.value);
+	                            });
+
+	                            if (value) {
+	                                placeholder.attr('data-mce-value', escape(value));
+
+	                                //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
+	                                //placeholder.append(text);
+	                            }
+
+	                            node.replace(placeholder);
+
+	                            continue;
+	                        }
+
+	                        // serialize to string
+	                        var value = new Serializer({ validate: false }).serialize(node);
+
+	                        // trim
+	                        value = tinymce.trim(value);
+
+	                        var pre = new Node('pre', 1);
+	                        pre.attr({ 'data-mce-code': node.name });
+
+	                        var text = createTextNode(value, false);
+	                        pre.append(text);
+
+	                        node.replace(pre);
+	                    }
+	                });
+
+	                ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
+	                    var i = nodes.length, node, parent;
+
+	                    function isBody(parent) {
+	                        return parent.name === 'body';
+	                    }
+
+	                    function isValidCode(type) {
+	                        return type === 'shortcode' || type === 'php';
+	                    }
+
+	                    while (i--) {
+	                        node = nodes[i], parent = node.parent;
+
+	                        // don't process placeholders
+	                        if (node.attr('data-mce-type') == 'placeholder') {
+	                            continue;
+	                        }
+
+	                        if (!isValidCode(node.attr(name))) {
+	                            continue;
+	                        }
+
+	                        var value = node.firstChild.value;
+
+	                        // replace linebreaks with newlines
+	                        if (value) {
+	                            node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
+	                        }
+
+	                        if (parent) {
+	                            // don't process shortcode in code blocks
+	                            if (parent.attr(name)) {
+	                                node.unwrap();
+	                                continue;
+	                            }
+
+	                            // rename shortcode blocks to <pre>
+	                            if (isBody(parent) || isOnlyChild(node)) {
+	                                node.name = 'pre';
+	                            } else {
+	                                // add whitespace after the span so a cursor can be set
+	                                if (node.name == 'span' && node === parent.lastChild) {
+	                                    var nbsp = createTextNode('\u00a0');
+	                                    parent.append(nbsp);
+	                                }
+	                            }
+	                        }
+	                    }
+	                });
+
+	                ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
+	                    var i = nodes.length, node, child;
+
+	                    function isXmlNode(node) {
+	                        return !/(shortcode|php)/.test(node.attr('data-mce-code'));
+	                    }
+
+	                    while (i--) {
+	                        node = nodes[i], root_block = false;
+
+	                        // get the code block type, eg: script, shortcode, style, php
+	                        var type = node.attr(name);
+
+	                        if (node.name === 'img') {
+	                            var elm = new Node(type, 1);
+
+	                            for (var key in node.attributes.map) {
+	                                var value = node.attributes.map[key];
+
+	                                if (key.indexOf('data-mce-p-') !== -1) {
+	                                    key = key.substr(11);
+	                                } else {
+	                                    value = null;
+	                                }
+
+	                                elm.attr(key, value);
+	                            }
+	                            var value = node.attr('data-mce-value');
+
+	                            if (value) {
+	                                var text = createTextNode('\n' + unescape(value) + '\n');
+	                                elm.append(text);
+	                            }
+
+	                            node.replace(elm);
+
+	                            continue;
+	                        }
+
+	                        // pre node is empty, remove
+	                        if (node.isEmpty()) {
+	                            node.remove();
+	                        }
+
+	                        // skip xml
+	                        if (type === 'xml') {
+	                            continue;
+	                        }
+
+	                        // set the root block type for script and style tags so the parser does the work wrapping free text
+	                        if (type === 'script' || type === 'style') {
+	                            root_block = type;
+	                        }
+
+	                        var child = node.firstChild, newNode = node.clone(true), text = '';
+
+	                        if (child) {
+	                            do {
+	                                if (isXmlNode(node)) {
+	                                    var value = child.name == 'br' ? '\n' : child.value;
+
+	                                    if (value) {
+	                                        text += value;
+	                                    }
+	                                }
+	                            } while (child = child.next);
+	                        }
+
+	                        if (text) {
+	                            newNode.empty();
+
+	                            var parser = new DomParser({ validate: false });
+
+	                            // validate attributes of script and style tags
+	                            if (type === 'script' || type === 'style') {
+	                                parser.addNodeFilter(type, function (items) {
+	                                    var n = items.length;
+
+	                                    while (n--) {
+	                                        each(items[n].attributes, function (attr, i) {
+	                                            if (!attr) {
+	                                                return true;
+	                                            }
+	                                            
+	                                            if (ed.schema.isValid(type, attr.name) === false) {
+	                                                items[n].attr(attr.name, null);
+	                                            }
+	                                        });
+	                                    }
+	                                });
+	                            }
+
+	                            // parse text and process
+	                            var fragment = parser.parse(text, { forced_root_block: root_block });
+	                            // append fragment to <pre> clone
+	                            newNode.append(fragment);
+	                        }
+
+	                        node.replace(newNode);
+
+	                        if (type === 'shortcode' && newNode.name === 'pre') {                            
+	                            // append newline to the end of shortcode blocks
+	                            var newline = createTextNode('\n');
+	                            newNode.append(newline);
+
+	                            // unwrap to text as further processing is not needed
+	                            newNode.unwrap();
+	                        }
+	                    }
+	                });
+
+	                if (ed.plugins.clipboard) {
+	                    ed.onGetClipboardContent.add(function (ed, content) {
+	                        var text = content['text/plain'] || '', value;
+
+	                        // trim text
+	                        text = tinymce.trim(text);
+
+	                        if (text) {
+	                            var node = ed.selection.getNode();
+
+	                            // don't process into PRE tags
+	                            if (node && node.nodeName === 'PRE') {
+	                                return;
+	                            }
+
+	                            value = processOnInsert(text, node);
+
+	                            // update with processed text
+	                            if (value !== text) {
+	                                content['text/plain'] = '';
+	                                content['text/html'] = content['x-tinymce/html'] = value;
+	                            }
+	                        }
+	                    });
+	                }
+	            });
+
+	            ed.onInit.add(function () {
+	                // Display "script" instead of "pre" in element path
+	                if (ed.theme && ed.theme.onResolveName) {
+	                    ed.theme.onResolveName.add(function (theme, o) {
+	                        var node = o.node;
+
+	                        if (node.getAttribute('data-mce-code')) {
+	                            o.name = node.getAttribute('data-mce-code');
+	                        }
+	                    });
+	                }
+	            });
+
+	            ed.onBeforeSetContent.add(function (ed, o) {
+	                if (ed.settings.code_protect_shortcode) {
+	                    // only process content on "load"
+	                    if (o.content && o.load) {
+	                        o.content = processShortcode(o.content);
+	                    }
+	                }
+
+	                if (ed.settings.code_allow_custom_xml) {
+	                    // only process content on "load"
+	                    if (o.content && o.load) {
+	                        o.content = processXML(o.content);
+	                    }
+	                }
+
+	                // test for PHP, Script or Style
+	                if (/<(\?|script|style)/.test(o.content)) {
+	                    // Remove javascript if not enabled
+	                    if (!ed.settings.code_allow_script) {
+	                        o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+	                    }
+
+	                    if (!ed.settings.code_allow_style) {
+	                        o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+	                    }
+
+	                    o.content = processPhp(o.content);
+	                }
+	            });
+
+	            ed.onPostProcess.add(function (ed, o) {
+	                if (o.get) {
+	                    // Process converted php
+	                    if (/(data-mce-php|\[php:start\])/.test(o.content)) {
+	                        // attribute value
+	                        o.content = o.content.replace(/\[php:\s?start\]([^\[]]+)\[php:\s?end\]/g, function (a, b) {
+	                            return '<?php' + ed.dom.decode(b) + '?>';
+	                        });
+
+	                        // textarea
+	                        o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+	                            if (/&lt;\?php/.test(c)) {
+	                                c = ed.dom.decode(c);
+	                            }
+	                            return '<textarea' + b + '>' + c + '</textarea>';
+	                        });
+
+	                        // as attribute
+	                        o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
+	                            return '<?php' + ed.dom.decode(b) + '?>';
+	                        });
+	                    }
+
+	                    // shortcode content will be encoded as text, so decode
+	                    if (ed.settings.code_protect_shortcode) {
+	                        o.content = o.content.replace(/\{([\s\S]+)\}/gi, function (match, content) {
+	                            return '{' + ed.dom.decode(content) + '}';
+	                        });
+	                    }
+
+	                    // decode code snippets
+	                    o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
+	                        // not the droids etc.
+	                        if (attr.indexOf('data-mce-code') === -1) {
+	                            return match;
+	                        }
+
+	                        // trim content
+	                        content = tinymce.trim(content);
+
+	                        // decode content
+	                        content = ed.dom.decode(content);
+
+	                        // replace linebreaks with newline
+	                        content = content.replace(/<br[^>]*?>/gi, '\n');
+
+	                        // remove and replace <?php?> tags
+	                        if (attr.indexOf('data-mce-code="php"') !== -1) {
+	                            content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
+	                            content = '<?php\n' + tinymce.trim(content) + '\n?>';
+	                        }
+
+	                        return content;
+	                    });
+
+	                    // decode protected code
+	                    o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
+	                        return unescape(content);
+	                    });
+	                }
+	            });
+	        }
+	    });
+	    // Register plugin
+	    tinymce.PluginManager.add('code', tinymce.plugins.CodePlugin);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var VK = tinymce.VK,
+	        each = tinymce.each,
+	        map = tinymce.map;
+	    var blocks = [];
+
+	    tinymce.create('tinymce.plugins.FormatPlugin', {
+	        init: function (ed, url) {
+	            var self = this;
+	            this.editor = ed;
+
+	            // Register buttons
+	            ed.addButton('italic', {
+	                title : 'advanced.italic_desc',
+	                onclick : function(e) {
+	                    e.preventDefault();
+	                    
+	                    if (e.shiftKey) {
+	                        ed.formatter.toggle('italic-i');
+	                        return;
+	                    }
+
+	                    ed.formatter.toggle('italic');
+	                }
+	            });
+
+	            ed.addShortcut('meta+shift+i', 'italic.desc', function() {
+	                ed.formatter.apply('italic-i');
+	            });
+
+	            function addSoftHyphenShortcut() {
+	                ed.addCommand('mceSoftHyphen', function() {
+	                    ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
+	                });
+	    
+	                var keyCode = 189;
+
+	                // Firefox seems to use a different keyCode, - instead of _
+	                if (tinymce.isGecko) {
+	                    keyCode = 173;
+	                }
+	    
+	                ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
+	    
+	            }
+
+	            // add shoft hyphen keyboard shortcut
+	            addSoftHyphenShortcut();
+
+	            ed.onPreInit.add(function (ed) {
+	                each(ed.schema.getBlockElements(), function (v, k) {
+	                    if (/\W/.test(k)) {
+	                        return true;
+	                    }
+	                    
+	                    blocks.push(k.toLowerCase());
+	                });
+
+	                // Register default block formats
+	                ed.formatter.register('aside', {
+	                    block: 'aside',
+	                    remove: 'all',
+	                    wrapper: true
+	                });
+
+	                // paragraph
+	                ed.formatter.register('p', {
+	                    block: 'p',
+	                    remove: 'all'
+	                });
+
+	                // div
+	                ed.formatter.register('div', {
+	                    block: 'div',
+	                    onmatch: ed.settings.forced_root_block ? function() {return false} : false
+	                });
+
+	                // div container
+	                ed.formatter.register('div_container', {
+	                    block: 'div',
+	                    wrapper: true,
+	                    onmatch: ed.settings.forced_root_block ? function() {return false} : false
+	                });
+
+	                // span
+	                ed.formatter.register('span', {
+	                    inline: 'span',
+	                    remove: 'all',
+	                    onmatch: function() {
+	                        return false;
+	                    }
+	                });
+
+	                // section
+	                ed.formatter.register('section', {
+	                    block: 'section',
+	                    remove: 'all',
+	                    wrapper: true,
+	                    merge_siblings: false
+	                });
+
+	                // article
+	                ed.formatter.register('article', {
+	                    block: 'article',
+	                    remove: 'all',
+	                    wrapper: true,
+	                    merge_siblings: false
+	                });
+
+	                // footer
+	                ed.formatter.register('footer', {
+	                    block: 'footer',
+	                    remove: 'all',
+	                    wrapper: true,
+	                    merge_siblings: false
+	                });
+
+	                // header
+	                ed.formatter.register('header', {
+	                    block: 'header',
+	                    remove: 'all',
+	                    wrapper: true,
+	                    merge_siblings: false
+	                });
+
+	                // nav
+	                ed.formatter.register('nav', {
+	                    block: 'nav',
+	                    remove: 'all',
+	                    wrapper: true,
+	                    merge_siblings: false
+	                });
+
+	                // code
+	                ed.formatter.register('code', {
+	                    inline: 'code',
+	                    remove: 'all'
+	                });
+
+	                // samp
+	                ed.formatter.register('samp', {
+	                    inline: 'samp',
+	                    remove: 'all'
+	                });
+
+	                // blockquote - remove wrapper?
+	                ed.formatter.register('blockquote', {
+	                    block: 'blockquote',
+	                    wrapper: 1,
+	                    remove: 'all',
+	                    merge_siblings: false
+	                });
+
+	                // Italic - <i>
+	                ed.formatter.register('italic-i', {
+	                    inline: 'i',
+	                    remove: 'all'
+	                }); 
+	            });
+
+	            // update with HMTL5 tags
+	            ed.settings.removeformat = [{
+	                selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
+	                remove: 'all',
+	                split: true,
+	                expand: false,
+	                block_expand: true,
+	                deep: true
+	            }];
+
+	            ed.onKeyDown.add(function (ed, e) {
+	                if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
+	                    // clear blocks
+	                    self._clearBlocks(ed, e);
+	                }
+	            });
+
+	            ed.onKeyUp.addToTop(function (ed, e) {
+	                if (e.keyCode === VK.ENTER) {
+	                    var n = ed.selection.getNode();
+	                    if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
+	                        // remove all attributes
+	                        if (ed.settings.keep_styles === false) {
+	                            ed.dom.removeAllAttribs(n);
+	                        }
+	                        ed.formatter.apply('p');
+	                    }
+	                }
+	            });
+
+	            // Format Block fix
+	            ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+	                var se = ed.selection,
+	                    n = se.getNode(),
+	                    p;
+
+	                switch (cmd) {
+	                    case 'FormatBlock':
+	                        // remove format
+	                        if (!v) {
+	                            o.terminate = true;
+
+	                            if (n === ed.getBody()) {
+	                                return;
+	                            }
+
+	                            ed.undoManager.add();
+
+	                            p = ed.dom.getParent(n, blocks.join(',')) || '';
+
+	                            if (p) {
+	                                var name = p.nodeName.toLowerCase();
+
+	                                if (ed.formatter.get(name)) {
+	                                    ed.formatter.remove(name);
+	                                }
+	                            }
+
+	                            var cm = ed.controlManager.get('formatselect');
+
+	                            if (cm) {
+	                                cm.select(p);
+	                            }
+	                        }
+	                        // Definition List
+	                        if (v === 'dt' || v === 'dd') {
+	                            if (n && !ed.dom.getParent(n, 'dl')) {
+	                                ed.execCommand('InsertDefinitionList');
+	                            }
+
+	                            if (v === 'dt' && n.nodeName === 'DD') {
+	                                ed.dom.rename(n, 'DT');
+	                            }
+
+	                            if (v === 'dd' && n.nodeName === 'DT') {
+	                                ed.dom.rename(n, 'DD');
+	                            }
+
+	                            o.terminate = true;
+	                        }
+
+	                        break;
+	                    case 'RemoveFormat':
+	                        if (!v && !ed.dom.isBlock(n)) {
+	                            var cm = ed.controlManager.get('styleselect');
+	                            // get select Styles value if any
+	                            if (cm && cm.selectedValue) {
+	                                // remove style
+	                                ed.execCommand('mceToggleFormat', false, cm.selectedValue);
+	                            }
+	                        }
+
+	                        break;
+	                }
+	            });
+
+	            ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+	                var se = ed.selection,
+	                    n = se.getNode();
+	                // remove empty Definition List
+	                switch (cmd) {
+	                    case 'mceToggleFormat':
+	                        if (v === "dt" || v === "dd") {
+	                            if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
+	                                ed.formatter.remove('dl');
+	                            }
+	                        }
+	                        break;
+	                }
+	            });
+
+	            /*ed.onPreInit.add(function() {
+
+	                function wrapList(node) {
+	                    var sibling = node.prev;
+
+	                    if (node.parent && node.parent.name === 'dl') {
+	                        return;
+	                    }
+
+	                    if (sibling && (sibling.name === 'dl' || sibling.name === 'dl')) {
+	                        sibling.append(node);
+	                        return;
+	                    }
+
+	                    sibling = node.next;
+
+	                    if (sibling && (sibling.name === 'dl' || sibling.name === 'dl')) {
+	                        sibling.insert(node, sibling.firstChild, true);
+	                        return;
+	                    }
+
+	                    node.wrap(ed.parser.filterNode(new tinymce.html.Node('dl', 1)));
+	                }
+
+	                ed.parser.addNodeFilter('dt,dd', function(nodes) {
+	                    for (var i = 0, len = nodes.length; i < len; i++) {
+	                        wrapList(nodes[i]);
+	                    }
+	                });
+
+	                ed.serializer.addNodeFilter('dt,dd', function(nodes) {
+	                    for (var i = 0, len = nodes.length; i < len; i++) {
+	                        wrapList(nodes[i]);
+	                    }
+	                });
+	            });*/
+	        },
+	        _clearBlocks: function (ed, e) {
+	            var p, n = ed.selection.getNode();
+
+	            // Find parent element just before the document body
+	            p = ed.dom.getParents(n, blocks.join(','));
+
+	            if (p && p.length > 1) {
+	                // set defualt content and get the element to use
+	                var tag = ed.getParam('forced_root_block', 'p');
+
+	                if (!tag) {
+	                    tag = ed.getParam('force_block_newlines') ? 'p' : 'br';
+	                }
+
+	                // prevent default action
+	                e.preventDefault();
+
+	                // get the first block in the collection
+	                var block = p[p.length - 1];
+
+	                // skip if it is the body
+	                if (block === ed.getBody()) {
+	                    return;
+	                }
+
+	                // create element
+	                var el = ed.dom.create(tag, {}, '\u00a0');
+
+	                if (e.keyCode === VK.ENTER || e.keyCode === VK.DOWN) {
+	                    // insert after parent element
+	                    ed.dom.insertAfter(el, block);
+	                } else {
+	                    // insert after parent element
+	                    block.parentNode.insertBefore(el, block);
+	                }
+
+	                // select and collapse
+	                ed.selection.select(el);
+	                ed.selection.collapse(1);
+	            }
+
+	            // execute normal enter/up behaviour
+	        }
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('format', tinymce.plugins.FormatPlugin);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var each = tinymce.each,
+	        DOM = tinymce.DOM,
+	        PreviewCss = tinymce.util.PreviewCss;
+
+	    /* Make a css url absolute
+	     * @param u URL string
+	     * @param p URL of the css file
+	     */
+	    function toAbsolute(u, p) {
+	        return u.replace(/url\(["']?(.+?)["']?\)/gi, function (a, b) {
+
+	            if (b.indexOf('://') < 0) {
+	                return 'url("' + p + b + '")';
+	            }
+
+	            return a;
+	        });
+	    }
+
+	    function isEditorContentCss(url) {
+	        return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
+	    }
+
+	    function cleanSelectorText(selectorText) {
+	        // Parse simple element.class1, .class1
+	        var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(selectorText);
+
+	        // no match
+	        if (!selector) {
+	            return '';
+	        }
+
+	        var elementName = selector[1];
+
+	        if (elementName !== "body") {
+	            return selector[2].substr(1).split('.').join(' ');
+	        }
+
+	        return '';
+	    }
+
+	    var rgba = {}, luma = {};
+
+	    function getRGBA(val) {
+	        if (!rgba[val]) {
+	            var r = 0, b = 0, g = 0, a = 1, values, match;
+
+	            if (val.indexOf('#') !== -1) {
+	                val = val.substr(1);
+
+	                // fff -> ffffff
+	                if (val.length === 3) {
+	                    val += val;
+	                }
+
+	                values = parseInt(val, 16);
+
+	                r = (values >> 16) & 0xFF;
+	                g = (values >> 8) & 0xFF;
+	                b = (values >> 0) & 0xFF;
+	                a = (values >> 24) & 0xFF;
+	            } else {
+	                // remove spaces
+	                val = val.replace(/\s/g, '');
+
+	                if (match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val)) {
+	                    values = match[1].split(',').map(function (x, i) {
+	                        return parseFloat(x);
+	                    });
+	                }
+
+	                if (values) {
+	                    r = values[0];
+	                    g = values[1];
+	                    b = values[2];
+
+	                    if (values.length === 4) {
+	                        a = values[3] || 1;
+	                    }
+	                }
+	            }
+
+	            rgba[val] = { r: r, g: g, b: b, a: a };
+	        }
+
+	        return rgba[val];
+	    }
+
+	    // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L75
+	    function getLuminance(val) {
+	        if (!luma[val]) {
+	            var col = getRGBA(val);
+
+	            // opacity is set
+	            /*if (col.a < 1 && color2) {
+	                var col2 = getRGBA(color2);
+
+	                col = {
+	                    r: ((col2.r - col.r) * col.a) + col.r,
+	                    g: ((col2.g - col.g) * col.a) + col.g,
+	                    b: ((col2.b - col.b) * col.a) + col.b
+	                };
+	            }*/
+
+	            var RsRGB, GsRGB, BsRGB, R, G, B;
+
+	            RsRGB = col.r / 255;
+	            GsRGB = col.g / 255;
+	            BsRGB = col.b / 255;
+
+	            if (RsRGB <= 0.03928) { R = RsRGB / 12.92; } else { R = Math.pow(((RsRGB + 0.055) / 1.055), 2.4); }
+	            if (GsRGB <= 0.03928) { G = GsRGB / 12.92; } else { G = Math.pow(((GsRGB + 0.055) / 1.055), 2.4); }
+	            if (BsRGB <= 0.03928) { B = BsRGB / 12.92; } else { B = Math.pow(((BsRGB + 0.055) / 1.055), 2.4); }
+
+	            luma[val] = (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+
+	            //luma[val] = 0.2126 * col.r + 0.7152 * col.g + 0.0722 * col.b; // per ITU-R BT.709
+	        }
+
+	        return luma[val];
+	    }
+
+	    // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L726
+	    function isReadable(color1, color2, wcag2, limit) {
+	        var l1 = getLuminance(color1);
+	        var l2 = getLuminance(color2);
+
+	        var lvl = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+
+	        wcag2 = wcag2 || 4.5;
+	        limit = limit || 21;
+
+	        return lvl >= parseFloat(wcag2) && lvl < parseFloat(limit); // AA
+	    }
+
+	    tinymce.create('tinymce.plugins.ImportCSS', {
+	        init: function (ed, url) {
+	            this.editor = ed;
+	            var self = this;
+
+	            // create an event to use externally
+	            ed.onImportCSS = new tinymce.util.Dispatcher();
+
+	            ed.onImportCSS.add(function () {
+	                if (tinymce.is(ed.settings.importcss_classes)) {
+	                    return;
+	                }
+
+	                self._import();
+	            });
+
+	            // attempt to import when the editor is initialised
+	            ed.onInit.add(function () {
+	                ed.onImportCSS.dispatch();
+
+	                // check for high contrast if not already set in a parameter
+	                if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
+	                    self._setHighContrastMode();
+	                }
+
+	                self._setGuideLinesColor();
+	            });
+
+	            ed.onFocus.add(function(ed) {
+	                if (ed._hasGuidelines) {
+	                    return;
+	                }
+
+	                self._setGuideLinesColor();
+	            });
+	        },
+
+	        _setHighContrastMode: function () {
+	            var ed = this.editor;
+
+	            var bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+
+	            if (!bodybg || !color) {
+	                return;
+	            }
+
+	            var hex = ed.dom.toHex(bodybg);
+
+	            // if the colours match, may be an error in stylesheet loading
+	            if (hex == ed.dom.toHex(color) && hex === '#000000') {
+	                return;
+	            }
+
+	            if (!isReadable(color, bodybg, 3.0)) {
+	                ed.dom.addClass(ed.getBody(), 'mceContentReset');
+	            }
+	        },
+
+	        _setGuideLinesColor: function () {
+	            var ed = this.editor;
+
+	            var gray = [
+	                '#000000',
+	                '#080808',
+	                '#101010',
+	                '#181818',
+	                '#202020',
+	                '#282828',
+	                '#303030',
+	                '#383838',
+	                '#404040',
+	                '#484848',
+	                '#505050',
+	                '#585858',
+	                '#606060',
+	                '#686868',
+	                '#696969',
+	                '#707070',
+	                '#787878',
+	                '#808080',
+	                '#888888',
+	                '#909090',
+	                '#989898',
+	                '#a0a0a0',
+	                '#a8a8a8',
+	                '#a9a9a9',
+	                '#b0b0b0',
+	                '#b8b8b8',
+	                '#bebebe',
+	                '#c0c0c0',
+	                '#c8c8c8',
+	                '#d0d0d0',
+	                '#d3d3d3',
+	                '#d8d8d8',
+	                '#dcdcdc',
+	                '#e0e0e0',
+	                '#e8e8e8',
+	                '#f0f0f0',
+	                '#f5f5f5',
+	                '#f8f8f8',
+	                '#ffffff'
+	            ];
+
+	            var blue = [
+	                '#0d47a1',
+	                '#1565c0',
+	                '#1976d2',
+	                '#1e88e5',
+	                '#2196f3',
+	                '#42a5f5',
+	                '#64b5f6',
+	                '#90caf9',
+	                '#bbdefb',
+	                '#e3f2fd'
+	            ];
+
+	            var guidelines = '#787878', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);         
+	            
+	            if (!bodybg) {
+	                return;
+	            }
+
+	            ed._hasGuidelines = true;
+
+	            // guidelines
+	            for (var i = 0; i < gray.length; i++) {
+	                if (isReadable(gray[i], bodybg, 4.5, 5.0)) {
+
+	                    if (ed.dom.toHex(color) === ed.dom.toHex(gray[i])) {
+	                        continue;
+	                    }
+
+	                    guidelines = gray[i];
+
+	                    break;
+	                }
+	            }
+
+	            // control element selection
+	            for (var i = 0; i < blue.length; i++) {
+	                if (isReadable(blue[i], bodybg, 4.5, 5.0)) {
+	                    control = blue[i];
+	                    break;
+	                }
+	            }
+
+	            if (guidelines || control) {
+	                var css = ':root{';
+
+	                if (guidelines) {
+	                    css += '--mce-guidelines: ' + guidelines + ';';
+	                }
+
+	                {
+	                    css += '--mce-placeholder: ' + placeholder + ';';
+	                }
+
+	                if (control) {
+	                    css += '--mce-control-selection: ' + control + ';';
+	                    css += '--mce-control-selection-bg: ' + controlbg + ';';
+	                }
+
+	                css += '}';
+
+	                ed.dom.addStyle(css);
+	            }
+	        },
+
+	        _import: function () {
+	            var self = this,
+	                ed = this.editor,
+	                doc = ed.getDoc(), href = '',
+	                rules = [],
+	                fonts = false;
+
+	            var fontface = [], filtered = {}, classes = [];
+
+	            function isAllowedStylesheet(href) {
+	                var styleselect = ed.getParam('styleselect_stylesheets');
+
+	                if (!styleselect) {
+	                    return true;
+	                }
+
+	                if (typeof filtered[href] !== 'undefined') {
+	                    return filtered[href];
+	                }
+
+	                filtered[href] = (href.indexOf(styleselect) !== -1);
+
+	                return filtered[href];
+	            }
+
+	            function parseCSS(stylesheet) {
+	                // IE style imports
+	                each(stylesheet.imports, function (r) {
+	                    if (r.href.indexOf('://fonts.googleapis.com') > 0) {
+	                        var v = '@import url(' + r.href + ');';
+
+	                        if (self.fontface.indexOf(v) === -1) {
+	                            self.fontface.unshift(v);
+	                        }
+
+	                        return;
+	                    }
+
+	                    parseCSS(r);
+	                });
+
+	                try {
+	                    rules = stylesheet.cssRules || stylesheet.rules;
+	                    href = stylesheet.href;
+
+	                    if (!href) {
+	                        return;
+	                    }
+
+	                    if (isEditorContentCss(href)) {
+	                        return;
+	                    }
+
+	                    // get stylesheet href
+	                    href = href.substr(0, href.lastIndexOf('/') + 1);
+
+	                    ed.hasStyleSheets = true;
+	                } catch (e) {
+	                    // Firefox fails on rules to remote domain for example: 
+	                    // @import url(//fonts.googleapis.com/css?family=Pathway+Gothic+One);
+	                }
+
+	                each(rules, function (r) {
+	                    // Real type or fake it on IE
+	                    switch (r.type || 1) {
+	                        // Rule
+	                        case 1:
+	                            if (!isAllowedStylesheet(stylesheet.href)) {
+	                                return true;
+	                            }
+
+	                            // IE8
+	                            if (!r.type) ;
+
+	                            if (r.selectorText) {
+	                                each(r.selectorText.split(','), function (v) {
+	                                    v = v.replace(/^\s*|\s*$|^\s\./g, "");
+
+	                                    // Is internal or it doesn't contain a class
+	                                    if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
+	                                        return;
+	                                    }
+
+	                                    if (v && classes.indexOf(v) === -1) {
+	                                        classes.push(v);
+	                                    }
+	                                });
+	                            }
+
+	                            break;
+
+	                        // Import
+	                        case 3:
+	                            if (r.href.indexOf('//fonts.googleapis.com') > 0) {
+	                                var v = '@import url(' + r.href + ');';
+
+	                                if (fontface.indexOf(v) === -1) {
+	                                    fontface.unshift(v);
+	                                }
+	                            }
+
+	                            // only local imports
+	                            if (r.href.indexOf('//') === -1) {
+	                                parseCSS(r.styleSheet);
+	                            }
+	                            break;
+	                        // font-face
+	                        case 5:
+	                            // check for text and skip popular font icons
+	                            if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {
+	                                var v = toAbsolute(r.cssText, href);
+
+	                                if (fontface.indexOf(v) === -1) {
+	                                    fontface.push(v);
+	                                }
+	                            }
+	                            break;
+	                    }
+	                });
+	            }
+
+	            // parse stylesheets
+	            if (!classes.length) {
+	                try {
+	                    each(doc.styleSheets, function (styleSheet) {
+	                        parseCSS(styleSheet);
+	                    });
+	                } catch (ex) { }
+	            }
+
+	            // add font-face rules
+	            if (!fontface.length && !fonts) {
+	                try {
+	                    // get document head
+	                    var head = DOM.doc.getElementsByTagName('head')[0];
+	                    // create style element
+	                    var style = DOM.create('style', {
+	                        type: 'text/css'
+	                    });
+
+	                    var css = self.fontface.join("\n");
+
+	                    if (style.styleSheet) {
+	                        var setCss = function () {
+	                            try {
+	                                style.styleSheet.cssText = css;
+	                            } catch (e) { }
+	                        };
+	                        if (style.styleSheet.disabled) {
+	                            setTimeout(setCss, 10);
+	                        } else {
+	                            setCss();
+	                        }
+	                    } else {
+	                        style.appendChild(DOM.doc.createTextNode(css));
+	                    }
+
+	                    // add to head
+	                    head.appendChild(style);
+
+	                    // set fonts flag so we only do this once
+	                    fonts = true;
+
+	                } catch (e) { }
+	            }
+
+	            // sort and expose if classes have been set
+	            if (classes.length) {
+	                // sort alphabetically
+	                if (ed.getParam('styleselect_sort', 1)) {
+	                    classes.sort();
+	                }
+
+	                ed.settings.importcss_classes = tinymce.map(classes, function (val) {
+	                    var cls = cleanSelectorText(val);
+
+	                    var style = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
+	                    return { 'selector': val, 'class': cls, 'style': style };
+	                });
+	            }
+	        }
+	    });
+	    // Register plugin
+	    tinymce.PluginManager.add('importcss', tinymce.plugins.ImportCSS);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function() {
+	    tinymce.create('tinymce.plugins.ColorPicker', {
+	        init : function(ed, url) {
+	            this.editor = ed;
+
+	            // Register commands
+	            ed.addCommand('mceColorPicker', function(ui, v) {
+	                ed.windowManager.open({
+	                    url     : ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=colorpicker',
+	                    width   : 365,
+	                    height  : 320,
+	                    close_previous : false,
+	                }, {
+	                    input_color : v.color,
+	                    func        : v.func
+	                });
+	            });
+	        }
+	    });
+	    // Register plugin
+	    tinymce.PluginManager.add('colorpicker', tinymce.plugins.ColorPicker);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @copyright   Copyright 2009, Moxiecode Systems AB
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 *
+	 * * Based on plupload - http://www.plupload.com
+	 */
+
+	(function () {
+	    var each = tinymce.each,
+	        extend = tinymce.extend,
+	        JSON = tinymce.util.JSON,
+	        RangeUtils = tinymce.dom.RangeUtils,
+	        Dispatcher = tinymce.util.Dispatcher;
+
+	    var counter = 0;
+
+	    /**
+	     Generates an unique ID.
+	     @method uid
+	     @return {String} Virtually unique id.
+	     */
+	    function uid() {
+	        var guid = new Date().getTime().toString(32),
+	            i;
+
+	        for (i = 0; i < 5; i++) {
+	            guid += Math.floor(Math.random() * 65535).toString(32);
+	        }
+
+	        return 'wf_' + guid + (counter++).toString(32);
+	    }
+
+	    var mimes = {};
+
+	    // Parses the default mime types string into a mimes lookup map (from plupload.js)
+	    (function (mime_data) {
+	        var items = mime_data.split(/,/),
+	            i, y, ext;
+
+	        for (i = 0; i < items.length; i += 2) {
+	            ext = items[i + 1].split(/ /);
+
+	            for (y = 0; y < ext.length; y++) {
+	                mimes[ext[y]] = items[i];
+	            }
+	        }
+	    })(
+	        "application/msword,doc dot," +
+	        "application/pdf,pdf," +
+	        "application/pgp-signature,pgp," +
+	        "application/postscript,ps ai eps," +
+	        "application/rtf,rtf," +
+	        "application/vnd.ms-excel,xls xlb," +
+	        "application/vnd.ms-powerpoint,ppt pps pot," +
+	        "application/zip,zip," +
+	        "application/x-shockwave-flash,swf swfl," +
+	        "application/vnd.openxmlformats-officedocument.wordprocessingml.document,docx," +
+	        "application/vnd.openxmlformats-officedocument.wordprocessingml.template,dotx," +
+	        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,xlsx," +
+	        "application/vnd.openxmlformats-officedocument.presentationml.presentation,pptx," +
+	        "application/vnd.openxmlformats-officedocument.presentationml.template,potx," +
+	        "application/vnd.openxmlformats-officedocument.presentationml.slideshow,ppsx," +
+	        "application/x-javascript,js," +
+	        "application/json,json," +
+	        "audio/mpeg,mpga mpega mp2 mp3," +
+	        "audio/x-wav,wav," +
+	        "audio/mp4,m4a," +
+	        "image/bmp,bmp," +
+	        "image/gif,gif," +
+	        "image/jpeg,jpeg jpg jpe," +
+	        "image/photoshop,psd," +
+	        "image/png,png," +
+	        "image/svg+xml,svg svgz," +
+	        "image/tiff,tiff tif," +
+	        "text/plain,asc txt text diff log md," +
+	        "text/html,htm html xhtml," +
+	        "text/css,css," +
+	        "text/csv,csv," +
+	        "text/rtf,rtf," +
+	        "video/mpeg,mpeg mpg mpe," +
+	        "video/quicktime,qt mov," +
+	        "video/mp4,mp4," +
+	        "video/x-m4v,m4v," +
+	        "video/x-flv,flv," +
+	        "video/x-ms-wmv,wmv," +
+	        "video/avi,avi," +
+	        "video/webm,webm," +
+	        "video/vnd.rn-realvideo,rv," +
+	        "application/vnd.oasis.opendocument.formula-template,otf," +
+	        "application/octet-stream,exe"
+	    );
+
+	    var state = {
+	        /**
+	         * Inital state of the queue and also the state ones it's finished all it's uploads.
+	         *
+	         * @property STOPPED
+	         * @final
+	         */
+	        STOPPED: 1,
+	        /**
+	         * Upload process is running
+	         *
+	         * @property STARTED
+	         * @final
+	         */
+	        STARTED: 2,
+	        /**
+	         * File is queued for upload
+	         *
+	         * @property QUEUED
+	         * @final
+	         */
+	        QUEUED: 1,
+	        /**
+	         * File is being uploaded
+	         *
+	         * @property UPLOADING
+	         * @final
+	         */
+	        UPLOADING: 2,
+	        /**
+	         * File has failed to be uploaded
+	         *
+	         * @property FAILED
+	         * @final
+	         */
+	        FAILED: 4,
+	        /**
+	         * File has been uploaded successfully
+	         *
+	         * @property DONE
+	         * @final
+	         */
+	        DONE: 5,
+	        // Error constants used by the Error event
+
+	        /**
+	         * Generic error for example if an exception is thrown inside Silverlight.
+	         *
+	         * @property GENERIC_ERROR
+	         * @final
+	         */
+	        GENERIC_ERROR: -100,
+	        /**
+	         * HTTP transport error. For example if the server produces a HTTP status other than 200.
+	         *
+	         * @property HTTP_ERROR
+	         * @final
+	         */
+	        HTTP_ERROR: -200,
+	        /**
+	         * Generic I/O error. For exampe if it wasn't possible to open the file stream on local machine.
+	         *
+	         * @property IO_ERROR
+	         * @final
+	         */
+	        IO_ERROR: -300,
+	        /**
+	         * Generic I/O error. For exampe if it wasn't possible to open the file stream on local machine.
+	         *
+	         * @property SECURITY_ERROR
+	         * @final
+	         */
+	        SECURITY_ERROR: -400
+	    };
+
+	    tinymce.create('tinymce.plugins.Upload', {
+	        files: [],
+	        plugins: [],
+	        init: function (ed, url) {
+	            function cancel() {
+	                // Block browser default drag over
+	                ed.dom.bind(ed.getBody(), 'dragover', function (e) {
+	                    var dataTransfer = e.dataTransfer;
+
+	                    // cancel dropped files
+	                    if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+	                        e.preventDefault();
+	                    }
+	                });
+
+	                ed.dom.bind(ed.getBody(), 'drop', function (e) {
+	                    var dataTransfer = e.dataTransfer;
+
+	                    // cancel dropped files
+	                    if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+	                        e.preventDefault();
+	                    }
+	                });
+	            }
+
+	            var self = this;
+	            self.editor = ed;
+	            self.plugin_url = url;
+
+	            ed.onPreInit.add(function () {
+	                // get list of supported plugins
+	                each(ed.plugins, function (plg, name) {
+	                    if (tinymce.is(plg.getUploadConfig, 'function')) {
+	                        
+	                        var data = plg.getUploadConfig();
+
+	                        if (data.inline && data.filetypes) {
+	                            self.plugins.push(plg);
+	                        }
+	 
+	                    }
+	                });
+
+	                // Cleanup callback
+	                ed.onBeforeSetContent.add(function (ed, o) {
+	                    o.content = o.content.replace(/<\/media>/g, '&nbsp;</media>');
+	                });
+
+	                // Cleanup callback
+	                ed.onPostProcess.add(function (ed, o) {
+	                    o.content = o.content.replace(/(&nbsp;|\u00a0)<\/media>/g, '</media>');
+	                });
+
+	                ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
+
+	                if (!ed.settings.compress.css) {
+	                    ed.dom.loadCSS(url + "/css/content.css");
+	                }
+
+	                // Remove bogus elements
+	                ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
+	                    var i = nodes.length;
+
+	                    while (i--) {
+	                        nodes[i].remove();
+	                    }
+	                });
+
+	                function isMediaPlaceholder(node) {
+	                    if (node.name === 'media') {
+	                        return true;
+	                    }
+
+	                    if (node.name === 'img') {
+	                        if (node.attr('data-mce-upload-marker')) {
+	                            return true;
+	                        }
+
+	                        var cls = node.attr('class');
+
+	                        if (cls && cls.indexOf('upload-placeholder') != -1) {
+	                            return true;
+	                        }
+	                    }
+
+	                    return false;
+	                }
+
+	                // find and convert upload markers
+	                ed.parser.addNodeFilter('img,media', function (nodes) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+
+	                        if (isMediaPlaceholder(node)) {
+
+	                            // no plugins to upload, remove node
+	                            if (self.plugins.length == 0) {
+	                                node.remove();
+	                            } else {
+	                                self._createUploadMarker(node);
+	                            }
+	                        }
+	                    }
+	                });
+
+	                // remove upload markers
+	                ed.serializer.addNodeFilter('img', function (nodes) {
+	                    var i = nodes.length,
+	                        node, cls;
+
+	                    while (i--) {
+	                        node = nodes[i], cls = node.attr('class');
+
+	                        if (cls && /mce-item-upload-marker/.test(cls)) {
+	                            // remove marker classes
+	                            cls = cls.replace(/(?:^|\s)(mce-item-)(?!)(upload|upload-marker|upload-placeholder)(?!\S)/g, '');
+	                            // set class and src
+	                            node.attr({
+	                                'data-mce-src': '',
+	                                'src': '',
+	                                'class': tinymce.trim(cls)
+	                            });
+
+	                            // rename
+	                            node.name = 'media';
+	                            node.shortEnded = false;
+	                            // remove alt if set
+	                            node.attr('alt', null);
+	                            // set media type (default to image/jpeg for now)
+	                            //node.attr('type', 'image/jpeg');
+	                        }
+	                    }
+	                });
+
+	                function bindUploadEvents(ed) {
+	                    each(ed.dom.select('.mce-item-upload-marker', ed.getBody()), function (n) {
+	                        if (self.plugins.length == 0) {
+	                            ed.dom.remove(n);
+	                        } else {
+	                            self._bindUploadMarkerEvents(ed, n);
+	                        }
+	                    });
+	                }
+
+	                // update events when content is inserted
+	                ed.selection.onSetContent.add(function () {
+	                    bindUploadEvents(ed);
+	                });
+
+	                // update events when content is set
+	                ed.onSetContent.add(function () {
+	                    bindUploadEvents(ed);
+	                });
+
+	                // update events when fullscreen is activated
+	                if (ed.onFullScreen) {
+	                    ed.onFullScreen.add(function (editor) {
+	                        bindUploadEvents(editor);
+	                    });
+	                }
+	            });
+
+	            ed.onInit.add(function () {
+	                // no supported plugins
+	                if (self.plugins.length == 0) {
+	                    cancel();
+	                    return;
+	                }
+
+	                // Display "a#name" instead of "img" in element path
+	                if (ed.theme && ed.theme.onResolveName) {
+	                    ed.theme.onResolveName.add(function (theme, o) {
+	                        var n = o.node;
+
+	                        if (n && n.nodeName === 'IMG' && /mce-item-upload/.test(n.className)) {
+	                            o.name = 'placeholder';
+	                        }
+	                    });
+	                }
+
+	                function cancelEvent(e) {
+	                    e.preventDefault();
+	                    e.stopPropagation();
+	                }
+
+	                ed.dom.bind(ed.getBody(), 'dragover', function (e) {
+	                    e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
+	                });
+
+	                // Attach drop handler and grab files
+	                ed.dom.bind(ed.getBody(), 'drop', function (e) {
+	                    var dataTransfer = e.dataTransfer;
+
+	                    // Add dropped files
+	                    if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+	                        each(dataTransfer.files, function (file) {
+	                            var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
+	                            if (rng) {
+	                                ed.selection.setRng(rng);
+	                                rng = null;
+	                            }
+
+	                            self.addFile(file);
+	                        });
+
+	                        cancelEvent(e);
+	                    }
+
+	                    // upload...
+	                    if (self.files.length) {
+	                        each(self.files, function (file) {
+	                            self.upload(file);
+	                        });
+	                    }
+	                    // stop Firefox opening the image in a new window if the drop target is itself (drag cancelled)
+	                    if (tinymce.isGecko && e.target.nodeName == 'IMG') {
+	                        cancelEvent(e);
+	                    }
+	                });
+	            });
+
+	            // Setup plugin events
+	            self.FilesAdded = new Dispatcher(this);
+	            self.UploadProgress = new Dispatcher(this);
+	            self.FileUploaded = new Dispatcher(this);
+	            self.UploadError = new Dispatcher(this);
+
+	            // default settings
+	            this.settings = {
+	                multipart: true,
+	                multi_selection: true,
+	                file_data_name: 'file',
+	                filters: []
+	            };
+
+	            self.FileUploaded.add(function (file, o) {
+	                var n = file.marker;
+
+	                function showError(error) {
+	                    ed.windowManager.alert(error || ed.getLang('upload.response_error', 'Invalid Upload Response'));
+	                    ed.dom.remove(n);
+
+	                    return false;
+	                }
+
+	                if (n) {
+	                    if (o && o.response) {
+	                        var data = o.response,
+	                            r;
+	                        // parse JSON data if valid
+	                        try {
+	                            r = JSON.parse(data);
+	                        } catch (e) {
+	                            // malformed JSON
+	                            if (data.indexOf('{') !== -1) {                        
+	                                data = 'The server returned an invalid JSON response.';
+	                            }
+
+	                            return showError(data);
+	                        }
+
+	                        if (!r) {
+	                            return showError();
+	                        }
+
+	                        if (r.error || !r.result) {
+	                            var txt = '';
+
+	                            if (r.error) {
+	                                txt = r.error.message || '';
+	                            }
+
+	                            ed.windowManager.alert(txt);
+	                            ed.dom.remove(n);
+
+	                            return false;
+	                        }
+
+	                        if (file.status == state.DONE) {
+	                            if (file.uploader) {
+	                                var files = r.result.files || [];
+	                                var item = files.length ? files[0] : {};
+
+	                                var obj = tinymce.extend({
+	                                    type: file.type,
+	                                    name: file.name
+	                                }, item);
+
+	                                self._selectAndInsert(file, obj);
+	                            }
+
+	                            // remove from list
+	                            self.files.splice(tinymce.inArray(self.files, file), 1);
+	                        }
+	                    } else {
+	                        return showError();
+	                    }
+
+	                    // remove marker
+	                    ed.dom.remove(n);
+	                }
+	            });
+
+	            self.UploadProgress.add(function (file) {
+	                if (file.loaded && file.marker) {
+	                    var pct = Math.floor(file.loaded / file.size * 100);
+	                    ed.dom.setAttrib(file.marker, 'data-progress', pct);
+	                }
+	            });
+
+	            self.UploadError.add(function (o) {
+	                ed.windowManager.alert(o.code + ' : ' + o.message);
+
+	                if (o.file && o.file.marker) {
+	                    ed.dom.remove(o.file.marker);
+	                }
+
+	            });
+	        },
+
+	        _selectAndInsert: function (file, data) {
+	            var ed = this.editor, marker = file.marker, uploader = file.uploader;
+
+	            // select marker
+	            ed.selection.select(marker);
+	            var elm = uploader.insertUploadedFile(data);
+
+	            if (elm) {
+	                // is an element node
+	                if (typeof elm === 'object' && elm.nodeType) {
+	                    // transfer width and height from marker
+	                    if (ed.dom.hasClass(marker, 'mce-item-upload-marker')) {
+	                        var styles = ed.dom.getAttrib(marker, 'data-mce-style');
+
+	                        var w = marker.width || 0;
+	                        var h = marker.height || 0;
+
+	                        // transfer styles
+	                        if (styles) {
+	                            // parse to object
+	                            styles = ed.dom.styles.parse(styles);
+
+	                            if (styles.width) {
+	                                w = styles.width;
+
+	                                delete styles.width;
+	                            }
+
+	                            if (styles.height) {
+	                                h = styles.height;
+
+	                                delete styles.height;
+	                            }
+
+	                            // set styles
+	                            ed.dom.setStyles(elm, styles);
+	                        }
+
+	                        // pass through width and height
+	                        if (w) {
+	                            ed.dom.setAttrib(elm, 'width', w);
+	                        }
+
+	                        if (h) {
+	                            if (w) {
+	                                h = '';
+	                            }
+
+	                            ed.dom.setAttrib(elm, 'height', h);
+	                        }
+	                    }
+
+	                    ed.undoManager.add();
+
+	                    // replace marker with new element
+	                    ed.dom.replace(elm, marker);
+	                }
+
+	                ed.nodeChanged();
+
+	                return true;
+	            }
+	        },
+
+	        /*
+	         * Bind events to upload marker and create upload input
+	         * @param marker Marker / Placeholder element
+	         */
+	        _bindUploadMarkerEvents: function (ed, marker) {
+	            var self = this,
+	                dom = tinymce.DOM;
+
+	            function removeUpload() {
+	                dom.setStyles('wf_upload_button', {
+	                    'top': '',
+	                    'left': '',
+	                    'display': 'none',
+	                    'zIndex': ''
+	                });
+	            }
+
+	            // remove upload on nodechange
+	            ed.onNodeChange.add(removeUpload);
+	            // remove on window scroll
+	            ed.dom.bind(ed.getWin(), 'scroll', removeUpload);
+
+	            var input = dom.get('wf_upload_input'), btn = dom.get('wf_upload_button');
+
+	            // create input
+	            if (!btn) {
+	                var btn = dom.add(dom.doc.body, 'div', {
+	                    'id': 'wf_upload_button',
+	                    'class': 'btn',
+	                    'role': 'button',
+	                    'title': ed.getLang('upload.button_description', 'Click to upload a file')
+	                }, '<label for="wf_upload_input"><span class="icon-upload"></span>&nbsp;' + ed.getLang('upload.label', 'Upload') + '</label>');
+
+	                // create upload input
+	                input = dom.add(btn, 'input', {
+	                    'type': 'file',
+	                    'id': 'wf_upload_input'
+	                });
+	            }
+
+	            // add upload on mouseover
+	            ed.dom.bind(marker, 'mouseover', function (e) {
+
+	                if (ed.dom.getAttrib(marker, 'data-mce-selected')) {
+	                    return;
+	                }
+
+	                var vp = ed.dom.getViewPort(ed.getWin());
+	                var p1 = dom.getRect(ed.getContentAreaContainer());
+	                var p2 = ed.dom.getRect(marker);
+
+	                if (vp.y > p2.y + p2.h / 2 - 25) {
+	                    return;
+	                }
+
+	                if (vp.y < (p2.y + p2.h / 2 + 25) - p1.h) {
+	                    return;
+	                }
+
+	                var x = Math.max(p2.x - vp.x, 0) + p1.x;
+	                var y = Math.max(p2.y - vp.y, 0) + p1.y - Math.max(vp.y - p2.y, 0);
+
+	                var zIndex = ed.id == 'mce_fullscreen' ? dom.get('mce_fullscreen_container').style.zIndex : 0;
+
+	                dom.setStyles('wf_upload_button', {
+	                    'top': y + p2.h / 2 - 16,
+	                    'left': x + p2.w / 2 - 50,
+	                    'display': 'block',
+	                    'zIndex': zIndex + 1
+	                });
+
+	                dom.setStyles('wf_select_button', {
+	                    'top': y + p2.h / 2 - 16,
+	                    'left': x + p2.w / 2 - 50,
+	                    'display': 'block',
+	                    'zIndex': zIndex + 1
+	                });
+
+	                // bind onchange event to input to trigger upload
+	                input.onchange = function () {
+	                    if (input.files) {
+	                        var file = input.files[0];
+
+	                        if (file) {
+	                            file.marker = marker;
+
+	                            if (self.addFile(file)) {
+	                                // add width and height as styles if set
+	                                each(['width', 'height'], function (key) {
+	                                    ed.dom.setStyle(marker, key, ed.dom.getAttrib(marker, key));
+	                                });
+
+	                                // rename to "span" to support css:after
+	                                file.marker = ed.dom.rename(marker, 'span');
+
+	                                self.upload(file);
+	                                removeUpload();
+	                            }
+	                        }
+	                    }
+	                };
+
+	                /*ed.dom.bind(select, 'click', function (e) {
+	                    e.preventDefault();
+
+	                    ed.execCommand('mceFileBrowser', false, {
+	                        callback: function (item, files) {
+	                            var obj = files[0], plugin;
+
+	                            // find appropriate plugin to insert with
+	                            each(self.plugins, function(plg, key) {
+	                                if (plg.getUploadURL(obj.title)) {
+	                                    plugin = plg;
+
+	                                    return true;
+	                                }
+	                            });
+
+	                            if (plugin) {
+	                                self._selectAndInsert({ marker: marker, name: obj.title, uploader: plugin }, obj);
+	                            }
+	                        }
+	                    });
+	                });*/
+	            });
+
+	            // remove upload on mouseout
+	            ed.dom.bind(marker, 'mouseout', function (e) {
+	                // don't remove if over upload input
+	                if (!e.relatedTarget && e.clientY > 0) {
+	                    return;
+	                }
+
+	                removeUpload();
+	            });
+	        },
+	        _createUploadMarker: function (n) {
+	            var ed = this.editor,
+	                src = n.attr('src') || '',
+	                style = {},
+	                styles, cls = [];
+
+	            // get alt from src if not base64 encoded
+	            if (!n.attr('alt') && !/data:image/.test(src)) {
+	                var alt = src.substring(src.length, src.lastIndexOf('/') + 1);
+	                // set alt
+	                n.attr('alt', alt);
+	            }
+
+	            if (n.attr('style')) {
+	                style = ed.dom.styles.parse(n.attr('style'));
+	            }
+
+	            // convert hspace
+	            if (n.attr('hspace')) {
+	                style['margin-left'] = style['margin-right'] = n.attr('hspace');
+	            }
+
+	            // convert vspace
+	            if (n.attr('vspace')) {
+	                style['margin-top'] = style['margin-bottom'] = n.attr('vspace');
+	            }
+
+	            // convert align
+	            if (n.attr('align')) {
+	                style.float = n.attr('align');
+	            }
+
+	            if (n.attr('class')) {
+	                cls = n.attr('class').replace(/\s*upload-placeholder\s*/, '').split(' ');
+	            }
+
+	            // add marker classes
+	            cls.push('mce-item-upload');
+	            cls.push('mce-item-upload-marker');
+
+	            if (n.name === 'media') {
+	                n.name = 'img';
+	                n.shortEnded = true;
+	            }
+
+	            // set attribs
+	            n.attr({
+	                'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+	                'class': tinymce.trim(cls.join(' '))
+	            });
+
+	            var tmp = ed.dom.create('span', {
+	                'style': style
+	            });
+
+	            // add styles if any
+	            if (styles = ed.dom.getAttrib(tmp, 'style')) {
+	                n.attr({
+	                    'style': styles,
+	                    'data-mce-style': styles
+	                });
+	            }
+	        },
+	        /**
+	         * Builds a full url out of a base URL and an object with items to append as query string items.
+	         *
+	         * @param {String} url Base URL to append query string items to.
+	         * @param {Object} items Name/value object to serialize as a querystring.
+	         * @return {String} String with url + serialized query string items.
+	         */
+	        buildUrl: function (url, items) {
+	            var query = '';
+
+	            each(items, function (value, name) {
+	                query += (query ? '&' : '') + encodeURIComponent(name) + '=' + encodeURIComponent(value);
+	            });
+
+	            if (query) {
+	                url += (url.indexOf('?') > 0 ? '&' : '?') + query;
+	            }
+
+	            return url;
+	        },
+	        addFile: function (file) {
+	            var ed = this.editor,
+	                self = this,
+	                url;
+
+	            // check for extension in file name, eg. image.php.jpg
+	            if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
+	                ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+	                return false;
+	            }
+
+	            // get first url for the file type
+	            each(self.plugins, function (o, k) {
+	                if (!file.upload_url) {
+	                    if (url = o.getUploadURL(file)) {
+	                        file.upload_url = url;
+	                        file.uploader = o;
+	                    }
+	                }
+	            });
+
+	            if (file.upload_url) {
+	                if (tinymce.is(file.uploader.getUploadConfig, 'function')) {
+	                    // check file type and size
+	                    var config = file.uploader.getUploadConfig();
+	                    /*var type = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1');
+
+	                    // lowercase
+	                    type = type.toLowerCase();*/
+	                    if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
+	                        ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+	                        return false;
+	                    }
+
+	                    if (file.size) {
+	                        var max = parseInt(config.max_size) || 1024;
+
+	                        if (file.size > max * 1024) {
+	                            ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
+	                            return false;
+	                        }
+	                    }
+	                }
+
+	                // dispatch event
+	                self.FilesAdded.dispatch(file);
+
+	                if (!file.marker) {
+
+	                    ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="__mce_tmp">\uFEFF</span>', {
+	                        skip_undo: 1
+	                    });
+
+	                    var n = ed.dom.get('__mce_tmp');
+
+	                    // get approximate size of image from file size
+	                    if (/image\/(gif|png|jpeg|jpg)/.test(file.type)) {
+	                        w = h = Math.round(Math.sqrt(file.size));
+
+	                        // set minimum value of 100
+	                        w = Math.max(300, w);
+	                        h = Math.max(300, h);
+
+	                        ed.dom.setStyles(n, {
+	                            width: w,
+	                            height: h
+	                        });
+
+	                        ed.dom.addClass(n, 'mce-item-upload');
+	                    } else {
+	                        ed.setProgressState(true);
+	                    }
+
+	                    file.marker = n;
+	                }
+
+	                ed.undoManager.add();
+
+	                // add files to queue
+	                self.files.push(file);
+
+	                return true;
+	            } else {
+	                ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+	                return false;
+	            }
+	        },
+	        upload: function (file) {
+	            var self = this,
+	                ed = this.editor;
+
+	            var args = {
+	                'method': 'upload',
+	                'id': uid(),
+	                'inline': 1
+	            };
+
+	            var url = file.upload_url;
+
+	            // add query
+	            url += '&' + ed.settings.query;
+
+	            function sendFile(bin) {
+	                var xhr = new XMLHttpRequest,
+	                    formData = new FormData();
+
+	                // progress
+	                if (xhr.upload) {
+	                    xhr.upload.onprogress = function (e) {
+	                        if (e.lengthComputable) {
+	                            file.loaded = Math.min(file.size, e.loaded);
+	                            self.UploadProgress.dispatch(file);
+	                        }
+	                    };
+	                }
+
+	                xhr.onreadystatechange = function () {
+	                    var httpStatus;
+
+	                    if (xhr.readyState == 4 && self.state !== state.STOPPED) {
+
+	                        ed.setProgressState(false);
+
+	                        // Getting the HTTP status might fail on some Gecko versions
+	                        try {
+	                            httpStatus = xhr.status;
+	                        } catch (ex) {
+	                            httpStatus = 0;
+	                        }
+
+	                        // Is error status
+	                        if (httpStatus >= 400) {
+	                            self.UploadError.dispatch({
+	                                code: state.HTTP_ERROR,
+	                                message: ed.getLang('upload.http_error', 'HTTP Error'),
+	                                file: file,
+	                                status: httpStatus
+	                            });
+	                        } else {
+	                            file.loaded = file.size;
+
+	                            self.UploadProgress.dispatch(file);
+
+	                            bin = formData = null; // Free memory
+
+	                            file.status = state.DONE;
+
+	                            self.FileUploaded.dispatch(file, {
+	                                response: xhr.responseText,
+	                                status: httpStatus
+	                            });
+	                        }
+	                    }
+	                };
+	                // get name
+	                var name = file.target_name || file.name;
+
+	                // remove some common characters
+	                name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+	                extend(args, {
+	                    'name': name
+	                });
+
+	                xhr.open("post", url, true);
+
+	                // Set custom headers
+	                each(self.settings.headers, function (value, name) {
+	                    xhr.setRequestHeader(name, value);
+	                });
+
+	                // Add multipart params
+	                each(extend(args, self.settings.multipart_params), function (value, name) {
+	                    formData.append(name, value);
+	                });
+
+	                // Add file and send it
+	                formData.append(self.settings.file_data_name, bin);
+	                xhr.send(formData);
+
+	                return;
+
+
+	            } // sendFile
+
+
+	            // File upload finished
+	            if (file.status == state.DONE || file.status == state.FAILED || self.state == state.STOPPED) {
+	                return;
+	            }
+
+	            // Standard arguments
+	            extend(args, {
+	                name: file.target_name || file.name
+	            });
+
+	            // send the file object
+	            sendFile(file);
+	        }
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('upload', tinymce.plugins.Upload);
+	})();
+
+	/**
+	 * @package   	JCE
+	 * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+	 * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+	 * JCE is free software. This version may have been modified pursuant
+	 * to the GNU General Public License, and as distributed it includes or
+	 * is derivative of works licensed under the GNU General Public License or
+	 * other free or open source software licenses.
+	 */
+	(function () {
+	    var VK = tinymce.VK,
+	        Node = tinymce.html.Node,
+	        each = tinymce.each;
+	    var blocks = [];
+
+	    tinymce.create('tinymce.plugins.Figure', {
+	        init: function (ed, url) {
+	            this.editor = ed;
+
+	            ed.onPreInit.add(function (ed) {
+	                ed.parser.addNodeFilter('figure', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+
+	                        if (node.getAll('figcaption').length === 0) {
+	                            var figcaption = new Node('figcaption', 1);
+	                            figcaption.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
+	                            figcaption.attr('contenteditable', true);
+
+	                            node.append(figcaption);
+	                        }
+
+	                        if (node.getAll('img').length) {
+	                            node.attr('data-mce-image', '1');
+	                            node.attr('contenteditable', 'false');
+
+	                            each(node.getAll('img'), function(img) {
+	                                img.attr('data-mce-contenteditable', 'true');
+	                            });
+	                        }
+	                    }
+	                });
+
+	                ed.parser.addNodeFilter('figcaption', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        // Add identifying attribute to create dummy text
+	                        if (!node.firstChild) {
+	                            node.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
+	                        }
+	                        // make editable
+	                        node.attr('contenteditable', 'true');
+	                    }
+	                });
+
+	                ed.serializer.addNodeFilter('figure', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        node.attr('contenteditable', null);
+
+	                        each(node.getAll('img'), function(img) {
+	                            img.attr('data-mce-contenteditable', null);
+	                        });
+	                    }
+	                });
+
+	                ed.serializer.addNodeFilter('figcaption', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        // remove empty figcaption
+	                        if (!node.firstChild) {
+	                            node.remove();
+	                        } else {
+	                            node.attr('contenteditable', null);
+	                        }
+	                    }
+	                });
+
+	                ed.serializer.addAttributeFilter('data-mce-image', function (nodes, name) {
+	                    var i = nodes.length,
+	                        node;
+
+	                    while (i--) {
+	                        node = nodes[i];
+	                        node.attr(name, null);
+	                    }
+	                });
+
+	                each(ed.schema.getBlockElements(), function (v, k) {
+	                    if (/\W/.test(k)) {
+	                        return true;
+	                    }
+
+	                    blocks.push(k.toLowerCase());
+	                });
+
+	                ed.formatter.register('figure', {
+	                    block: 'figure',
+	                    remove: 'all',
+	                    ceFalseOverride: true,
+	                    deep: false,
+	                    onformat: function (elm, fmt, vars, node) {
+	                        vars = vars || {};
+
+	                        if (ed.dom.select('img,video,iframe', elm)) {
+	                            ed.dom.setAttribs(elm, {
+	                                'data-mce-image': 1,
+	                                'contenteditable': false
+	                            });
+
+	                            // set fake contenteditable for img element
+	                            ed.dom.setAttrib(ed.dom.select('img', elm), 'data-mce-contenteditable', 'true');
+
+	                            ed.dom.add(elm, 'figcaption', {
+	                                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+	                                'contenteditable': true
+	                            }, vars.caption || '');
+	                        }
+	                    },
+	                    onremove: function (node) {
+	                        ed.dom.remove(ed.dom.select('figcaption', node));
+	                    }
+	                });
+
+	                ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+	                    var se = ed.selection,
+	                        n = se.getNode();
+
+	                    switch (cmd) {
+	                        case 'JustifyRight':
+	                        case 'JustifyLeft':
+	                        case 'JustifyCenter':
+	                            if (n && n.nodeName === "IMG") {
+	                                var parent = ed.dom.getParent(n, 'FIGURE');
+
+	                                if (parent) {
+	                                    se.select(parent);
+	                                    ed.execCommand(cmd, false);
+	                                    o.terminate = true;
+	                                }
+	                            }
+	                            break;
+	                    }
+	                });
+
+	                ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+	                    var n = ed.selection.getNode();
+
+	                    switch (cmd) {
+	                        case 'JustifyRight':
+	                        case 'JustifyLeft':
+	                        case 'JustifyCenter':
+	                            if (n && n.nodeName === "FIGURE") {
+	                                var img = ed.dom.select('IMG', n);
+
+	                                if (img.length) {
+	                                    ed.selection.select(img[0]);
+	                                }
+	                            }
+	                            break;
+	                    }
+	                });
+
+	                ed.onKeyDown.add(function (ed, e) {
+	                    var isDelete, rng, container;
+
+	                    isDelete = e.keyCode == VK.DELETE;
+
+	                    if (!e.isDefaultPrevented() && (isDelete || e.keyCode == VK.BACKSPACE) && !VK.modifierPressed(e)) {
+	                        rng = ed.selection.getRng();
+	                        container = rng.startContainer;
+	                        offset = rng.startOffset;
+	                        collapsed = rng.collapsed;
+
+	                        container = ed.dom.getParent(container, 'FIGURE');
+
+	                        // remove figure and children if the img is selected
+	                        if (container) {
+	                            var node = ed.selection.getNode();
+
+	                            if (node.nodeName === 'IMG') {
+	                                ed.dom.remove(container);
+	                                ed.nodeChanged();
+	                                e.preventDefault();
+	                                return;
+	                            }
+
+	                            // override delete only if the figcaption is empty, so it is not itself removed
+	                            if (node.nodeName == 'FIGCAPTION' && (!node.nodeValue || node.nodeValue.length === 0) && node.childNodes.length === 0) {
+	                                e.preventDefault();
+	                            }
+
+	                            if (node.nodeType === 3 && (!collapsed && !offset)) {
+	                                var figcaption = ed.dom.getParent(node, 'FIGCAPTION');
+
+	                                if (figcaption) {
+	                                    while (figcaption.firstChild) {
+	                                        figcaption.removeChild(figcaption.firstChild);
+	                                    }
+
+	                                    e.preventDefault();
+	                                }
+	                            }
+	                        }
+	                    }
+	                });
+	            });
+	        }
+
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('figure', tinymce.plugins.Figure);
+	})();
+
+	(function () {
+	    tinymce.create('tinymce.plugins.UiPlugin', {
+	        init: function (ed, url) {}
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('ui', tinymce.plugins.UiPlugin);
+	})();
+
+	/**
+	 * editor_plugin_src.js
+	 *
+	 * Copyright 2009, Moxiecode Systems AB
+	 * Released under LGPL License.
+	 *
+	 * License: http://tinymce.moxiecode.com/license
+	 * Contributing: http://tinymce.moxiecode.com/contributing
+	 */
+
+	(function () {
+	    tinymce.PluginManager.add('noneditable', function (editor) {
+	        var nonEditableRegExps, contentEditableAttrName = 'contenteditable';
+
+	        var editClass = tinymce.trim(editor.getParam("noneditable_editable_class", "mceEditable"));
+	        var nonEditClass = tinymce.trim(editor.getParam("noneditable_noneditable_class", "mceNonEditable"));
+
+	        function hasClass(checkClassName) {
+	            return function (node) {
+	                return (" " + node.attr("class") + " ").indexOf(checkClassName) !== -1;
+	            };
+	        }
+
+	        function convertRegExpsToNonEditable(e) {
+	            var i = nonEditableRegExps.length, content = e.content, cls = tinymce.trim(nonEditClass);
+
+	            function replaceMatchWithSpan(match) {
+	                var args = arguments, index = args[args.length - 2];
+	                var prevChar = index > 0 ? content.charAt(index - 1) : '';
+
+	                // Is value inside an attribute then don't replace
+	                if (prevChar === '"') {
+	                    return match;
+	                }
+
+	                // Is value inside a contentEditable="false" tag
+	                if (prevChar === '>') {
+	                    var findStartTagIndex = content.lastIndexOf('<', index);
+	                    if (findStartTagIndex !== -1) {
+	                        var tagHtml = content.substring(findStartTagIndex, index);
+	                        if (tagHtml.indexOf('contenteditable="false"') !== -1) {
+	                            return match;
+	                        }
+	                    }
+	                }
+
+	                return (
+	                    '<span class="' + cls + '" data-mce-content="' + editor.dom.encode(args[0]) + '">' +
+	                    editor.dom.encode(typeof args[1] === "string" ? args[1] : args[0]) + '</span>'
+	                );
+	            }
+
+	            // Don't replace the variables when raw is used for example on undo/redo
+	            if (e.format == "raw") {
+	                return;
+	            }
+
+	            while (i--) {
+	                content = content.replace(nonEditableRegExps[i], replaceMatchWithSpan);
+	            }
+
+	            e.content = content;
+	        }
+
+	        var hasEditClass = hasClass(editClass);
+	        var hasNonEditClass = hasClass(nonEditClass);
+
+	        nonEditableRegExps = editor.getParam("noneditable_regexp");
+
+	        if (nonEditableRegExps && !nonEditableRegExps.length) {
+	            nonEditableRegExps = [nonEditableRegExps];
+	        }
+
+	        editor.onPreInit.add(function () {
+	            editor.formatter.register('noneditable', {
+	                block: 'div',
+	                wrapper: true,
+	                onformat: function (elm, fmt, vars) {
+	                    tinymce.each(vars, function (value, key) {
+	                        editor.dom.setAttrib(elm, key, value);
+	                    });
+	                }
+	            });
+
+	            if (nonEditableRegExps) {
+	                editor.onBeforeSetContent.add(function (ed, e) {
+	                    convertRegExpsToNonEditable(e);
+	                });
+	            }
+
+	            editor.parser.addAttributeFilter('class', function (nodes) {
+	                var i = nodes.length, node;
+
+	                while (i--) {
+	                    node = nodes[i];
+
+	                    if (hasEditClass(node)) {
+	                        node.attr(contentEditableAttrName, "true");
+	                    } else if (hasNonEditClass(node)) {
+	                        node.attr(contentEditableAttrName, "false");
+	                    }
+	                }
+	            });
+
+	            editor.serializer.addAttributeFilter(contentEditableAttrName, function (nodes) {
+	                var i = nodes.length, node;
+
+	                while (i--) {
+	                    node = nodes[i];
+	                    if (!hasEditClass(node) && !hasNonEditClass(node)) {
+	                        continue;
+	                    }
+
+	                    if (nonEditableRegExps && node.attr('data-mce-content')) {
+	                        node.name = "#text";
+	                        node.type = 3;
+	                        node.raw = true;
+	                        node.value = node.attr('data-mce-content');
+	                    } else {
+	                        node.attr(contentEditableAttrName, null);
+	                    }
+	                }
+	            });
+	        });
+	    });
+	})();
+
+	(function () {
+	    var DOM = tinymce.DOM;
+	    
+	    tinymce.create('tinymce.plugins.BrandingPlugin', {
+
+	        init: function (ed, url) {
+
+	            // turn off branding
+	            if (ed.settings.branding === false) {
+	                return;
+	            }
+	            
+	            ed.onPostRender.add(function () {
+	                var container = ed.getContentAreaContainer();
+	                DOM.insertAfter(DOM.create('div', {'class' : 'mceBranding'}, 'Powered by JCE Core. <span id="mceBrandingMessage"></span><a href="https://www.joomlacontenteditor.net/purchase" target="_blank" title="Get JCE Pro">JCE Pro</a>'), container);
+	            });
+
+	            ed.onNodeChange.add(function (ed, cm, n, co) {
+	                var container = ed.getContentAreaContainer(), msg = 'Get more features with ';
+	                
+	                if (n.nodeName === "IMG") {
+	                    msg = 'Image resizing, thumbnails and editing in ';
+	                }
+
+	                if (ed.dom.is(n, '.mce-item-media')) {
+	                    msg = 'Upload and manage audio and video with ';
+	                }
+
+	                DOM.setHTML(DOM.get('mceBrandingMessage', container), msg);
+	            });
+	        }
+	    });
+
+	    // Register plugin
+	    tinymce.PluginManager.add('branding', tinymce.plugins.BrandingPlugin);
+	})();
 
 }());
