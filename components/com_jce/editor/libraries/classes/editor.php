@@ -514,7 +514,7 @@ class WFEditor
         // encode as json string
         $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
-        $this->addScriptDeclaration('try{WFEditor.init(' . $tinymce . ');}catch(e){console.debug(e);}');
+        $this->addScriptDeclaration('var WfEditorSettings = ' . $tinymce . ';');
 
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
@@ -571,7 +571,7 @@ class WFEditor
                     $script .= '&' . $version;
                 }
             }
-            $output .= $tab . '<script data-cfasync="false" type="text/javascript" src="' . $script . '"></script>' . $end;
+            $output .= $tab . '<script data-cfasync="false" type="text/javascript" src="' . $script . '" defer></script>' . $end;
         }
 
         foreach ($this->javascript as $script) {
