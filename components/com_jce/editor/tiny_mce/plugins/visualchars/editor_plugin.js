@@ -5,7 +5,7 @@
  * License: http://www.tinymce.com/license
  */
 (function () {
-    var Cookie = tinymce.util.Cookie;
+    var Storage = tinymce.util.Storage;
     
     tinymce.create('tinymce.plugins.VisualChars', {
         init: function (ed, url) {
