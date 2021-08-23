@@ -8,7 +8,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function () {
+ (function () {
     var each = tinymce.each,
         extend = tinymce.extend,
         Node = tinymce.html.Node,
@@ -477,6 +477,13 @@
             }
 
             styles[key] = val;
+        });
+
+        // keep some styles
+        each(styleVal, function(value, key) {
+            if (/(margin|float|align)/.test(key)) {
+                styles[key] = value;
+            }
         });
 
         previewWrapper = Node.create('span', {
@@ -1098,317 +1105,310 @@
         return ed.dom.getParent(node, '[data-mce-object]')
     }
 
-    tinymce.create('tinymce.plugins.MediaPlugin', {
-        init: function (ed, url) {
-            var self = this;
+    // Register plugin
+    tinymce.PluginManager.add('media', function (ed, url) {
+        function isMediaNode(node) {
+            return node && isMediaObject(ed, node);
+        }
 
-            self.editor = ed;
-            self.url = url;
+        ed.onPreInit.add(function () {
+            ed.onUpdateMedia.add(function (ed, o) {
+                // only updating audio/video
+                if (!isSupportedMedia(o.before)) {
+                    return;
+                }
+                
+                each(ed.dom.select('video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object'), function (elm) {
+                    var src = elm.getAttribute('src');
 
-            function isMediaNode(node) {
-                return node && isMediaObject(ed, node);
+                    // get src for placeholder img
+                    if (elm.nodeName === 'IMG') {
+                        src = elm.getAttribute('data-mce-p-src');
+                    }
+
+                    // check value in <source> element
+                    if (elm.nodeName === 'VIDEO' || elm.nodeName === 'AUDIO') {
+                        var html = elm.getAttribute('data-mce-html');
+
+                        if (html) {
+                            var tmp = ed.dom.create(elm.nodeName, {}, unescape(html));
+
+                            each(tmp.childNodes, function (el) {
+                                if (el.nodeName == 'SOURCE') {
+                                    if (el.getAttribute('src') == o.before) {
+                                        el.setAttribute('src', o.after);
+                                    }
+                                }
+                            });
+
+                            elm.setAttribute('data-mce-html', escape(tmp.innerHTML))
+                        }
+
+                        // update poster value
+                        var poster = elm.getAttribute('poster');
+
+                        if (poster && poster == o.before) {
+                            elm.setAttribute('poster', o.after);
+                        }
+                    }
+
+                    if (src == o.before) {
+                        updateMedia(ed, { src: o.after }, elm);
+                    }
+                });
+            });
+
+            var invalid = ed.settings.invalid_elements;
+
+            // keep this for legacy
+            if (ed.settings.schema === "html4") {
+                // iframe
+                ed.schema.addValidElements('iframe[longdesc|name|src|frameborder|marginwidth|marginheight|scrolling|align|width|height|allowfullscreen|seamless|*]');
+                // audio, video, embed
+                ed.schema.addValidElements('video[src|autobuffer|autoplay|loop|controls|width|height|poster|*],audio[src|autobuffer|autoplay|loop|controls|*],source[src|type|media|*],embed[src|type|width|height|*]');
             }
 
-            ed.onPreInit.add(function () {
-                ed.onUpdateMedia.add(function (ed, o) {
-                    // only updating audio/video
-                    if (!isSupportedMedia(o.before)) {
+            invalid = tinymce.explode(invalid, ',');
+
+            // Convert video elements to image placeholder
+            ed.parser.addNodeFilter('iframe,video,audio,object,embed',
+                placeHolderConverter(ed));
+
+            // Convert placeholders to video elements (legacy conversion)
+            ed.serializer.addAttributeFilter('data-mce-object', function (nodes, name) {
+                var i = nodes.length, node;
+
+                while (i--) {
+                    node = nodes[i];
+
+                    if (!node.parent) {
+                        continue;
+                    }
+
+                    convertPlaceholderToMedia(ed, node);
+                }
+            });
+        });
+
+        ed.onInit.add(function () {
+            var settings = ed.settings;
+
+            ed.theme.onResolveName.add(function (theme, o) {
+                var node, name;
+
+                if (node = ed.dom.getParent(o.node, '[data-mce-object]')) {
+                    name = node.getAttribute('data-mce-object');
+
+                    // skip processing as we are using the parent node
+                    if (o.node !== node) {
+                        o.name = '';
                         return;
                     }
-                    
-                    each(ed.dom.select('video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object'), function (elm) {
-                        var src = elm.getAttribute('src');
 
-                        // get src for placeholder img
-                        if (elm.nodeName === 'IMG') {
-                            src = elm.getAttribute('data-mce-p-src');
-                        }
+                    if (node.nodeName !== 'IMG') {
+                        node = ed.dom.select('iframe,audio,video', node);
 
-                        // check value in <source> element
-                        if (elm.nodeName === 'VIDEO' || elm.nodeName === 'AUDIO') {
-                            var html = elm.getAttribute('data-mce-html');
+                        var src = ed.dom.getAttrib(node, 'src') || ed.dom.getAttrib(node, 'data-mce-p-src') || '';
 
-                            if (html) {
-                                var tmp = ed.dom.create(elm.nodeName, {}, unescape(html));
+                        if (src) {
+                            var str = isSupportedMedia(ed, src) || '';
 
-                                each(tmp.childNodes, function (el) {
-                                    if (el.nodeName == 'SOURCE') {
-                                        if (el.getAttribute('src') == o.before) {
-                                            el.setAttribute('src', o.after);
-                                        }
-                                    }
-                                });
-
-                                elm.setAttribute('data-mce-html', escape(tmp.innerHTML))
-                            }
-
-                            // update poster value
-                            var poster = elm.getAttribute('poster');
-
-                            if (poster && poster == o.before) {
-                                elm.setAttribute('poster', o.after);
+                            if (str) {
+                                name = str[0].toUpperCase() + str.slice(1);
                             }
                         }
-
-                        if (src == o.before) {
-                            updateMedia(ed, { src: o.after }, elm);
-                        }
-                    });
-                });
-
-                var invalid = ed.settings.invalid_elements;
-
-                // keep this for legacy
-                if (ed.settings.schema === "html4") {
-                    // iframe
-                    ed.schema.addValidElements('iframe[longdesc|name|src|frameborder|marginwidth|marginheight|scrolling|align|width|height|allowfullscreen|seamless|*]');
-                    // audio, video, embed
-                    ed.schema.addValidElements('video[src|autobuffer|autoplay|loop|controls|width|height|poster|*],audio[src|autobuffer|autoplay|loop|controls|*],source[src|type|media|*],embed[src|type|width|height|*]');
-                }
-
-                invalid = tinymce.explode(invalid, ',');
-
-                // Convert video elements to image placeholder
-                ed.parser.addNodeFilter('iframe,video,audio,object,embed',
-                    placeHolderConverter(ed));
-
-                // Convert placeholders to video elements (legacy conversion)
-                ed.serializer.addAttributeFilter('data-mce-object', function (nodes, name) {
-                    var i = nodes.length, node;
-
-                    while (i--) {
-                        node = nodes[i];
-
-                        if (!node.parent) {
-                            continue;
-                        }
-
-                        convertPlaceholderToMedia(ed, node);
                     }
-                });
+
+                    if (name === 'object') {
+                        name = 'media';
+                    }
+
+                    o.name = name;
+                }
             });
 
-            ed.onInit.add(function () {
-                var settings = ed.settings;
+            if (!ed.settings.compress.css) {
+                ed.dom.loadCSS(url + "/css/content.css");
+            }
 
-                ed.theme.onResolveName.add(function (theme, o) {
-                    var node, name;
-
-                    if (node = ed.dom.getParent(o.node, '[data-mce-object]')) {
-                        name = node.getAttribute('data-mce-object');
-
-                        // skip processing as we are using the parent node
-                        if (o.node !== node) {
-                            o.name = '';
-                            return;
-                        }
-
-                        if (node.nodeName !== 'IMG') {
-                            node = ed.dom.select('iframe,audio,video', node);
-
-                            var src = ed.dom.getAttrib(node, 'src') || ed.dom.getAttrib(node, 'data-mce-p-src') || '';
-
-                            if (src) {
-                                var str = isSupportedMedia(ed, src) || '';
-
-                                if (str) {
-                                    name = str[0].toUpperCase() + str.slice(1);
-                                }
-                            }
-                        }
-
-                        if (name === 'object') {
-                            name = 'media';
-                        }
-
-                        o.name = name;
-                    }
-                });
-
-                if (!ed.settings.compress.css) {
-                    ed.dom.loadCSS(url + "/css/content.css");
+            ed.onObjectResized.add(function (ed, elm, width, height) {
+                if (!isMediaNode(elm)) {
+                    return;
                 }
 
-                ed.onObjectResized.add(function (ed, elm, width, height) {
-                    if (!isMediaNode(elm)) {
-                        return;
-                    }
+                if (ed.dom.hasClass(elm, 'mce-object-preview')) {
+                    ed.dom.setStyles(elm, { 'width': '', 'height': '' });
 
-                    if (ed.dom.hasClass(elm, 'mce-object-preview')) {
-                        ed.dom.setStyles(elm, { 'width': '', 'height': '' });
+                    elm = elm.firstChild;
+                }
 
-                        elm = elm.firstChild;
-                    }
+                // store values
+                ed.dom.setAttrib(elm, 'data-mce-width', width);
+                ed.dom.setAttrib(elm, 'data-mce-height', height);
 
-                    // store values
-                    ed.dom.setAttrib(elm, 'data-mce-width', width);
-                    ed.dom.setAttrib(elm, 'data-mce-height', height);
+                // remove attributes
+                ed.dom.removeAttrib(elm, 'width');
+                ed.dom.removeAttrib(elm, 'height');
 
-                    // remove attributes
-                    ed.dom.removeAttrib(elm, 'width');
-                    ed.dom.removeAttrib(elm, 'height');
-
-                    // set as styles
-                    ed.dom.setStyles(elm, { 'width': width, 'height': height });
-                });
-
-                ed.dom.bind(ed.getDoc(), 'mousedown touchstart keydown', function (e) {
-                    var node = ed.dom.getParent(e.target, '.mce-object-preview');
-
-                    if (node) {
-                        ed.selection.select(node);
-
-                        window.setTimeout(function () {
-                            node.setAttribute('data-mce-selected', '2');
-                        }, 100);
-
-                        // prevent bubbling up to DragDropOverrides
-                        e.stopImmediatePropagation();
-
-                        if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
-                            return previewToPlaceholder(ed, node);
-                        }
-
-                        return;
-                    }
-                });
-
-                ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-                    var node = ed.selection.getNode();
-
-                    // pause all video and audio in preview elements
-                    each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function (elm) {
-                        elm.pause();
-                    });
-
-                    if (node) {
-                        if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
-                            if (e.type === 'click' && VK.metaKeyPressed(e)) {
-                                return placeholderToPreview(ed, node);
-                            }
-                        }
-                    }
-                });
-
-                ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
-                    // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
-                    if (cmd && cmd.indexOf('Format') !== -1) {
-                        var node = ed.selection.getNode();
-
-                        // if it is a preview node, select the iframe
-                        if (isMediaNode(node)) {
-                            if (node.nodeName !== 'IMG') {
-                                node = node.firstChild;
-                                ed.selection.select(node);
-                            }
-
-                            if (tinymce.is(v, 'object')) {
-                                v.node = node;
-                            }
-                        }
-                    }
-                });
-
-                // add a br element after an iframe insert if it is to be converted to a media preview
-                ed.selection.onBeforeSetContent.add(function (ed, o) {
-                    if (settings.media_live_embed) {
-                        // remove existing caret to prevent duplicates
-                        o.content = o.content.replace(/<br data-mce-caret="1"[^>]+>/gi, '');
-
-                        // add a caret br after iframe content
-                        if (/^<(iframe|video|audio)([^>]+)><\/(iframe|video|audio)>$/.test(o.content)) {
-                            o.content += '<br data-mce-caret="1" />';
-                        }
-                    }
-                });
+                // set as styles
+                ed.dom.setStyles(elm, { 'width': width, 'height': height });
             });
 
-            // Remove iframe preview on backspace or delete
-            ed.onKeyDown.add(function (ed, e) {
+            ed.dom.bind(ed.getDoc(), 'mousedown touchstart keydown', function (e) {
+                var node = ed.dom.getParent(e.target, '.mce-object-preview');
+
+                if (node) {
+                    ed.selection.select(node);
+
+                    window.setTimeout(function () {
+                        node.setAttribute('data-mce-selected', '2');
+                    }, 100);
+
+                    // prevent bubbling up to DragDropOverrides
+                    e.stopImmediatePropagation();
+
+                    if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
+                        return previewToPlaceholder(ed, node);
+                    }
+
+                    return;
+                }
+            });
+
+            ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
                 var node = ed.selection.getNode();
 
-                if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-                    if (node) {
+                // pause all video and audio in preview elements
+                each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function (elm) {
+                    elm.pause();
+                });
 
-                        if (node === ed.getBody()) {
-                            node = e.target;
-                        }
-
-                        if (isMediaNode(node)) {
-                            node = ed.dom.getParent(node, '[data-mce-object]') || node;
-                            ed.dom.remove(node);
-
-                            ed.nodeChanged();
+                if (node) {
+                    if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
+                        if (e.type === 'click' && VK.metaKeyPressed(e)) {
+                            return placeholderToPreview(ed, node);
                         }
                     }
                 }
             });
 
-            function updatePreviewSelection(ed) {
-                each(ed.dom.select('.mce-object-preview', ed.getBody()), function (node) {
+            ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+                // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
+                if (cmd && cmd.indexOf('Format') !== -1) {
+                    var node = ed.selection.getNode();
 
-                    // for an empty block node, padd with a break
-                    if (ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
-                        ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), node);
+                    // if it is a preview node, select the iframe
+                    if (isMediaNode(node)) {
+                        if (node.nodeName !== 'IMG') {
+                            node = node.firstChild;
+                            ed.selection.select(node);
+                        }
+
+                        if (tinymce.is(v, 'object')) {
+                            v.node = node;
+                        }
                     }
-                });
+                }
+            });
+
+            // add a br element after an iframe insert if it is to be converted to a media preview
+            ed.selection.onBeforeSetContent.add(function (ed, o) {
+                if (settings.media_live_embed) {
+                    // remove existing caret to prevent duplicates
+                    o.content = o.content.replace(/<br data-mce-caret="1"[^>]+>/gi, '');
+
+                    // add a caret br after iframe content
+                    if (/^<(iframe|video|audio)([^>]+)><\/(iframe|video|audio)>$/.test(o.content)) {
+                        o.content += '<br data-mce-caret="1" />';
+                    }
+                }
+            });
+        });
+
+        // Remove iframe preview on backspace or delete
+        ed.onKeyDown.add(function (ed, e) {
+            var node = ed.selection.getNode();
+
+            if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+                if (node) {
+
+                    if (node === ed.getBody()) {
+                        node = e.target;
+                    }
+
+                    if (isMediaNode(node)) {
+                        node = ed.dom.getParent(node, '[data-mce-object]') || node;
+                        ed.dom.remove(node);
+
+                        ed.nodeChanged();
+                    }
+                }
+            }
+        });
+
+        function updatePreviewSelection(ed) {
+            each(ed.dom.select('.mce-object-preview', ed.getBody()), function (node) {
+
+                // for an empty block node, padd with a break
+                if (ed.dom.isBlock(node.parentNode) && !node.previousSibling && !node.nextSibling) {
+                    ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), node);
+                }
+            });
+        }
+
+        ed.onSetContent.add(function (ed, o) {
+            updatePreviewSelection(ed);
+        });
+
+        tinymce.util.MediaEmbed = {
+            dataToHtml: function (name, data, innerHtml) {
+                var html = '';
+
+                if (name === "iframe" || name === "video" || name === "audio") {
+                    if (typeof data === "string") {
+                        html = data;
+                    } else {
+                        html = ed.dom.createHTML(name, data, innerHtml);
+                    }
+                }
+
+                return html;
+            }
+        };
+
+        ed.addCommand('insertMediaHtml', function (ui, value) {
+            var data = {}, name = 'iframe', innerHtml = '';
+
+            if (typeof value === 'string') {
+                data = value;
+            } else if (value.name && value.data) {
+                name = value.name, data = value.data;
+                innerHtml = value.innerHtml || '';
             }
 
-            ed.onSetContent.add(function (ed, o) {
-                updatePreviewSelection(ed);
+            var html = tinymce.util.MediaEmbed.dataToHtml(name, data, innerHtml);
+
+            ed.execCommand('mceInsertContent', false, html, {
+                skip_undo: 1
             });
 
-            tinymce.util.MediaEmbed = {
-                dataToHtml: function (name, data, innerHtml) {
-                    var html = '';
+            updatePreviewSelection(ed);
 
-                    if (name === "iframe" || name === "video" || name === "audio") {
-                        if (typeof data === "string") {
-                            html = data;
-                        } else {
-                            html = ed.dom.createHTML(name, data, innerHtml);
-                        }
-                    }
+            ed.undoManager.add();
+        });
 
-                    return html;
-                }
-            };
-
-            ed.addCommand('insertMediaHtml', function (ui, value) {
-                var data = {}, name = 'iframe', innerHtml = '';
-
-                if (typeof value === 'string') {
-                    data = value;
-                } else if (value.name && value.data) {
-                    name = value.name, data = value.data;
-                    innerHtml = value.innerHtml || '';
-                }
-
-                var html = tinymce.util.MediaEmbed.dataToHtml(name, data, innerHtml);
-
-                ed.execCommand('mceInsertContent', false, html, {
-                    skip_undo: 1
-                });
-
-                updatePreviewSelection(ed);
-
-                ed.undoManager.add();
-            });
-        },
-
-        getMediaData: function () {
-            return getMediaData(this.editor);
-        },
-
-        updateMedia: function (data) {
-            return updateMedia(this.editor, data);
-        },
-
-        isMediaObject: function (node) {
-            return isMediaObject(this.editor, node);
+        return {
+            getMediaData: function () {
+                return getMediaData(ed);
+            },
+    
+            updateMedia: function (data) {
+                return updateMedia(ed, data);
+            },
+    
+            isMediaObject: function (node) {
+                return isMediaObject(ed, node);
+            }
         }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('media', tinymce.plugins.MediaPlugin);
 })();
