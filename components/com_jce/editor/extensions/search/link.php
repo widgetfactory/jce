@@ -37,7 +37,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         require_once $adapter;
 
         // create classname, eg: PlgSearchContent
-        $className = 'PlgSearch' . ucfirst($plugin);
+        $className = 'PlgWfSearch' . ucfirst($plugin);
 
         if (!class_exists($className)) {
             return;

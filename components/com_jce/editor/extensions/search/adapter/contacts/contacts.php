@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
 /**
  * Contacts search plugin.
  */
-class PlgSearchContacts extends JPlugin
+class PlgWfSearchContacts extends JPlugin
 {
 	/**
 	 * Load the language file on instantiation.

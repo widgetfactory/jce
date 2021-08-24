@@ -20,7 +20,7 @@ require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
  * Weblinks search plugin.
  *
  */
-class PlgSearchWeblinks extends JPlugin
+class PlgWfSearchWeblinks extends JPlugin
 {
 	/**
 	 * Load the language file on instantiation.

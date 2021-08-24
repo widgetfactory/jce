@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * Tags search plugin.
  *
  */
-class PlgSearchTags extends JPlugin
+class PlgWfSearchTags extends JPlugin
 {
 	/**
 	 * Load the language file on instantiation.

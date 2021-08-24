@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * Content search plugin.
  *
  */
-class PlgSearchContent extends JPlugin
+class PlgWfSearchContent extends JPlugin
 {
     /**
      * Determine areas searchable by this plugin.

@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  *
  * @since  1.6
  */
-class PlgSearchCategories extends JPlugin
+class PlgWfSearchCategories extends JPlugin
 {
     /**
      * Load the language file on instantiation.
