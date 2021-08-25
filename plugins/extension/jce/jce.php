@@ -180,4 +180,37 @@ class PlgExtensionJce extends JPlugin
             JcePluginsHelper::postInstall('uninstall', $plugin, $installer);
         }
     }
+
+    public function onExtensionAfterSave($context, $table, $result)
+    {
+        if ($context !== 'com_config.component') {
+            return;
+        }
+
+        if ($table->element !== 'com_jce') {
+            return;
+        }
+
+        $params = json_decode($table->params, true);
+
+        if ($params && !empty($params['updates_key'])) {
+            $updatesite = JTable::getInstance('Updatesite');
+
+            // sanitize key
+            $key = preg_replace("/[^a-zA-Z0-9]/", "", $params['updates_key']);
+
+            $db = JFactory::getDBO();
+
+            $query = $db->getQuery(true);
+            $query->select($db->qn('update_site_id'))->from('#__update_sites_extensions')->where($db->qn('extension_id') . '=' . (int) $table->package_id);
+            $db->setQuery($query);
+            $update_site_id = $db->loadResult();
+
+            if ($update_site_id) {
+                $updatesite->load($update_site_id);
+                $updatesite->bind(array('extra_query' => 'key=' . $key));
+                $updatesite->store();
+            }
+        }
+    }
 }
