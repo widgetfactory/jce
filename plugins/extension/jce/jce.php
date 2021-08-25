@@ -207,9 +207,11 @@ class PlgExtensionJce extends JPlugin
             $update_site_id = $db->loadResult();
 
             if ($update_site_id) {
-                $updatesite->load($update_site_id);
-                $updatesite->bind(array('extra_query' => 'key=' . $key));
-                $updatesite->store();
+                if ($updatesite->load($update_site_id)) {
+                    $updatesite->bind(array('extra_query' => 'key=' . $key));
+                    $updatesite->check();
+                    $updatesite->store();
+                }
             }
         }
     }
