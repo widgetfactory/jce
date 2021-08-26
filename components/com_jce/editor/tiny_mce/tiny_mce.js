@@ -20140,7 +20140,6 @@
 				elm.id = id;
 				elm.type = 'text/javascript';
 				elm.src = tinymce._addVer(url);
-				elm.defer = true;
 
 				// Add onload listener for non IE browsers since IE9
 				// fires onload event before the script is parsed and executed
