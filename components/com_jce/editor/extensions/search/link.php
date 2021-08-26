@@ -82,17 +82,18 @@ class WFLinkSearchExtension extends WFSearchExtension
         // get plugins
         $plugins = $wf->getParam('search.link.plugins', array());
 
-        // default core search plugins
-        $default = array('categories', 'contacts', 'content', 'weblinks', 'tags');
-
+        // set defaults if empty
         if (empty($plugins)) {
-            $plugins = $default;
+            $plugins = array('categories', 'contacts', 'content', 'tags');
         }
+
+        // list core adapters
+        $adapters = array('categories', 'contacts', 'content', 'tags', 'weblinks');
 
         // check and load external search plugins
         foreach ($plugins as $plugin) {
             // process core search plugins
-            if (in_array($plugin, $default)) {
+            if (in_array($plugin, $adapters)) {
                 $this->loadDefaultAdapter($plugin);
                 continue;
             }
