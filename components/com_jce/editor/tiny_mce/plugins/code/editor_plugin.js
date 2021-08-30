@@ -938,7 +938,7 @@
 
           // shortcode content will be encoded as text, so decode
           if (ed.settings.code_protect_shortcode) {
-            o.content = o.content.replace(/\{([\s\S]+)\}/gi, function (match, content) {
+            o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
               return '{' + ed.dom.decode(content) + '}';
             });
           }
