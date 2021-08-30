@@ -9,10 +9,8 @@
  */
 (function () {
     var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
         each = tinymce.each,
-        Node = tinymce.html.Node;
-    var VK = tinymce.VK,
+        VK = tinymce.VK,
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
@@ -154,7 +152,7 @@
                 if (!ed.settings.compress.css) {
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
-                
+
                 ed.parser.addNodeFilter('hr', function (nodes) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i],
@@ -270,9 +268,7 @@
         },
 
         _getPageBreak: function () {
-            var t = this,
-                ed = this.editor,
-                dom = ed.dom,
+            var ed = this.editor,
                 n = ed.selection.getNode(),
                 o;
 
@@ -287,8 +283,7 @@
         },
 
         _updatePageBreak: function (n, v) {
-            var t = this,
-                ed = this.editor;
+            var ed = this.editor;
 
             tinymce.extend(v, {
                 'data-mce-alt': v.alt || ''
@@ -300,13 +295,11 @@
         },
 
         _insertBreak: function (s, args) {
-            var t = this,
-                ed = this.editor,
+            var ed = this.editor,
                 dom = ed.dom,
                 n = ed.selection.getNode(),
-                ns, h, c, re, isBlock = false,
-                hr, p, desc = '',
-                bElm = [];
+                ns, h,
+                hr, p;
 
             var blocks = 'H1,H2,H3,H4,H5,H6,P,DIV,ADDRESS,PRE,FORM,TABLE,OL,UL,CAPTION,BLOCKQUOTE,CENTER,DL,DIR,FIELDSET,NOSCRIPT,NOFRAMES,MENU,ISINDEX,SAMP,SECTION,ARTICLE,HGROUP,ASIDE,FIGURE';
 

@@ -68,17 +68,22 @@
           val += val;
         }
 
-        values = parseInt(val, 16);
+        r = parseInt(val.substring(0, 2), 16);
+        g = parseInt(val.substring(2, 4), 16);
+        b = parseInt(val.substring(4, 6), 16);
 
-        r = (values >> 16) & 0xFF;
-        g = (values >> 8) & 0xFF;
-        b = (values >> 0) & 0xFF;
-        a = (values >> 24) & 0xFF;
+        if (val.length > 6) {
+          a = parseInt(val.substring(6, 8), 16);
+          a = +(a / 255).toFixed(2);
+        }
+
       } else {
         // remove spaces
         val = val.replace(/\s/g, '');
 
-        if (match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val)) {
+        var match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val);
+
+        if (match) {
           values = match[1].split(',').map(function (x, i) {
             return parseFloat(x);
           });
@@ -399,9 +404,6 @@
                 return true;
               }
 
-              // IE8
-              if (!r.type) { }
-
               if (r.selectorText) {
                 each(r.selectorText.split(','), function (v) {
                   v = v.replace(/^\s*|\s*$|^\s\./g, "");
@@ -419,7 +421,7 @@
 
               break;
 
-              // Import
+            // Import
             case 3:
               if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                 var v = '@import url(' + r.href + ');';
@@ -434,7 +436,7 @@
                 parseCSS(r.styleSheet);
               }
               break;
-              // font-face
+            // font-face
             case 5:
               // check for text and skip popular font icons
               if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {

@@ -248,7 +248,7 @@
 
             html.push('<', name);
 
-            var len, attr;
+            var attr;
 
             if (attrs) {
               for (var i = 0, len = attrs.length; i < len; i++) {
@@ -413,8 +413,10 @@
       }
 
       ed.onKeyDown.add(function (ed, e) {
+        var node;
+
         if (e.keyCode == VK.ENTER) {
-          var node = ed.selection.getNode();
+          node = ed.selection.getNode();
 
           if (node.nodeName === 'PRE') {
             var type = node.getAttribute('data-mce-code') || '';
@@ -449,7 +451,7 @@
         }
 
         if (e.keyCode == VK.UP && e.altKey) {
-          var node = ed.selection.getNode();
+          node = ed.selection.getNode();
 
           handleEnterInPre(ed, node, true);
           e.preventDefault();
@@ -457,7 +459,7 @@
 
         // Check for tab but not ctrl/cmd+tab since it switches browser tabs
         if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
-          var node = ed.selection.getNode();
+          node = ed.selection.getNode();
 
           if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
             ed.selection.setContent('\t', { no_events: true });
@@ -466,7 +468,7 @@
         }
 
         if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-          var node = ed.selection.getNode();
+          node = ed.selection.getNode();
 
           if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
             ed.undoManager.add();
@@ -661,7 +663,7 @@
             }
 
             // serialize to string
-            var value = new Serializer({ validate: false }).serialize(node);
+            value = new Serializer({ validate: false }).serialize(node);
 
             // trim
             value = tinymce.trim(value);
@@ -735,7 +737,9 @@
           }
 
           while (i--) {
-            var node = nodes[i], root_block = false;
+            var root_block = false;
+
+            node = nodes[i];
 
             // get the code block type, eg: script, shortcode, style, php
             var type = node.attr(name);
@@ -744,15 +748,15 @@
               var elm = new Node(type, 1);
 
               for (var key in node.attributes.map) {
-                var value = node.attributes.map[key];
+                var val = node.attributes.map[key];
 
                 if (key.indexOf('data-mce-p-') !== -1) {
                   key = key.substr(11);
                 } else {
-                  value = null;
+                  val = null;
                 }
 
-                elm.attr(key, value);
+                elm.attr(key, val);
               }
 
               var value = node.attr('data-mce-value');

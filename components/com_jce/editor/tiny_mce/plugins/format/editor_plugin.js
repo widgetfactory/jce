@@ -257,7 +257,7 @@
             break;
           case 'RemoveFormat':
             if (!v && !ed.dom.isBlock(n)) {
-              var cm = ed.controlManager.get('styleselect');
+              cm = ed.controlManager.get('styleselect');
               // get select Styles value if any
               if (cm && cm.selectedValue) {
                 // remove style
