@@ -13,7 +13,7 @@
 
   (function (win) {
     var whiteSpaceRe = /^\s*|\s*$/g,
-      undef, isRegExpBroken = 'B'.replace(/A(.)|B/, '$1') === '$1';
+      undef;
 
     var slice = [].slice;
 
@@ -1042,8 +1042,8 @@
 
     tinymce.util.Delay = {
       /**
-           * Requests an animation frame and fallbacks to a timeout on older browsers.
-           *
+       * Requests an animation frame and fallbacks to a timeout on older browsers.
+       *
            * @method requestAnimationFrame
            * @param {function} callback Callback to execute when a new frame is available.
            * @param {DOMElement} element Optional element to scope it to.
@@ -1146,11 +1146,11 @@
       clearInterval: wrappedClearInterval,
 
       /**
-           * Clears an timeout timer so it won't execute.
-           *
-           * @method clearTimeout
-           * @param {Number} Timeout timer id number.
-           */
+             * Clears an timeout timer so it won't execute.
+             *
+             * @method clearTimeout
+             * @param {Number} Timeout timer id number.
+             */
       clearTimeout: wrappedClearTimeout
     };
   })(tinymce);
@@ -1742,8 +1742,6 @@
    */
 
   (function (tinymce) {
-    var each = tinymce.each;
-
     /**
        * This class contains simple storage manangement functions.
        *
@@ -1774,7 +1772,9 @@
         if (v) {
           try {
             h = JSON.parse(v);
-          } catch (e) { }
+          } catch (e) {
+            /* error */
+          }
         }
 
         return h;
@@ -2958,7 +2958,7 @@
         }
       }
 
-      editor.parser.addNodeFilter('span', function (nodes, name) {
+      editor.parser.addNodeFilter('span', function (nodes) {
         var i = nodes.length,
           node;
         while (i--) {
@@ -2967,7 +2967,7 @@
         }
       });
 
-      editor.serializer.addNodeFilter('span', function (nodes, name) {
+      editor.serializer.addNodeFilter('span', function (nodes) {
         var i = nodes.length,
           node;
         while (i--) {
@@ -3717,6 +3717,64 @@
       editor.onMouseUp.add(normalize);
     }
 
+    /*function inlineBoundary() {
+      function isBoundaryNode(node) {
+        return node && node.nodeName === 'A';
+      }
+
+      function isLastChildOf(node) {
+        return node.parentNode && node.parentNode.lastChild === node;
+      }
+
+      editor.onNodeChange.add(function () {
+        // remove existing selections
+        dom.removeAttrib(dom.select('a'), 'data-mce-selected');
+
+        var node = editor.selection.getNode(), node = dom.getParent(node, 'a');
+
+        if (isBoundaryNode(node)) {
+          node.setAttribute('data-mce-selected', 'inline-boundary');
+        }
+      });
+
+  		// Attempt to move caret after a container element like <a> or <code>
+      editor.onKeyDown.addToTop(function (editor, e) {
+        if (e.keyCode == VK.RIGHT) {
+          var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
+
+          if (!node || node === editor.getBody()) {
+            return;
+          }
+
+          node = dom.getParent(node, 'a');
+
+          if (!isBoundaryNode(node) || !isLastChildOf(node)) {
+            return;
+          }
+
+          if (container.nodeType === 3 && node) {
+            var text = container.data;
+
+            if (text && text.length && rng.startOffset == text.length) {
+              var marker = dom.add(node.parentNode, 'span', {'data-mce-type': "bookmark"}, '\uFEFF');
+
+              // Move the caret to the end of the marker
+              rng = dom.createRng();
+              rng.setStart(marker, 0);
+              rng.setEnd(marker, 0);
+              selection.setRng(rng);
+
+              // remove marker
+              dom.remove(marker);
+
+              editor.nodeChanged();
+              e.preventDefault();
+            }
+          }
+        }
+      });
+    }*/
+
     // All browsers
     normalizeSelection();
 
@@ -3783,6 +3841,7 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
   (function (tinymce) {
     var each = tinymce.each;
 
@@ -3800,18 +3859,22 @@
             val += val;
           }
 
-          values = parseInt(val, 16);
+          r = parseInt(val.substring(0, 2), 16);
+          g = parseInt(val.substring(2, 4), 16);
+          b = parseInt(val.substring(4, 6), 16);
 
-          r = (values >> 16) & 0xFF;
-          g = (values >> 8) & 0xFF;
-          b = (values >> 0) & 0xFF;
-          a = (values >> 24) & 0xFF;
+          if (val.length > 6) {
+            a = parseInt(val.substring(6, 8), 16);
+            a = +(a / 255).toFixed(2);
+          }
+
         } else {
           // remove spaces
           val = val.replace(/\s/g, '');
+          match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val);
 
-          if (match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val)) {
-            values = match[1].split(',').map(function (x, i) {
+          if (match) {
+            values = match[1].split(',').map(function (x) {
               return parseFloat(x);
             });
           }
@@ -3827,7 +3890,7 @@
           }
         }
 
-        rgba[val] = { r: r, g: g, b: b, a: a };
+        rgba[val] = {r: r, g: g, b: b, a: a};
       }
 
       return rgba[val];
@@ -3950,25 +4013,21 @@
 
       ed.getBody().appendChild(previewElm);
 
-      // Get parent container font size so we can compute px values out of em/% for older IE:s
-      var parentFontSize = dom.getStyle(ed.getBody(), 'fontSize', true);
-      var parentFontSize = /px$/.test(parentFontSize) ? parseInt(parentFontSize, 10) : 0;
-
       // get body background color and element background color
       var bodybg = dom.getStyle(ed.getBody(), 'background-color', true), elmbg = dom.getStyle(previewElm, 'background-color', true);
 
       var styles = previewStyles.split(' ');
 
       for (var i = 0, len = styles.length; i < len; i++) {
-        var name = styles[i], value = dom.getStyle(previewElm, name, true);
+        var key = styles[i], value = dom.getStyle(previewElm, key, true);
 
         // skip if already added
-        if (name == 'background-color' && previewCss[name]) {
+        if (key == 'background-color' && previewCss[key]) {
           continue;
         }
 
         // If text color is white and the background color is white or transparent, override with default color
-        if (name == 'color') {
+        if (key == 'color') {
           // default to white if transparent
           if (/transparent|rgba\s*\([^)]+,\s*0\)/.test(elmbg)) {
             elmbg = white;
@@ -3986,11 +4045,11 @@
         }
 
         // set to default if value is 0
-        if (name == 'font-size' && parseInt(value) === 0) {
+        if (key == 'font-size' && parseInt(value) === 0) {
           value = 'inherit';
         }
 
-        previewCss[name] = value;
+        previewCss[key] = value;
       }
 
       dom.remove(previewElm);
@@ -10199,7 +10258,7 @@
           }
 
           if (keep_children) {
-            while (child = node.firstChild) {
+            while ((child = node.firstChild)) {
               // IE 8 will crash if you don't remove completely empty text nodes
               if (!tinymce.isIE || child.nodeType !== 3 || child.nodeValue) {
                 parent.insertBefore(child, node);
@@ -12762,7 +12821,7 @@
    */
   (function (tinymce) {
     var NodeType = tinymce.dom.NodeType, DOMUtils = tinymce.DOM;
-    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
+    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr, CaretPosition = tinymce.caret.CaretPosition;
 
     var isText = NodeType.isText,
       isBogus = NodeType.isBogus,
@@ -14382,7 +14441,7 @@
           clientRect = getAbsoluteClientRect(node, before);
           DOM.setStyle(caretContainerNode, 'top', clientRect.top);
 
-          $lastVisualCaret = DOM.add(rootNode, 'div', { 'class': 'mce-visual-caret', 'data-mce-bogus': 'all', 'style': clientRect });
+          $lastVisualCaret = DOM.add(rootNode, 'div', {'class': 'mce-visual-caret', 'data-mce-bogus': 'all', 'style': clientRect});
 
           if (before) {
             DOM.addClass($lastVisualCaret, 'mce-visual-caret-before');
@@ -16956,7 +17015,6 @@
       CaretContainer = tinymce.caret.CaretContainer,
       CaretPosition = tinymce.caret.CaretPosition,
       RangeUtils = tinymce.dom.RangeUtils,
-      NodeType = tinymce.dom.NodeType,
       Zwsp = tinymce.text.Zwsp,
       Arr = tinymce.util.Arr;
 
@@ -18138,9 +18196,6 @@
           updateTableRect(editor, e);
         });
 
-      		// Hide rect on focusout since it would float on top of windows otherwise
-      		//editor.onFocusOut.add(hideResizeRect);
-
         editor.onBlur.add(hideResizeRect);
         editor.onHide.add(hideResizeRect);
       });
@@ -18290,10 +18345,10 @@
       });
 
       // Add onBeforeSetContent with cleanup
-      self.onBeforeSetContent.add(function (self, args) {
+      self.onBeforeSetContent.add(function (e, args) {
         if (args.format !== 'raw') {
-          var node = new tinymce.html.DomParser(editor.settings, editor.schema).parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
-          args.content = new tinymce.html.Serializer({ validate: editor.settings.validate }, editor.schema).serialize(node);
+          var node = new tinymce.html.DomParser(editor.settings, editor.schema).parse(args.content, extend(args, {isRootContent: true, forced_root_block: false}));
+          args.content = new tinymce.html.Serializer({validate: editor.settings.validate}, editor.schema).serialize(node);
         }
       });
 
@@ -18733,7 +18788,7 @@
 
               return;
             }
-          } while (node = (start ? walker.next() : walker.prev()));
+          } while ((node = (start ? walker.next() : walker.prev())));
         }
 
         if (node) {
@@ -18878,7 +18933,7 @@
           // IE throws unspecified error here if TinyMCE is placed in a frame/iframe
         }
 
-        var evt = { range: rng };
+        evt = {range: rng};
 
         self.onGetSelectionRange.dispatch(self, evt);
 
@@ -18968,7 +19023,7 @@
 
         sel = self.getSel();
 
-        var evt = { range: rng };
+        var evt = {range: rng};
 
         self.onSetSelectionRange.dispatch(self, evt);
 
@@ -19224,7 +19279,7 @@
           function hasBrBeforeAfter(node, left) {
             var walker = new TreeWalker(node, dom.getParent(node.parentNode, dom.isBlock) || body);
 
-            while (node = walker[left ? 'prev' : 'next']()) {
+            while ((node = walker[left ? 'prev' : 'next']())) {
               if (node.nodeName === "BR") {
                 return true;
               }
@@ -19240,7 +19295,7 @@
             walker = new TreeWalker(startNode, dom.getParent(startNode.parentNode, dom.isBlock) || body);
 
             // Walk left until we hit a text node we can move to or a block/br/img
-            while (node = walker[left ? 'prev' : 'next']()) {
+            while ((node = walker[left ? 'prev' : 'next']())) {
               // Found text node that has a length
               if (node.nodeType === 3 && node.nodeValue.length > 0) {
                 container = node;
@@ -19320,7 +19375,7 @@
                     normalized = true;
                     break;
                   }
-                } while (node = (start ? walker.next() : walker.prev()));
+                } while ((node = (start ? walker.next() : walker.prev())));
               }
             }
           }
@@ -19967,7 +20022,7 @@
           }
 
           // Nodes needs to be attached to something in WebKit/Opera
-          		// This fix will make DOM ranges and make Sizzle happy!
+          // This fix will make DOM ranges and make Sizzle happy!
           impl = document.implementation;
           if (impl.createHTMLDocument) {
             // Create an empty HTML document
@@ -21340,7 +21395,7 @@
    */
   (function (tinymce) {
     // Shorten class names
-    var dom = tinymce.DOM, each = tinymce.each;
+    var dom = tinymce.DOM;
     /**
   	 * This class is used to create layouts. A layout is a container for other controls like buttons etc.
   	 *
@@ -22039,7 +22094,7 @@
       addFilterTag: function (item) {
         var self = this, value = item.settings.title;
 
-        var filter = DOM.get('menu_filter_' + self.id), btn = DOM.create('button', { 'class': 'mceButton', 'value': value }, '<label>' + value + '</label>');
+        var filter = DOM.get('menu_filter_' + self.id), btn = DOM.create('button', {'class': 'mceButton', 'value': value}, '<label>' + value + '</label>');
         DOM.insertBefore(btn, filter.lastChild);
 
         Event.add(btn, 'click', function (evt) {
@@ -22533,7 +22588,8 @@
             nodes.reverse();
           }
 
-          var endIndex = Math.max(0, nodes.length - 1), tabIndex = nodeIndex(nodes, evt.target);
+          var endIndex = Math.max(0, nodes.length - 1);
+          tabIndex = nodeIndex(nodes, evt.target);
 
           tabIndex++;
 
@@ -22869,7 +22925,6 @@
   		 * @param {Editor} ed Optional the editor instance this button is for.
   		 */
       ListBox: function (id, s, ed) {
-
         this.parent(id, s, ed);
 
         /**
@@ -23652,7 +23707,7 @@
     var DOM = tinymce.DOM,
       Event = tinymce.dom.Event,
       each = tinymce.each,
-      Dispatcher = tinymce.util.Dispatcher;
+      Dispatcher = tinymce.util.Dispatcher;
 
     /**
   	 * This class is used to create text / input boxes.
@@ -23760,7 +23815,7 @@
           this.onChange.add(s.onchange);
         }
 
-        Event.add(this.id, 'change', function (e) {
+        Event.add(this.id, 'change', function () {
           self.onChange.dispatch(this, DOM.get(self.id));
         });
 
@@ -23800,22 +23855,22 @@
     var DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
     /**
-  	 * This class is used to create text / input boxes.
-  	 *
-  	 * @class tinymce.ui.TextBox
-  	 * @extends tinymce.ui.Control
-  	 * @example
-  	 */
+     * This class is used to create text / input boxes.
+     *
+     * @class tinymce.ui.TextBox
+     * @extends tinymce.ui.Control
+     * @example
+     */
     tinymce.create('tinymce.ui.UrlBox:tinymce.ui.TextBox', {
       /**
-  		 * Constructs a new textbox control instance.
-  		 *
-  		 * @constructor
-  		 * @method TextBox
-  		 * @param {String} id Control id for the list box.
-  		 * @param {Object} s Optional name/value settings object.
-  		 * @param {Editor} ed Optional the editor instance this button is for.
-  		 */
+       * Constructs a new textbox control instance.
+       *
+       * @constructor
+       * @method TextBox
+       * @param {String} id Control id for the list box.
+       * @param {Object} s Optional name/value settings object.
+       * @param {Editor} ed Optional the editor instance this button is for.
+       */
       UrlBox: function (id, s, ed) {
         s.multiline = false;
 
@@ -23827,12 +23882,12 @@
       },
 
       /**
-  		 * Renders the text box as a HTML string. This method is much faster than using the DOM and when
-  		 * creating a whole toolbar with buttons it does make a lot of difference.
-  		 *
-  		 * @method renderHTML
-  		 * @return {String} HTML for the text control element.
-  		 */
+       * Renders the text box as a HTML string. This method is much faster than using the DOM and when
+       * creating a whole toolbar with buttons it does make a lot of difference.
+       *
+       * @method renderHTML
+       * @return {String} HTML for the text control element.
+       */
       renderHTML: function () {
         var html = this.parent(),
           s = this.settings;
@@ -23858,35 +23913,35 @@
       },
 
       /**
-  		 * Sets the loading state for the control. This will add an aria-busy property to the
-  		 * element that contains the control and set the disable state.
-  		 *
-  		 * @method setLoading
-  		 * @param {Boolean} state Boolean state if the control should be set loading or not.
-  		 */
-  		 setLoading: function (state) {
+       * Sets the loading state for the control. This will add an aria-busy property to the
+       * element that contains the control and set the disable state.
+       *
+       * @method setLoading
+       * @param {Boolean} state Boolean state if the control should be set loading or not.
+       */
+      setLoading: function (state) {
         this.setAriaProperty('busy', state);
         this.setDisabled(state);
       },
 
       /**
-  		 * Sets the disabled state for the control. This will add CSS classes to the
-  		 * element that contains the control. So that it can be disabled visually.
-  		 *
-  		 * @method setDisabled
-  		 * @param {Boolean} state Boolean state if the control should be disabled or not.
-  		 */
-  		 setDisabled: function (state) {
+       * Sets the disabled state for the control. This will add CSS classes to the
+       * element that contains the control. So that it can be disabled visually.
+       *
+       * @method setDisabled
+       * @param {Boolean} state Boolean state if the control should be disabled or not.
+       */
+      setDisabled: function (state) {
         this.parent(state);
         DOM.get(this.id + '_upload').disabled = state;
       },
 
       /**
-  		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
-  		 *
-  		 * @method postRender
-  		 */
+       * Post render event. This will be executed after the control has been rendered and can be used to
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+       *
+       * @method postRender
+       */
       postRender: function () {
         var self = this, s = this.settings;
 
@@ -23916,11 +23971,11 @@
             Event.cancel(e);
           });
 
-          DOM.bind(this.id, 'dragover dragenter', function (e) {
+          DOM.bind(this.id, 'dragover dragenter', function () {
             DOM.addClass(this.id, 'mceUrlBoxUploadHover');
           });
 
-          DOM.bind(this.id, 'dragleave', function (e) {
+          DOM.bind(this.id, 'dragleave', function () {
             DOM.removeClass(this.id, 'mceUrlBoxUploadHover');
           });
 
@@ -23951,7 +24006,7 @@
     var DOM = tinymce.DOM,
       Event = tinymce.dom.Event,
       each = tinymce.each,
-      Dispatcher = tinymce.util.Dispatcher;
+      Dispatcher = tinymce.util.Dispatcher;
 
     /**
   	 * This class is used to create text / input boxes.
@@ -24067,11 +24122,11 @@
           this.onChange.add(s.onchange);
         }
 
-        Event.add(this.id, 'click', function (e) {
+        Event.add(this.id, 'click', function () {
           self.checked(self.checked());
         });
 
-        Event.add(this.id, 'change', function (e) {
+        Event.add(this.id, 'change', function () {
           self.onChange.dispatch(this, DOM.get(self.id));
         });
 
@@ -25072,7 +25127,7 @@
       showPanel: function (elm) {
         var self = this,
           s = this.settings,
-          pos, x, y, mx, my;
+          pos, x, y, mx, my, w, h, vp, panel;
 
         this.storeSelection();
 
@@ -25086,7 +25141,7 @@
 
         vp = DOM.getViewPort();
 
-        var panel = DOM.get(self.id);
+        panel = DOM.get(self.id);
 
         if (!panel) {
           return;
@@ -25109,7 +25164,7 @@
         my = vp.y + vp.h;
 
         if ((x + w) > mx) {
-          x = px ? px - w : Math.max(0, mx - w);
+          x =  Math.max(0, mx - w);
         }
 
         if ((y + h) > my) {
@@ -25168,7 +25223,7 @@
           style: 'position:absolute;left:0;top:-1000px;'
         });
 
-        panel = DOM.add(panel, 'div', { 'class': prefix });
+        panel = DOM.add(panel, 'div', {'class': prefix});
 
         var content = DOM.add(panel, 'div', {
           'class': prefix + 'Content'
@@ -25209,7 +25264,7 @@
         DOM.setHTML(content, html.join(''));
 
         if (s.url) {
-          DOM.add(panelContent, 'iframe', {
+          DOM.add(content, 'iframe', {
             'id': self.id + '_iframe',
             'src': s.url,
             style: {
@@ -25295,7 +25350,7 @@
            * @method hideMenu
            * @param {Event} e Optional event object.
            */
-      hidePanel: function (e) {
+      hidePanel: function () {
         var self = this;
 
         DOM.hide(self.id);
@@ -25334,29 +25389,10 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
-  (function (tinymce) {
+  (function () {
     var DOM = tinymce.DOM,
-      Event = tinymce.dom.Event;
-
-    function debounce(func, wait, immediate) {
-      var timeout;
-      return function () {
-        var context = this,
-          args = arguments;
-        var later = function () {
-          timeout = null;
-          if (!immediate) {
-            func.apply(context, args);
-          }
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) {
-          func.apply(context, args);
-        }
-      };
-    }
+      Event = tinymce.dom.Event,
+      Delay = tinymce.util.Delay;
 
     tinymce.create('tinymce.ui.ContextPanel:tinymce.ui.Panel', {
       /**
@@ -25386,7 +25422,7 @@
 
         DOM.addClass(DOM.select('.mcePanel', DOM.get(this.id)), 'mceContextPanel');
 
-        var scrollFunc = debounce(function () {
+        var scrollFunc = Delay.debounce(function () {
           if (self.isPanelVisible) {
             self.positionPanel();
           }
@@ -25413,7 +25449,7 @@
       },
 
       positionPanel: function () {
-        var self = this, x, y;
+        var self = this, x, y, pos, w;
 
         var panel = DOM.get(self.id);
 
@@ -25453,7 +25489,6 @@
         y = pos.y + offset.y;
 
         w = panel.clientWidth;
-        h = panel.clientHeight;
 
         // position to center of target
         x = x - w / 2;
@@ -25479,7 +25514,7 @@
         this.parent();
       }
     });
-  })(tinymce);
+  })();
 
   /**
    * @package   	JCE
@@ -25666,7 +25701,7 @@
       renderHTML: function () {
         var html = '',
           self = this,
-          s = self.settings;
+          s = self.settings, icon;
 
         if (s.image) {
           icon = DOM.createHTML('img ', {
@@ -25716,7 +25751,7 @@
         var self = this,
           s = self.settings;
 
-        activate = function (evt) {
+        var activate = function (evt) {
           if (!self.isDisabled()) {
             s.onclick(self.value);
             Event.cancel(evt);
@@ -25772,9 +25807,7 @@
    * other free or open source software licenses.
    */
   (function (tinymce) {
-    var DOM = tinymce.DOM,
-      Event = tinymce.dom.Event,
-      Dispatcher = tinymce.util.Dispatcher;
+    var Dispatcher = tinymce.util.Dispatcher;
 
     tinymce.create('tinymce.ui.ButtonDialog:tinymce.ui.PanelButton', {
       /**
@@ -25793,7 +25826,7 @@
 
         if (s.buttons) {
           tinymce.each(s.buttons, function (btn) {
-            btn.onclick = btn.click || function () {};
+            btn.onclick = btn.click || function () { };
           });
         }
 
@@ -26350,6 +26383,8 @@
   		 * });
   		 */
       init: function (settings) {
+        /*eslint no-unused-vars:0*/
+
         var self = this;
 
         function createId(elm) {
@@ -26778,7 +26813,7 @@
       });
     };
 
-    var normalizeSelection = function (editor, rng) {
+    var normalizeSelection = function (editor) {
       editor.selection.normalize();
     };
 
@@ -26795,7 +26830,7 @@
         body.focus();
       }
     };
-
+    /*eslint no-unused-vars:0*/
     var focusEditor = function (editor) {
       var controlElm, contentEditableHost, rng, doc = editor.getDoc(),
         body = editor.getBody(),
@@ -29055,10 +29090,8 @@
 
       setMode: function (disabled) {
         // It will not steal focus while setting contentEditable
-        body = self.getBody();
-
+        var body = self.getBody();
         body.contentEditable = disabled;
-
         body.disabled = disabled;
       },
 
@@ -30994,26 +31027,12 @@
         },
 
         'Cut,Copy,Paste': function (command) {
-          var doc = editor.getDoc();
-
           // Try executing the native command
           try {
             execNativeCommand(command);
           } catch (ex) {
+            // Command failed
           }
-
-          // Present alert message about clipboard access not being available
-          /*if (failed || !doc.queryCommandSupported(command)) {
-  					if (tinymce.isGecko) {
-  						editor.windowManager.confirm(editor.getLang('clipboard_msg'), function (state) {
-  							if (state) {
-  								open('http://www.mozilla.org/editor/midasdemo/securityprefs.html', '_blank');
-  							}
-  						});
-  					} else {
-  						editor.windowManager.alert(editor.getLang('clipboard_no_support'));
-  					}
-  				}*/
         },
 
         // Override unlink command
@@ -31668,11 +31687,7 @@
         'InsertUnorderedList,InsertOrderedList': function (command) {
           var list = dom.getParent(selection.getNode(), 'ul,ol,dl');
 
-          return list &&
-  					(
-  					  command === 'insertunorderedlist' && list.tagName === 'UL' ||
-  						command === 'insertorderedlist' && list.tagName === 'OL'
-  					);
+          return list && (command === 'insertunorderedlist' && list.tagName === 'UL' || command === 'insertorderedlist' && list.tagName === 'OL');
         }
       }, 'state');
 
@@ -32344,7 +32359,7 @@
       createDropMenu: function (id, s, cc) {
         var self = this,
           ed = self.editor,
-          c, bm, cls, bm;
+          c, bm, cls;
 
         s = extend({
           'class': 'mceDropDown',
@@ -32493,7 +32508,7 @@
             return;
           }
 
-          each(ed.settings.importcss_classes, function (item, idx) {
+          each(ed.settings.importcss_classes, function (item) {
             // Parse simple element.class1, .class1
             var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(item.selector || item);
 
@@ -32512,7 +32527,7 @@
             each(classes, function (cls) {
               ctrl.add(cls, cls, {
                 style: function () {
-                  return tinymce.util.PreviewCss(ed, { classes: cls });
+                  return tinymce.util.PreviewCss(ed, {classes: cls});
                 }
               });
             });
@@ -32750,7 +32765,7 @@
         return self.add(c);
       },
 
-      createUrlBox: function (id, s, cc) {
+      createUrlBox: function (id, s) {
         var ed = this.editor;
 
         s.upload_label = ed.getLang(s.upload_label, 'Upload');
@@ -32759,7 +32774,7 @@
         return this.createTextBox(id, s, tinymce.ui.UrlBox);
       },
 
-      createCheckBox: function (id, s, cc) {
+      createCheckBox: function (id, s) {
         var self = this,
           ed = self.editor,
           c, cls;
@@ -32815,7 +32830,7 @@
         return self.add(c);
       },
 
-      createContextPanel: function (id, s, cc) {
+      createContextPanel: function (id, s) {
         var cc = tinymce.ui.ContextPanel;
         return this.createPanel(id, s, cc);
       },
@@ -32980,6 +32995,16 @@
       }
     }
 
+    function nodeIndex(nodes, node) {
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i] === node) {
+          return i;
+        }
+      }
+
+      return -1;
+    }
+
     /**
        * This class handles the creation of native windows and dialogs. This class can be extended to provide for example inline dialogs.
        *
@@ -33050,8 +33075,8 @@
 
         id = DOM.uniqueId("mce_window_"); // Use a prefix so this can't conflict with other ids
 
-        f = extend({ width: 0, height: 0 }, f || {});
-        p = extend({ mce_window_id: id }, p || {});
+        f = extend({width: 0, height: 0}, f || {});
+        p = extend({mce_window_id: id}, p || {});
 
         // Only store selection if the type is a normal window
         if (!f.type) {
@@ -33080,14 +33105,14 @@
 
         // create modal
         if (!modal.length) {
-          modal = DOM.add(DOM.doc.body, 'div', { 'class': ed.settings.skin_class + ' mceModal', role: 'dialog', 'aria-labelledby': id + '_title' }, '');
+          modal = DOM.add(DOM.doc.body, 'div', {'class': ed.settings.skin_class + ' mceModal', role: 'dialog', 'aria-labelledby': id + '_title'}, '');
 
           if (f.overlay !== false) {
-            DOM.add(modal, 'div', { 'class': 'mceModalOverlay' });
+            DOM.add(modal, 'div', {'class': 'mceModalOverlay'});
           }
         }
 
-        DOM.add(modal, 'div', { 'class': 'mceModalFrame', id: id + '_frame' }, html);
+        DOM.add(modal, 'div', {'class': 'mceModalFrame', id: id + '_frame'}, html);
 
         if (!f.fixed) {
           DOM.addClass(DOM.select('.mceModalHeader', modal), 'mceModalMove');
@@ -33111,7 +33136,7 @@
 
           DOM.addClass(id + '_content', 'mceModalContentIframe');
 
-          var iframe = DOM.add(id + '_content', 'iframe', { id: id + '_ifr', src: 'javascript:""', frameBorder: 0, 'aria-label': 'Dialog Content Iframe' });
+          var iframe = DOM.add(id + '_content', 'iframe', {id: id + '_ifr', src: 'javascript:""', frameBorder: 0, 'aria-label': 'Dialog Content Iframe'});
           DOM.setAttrib(iframe, 'src', url);
 
           Event.add(iframe, 'load', function () {
@@ -33135,14 +33160,14 @@
 
           if (f.buttons.length) {
             // add footer
-            DOM.add(DOM.select('.mceModalContainer', id), 'div', { 'class': 'mceModalFooter', id: id + '_footer' });
+            DOM.add(DOM.select('.mceModalContainer', id), 'div', {'class': 'mceModalFooter', id: id + '_footer'});
 
             // add buttons
             each(f.buttons, function (button) {
 
               // patch in close function for cancel button
               if (button.id === 'cancel') {
-                button.onclick = function (e) {
+                button.onclick = function () {
                   self.close(null, id);
                 };
               }
@@ -33162,7 +33187,7 @@
               var btn = DOM.add(id + '_footer', 'button', attribs, button.title);
 
               if (button.icon) {
-                DOM.add(btn, 'span', { 'class': 'mceIcon mce_' + button.icon, 'role': 'presentation' });
+                DOM.add(btn, 'span', {'class': 'mceIcon mce_' + button.icon, 'role': 'presentation'});
               }
 
               each(tinymce.explode(button.classes), function (cls) {
@@ -33224,16 +33249,6 @@
             });
           }
 
-          function nodeIndex(nodes, node) {
-            for (var i = 0; i < nodes.length; i++) {
-              if (nodes[i] === node) {
-                return i;
-              }
-            }
-
-            return -1;
-          }
-
           // restrict tabbing to within the form elements of the dialog
           Event.add(id, 'keydown', function (e) {
             var tabIndex = 0;
@@ -33255,8 +33270,9 @@
                 nodes.reverse();
               }
 
-              var endIndex = Math.max(0, nodes.length - 1), tabIndex = nodeIndex(nodes, e.target);
+              var endIndex = Math.max(0, nodes.length - 1);
 
+              tabIndex = nodeIndex(nodes, e.target);
               tabIndex++;
 
               tabIndex = Math.max(tabIndex, 0);
@@ -33403,7 +33419,7 @@
            * @param {String} id Id of window to close.
            */
       close: function (win, id) {
-        var self = this, id;
+        var self = this;
 
         id = self._findId(id || win);
 
@@ -33480,7 +33496,7 @@
            *       tinymce.activeEditor.windowManager.alert("Cancel");
            * });
            */
-      confirm: function (txt, cb, s) {
+      confirm: function (txt, cb) {
         var self = this;
 
         self.open({
@@ -33518,7 +33534,7 @@
            * // Displays an alert box using the active editors window manager instance
            * tinymce.activeEditor.windowManager.alert('Hello world!');
            */
-      alert: function (txt, cb, s) {
+      alert: function (txt, cb) {
         var self = this;
 
         self.open({
@@ -33546,17 +33562,18 @@
       },
 
       /**
-           * Resizes the specified window or id.
-           *
-           * @param {Number} dw Delta width.
-           * @param {Number} dh Delta height.
-           * @param {window/id} win Window if the dialog isn't inline. Id if the dialog is inline.
-           */
+       * Resizes the specified window or id.
+       *
+       * @param {Number} dw Delta width.
+       * @param {Number} dh Delta height.
+       * @param {window/id} win Window if the dialog isn't inline. Id if the dialog is inline.
+       */
+      /*eslint no-unused-vars:0*/
       resizeBy: function (dw, dh, id) {
       },
 
       moveTo: function (id, x, y) {
-        DOM.setStyles(id, { 'left': x, 'top': y });
+        DOM.setStyles(id, {'left': x, 'top': y});
       },
 
       position: function (id) {
@@ -33566,7 +33583,7 @@
         var top = Math.round(Math.max(vp.y + 10, vp.y + (vp.h / 2.0) - (p.h / 2.0)));
         var left = Math.round(Math.max(vp.x + 10, vp.x + (vp.w / 2.0) - (p.w / 2.0)));
 
-        DOM.setStyles(id, { 'left': left, 'top': top });
+        DOM.setStyles(id, {'left': left, 'top': top});
       },
 
       focus: function (id) {
@@ -33607,7 +33624,7 @@
       },
 
       // Internal functions
-      _startDrag: function (id, se, ac) {
+      _startDrag: function (id, se) {
         var mu, mm, d = DOM.doc,
           sx, sy, p, vp, dx, dy;
 
@@ -33658,7 +33675,7 @@
           dx = Math.max(p.x + x, 10);
           dy = Math.max(p.y + y, 10);
 
-          DOM.setStyles(id, { 'left': dx, 'top': dy });
+          DOM.setStyles(id, {'left': dx, 'top': dy});
 
           return Event.cancel(e);
         });
@@ -35513,7 +35530,7 @@
 
           // Walk the nodes inside the block
           walker = new TreeWalker(container, dom.getParent(container, isBlock) || ed.getBody());
-          while (node = walker[start ? 'prev' : 'next']()) {
+          while ((node = walker[start ? 'prev' : 'next']())) {
             if (node.nodeType === 3) {
               lastTextNode = node;
               pos = findSpace(node);
@@ -36885,7 +36902,7 @@
             }
           }
 
-          while (node = walker.current()) {
+          while ((node = walker.current())) {
             if (node.nodeType === 1) {
               // Ignore bogus elements
               if (!node.getAttribute('data-mce-bogus')) {
@@ -37324,7 +37341,7 @@
     var CaretWalker = tinymce.caret.CaretWalker, CaretPosition = tinymce.caret.CaretPosition, CaretContainer = tinymce.caret.CaretContainer, CaretUtils = tinymce.caret.CaretUtils,
       CaretContainerRemove = tinymce.caret.CaretContainerRemove, FakeCaret = tinymce.caret.FakeCaret, LineWalker = tinymce.caret.LineWalker, LineUtils = tinymce.caret.LineUtils;
 
-    var NodeType = tinymce.dom.NodeType, RangeUtils = tinymce.dom.RangeUtils, ClientRect = tinymce.geom.ClientRect;
+    var NodeType = tinymce.dom.NodeType, RangeUtils = tinymce.dom.RangeUtils;
     var VK = tinymce.VK, Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
 
     var Dispatcher = tinymce.util.Dispatcher;
@@ -37851,6 +37868,16 @@
           return null;
         }
 
+        /*function isXYWithinRange(clientX, clientY, range) {
+          if (range.collapsed) {
+            return false;
+          }
+
+          return Arr.reduce(range.getClientRects(), function (state, rect) {
+            return state || ClientRect.containsXY(rect, clientX, clientY);
+          }, false);
+        }*/
+
         // Some browsers (Chrome) lets you place the caret after a cE=false
         // Make sure we render the caret container in this case
         editor.onMouseUp.add(function () {
@@ -37895,7 +37922,7 @@
         function handleTouchSelect(editor) {
           var moved = false;
 
-          editor.dom.bind(editor.getBody(), 'touchstart', function (e) {
+          editor.dom.bind(editor.getBody(), 'touchstart', function () {
             moved = false;
           });
 
@@ -38181,7 +38208,7 @@
         var node,
           dom = editor.dom,
           $realSelectionContainer, sel,
-          startContainer, startOffset, endOffset, caretPosition, targetClone, origTargetClone;
+          startContainer, startOffset, endOffset, caretPosition, targetClone;
 
         if (!range) {
           return null;
@@ -38226,7 +38253,7 @@
           return null;
         }
 
-        targetClone = origTargetClone = node.cloneNode(true);
+        targetClone = node.cloneNode(true);
 
         var evt = {
           node: node,
@@ -38242,7 +38269,7 @@
         $realSelectionContainer = dom.get(realSelectionId);
 
         if (!$realSelectionContainer) {
-          $realSelectionContainer = dom.create('div', { 'data-mce-bogus': 'all', 'class': 'mce-offscreen-selection', 'id': realSelectionId });
+          $realSelectionContainer = dom.create('div', {'data-mce-bogus': 'all', 'class': 'mce-offscreen-selection', 'id': realSelectionId});
           dom.add(editor.getBody(), $realSelectionContainer);
         }
 
@@ -38312,6 +38339,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var Entities = tinymce.html.Entities, each = tinymce.each;
 
@@ -38456,6 +38486,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
 
     tinymce.create('tinymce.plugins.HelpPlugin', {
@@ -38508,7 +38541,7 @@
   		 */
 
       init: function (ed, url) {
-        var t = this;
+        var self = this;
 
         if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
           return;
@@ -38523,25 +38556,25 @@
         // Add a key down handler
         ed.onKeyDown.addToTop(function (ed, e) {
           if (e.keyCode == 13) {
-            return t.handleEnter(ed);
+            return self.handleEnter(ed);
           }
         });
 
         // Internet Explorer has built-in automatic linking for most cases
-        if (tinyMCE.isIE) {
+        if (tinymce.isIE) {
           return;
         }
 
         ed.onKeyPress.add(function (ed, e) {
           if (e.which == 41) {
-            return t.handleEclipse(ed);
+            return self.handleEclipse(ed);
           }
         });
 
         // Add a key up handler
         ed.onKeyUp.add(function (ed, e) {
           if (e.keyCode == 32) {
-            return t.handleSpacebar(ed);
+            return self.handleSpacebar(ed);
           }
         });
       },
@@ -38730,6 +38763,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var each = tinymce.each,
       Node = tinymce.html.Node;
@@ -39266,6 +39302,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var each = tinymce.each,
       Node = tinymce.html.Node,
@@ -39504,8 +39543,10 @@
 
               html.push('<', name);
 
+              var attr;
+
               if (attrs) {
-                for (i = 0, l = attrs.length; i < l; i++) {
+                for (var i = 0, len = attrs.length; i < len; i++) {
                   attr = attrs[i];
 
                   if (!isValid(name, attr.name)) {
@@ -39667,8 +39708,10 @@
         }
 
         ed.onKeyDown.add(function (ed, e) {
+          var node;
+
           if (e.keyCode == VK.ENTER) {
-            var node = ed.selection.getNode();
+            node = ed.selection.getNode();
 
             if (node.nodeName === 'PRE') {
               var type = node.getAttribute('data-mce-code') || '';
@@ -39703,7 +39746,7 @@
           }
 
           if (e.keyCode == VK.UP && e.altKey) {
-            var node = ed.selection.getNode();
+            node = ed.selection.getNode();
 
             handleEnterInPre(ed, node, true);
             e.preventDefault();
@@ -39711,7 +39754,7 @@
 
           // Check for tab but not ctrl/cmd+tab since it switches browser tabs
           if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
-            var node = ed.selection.getNode();
+            node = ed.selection.getNode();
 
             if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
               ed.selection.setContent('\t', { no_events: true });
@@ -39720,7 +39763,7 @@
           }
 
           if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-            var node = ed.selection.getNode();
+            node = ed.selection.getNode();
 
             if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
               ed.undoManager.add();
@@ -39915,7 +39958,7 @@
               }
 
               // serialize to string
-              var value = new Serializer({ validate: false }).serialize(node);
+              value = new Serializer({ validate: false }).serialize(node);
 
               // trim
               value = tinymce.trim(value);
@@ -39989,7 +40032,9 @@
             }
 
             while (i--) {
-              var node = nodes[i], root_block = false;
+              var root_block = false;
+
+              node = nodes[i];
 
               // get the code block type, eg: script, shortcode, style, php
               var type = node.attr(name);
@@ -39998,15 +40043,15 @@
                 var elm = new Node(type, 1);
 
                 for (var key in node.attributes.map) {
-                  var value = node.attributes.map[key];
+                  var val = node.attributes.map[key];
 
                   if (key.indexOf('data-mce-p-') !== -1) {
                     key = key.substr(11);
                   } else {
-                    value = null;
+                    val = null;
                   }
 
-                  elm.attr(key, value);
+                  elm.attr(key, val);
                 }
 
                 var value = node.attr('data-mce-value');
@@ -40239,10 +40284,12 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var VK = tinymce.VK,
-      each = tinymce.each,
-      map = tinymce.map;
+      each = tinymce.each;
     var blocks = [];
 
     tinymce.create('tinymce.plugins.FormatPlugin', {
@@ -40487,7 +40534,7 @@
               break;
             case 'RemoveFormat':
               if (!v && !ed.dom.isBlock(n)) {
-                var cm = ed.controlManager.get('styleselect');
+                cm = ed.controlManager.get('styleselect');
                 // get select Styles value if any
                 if (cm && cm.selectedValue) {
                   // remove style
@@ -40609,6 +40656,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var each = tinymce.each,
       DOM = tinymce.DOM,
@@ -40653,6 +40703,8 @@
 
     var rgba = {}, luma = {};
 
+    /*no-bitwise:0;no-cond-assign:0*/
+
     function getRGBA(val) {
       if (!rgba[val]) {
         var r = 0, b = 0, g = 0, a = 1, values, match;
@@ -40665,17 +40717,22 @@
             val += val;
           }
 
-          values = parseInt(val, 16);
+          r = parseInt(val.substring(0, 2), 16);
+          g = parseInt(val.substring(2, 4), 16);
+          b = parseInt(val.substring(4, 6), 16);
 
-          r = (values >> 16) & 0xFF;
-          g = (values >> 8) & 0xFF;
-          b = (values >> 0) & 0xFF;
-          a = (values >> 24) & 0xFF;
+          if (val.length > 6) {
+            a = parseInt(val.substring(6, 8), 16);
+            a = +(a / 255).toFixed(2);
+          }
+
         } else {
           // remove spaces
           val = val.replace(/\s/g, '');
 
-          if (match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val)) {
+          var match = /^(?:rgb|rgba)\(([^\)]*)\)$/.exec(val);
+
+          if (match) {
             values = match[1].split(',').map(function (x, i) {
               return parseFloat(x);
             });
@@ -40996,9 +41053,6 @@
                   return true;
                 }
 
-                // IE8
-                if (!r.type) ;
-
                 if (r.selectorText) {
                   each(r.selectorText.split(','), function (v) {
                     v = v.replace(/^\s*|\s*$|^\s\./g, "");
@@ -41016,7 +41070,7 @@
 
                 break;
 
-                // Import
+              // Import
               case 3:
                 if (r.href.indexOf('//fonts.googleapis.com') > 0) {
                   var v = '@import url(' + r.href + ');';
@@ -41031,7 +41085,7 @@
                   parseCSS(r.styleSheet);
                 }
                 break;
-                // font-face
+              // font-face
               case 5:
                 // check for text and skip popular font icons
                 if (r.cssText && /(fontawesome|glyphicons|icomoon)/i.test(r.cssText) === false) {
@@ -41120,6 +41174,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     tinymce.create('tinymce.plugins.ColorPicker', {
       init : function (ed, url) {
@@ -41155,6 +41212,8 @@
    *
    * * Based on plupload - http://www.plupload.com
    */
+
+  /*global tinymce:true */
 
   (function () {
     var each = tinymce.each,
@@ -41729,7 +41788,7 @@
 
         // create input
         if (!btn) {
-          var btn = dom.add(dom.doc.body, 'div', {
+          btn = dom.add(dom.doc.body, 'div', {
             'id': 'wf_upload_button',
             'class': 'btn',
             'role': 'button',
@@ -41957,7 +42016,7 @@
             }
 
             if (file.size) {
-              var max = parseInt(config.max_size) || 1024;
+              var max = parseInt(config.max_size, 2) || 1024;
 
               if (file.size > max * 1024) {
                 ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
@@ -41975,7 +42034,7 @@
               skip_undo: 1
             });
 
-            var n = ed.dom.get('__mce_tmp');
+            var n = ed.dom.get('__mce_tmp'), w, h;
 
             // get approximate size of image from file size
             if (/image\/(gif|png|jpeg|jpg)/.test(file.type)) {
@@ -42136,6 +42195,9 @@
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
+
+  /*global tinymce:true */
+
   (function () {
     var VK = tinymce.VK,
       Node = tinymce.html.Node,
@@ -42354,6 +42416,8 @@
     tinymce.PluginManager.add('figure', tinymce.plugins.Figure);
   })();
 
+  /*global tinymce:true */
+
   (function () {
     tinymce.create('tinymce.plugins.UiPlugin', {
       init: function (ed, url) {}
@@ -42372,6 +42436,8 @@
    * License: http://tinymce.moxiecode.com/license
    * Contributing: http://tinymce.moxiecode.com/contributing
    */
+
+  /*global tinymce:true */
 
   (function () {
     tinymce.PluginManager.add('noneditable', function (editor) {
@@ -42489,6 +42555,8 @@
       });
     });
   })();
+
+  /*global tinymce:true */
 
   (function () {
     var DOM = tinymce.DOM;
