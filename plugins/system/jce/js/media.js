@@ -306,15 +306,10 @@
     }
 
     $(document).ready(function ($) {
-        $('.field-media-wrapper').find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
+        // process joomla and flexi-content media fields
+        $('.field-media-wrapper, .fc-field-value-properties-box').find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
 
-        // other - removed as it seems to cause some issues
-        /*$('.field-media-wrapper').find('.wf-media-input:not(.wf-media-input-active)').each(function (i, row) {
-            updateMediaUrl($(this).parents('.field-media-wrapper'));
-
-            $(this).addClass('wf-media-input-upload');
-        });*/
-
+        // existing repeatable
         $('.field-media-input').parents('.subform-repeatable-group').each(function (i, row) {
             updateMediaUrl(row);
         });
@@ -324,6 +319,7 @@
             updateMediaUrl(row);
         });
 
+        // repeatable when created
         $(document).on('subform-row-add', function (evt, row) {
             // get original event from jQuery
             var originalEvent = evt.originalEvent;
