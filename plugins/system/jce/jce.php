@@ -55,11 +55,31 @@ class PlgSystemJce extends JPlugin
         return true;
     }
 
-    public function onAfterRoute()
+    private function canRedirectMedia()
     {
         $app = JFactory::getApplication();
 
-        if ($app->input->getCmd('option') == 'com_jce' && $app->input->getCmd('task') == 'mediafield.display' && $app->input->get('fieldid')) {
+        // must have fieldid
+        if (!$app->input->get('fieldid')) {
+            return false;
+        }
+        
+        // jce converted mediafield
+        if ($app->input->getCmd('option') == 'com_jce' && $app->input->getCmd('task') == 'mediafield.display') {
+            return true;
+        }
+
+        // flexi-content mediafield
+        if ($app->input->getCmd('option') == 'com_media' && $app->input->getCmd('asset') == 'com_flexicontent') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function onAfterRoute()
+    {
+        if ($this->canRedirectMedia()) {
             
             if ($this->isEditorEnabled()) {
                 $params = JComponentHelper::getParams('com_jce');
@@ -170,7 +190,8 @@ class PlgSystemJce extends JPlugin
 
             $type = $field->getAttribute('type');
 
-            if (strtolower($type) === 'media') {
+            // joomla media field and flexi-content converted media field
+            if (strtolower($type) === 'media' || strtolower($type) === 'fcmedia') {
 
                 $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
@@ -178,6 +199,7 @@ class PlgSystemJce extends JPlugin
                 $hasMedia = true;
             }
 
+            // jce media field
             if (strtolower($type) === 'mediajce') {
                 $hasMedia = true;
             }
