@@ -49,9 +49,6 @@ class JFormFieldKeyValue extends JFormField
             $values = json_decode(htmlspecialchars_decode($this->value), true);
         }
 
-        // cast to array
-        $values = (array) $values;
-
         // default
         if (empty($values)) {
             $values = array(
@@ -112,7 +109,11 @@ class JFormFieldKeyValue extends JFormField
             $str[] = '</div>';
         }
 
-        $str[] = '<input type="hidden" name="' . $this->name . '" value="' . htmlspecialchars(json_encode($values)) . '" />';
+        if (!empty($this->value)) {
+            $this->value = htmlspecialchars(json_encode($values));
+        }
+
+        $str[] = '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '" />';
 
         return implode("", $str);
     }

@@ -11,6 +11,12 @@
 
                 $(':input[name]', this).each(function() {
                     var name = $(this).attr('name'), val = $(this).val();
+
+                    // must have "key"
+                    if (name == '') {
+                        return true;
+                    }
+
                     // encode and set value
                     data[name] = $('<textarea/>').text(val).html();
                 });

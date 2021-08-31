@@ -260,6 +260,11 @@ class WFEditor
                 $userParams = json_decode($userParams, true);
             }
 
+            // Remove values with invalid key
+        	$userParams = array_filter($userParams, function ($key) {
+            	return !is_numeric($key);
+        	}, ARRAY_FILTER_USE_KEY);
+
             foreach ($userParams as $userParam) {
                 $name = '';
                 $value = '';
