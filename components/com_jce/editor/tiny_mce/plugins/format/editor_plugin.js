@@ -26,6 +26,9 @@
         onclick : function (e) {
           e.preventDefault();
 
+          // restore focus
+          ed.focus();
+
           if (e.shiftKey) {
             ed.formatter.toggle('italic-i');
             return;
