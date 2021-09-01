@@ -9,7 +9,6 @@
  */
 (function () {
     var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
         each = tinymce.each;
 
     // https://en.wikipedia.org/wiki/Emoticons_(Unicode_block)    
@@ -187,6 +186,7 @@
                         try {
                             icons = JSON.parse(text);
                         } catch (e) {
+                            // json error
                         }
 
                         // create path

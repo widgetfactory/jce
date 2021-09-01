@@ -12,16 +12,16 @@
 
     tinymce.create('tinymce.plugins.FontColorPlugin', {
         init: function (ed, url) {
-            var self = this;
             this.editor = ed;
 
             ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
                 var c;
 
                 function updateColor(controlId, color) {
-                    if (c = cm.get(controlId)) {
-                        if (!color)
+                    if ((c = cm.get(controlId))) {
+                        if (!color) {
                             color = c.settings.default_color;
+                        }
                         if (color !== c.value) {
                             c.displayColor(color);
                         }

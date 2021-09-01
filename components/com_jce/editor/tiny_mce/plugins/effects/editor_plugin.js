@@ -17,7 +17,7 @@
             if (!val) {
                 return '';
             }
-            
+
             return val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
         }
 
@@ -151,7 +151,7 @@
                 bindMouseoverEvent(ed);
             });
 
-            ed.onUpdateMedia.add(function (ed, o) {               
+            ed.onUpdateMedia.add(function (ed, o) {
                 each(ed.dom.select('img[data-mouseover]'), function (elm) {
                     var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 
@@ -160,29 +160,29 @@
                     }
 
                     if (mouseover == o.before) {
-                       elm.setAttribute('data-mouseover', o.after);
+                        elm.setAttribute('data-mouseover', o.after);
                     }
 
                     if (mouseout == o.before) {
                         elm.setAttribute('data-mouseout', o.after);
-                     }
+                    }
                 });
             });
         });
 
         function bindMouseoverEvent(ed) {
             each(ed.dom.select('img[data-mouseover]'), function (elm) {
-                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
+                var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
 
                 if (!src || !mouseover) {
                     return true;
                 }
 
-                elm.onmouseover = function() {
+                elm.onmouseover = function () {
                     elm.setAttribute('src', elm.getAttribute('data-mouseover'));
                 };
 
-                elm.onmouseout = function() {
+                elm.onmouseout = function () {
                     elm.setAttribute('src', elm.getAttribute('data-mouseout') || src);
                 };
             });

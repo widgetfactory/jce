@@ -36,10 +36,6 @@
         return node && node.nodeName === "IMG" && !isMediaObject(node);
     }
 
-    function isSupportedImage(value) {
-        return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
-    }
-
     function uploadFile(url, file) {
         return new Promise(function (resolve, reject) {
             var xhr = new XMLHttpRequest,
@@ -221,7 +217,7 @@
                     return;
                 }
 
-                var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, captionCtrl;
+                var cm = ed.controlManager, form = cm.createForm('image_form'), urlCtrl, captionCtrl, descriptionCtrl;
 
                 var args = {
                     label: ed.getLang('dlg.url', 'URL'),

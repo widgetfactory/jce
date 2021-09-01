@@ -17,7 +17,6 @@
         Serializer = tinymce.html.Serializer,
         Node = tinymce.html.Node,
         DOM = tinymce.DOM,
-        Entities = tinymce.html.Entities,
         Dispatcher = tinymce.util.Dispatcher;
 
     var styleProps = [
@@ -212,25 +211,6 @@
         return value.toLowerCase();
     }
 
-    function rgbToHex(color) {
-        var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
-
-        var rgb = color.replace(re, "$1,$2,$3").split(',');
-        if (rgb.length == 3) {
-            r = parseInt(rgb[0]).toString(16);
-            g = parseInt(rgb[1]).toString(16);
-            b = parseInt(rgb[2]).toString(16);
-
-            r = r.length == 1 ? 0 + r : r;
-            g = g.length == 1 ? 0 + g : g;
-            b = b.length == 1 ? 0 + b : b;
-
-            return "#" + r + g + b;
-        }
-
-        return color;
-    }
-
     // Open Office
     var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
@@ -393,7 +373,7 @@
         doc.body.appendChild(styleElement);
 
         return styleElement.sheet.cssRules;
-    }
+    };
 
     function cleanCssContent(content) {
         var classes = [],
@@ -412,7 +392,7 @@
                     var text = r.cssText || "";
 
                     if (!text) {
-                        return
+                        return;
                     }
 
                     if (tinymce.inArray(classes, text) === -1) {
@@ -566,14 +546,13 @@
      * Becomes:
      *  <p>a</p><p>b</p>
      */
-    function removeExplorerBrElementsAfterBlocks(self, o) {
+    function removeExplorerBrElementsAfterBlocks(editor, o) {
         // Only filter word specific content
         if (!o.wordContent) {
             return;
         }
 
-        var editor = self.editor,
-            html = o.content;
+        var html = o.content;
 
         // Produce block regexp based on the block elements in schema
         var blockElements = [];
@@ -615,9 +594,8 @@
      * @param {String} content Content that needs to be processed.
      * @return {String} Processed contents.
      */
-    function removeWebKitStyles(self, o) {
-        var editor = self.editor,
-            content = o.content;
+    function removeWebKitStyles(editor, o) {
+        var content = o.content;
 
         // skip internal content
         if (o.internal) {
@@ -1001,7 +979,7 @@
 
         // split to array if string
         if (removeStyles && tinymce.is(removeStyles, 'string')) {
-            removeProps = tinymce.explode(removeStyles);
+            var removeProps = tinymce.explode(removeStyles);
 
             each(removeProps, function (style, i) {
                 if (style === "border") {
@@ -1194,7 +1172,7 @@
 
         // split to array if string
         if (removeStyles && tinymce.is(removeStyles, 'string')) {
-            removeProps = tinymce.explode(removeStyles);
+            var removeProps = tinymce.explode(removeStyles);
 
             each(removeProps, function (style, i) {
                 if (style === "border") {
@@ -1384,7 +1362,7 @@
                         // remove marker
                         node.attr('data-mce-word-list', null);
 
-                        if (type = isNumericList(nodeText)) {
+                        if ((type = isNumericList(nodeText))) {
                             // Parse OL start number
                             var matches = /([0-9]+)\./.exec(nodeText);
                             var start = 1;
@@ -1912,7 +1890,7 @@
 
             if (typeof rootAttrs === 'object') {
                 for (key in rootAttrs) {
-                    if (rootAttrs.hasOwnProperty(key)) {
+                    if (Object.prototype.hasOwnProperty.call(rootAttrs, key)) {
                         attrs.push(key + '="' + Entities.encodeAllRaw(rootAttrs[key]) + '"');
                     }
                 }
@@ -2026,17 +2004,6 @@
         return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
     }
 
-    /**
-     * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
-     *
-     * @param {Event} e Paste event object to check if it contains any data.
-     * @return {Boolean} true/false if the clipboard is empty or not.
-     */
-    function isBrokenAndroidClipboardEvent(e) {
-        var clipboardData = e.clipboardData;
-        return navigator.userAgent.indexOf('Android') != -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
-    }
-
     function hasContentType(clipboardContent, mimeType) {
         return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
     }
@@ -2057,7 +2024,7 @@
 
             new CutCopy().register(ed);
 
-            var pasteBinElm, lastRng, keyboardPasteTimeStamp = 0;
+            var pasteBinElm, lastRng;
             var pasteBinDefaultContent = '%MCEPASTEBIN%',
                 keyboardPastePlainTextState;
 
@@ -2079,13 +2046,13 @@
             // process quirks
             if (tinymce.isWebKit) {
                 self.onPreProcess.add(function (self, o) {
-                    removeWebKitStyles(self, o);
+                    removeWebKitStyles(ed, o);
                 });
             }
 
             if (isIE) {
                 self.onPreProcess.add(function (self, o) {
-                    removeExplorerBrElementsAfterBlocks(self, o);
+                    removeExplorerBrElementsAfterBlocks(ed, o);
                 });
             }
 

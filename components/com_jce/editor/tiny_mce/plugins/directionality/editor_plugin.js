@@ -8,16 +8,16 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function () {
 	tinymce.create('tinymce.plugins.Directionality', {
-		init : function(ed, url) {            
-            function setDir(dir) {
+		init: function (ed, url) {
+			function setDir(dir) {
 				var dom = ed.dom, curDir, blocks = ed.selection.getSelectedBlocks();
 
 				if (blocks.length) {
 					curDir = dom.getAttrib(blocks[0], "dir");
 
-					tinymce.each(blocks, function(block) {
+					tinymce.each(blocks, function (block) {
 						// Add dir to block if the parent block doesn't already have that dir
 						if (!dom.getParent(block.parentNode, "*[dir='" + dir + "']", dom.getRoot())) {
 							if (curDir != dir) {
@@ -32,21 +32,21 @@
 				}
 			}
 
-			ed.addCommand('mceDirectionLTR', function() {
+			ed.addCommand('mceDirectionLTR', function () {
 				setDir("ltr");
 			});
 
-			ed.addCommand('mceDirectionRTL', function() {
+			ed.addCommand('mceDirectionRTL', function () {
 				setDir("rtl");
 			});
 
-			ed.addButton('ltr', {title : 'directionality.ltr_desc', cmd : 'mceDirectionLTR'});
-			ed.addButton('rtl', {title : 'directionality.rtl_desc', cmd : 'mceDirectionRTL'});
+			ed.addButton('ltr', { title: 'directionality.ltr_desc', cmd: 'mceDirectionLTR' });
+			ed.addButton('rtl', { title: 'directionality.rtl_desc', cmd: 'mceDirectionRTL' });
 
 			ed.onNodeChange.add(this.nodeChange, this);
 		},
 
-		nodeChange : function(ed, cm, n) {
+		nodeChange: function (ed, cm, n) {
 			var dom = ed.dom, dir;
 
 			n = dom.getParent(n, dom.isBlock);
