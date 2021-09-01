@@ -9,7 +9,7 @@
  */
 
 (function () {
-    var each = tinymce.each, DOM = tinymce.DOM;
+    var each = tinymce.each;
 
     tinymce.create('tinymce.plugins.XHTMLXtrasPlugin', {
         init: function (ed, url) {
@@ -21,9 +21,9 @@
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=cite',
                     size: 'mce-modal-square-large'
                 }, {
-                        plugin_url: url,
-                        element: 'cite'
-                    });
+                    plugin_url: url,
+                    element: 'cite'
+                });
             });
 
 
@@ -32,52 +32,48 @@
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=acronym',
                     size: 'mce-modal-square-large'
                 }, {
-                        plugin_url: url,
-                        element: 'acronym'
-                    });
+                    plugin_url: url,
+                    element: 'acronym'
+                });
             });
-
 
             ed.addCommand('mceAbbr', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=abbr',
                     size: 'mce-modal-square-large'
                 }, {
-                        plugin_url: url,
-                        element: 'abbr'
-                    });
+                    plugin_url: url,
+                    element: 'abbr'
+                });
             });
-
 
             ed.addCommand('mceDel', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=del',
                     size: 'mce-modal-square-large'
                 }, {
-                        plugin_url: url,
-                        element: 'del'
-                    });
+                    plugin_url: url,
+                    element: 'del'
+                });
             });
-
 
             ed.addCommand('mceIns', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=ins',
                     size: 'mce-modal-square-large'
                 }, {
-                        plugin_url: url,
-                        element: 'ins'
-                    });
+                    plugin_url: url,
+                    element: 'ins'
+                });
             });
-
 
             ed.addCommand('mceAttributes', function () {
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=xhtmlxtras&element=attributes',
                     size: 'mce-modal-portrait-large'
                 }, {
-                        plugin_url: url
-                    });
+                    plugin_url: url
+                });
             });
 
             // Register buttons
@@ -107,8 +103,8 @@
                 cmd: 'mceIns'
             });
             ed.addButton('attribs', {
-                title : 'xhtmlxtras.attribs_desc',
-                cmd : 'mceAttributes'
+                title: 'xhtmlxtras.attribs_desc',
+                cmd: 'mceAttributes'
             });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
@@ -131,7 +127,7 @@
                     do {
                         cm.setDisabled(n.nodeName.toLowerCase(), 0);
                         cm.setActive(n.nodeName.toLowerCase(), 1);
-                    } while (n = n.parentNode);
+                    } while ((n = n.parentNode));
                 }
             });
 
@@ -147,9 +143,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     },
 
                     acronym: {
@@ -159,9 +153,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     },
 
                     abbr: {
@@ -171,9 +163,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     },
 
                     del: {
@@ -183,9 +173,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     },
 
                     ins: {
@@ -195,9 +183,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     },
 
                     attributes: {
@@ -207,9 +193,7 @@
                             each(vars, function (value, key) {
                                 ed.dom.setAttrib(elm, key, value);
                             });
-
                         }
-
                     }
                 });
             });

@@ -42,7 +42,7 @@
                     }
 
                     each(el, function (e, i) {
-                        if (e.id == editor.id) {
+                        if (e.id == ed.id) {
                             x = i;
                             return false;
                         }
@@ -64,7 +64,7 @@
                     return null;
                 }
 
-                v = explode(editor.getParam('tab_focus', editor.getParam('tabfocus_elements', ':prev,:next')));
+                v = explode(ed.getParam('tab_focus', ed.getParam('tabfocus_elements', ':prev,:next')));
 
                 if (v.length == 1) {
                     v[1] = v[0];

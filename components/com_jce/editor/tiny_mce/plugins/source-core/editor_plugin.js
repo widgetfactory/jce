@@ -1,15 +1,14 @@
-(function() {
+(function () {
     var DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.SourcePlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
             self.editor = ed;
 
             if (ed.plugins.fullscreen) {
-                ed.onFullScreen.add(function(ed, state) {
+                ed.onFullScreen.add(function (ed, state) {
                     var element = ed.getElement();
-                    var container = element.parentNode;
 
                     // get tabs header
                     var header = DOM.getPrev(element, '.wf-editor-header');
@@ -24,13 +23,13 @@
                     }
                 });
 
-                ed.onFullScreenResize.add(function(ed, vp) {
+                ed.onFullScreenResize.add(function (ed, vp) {
                     var element = ed.getElement();
                     DOM.setStyle(element, 'height', vp.h);
                 });
             }
 
-            ed.onInit.add(function(ed) {
+            ed.onInit.add(function (ed) {
                 // get the stored active tab
                 var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
 
@@ -52,7 +51,7 @@
                 }
             });
         },
-        insertContent: function(v) {
+        insertContent: function (v) {
             var ed = this.editor,
                 el = ed.getElement();
 
@@ -73,18 +72,18 @@
                 }
             }
         },
-        getContent: function() {
+        getContent: function () {
             var ed = this.editor;
             return ed.getElement().value;
         },
-        save: function() {
+        save: function () {
             return this.getContent();
         },
-        hide: function() {
+        hide: function () {
             var ed = this.editor;
             DOM.hide(ed.getElement());
         },
-        toggle: function() {
+        toggle: function () {
             var ed = this.editor;
             var element = ed.getElement(),
                 container = element.parentNode;
@@ -93,7 +92,7 @@
             var header = DOM.getPrev(element, '.wf-editor-header');
 
             // get editor iframe height
-            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
+            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height, 2) || ed.settings.height;
 
             var o = tinymce.util.Storage.getHash("TinyMCE_" + ed.id + "_size");
 
@@ -131,8 +130,8 @@
             }
         },
 
-        getCursorPos: function() {
-           return 0;
+        getCursorPos: function () {
+            return 0;
         }
     });
 

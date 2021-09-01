@@ -8,23 +8,19 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function () {
     tinymce.create('tinymce.plugins.Nonbreaking', {
-        init : function(ed, url) {
-            var t = this;
-
-            t.editor = ed;
-
+        init: function (ed, url) {
             // Register commands
-            ed.addCommand('mceNonBreaking', function() {
+            ed.addCommand('mceNonBreaking', function () {
                 ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-nbsp">&nbsp;</span>' : '&nbsp;');
             });
 
             // Register buttons
-            ed.addButton('nonbreaking', {title : 'nonbreaking.desc', cmd : 'mceNonBreaking'});
+            ed.addButton('nonbreaking', { title: 'nonbreaking.desc', cmd: 'mceNonBreaking' });
 
             if (ed.getParam('nonbreaking_force_tab')) {
-                ed.onKeyDown.add(function(ed, e) {
+                ed.onKeyDown.add(function (ed, e) {
                     if (e.keyCode == 9) {
                         e.preventDefault();
 

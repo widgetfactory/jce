@@ -10,14 +10,10 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function () {
-    var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event,
-        each = tinymce.each;
+/*eslint no-labels:0, no-constant-condition: 0 */
 
-    function isContentEditableFalse(node) {
-        return node && node.nodeType == 1 && node.contentEditable === "false";
-    }
+(function () {
+    var DOM = tinymce.DOM;
 
     // Based on work developed by: James Padolsey http://james.padolsey.com
     // released under UNLICENSE that is compatible with LGPL
@@ -146,9 +142,9 @@
                     }
                 } else if ((!hiddenTextElementsMap[curNode.nodeName] || blockElementsMap[curNode.nodeName]) && curNode.firstChild) {
                     //if (!isContentEditableFalse(curNode)) {
-                        // Move down
-                        curNode = curNode.firstChild;
-                        continue;
+                    // Move down
+                    curNode = curNode.firstChild;
+                    continue;
                     //}
                 } else if (curNode.nextSibling) {
                     // Move forward:
@@ -254,7 +250,7 @@
         }
 
         text = getText(node);
-        
+
         if (!text) {
             return;
         }
@@ -317,7 +313,7 @@
                     '       <input id="' + editor.id + '_wholewords" type="checkbox" />' +
                     '       <label for="' + editor.id + '_wholewords">' + editor.getLang('searchreplace.wholewords', 'Whole Words') + '</label>' +
                     '   </div>' +
-                    '</div>'+
+                    '</div>' +
                     '</div>';
 
                 editor.windowManager.open({
@@ -326,21 +322,21 @@
                     size: 'mce-modal-landscape-small',
                     overlay: false,
                     open: function () {
-                        var win = this;
-                        
+                        var id = this.id;
+
                         var search = DOM.get(editor.id + '_search_string');
 
                         search.value = editor.selection.getContent({
                             format: 'text'
                         });
 
-                        DOM.bind(editor.id + '_search_next', 'click', function(e) {
+                        DOM.bind(editor.id + '_search_next', 'click', function (e) {
                             e.preventDefault();
 
                             editor.execCommand('mceSearchNext', false);
                         });
 
-                        DOM.bind(editor.id + '_search_prev', 'click', function(e) {
+                        DOM.bind(editor.id + '_search_prev', 'click', function (e) {
                             e.preventDefault();
 
                             editor.execCommand('mceSearchPrev', false);
@@ -351,18 +347,18 @@
                         }, 10);
 
                         editor.updateSearchButtonStates.add(function (obj) {
-                            tinymce.each(obj, function(val, key) {
-                                var elm = DOM.get(editor.id + '_search_' + key) || DOM.get(win.id + '_search_' + key);
+                            tinymce.each(obj, function (val, key) {
+                                var elm = DOM.get(editor.id + '_search_' + key) || DOM.get(id + '_search_' + key);
 
                                 if (!elm) {
                                     return;
                                 }
-                                
+
                                 elm.disabled = !!val;
                             });
                         });
                     },
-                    close: function() {
+                    close: function () {
                         DOM.unbind(editor.id + '_search_next', 'click');
                         DOM.unbind(editor.id + '_search_prev', 'click');
 
@@ -374,13 +370,13 @@
                             id: 'find',
                             onclick: function (e) {
                                 e.preventDefault();
-                                
+
                                 var matchcase = DOM.get(editor.id + '_matchcase');
                                 var wholeword = DOM.get(editor.id + '_wholewords');
 
                                 var text = DOM.getValue(editor.id + '_search_string');
-                                
-                                
+
+
                                 editor.execCommand('mceSearch', false, {
                                     "textcase": !!matchcase.checked,
                                     "text": text,
@@ -659,7 +655,7 @@
                 nodes = tinymce.grep(tinymce.toArray(node.getElementsByTagName('span')), isMatchSpan);
 
                 // filter nodes so that only those that are contenteditable or within a contenteditable parent can be replaced
-                nodes = tinymce.grep(nodes, function(node) {
+                nodes = tinymce.grep(nodes, function (node) {
                     var parent = editor.dom.getParent(node, '[contenteditable]');
 
                     if (parent && parent.contentEditable === 'false') {

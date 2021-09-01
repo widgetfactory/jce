@@ -8,50 +8,51 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
-(function() {
+(function () {
     tinymce.create('tinymce.plugins.StylePlugin', {
-        init : function(ed, url) {
+        init: function (ed, url) {
             // Register commands
-            ed.addCommand('mceStyleProps', function() {
+            ed.addCommand('mceStyleProps', function () {
                 var applyStyleToBlocks = false;
                 var blocks = ed.selection.getSelectedBlocks();
                 var styles = [];
 
                 if (blocks.length === 1) {
                     styles.push(ed.selection.getNode().style.cssText);
-                }
-                else {
-                    tinymce.each(blocks, function(block) {
+                } else {
+                    tinymce.each(blocks, function (block) {
                         styles.push(ed.dom.getAttrib(block, 'style'));
                     });
                     applyStyleToBlocks = true;
                 }
 
                 ed.windowManager.open({
-                    file 	: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
-                    size    : 'mce-modal-landscape-xxlarge' 
+                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=style',
+                    size: 'mce-modal-landscape-xxlarge'
                 }, {
-                    applyStyleToBlocks : applyStyleToBlocks,
-                    plugin_url : url,
-                    styles : styles
+                    applyStyleToBlocks: applyStyleToBlocks,
+                    plugin_url: url,
+                    styles: styles
                 });
             });
 
-            ed.addCommand('mceSetElementStyle', function(ui, v) {
-                if (e = ed.selection.getNode()) {
-                    ed.dom.setAttrib(e, 'style', v);
+            ed.addCommand('mceSetElementStyle', function (ui, v) {
+                var node = ed.selection.getNode();
+
+                if (node) {
+                    ed.dom.setAttrib(node, 'style', v);
                     ed.execCommand('mceRepaint');
                 }
             });
 
-            ed.onNodeChange.add(function(ed, cm, n) {
+            ed.onNodeChange.add(function (ed, cm, n) {
                 cm.setDisabled('style', (n.nodeName === 'BODY' || (n.nodeName === 'BR' && n.getAttribute('data-mce-bogus'))));
             });
 
             // Register buttons
             ed.addButton('style', {
-                title : 'style.desc',
-                cmd : 'mceStyleProps'
+                title: 'style.desc',
+                cmd: 'mceStyleProps'
             });
         }
     });

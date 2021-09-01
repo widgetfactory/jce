@@ -1,3 +1,4 @@
+
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
@@ -8,8 +9,8 @@
  * other free or open source software licenses.
  */
 
+/* eslint-disable no-control-regex */
 (function () {
-	var each = tinymce.each;
 	tinymce.create('tinymce.plugins.TextCase', {
 		init: function (ed, url) {
 			var self = this;

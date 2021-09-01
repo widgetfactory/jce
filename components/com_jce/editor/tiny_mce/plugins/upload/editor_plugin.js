@@ -752,7 +752,9 @@
       });
 
       // add styles if any
-      if (styles = ed.dom.getAttrib(tmp, 'style')) {
+      var styles = ed.dom.getAttrib(tmp, 'style');
+      
+      if (styles) {
         n.attr({
           'style': styles,
           'data-mce-style': styles
@@ -781,8 +783,7 @@
     },
     addFile: function (file) {
       var ed = this.editor,
-        self = this,
-        url;
+        self = this;
 
       // check for extension in file name, eg. image.php.jpg
       if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
@@ -793,7 +794,9 @@
       // get first url for the file type
       each(self.plugins, function (o, k) {
         if (!file.upload_url) {
-          if (url = o.getUploadURL(file)) {
+          var url = o.getUploadURL(file);
+
+          if (url) {
             file.upload_url = url;
             file.uploader = o;
           }

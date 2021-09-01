@@ -12,7 +12,6 @@
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
-            var self = this;
             this.editor = ed;
         },
 
@@ -150,9 +149,9 @@
                         if (ed.formatter.get(name)) {
                             //ed.formatter.apply(name, {}, node);
                             ed.execCommand('ApplyFormat', false, {
-                                name : name,
-                                args : {},
-                                node : node
+                                name: name,
+                                args: {},
+                                node: node
                             });
                             // custom class
                         } else {
@@ -165,9 +164,9 @@
                             } else {
                                 //ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
                                 ed.execCommand('ApplyFormat', false, {
-                                    name : 'classname',
-                                    args : { 'value': name },
-                                    node : ed.selection.isCollapsed() ? node : null
+                                    name: 'classname',
+                                    args: { 'value': name },
+                                    node: ed.selection.isCollapsed() ? node : null
                                 });
                             }
 
@@ -254,7 +253,7 @@
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
                 // generic class format
-                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*', ceFalseOverride : true});
+                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*', ceFalseOverride: true });
 
                 function isValidAttribute(name) {
                     var isvalid = true, invalid = ed.settings.invalid_attributes;

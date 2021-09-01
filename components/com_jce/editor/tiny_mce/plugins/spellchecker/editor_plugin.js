@@ -33,8 +33,7 @@
 
     tinymce.create('tinymce.plugins.SpellcheckerPlugin', {
         init: function (ed, url) {
-            var self = this,
-                cm;
+            var self = this;
 
             self.url = url;
             self.editor = ed;
@@ -98,12 +97,12 @@
 
             // only required for PHP spellchecker
             if (!self.native_spellchecker) {
-                ed.onPreInit.add(function() {
+                ed.onPreInit.add(function () {
                     if (ed.settings.content_css !== false) {
                         ed.dom.loadCSS(url + "/css/content.css");
                     }
                 });
-                
+
                 ed.onBeforeGetContent.add(function () {
                     if (self.active) {
                         self._removeWords();
@@ -150,8 +149,7 @@
             });
         },
         createControl: function (n, cm) {
-            var self = this,
-                c, ed = self.editor;
+            var self = this, c;
 
             if (n == 'spellchecker') {
                 // Use basic button if we use the native spellchecker
@@ -243,10 +241,12 @@
             if (d.createTreeWalker) {
                 w = d.createTreeWalker(n, NodeFilter.SHOW_TEXT, null, false);
 
-                while ((n = w.nextNode()) != null)
+                while ((n = w.nextNode()) != null) {
                     f.call(this, n);
-            } else
+                }
+            } else {
                 tinymce.walk(n, f, 'childNodes');
+            }
         },
         _getSeparators: function () {
             var re = '',
@@ -268,8 +268,9 @@
 
             // Get area text
             this._walk(ed.getBody(), function (n) {
-                if (n.nodeType == 3)
+                if (n.nodeType == 3) {
                     tx += n.nodeValue + ' ';
+                }
             });
 
             // split the text up into individual words
@@ -425,11 +426,12 @@
                             });
                         });
 
-                    } else
+                    } else {
                         m.add({
                             title: 'spellchecker.no_sug',
                             'class': 'mceMenuItemTitle'
                         }).setDisabled(1);
+                    }
 
                     if (ed.getParam('show_ignore_words', true)) {
                         m.addSeparator();
@@ -543,8 +545,6 @@
         _sendRPC: function (m, p, cb) {
             var self = this,
                 ed = self.editor;
-
-            var query = '';
 
             var args = {
                 id: uid(),

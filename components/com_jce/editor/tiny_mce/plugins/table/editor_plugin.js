@@ -13,10 +13,11 @@
         Event = tinymce.dom.Event,
         each = tinymce.each,
         VK = tinymce.VK,
-        TreeWalker = tinymce.dom.TreeWalker;
+        TreeWalker = tinymce.dom.TreeWalker,
+        Delay = tinymce.util.Delay;
 
     function getSpanVal(td, name) {
-        return parseInt(td.getAttribute(name) || 1);
+        return parseInt(td.getAttribute(name) || 1, 2);
     }
 
     /**
@@ -57,8 +58,9 @@
 
                         // Skip over existing cells produced by rowspan
                         if (grid[y]) {
-                            while (grid[y][x])
+                            while (grid[y][x]) {
                                 x++;
+                            }
                         }
 
                         // Get col/rowspan from cell
@@ -67,8 +69,9 @@
 
                         // Fill out rowspan/colspan right and down
                         for (y2 = y; y2 < y + rowspan; y2++) {
-                            if (!grid[y2])
+                            if (!grid[y2]) {
                                 grid[y2] = [];
+                            }
 
                             for (x2 = x; x2 < x + colspan; x2++) {
                                 grid[y2][x2] = {
@@ -93,18 +96,20 @@
             var row;
 
             row = grid[y];
-            if (row)
+            if (row) {
                 return row[x];
+            }
         }
 
         function setSpanVal(td, name, val) {
             if (td) {
-                val = parseInt(val);
+                val = parseInt(val, 2);
 
-                if (val === 1)
+                if (val === 1) {
                     td.removeAttribute(name, 1);
-                else
+                } else {
                     td.setAttribute(name, val, 1);
+                }
             }
         }
 
@@ -157,10 +162,11 @@
 
                         node = cloneNode(node, false);
 
-                        if (!formatNode)
+                        if (!formatNode) {
                             formatNode = curNode = node;
-                        else if (curNode)
+                        } else if (curNode) {
                             curNode.appendChild(node);
+                        }
 
                         curNode = node;
                     });
@@ -180,8 +186,9 @@
             if (formatNode) {
                 cell.appendChild(formatNode);
             } else {
-                if (!tinymce.isIE || tinymce.isIE11)
+                if (!tinymce.isIE || tinymce.isIE11) {
                     cell.innerHTML = '<br data-mce-bogus="1" />';
+                }
             }
 
             return cell;
@@ -192,8 +199,9 @@
 
             // Empty rows
             each(dom.select('tr', table), function (tr) {
-                if (tr.cells.length == 0)
+                if (tr.cells.length == 0) {
                     dom.remove(tr);
+                }
             });
 
             // Empty table
@@ -207,15 +215,17 @@
 
             // Empty header/body/footer
             each(dom.select('thead,tbody,tfoot', table), function (part) {
-                if (part.rows.length == 0)
+                if (part.rows.length == 0) {
                     dom.remove(part);
+                }
             });
 
             // Restore selection to start position if it still exists
             buildGrid();
 
             // Restore the selection to the closest table position
-            row = grid[Math.min(grid.length - 1, startPos.y)];
+            var row = grid[Math.min(grid.length - 1, startPos.y)];
+
             if (row) {
                 selection.select(row[Math.min(row.length - 1, startPos.x)].elm, true);
                 selection.collapse(true);
@@ -236,8 +246,9 @@
 
                         if (cell.parentNode == tr) {
                             // Append clones after
-                            for (c = 1; c <= cols; c++)
+                            for (c = 1; c <= cols; c++) {
                                 dom.insertAfter(cloneCell(cell), cell);
+                            }
 
                             break;
                         }
@@ -245,8 +256,9 @@
 
                     if (x2 == -1) {
                         // Insert nodes before first cell
-                        for (c = 1; c <= cols; c++)
+                        for (c = 1; c <= cols; c++) {
                             tr.insertBefore(cloneCell(tr.cells[0]), tr.cells[0]);
+                        }
                     }
                 }
             }
@@ -255,7 +267,7 @@
         function split() {
             each(grid, function (row, y) {
                 each(row, function (cell, x) {
-                    var colSpan, rowSpan, newCell, i;
+                    var colSpan, rowSpan, i;
 
                     if (isCellSelected(cell)) {
                         cell = cell.elm;
@@ -267,8 +279,9 @@
                             setSpanVal(cell, 'colSpan', 1);
 
                             // Insert cells right
-                            for (i = 0; i < colSpan - 1; i++)
+                            for (i = 0; i < colSpan - 1; i++) {
                                 dom.insertAfter(cloneCell(cell), cell);
+                            }
 
                             fillLeftDown(x, y, rowSpan - 1, colSpan);
                         }
@@ -278,7 +291,7 @@
         }
 
         function merge(cell, cols, rows) {
-            var startX, startY, endX, endY, x, y, startCell, endCell, cell, children, count;
+            var startX, startY, endX, endY, x, y, startCell, endCell, cell, children, count, pos;
 
             // Use specified cell and cols/rows
             if (cell) {
@@ -334,8 +347,9 @@
                 // Remove other cells and add it's contents to the start cell
                 for (y = startY; y <= endY; y++) {
                     for (x = startX; x <= endX; x++) {
-                        if (!grid[y] || !grid[y][x])
+                        if (!grid[y] || !grid[y][x]) {
                             continue;
+                        }
 
                         cell = grid[y][x].elm;
 
@@ -350,9 +364,12 @@
                             if (children.length) {
                                 children = tinymce.grep(startCell.childNodes);
                                 count = 0;
+
+                                // eslint-disable-next-line no-loop-func
                                 each(children, function (node) {
-                                    if (node.nodeName == 'BR' && dom.getAttrib(node, 'data-mce-bogus') && count++ < children.length - 1)
+                                    if (node.nodeName == 'BR' && dom.getAttrib(node, 'data-mce-bogus') && count++ < children.length - 1) {
                                         startCell.removeChild(node);
+                                    }
                                 });
                             }
 
@@ -379,19 +396,22 @@
                         newRow = cloneNode(rowElm, false);
                         posY = y;
 
-                        if (before)
+                        if (before) {
                             return false;
+                        }
                     }
                 });
 
-                if (before)
+                if (before) {
                     return !posY;
+                }
             });
 
             for (x = 0; x < grid[0].length; x++) {
                 // Cell not found could be because of an invalid table structure
-                if (!grid[posY][x])
+                if (!grid[posY][x]) {
                     continue;
+                }
 
                 cell = grid[posY][x].elm;
 
@@ -425,10 +445,11 @@
             }
 
             if (newRow.hasChildNodes()) {
-                if (!before)
+                if (!before) {
                     dom.insertAfter(newRow, rowElm);
-                else
+                } else {
                     rowElm.parentNode.insertBefore(newRow, rowElm);
+                }
             }
         }
 
@@ -441,20 +462,23 @@
                     if (isCellSelected(cell)) {
                         posX = x;
 
-                        if (before)
+                        if (before) {
                             return false;
+                        }
                     }
                 });
 
-                if (before)
+                if (before) {
                     return !posX;
+                }
             });
 
             each(grid, function (row, y) {
                 var cell, rowSpan, colSpan;
 
-                if (!row[posX])
+                if (!row[posX]) {
                     return;
+                }
 
                 cell = row[posX].elm;
                 if (cell != lastCell) {
@@ -469,8 +493,9 @@
                             cell.parentNode.insertBefore(cloneCell(cell), cell);
                             fillLeftDown(posX, y, rowSpan - 1, colSpan);
                         }
-                    } else
-                        setSpanVal(cell, 'colSpan', cell.colSpan + 1);
+                    } else {
+                        getSpanVal(cell, 'colSpan', cell.colSpan + 1);
+                    }
 
                     lastCell = cell;
                 }
@@ -490,10 +515,11 @@
 
                             colSpan = getSpanVal(cell, 'colSpan');
 
-                            if (colSpan > 1)
+                            if (colSpan > 1) {
                                 setSpanVal(cell, 'colSpan', colSpan - 1);
-                            else
+                            } else {
                                 dom.remove(cell);
+                            }
                         });
 
                         cols.push(x);
@@ -508,9 +534,9 @@
             var rows;
 
             function deleteRow(tr) {
-                var nextTr, pos, lastCell;
+                var pos, lastCell;
 
-                nextTr = dom.getNext(tr, 'tr');
+                //var nextTr = dom.getNext(tr, 'tr');
 
                 // Move down row spanned cells
                 each(tr.cells, function (cell) {
@@ -533,10 +559,11 @@
                     if (cell != lastCell) {
                         rowSpan = getSpanVal(cell, 'rowSpan');
 
-                        if (rowSpan <= 1)
+                        if (rowSpan <= 1) {
                             dom.remove(cell);
-                        else
+                        } else {
                             setSpanVal(cell, 'rowSpan', rowSpan - 1);
+                        }
 
                         lastCell = cell;
                     }
@@ -575,8 +602,9 @@
 
         function pasteRows(rows, before) {
             // If we don't have any rows in the clipboard, return immediately
-            if (!rows)
+            if (!rows) {
                 return;
+            }
 
             var selectedRows = getSelectedRows(),
                 targetRow = selectedRows[before ? 0 : selectedRows.length - 1],
@@ -588,44 +616,51 @@
 
                 targetCellCount = 0;
                 each(row, function (cell, x) {
-                    if (cell.real)
+                    if (cell.real) {
                         targetCellCount += cell.colspan;
+                    }
 
-                    if (cell.elm.parentNode == targetRow)
+                    if (cell.elm.parentNode == targetRow) {
                         match = 1;
+                    }
                 });
 
-                if (match)
+                if (match) {
                     return false;
+                }
             });
 
-            if (!before)
+            if (!before) {
                 rows.reverse();
+            }
 
             each(rows, function (row) {
                 var cellCount = row.cells.length,
                     cell;
 
                 // Remove col/rowspans
-                for (i = 0; i < cellCount; i++) {
+                for (var i = 0; i < cellCount; i++) {
                     cell = row.cells[i];
                     setSpanVal(cell, 'colSpan', 1);
                     setSpanVal(cell, 'rowSpan', 1);
                 }
 
                 // Needs more cells
-                for (i = cellCount; i < targetCellCount; i++)
+                for (i = cellCount; i < targetCellCount; i++) {
                     row.appendChild(cloneCell(row.cells[cellCount - 1]));
+                }
 
                 // Needs less cells
-                for (i = targetCellCount; i < cellCount; i++)
+                for (i = targetCellCount; i < cellCount; i++) {
                     dom.remove(row.cells[i]);
+                }
 
                 // Add before/after
-                if (before)
+                if (before) {
                     targetRow.parentNode.insertBefore(row, targetRow);
-                else
+                } else {
                     dom.insertAfter(row, targetRow);
+                }
             });
 
             // Remove current selection
@@ -657,7 +692,7 @@
         }
 
         function findEndPos() {
-            var pos, maxX, maxY;
+            var maxX, maxY;
 
             maxX = maxY = 0;
 
@@ -668,24 +703,28 @@
                     if (isCellSelected(cell)) {
                         cell = grid[y][x];
 
-                        if (x > maxX)
+                        if (x > maxX) {
                             maxX = x;
+                        }
 
-                        if (y > maxY)
+                        if (y > maxY) {
                             maxY = y;
+                        }
 
                         if (cell.real) {
                             colSpan = cell.colspan - 1;
                             rowSpan = cell.rowspan - 1;
 
                             if (colSpan) {
-                                if (x + colSpan > maxX)
+                                if (x + colSpan > maxX) {
                                     maxX = x + colSpan;
+                                }
                             }
 
                             if (rowSpan) {
-                                if (y + rowSpan > maxY)
+                                if (y + rowSpan > maxY) {
                                     maxY = y + rowSpan;
+                                }
                             }
                         }
                     }
@@ -715,22 +754,24 @@
                 maxY = endY;
 
                 // Expand startX
-                for (y = startY; y <= maxY; y++) {
+                for (var y = startY; y <= maxY; y++) {
                     cell = grid[y][startX];
 
                     if (!cell.real) {
-                        if (startX - (cell.colspan - 1) < startX)
+                        if (startX - (cell.colspan - 1) < startX) {
                             startX -= cell.colspan - 1;
+                        }
                     }
                 }
 
                 // Expand startY
-                for (x = startX; x <= maxX; x++) {
+                for (var x = startX; x <= maxX; x++) {
                     cell = grid[startY][x];
 
                     if (!cell.real) {
-                        if (startY - (cell.rowspan - 1) < startY)
+                        if (startY - (cell.rowspan - 1) < startY) {
                             startY -= cell.rowspan - 1;
+                        }
                     }
                 }
 
@@ -744,13 +785,15 @@
                             rowSpan = cell.rowspan - 1;
 
                             if (colSpan) {
-                                if (x + colSpan > maxX)
+                                if (x + colSpan > maxX) {
                                     maxX = x + colSpan;
+                                }
                             }
 
                             if (rowSpan) {
-                                if (y + rowSpan > maxY)
+                                if (y + rowSpan > maxY) {
                                     maxY = y + rowSpan;
+                                }
                             }
                         }
                     }
@@ -762,8 +805,9 @@
                 // Add new selection
                 for (y = startY; y <= maxY; y++) {
                     for (x = startX; x <= maxX; x++) {
-                        if (grid[y][x])
+                        if (grid[y][x]) {
                             dom.addClass(grid[y][x].elm, 'mceSelected');
+                        }
                     }
                 }
             }
@@ -969,7 +1013,7 @@
                 var n = e.target;
 
                 if (e.altKey && ed.dom.is(n, 'td,th,caption')) {
-                    n = ed.dom.getParent(n, 'table')
+                    n = ed.dom.getParent(n, 'table');
                 }
 
                 if (n.nodeName == 'TABLE') {
@@ -1183,7 +1227,7 @@
                             var siblingRow = currentRow[siblingDirection];
 
                             if (siblingRow) {
-                                moveCursorToRow(editor, sourceNode, siblingRow, upBool);
+                                moveCursorToRow(ed, sourceNode, siblingRow, upBool);
                                 e.preventDefault();
                                 return true;
                             }
@@ -1224,7 +1268,7 @@
                             var targetRow = getChildForDirection(targetParent, upBool);
 
                             if (targetRow) {
-                                moveCursorToRow(editor, sourceNode, targetRow, upBool);
+                                moveCursorToRow(ed, sourceNode, targetRow, upBool);
                             }
 
                             e.preventDefault();
@@ -1314,9 +1358,9 @@
                             return ed.dom.getParent(nodeOne, 'TABLE') === ed.dom.getParent(NodeTwo, 'TABLE');
                         }
 
-                        if (isVerticalMovement() && isInTable(editor)) {
+                        if (isVerticalMovement() && isInTable(ed)) {
                             var preBrowserNode = ed.selection.getNode();
-                            Delay.setEditorTimeout(editor, function () {
+                            Delay.setEditorTimeout(ed, function () {
                                 if (shouldFixCaret(preBrowserNode)) {
                                     handle(!e.shiftKey && key === VK.UP, preBrowserNode, e);
                                 }
@@ -1487,6 +1531,12 @@
                     function placeCaretInCell(cell) {
                         ed.selection.select(cell, true);
                         ed.selection.collapse(true);
+                    }
+
+                    function paddCell(cell) {
+                        if (!cell.hasChildNodes()) {
+                            cell.innerHTML = '<br data-mce-bogus="1" />';
+                        }
                     }
 
                     function clearCell(cell) {
@@ -1661,8 +1711,8 @@
                 // Add context menu
                 if (ed && ed.plugins.contextmenu) {
                     ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
-                        var sm, se = ed.selection,
-                            el = se.getNode() || ed.getBody();
+                        var sm;
+                        //var el = ed.selection.getNode() || ed.getBody();
 
                         if (ed.dom.getParent(e, 'td') || ed.dom.getParent(e, 'th') || ed.dom.select('td.mceSelected,th.mceSelected').length) {
                             m.add({
@@ -1772,12 +1822,13 @@
                                 cmd: 'mceTableDeleteCol'
                             });
 
-                        } else
+                        } else {
                             m.add({
                                 title: 'table.desc',
                                 icon: 'table',
                                 cmd: 'mceInsertTable'
                             });
+                        }
                     });
                 }
             });
@@ -1801,8 +1852,8 @@
                     if (!ed.dom.select('td.mceSelected,th.mceSelected').length) {
                         winMan.open({
                             url: url + '&layout=merge',
-                            width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0)),
-                            height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0)),
+                            width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0), 2),
+                            height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0), 2),
                             inline: 1,
                             size: 'mce-modal-landscape-small'
                         }, {
@@ -1932,16 +1983,15 @@
          * Create Grid Control
          */
         createControl: function (n, cm) {
-            var t = this,
-                ed = t.editor;
+            var ed = this.editor;
 
             function createMenuGrid(cols, rows) {
                 var html = '<table role="presentation" class="mceTableSplitMenu"><tbody>';
 
-                for (i = 0; i < rows; i++) {
+                for (var i = 0; i < rows; i++) {
                     html += '<tr>';
 
-                    for (x = 0; x < cols; x++) {
+                    for (var x = 0; x < cols; x++) {
                         html += '<td><a href="#"></a></td>';
                     }
 
@@ -1982,7 +2032,7 @@
                 }
 
                 for (i = 0; i < rows.length; i++) {
-                    cells = rows[i].childNodes;
+                    var cells = rows[i].childNodes;
 
                     for (z = 0; z < cells.length; z++) {
                         if (z > x || i > y) {
@@ -1997,7 +2047,7 @@
             }
 
             function menuGridClick(e) {
-                var c, el = e.target,
+                var el = e.target,
                     bookmark = 0;
 
                 if (el.nodeName !== "TD") {
@@ -2127,14 +2177,16 @@
                     }
 
                     m.onShowMenu.add(function () {
-                        if (n = DOM.get(sb.id)) {
+                        var n = DOM.get(sb.id);
+
+                        if (n) {
                             DOM.removeClass(DOM.select('.mceTableSplitMenu td', n), 'selected');
                             DOM.setHTML(DOM.select('.mceTableSplitMenu .mceTableGridCount', n), '&nbsp;');
                         }
 
                         var se = ed.selection,
                             el = se.getNode(),
-                            n, p = DOM.getParent(el, 'table')
+                            n, p = DOM.getParent(el, 'table');
 
                         tinymce.walk(m, function (o) {
                             if (o === sb || o === tm) {

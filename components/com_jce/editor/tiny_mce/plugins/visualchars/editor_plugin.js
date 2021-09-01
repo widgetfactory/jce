@@ -6,76 +6,14 @@
  */
 (function () {
     var Storage = tinymce.util.Storage;
-    
-    tinymce.create('tinymce.plugins.VisualChars', {
-        init: function (ed, url) {
-            var self = this, state;
 
-            self.editor = ed;
+    // Register plugin
+    tinymce.PluginManager.add('visualchars', function (ed, url) {
 
-            // get state from cookie
-            if (ed.getParam('use_state_cookies', true)) {
-                state = Storage.get('wf_visualchars_state');
-            }
+        function toggleVisualChars(state, o) {
 
-            state = tinymce.is(state, 'string') ? parseFloat(state) : ed.getParam('visualchars_default_state', 0);
-
-            ed.onInit.add(function () {
-                ed.controlManager.setActive('visualchars', state);
-
-                self._toggleVisualChars(state);
-            });
-
-            // Register buttons
-            ed.addButton('visualchars', {
-                title: 'visualchars.desc',
-                cmd: 'mceVisualChars'
-            });
-
-            // add trigger for nbsp button
-            ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
-                if (cmd === "mceNonBreaking") {
-                    self._toggleVisualChars(state);
-                }
-            });
-
-            // Register commands
-            ed.addCommand('mceVisualChars', function () {
-                state = !state;
-
-                ed.controlManager.setActive('visualchars', state);
-                self._toggleVisualChars(state);
-
-                if (ed.getParam('use_state_cookies', true)) {
-                    Storage.set('wf_visualchars_state', state ? 1 : 0);
-                }
-            }, self);
-
-            ed.onKeyUp.add(function (ed, e) {
-                if (state) {
-                    if (e.keyCode == 13) {
-                        self._toggleVisualChars(state);
-                    }
-                }
-            });
-
-            ed.onPreProcess.add(function (ed, o) {
-                if (o.get) {
-                    self._toggleVisualChars(false, o.node);
-                }
-            });
-
-            ed.onSetContent.add(function (ed, o) {
-                self._toggleVisualChars(state);
-            });
-        },
-
-        _toggleVisualChars: function (state, o) {
-            var self = this;
-            
             var ed = this.editor, node, nodeList, i, body = o || ed.getBody(),
-                nodeValue, selection = ed.selection,
-                div, bookmark;
+                nodeValue, div;
             var charMap, visualCharsRegExp;
 
             charMap = {
@@ -146,8 +84,63 @@
                 }
             }
         }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('visualchars', tinymce.plugins.VisualChars);
+        var state;
+
+        // get state from cookie
+        if (ed.getParam('use_state_cookies', true)) {
+            state = Storage.get('wf_visualchars_state');
+        }
+
+        state = tinymce.is(state, 'string') ? parseFloat(state) : ed.getParam('visualchars_default_state', 0);
+
+        ed.onInit.add(function () {
+            ed.controlManager.setActive('visualchars', state);
+
+            toggleVisualChars(state);
+        });
+
+        // Register buttons
+        ed.addButton('visualchars', {
+            title: 'visualchars.desc',
+            cmd: 'mceVisualChars'
+        });
+
+        // add trigger for nbsp button
+        ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+            if (cmd === "mceNonBreaking") {
+                toggleVisualChars(state);
+            }
+        });
+
+        // Register commands
+        ed.addCommand('mceVisualChars', function () {
+            state = !state;
+
+            ed.controlManager.setActive('visualchars', state);
+            toggleVisualChars(state);
+
+            if (ed.getParam('use_state_cookies', true)) {
+                Storage.set('wf_visualchars_state', state ? 1 : 0);
+            }
+        }, self);
+
+        ed.onKeyUp.add(function (ed, e) {
+            if (state) {
+                if (e.keyCode == 13) {
+                    toggleVisualChars(state);
+                }
+            }
+        });
+
+        ed.onPreProcess.add(function (ed, o) {
+            if (o.get) {
+                toggleVisualChars(false, o.node);
+            }
+        });
+
+        ed.onSetContent.add(function (ed, o) {
+            toggleVisualChars(state);
+        });
+    });
 })();

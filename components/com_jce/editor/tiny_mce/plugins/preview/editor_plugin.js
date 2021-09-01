@@ -1,6 +1,5 @@
-(function() {
-    var DOM = tinymce.DOM,
-        Event = tinymce.dom.Event;
+(function () {
+    var DOM = tinymce.DOM;
 
     var counter = 0;
 
@@ -21,12 +20,12 @@
     }
 
     tinymce.create('tinymce.plugins.PreviewPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             this.editor = ed;
 
             var self = this;
 
-            ed.onInit.add(function(ed) {
+            ed.onInit.add(function (ed) {
                 // get the stored active tab
                 var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
 
@@ -35,21 +34,20 @@
                     ed.hide();
                     // hide textarea
                     DOM.hide(ed.getElement());
-                    
+
                     self.toggle();
                 }
             });
         },
 
-        hide: function() {
+        hide: function () {
             DOM.hide(this.editor.id + '_editor_preview');
         },
 
-        toggle: function() {
+        toggle: function () {
             var ed = this.editor;
 
-            var self = this,
-                s = ed.settings;
+            var s = ed.settings;
 
             var element = ed.getElement();
             var container = element.parentNode;
@@ -57,7 +55,7 @@
             var header = DOM.getPrev(element, '.wf-editor-header');
 
             // get editor iframe height
-            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height) || s.height;
+            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height, 2) || s.height;
             var preview = DOM.get(ed.id + '_editor_preview');
             var iframe = DOM.get(ed.id + '_editor_preview_iframe');
 
@@ -112,7 +110,7 @@
             });
 
             // create query
-            for (k in args) {
+            for (var k in args) {
                 query += '&' + k + '=' + encodeURIComponent(args[k]);
             }
 
@@ -137,13 +135,13 @@
                     css = tinymce.explode(s.content_css);
                 }
 
-                tinymce.each(css, function(url) {
+                tinymce.each(css, function (url) {
                     html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
                 });
 
                 // append found scripts to body
                 if (scripts) {
-                    tinymce.each(scripts, function(script) {
+                    tinymce.each(scripts, function (script) {
                         html += '' + script + '';
                     });
                 }
@@ -166,9 +164,8 @@
                     'method': 'showPreview'
                 }) + '&' + query,
                 content_type: 'application/x-www-form-urlencoded',
-                success: function(x) {
-                    var o = {},
-                        msg = "";
+                success: function (x) {
+                    var o = {};
 
                     try {
                         o = JSON.parse(x);
@@ -176,7 +173,7 @@
                         o.error = /[{}]/.test(o) ? 'The server returned an invalid JSON response' : x;
                     }
 
-                    r = o.result;
+                    var r = o.result;
 
                     // revert to unprocessed content on error
                     if (!x || o.error) {
@@ -185,7 +182,7 @@
 
                     update(r);
                 },
-                error: function(e, x) {
+                error: function (e, x) {
                     update(ed.getContent());
                 }
             });
