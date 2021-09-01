@@ -39941,6 +39941,7 @@
                   title: ed.dom.encode(value)
                 });
 
+                // eslint-disable-next-line no-loop-func
                 each(node.attributes, function (attr) {
                   placeholder.attr('data-mce-p-' + attr.name, attr.value);
                 });
@@ -40092,7 +40093,7 @@
                       text += value;
                     }
                   }
-                } while (child = child.next);
+                } while ((child = child.next));
               }
 
               if (text) {
@@ -40102,17 +40103,20 @@
 
                 // validate attributes of script and style tags
                 if (type === 'script' || type === 'style') {
-                  parser.addNodeFilter(type, function (items) {
+                  parser.addNodeFilter(type, function (items, name) {
                     var n = items.length;
 
                     while (n--) {
-                      each(items[n].attributes, function (attr, i) {
+                      var item = items[n];
+                      
+                      // eslint-disable-next-line no-loop-func
+                      each(item.attributes, function (attr) {
                         if (!attr) {
                           return true;
                         }
 
-                        if (ed.schema.isValid(type, attr.name) === false) {
-                          items[n].attr(attr.name, null);
+                        if (ed.schema.isValid(name, attr.name) === false) {
+                          item.attr(attr.name, null);
                         }
                       });
                     }
@@ -40302,6 +40306,9 @@
           title : 'advanced.italic_desc',
           onclick : function (e) {
             e.preventDefault();
+
+            // restore focus
+            ed.focus();
 
             if (e.shiftKey) {
               ed.formatter.toggle('italic-i');
