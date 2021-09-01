@@ -39,7 +39,6 @@
 
     tinymce.create('tinymce.plugins.FormatSelectPlugin', {
         init: function (ed, url) {
-            var self = this;
             this.editor = ed;
 
             var nodes = [];

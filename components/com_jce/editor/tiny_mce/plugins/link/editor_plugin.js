@@ -11,14 +11,18 @@
     var DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
     // A selection of useful utilities borrowed from https://github.com/tinymce/tinymce/blob/develop/modules/tinymce/src/plugins/link/main/ts/core/Utils.ts
-    var isAnchor = function (elm) { return elm && elm.nodeName.toLowerCase() === 'a'; };
-    var hasFileSpan = function (elm) { return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1 };
+    var isAnchor = function (elm) {
+        return elm && elm.nodeName.toLowerCase() === 'a';
+    };
+
+    var hasFileSpan = function (elm) {
+        return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1;
+    };
 
     var collectNodesInRange = function (rng, predicate) {
         if (rng.collapsed) {
             return [];
-        }
-        else {
+        } else {
             var contents = rng.cloneContents();
             var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
             var elements = [];
@@ -43,7 +47,9 @@
         return elements.length === 0;
     };
 
-    var trimCaretContainers = function (text) { return text.replace(/\uFEFF/g, ''); };
+    var trimCaretContainers = function (text) {
+        return text.replace(/\uFEFF/g, '');
+    };
 
     var getAnchorText = function (selection, anchorElm) {
         var text = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({ format: 'text' });
@@ -61,7 +67,7 @@
         } else {
             elm.textContent = text;
         }
-    }
+    };
 
     function createLink(ed, data) {
         var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'a[href]');
@@ -95,7 +101,7 @@
 
         // set default target
         if (ed.settings.default_link_target) {
-            args['target'] = ed.settings.default_link_target;
+            args.target = ed.settings.default_link_target;
         }
 
         // no selection, so create a link from the url
@@ -208,7 +214,7 @@
                             }
 
                             // get anchor or selected element text
-                            var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || ''
+                            var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
 
                             urlCtrl.value(src);
 
@@ -353,7 +359,7 @@
 
                     DOM.setAttrib(ed.id + '_link_unlink', 'disabled', 'disabled');
 
-                    node = ed.dom.getParent(selection.getNode(), 'a[href]');
+                    var node = ed.dom.getParent(selection.getNode(), 'a[href]');
 
                     if (isAnchor(node)) {
                         selection.select(node);

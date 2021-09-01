@@ -8,13 +8,13 @@
  * other free or open source software licenses.
  */
 
-(function() {
-    var each = tinymce.each, cookie = tinymce.util.Cookie, DOM = tinymce.DOM;
+(function () {
+    var DOM = tinymce.DOM;
 
     tinymce.create('tinymce.plugins.KitchenSink', {
-        init: function(ed, url) {
+        init: function (ed, url) {
 
-            var self = this, state = false, h = 0, el = ed.getElement(), s = ed.settings;
+            var state = false, h = 0, el = ed.getElement(), s = ed.settings;
 
             function toggle() {
                 var row = DOM.getParents(ed.id + '_kitchensink', '.mceToolbarRow');
@@ -55,7 +55,7 @@
                 cmd: 'mceKitchenSink'
             });
 
-            ed.onPostRender.add(function(ed, cm) {
+            ed.onPostRender.add(function (ed, cm) {
                 if (DOM.get('mce_fullscreen')) {
                     state = true;
                     return;
@@ -64,7 +64,7 @@
                 toggle();
             });
 
-            ed.onInit.add(function(ed) {
+            ed.onInit.add(function (ed) {
                 ed.controlManager.setActive('kitchensink', state);
             });
         }

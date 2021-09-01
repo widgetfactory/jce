@@ -25,6 +25,10 @@
         return node.parentNode.lastChild == node;
     }
 
+    function isBogusBr(node) {
+        return node.nodeName == 'BR' && node.getAttribute('data-mce-bogus');
+    }
+
     tinymce.create('tinymce.plugins.Lists', {
         init: function (editor) {
             var self = this;
@@ -64,7 +68,7 @@
                     offset = rng[start ? 'startOffset' : 'endOffset'];
 
                     if (container.nodeType == 1) {
-                        offsetNode = editor.dom.create('span', {'data-mce-type': 'bookmark'});
+                        offsetNode = editor.dom.create('span', { 'data-mce-type': 'bookmark' });
 
                         if (container.hasChildNodes()) {
                             offset = Math.min(offset, container.childNodes.length - 1);
@@ -203,7 +207,7 @@
                 } else {
                     // BR is needed in empty blocks on non IE browsers
                     if (!hasContentNode) {
-                        textBlock.appendChild(editor.dom.create('br', {'data-mce-bogus': '1'}));
+                        textBlock.appendChild(editor.dom.create('br', { 'data-mce-bogus': '1' }));
                     }
                 }
 
@@ -422,15 +426,15 @@
                 }*/
 
                 function appendToNewList(li, newList) {
-                    var listItem = editor.dom.create('li', {'style' : 'list-style-type: none;'});
-                    
+                    var listItem = editor.dom.create('li', { 'style': 'list-style-type: none;' });
+
                     li.parentNode.insertBefore(listItem, li);
                     listItem.appendChild(newList);
                 }
 
                 // multiple list items
                 sibling = li.previousSibling || li.nextSibling;
-                
+
                 if (sibling && sibling.nodeName == 'LI') {
                     newList = editor.dom.create(li.parentNode.nodeName);
 
@@ -674,8 +678,6 @@
             }
 
             self.backspaceDelete = function (isForward) {
-                var dom = editor.dom, selection = editor.seletion;
-
                 function findNextCaretContainer(rng, isForward) {
                     var node = rng.startContainer, offset = rng.startOffset;
                     var nonEmptyBlocks, walker;
@@ -686,16 +688,16 @@
 
                     nonEmptyBlocks = editor.schema.getNonEmptyElements();
                     if (node.nodeType == 1) {
-						            node = tinymce.dom.RangeUtils.getNode(node, offset);
-					          }
+                        node = tinymce.dom.RangeUtils.getNode(node, offset);
+                    }
                     walker = new tinymce.dom.TreeWalker(rng.startContainer);
 
                     // Delete at <li>|<br></li> then jump over the bogus br
-            				if (isForward) {
-            					if (isBogusBr(node)) {
-            						walker.next();
-            					}
-            				}
+                    if (isForward) {
+                        if (isBogusBr(node)) {
+                            walker.next();
+                        }
+                    }
 
                     while ((node = walker[isForward ? 'next' : 'prev']())) {
                         if (node.nodeName == 'LI' && !node.hasChildNodes()) {
@@ -771,11 +773,9 @@
                         }
                     }
                 }
-            }
+            };
 
-            editor.onBeforeExecCommand.add(function(ed, cmd, ui, v, o) {
-                var isHandled;
-
+            editor.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
                 if (cmd.toLowerCase() == "indent") {
                     if (indentSelection()) {
                         o.terminate = true;
@@ -805,7 +805,7 @@
             editor.addQueryStateHandler('InsertOrderedList', queryListCommandState('OL'));
             editor.addQueryStateHandler('InsertDefinitionList', queryListCommandState('DL'));
 
-            editor.onKeyDown.add(function (ed, e) {                
+            editor.onKeyDown.add(function (ed, e) {
                 // Check for tab but not ctrl/cmd+tab since it switches browser tabs
                 if (e.keyCode != 9 || tinymce.VK.metaKeyPressed(e)) {
                     return;
@@ -832,7 +832,7 @@
                 }
             });
         },
-        backspaceDelete: function(isForward) {
+        backspaceDelete: function (isForward) {
             return this.backspaceDelete(isForward);
         }
     });

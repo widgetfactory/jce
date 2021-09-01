@@ -41113,7 +41113,9 @@
             each(doc.styleSheets, function (styleSheet) {
               parseCSS(styleSheet);
             });
-          } catch (ex) { }
+          } catch (ex) {
+            // error
+          }
         }
 
         // add font-face rules
@@ -41132,7 +41134,9 @@
               var setCss = function () {
                 try {
                   style.styleSheet.cssText = css;
-                } catch (e) { }
+                } catch (e) {
+                  // error
+                }
               };
               if (style.styleSheet.disabled) {
                 setTimeout(setCss, 10);
@@ -41149,7 +41153,9 @@
             // set fonts flag so we only do this once
             fonts = true;
 
-          } catch (e) { }
+          } catch (e) {
+            // error
+          }
         }
 
         // sort and expose if classes have been set

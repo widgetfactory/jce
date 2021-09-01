@@ -9,12 +9,12 @@
  * other free or open source software licenses.
  */
 
-(function() {
+(function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event;
 
     tinymce.create('tinymce.plugins.FullScreenPlugin', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var width, height, bookmark, resize, de = DOM.doc.documentElement,
                 overflow;
 
@@ -31,7 +31,7 @@
                     ca = ed.getContentAreaContainer(),
                     p = ca.parentNode;
 
-                tinymce.each(p.childNodes, function(n) {
+                tinymce.each(p.childNodes, function (n) {
                     if (n === ca) {
                         return;
                     }
@@ -43,14 +43,16 @@
             }
 
             // Register commands
-            ed.addCommand('mceFullScreen', function() {
+            ed.addCommand('mceFullScreen', function () {
                 var iframe = DOM.get(ed.id + '_ifr'),
                     s = ed.settings;
 
                 // might generate an error if the first element cannot contain a node, eg: style
                 try {
                     bookmark = ed.selection.getBookmark();
-                } catch (e) {}
+                } catch (e) {
+                    //error
+                }
 
                 var vp = DOM.getViewPort();
                 var header = DOM.getPrev(element, '.wf-editor-header');
@@ -84,7 +86,7 @@
                 } else {
                     width = container.clientWidth;
                     // get the current iframe height from the style
-                    height = parseInt(iframe.style.height);
+                    height = parseInt(iframe.style.height, 2);
 
                     // store overflow
                     overflow = de.style.overflow;
@@ -109,7 +111,7 @@
                     DOM.addClass(container, 'mce-fullscreen');
 
                     // wait to update...
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         // set iframe height
                         DOM.setStyle(iframe, 'height', vp.h - ih - header.offsetHeight);
 
@@ -126,7 +128,7 @@
                     }
 
                     // add window resize event
-                    resize = Event.add(DOM.win, 'resize', function() {
+                    resize = Event.add(DOM.win, 'resize', function () {
                         vp = DOM.getViewPort();
                         DOM.setStyles(iframe, { 'height': vp.h - ih, 'max-width': vp.w + 'px' });
 
@@ -153,7 +155,7 @@
 
             ed.addShortcut('meta+shift+f', 'fullscreen.desc', 'mceFullScreen');
 
-            ed.onNodeChange.add(function(ed, cm) {
+            ed.onNodeChange.add(function (ed, cm) {
                 cm.setActive('fullscreen', ed.getParam('fullscreen_enabled'));
             });
         }
