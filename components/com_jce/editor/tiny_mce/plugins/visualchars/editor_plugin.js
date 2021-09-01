@@ -12,7 +12,7 @@
 
         function toggleVisualChars(state, o) {
 
-            var ed = this.editor, node, nodeList, i, body = o || ed.getBody(),
+            var node, nodeList, i, body = o || ed.getBody(),
                 nodeValue, div;
             var charMap, visualCharsRegExp;
 
