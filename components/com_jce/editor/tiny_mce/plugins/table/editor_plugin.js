@@ -17,7 +17,7 @@
         Delay = tinymce.util.Delay;
 
     function getSpanVal(td, name) {
-        return parseInt(td.getAttribute(name) || 1, 2);
+        return parseInt(td.getAttribute(name) || 1, 10);
     }
 
     /**
@@ -103,7 +103,7 @@
 
         function setSpanVal(td, name, val) {
             if (td) {
-                val = parseInt(val, 2);
+                val = parseInt(val, 10);
 
                 if (val === 1) {
                     td.removeAttribute(name, 1);
