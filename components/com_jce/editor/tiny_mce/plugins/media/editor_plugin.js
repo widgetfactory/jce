@@ -8,7 +8,7 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
- (function () {
+(function () {
     var each = tinymce.each,
         extend = tinymce.extend,
         Node = tinymce.html.Node,
@@ -126,7 +126,7 @@
             if (!src) {
                 return false;
             }
-            
+
             if (isLocalUrl(editor, src)) {
                 return true;
             }
@@ -142,7 +142,7 @@
             if (!src) {
                 return false;
             }
-            
+
             return isLocalUrl(editor, src);
         }
 
@@ -211,6 +211,7 @@
      * Check that a node is valid to be processed, ie: must have a url of some sort
      * @param {tinymce.html.Node} node 
      */
+    // eslint-disable-next-line no-unused-vars
     function isValidNode(node) {
         var name = node.name;
 
@@ -357,9 +358,9 @@
         "video/webm,webm," +
         "video/quicktime,qt mov," +
         "video/x-flv,flv," +
-        "video/vnd.rn-realvideo,rv", +
+        "video/vnd.rn-realvideo,rv," +
         "video/3gpp,3gp," +
-    "video/x-matroska,mkv"
+        "video/x-matroska,mkv"
     );
 
     each(mediaTypes, function (value, key) {
@@ -433,7 +434,7 @@
         var html = new tinymce.html.Serializer().serialize(preview);
 
         editor.dom.replace(editor.dom.createFragment(html), node);
-    }
+    };
 
     var createPreviewNode = function (editor, node) {
         var previewWrapper;
@@ -465,12 +466,12 @@
             }
 
             return 'false';
-        }
+        };
 
         var styles = {}, styleVal = editor.dom.parseStyle(node.attr('style'));
 
         each(['width', 'height'], function (key) {
-            val = node.attr(key) || styleVal[key] || '';
+            var val = node.attr(key) || styleVal[key] || '';
 
             if (val && !/(%|[a-z]{1,3})$/.test(val)) {
                 val += 'px';
@@ -480,7 +481,7 @@
         });
 
         // keep some styles
-        each(styleVal, function(value, key) {
+        each(styleVal, function (value, key) {
             if (/(margin|float|align)/.test(key)) {
                 styles[key] = value;
             }
@@ -556,7 +557,8 @@
             if (key === 'style' && value) {
                 var styleObject = editor.dom.parseStyle(value);
 
-                tinymce.each(['width', 'height'], function (key) {
+                // eslint-disable-next-line no-loop-func
+                each(['width', 'height'], function (key) {
                     // skip processing in audio element
                     if (tag === 'audio') {
                         return true;
@@ -600,7 +602,7 @@
                 var value = param.attr('src') || param.attr('url') || null;
 
                 if (value) {
-                    attribs['src'] = editor.convertURL(value);
+                    attribs.src = editor.convertURL(value);
 
                     param.remove();
                 }
@@ -835,8 +837,10 @@
         // Set class
         targetNode.attr('class', tinymce.trim(classes.join(' ')));
 
+        var styles = editor.dom.serializeStyle(style);
+
         // add styles
-        if (styles = editor.dom.serializeStyle(style)) {
+        if (styles) {
             targetNode.attr('style', styles);
         }
 
@@ -944,6 +948,7 @@
         try {
             html = unescape(html);
         } catch (e) {
+            // error
         }
 
         var nodes = parseHTML(html);
@@ -951,13 +956,13 @@
         each(nodes, function (node, i) {
             if (node.name === "source") {
                 // create empty source array
-                if (!data['source']) {
-                    data['source'] = [];
+                if (!data.source) {
+                    data.source = [];
                 }
 
                 var val = ed.convertURL(node.value.src);
 
-                data['source'].push(val);
+                data.source.push(val);
             } else if (node.name === "param") {
                 if (isUrlValue(node.value.name)) {
                     node.value.value = ed.convertURL(node.value.value);
@@ -965,7 +970,7 @@
 
                 data[node.value.name] = node.value.value;
             } else {
-                data['html'] = node.value;
+                data.html = node.value;
             }
         });
 
@@ -999,10 +1004,10 @@
         var i, attribs = node.attributes;
 
         // set src value
-        data['src'] = ed.dom.getAttrib(node, 'data-mce-p-src') || ed.dom.getAttrib(node, 'data-mce-p-data') || ed.dom.getAttrib(node, 'src');
+        data.src = ed.dom.getAttrib(node, 'data-mce-p-src') || ed.dom.getAttrib(node, 'data-mce-p-data') || ed.dom.getAttrib(node, 'src');
 
         // convert url
-        data['src'] = ed.convertURL(data['src']);
+        data.src = ed.convertURL(data.src);
 
         for (i = attribs.length - 1; i >= 0; i--) {
             var attrib = attribs.item(i),
@@ -1102,7 +1107,7 @@
 
     function isMediaObject(ed, node) {
         node = node || ed.selection.getNode();
-        return ed.dom.getParent(node, '[data-mce-object]')
+        return ed.dom.getParent(node, '[data-mce-object]');
     }
 
     // Register plugin
@@ -1117,7 +1122,7 @@
                 if (!isSupportedMedia(o.before)) {
                     return;
                 }
-                
+
                 each(ed.dom.select('video.mce-object, audio.mce-object, iframe.mce-object, img.mce-object'), function (elm) {
                     var src = elm.getAttribute('src');
 
@@ -1141,7 +1146,7 @@
                                 }
                             });
 
-                            elm.setAttribute('data-mce-html', escape(tmp.innerHTML))
+                            elm.setAttribute('data-mce-html', escape(tmp.innerHTML));
                         }
 
                         // update poster value
@@ -1158,8 +1163,6 @@
                 });
             });
 
-            var invalid = ed.settings.invalid_elements;
-
             // keep this for legacy
             if (ed.settings.schema === "html4") {
                 // iframe
@@ -1167,8 +1170,6 @@
                 // audio, video, embed
                 ed.schema.addValidElements('video[src|autobuffer|autoplay|loop|controls|width|height|poster|*],audio[src|autobuffer|autoplay|loop|controls|*],source[src|type|media|*],embed[src|type|width|height|*]');
             }
-
-            invalid = tinymce.explode(invalid, ',');
 
             // Convert video elements to image placeholder
             ed.parser.addNodeFilter('iframe,video,audio,object,embed',
@@ -1194,9 +1195,9 @@
             var settings = ed.settings;
 
             ed.theme.onResolveName.add(function (theme, o) {
-                var node, name;
+                var name, node = ed.dom.getParent(o.node, '[data-mce-object]');
 
-                if (node = ed.dom.getParent(o.node, '[data-mce-object]')) {
+                if (node) {
                     name = node.getAttribute('data-mce-object');
 
                     // skip processing as we are using the parent node
@@ -1401,14 +1402,14 @@
             getMediaData: function () {
                 return getMediaData(ed);
             },
-    
+
             updateMedia: function (data) {
                 return updateMedia(ed, data);
             },
-    
+
             isMediaObject: function (node) {
                 return isMediaObject(ed, node);
             }
-        }
+        };
     });
 })();

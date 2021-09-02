@@ -546,13 +546,13 @@
      * Becomes:
      *  <p>a</p><p>b</p>
      */
-    function removeExplorerBrElementsAfterBlocks(editor, o) {
+    function removeExplorerBrElementsAfterBlocks(e, o) {
         // Only filter word specific content
         if (!o.wordContent) {
             return;
         }
 
-        var html = o.content;
+        var html = o.content, editor = e.editor;
 
         // Produce block regexp based on the block elements in schema
         var blockElements = [];
@@ -594,8 +594,8 @@
      * @param {String} content Content that needs to be processed.
      * @return {String} Processed contents.
      */
-    function removeWebKitStyles(editor, o) {
-        var content = o.content;
+    function removeWebKitStyles(e, o) {
+        var content = o.content, editor = e.editor;
 
         // skip internal content
         if (o.internal) {
@@ -664,8 +664,8 @@
         o.content = content;
     }
 
-    function preProcess(self, o) {
-        var ed = self.editor,
+    function preProcess(e, o) {
+        var ed = e.editor,
             h = o.content;
 
         // Process away some basic content
@@ -690,14 +690,17 @@
         }
 
         o.content = h;
+
+        ed.onPastePreProcess.dispatch(ed, o);
+        ed.execCallback('paste_preprocess', e, o);
     }
 
-    function postProcess(self, o) {
-        var ed = self.editor,
+    function postProcess(e, o) {
+        var ed = e.editor,
             dom = ed.dom;
 
         // skip plain text
-        if (self.pasteAsPlainText) {
+        if (e.pasteAsPlainText) {
             return;
         }
 
@@ -716,13 +719,17 @@
 
         // Convert width and height attributes to styles
         each(dom.select('table, td, th', o.node), function (n) {
-            if ((value = dom.getAttrib(n, 'width'))) {
-                dom.setStyle(n, 'width', value);
+            var width = dom.getAttrib(n, 'width');
+            
+            if (width) {
+                dom.setStyle(n, 'width', width);
                 dom.setAttrib(n, 'width', '');
             }
 
-            if ((value = dom.getAttrib(n, 'height'))) {
-                dom.setStyle(n, 'height', value);
+            var height = dom.getAttrib(n, 'height');
+
+            if (height) {
+                dom.setStyle(n, 'height', height);
                 dom.setAttrib(n, 'height', '');
             }
         });
@@ -949,6 +956,9 @@
                 dom.remove(n, 1);
             });
         }*/
+
+        ed.onPastePostProcess.dispatch(ed, o);
+        ed.execCallback('paste_postprocess', e, o);
     }
 
     /**
@@ -2045,31 +2055,16 @@
 
             // process quirks
             if (tinymce.isWebKit) {
-                self.onPreProcess.add(function (self, o) {
-                    removeWebKitStyles(ed, o);
-                });
+                self.onPreProcess.add(removeWebKitStyles);
             }
 
             if (isIE) {
-                self.onPreProcess.add(function (self, o) {
-                    removeExplorerBrElementsAfterBlocks(ed, o);
-                });
+                self.onPreProcess.add(removeExplorerBrElementsAfterBlocks);
             }
 
             // Register default handlers
-            self.onPreProcess.add(function (self, o) {
-                preProcess(self, o);
-
-                ed.onPastePreProcess.dispatch(ed, o);
-                ed.execCallback('paste_preprocess', self, o);
-            });
-
-            self.onPostProcess.add(function (self, o) {
-                postProcess(self, o);
-
-                ed.onPastePostProcess.dispatch(ed, o);
-                ed.execCallback('paste_postprocess', self, o);
-            });
+            self.onPreProcess.add(preProcess);
+            self.onPostProcess.add(postProcess);
 
             self.pasteText = ed.getParam('clipboard_paste_text', 1);
             self.pasteHtml = ed.getParam('clipboard_paste_html', 1);
