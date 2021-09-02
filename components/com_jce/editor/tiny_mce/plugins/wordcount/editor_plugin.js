@@ -9,7 +9,7 @@
  */
 
 (function () {
-    var VK = tinymce.VK;
+    var VK = tinymce.VK, DOM = tinymce.DOM;
 
     tinymce.PluginManager.add('wordcount', function (ed, url) {
         var self = this,
@@ -19,7 +19,7 @@
         var cleanre = ed.getParam('wordcount_cleanregex', /[0-9.(),;:!?%#$?\x27\x22_+=\\\/\-]*/g);
         var update_rate = ed.getParam('wordcount_update_rate', 2000);
         var update_on_delete = ed.getParam('wordcount_update_on_delete', false);
-        var id = ed.id + '_word_count';
+        var target_id = ed.id + '_word_count';
 
         ed.onWordCount = new tinymce.util.Dispatcher(self);
 
@@ -65,18 +65,18 @@
                         tc = limit - tc;
 
                         if (tc < 0) {
-                            tinymce.DOM.addClass(id, 'mceWordCountLimit');
+                            DOM.addClass(target_id, 'mceWordCountLimit');
 
                             if (showAlert) {
                                 ed.windowManager.alert(ed.getLang('wordcount.limit_alert', 'You have reached the word limit set for this content.'));
                             }
 
                         } else {
-                            tinymce.DOM.removeClass(id, 'mceWordCountLimit');
+                            DOM.removeClass(target_id, 'mceWordCountLimit');
                         }
                     }
 
-                    tinymce.DOM.setHTML(id, tc.toString());
+                    DOM.setHTML(target_id, tc.toString());
 
                     ed.onWordCount.dispatch(ed, tc);
 
@@ -89,13 +89,13 @@
 
         ed.onPostRender.add(function (ed, cm) {
             // Add it to the specified id or the theme advanced path
-            var target_id = ed.getParam('wordcount_target_id');
+            target_id = ed.getParam('wordcount_target_id', target_id);
 
-            if (!id) {
-                var row = tinymce.DOM.get(ed.id + '_path_row');
+            if (!DOM.get(target_id)) {
+                var row = DOM.get(ed.id + '_path_row');
 
                 if (row) {
-                    tinymce.DOM.add(row.parentNode, 'div', {
+                    DOM.add(row.parentNode, 'div', {
                         'class': 'mceWordCount'
                     }, ed.getLang('wordcount.words', 'Words: ') + '<span id="' + target_id + '" class="mceText">0</span>');
                 }
