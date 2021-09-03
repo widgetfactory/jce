@@ -133,6 +133,7 @@
 .mceListBoxMenu .mceMenuItems {
     overflow: hidden;
     overflow-y: auto;
+    max-height: 386px;
 }
 
 select.mceNativeListBox {
