@@ -9,7 +9,7 @@
  * other free or open source software licenses.
  */
 
-(function (tinymce) {
+(function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event,
         extend = tinymce.extend,
@@ -63,7 +63,7 @@
 
         init: function (ed, url) {
             var self = this,
-                s, v, o;
+                s, v;
 
             self.editor = ed;
             self.url = url;
@@ -208,18 +208,22 @@
         },
 
         createControl: function (n, cf) {
-            var cd, c;
+            var c = cf.createControl(n);
 
-            if (c = cf.createControl(n))
+            if (c) {
                 return c;
+            }
 
-            if ((cd = this.controls[n]))
+            var cd = this.controls[n];
+
+            if (cd) {
                 return cf.createButton(n, {
                     title: "advanced." + cd[0],
                     cmd: cd[1],
                     ui: cd[2],
                     value: cd[3]
                 });
+            }
         },
 
         execCommand: function (cmd, ui, val) {
@@ -234,10 +238,10 @@
         },
 
         renderUI: function (o) {
-            var n, ic, tb, self = this,
+            var n, ic, self = this,
                 ed = self.editor,
                 s = self.settings,
-                sc, p, nl;
+                sc, p;
 
             if (ed.settings) {
                 ed.settings.aria_label = s.aria_label + ed.getLang('advanced.help_shortcut');
@@ -381,7 +385,7 @@
             }
 
             // Create iframe container
-            n = ic = DOM.add(tb, 'div', {
+            ic = DOM.add(tb, 'div', {
                 'class': 'mceIframeContainer'
             });
 
@@ -400,7 +404,6 @@
         _addControls: function (v, tb) {
             var self = this,
                 s = self.settings,
-                ed = self.editor,
                 di, cf = self.editor.controlManager;
 
             if (s.theme_disable && !self._disabled) {
@@ -666,7 +669,7 @@
 
                     // Ignore bogus/hidden elements
                     if (n.getAttribute('data-mce-bogus')) {
-                        return
+                        return;
                     }
 
                     // ignore linebreaks
@@ -689,47 +692,49 @@
                             break;
 
                         case 'img':
-                            if (v = DOM.getAttrib(n, 'src')) {
+                            if ((v = DOM.getAttrib(n, 'src'))) {
                                 ti += 'src: ' + v + ' ';
                             }
                             break;
 
                         case 'a':
-                            if (v = DOM.getAttrib(n, 'href')) {
+                            if ((v = DOM.getAttrib(n, 'href'))) {
                                 ti += 'href: ' + v + ' ';
                             }
 
                             break;
 
                         case 'font':
-                            if (v = DOM.getAttrib(n, 'face')) {
+                            if ((v = DOM.getAttrib(n, 'face'))) {
                                 ti += 'font: ' + v + ' ';
                             }
 
-                            if (v = DOM.getAttrib(n, 'size')) {
+                            if ((v = DOM.getAttrib(n, 'size'))) {
                                 ti += 'size: ' + v + ' ';
                             }
 
-                            if (v = DOM.getAttrib(n, 'color')) {
+                            if ((v = DOM.getAttrib(n, 'color'))) {
                                 ti += 'color: ' + v + ' ';
                             }
 
                             break;
 
                         case 'span':
-                            if (v = DOM.getAttrib(n, 'style')) {
+                            if ((v = DOM.getAttrib(n, 'style'))) {
                                 ti += 'style: ' + v + ' ';
                             }
 
                             break;
                     }
 
-                    if (v = DOM.getAttrib(n, 'id')) {
+                    if ((v = DOM.getAttrib(n, 'id'))) {
                         ti += 'id: ' + v + ' ';
                     }
 
                     if (ed.settings.theme_path_show_classnames !== false) {
-                        if (v = DOM.getAttrib(n, 'class')) {
+                        v = DOM.getAttrib(n, 'class');
+
+                        if (v) {
                             v = v.replace(/mce-item-[\w]+/g, '');
                             v = tinymce.trim(v);
 
@@ -836,4 +841,4 @@
     });
 
     tinymce.ThemeManager.add('advanced', tinymce.themes.AdvancedTheme);
-}(tinymce));
+})();
