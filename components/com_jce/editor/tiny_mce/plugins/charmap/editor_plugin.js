@@ -301,9 +301,9 @@
 		}
 
 		if (tinymce.is(settingValue, 'object')) {
-			values = [];
+			var values = [];
 
-			tinymce.each(settingValue, function(value, key) {
+			tinymce.each(settingValue, function (value, key) {
 				// encode to numeric
 				key = Entities.encodeNumeric(Entities.decode(key));
 				// clean the key
@@ -327,34 +327,34 @@
 
 			function extendCharMap(charmap) {
 				var settings = ed.settings;
-	
+
 				if (settings.charmap) {
 					charmap = getCharsFromSetting(settings.charmap);
 				}
-	
+
 				if (settings.charmap_append) {
 					return [].concat(charmap).concat(getCharsFromSetting(settings.charmap_append));
 				}
-	
+
 				return charmap;
 			}
-	
+
 			function getCharMap() {
 				return extendCharMap(getDefaultCharMap());
 			}
 
 			function renderCharMapHTML() {
 				var i;
-	
+
 				var html = '';
-	
+
 				var charmap = getCharMap();
-	
+
 				for (i = 0; i < charmap.length; i++) {
 					if (i < charmap.length) {
 						var chr = charmap[i], chrText = chr ? String.fromCharCode(parseInt(chr[0], 10)) : '&nbsp;';
 						var named = Entities.encodeNamed(chrText), named = named.substring(1);
-	
+
 						html += (
 							'<button title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
 							chrText +
@@ -364,71 +364,71 @@
 						html += '';
 					}
 				}
-	
+
 				html += '';
-	
+
 				return html;
 			}
-	
+
 			function previewChar(codeA, codeB, codeN) {
 				var elmA = DOM.get(ed.id + '_charmapCodeA');
 				var elmB = DOM.get(ed.id + '_charmapCodeB');
 				var elmV = DOM.get(ed.id + '_charmapCodeV');
 				var elmN = DOM.get(ed.id + '_charmapCodeN');
-	
+
 				if (codeA == '#160;') {
 					elmV.innerHTML = '__';
 				} else {
 					elmV.innerHTML = '&' + codeA;
 				}
-	
+
 				elmB.innerHTML = '&amp;' + codeA;
 				elmA.innerHTML = '&amp;' + codeB;
 				elmN.innerHTML = codeN;
 			}
 
 			var html = '' +
-			'<div role="presentation" class="mceCharacterMap mceModalRow">' +
-			'	<div id="' + ed.id + '_charmapView" role="group"></div>' +
-			'	<div class="mceCharacterMapDescription">' +
-			'		<h1 id="' + ed.id + '_charmapCodeV"></h1>' +
-			'		<h4 id="' + ed.id + '_charmapCodeN"></h4>' +
-			'		<h3 id="' + ed.id + '_charmapCodeA"></h3>' +
-			'		<h3 id="' + ed.id + '_charmapCodeB"></h3>' +
-			'	</div>' +
-			'</div>';
+				'<div role="presentation" class="mceCharacterMap mceModalRow">' +
+				'	<div id="' + ed.id + '_charmapView" role="group"></div>' +
+				'	<div class="mceCharacterMapDescription">' +
+				'		<h1 id="' + ed.id + '_charmapCodeV"></h1>' +
+				'		<h4 id="' + ed.id + '_charmapCodeN"></h4>' +
+				'		<h3 id="' + ed.id + '_charmapCodeA"></h3>' +
+				'		<h3 id="' + ed.id + '_charmapCodeB"></h3>' +
+				'	</div>' +
+				'</div>';
 
 			ed.addCommand('mceCharacterMap', function (v) {
 				ed.windowManager.open({
 					title: ed.getLang('advanced.charmap_desc'),
 					content: html,
 					size: 'mce-modal-landscape-xlarge',
-					open: function() {
+					open: function () {
 						var win = this, elm = DOM.get(ed.id + '_charmapView');
-						
+
 						DOM.setHTML(elm, renderCharMapHTML());
-	
+
 						DOM.bind(elm, 'mouseover', function (e) {
 							var node = e.target;
-				
+
 							if (node.nodeName !== "BUTTON") {
 								return;
 							}
-				
+
 							var chr = node.getAttribute('data-numeric'), chrA = '#' + chr + ';', chrB = node.getAttribute('data-named'), chrN = node.getAttribute('title');
-							
+
 							previewChar(chrA, chrB, chrN);
 						});
-				
+
 						DOM.bind(elm, 'click', function (e) {
 							var node = e.target;
-				
+
 							e.preventDefault();
-				
+
 							if (node.nodeName !== "BUTTON") {
 								return;
 							}
-				
+
 							var chr = node.getAttribute('data-numeric');
 							ed.execCommand('mceInsertContent', false, '&#' + chr + ';');
 

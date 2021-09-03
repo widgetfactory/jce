@@ -40,11 +40,12 @@
                     if (k == v && v >= 1 && v <= 7) {
                         k = v + ' (' + self.sizes[v - 1] + 'pt)';
                         cl = s.font_size_classes[v - 1];
-                        v = s.font_size_style_values[v - 1] || (t.sizes[v - 1] + 'pt');
+                        v = s.font_size_style_values[v - 1] || (self.sizes[v - 1] + 'pt');
                     }
 
-                    if (/^\s*\./.test(v))
+                    if (/^\s*\./.test(v)) {
                         cl = v.replace(/\./g, '');
+                    }
 
                     o[k] = cl ? {
                         'class': cl
@@ -57,16 +58,16 @@
             }
 
             ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
-                var c = cm.get('fontsizeselect'), fv;
+                var c = cm.get('fontsizeselect'), fv, cl;
 
                 if (c && n) {
-                    each(o.parents, function (n) {                                                
+                    each(o.parents, function (n) {
                         if (n.style) {
                             fv = n.style.fontSize || ed.dom.getStyle(n, 'fontSize'),
                                 cl = ed.dom.getAttrib(n, 'class', '');
 
                             c.select(function (v) {
-                                if (v.fontSize && v.fontSize === fv) {                                    
+                                if (v.fontSize && v.fontSize === fv) {
                                     return true;
                                 }
 
@@ -92,8 +93,7 @@
         _createSizeFontSelect: function () {
             var self = this,
                 ed = self.editor,
-                c, i = 0,
-                cl = [];
+                c, i = 0;
 
             c = ed.controlManager.createListBox('fontsizeselect', {
                 title: 'advanced.font_size',
@@ -124,8 +124,9 @@
                         });
                         ed.undoManager.add();
                         ed.nodeChanged();
-                    } else
+                    } else {
                         ed.execCommand('FontSize', false, v.fontSize);
+                    }
 
                     // Fake selection, execCommand will fire a nodeChange and update the selection
                     c.select(function (sv) {
@@ -145,10 +146,10 @@
                     var fz = v.fontSize;
 
                     if (fz >= 1 && fz <= 7) {
-                        fz = self.sizes[parseInt(fz) - 1] + 'pt';
+                        fz = self.sizes[parseInt(fz, 10) - 1] + 'pt';
                     }
 
-                    var lh = Math.max(32, parseInt(fz));
+                    var lh = Math.max(32, parseInt(fz, 10));
 
                     c.add(k, v, {
                         'style': 'font-size:' + fz + ';line-height:' + lh + 'px',

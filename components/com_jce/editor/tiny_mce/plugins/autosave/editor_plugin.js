@@ -8,14 +8,14 @@
  * Contributing: http://www.tinymce.com/contributing
  */
 
-/*global tinymce:true */
+/*global Joomla:true */
 
 // Internal unload handler will be called before the page is unloaded
 // Needs to be outside the plugin since it would otherwise keep
 // a reference to editor in closue scope
 /*eslint no-func-assign:0 */
 
-(function(tinymce) {
+(function (tinymce) {
     var Dispatcher = tinymce.util.Dispatcher,
         Storage = window.localStorage;
 
@@ -23,10 +23,10 @@
         return;
     }
 
-    tinymce._beforeUnloadHandler = function(e) {
+    tinymce._beforeUnloadHandler = function (e) {
         var msg;
 
-        tinymce.each(tinymce.editors, function(editor) {
+        tinymce.each(tinymce.editors, function (editor) {
             // Store a draft for each editor instance
             if (editor.plugins.autosave) {
                 editor.plugins.autosave.storeDraft();
@@ -46,7 +46,7 @@
     };
 
     tinymce.create('tinymce.plugins.AutosavePlugin', {
-        init: function(ed) {
+        init: function (ed) {
             var self = this,
                 settings = ed.settings,
                 prefix, started;
@@ -148,7 +148,7 @@
 
             function startStoreDraft() {
                 if (!started) {
-                    setInterval(function() {
+                    setInterval(function () {
                         if (!ed.removed) {
                             storeDraft();
                         }
@@ -175,7 +175,7 @@
             });
 
             // Enable/disable restoredraft button depending on if there is a draft stored or not
-            ed.onNodeChange.add(function() {
+            ed.onNodeChange.add(function () {
                 var controlManager = ed.controlManager;
 
                 if (controlManager.get('autosave')) {
@@ -183,7 +183,7 @@
                 }
             });
 
-            ed.onInit.add(function() {
+            ed.onInit.add(function () {
                 // Check if the user added the restore button, then setup auto storage logic
                 if (ed.controlManager.get('autosave')) {
                     startStoreDraft();
@@ -201,13 +201,13 @@
             }
 
             if (ed.settings.autosave_restore_when_empty !== false) {
-                ed.onInit.add(function() {
+                ed.onInit.add(function () {
                     if (hasDraft() && isEmpty()) {
                         restoreDraft();
                     }
                 });
 
-                ed.onSaveContent.add(function() {
+                ed.onSaveContent.add(function () {
                     removeDraft();
                 });
             }

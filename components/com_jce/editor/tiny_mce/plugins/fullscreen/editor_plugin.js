@@ -86,7 +86,7 @@
                 } else {
                     width = container.clientWidth;
                     // get the current iframe height from the style
-                    height = parseInt(iframe.style.height, 2);
+                    height = parseInt(iframe.style.height, 10);
 
                     // store overflow
                     overflow = de.style.overflow;

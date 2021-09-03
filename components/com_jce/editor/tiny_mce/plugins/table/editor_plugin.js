@@ -1852,8 +1852,8 @@
                     if (!ed.dom.select('td.mceSelected,th.mceSelected').length) {
                         winMan.open({
                             url: url + '&layout=merge',
-                            width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0), 2),
-                            height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0), 2),
+                            width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0), 10),
+                            height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0), 10),
                             inline: 1,
                             size: 'mce-modal-landscape-small'
                         }, {

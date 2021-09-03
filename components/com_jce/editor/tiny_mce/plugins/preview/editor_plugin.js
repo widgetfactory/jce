@@ -55,7 +55,7 @@
             var header = DOM.getPrev(element, '.wf-editor-header');
 
             // get editor iframe height
-            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height, 2) || s.height;
+            var ifrHeight = parseInt(DOM.get(ed.id + '_ifr').style.height, 10) || s.height;
             var preview = DOM.get(ed.id + '_editor_preview');
             var iframe = DOM.get(ed.id + '_editor_preview_iframe');
 

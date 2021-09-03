@@ -251,7 +251,7 @@
         };
 
         var setHtml5Clipboard = function (clipboardData, html, text) {
-            if (hasWorkingClipboardApi(clipboardData)) {                
+            if (hasWorkingClipboardApi(clipboardData)) {
                 try {
                     clipboardData.clearData();
                     clipboardData.setData('text/html', html);
@@ -266,7 +266,7 @@
             }
         };
 
-        var setClipboardData = function (evt, data, fallback, done) {            
+        var setClipboardData = function (evt, data, fallback, done) {
             if (setHtml5Clipboard(evt.clipboardData, data.html, data.text)) {
                 evt.preventDefault();
                 done();
@@ -285,7 +285,7 @@
 
                 var inner = editor.dom.create('div', {
                     contenteditable: "true",
-                    "data-mce-bogus" : "all"
+                    "data-mce-bogus": "all"
                 }, markedHtml);
 
                 editor.dom.setStyles(outer, {
@@ -294,7 +294,7 @@
                     width: '1000px',
                     overflow: 'hidden'
                 });
-                
+
                 outer.appendChild(inner);
                 editor.dom.add(editor.getBody(), outer);
 
@@ -720,7 +720,7 @@
         // Convert width and height attributes to styles
         each(dom.select('table, td, th', o.node), function (n) {
             var width = dom.getAttrib(n, 'width');
-            
+
             if (width) {
                 dom.setStyle(n, 'width', width);
                 dom.setAttrib(n, 'width', '');
@@ -2546,7 +2546,7 @@
                 }, 0);
             }
 
-            ed.onKeyDown.add(function (ed, e) {                
+            ed.onKeyDown.add(function (ed, e) {
                 // block events
                 if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed(e) && e.keyCode == 88)) {
                     e.preventDefault();

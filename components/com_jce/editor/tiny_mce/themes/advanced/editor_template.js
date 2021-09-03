@@ -14,56 +14,9 @@
         Event = tinymce.dom.Event,
         extend = tinymce.extend,
         each = tinymce.each,
-        Cookie = tinymce.util.Cookie,
-        lastExtID, explode = tinymce.explode;
-
-    function now() {
-        return new Date().getTime();
-    }
-
-    /* A selection of functions from Underscore.js to expand tinymec.util.Tools
-     * http://underscorejs.org
-     * (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-     * Underscore may be freely distributed under the MIT license.
-     */
-
-    // Returns a function, that, as long as it continues to be invoked, will not
-    // be triggered. The function will be called after it stops being called for
-    // N milliseconds. If `immediate` is passed, trigger the function on the
-    // leading edge, instead of the trailing.
-    function debounce(func, wait, immediate) {
-        var timeout, args, context, timestamp, result;
-
-        var later = function () {
-            var last = now() - timestamp;
-
-            if (last < wait && last > 0) {
-                timeout = setTimeout(later, wait - last);
-            } else {
-                timeout = null;
-                if (!immediate) {
-                    result = func.apply(context, args);
-                    if (!timeout)
-                        context = args = null;
-                }
-            }
-        };
-
-        return function () {
-            context = this;
-            args = arguments;
-            timestamp = now();
-            var callNow = immediate && !timeout;
-            if (!timeout)
-                timeout = setTimeout(later, wait);
-            if (callNow) {
-                result = func.apply(context, args);
-                context = args = null;
-            }
-
-            return result;
-        };
-    }
+        Storage = tinymce.util.Storage,
+        Delay = tinymce.util.Delay,
+        explode = tinymce.explode;
 
     tinymce.create('tinymce.themes.AdvancedTheme', {
 
@@ -386,7 +339,7 @@
 
             // Store away the size
             if (store && s.use_state_cookies !== false) {
-                Cookie.setHash("wf_editor_size_" + ed.id, {
+                Storage.setHash("wf_editor_size_" + ed.id, {
                     cw: w,
                     ch: h
                 });
@@ -568,7 +521,7 @@
 
                 if (s.use_state_cookies !== false) {
                     ed.onPostRender.add(function () {
-                        var o = Cookie.getHash("wf_editor_size_" + ed.id);
+                        var o = Storage.getHash("wf_editor_size_" + ed.id);
 
                         if (!o) {
                             return;
@@ -630,7 +583,7 @@
                     if (ed.settings.floating_toolbar) {
                         var elm = ed.getContainer(), parent = elm.parentNode;
 
-                        Event.add(window, 'scroll', debounce(function () {
+                        Event.add(window, 'scroll', Delay.debounce(function () {
                             if (ed.settings.fullscreen_enabled) {
                                 return;
                             }

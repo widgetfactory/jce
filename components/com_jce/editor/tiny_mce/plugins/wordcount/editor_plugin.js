@@ -47,7 +47,7 @@
         }
 
         function countChars(ed) {
-            var limit = parseInt(ed.getParam('wordcount_limit', 0), 2), showAlert = ed.getParam('wordcount_alert', 0);
+            var limit = parseInt(ed.getParam('wordcount_limit', 0), 10), showAlert = ed.getParam('wordcount_alert', 0);
 
             // Keep multiple calls from happening at the same time
             if (block) {
