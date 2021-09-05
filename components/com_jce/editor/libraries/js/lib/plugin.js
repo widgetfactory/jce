@@ -1,3 +1,4 @@
+/* eslint-disable consistent-this */
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
@@ -7,6 +8,8 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global tinyMCEPopup, jQuery, TinyMCE_Utils */
 
 // String functions
 (function ($) {
@@ -20,6 +23,7 @@
      @method uid
      @return {String} Virtually unique id.
      */
+    // eslint-disable-next-line no-unused-vars
     function uid() {
         var guid = new Date().getTime().toString(32),
             i;
@@ -548,10 +552,11 @@
                 $.each(p, function (lc, o) {
                     $.each(o, function (g, o) {
                         $.each(o, function (k, o) {
-                            if (g === 'common')
+                            if (g === 'common') {
                                 i18n[lc + '.' + k] = o;
-                            else
+                            } else {
                                 i18n[lc + '.' + g + '.' + k] = o;
+                            }
                         });
 
                     });
@@ -584,27 +589,27 @@
 
             var val = sessionStorage.getItem(n);
 
-            if (typeof v == 'undefined') {
+            if (typeof val == 'undefined') {
                 return s;
             }
 
-            if (fn && typeof fn === "function" && !fn(v)) {
+            if (fn && typeof fn === "function" && !fn(val)) {
                 return s;
             }
 
-            if (v === 'null') {
+            if (val === 'null') {
                 return null;
             }
 
-            if (v === 'true') {
+            if (val === 'true') {
                 return true;
             }
 
-            if (v === 'false') {
+            if (val === 'false') {
                 return false;
             }
 
-            return v;
+            return val;
         },
         /**
          * Sets a raw sessionStorage string.
@@ -633,9 +638,3 @@ if (typeof ColorPicker === 'undefined') {
         settings: {}
     };
 }
-/* Compat */
-AutoValidator = {
-    validate: function () {
-        return true;
-    }
-};
