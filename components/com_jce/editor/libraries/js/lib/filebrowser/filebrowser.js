@@ -1,3 +1,4 @@
+/* eslint-disable consistent-this */
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
@@ -7,6 +8,8 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global tinyMCEPopup, jQuery, Wf */
 
 (function ($, Wf, undef) {
     var mimeTypes = {};
@@ -35,19 +38,6 @@
         "text,txt|rtf|csv"
     );
 
-    // Create a unique ID
-    var guid = (function () {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return function () {
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                s4() + '-' + s4() + s4() + s4();
-        };
-    })();
-
     // get mimetype from lookup map
     function getMimeType(ext) {
         ext = ext.toLowerCase();
@@ -61,8 +51,6 @@
     var scrollEvents = 'click.scroll mousedown.scroll wheel.scroll mousewheel.scroll keyup.scroll touchmove.scroll';
 
     var FileBrowser = function (element, options) {
-        var self = this;
-
         this.element = element;
 
         // set some variables
@@ -250,10 +238,13 @@
                 switch (e.which) {
                     case 13:
                         // get currently selected item
-                        n = $('li.selected:last', '#item-list').get(0);
+                        var n = $('li.selected:last', '#item-list').get(0);
 
-                        if (!n)
+                        if (!n) {
                             return;
+                        }
+
+                        var p = $(n).parents('li');
 
                         if ($(n).hasClass('folder')) {
                             var u = $(p).data('url') || self._getPreviousDir();
@@ -326,7 +317,7 @@
 
                 var x = 0,
                     count = self._limitcount,
-                    limit = parseInt(self._limit);
+                    limit = parseInt(self._limit, 10);
 
                 if ($(this).hasClass('limit-left')) {
                     x = count - limit;
@@ -484,12 +475,12 @@
             });
 
             var showDetails = this._getState('details', 0, function (val) {
-                val = parseInt(val);
+                val = parseInt(val, 10);
                 return val === 0 || val === 1;
             });
 
             // show details view (hide tree)
-            if (parseInt(showDetails) || !this._treeLoaded()) {
+            if (parseInt(showDetails, 10) || !this._treeLoaded()) {
                 $('#show-details').removeClass('uk-active');
                 $('main').addClass('uk-tree-hidden');
             } else {
@@ -1137,7 +1128,7 @@
             var $count = $('<li class="count">( ' + this._foldercount + ' ' + this._translate('folders', 'folders') + ', ' + this._filecount + ' ' + this._translate('files', 'files') + ')</li>').appendTo($pathway);
 
             // get base list width
-            var w = bw = $pathway.outerWidth(true);
+            var w = $pathway.outerWidth(true);
 
             if (dir) {
                 var x = 1,
@@ -1267,7 +1258,10 @@
                 return def;
             }
 
-            callback = callback || function (val) { return val; }
+            callback = callback || function (val) {
+                return val;
+            };
+
             return Wf.Storage.get('wf_' + Wf.getName() + '_' + name, def, callback);
         },
 
@@ -1288,7 +1282,7 @@
             this._hideButtons($('.button', '#buttons'));
 
             // get list limit
-            this._limit = parseInt($('#browser-list-limit-select').val());
+            this._limit = parseInt($('#browser-list-limit-select').val(), 10);
 
             // get sort value
             var sort = this._sortValue || '';
@@ -1587,7 +1581,7 @@
                                         $('param[name=movie], param[name=src]', this).each(function () {
                                             var s = toRelative($(this).attr('value'));
                                             if (!/http(s)?:\/\//.test(s)) {
-                                                s = string.path(site, s);
+                                                s = Wf.String.path(site, s);
                                             }
                                             $(this).attr('value', s);
                                         });
@@ -1774,6 +1768,7 @@
                                     // copy text
                                     document.execCommand('copy');
                                 } catch (err) {
+                                    // error
                                 }
                             }
 
@@ -1797,6 +1792,7 @@
 
                     var items = this._pasteitems.split(',');
 
+                    // eslint-disable-next-line no-case-declarations
                     function callback(o, dir) {
                         if (o.folders.length) {
                             // remove from tree
@@ -2018,7 +2014,7 @@
                     break;
             }
 
-            this._dialog['alert'] = Wf.Modal.alert(err, {
+            this._dialog.alert = Wf.Modal.alert(err, {
                 close: function () {
                     self.refresh();
                 }
@@ -2145,7 +2141,6 @@
          */
         _addButton: function (o, type) {
             var self = this,
-                dialog = this.options.dialog,
                 fn = this._execute;
 
             if (o.action) {
@@ -2275,8 +2270,8 @@
             if (file.length && folder.length) {
                 var buttons = {};
 
-                var filebtns = this._buttons['file'];
-                var folderbtns = this._buttons['folder'];
+                var filebtns = this._buttons.file;
+                var folderbtns = this._buttons.folder;
 
                 $.each(filebtns, function (k, o) {
                     if (!o.trigger && o.multiple) {
@@ -2379,8 +2374,6 @@
          * Deselect all list items
          */
         _deselectItems: function () {
-            var dialog = this.options.dialog;
-
             // deselect item and uncheck checkboxes
             $('li.selected', '#item-list').removeClass('selected active').find('input[type="checkbox"]').prop('checked', false);
 
@@ -3017,7 +3010,7 @@
         $(this).on('filebrowser:insert', function (e, cb) {
             var selected = instance.getSelectedItems();
 
-            var promises = [], data = [];
+            var promises = [];
 
             $(selected).each(function () {
                 promises.push(instance.serializeItemData(this));
