@@ -194,8 +194,8 @@ class pkg_jceInstallerScript
         $jversion = new JVersion();
 
         // joomla version check
-        if (version_compare($jversion->getShortVersion(), '3.6', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.6 or later - ' . $requirements);
+        if (version_compare($jversion->getShortVersion(), '3.9', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 3.9 or later - ' . $requirements);
         }
 
         $parent = $installer->getParent();
