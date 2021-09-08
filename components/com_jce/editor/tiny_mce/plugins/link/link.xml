@@ -169,10 +169,11 @@
         </fieldset>
 
         <fieldset name="plugin.links" />
-        <fieldset name="plugin.popups" />
         <fieldset name="plugin.search" />
+        <fieldset name="plugin.popups" />
+        
     </fields>
-    <extensions>links,popups,search</extensions>
+    <extensions>links,search,popups</extensions>
     <languages></languages>
     <help>
         <topic key="link.about" title="WF_LINK_HELP_ABOUT" />

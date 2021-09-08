@@ -401,8 +401,13 @@ class WFLinkSearchExtension extends WFSearchExtension
             }
 
             // remove the alias from a link
-            if ((int) $wf->getParam('search.link.remove_alias', 0) && strpos($row->href, ':') !== false) {
+            if ((bool) $wf->getParam('search.link.remove_alias', 0) && strpos($row->href, ':') !== false) {
                 $row->href = preg_replace('#\:[\w-]+#ui', '', $row->href);
+            }
+
+            // remove Itemid
+            if ((bool) $wf->getParam('search.link.itemid', 1) === false) {
+                $row->href = preg_replace('#&Itemid=[0-9]+#', '', $row->href);
             }
 
             // convert to SEF

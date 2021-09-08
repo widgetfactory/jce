@@ -24,6 +24,10 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+            <field name="itemid" type="yesno" default="1" label="WF_LINK_SEARCH_ITEMID" description="WF_LINK_SEARCH_ITEMID_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
         </fieldset>
     </fields>
     <plugins>link</plugins>
