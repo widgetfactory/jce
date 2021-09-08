@@ -589,7 +589,7 @@
 
             var val = sessionStorage.getItem(n);
 
-            if (typeof val == 'undefined') {
+            if (typeof val == 'undefined' || val == null) {
                 return s;
             }
 
