@@ -521,6 +521,9 @@ class WFEditor
 
         $this->addScriptDeclaration('var WfEditorSettings = ' . $tinymce . ';');
 
+        // if the editor scripts are already loaded...init
+        $this->addScriptDeclaration('if(window.WfEditor){try{WfEditor.create();}catch(e){console.debug(e);}}');
+
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
                 $this->addScript(JURI::root(true) . '/' . $wf->getParam('editor.callback_file'));
