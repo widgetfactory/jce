@@ -302,12 +302,15 @@ class JoomlalinksContent extends JObject
         $wf = WFEditorPlugin::getInstance();
 
         if ((bool) $wf->getParam('links.joomlalinks.sef_url', 0)) {
-            $url = WFLinkBrowser::route($url);
+            $url = WFLinkHelper::route($url);
         }
 
-        // remove Itemid
+        // remove Itemid if "home"
+        $url = WFLinkHelper::removeHomeItemId($url);
+
+        // remove Itemid if set
         if ((bool) $wf->getParam('links.joomlalinks.itemid', 1) === false) {
-            $url = WFLinkBrowser::removeItemId($url);
+            $url = WFLinkHelper::removeItemId($url);
         }
 
         return $url;

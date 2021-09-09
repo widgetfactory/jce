@@ -400,27 +400,8 @@ class WFLinkSearchExtension extends WFSearchExtension
                 $row->href = substr_replace($row->href, '', 0, strlen(JURI::base(true)) + 1);
             }
 
-            // remove the alias from a link
-            if ((bool) $wf->getParam('search.link.remove_alias', 0) && strpos($row->href, ':') !== false) {
-                $row->href = preg_replace('#\:[\w-]+#ui', '', $row->href);
-            }
-
-            // remove Itemid
-            if ((bool) $wf->getParam('search.link.itemid', 1) === false) {
-                $row->href = preg_replace('#&Itemid=[0-9]+#', '', $row->href);
-            }
-
-            // convert to SEF
-            if ($router && $sef) {
-                $router->setMode(1);
-
-                $url = str_replace('&amp;', '&', $row->href);
-
-                $uri = $router->build($url);
-                $url = $uri->toString();
-
-                $row->href = str_replace('/administrator/', '/', $url);
-            }
+            // remove the alias or ItemId from a link
+            $row->href = self::route($row->href);
 
             $result->title = $row->title;
             $result->text = $row->text;
@@ -438,6 +419,25 @@ class WFLinkSearchExtension extends WFSearchExtension
         }
 
         return $results;
+    }
+
+    private static function route($url)
+    {
+        $wf = WFEditorPlugin::getInstance();
+
+        if ((bool) $wf->getParam('search.link.remove_alias', 0)) {
+            $url = WFLinkHelper::route($url);
+        }
+
+        // remove Itemid if "home"
+        $url = WFLinkHelper::removeHomeItemId($url);
+
+        // remove Itemid if set
+        if ((bool) $wf->getParam('search.link.itemid', 1) === false) {
+            $url = WFLinkHelper::removeItemId($url);
+        }
+
+        return $url;
     }
 
     private static function getAnchors($content)

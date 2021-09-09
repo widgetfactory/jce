@@ -223,36 +223,6 @@ class WFLinkExtension extends WFExtension
     }
 
     /**
-     * Translates an internal Joomla URL to a humanly readible URL.
-     *
-     * @param string $url Absolute or Relative URI to Joomla resource
-     *
-     * @return The translated humanly readible URL
-     */
-    public static function route($url)
-    {
-        $app = JApplication::getInstance('site');
-        $router = $app->getRouter('site');
-
-        if (!$router) {
-            return $url;
-        }
-
-        $uri = $router->build($url);
-        $url = $uri->toString();
-        $url = str_replace('/administrator/', '/', $url);
-
-        return $url;
-    }
-
-    public static function removeItemId($url)
-    {
-        $url = preg_replace('#&Itemid=[0-9]+#', '', $url);
-
-        return $url;
-    }
-
-    /**
      * XML encode a string.
      *
      * @param     string    String to encode
