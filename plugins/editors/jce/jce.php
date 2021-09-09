@@ -77,7 +77,7 @@ class plgEditorJCE extends JPlugin
         $editor->init();
 
         foreach ($editor->getScripts() as $script) {
-            $document->addScript($script, array(), array('defer' => 'defer'));
+            $document->addScript($script);
         }
 
         foreach ($editor->getStyleSheets() as $style) {

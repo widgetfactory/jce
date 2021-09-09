@@ -56,6 +56,8 @@ class WFModelEditor extends JObject
             $document->addStylesheet($style, array('version' => 'auto'));
         }
 
-        $document->addScriptDeclaration(implode("\n", self::$editor->getScriptDeclaration()));
+        $script = "document.addEventListener('DOMContentLoaded',function handler(){" . implode("", self::$editor->getScriptDeclaration()) . ";this.removeEventListener('DOMContentLoaded',handler);});";
+
+        $document->addScriptDeclaration($script);
     }
 }

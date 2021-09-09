@@ -519,11 +519,8 @@ class WFEditor
         // encode as json string
         $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
-        $this->addScriptDeclaration('var WfEditorSettings = ' . $tinymce . ';');
-
-        // if the editor scripts are already loaded...init
-        $this->addScriptDeclaration('if(window.WfEditor){try{WfEditor.create();}catch(e){console.debug(e);}}');
-
+        $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
+        
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
                 $this->addScript(JURI::root(true) . '/' . $wf->getParam('editor.callback_file'));
