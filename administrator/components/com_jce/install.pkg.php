@@ -304,12 +304,12 @@ class pkg_jceInstallerScript
             $theme = '';
 
             // update toolbar_theme for 2.8.0 and 2.8.1 beta
-            if (version_compare($current_version, '2.8.0', '>=') && version_compare($current_version, '2.8.1', '<')) {
+            if (version_compare($current_version, '2.8.0', 'ge') && version_compare($current_version, '2.8.1', 'lt')) {
                 $theme = 'modern';
             }
 
             // update toolbar_theme for 2.7.x
-            if (version_compare($current_version, '2.8', '<')) {
+            if (version_compare($current_version, '2.8', 'lt')) {
                 $theme = 'default';
             }
 
@@ -377,6 +377,13 @@ class pkg_jceInstallerScript
                 if ($plugin) {
                     $extension->publish(null, 1);
                 }
+            }
+
+            // fix checkout_out table
+            if (version_compare($current_version, '2.9.14', 'le')) {
+                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out') . " " . $db->qn('checked_out') . " INT UNSIGNED NULL";
+                $db->setQuery($query);
+                $db->execute();
             }
 
             self::cleanupInstall($installer);
