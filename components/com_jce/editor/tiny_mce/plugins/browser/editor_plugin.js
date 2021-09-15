@@ -7,18 +7,18 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function() {
+(function () {
     tinymce.create('tinymce.plugins.Browser', {
-        init: function(ed, url) {
+        init: function (ed, url) {
             var self = this;
 
             self.ed = ed;
 
-            ed.addCommand('mceFileBrowser', function(ui, args, win) {
+            ed.addCommand('mceFileBrowser', function (ui, args, win) {
                 self.open(args, win);
             });
         },
-        open: function(args, win) {
+        open: function (args, win) {
             args = args || {};
 
             var ed = this.ed;
@@ -26,7 +26,7 @@
             ed.windowManager.open({
                 file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=browser' + (args.caller ? '.' + args.caller : '') + (args.filter ? '&filter=' + args.filter : ''),
                 close_previous: "no",
-                size: 'mce-modal-landscape-full',
+                size: 'mce-modal-landscape-full'
             }, args);
 
             return false;

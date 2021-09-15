@@ -7,17 +7,20 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global Wf, tinyMCEPopup, jQuery */
+
 (function ($) {
     function init() {
         $('#insert').on('click', function (e) {
             e.preventDefault();
             insert();
-        });
+        }).show();
 
         $('#cancel').on('click', function (e) {
             e.preventDefault();
             tinyMCEPopup.close();
-        });
+        }).show();
 
         var ed = tinyMCEPopup.editor, src = tinyMCEPopup.getWindowArg('value');
 
