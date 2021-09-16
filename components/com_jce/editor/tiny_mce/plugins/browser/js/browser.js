@@ -15,12 +15,12 @@
         $('#insert').on('click', function (e) {
             e.preventDefault();
             insert();
-        }).show();
+        });
 
         $('#cancel').on('click', function (e) {
             e.preventDefault();
             tinyMCEPopup.close();
-        }).show();
+        });
 
         var ed = tinyMCEPopup.editor, src = tinyMCEPopup.getWindowArg('value');
 
