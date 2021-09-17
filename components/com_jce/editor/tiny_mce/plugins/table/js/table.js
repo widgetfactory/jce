@@ -583,11 +583,6 @@
             var html = '',
                 capEl, elm;
 
-            if (!AutoValidator.validate($('form').get(0))) {
-                tinyMCEPopup.alert(ed.getLang('invalid_data'));
-                return false;
-            }
-
             // Get form data
             width = $('#width').val();
             height = $('#height').val();
