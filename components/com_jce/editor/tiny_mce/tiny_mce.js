@@ -34411,8 +34411,8 @@
                 hasContentEditableState = !isShortEnded(node); // We don't want to wrap the container only it's children
               }
 
-              // Stop wrapping on br elements
-              if (isEq(nodeName, 'br')) {
+              // Stop wrapping on br elements - not sure if this should still be used... TODO
+              /*if (isEq(nodeName, 'br')) {
                 currentWrapElm = 0;
 
                 // Remove any br elements when we wrap things
@@ -34421,7 +34421,7 @@
                 }
 
                 return;
-              }
+              }*/
 
               // If node is wrapper type
               if (format.wrapper && matchNode(node, name, vars)) {
