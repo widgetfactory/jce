@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global Wf, WFAggregator, $ */
+
 WFAggregator.add('dailymotion', {
     /**
      * Parameter Object
@@ -20,11 +23,11 @@ WFAggregator.add('dailymotion', {
         autoPlay: 0,
         start: 0
     },
-    setup: function() {
+    setup: function () {
         $('#dailymotion_autoPlay').prop('checked', this.params.autoPlay);
 
-        $('#dailymotion_player_size').on('change', function() {
-            var v = parseInt(this.value);
+        $('#dailymotion_player_size').on('change', function () {
+            var v = parseInt(this.value, 10);
             $('#dailymotion_player_size_custom').toggleClass('uk-hidden', !!this.value);
 
             if (v) {
@@ -34,8 +37,8 @@ WFAggregator.add('dailymotion', {
 
         });
 
-        $('#dailymotion_player_size_custom').on('change', function() {
-            var v = parseInt(this.value);
+        $('#dailymotion_player_size_custom').on('change', function () {
+            var v = parseInt(this.value, 10);
 
             if (v) {
                 $('#width').val(v);
@@ -43,19 +46,19 @@ WFAggregator.add('dailymotion', {
             }
         });
     },
-    getTitle: function() {
+    getTitle: function () {
         return this.title || this.name;
     },
     /**
      * Get the Media type
      */
-    getType: function() {
+    getType: function () {
         return 'iframe';
     },
     /**
      * Check whether a media type is supported
      */
-    isSupported: function(v) {
+    isSupported: function (v) {
         if (typeof v == 'object') {
             v = v.src || v.data || '';
         }
@@ -66,11 +69,10 @@ WFAggregator.add('dailymotion', {
 
         return false;
     },
-    getValues: function(src) {
+    getValues: function (src) {
         var self = this,
             data = {},
             args = {},
-            type = this.getType(),
             id = '';
 
         // get variables from query string
@@ -78,9 +80,10 @@ WFAggregator.add('dailymotion', {
             $.extend(args, Wf.String.query(src));
         }
 
-        $('input, select', '#dailymotion_options').each(function() {
+        $('input[id], select[id]', '#dailymotion_options').each(function () {
             var k = $(this).attr('id'),
                 v = $(this).val();
+
             // remove dailymotion_ prefix
             k = k.substr(k.indexOf('_') + 1);
 
@@ -106,7 +109,7 @@ WFAggregator.add('dailymotion', {
         }
 
         // protocol / scheme relative url
-        src = '//www.dailymotion.com/embed/video/' + id;
+        src = 'https://www.dailymotion.com/embed/video/' + id;
 
         // convert args to URL query string
         var query = $.param(args);
@@ -125,7 +128,7 @@ WFAggregator.add('dailymotion', {
 
         return data;
     },
-    setValues: function(data) {
+    setValues: function (data) {
         var self = this, src = data.src || data.data || '',
             id = '';
 
@@ -136,7 +139,7 @@ WFAggregator.add('dailymotion', {
         var query = Wf.String.query(src);
 
         // add extracted values to data
-        $.each(query, function(key, val) {
+        $.each(query, function (key, val) {
             if (self.props[key] == val) {
                 return true;
             }
@@ -154,17 +157,17 @@ WFAggregator.add('dailymotion', {
         }
 
         // simplify url
-        data.src = '//www.dailymotion.com/embed/video/' + id;
+        data.src = 'https://www.dailymotion.com/embed/video/' + id;
 
         return data;
     },
-    getAttributes: function(src) {
+    getAttributes: function (src) {
         var args = {},
             data = this.setValues({
                 src: src
             }) || {};
 
-        $.each(data, function(k, v) {
+        $.each(data, function (k, v) {
             if (k == 'src') {
                 return;
             }
@@ -179,9 +182,9 @@ WFAggregator.add('dailymotion', {
 
         return args;
     },
-    setAttributes: function() {
+    setAttributes: function () {
 
     },
-    onSelectFile: function() {},
-    onInsert: function() {}
+    onSelectFile: function () { },
+    onInsert: function () { }
 });
