@@ -199,7 +199,7 @@
     var TableDialog = {
         settings: {},
         init: function () {
-            this.layout = tinyMCEPopup.getWindowArg('layout', 'table');
+            var layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
@@ -207,7 +207,7 @@
 
             Wf.init();
 
-            if (this.layout == 'merge') {
+            if (layout == 'merge') {
                 return this.initMerge();
             }
 
@@ -218,7 +218,7 @@
                 });
             }
 
-            switch (this.layout) {
+            switch (layout) {
                 case 'table':
                     this.initTable();
                     break;
@@ -236,7 +236,9 @@
             $('.uk-datalist').trigger('datalist:update');
         },
         insert: function () {
-            switch (this.layout) {
+            var layout = tinyMCEPopup.getWindowArg('layout', 'table');
+
+            switch (layout) {
                 case 'table':
                     this.insertTable();
                     break;
