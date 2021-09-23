@@ -1,12 +1,14 @@
+/* global Wf, tinyMCEPopup, jQuery, tinymce */
+
 (function (tinymce, tinyMCEPopup, $) {
     function convertRGBToHex(col) {
-        var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
+        var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi"), r, g, b;
 
         var rgb = col.replace(re, "$1,$2,$3").split(',');
         if (rgb.length == 3) {
-            r = parseInt(rgb[0]).toString(16);
-            g = parseInt(rgb[1]).toString(16);
-            b = parseInt(rgb[2]).toString(16);
+            r = parseInt(rgb[0], 10).toString(16);
+            g = parseInt(rgb[1], 10).toString(16);
+            b = parseInt(rgb[2], 10).toString(16);
 
             r = r.length == 1 ? '0' + r : r;
             g = g.length == 1 ? '0' + g : g;
@@ -18,53 +20,9 @@
         return col;
     }
 
-    function convertHexToRGB(col) {
-        if (col.indexOf('#') != -1) {
-            col = col.replace(new RegExp('[^0-9A-F]', 'gi'), '');
-
-            r = parseInt(col.substring(0, 2), 16);
-            g = parseInt(col.substring(2, 4), 16);
-            b = parseInt(col.substring(4, 6), 16);
-
-            return "rgb(" + r + "," + g + "," + b + ")";
-        }
-
-        return col;
-    }
-
     function trimSize(size) {
         size = size.replace(/([0-9\.]+)(px|%|in|cm|mm|em|ex|pt|pc)/i, '$1$2');
         return size ? size.replace(/px$/, '') : "";
-    }
-
-    function getStyle(elm, attrib, style) {
-        var val = tinyMCEPopup.editor.dom.getAttrib(elm, attrib);
-
-        if (val != '') {
-            return '' + val;
-        }
-
-        if (typeof (style) == 'undefined') {
-            style = attrib;
-        }
-
-        return tinyMCEPopup.editor.dom.getStyle(elm, style);
-    }
-
-    function getCSSSize(size) {
-        size = trimSize(size);
-
-        if (size == "")
-            return "";
-
-        // Add px
-        if (/^[0-9]+$/.test(size))
-            size += 'px';
-        // Sanity check, IE doesn't like broken values
-        else if (!(/^[0-9\.]+(px|%|in|cm|mm|em|ex|pt|pc)$/i.test(size)))
-            return "";
-
-        return size;
     }
 
     function valueToHex(val) {
@@ -194,7 +152,7 @@
             }
 
             if (k == 'width') {
-                v = /[0-9][a-z]/.test(v) ? parseInt(v) : v;
+                v = /[0-9][a-z]/.test(v) ? parseInt(v, 10) : v;
             }
 
             if (k == 'color' && v) {
@@ -223,9 +181,9 @@
         var styles = ed.dom.parseStyle($proxy.attr('style'));
 
         // remove -moz and -webkit styles
-        for (k in styles) {
-            if (k.indexOf('-moz-') >= 0 || k.indexOf('-webkit-') >= 0 || k === 'border-image') {
-                delete styles[k];
+        for (var key in styles) {
+            if (key.indexOf('-moz-') >= 0 || key.indexOf('-webkit-') >= 0 || key === 'border-image') {
+                delete styles[key];
             }
         }
 
@@ -241,9 +199,7 @@
     var TableDialog = {
         settings: {},
         init: function () {
-            var self = this,
-                ed = tinyMCEPopup.editor,
-                layout = tinyMCEPopup.getWindowArg('layout', 'table');
+            this.layout = tinyMCEPopup.getWindowArg('layout', 'table');
 
             if (!this.settings.file_browser) {
                 $('input.browser').removeClass('browser');
@@ -251,7 +207,7 @@
 
             Wf.init();
 
-            if (layout == 'merge') {
+            if (this.layout == 'merge') {
                 return this.initMerge();
             }
 
@@ -262,7 +218,7 @@
                 });
             }
 
-            switch (layout) {
+            switch (this.layout) {
                 case 'table':
                     this.initTable();
                     break;
@@ -280,9 +236,7 @@
             $('.uk-datalist').trigger('datalist:update');
         },
         insert: function () {
-            var layout = tinyMCEPopup.getWindowArg('layout', 'table');
-
-            switch (layout) {
+            switch (this.layout) {
                 case 'table':
                     this.insertTable();
                     break;
@@ -310,8 +264,7 @@
             $('#classes').val(values).trigger('change');
         },
         initTable: function () {
-            var self = this,
-                ed = tinyMCEPopup.editor;
+            var ed = tinyMCEPopup.editor;
 
             var elm = ed.dom.getParent(ed.selection.getNode(), "table");
             var action = tinyMCEPopup.getWindowArg('action');
@@ -354,7 +307,7 @@
                     // legacy border
                     if (k === "border" && v !== "") {
                         $('#table_border').val(function () {
-                            v = parseInt(v);
+                            v = parseInt(v, 10);
 
                             if (this.type === "checkbox") {
                                 this.checked = !!v;
@@ -440,8 +393,7 @@
             }
         },
         initCell: function () {
-            var self = this,
-                ed = tinyMCEPopup.editor,
+            var ed = tinyMCEPopup.editor,
                 dom = ed.dom;
 
             var elm = dom.getParent(ed.selection.getStart(), "td,th");
@@ -527,7 +479,7 @@
 
                 if (k === "width" || k === "height") {
                     if (v && !/\D/.test(v)) {
-                        v = parseInt(v) + 'px';
+                        v = parseInt(v, 10) + 'px';
                     }
                 }
 
@@ -537,7 +489,7 @@
                             var s = $('#border_' + n).val();
 
                             if (n === "width" && s !== "" && !/\D/.test(s)) {
-                                s = parseInt(s) + 'px';
+                                s = parseInt(s, 10) + 'px';
                             }
 
                             if (n === "color") {
@@ -579,8 +531,7 @@
                 border = 0,
                 cellpadding = -1,
                 cellspacing = -1,
-                align, width, height, className, caption, frame, rules;
-            var html = '',
+                align, width, height, className, caption, frame, rules, id, summary, dir, lang, borderColor, bgColor, background, style, html = '',
                 capEl, elm;
 
             // Get form data
@@ -761,12 +712,13 @@
 
                 // Fixes a bug in IE where the caret cannot be placed after the table if the table is at the end of the document
                 if (tinymce.isIE && !tinymce.isIE11 && node.nextSibling == null) {
-                    if (ed.settings.forced_root_block)
+                    if (ed.settings.forced_root_block) {
                         dom.insertAfter(dom.create(ed.settings.forced_root_block), node);
-                    else
+                    } else {
                         dom.insertAfter(dom.create('br', {
                             'data-mce-bogus': '1'
                         }), node);
+                    }
                 }
 
                 try {
@@ -798,7 +750,11 @@
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
-                v;
+                v, align,
+                valign,
+                width,
+                height,
+                bgColor;
 
             var curCellType = td.nodeName.toLowerCase();
             var celltype = $('#celltype').val();
@@ -873,12 +829,13 @@
                 // changing to a different node type
                 var newCell = doc.createElement(celltype);
 
-                for (var c = 0; c < td.childNodes.length; c++)
+                for (var c = 0; c < td.childNodes.length; c++) {
                     newCell.appendChild(td.childNodes[c].cloneNode(1));
+                }
 
-                for (var a = 0; a < td.attributes.length; a++)
+                for (var a = 0; a < td.attributes.length; a++) {
                     ed.dom.setAttrib(newCell, td.attributes[a].name, ed.dom.getAttrib(td, td.attributes[a].name));
-
+                }
                 td.parentNode.replaceChild(newCell, td);
                 td = newCell;
             }
@@ -914,27 +871,28 @@
 
             ed.execCommand('mceBeginUndoLevel');
 
+            function doUpdate(state) {
+                if (state) {
+
+                    self.updateCell(tdElm);
+
+                    ed.addVisual();
+                    ed.nodeChanged();
+                    inst.execCommand('mceEndUndoLevel');
+                    tinyMCEPopup.close();
+                }
+            }
+
             switch ($('#action').val()) {
                 case "cell":
                     var celltype = $('#celltype').val();
                     var scope = $('#scope').val();
 
-                    function doUpdate(s) {
-                        if (s) {
-                            self.updateCell(tdElm);
-
-                            ed.addVisual();
-                            ed.nodeChanged();
-                            inst.execCommand('mceEndUndoLevel');
-                            tinyMCEPopup.close();
-                        }
-                    };
-
                     if (ed.getParam("accessibility_warnings", 1)) {
                         if (celltype == "th" && scope == "") {
                             tinyMCEPopup.confirm(ed.getLang('table_dlg.missing_scope', 'Missing Scope', true), doUpdate);
                         } else {
-                            doUpdate(1);
+                            doUpdate(true);
                         }
 
                         return;
@@ -985,7 +943,10 @@
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
-                v;
+                v, height,
+                bgColor,
+                align,
+                valign;
 
             var curRowType = tr.parentNode.nodeName.toLowerCase();
             var rowtype = $('#rowtype').val();
@@ -1142,8 +1103,9 @@
                     var rows = tableElm.getElementsByTagName("tr");
 
                     for (var i = 0; i < rows.length; i++) {
-                        if ((i % 2 == 0 && action == "odd") || (i % 2 != 0 && action == "even"))
+                        if ((i % 2 == 0 && action == "odd") || (i % 2 != 0 && action == "even")) {
                             this.updateRow(rows[i], true, true);
+                        }
                     }
 
                     break;
