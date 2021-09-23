@@ -32986,7 +32986,6 @@
     var DOM = tinymce.DOM,
       Event = tinymce.dom.Event,
       each = tinymce.each,
-      extend = tinymce.extend,
       Dispatcher = tinymce.util.Dispatcher;
 
     function ucfirst(s) {
@@ -33004,73 +33003,86 @@
       }
     }
 
-    function nodeIndex(nodes, node) {
-      for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i] === node) {
-          return i;
-        }
-      }
-
-      return -1;
-    }
-
     /**
-       * This class handles the creation of native windows and dialogs. This class can be extended to provide for example inline dialogs.
+     * This class handles the creation of native windows and dialogs. This class can be extended to provide for example inline dialogs.
+     *
+     * @class tinymce.WindowManager
+     * @example
+     * // Opens a new dialog with the file.htm file and the size 320x240
+     * // It also adds a custom parameter this can be retrieved by using tinyMCEPopup.getWindowArg inside the dialog.
+     * tinyMCE.activeEditor.windowManager.open({
+     *    url : 'file.htm',
+     *    width : 320,
+     *    height : 240
+     * }, {
+     *    custom_param : 1
+     * });
+     * // Displays an alert box using the active editors window manager instance
+     * tinyMCE.activeEditor.windowManager.alert('Hello world!');
+     *
+     * // Displays an confirm box and an alert message will be displayed depending on what you choose in the confirm
+     * tinyMCE.activeEditor.windowManager.confirm("Do you want to do something", function(s) {
+     *    if (s)
+     *       tinyMCE.activeEditor.windowManager.alert("Ok");
+     *    else
+     *       tinyMCE.activeEditor.windowManager.alert("Cancel");
+     * });
+     */
+    tinymce.create('tinymce.WindowManager', {
+      /**
+       * Constructs a new window manager instance.
        *
-       * @class tinymce.WindowManager
-       * @example
-       * // Opens a new dialog with the file.htm file and the size 320x240
-       * // It also adds a custom parameter this can be retrieved by using tinyMCEPopup.getWindowArg inside the dialog.
-       * tinymce.activeEditor.windowManager.open({
-       *    url : 'file.htm',
-       *    width : 320,
-       *    height : 240
-       * }, {
-       *    custom_param : 1
-       * });
-       * // Displays an alert box using the active editors window manager instance
-       * tinymce.activeEditor.windowManager.alert('Hello world!');
-       *
-       * // Displays an confirm box and an alert message will be displayed depending on what you choose in the confirm
-       * tinymce.activeEditor.windowManager.confirm("Do you want to do something", function(s) {
-       *    if (s)
-       *       tinymce.activeEditor.windowManager.alert("Ok");
-       *    else
-       *       tinymce.activeEditor.windowManager.alert("Cancel");
-       * });
+       * @constructor
+       * @method WindowManager
+       * @param {tinymce.Editor} ed Editor instance that the windows are bound to.
        */
-    tinymce.WindowManager = function (ed) {
-      this.editor = ed;
-      this.onOpen = new Dispatcher(this);
-      this.onClose = new Dispatcher(this);
-      this.params = {};
-      this.features = {};
+      WindowManager: function (ed) {
+        this.editor = ed;
+        this.onOpen = new Dispatcher(this);
+        this.onClose = new Dispatcher(this);
+        this.params = {};
+        this.features = {};
 
-      this.zIndex = 700002;
-      this.count = 0;
-      this.windows = {};
-    };
-
-    tinymce.WindowManager.prototype = {
+        this.zIndex = 700002;
+        this.count = 0;
+        this.windows = {};
+      },
 
       /**
-           * Opens a new window.
-           *
-           * @method open
-           * @param {Object} s Optional name/value settings collection contains things like width/height/url etc.
-           * @option {String} title Window title.
-           * @option {String} file URL of the file to open in the window.
-           * @option {Number} width Width in pixels.
-           * @option {Number} height Height in pixels.
-           * @option {Boolean} resizable Specifies whether the popup window is resizable or not.
-           * @option {Boolean} maximizable Specifies whether the popup window has a "maximize" button and can get maximized or not.
-           * @option {Boolean} inline Specifies whether to display in-line (set to 1 or true for in-line display; requires inlinepopups plugin).
-           * @option {Boolean} translate_i18n Specifies whether translation should occur or not of i18 key strings. Default is true.
-           * @option {String/bool} close_previous Specifies whether a previously opened popup window is to be closed or not (like when calling the file browser window over the advlink popup).
-           * @option {String/bool} scrollbars Specifies whether the popup window can have scrollbars if required (i.e. content larger than the popup size specified).
-           * @param {Object} p Optional parameters/arguments collection can be used by the dialogs to retrive custom parameters.
-           * @option {String} plugin_url url to plugin if opening plugin window that calls tinyMCEPopup.requireLangPack() and needs access to the plugin language js files
-           */
+       * Creates a instance of a class. This method was needed since IE can't create instances
+       * of classes from a parent window due to some reference problem. Any arguments passed after the class name
+       * will be passed as arguments to the constructor.
+       *
+       * @method createInstance
+       * @param {String} cl Class name to create an instance of.
+       * @return {Object} Instance of the specified class.
+       * @example
+       * var uri = tinyMCEPopup.editor.windowManager.createInstance('tinymce.util.URI', 'http://www.somesite.com');
+       * alert(uri.getURI());
+       */
+      createInstance: function (cl, a, b, c, d, e) {
+        var fn = tinymce.resolve(cl);
+        return new fn(a, b, c, d, e);
+      },
+
+      /**
+       * Opens a new window.
+       *
+       * @method open
+       * @param {Object} s Optional name/value settings collection contains things like width/height/url etc.
+       * @option {String} title Window title.
+       * @option {String} file URL of the file to open in the window.
+       * @option {Number} width Width in pixels.
+       * @option {Number} height Height in pixels.
+       * @option {Boolean} resizable Specifies whether the popup window is resizable or not.
+       * @option {Boolean} maximizable Specifies whether the popup window has a "maximize" button and can get maximized or not.
+       * @option {Boolean} inline Specifies whether to display in-line (set to 1 or true for in-line display; requires inlinepopups plugin).
+       * @option {Boolean} translate_i18n Specifies whether translation should occur or not of i18 key strings. Default is true.
+       * @option {String/bool} close_previous Specifies whether a previously opened popup window is to be closed or not (like when calling the file browser window over the advlink popup).
+       * @option {String/bool} scrollbars Specifies whether the popup window can have scrollbars if required (i.e. content larger than the popup size specified).
+       * @param {Object} p Optional parameters/arguments collection can be used by the dialogs to retrive custom parameters.
+       * @option {String} plugin_url url to plugin if opening plugin window that calls tinyMCEPopup.requireLangPack() and needs access to the plugin language js files
+       */
       open: function (f, p) {
         var self = this,
           id,
@@ -33082,20 +33094,22 @@
         f = f || {};
         p = p || {};
 
-        id = DOM.uniqueId("mce_window_"); // Use a prefix so this can't conflict with other ids
-
-        f = extend({ width: 0, height: 0 }, f || {});
-        p = extend({ mce_window_id: id }, p || {});
-
         // Only store selection if the type is a normal window
         if (!f.type) {
           self.bookmark = ed.selection.getBookmark(1);
         }
 
-        self.onOpen.dispatch(self, f, p);
+        id = DOM.uniqueId("mce_window_"); // Use a prefix so this can't conflict with other ids
 
-        this.features = f;
-        this.params = p;
+        f.width = parseInt(f.width || 0, 10);
+        f.height = parseInt(f.height || 0, 10);
+
+        p.mce_window_id = id;
+
+        self.features = f;
+        self.params = p;
+
+        self.onOpen.dispatch(self, f, p);
 
         // modal html
         var html = '' +
@@ -33176,7 +33190,7 @@
 
               // patch in close function for cancel button
               if (button.id === 'cancel') {
-                button.onclick = function () {
+                button.onclick = function (e) {
                   self.close(null, id);
                 };
               }
@@ -33258,6 +33272,16 @@
             });
           }
 
+          function nodeIndex(nodes, node) {
+            for (var i = 0; i < nodes.length; i++) {
+              if (nodes[i] === node) {
+                return i;
+              }
+            }
+
+            return -1;
+          }
+
           // restrict tabbing to within the form elements of the dialog
           Event.add(id, 'keydown', function (e) {
             var tabIndex = 0;
@@ -33279,9 +33303,8 @@
                 nodes.reverse();
               }
 
-              var endIndex = Math.max(0, nodes.length - 1);
+              var endIndex = Math.max(0, nodes.length - 1), tabIndex = nodeIndex(nodes, e.target);
 
-              tabIndex = nodeIndex(nodes, e.target);
               tabIndex++;
 
               tabIndex = Math.max(tabIndex, 0);
@@ -33421,14 +33444,14 @@
       },
 
       /**
-           * Closes the specified window. This will also dispatch out a onClose event.
-           *
-           * @method close
-           * @param {Window} win Window object to close.
-           * @param {String} id Id of window to close.
-           */
+       * Closes the specified window. This will also dispatch out a onClose event.
+       *
+       * @method close
+       * @param {Window} win Window object to close.
+       * @param {String} id Id of window to close.
+       */
       close: function (win, id) {
-        var self = this;
+        var self = this, id;
 
         id = self._findId(id || win);
 
@@ -33490,22 +33513,22 @@
       },
 
       /**
-           * Creates a confirm dialog
-           *
-           * @method confirm
-           * @param {String} t Title for the new confirm dialog.
-           * @param {function} cb Callback function to be executed after the user has selected ok or cancel.
-           * @param {Object} s Optional scope to execute the callback in.
-           * @example
-           * // Displays an confirm box and an alert message will be displayed depending on what you choose in the confirm
-           * tinymce.activeEditor.windowManager.confirm("Do you want to do something", function(s) {
-           *    if (s)
-           *       tinymce.activeEditor.windowManager.alert("Ok");
-           *    else
-           *       tinymce.activeEditor.windowManager.alert("Cancel");
-           * });
-           */
-      confirm: function (txt, cb) {
+       * Creates a confirm dialog
+       *
+       * @method confirm
+       * @param {String} t Title for the new confirm dialog.
+       * @param {function} cb Callback function to be executed after the user has selected ok or cancel.
+       * @param {Object} s Optional scope to execute the callback in.
+       * @example
+       * // Displays an confirm box and an alert message will be displayed depending on what you choose in the confirm
+       * tinyMCE.activeEditor.windowManager.confirm("Do you want to do something", function(s) {
+       *    if (s)
+       *       tinyMCE.activeEditor.windowManager.alert("Ok");
+       *    else
+       *       tinyMCE.activeEditor.windowManager.alert("Cancel");
+       * });
+       */
+      confirm: function (txt, cb, s) {
         var self = this;
 
         self.open({
@@ -33533,17 +33556,17 @@
       },
 
       /**
-           * Creates a alert dialog
-           *
-           * @method alert
-           * @param {String} t Title for the new alert dialog.
-           * @param {function} cb Callback function to be executed after the user has selected ok.
-           * @param {Object} s Optional scope to execute the callback in.
-           * @example
-           * // Displays an alert box using the active editors window manager instance
-           * tinymce.activeEditor.windowManager.alert('Hello world!');
-           */
-      alert: function (txt, cb) {
+       * Creates a alert dialog
+       *
+       * @method alert
+       * @param {String} t Title for the new alert dialog.
+       * @param {function} cb Callback function to be executed after the user has selected ok.
+       * @param {Object} s Optional scope to execute the callback in.
+       * @example
+       * // Displays an alert box using the active editors window manager instance
+       * tinyMCE.activeEditor.windowManager.alert('Hello world!');
+       */
+      alert: function (txt, cb, s) {
         var self = this;
 
         self.open({
@@ -33577,7 +33600,6 @@
        * @param {Number} dh Delta height.
        * @param {window/id} win Window if the dialog isn't inline. Id if the dialog is inline.
        */
-      /*eslint no-unused-vars:0*/
       resizeBy: function (dw, dh, id) {
       },
 
@@ -33633,9 +33655,9 @@
       },
 
       // Internal functions
-      _startDrag: function (id, se) {
+      _startDrag: function (id, se, ac) {
         var mu, mm, d = DOM.doc,
-          sx, sy, p, vp, dx, dy;
+          sx, sy;
 
         if (DOM.hasClass(id, 'dragging')) {
           end();
@@ -33644,8 +33666,8 @@
 
         updateWithTouchData(se);
 
-        p = DOM.getRect(id);
-        vp = DOM.getViewPort();
+        var p = DOM.getRect(id);
+        var vp = DOM.getViewPort();
 
         // Reduce viewport size to avoid scrollbars while dragging
         vp.w -= 2;
@@ -33681,8 +33703,8 @@
           x = e.screenX - sx; // - vp.x;
           y = e.screenY - sy; // - vp.y;
 
-          dx = Math.max(p.x + x, 10);
-          dy = Math.max(p.y + y, 10);
+          var dx = Math.max(p.x + x, 10);
+          var dy = Math.max(p.y + y, 10);
 
           DOM.setStyles(id, { 'left': dx, 'top': dy });
 
@@ -33695,13 +33717,12 @@
         var fw, ix = 0;
 
         /*for (var i = 0; i < this.windows.length; i++) {
-                  var win = this.windows[i];
-
-                  if (win.zIndex > ix) {
-                      fw = win;
-                      ix = win.zIndex;
-                  }
-              }*/
+            var win = this.windows[i];
+            if (win.zIndex > ix) {
+                fw = win;
+                ix = win.zIndex;
+            }
+        }*/
 
         tinymce.each(this.windows, function (win) {
           if (win.zIndex > ix) {
@@ -33731,7 +33752,7 @@
 
         return w;
       }
-    };
+    });
   })(tinymce);
 
   /**
