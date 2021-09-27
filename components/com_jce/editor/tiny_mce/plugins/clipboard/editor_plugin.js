@@ -746,9 +746,10 @@
             processStyles(ed, o.node);
         }
 
-        // fix table borders
+       
         if (o.wordContent) {
-
+            
+            // fix table borders
             var borderColors = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
             var positions = ['top', 'right', 'bottom', 'left'];
 
@@ -850,12 +851,9 @@
 
                 dom.setStyles(n, styles);
             });
-        }
 
-        // update indents
-        if (o.wordContent) {
-            // update indent conversion
-            each(dom.select('[data-mce-indent]', o.node), function (el) {
+             // update indent conversion
+             each(dom.select('[data-mce-indent]', o.node), function (el) {
                 if (el.nodeName === "p") {
                     var value = dom.getAttrib(el, 'data-mce-indent');
                     var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
@@ -864,6 +862,10 @@
                 }
 
                 dom.setAttrib(el, 'data-mce-indent', '');
+            });
+
+            each(dom.select('[data-mce-word-list]', o.node), function (el) {
+                el.removeAttribute('data-mce-word-list');
             });
         }
 
