@@ -2476,7 +2476,8 @@ select.mceNativeListBox {
 }
 
 .mceModal .mceModalConfirm .mceModalContent,
-.mceModal .mceModalAlert .mceModalContent {
+.mceModal .mceModalAlert .mceModalContent,
+.mceModal .mceModalPrompt .mceModalContent {
     /*height: calc(100% - 98px);*/
     min-height: 5em;
     display: flex;
@@ -2640,7 +2641,8 @@ select.mceNativeListBox {
 }
 
 .mceModalConfirm,
-.mceModalAlert {
+.mceModalAlert,
+.mceModalPrompt {
     min-height: 160px;
 }
 
@@ -2668,7 +2670,8 @@ select.mceNativeListBox {
 .mceModal .mce-modal-landscape-384,
 .mceModal .mce-modal-landscape-small,
 .mceModalConfirm,
-.mceModalAlert {
+.mceModalAlert,
+.mceModalPrompt {
     max-width: 384px;
 }
 
@@ -2874,6 +2877,17 @@ select.mceNativeListBox {
 .mceModal .mceModalContent .mceModalControl iframe {
     position: relative;
     border: 1px solid #ddd;
+}
+
+.mceModal .mceModalContent .mceModalControlAppend input {
+    padding-right: 42px;
+}
+
+.mceModal .mceModalContent .mceModalControlAppend input + span {
+    position: absolute;
+    right: 4px;
+    display: block;
+    color: #888;
 }
 
 .mceModal .mceModalConfirm .mceModalContent p,
