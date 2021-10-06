@@ -173,7 +173,15 @@
         function removeMarker(marker) {
             each(ed.dom.select('img[src]'), function (image) {
                 if (image.src == marker.src) {
-                    ed.dom.remove(image);
+                    ed.selection.select(image);
+                    ed.execCommand('mceRemoveNode');
+
+                    var node = ed.selection.getNode();
+
+                    // restore bogus break
+                    if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
+                        ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
+                    }
                 }
             });
         }
