@@ -8,25 +8,7 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend, each = tinymce.each;
-
-    var counter = 0;
-
-    /**
-     Generates an unique ID.
-     @method uid
-     @return {String} Virtually unique id.
-     */
-    function uid() {
-        var guid = new Date().getTime().toString(32),
-            i;
-
-        for (i = 0; i < 5; i++) {
-            guid += Math.floor(Math.random() * 65535).toString(32);
-        }
-
-        return 'wf_' + guid + (counter++).toString(32);
-    }
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event, extend = tinymce.extend;
 
     function isMediaObject(node) {
         return node.getAttribute('data-mce-object') || node.getAttribute('data-mce-type');
@@ -34,67 +16,6 @@
 
     function isImage(node) {
         return node && node.nodeName === "IMG" && !isMediaObject(node);
-    }
-
-    function uploadFile(url, file) {
-        return new Promise(function (resolve, reject) {
-            var xhr = new XMLHttpRequest,
-                formData = new FormData();
-
-            var settings = tinymce.settings;
-
-            // progress
-            if (xhr.upload) {
-                xhr.upload.onprogress = function (e) {
-                    if (e.lengthComputable) {
-                        file.loaded = Math.min(file.size, e.loaded);
-                    }
-                };
-            }
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status === 200) {
-                        resolve(xhr.responseText);
-                    } else {
-                        reject();
-                    }
-
-                    file = formData = null; // Free memory
-                }
-            };
-
-            // get name
-            var name = file.target_name || file.name;
-
-            // remove some common characters
-            name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
-
-            var args = {
-                'method': 'upload',
-                'id': uid(),
-                'inline': 1,
-                'name': name
-            };
-
-            // add query
-            url += '&' + settings.query;
-
-            xhr.open("post", url, true);
-
-            // set xhr request header
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-            // Add multipart params
-            each(args, function (value, key) {
-                formData.append(key, value);
-            });
-
-            // Add file and send it
-            formData.append('file', file);
-
-            xhr.send(formData);
-        });
     }
 
     tinymce.create('tinymce.plugins.ImageManager', {
@@ -270,39 +191,26 @@
                                 // set disabled
                                 urlCtrl.setLoading(true);
 
-                                uploadFile(url, file).then(function (response) {
+                                extend(file, {
+                                    filename: file.name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, ''),
+                                    upload_url: url
+                                });
+
+                                ed.plugins.upload.upload(file, function (response) {
                                     urlCtrl.setLoading(false);
 
-                                    try {
-                                        var o = JSON.parse(response), error = 'Unable to upload file';
+                                    var files = response.files || [], item = files.length ? files[0] : {};
 
-                                        // valid json
-                                        if (tinymce.is(o, 'object')) {
-                                            if (o.error) {
-                                                error = o.error.message || error;
-                                            }
-
-                                            var r = o.result;
-
-                                            if (r) {
-                                                var files = r.files || [], item = files.length ? files[0] : {};
-
-                                                if (item.file) {
-                                                    urlCtrl.value(item.file);
-
-                                                    return true;
-                                                }
-                                            }
-                                        }
-
-                                        ed.windowManager.alert(error);
-
-                                    } catch (e) {
-                                        ed.windowManager.alert('The server returned an invalid JSON response');
+                                    if (item.file) {
+                                        urlCtrl.value(item.file);
+                                        return true;
                                     }
-                                }, function () {
+
+                                    ed.windowManager.alert('Unable to upload file!');
+
+                                }, function (message) {
+                                    ed.windowManager.alert(message);
                                     urlCtrl.setLoading(false);
-                                    return false;
                                 });
                             }
                         }
