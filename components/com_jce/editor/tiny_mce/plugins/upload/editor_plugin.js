@@ -114,7 +114,7 @@
           if (isMediaPlaceholder(node)) {
 
             // no plugins to upload, remove node
-            if (self.plugins.length == 0) {
+            if (plugins.length == 0) {
               node.remove();
             } else {
               createUploadMarker(node);
@@ -152,10 +152,10 @@
 
       function bindUploadEvents(ed) {
         each(ed.dom.select('.mce-item-upload-marker', ed.getBody()), function (n) {
-          if (self.plugins.length == 0) {
+          if (plugins.length == 0) {
             ed.dom.remove(n);
           } else {
-            bindUploadMarkerEvents(ed, n);
+            bindUploadMarkerEvents(n);
           }
         });
       }
@@ -237,8 +237,14 @@
       });
     });
 
+    var noop = function () {};
+
     function uploadHandler(file, success, failure, progress) {
       var xhr, formData;
+
+      success = success || noop;
+      failure = failure || noop;
+      progress = progress || noop;
 
       var args = {
         method: 'upload',
@@ -278,12 +284,12 @@
           return;
         }
 
-        if (!json.result || !json.result.files) {
+        if (!json.result) {
           failure(json.error.message || 'Invalid JSON response!');
           return;
         }
 
-        success(json.result.files[0]);
+        success(json.result);
       };
 
       formData = new FormData();
@@ -464,6 +470,7 @@
 
       // select marker
       ed.selection.select(marker);
+
       var elm = uploader.insertUploadedFile(data);
 
       if (elm) {
@@ -541,6 +548,7 @@
 
       // remove upload on nodechange
       ed.onNodeChange.add(removeUpload);
+
       // remove on window scroll
       ed.dom.bind(ed.getWin(), 'scroll', removeUpload);
 
@@ -637,7 +645,10 @@
     }
 
     function uploadFile(file) {
-      uploadHandler(file, function (item) {
+      uploadHandler(file, function (response) {
+        
+        var files = response.files || [], item = files.length ? files[0] : {};
+        
         if (file.uploader) {
 
           var obj = tinymce.extend({
