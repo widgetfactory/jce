@@ -8,7 +8,6 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  *
- * * Based on plupload - http://www.plupload.com
  */
 
 /*global tinymce:true */
@@ -305,7 +304,7 @@
 
     function addFile(file) {
       // check for extension in file name, eg. image.php.jpg
-      if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
+      if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
         ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
         return false;
       }
