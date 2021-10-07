@@ -11,13 +11,15 @@
 (function () {
     var each = tinymce.each,
         VK = tinymce.VK,
-        Event = tinymce.dom.Event,
         Schema = tinymce.html.Schema,
         DomParser = tinymce.html.DomParser,
         Serializer = tinymce.html.Serializer,
         Node = tinymce.html.Node,
         DOM = tinymce.DOM,
-        Dispatcher = tinymce.util.Dispatcher;
+        Dispatcher = tinymce.util.Dispatcher,
+        BlobCache = tinymce.file.BlobCache;
+
+        var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
     var styleProps = [
         'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
@@ -241,6 +243,55 @@
     };
 
     var InternalHtml = new InternalHtml();
+
+    function getBase64FromUri(uri) {
+        var idx;
+
+        idx = uri.indexOf(',');
+        if (idx !== -1) {
+            return uri.substr(idx + 1);
+        }
+
+        return null;
+    }
+
+    function isValidDataUriImage(settings, imgElm) {
+        return settings.images_dataimg_filter ? settings.images_dataimg_filter(imgElm) : true;
+    }
+
+    function pasteImage(editor, rng, reader, blob) {
+        if (rng) {
+            editor.selection.setRng(rng);
+            rng = null;
+        }
+
+        var dataUri = reader.result;
+        var base64 = getBase64FromUri(dataUri);
+
+        var img = new Image();
+        img.src = dataUri;
+
+        // TODO: Move the bulk of the cache logic to EditorUpload
+        if (isValidDataUriImage(editor.settings, img)) {
+            var blobInfo, existingBlobInfo;
+
+            existingBlobInfo = BlobCache.findFirst(function (cachedBlobInfo) {
+                return cachedBlobInfo.base64() === base64;
+            });
+
+            if (!existingBlobInfo) {
+                blobInfo = BlobCache.create('mceclip', blob, base64);
+                BlobCache.add(blobInfo);
+            } else {
+                blobInfo = existingBlobInfo;
+            }
+
+            return '<img src="' + blobInfo.blobUri() + '" />';
+
+        } else {
+            return '<img src="' + dataUri + '" />';
+        }
+    }
 
     var CutCopy = function (editor) {
         var noop = function () { };
@@ -746,9 +797,7 @@
             processStyles(ed, o.node);
         }
 
-       
         if (o.wordContent) {
-            
             // fix table borders
             var borderColors = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
             var positions = ['top', 'right', 'bottom', 'left'];
@@ -852,8 +901,8 @@
                 dom.setStyles(n, styles);
             });
 
-             // update indent conversion
-             each(dom.select('[data-mce-indent]', o.node), function (el) {
+            // update indent conversion
+            each(dom.select('[data-mce-indent]', o.node), function (el) {
                 if (el.nodeName === "p") {
                     var value = dom.getAttrib(el, 'data-mce-indent');
                     var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
@@ -869,25 +918,35 @@
             });
         }
 
-        // image file/data regular expression
-        var imgRe = /(file:|data:image)\//i,
-            uploader = ed.plugins.upload;
-        var canUpload = uploader && uploader.plugins.length;
+        function isValidDataUriImage(value) {
+            return /^(file:|data:image)\//i.test(value);
+        }
+
+        function canUploadDataImage() {
+            var uploader = ed.plugins.upload;
+
+            return uploader && uploader.plugins.length;
+        }
 
         // Process images - remove local
         each(dom.select('img', o.node), function (el) {
-            var s = dom.getAttrib(el, 'src');
+            var src = dom.getAttrib(el, 'src');
 
             // remove or processs for upload img element if blank, local file url or base64 encoded
-            if (!s || imgRe.test(s)) {
-                if (ed.getParam('clipboard_paste_upload_images') && canUpload) {
+            if (!src || isValidDataUriImage(src)) {
+                // leave it as it is to be processed as a blob
+                if (ed.settings.clipboard_paste_data_images != false) {
+                    return true;
+                }
+                
+                if (ed.settings.clipboard_paste_upload_data_images != false && canUploadDataImage()) {
                     // add marker
                     ed.dom.setAttrib(el, 'data-mce-upload-marker', '1');
                 } else {
                     dom.remove(el);
                 }
             } else {
-                dom.setAttrib(el, 'src', ed.convertURL(s));
+                dom.setAttrib(el, 'src', ed.convertURL(src));
             }
         });
 
@@ -1837,6 +1896,11 @@
         // existing link...
         var decoded = ed.dom.decode(content);
 
+        // skip blobs and data uri
+        if (/^<img src="(data|blob):[^>]+?>/.test(content)) {
+            return content;
+        }
+
         if (/^<a([^>]+)>([\s\S]+?)<\/a>$/.test(decoded)) {
             return content;
         }
@@ -1975,14 +2039,20 @@
             if (dataTransfer.getData) {
                 var legacyText = dataTransfer.getData('Text');
                 if (legacyText && legacyText.length > 0) {
-                    items['text/plain'] = legacyText;
+                    if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
+                        items['text/plain'] = legacyText;
+                    }
                 }
             }
 
             if (dataTransfer.types) {
                 for (var i = 0; i < dataTransfer.types.length; i++) {
                     var contentType = dataTransfer.types[i];
-                    items[contentType] = dataTransfer.getData(contentType);
+                    try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
+                        items[contentType] = dataTransfer.getData(contentType);
+                    } catch (ex) {
+                        items[contentType] = ""; // useless in general, but for consistency across browsers
+                    }
                 }
             }
         }
@@ -1998,7 +2068,8 @@
      * @return {Object} Object with mime types and data for those mime types.
      */
     function getClipboardContent(editor, clipboardEvent) {
-        var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
+        //var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
+        var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
         // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
         if (navigator.userAgent.indexOf(' Edge/') !== -1) {
@@ -2021,7 +2092,7 @@
     }
 
     function hasHtmlOrText(content) {
-        return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
+        return (hasContentType(content, 'text/html') || hasContentType(content, 'text/plain')) && !content.Files;
     }
 
     // IE flag to include Edge
@@ -2038,7 +2109,7 @@
 
             var pasteBinElm, lastRng;
             var pasteBinDefaultContent = '%MCEPASTEBIN%',
-                keyboardPastePlainTextState;
+                keyboardPastePlainTextState, keyboardPasteTimeStamp = 0;
 
             // set default paste state for dialog trigger
             this.canPaste = false;
@@ -2232,11 +2303,15 @@
                     // Execute post process handlers
                     self.onPostProcess.dispatch(self, o);
 
+                    // get processed content
+                    o.content = o.node.innerHTML;
+
+                    /*
                     // Serialize content
                     o.content = ed.serializer.serialize(o.node, {
                         getInner: 1,
                         forced_root_block: ''
-                    });
+                    });*/
 
                     // remove empty paragraphs
                     if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
@@ -2281,15 +2356,28 @@
                 // get html content
                 content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
 
+                if (!content) {
+                    content = getPasteBinHtml();
+                    internal = internal ? internal : InternalHtml.isMarked(content);
+
+                    // no content....?
+                    if (content === pasteBinDefaultContent) {
+                        self.pasteAsPlainText = true;
+                    }
+                }
+
+                // remove pasteBin and reset rng
+                removePasteBin();
+
                 // unmark content
                 content = InternalHtml.unmark(content);
 
                 // trim
                 content = trimHtml(content);
 
-                // no content....?
-                if (content === pasteBinDefaultContent) {
-                    return;
+                if (!internal && isPlainTextPaste(clipboardContent)) {
+                    // set pasteAsPlainText state
+                    self.pasteAsPlainText = clipboardContent['text/plain'] == content;
                 }
 
                 // paste text
@@ -2319,11 +2407,8 @@
              * instead of the current editor selection element.
              */
             function createPasteBin() {
-                var dom = ed.dom,
-                    body = ed.getBody();
-                var viewport = ed.dom.getViewPort(ed.getWin()),
-                    scrollTop = viewport.y,
-                    top = 20;
+                var dom = ed.dom, body = ed.getBody();
+                var viewport = ed.dom.getViewPort(ed.getWin()), scrollTop = viewport.y, top = 20;
                 var scrollContainer;
 
                 lastRng = ed.selection.getRng();
@@ -2403,18 +2488,22 @@
                 }
 
                 // Create a pastebin
-                pasteBinElm = dom.add(ed.getBody(), 'div', {
+                pasteBinElm = ed.dom.add(ed.getBody(), 'div', {
                     id: "mcepastebin",
                     contentEditable: true,
                     "data-mce-bogus": "all",
-                    style: 'position: absolute; top: ' + top + 'px;' +
-                        'width: 10px; height: 10px; overflow: hidden; opacity: 0'
+                    style: 'position: absolute; top: ' + top + 'px; width: 10px; height: 10px; overflow: hidden; opacity: 0'
                 }, pasteBinDefaultContent);
 
                 // Move paste bin out of sight since the controlSelection rect gets displayed otherwise on IE and Gecko
-                if (isIE || tinymce.isGecko) {
+                if (tinymce.isGecko) {
                     dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) == 'rtl' ? 0xFFFF : -0xFFFF);
                 }
+
+                // Prevent focus events from bubbeling fixed FocusManager issues
+                dom.bind(pasteBinElm, 'beforedeactivate focusin focusout', function (e) {
+                    e.stopPropagation();
+                });
 
                 pasteBinElm.focus();
                 ed.selection.select(pasteBinElm, true);
@@ -2475,79 +2564,6 @@
                 return html;
             }
 
-            // This function grabs the contents from the clipboard by adding a
-            // hidden div and placing the caret inside it and after the browser paste
-            // is done it grabs that contents and processes that
-            function getContentFromPasteBin(e) {
-                var dom = ed.dom;
-
-                // don't repeat paste
-                if (dom.get('mcepastebin')) {
-                    return;
-                }
-
-                createPasteBin();
-
-                // old annoying IE....   
-                if (isIE && isIE < 11) {
-                    var rng;
-
-                    // Select the container
-                    rng = dom.doc.body.createTextRange();
-                    rng.moveToElementText(pasteBinElm);
-                    rng.execCommand('Paste');
-
-                    var html = pasteBinElm.innerHTML;
-
-                    // Check if the contents was changed, if it wasn't then clipboard extraction failed probably due
-                    // to IE security settings so we pass the junk though better than nothing right
-                    if (html === pasteBinDefaultContent) {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // Remove container
-                    removePasteBin();
-
-                    // For some odd reason we need to detach the the mceInsertContent call from the paste event
-                    // It's like IE has a reference to the parent element that you paste in and the selection gets messed up
-                    // when it tries to restore the selection
-                    setTimeout(function () {
-                        insertClipboardContent({
-                            "text/html": html
-                        });
-                    }, 0);
-
-                    // Block the real paste event
-                    Event.cancel(e);
-
-                    return;
-                }
-
-                function block(e) {
-                    e.preventDefault();
-                }
-
-                // Block mousedown and click to prevent selection change
-                dom.bind(ed.getDoc(), 'mousedown', block);
-                dom.bind(ed.getDoc(), 'keydown', block);
-
-                // Wait a while and grab the pasted contents
-                window.setTimeout(function () {
-                    var html = getPasteBinHtml();
-
-                    removePasteBin();
-
-                    insertClipboardContent({
-                        "text/html": html
-                    });
-
-                    // Unblock events once we got the contents
-                    dom.unbind(ed.getDoc(), 'mousedown', block);
-                    dom.unbind(ed.getDoc(), 'keydown', block);
-                }, 0);
-            }
-
             ed.onKeyDown.add(function (ed, e) {
                 // block events
                 if (!ed.getParam('clipboard_allow_cut', 1) && (VK.metaKeyPressed(e) && e.keyCode == 88)) {
@@ -2562,6 +2578,8 @@
 
                 // Ctrl+V or Shift+Insert
                 if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
+                    keyboardPasteTimeStamp = new Date().getTime();
+
                     // Prevent undoManager keydown handler from making an undo level with the pastebin in it
                     e.stopImmediatePropagation();
 
@@ -2570,11 +2588,24 @@
                     // mark as plain text paste
                     if (keyboardPastePlainTextState) {
                         self.pasteAsPlainText = true;
-
-                        getContentFromPasteBin(e);
                     }
+
+                    removePasteBin();
+                    createPasteBin();
                 }
             });
+
+            /**
+             * Chrome on Android doesn't support proper clipboard access so we have no choice but to allow the browser default behavior.
+             *
+             * @param {Event} e Paste event object to check if it contains any data.
+             * @return {Boolean} true/false if the clipboard is empty or not.
+             */
+            function isBrokenAndroidClipboardEvent(e) {
+                var clipboardData = e.clipboardData;
+
+                return navigator.userAgent.indexOf('Android') !== -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
+            }
 
             function isHtmlPaste(content) {
                 if (!hasContentType(content, "text/html")) {
@@ -2620,6 +2651,8 @@
             function pasteImageData(e) {
                 var dataTransfer = e.clipboardData || e.dataTransfer;
 
+                var rng = lastRng || ed.selection.getRng();
+
                 function processItems(items) {
                     var i, item, hadImage = false;
 
@@ -2628,8 +2661,23 @@
                             item = items[i];
 
                             if (/^image\/(jpeg|png|gif|bmp)$/.test(item.type)) {
-                                e.preventDefault();
                                 hadImage = true;
+                                e.preventDefault();
+
+                                if (ed.settings.clipboard_paste_data_images !== false) {
+                                    var blob = item.getAsFile ? item.getAsFile() : item;
+
+                                    var reader = new FileReader();
+                                    // eslint-disable-next-line no-loop-func
+                                    reader.onload = function () {
+                                        var html = pasteImage(ed, rng, reader, blob);
+                                        pasteHtml(html);
+                                    };
+
+                                    reader.readAsDataURL(blob);
+                                } else {
+                                    pasteHtml('<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-mce-upload-marker="1" />', true);
+                                }
                             }
                         }
                     }
@@ -2637,15 +2685,17 @@
                     return hadImage;
                 }
 
+                removePasteBin();
+
                 return processItems(dataTransfer.items) || processItems(dataTransfer.files);
             }
 
-            function isPasteInPre(ed) {
+            function isPasteInPre() {
                 var node = ed.selection.getNode();
                 return ed.settings.html_paste_in_pre !== false && node && node.nodeName === 'PRE';
             }
 
-            function getCaretRangeFromEvent(ed, e) {
+            function getCaretRangeFromEvent(e) {
                 return tinymce.dom.RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
             }
 
@@ -2654,14 +2704,65 @@
                 return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
             }
 
-            function getContentAndInsert(ed, e) {
-                var clipboardContent = getClipboardContent(ed, e);
+            function getLastRng() {
+                return lastRng || ed.selection.getRng();
+            }
 
-                removePasteBin();
+            function getContentAndInsert(e) {
+                // Getting content from the Clipboard can take some time
+                var clipboardTimer = new Date().getTime();
+                var clipboardContent = getClipboardContent(ed, e);
+                var clipboardDelay = new Date().getTime() - clipboardTimer;
+
+                function isKeyBoardPaste() {
+                    if (e.type == 'drop') {
+                        return false;
+                    }
+
+                    return (new Date().getTime() - keyboardPasteTimeStamp - clipboardDelay) < 1000;
+                }
 
                 var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
-                if (isPasteInPre(ed)) {
+                keyboardPastePlainTextState = false;
+
+                if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
+                    removePasteBin();
+                    return;
+                }
+
+                // Not a keyboard paste prevent default paste and try to grab the clipboard contents using different APIs
+                if (!isKeyBoardPaste()) {
+                    e.preventDefault();
+                }
+
+                // Try IE only method if paste isn't a keyboard paste
+                if (isIE && (!isKeyBoardPaste() || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+                    createPasteBin();
+
+                    ed.dom.bind(ed.dom.get('mcepastebin'), 'paste', function (e) {
+                        e.stopPropagation();
+                    });
+
+                    ed.getDoc().execCommand('Paste', false, null);
+                    clipboardContent["text/html"] = getPasteBinHtml();
+                }
+
+
+                if (isPlainTextFileUrl(clipboardContent)) {
+                    removePasteBin();
+                    return;
+                }
+
+                if (!hasHtmlOrText(clipboardContent) && pasteImageData(e, getLastRng())) {
+                    removePasteBin();
+                    return;
+                }
+
+                // pasting content into a pre element so encode html first, then insert using setContent
+                if (isPasteInPre()) {
+                    removePasteBin();
+
                     var html = clipboardContent['text/html'] || '', text = clipboardContent['text/plain'];
 
                     // encode
@@ -2678,50 +2779,38 @@
                     return true;
                 }
 
-                if (isPlainTextFileUrl(clipboardContent)) {
-                    return;
-                }
-
-                if (!hasHtmlOrText(clipboardContent) && pasteImageData(e)) {
-                    pasteHtml('<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-mce-upload-marker="1" />', true);
-                    return true;
-                }
-
-                // use plain text (don't return so pastebin is used on Windows?)
-                if (!internal && isPlainTextPaste(clipboardContent)) {
-                    var text = clipboardContent["text/plain"];
-
-                    // set pasteAsPlainText state
-                    self.pasteAsPlainText = true;
-
-                    pasteText(text);
+                // If clipboard API has HTML then use that directly
+                if (isHtmlPaste(clipboardContent)) {
                     e.preventDefault();
 
-                    return;
-                }
-
-                // use html from clipboard API
-                if (isHtmlPaste(clipboardContent)) {
                     // if clipboard lacks internal mime type, inspect html for internal markings
                     if (!internal) {
                         internal = InternalHtml.isMarked(clipboardContent['text/html']);
                     }
 
-                    e.preventDefault();
                     insertClipboardContent(clipboardContent, internal);
+                } else {
+                    setTimeout(function () {
+                        function block(e) {
+                            e.preventDefault();
+                        }
 
-                    return true;
+                        // Block mousedown and click to prevent selection change
+                        ed.dom.bind(ed.getDoc(), 'mousedown', block);
+                        ed.dom.bind(ed.getDoc(), 'keydown', block);
+
+                        insertClipboardContent(clipboardContent, internal);
+
+                        // Block mousedown and click to prevent selection change
+                        ed.dom.unbind(ed.getDoc(), 'mousedown', block);
+                        ed.dom.unbind(ed.getDoc(), 'keydown', block);
+                    }, 0);
                 }
             }
 
             // Grab contents on paste event
             ed.onPaste.add(function (ed, e) {
-                if (getContentAndInsert(ed, e) === true) {
-                    return;
-                }
-
-                // use paste bin
-                getContentFromPasteBin(e);
+                getContentAndInsert(e);
             });
 
             ed.onInit.add(function () {
@@ -2732,7 +2821,7 @@
                 });
 
                 ed.dom.bind(ed.getBody(), 'drop', function (e) {
-                    var rng = getCaretRangeFromEvent(ed, e);
+                    var rng = getCaretRangeFromEvent(e);
 
                     if (e.isDefaultPrevented() || draggingInternally) {
                         return;
@@ -2740,7 +2829,7 @@
 
                     if (rng && ed.settings.clipboard_paste_filter_drop !== false) {
                         ed.selection.setRng(rng);
-                        getContentAndInsert(ed, e);
+                        getContentAndInsert(e);
                     }
                 });
 
