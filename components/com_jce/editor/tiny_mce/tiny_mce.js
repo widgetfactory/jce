@@ -956,11 +956,55 @@
     tinymce.util = {};
 
     /**
+  	 * Contains various file classes.
+  	 *
+  	 * @namespace tinymce.file
+  	 */
+
+     tinymce.file = {};
+
+    /**
   	 * Contains plugin classes.
   	 *
   	 * @namespace tinymce.plugins
   	 */
   })(window);
+
+  /**
+   * Uuid.js
+   *
+   * Released under LGPL License.
+   * Copyright (c) 1999-2016 Ephox Corp. All rights reserved
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+
+  /**
+   * Generates unique ids.
+   *
+   * @class tinymce.util.Uuid
+   * @private
+   */
+
+  var count = 0;
+
+  var seed = function () {
+    var rnd = function () {
+      return Math.round(Math.random() * 0xFFFFFFFF).toString(36);
+    };
+
+    var now = new Date().getTime();
+    return 's' + now.toString(36) + rnd() + rnd() + rnd();
+  };
+
+  var uuid = function (prefix) {
+    return prefix + (count++) + seed();
+  };
+
+  tinymce.util.Uuid = {
+    uuid: uuid
+  };
 
   /**
    * Delay.js
@@ -4360,6 +4404,243 @@
       noop: noop
     };
   })(tinymce);
+
+  /**
+   * BlobCache.js
+   *
+   * Released under LGPL License.
+   * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+
+  /**
+   * Hold blob info objects where a blob has extra internal information.
+   *
+   * @private
+   * @class tinymce.file.BlobCache
+   */
+
+
+  var Arr = tinymce.util.Arr, Fun = tinymce.util.Fun, Uuid = tinymce.util.Uuid;
+
+  var cache = [],
+    constant = Fun.constant;
+
+  function mimeToExt(mime) {
+    var mimes = {
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/gif': 'gif',
+      'image/png': 'png'
+    };
+
+    return mimes[mime.toLowerCase()] || 'dat';
+  }
+
+  function create(o, blob, base64, filename) {
+    return typeof o === 'object' ? toBlobInfo(o) : toBlobInfo({
+      id: o,
+      name: filename,
+      blob: blob,
+      base64: base64
+    });
+  }
+
+  function toBlobInfo(o) {
+    var id, name;
+
+    if (!o.blob || !o.base64) {
+      throw "blob and base64 representations of the image are required for BlobInfo to be created";
+    }
+
+    id = o.id || Uuid.uuid('blobid');
+    name = o.name || id;
+
+    return {
+      id: constant(id),
+      name: constant(name),
+      filename: constant(name + '.' + mimeToExt(o.blob.type)),
+      blob: constant(o.blob),
+      base64: constant(o.base64),
+      blobUri: constant(o.blobUri || URL.createObjectURL(o.blob)),
+      uri: constant(o.uri)
+    };
+  }
+
+  function add(blobInfo) {
+    if (!get(blobInfo.id())) {
+      cache.push(blobInfo);
+    }
+  }
+
+  function get(id) {
+    return findFirst(function (cachedBlobInfo) {
+      return cachedBlobInfo.id() === id;
+    });
+  }
+
+  function findFirst(predicate) {
+    return Arr.filter(cache, predicate)[0];
+  }
+
+  function getByUri(blobUri) {
+    return findFirst(function (blobInfo) {
+      return blobInfo.blobUri() == blobUri;
+    });
+  }
+
+  function removeByUri(blobUri) {
+    cache = Arr.filter(cache, function (blobInfo) {
+      if (blobInfo.blobUri() === blobUri) {
+        URL.revokeObjectURL(blobInfo.blobUri());
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  function destroy() {
+    Arr.each(cache, function (cachedBlobInfo) {
+      URL.revokeObjectURL(cachedBlobInfo.blobUri());
+    });
+
+    cache = [];
+  }
+
+  tinymce.file.BlobCache = {
+    create: create,
+    add: add,
+    get: get,
+    getByUri: getByUri,
+    findFirst: findFirst,
+    removeByUri: removeByUri,
+    destroy: destroy
+  };
+
+  /**
+   * Conversions.js
+   *
+   * Released under LGPL License.
+   * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+
+  /**
+   * Converts blob/uris back and forth.
+   *
+   * @private
+   * @class tinymce.file.Conversions
+   */
+
+  function blobUriToBlob(url) {
+    return new Promise(function (resolve, reject) {
+
+      var rejectWithError = function () {
+        reject("Cannot convert " + url + " to Blob. Resource might not exist or is inaccessible.");
+      };
+
+      try {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('GET', url, true);
+        xhr.responseType = 'blob';
+
+        xhr.onload = function () {
+          if (this.status == 200) {
+            resolve(this.response);
+          } else {
+            // IE11 makes it into onload but responds with status 500
+            rejectWithError();
+          }
+        };
+
+        // Chrome fires an error event instead of the exception
+        // Also there seems to be no way to intercept the message that is logged to the console
+        xhr.onerror = rejectWithError;
+
+        xhr.send();
+      } catch (ex) {
+        rejectWithError();
+      }
+    });
+  }
+
+  function parseDataUri(uri) {
+    var type, matches;
+
+    uri = decodeURIComponent(uri).split(',');
+
+    matches = /data:([^;]+)/.exec(uri[0]);
+    if (matches) {
+      type = matches[1];
+    }
+
+    return {
+      type: type,
+      data: uri[1]
+    };
+  }
+
+  function dataUriToBlob(uri) {
+    return new Promise(function (resolve) {
+      var str, arr, i;
+
+      uri = parseDataUri(uri);
+
+      // Might throw error if data isn't proper base64
+      try {
+        str = atob(uri.data);
+      } catch (e) {
+        resolve(new Blob([]));
+        return;
+      }
+
+      arr = new Uint8Array(str.length);
+
+      for (i = 0; i < arr.length; i++) {
+        arr[i] = str.charCodeAt(i);
+      }
+
+      resolve(new Blob([arr], {
+        type: uri.type
+      }));
+    });
+  }
+
+  function uriToBlob(url) {
+    if (url.indexOf('blob:') === 0) {
+      return blobUriToBlob(url);
+    }
+
+    if (url.indexOf('data:') === 0) {
+      return dataUriToBlob(url);
+    }
+
+    return null;
+  }
+
+  function blobToDataUri(blob) {
+    return new Promise(function (resolve) {
+      var reader = new FileReader();
+
+      reader.onloadend = function () {
+        resolve(reader.result);
+      };
+
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  tinymce.file.Conversions = {
+    uriToBlob: uriToBlob,
+    blobToDataUri: blobToDataUri,
+    parseDataUri: parseDataUri
+  };
 
   /**
    * Entities.js
@@ -33593,6 +33874,41 @@
         });
       },
 
+      prompt: function (txt, cb, s) {
+        var self = this;
+
+        var html = '<div class="mceModalRow">' +
+          '   <div class="mceModalControl">' +
+          '       <input type="text" id="' + self.editor.id + '_prompt_input" autofocus />' +
+          '   </div>' +
+          '</div>';
+
+        self.open({
+          title: '',
+          type: 'prompt',
+          buttons: [
+            {
+              title: self.editor.getLang('cancel', 'Cancel'),
+              id: 'cancel'
+            },
+            {
+              title: self.editor.getLang('ok', 'Ok'),
+              id: 'ok',
+              classes: 'primary',
+              autofocus: true,
+              onsubmit: function () {
+                var value = DOM.getValue(self.editor.id + '_prompt_input');
+
+                if (cb) {
+                  cb.call(s || self, value);
+                }
+              }
+            }
+          ],
+          content: html
+        });
+      },
+
       /**
        * Resizes the specified window or id.
        *
@@ -41260,492 +41576,462 @@
 
   (function () {
     var each = tinymce.each,
-      extend = tinymce.extend,
       JSON = tinymce.util.JSON,
       RangeUtils = tinymce.dom.RangeUtils,
-      Dispatcher = tinymce.util.Dispatcher;
+      Uuid = tinymce.util.Uuid;
 
-    var counter = 0;
+    // Register plugin
+    tinymce.PluginManager.add('upload', function (ed, url) {
+      var plugins = [], files = [];
 
-    /**
-       Generates an unique ID.
-       @method uid
-       @return {String} Virtually unique id.
-       */
-    function uid() {
-      var guid = new Date().getTime().toString(32),
-        i;
+      function cancel() {
+        // Block browser default drag over
+        ed.dom.bind(ed.getBody(), 'dragover', function (e) {
+          var dataTransfer = e.dataTransfer;
 
-      for (i = 0; i < 5; i++) {
-        guid += Math.floor(Math.random() * 65535).toString(32);
+          // cancel dropped files
+          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+            e.preventDefault();
+          }
+        });
+
+        ed.dom.bind(ed.getBody(), 'drop', function (e) {
+          var dataTransfer = e.dataTransfer;
+
+          // cancel dropped files
+          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+            e.preventDefault();
+          }
+        });
       }
 
-      return 'wf_' + guid + (counter++).toString(32);
-    }
+      ed.onPreInit.add(function () {
+        // get list of supported plugins
+        each(ed.plugins, function (plg, name) {
+          if (tinymce.is(plg.getUploadConfig, 'function')) {
 
-    var mimes = {};
+            var data = plg.getUploadConfig();
 
-    // Parses the default mime types string into a mimes lookup map (from plupload.js)
-    (function (mime_data) {
-      var items = mime_data.split(/,/),
-        i, y, ext;
-
-      for (i = 0; i < items.length; i += 2) {
-        ext = items[i + 1].split(/ /);
-
-        for (y = 0; y < ext.length; y++) {
-          mimes[ext[y]] = items[i];
-        }
-      }
-    })(
-      "application/msword,doc dot," +
-          "application/pdf,pdf," +
-          "application/pgp-signature,pgp," +
-          "application/postscript,ps ai eps," +
-          "application/rtf,rtf," +
-          "application/vnd.ms-excel,xls xlb," +
-          "application/vnd.ms-powerpoint,ppt pps pot," +
-          "application/zip,zip," +
-          "application/x-shockwave-flash,swf swfl," +
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document,docx," +
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.template,dotx," +
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,xlsx," +
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation,pptx," +
-          "application/vnd.openxmlformats-officedocument.presentationml.template,potx," +
-          "application/vnd.openxmlformats-officedocument.presentationml.slideshow,ppsx," +
-          "application/x-javascript,js," +
-          "application/json,json," +
-          "audio/mpeg,mpga mpega mp2 mp3," +
-          "audio/x-wav,wav," +
-          "audio/mp4,m4a," +
-          "image/bmp,bmp," +
-          "image/gif,gif," +
-          "image/jpeg,jpeg jpg jpe," +
-          "image/photoshop,psd," +
-          "image/png,png," +
-          "image/svg+xml,svg svgz," +
-          "image/tiff,tiff tif," +
-          "text/plain,asc txt text diff log md," +
-          "text/html,htm html xhtml," +
-          "text/css,css," +
-          "text/csv,csv," +
-          "text/rtf,rtf," +
-          "video/mpeg,mpeg mpg mpe," +
-          "video/quicktime,qt mov," +
-          "video/mp4,mp4," +
-          "video/x-m4v,m4v," +
-          "video/x-flv,flv," +
-          "video/x-ms-wmv,wmv," +
-          "video/avi,avi," +
-          "video/webm,webm," +
-          "video/vnd.rn-realvideo,rv," +
-          "application/vnd.oasis.opendocument.formula-template,otf," +
-          "application/octet-stream,exe"
-    );
-
-    var state = {
-      /**
-           * Inital state of the queue and also the state ones it's finished all it's uploads.
-           *
-           * @property STOPPED
-           * @final
-           */
-      STOPPED: 1,
-      /**
-           * Upload process is running
-           *
-           * @property STARTED
-           * @final
-           */
-      STARTED: 2,
-      /**
-           * File is queued for upload
-           *
-           * @property QUEUED
-           * @final
-           */
-      QUEUED: 1,
-      /**
-           * File is being uploaded
-           *
-           * @property UPLOADING
-           * @final
-           */
-      UPLOADING: 2,
-      /**
-           * File has failed to be uploaded
-           *
-           * @property FAILED
-           * @final
-           */
-      FAILED: 4,
-      /**
-           * File has been uploaded successfully
-           *
-           * @property DONE
-           * @final
-           */
-      DONE: 5,
-      // Error constants used by the Error event
-
-      /**
-           * Generic error for example if an exception is thrown inside Silverlight.
-           *
-           * @property GENERIC_ERROR
-           * @final
-           */
-      GENERIC_ERROR: -100,
-      /**
-           * HTTP transport error. For example if the server produces a HTTP status other than 200.
-           *
-           * @property HTTP_ERROR
-           * @final
-           */
-      HTTP_ERROR: -200,
-      /**
-           * Generic I/O error. For exampe if it wasn't possible to open the file stream on local machine.
-           *
-           * @property IO_ERROR
-           * @final
-           */
-      IO_ERROR: -300,
-      /**
-           * Generic I/O error. For exampe if it wasn't possible to open the file stream on local machine.
-           *
-           * @property SECURITY_ERROR
-           * @final
-           */
-      SECURITY_ERROR: -400
-    };
-
-    tinymce.create('tinymce.plugins.Upload', {
-      files: [],
-      plugins: [],
-      init: function (ed, url) {
-        function cancel() {
-          // Block browser default drag over
-          ed.dom.bind(ed.getBody(), 'dragover', function (e) {
-            var dataTransfer = e.dataTransfer;
-
-            // cancel dropped files
-            if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-              e.preventDefault();
+            if (data.inline && data.filetypes) {
+              plugins.push(plg);
             }
-          });
 
-          ed.dom.bind(ed.getBody(), 'drop', function (e) {
-            var dataTransfer = e.dataTransfer;
+          }
+        });
 
-            // cancel dropped files
-            if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-              e.preventDefault();
-            }
-          });
+        // Cleanup callback
+        ed.onBeforeSetContent.add(function (ed, o) {
+          o.content = o.content.replace(/<\/media>/g, '&nbsp;</media>');
+        });
+
+        // Cleanup callback
+        ed.onPostProcess.add(function (ed, o) {
+          o.content = o.content.replace(/(&nbsp;|\u00a0)<\/media>/g, '</media>');
+        });
+
+        ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
+
+        if (!ed.settings.compress.css) {
+          ed.dom.loadCSS(url + "/css/content.css");
         }
 
-        var self = this;
-        self.editor = ed;
-        self.plugin_url = url;
+        // Remove bogus elements
+        ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
+          var i = nodes.length;
 
-        ed.onPreInit.add(function () {
-          // get list of supported plugins
-          each(ed.plugins, function (plg, name) {
-            if (tinymce.is(plg.getUploadConfig, 'function')) {
+          while (i--) {
+            nodes[i].remove();
+          }
+        });
 
-              var data = plg.getUploadConfig();
-
-              if (data.inline && data.filetypes) {
-                self.plugins.push(plg);
-              }
-
-            }
-          });
-
-          // Cleanup callback
-          ed.onBeforeSetContent.add(function (ed, o) {
-            o.content = o.content.replace(/<\/media>/g, '&nbsp;</media>');
-          });
-
-          // Cleanup callback
-          ed.onPostProcess.add(function (ed, o) {
-            o.content = o.content.replace(/(&nbsp;|\u00a0)<\/media>/g, '</media>');
-          });
-
-          ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
-
-          if (!ed.settings.compress.css) {
-            ed.dom.loadCSS(url + "/css/content.css");
+        function isMediaPlaceholder(node) {
+          if (node.name === 'media') {
+            return true;
           }
 
-          // Remove bogus elements
-          ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
-            var i = nodes.length;
-
-            while (i--) {
-              nodes[i].remove();
-            }
-          });
-
-          function isMediaPlaceholder(node) {
-            if (node.name === 'media') {
+          if (node.name === 'img') {
+            if (node.attr('data-mce-upload-marker')) {
               return true;
             }
 
-            if (node.name === 'img') {
-              if (node.attr('data-mce-upload-marker')) {
-                return true;
-              }
+            var cls = node.attr('class');
 
-              var cls = node.attr('class');
-
-              if (cls && cls.indexOf('upload-placeholder') != -1) {
-                return true;
-              }
+            if (cls && cls.indexOf('upload-placeholder') != -1) {
+              return true;
             }
-
-            return false;
           }
 
-          // find and convert upload markers
-          ed.parser.addNodeFilter('img,media', function (nodes) {
-            var i = nodes.length,
-              node;
+          return false;
+        }
 
-            while (i--) {
-              node = nodes[i];
+        // find and convert upload markers
+        ed.parser.addNodeFilter('img,media', function (nodes) {
+          var i = nodes.length,
+            node;
 
-              if (isMediaPlaceholder(node)) {
+          while (i--) {
+            node = nodes[i];
 
-                // no plugins to upload, remove node
-                if (self.plugins.length == 0) {
-                  node.remove();
-                } else {
-                  self._createUploadMarker(node);
-                }
-              }
-            }
-          });
+            if (isMediaPlaceholder(node)) {
 
-          // remove upload markers
-          ed.serializer.addNodeFilter('img', function (nodes) {
-            var i = nodes.length,
-              node, cls;
-
-            while (i--) {
-              node = nodes[i], cls = node.attr('class');
-
-              if (cls && /mce-item-upload-marker/.test(cls)) {
-                // remove marker classes
-                cls = cls.replace(/(?:^|\s)(mce-item-)(?!)(upload|upload-marker|upload-placeholder)(?!\S)/g, '');
-                // set class and src
-                node.attr({
-                  'data-mce-src': '',
-                  'src': '',
-                  'class': tinymce.trim(cls)
-                });
-
-                // rename
-                node.name = 'media';
-                node.shortEnded = false;
-                // remove alt if set
-                node.attr('alt', null);
-                // set media type (default to image/jpeg for now)
-                //node.attr('type', 'image/jpeg');
-              }
-            }
-          });
-
-          function bindUploadEvents(ed) {
-            each(ed.dom.select('.mce-item-upload-marker', ed.getBody()), function (n) {
-              if (self.plugins.length == 0) {
-                ed.dom.remove(n);
+              // no plugins to upload, remove node
+              if (plugins.length == 0) {
+                node.remove();
               } else {
-                self._bindUploadMarkerEvents(ed, n);
+                createUploadMarker(node);
               }
-            });
-          }
-
-          // update events when content is inserted
-          ed.selection.onSetContent.add(function () {
-            bindUploadEvents(ed);
-          });
-
-          // update events when content is set
-          ed.onSetContent.add(function () {
-            bindUploadEvents(ed);
-          });
-
-          // update events when fullscreen is activated
-          if (ed.onFullScreen) {
-            ed.onFullScreen.add(function (editor) {
-              bindUploadEvents(editor);
-            });
+            }
           }
         });
 
-        ed.onInit.add(function () {
-          // no supported plugins
-          if (self.plugins.length == 0) {
-            cancel();
+        // remove upload markers
+        ed.serializer.addNodeFilter('img', function (nodes) {
+          var i = nodes.length,
+            node, cls;
+
+          while (i--) {
+            node = nodes[i], cls = node.attr('class');
+
+            if (cls && /mce-item-upload-marker/.test(cls)) {
+              // remove marker classes
+              cls = cls.replace(/(?:^|\s)(mce-item-)(?!)(upload|upload-marker|upload-placeholder)(?!\S)/g, '');
+              // set class and src
+              node.attr({
+                'data-mce-src': '',
+                'src': '',
+                'class': tinymce.trim(cls)
+              });
+
+              // rename
+              node.name = 'media';
+              node.shortEnded = false;
+              // remove alt if set
+              node.attr('alt', null);
+            }
+          }
+        });
+
+        function bindUploadEvents(ed) {
+          each(ed.dom.select('.mce-item-upload-marker', ed.getBody()), function (n) {
+            if (plugins.length == 0) {
+              ed.dom.remove(n);
+            } else {
+              bindUploadMarkerEvents(n);
+            }
+          });
+        }
+
+        // update events when content is inserted
+        ed.selection.onSetContent.add(function () {
+          bindUploadEvents(ed);
+        });
+
+        // update events when content is set
+        ed.onSetContent.add(function () {
+          bindUploadEvents(ed);
+        });
+
+        // update events when fullscreen is activated
+        if (ed.onFullScreen) {
+          ed.onFullScreen.add(function (editor) {
+            bindUploadEvents(editor);
+          });
+        }
+      });
+
+      ed.onInit.add(function () {
+        // no supported plugins
+        if (plugins.length == 0) {
+          cancel();
+          return;
+        }
+
+        // Display "a#name" instead of "img" in element path
+        if (ed.theme && ed.theme.onResolveName) {
+          ed.theme.onResolveName.add(function (theme, o) {
+            var n = o.node;
+
+            if (n && n.nodeName === 'IMG' && /mce-item-upload/.test(n.className)) {
+              o.name = 'placeholder';
+            }
+          });
+        }
+
+        function cancelEvent(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        ed.dom.bind(ed.getBody(), 'dragover', function (e) {
+          e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
+        });
+
+        // Attach drop handler and grab files
+        ed.dom.bind(ed.getBody(), 'drop', function (e) {
+          var dataTransfer = e.dataTransfer;
+
+          // Add dropped files
+          if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+            each(dataTransfer.files, function (file) {
+              var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
+              if (rng) {
+                ed.selection.setRng(rng);
+                rng = null;
+              }
+
+              addFile(file);
+            });
+
+            cancelEvent(e);
+          }
+
+          // upload...
+          if (files.length) {
+            each(files, function (file) {
+              uploadFile(file);
+            });
+          }
+          // stop Firefox opening the image in a new window if the drop target is itself (drag cancelled)
+          if (tinymce.isGecko && e.target.nodeName == 'IMG') {
+            cancelEvent(e);
+          }
+        });
+      });
+
+      var noop = function () {};
+
+      function uploadHandler(file, success, failure, progress) {
+        var xhr, formData;
+
+        success = success || noop;
+        failure = failure || noop;
+        progress = progress || noop;
+
+        var args = {
+          method: 'upload',
+          id: Uuid.uuid('wf_'),
+          inline: 1,
+          name: file.filename
+        };
+
+        var url = file.upload_url;
+
+        // add query
+        url += '&' + ed.settings.query;
+
+        xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+
+        xhr.upload.onprogress = function (e) {
+          progress(e.loaded / e.total * 100);
+        };
+
+        xhr.onerror = function () {
+          failure("Image upload failed due to a XHR Transport error. Code: " + xhr.status);
+        };
+
+        xhr.onload = function () {
+          var json;
+
+          if (xhr.status < 200 || xhr.status >= 300) {
+            failure("HTTP Error: " + xhr.status);
             return;
           }
 
-          // Display "a#name" instead of "img" in element path
-          if (ed.theme && ed.theme.onResolveName) {
-            ed.theme.onResolveName.add(function (theme, o) {
-              var n = o.node;
+          json = JSON.parse(xhr.responseText);
 
-              if (n && n.nodeName === 'IMG' && /mce-item-upload/.test(n.className)) {
-                o.name = 'placeholder';
-              }
-            });
+          if (!json || json.error) {
+            failure(json.error.message || 'Invalid JSON response!');
+            return;
           }
 
-          function cancelEvent(e) {
-            e.preventDefault();
-            e.stopPropagation();
+          if (!json.result) {
+            failure(json.error.message || 'Invalid JSON response!');
+            return;
           }
 
-          ed.dom.bind(ed.getBody(), 'dragover', function (e) {
-            e.dataTransfer.dropEffect = tinymce.VK.metaKeyPressed(e) ? "copy" : "move";
-          });
-
-          // Attach drop handler and grab files
-          ed.dom.bind(ed.getBody(), 'drop', function (e) {
-            var dataTransfer = e.dataTransfer;
-
-            // Add dropped files
-            if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-              each(dataTransfer.files, function (file) {
-                var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
-                if (rng) {
-                  ed.selection.setRng(rng);
-                  rng = null;
-                }
-
-                self.addFile(file);
-              });
-
-              cancelEvent(e);
-            }
-
-            // upload...
-            if (self.files.length) {
-              each(self.files, function (file) {
-                self.upload(file);
-              });
-            }
-            // stop Firefox opening the image in a new window if the drop target is itself (drag cancelled)
-            if (tinymce.isGecko && e.target.nodeName == 'IMG') {
-              cancelEvent(e);
-            }
-          });
-        });
-
-        // Setup plugin events
-        self.FilesAdded = new Dispatcher(this);
-        self.UploadProgress = new Dispatcher(this);
-        self.FileUploaded = new Dispatcher(this);
-        self.UploadError = new Dispatcher(this);
-
-        // default settings
-        this.settings = {
-          multipart: true,
-          multi_selection: true,
-          file_data_name: 'file',
-          filters: []
+          success(json.result);
         };
 
-        self.FileUploaded.add(function (file, o) {
-          var n = file.marker;
+        formData = new FormData();
+        formData.append('file', file, file.name);
 
-          function showError(error) {
-            ed.windowManager.alert(error || ed.getLang('upload.response_error', 'Invalid Upload Response'));
-            ed.dom.remove(n);
+        // Add multipart params
+        each(args, function (value, name) {
+          formData.append(name, value);
+        });
 
-            return false;
+        xhr.send(formData);
+      }
+
+      function addFile(file) {
+        // check for extension in file name, eg. image.php.jpg
+        if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
+          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+          return false;
+        }
+
+        // get first url for the file type
+        each(plugins, function (plg) {
+          if (!file.upload_url) {
+            var url = plg.getUploadURL(file);
+
+            if (url) {
+              file.upload_url = url;
+              file.uploader = plg;
+
+              return false;
+            }
           }
+        });
 
-          if (n) {
-            if (o && o.response) {
-              var data = o.response,
-                r;
-              // parse JSON data if valid
-              try {
-                r = JSON.parse(data);
-              } catch (e) {
-                // malformed JSON
-                if (data.indexOf('{') !== -1) {
-                  data = 'The server returned an invalid JSON response.';
-                }
+        if (file.upload_url) {
+          if (tinymce.is(file.uploader.getUploadConfig, 'function')) {
+            // check file type and size
+            var config = file.uploader.getUploadConfig();
 
-                return showError(data);
-              }
+            var name = file.target_name || file.name;
 
-              if (!r) {
-                return showError();
-              }
+            // remove some common characters
+            file.filename = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
 
-              if (r.error || !r.result) {
-                var txt = '';
-
-                if (r.error) {
-                  txt = r.error.message || '';
-                }
-
-                ed.windowManager.alert(txt);
-                ed.dom.remove(n);
-
-                return false;
-              }
-
-              if (file.status == state.DONE) {
-                if (file.uploader) {
-                  var files = r.result.files || [];
-                  var item = files.length ? files[0] : {};
-
-                  var obj = tinymce.extend({
-                    type: file.type,
-                    name: file.name
-                  }, item);
-
-                  self._selectAndInsert(file, obj);
-                }
-
-                // remove from list
-                self.files.splice(tinymce.inArray(self.files, file), 1);
-              }
-            } else {
-              return showError();
+            if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
+              ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+              return false;
             }
 
-            // remove marker
-            ed.dom.remove(n);
-          }
-        });
+            if (file.size) {
+              var max = parseInt(config.max_size, 10) || 1024;
 
-        self.UploadProgress.add(function (file) {
-          if (file.loaded && file.marker) {
-            var pct = Math.floor(file.loaded / file.size * 100);
-            ed.dom.setAttrib(file.marker, 'data-progress', pct);
-          }
-        });
-
-        self.UploadError.add(function (o) {
-          ed.windowManager.alert(o.code + ' : ' + o.message);
-
-          if (o.file && o.file.marker) {
-            ed.dom.remove(o.file.marker);
+              if (file.size > max * 1024) {
+                ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
+                return false;
+              }
+            }
           }
 
-        });
-      },
+          if (!file.marker && ed.settings.upload_use_placeholder !== false) {
 
-      _selectAndInsert: function (file, data) {
-        var ed = this.editor, marker = file.marker, uploader = file.uploader;
+            ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="__mce_tmp">\uFEFF</span>', {
+              skip_undo: 1
+            });
+
+            var n = ed.dom.get('__mce_tmp'), w, h;
+
+            // get approximate size of image from file size
+            if (/image\/(gif|png|jpeg|jpg)/.test(file.type) && file.size) {
+              w = h = Math.round(Math.sqrt(file.size));
+
+              // set minimum value of 100
+              w = Math.max(300, w);
+              h = Math.max(300, h);
+
+              ed.dom.setStyles(n, {
+                width: w,
+                height: h
+              });
+
+              ed.dom.addClass(n, 'mce-item-upload');
+            } else {
+              ed.setProgressState(true);
+            }
+
+            file.marker = n;
+          }
+
+          ed.undoManager.add();
+
+          // add files to queue
+          files.push(file);
+
+          return true;
+        } else {
+          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+          return false;
+        }
+      }
+
+      /**
+       * Create an upload marker on selected nodes
+       * @param {*} node 
+       */
+      function createUploadMarker(node) {
+        var src = node.attr('src') || '',
+          style = {},
+          styles, cls = [];
+
+        // get alt from src if not base64 encoded
+        if (!node.attr('alt') && !/data:image/.test(src)) {
+          var alt = src.substring(src.length, src.lastIndexOf('/') + 1);
+          // set alt
+          node.attr('alt', alt);
+        }
+
+        if (node.attr('style')) {
+          style = ed.dom.styles.parse(node.attr('style'));
+        }
+
+        // convert hspace
+        if (node.attr('hspace')) {
+          style['margin-left'] = style['margin-right'] = node.attr('hspace');
+        }
+
+        // convert vspace
+        if (node.attr('vspace')) {
+          style['margin-top'] = style['margin-bottom'] = node.attr('vspace');
+        }
+
+        // convert align
+        if (node.attr('align')) {
+          style["float"] = node.attr('align');
+        }
+
+        if (node.attr('class')) {
+          cls = node.attr('class').replace(/\s*upload-placeholder\s*/, '').split(' ');
+        }
+
+        // add marker classes
+        cls.push('mce-item-upload');
+        cls.push('mce-item-upload-marker');
+
+        if (node.name === 'media') {
+          node.name = 'img';
+          node.shortEnded = true;
+        }
+
+        // set attribs
+        node.attr({
+          'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+          'class': tinymce.trim(cls.join(' '))
+        });
+
+        var tmp = ed.dom.create('span', {
+          'style': style
+        });
+
+        // add styles if any
+        var styles = ed.dom.getAttrib(tmp, 'style');
+
+        if (styles) {
+          node.attr({
+            'style': styles,
+            'data-mce-style': styles
+          });
+        }
+      }
+
+      /**
+       * Find and replace the marker with the uploaded file, using attributes from the uploader
+       * @param {*} file 
+       * @param {*} data 
+       * @returns 
+       */
+      function selectAndInsert(file, data) {
+        var marker = file.marker, uploader = file.uploader;
 
         // select marker
         ed.selection.select(marker);
+
         var elm = uploader.insertUploadedFile(data);
 
         if (elm) {
@@ -41803,15 +42089,14 @@
 
           return true;
         }
-      },
+      }
 
       /*
-           * Bind events to upload marker and create upload input
-           * @param marker Marker / Placeholder element
-           */
-      _bindUploadMarkerEvents: function (ed, marker) {
-        var self = this,
-          dom = tinymce.DOM;
+       * Bind events to upload marker and create upload input
+       * @param marker Marker / Placeholder element
+       */
+      function bindUploadMarkerEvents(marker) {
+        var dom = tinymce.DOM;
 
         function removeUpload() {
           dom.setStyles('wf_upload_button', {
@@ -41824,6 +42109,7 @@
 
         // remove upload on nodechange
         ed.onNodeChange.add(removeUpload);
+
         // remove on window scroll
         ed.dom.bind(ed.getWin(), 'scroll', removeUpload);
 
@@ -41891,7 +42177,7 @@
               if (file) {
                 file.marker = marker;
 
-                if (self.addFile(file)) {
+                if (addFile(file)) {
                   // add width and height as styles if set
                   each(['width', 'height'], function (key) {
                     ed.dom.setStyle(marker, key, ed.dom.getAttrib(marker, key));
@@ -41900,35 +42186,12 @@
                   // rename to "span" to support css:after
                   file.marker = ed.dom.rename(marker, 'span');
 
-                  self.upload(file);
+                  uploadFile(file);
                   removeUpload();
                 }
               }
             }
           };
-
-          /*ed.dom.bind(select, 'click', function (e) {
-                      e.preventDefault();
-
-                      ed.execCommand('mceFileBrowser', false, {
-                          callback: function (item, files) {
-                              var obj = files[0], plugin;
-
-                              // find appropriate plugin to insert with
-                              each(self.plugins, function(plg, key) {
-                                  if (plg.getUploadURL(obj.title)) {
-                                      plugin = plg;
-
-                                      return true;
-                                  }
-                              });
-
-                              if (plugin) {
-                                  self._selectAndInsert({ marker: marker, name: obj.title, uploader: plugin }, obj);
-                              }
-                          }
-                      });
-                  });*/
         });
 
         // remove upload on mouseout
@@ -41940,296 +42203,48 @@
 
           removeUpload();
         });
-      },
-      _createUploadMarker: function (n) {
-        var ed = this.editor,
-          src = n.attr('src') || '',
-          style = {},
-          styles, cls = [];
-
-        // get alt from src if not base64 encoded
-        if (!n.attr('alt') && !/data:image/.test(src)) {
-          var alt = src.substring(src.length, src.lastIndexOf('/') + 1);
-          // set alt
-          n.attr('alt', alt);
-        }
-
-        if (n.attr('style')) {
-          style = ed.dom.styles.parse(n.attr('style'));
-        }
-
-        // convert hspace
-        if (n.attr('hspace')) {
-          style['margin-left'] = style['margin-right'] = n.attr('hspace');
-        }
-
-        // convert vspace
-        if (n.attr('vspace')) {
-          style['margin-top'] = style['margin-bottom'] = n.attr('vspace');
-        }
-
-        // convert align
-        if (n.attr('align')) {
-          style["float"] = n.attr('align');
-        }
-
-        if (n.attr('class')) {
-          cls = n.attr('class').replace(/\s*upload-placeholder\s*/, '').split(' ');
-        }
-
-        // add marker classes
-        cls.push('mce-item-upload');
-        cls.push('mce-item-upload-marker');
-
-        if (n.name === 'media') {
-          n.name = 'img';
-          n.shortEnded = true;
-        }
-
-        // set attribs
-        n.attr({
-          'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-          'class': tinymce.trim(cls.join(' '))
-        });
-
-        var tmp = ed.dom.create('span', {
-          'style': style
-        });
-
-        // add styles if any
-        var styles = ed.dom.getAttrib(tmp, 'style');
-        
-        if (styles) {
-          n.attr({
-            'style': styles,
-            'data-mce-style': styles
-          });
-        }
-      },
-      /**
-           * Builds a full url out of a base URL and an object with items to append as query string items.
-           *
-           * @param {String} url Base URL to append query string items to.
-           * @param {Object} items Name/value object to serialize as a querystring.
-           * @return {String} String with url + serialized query string items.
-           */
-      buildUrl: function (url, items) {
-        var query = '';
-
-        each(items, function (value, name) {
-          query += (query ? '&' : '') + encodeURIComponent(name) + '=' + encodeURIComponent(value);
-        });
-
-        if (query) {
-          url += (url.indexOf('?') > 0 ? '&' : '?') + query;
-        }
-
-        return url;
-      },
-      addFile: function (file) {
-        var ed = this.editor,
-          self = this;
-
-        // check for extension in file name, eg. image.php.jpg
-        if (/\.(php|php(3|4|5)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
-          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
-          return false;
-        }
-
-        // get first url for the file type
-        each(self.plugins, function (o, k) {
-          if (!file.upload_url) {
-            var url = o.getUploadURL(file);
-
-            if (url) {
-              file.upload_url = url;
-              file.uploader = o;
-            }
-          }
-        });
-
-        if (file.upload_url) {
-          if (tinymce.is(file.uploader.getUploadConfig, 'function')) {
-            // check file type and size
-            var config = file.uploader.getUploadConfig();
-            /*var type = file.type.replace(/[a-z0-9]+\/([a-z0-9]{2,4})/i, '$1');
-
-                      // lowercase
-                      type = type.toLowerCase();*/
-            if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
-              ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
-              return false;
-            }
-
-            if (file.size) {
-              var max = parseInt(config.max_size, 10) || 1024;
-
-              if (file.size > max * 1024) {
-                ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
-                return false;
-              }
-            }
-          }
-
-          // dispatch event
-          self.FilesAdded.dispatch(file);
-
-          if (!file.marker) {
-
-            ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="__mce_tmp">\uFEFF</span>', {
-              skip_undo: 1
-            });
-
-            var n = ed.dom.get('__mce_tmp'), w, h;
-
-            // get approximate size of image from file size
-            if (/image\/(gif|png|jpeg|jpg)/.test(file.type)) {
-              w = h = Math.round(Math.sqrt(file.size));
-
-              // set minimum value of 100
-              w = Math.max(300, w);
-              h = Math.max(300, h);
-
-              ed.dom.setStyles(n, {
-                width: w,
-                height: h
-              });
-
-              ed.dom.addClass(n, 'mce-item-upload');
-            } else {
-              ed.setProgressState(true);
-            }
-
-            file.marker = n;
-          }
-
-          ed.undoManager.add();
-
-          // add files to queue
-          self.files.push(file);
-
-          return true;
-        } else {
-          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
-          return false;
-        }
-      },
-      upload: function (file) {
-        var self = this,
-          ed = this.editor;
-
-        var args = {
-          'method': 'upload',
-          'id': uid(),
-          'inline': 1
-        };
-
-        var url = file.upload_url;
-
-        // add query
-        url += '&' + ed.settings.query;
-
-        function sendFile(bin) {
-          var xhr = new XMLHttpRequest,
-            formData = new FormData();
-
-          // progress
-          if (xhr.upload) {
-            xhr.upload.onprogress = function (e) {
-              if (e.lengthComputable) {
-                file.loaded = Math.min(file.size, e.loaded);
-                self.UploadProgress.dispatch(file);
-              }
-            };
-          }
-
-          xhr.onreadystatechange = function () {
-            var httpStatus;
-
-            if (xhr.readyState == 4 && self.state !== state.STOPPED) {
-
-              ed.setProgressState(false);
-
-              // Getting the HTTP status might fail on some Gecko versions
-              try {
-                httpStatus = xhr.status;
-              } catch (ex) {
-                httpStatus = 0;
-              }
-
-              // Is error status
-              if (httpStatus >= 400) {
-                self.UploadError.dispatch({
-                  code: state.HTTP_ERROR,
-                  message: ed.getLang('upload.http_error', 'HTTP Error'),
-                  file: file,
-                  status: httpStatus
-                });
-              } else {
-                file.loaded = file.size;
-
-                self.UploadProgress.dispatch(file);
-
-                bin = formData = null; // Free memory
-
-                file.status = state.DONE;
-
-                self.FileUploaded.dispatch(file, {
-                  response: xhr.responseText,
-                  status: httpStatus
-                });
-              }
-            }
-          };
-          // get name
-          var name = file.target_name || file.name;
-
-          // remove some common characters
-          name = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
-
-          extend(args, {
-            'name': name
-          });
-
-          xhr.open("post", url, true);
-
-          // Set custom headers
-          each(self.settings.headers, function (value, name) {
-            xhr.setRequestHeader(name, value);
-          });
-
-          // Add multipart params
-          each(extend(args, self.settings.multipart_params), function (value, name) {
-            formData.append(name, value);
-          });
-
-          // Add file and send it
-          formData.append(self.settings.file_data_name, bin);
-          xhr.send(formData);
-
-          return;
-
-
-        } // sendFile
-
-
-        // File upload finished
-        if (file.status == state.DONE || file.status == state.FAILED || self.state == state.STOPPED) {
-          return;
-        }
-
-        // Standard arguments
-        extend(args, {
-          name: file.target_name || file.name
-        });
-
-        // send the file object
-        sendFile(file);
       }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('upload', tinymce.plugins.Upload);
+      function uploadFile(file) {
+        uploadHandler(file, function (response) {
+          
+          var files = response.files || [], item = files.length ? files[0] : {};
+          
+          if (file.uploader) {
+
+            var obj = tinymce.extend({
+              type: file.type,
+              name: file.name
+            }, item);
+
+            selectAndInsert(file, obj);
+          }
+
+          // remove from list
+          files.splice(tinymce.inArray(files, file), 1);
+
+          if (file.marker) {
+            ed.dom.remove(file.marker);
+          }
+
+        }, function (message) {
+          ed.windowManager.alert(message);
+
+          if (file.marker) {
+            ed.dom.remove(file.marker);
+          }
+        }, function (value) {
+          if (file.marker) {
+            ed.dom.setAttrib(file.marker, 'data-progress', value);
+          }
+        });
+      }
+
+      return {
+        plugins: plugins,
+        upload: uploadHandler
+      };
+    });
   })();
 
   /**
@@ -42639,6 +42654,414 @@
 
     // Register plugin
     tinymce.PluginManager.add('branding', tinymce.plugins.BrandingPlugin);
+  })();
+
+  /**
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
+   */
+
+  /*global tinymce:true */
+
+  (function () {
+      var each = tinymce.each, BlobCache = tinymce.file.BlobCache, Conversions = tinymce.file.Conversions, Uuid = tinymce.util.Uuid, DOM = tinymce.DOM;
+
+      var count = 0;
+
+      var uniqueId = function (prefix) {
+          return (prefix || 'blobid') + (count++);
+      };
+
+      function isSupportedImage(value) {
+          return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
+      }
+
+      function getImageExtension(value) {
+          if (isSupportedImage(value)) {
+              return value.substring(value.length, value.lastIndexOf('.') + 1);
+          }
+
+          return '';
+      }
+
+      function uploadHandler(settings, blobInfo, success, failure, progress) {
+          var xhr, formData;
+
+          xhr = new XMLHttpRequest();
+          xhr.open('POST', settings.url);
+
+          xhr.upload.onprogress = function (e) {
+              progress(e.loaded / e.total * 100);
+          };
+
+          xhr.onerror = function () {
+              failure("Image upload failed due to a XHR Transport error. Code: " + xhr.status);
+          };
+
+          xhr.onload = function () {
+              var json;
+
+              if (xhr.status < 200 || xhr.status >= 300) {
+                  failure("HTTP Error: " + xhr.status);
+                  return;
+              }
+
+              json = JSON.parse(xhr.responseText);
+
+              if (!json || json.error) {
+                  failure(json.error.message || 'Invalid JSON response!');
+                  return;
+              }
+
+              if (!json.result || !json.result.files) {
+                  failure(json.error.message || 'Invalid JSON response!');
+                  return;
+              }
+
+              success(json.result.files[0]);
+          };
+
+          formData = new FormData();
+          formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+          // Add multipart params
+          each(settings, function (value, name) {
+              if (name == 'url' || name == 'multipart') {
+                  return true;
+              }
+
+              formData.append(name, value);
+          });
+
+          xhr.send(formData);
+      }
+
+      function imageToBlobInfo(blobCache, img, resolve, reject) {
+          var base64, blobInfo;
+
+          if (img.src.indexOf('blob:') === 0) {
+              blobInfo = blobCache.getByUri(img.src);
+
+              if (blobInfo) {
+                  resolve({
+                      image: img,
+                      blobInfo: blobInfo
+                  });
+              } else {
+                  Conversions.uriToBlob(img.src).then(function (blob) {
+                      Conversions.blobToDataUri(blob).then(function (dataUri) {
+                          base64 = Conversions.parseDataUri(dataUri).data;
+                          blobInfo = blobCache.create(uniqueId(), blob, base64);
+                          blobCache.add(blobInfo);
+
+                          resolve({
+                              image: img,
+                              blobInfo: blobInfo
+                          });
+                      });
+                  }, function (err) {
+                      reject(err);
+                  });
+              }
+
+              return;
+          }
+
+          base64 = Conversions.parseDataUri(img.src).data;
+          blobInfo = blobCache.findFirst(function (cachedBlobInfo) {
+              return cachedBlobInfo.base64() === base64;
+          });
+
+          if (blobInfo) {
+              resolve({
+                  image: img,
+                  blobInfo: blobInfo
+              });
+          } else {
+              Conversions.uriToBlob(img.src).then(function (blob) {
+                  blobInfo = blobCache.create(uniqueId(), blob, base64);
+                  blobCache.add(blobInfo);
+
+                  resolve({
+                      image: img,
+                      blobInfo: blobInfo
+                  });
+              }, function (err) {
+                  reject(err);
+              });
+          }
+      }
+
+      tinymce.PluginManager.add('blobupload', function (ed, url) {
+          var uploaders = [];
+
+          ed.onPreInit.add(function () {
+              // get list of supported plugins
+              each(ed.plugins, function (plg, name) {
+                  if (tinymce.is(plg.getUploadConfig, 'function')) {
+
+                      var data = plg.getUploadConfig();
+
+                      if (data.inline && data.filetypes) {
+                          uploaders.push(plg);
+                      }
+                  }
+              });
+          });
+
+          function findMarker(marker) {
+              var found;
+
+              each(ed.dom.select('img[src]'), function (image) {
+                  if (image.src == marker.src) {
+                      found = image;
+
+                      return false;
+                  }
+              });
+
+              return found;
+          }
+
+          function removeMarker(marker) {
+              each(ed.dom.select('img[src]'), function (image) {
+                  if (image.src == marker.src) {
+                      ed.selection.select(image);
+                      ed.execCommand('mceRemoveNode');
+
+                      var node = ed.selection.getNode();
+
+                      // restore bogus break
+                      if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
+                          ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
+                      }
+                  }
+              });
+          }
+
+          function processImages(images) {
+              var cachedPromises = {};
+
+              var promises = tinymce.map(images, function (img) {
+                  var newPromise;
+
+                  if (cachedPromises[img.src]) {
+                      // Since the cached promise will return the cached image
+                      // We need to wrap it and resolve with the actual image
+                      return new Promise(function (resolve) {
+                          cachedPromises[img.src].then(function (imageInfo) {
+                              if (typeof imageInfo === 'string') { // error apparently
+                                  return imageInfo;
+                              }
+                              resolve({
+                                  image: img,
+                                  blobInfo: imageInfo.blobInfo
+                              });
+                          });
+                      });
+                  }
+
+                  newPromise = new Promise(function (resolve, reject) {
+                      imageToBlobInfo(BlobCache, img, resolve, reject);
+                  }).then(function (result) {
+                      delete cachedPromises[result.image.src];
+                      return result;
+                  })['catch'](function (error) {
+                      delete cachedPromises[img.src];
+                      return error;
+                  });
+
+                  cachedPromises[img.src] = newPromise;
+
+                  return newPromise;
+              });
+
+              return Promise.all(promises);
+          }
+
+          ed.onInit.add(function () {
+
+              if (!ed.plugins.clipboard) {
+                  return;
+              }
+
+              ed.onPasteBeforeInsert.add(function (ed, o) {
+                  var node = ed.dom.create('div', 0, o.content), images = tinymce.grep(ed.dom.select('img[src]', node), function (img) {
+                      var src = img.getAttribute('src');
+
+                      if (img.hasAttribute('data-mce-bogus')) {
+                          return false;
+                      }
+
+                      if (img.hasAttribute('data-mce-placeholder')) {
+                          return false;
+                      }
+
+                      if (img.hasAttribute('data-mce-upload-marker')) {
+                          return false;
+                      }
+
+                      if (!src || src == 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') {
+                          return false;
+                      }
+
+                      if (src.indexOf('blob:') === 0) {
+                          return true;
+                      }
+
+                      if (src.indexOf('data:') === 0) {
+                          return true;
+                      }
+
+                      return false;
+                  });
+
+                  if (images.length) {
+                      var promises = [];
+
+                      processImages(images).then(function (result) {
+                          each(result, function (item) {
+                              if (typeof item == 'string') {
+                                  return;
+                              }
+
+                              ed.selection.select(findMarker(item.image));
+                              ed.selection.scrollIntoView();
+
+                              promises.push(uploadPastedImage(item.image, item.blobInfo));
+                          });
+                      });
+
+                      Promise.all(promises).then();
+                  }
+              });
+          });
+
+          function uploadPastedImage(marker, blobInfo) {
+              return new Promise(function (resolve, reject) {
+                  // no suitable uploaders, remove blob
+                  if (!uploaders.length) {
+                      removeMarker(marker);
+
+                      return resolve();
+                  }
+
+                  var html = '' +
+                      '<div class="mceModalRow">' +
+                      '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
+                      '   <div class="mceModalControl mceModalControlAppend">' +
+                      '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
+                      '       <span role="presentation"></span>' +
+                      '   </div>' +
+                      '</div>';
+
+                  var win = ed.windowManager.open({
+                      title: ed.getLang('dlg.name', 'Image Name'),
+                      content: html,
+                      size: 'mce-modal-landscape-small',
+                      buttons: [
+                          {
+                              title: ed.getLang('cancel', 'Cancel'),
+                              id: 'cancel'
+                          },
+                          {
+                              title: ed.getLang('submit', 'Submit'),
+                              id: 'submit',
+                              onclick: function (e) {
+                                  var filename = DOM.getValue(ed.id + '_blob_input');
+
+                                  if (!filename) {
+                                      removeMarker(marker);
+                                      return resolve();
+                                  }
+
+                                  // remove some common characters
+                                  filename = filename.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+                                  var url, uploader;
+
+                                  each(uploaders, function (instance) {
+                                      if (!url) {
+                                          url = instance.getUploadURL({ name: blobInfo.filename() });
+
+                                          if (url) {
+                                              uploader = instance;
+                                              return false;
+                                          }
+                                      }
+                                  });
+
+                                  if (!url) {
+                                      removeMarker(marker);
+                                      return resolve();
+                                  }
+
+                                  var props = {
+                                      method: 'upload',
+                                      id: Uuid.uuid('wf_'),
+                                      inline: 1,
+                                      name: filename,
+                                      url: url + '&' + ed.settings.query
+                                  };
+
+                                  var images = tinymce.grep(ed.dom.select('img[src^="blob:"]'), function (image) {
+                                      return image.src == marker.src;
+                                  });
+
+                                  ed.setProgressState(true);
+
+                                  uploadHandler(props, blobInfo, function (data) {
+
+                                      data.marker = images[0];
+
+                                      var elm = uploader.insertUploadedFile(data);
+
+                                      if (elm) {
+                                          ed.undoManager.add();
+                                          // replace marker with new element
+                                          ed.dom.replace(elm, images[0]);
+                                      }
+
+                                      ed.setProgressState(false);
+
+                                      win.close();
+
+                                      return resolve();
+
+                                  }, function (error) {
+                                      ed.windowManager.alert(error);
+                                      ed.setProgressState(false);
+
+                                      return resolve();
+                                  }, function () { });
+                              },
+                              classes: 'primary'
+                          }
+                      ],
+                      open: function () {
+                          DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
+
+                          window.setTimeout(function () {
+                              DOM.get(ed.id + '_blob_input').focus();
+                          }, 10);
+                      },
+                      close: function () {
+                          var filename = DOM.getValue(ed.id + '_blob_input');
+
+                          if (!filename) {
+                              removeMarker(marker);
+                              return resolve();
+                          }
+                      }
+                  });
+              });
+          }
+      });
   })();
 
 }());
