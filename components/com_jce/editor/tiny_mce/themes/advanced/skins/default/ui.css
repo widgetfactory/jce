@@ -2859,6 +2859,7 @@ select.mceNativeListBox {
     margin: 0;
     display: flex;
     align-items: center;
+    gap: 4px;
 }
 
 .mceModal .mceModalContent .mceModalFlexNone {
@@ -2890,6 +2891,10 @@ select.mceNativeListBox {
     color: #888;
     font-size: 14px;
     line-height: 2rem;
+}
+
+.mceModal .mceModalContent .mceModalControlAppend input + select {
+    max-width: 5em;
 }
 
 .mceModal .mceModalContent p {
