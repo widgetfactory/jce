@@ -554,12 +554,19 @@
     right: 4px;
     display: block;
     color: #888;
+    font-size: 14px;
+    line-height: 2rem;
+}
+
+.mceModal .mceModalContent p {
+    margin: 0.5rem 0;
+    font-size: 14px;
+    line-height: 2rem;
 }
 
 .mceModal .mceModalConfirm .mceModalContent p,
 .mceModal .mceModalAlert .mceModalContent p {
-    font-size: 14px;
-    line-height: 32px;
+    margin: 0;
     text-align: center;
 }
 

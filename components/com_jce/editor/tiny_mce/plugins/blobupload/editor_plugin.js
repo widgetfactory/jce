@@ -294,6 +294,7 @@
                 }
 
                 var html = '' +
+                    '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
                     '<div class="mceModalRow">' +
                     '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
                     '   <div class="mceModalControl mceModalControlAppend">' +
@@ -303,7 +304,7 @@
                     '</div>';
 
                 var win = ed.windowManager.open({
-                    title: ed.getLang('dlg.name', 'Image Name'),
+                    title: ed.getLang('dlg.name', 'Name'),
                     content: html,
                     size: 'mce-modal-landscape-small',
                     buttons: [
@@ -324,6 +325,14 @@
 
                                 // remove some common characters
                                 filename = filename.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+                                // check for extension in file name, eg. image.php.jpg
+                                if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
+                                    ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                                    
+                                    removeMarker(marker);
+                                    return resolve();
+                                }
 
                                 var url, uploader;
 
