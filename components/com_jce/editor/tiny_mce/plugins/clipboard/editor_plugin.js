@@ -935,7 +935,7 @@
             // remove or processs for upload img element if blank, local file url or base64 encoded
             if (!src || isValidDataUriImage(src)) {
                 // leave it as it is to be processed as a blob
-                if (ed.settings.clipboard_paste_data_images != false) {
+                if (ed.settings.clipboard_paste_data_images) {
                     return true;
                 }
                 
@@ -2664,7 +2664,7 @@
                                 hadImage = true;
                                 e.preventDefault();
 
-                                if (ed.settings.clipboard_paste_data_images !== false) {
+                                if (ed.settings.clipboard_paste_data_images) {
                                     var blob = item.getAsFile ? item.getAsFile() : item;
 
                                     var reader = new FileReader();

@@ -42890,6 +42890,8 @@
               }
 
               ed.onPasteBeforeInsert.add(function (ed, o) {
+                  var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
                   var node = ed.dom.create('div', 0, o.content), images = tinymce.grep(ed.dom.select('img[src]', node), function (img) {
                       var src = img.getAttribute('src');
 
@@ -42905,7 +42907,7 @@
                           return false;
                       }
 
-                      if (!src || src == 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7') {
+                      if (!src || src == transparentSrc) {
                           return false;
                       }
 
@@ -42986,7 +42988,7 @@
                                   // check for extension in file name, eg. image.php.jpg
                                   if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
                                       ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
-                                      
+
                                       removeMarker(marker);
                                       return resolve();
                                   }
@@ -43017,14 +43019,13 @@
                                       url: url + '&' + ed.settings.query
                                   };
 
-                                  var images = tinymce.grep(ed.dom.select('img[src^="blob:"]'), function (image) {
+                                  var images = tinymce.grep(ed.dom.select('img[src]'), function (image) {
                                       return image.src == marker.src;
                                   });
 
                                   ed.setProgressState(true);
 
                                   uploadHandler(props, blobInfo, function (data) {
-
                                       data.marker = images[0];
 
                                       var elm = uploader.insertUploadedFile(data);
@@ -43033,6 +43034,8 @@
                                           ed.undoManager.add();
                                           // replace marker with new element
                                           ed.dom.replace(elm, images[0]);
+                                          // select new image
+                                          ed.selection.select(elm);
                                       }
 
                                       ed.setProgressState(false);
@@ -43059,12 +43062,8 @@
                           }, 10);
                       },
                       close: function () {
-                          var filename = DOM.getValue(ed.id + '_blob_input');
-
-                          if (!filename) {
-                              removeMarker(marker);
-                              return resolve();
-                          }
+                          removeMarker(marker);
+                          return resolve();
                       }
                   });
               });
