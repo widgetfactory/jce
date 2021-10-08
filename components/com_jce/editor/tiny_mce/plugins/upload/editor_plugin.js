@@ -236,7 +236,7 @@
       });
     });
 
-    var noop = function () {};
+    var noop = function () { };
 
     function uploadHandler(file, success, failure, progress) {
       var xhr, formData;
@@ -278,12 +278,11 @@
 
         json = JSON.parse(xhr.responseText);
 
-        if (!json || json.error) {
-          failure(json.error.message || 'Invalid JSON response!');
-          return;
+        if (!json) {
+          failure('Invalid JSON response!');
         }
 
-        if (!json.result) {
+        if (json.error || !json.result) {
           failure(json.error.message || 'Invalid JSON response!');
           return;
         }
@@ -292,12 +291,13 @@
       };
 
       formData = new FormData();
-      formData.append('file', file, file.name);
 
-      // Add multipart params
+      // Add params
       each(args, function (value, name) {
         formData.append(name, value);
       });
+
+      formData.append('file', file, file.name);
 
       xhr.send(formData);
     }
@@ -645,9 +645,9 @@
 
     function uploadFile(file) {
       uploadHandler(file, function (response) {
-        
+
         var files = response.files || [], item = files.length ? files[0] : {};
-        
+
         if (file.uploader) {
 
           var obj = tinymce.extend({
