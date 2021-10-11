@@ -27,7 +27,9 @@
   }
 
   function isOnlyChild(node) {
-    var parent = node.parent, child = parent.firstChild, count = 0;
+    var parent = node.parent,
+      child = parent.firstChild,
+      count = 0;
 
     if (child) {
       do {
@@ -64,7 +66,14 @@
       this.editor = ed;
       this.url = url;
 
-      var blockElements = [], htmlSchema = new tinymce.html.Schema({ schema: 'mixed', invalid_elements: ed.settings.invalid_elements }), xmlSchema = new tinymce.html.Schema({ verify_html: false });
+      var blockElements = [],
+        htmlSchema = new tinymce.html.Schema({
+          schema: 'mixed',
+          invalid_elements: ed.settings.invalid_elements
+        }),
+        xmlSchema = new tinymce.html.Schema({
+          verify_html: false
+        });
 
       // should code blocks be used?
       var code_blocks = ed.settings.code_use_blocks !== false;
@@ -122,10 +131,10 @@
       }
 
       /**
-             * Detect and process shortcode in an html string
-             * @param {String} html
-             * @param {String} tagName
-             */
+       * Detect and process shortcode in an html string
+       * @param {String} html
+       * @param {String} tagName
+       */
       function processShortcode(html, tagName) {
         // quick check to see if we should proceed
         if (html.indexOf('{') === -1) {
@@ -207,26 +216,26 @@
       }
 
       /**
-             * Check whether a tag is a defined invalid element
-             * @param {String} name
-             */
+       * Check whether a tag is a defined invalid element
+       * @param {String} name
+       */
       function isInvalidElement(name) {
         var invalid_elements = ed.settings.invalid_elements.split(',');
         return tinymce.inArray(invalid_elements, name) !== -1;
       }
 
       /**
-             * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
-             * @param {String} name
-             */
+       * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
+       * @param {String} name
+       */
       function isXmlElement(name) {
         return !htmlSchema.isValid(name) && !isInvalidElement(name);
       }
 
       /**
-             * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
-             * @param {String} xml
-             */
+       * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
+       * @param {String} xml
+       */
       function validateXml(xml) {
         var html = [];
 
@@ -303,9 +312,9 @@
       }
 
       /**
-             * Detect and process xml tags
-             * @param {String} content
-             */
+       * Detect and process xml tags
+       * @param {String} content
+       */
       function processXML(content) {
         return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
           // check if svg is allowed
@@ -333,10 +342,10 @@
       }
 
       /**
-             * Create a shortcode pre. This differs from the code pre as it is still contenteditable
-             * @param {String} data
-             * @param {String} tag
-             */
+       * Create a shortcode pre. This differs from the code pre as it is still contenteditable
+       * @param {String} data
+       * @param {String} tag
+       */
       function createShortcodePre(data, tag) {
         data = data.replace(/[\n\r]/gi, '<br />');
 
@@ -347,11 +356,11 @@
       }
 
       /**
-             * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
-             * @param {String} data
-             * @param {String} type
-             * @param {String} tag
-             */
+       * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
+       * @param {String} data
+       * @param {String} type
+       * @param {String} tag
+       */
       function createCodePre(data, type, tag) {
         // "protect" code if we are not using code blocks
         if (code_blocks === false) {
@@ -462,7 +471,9 @@
           node = ed.selection.getNode();
 
           if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
-            ed.selection.setContent('\t', { no_events: true });
+            ed.selection.setContent('\t', {
+              no_events: true
+            });
             e.preventDefault();
           }
         }
@@ -489,14 +500,17 @@
         }
 
         ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-          var node = e.target, sel = ed.selection.getNode();
+          var node = e.target,
+            sel = ed.selection.getNode();
 
           ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
 
           // edge case where forced_root_block:false
           if (node === ed.getBody() && isCodePlaceholder(sel)) {
             if (sel.parentNode === node && !sel.nextSibling) {
-              ed.dom.insertAfter(ed.dom.create('br', { 'data-mce-bogus': 1 }), sel);
+              ed.dom.insertAfter(ed.dom.create('br', {
+                'data-mce-bogus': 1
+              }), sel);
             }
 
             return;
@@ -525,7 +539,9 @@
             var title = ed.getLang('code.' + key, key);
 
             if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
-              ctrl.add(title, key, { class: 'mce-code-' + key });
+              ctrl.add(title, key, {
+                class: 'mce-code-' + key
+              });
 
               ed.formatter.register('shortcode', {
                 block: 'pre',
@@ -543,7 +559,9 @@
             }
 
             if (ed.getParam('code_allow_' + key) && code_blocks) {
-              ctrl.add(title, key, { class: 'mce-code-' + key });
+              ctrl.add(title, key, {
+                class: 'mce-code-' + key
+              });
 
               ed.formatter.register(key, {
                 block: 'pre',
@@ -589,14 +607,6 @@
           }
         });
 
-        ed.selection.onBeforeSetContent.add(function (sel, o) {
-          if (ed.settings.code_protect_shortcode) {
-            if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
-              o.content = processShortcode(o.content);
-            }
-          }
-        });
-
         // remove paragraph parent of a pre block
         ed.selection.onSetContent.add(function (sel, o) {
           each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
@@ -614,7 +624,8 @@
             node;
 
           while (i--) {
-            var node = nodes[i], type = node.attr('type');
+            var node = nodes[i],
+              type = node.attr('type');
 
             if (type) {
               node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
@@ -664,13 +675,17 @@
             }
 
             // serialize to string
-            value = new Serializer({ validate: false }).serialize(node);
+            value = new Serializer({
+              validate: false
+            }).serialize(node);
 
             // trim
             value = tinymce.trim(value);
 
             var pre = new Node('pre', 1);
-            pre.attr({ 'data-mce-code': node.name });
+            pre.attr({
+              'data-mce-code': node.name
+            });
 
             var text = createTextNode(value, false);
             pre.append(text);
@@ -680,7 +695,8 @@
         });
 
         ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
-          var i = nodes.length, node, parent;
+          var i = nodes.length,
+            node, parent;
 
           function isBody(parent) {
             return parent.name === 'body';
@@ -688,6 +704,26 @@
 
           function isValidCode(type) {
             return type === 'shortcode' || type === 'php';
+          }
+
+          function isBlockNode(node) {
+            return tinymce.inArray(blockElements, node.name) != -1;
+          }
+
+          function isInlineNode(node) {
+            if (node.name != 'span') {
+              return false;
+            }
+
+            if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
+              return true;
+            }
+
+            if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
+              return true;
+            }
+
+            return false;
           }
 
           while (i--) {
@@ -717,7 +753,7 @@
               }
 
               // rename shortcode blocks to <pre>
-              if (isBody(parent) || isOnlyChild(node)) {
+              if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
                 node.name = 'pre';
               } else {
                 // add whitespace after the span so a cursor can be set
@@ -731,7 +767,8 @@
         });
 
         ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-          var i = nodes.length, node, child;
+          var i = nodes.length,
+            node, child;
 
           function isXmlNode(node) {
             return !/(shortcode|php)/.test(node.attr('data-mce-code'));
@@ -763,8 +800,12 @@
               var value = node.attr('data-mce-value');
 
               if (value) {
-                var text = createTextNode('\n' + unescape(value) + '\n');
-                elm.append(text);
+                var text = createTextNode(unescape(value));
+
+                // only use text node if shortcode or php
+                if (type == 'php' || type == 'shortcode') {
+                  elm = text;
+                }
               }
 
               node.replace(elm);
@@ -787,7 +828,9 @@
               root_block = type;
             }
 
-            var child = node.firstChild, newNode = node.clone(true), text = '';
+            var child = node.firstChild,
+              newNode = node.clone(true),
+              text = '';
 
             if (child) {
               do {
@@ -804,7 +847,9 @@
             if (text) {
               newNode.empty();
 
-              var parser = new DomParser({ validate: false });
+              var parser = new DomParser({
+                validate: false
+              });
 
               // validate attributes of script and style tags
               if (type === 'script' || type === 'style') {
@@ -813,7 +858,7 @@
 
                   while (n--) {
                     var item = items[n];
-                    
+
                     // eslint-disable-next-line no-loop-func
                     each(item.attributes, function (attr) {
                       if (!attr) {
@@ -829,7 +874,9 @@
               }
 
               // parse text and process
-              var fragment = parser.parse(text, { forced_root_block: root_block });
+              var fragment = parser.parse(text, {
+                forced_root_block: root_block
+              });
               // append fragment to <pre> clone
               newNode.append(fragment);
             }
@@ -849,7 +896,8 @@
 
         if (ed.plugins.clipboard) {
           ed.onGetClipboardContent.add(function (ed, content) {
-            var text = content['text/plain'] || '', value;
+            var text = content['text/plain'] || '',
+              value;
 
             // trim text
             text = tinymce.trim(text);
@@ -889,11 +937,17 @@
 
       ed.onBeforeSetContent.add(function (ed, o) {
         if (ed.settings.code_protect_shortcode) {
+          if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
+            o.content = processShortcode(o.content);
+          }
+        }
+
+        /*if (ed.settings.code_protect_shortcode) {
           // only process content on "load"
           if (o.content && o.load) {
             o.content = processShortcode(o.content);
           }
-        }
+        }*/
 
         if (ed.settings.code_allow_custom_xml) {
           // only process content on "load"
@@ -918,7 +972,7 @@
       });
 
       ed.onPostProcess.add(function (ed, o) {
-        if (o.get) {
+        if (o.get) {          
           // Process converted php
           if (/(data-mce-php|\[php:start\])/.test(o.content)) {
             // attribute value
