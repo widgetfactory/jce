@@ -19,7 +19,7 @@
         Dispatcher = tinymce.util.Dispatcher,
         BlobCache = tinymce.file.BlobCache;
 
-        var mceInternalUrlPrefix = 'data:text/mce-internal,';
+    var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
     var styleProps = [
         'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
@@ -938,7 +938,7 @@
                 if (ed.settings.clipboard_paste_data_images) {
                     return true;
                 }
-                
+
                 if (ed.settings.clipboard_paste_upload_data_images != false && canUploadDataImage()) {
                     // add marker
                     ed.dom.setAttrib(el, 'data-mce-upload-marker', '1');
@@ -2576,6 +2576,13 @@
                     return false;
                 }
 
+                function removePasteBinOnKeyUp(e) {
+                    // Ctrl+V or Shift+Insert
+                    if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
+                        removePasteBin();
+                    }
+                }
+
                 // Ctrl+V or Shift+Insert
                 if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
                     keyboardPasteTimeStamp = new Date().getTime();
@@ -2592,6 +2599,18 @@
 
                     removePasteBin();
                     createPasteBin();
+
+                    // Remove pastebin if we get a keyup and no paste event
+                    // For example pasting a file in IE 11 will not produce a paste event
+                    ed.dom.bind(ed.getBody(), 'keyup', function handler(e) {
+                        removePasteBinOnKeyUp(e);
+                        ed.dom.unbind(ed.getBody(), 'keyup', handler);
+                    });
+
+                    ed.dom.bind(ed.getBody(), 'paste', function handler(e) {
+                        removePasteBinOnKeyUp(e);
+                        ed.dom.unbind(ed.getBody(), 'paste', handler);
+                    });
                 }
             });
 
@@ -2637,6 +2656,11 @@
                 }
 
                 if (hasContentType(content, "text/plain")) {
+                    // pastebin file data in Gecko leaves a blank "Files" entry and a text/plain entry with the file name
+                    if ("Files" in content) {
+                        return false;
+                    }
+                    
                     // Safari weirdness...
                     if (isSafari() && "text/rtf" in content) {
                         return false;
@@ -2775,6 +2799,21 @@
                     e.preventDefault();
 
                     ed.selection.setContent(text, { no_events: true });
+
+                    return true;
+                }
+
+                // use plain text (don't return so pastebin is used on Windows?)
+                if (!internal && isPlainTextPaste(clipboardContent)) {
+                    removePasteBin();
+
+                    var text = clipboardContent["text/plain"];
+
+                    // set pasteAsPlainText state
+                    self.pasteAsPlainText = true;
+
+                    pasteText(text);
+                    e.preventDefault();
 
                     return true;
                 }
