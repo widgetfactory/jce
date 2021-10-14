@@ -41,18 +41,7 @@ class PlgSystemJce extends JPlugin
 
     private function isEditorEnabled()
     {
-        $config = JFactory::getConfig();
-        $user = JFactory::getUser();
-
-        if (!JPluginHelper::getPlugin('editors', 'jce')) {
-            return false;
-        }
-
-        if ($user->getParam('editor', $config->get('editor')) !== 'jce') {
-            return false;
-        }
-
-        return true;
+        return JPluginHelper::isEnabled('editors', 'jce');
     }
 
     private function canRedirectMedia()
@@ -131,37 +120,17 @@ class PlgSystemJce extends JPlugin
 
         $version = new JVersion();
 
-        if (!$version->isCompatible('3.4')) {
+        // Joomla 3.9 or later...
+        if (!$version->isCompatible('3.9')) {
             return true;
         }
 
         if (!($form instanceof JForm)) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
-
             return false;
         }
 
         $params = JComponentHelper::getParams('com_jce');
-
-        // get form name.
-        $name = $form->getName();
-
-        if (!$version->isCompatible('3.6')) {
-            $valid = array(
-                'com_content.article',
-                'com_categories.categorycom_content',
-                'com_templates.style',
-                'com_tags.tag',
-                'com_banners.banner',
-                'com_contact.contact',
-                'com_newsfeeds.newsfeed',
-            );
-
-            // only allow some forms, see - https://github.com/joomla/joomla-cms/pull/8657
-            if (!in_array($name, $valid)) {
-                return true;
-            }
-        }
 
         // editor not enabled
         if (!$this->isEditorEnabled()) {
