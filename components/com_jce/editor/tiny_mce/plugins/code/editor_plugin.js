@@ -805,6 +805,8 @@
                 // only use text node if shortcode or php
                 if (type == 'php' || type == 'shortcode') {
                   elm = text;
+                } else {
+                  elm.append(text);
                 }
               }
 
@@ -972,7 +974,7 @@
       });
 
       ed.onPostProcess.add(function (ed, o) {
-        if (o.get) {          
+        if (o.get) {
           // Process converted php
           if (/(data-mce-php|\[php:start\])/.test(o.content)) {
             // attribute value
