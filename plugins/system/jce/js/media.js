@@ -1,8 +1,7 @@
+/* global jQuery */
 (function ($) {
 
     var counter = 0;
-
-    var Joomla = window.Joomla || {};
 
     /**
      Generates an unique ID.
@@ -21,7 +20,13 @@
     }
 
     function parseUrl(url) {
-        var data = {}, url = url.substring(url.indexOf('?') + 1);
+        var data = {};
+        
+        if (!url) {
+            return data;
+        }
+        
+        url = url.substring(url.indexOf('?') + 1);
 
         $.each(url.replace(/\+/g, ' ').split('&'), function (i, value) {
             var param = value.split('='), key = decodeURIComponent(param[0]), val;
@@ -111,18 +116,18 @@
             'images': 'jpg,jpeg,png,gif,webp',
             'media': 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
             'html': 'html,htm,txt',
-            'files': 'doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,webp,apng,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv,htm,html',
+            'files': 'doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,webp,apng,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv,htm,html'
         };
 
         var mimes = map[filter] || filter;
-        var name = file.name.toLowerCase();
 
         return new RegExp('\.(' + mimes.split(',').join('|') + ')$', 'i').test(file.name);
     }
 
     $.fn.WfMediaUpload = function () {
         return this.each(function () {
-            var elm = this;//document.getElementById(this.id) || this;
+            // eslint-disable-next-line consistent-this
+            var elm = this;
 
             function insertFile(value) {
                 // Joomla 3.5.x / 4.x Media Field
@@ -246,7 +251,7 @@
                 e.preventDefault();
                 e.stopPropagation();
             }).on('dragover dragenter', function (e) {
-                $(this).addClass('wf-media-upload-hover')
+                $(this).addClass('wf-media-upload-hover');
             }).on('dragleave', function (e) {
                 $(this).removeClass('wf-media-upload-hover');
             }).on('drop', function (e) {
@@ -279,11 +284,8 @@
 
             $(this).addClass('wf-media-input-wrapper');
 
-            var params = {}, dataUrl = $(this).data('url');
-
-            if (dataUrl) {
-                params = parseUrl(dataUrl);
-            }
+            var dataUrl = $(this).data('url') || this.url || '';
+            var params = parseUrl(dataUrl);
 
             // set mediatype or default to "images"
             var mediatype = params.mediatype || params.view || 'images';
