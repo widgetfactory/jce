@@ -33,7 +33,7 @@
             }
 
             // Setup a return message if the editor is dirty
-            if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload", true)) {
+            if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload")) {
                 msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
                 // hide joomla loader
                 if (typeof Joomla !== "undefined" && Joomla.loadingLayer) {
