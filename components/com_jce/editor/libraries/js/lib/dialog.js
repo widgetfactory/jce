@@ -1,3 +1,5 @@
+/* global Wf, jQuery, tinyMCEPopup*/
+
 (function ($) {
 
 
@@ -10,7 +12,7 @@
          */
         getAttrib: function (e, at) {
             var ed = tinyMCEPopup.editor,
-                v, v2;
+                v;
 
             switch (at) {
                 case 'width':
@@ -18,20 +20,20 @@
                     v = ed.dom.getAttrib(e, at) || e.style[at] || '';
 
                     if (v.indexOf('px') !== -1) {
-                        v = parseInt(v);
+                        v = parseInt(v, 10);
                     }
 
                     break;
                 case 'align':
-                    if (v = ed.dom.getAttrib(e, 'align')) {
+                    if ((v = ed.dom.getAttrib(e, 'align'))) {
                         return v;
                     }
 
-                    if (v = ed.dom.getStyle(e, 'float')) {
+                    if ((v = ed.dom.getStyle(e, 'float'))) {
                         return v;
                     }
 
-                    if (v = ed.dom.getStyle(e, 'vertical-align')) {
+                    if ((v = ed.dom.getStyle(e, 'vertical-align'))) {
                         return v;
                     }
 
@@ -41,38 +43,38 @@
                     break;
                 case 'margin-top':
                 case 'margin-bottom':
-                    if (v = ed.dom.getStyle(e, at)) {
+                    if ((v = ed.dom.getStyle(e, at))) {
                         if (/auto|inherit/.test(v)) {
                             return v;
                         }
 
                         if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
-                            return parseInt(v);
+                            return parseInt(v, 10);
                         }
 
                         return v;
                     }
 
-                    if (v = ed.dom.getAttrib(e, 'vspace')) {
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+                    if ((v = ed.dom.getAttrib(e, 'vspace'))) {
+                        return parseInt(v.replace(/[^-0-9]/g, ''), 10);
                     }
                     break;
                 case 'margin-left':
                 case 'margin-right':
-                    if (v = ed.dom.getStyle(e, at)) {
+                    if ((v = ed.dom.getStyle(e, at))) {
                         if (/auto|inherit/.test(v)) {
                             return v;
                         }
 
                         if (!/[a-z%]/i.test(v) || v.indexOf('px') !== -1) {
-                            return parseInt(v);
+                            return parseInt(v, 10);
                         }
 
                         return v;
                     }
 
-                    if (v = ed.dom.getAttrib(e, 'hspace')) {
-                        return parseInt(v.replace(/[^-0-9]/g, ''));
+                    if ((v = ed.dom.getAttrib(e, 'hspace'))) {
+                        return parseInt(v.replace(/[^-0-9]/g, ''), 10);
                     }
                     break;
                 case 'border-width':
@@ -80,8 +82,8 @@
                 case 'border-color':
                     v = '';
                     tinymce.each(['top', 'right', 'bottom', 'left'], function (n) {
-                        s = at.replace(/-/, '-' + n + '-');
-                        sv = ed.dom.getStyle(e, s);
+                        var s = at.replace(/-/, '-' + n + '-');
+                        var sv = ed.dom.getStyle(e, s);
                         // False or not the same as prev
                         if (sv !== '' || (sv != v && v !== '')) {
                             v = '';
@@ -135,8 +137,7 @@
          * Set / update styles on a sample image, eg: <img src="image.jpg" id="sample" />
          */
         setStyles: function () {
-            var self = this,
-                ed = tinyMCEPopup.editor,
+            var ed = tinyMCEPopup.editor,
                 $img = $('#sample');
 
             if (!$img.length) {
@@ -152,7 +153,7 @@
                 var v = ed.dom.getStyle($img.get(0), 'margin-' + k);
 
                 if (v && v.indexOf('px') != -1) {
-                    v = parseInt(v);
+                    v = parseInt(v, 10);
                 }
 
                 $('#margin_' + k).val(v);
@@ -187,7 +188,7 @@
                 }
 
                 if (k == 'width') {
-                    v = /[0-9][a-z]/.test(v) ? parseInt(v) : v;
+                    v = /[0-9][a-z]/.test(v) ? parseInt(v, 10) : v;
                 }
 
                 if (k == 'color' && v) {

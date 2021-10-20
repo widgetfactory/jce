@@ -1,9 +1,11 @@
+/* eslint-disable consistent-this */
+/* global jQuery */
 (function ($) {
     // jQuery or selector - https://github.com/byrichardpowell/jquery-or
-    $.fn.or = function( fallbackSelector ) {
-		return this.length ? this : $( fallbackSelector || 'body' );
-	};
-    
+    $.fn.or = function (fallbackSelector) {
+        return this.length ? this : $(fallbackSelector || 'body');
+    };
+
     $.fn.borderWidget = function () {
         $(this).on('click change', function () {
             var state = this.checked;
@@ -99,7 +101,7 @@
             var cb = this,
                 $elms = $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]');
 
-                $(this).parent('label').addClass('uk-constrain-label');
+            $(this).parent('label').addClass('uk-constrain-label');
 
             $(this).on('constrain:update', function () {
                 $(this).parents('.uk-form-constrain').find('input[type="text"], input[type="number"]').each(function () {
@@ -181,7 +183,7 @@
 
             $('.uk-repeatable-delete', this).on('click', function (e) {
                 var $elm = $(this).parent().parent();
-                
+
                 $elm.remove();
 
                 $(self).trigger('repeatable:delete', [self, $elm.get(0)]);

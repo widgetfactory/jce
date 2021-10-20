@@ -1,3 +1,5 @@
+/* eslint-disable consistent-this */
+/* global jQuery */
 (function ($) {
     var specialKeyCodeMap = {
         9: 'tab',
@@ -88,7 +90,7 @@
                     return;
                 }
 
-                $(this).trigger('datalist:update', {change: true});
+                $(this).trigger('datalist:update', { change: true });
             });
 
             function removeTag(tag) {
@@ -98,14 +100,14 @@
                     values = values.split(settings.seperator);
                 }
 
-                values = values.filter(function(value) {                    
+                values = values.filter(function (value) {
                     if (value !== $(tag).val()) {
                         return true;
                     }
                 });
 
                 // remove from select values
-                $(select).val(function() {
+                $(select).val(function () {
                     if (this.nodeName === 'INPUT') {
                         return values.join(settings.seperator);
                     }
@@ -122,7 +124,7 @@
 
             function updateComboBox(data) {
                 if (!settings.input && !data.text) {
-                    $('option', select).each(function() {
+                    $('option', select).each(function () {
                         if (this.value === data.value) {
                             data.text = $(this).attr('label') || $(this).text();
                         }
@@ -138,7 +140,7 @@
                     var found = false;
 
                     // tag already exists
-                    $('button', container).each(function() {
+                    $('button', container).each(function () {
                         if (this.value === data.value) {
                             found = true;
                         }
@@ -202,8 +204,9 @@
                 var i = values.length;
 
                 while (i--) {
-                    val = values[i];
+                    var val = values[i];
 
+                    // eslint-disable-next-line no-loop-func
                     $.each(options, function (x, opt) {
                         if (opt.value === val) {
                             values.splice(i, 1);
@@ -245,7 +248,7 @@
             }
 
             // select item on click
-            $(menu).on('mousedown click touchstart', function(e) {
+            $(menu).on('mousedown click touchstart', function (e) {
                 selectMenuItem(e);
             });
 
@@ -314,7 +317,7 @@
                 focusIdx += dir;
 
                 // get filtered list
-                $filtered = $items.filter(':visible').filter(function () {
+                var $filtered = $items.filter(':visible').filter(function () {
                     return this.getAttribute('tabindex') > -1;
                 });
 
@@ -468,7 +471,7 @@
             });
 
             // hide menu if no focus
-            $('body').on('mousedown touchstart keyup', function (e) {                                
+            $('body').on('mousedown touchstart keyup', function (e) {
                 // only process on TAB
                 if (e.keyCode && e.keyCode !== 9) {
                     return;
@@ -546,9 +549,9 @@
                     if (typeof values === 'string') {
                         values = values.split(settings.seperator);
                     }
-                    
+
                     $.each(values, function (i, value) {
-                        updateComboBox({value : value});
+                        updateComboBox({ value: value });
                     });
                 }
 

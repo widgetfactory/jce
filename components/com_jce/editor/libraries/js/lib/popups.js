@@ -8,6 +8,9 @@
  * other free or open source software licenses.
  */
 
+/* global WFExtensions, tinyMCEPopup, $ */
+
+// eslint-disable-next-line no-unused-vars
 var WFPopups = WFExtensions.add('Popups', {
     /**
      * Array of popup extension objects
@@ -208,8 +211,8 @@ var WFPopups = WFExtensions.add('Popups', {
         var ed = tinyMCEPopup.editor;
 
         // map values
-        if (this.config['map']) {
-            $.each(this.config['map'], function (to, from) {
+        if (this.config.map) {
+            $.each(this.config.map, function (to, from) {
                 var v = args[from] || $('#' + from).val();
                 ed.dom.setAttrib(n, to, v);
 
@@ -233,7 +236,9 @@ var WFPopups = WFExtensions.add('Popups', {
         }
 
         // default callback function returns passed in value
-        callback = callback || function (val) { return val };
+        callback = callback || function (val) {
+            return val;
+        };
 
         // default index value
         index = index || 0;
