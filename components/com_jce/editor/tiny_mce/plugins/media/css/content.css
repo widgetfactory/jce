@@ -80,6 +80,16 @@ img.mce-object.mce-object-video {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 12px;
 }
+.mce-object-preview.mce-object-preview-center {
+  display: block;
+  margin: 0 auto;
+}
+.mce-object-preview.mce-object-preview-left {
+  float: left;
+}
+.mce-object-preview.mce-object-preview-right {
+  float: right;
+}
 .mce-object-preview[data-mce-selected] {
   border: 2px solid #3399ff;
   border-color: var(--mce-control-selection);
@@ -96,6 +106,7 @@ img.mce-object.mce-object-video {
   z-index: 5;
   width: 100%;
   height: 100%;
+  border: 0;
 }
 .mce-object-preview::after {
   content: attr(aria-details);

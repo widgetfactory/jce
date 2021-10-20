@@ -29,6 +29,10 @@
         return !isPreviewMedia(type);
     }
 
+    function isCenterAligned(style) {
+        return style.display == 'block' && style['margin-left'] == 'auto' && style['margin-right'] == 'auto';
+    }
+
     function isSupportedMedia(url) {
         // youtube
         if (/youtu(\.)?be(.+)?\/(.+)/.test(url)) {
@@ -468,6 +472,8 @@
             return 'false';
         };
 
+        var classes = ['mce-object-preview', 'mce-object-' + name];
+
         var styles = {}, styleVal = editor.dom.parseStyle(node.attr('style'));
 
         each(['width', 'height'], function (key) {
@@ -487,10 +493,23 @@
             }
         });
 
+        if (isCenterAligned(styleVal)) {
+            classes.push('mce-object-preview-center');
+
+            delete styles['margin-left'];
+            delete styles['margin-right'];
+        }
+
+        if (styleVal['float']) {
+            classes.push('mce-object-preview-' + styleVal['float']);
+
+            delete styles['float'];
+        }
+
         previewWrapper = Node.create('span', {
             'contentEditable': 'false',
             'data-mce-object': name,
-            'class': 'mce-object-preview mce-object-' + name,
+            'class': classes.join(' '),
             'aria-details': msg,
             'data-mce-resize': canResize(node),
             'style': editor.dom.serializeStyle(styles)
@@ -1057,7 +1076,13 @@
 
         var nodeName = node.nodeName.toLowerCase();
 
-        ed.dom.removeClass(node, 'mce-object-preview-block');
+        // clean up classes
+        each(['block', 'center', 'left', 'right'], function (val) {
+            ed.dom.removeClass(node, 'mce-object-preview-' + val);
+        });
+
+        // clear styles on preview node
+        node.removeAttribute('style');
 
         // get iframe/video node
         if (node.className.indexOf('mce-object-preview') !== -1) {
@@ -1092,6 +1117,18 @@
         });
 
         ed.dom.setAttribs(node, attribs);
+
+        var styleObject = ed.dom.parseStyle(node.getAttribute('style'));
+
+        if (preview) {
+            if (isCenterAligned(styleObject)) {
+                ed.dom.addClass(preview, 'mce-object-preview-center');
+            }
+
+            if (styleObject['float']) {
+                ed.dom.addClass(preview, 'mce-object-preview-' + styleObject['float']);
+            }
+        }
 
         // update style dimensions
         each(['width', 'height'], function (key) {
