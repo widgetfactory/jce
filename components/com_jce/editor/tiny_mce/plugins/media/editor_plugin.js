@@ -1231,6 +1231,30 @@
         ed.onInit.add(function () {
             var settings = ed.settings;
 
+            var alignStylesMap = {
+                left : { float: 'left' },
+                center : { 'display' : 'block', 'margin-left' : 'auto', 'margin-right' : 'auto' },
+                right : { float: 'right' }
+            };
+
+            each(['left', 'right', 'center'], function (align) {
+                ed.formatter.register('align' + align, {
+                    selector: 'span[data-mce-object]',
+                    collapsed: false,
+                    ceFalseOverride: true,
+                    classes: 'mce-object-preview-' + align,
+                    deep: true,
+                    onformat: function (elm) {
+                        ed.dom.setStyles(ed.dom.select('iframe,video,audio', elm), alignStylesMap[align]);
+                    },
+                    onremove : function (elm) {
+                        each(alignStylesMap[align], function (val, key) {
+                            ed.dom.setStyle(ed.dom.select('iframe,video,audio', elm), key, null);
+                        });
+                    }
+                });
+            });
+
             ed.theme.onResolveName.add(function (theme, o) {
                 var name, node = ed.dom.getParent(o.node, '[data-mce-object]');
 
@@ -1332,17 +1356,26 @@
 
             ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
                 // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
-                if (cmd && cmd.indexOf('Format') !== -1) {
+                if (cmd && (cmd.indexOf('Format') != -1 || cmd.indexOf('Justify') != -1)) {
                     var node = ed.selection.getNode();
 
                     // if it is a preview node, select the iframe
                     if (isMediaNode(node)) {
                         if (node.nodeName !== 'IMG') {
-                            node = node.firstChild;
-                            ed.selection.select(node);
+                            node = node.firstChild || node;
+
+                            if (node) {
+                                var range = ed.dom.createRng();
+                                range.setStart(node, 0);
+                                range.setEnd(node, 0);
+
+                                var sel = ed.selection.getSel();
+                                sel.removeAllRanges();
+                                sel.addRange(range);
+                            }
                         }
 
-                        if (tinymce.is(v, 'object')) {
+                        if (node && tinymce.is(v, 'object')) {
                             v.node = node;
                         }
                     }

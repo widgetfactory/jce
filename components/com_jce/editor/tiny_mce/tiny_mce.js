@@ -34097,26 +34097,26 @@
 
   (function (tinymce) {
     /**
-  	 * Text formatter engine class. This class is used to apply formats like bold, italic, font size
-  	 * etc to the current selection or specific nodes. This engine was build to replace the browsers
-  	 * default formatting logic for execCommand due to it's inconsistant and buggy behavior.
-  	 *
-  	 * @class tinymce.Formatter
-  	 * @example
-  	 *  tinymce.activeEditor.formatter.register('mycustomformat', {
-  	 *    inline : 'span',
-  	 *    styles : {color : '#ff0000'}
-  	 *  });
-  	 *
-  	 *  tinymce.activeEditor.formatter.apply('mycustomformat');
-  	 */
+     * Text formatter engine class. This class is used to apply formats like bold, italic, font size
+     * etc to the current selection or specific nodes. This engine was build to replace the browsers
+     * default formatting logic for execCommand due to it's inconsistant and buggy behavior.
+     *
+     * @class tinymce.Formatter
+     * @example
+     *  tinymce.activeEditor.formatter.register('mycustomformat', {
+     *    inline : 'span',
+     *    styles : {color : '#ff0000'}
+     *  });
+     *
+     *  tinymce.activeEditor.formatter.apply('mycustomformat');
+     */
 
     /**
-  	 * Constructs a new formatter instance.
-  	 *
-  	 * @constructor Formatter
-  	 * @param {tinymce.Editor} ed Editor instance to construct the formatter engine to.
-  	 */
+     * Constructs a new formatter instance.
+     *
+     * @constructor Formatter
+     * @param {tinymce.Editor} ed Editor instance to construct the formatter engine to.
+     */
     tinymce.Formatter = function (ed) {
       var formats = {},
         each = tinymce.each,
@@ -34474,26 +34474,26 @@
       }
 
       /*function addKeyboardShortcuts() {
-  			// Add some inline shortcuts
-  			ed.addShortcut('ctrl+b', 'bold_desc', 'Bold');
-  			ed.addShortcut('ctrl+i', 'italic_desc', 'Italic');
-  			ed.addShortcut('ctrl+u', 'underline_desc', 'Underline');
+        // Add some inline shortcuts
+        ed.addShortcut('ctrl+b', 'bold_desc', 'Bold');
+        ed.addShortcut('ctrl+i', 'italic_desc', 'Italic');
+        ed.addShortcut('ctrl+u', 'underline_desc', 'Underline');
 
-  			// BlockFormat shortcuts keys
-  			for (var i = 1; i <= 6; i++) {
-  				//ed.addShortcut('alt+shift+' + i, '', ['FormatBlock', false, 'h' + i]);
-  				// keep legacy shortcuts
-  				ed.addShortcut('ctrl+' + i, '', ['FormatBlock', false, 'h' + i]);
+        // BlockFormat shortcuts keys
+        for (var i = 1; i <= 6; i++) {
+          //ed.addShortcut('alt+shift+' + i, '', ['FormatBlock', false, 'h' + i]);
+          // keep legacy shortcuts
+          ed.addShortcut('ctrl+' + i, '', ['FormatBlock', false, 'h' + i]);
 
-  			}
+        }
 
-  			each(['p', 'div', 'address'], function (name, i) {
-  				var n = 7 + i;
+        each(['p', 'div', 'address'], function (name, i) {
+          var n = 7 + i;
 
-  				//ed.addShortcut('alt+shift+' + n, '', ['FormatBlock', false, name]);
-  				ed.addShortcut('ctrl+' + n, '', ['FormatBlock', false, name]);
-  			});
-  		}*/
+          //ed.addShortcut('alt+shift+' + n, '', ['FormatBlock', false, name]);
+          ed.addShortcut('ctrl+' + n, '', ['FormatBlock', false, name]);
+        });
+      }*/
 
       function addKeyboardShortcuts() {
         // Add some inline shortcuts
@@ -34514,23 +34514,23 @@
       // Public functions
 
       /**
-  		 * Returns the format by name or all formats if no name is specified.
-  		 *
-  		 * @method get
-  		 * @param {String} name Optional name to retrive by.
-  		 * @return {Array/Object} Array/Object with all registred formats or a specific format.
-  		 */
+       * Returns the format by name or all formats if no name is specified.
+       *
+       * @method get
+       * @param {String} name Optional name to retrive by.
+       * @return {Array/Object} Array/Object with all registred formats or a specific format.
+       */
       function get(name) {
         return name ? formats[name] : formats;
       }
 
       /**
-  		 * Registers a specific format by name.
-  		 *
-  		 * @method register
-  		 * @param {Object/String} name Name of the format for example "bold".
-  		 * @param {Object/Array} format Optional format object or array of format variants can only be omitted if the first arg is an object.
-  		 */
+       * Registers a specific format by name.
+       *
+       * @method register
+       * @param {Object/String} name Name of the format for example "bold".
+       * @param {Object/Array} format Optional format object or array of format variants can only be omitted if the first arg is an object.
+       */
       function register(name, format) {
         if (name) {
           if (typeof (name) !== 'string') {
@@ -34570,17 +34570,26 @@
               }
             });
 
-            formats[name] = format;
+            if (formats[name]) {
+              var current = formats[name];
+
+              // Force collection into array
+              current = current.length ? current : [current];
+
+              formats[name] = current.concat(format);
+            } else {
+              formats[name] = format;
+            }
           }
         }
       }
 
       /**
-  		 * Unregister a specific format by name.
-  		 *
-  		 * @method unregister
-  		 * @param {String} name Name of the format for example "bold".
-  		 */
+       * Unregister a specific format by name.
+       *
+       * @method unregister
+       * @param {String} name Name of the format for example "bold".
+       */
       function unregister(name) {
         if (name && formats[name]) {
           delete formats[name];
@@ -34627,13 +34636,13 @@
       }
 
       /**
-  		 * Applies the specified format to the current selection or specified node.
-  		 *
-  		 * @method apply
-  		 * @param {String} name Name of format to apply.
-  		 * @param {Object} vars Optional list of variables to replace within format before applying it.
-  		 * @param {Node} node Optional node to apply the format to defaults to current selection.
-  		 */
+       * Applies the specified format to the current selection or specified node.
+       *
+       * @method apply
+       * @param {String} name Name of format to apply.
+       * @param {Object} vars Optional list of variables to replace within format before applying it.
+       * @param {Node} node Optional node to apply the format to defaults to current selection.
+       */
       function apply(name, vars, node) {
         var formatList = get(name),
           format = formatList[0],
@@ -34745,8 +34754,8 @@
             var currentWrapElm;
 
             /**
-  					 * Process a list of nodes wrap them.
-  					 */
+             * Process a list of nodes wrap them.
+             */
             function process(node) {
               var nodeName, parentName, found, hasContentEditableState, lastContentEditable;
 
@@ -34782,7 +34791,7 @@
               // Can we rename the block
               // TODO: Break this if up, too complex
               if (contentEditable && !hasContentEditableState && format.block &&
-  							!format.wrapper && isTextBlock(nodeName) && isValidChild(parentName, wrapName)) {
+                !format.wrapper && isTextBlock(nodeName) && isValidChild(parentName, wrapName)) {
                 node = dom.rename(node, wrapName);
                 setElementFormat(node);
                 newWrappers.push(node);
@@ -34809,9 +34818,9 @@
               // Is it valid to wrap this item
               // TODO: Break this if up, too complex
               if (contentEditable && !hasContentEditableState && isValidChild(wrapName, nodeName) && isValidChild(parentName, wrapName) &&
-  							!isBOM(node) &&
-  							!isCaretNode(node) &&
-  							(!format.inline || !isBlock(node))) {
+                !isBOM(node) &&
+                !isCaretNode(node) &&
+                (!format.inline || !isBlock(node))) {
                 // Start wrapping
                 if (!currentWrapElm) {
                   // Wrap the node
@@ -34911,11 +34920,11 @@
             // fontSize defines the line height for the whole branch of nested style wrappers,
             // therefore it should be set on the outermost wrapper
             /*if (!isBlock(node) && !getStyle(node, 'fontSize')) {
-  						var styleNode = matchNestedWrapper(node, hasStyle('fontSize'));
-  						if (styleNode) {
-  							apply('fontsize', {value: getStyle(styleNode, 'fontSize')}, node);
-  						}
-  					}*/
+              var styleNode = matchNestedWrapper(node, hasStyle('fontSize'));
+              if (styleNode) {
+                apply('fontsize', {value: getStyle(styleNode, 'fontSize')}, node);
+              }
+            }*/
 
             if (format.inline || format.wrapper) {
               // Merges the current node with it's children of similar type to reduce the number of elements
@@ -35022,13 +35031,13 @@
       }
 
       /**
-  		 * Removes the specified format from the current selection or specified node.
-  		 *
-  		 * @method remove
-  		 * @param {String} name Name of format to remove.
-  		 * @param {Object} vars Optional list of variables to replace within format before removing it.
-  		 * @param {Node/Range} node Optional node or DOM range to remove the format from defaults to current selection.
-  		 */
+       * Removes the specified format from the current selection or specified node.
+       *
+       * @method remove
+       * @param {String} name Name of format to remove.
+       * @param {Object} vars Optional list of variables to replace within format before removing it.
+       * @param {Node/Range} node Optional node or DOM range to remove the format from defaults to current selection.
+       */
       function remove(name, vars, node, similar) {
         var formatList = get(name),
           format = formatList[0],
@@ -35172,22 +35181,22 @@
               // This will happen if you triple click a table cell and use remove formatting
 
               /*if (/^(TR|TH|TD)$/.test(startContainer.nodeName) && startContainer.firstChild) {
-  							if (startContainer.nodeName == "TR") {
-  								startContainer = startContainer.firstChild.firstChild || startContainer;
-  							} else {
-  								startContainer = startContainer.firstChild || startContainer;
-  							}
-  						}*/
+                if (startContainer.nodeName == "TR") {
+                  startContainer = startContainer.firstChild.firstChild || startContainer;
+                } else {
+                  startContainer = startContainer.firstChild || startContainer;
+                }
+              }*/
 
               // Try to adjust endContainer as well if cells on the same row were selected - bug #6410
               if (commonAncestorContainer &&
-  							/^T(HEAD|BODY|FOOT|R)$/.test(commonAncestorContainer.nodeName) &&
-  							/^(TH|TD)$/.test(endContainer.nodeName) && endContainer.firstChild) {
+                /^T(HEAD|BODY|FOOT|R)$/.test(commonAncestorContainer.nodeName) &&
+                /^(TH|TD)$/.test(endContainer.nodeName) && endContainer.firstChild) {
                 endContainer = endContainer.firstChild || endContainer;
               }
 
               if (dom.isChildOf(startContainer, endContainer) && !isBlock(endContainer) &&
-  							!isTableCell(startContainer) && !isTableCell(endContainer)) {
+                !isTableCell(startContainer) && !isTableCell(endContainer)) {
                 startContainer = wrap(startContainer, 'span', {
                   id: '_start',
                   'data-mce-type': 'bookmark'
@@ -35233,7 +35242,7 @@
 
               // Remove parent span if it only contains text-decoration: underline, yet a parent node is also underlined.
               if (node.nodeType === 1 && ed.dom.getStyle(node, 'text-decoration') === 'underline' &&
-  							node.parentNode && getTextDecoration(node.parentNode) === 'underline') {
+                node.parentNode && getTextDecoration(node.parentNode) === 'underline') {
                 removeFormat({
                   'deep': false,
                   'exact': true,
@@ -35292,13 +35301,13 @@
       }
 
       /**
-  		 * Toggles the specified format on/off.
-  		 *
-  		 * @method toggle
-  		 * @param {String} name Name of format to apply/remove.
-  		 * @param {Object} vars Optional list of variables to replace within format before applying/removing it.
-  		 * @param {Node} node Optional node to apply the format to or remove from. Defaults to current selection.
-  		 */
+       * Toggles the specified format on/off.
+       *
+       * @method toggle
+       * @param {String} name Name of format to apply/remove.
+       * @param {Object} vars Optional list of variables to replace within format before applying/removing it.
+       * @param {Node} node Optional node to apply the format to or remove from. Defaults to current selection.
+       */
       function toggle(name, vars, node) {
         var fmt = get(name);
 
@@ -35310,15 +35319,15 @@
       }
 
       /**
-  		 * Return true/false if the specified node has the specified format.
-  		 *
-  		 * @method matchNode
-  		 * @param {Node} node Node to check the format on.
-  		 * @param {String} name Format name to check.
-  		 * @param {Object} vars Optional list of variables to replace before checking it.
-  		 * @param {Boolean} similar Match format that has similar properties.
-  		 * @return {Object} Returns the format object it matches or undefined if it doesn't match.
-  		 */
+       * Return true/false if the specified node has the specified format.
+       *
+       * @method matchNode
+       * @param {Node} node Node to check the format on.
+       * @param {String} name Format name to check.
+       * @param {Object} vars Optional list of variables to replace before checking it.
+       * @param {Boolean} similar Match format that has similar properties.
+       * @return {Object} Returns the format object it matches or undefined if it doesn't match.
+       */
       function matchNode(node, name, vars, similar) {
         var formatList = get(name),
           format, i, classes;
@@ -35389,14 +35398,14 @@
       }
 
       /**
-  		 * Matches the current selection or specified node against the specified format name.
-  		 *
-  		 * @method match
-  		 * @param {String} name Name of format to match.
-  		 * @param {Object} vars Optional list of variables to replace before checking it.
-  		 * @param {Node} node Optional node to check.
-  		 * @return {boolean} true/false if the specified selection/node matches the format.
-  		 */
+       * Matches the current selection or specified node against the specified format name.
+       *
+       * @method match
+       * @param {String} name Name of format to match.
+       * @param {Object} vars Optional list of variables to replace before checking it.
+       * @param {Node} node Optional node to check.
+       * @return {boolean} true/false if the specified selection/node matches the format.
+       */
       function match(name, vars, node) {
         var startNode;
 
@@ -35443,13 +35452,13 @@
       }
 
       /**
-  		 * Matches the current selection against the array of formats and returns a new array with matching formats.
-  		 *
-  		 * @method matchAll
-  		 * @param {Array} names Name of format to match.
-  		 * @param {Object} vars Optional list of variables to replace before checking it.
-  		 * @return {Array} Array with matched formats.
-  		 */
+       * Matches the current selection against the array of formats and returns a new array with matching formats.
+       *
+       * @method matchAll
+       * @param {Array} names Name of format to match.
+       * @param {Object} vars Optional list of variables to replace before checking it.
+       * @return {Array} Array with matched formats.
+       */
       function matchAll(names, vars) {
         var startElement, matchedFormatNames = [],
           checkedMap = {};
@@ -35473,12 +35482,12 @@
       }
 
       /**
-  		 * Returns true/false if the specified format can be applied to the current selection or not. It will currently only check the state for selector formats, it returns true on all other format types.
-  		 *
-  		 * @method canApply
-  		 * @param {String} name Name of format to check.
-  		 * @return {boolean} true/false if the specified format can be applied to the current selection/node.
-  		 */
+       * Returns true/false if the specified format can be applied to the current selection or not. It will currently only check the state for selector formats, it returns true on all other format types.
+       *
+       * @method canApply
+       * @param {String} name Name of format to check.
+       * @return {boolean} true/false if the specified format can be applied to the current selection/node.
+       */
       function canApply(name) {
         var formatList = get(name),
           startNode, parents, i, x, selector;
@@ -35508,13 +35517,13 @@
       }
 
       /**
-  		 * Executes the specified callback when the current selection matches the formats or not.
-  		 *
-  		 * @method formatChanged
-  		 * @param {String} formats Comma separated list of formats to check for.
-  		 * @param {function} callback Callback with state and args when the format is changed/toggled on/off.
-  		 * @param {Boolean} similar True/false state if the match should handle similar or exact formats.
-  		 */
+       * Executes the specified callback when the current selection matches the formats or not.
+       *
+       * @method formatChanged
+       * @param {String} formats Comma separated list of formats to check for.
+       * @param {function} callback Callback with state and args when the format is changed/toggled on/off.
+       * @param {Boolean} similar True/false state if the match should handle similar or exact formats.
+       */
       function formatChanged(formats, callback, similar) {
         var currentFormats;
 
@@ -35611,13 +35620,13 @@
       // Private functions
 
       /**
-  		 * Checks if the specified nodes name matches the format inline/block or selector.
-  		 *
-  		 * @private
-  		 * @param {Node} node Node to match against the specified format.
-  		 * @param {Object} format Format object o match with.
-  		 * @return {boolean} true/false if the format matches.
-  		 */
+       * Checks if the specified nodes name matches the format inline/block or selector.
+       *
+       * @private
+       * @param {Node} node Node to match against the specified format.
+       * @param {Object} format Format object o match with.
+       * @return {boolean} true/false if the format matches.
+       */
       function matchName(node, format) {
         // Check for inline match
         if (isEq(node, format.inline)) {
@@ -35636,13 +35645,13 @@
       }
 
       /**
-  		 * Compares two string/nodes regardless of their case.
-  		 *
-  		 * @private
-  		 * @param {String/Node} Node or string to compare.
-  		 * @param {String/Node} Node or string to compare.
-  		 * @return {boolean} True/false if they match.
-  		 */
+       * Compares two string/nodes regardless of their case.
+       *
+       * @private
+       * @param {String/Node} Node or string to compare.
+       * @param {String/Node} Node or string to compare.
+       * @return {boolean} True/false if they match.
+       */
       function isEq(str1, str2) {
         str1 = str1 || '';
         str2 = str2 || '';
@@ -35658,26 +35667,26 @@
       }
 
       /**
-  		 * Returns the style by name on the specified node. This method modifies the style
-  		 * contents to make it more easy to match. This will resolve a few browser issues.
-  		 *
-  		 * @private
-  		 * @param {Node} node to get style from.
-  		 * @param {String} name Style name to get.
-  		 * @return {String} Style item value.
-  		 */
+       * Returns the style by name on the specified node. This method modifies the style
+       * contents to make it more easy to match. This will resolve a few browser issues.
+       *
+       * @private
+       * @param {Node} node to get style from.
+       * @param {String} name Style name to get.
+       * @return {String} Style item value.
+       */
       function getStyle(node, name) {
         return normalizeStyleValue(dom.getStyle(node, name), name);
       }
       /**
-  		 * Normalize style value by name. This method modifies the style contents
-  		 * to make it more easy to match. This will resolve a few browser issues.
-  		 *
-  		 * @private
-  		 * @param {Node} node to get style from.
-  		 * @param {String} name Style name to get.
-  		 * @return {String} Style item value.
-  		 */
+       * Normalize style value by name. This method modifies the style contents
+       * to make it more easy to match. This will resolve a few browser issues.
+       *
+       * @private
+       * @param {Node} node to get style from.
+       * @param {String} name Style name to get.
+       * @return {String} Style item value.
+       */
       function normalizeStyleValue(value, name) {
         // Force the format to hex
         if (name == 'color' || name == 'backgroundColor') {
@@ -35698,13 +35707,13 @@
       }
 
       /**
-  		 * Replaces variables in the value. The variable format is %var.
-  		 *
-  		 * @private
-  		 * @param {String} value Value to replace variables in.
-  		 * @param {Object} vars Name/value array with variables to replace.
-  		 * @return {String} New value with replaced variables.
-  		 */
+       * Replaces variables in the value. The variable format is %var.
+       *
+       * @private
+       * @param {String} value Value to replace variables in.
+       * @param {Object} vars Name/value array with variables to replace.
+       * @return {String} New value with replaced variables.
+       */
       function replaceVars(value, vars) {
         if (typeof (value) != "string") {
           value = value(vars);
@@ -35731,16 +35740,16 @@
       }
 
       /**
-  		 * Expands the specified range like object to depending on format.
-  		 *
-  		 * For example on block formats it will move the start/end position
-  		 * to the beginning of the current block.
-  		 *
-  		 * @private
-  		 * @param {Object} rng Range like object.
-  		 * @param {Array} formats Array with formats to expand by.
-  		 * @return {Object} Expanded range like object.
-  		 */
+       * Expands the specified range like object to depending on format.
+       *
+       * For example on block formats it will move the start/end position
+       * to the beginning of the current block.
+       *
+       * @private
+       * @param {Object} rng Range like object.
+       * @param {Array} formats Array with formats to expand by.
+       * @return {Object} Expanded range like object.
+       */
       function expandRng(rng, format, remove) {
         var lastIdx, leaf, endPoint,
           startContainer = rng.startContainer,
@@ -36032,7 +36041,7 @@
             }
 
             if (leaf.node && leaf.offset > 0 && leaf.node.nodeType === 3 &&
-  						leaf.node.nodeValue.charAt(leaf.offset - 1) === ' ') {
+              leaf.node.nodeValue.charAt(leaf.offset - 1) === ' ') {
 
               if (leaf.offset > 1) {
                 endContainer = leaf.node;
@@ -36111,16 +36120,16 @@
       }
 
       /**
-  		 * Removes the specified format for the specified node. It will also remove the node if it doesn't have
-  		 * any attributes if the format specifies it to do so.
-  		 *
-  		 * @private
-  		 * @param {Object} format Format object with items to remove from node.
-  		 * @param {Object} vars Name/value object with variables to apply to format.
-  		 * @param {Node} node Node to remove the format styles on.
-  		 * @param {Node} compare_node Optional compare node, if specified the styles will be compared to that node.
-  		 * @return {Boolean} True/false if the node was removed or not.
-  		 */
+       * Removes the specified format for the specified node. It will also remove the node if it doesn't have
+       * any attributes if the format specifies it to do so.
+       *
+       * @private
+       * @param {Object} format Format object with items to remove from node.
+       * @param {Object} vars Name/value object with variables to apply to format.
+       * @param {Node} node Node to remove the format styles on.
+       * @param {Node} compare_node Optional compare node, if specified the styles will be compared to that node.
+       * @return {Boolean} True/false if the node was removed or not.
+       */
       function removeFormat(format, vars, node, compare_node) {
         var i, attrs, stylesModified;
 
@@ -36130,7 +36139,7 @@
         }
 
         if (format.onremove) {
-          format.onremove(node);
+          format.onremove(node, format, vars, node);
         }
 
         // Should we compare with format attribs and styles
@@ -36232,23 +36241,23 @@
       }
 
       /**
-  		 * Removes the node and wrap it's children in paragraphs before doing so or
-  		 * appends BR elements to the beginning/end of the block element if forcedRootBlocks is disabled.
-  		 *
-  		 * If the div in the node below gets removed:
-  		 *  text<div>text</div>text
-  		 *
-  		 * Output becomes:
-  		 *  text<div><br />text<br /></div>text
-  		 *
-  		 * So when the div is removed the result is:
-  		 *  text<br />text<br />text
-  		 *
-  		 * @private
-  		 * @param {Node} node Node to remove + apply BR/P elements to.
-  		 * @param {Object} format Format rule.
-  		 * @return {Node} Input node.
-  		 */
+       * Removes the node and wrap it's children in paragraphs before doing so or
+       * appends BR elements to the beginning/end of the block element if forcedRootBlocks is disabled.
+       *
+       * If the div in the node below gets removed:
+       *  text<div>text</div>text
+       *
+       * Output becomes:
+       *  text<div><br />text<br /></div>text
+       *
+       * So when the div is removed the result is:
+       *  text<br />text<br />text
+       *
+       * @private
+       * @param {Node} node Node to remove + apply BR/P elements to.
+       * @param {Object} format Format rule.
+       * @return {Node} Input node.
+       */
       function removeNode(node, format) {
         var parentNode = node.parentNode,
           rootBlockElm;
@@ -36301,14 +36310,14 @@
       }
 
       /**
-  		 * Returns the next/previous non whitespace node.
-  		 *
-  		 * @private
-  		 * @param {Node} node Node to start at.
-  		 * @param {boolean} next (Optional) Include next or previous node defaults to previous.
-  		 * @param {boolean} inc (Optional) Include the current node in checking. Defaults to false.
-  		 * @return {Node} Next or previous node or undefined if it wasn't found.
-  		 */
+       * Returns the next/previous non whitespace node.
+       *
+       * @private
+       * @param {Node} node Node to start at.
+       * @param {boolean} next (Optional) Include next or previous node defaults to previous.
+       * @param {boolean} inc (Optional) Include the current node in checking. Defaults to false.
+       * @return {Node} Next or previous node or undefined if it wasn't found.
+       */
       function getNonWhiteSpaceSibling(node, next, inc) {
         if (node) {
           next = next ? 'nextSibling' : 'previousSibling';
@@ -36322,35 +36331,35 @@
       }
 
       /**
-  		 * Checks if the specified node is a bookmark node or not.
-  		 *
-  		 * @param {Node} node Node to check if it's a bookmark node or not.
-  		 * @return {Boolean} true/false if the node is a bookmark node.
-  		 */
+       * Checks if the specified node is a bookmark node or not.
+       *
+       * @param {Node} node Node to check if it's a bookmark node or not.
+       * @return {Boolean} true/false if the node is a bookmark node.
+       */
       function isBookmarkNode(node) {
         return node && node.nodeType == 1 && node.getAttribute('data-mce-type') == 'bookmark';
       }
 
       /**
-  		 * Merges the next/previous sibling element if they match.
-  		 *
-  		 * @private
-  		 * @param {Node} prev Previous node to compare/merge.
-  		 * @param {Node} next Next node to compare/merge.
-  		 * @return {Node} Next node if we didn't merge and prev node if we did.
-  		 */
+       * Merges the next/previous sibling element if they match.
+       *
+       * @private
+       * @param {Node} prev Previous node to compare/merge.
+       * @param {Node} next Next node to compare/merge.
+       * @return {Node} Next node if we didn't merge and prev node if we did.
+       */
       function mergeSiblings(prev, next) {
         var sibling, tmpSibling;
 
         /**
-  			 * Compares two nodes and checks if it's attributes and styles matches.
-  			 * This doesn't compare classes as items since their order is significant.
-  			 *
-  			 * @private
-  			 * @param {Node} node1 First node to compare with.
-  			 * @param {Node} node2 Second node to compare with.
-  			 * @return {boolean} True/false if the nodes are the same or not.
-  			 */
+         * Compares two nodes and checks if it's attributes and styles matches.
+         * This doesn't compare classes as items since their order is significant.
+         *
+         * @private
+         * @param {Node} node1 First node to compare with.
+         * @param {Node} node2 Second node to compare with.
+         * @return {boolean} True/false if the nodes are the same or not.
+         */
         function compareElements(node1, node2) {
           // Not the same name
           if (node1.nodeName != node2.nodeName) {
@@ -36358,12 +36367,12 @@
           }
 
           /**
-  				 * Returns all the nodes attributes excluding internal ones, styles and classes.
-  				 *
-  				 * @private
-  				 * @param {Node} node Node to get attributes from.
-  				 * @return {Object} Name/value object with attributes and attribute values.
-  				 */
+           * Returns all the nodes attributes excluding internal ones, styles and classes.
+           *
+           * @private
+           * @param {Node} node Node to get attributes from.
+           * @return {Object} Name/value object with attributes and attribute values.
+           */
           function getAttribs(node) {
             var attribs = {};
 
@@ -36380,13 +36389,13 @@
           }
 
           /**
-  				 * Compares two objects checks if it's key + value exists in the other one.
-  				 *
-  				 * @private
-  				 * @param {Object} obj1 First object to compare.
-  				 * @param {Object} obj2 Second object to compare.
-  				 * @return {boolean} True/false if the objects matches or not.
-  				 */
+           * Compares two objects checks if it's key + value exists in the other one.
+           *
+           * @private
+           * @param {Object} obj1 First object to compare.
+           * @param {Object} obj2 Second object to compare.
+           * @return {boolean} True/false if the objects matches or not.
+           */
           function compareObjects(obj1, obj2) {
             var value, name;
 
@@ -36816,8 +36825,8 @@
       }
 
       /**
-  		 * Moves the start to the first suitable text node.
-  		 */
+       * Moves the start to the first suitable text node.
+       */
       function moveStart(rng) {
         var container = rng.startContainer,
           offset = rng.startOffset,
