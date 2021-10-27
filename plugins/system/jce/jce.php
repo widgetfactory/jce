@@ -137,11 +137,6 @@ class PlgSystemJce extends JPlugin
             return true;
         }
 
-        // media replacement disabled
-        if ((bool) $params->get('replace_media_manager', 1) === false) {
-            return true;
-        }
-
         $hasMedia = false;
         $fields = $form->getFieldset();
 
@@ -161,6 +156,11 @@ class PlgSystemJce extends JPlugin
 
             // joomla media field and flexi-content converted media field
             if (strtolower($type) === 'media' || strtolower($type) === 'fcmedia') {
+
+                // media replacement disabled, skip...
+                if ((bool) $params->get('replace_media_manager', 1) === false) {
+                    continue;
+                }
 
                 $group = (string) $field->group;
                 $form->setFieldAttribute($name, 'type', 'mediajce', $group);
