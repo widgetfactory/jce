@@ -32,4 +32,50 @@ class JceTableProfiles extends JTable
 
         return $return;
     }
+
+    /**
+	 * Overloaded check function
+	 *
+	 * @return  boolean  True on success, false on failure
+	 *
+	 * @see     Table::check()
+	 * @since   2.9.18
+	 */
+	public function check()
+	{
+		try
+		{
+			parent::check();
+		}
+		catch (\Exception $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+		
+		/**
+		 * Ensure any new items have compulsory fields set
+		 */
+		if (!$this->id)
+		{
+			if (!isset($this->device))
+			{
+				$this->device = 'desktop,tablet,phone';
+			}
+			
+			if (!isset($this->area))
+			{
+				$this->area = '0';
+			}
+			
+			// Params can be an empty json string
+			if (!empty($this->params))
+			{
+				$this->params = '{}';
+			}
+		}
+		
+		return true;
+	}
 }

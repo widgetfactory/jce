@@ -722,6 +722,11 @@ class JceModelProfile extends JModelAdmin
             $data['params'] = json_encode(WFUtility::array_merge_recursive_distinct($params, $json));
         }
 
+        // set a default value for validation
+        if (empty($data['params'])) {
+        	$data['params'] = '{}';
+        }
+
         if (parent::save($data)) {
             return true;
         }
