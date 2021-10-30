@@ -78,3 +78,8 @@
 .ui-jce .nav.nav-tabs .nav-item:last-of-type .nav-link {
     box-shadow: initial;
 }
+
+/* fix for profiles list checkbox */
+.ui-jce table td.order + td label {
+    min-width: inherit;
+}
