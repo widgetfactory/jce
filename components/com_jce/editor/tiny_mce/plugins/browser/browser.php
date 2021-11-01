@@ -104,10 +104,10 @@ class WFBrowserPlugin extends WFMediaManager
                 $document->addScript(array('window.min'), 'plugins');
 
                 $callback = $app->input->getCmd('callback', '');
-                $element = $app->input->getCmd('fieldid', '');
+                $element = $app->input->getCmd('fieldid', 'field-media-id');
 
                 // Joomla 4 field variable not converted
-                if (!$element || $element === 'field-media-id') {
+                if ($element == 'field-media-id') {
                     $element = $app->input->getCmd('element', '');
                 }
 

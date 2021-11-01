@@ -1,4 +1,4 @@
-/* global jQuery */
+/* global jQuery, Joomla */
 (function ($) {
 
     var counter = 0;
@@ -21,11 +21,11 @@
 
     function parseUrl(url) {
         var data = {};
-        
+
         if (!url) {
             return data;
         }
-        
+
         url = url.substring(url.indexOf('?') + 1);
 
         $.each(url.replace(/\+/g, ' ').split('&'), function (i, value) {
@@ -269,10 +269,10 @@
         });
     };
 
-    function updateMediaUrl(row) {
+    function updateMediaUrl(row, repeatable) {
         $(row).find('.field-media-wrapper').add(row).each(function () {
             // only subform and custom elements
-            if ($(this).find('.wf-media-input-upload').length) {
+            if ($(this).find('.wf-media-input-upload').length && !repeatable) {
                 return true;
             }
 
@@ -287,8 +287,16 @@
             var dataUrl = $(this).data('url') || this.url || '';
             var params = parseUrl(dataUrl);
 
-            // set mediatype or default to "images"
-            var mediatype = params.mediatype || params.view || 'images';
+            // set mediatype default to "images"
+            var mediatype = 'images';
+
+            // process a parameter
+            if (params.mediatype) {
+                mediatype = params.mediatype;
+                // or layout override of url set to files
+            } else if (params.view == 'files') {
+                mediatype = 'files';
+            }
 
             // create url
             var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
@@ -308,17 +316,30 @@
     }
 
     $(document).ready(function ($) {
-        // process joomla and flexi-content media fields
-        $('.field-media-wrapper, .fc-field-value-properties-box').find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input');
+        var options = Joomla.getOptions('plg_system_jce', {});
 
-        // existing repeatable
-        $('.field-media-input').parents('.subform-repeatable-group').each(function (i, row) {
-            updateMediaUrl(row);
+        function canProcessField(elm) {
+            return options.replace_media || $(elm).find('.wf-media-input').length;
+        }
+
+        if (options.replace_media) {
+            // process joomla and flexi-content media fields
+            $('.field-media-wrapper, .fc-field-value-properties-box').find('.field-media-input').addClass('wf-media-input');
+        }
+
+        // remove readonly
+        $('.wf-media-input').removeAttr('readonly');
+
+        // update existing repeatable
+        $('.wf-media-input').parents('.subform-repeatable-group').each(function (i, row) {
+            updateMediaUrl(row, true);
         });
 
         // joomla custom attribute
         $('joomla-field-media').each(function (i, row) {
-            updateMediaUrl(row);
+            if (canProcessField(row)) {
+                updateMediaUrl(row);
+            }
         });
 
         // repeatable when created
@@ -331,9 +352,10 @@
                 row = originalEvent.detail.row || row;
             }
 
-            $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input wf-media-input-active');
-
-            updateMediaUrl(row);
+            if (canProcessField(row)) {
+                $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input wf-media-input-active');
+                updateMediaUrl(row, true);
+            }
         });
 
         $('.wf-media-input-upload').WfMediaUpload();

@@ -176,6 +176,10 @@ class PlgSystemJce extends JPlugin
 
         // form has a converted media field
         if ($hasMedia) {
+            if ((bool) $params->get('replace_media_manager', 1)) {
+                JFactory::getDocument()->addScriptOptions('plg_system_jce', array('replace_media' => true), true);
+            }
+
             $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
 
             // Include jQuery

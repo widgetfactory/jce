@@ -58,7 +58,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
 
         $config = array(
             'element' => $this->id,
-            'mediatype' => $this->mediatype,
+            'mediatype' => strtolower($this->mediatype),
             'converted' => (int) $this->element['converted'] ? true : false
         );
 
@@ -79,7 +79,7 @@ class JFormFieldMediaJce extends JFormFieldMedia
             'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
         );
 
-        if ($options['upload'] === 1) {
+        if ($options['upload'] == 1) {
             $extraData['class'] .= ' wf-media-input-upload';
         }
 
