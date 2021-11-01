@@ -386,6 +386,13 @@ class pkg_jceInstallerScript
                 $db->execute();
             }
 
+            // fix checked_out_time deafult value
+            if (version_compare($current_version, '2.9.18', 'lt')) {
+                $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out_time') . " " . $db->qn('checked_out_time') . " DATETIME NULL DEFAULT NULL";
+                $db->setQuery($query);
+                $db->execute();
+            }
+
             self::cleanupInstall($installer);
         }
     }
