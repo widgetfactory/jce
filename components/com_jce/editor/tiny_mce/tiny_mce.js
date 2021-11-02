@@ -41692,7 +41692,6 @@
             if (data.inline && data.filetypes) {
               plugins.push(plg);
             }
-
           }
         });
 
@@ -42282,7 +42281,19 @@
         });
       }
 
+      function removeFile(file) {
+        // remove from list
+        for (var i = 0; i < files.length; i++) {
+          if (files[i] === file) {
+            files.splice(i, 1);
+          }
+        }
+
+        files.splice(tinymce.inArray(files, file), 1);
+      }
+
       function uploadFile(file) {
+
         uploadHandler(file, function (response) {
 
           var files = response.files || [], item = files.length ? files[0] : {};
@@ -42297,19 +42308,25 @@
             selectAndInsert(file, obj);
           }
 
-          // remove from list
-          files.splice(tinymce.inArray(files, file), 1);
+          removeFile(file);
 
           if (file.marker) {
             ed.dom.remove(file.marker);
           }
+
+          ed.setProgressState(false);
 
         }, function (message) {
           ed.windowManager.alert(message);
 
+          removeFile(file);
+
           if (file.marker) {
             ed.dom.remove(file.marker);
           }
+
+          ed.setProgressState(false);
+
         }, function (value) {
           if (file.marker) {
             ed.dom.setAttrib(file.marker, 'data-progress', value);
