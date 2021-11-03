@@ -2302,16 +2302,13 @@
 
                     // Execute post process handlers
                     self.onPostProcess.dispatch(self, o);
-
-                    // get processed content
-                    o.content = o.node.innerHTML;
-
-                    /*
+                    
                     // Serialize content
                     o.content = ed.serializer.serialize(o.node, {
                         getInner: 1,
-                        forced_root_block: ''
-                    });*/
+                        forced_root_block: '',
+                        no_events: true
+                    });
 
                     // remove empty paragraphs
                     if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
@@ -2771,7 +2768,6 @@
                     ed.getDoc().execCommand('Paste', false, null);
                     clipboardContent["text/html"] = getPasteBinHtml();
                 }
-
 
                 if (isPlainTextFileUrl(clipboardContent)) {
                     removePasteBin();
