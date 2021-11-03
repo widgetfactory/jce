@@ -64,6 +64,14 @@ class WFEditor
      */
     private static $plugins = array('core', 'help', 'autolink', 'effects', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'blobupload', 'upload', 'figure', 'ui', 'noneditable', 'branding');
 
+    /**
+     * Initialization state
+     *
+     * @var boolean
+     */
+    public $initialized = false;
+    
+    
     private function addScript($url)
     {
         $url = $this->addAssetVersion($url);
@@ -158,6 +166,8 @@ class WFEditor
 
     public function init()
     {
+        $this->initialized = true;
+         
         $settings = $this->getSettings();
 
         JFactory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
