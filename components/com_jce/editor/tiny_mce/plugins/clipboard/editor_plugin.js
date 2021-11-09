@@ -716,8 +716,12 @@
     }
 
     function preProcess(e, o) {
-        var ed = e.editor,
-            h = o.content;
+        var ed = e.editor;
+
+        ed.onPastePreProcess.dispatch(ed, o);
+        ed.execCallback('paste_preprocess', e, o);
+
+        var h = o.content;
 
         // Process away some basic content
         h = h.replace(/^\s*(&nbsp;)+/g, ''); // nbsp entities at the start of contents
@@ -741,14 +745,14 @@
         }
 
         o.content = h;
-
-        ed.onPastePreProcess.dispatch(ed, o);
-        ed.execCallback('paste_preprocess', e, o);
     }
 
     function postProcess(e, o) {
         var ed = e.editor,
             dom = ed.dom;
+
+        // remove url conversion containers
+        ed.dom.remove(ed.dom.select('div[data-mce-convert]', o.node), 1);
 
         // skip plain text
         if (e.pasteAsPlainText) {
@@ -1887,7 +1891,7 @@
 
         function wrapContent(content) {
             if (content.indexOf('data-mce-convert="url"') === -1) {
-                return '<div data-mce-convert="url">' + content + '</div>';
+                return ed.dom.createHTML('div', { 'data-mce-convert': 'url' }, content);
             }
 
             return content;
@@ -1953,7 +1957,7 @@
         var isPlainText = function (text) {
             // so basically any tag that is not one of the "p, div, br", or is one of them, but is followed
             // by some additional characters qualifies the text as not a plain text (having some HTML tags)
-            return !/<(?:(?!\/?(?:div|p|br))[^>]*|(?:div|p|br)\s+\w[^>]+)>/.test(text);
+            return !/<(?:(?!\/?(?:\w+))[^>]*|(?:\w+)\s+\w[^>]+)>/.test(text);
         };
 
         var toBRs = function (text) {
@@ -2025,6 +2029,8 @@
         };
     };
 
+    Newlines = new Newlines();
+
     /**
      * Gets various content types out of a datatransfer object.
      *
@@ -2070,15 +2076,6 @@
     function getClipboardContent(editor, clipboardEvent) {
         //var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
         var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
-
-        // Edge 15 has a broken HTML Clipboard API see https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11877517/
-        if (navigator.userAgent.indexOf(' Edge/') !== -1) {
-            content = tinymce.extend(content, {
-                'text/html': ''
-            });
-        }
-
-        editor.onGetClipboardContent.dispatch(editor, content);
 
         return content;
     }
@@ -2156,28 +2153,6 @@
                 }
             });
 
-            ed.onPreInit.add(function () {
-                ed.serializer.addAttributeFilter('data-mce-convert', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-                        node.unwrap();
-                    }
-                });
-
-                ed.parser.addAttributeFilter('data-mce-convert', function (nodes, name) {
-                    var i = nodes.length,
-                        node;
-
-                    while (i--) {
-                        node = nodes[i];
-                        node.unwrap();
-                    }
-                });
-            });
-
             ed.onInit.add(function () {
                 if (ed.plugins.contextmenu) {
                     ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
@@ -2227,7 +2202,7 @@
                 text = ed.dom.encode(text).replace(/\r\n/g, '\n');
 
                 // convert newlines to block elements
-                text = new Newlines().convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
+                text = Newlines.convert(text, ed.settings.forced_root_block, ed.settings.forced_root_block_attrs);
 
                 pasteHtml(text);
             }
@@ -2302,13 +2277,9 @@
 
                     // Execute post process handlers
                     self.onPostProcess.dispatch(self, o);
-                    
-                    // Serialize content
-                    o.content = ed.serializer.serialize(o.node, {
-                        getInner: 1,
-                        forced_root_block: '',
-                        no_events: true
-                    });
+
+                    // get content from node
+                    o.content = o.node.innerHTML;
 
                     // remove empty paragraphs
                     if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
@@ -2350,21 +2321,28 @@
             function insertClipboardContent(clipboardContent, internal) {
                 var content, isPlainTextHtml;
 
-                // get html content
-                content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
-
-                if (!content) {
+                // Grab HTML from paste bin as a fallback
+                if (!isHtmlPaste(clipboardContent)) {
                     content = getPasteBinHtml();
-                    internal = internal ? internal : InternalHtml.isMarked(content);
 
                     // no content....?
                     if (content === pasteBinDefaultContent) {
                         self.pasteAsPlainText = true;
+                    } else {
+                        // is marked as internal paste
+                        internal = internal ? internal : InternalHtml.isMarked(content);
+
+                        clipboardContent['text/html'] = content;
                     }
                 }
 
                 // remove pasteBin and reset rng
                 removePasteBin();
+
+                ed.onGetClipboardContent.dispatch(ed, clipboardContent);
+
+                // get html content
+                content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
 
                 // unmark content
                 content = InternalHtml.unmark(content);
@@ -2372,15 +2350,38 @@
                 // trim
                 content = trimHtml(content);
 
-                if (!internal && isPlainTextPaste(clipboardContent)) {
+                // pasting content into a pre element so encode html first, then insert using setContent
+                if (isPasteInPre()) {
+                    var text = clipboardContent['text/plain'];
+
+                    // encode
+                    text = ed.dom.encode(text);
+
+                    // prefer plain text, otherwise use encoded html
+                    if (content && !text) {
+                        text = ed.dom.encode(content);
+                    }
+
+                    ed.selection.setContent(text, { no_events: true });
+
+                    return true;
+                }
+
+                /*if (!internal && isPlainTextPaste(clipboardContent)) {
                     // set pasteAsPlainText state
                     self.pasteAsPlainText = clipboardContent['text/plain'] == content;
+                }*/
+
+                var isPlainTextHtml = (internal === false && (Newlines.isPlainText(content)));
+
+                // If we got nothing from clipboard API and pastebin or the content is a plain text (with only
+                // some BRs, Ps or DIVs as newlines) then we fallback to plain/text
+                if (!content.length || isPlainTextHtml) {
+                    self.pasteAsPlainText = true;
                 }
 
                 // paste text
                 if (self.pasteAsPlainText) {
-                    isPlainTextHtml = (internal === false && new Newlines().isPlainText(content));
-
                     // Use plain text contents from Clipboard API unless the HTML contains paragraphs then
                     // we should convert the HTML to plain text since works better when pasting HTML/Word contents as plain text
                     if (hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
@@ -2631,44 +2632,6 @@
                 return true;
             }
 
-            function isSafari() {
-                var ua = navigator.userAgent;
-                return ua.indexOf('AppleWebKit') !== -1 && ua.indexOf('Safari') !== -1;
-            }
-
-            function isPlainTextPaste(content) {
-                // CTRL + SHIFT + V or Paste Text dialog
-                if (self.pasteAsPlainText) {
-                    return true;
-                }
-
-                // IE does not support text/plain
-                if (isIE) {
-                    return false;
-                }
-
-                // prefer text/html
-                if (hasContentType(content, "text/html")) {
-                    return false;
-                }
-
-                if (hasContentType(content, "text/plain")) {
-                    // pastebin file data in Gecko leaves a blank "Files" entry and a text/plain entry with the file name
-                    if ("Files" in content) {
-                        return false;
-                    }
-                    
-                    // Safari weirdness...
-                    if (isSafari() && "text/rtf" in content) {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
-
             function pasteImageData(e) {
                 var dataTransfer = e.clipboardData || e.dataTransfer;
 
@@ -2707,6 +2670,10 @@
                 }
 
                 removePasteBin();
+
+                if (!dataTransfer) {
+                    return false;
+                }
 
                 return processItems(dataTransfer.items) || processItems(dataTransfer.files);
             }
@@ -2777,41 +2744,6 @@
                 if (!hasHtmlOrText(clipboardContent) && pasteImageData(e, getLastRng())) {
                     removePasteBin();
                     return;
-                }
-
-                // pasting content into a pre element so encode html first, then insert using setContent
-                if (isPasteInPre()) {
-                    removePasteBin();
-
-                    var html = clipboardContent['text/html'] || '', text = clipboardContent['text/plain'];
-
-                    // encode
-                    text = ed.dom.encode(text);
-
-                    if (html && !text) {
-                        text = ed.dom.encode(html);
-                    }
-
-                    e.preventDefault();
-
-                    ed.selection.setContent(text, { no_events: true });
-
-                    return true;
-                }
-
-                // use plain text (don't return so pastebin is used on Windows?)
-                if (!internal && isPlainTextPaste(clipboardContent)) {
-                    removePasteBin();
-
-                    var text = clipboardContent["text/plain"];
-
-                    // set pasteAsPlainText state
-                    self.pasteAsPlainText = true;
-
-                    pasteText(text);
-                    e.preventDefault();
-
-                    return true;
                 }
 
                 // If clipboard API has HTML then use that directly
