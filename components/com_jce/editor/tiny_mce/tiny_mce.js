@@ -3251,7 +3251,7 @@
         if (!isDefaultPrevented(e) && isSelectionAcrossElements()) {
           applyAttributes = getAttributeApplyFunction();
 
-          setTimeout(editor, function () {
+          setTimeout(function () {
             applyAttributes();
           }, 0);
         }
@@ -39809,6 +39809,11 @@
             return html;
           }
 
+          // process as sourcerer
+          if (html.indexOf('{source') === 0) {
+            return processSourcerer(html);
+          }
+
           // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
           tagName = tagName || 'span';
 
@@ -39830,6 +39835,23 @@
             }
 
             return createShortcodePre(match, tagName);
+          });
+        }
+
+        function processSourcerer(html) {
+          // quick check to see if we should proceed
+          if (html.indexOf('{source') === -1) {
+            return html;
+          }
+
+          // shortcode blocks eg: {source}html{/source}
+          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
+            // already wrapped in a tag
+            if (match.charAt(0) === '<') {
+              return match;
+            }
+
+            return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + ed.dom.encode(match) + '</pre>';
           });
         }
 
@@ -40089,12 +40111,12 @@
 
           if (e.keyCode == VK.ENTER) {
             node = ed.selection.getNode();
-
+            /* Handled by EnterKey perhaps?
             if (node.nodeName === 'PRE') {
               var type = node.getAttribute('data-mce-code') || '';
 
               if (type) {
-                if (type === 'shortcode') {
+                if (type == 'shortcode') {
                   if (e.shiftKey) {
                     ed.execCommand("InsertLineBreak", false, e);
                   } else {
@@ -40107,14 +40129,10 @@
 
                 if (e.altKey || e.shiftKey) {
                   handleEnterInPre(ed, node);
-                } else {
-                  ed.execCommand("InsertLineBreak", false, e);
+                  e.preventDefault();
                 }
-
-                // prevent default action
-                e.preventDefault();
               }
-            }
+            }*/
 
             if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
               handleEnterInPre(ed, node);
@@ -40602,17 +40620,13 @@
 
         ed.onBeforeSetContent.add(function (ed, o) {
           if (ed.settings.code_protect_shortcode) {
+            // process regularlabs sourcerer blocks first
+            o.content = processSourcerer(o.content);
+
             if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
               o.content = processShortcode(o.content);
             }
           }
-
-          /*if (ed.settings.code_protect_shortcode) {
-            // only process content on "load"
-            if (o.content && o.load) {
-              o.content = processShortcode(o.content);
-            }
-          }*/
 
           if (ed.settings.code_allow_custom_xml) {
             // only process content on "load"
