@@ -102,7 +102,7 @@
                 filter: true,
                 max_height: 384,
                 onselect: function (name) {
-                    var matches = [], removedFormat, node = ed.selection.getNode();
+                    var matches = [], removedFormat, node = ed.selection.getNode(), bookmark = ed.selection.getBookmark();
 
                     function isTextSelection() {
                         var rng = ed.selection.getRng();
@@ -146,13 +146,16 @@
 
                     if (!removedFormat) {
                         // registered style format
-                        if (ed.formatter.get(name)) {
-                            //ed.formatter.apply(name, {}, node);
-                            ed.execCommand('ApplyFormat', false, {
-                                name: name,
-                                args: {},
-                                node: node
-                            });
+                        if (ed.formatter.get(name)) {                            
+                            if (ed.formatter.match(name)) {
+                                ed.formatter.remove(name);
+                            } else {
+                                ed.execCommand('ApplyFormat', false, {
+                                    name: name,
+                                    args: {},
+                                    node: node
+                                });
+                            }
                             // custom class
                         } else {
                             node = ed.selection.getNode();
@@ -162,7 +165,6 @@
                                 // fire nodechange on custom format
                                 ed.nodeChanged();
                             } else {
-                                //ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
                                 ed.execCommand('ApplyFormat', false, {
                                     name: 'classname',
                                     args: { 'value': name },
@@ -174,6 +176,8 @@
                             ctrl.add(name, name);
                         }
                     }
+
+                    ed.selection.moveToBookmark(bookmark);
 
                     ed.undoManager.add();
 
