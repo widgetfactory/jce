@@ -40624,7 +40624,7 @@
           }
         });
 
-        ed.onBeforeSetContent.add(function (ed, o) {        
+        ed.onBeforeSetContent.add(function (ed, o) {
           if (ed.settings.code_protect_shortcode) {
             // process regularlabs sourcerer blocks first
             o.content = processSourcerer(o.content);
@@ -40699,11 +40699,16 @@
               // decode content
               content = ed.dom.decode(content);
 
-              // replace linebreaks with newline
-              content = content.replace(/<br[^>]*?>/gi, '\n');
+              // get element from match
+              var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
+
+              // replace linebreaks with newline in some blocks
+              if (type != 'script') {
+                content = content.replace(/<br[^>]*?>/gi, '\n');
+              }
 
               // remove and replace <?php?> tags
-              if (attr.indexOf('data-mce-code="php"') !== -1) {
+              if (type == 'php') {
                 content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
                 content = '<?php\n' + tinymce.trim(content) + '\n?>';
               }
