@@ -188,6 +188,8 @@
             return match;
           }
 
+          match = ed.dom.decode(match);
+
           return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + ed.dom.encode(match) + '</pre>';
         });
       }
@@ -369,6 +371,10 @@
        * @param {String} tag
        */
       function createShortcodePre(data, tag) {
+        // decode data before re-encoding
+        data = ed.dom.decode(data);
+
+        // replace newlines with linebreaks
         data = data.replace(/[\n\r]/gi, '<br />');
 
         return ed.dom.createHTML(tag || 'pre', {
@@ -955,7 +961,7 @@
         }
       });
 
-      ed.onBeforeSetContent.add(function (ed, o) {
+      ed.onBeforeSetContent.add(function (ed, o) {        
         if (ed.settings.code_protect_shortcode) {
           // process regularlabs sourcerer blocks first
           o.content = processSourcerer(o.content);
