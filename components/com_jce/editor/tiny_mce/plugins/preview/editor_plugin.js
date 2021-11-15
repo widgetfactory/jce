@@ -130,7 +130,7 @@
                 html += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
 
                 if (s.compress.css) {
-                    css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&layout=preview&' + s.query];
+                    css = [s.site_url + 'index.php?option=com_jce&task=editor.pack&type=css&slot=preview&' + s.query];
                 } else {
                     css = tinymce.explode(s.content_css);
                 }

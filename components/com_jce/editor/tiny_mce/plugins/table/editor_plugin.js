@@ -1929,7 +1929,7 @@
                 },
                 mceTableRowProps: function () {
                     winMan.open({
-                        url: url + '&layout=row',
+                        url: url + '&slot=row',
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
@@ -1938,7 +1938,7 @@
                 },
                 mceTableCellProps: function () {
                     winMan.open({
-                        url: url + '&layout=cell',
+                        url: url + '&slot=cell',
                         size: 'mce-modal-landscape-xlarge'
                     }, {
                         plugin_url: url,
