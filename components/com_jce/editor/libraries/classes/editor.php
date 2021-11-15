@@ -227,7 +227,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // assign skin - new default is "modern"
-        $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'default');
+        $settings['skin'] = $wf->getParam('editor.toolbar_theme', 'modern');
 
         if (empty($settings['skin'])) {
             $settings['skin'] = 'modern';
@@ -243,7 +243,7 @@ class WFEditor
         }
 
         if ($settings['skin'] == 'mobile') {
-            $settings['skin'] = 'default';
+            $settings['skin'] = 'modern';
             $settings['skin_variant'] = 'touch';
         }
     }
@@ -1428,9 +1428,9 @@ class WFEditor
 
                 break;
             case 'css':
-                $layout = $wf->input->getWord('layout', 'editor');
+                $slot = $wf->input->getCmd('slot', 'editor');
 
-                if ($layout == 'content') {
+                if ($slot == 'content') {
                     $files = array();
 
                     $files[] = WF_EDITOR_THEMES . '/' . $themes[0] . '/skins/' . $skin . '/content.css';
@@ -1460,7 +1460,7 @@ class WFEditor
                             $files[] = $content;
                         }
                     }
-                } elseif ($layout == 'preview') {
+                } elseif ($slot == 'preview') {
                     $files = array();
                     $files[] = WF_EDITOR_PLUGINS . '/preview/css/preview.css';
                     // get template stylesheets
