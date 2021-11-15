@@ -10,7 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php');
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
  * JCE class.
@@ -77,35 +77,25 @@ class WFApplication extends JObject
 
     protected function getComponent($id = null, $option = null)
     {
-        $component = JTable::getInstance('extension');
+        if ($id) {
+            $components = JComponentHelper::getComponents();
 
-        // find component by option
-        if (empty($id) && $option) {
-            $id = $component->find(array('type' => 'component', 'element' => $option));
+            foreach ($components as $option => $component) {
+                if ($id == $component->id) {
+                    return $component;
+                }
+            }
         }
 
-        // load component
-        $component->load($id);
-
-        return $component;
+        return JComponentHelper::getComponent($option);
     }
 
     public function getContext()
     {
         $option = JFactory::getApplication()->input->getCmd('option');
-        $extension = $this->getComponent(null, $option);
+        $component = JComponentHelper::getComponent($option, true);
 
-        $extension_id = 0;
-
-        if (isset($extension->extension_id)) {
-            return $extension->extension_id;
-        }
-
-        if (isset($extension->id)) {
-            return $extension->id;
-        }
-
-        return 0;
+        return $component->id;
     }
 
     private function getProfileVars()
@@ -116,9 +106,9 @@ class WFApplication extends JObject
 
         $settings = array(
             'option' => $option,
-            'area'   => 2,
+            'area' => 2,
             'device' => 'desktop',
-            'groups' => array()
+            'groups' => array(),
         );
 
         // find the component if this is called from within the JCE component
@@ -126,12 +116,12 @@ class WFApplication extends JObject
             $context = $app->input->getInt('context');
 
             if ($context) {
-                
+
                 if ($context === 'mediafield') {
                     $settings['option'] = 'mediafield';
                 } else {
                     $component = $this->getComponent($context);
-                    $settings['option'] = $component->element;
+                    $settings['option'] = $component->option;
                 }
             }
 
@@ -341,7 +331,7 @@ class WFApplication extends JObject
         if ($plugin) {
             // optional caller, eg: Link
             $caller = '';
-            
+
             // get name and caller from plugin name
             if (strpos($plugin, '.') !== false) {
                 list($plugin, $caller) = explode('.', $plugin);
@@ -430,10 +420,10 @@ class WFApplication extends JObject
         $value = $params->get($key);
 
         // key not present in params or was empty string or empty array (JRegistry returns null), use fallback value
-        if (self::isEmptyValue($value)) {            
+        if (self::isEmptyValue($value)) {
             // set default as empty string
             $value = '';
-            
+
             // key does not exist (parameter was not set) - use fallback
             if ($params->exists($key) === false) {
                 $value = $fallback;
@@ -445,7 +435,7 @@ class WFApplication extends JObject
                     // reset $default to prevent clearing
                     $default = '';
                 }
-            // parameter is set, but is empty, but fallback is not (inherited values)
+                // parameter is set, but is empty, but fallback is not (inherited values)
             } else if ($fallback != '') {
                 $value = $fallback;
             }
