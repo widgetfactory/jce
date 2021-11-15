@@ -165,7 +165,7 @@ WFAggregator.add('vimeo', {
             });
         } else {
             // process default values
-            var id = '', hash = '', matches = /vimeo\.com\/(?:\w+)?\/?([0-9]+)(?:\/|\?h=)?([a-z0-9]+)?/.exec(src);
+            var id = '', hash = '', matches = /vimeo\.com\/(?:\w+\/){0,2}([0-9]+)(?:\/|\?h=)?([a-z0-9]+)?/.exec(src);
 
             if (matches && tinymce.is(matches, 'array')) {
                 var id = matches[1];
