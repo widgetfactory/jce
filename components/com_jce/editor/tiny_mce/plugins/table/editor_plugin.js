@@ -1851,7 +1851,7 @@
 
                     if (!ed.dom.select('td.mceSelected,th.mceSelected').length) {
                         winMan.open({
-                            url: url + '&layout=merge',
+                            url: url + '&slot=merge',
                             width: 240 + parseInt(ed.getLang('table.merge_cells_delta_width', 0), 10),
                             height: 170 + parseInt(ed.getLang('table.merge_cells_delta_height', 0), 10),
                             inline: 1,

@@ -21,7 +21,7 @@ class WFTablePlugin extends WFEditorPlugin
 
     public function getLayout()
     {
-        return JFactory::getApplication()->input->getWord('layout', 'table');
+        return JFactory::getApplication()->input->getCmd('slot', 'table');
     }
 
     /**

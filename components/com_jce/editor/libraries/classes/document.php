@@ -474,8 +474,8 @@ class WFDocument extends JObject
 
         $query['plugin'] = $name;
 
-        // set layout
-        $query['layout'] = $app->input->getCmd('layout');
+        // set slot
+        $query['slot'] = $app->input->getCmd('slot');
 
         // set standalone mode (for File Browser etc)
         $query['standalone'] = $this->get('standalone');
