@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+/* global $, WFAggregator, Wf */
+
+
 WFAggregator.add('vimeo', {
     /**
      * Parameter Object
@@ -95,11 +98,18 @@ WFAggregator.add('vimeo', {
         if (args.clip_id) {
             id = args.clip_id;
         } else {
-            var s = /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.exec(src);
+            // process default values
+            var id = '', hash = '', matches = /vimeo\.com\/([0-9]+)\/?([a-z0-9]+)?/.exec(src);
 
-            if (s && $.type(s) === "array") {
-                id = s.pop();
+            if (matches && tinymce.is(matches, 'array')) {
+                var id = matches[1];
+                
+                if (matches.length > 2) {
+                    hash = matches[2];
+                }
             }
+
+            id = id + (hash ? '?h=' + hash : '');
         }
 
         src = 'https://player.vimeo.com/video/' + id;
@@ -141,27 +151,34 @@ WFAggregator.add('vimeo', {
 
         // legacy embed method
         if (/moogaloop.swf/.test(src)) {
-            data['vimeo_embed'] = true;
+            data.vimeo_embed = true;
 
             // get id from clip_id
-            id = query['clip_id'];
+            id = query.clip_id;
 
             // delete clip_id
-            delete query['clip_id'];
-            delete data['clip_id'];
+            delete query.clip_id;
+            delete data.clip_id;
 
             $.each(['portrait', 'title', 'byline'], function (i, s) {
                 delete data['show_' + s];
             });
         } else {
-            var s = /vimeo\.com\/(\w+\/)?(\w+\/)?([0-9]+)/.exec(src);
+            // process default values
+            var id = '', hash = '', matches = /vimeo\.com\/(?:\w+)?\/?([0-9]+)(?:\/|\?h=)?([a-z0-9]+)?/.exec(src);
 
-            if (s && $.type(s) === "array") {
-                id = s.pop();
+            if (matches && tinymce.is(matches, 'array')) {
+                var id = matches[1];
+                
+                if (matches.length > 2) {
+                    hash = matches[2];
+                }
             }
+
+            id = id + (hash ? '/' + hash : '');
         }
 
-        $.each(query, function(key, val) {
+        $.each(query, function (key, val) {
             // skip default
             if (self.props[key] === val) {
                 return true;
@@ -170,7 +187,7 @@ WFAggregator.add('vimeo', {
             if (key == 'color' && val.charAt(0) !== '#') {
                 val = '#' + val;
             }
-            
+
             data['vimeo_' + key] = val;
         });
 
