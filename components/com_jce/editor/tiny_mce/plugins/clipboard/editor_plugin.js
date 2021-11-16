@@ -1539,6 +1539,8 @@
 
     pasteBinElm.focus();
     editor.selection.select(pasteBinElm, true);
+
+    return lastRng;
   };
 
   /**
@@ -1610,16 +1612,13 @@
     return pasteBinElm ? pasteBinElm.innerHTML : '';
   };
 
-
   var getLastRng = function (lastRng) {
     return lastRng;
   };
 
-
   var isDefaultContent = function (pasteBinDefaultContent, content) {
     return content === pasteBinDefaultContent;
   };
-
 
   var isPasteBin = function (elm) {
     return elm && elm.id === 'mcepastebin';
@@ -1636,7 +1635,7 @@
 
     return {
       create: function () {
-        return create(editor, lastRng, pasteBinDefaultContent);
+        lastRng = create(editor, lastRng, pasteBinDefaultContent);
       },
       remove: function () {
         return remove(editor, lastRng);

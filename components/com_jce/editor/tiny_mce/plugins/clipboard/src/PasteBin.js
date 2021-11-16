@@ -105,6 +105,8 @@ var create = function (editor, lastRng, pasteBinDefaultContent) {
 
   pasteBinElm.focus();
   editor.selection.select(pasteBinElm, true);
+
+  return lastRng;
 };
 
 /**
@@ -176,16 +178,13 @@ var getHtml = function (editor) {
   return pasteBinElm ? pasteBinElm.innerHTML : '';
 };
 
-
 var getLastRng = function (lastRng) {
   return lastRng;
 };
 
-
 var isDefaultContent = function (pasteBinDefaultContent, content) {
   return content === pasteBinDefaultContent;
 };
-
 
 var isPasteBin = function (elm) {
   return elm && elm.id === 'mcepastebin';
@@ -202,7 +201,7 @@ export var PasteBin = function (editor) {
 
   return {
     create: function () {
-      return create(editor, lastRng, pasteBinDefaultContent);
+      lastRng = create(editor, lastRng, pasteBinDefaultContent);
     },
     remove: function () {
       return remove(editor, lastRng);
