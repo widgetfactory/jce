@@ -15,7 +15,7 @@ import * as Newlines from './Newlines';
 import * as InternalHtml from './InternalHtml';
 import * as Utils from './Utils';
 import * as WordFilter from './WordFilter';
-import { PasteBin } from './PasteBin.js';
+import PasteBin from './PasteBin.js';
 
 var each = tinymce.each,
     VK = tinymce.VK,

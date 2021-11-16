@@ -196,7 +196,7 @@ var isDefault = function (editor, pasteBinDefaultContent) {
   return isPasteBin(pasteBinElm) && isDefaultContent(pasteBinElm.innerHTML);
 };
 
-export var PasteBin = function (editor) {
+export default function (editor) {
   var lastRng, pasteBinDefaultContent = '%MCEPASTEBIN%';
 
   return {
@@ -222,4 +222,4 @@ export var PasteBin = function (editor) {
       return isDefaultContent(pasteBinDefaultContent, content);
     }
   };
-};
+}

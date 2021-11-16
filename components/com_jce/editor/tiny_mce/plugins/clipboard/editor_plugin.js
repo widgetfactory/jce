@@ -1630,7 +1630,7 @@
     return isPasteBin(pasteBinElm) && isDefaultContent(pasteBinElm.innerHTML);
   };
 
-  var PasteBin = function (editor) {
+  function PasteBin (editor) {
     var lastRng, pasteBinDefaultContent = '%MCEPASTEBIN%';
 
     return {
@@ -1656,7 +1656,7 @@
         return isDefaultContent(pasteBinDefaultContent, content);
       }
     };
-  };
+  }
 
   /**
    * @package   	JCE
