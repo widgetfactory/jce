@@ -16,8 +16,8 @@ class JceViewPopup extends JViewLegacy
         $app = JFactory::getApplication();
         $document = JFactory::getDocument();
 
-        $document->addScript(JURI::root(true) . '/components/com_jce/media/js/popup.js');
-        $document->addStylesheet(JURI::root(true) . '/components/com_jce/media/css/popup.css');
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/popup.min.js');
+        $document->addStylesheet(JURI::root(true) . '/media/com_jce/css/popup.min.css');
 
         // Get variables
         $img    = $app->input->get('img', '', 'STRING');

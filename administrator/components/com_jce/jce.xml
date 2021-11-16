@@ -12,16 +12,17 @@
 
     <files folder="components/com_jce">
         <folder>editor</folder>
-        <folder>media</folder>
         <folder>views</folder>
         <!--file>index.html</file-->
         <file>jce.php</file>
         <file>licence.txt</file>
     </files>
 
-    <!-- Media -->
-    <media folder="media/jce" destination="jce">
-        <folder>icons</folder>
+    <!-- Component Media -->
+    <media folder="media/com_jce" destination="com_jce">
+        <folder>css</folder>
+        <folder>img</folder>
+        <folder>js</folder>
     </media>
 
     <languages folder="language/en-GB">
@@ -43,7 +44,7 @@
     </install>
 
     <administration>
-        <menu view="cpanel" img="components/com_jce/media/img/logo.svg" link="option=com_jce">COM_JCE</menu>
+        <menu view="cpanel" img="media/com_jce/img/logo.svg" link="option=com_jce">COM_JCE</menu>
 
         <submenu>
             <menu view="cpanel" link="option=com_jce">COM_JCE_MENU_CPANEL</menu>
@@ -57,7 +58,6 @@
             <folder>helpers</folder>
             <folder>includes</folder>
             <folder>layouts</folder>
-            <folder>media</folder>
             <folder>models</folder>
             <folder>sql</folder>
             <folder>tables</folder>

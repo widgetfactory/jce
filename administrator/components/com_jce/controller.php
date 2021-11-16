@@ -125,7 +125,7 @@ class JceController extends JControllerLegacy
                 JceHelperAdmin::addSubmenu($vName);
             }
 
-            $document->addStyleSheet('components/com_jce/media/css/global.min.css?' . md5(WF_VERSION));
+            $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/global.min.css?' . md5(WF_VERSION));
 
             $view->display();
         }

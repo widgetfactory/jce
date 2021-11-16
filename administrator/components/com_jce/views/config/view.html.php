@@ -33,7 +33,7 @@ class JceViewConfig extends JViewLegacy
         $this->addToolbar();
         parent::display($tpl);
 
-        $document->addScript('components/com_jce/media/js/core.min.js?' . md5(WF_VERSION));
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/core.min.js?' . md5(WF_VERSION));
     }
 
     /**

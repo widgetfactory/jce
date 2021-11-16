@@ -56,8 +56,8 @@ class JceViewProfiles extends JViewLegacy
         }
 
         $document = JFactory::getDocument();
-        $document->addScript('components/com_jce/media/js/profiles.min.js');
-        $document->addStyleSheet('components/com_jce/media/css/profiles.min.css');
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/profiles.min.js');
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/profiles.min.css');
 
         $this->addToolbar();
         $this->sidebar = JHtmlSidebar::render();

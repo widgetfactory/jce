@@ -32,7 +32,7 @@ class JceViewBrowser extends JViewLegacy
         JHtml::_('jquery.framework');
 
         $document = JFactory::getDocument();
-        $document->addStyleSheet('components/com_jce/media/css/browser.min.css');
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/browser.min.css');
 
         $this->addToolbar();
 

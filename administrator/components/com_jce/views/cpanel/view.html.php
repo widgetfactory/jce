@@ -31,8 +31,8 @@ class JceViewCpanel extends JViewLegacy
         JHtml::_('jquery.framework');
 
         $document = JFactory::getDocument();
-        $document->addScript('components/com_jce/media/js/cpanel.min.js');
-        $document->addStyleSheet('components/com_jce/media/css/cpanel.min.css');
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/cpanel.min.js');
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/cpanel.min.css');
 
         $this->addToolbar();
         $this->sidebar = JHtmlSidebar::render();
