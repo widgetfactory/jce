@@ -100,9 +100,9 @@
           var tagName;
 
           // an empty block container, so insert as <pre>
-          if (node && ed.dom.isEmpty(node)) {
+          /*if (node && ed.dom.isEmpty(node)) {
             tagName = 'pre';
-          }
+          }*/
 
           value = processShortcode(value, tagName);
         }

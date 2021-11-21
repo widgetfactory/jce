@@ -39763,9 +39763,9 @@
             var tagName;
 
             // an empty block container, so insert as <pre>
-            if (node && ed.dom.isEmpty(node)) {
+            /*if (node && ed.dom.isEmpty(node)) {
               tagName = 'pre';
-            }
+            }*/
 
             value = processShortcode(value, tagName);
           }
@@ -40599,7 +40599,7 @@
                   return;
                 }
 
-                value = processOnInsert(text, node);
+                value = processOnInsert(text);
 
                 // update with processed text
                 if (value !== text) {
