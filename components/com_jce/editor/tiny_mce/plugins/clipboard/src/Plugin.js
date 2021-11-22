@@ -501,7 +501,7 @@ function convertURLs(ed, content) {
     var ex = '([-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~]+@[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~]+\.[-!#$%&\'*+\\./0-9=?A-Z^_`a-z{|}~]+)';
     var ux = '((?:news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
 
-    var attribRe = '(?:(?:href|src|poster|data|value|srcset|longdesc|usemap|cite|classid|codebase)=["\'])'; // match attribute before url, eg: href="url"
+    var attribRe = '(?:(?:[a-z0-9_-]+)=["\'])'; // match attribute before url, eg: href="url"
     var bracketRe = '(?:\{|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
     function createLink(url) {
@@ -544,7 +544,7 @@ function convertURLs(ed, content) {
         content = wrapContent(content);
 
         // find and link url if not already linked
-        content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
+        content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {            
             if (extra) {
                 return match;
             }
