@@ -873,9 +873,6 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                 if (pasteBin.isDefaultContent(content)) {
                     self.pasteAsPlainText = true;
                 } else {
-                    // is marked as internal paste
-                    internal = internal ? internal : InternalHtml.isMarked(content);
-
                     clipboardContent['text/html'] = content;
                 }
             }
@@ -887,6 +884,9 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
             // get html content
             content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
+
+            // mark as internal
+            internal = internal ? internal : InternalHtml.isMarked(content);
 
             // unmark content
             content = InternalHtml.unmark(content);

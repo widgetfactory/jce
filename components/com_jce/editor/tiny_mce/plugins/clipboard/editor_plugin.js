@@ -2525,9 +2525,6 @@
                   if (pasteBin.isDefaultContent(content)) {
                       self.pasteAsPlainText = true;
                   } else {
-                      // is marked as internal paste
-                      internal = internal ? internal : isMarked(content);
-
                       clipboardContent['text/html'] = content;
                   }
               }
@@ -2539,6 +2536,9 @@
 
               // get html content
               content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'];
+
+              // mark as internal
+              internal = internal ? internal : isMarked(content);
 
               // unmark content
               content = unmark(content);
