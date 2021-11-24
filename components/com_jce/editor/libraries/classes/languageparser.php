@@ -16,6 +16,8 @@ class WFLanguageParser extends JObject
     protected $plugins = array();
     protected $sections = array();
 
+    protected $language = 'en-GB';
+
     /**
      * Cache of processed data.
      *
@@ -33,6 +35,10 @@ class WFLanguageParser extends JObject
 
         if (array_key_exists('sections', $config)) {
             $config['sections'] = (array) $config['sections'];
+        }
+
+        if (array_key_exists('language', $config)) {
+            $config['language'] = $config['language'];
         }
 
         $this->setProperties($config);
@@ -312,10 +318,9 @@ class WFLanguageParser extends JObject
 
     public function load($files = array())
     {
-        // get the language file
-        $language = JFactory::getLanguage();
         // get language tag
-        $tag = $language->getTag();
+        $tag = $this->language;
+        
         // base language path
         $path = JPATH_SITE . '/language/' . $tag;
 

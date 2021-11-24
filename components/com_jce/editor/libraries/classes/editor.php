@@ -318,6 +318,16 @@ class WFEditor
         return $language->isRTL() ? 'rtl' : 'ltr';
     }
 
+    protected function getLanguageCode()
+    {
+        return WFLanguage::getCode();
+    }
+
+    protected function getLanguageTag()
+    {
+        return WFLanguage::getTag();
+    }
+
     public function getSettings()
     {
         // get an editor instance
@@ -335,7 +345,7 @@ class WFEditor
         $settings = array(
             'token' => JSession::getFormToken(),
             'base_url' => JURI::root(),
-            'language' => WFLanguage::getCode(),
+            'language' => $this->getLanguageCode(),
             'directionality' => $this->getLanguageDirection(),
             'theme' => 'none',
             'plugins' => '',
@@ -1504,7 +1514,7 @@ class WFEditor
 
     public function loadlanguages()
     {
-        $parser = new WFLanguageParser(array('plugins' => $this->getPlugins()));
+        $parser = new WFLanguageParser(array('language' => $this->getLanguageTag(), 'plugins' => $this->getPlugins()));
         $data = $parser->load();
         $parser->output($data);
     }

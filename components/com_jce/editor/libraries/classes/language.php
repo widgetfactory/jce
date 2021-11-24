@@ -10,12 +10,16 @@
  */
 abstract class WFLanguage
 {
-    protected static $tag;
+    /* Map language code to generic tag */
+    protected static $map = array(
+        'de' => 'de-DE',
+        'fr' => 'fr-FR',
+    );
 
     /*
-     * Check a lnagueg file exists and is the correct version
+     * Check a language file exists and is the correct version
      */
-    protected static function check($tag)
+    protected static function isValid($tag)
     {
         return file_exists(JPATH_SITE . '/language/' . $tag . '/' . $tag . '.com_jce.ini');
     }
@@ -27,16 +31,6 @@ abstract class WFLanguage
      */
     public static function getDir()
     {
-        /*$language = JFactory::getLanguage();
-
-        $tag = self::getTag();
-
-        if ($language->getTag() == $tag) {
-            return $language->isRTL() ? 'rtl' : 'ltr';
-        }
-
-        return 'ltr';*/
-
         return JFactory::getLanguage()->isRTL() ? 'rtl' : 'ltr';
     }
 
@@ -49,15 +43,17 @@ abstract class WFLanguage
     {
         $tag = JFactory::getLanguage()->getTag();
 
-        if (!isset(self::$tag)) {
-            if (self::check($tag)) {
-                self::$tag = $tag;
-            } else {
-                self::$tag = 'en-GB';
-            }
+        $code = substr($tag, 0, strpos($tag, '-'));
+
+        if (array_key_exists($code, self::$map)) {
+            $tag = self::$map[$code];
         }
 
-        return self::$tag;
+        if (false == self::isValid($tag)) {
+            return 'en-GB';
+        }
+
+        return $tag;
     }
 
     /**
