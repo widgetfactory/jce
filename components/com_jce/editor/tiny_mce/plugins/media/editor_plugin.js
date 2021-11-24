@@ -456,6 +456,16 @@
             node.attr('autoplay', null);
         }
 
+        if (name == 'iframe' && node.attr('src')) {
+            var src = node.attr('src');
+
+            // store original src
+            node.attr('data-mce-p-src', src);
+
+            // remove autoplay
+            node.attr('src', src.replace('autoplay=1', 'autoplay=0'));
+        }
+
         var canResize = function (node) {
             if (node.name === 'video') {
                 return 'proportional';
@@ -1113,6 +1123,12 @@
                 return true;
             }
 
+            if (nodeName == 'iframe' && name == 'src') {
+                attribs['data-mce-p-' + name] = value;
+                // reset autoplay
+                value = value.replace('autoplay=1', 'autoplay=1');
+            }
+
             attribs[name] = value;
         });
 
@@ -1232,9 +1248,9 @@
             var settings = ed.settings;
 
             var alignStylesMap = {
-                left : { float: 'left' },
-                center : { 'display' : 'block', 'margin-left' : 'auto', 'margin-right' : 'auto' },
-                right : { float: 'right' }
+                left: { float: 'left' },
+                center: { 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' },
+                right: { float: 'right' }
             };
 
             each(['left', 'right', 'center'], function (align) {
@@ -1247,7 +1263,7 @@
                     onformat: function (elm) {
                         ed.dom.setStyles(ed.dom.select('iframe,video,audio', elm), alignStylesMap[align]);
                     },
-                    onremove : function (elm) {
+                    onremove: function (elm) {
                         each(alignStylesMap[align], function (val, key) {
                             ed.dom.setStyle(ed.dom.select('iframe,video,audio', elm), key, null);
                         });

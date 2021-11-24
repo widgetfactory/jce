@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global $, WFAggregator, Wf */
+
 WFAggregator.add('youtube', {
     /**
      * Parameter Object
@@ -28,26 +31,24 @@ WFAggregator.add('youtube', {
         end: '',
         privacy: 0
     },
-    setup: function() {
-        var self = this;
-        
+    setup: function () {
         $.each(this.params, function (k, v) {
             $('#youtube_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
     },
-    getTitle: function() {
+    getTitle: function () {
         return this.title || this.name;
     },
     /**
      * Get the Media type
      */
-    getType: function() {
+    getType: function () {
         return $('#youtube_embed:visible').is(':checked') ? 'flash' : 'iframe';
     },
     /**
      * Check whether a media type is supported
      */
-    isSupported: function(v) {
+    isSupported: function (v) {
         if (typeof v == 'object') {
             v = v.src || v.data || '';
         }
@@ -58,7 +59,7 @@ WFAggregator.add('youtube', {
 
         return false;
     },
-    getValues: function(src) {
+    getValues: function (src) {
         var self = this,
             data = {},
             args = {},
@@ -79,7 +80,7 @@ WFAggregator.add('youtube', {
         // ssl url
         src = src.replace(/^(http:)?\/\//, 'https://');
 
-        $(':input', '#youtube_options').not('#youtube_embed, #youtube_https, #youtube_privacy').each(function() {
+        $(':input', '#youtube_options').not('#youtube_embed, #youtube_https, #youtube_privacy').each(function () {
             var k = $(this).attr('id'),
                 v = $(this).val();
 
@@ -103,14 +104,14 @@ WFAggregator.add('youtube', {
         });
 
         // process src
-        src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
+        src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
             d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
 
             if (b && !c) {
                 c = '.com';
             }
 
-            id = d.replace(/([^\?&#]+)/, function($0, $1) {
+            id = d.replace(/([^\?&#]+)/, function ($0, $1) {
                 return $1;
             });
 
@@ -143,7 +144,7 @@ WFAggregator.add('youtube', {
             });
         }
 
-        $('.uk-repeatable', '#youtube_params').each(function() {
+        $('.uk-repeatable', '#youtube_params').each(function () {
             var key = $('input[name^="youtube_params_name"]', this).val();
             var value = $('input[name^="youtube_params_value"]', this).val();
 
@@ -168,11 +169,11 @@ WFAggregator.add('youtube', {
      * Parse the Youtube URI into component parts
      * https://github.com/tinymce/tinymce/blob/master/js/tinymce/classes/util/URI.js
      */
-    parseURL: function(url) {
+    parseURL: function (url) {
         var o = {};
 
         url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
-        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function(i, v) {
+        $.each(["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"], function (i, v) {
             var s = url[i];
             if (s) {
                 o[v] = s;
@@ -181,7 +182,7 @@ WFAggregator.add('youtube', {
 
         return o;
     },
-    setValues: function(data) {
+    setValues: function (data) {
         var self = this, id = '',
             src = data.src || data.data || '',
             query = {};
@@ -204,7 +205,7 @@ WFAggregator.add('youtube', {
         src = 'https://' + u.host + '' + u.path;
 
         if (src.indexOf('youtube-nocookie') !== -1) {
-            data['youtube_privacy'] = 1;
+            data.youtube_privacy = 1;
         }
 
         if (query.v) {
@@ -219,16 +220,22 @@ WFAggregator.add('youtube', {
         }
 
         // process values
-        $.each(query, function(key, val) {
+        $.each(query, function (key, val) {
             try {
                 val = decodeURIComponent(val);
-            } catch (e) {}
-    
+            } catch (e) { 
+                // error
+            }
+
+            if (key == 'autoplay') {
+                val = parseInt(val, 10);
+            }
+
             // skip playlist if it is the same as the id
             if (key == 'playlist' && val == id) {
                 return true;
             }
-    
+
             // skip wmode
             if (key == 'wmode') {
                 return true;
@@ -245,7 +252,7 @@ WFAggregator.add('youtube', {
         });
 
         // process url
-        src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function(a, b, c, d) {
+        src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
             var args = 'youtube';
 
             if (b) {
@@ -277,11 +284,11 @@ WFAggregator.add('youtube', {
 
         return data;
     },
-    getAttributes: function(src) {
+    getAttributes: function (src) {
         var args = {},
             data = this.setValues({ src: src }) || {};
 
-        $.each(data, function(k, v) {
+        $.each(data, function (k, v) {
             if (k === "src") {
                 return;
             }
@@ -297,9 +304,9 @@ WFAggregator.add('youtube', {
 
         return args;
     },
-    setAttributes: function() {
+    setAttributes: function () {
 
     },
-    onSelectFile: function() {},
-    onInsert: function() {}
+    onSelectFile: function () { },
+    onInsert: function () { }
 });

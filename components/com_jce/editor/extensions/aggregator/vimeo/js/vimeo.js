@@ -190,6 +190,10 @@ WFAggregator.add('vimeo', {
                 val = '#' + val;
             }
 
+            if (key == 'autoplay') {
+                val = parseInt(val, 10);
+            }
+
             data['vimeo_' + key] = val;
         });
 
