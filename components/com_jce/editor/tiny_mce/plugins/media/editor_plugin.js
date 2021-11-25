@@ -1242,6 +1242,36 @@
                     convertPlaceholderToMedia(ed, node);
                 }
             });
+
+            function objectActivate(ed, e) {
+                var node = ed.dom.getParent(e.target, '.mce-object-preview');
+
+                if (node) {
+                    ed.selection.select(node);
+
+                    if (ed.dom.getAttrib(node, 'data-mce-selected')) {
+                        node.setAttribute('data-mce-selected', '2');
+                    }
+                    
+                    if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
+                        previewToPlaceholder(ed, node);
+                    }
+
+                    // prevent bubbling up to DragDropOverrides
+                    e.stopImmediatePropagation();
+
+                    e.preventDefault();
+
+                    return;        
+                }
+            }
+
+            ed.onMouseDown.addToTop(objectActivate);
+            ed.onKeyDown.addToTop(objectActivate);
+
+            ed.dom.bind(ed.getDoc(), 'touchstart', function (e) {
+                objectActivate(ed, e);
+            });
         });
 
         ed.onInit.add(function () {
@@ -1332,26 +1362,7 @@
                 ed.dom.setStyles(elm, { 'width': width, 'height': height });
             });
 
-            ed.dom.bind(ed.getDoc(), 'mousedown touchstart keydown', function (e) {
-                var node = ed.dom.getParent(e.target, '.mce-object-preview');
-
-                if (node) {
-                    ed.selection.select(node);
-
-                    window.setTimeout(function () {
-                        node.setAttribute('data-mce-selected', '2');
-                    }, 100);
-
-                    // prevent bubbling up to DragDropOverrides
-                    e.stopImmediatePropagation();
-
-                    if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
-                        return previewToPlaceholder(ed, node);
-                    }
-
-                    return;
-                }
-            });
+           
 
             ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
                 var node = ed.selection.getNode();
