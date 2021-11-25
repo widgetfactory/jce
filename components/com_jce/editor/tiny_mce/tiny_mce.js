@@ -14769,7 +14769,7 @@
         }
 
         if ($lastVisualCaret) {
-          $lastVisualCaret.remove();
+          DOM.remove($lastVisualCaret);
           $lastVisualCaret = null;
         }
 
@@ -29410,19 +29410,19 @@
    */
 
   (function (tinymce) {
-    var each = tinymce.each;
+  	var each = tinymce.each;
 
-    /**
+  	/**
   	 * Creates all event dispatcher instances for the editor instance and also adds
   	 * passthoughs for legacy callback handlers.
   	 */
-    tinymce.Editor.prototype.setupEvents = function () {
-      var self = this,
-        settings = self.settings;
+  	tinymce.Editor.prototype.setupEvents = function () {
+  		var self = this,
+  			settings = self.settings;
 
-      // Add events to the editor
-      each([
-        /**
+  		// Add events to the editor
+  		each([
+  			/**
   			 * Fires before the initialization of the editor.
   			 *
   			 * @event onPreInit
@@ -29439,9 +29439,9 @@
   			 *    }
   			 * });
   			 */
-        'onPreInit',
+  			'onPreInit',
 
-        /**
+  			/**
   			 * Fires before the initialization of the editor.
   			 *
   			 * @event onBeforeRenderUI
@@ -29457,9 +29457,9 @@
   			 *    }
   			 * });
   			 */
-        'onBeforeRenderUI',
+  			'onBeforeRenderUI',
 
-        /**
+  			/**
   			 * Fires after the rendering has completed.
   			 *
   			 * @event onPostRender
@@ -29475,9 +29475,9 @@
   			 *    }
   			 * });
   			 */
-        'onPostRender',
+  			'onPostRender',
 
-        /**
+  			/**
   			 * Fires when the onload event on the body occurs.
   			 *
   			 * @event onLoad
@@ -29493,9 +29493,9 @@
   			 *    }
   			 * });
   			 */
-        'onLoad',
+  			'onLoad',
 
-        /**
+  			/**
   			 * Fires after the initialization of the editor is done.
   			 *
   			 * @event onInit
@@ -29512,9 +29512,9 @@
   			 *    }
   			 * });
   			 */
-        'onInit',
+  			'onInit',
 
-        /**
+  			/**
   			 * Fires when the editor instance is removed from page.
   			 *
   			 * @event onRemove
@@ -29530,9 +29530,9 @@
   			 *    }
   			 * });
   			 */
-        'onRemove',
+  			'onRemove',
 
-        /**
+  			/**
   			 * Fires when the editor is activated.
   			 *
   			 * @event onActivate
@@ -29548,9 +29548,9 @@
   			 *    }
   			 * });
   			 */
-        'onActivate',
+  			'onActivate',
 
-        /**
+  			/**
   			 * Fires when the editor is deactivated.
   			 *
   			 * @event onDeactivate
@@ -29566,9 +29566,9 @@
   			 *    }
   			 * });
   			 */
-        'onDeactivate',
+  			'onDeactivate',
 
-        /**
+  			/**
   			 * Fires when the editor is shown.
   			 *
   			 * @event onShow
@@ -29584,9 +29584,9 @@
   			 *    }
   			 * });
   			 */
-        'onShow',
+  			'onShow',
 
-        /**
+  			/**
   			 * Fires when the editor is hidden.
   			 *
   			 * @event onHide
@@ -29602,9 +29602,9 @@
   			 *    }
   			 * });
   			 */
-        'onHide',
+  			'onHide',
 
-        /**
+  			/**
   			 * Fires when something in the body of the editor is clicked.
   			 *
   			 * @event onClick
@@ -29621,9 +29621,9 @@
   			 *    }
   			 * });
   			 */
-        'onClick',
+  			'onClick',
 
-        /**
+  			/**
   			 * Fires when a registered event is intercepted.
   			 *
   			 * @event onEvent
@@ -29640,9 +29640,9 @@
   			 *    }
   			 * });
   			 */
-        'onEvent',
+  			'onEvent',
 
-        /**
+  			/**
   			 * Fires when a mouseup event is intercepted inside the editor.
   			 *
   			 * @event onMouseUp
@@ -29659,9 +29659,9 @@
   			 *    }
   			 * });
   			 */
-        'onMouseUp',
+  			'onMouseUp',
 
-        /**
+  			/**
   			 * Fires when a mousedown event is intercepted inside the editor.
   			 *
   			 * @event onMouseDown
@@ -29678,9 +29678,9 @@
   			 *    }
   			 * });
   			 */
-        'onMouseDown',
+  			'onMouseDown',
 
-        /**
+  			/**
   			 * Fires when a dblclick event is intercepted inside the editor.
   			 *
   			 * @event onDblClick
@@ -29697,9 +29697,9 @@
   			 *    }
   			 * });
   			 */
-        'onDblClick',
+  			'onDblClick',
 
-        /**
+  			/**
   			 * Fires when a keydown event is intercepted inside the editor.
   			 *
   			 * @event onKeyDown
@@ -29716,9 +29716,9 @@
   			 *    }
   			 * });
   			 */
-        'onKeyDown',
+  			'onKeyDown',
 
-        /**
+  			/**
   			 * Fires when a keydown event is intercepted inside the editor.
   			 *
   			 * @event onKeyUp
@@ -29735,9 +29735,9 @@
   			 *    }
   			 * });
   			 */
-        'onKeyUp',
+  			'onKeyUp',
 
-        /**
+  			/**
   			 * Fires when a keypress event is intercepted inside the editor.
   			 *
   			 * @event onKeyPress
@@ -29754,9 +29754,9 @@
   			 *    }
   			 * });
   			 */
-        'onKeyPress',
+  			'onKeyPress',
 
-        /**
+  			/**
   			 * Fires when a contextmenu event is intercepted inside the editor.
   			 *
   			 * @event onContextMenu
@@ -29773,9 +29773,9 @@
   			 *    }
   			 * });
   			 */
-        'onContextMenu',
+  			'onContextMenu',
 
-        /**
+  			/**
   			 * Fires when a form submit event is intercepted.
   			 *
   			 * @event onSubmit
@@ -29792,9 +29792,9 @@
   			 *    }
   			 * });
   			 */
-        'onSubmit',
+  			'onSubmit',
 
-        /**
+  			/**
   			 * Fires when a form reset event is intercepted.
   			 *
   			 * @event onReset
@@ -29811,9 +29811,9 @@
   			 *    }
   			 * });
   			 */
-        'onReset',
+  			'onReset',
 
-        /**
+  			/**
   			 * Fires when a paste event is intercepted inside the editor.
   			 *
   			 * @event onPaste
@@ -29830,9 +29830,9 @@
   			 *    }
   			 * });
   			 */
-        'onPaste',
+  			'onPaste',
 
-        /**
+  			/**
   			 * Fires when a cut event is intercepted inside the editor.
   			 *
   			 * @event onCut
@@ -29849,9 +29849,9 @@
   			 *    }
   			 * });
   			 */
-        'onCut',
+  			'onCut',
 
-        /**
+  			/**
   			 * Fires when a copy event is intercepted inside the editor.
   			 *
   			 * @event onCopy
@@ -29868,9 +29868,9 @@
   			 *    }
   			 * });
   			 */
-        'onCopy',
+  			'onCopy',
 
-        /**
+  			/**
   			 * Fires when the Serializer does a preProcess on the contents.
   			 *
   			 * @event onPreProcess
@@ -29893,9 +29893,9 @@
   			 *    }
   			 * });
   			 */
-        'onPreProcess',
+  			'onPreProcess',
 
-        /**
+  			/**
   			 * Fires when the Serializer does a postProcess on the contents.
   			 *
   			 * @event onPostProcess
@@ -29914,9 +29914,9 @@
   			 *    }
   			 * });
   			 */
-        'onPostProcess',
+  			'onPostProcess',
 
-        /**
+  			/**
   			 * Fires before new contents is added to the editor. Using for example setContent.
   			 *
   			 * @event onBeforeSetContent
@@ -29933,9 +29933,9 @@
   			 *    }
   			 * });
   			 */
-        'onBeforeSetContent',
+  			'onBeforeSetContent',
 
-        /**
+  			/**
   			 * Fires before contents is extracted from the editor using for example getContent.
   			 *
   			 * @event onBeforeGetContent
@@ -29952,9 +29952,9 @@
   			 *    }
   			 * });
   			 */
-        'onBeforeGetContent',
+  			'onBeforeGetContent',
 
-        /**
+  			/**
   			 * Fires after the contents has been added to the editor using for example onSetContent.
   			 *
   			 * @event onSetContent
@@ -29971,9 +29971,9 @@
   			 *    }
   			 * });
   			 */
-        'onSetContent',
+  			'onSetContent',
 
-        /**
+  			/**
   			 * Fires after the contents has been extracted from the editor using for example getContent.
   			 *
   			 * @event onGetContent
@@ -29990,9 +29990,9 @@
   			 *    }
   			 * });
   			 */
-        'onGetContent',
+  			'onGetContent',
 
-        /**
+  			/**
   			 * Fires when the editor gets loaded with contents for example when the load method is executed.
   			 *
   			 * @event onLoadContent
@@ -30009,9 +30009,9 @@
   			 *    }
   			 * });
   			 */
-        'onLoadContent',
+  			'onLoadContent',
 
-        /**
+  			/**
   			 * Fires when the editor contents gets saved for example when the save method is executed.
   			 *
   			 * @event onSaveContent
@@ -30028,9 +30028,9 @@
   			 *    }
   			 * });
   			 */
-        'onSaveContent',
+  			'onSaveContent',
 
-        /**
+  			/**
   			 * Fires when the user changes node location using the mouse or keyboard.
   			 *
   			 * @event onNodeChange
@@ -30048,9 +30048,9 @@
   			 *    }
   			 * });
   			 */
-        'onNodeChange',
+  			'onNodeChange',
 
-        /**
+  			/**
   			 * Fires when a new undo level is added to the editor.
   			 *
   			 * @event onChange
@@ -30066,9 +30066,9 @@
   			 *    }
   			 * });
   			 */
-        'onChange',
+  			'onChange',
 
-        /**
+  			/**
   			 * Fires before a command gets executed for example "Bold".
   			 *
   			 * @event onBeforeExecCommand
@@ -30084,9 +30084,9 @@
   			 *    }
   			 * });
   			 */
-        'onBeforeExecCommand',
+  			'onBeforeExecCommand',
 
-        /**
+  			/**
   			 * Fires after a command is executed for example "Bold".
   			 *
   			 * @event onExecCommand
@@ -30102,9 +30102,9 @@
   			 *    }
   			 * });
   			 */
-        'onExecCommand',
+  			'onExecCommand',
 
-        /**
+  			/**
   			 * Fires when the contents is undo:ed.
   			 *
   			 * @event onUndo
@@ -30121,9 +30121,9 @@
   			 *    }
   			 * });
   			 */
-        'onUndo',
+  			'onUndo',
 
-        /**
+  			/**
   			 * Fires when the contents is redo:ed.
   			 *
   			 * @event onRedo
@@ -30140,9 +30140,9 @@
   			 *    }
   			 * });
   			 */
-        'onRedo',
+  			'onRedo',
 
-        /**
+  			/**
   			 * Fires when visual aids is enabled/disabled.
   			 *
   			 * @event onVisualAid
@@ -30158,9 +30158,9 @@
   			 *    }
   			 * });
   			 */
-        'onVisualAid',
+  			'onVisualAid',
 
-        /**
+  			/**
   			 * Fires when the progress throbber is shown above the editor.
   			 *
   			 * @event onSetProgressState
@@ -30179,9 +30179,9 @@
   			 *    }
   			 * });
   			 */
-        'onSetProgressState',
+  			'onSetProgressState',
 
-        /**
+  			/**
   			 * Fires after an attribute is set using setAttrib.
   			 *
   			 * @event onSetAttrib
@@ -30197,9 +30197,9 @@
   			 *    }
   			 * });
   			 */
-        'onSetAttrib',
+  			'onSetAttrib',
 
-        /**
+  			/**
   			 * Fires when  when the current text selection in the editor is changed.
   			 *
   			 * @event onSelectionChange
@@ -30215,331 +30215,331 @@
   			 *    }
   			 * });
   			 */
-        'onSelectionChange',
+  			'onSelectionChange',
 
-        /**
+  			/**
   			 * Fires when the editor loses focus.
   			 *
   			 * @event onBlur
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-        'onBlur',
+  			'onBlur',
 
-        /**
+  			/**
   			 * Fires after the editor is focused.
   			 *
   			 * @event onFocus
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-        'onFocus',
+  			'onFocus',
 
-        /**
+  			/**
   			 * Fires when focus is moved to the editor.
   			 *
   			 * @event onFocusIn
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-        'onFocusIn',
+  			'onFocusIn',
 
-        /**
+  			/**
   			 * Fires when focus is moved from the editor.
   			 *
   			 * @event onFocusOut
   			 * @param {tinymce.Editor} sender Editor instance.
   			 */
-        'onFocusOut'
+  			'onFocusOut'
 
-      ], function (name) {
-        self[name] = new tinymce.util.Dispatcher(self);
-      });
+  		], function (name) {
+  			self[name] = new tinymce.util.Dispatcher(self);
+  		});
 
-      // Handle legacy cleanup_callback option
-      if (settings.cleanup_callback) {
-        self.onBeforeSetContent.add(function (ed, o) {
-          o.content = ed.execCallback('cleanup_callback', 'insert_to_editor', o.content, o);
-        });
+  		// Handle legacy cleanup_callback option
+  		if (settings.cleanup_callback) {
+  			self.onBeforeSetContent.add(function (ed, o) {
+  				o.content = ed.execCallback('cleanup_callback', 'insert_to_editor', o.content, o);
+  			});
 
-        self.onPreProcess.add(function (ed, o) {
-          if (o.set) {
-            ed.execCallback('cleanup_callback', 'insert_to_editor_dom', o.node, o);
-          }
+  			self.onPreProcess.add(function (ed, o) {
+  				if (o.set) {
+  					ed.execCallback('cleanup_callback', 'insert_to_editor_dom', o.node, o);
+  				}
 
-          if (o.get) {
-            ed.execCallback('cleanup_callback', 'get_from_editor_dom', o.node, o);
-          }
-        });
+  				if (o.get) {
+  					ed.execCallback('cleanup_callback', 'get_from_editor_dom', o.node, o);
+  				}
+  			});
 
-        self.onPostProcess.add(function (ed, o) {
-          if (o.set) {
-            o.content = ed.execCallback('cleanup_callback', 'insert_to_editor', o.content, o);
-          }
+  			self.onPostProcess.add(function (ed, o) {
+  				if (o.set) {
+  					o.content = ed.execCallback('cleanup_callback', 'insert_to_editor', o.content, o);
+  				}
 
-          if (o.get) {
-            o.content = ed.execCallback('cleanup_callback', 'get_from_editor', o.content, o);
-          }
-        });
-      }
-    };
+  				if (o.get) {
+  					o.content = ed.execCallback('cleanup_callback', 'get_from_editor', o.content, o);
+  				}
+  			});
+  		}
+  	};
 
-    /**
+  	/**
   	 * Binds native DOM events and sends these out to the dispatchers.
   	 */
-    tinymce.Editor.prototype.bindNativeEvents = function () {
-      // 'focus', 'blur', 'dblclick', 'beforedeactivate', submit, reset
-      var self = this,
-        settings = self.settings,
-        dom = self.dom,
-        nativeToDispatcherMap;
+  	tinymce.Editor.prototype.bindNativeEvents = function () {
+  		// 'focus', 'blur', 'dblclick', 'beforedeactivate', submit, reset
+  		var self = this,
+  			settings = self.settings,
+  			dom = self.dom,
+  			nativeToDispatcherMap;
 
-      nativeToDispatcherMap = {
-        mouseup: 'onMouseUp',
-        mousedown: 'onMouseDown',
-        click: 'onClick',
-        keyup: 'onKeyUp',
-        keydown: 'onKeyDown',
-        keypress: 'onKeyPress',
-        submit: 'onSubmit',
-        reset: 'onReset',
-        contextmenu: 'onContextMenu',
-        dblclick: 'onDblClick',
-        paste: 'onPaste',
-        cut: 'onCut',
-        copy: 'onCopy',
-        selectionchange: 'onSelectionChange',
-        focusin: 'onFocusIn',
-        focusout: 'onFocusOut'
-      };
+  		nativeToDispatcherMap = {
+  			mouseup: 'onMouseUp',
+  			mousedown: 'onMouseDown',
+  			click: 'onClick',
+  			keyup: 'onKeyUp',
+  			keydown: 'onKeyDown',
+  			keypress: 'onKeyPress',
+  			submit: 'onSubmit',
+  			reset: 'onReset',
+  			contextmenu: 'onContextMenu',
+  			dblclick: 'onDblClick',
+  			paste: 'onPaste',
+  			cut: 'onCut',
+  			copy: 'onCopy',
+  			selectionchange: 'onSelectionChange',
+  			focusin: 'onFocusIn',
+  			focusout: 'onFocusOut'
+  		};
 
-      // Handler that takes a native event and sends it out to a dispatcher like onKeyDown
-      function eventHandler(evt, args) {
-        // Don't fire events when it's removed
-        if (self.removed) {
-          return;
-        }
+  		// Handler that takes a native event and sends it out to a dispatcher like onKeyDown
+  		function eventHandler(evt, args) {
+  			// Don't fire events when it's removed
+  			if (self.removed) {
+  				return;
+  			}
 
-        // Sends the native event out to a global dispatcher then to the specific event dispatcher
-        if (self.onEvent.dispatch(self, evt, args) !== false) {
-          self[nativeToDispatcherMap[evt.fakeType || evt.type]].dispatch(self, evt, args);
-        }
-      }
+  			// Sends the native event out to a global dispatcher then to the specific event dispatcher
+  			if (self.onEvent.dispatch(self, evt, args) !== false) {
+  				self[nativeToDispatcherMap[evt.fakeType || evt.type]].dispatch(self, evt, args);
+  			}
+  		}
 
-      var timer;
+  		var timer;
 
-      function nodeChanged(ed, e) {
-        if (timer) {
-          clearTimeout(timer);
-        }
+  		function nodeChanged(ed, e) {
+  			if (timer) {
+  				clearTimeout(timer);
+  			}
 
-        // Normalize selection for example <b>a</b><i>|a</i> becomes <b>a|</b><i>a</i> except for Ctrl+A since it selects everything
-        if (e.keyCode != 65 || !tinymce.VK.metaKeyPressed(e)) {
-          self.selection.normalize();
-        }
+  			// Normalize selection for example <b>a</b><i>|a</i> becomes <b>a|</b><i>a</i> except for Ctrl+A since it selects everything
+  			if (e.keyCode != 65 || !tinymce.VK.metaKeyPressed(e)) {
+  				self.selection.normalize();
+  			}
 
-        self.nodeChanged();
-      }
+  			self.nodeChanged();
+  		}
 
-      var lastPath = [];
+  		var lastPath = [];
 
-      /**
+  		/**
   		 * Returns true/false if the current element path has been changed or not.
   		 *
   		 * @private
   		 * @return {Boolean} True if the element path is the same false if it's not.
   		 */
-      function isSameElementPath(ed, startElm) {
-        var i, currentPath;
+  		function isSameElementPath(ed, startElm) {
+  			var i, currentPath;
 
-        currentPath = ed.dom.getParents(startElm, '*', ed.getBody());
+  			currentPath = ed.dom.getParents(startElm, '*', ed.getBody());
 
-        if (tinymce.inArray(currentPath, startElm) === -1) {
-          currentPath.push(startElm);
-        }
+  			if (tinymce.inArray(currentPath, startElm) === -1) {
+  				currentPath.push(startElm);
+  			}
 
-        if (currentPath.length === lastPath.length) {
-          for (i = currentPath.length; i >= 0; i--) {
-            if (currentPath[i] !== lastPath[i]) {
-              break;
-            }
-          }
+  			if (currentPath.length === lastPath.length) {
+  				for (i = currentPath.length; i >= 0; i--) {
+  					if (currentPath[i] !== lastPath[i]) {
+  						break;
+  					}
+  				}
 
-          if (i === -1) {
-            lastPath = currentPath;
-            return true;
-          }
-        }
+  				if (i === -1) {
+  					lastPath = currentPath;
+  					return true;
+  				}
+  			}
 
-        lastPath = currentPath;
+  			lastPath = currentPath;
 
-        return false;
-      }
+  			return false;
+  		}
 
-      // Add DOM events
-      each(nativeToDispatcherMap, function (dispatcherName, nativeName) {
-        var root = settings.content_editable ? self.getBody() : self.getDoc();
+  		// Add DOM events
+  		each(nativeToDispatcherMap, function (dispatcherName, nativeName) {
+  			var root = settings.content_editable ? self.getBody() : self.getDoc();
 
-        switch (nativeName) {
-          case 'contextmenu':
-            dom.bind(root, nativeName, eventHandler);
-            break;
+  			switch (nativeName) {
+  				case 'contextmenu':
+  					dom.bind(root, nativeName, eventHandler);
+  					break;
 
-          case 'paste':
-          case 'cut':
-          case 'copy':
-            dom.bind(self.getBody(), nativeName, eventHandler);
-            break;
+  				case 'paste':
+  				case 'cut':
+  				case 'copy':
+  					dom.bind(self.getBody(), nativeName, eventHandler);
+  					break;
 
-          case 'submit':
-          case 'reset':
-            dom.bind(self.getElement().form || tinymce.DOM.getParent(self.id, 'form'), nativeName, eventHandler);
-            break;
+  				case 'submit':
+  				case 'reset':
+  					dom.bind(self.getElement().form || tinymce.DOM.getParent(self.id, 'form'), nativeName, eventHandler);
+  					break;
 
-          default:
-            dom.bind(root, nativeName, eventHandler);
-        }
-      });
+  				default:
+  					dom.bind(root, nativeName, eventHandler);
+  			}
+  		});
 
-      function getFocusTarget() {
-        if (settings.content_editable) {
-          return self.getBody();
-        }
+  		function getFocusTarget() {
+  			if (settings.content_editable) {
+  				return self.getBody();
+  			}
 
-        if (tinymce.isGecko) {
-          return self.getDoc();
-        }
+  			if (tinymce.isGecko) {
+  				return self.getDoc();
+  			}
 
-        return self.getWin();
-      }
+  			return self.getWin();
+  		}
 
-      // Set the editor as active when focused
-      dom.bind(getFocusTarget(), 'focus', function () {
-        self.focus(true);
-      });
+  		// Set the editor as active when focused
+  		dom.bind(getFocusTarget(), 'focus', function () {
+  			self.focus(true);
+  		});
 
-      // Selection change is delayed ~200ms on IE when you click inside the current range
-      self.onSelectionChange.add(function (ed, e) {
-        var startElm = ed.selection.getStart(true);
+  		// Selection change is delayed ~200ms on IE when you click inside the current range
+  		self.onSelectionChange.add(function (ed, e) {
+  			var startElm = ed.selection.getStart(true);
 
-        // it seems to be necessary to prefill this value with the current element before checking isSameElementPath...?
-        lastPath = [startElm];
+  			// it seems to be necessary to prefill this value with the current element before checking isSameElementPath...?
+  			//lastPath = [startElm];
 
-        if (!isSameElementPath(ed, startElm) && ed.dom.isChildOf(startElm, ed.getBody())) {
-          nodeChanged(ed, e);
-        }
-      });
-
-      // Fire an extra nodeChange on mouseup for compatibility reasons
-      self.onMouseUp.add(function (ed, e) {
-        if (!e.isDefaultPrevented()) {
-          // Delay nodeChanged call for WebKit edge case issue where the range
-          // isn't updated until after you click outside a selected image
-          if (ed.selection.getNode().nodeName == 'IMG') {
-            timer = setTimeout(function () {
-              nodeChanged(ed, e);
-            }, 0);
-          } else {
-            nodeChanged(ed, e);
-          }
-        }
-      });
-
-      // Add node change handler
-      //self.onMouseUp.add(nodeChanged);
-
-      /*self.onKeyUp.add(function (ed, e) {
-  			var keyCode = e.keyCode;
-
-  			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 13 || keyCode == 45 || keyCode == 46 || keyCode == 8 || (tinymce.isMac && (keyCode == 91 || keyCode == 93)) || e.ctrlKey) {
+  			if (!isSameElementPath(ed, startElm) && ed.dom.isChildOf(startElm, ed.getBody())) {
   				nodeChanged(ed, e);
   			}
-  		});*/
+  		});
 
-      // Add reset handler
-      self.onReset.add(function () {
-        self.setContent(self.startContent, {
-          format: 'raw'
-        });
-      });
+  		// Fire an extra nodeChange on mouseup for compatibility reasons
+  		self.onMouseUp.add(function (ed, e) {
+  			if (!e.isDefaultPrevented()) {
+  				// Delay nodeChanged call for WebKit edge case issue where the range
+  				// isn't updated until after you click outside a selected image
+  				if (ed.selection.getNode().nodeName == 'IMG') {
+  					timer = setTimeout(function () {
+  						nodeChanged(ed, e);
+  					}, 0);
+  				} else {
+  					nodeChanged(ed, e);
+  				}
+  			}
+  		});
 
-      function hasModifier(e) {
-        return e.altKey || e.ctrlKey || e.metaKey;
-      }
+  		// Add node change handler
+  		//self.onMouseUp.add(nodeChanged);
 
-      function isFunctionKey(e) {
-        return e.type === "keydown" && e.keyCode >= 112 && e.keyCode <= 123;
-      }
+  		/*self.onKeyUp.add(function (ed, e) {
+  				var keyCode = e.keyCode;
+  	
+  				if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 13 || keyCode == 45 || keyCode == 46 || keyCode == 8 || (tinymce.isMac && (keyCode == 91 || keyCode == 93)) || e.ctrlKey) {
+  					nodeChanged(ed, e);
+  				}
+  			});*/
 
-      function matchShortcut(e, shortcut) {
-        if (!shortcut) {
-          return false;
-        }
+  		// Add reset handler
+  		self.onReset.add(function () {
+  			self.setContent(self.startContent, {
+  				format: 'raw'
+  			});
+  		});
 
-        /*var ctrlState = tinymce.isMac ? e.metaKey : e.ctrlKey;
+  		function hasModifier(e) {
+  			return e.altKey || e.ctrlKey || e.metaKey;
+  		}
 
-  			if (shortcut.ctrl != ctrlState) {
+  		function isFunctionKey(e) {
+  			return e.type === "keydown" && e.keyCode >= 112 && e.keyCode <= 123;
+  		}
+
+  		function matchShortcut(e, shortcut) {
+  			if (!shortcut) {
   				return false;
-  			}*/
+  			}
 
-        if (shortcut.ctrl != e.ctrlKey || shortcut.meta != e.metaKey) {
-          return false;
-        }
+  			/*var ctrlState = tinymce.isMac ? e.metaKey : e.ctrlKey;
+  	  
+  				  if (shortcut.ctrl != ctrlState) {
+  					  return false;
+  				  }*/
 
-        if (shortcut.alt != e.altKey || shortcut.shift != e.shiftKey) {
-          return false;
-        }
+  			if (shortcut.ctrl != e.ctrlKey || shortcut.meta != e.metaKey) {
+  				return false;
+  			}
 
-        if (e.keyCode == shortcut.keyCode || (e.charCode && e.charCode == shortcut.charCode)) {
-          e.preventDefault();
-          return true;
-        }
+  			if (shortcut.alt != e.altKey || shortcut.shift != e.shiftKey) {
+  				return false;
+  			}
 
-        return false;
-      }
+  			if (e.keyCode == shortcut.keyCode || (e.charCode && e.charCode == shortcut.charCode)) {
+  				e.preventDefault();
+  				return true;
+  			}
 
-      function executeShortcutAction(shortcut) {
-        return shortcut.func ? shortcut.func.call(shortcut.scope) : null;
-      }
+  			return false;
+  		}
 
-      var pendingPatterns = [];
+  		function executeShortcutAction(shortcut) {
+  			return shortcut.func ? shortcut.func.call(shortcut.scope) : null;
+  		}
 
-      // Add shortcuts
-      function handleShortcut(e) {
-        if ((hasModifier(e) || isFunctionKey(e)) && !e.isDefaultPrevented()) {
-          each(self.shortcuts, function (shortcut) {
-            if (matchShortcut(e, shortcut)) {
-              pendingPatterns = shortcut.subpatterns.slice(0);
+  		var pendingPatterns = [];
 
-              if (e.type == "keydown") {
-                executeShortcutAction(shortcut);
-              }
+  		// Add shortcuts
+  		function handleShortcut(e) {
+  			if ((hasModifier(e) || isFunctionKey(e)) && !e.isDefaultPrevented()) {
+  				each(self.shortcuts, function (shortcut) {
+  					if (matchShortcut(e, shortcut)) {
+  						pendingPatterns = shortcut.subpatterns.slice(0);
 
-              return true;
-            }
-          });
+  						if (e.type == "keydown") {
+  							executeShortcutAction(shortcut);
+  						}
 
-          if (matchShortcut(e, pendingPatterns[0])) {
-            if (pendingPatterns.length === 1) {
-              if (e.type == "keydown") {
-                executeShortcutAction(pendingPatterns[0]);
-              }
-            }
+  						return true;
+  					}
+  				});
 
-            pendingPatterns.shift();
-          }
-        }
-      }
+  				if (matchShortcut(e, pendingPatterns[0])) {
+  					if (pendingPatterns.length === 1) {
+  						if (e.type == "keydown") {
+  							executeShortcutAction(pendingPatterns[0]);
+  						}
+  					}
 
-      self.onKeyUp.add(function (ed, e) {
-        handleShortcut(e);
-      });
+  					pendingPatterns.shift();
+  				}
+  			}
+  		}
 
-      self.onKeyPress.add(function (ed, e) {
-        handleShortcut(e);
-      });
+  		self.onKeyUp.add(function (ed, e) {
+  			handleShortcut(e);
+  		});
 
-      self.onKeyDown.add(function (ed, e) {
-        handleShortcut(e);
-      });
-    };
+  		self.onKeyPress.add(function (ed, e) {
+  			handleShortcut(e);
+  		});
+
+  		self.onKeyDown.add(function (ed, e) {
+  			handleShortcut(e);
+  		});
+  	};
   })(tinymce);
 
   /**
@@ -38528,6 +38528,10 @@
 
           if (!isRangeInCaretContainer(rng)) {
             hideFakeCaret();
+          }
+
+          if (rng.startContainer.parentNode == rootNode) {
+            return;
           }
 
           if (!isFakeSelectionElement(rng.startContainer.parentNode)) {
