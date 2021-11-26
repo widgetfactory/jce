@@ -1169,6 +1169,32 @@
             return node && isMediaObject(ed, node);
         }
 
+        function objectActivate(ed, e) {
+            var node = ed.dom.getParent(e.target, '.mce-object-preview');
+
+            if (node) {
+                ed.selection.select(node);
+
+                if (ed.dom.getAttrib(node, 'data-mce-selected')) {
+                    node.setAttribute('data-mce-selected', '2');
+                }
+                
+                if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
+                    previewToPlaceholder(ed, node);
+                }
+
+                // prevent bubbling up to DragDropOverrides
+                e.stopImmediatePropagation();
+
+                e.preventDefault();
+
+                return;        
+            }
+        }
+
+        ed.onMouseDown.add(objectActivate);
+        ed.onKeyDown.add(objectActivate);
+
         ed.onPreInit.add(function () {
             ed.onUpdateMedia.add(function (ed, o) {
                 // only updating audio/video
@@ -1242,32 +1268,6 @@
                     convertPlaceholderToMedia(ed, node);
                 }
             });
-
-            function objectActivate(ed, e) {
-                var node = ed.dom.getParent(e.target, '.mce-object-preview');
-
-                if (node) {
-                    ed.selection.select(node);
-
-                    if (ed.dom.getAttrib(node, 'data-mce-selected')) {
-                        node.setAttribute('data-mce-selected', '2');
-                    }
-                    
-                    if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
-                        previewToPlaceholder(ed, node);
-                    }
-
-                    // prevent bubbling up to DragDropOverrides
-                    e.stopImmediatePropagation();
-
-                    e.preventDefault();
-
-                    return;        
-                }
-            }
-
-            ed.onMouseDown.addToTop(objectActivate);
-            ed.onKeyDown.addToTop(objectActivate);
 
             ed.dom.bind(ed.getDoc(), 'touchstart', function (e) {
                 objectActivate(ed, e);
