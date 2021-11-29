@@ -17,7 +17,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="restrict_dir" type="customlist" default="administrator,bin,cache,components,cli,includes,language,layouts,libraries,logs,media,modules,plugins,templates,tmp,xmlrpc" multiple="true" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" showon="allow_root:1">
+            <field name="restrict_dir" type="customlist" default="administrator,bin,cache,components,cli,includes,language,layouts,libraries,logs,media,modules,plugins,templates,tmp,xmlrpc" multiple="true" label="WF_PARAM_DIRECTORY_RESTRICTED" description="WF_PARAM_DIRECTORY_RESTRICTED_DESC" layout="joomla.form.field.list-fancy-select" showon="allow_root:1">
                 <option value="administrator">administrator</option>
                 <option value="bin">bin</option>
                 <option value="cache">cache</option>
