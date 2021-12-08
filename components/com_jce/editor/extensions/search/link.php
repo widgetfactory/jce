@@ -368,7 +368,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         for ($i = 0, $count = count($rows); $i < $count; ++$i) {
             $row = &$rows[$i];
 
-            if (empty($row->href) || empty($row->text)) {
+            if (empty($row->href) || empty($row->title)) {
                 continue;
             }
 
