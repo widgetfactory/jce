@@ -380,7 +380,7 @@ class pkg_jceInstallerScript
             }
 
             // fix checkout_out table
-            if (version_compare($current_version, '2.9.15', 'lt')) {
+            if (version_compare($current_version, '2.9.18', 'lt')) {
                 $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out') . " " . $db->qn('checked_out') . " INT UNSIGNED NULL";
                 $db->setQuery($query);
                 $db->execute();
