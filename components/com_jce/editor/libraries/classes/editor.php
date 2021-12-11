@@ -483,10 +483,10 @@ class WFEditor
 
             // Editor
             $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
-
-            // language
-            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
         }
+
+        // language
+        $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
 
         $this->getCustomConfig($settings);
 
@@ -1428,13 +1428,6 @@ class WFEditor
 
                 // add Editor file
                 $files[] = WF_EDITOR . '/libraries/js/editor.min.js';
-
-                // parse ini language files
-                $parser = new WFLanguageParser();
-                $data = $parser->load();
-
-                // add to packer
-                $packer->setContentEnd($data);
 
                 break;
             case 'css':
