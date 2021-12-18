@@ -284,7 +284,17 @@
 
             $(this).addClass('wf-media-input-wrapper');
 
+            // get url from data attribute or custom element attribute
             var dataUrl = $(this).data('url') || this.url || '';
+
+            // legacy modal link btn
+            var $linkBtn = $(this).find('a[href*="index.php?option=com_media"].modal.btn');
+
+            if ($linkBtn.length && !dataUrl) {
+                dataUrl = $linkBtn.attr('href') || '';
+            }
+
+            // parse url parameters
             var params = parseUrl(dataUrl);
 
             // set mediatype default to "images"
@@ -305,8 +315,10 @@
                 url += '&context=' + options.context;
             }
 
-            // update url
-            $(this).data('url', url);
+            // update data url attribute
+            if ($(this).data('url')) {
+                $(this).data('url', url);
+            }
 
             // update custom element
             if (this.url) {
@@ -315,6 +327,11 @@
                 var ifrHtml = '<iframe src="' + url + '" class="iframe" title="" width="100%" height="100%"></iframe>';
                 // update attributes
                 $(this).find('.joomla-modal').attr('data-url', url).attr('data-iframe', ifrHtml);
+            }
+
+            // update link button
+            if ($linkBtn.length) {
+                $linkBtn.attr('href', url);
             }
         });
     }
