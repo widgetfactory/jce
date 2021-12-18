@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/*global plupload:true */
+/*global Wf, jQuery */
 
 (function ($, Wf) {
 

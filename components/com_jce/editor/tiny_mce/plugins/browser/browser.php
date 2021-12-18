@@ -101,7 +101,7 @@ class WFBrowserPlugin extends WFMediaManager
 
         if ($document->get('standalone') == 1) {
             if ($slot === 'plugin') {
-                $document->addScript(array('window.min'), 'plugins');
+                $document->addScript(array('window.min'));
 
                 $callback = $app->input->getCmd('callback', '');
                 $element = $app->input->getCmd('fieldid', 'field-media-id');

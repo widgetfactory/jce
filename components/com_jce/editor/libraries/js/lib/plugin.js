@@ -36,7 +36,6 @@
     }
 
     var Wf = {
-        i18n: {},
         language: '',
         options: {
             selectChange: $.noop,
@@ -529,43 +528,10 @@
                 height: Math.round(h)
             };
         },
-        /**
-         * Adds a language pack, this gets called by the loaded language files like en.js.
-         *
-         * @method addI18n
-         * @param {String} p Prefix for the language items. For example en.myplugin
-         * @param {Object} o Name/Value collection with items to add to the language group.
-         * @source TinyMCE EditorManager.js
-         * @copyright Copyright 2009, Moxiecode Systems AB
-         * @licence GNU / LGPL 2 - http://www.gnu.org/copyleft/lesser.html
-         *
-         * Modified for JQuery
-         */
-        addI18n: function (p, o) {
-            var i18n = this.i18n;
 
-            if ($.type(p) == 'string') {
-                $.each(o, function (k, o) {
-                    i18n[p + '.' + k] = o;
-                });
-            } else {
-                $.each(p, function (lc, o) {
-                    $.each(o, function (g, o) {
-                        $.each(o, function (k, o) {
-                            if (g === 'common') {
-                                i18n[lc + '.' + k] = o;
-                            } else {
-                                i18n[lc + '.' + g + '.' + k] = o;
-                            }
-                        });
-
-                    });
-
-                });
-            }
-        },
         translate: function (s, ds) {
-            return tinyMCEPopup.getLang('dlg.' + s, ds || s);
+            var val = tinyMCEPopup.getLang('dlg.' + s, ds || s);
+            return val;
         }
     };
 

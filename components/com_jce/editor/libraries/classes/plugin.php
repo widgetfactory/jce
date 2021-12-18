@@ -218,6 +218,7 @@ class WFEditorPlugin extends JObject
             'plugins' => array('core' => array($name), 'external' => array()),
             'sections' => array('dlg', $name . '_dlg', 'colorpicker'),
             'mode' => 'plugin',
+            'language' => WFLanguage::getTag()
         ));
 
         $data = $parser->load();

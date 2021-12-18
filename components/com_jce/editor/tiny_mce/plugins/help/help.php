@@ -81,6 +81,10 @@ class WFHelpPlugin extends WFEditorPlugin
 
         $document = WFDocument::getInstance();
 
+        if ($document->get('standalone') == 1) {
+            $document->addScript(array('window.min'));
+        }
+
         $document->addScript(array('help.min'), 'plugins');
         $document->addStyleSheet(array('help.min'), 'plugins');
 
