@@ -149,7 +149,7 @@
                         if (ed.formatter.get(name)) {                            
                             if (ed.formatter.match(name)) {
                                 ed.formatter.remove(name);
-                            } else {
+                            } else {                                
                                 ed.execCommand('ApplyFormat', false, {
                                     name: name,
                                     args: {},
@@ -352,7 +352,7 @@
 
                             name = 'style_' + (counter++);
                             fmt = {
-                                //inline: 'span',
+                                inline: 'span',
                                 classes: val,
                                 selector: '*',
                                 ceFalseOverride: true
