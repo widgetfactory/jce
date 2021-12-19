@@ -665,7 +665,9 @@ class WFDocument extends JObject
                         'plugins' => array('core' => array($this->getName()), 'external' => array()),
                         'sections' => array('dlg', $this->getName() . '_dlg'),
                         'mode' => 'plugin',
+                        'language' => WFLanguage::getTag()
                     ));
+
                     $data .= $parser->load();
 
                     // add script declarations

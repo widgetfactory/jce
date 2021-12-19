@@ -238,7 +238,7 @@ class WFEditorPlugin extends JObject
         jimport('joomla.filesystem.folder');
         $document = WFDocument::getInstance();
 
-        if ($document->get('standalone') === 0) {
+        if ($document->get('standalone') == 0) {
             $document->addScript(array('tiny_mce_popup'), 'tiny_mce');
         }
 
