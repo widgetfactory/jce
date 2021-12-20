@@ -209,7 +209,7 @@ class WFHelpPlugin extends WFEditorPlugin
 
         $result = '';
 
-        $result .= '<ul class="uk-nav uk-nav-side" id="help-menu"><li class="uk-nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
+        $result .= '<ul class="uk-nav" id="help-menu"><li class="uk-nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
         $result .= $this->getTopics($file);
         $result .= '</ul>';
 
