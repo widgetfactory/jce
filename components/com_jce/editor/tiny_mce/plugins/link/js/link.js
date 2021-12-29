@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global Wf, jQuery, tinyMCEPopup, WFPopups */
+
 (function ($, tinyMCEPopup) {
     // http://stackoverflow.com/a/46181
     var emailRex = /(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})/;
@@ -41,7 +44,7 @@
         return newRel.length ? toString(newRel) : null;
     };
 
-    var anchorElm;
+    var anchorElm, currNode;
 
     var LinkDialog = {
         settings: {},
@@ -222,8 +225,11 @@
                 }
             }
 
+            // store the current node
+            currNode = se.getNode();
+
             // get the anchor element from the selection node
-            anchorElm = ed.dom.getParent(se.getNode(), 'a[href]');
+            anchorElm = ed.dom.getParent(currNode, 'a[href]');
 
             if (api.isAnchor(anchorElm)) {
                 // select the anchor node so it is updated correctly
@@ -302,7 +308,7 @@
 
             // Enable / disable attributes
             $.each(this.settings.attributes, function (k, v) {
-                if (parseInt(v) === 0) {
+                if (parseInt(v, 10) === 0) {
                     $('#attributes-' + k).hide();
                 }
             });
@@ -460,6 +466,11 @@
                         'href': args.href,
                         'data-mce-tmp': '1'
                     });
+
+                    if (txt) {                        
+                        // update the text on the selected node, not the anchor
+                        api.updateTextContent(currNode || node, txt);
+                     }
                 } else {
                     // insert link on selection
                     ed.execCommand('mceInsertLink', false, {
@@ -485,11 +496,6 @@
                     if (i > 0 && args.id) {
                         ed.dom.setAttrib(elm, 'id', '');
                     }
-
-                    if (txt) {
-                        // update the text on the selected node, not the anchor
-                        api.updateTextContent(elm, txt);
-                    }
                 });
 
                 // get first link item
@@ -505,7 +511,7 @@
             }
 
             // get link or element
-            el = el || n;
+            el = el || node;
 
             // Create or remove popup
             WFPopups.createPopup(el);
@@ -572,7 +578,9 @@
 
                             try {
                                 val = decodeURIComponent(val);
-                            } catch (e) { }
+                            } catch (e) {
+                                // error
+                            }
 
                             $('#email_' + k[0]).val(val);
                         }

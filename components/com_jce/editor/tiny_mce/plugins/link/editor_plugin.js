@@ -57,7 +57,7 @@
     };
 
     var updateTextContent = function (elm, text) {
-        // update the selected node so as not to overwrite with anchor text
+        /*// update the selected node so as not to overwrite with anchor text
         if (elm.firstChild && elm.firstChild.nodeType === 1) {
             elm = elm.firstChild;
         }
@@ -66,7 +66,17 @@
             elm.innerText = text;
         } else {
             elm.textContent = text;
-        }
+        }*/
+
+        tinymce.each(elm.childNodes, function (elm) {
+            if (elm.nodeType == 3) {
+                if ("innerText" in elm) {
+                    elm.innerText = text;
+                } else {
+                    elm.textContent = text;
+                }
+            }
+        });
     };
 
     function createLink(ed, data) {
@@ -112,7 +122,7 @@
             ed.execCommand('mceInsertLink', false, args);
 
             if (isAnchor(anchor)) {
-                updateTextContent(anchor, data.text);
+                updateTextContent(node, data.text);
             }
         }
 
