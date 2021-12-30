@@ -49,6 +49,7 @@ class PlgSystemJce extends JPlugin
     private function canRedirectMedia()
     {
         $app = JFactory::getApplication();
+        $params = JComponentHelper::getParams('com_jce');
 
         // must have fieldid
         if (!$app->input->get('fieldid')) {
@@ -60,9 +61,11 @@ class PlgSystemJce extends JPlugin
             return true;
         }
 
-        // flexi-content mediafield
-        if ($app->input->getCmd('option') == 'com_media' && $app->input->getCmd('asset') == 'com_flexicontent') {
-            return true;
+        if ((bool) $params->get('replace_media_manager', 1) == true) {
+            // flexi-content mediafield
+            if ($app->input->getCmd('option') == 'com_media' && $app->input->getCmd('asset') == 'com_flexicontent') {
+                return true;
+            }
         }
 
         return false;
@@ -70,16 +73,9 @@ class PlgSystemJce extends JPlugin
 
     public function onAfterRoute()
     {
-        if ($this->canRedirectMedia()) {
-            
-            if ($this->isEditorEnabled()) {
-                $params = JComponentHelper::getParams('com_jce');
-
-                if ((bool) $params->get('replace_media_manager', 1) == true) {
-                    // redirect to file browser
-                    $this->redirectMedia();
-                }
-            }
+        if ($this->canRedirectMedia() && $this->isEditorEnabled()) {
+            // redirect to file browser
+            $this->redirectMedia();
         }
     }
 
