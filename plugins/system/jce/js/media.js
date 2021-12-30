@@ -282,7 +282,7 @@
                 return true;
             }
 
-            $(this).addClass('wf-media-input-wrapper');
+            $(this).addClass('wf-media-wrapper');
 
             // get url from data attribute or custom element attribute
             var dataUrl = $(this).data('url') || this.url || '';
