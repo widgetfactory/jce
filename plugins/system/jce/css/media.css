@@ -7,7 +7,6 @@ div[data-url].wf-media-wrapper > div.modal {
     width: 100%;
     overflow: hidden;
     padding: 0;
-    height: auto !important; /* quantum manager override */
 }
 
 .wf-media-wrapper .modal .modal-body iframe[name="field-media-modal"] {
