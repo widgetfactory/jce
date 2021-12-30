@@ -349,7 +349,7 @@
         }
 
         // remove readonly
-        $('.wf-media-input').removeAttr('readonly');
+        $('.wf-media-input').removeAttr('readonly').parents('.field-media-wrapper').addClass('wf-media-wrapper');
 
         // update existing repeatable
         $('.wf-media-input').parents('.subform-repeatable-group').each(function (i, row) {
@@ -382,6 +382,6 @@
         $('.wf-media-input-upload').WfMediaUpload();
 
         // remove modal heading
-        $('.field-media-wrapper .modal-header h3').html('&nbsp;');
+        $('.wf-media-wrapper .modal-header h3').html('&nbsp;');
     });
 })(jQuery);
