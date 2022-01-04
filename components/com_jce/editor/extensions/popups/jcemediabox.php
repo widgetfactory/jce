@@ -24,23 +24,6 @@ class WFPopupsExtension_Jcemediabox
 
             $document->addScript('jcemediabox', 'extensions/popups/jcemediabox/js');
             $document->addStyleSheet('jcemediabox', 'extensions/popups/jcemediabox/css');
-
-            jimport('joomla.filesystem.folder');
-            jimport('joomla.filesystem.file');
-
-            $path = JPATH_PLUGINS.'/system/jcemediabox/addons';
-
-            $files = JFolder::files($path, '.js');
-
-            if (!empty($files)) {
-                foreach ($files as $file) {
-                    if (strpos($file, '-src.js') === false) {
-                        $scripts[] = 'plugins/system/jcemediabox/addons/'.JFile::stripExt($file);
-                    }
-                }
-            }
-
-            $document->addScript($scripts, 'joomla');
         }
     }
 
