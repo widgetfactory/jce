@@ -95,8 +95,6 @@ class WFStyleselectPluginConfig
                 foreach ((array) $custom_styles as $style) {
                     $style = (object) $style;
 
-                    $style->ceFalseOverride = true;
-
                     // clean up title
                     if (isset($style->title)) {
                         $style->title = self::cleanString($style->title);

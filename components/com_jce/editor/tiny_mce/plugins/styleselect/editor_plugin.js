@@ -328,6 +328,11 @@
                                 });
                             }
 
+                            // set as true if not defined
+                            if (!tinymce.is(fmt.ceFalseOverride)) {
+                                fmt.ceFalseOverride = true;
+                            }
+
                             ed.formatter.register(name, fmt);
 
                             ctrl.add(fmt.title, name, {
