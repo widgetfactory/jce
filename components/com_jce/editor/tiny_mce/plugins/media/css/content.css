@@ -122,6 +122,9 @@ img.mce-object.mce-object-video {
   z-index: 1;
   box-sizing: border-box;
   pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .mce-object-preview audio.mce-object-audio {
   /* default for Chrome */
@@ -139,7 +142,6 @@ img.mce-object.mce-object-video {
 .mce-object-preview.mce-object-audio::after {
   font-size: 0.75em;
   line-height: 1;
-  top: calc(50% - 0.5em);
 }
 .mce-object-shim {
   background: rgba(0, 0, 0, 0.5) url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") repeat scroll 0 0;
