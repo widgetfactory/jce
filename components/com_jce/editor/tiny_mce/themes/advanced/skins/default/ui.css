@@ -1312,6 +1312,10 @@ select.mceNativeListBox {
     margin: auto;
 }
 
+.mceDefaultSkin .mceIcon img[src$='.svg'] {
+    max-height: 16px;
+}
+
 .mceDefaultSkin .mceIconImage {
     display: flex;
     background: none;
