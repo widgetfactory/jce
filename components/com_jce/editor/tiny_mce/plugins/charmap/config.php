@@ -17,16 +17,15 @@ class WFCharmapPluginConfig
         $append = $wf->getParam('charmap.charmap_append', array());
 
         if (!empty($append)) {
-            
-            // Remove values with invalid key
-        	$append = array_filter($append, function ($key) {
-            	return !is_numeric($key);
-        	}, ARRAY_FILTER_USE_KEY);
-            
             $values = array();
             
             foreach($append as $item) {
                 $item = (object) $item;
+
+                // invalid values
+                if (empty($item->name) || empty($item->value)) {
+                    continue;
+                }
 
                 $item->name = html_entity_decode($item->name);
                 $values[$item->name] = $item->value;
