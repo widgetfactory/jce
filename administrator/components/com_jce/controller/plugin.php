@@ -66,9 +66,14 @@ class JceControllerPlugin extends JControllerLegacy
 
         include_once $path . '/' . $plugin . '.php';
 
-        $className = 'WF' . ucwords($plugin, '_') . 'Plugin';
+        $className = 'WF' . ucwords($plugin, '_-') . 'Plugin';
+        // remove delimeters
+        $className = str_replace(array('-', '_'), '', $className);
 
         if (class_exists($className)) {
+            // load language file if any
+            $language->load('plg_jce_' . basename($path), $path);
+
             $instance = new $className();
 
             if (strpos($task, '.') !== false) {
