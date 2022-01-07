@@ -985,10 +985,17 @@ class WFEditor
             }
         }
 
+        $delim = array('-', '_');
+
         // loop through list and create/call method
         foreach ($items as $plugin) {
+            $name = str_replace($delim, ' ', $plugin);
+            
             // Create class name
-            $classname = 'WF' . ucwords($plugin, '_') . 'PluginConfig';
+            $classname = 'WF' . ucwords($name) . 'PluginConfig';
+            
+            // remove space
+            $classname = str_replace(' ', '', $classname);
 
             // Check class and method are callable, and call
             if (class_exists($classname) && method_exists($classname, 'getConfig')) {

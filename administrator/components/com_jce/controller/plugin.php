@@ -18,6 +18,19 @@ class JceControllerPlugin extends JControllerLegacy
         'image'     => 'imgmanager',
         'imagepro'  => 'imgmanager_ext'
     );
+
+    private function createClassName($name) {
+        $delim = array('-', '_');
+
+        $name = str_replace($delim, ' ', $name);
+
+        $className = 'WF' . ucwords($name,) . 'Plugin';
+        
+        // remove space
+        $className = str_replace(' ', '', $className);
+
+        return $className;
+    }
     
     public function execute($task)
     {
@@ -66,9 +79,7 @@ class JceControllerPlugin extends JControllerLegacy
 
         include_once $path . '/' . $plugin . '.php';
 
-        $className = 'WF' . ucwords($plugin, '_-') . 'Plugin';
-        // remove delimiters
-        $className = str_replace(array('-', '_'), '', $className);
+        $className = $this->createClassName($plugin);
 
         if (class_exists($className)) {
             // load language file if any
