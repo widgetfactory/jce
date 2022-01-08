@@ -1874,6 +1874,10 @@ select:not([multiple]):not([size]) {
     display: flex;
 }
 
+.uk-repeatable .uk-flex {
+    gap: 5px;
+}
+
 .uk-repeatable .uk-repeatable-create,
 .uk-repeatable .uk-repeatable-delete {
     display: none;

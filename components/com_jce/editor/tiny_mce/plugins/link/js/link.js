@@ -46,6 +46,26 @@
 
     var anchorElm, currNode;
 
+    function getAttributes(node) {
+        var ed = tinyMCEPopup.editor;
+
+        var i, attrs = node.attributes, attribs = {};
+
+        // map all attributes
+        for (i = attrs.length - 1; i >= 0; i--) {
+            var name = attrs[i].name, value = ed.dom.getAttrib(node, name);
+
+            // skip internal, eg: _moz_resizing or data-mce-style
+            if (name.charAt(0) === "_" || name.indexOf('-mce-') !== -1) {
+                continue;
+            }
+
+            attribs[name] = value;
+        }
+
+        return attribs;
+    }
+
     var LinkDialog = {
         settings: {},
         init: function () {
@@ -295,6 +315,39 @@
 
                     return v;
                 }).trigger('change');
+
+                var x = 0, attribs = getAttributes(anchorElm);
+
+                // process remaining attributes
+                $.each(attribs, function (key, val) {
+                    if (key === 'data-mouseover' || key === 'data-mouseout' || key.indexOf('on') === 0) {
+                        return true;
+                    }
+
+                    if (document.getElementById(key)) {
+                        return true;
+                    }
+
+                    try {
+                        val = decodeURIComponent(val);
+                    } catch (e) {
+                        // error
+                    }
+
+                    var repeatable = $('.uk-repeatable').eq(0);
+
+                    if (x > 0) {
+                        $(repeatable).clone(true).appendTo($(repeatable).parent());
+                    }
+
+                    var elements = $('.uk-repeatable').eq(x).find('input, select');
+
+                    $(elements).eq(0).val(key);
+                    $(elements).eq(1).val(val);
+
+                    x++;
+                });
+
             } else {
                 // set defaults
                 Wf.setDefaults(this.settings.defaults);
@@ -442,6 +495,17 @@
                 args[k] = v;
             });
 
+            // get custom attributes
+			$('.uk-repeatable').each(function () {
+				var elements = $('input, select', this);
+				var key = $(elements).eq(0).val(),
+					value = $(elements).eq(1).val();
+
+				if (key) {
+					args[key] = value;
+				}
+			});
+
             if (!ed.settings.allow_unsafe_link_target) {
                 args.rel = toggleTargetRules(args.rel, args.target == '_blank' && /:\/\//.test(args.href));
             }
@@ -467,10 +531,10 @@
                         'data-mce-tmp': '1'
                     });
 
-                    if (txt) {                        
+                    if (txt) {
                         // update the text on the selected node, not the anchor
                         api.updateTextContent(currNode || node, txt);
-                     }
+                    }
                 } else {
                     // insert link on selection
                     ed.execCommand('mceInsertLink', false, {
@@ -687,7 +751,7 @@
                                         $.each(item.anchors, function (i, a) {
                                             $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {
                                                 var url = Wf.String.decode(item.link) + '#' + a;
-                                        
+
                                                 self.insertLink({ 'url': url, text: a });
                                             }).appendTo($dl);
                                         });
