@@ -42,7 +42,7 @@
             if ($('div.styleformat-list div.styleformat').length === 1) {
 
                 // clear inputs and remove styles
-                $(this).parents('.styleformat').find('input, select').val('').removeAttr('style').removeAttr('class');
+                $('input, select', this.parentNode).val("").removeAttr('style').removeAttr('class');
                 // hide
                 $(this).parents('.styleformat').hide();
                 // otherwise remove it
