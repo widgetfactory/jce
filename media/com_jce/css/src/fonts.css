@@ -1,0 +1,71 @@
+.ui-jce .fontlist {
+    position: relative;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce .fontlist input[type="checkbox"] {
+    margin: 5px 10px;
+    width: auto;
+}
+
+.ui-jce .fontlist .font-item,
+.ui-jce .fontlist .font-item-plus {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    max-width: 480px;
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.ui-jce .fontlist .font-item > div {
+    padding: 0 5px 0 0;
+}
+
+.ui-jce .fontlist .font-item-highlight.sortable-placeholder{
+    max-width: 480px;
+    padding: 5px 10px;
+}
+
+.ui-jce .fontlist .font-item-plus {
+    border-style: dashed;
+}
+
+.ui-jce .fontlist .font-item-plus span {
+    display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .fontlist .font-item-plus span {
+    text-align: right;
+}
+
+.ui-jce .fontlist .font-item-plus .icon {
+    margin-right: 10px;
+    line-height: 2rem;
+    width: 28px;
+    height: 28px;
+}
+
+.ui-jce .fontlist>div,
+.ui-jce .fontlist label {
+    cursor: move;
+}
+
+.ui-jce .fontlist .font-item input[type="text"] {
+    margin: 0;
+    float: none;
+}
+
+.ui-jce .fontlist .font-item[title="Webdings"] label,
+.ui-jce .fontlist .font-item[title="Wingdings"] label {
+    font-family: inherit !important;
+}

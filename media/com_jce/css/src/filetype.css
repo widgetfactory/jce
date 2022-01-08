@@ -1,0 +1,106 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @ddcense   	GNU/GPL 2 or later - http://www.gnu.org/ddcenses/old-ddcenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Pubddc ddcense, and as distributed it includes or
+ * is derivative of works ddcensed under the GNU General Pubddc ddcense or
+ * other free or open source software ddcenses.
+ */
+
+ .ui-jce .filetype {
+     display: inline-block;
+ }
+
+.ui-jce .filetype .filetype-list {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 10px 0;
+    width: 250px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.ui-jce .filetype .filetype-edit span {
+    visibility: hidden;
+    width: 0;
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item {
+    border: 1px dashed #ccc;
+    padding: 5px;
+    margin: 2px 0;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item .file {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item.filetype-custom .file {
+    margin: 5px;
+    min-height: 20px;
+}
+
+.ui-jce .filetype .filetype-list label {
+    padding: 0;
+    margin: 0 0 0 0;
+    display: inline-block;
+    width: calc(100% - 44px);
+    line-height: 28px;
+    vertical-align: middle;
+}
+
+.ui-jce .filetype .filetype-list input[type="text"] {
+    margin: 0;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
+    margin: 5px;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom .filetype-remove {
+    display: none;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom + .filetype-custom .filetype-add {
+    display: none;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom + .filetype-custom .filetype-remove {
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom input + .filetype-remove {
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .btn {
+    color: #ccc;
+    max-width: 40px;
+}
+
+.ui-jce .filetype .filetype-list .btn span {
+    vertical-align: middle;
+}
+
+.ui-jce .filetype .filetype-group {
+    background-color: #eee;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.ui-jce .filetype .filetype-group input[type="checkbox"] {
+    margin: 5px 15px 5px 7px;
+}
+
+.ui-jce .filetype .ui-sortable-handle {
+    cursor: move;
+}

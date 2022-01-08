@@ -1,0 +1,1235 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.file,
+.file.default {
+    background: url(../../../../../components/com_jce/editor/libraries/img/ext.png) no-repeat 0 0;
+}
+
+.file.txt {
+    background-position: 0 -20px;
+}
+
+.file.zip,
+.file.tar,
+.file.gz,
+.file.rar {
+    background-position: 0 -40px;
+}
+
+.file.html,
+.file.htm {
+    background-position: 0 -60px;
+}
+
+.file.mp3,
+.file.wav,
+.file.aiff,
+.file.m4a,
+.file.oga {
+    background-position: 0 -80px;
+}
+
+.file.php {
+    background-position: 0 -100px;
+}
+
+.file.sql {
+    background-position: 0 -120px;
+}
+
+.file.gif {
+    background-position: 0 -140px;
+}
+
+.file.jpg,
+.file.jpeg {
+    background-position: 0 -160px;
+}
+
+.file.png,
+.file.apng,
+.file.webp {
+    background-position: 0 -180px;
+}
+
+.file.webm,
+.file.ogg,
+.file.ogv,
+.file.mp4,
+.file.mpeg,
+.file.mpg,
+.file.mkv,
+.file.m4v {
+    background-position: 0 -200px;
+}
+
+.file.js,
+.file.xml,
+.file.xaml {
+    background-position: 0 -220px;
+}
+
+.file.css {
+    background-position: 0 -420px;
+}
+
+.file.rtf {
+    background-position: 0 -300px;
+}
+
+.file.notwritable,
+dd.file.notwritable,
+.file.duplicate {
+    background: url(../img/icons.png) no-repeat 0 -620px;
+}
+
+.file.notsafe,
+dd.file.notsafe {
+    background: url(../img/icons.png) no-repeat 0 -640px;
+}
+
+/* Adobe Flash Player */
+.file.swf,
+.file.as,
+.file.fla {
+    background-position: 0 -340px;
+}
+
+/* Adobe Flash Video */
+.file.flv,
+.file.f4v,
+.file.f4p,
+.file.f4a,
+.file.f4b {
+    background-position: 0 -340px;
+}
+
+/* Microsoft Word */
+.file.doc,
+.file.docx,
+.file.dot,
+.file.dotx {
+    background-position: 0 -400px;
+}
+
+/* Microsoft Excel */
+.file.xls,
+.file.xlsx,
+.file.xlsm {
+    background-position: 0 -320px;
+}
+
+/* Microsoft Powerpoint */
+.file.ppt,
+.file.pptx,
+.file.pps,
+.file.ppsx {
+    background-position: 0 -380px;
+}
+
+/* Adobe® Acrobat */
+.file.pdf {
+    background-position: 0 -360px;
+}
+
+/** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
+
+/* Apple Quicktime */
+.file.mov,
+.file.qt {
+    background-position: 0 -200px;
+}
+
+/* RealPlayer */
+.file.ra,
+.file.rm,
+.file.ram {
+    background-position: 0 -200px;
+}
+
+/* Adobe Shockwave */
+.file.dcr {
+    background-position: 0 -200px;
+}
+
+/* Windows Media Player */
+.file.wmv,
+.file.wma,
+.file.wm,
+.file.wmx,
+.file.wvx,
+.file.asf,
+.file.asx,
+.file.avi {
+    background-position: 0 -200px;
+}
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @ddcense   	GNU/GPL 2 or later - http://www.gnu.org/ddcenses/old-ddcenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Pubddc ddcense, and as distributed it includes or
+ * is derivative of works ddcensed under the GNU General Pubddc ddcense or
+ * other free or open source software ddcenses.
+ */
+
+ .ui-jce .filetype {
+     display: inline-block;
+ }
+
+.ui-jce .filetype .filetype-list {
+    display: none;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 10px 0;
+    width: 250px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.ui-jce .filetype .filetype-edit span {
+    visibility: hidden;
+    width: 0;
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item {
+    border: 1px dashed #ccc;
+    padding: 5px;
+    margin: 2px 0;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item .file {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item.filetype-custom .file {
+    margin: 5px;
+    min-height: 20px;
+}
+
+.ui-jce .filetype .filetype-list label {
+    padding: 0;
+    margin: 0 0 0 0;
+    display: inline-block;
+    width: calc(100% - 44px);
+    line-height: 28px;
+    vertical-align: middle;
+}
+
+.ui-jce .filetype .filetype-list input[type="text"] {
+    margin: 0;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
+    margin: 5px;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom .filetype-remove {
+    display: none;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom + .filetype-custom .filetype-add {
+    display: none;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom + .filetype-custom .filetype-remove {
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .filetype-custom input + .filetype-remove {
+    display: inline-block;
+}
+
+.ui-jce .filetype .filetype-list .btn {
+    color: #ccc;
+    max-width: 40px;
+}
+
+.ui-jce .filetype .filetype-list .btn span {
+    vertical-align: middle;
+}
+
+.ui-jce .filetype .filetype-group {
+    background-color: #eee;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.ui-jce .filetype .filetype-group input[type="checkbox"] {
+    margin: 5px 15px 5px 7px;
+}
+
+.ui-jce .filetype .ui-sortable-handle {
+    cursor: move;
+}
+.ui-jce .styleformat-collapse > div {
+    display: none;
+}
+
+.ui-jce .styleformat-collapse .styleformat-header,
+.ui-jce .styleformat-collapse .styleformat-item-title {
+    display: block;
+}
+
+.ui-jce .styleformat .icon-chevron-up {
+    display: inline-block;
+}
+
+.ui-jce .styleformat .icon-chevron-down {
+    display: none;
+}
+
+.ui-jce .styleformat-collapse .icon-chevron-down {
+    display: inline-block;
+}
+
+.ui-jce .styleformat-collapse .icon-chevron-up {
+    display: none;
+}
+
+.ui-jce .styleformat-list .styleformat-item-plus {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 2px 0;
+    max-width: 400px;
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.ui-jce .styleformat-list .styleformat-item-plus {
+    border-style: dashed;
+}
+
+.ui-jce .styleformat-list .styleformat-item-plus span {
+    display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .styleformat-list .styleformat-item-plus span {
+    text-align: right;
+}
+
+.ui-jce .styleformat-list .styleformat-item-plus .icon {
+    margin-right: 10px;
+    line-height: 2rem;
+    width: 28px;
+    height: 28px;
+}
+
+.ui-jce .styleformat-list .styleformat-item-trash {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    padding: 4px 8px;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-handle {
+    position: absolute;
+    left: 40px;
+    top: 0;
+    cursor: move;
+    width: calc(100% - 80px);
+    display: block;
+    height: 32px;
+    right: 40px;
+}
+
+.ui-jce .styleformat-list .styleformat .collapse {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 16px;
+    width: 28px;
+    height: 28px;
+}
+
+.ui-jce .styleformat-list .styleformat,
+.ui-jce .styleformat-list .styleformat-highlight {
+    border: 1px solid #CCCCCC;
+    padding: 30px 5px 5px;
+    max-width: 400px;
+    position: relative;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.ui-jce .styleformat-list .styleformat-highlight {
+    border-style: dashed;
+    min-height: 46px;
+    margin: 10px 0;
+    background-color: #F7F7F7;
+}
+
+.ui-jce .styleformat-list .styleformat>div {
+    margin: 5px 0;
+    padding: 5px 10px 5px 5px;
+    position: relative;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    left: 0;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+.ui-jce .styleformat-list .styleformat+div {
+    margin-top: 10px;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title {
+    background-color: #eee;
+}
+
+.ui-jce .styleformat-list .styleformat div input,
+.ui-jce .styleformat-list .styleformat div select {
+    max-width: 100%;
+    width: 365px;
+}
+
+.ui-jce .styleformat-list .styleformat div select {
+    width: 100%;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input {
+    font-size: inherit;
+    color: inherit;
+    float: none;
+}
+
+/* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.code,
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.samp {
+    font-family: monospace
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.strong {
+    font-weight: bolder
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.em {
+    font-style: italic
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.sub {
+    vertical-align: sub
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.sup {
+    vertical-align: super
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h1 {
+    font-size: 2em;
+    margin: .67em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h2 {
+    font-size: 1.5em;
+    margin: .75em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h3 {
+    font-size: 1.17em;
+    margin: .83em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h4 {
+    margin: 1.12em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h5 {
+    font-size: .83em;
+    margin: 1.5em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-title input.h6 {
+    font-size: .75em;
+    margin: 1.67em 0
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-element {
+    clear: left
+}
+
+.ui-jce .styleformat label {
+    display: block;
+    min-width: 100px;
+}
+
+.ui-jce .styleformat label+input,
+.ui-jce .styleformat label+select {
+    margin: 0;
+}
+
+.ui-jce .styleformat-list .styleformat .styleformat-item-element option:first-child {
+    margin: 5px 0;
+}
+.ui-jce .fontlist {
+    position: relative;
+    list-style: none outside none;
+    margin: 0 !important;
+    min-width: 200px;
+    padding: 0;
+}
+
+.ui-jce .fontlist input[type="checkbox"] {
+    margin: 5px 10px;
+    width: auto;
+}
+
+.ui-jce .fontlist .font-item,
+.ui-jce .fontlist .font-item-plus {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    max-width: 480px;
+    position: relative;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.ui-jce .fontlist .font-item > div {
+    padding: 0 5px 0 0;
+}
+
+.ui-jce .fontlist .font-item-highlight.sortable-placeholder{
+    max-width: 480px;
+    padding: 5px 10px;
+}
+
+.ui-jce .fontlist .font-item-plus {
+    border-style: dashed;
+}
+
+.ui-jce .fontlist .font-item-plus span {
+    display: inline-block;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    line-height: 2rem;
+    text-align: left;
+}
+
+[dir="rtl"] .ui-jce .fontlist .font-item-plus span {
+    text-align: right;
+}
+
+.ui-jce .fontlist .font-item-plus .icon {
+    margin-right: 10px;
+    line-height: 2rem;
+    width: 28px;
+    height: 28px;
+}
+
+.ui-jce .fontlist>div,
+.ui-jce .fontlist label {
+    cursor: move;
+}
+
+.ui-jce .fontlist .font-item input[type="text"] {
+    margin: 0;
+    float: none;
+}
+
+.ui-jce .fontlist .font-item[title="Webdings"] label,
+.ui-jce .fontlist .font-item[title="Wingdings"] label {
+    font-family: inherit !important;
+}
+.ui-jce .blockformats {
+    position: relative;
+}
+
+.ui-jce .blockformats .blockformat-item {
+    border: 1px solid #ccc;
+    padding: 5px;
+    min-width: 200px;
+    max-width: 300px;
+    position: relative;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.ui-jce .blockformats .blockformat-item {
+    cursor: move;
+    line-height: 30px;
+}
+
+.ui-jce .blockformats .blockformat-item i {
+    margin: 10px 0;
+    color: #ccc;
+}
+
+.ui-jce .blockformats .blockformat-item label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ui-jce .blockformats .blockformat-item input {
+    margin: 8px 10px;
+}
+
+/* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+
+.ui-jce .blockformats .blockformat-item .blockformat-code,
+.ui-jce .blockformats .blockformat-item .blockformat-samp {
+    font-family: monospace
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-strong {
+    font-weight: bolder
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-em {
+    font-style: italic
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-sub {
+    vertical-align: sub
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-sup {
+    vertical-align: super
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h1 {
+    font-size: 2em
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h2 {
+    font-size: 1.5em
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h3 {
+    font-size: 1.17em
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h4 {}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h5 {
+    font-size: .83em
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-h6 {
+    font-size: .75em
+}
+
+.ui-jce .blockformats .blockformat-item .blockformat-span {
+    float: none;
+    margin: 0;
+    display: inline;
+}
+
+.ui-jce .blockformats > div:after {
+    content: "::";
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    line-height: 20px;
+    width: 20px;
+    margin-top: -10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #ccc;
+}
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+html {
+    overflow-y: visible !important;
+}
+
+.editor-layout {
+    position: relative;
+    margin: 20px 60px 50px 0;
+}
+
+.com_jce .mce-tinymce {
+    border-width: 1px;
+    box-sizing: content-box;
+}
+
+.mce-tinymce .mce-statusbar {
+    border-width: 1px;
+}
+
+.mce-tinymce .mce-edit-area {
+    border-width: 1px 1px 0px;
+}
+
+.mce-tinymce .mce-panel.mce-edit-area {
+    background: #fff;
+}
+
+.com_jce .mce-toolbar .mce-btn,
+.com_jce .mce-toolbar .mce-btn button {
+    cursor: move;
+}
+
+.com_jce .mce-btn {
+    display: inline-block;
+    font-size: 0;
+}
+
+.mce-btn-group:empty {
+    min-width: 30px;
+    min-height: 30px;
+    display: none;
+}
+
+.mce-btn-group.visible:empty {
+    display: inline-block;
+}
+
+.mce-toolbar.ui-sortable-helper {
+    background-color: #e6e6e6;
+}
+
+.editor-layout+div.mce-tinymce {
+    min-width: 600px;
+    display: inline-block;
+}
+
+.mce-edit-area>div {
+    min-height: 120px;
+}
+
+.mce-edit-area>div>p {
+    white-space: pre-wrap;
+    margin: 5px;
+}
+
+#profileLayoutTable {
+    position: relative;
+}
+
+#editor_toggle {
+    padding: 0 5px;
+    line-height: 20px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+    display: block;
+}
+
+.com_jce .widthMarker {
+    border: 1px dashed #999;
+    border-bottom-width: 0;
+    display: block;
+    left: 0;
+    height: 24px;
+    position: absolute;
+    text-align: center;
+    top: -28px;
+    box-sizing: content-box;
+}
+
+.com_jce .widthMarker span {
+    background: none repeat scroll 0 0 #FFFFFF;
+    display: inline-block;
+    left: 50%;
+    line-height: 20px;
+    margin: 0 0 0 -25px;
+    position: absolute;
+    top: -10px;
+    width: 50px;
+    text-align: center;
+}
+
+.ui-sortable-sorting .mce-btn {
+    background-color: #e6e6e6;
+}
+
+.com_jce .sortable-row-highlight,
+.com_jce .sortable-btn-highlight {
+    border: 1px dashed #9FBBDD !important;
+}
+
+.com_jce .sortable-row-highlight {
+    margin: 0 0 2px 0;
+}
+
+.com_jce .sortable-handle {
+    height: 32px;
+    border: 1px solid #ddd;
+    cursor: move;
+    background-color: #f5f5f5;
+    text-align: center;
+    position: absolute;
+    display: block;
+    box-sizing: border-box;
+    top: 0;
+    right: -20px;
+}
+
+.com_jce .sortable-handle i {
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.com_jce .sortable-option {
+    margin: 0;
+    width: 20px;
+    opacity: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 4px;
+    right: -60px;
+    height: 28px;
+}
+
+.com_jce .sortable-option i {
+    line-height: 28px;
+}
+
+.com_jce .sortable-option.sortable-option-hover {
+    opacity: 0.8;
+}
+
+.editor-button-pool {
+    max-width: 100%;
+    margin-right: 60px;
+}
+
+.editor-button-pool .sortable-option {
+    display: none;
+}
+
+html[dir="rtl"] .com_jce .sortable-handle {
+    left: -30px;
+    right: auto;
+}
+
+html[dir="rtl"] .com_jce .sortable-option {
+    left: -60px;
+    right: auto;
+}
+
+html[dir="rtl"] .widthMarker {
+    left: auto;
+}
+
+html[dir="rtl"] .form-horizontal .control-label {
+    float: right;
+}
+
+.mce-container .mce-btn .mce-caret {
+    margin: -7px;
+}
+
+.ui-sortable>.mce-toolbar {
+    position: relative;
+}
+
+.mce-container .mce-toolbar {
+    font-size: 0;
+    line-height: 1;
+    height: auto;
+    min-height: 28px;
+    position: relative;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 1px;
+    margin-bottom: 2px;
+}
+
+.mce-container .mce-toolbar  > div {
+    font-size: 0;
+    line-height: 1;
+}
+
+.mce-tinymce.mce-panel,
+.mce-toolbar-grp.mce-panel {
+    border: 0 none;
+    background: none;
+    padding: 0;
+}
+
+.mce-container .mce-flow-layout-item {
+    margin: 0;
+}
+
+.mce-listbox, .mce-splitbtn {
+    border: 1px solid #ddd;
+    height: 26px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    position: relative;
+    cursor: move;
+}
+
+.mce-listbox[data-name="styleselect"] {
+    background: #fff;
+}
+
+.mce-toolbar-grp .mce-btn-has-text .mce-txt {
+    margin-right: 10px;
+}
+
+.mce-toolbar .mce-container .mce-btn .mce-caret {
+    margin: -2px 0;
+}
+
+.editor-layout .mceToolbarRow:first-child > div:first-child {
+	margin-left: 0;
+}
+
+.sortable-handle i, .sortable-option i {font-size: initial}
+
+.editor-layout .sortable-option i:last-child {display: none;}
+
+/*.defaultSkin .mceLayout .mceToolbarRow:after {
+    content: "::";
+    display: block;
+    width: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -10px;
+    font-size: 1.2rem;
+    color: #aaa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}*/
+.ui-jce .users-select {
+    position: relative;
+    margin: 10px 0;
+}
+
+.ui-jce joomla-field-user+.users-select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: calc(100% - 48px);
+}
+
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select {
+    width: 100%;
+}
+
+.ui-jce joomla-field-user+.users-select joomla-field-fancy-select .choices__inner {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.extensions-select.radio {
+    padding: 0;
+}
+
+.extensions-select.radio input[type="radio"] {
+    display: inline-block;
+    margin: 0 5px 0 0;
+    float: none;
+}
+
+.extensions-select label {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    vertical-align: middle;
+    padding: 0;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav {
+    border-width: 0 0 0 1px;
+    float: right;
+    padding: 0 0.2em 0 0.1em;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {
+    padding-left: 0.1em;
+    border-right-width: 1px;
+    margin-right: -1px;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-nav li {
+    margin: 0 1px 0.2em 0;
+    border-left: 0 none;
+}
+
+html[dir="rtl"] .ui-jce .ui-tabs-vertical .ui-tabs-panel {
+    margin: 0 13em 0 0;
+}
+
+.ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li>a:first-child {
+    max-width: 100px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    white-space: pre-wrap;
+    cursor: pointer;
+    background-color: #F5F5F5;
+    border-color: #eee #ddd #eee #eee;
+    -webkit-box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+    box-shadow: inset -1px 0px 1px px rgba(0, 0, 0, 0.05);
+}
+
+.ui-bootstrap #jce div.tab-pane.tabbable.tabs-left ul li.active>a {
+    background-color: #fff;
+    border-color: #eee #fff #eee #eee;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+#jce #tabs ul li span.tabs-label {
+    margin: 5px 0;
+    display: block;
+}
+
+input#profile_description {
+    width: 500px;
+}
+
+/* Mobile stuff */
+
+@media (max-width: 767px) {
+    input[type="text"] {
+        max-width: 250px;
+    }
+}
+
+a.browser {
+    display: inline-block;
+    margin: 8px 0;
+}
+
+/*.com_jce .tabs-left .nav-tabs li a {font-size: 18px;line-height: 20px;font-weight: bold;padding: 16px 8px;}*/
+
+.com_jce .tabs-left .tab-content {
+    overflow: visible;
+}
+
+/*.com_jce .form-horizontal .control-label {}
+
+.com_jce .form-horizontal .controls {
+    position: relative;
+    margin: 0;
+}
+
+.com_jce .form-horizontal .control-label + .controls {
+    margin-left: 180px;
+}*/
+
+#tabs-editor .nav-tabs>li>a,
+#tabs-plugins .nav-tabs>li>a {
+    padding: 24px 12px;
+    min-height: 72px;
+}
+
+[data-toggle="tab"] .mce-toolbar .mce-ico {
+    line-height: inherit;
+}
+
+.checkboxes .mce-toolbar .mce-ico {
+    line-height: inherit;
+}
+
+.tab-disabled {
+    display: none;
+}
+
+.nav-tabs .mce-toolbar {
+    max-width: 180px;
+    white-space: normal;
+}
+
+.nav-tabs .mce-toolbar .mce-btn {
+    margin: 2px 2px 0 0;
+    height: 32px;
+}
+
+.nav-tabs .mce-toolbar .mce-list-box,
+.nav-tabs .mce-toolbar .mceListBox {
+    max-width: 95px;
+    max-height: 32px;
+}
+
+.nav-tabs .mce-toolbar {
+    margin: 0 0 15px 0
+}
+
+.wf-repeatable-collapse .icon-bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background-color: #f5f5f5;
+    border-radius: 1px;
+}
+
+.mceDefaultSkin.checkboxes .mceButton {
+    text-align: left;
+    max-width: 250px;
+    padding: 5px;
+    display: block;
+    cursor: default;
+}
+
+.checkboxes .mceButton>input[type="checkbox"] {
+    vertical-align: middle;
+    line-height: 20px;
+    margin: 0 3px;
+}
+
+.checkboxes .mceButton .mceIcon,
+.checkboxes .mceButton>label {
+    line-height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+    font-family: inherit;
+}
+
+.tabs-left .nav-tabs,
+.tabs-left .tab-content {
+    flex-direction: column !important;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.tabs-left .nav-tabs {
+    flex: 0 0 calc(100% / 12 * 2);
+    width: calc(100% / 12 * 2);
+}
+
+.tabs-left .tab-content {
+    flex: 0 0 calc(100% / 12 * 9);
+    width: calc(100% / 12 * 9);
+}
+
+.tabs-left>.nav-tabs>li>a {
+    min-height: 100px;
+}
+
+@keyframes donut-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.ui-jce .donut {
+    display: inline-block;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #888;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: donut-spin 1.2s linear infinite;
+}
+
+.ui-jce .donut {
+    display: none;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+}
+
+.ui-jce.loading .donut {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1001;
+    margin: -15px 0 0 -15px;
+}
+
+.ui-jce.loading {
+    position: static;
+}
+
+.ui-jce.loading:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+}
+
+.ui-jce legend {
+    font-size: 1.25em;
+}
+
+/* Joomla 4 */
+.ui-jce .options-grid-form > legend {
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 3em;
+}
+
+.ui-jce .row-fluid .form-horizontal .control-label {
+    width: auto;
+    min-width: 160px;
+}
+
+.ui-jce .row-fluid .form-horizontal .control-label:empty {
+    min-width: inherit;
+    padding: 0;
+    width: 0;
+}
+
+.ui-jce .checkboxes .sortable-placeholder {
+    border: 1px dashed #ccc;
+    background-color: #fafafa;
+    min-height: 32px;
+    display: block;
+    padding: 0.5rem;
+    cursor: move;
+    max-width: 300px;
+    box-sizing: border-box;
+}
+
+.ui-jce .hide {
+    display: none;
+}
