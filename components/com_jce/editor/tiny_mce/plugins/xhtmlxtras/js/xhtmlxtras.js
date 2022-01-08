@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global Wf, jQuery, tinyMCEPopup */
+
 (function ($) {
 
 	var XHTMLXtrasDialog = {
@@ -82,10 +85,12 @@
 						if (k === 'data-mouseover' || k === 'data-mouseout' || k.indexOf('on') === 0) {
 							return true;
 						}
-						
+
 						try {
 							v = decodeURIComponent(v);
-						} catch (e) { }
+						} catch (e) {
+							// error
+						}
 
 						var repeatable = $('.uk-repeatable').eq(0);
 
@@ -246,8 +251,9 @@
 			value = "" + value;
 
 			if (value.length < len) {
-				for (i = 0; i < (len - value.length); i++)
+				for (i = 0; i < (len - value.length); i++) {
 					value = "0" + value;
+				}
 			}
 
 			return value;

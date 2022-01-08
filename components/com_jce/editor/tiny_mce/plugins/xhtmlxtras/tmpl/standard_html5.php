@@ -64,12 +64,9 @@ defined('JPATH_PLATFORM') or die;
 </div>
 
 <div class="uk-form-row uk-grid uk-grid-small">
-  <label for="custom_attributes" class="uk-form-label uk-width-2-10">
-    <?php echo JText::_('WF_LABEL_OTHER'); ?>
-  </label>
-  <div class="uk-form-controls uk-width-8-10">
+  <div class="uk-form-controls uk-width-1-1">
     <div class="uk-repeatable">
-      <div class="uk-form-controls uk-grid uk-grid-small uk-margin-small uk-width-9-10">
+      <div class="uk-form-controls uk-flex uk-margin-small uk-width-9-10">
         <label class="uk-form-label uk-width-1-10">
           <?php echo JText::_('WF_LABEL_NAME'); ?>
         </label>
