@@ -68,6 +68,9 @@
             elm.textContent = text;
         }*/
 
+        // replace white space
+        text = text.replace(/^[\s ]/, '\uFEFF');
+
         tinymce.each(elm.childNodes, function (elm) {
             if (elm.nodeType == 3) {
                 if ("innerText" in elm) {
