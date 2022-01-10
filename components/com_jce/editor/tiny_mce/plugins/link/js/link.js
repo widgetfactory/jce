@@ -376,6 +376,10 @@
             // trigger datalist init/update
             $('.uk-datalist').trigger('datalist:update');
 
+            $('.uk-repeatable').on('repeatable:delete', function (e, ctrl, elm) {
+                $(elm).find('input, select').eq(1).val('');
+            });
+
             window.focus();
         },
 

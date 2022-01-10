@@ -184,7 +184,8 @@
             $('.uk-repeatable-delete', this).on('click', function (e) {
                 var $elm = $(this).parent().parent();
 
-                $elm.remove();
+                //$elm.remove();
+                $elm.hide();
 
                 $(self).trigger('repeatable:delete', [self, $elm.get(0)]);
 
@@ -369,7 +370,7 @@
             $('.uk-accordion-title', el).removeClass('uk-active');
 
             $(this).addClass('uk-active').next('div').css('height', function (i, v) {
-                if (parseInt(v) === 0) {
+                if (parseInt(v, 10) === 0) {
                     $(el).trigger('accordion.activate', [tab, this]);
                     return 'auto';
                 }
