@@ -70,8 +70,7 @@ class WFEditor
      * @var boolean
      */
     public $initialized = false;
-    
-    
+
     private function addScript($url)
     {
         $url = $this->addAssetVersion($url);
@@ -167,7 +166,7 @@ class WFEditor
     public function init()
     {
         $this->initialized = true;
-         
+
         $settings = $this->getSettings();
 
         JFactory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
@@ -271,9 +270,9 @@ class WFEditor
             }
 
             // Remove values with invalid key
-        	$userParams = array_filter($userParams, function ($key) {
-            	return !is_numeric($key);
-        	}, ARRAY_FILTER_USE_KEY);
+            $userParams = array_filter($userParams, function ($key) {
+                return !is_numeric($key);
+            }, ARRAY_FILTER_USE_KEY);
 
             foreach ($userParams as $userParam) {
                 $name = '';
@@ -540,7 +539,7 @@ class WFEditor
         $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
         $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
-        
+
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
                 $this->addScript(JURI::root(true) . '/' . $wf->getParam('editor.callback_file'));
@@ -990,10 +989,10 @@ class WFEditor
         // loop through list and create/call method
         foreach ($items as $plugin) {
             $name = str_replace($delim, ' ', $plugin);
-            
+
             // Create class name
             $classname = 'WF' . ucwords($name) . 'PluginConfig';
-            
+
             // remove space
             $classname = str_replace(' ', '', $classname);
 
@@ -1430,7 +1429,7 @@ class WFEditor
 
                 // add external plugins
                 foreach ($plugins['external'] as $plugin => $path) {
-                    $files[] = $path . '/' . $plugin . '/editor_plugin' . $suffix . '.js';
+                    $files[] = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/editor_plugin' . $suffix . '.js';
                 }
 
                 // add Editor file
@@ -1457,6 +1456,7 @@ class WFEditor
                     // Add core plugins
                     foreach ($plugins['core'] as $plugin) {
                         $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
+
                         if (JFile::exists($content)) {
                             $files[] = $content;
                         }
@@ -1464,7 +1464,7 @@ class WFEditor
 
                     // add external plugins
                     foreach ($plugins['external'] as $plugin => $path) {
-                        $content = $path . '/' . $plugin . '/css/content.css';
+                        $content = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/css/content.css';
 
                         if (JFile::exists($content)) {
                             $files[] = $content;
