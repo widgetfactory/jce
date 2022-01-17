@@ -200,6 +200,13 @@ WFAggregator.add('vimeo', {
         // simplify url
         src = 'https://vimeo.com/' + id;
 
+        // remove iframe attributes
+        $.each(data, function (key, val) {
+            if (/^iframe_(allow|frameborder|allowfullscreen)/.test(key)) {
+                delete data[key];
+            }
+        });
+
         data.src = src;
 
         return data;

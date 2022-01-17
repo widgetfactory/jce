@@ -280,6 +280,13 @@ WFAggregator.add('youtube', {
             // add www (required by iOS ??)
         }).replace(/\/\/youtube/i, '//www.youtube');
 
+        // remove iframe attributes
+        $.each(data, function (key, val) {
+            if (/^iframe_(allow|frameborder|allowfullscreen)/.test(key)) {
+                delete data[key];
+            }
+        });
+
         data.src = src;
 
         return data;
