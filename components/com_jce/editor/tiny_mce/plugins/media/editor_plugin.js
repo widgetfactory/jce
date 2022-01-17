@@ -567,15 +567,25 @@
             }
 
             if (key.indexOf('data-mce-p-') === 0) {
-                key = key.substr(11);
+                key = key.substring(11);
             }
 
             if (key === 'data-mce-width' || key === 'data-mce-height') {
-                key = key.substr(9);
+                key = key.substring(9);
+            }
+
+            // skip system attributes
+            if (key.indexOf('data-mce-') === 0) {
+                continue;
+            }
+
+            // skip preview span attributes
+            if (node.attr('data-mce-object') && key.indexOf('aria-') == 0) {
+                continue;
             }
 
             // skip invalid tags but not custom dash attributes, eg: data-* or uk-* etc.
-            if (!editor.schema.isValid(tag, key) && key.indexOf('-') === -1) {
+            if (!editor.schema.isValid(tag, key) && key.indexOf('-') == -1) {
                 continue;
             }
 
@@ -651,11 +661,15 @@
 
         elm = new Node(tag, 1);
 
+        attribs = processNodeAttributes(editor, tag, node);
+
         if (/\s*mce-object-preview\s*/.test(node.attr('class')) && node.firstChild && node.firstChild.name === tag) {
             node = node.firstChild;
         }
 
-        attribs = processNodeAttributes(editor, tag, node);
+        attribs = extend(attribs, processNodeAttributes(editor, tag, node));
+
+        console.log(attribs);
 
         elm.attr(attribs);
 
@@ -1017,6 +1031,25 @@
 
         // get media node in preview
         if (node.className.indexOf('mce-object-preview') !== -1) {
+
+            // get preview attributes
+            var i, attribs = node.attributes;
+
+            for (i = attribs.length - 1; i >= 0; i--) {
+                var item = attribs.item(i),
+                    name = item.name,
+                    value;
+
+                if (name == 'contenteditable') {
+                    continue;
+                }
+
+                if (name.indexOf('data-mce-') == -1 && name.indexOf('aria-') == -1) {
+                    data[name] = ed.dom.getAttrib(node, name);
+                }
+            }
+
+            // reset node to iframe
             node = node.firstChild;
         }
 
@@ -1030,17 +1063,17 @@
             extend(data, htmlToData(ed, mediatype, html));
         }
 
-        var i, attribs = node.attributes;
-
         // set src value
         data.src = ed.dom.getAttrib(node, 'data-mce-p-src') || ed.dom.getAttrib(node, 'data-mce-p-data') || ed.dom.getAttrib(node, 'src');
 
         // convert url
         data.src = ed.convertURL(data.src);
 
+        var i, attribs = node.attributes;
+
         for (i = attribs.length - 1; i >= 0; i--) {
-            var attrib = attribs.item(i),
-                name = attrib.name,
+            var item = attribs.item(i),
+                name = item.name,
                 value;
 
             // get value from element
@@ -1178,7 +1211,7 @@
                 if (ed.dom.getAttrib(node, 'data-mce-selected')) {
                     node.setAttribute('data-mce-selected', '2');
                 }
-                
+
                 if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
                     previewToPlaceholder(ed, node);
                 }
@@ -1188,7 +1221,7 @@
 
                 e.preventDefault();
 
-                return;        
+                return;
             }
         }
 
@@ -1362,8 +1395,6 @@
                 ed.dom.setStyles(elm, { 'width': width, 'height': height });
             });
 
-           
-
             ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
                 var node = ed.selection.getNode();
 
@@ -1381,7 +1412,7 @@
                 }
             });
 
-            ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+            ed.onBeforeExecCommand.add(function (ed, cmd, ui, values, o) {
                 // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
                 if (cmd && (cmd.indexOf('Format') != -1 || cmd.indexOf('Justify') != -1)) {
                     var node = ed.selection.getNode();
@@ -1402,8 +1433,8 @@
                             }
                         }
 
-                        if (node && tinymce.is(v, 'object')) {
-                            v.node = node;
+                        if (node && tinymce.is(values, 'object')) {
+                            values.node = node;
                         }
                     }
                 }
