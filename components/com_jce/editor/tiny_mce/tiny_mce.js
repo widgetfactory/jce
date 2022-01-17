@@ -34164,6 +34164,10 @@
         return node.nodeType === 1 && node.id === '_mce_caret';
       }
 
+      function isBogusBr(node) {
+        return node.nodeName == "BR" && node.getAttribute('data-mce-bogus') && !node.nextSibling;
+      }
+
       function isFigure(node) {
         return getParents(node, 'FIGURE') && node.nodeName != 'FIGURE';
       }
@@ -34699,7 +34703,7 @@
             }
 
             // apply format to element, but not caret node
-            if (dom.is(node, format.selector) && !isCaretNode(node)) {
+            if (dom.is(node, format.selector) && !isCaretNode(node) && !isBogusBr(node)) {
               setElementFormat(node, format);
               found = true;
               return false;
@@ -34758,6 +34762,10 @@
              */
             function process(node) {
               var nodeName, parentName, found, hasContentEditableState, lastContentEditable;
+
+              if (isBogusBr(node) || isCaretNode(node)) {
+                return;
+              }
 
               lastContentEditable = contentEditable;
               nodeName = node.nodeName.toLowerCase();
@@ -34820,6 +34828,7 @@
               if (contentEditable && !hasContentEditableState && isValidChild(wrapName, nodeName) && isValidChild(parentName, wrapName) &&
                 !isBOM(node) &&
                 !isCaretNode(node) &&
+                !isBogusBr(node) &&
                 (!format.inline || !isBlock(node))) {
                 // Start wrapping
                 if (!currentWrapElm) {
@@ -35663,7 +35672,7 @@
       }
 
       function isElementNode(node) {
-        return node.nodeType == 1 && !isBookmarkNode(node) && !isWhiteSpaceNode(node) && !isCaretNode(node);
+        return node.nodeType == 1 && !isBookmarkNode(node) && !isWhiteSpaceNode(node) && !isCaretNode(node) && !isBogusBr(node);
       }
 
       /**
@@ -35764,10 +35773,6 @@
           container = parent = start ? startContainer : endContainer;
           siblingName = start ? 'previousSibling' : 'nextSibling';
           root = dom.getRoot();
-
-          function isBogusBr(node) {
-            return node.nodeName == "BR" && node.getAttribute('data-mce-bogus') && !node.nextSibling;
-          }
 
           // If it's a text node and the offset is inside the text
           if (container.nodeType == 3 && !isWhiteSpaceNode(container)) {
