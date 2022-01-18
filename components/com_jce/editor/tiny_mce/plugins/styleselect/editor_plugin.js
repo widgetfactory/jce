@@ -147,8 +147,12 @@
                     if (!removedFormat) {
                         // registered style format
                         if (ed.formatter.get(name)) {                            
-                            if (ed.formatter.match(name)) {
-                                ed.formatter.remove(name);
+                            if (ed.formatter.match(name)) {                                
+                                ed.execCommand('RemoveFormat', false, {
+                                    name: name,
+                                    args: {},
+                                    node: node
+                                });
                             } else {                                
                                 ed.execCommand('ApplyFormat', false, {
                                     name: name,
