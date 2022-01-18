@@ -44,6 +44,9 @@ class WFPreviewPlugin extends WFEditorPlugin
         // load paramter class
         jimport('joomla.html.parameter');
 
+        // register autoload for ContentHelperRoute
+        JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
+
         // get post data
         $data = $app->input->post->get('data', '', 'RAW');
 
@@ -75,6 +78,7 @@ class WFPreviewPlugin extends WFEditorPlugin
         $article->parameters = new JRegistry();
         $article->text = $data;
 
+        // load system plugins
         JPluginHelper::importPlugin('system');
 
         $app->triggerEvent('onWfContentPreview', array($context, &$article, &$params, 0));
@@ -83,10 +87,8 @@ class WFPreviewPlugin extends WFEditorPlugin
         if ((bool) $this->getParam('process_content', 1)) {
             $page = 0;
 
+            // load content plugins
             JPluginHelper::importPlugin('content');
-
-            // load content router
-            require_once JPATH_SITE . '/components/com_content/helpers/route.php';
 
             // set error reporting off to produce empty string on Fatal error
             error_reporting(0);
