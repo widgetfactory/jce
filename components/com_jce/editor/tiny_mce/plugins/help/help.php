@@ -35,10 +35,9 @@ class WFHelpPlugin extends WFEditorPlugin
 
         $params = JComponentHelper::getParams('com_jce');
 
-        $registry = new JRegistry($params);
-        $url = $registry->get('preferences.help_url', 'https://www.joomlacontenteditor.net');
-        $method = $registry->get('preferences.help_method', 'reference');
-        $pattern = $registry->get('preferences.help_pattern', '/$1/$2/$3');
+        $url = $params->get('help_url', 'https://www.joomlacontenteditor.net');
+        $method = $params->get('help_method', 'reference');
+        $pattern = $params->get('help_pattern', '/$1/$2/$3');
 
         // trim url of trailing slash
         $url = trim($url, '/');
