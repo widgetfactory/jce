@@ -31409,8 +31409,8 @@
           formatter.apply(value.name, value.args || {}, value.node || null);
         },
 
-        RemoveFormat: function (command) {
-          formatter.remove(command);
+        RemoveFormat: function (command, ui, value) {
+          formatter.remove(value.name, value.args || {}, value.node || null);
         },
 
         mceBlockQuote: function () {
