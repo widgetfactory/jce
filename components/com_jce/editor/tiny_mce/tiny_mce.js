@@ -31144,11 +31144,11 @@
     var TreeWalker = tinymce.dom.TreeWalker;
 
     /**
-  	 * This class enables you to add custom editor commands and it contains
-  	 * overrides for native browser commands to address various bugs and issues.
-  	 *
-  	 * @class tinymce.EditorCommands
-  	 */
+     * This class enables you to add custom editor commands and it contains
+     * overrides for native browser commands to address various bugs and issues.
+     *
+     * @class tinymce.EditorCommands
+     */
     tinymce.EditorCommands = function (editor) {
       var dom = editor.dom,
         selection = editor.selection,
@@ -31162,14 +31162,14 @@
         bookmark;
 
       /**
-  		 * Executes the specified command.
-  		 *
-  		 * @method execCommand
-  		 * @param {String} command Command to execute.
-  		 * @param {Boolean} ui Optional user interface state.
-  		 * @param {Object} value Optional value for command.
-  		 * @return {Boolean} true/false if the command was found or not.
-  		 */
+       * Executes the specified command.
+       *
+       * @method execCommand
+       * @param {String} command Command to execute.
+       * @param {Boolean} ui Optional user interface state.
+       * @param {Object} value Optional value for command.
+       * @return {Boolean} true/false if the command was found or not.
+       */
       function execCommand(command, ui, value) {
         var func;
 
@@ -31185,12 +31185,12 @@
       }
 
       /**
-  		 * Queries the current state for a command for example if the current selection is "bold".
-  		 *
-  		 * @method queryCommandState
-  		 * @param {String} command Command to check the state of.
-  		 * @return {Boolean/Number} true/false if the selected contents is bold or not, -1 if it's not found.
-  		 */
+       * Queries the current state for a command for example if the current selection is "bold".
+       *
+       * @method queryCommandState
+       * @param {String} command Command to check the state of.
+       * @return {Boolean/Number} true/false if the selected contents is bold or not, -1 if it's not found.
+       */
       function queryCommandState(command) {
         var func;
 
@@ -31205,12 +31205,12 @@
       }
 
       /**
-  		 * Queries the command value for example the current fontsize.
-  		 *
-  		 * @method queryCommandValue
-  		 * @param {String} command Command to check the value of.
-  		 * @return {Object} Command value of false if it's not found.
-  		 */
+       * Queries the command value for example the current fontsize.
+       *
+       * @method queryCommandValue
+       * @param {String} command Command to check the value of.
+       * @return {Object} Command value of false if it's not found.
+       */
       function queryCommandValue(command) {
         var func;
 
@@ -31225,12 +31225,12 @@
       }
 
       /**
-  		 * Adds commands to the command collection.
-  		 *
-  		 * @method addCommands
-  		 * @param {Object} command_list Name/value collection with commands to add, the names can also be comma separated.
-  		 * @param {String} type Optional type to add, defaults to exec. Can be value or state as well.
-  		 */
+       * Adds commands to the command collection.
+       *
+       * @method addCommands
+       * @param {Object} command_list Name/value collection with commands to add, the names can also be comma separated.
+       * @param {String} type Optional type to add, defaults to exec. Can be value or state as well.
+       */
       function addCommands(command_list, type) {
         type = type || 'exec';
 
@@ -31242,12 +31242,12 @@
       }
 
       /**
-  		 * Returns true/false if the command is supported or not.
-  		 *
-  		 * @method queryCommandSupported
-  		 * @param {String} command Command that we check support for.
-  		 * @return {Boolean} true/false if the command is supported or not.
-  		 */
+       * Returns true/false if the command is supported or not.
+       *
+       * @method queryCommandSupported
+       * @param {String} command Command that we check support for.
+       * @return {Boolean} true/false if the command is supported or not.
+       */
       function queryCommandSupported(command) {
         command = command.toLowerCase();
 
@@ -31410,6 +31410,7 @@
         },
 
         RemoveFormat: function (command, ui, value) {
+          value = value || { name: command };
           formatter.remove(value.name, value.args || {}, value.node || null);
         },
 
@@ -31459,241 +31460,241 @@
           selection.select(value);
         },
         /*
-  			mceInsertContent: function (command, ui, value) {
-  				var parser, serializer, parentNode, rootNode, fragment, args;
-  				var marker, rng, node, node2, bookmarkHtml, merge;
-  				var textInlineElements = editor.schema.getTextInlineElements();
+        mceInsertContent: function (command, ui, value) {
+          var parser, serializer, parentNode, rootNode, fragment, args;
+          var marker, rng, node, node2, bookmarkHtml, merge;
+          var textInlineElements = editor.schema.getTextInlineElements();
 
-  				function trimOrPaddLeftRight(html) {
-  					var rng, container, offset;
+          function trimOrPaddLeftRight(html) {
+            var rng, container, offset;
 
-  					rng = selection.getRng(true);
-  					container = rng.startContainer;
-  					offset = rng.startOffset;
+            rng = selection.getRng(true);
+            container = rng.startContainer;
+            offset = rng.startOffset;
 
-  					function hasSiblingText(siblingName) {
-  						return container[siblingName] && container[siblingName].nodeType == 3;
-  					}
+            function hasSiblingText(siblingName) {
+              return container[siblingName] && container[siblingName].nodeType == 3;
+            }
 
-  					if (container.nodeType == 3) {
-  						if (offset > 0) {
-  							html = html.replace(/^&nbsp;/, ' ');
-  						} else if (!hasSiblingText('previousSibling')) {
-  							html = html.replace(/^ /, '&nbsp;');
-  						}
+            if (container.nodeType == 3) {
+              if (offset > 0) {
+                html = html.replace(/^&nbsp;/, ' ');
+              } else if (!hasSiblingText('previousSibling')) {
+                html = html.replace(/^ /, '&nbsp;');
+              }
 
-  						if (offset < container.length) {
-  							html = html.replace(/&nbsp;(<br>|)$/, ' ');
-  						} else if (!hasSiblingText('nextSibling')) {
-  							html = html.replace(/(&nbsp;| )(<br>|)$/, '&nbsp;');
-  						}
-  					}
+              if (offset < container.length) {
+                html = html.replace(/&nbsp;(<br>|)$/, ' ');
+              } else if (!hasSiblingText('nextSibling')) {
+                html = html.replace(/(&nbsp;| )(<br>|)$/, '&nbsp;');
+              }
+            }
 
-  					return html;
-  				}
+            return html;
+          }
 
-  				// Removes &nbsp; from a [b] c -> a &nbsp;c -> a c
-  				function trimNbspAfterDeleteAndPaddValue() {
-  					var rng, container, offset;
+          // Removes &nbsp; from a [b] c -> a &nbsp;c -> a c
+          function trimNbspAfterDeleteAndPaddValue() {
+            var rng, container, offset;
 
-  					rng = selection.getRng(true);
-  					container = rng.startContainer;
-  					offset = rng.startOffset;
+            rng = selection.getRng(true);
+            container = rng.startContainer;
+            offset = rng.startOffset;
 
-  					if (container.nodeType == 3 && rng.collapsed) {
-  						if (container.data[offset] === '\u00a0') {
-  							container.deleteData(offset, 1);
+            if (container.nodeType == 3 && rng.collapsed) {
+              if (container.data[offset] === '\u00a0') {
+                container.deleteData(offset, 1);
 
-  							if (!/[\u00a0| ]$/.test(value)) {
-  								value += ' ';
-  							}
-  						} else if (container.data[offset - 1] === '\u00a0') {
-  							container.deleteData(offset - 1, 1);
+                if (!/[\u00a0| ]$/.test(value)) {
+                  value += ' ';
+                }
+              } else if (container.data[offset - 1] === '\u00a0') {
+                container.deleteData(offset - 1, 1);
 
-  							if (!/[\u00a0| ]$/.test(value)) {
-  								value = ' ' + value;
-  							}
-  						}
-  					}
-  				}
+                if (!/[\u00a0| ]$/.test(value)) {
+                  value = ' ' + value;
+                }
+              }
+            }
+          }
 
-  				function markInlineFormatElements(fragment) {
-  					if (merge) {
-  						for (node = fragment.firstChild; node; node = node.walk(true)) {
-  							if (textInlineElements[node.name]) {
-  								node.attr('data-mce-new', "true");
-  							}
-  						}
-  					}
-  				}
+          function markInlineFormatElements(fragment) {
+            if (merge) {
+              for (node = fragment.firstChild; node; node = node.walk(true)) {
+                if (textInlineElements[node.name]) {
+                  node.attr('data-mce-new', "true");
+                }
+              }
+            }
+          }
 
-  				if (typeof value != 'string') {
-  					merge = value.merge;
-  					value = value.content;
-  				}
+          if (typeof value != 'string') {
+            merge = value.merge;
+            value = value.content;
+          }
 
-  				// Check for whitespace before/after value
-  				if (/^ | $/.test(value)) {
-  					value = trimOrPaddLeftRight(value);
-  				}
+          // Check for whitespace before/after value
+          if (/^ | $/.test(value)) {
+            value = trimOrPaddLeftRight(value);
+          }
 
-  				// Setup parser and serializer
-  				parser = editor.parser;
-  				serializer = new tinymce.html.Serializer({}, editor.schema);
-  				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;&#x200B;</span>';
+          // Setup parser and serializer
+          parser = editor.parser;
+          serializer = new tinymce.html.Serializer({}, editor.schema);
+          bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;&#x200B;</span>';
 
-  				// Run beforeSetContent handlers on the HTML to be inserted
-  				args = {
-  					content: value,
-  					format: 'html'
-  				};
-  				selection.onBeforeSetContent.dispatch(selection, args);
-  				value = args.content;
+          // Run beforeSetContent handlers on the HTML to be inserted
+          args = {
+            content: value,
+            format: 'html'
+          };
+          selection.onBeforeSetContent.dispatch(selection, args);
+          value = args.content;
 
-  				// Add caret at end of contents if it's missing
-  				if (value.indexOf('{$caret}') == -1) {
-  					value += '{$caret}';
-  				}
+          // Add caret at end of contents if it's missing
+          if (value.indexOf('{$caret}') == -1) {
+            value += '{$caret}';
+          }
 
-  				// Replace the caret marker with a span bookmark element
-  				value = value.replace(/\{\$caret\}/, bookmarkHtml);
+          // Replace the caret marker with a span bookmark element
+          value = value.replace(/\{\$caret\}/, bookmarkHtml);
 
-  				// If selection is at <body>|<p></p> then move it into <body><p>|</p>
-  				rng = selection.getRng();
-  				var caretElement = rng.startContainer || (rng.parentElement ? rng.parentElement() : null);
-  				var body = editor.getBody();
-  				if (caretElement === body && selection.isCollapsed()) {
-  					if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
-  						rng = dom.createRng();
-  						rng.setStart(body.firstChild, 0);
-  						rng.setEnd(body.firstChild, 0);
-  						selection.setRng(rng);
-  					}
-  				}
+          // If selection is at <body>|<p></p> then move it into <body><p>|</p>
+          rng = selection.getRng();
+          var caretElement = rng.startContainer || (rng.parentElement ? rng.parentElement() : null);
+          var body = editor.getBody();
+          if (caretElement === body && selection.isCollapsed()) {
+            if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
+              rng = dom.createRng();
+              rng.setStart(body.firstChild, 0);
+              rng.setEnd(body.firstChild, 0);
+              selection.setRng(rng);
+            }
+          }
 
-  				// Insert node maker where we will insert the new HTML and get it's parent
-  				if (!selection.isCollapsed()) {
-  					editor.getDoc().execCommand('Delete', false, null);
-  					trimNbspAfterDeleteAndPaddValue();
-  				}
+          // Insert node maker where we will insert the new HTML and get it's parent
+          if (!selection.isCollapsed()) {
+            editor.getDoc().execCommand('Delete', false, null);
+            trimNbspAfterDeleteAndPaddValue();
+          }
 
-  				parentNode = selection.getNode();
+          parentNode = selection.getNode();
 
-  				// Parse the fragment within the context of the parent node
-  				var parserArgs = {
-  					context: parentNode.nodeName.toLowerCase()
-  				};
-  				fragment = parser.parse(value, parserArgs);
+          // Parse the fragment within the context of the parent node
+          var parserArgs = {
+            context: parentNode.nodeName.toLowerCase()
+          };
+          fragment = parser.parse(value, parserArgs);
 
-  				markInlineFormatElements(fragment);
+          markInlineFormatElements(fragment);
 
-  				// Move the caret to a more suitable location
-  				node = fragment.lastChild;
-  				if (node.attr('id') == 'mce_marker') {
-  					marker = node;
+          // Move the caret to a more suitable location
+          node = fragment.lastChild;
+          if (node.attr('id') == 'mce_marker') {
+            marker = node;
 
-  					for (node = node.prev; node; node = node.walk(true)) {
-  						if (node.type == 3 || !dom.isBlock(node.name)) {
-  							if (editor.schema.isValidChild(node.parent.name, 'span')) {
-  								node.parent.insert(marker, node, node.name === 'br');
-  							}
-  							break;
-  						}
-  					}
-  				}
+            for (node = node.prev; node; node = node.walk(true)) {
+              if (node.type == 3 || !dom.isBlock(node.name)) {
+                if (editor.schema.isValidChild(node.parent.name, 'span')) {
+                  node.parent.insert(marker, node, node.name === 'br');
+                }
+                break;
+              }
+            }
+          }
 
-  				editor._selectionOverrides.showBlockCaretContainer(parentNode);
+          editor._selectionOverrides.showBlockCaretContainer(parentNode);
 
-  				// If parser says valid we can insert the contents into that parent
-  				if (!parserArgs.invalid) {
-  					value = serializer.serialize(fragment);
+          // If parser says valid we can insert the contents into that parent
+          if (!parserArgs.invalid) {
+            value = serializer.serialize(fragment);
 
-  					// Check if parent is empty or only has one BR element then set the innerHTML of that parent
-  					node = parentNode.firstChild;
-  					node2 = parentNode.lastChild;
-  					if (!node || (node === node2 && node.nodeName === 'BR')) {
-  						dom.setHTML(parentNode, value);
-  					} else {
-  						selection.setContent(value);
-  					}
-  				} else {
-  					// If the fragment was invalid within that context then we need
-  					// to parse and process the parent it's inserted into
+            // Check if parent is empty or only has one BR element then set the innerHTML of that parent
+            node = parentNode.firstChild;
+            node2 = parentNode.lastChild;
+            if (!node || (node === node2 && node.nodeName === 'BR')) {
+              dom.setHTML(parentNode, value);
+            } else {
+              selection.setContent(value);
+            }
+          } else {
+            // If the fragment was invalid within that context then we need
+            // to parse and process the parent it's inserted into
 
-  					// Insert bookmark node and get the parent
-  					selection.setContent(bookmarkHtml);
-  					parentNode = selection.getNode();
-  					rootNode = editor.getBody();
+            // Insert bookmark node and get the parent
+            selection.setContent(bookmarkHtml);
+            parentNode = selection.getNode();
+            rootNode = editor.getBody();
 
-  					// Opera will return the document node when selection is in root
-  					if (parentNode.nodeType == 9) {
-  						parentNode = node = rootNode;
-  					} else {
-  						node = parentNode;
-  					}
+            // Opera will return the document node when selection is in root
+            if (parentNode.nodeType == 9) {
+              parentNode = node = rootNode;
+            } else {
+              node = parentNode;
+            }
 
-  					// Find the ancestor just before the root element
-  					while (node !== rootNode) {
-  						parentNode = node;
-  						node = node.parentNode;
-  					}
+            // Find the ancestor just before the root element
+            while (node !== rootNode) {
+              parentNode = node;
+              node = node.parentNode;
+            }
 
-  					// Get the outer/inner HTML depending on if we are in the root and parser and serialize that
-  					value = parentNode == rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
-  					value = serializer.serialize(
-  						parser.parse(
-  							// Need to replace by using a function since $ in the contents would otherwise be a problem
-  							value.replace(/<span (id="mce_marker"|id=mce_marker).+?<\/span>/i, function () {
-  								return serializer.serialize(fragment);
-  							})
-  						)
-  					);
+            // Get the outer/inner HTML depending on if we are in the root and parser and serialize that
+            value = parentNode == rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
+            value = serializer.serialize(
+              parser.parse(
+                // Need to replace by using a function since $ in the contents would otherwise be a problem
+                value.replace(/<span (id="mce_marker"|id=mce_marker).+?<\/span>/i, function () {
+                  return serializer.serialize(fragment);
+                })
+              )
+            );
 
-  					// Set the inner/outer HTML depending on if we are in the root or not
-  					if (parentNode == rootNode) {
-  						dom.setHTML(rootNode, value);
-  					} else {
-  						dom.setOuterHTML(parentNode, value);
-  					}
-  				}
+            // Set the inner/outer HTML depending on if we are in the root or not
+            if (parentNode == rootNode) {
+              dom.setHTML(rootNode, value);
+            } else {
+              dom.setOuterHTML(parentNode, value);
+            }
+          }
 
-  				marker = dom.get('mce_marker');
+          marker = dom.get('mce_marker');
 
-  				if (marker) {
-  					selection.scrollIntoView(marker);
+          if (marker) {
+            selection.scrollIntoView(marker);
 
-  					// Move selection before marker and remove it
-  					rng = dom.createRng();
+            // Move selection before marker and remove it
+            rng = dom.createRng();
 
-  					// If previous sibling is a text node set the selection to the end of that node
-  					node = marker.previousSibling;
-  					if (node && node.nodeType == 3) {
-  						rng.setStart(node, node.nodeValue.length);
+            // If previous sibling is a text node set the selection to the end of that node
+            node = marker.previousSibling;
+            if (node && node.nodeType == 3) {
+              rng.setStart(node, node.nodeValue.length);
 
-  						// TODO: Why can't we normalize on IE
-  						if (!tinymce.isIE) {
-  							node2 = marker.nextSibling;
-  							if (node2 && node2.nodeType == 3) {
-  								node.appendData(node2.data);
-  								node2.parentNode.removeChild(node2);
-  							}
-  						}
-  					} else {
-  						// If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
-  						rng.setStartBefore(marker);
-  						rng.setEndBefore(marker);
-  					}
+              // TODO: Why can't we normalize on IE
+              if (!tinymce.isIE) {
+                node2 = marker.nextSibling;
+                if (node2 && node2.nodeType == 3) {
+                  node.appendData(node2.data);
+                  node2.parentNode.removeChild(node2);
+                }
+              }
+            } else {
+              // If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
+              rng.setStartBefore(marker);
+              rng.setEndBefore(marker);
+            }
 
-  					// Remove the marker node and set the new range
-  					dom.remove(marker);
-  					selection.setRng(rng);
-  				}
+            // Remove the marker node and set the new range
+            dom.remove(marker);
+            selection.setRng(rng);
+          }
 
-  				// Dispatch after event and add any visual elements needed
-  				selection.onSetContent.dispatch(selection, args);
-  				editor.addVisual();
-  			},
-  			*/
+          // Dispatch after event and add any visual elements needed
+          selection.onSetContent.dispatch(selection, args);
+          editor.addVisual();
+        },
+        */
         mceInsertContent: function (command, ui, value) {
           tinymce.InsertContent.insertAtCaret(editor, value);
         },
@@ -31969,8 +31970,8 @@
 
           return (
             queryCommandState('InsertUnorderedList') ||
-  					queryCommandState('InsertOrderedList') ||
-  					(!settings.inline_styles && !!dom.getParent(selection.getNode(), 'BLOCKQUOTE'))
+            queryCommandState('InsertOrderedList') ||
+            (!settings.inline_styles && !!dom.getParent(selection.getNode(), 'BLOCKQUOTE'))
           );
         },
 
