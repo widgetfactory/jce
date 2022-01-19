@@ -11,6 +11,7 @@
 /* global Wf, jQuery, tinyMCEPopup */
 
 (function ($) {
+	var mediaApi;
 
 	var XHTMLXtrasDialog = {
 		settings: {},
@@ -32,6 +33,10 @@
 				attribs[name] = value;
 			}
 
+			if (mediaApi && mediaApi.isMediaObject(n)) {
+				attribs = mediaApi.getMediaData();
+			}
+
 			return attribs;
 		},
 
@@ -40,6 +45,10 @@
 				se = ed.selection,
 				n = se.getNode(),
 				element = tinyMCEPopup.getWindowArg('element');
+
+			if (ed.plugins.media) {
+				mediaApi = ed.plugins.media;
+			}
 
 			// get an element selection
 			if (element) {
@@ -58,18 +67,17 @@
 						if (/on(click|dblclick)/.test(k)) {
 							k = 'data-mce-' + k;
 						}
+
 						if (k === "classes") {
 							k = 'class';
 						}
+
 						var v = attribs[k];
 
-						if (typeof v !== "undefined") {
+						if (tinymce.is(v)) {
 							// clean up class
-							if (k === "class") {
-								// clean value
-								v = v.replace(/mce-item-(\w+)/gi, '').replace(/\s+/g, ' ');
-								// trim
-								v = $.trim(v);
+							if (k == "class") {
+								v = v.replace(/mce-(\S+)/g, '').replace(/\s+/g, ' ').trim();
 							}
 
 							$(this).val(v).trigger('change');
@@ -137,8 +145,8 @@
 			$('.uk-datalist').trigger('datalist:update');
 
 			$('.uk-repeatable').on('repeatable:delete', function (e, ctrl, elm) {
-                $(elm).find('input, select').eq(1).val('');
-            });
+				$(elm).find('input, select').eq(1).val('');
+			});
 		},
 
 		insert: function () {
@@ -199,7 +207,7 @@
 
 				ed.formatter.apply(element.toLowerCase(), args, elm);
 
-				// probably Attributes
+			// probably Attributes
 			} else {
 				var isTextSelection = !se.isCollapsed() && se.getContent() == se.getContent({ format: 'text' });
 
@@ -208,7 +216,12 @@
 					ed.formatter.apply('attributes', args);
 					// attribute selection
 				} else {
-					ed.dom.setAttribs(n, args);
+					
+					if (mediaApi && mediaApi.isMediaObject(n)) {
+						mediaApi.updateMedia(args);
+					} else {
+						ed.dom.setAttribs(n, args);
+					}
 				}
 			}
 
