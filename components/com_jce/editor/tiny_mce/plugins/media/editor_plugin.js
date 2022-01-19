@@ -669,8 +669,6 @@
 
         attribs = extend(attribs, processNodeAttributes(editor, tag, node));
 
-        console.log(attribs);
-
         elm.attr(attribs);
 
         // process innerHTML to nodes and append
