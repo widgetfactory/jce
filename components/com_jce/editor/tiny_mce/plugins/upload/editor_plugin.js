@@ -205,15 +205,17 @@
 
       // Attach drop handler and grab files
       ed.dom.bind(ed.getBody(), 'drop', function (e) {
-        var dataTransfer = e.dataTransfer;
+        var dataTransfer = e.dataTransfer, rng;
 
         // Add dropped files
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           each(dataTransfer.files, function (file) {
-            var rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
-            if (rng) {
-              ed.selection.setRng(rng);
-              rng = null;
+            if (!rng) {
+              rng = RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
+
+              if (rng) {
+                ed.selection.setRng(rng);
+              }
             }
 
             addFile(file);
@@ -349,11 +351,13 @@
 
         if (!file.marker && ed.settings.upload_use_placeholder !== false) {
 
-          ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="__mce_tmp">\uFEFF</span>', {
+          var uid = Uuid.uuid('wf-tmp-');
+
+          ed.execCommand('mceInsertContent', false, '<span data-mce-marker="1" id="' + uid + '">\uFEFF</span>', {
             skip_undo: 1
           });
 
-          var n = ed.dom.get('__mce_tmp'), w, h;
+          var n = ed.dom.get(uid), w, h;
 
           // get approximate size of image from file size
           if (/image\/(gif|png|jpeg|jpg)/.test(file.type) && file.size) {
@@ -375,8 +379,6 @@
 
           file.marker = n;
         }
-
-        ed.undoManager.add();
 
         // add files to queue
         files.push(file);
