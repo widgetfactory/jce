@@ -8,7 +8,11 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss;
+    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss, NodeType = tinymce.dom.NodeType;
+
+    function isInternalNode(node) {
+        return NodeType.isBogus(node) || NodeType.isBookmark(node);
+    }
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
@@ -104,17 +108,38 @@
                 onselect: function (name) {
                     var matches = [], removedFormat, node = ed.selection.getNode(), bookmark = ed.selection.getBookmark();
 
-                    function isTextSelection() {
-                        var rng = ed.selection.getRng();
-
-                        if (!rng || !rng.startContainer || !rng.endContainer) {
-                            return false;
+                    var collectNodesInRange = function (rng, predicate) {
+                        if (rng.collapsed) {
+                            return [];
+                        } else {
+                            var contents = rng.cloneContents();
+                            var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
+                            var elements = [];
+                            var current = contents.firstChild;
+                            do {
+                                if (predicate(current)) {
+                                    elements.push(current);
+                                }
+                            } while ((current = walker.next()));
+                            return elements;
                         }
+                    };
 
-                        return rng.startContainer.nodeType === 3 && rng.endContainer.nodeType === 3 && !rng.collapsed;
-                    }
+                    var isOnlyTextSelected = function () {
+                        // Allow inline text elements to be in the selection but nothing else
+                        var inlineTextElements = ed.schema.getTextInlineElements();
 
-                    if (node === ed.getBody() && !isTextSelection()) {
+                        var isElement = function (elm) {
+                            return elm.nodeType === 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+                        };
+
+                        // Collect all non inline text elements in the range and make sure no elements were found
+                        var elements = collectNodesInRange(ed.selection.getRng(), isElement);
+
+                        return elements.length === 0;
+                    };
+
+                    if (node === ed.getBody() && !isOnlyTextSelected()) {
                         return false;
                     }
 
@@ -129,10 +154,8 @@
                     });
 
                     // reset node if there is a text only selection
-                    if (!ed.selection.isCollapsed()) {
-                        if (isTextSelection()) {
-                            node = null;
-                        }
+                    if (!ed.selection.isCollapsed() && isOnlyTextSelected()) {
+                        node = null;
                     }
 
                     each(matches, function (match) {
@@ -146,14 +169,14 @@
 
                     if (!removedFormat) {
                         // registered style format
-                        if (ed.formatter.get(name)) {                            
-                            if (ed.formatter.match(name)) {                                
+                        if (ed.formatter.get(name)) {
+                            if (ed.formatter.match(name)) {
                                 ed.execCommand('RemoveFormat', false, {
                                     name: name,
                                     args: {},
                                     node: node
                                 });
-                            } else {                                
+                            } else {
                                 ed.execCommand('ApplyFormat', false, {
                                     name: name,
                                     args: {},
@@ -164,7 +187,7 @@
                         } else {
                             node = ed.selection.getNode();
 
-                            if (ed.dom.hasClass(node, name)) {
+                            if (ed.dom.hasClass(node, name)) {                                
                                 ed.dom.removeClass(node, name);
                                 // fire nodechange on custom format
                                 ed.nodeChanged();
@@ -182,8 +205,6 @@
                     }
 
                     ed.selection.moveToBookmark(bookmark);
-
-                    ed.undoManager.add();
 
                     return false; // No auto select
                 }
