@@ -1410,29 +1410,36 @@
                 }
             });
 
+            function findMediaNode(elm, nodeName) {
+                var nodes = ed.dom.select(nodeName, elm);
+                return nodes.length ? nodes[0] : null;
+            }
+
             ed.onBeforeExecCommand.add(function (ed, cmd, ui, values, o) {
-                // FormatBlock, RemoveFormat, ApplyFormat, ToggleFormat
-                if (cmd && (cmd.indexOf('Format') != -1 || cmd.indexOf('Justify') != -1)) {
+                // RemoveFormat, ApplyFormat, ToggleFormat
+                if (cmd && (cmd == 'ApplyFormat' || cmd == 'RemoveFormat' || cmd == 'ToggleFormat')) {
                     var node = ed.selection.getNode();
 
+                    if (tinymce.is(values, 'object') && values.node) {
+                        node = values.node;
+                    }
+
                     // if it is a preview node, select the iframe
-                    if (isMediaNode(node)) {
-                        if (node.nodeName !== 'IMG') {
-                            node = node.firstChild || node;
+                    if (isMediaNode(node) && node.nodeName !== 'IMG') {
+                        var mediaNode = findMediaNode(node, node.getAttribute('data-mce-object'));
 
-                            if (node) {
-                                var range = ed.dom.createRng();
-                                range.setStart(node, 0);
-                                range.setEnd(node, 0);
+                        if (mediaNode) {
+                            var range = ed.dom.createRng();
+                            range.setStart(mediaNode, 0);
+                            range.setEnd(mediaNode, 0);
 
-                                var sel = ed.selection.getSel();
-                                sel.removeAllRanges();
-                                sel.addRange(range);
-                            }
+                            var sel = ed.selection.getSel();
+                            sel.removeAllRanges();
+                            sel.addRange(range);
                         }
 
-                        if (node && tinymce.is(values, 'object')) {
-                            values.node = node;
+                        if (mediaNode && tinymce.is(values, 'object')) {
+                            values.node = mediaNode;
                         }
                     }
                 }
