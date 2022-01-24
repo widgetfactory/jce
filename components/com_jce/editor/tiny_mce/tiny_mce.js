@@ -12346,6 +12346,10 @@
       return isElement(node) && node.hasAttribute('data-mce-bogus');
     }
 
+    function isBookmark(node) {
+      return isElement(node) && node.getAttribute('data-mce-type') == 'bookmark';
+    }
+
     function hasContentEditableState(value) {
       return function (node) {
         if (isElement(node)) {
@@ -12375,7 +12379,8 @@
       hasPropValue: hasPropValue,
       hasAttributeValue: hasAttributeValue,
       matchStyleValues: matchStyleValues,
-      isBogus: isBogus
+      isBogus: isBogus,
+      isBookmark: isBookmark
     };
 
   })(tinymce);
