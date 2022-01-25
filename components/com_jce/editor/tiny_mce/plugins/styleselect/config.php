@@ -154,6 +154,8 @@ class WFStyleselectPluginConfig
                             // set to element
                             if (isset($style->element)) {
                                 $style->selector = $style->element;
+                            } else {
+                                $style->inline = 'span';
                             }
                         }
                     }
