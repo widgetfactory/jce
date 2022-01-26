@@ -508,7 +508,7 @@ class pkg_jceInstallerScript
         );
 
         // remove font manifest and window
-        $files['2.9.19'] = array(
+        $files['2.9.18'] = array(
             $site . '/editor/libraries/fonts/selection.json',
             $site . '/editor/tiny_mce/plugins/browser/js/window.min.js'
         );
