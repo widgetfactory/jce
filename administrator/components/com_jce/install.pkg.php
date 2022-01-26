@@ -507,6 +507,12 @@ class pkg_jceInstallerScript
             $admin . '/media'
         );
 
+        // remove font manifest and window
+        $files['2.9.19'] = array(
+            $site . '/editor/libraries/fonts/selection.json',
+            $site . '/editor/tiny_mce/plugins/browser/js/window.min.js'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',
