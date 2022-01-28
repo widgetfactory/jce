@@ -109,7 +109,10 @@ final class WFView extends JObject
 
         // clean the file name
         $file = preg_replace('/[^A-Z0-9_\.-]/i', '', $file);
-        $tpl = preg_replace('/[^A-Z0-9_\.-]/i', '', $tpl);
+
+        if (isset($tpl)) {
+            $tpl = preg_replace('/[^A-Z0-9_\.-]/i', '', $tpl);
+        }
 
         // load the template script
         jimport('joomla.filesystem.path');
