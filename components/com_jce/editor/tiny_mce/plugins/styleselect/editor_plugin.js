@@ -125,14 +125,15 @@
                         }
                     };
 
+                    // get list of inline text elements
+                    var inlineTextElements = ed.schema.getTextInlineElements();
+                    
+                    // check if valid text selection element
+                    var isElement = function (elm) {
+                        return elm && elm.nodeType == 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+                    };
+
                     var isOnlyTextSelected = function () {
-                        // Allow inline text elements to be in the selection but nothing else
-                        var inlineTextElements = ed.schema.getTextInlineElements();
-
-                        var isElement = function (elm) {
-                            return elm.nodeType === 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
-                        };
-
                         // Collect all non inline text elements in the range and make sure no elements were found
                         var elements = collectNodesInRange(ed.selection.getRng(), isElement);
 
@@ -160,8 +161,12 @@
 
                     each(matches, function (match) {
                         if (!name || match === name) {
-                            if (match) {
-                                ed.formatter.remove(match, {}, node);
+                            if (match) {                                
+                                ed.execCommand('RemoveFormat', false, {
+                                    name: match,
+                                    args: {},
+                                    node: node
+                                });
                             }
                             removedFormat = true;
                         }
@@ -187,7 +192,7 @@
                         } else {
                             node = ed.selection.getNode();
 
-                            if (ed.dom.hasClass(node, name)) {                                
+                            if (ed.dom.hasClass(node, name)) {
                                 ed.dom.removeClass(node, name);
                                 // fire nodechange on custom format
                                 ed.nodeChanged();
