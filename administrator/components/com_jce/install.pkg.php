@@ -187,8 +187,8 @@ class pkg_jceInstallerScript
         $requirements = '<a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" title="Editor Requirements" target="_blank" rel="noopener">https://www.joomlacontenteditor.net/support/documentation/editor/requirements</a>';
 
         // php version check
-        if (version_compare(PHP_VERSION, '5.6', 'lt')) {
-            throw new RuntimeException('JCE requires PHP 5.6 or later - ' . $requirements);
+        if (version_compare(PHP_VERSION, '7.4', 'lt')) {
+            throw new RuntimeException('JCE requires PHP 7.4 or later - ' . $requirements);
         }
 
         $jversion = new JVersion();
