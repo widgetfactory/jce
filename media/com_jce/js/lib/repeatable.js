@@ -1,7 +1,9 @@
-(function($) {
-    $(document).ready(function() {        
+/* global jQuery */
+/* eslint-disable consistent-this */
+(function ($) {
+    $(document).ready(function () {
         // repeatable
-        $('.controls').on('click', '.form-field-repeatable-add', function(e) {
+        $('.controls').on('click', '.form-field-repeatable-add', function (e) {
             e.preventDefault();
             // get repeatable container, clone item
             var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent(), $item = $repeatable.clone();
@@ -10,10 +12,10 @@
             $parent.append($item);
 
             // reset id values of all form items and trigger change
-            $parent.find(':input[name]').not('input[type="hidden"]').each(function() {
+            $parent.find(':input[name]').not('input[type="hidden"]').each(function () {
                 var elm = this, $p = $(this).parents('.form-field-repeatable-item'), idx = $p.index(), x = 0;
 
-                $p.find(':input[name]').each(function(i) {
+                $p.find(':input[name]').each(function (i) {
                     if (elm === this) {
                         x = i;
                         return true;
@@ -28,15 +30,15 @@
             }).trigger('change');
 
             $item.find(':input[name]').val('').trigger('change');
-		
+
             // fix media field
-            $item.find('.field-media-wrapper').each(function(){
+            $item.find('.field-media-wrapper').each(function () {
                 // re-initlialize
                 $(this).fieldMedia();
             });
         });
 
-        $('.controls').on('click', '.form-field-repeatable-remove', function(e) {
+        $('.controls').on('click', '.form-field-repeatable-remove', function (e) {
             e.preventDefault();
             var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent();
             // remove
