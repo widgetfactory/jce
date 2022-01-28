@@ -146,29 +146,31 @@ class PlgSystemJce extends JPlugin
             $name = $field->getAttribute('name');
 
             // avoid processing twice
-            if (strpos($form->getFieldAttribute($name, 'class'), 'wf-media-input') !== false) {
+            if ($form->getFieldAttribute($name, 'class') && strpos($form->getFieldAttribute($name, 'class'), 'wf-media-input') !== false) {
                 continue;
             }
 
             $type = $field->getAttribute('type');
 
-            // joomla media field and flexi-content converted media field
-            if (strtolower($type) === 'media' || strtolower($type) === 'fcmedia') {
+            if ($type) {
+                // joomla media field and flexi-content converted media field
+                if (strtolower($type) === 'media' || strtolower($type) === 'fcmedia') {
 
-                // media replacement disabled, skip...
-                if ((bool) $params->get('replace_media_manager', 1) === false) {
-                    continue;
+                    // media replacement disabled, skip...
+                    if ((bool) $params->get('replace_media_manager', 1) === false) {
+                        continue;
+                    }
+
+                    $group = (string) $field->group;
+                    $form->setFieldAttribute($name, 'type', 'mediajce', $group);
+                    $form->setFieldAttribute($name, 'converted', '1', $group);
+                    $hasMedia = true;
                 }
 
-                $group = (string) $field->group;
-                $form->setFieldAttribute($name, 'type', 'mediajce', $group);
-                $form->setFieldAttribute($name, 'converted', '1', $group);
-                $hasMedia = true;
-            }
-
-            // jce media field
-            if (strtolower($type) === 'mediajce') {
-                $hasMedia = true;
+                // jce media field
+                if (strtolower($type) === 'mediajce') {
+                    $hasMedia = true;
+                }
             }
         }
 
