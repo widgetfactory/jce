@@ -24,7 +24,7 @@ class JceControllerPlugin extends JControllerLegacy
 
         $name = str_replace($delim, ' ', $name);
 
-        $className = 'WF' . ucwords($name,) . 'Plugin';
+        $className = 'WF' . ucwords($name) . 'Plugin';
         
         // remove space
         $className = str_replace(' ', '', $className);
