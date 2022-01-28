@@ -42,7 +42,7 @@
             if ($('div.styleformat-list div.styleformat').length === 1) {
 
                 // clear inputs and remove styles
-                $(this).parents('.styleformat').find('input, select').val('').removeAttr('style').removeAttr('class');
+                $(this).parents('.styleformat').find('input, select').val('').removeAttr('style');
                 // hide
                 $(this).parents('.styleformat').hide();
                 // otherwise remove it
@@ -65,16 +65,16 @@
                 $('select', $item).chosen('destroy');
             }
 
-            $item.clone(true).insertBefore(this).show();
+            var $clone = $item.clone(true).insertBefore(this).show();
 
             // show all
-            $('div', $item).removeClass('hide');
+            $('div', $clone).removeClass('hide');
 
             // trigger collapse
-            $('a.close.collapse', $item).removeClass('icon-chevron-down').addClass('icon-chevron-up');
+            $('a.close.collapse', $clone).removeClass('icon-chevron-down').addClass('icon-chevron-up');
 
             // clear inputs and remove styles
-            $('input, select', $item).val("").removeAttr('style').removeAttr('class').first().focus();
+            $('input, select', $clone).val('').removeAttr('style').first().focus();
 
             e.preventDefault();
         });
@@ -105,16 +105,15 @@
                 if ($('.styleformat-item-title input', p).val()) {
                     // get all values in sequence and encode
                     $('input[type="text"], select', p).each(function () {
-                        var k = $(this).data('key'),
-                            v = $(this).val();
+                        var key = $(this).parents('[data-key]').data('key'), val = $(this).val();
 
-                        if (v !== "") {
+                        if (val != "") {
                             // count keys to make sure we have at least one
-                            if (k === 'element' || k === 'classes' || k === 'styles' || k === 'attributes') {
+                            if (key == 'element' || key == 'classes' || key == 'styles' || key == 'attributes') {
                                 x++;
                             }
 
-                            data[k] = v;
+                            data[key] = val;
                         }
                     });
                 }
@@ -140,21 +139,27 @@
             $('input[type="text"], select', this).on('change', function () {
                 $('div.styleformat-list').trigger('update');
 
-                var title = $('div.styleformat-item-title input', $(this).parents('div.styleformat')),
-                    v = $(this).val();
+                var title = $('div.styleformat-item-title input', $(this).parents('div.styleformat'));
+                var key = $(this).parents('[data-key]').data('key'), val = $(this).val();
 
-                if ($(this).data('key') === "element") {
-                    $(title).attr('class', "");
+                if (key == "element") {
+                    $(title).attr('class', function (i, cls) {
+                        if (cls) {
+                            return $.trim(cls.replace(/stc_[a-z0-9]+/g, '').replace(/\s+/g, ' '));
+                        }
+                        
+                        return '';
+                    });
 
-                    if (/^(h[1-6]|em|strong|code|sub|sup)$/.test(v)) {
-                        $(title).addClass(v);
+                    if (/^(h[1-6]|em|strong|code|sub|sup)$/.test(val)) {
+                        $(title).addClass('stc_' + val);
                     }
                 }
 
-                if ($(this).data('key') === "styles") {
+                if (key == "styles") {
                     $(title).attr('style', "");
 
-                    updateStyles(title, v);
+                    updateStyles(title, val);
                 }
             }).trigger('change');
 
