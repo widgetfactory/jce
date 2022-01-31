@@ -40753,8 +40753,7 @@
    * other free or open source software licenses.
    */
   (function () {
-      var each = tinymce.each, DomParser = tinymce.html.DomParser,
-          Serializer = tinymce.html.Serializer;
+      var each = tinymce.each;
 
       // Register plugin
       tinymce.PluginManager.add('effects', function (ed, url) {
@@ -40773,55 +40772,43 @@
                       return;
                   }
 
-                  var parser = new DomParser({ validate: false }, ed.schema);
+                  var div = ed.dom.create('div', {}, o.content);
 
-                  parser.addAttributeFilter('onmouseover', function (nodes) {
-                      var i = nodes.length;
+                  each(ed.dom.select('img[onmouseover]', div), function (node) {
+                      var mouseover = node.getAttribute('onmouseover'), mouseout = node.getAttribute('onmouseout');
 
-                      while (i--) {
-                          var node = nodes[i];
+                      if (!mouseover || mouseover.indexOf('this.src') !== 0) {
+                          return true;
+                      }
 
-                          if (node.name !== 'img') {
-                              continue;
-                          }
+                      mouseover = cleanEventAttribute(mouseover);
 
-                          var mouseover = node.attr('onmouseover'), mouseout = node.attr('onmouseout');
+                      // remove attribute
+                      node.removeAttribute('onmouseover');
 
-                          if (!mouseover || mouseover.indexOf('this.src') !== 0) {
-                              continue;
-                          }
+                      // if cleaned value is blank, move on
+                      if (!mouseover) {
+                          return true;
+                      }
 
-                          mouseover = cleanEventAttribute(mouseover);
+                      node.setAttribute('data-mouseover', mouseover);
+
+                      if (mouseout && mouseout.indexOf('this.src') === 0) {
+
+                          mouseout = cleanEventAttribute(mouseout);
 
                           // remove attribute
-                          node.attr('onmouseover', null);
+                          node.removeAttribute('onmouseout');
 
-                          // if cleaned value is blank, move on
-                          if (!mouseover) {
-                              continue;
+                          if (!mouseout) {
+                              return;
                           }
 
-                          node.attr('data-mouseover', mouseover);
-
-                          if (mouseout && mouseout.indexOf('this.src') === 0) {
-
-                              mouseout = cleanEventAttribute(mouseout);
-
-                              // remove attribute
-                              node.attr('onmouseout', null);
-
-                              if (!mouseout) {
-                                  return;
-                              }
-
-                              node.attr('data-mouseout', mouseout);
-                          }
+                          node.setAttribute('data-mouseout', mouseout);
                       }
                   });
 
-                  var fragment = parser.parse(o.content, { forced_root_block: false, isRootContent: true });
-
-                  o.content = new Serializer({ validate: false }, ed.schema).serialize(fragment);
+                  o.content = div.innerHTML;
               });
 
               // update event effects
