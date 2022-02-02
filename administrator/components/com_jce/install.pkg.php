@@ -184,11 +184,13 @@ class pkg_jceInstallerScript
             return true;
         }
 
+        $parent = $installer->getParent();
+
         $requirements = '<a href="https://www.joomlacontenteditor.net/support/documentation/editor/requirements" title="Editor Requirements" target="_blank" rel="noopener">https://www.joomlacontenteditor.net/support/documentation/editor/requirements</a>';
 
         // php version check
         if (version_compare(PHP_VERSION, '7.4', 'lt')) {
-            throw new RuntimeException('JCE requires PHP 7.4 or later - ' . $requirements);
+            JFactory::getApplication()->enqueueMessage('JCE requires PHP 7.4 or later - ' . $requirements . '. Although JCE may function with earlier PHP versions, we recommend you upgrade your server as soon as possible, as future versions of JCE will not install on sites running obsolete versions of PHP.');
         }
 
         $jversion = new JVersion();
@@ -197,8 +199,6 @@ class pkg_jceInstallerScript
         if (version_compare($jversion->getShortVersion(), '3.9', 'lt')) {
             throw new RuntimeException('JCE requires Joomla 3.9 or later - ' . $requirements);
         }
-
-        $parent = $installer->getParent();
 
         // set current package version and variant
         list($version, $variant) = $this->getCurrentVersion();
