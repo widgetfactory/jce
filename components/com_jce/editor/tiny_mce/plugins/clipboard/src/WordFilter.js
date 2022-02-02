@@ -115,7 +115,7 @@ function isBulletList(text) {
 function WordFilter(editor, content) {
     var settings = editor.settings;
 
-    var keepStyles, removeStyles, validStyles = {};
+    var keepStyles, removeStyles, validStyles = {}, styleProps = Utils.styleProps;
 
     // Chrome...
     content = content.replace(/<meta([^>]+)>/, '');
@@ -614,7 +614,7 @@ function WordFilter(editor, content) {
             node.attr('style', filterStyles(node, style));
 
             // Remove pointess spans
-            if (node.name == 'span' && node.parent && !node.attributes.length) {
+            if (node.name == 'span' && node.parent && !node.attributes.length) {                
                 node.unwrap();
             }
         }

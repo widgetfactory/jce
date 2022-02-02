@@ -282,6 +282,21 @@
     'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width'
   ];
 
+  var styleProps = [
+    'background', 'background-attachment', 'background-color', 'background-image', 'background-position', 'background-repeat',
+    'border', 'border-bottom', 'border-bottom-color', 'border-bottom-style', 'border-bottom-width', 'border-color', 'border-left', 'border-left-color', 'border-left-style', 'border-left-width', 'border-right', 'border-right-color', 'border-right-style', 'border-right-width', 'border-style', 'border-top', 'border-top-color', 'border-top-style', 'border-top-width', 'border-width', 'outline', 'outline-color', 'outline-style', 'outline-width',
+    'height', 'max-height', 'max-width', 'min-height', 'min-width', 'width',
+    'font', 'font-family', 'font-size', 'font-style', 'font-variant', 'font-weight',
+    'content', 'counter-increment', 'counter-reset', 'quotes',
+    'list-style', 'list-style-image', 'list-style-position', 'list-style-type',
+    'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top',
+    'padding', 'padding-bottom', 'padding-left', 'padding-right', 'padding-top',
+    'bottom', 'clear', 'clip', 'cursor', 'display', 'float', 'left', 'overflow', 'position', 'right', 'top', 'visibility', 'z-index',
+    'orphans', 'page-break-after', 'page-break-before', 'page-break-inside', 'widows',
+    'border-collapse', 'border-spacing', 'caption-side', 'empty-cells', 'table-layout',
+    'color', 'direction', 'letter-spacing', 'line-height', 'text-align', 'text-decoration', 'text-indent', 'text-shadow', 'text-transform', 'unicode-bidi', 'vertical-align', 'white-space', 'word-spacing'
+  ];
+
   var borderStyles = [
     'border', 'border-width', 'border-style', 'border-color',
     'border-top', 'border-right', 'border-bottom', 'border-left',
@@ -567,7 +582,7 @@
   function WordFilter(editor, content) {
       var settings = editor.settings;
 
-      var keepStyles, removeStyles, validStyles = {};
+      var keepStyles, removeStyles, validStyles = {}, styleProps$1 = styleProps;
 
       // Chrome...
       content = content.replace(/<meta([^>]+)>/, '');
@@ -601,12 +616,12 @@
 
       // split to array if string
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
-          var styleProps = tinymce.explode(keepStyles);
+          var styleProps$1 = tinymce.explode(keepStyles);
 
-          each(styleProps, function (style, i) {
+          each(styleProps$1, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
-                  styleProps = styleProps.concat(borderStyles);
+                  styleProps$1 = styleProps$1.concat(borderStyles);
                   return true;
               }
           });
@@ -625,12 +640,12 @@
           });
 
           // remove from core styleProps array
-          styleProps = tinymce.grep(styleProps, function (prop) {
+          styleProps$1 = tinymce.grep(styleProps$1, function (prop) {
               return tinymce.inArray(removeProps, prop) === -1;
           });
       }
 
-      each(styleProps, function (style) {
+      each(styleProps$1, function (style) {
           // add all border styles if "border" is set
           if (style === "border") {
               each(borderStyles, function (name) {
@@ -1066,7 +1081,7 @@
               node.attr('style', filterStyles(node, style));
 
               // Remove pointess spans
-              if (node.name == 'span' && node.parent && !node.attributes.length) {
+              if (node.name == 'span' && node.parent && !node.attributes.length) {                
                   node.unwrap();
               }
           }
@@ -2044,7 +2059,7 @@
    * @param node Node to process
    */
   function processStyles(editor, node) {
-      var dom = editor.dom;
+      var dom = editor.dom, styleProps$1 = styleProps;
 
       // Style to keep
       var keepStyles = editor.getParam('clipboard_paste_retain_style_properties');
@@ -2054,12 +2069,12 @@
 
       // split to array if string
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
-          var styleProps = tinymce.explode(keepStyles);
+          var styleProps$1 = tinymce.explode(keepStyles);
 
-          each$2(styleProps, function (style, i) {
+          each$2(styleProps$1, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
-                  styleProps = styleProps.concat(borderStyles);
+                  styleProps$1 = styleProps$1.concat(borderStyles);
                   return true;
               }
           });
@@ -2078,7 +2093,7 @@
           });
 
           // remove from core styleProps array
-          styleProps = tinymce.grep(styleProps, function (prop) {
+          styleProps$1 = tinymce.grep(styleProps$1, function (prop) {
               return tinymce.inArray(removeProps, prop) === -1;
           });
       }
@@ -2093,7 +2108,7 @@
 
           // check style against styleProps array
           each$2(styles, function (v, k) {
-              if (tinymce.inArray(styleProps, k) != -1) {
+              if (tinymce.inArray(styleProps$1, k) != -1) {
                   ns[k] = v;
                   x++;
               }
@@ -2456,7 +2471,7 @@
               };
 
               // only process externally sourced content
-              if (!internal) {
+              if (!internal) {                
                   // Execute pre process handlers
                   self.onPreProcess.dispatch(self, o);
 

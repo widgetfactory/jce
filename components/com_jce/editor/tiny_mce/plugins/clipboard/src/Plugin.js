@@ -392,7 +392,7 @@ function postProcess(e, o) {
  * @param node Node to process
  */
 function processStyles(editor, node) {
-    var dom = editor.dom;
+    var dom = editor.dom, styleProps = Utils.styleProps;
 
     // Style to keep
     var keepStyles = editor.getParam('clipboard_paste_retain_style_properties');
@@ -804,7 +804,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             };
 
             // only process externally sourced content
-            if (!internal) {
+            if (!internal) {                
                 // Execute pre process handlers
                 self.onPreProcess.dispatch(self, o);
 
