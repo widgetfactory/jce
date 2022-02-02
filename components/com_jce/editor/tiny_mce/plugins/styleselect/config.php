@@ -140,15 +140,22 @@ class WFStyleselectPluginConfig
                         $style->remove = 'all';
                     }
 
-                    // match all if not set
-                    if (!isset($style->selector)) {
-                        $style->selector = '*';
-
-                        // set to element
-                        if (isset($style->element)) {
-                            $style->selector = $style->element;
-                        } else {
+                    // edge case for forced_root_block=false
+                    if ($settings['forced_root_block'] === false) {
+                        if (!isset($style->element)) {
                             $style->inline = 'span';
+                            $style->selector = '*';
+                        }
+                    } else {
+                        // match all if not set
+                        if (!isset($style->selector)) {
+                            $style->selector = '*';
+                            // set to element
+                            if (isset($style->element)) {
+                                $style->selector = $style->element;
+                            } else {
+                                $style->inline = 'span';
+                            }
                         }
                     }
 
