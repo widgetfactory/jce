@@ -118,7 +118,8 @@ class WFStyleselectPluginConfig
                         $style->classes = self::cleanString($style->classes);
                     }
 
-                    if (isset($style->styles)) {
+                    // validate and cleanup styles
+                    if (isset($style->styles) && preg_match('#\s*([^:]+):\s*([^;]+);?#', $style->styles)) {
                         // replace comma with semi-colon and remove duplicates
                         $style->styles = preg_replace('#[;]+#', ';', $style->styles);
                     }
