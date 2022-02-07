@@ -19,13 +19,13 @@ class PlgSystemJce extends JPlugin
         return $this->onContentPrepareForm($form, $data);
     }
 
-    private function redirectMedia()
+    private function getMediaRedirectUrl()
     {
         $app = JFactory::getApplication();
 
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
-        $id = $app->input->get('fieldid');
+        $id = $app->input->get('fieldid', '');
         $mediatype = $app->input->getVar('mediatype', $app->input->getVar('view', 'images'));
         $context = $app->input->getVar('context', '');
 
@@ -36,8 +36,19 @@ class PlgSystemJce extends JPlugin
             'context'   => $context
         ));
 
-        if (!empty($options['url'])) {
-            $app->redirect($options['url']);
+        if (empty($options['url'])) {
+            return false;
+        }
+
+        return $options['url'];
+    }
+
+    private function redirectMedia()
+    {
+        $url = $this->getMediaRedirectUrl();
+
+        if ($url) {
+            JFactory::getApplication()->redirect($url);
         }
     }
 
@@ -55,7 +66,7 @@ class PlgSystemJce extends JPlugin
         if (!$app->input->get('fieldid')) {
             return false;
         }
-        
+
         // jce converted mediafield
         if ($app->input->getCmd('option') == 'com_jce' && $app->input->getCmd('task') == 'mediafield.display') {
             return true;
@@ -131,7 +142,12 @@ class PlgSystemJce extends JPlugin
         $params = JComponentHelper::getParams('com_jce');
 
         // editor not enabled
-        if (!$this->isEditorEnabled()) {
+        if (false == $this->isEditorEnabled()) {
+            return true;
+        }
+
+        // File Browser not enabled
+        if (false == $this->getMediaRedirectUrl()) {
             return true;
         }
 
