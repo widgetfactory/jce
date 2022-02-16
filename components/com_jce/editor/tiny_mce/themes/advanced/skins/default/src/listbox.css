@@ -56,6 +56,39 @@
     background-position: 100% 50%;*/
 }
 
+.mceDefaultSkin .mceListBox .mceComboBox {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    min-width: 50%;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+}
+
+.mceDefaultSkin .mceListBox .mceComboBox .mceText {
+    height: 30px;
+    line-height: 32px;
+    width: 100%;
+    background: #fff;
+    cursor: text;
+    padding: 4px;
+    box-sizing: border-box;
+    border: 0 none;
+    outline: none;
+
+    width: 100%;
+    min-width: 25%;
+    flex: 1;
+}
+
+.mceDefaultSkin .mceListBox .mceComboBox .mceOpen {
+    border: 0 none;
+}
+
 .mceDefaultSkin .mceListBoxSelected .mceText {
     border: 1px solid #ccc;
     border-right: 0;
@@ -182,24 +215,41 @@ select.mceNativeListBox {
     outline: none;
 }
 
-.mceListBoxMenu .mceMenuFilter .mceButton {
+.mceListBoxMenu .mceMenuFilter .mceButton,
+.mceListBox .mceComboBox .mceButton {
     margin: 0.125em;
     position: relative;
+    display: flex;
     height: 2em;
     min-width: 5em;
     min-height: inherit;
-    padding: 0 1.25em 0 0;
+    padding: 0;
     box-sizing: border-box;
     background: #eee;
 }
 
-.mceListBoxMenu .mceMenuFilter .mceButton label {
+.mceListBox .mceComboBox .mceButton {
+    margin: 1px;
+    min-width: 3em;
+    padding: 0 1px 0 0;
+}
+
+.mceListBoxMenu .mceMenuFilter .mceButton label,
+.mceListBox .mceComboBox .mceButton label {
     padding: 0.25em;
     cursor: default;
 }
 
-.mceListBoxMenu .mceMenuFilter .mceButton::after {
-    position: absolute;
+.mceListBox .mceComboBox .mceButton label {
+    min-width: 3em;
+    width: auto;
+    font-size: 12px;
+    line-height: 1.75em;
+}
+
+.mceListBoxMenu .mceMenuFilter .mceButton::after,
+.mceListBox .mceComboBox .mceButton::after {
+    position: relative;
     top: 0;
     right: 0;
     display: block;
@@ -212,6 +262,13 @@ select.mceNativeListBox {
     font-weight: 700;
     height: 100%;
     width: 1em;
+}
+
+.mceListBox[role="combobox"] > button.mceOpen {
+    position: absolute;
+    right: 0;
+    height: 30px;
+    border-width: 1px 1px 0 0;
 }
 
 .mceListBoxMenu .mceMenuFilter svg {
