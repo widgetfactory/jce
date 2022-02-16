@@ -273,11 +273,6 @@
                         }
                     });
 
-                    /*ctrl.select(matches[0]);
-
-                    each(matches, function (match, i) {
-                        ctrl.mark(match);
-                    });*/
                     ctrl.select(matches);
                 }
             });
