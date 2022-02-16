@@ -23291,7 +23291,7 @@
       select: function (values) {
         var self = this, fv;
 
-        if (values == null || values == undef) {
+        if (values == null || values == undef || !values.length) {
           return this.selectByIndex(-1);
         }
 
