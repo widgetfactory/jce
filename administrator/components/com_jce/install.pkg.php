@@ -190,7 +190,7 @@ class pkg_jceInstallerScript
 
         // php version check
         if (version_compare(PHP_VERSION, '7.4', 'lt')) {
-            JFactory::getApplication()->enqueueMessage('JCE requires PHP 7.4 or later - ' . $requirements . '. Although JCE may function with earlier PHP versions, we recommend you upgrade your server as soon as possible, as future versions of JCE will not install on sites running obsolete versions of PHP.');
+            throw new RuntimeException('JCE requires PHP 7.4 or later - ' . $requirements);
         }
 
         $jversion = new JVersion();
