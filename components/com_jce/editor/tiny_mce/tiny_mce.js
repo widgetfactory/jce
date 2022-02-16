@@ -21854,15 +21854,15 @@
    */
 
   (function (tinymce) {
-    /**
+  	/**
   	 * This class is base class for all menu item types like DropMenus items etc. This class should not
   	 * be instantiated directly other menu items should inherit from this one.
   	 *
   	 * @class tinymce.ui.MenuItem
   	 * @extends tinymce.ui.Control
   	 */
-    tinymce.create('tinymce.ui.MenuItem:tinymce.ui.Control', {
-      /**
+  	tinymce.create('tinymce.ui.MenuItem:tinymce.ui.Control', {
+  		/**
   		 * Constructs a new button control instance.
   		 *
   		 * @constructor
@@ -21870,48 +21870,48 @@
   		 * @param {String} id Button control id for the button.
   		 * @param {Object} s Optional name/value settings object.
   		 */
-      MenuItem: function (id, settings) {
-        this.parent(id, settings);
-      },
+  		MenuItem: function (id, settings) {
+  			this.parent(id, settings);
+  		},
 
-      /**
+  		/**
   		 * Sets the selected state for the control. This will add CSS classes to the
   		 * element that contains the control. So that it can be selected visually.
   		 *
   		 * @method setSelected
   		 * @param {Boolean} state Boolean state if the control should be selected or not.
   		 */
-      setSelected: function (state) {
-        this.setState('Selected', state);
-        this.setAriaProperty('checked', !!state);
-        this.selected = state;
-      },
+  		setSelected: function (state) {
+  			this.setState('Selected', state);
+  			this.setAriaProperty('checked', !!state);
+  			this.selected = state;
+  		},
 
-      /**
+  		/**
   		 * Returns true/false if the control is selected or not.
   		 *
   		 * @method isSelected
   		 * @return {Boolean} true/false if the control is selected or not.
   		 */
-      isSelected: function () {
-        return this.selected;
-      },
+  		isSelected: function () {
+  			return this.selected;
+  		},
 
-      /**
+  		/**
   		 * Post render handler. This function will be called after the UI has been
   		 * rendered so that events can be added.
   		 *
   		 * @method postRender
   		 */
-      postRender: function () {
-        this.parent();
+  		postRender: function () {
+  			this.parent();
 
-        // Set pending state
-        if (tinymce.is(this.selected)) {
-          this.setSelected(this.selected);
-        }
-      }
-    });
+  			// Set pending state
+  			if (tinymce.is(this.selected)) {
+  				this.setSelected(this.selected);
+  			}
+  		}
+  	});
   })(tinymce);
 
   /**
@@ -23153,47 +23153,47 @@
       undef;
 
     /**
-  	 * This class is used to create list boxes/select list. This one will generate
-  	 * a non native control. This one has the benefits of having visual items added.
-  	 *
-  	 * @class tinymce.ui.ListBox
-  	 * @extends tinymce.ui.Control
-  	 * @example
-  	 * // Creates a new plugin class and a custom listbox
-  	 * tinymce.create('tinymce.plugins.ExamplePlugin', {
-  	 *     createControl: function(n, cm) {
-  	 *         switch (n) {
-  	 *             case 'mylistbox':
-  	 *                 var mlb = cm.createListBox('mylistbox', {
-  	 *                      title : 'My list box',
-  	 *                      onselect : function(v) {
-  	 *                          tinymce.activeEditor.windowManager.alert('Value selected:' + v);
-  	 *                      }
-  	 *                 });
-  	 *
-  	 *                 // Add some values to the list box
-  	 *                 mlb.add('Some item 1', 'val1');
-  	 *                 mlb.add('some item 2', 'val2');
-  	 *                 mlb.add('some item 3', 'val3');
-  	 *
-  	 *                 // Return the new listbox instance
-  	 *                 return mlb;
-  	 *         }
-  	 *
-  	 *         return null;
-  	 *     }
-  	 * });
-  	 *
-  	 * // Register plugin with a short name
-  	 * tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
-  	 *
-  	 * // Initialize TinyMCE with the new plugin and button
-  	 * tinymce.init({
-  	 *    ...
-  	 *    plugins : '-example', // - means TinyMCE will not try to load it
-  	 *    theme_advanced_buttons1 : 'mylistbox' // Add the new example listbox to the toolbar
-  	 * });
-  	 */
+     * This class is used to create list boxes/select list. This one will generate
+     * a non native control. This one has the benefits of having visual items added.
+     *
+     * @class tinymce.ui.ListBox
+     * @extends tinymce.ui.Control
+     * @example
+     * // Creates a new plugin class and a custom listbox
+     * tinymce.create('tinymce.plugins.ExamplePlugin', {
+     *     createControl: function(n, cm) {
+     *         switch (n) {
+     *             case 'mylistbox':
+     *                 var mlb = cm.createListBox('mylistbox', {
+     *                      title : 'My list box',
+     *                      onselect : function(v) {
+     *                          tinymce.activeEditor.windowManager.alert('Value selected:' + v);
+     *                      }
+     *                 });
+     *
+     *                 // Add some values to the list box
+     *                 mlb.add('Some item 1', 'val1');
+     *                 mlb.add('some item 2', 'val2');
+     *                 mlb.add('some item 3', 'val3');
+     *
+     *                 // Return the new listbox instance
+     *                 return mlb;
+     *         }
+     *
+     *         return null;
+     *     }
+     * });
+     *
+     * // Register plugin with a short name
+     * tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
+     *
+     * // Initialize TinyMCE with the new plugin and button
+     * tinymce.init({
+     *    ...
+     *    plugins : '-example', // - means TinyMCE will not try to load it
+     *    theme_advanced_buttons1 : 'mylistbox' // Add the new example listbox to the toolbar
+     * });
+     */
 
     var specialKeyCodeMap = {
       9: 'tab',
@@ -23211,169 +23211,202 @@
 
     tinymce.create('tinymce.ui.ListBox:tinymce.ui.Control', {
       /**
-  		 * Constructs a new listbox control instance.
-  		 *
-  		 * @constructor
-  		 * @method ListBox
-  		 * @param {String} id Control id for the list box.
-  		 * @param {Object} s Optional name/value settings object.
-  		 * @param {Editor} ed Optional the editor instance this button is for.
-  		 */
+       * Constructs a new listbox control instance.
+       *
+       * @constructor
+       * @method ListBox
+       * @param {String} id Control id for the list box.
+       * @param {Object} s Optional name/value settings object.
+       * @param {Editor} ed Optional the editor instance this button is for.
+       */
       ListBox: function (id, s, ed) {
         this.parent(id, s, ed);
 
         /**
-  			 * Array of ListBox items.
-  			 *
-  			 * @property items
-  			 * @type Array
-  			 */
+         * Array of ListBox items.
+         *
+         * @property items
+         * @type Array
+         */
         this.items = s.items || [];
 
         /**
-  			 * Fires when the selection has been changed.
-  			 *
-  			 * @event onChange
-  			 */
+         * Fires when the selection has been changed.
+         *
+         * @event onChange
+         */
         this.onChange = new Dispatcher(this);
 
         /**
-  			 * Fires after the element has been rendered to DOM.
-  			 *
-  			 * @event onPostRender
-  			 */
+         * Fires after the element has been rendered to DOM.
+         *
+         * @event onPostRender
+         */
         this.onPostRender = new Dispatcher(this);
 
         /**
-  			 * Fires when a new item is added.
-  			 *
-  			 * @event onAdd
-  			 */
+         * Fires when a new item is added.
+         *
+         * @event onAdd
+         */
         this.onAdd = new Dispatcher(this);
 
         /**
-  			 * Fires before the menu gets rendered.
-  			 *
-  			 * @event onBeforeRenderMenu
-  			 */
+         * Fires before the menu gets rendered.
+         *
+         * @event onBeforeRenderMenu
+         */
         this.onBeforeRenderMenu = new Dispatcher(this);
 
         /**
-  			 * Fires when the menu gets rendered.
-  			 *
-  			 * @event onRenderMenu
-  			 */
+         * Fires when the menu gets rendered.
+         *
+         * @event onRenderMenu
+         */
         this.onRenderMenu = new Dispatcher(this);
 
+        /**
+         * Class prefix to identify and style control.
+         * 
+         * @type String
+         */
         this.classPrefix = 'mceListBox';
-        this.marked = {};
+      },
+
+      deselectAll: function () {
+        var self = this;
+
+        each(self.items, function (item) {
+          item.selected = false;
+        });
       },
 
       /**
-  		 * Selects a item/option by value. This will both add a visual selection to the
-  		 * item and change the title of the control to the title of the option.
-  		 *
-  		 * @method select
-  		 * @param {String/function} value Value to look for inside the list box or a function selector.
-  		 */
-      select: function (value) {
-        var self = this,
-          fv, fn;
+       * Selects a item/option by value. This will both add a visual selection to the
+       * item and change the title of the control to the title of the option.
+       *
+       * @method select
+       * @param {String/function} value Value to look for inside the list box or a function selector.
+       */
+      select: function (values) {
+        var self = this, fv;
 
-        this.marked = {};
-
-        if (value == undef) {
+        if (values == null || values == undef) {
           return this.selectByIndex(-1);
         }
 
-        // Is string or number make function selector
-        if (value && typeof (value) == "function") {
-          fn = value;
-        } else {
-          fn = function (val) {
-            return val == value;
-          };
-        }
+        // used by fontselect etc.
+        if (values && typeof values == "function") {
+          each(self.items, function (item, i) {
+            if (values(item.value)) {
+              self.selectByIndex(i);
+              fv = true;
+            }
+          });
 
-        // Do we need to do something?
-        //if (value != this.selectedValue) {
-        // Find item
-        each(this.items, function (item, i) {
-          if (fn(item.value)) {
-            fv = 1;
-            self.selectByIndex(i);
-            return false;
+          if (!fv) {
+            self.selectByIndex(-1);
           }
-        });
 
-        if (!fv) {
-          this.selectByIndex(-1);
+          return;
         }
-        //}
+
+        if (tinymce.is(values, 'string')) {
+          if (self.settings.multiple && self.settings.seperator) {
+            values = values.split(self.settings.seperator);
+          } else {
+            values = [values];
+          }
+        }
+
+        if (self.settings.multiple) {
+          self.deselectAll();
+        }
+
+        each(values, function (value) {
+          var i = self.findItem(value);
+
+          if (i == -1) {
+            i = self.add(value, value);
+          }
+
+          if (self.settings.multiple) {
+            self.addTag(value);
+            DOM.setValue(self.id + '_input', '');
+          }
+
+          self.selectByIndex(i);
+        });
       },
 
       value: function (val) {
         if (!arguments.length) {
-          return this.selectedValue;
+          val = [];
+
+          each(this.items, function (item) {
+            if (item.selected) {
+              val.push(item.value);
+            }
+          });
+
+          return val.join(' ').trim();
         }
 
         this.select(val);
       },
 
       /**
-  		 * Selects a item/option by index. This will both add a visual selection to the
-  		 * item and change the title of the control to the title of the option.
-  		 *
-  		 * @method selectByIndex
-  		 * @param {String} idx Index to select, pass -1 to select menu/title of select box.
-  		 */
+       * Selects a item/option by index. This will both add a visual selection to the
+       * item and change the title of the control to the title of the option.
+       *
+       * @method selectByIndex
+       * @param {String} idx Index to select, pass -1 to select menu/title of select box.
+       */
       selectByIndex: function (idx) {
-        var elm, item;
+        var self = this, elm, item;
 
-        this.marked = {};
-
-        //if (idx != this.selectedIndex) {
         elm = DOM.get(this.id + '_text');
         item = this.items[idx];
 
         if (item) {
           this.selectedValue = item.value;
-          this.selectedIndex = idx;
-          DOM.setHTML(elm, DOM.encode(item.title));
-          DOM.removeClass(elm, 'mceTitle');
-          DOM.setAttrib(this.id, 'aria-valuenow', item.title);
+
+          item.selected = true;
+
+          if (!self.settings.combobox) {
+            DOM.setHTML(elm, DOM.encode(item.title));
+            DOM.removeClass(elm, 'mceTitle');
+            DOM.setAttrib(this.id, 'aria-valuenow', item.title);
+          }
+
         } else {
           DOM.setHTML(elm, DOM.encode(this.settings.title));
           DOM.addClass(elm, 'mceTitle');
-          this.selectedValue = this.selectedIndex = null;
+          this.selectedValue = null;
+
           DOM.setAttrib(this.id, 'aria-valuenow', this.settings.title);
+
+          if (self.settings.multiple) {
+            self.deselectAll();
+          }
         }
 
         elm = 0;
-        //}
       },
 
       /**
-  		 * Marks a specific item by name. Marked values are optional items to mark as active.
-  		 *
-  		 * @param {String} value Value item to mark.
-  		 */
-      mark: function (value) {
-        this.marked[value] = true;
-      },
-
-      /**
-  		 * Adds a option item to the list box.
-  		 *
-  		 * @method add
-  		 * @param {String} name Title for the new option.
-  		 * @param {String} value Value for the new option.
-  		 * @param {Object} settings Optional object with settings like for example class.
-  		 */
+       * Adds a option item to the list box.
+       *
+       * @method add
+       * @param {String} name Title for the new option.
+       * @param {String} value Value for the new option.
+       * @param {Object} settings Optional object with settings like for example class.
+       */
       add: function (name, value, settings) {
         settings = settings || {};
 
-        if (this.hasItem(value)) {
+        // don't add if it already exists
+        if (this.findItem(value) != -1) {
           return;
         }
 
@@ -23382,51 +23415,62 @@
           value: value
         });
 
-        this.items.push(settings);
+        var len = this.items.push(settings);
         this.onAdd.dispatch(this, settings);
+
+        return len - 1;
       },
 
-      hasItem: function (value) {
-        for (var i = 0; i < this.items.length; i++) {
+      findItem: function (value) {
+        var idx = -1;
+
+        for (var i = 0, len = this.items.length; i < len; i++) {
           if (this.items[i].value === value) {
-            return true;
+            idx = i;
           }
         }
 
-        return false;
+        return idx;
       },
 
       /**
-  		 * Returns the number of items inside the list box.
-  		 *
-  		 * @method getLength
-  		 * @param {Number} Number of items inside the list box.
-  		 */
+       * Returns the number of items inside the list box.
+       *
+       * @method getLength
+       * @param {Number} Number of items inside the list box.
+       */
       getLength: function () {
         return this.items.length;
       },
 
       /**
-  		 * Renders the list box as a HTML string. This method is much faster than using the DOM and when
-  		 * creating a whole toolbar with buttons it does make a lot of difference.
-  		 *
-  		 * @method renderHTML
-  		 * @return {String} HTML for the list box control element.
-  		 */
+       * Renders the list box as a HTML string. This method is much faster than using the DOM and when
+       * creating a whole toolbar with buttons it does make a lot of difference.
+       *
+       * @method renderHTML
+       * @return {String} HTML for the list box control element.
+       */
       renderHTML: function () {
         var html = '',
           prefix = this.classPrefix;
 
         if (this.settings.combobox) {
-          html += DOM.createHTML('input', {
+
+          var inp = DOM.createHTML('input', {
             type: 'text',
             id: this.id + '_input',
             tabindex: -1,
             autocomplete: 'off',
             spellcheck: false,
             autocapitalize: 'off',
-            class: 'mceText'
+            class: 'mceText',
+            placeholder: '...'
           });
+
+          html += DOM.createHTML('div', {
+            class: 'mceComboBox'
+          }, inp);
+
         } else {
           html += DOM.createHTML('button', {
             type: 'button',
@@ -23445,7 +23489,7 @@
 
         return DOM.createHTML('div', {
           id: this.id,
-          role: 'listbox',
+          role: this.settings.combobox ? 'combobox' : 'listbox',
           tabindex: 0,
           'class': prefix + ' ' + this.settings['class'],
           title: this.settings.title,
@@ -23455,11 +23499,46 @@
         }, html);
       },
 
+      removeTag: function (btn) {
+        var self = this;
+
+        each(self.items, function (item) {
+          if (item.value === btn.value) {
+            item.selected = false;
+          }
+        });
+
+        Event.clear(btn);
+        DOM.remove(btn);
+      },
+
+      addTag: function (value) {
+        var self = this;
+
+        var inp = DOM.get(self.id + '_input'),
+          btn = DOM.create('button', {
+            'class': 'mceButton mceButtonTag',
+            'value': value
+          }, '<label>' + value + '</label>');
+        DOM.insertBefore(btn, inp);
+
+        Event.add(btn, 'click', function (evt) {
+          evt.preventDefault();
+
+          if (evt.target.nodeName == 'LABEL') {
+            return;
+          }
+
+          self.removeTag(btn);
+
+        });
+      },
+
       /**
-  		 * Displays the drop menu with all items.
-  		 *
-  		 * @method showMenu
-  		 */
+       * Displays the drop menu with all items.
+       *
+       * @method showMenu
+       */
       showMenu: function () {
         var self = this,
           pos, elm = DOM.get(this.id),
@@ -23468,10 +23547,6 @@
         if (this.isDisabled()) {
           return;
         }
-
-        /*if (this.menu && this.menu.isMenuVisible) {
-  				return this.hideMenu();
-  			}*/
 
         if (!this.isMenuRendered) {
           this.renderMenu();
@@ -23495,17 +23570,13 @@
         // Select in menu
         each(this.items, function (item) {
           if (menu.items[item.id]) {
+            // deselect item
             menu.items[item.id].setSelected(0);
-          }
-        });
 
-        each(this.items, function (item) {
-          if (menu.items[item.id] && self.marked[item.value]) {
-            menu.items[item.id].setSelected(1);
-          }
-
-          if (item.value === self.selectedValue) {
-            menu.items[item.id].setSelected(1);
+            // select if value match or selected
+            if (item.value === self.selectedValue || item.selected) {
+              menu.items[item.id].setSelected(1);
+            }
           }
         });
 
@@ -23519,10 +23590,10 @@
       },
 
       /**
-  		 * Hides the drop menu.
-  		 *
-  		 * @method hideMenu
-  		 */
+       * Hides the drop menu.
+       *
+       * @method hideMenu
+       */
       hideMenu: function (e) {
         if (!this.menu) {
           return;
@@ -23543,10 +23614,10 @@
       },
 
       /**
-  		 * Renders the menu to the DOM.
-  		 *
-  		 * @method renderMenu
-  		 */
+       * Renders the menu to the DOM.
+       *
+       * @method renderMenu
+       */
       renderMenu: function () {
         var self = this,
           menu;
@@ -23560,10 +23631,6 @@
           onselect: function (value) {
             if (self.settings.onselect(value) !== false) {
               self.select(value);
-            }
-
-            if (self.settings.combobox) {
-              DOM.setValue(self.id + '_input', '');
             }
           }
         });
@@ -23592,7 +23659,10 @@
             item.id = DOM.uniqueId();
             item.role = "option";
             item.onclick = function () {
-              if (self.settings.onselect(item.value) !== false) {
+              // execute onselect
+              var onselect = self.settings.onselect(item.value);
+
+              if (onselect !== false) {
                 self.select(item.value);
               } // Must be run after
             };
@@ -23606,16 +23676,19 @@
       },
 
       /**
-  		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
-  		 *
-  		 * @method postRender
-  		 */
+       * Post render event. This will be executed after the control has been rendered and can be used to
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+       *
+       * @method postRender
+       */
       postRender: function () {
         var self = this;
 
+        // clean up
+        self.destroy();
+
         Event.add(this.id, 'click', function (evt) {
-          if (evt.target.nodeName === "INPUT") {
+          if (evt.target.nodeName == "INPUT" || DOM.hasClass(evt.target, 'mceButtonTag')) {
             return;
           }
 
@@ -23662,7 +23735,7 @@
             }
 
             if (!specialKeyCodeMap[evt.keyCode]) {
-              self.menu.filter(evt.target.value);
+              self.menu.filterItems(evt.target.value);
             }
           }, 0);
         });
@@ -23682,13 +23755,13 @@
                 this.value = "";
               }
               break;
-              // down arrow
+            // down arrow
             case 40:
             case 38:
               self.showMenu();
               Event.cancel(evt);
               break;
-              // backspace
+            // backspace
             case 8:
               // keep normal behaviour while input has a value
               if (this.value) {
@@ -23735,18 +23808,21 @@
       },
 
       /**
-  		 * Destroys the ListBox i.e. clear memory and events.
-  		 *
-  		 * @method destroy
-  		 */
+       * Destroys the ListBox i.e. clear memory and events.
+       *
+       * @method destroy
+       */
       destroy: function () {
         this.parent();
 
         Event.clear(this.id + '_text');
         Event.clear(this.id + '_open');
 
+        each(this.items, function (item) {
+          item.selected = false;
+        });
+
         this.selectedValue = null;
-        this.selectedIndex = null;
       }
     });
   })(tinymce);
@@ -32804,8 +32880,10 @@
           ed = self.editor;
 
         s = tinymce.extend({
-          filter: true,
-          max_height: 384
+          max_height: 384,
+          combobox: true,
+          multiple: true,
+          seperator: ' '
         }, s || {});
 
         function loadClasses(ctrl) {
