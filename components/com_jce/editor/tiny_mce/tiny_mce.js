@@ -22577,11 +22577,6 @@
           self.clearFilterInput(true);
         }
 
-        // destroy keyboard nav
-        if (self.keyboardNav) {
-          self.keyboardNav.destroy();
-        }
-
         Event.remove(co, 'click', self.mouseClickFunc);
         Event.remove(co, 'keydown', self._keyDownHandler);
         Event.remove(co, 'keyup', self._keyUpHandler);
@@ -23319,10 +23314,6 @@
           }
         }
 
-        if (self.settings.multiple) {
-          self.deselectAll();
-        }
-
         each(values, function (value) {
           var i = self.findItem(value);
 
@@ -23330,7 +23321,7 @@
             i = self.add(value, value);
           }
 
-          if (self.settings.multiple) {
+          if (self.settings.multiple && self.items[i].selected == false) {
             self.addTag(value);
             DOM.setValue(self.id + '_input', '');
           }
@@ -23599,7 +23590,7 @@
           return;
         }
 
-        // Prevent double toogles by canceling the mouse click event to the button
+        // Prevent double toggles by canceling the mouse click event to the button
         if (e && e.type == "mousedown" && (e.target.id == this.id + '_text' || e.target.id == this.id + '_open')) {
           return;
         }
@@ -23607,6 +23598,7 @@
         if (!e || !DOM.getParent(e.target, '.mceMenu')) {
           DOM.removeClass(this.id, this.classPrefix + 'Selected');
           Event.remove(DOM.doc, 'mousedown', this.hideMenu, this);
+
           this.menu.hideMenu();
         }
 
@@ -23638,6 +23630,11 @@
         menu.onHideMenu.add(function () {
           self.hideMenu();
           self.focus();
+
+          if (self.settings.combobox) {
+            menu.clearFilteredItems();
+          }
+
         });
 
         // fire onBeforeRenderMenu, which allows list items to be added before display
