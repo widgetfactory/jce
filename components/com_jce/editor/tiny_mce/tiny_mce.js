@@ -23286,8 +23286,18 @@
       select: function (values) {
         var self = this, fv;
 
-        if (values == null || values == undef || !values.length) {
+        if (values == null || values == undef) {
           return this.selectByIndex(-1);
+        }
+
+        if (!values.length) {
+          this.deselectAll();
+          return this.selectByIndex(-1);
+        }
+
+        // reset
+        if (!this.settings.multiple) {
+          this.deselectAll();
         }
 
         // used by fontselect etc.
@@ -23317,17 +23327,26 @@
         each(values, function (value) {
           var i = self.findItem(value);
 
-          if (i == -1) {
+          // add a new custom combobox value
+          if (i == -1 && self.settings.combobox) {
             i = self.add(value, value);
-          }
-
-          if (self.settings.multiple && self.items[i].selected == false) {
-            self.addTag(value);
-            DOM.setValue(self.id + '_input', '');
           }
 
           self.selectByIndex(i);
         });
+
+        // clear combobox and add a tag for each selected item
+        if (this.settings.combobox) {
+          this.clearComboBox(true);
+
+          if (this.settings.multiple) {
+            each(this.items, function (item) {
+              if (item.selected) {
+                self.addTag(item.value);
+              }
+            });
+          }
+        }
       },
 
       value: function (val) {
@@ -23360,11 +23379,13 @@
         item = this.items[idx];
 
         if (item) {
-          this.selectedValue = item.value;
+          item.selected = !item.selected;
 
-          item.selected = true;
+          if (item.selected) {
+            this.selectedValue = item.value;
+          }
 
-          if (!self.settings.combobox) {
+          if (!this.settings.combobox) {
             DOM.setHTML(elm, DOM.encode(item.title));
             DOM.removeClass(elm, 'mceTitle');
             DOM.setAttrib(this.id, 'aria-valuenow', item.title);
@@ -23381,8 +23402,6 @@
             self.deselectAll();
           }
         }
-
-        elm = 0;
       },
 
       /**
@@ -23490,6 +23509,18 @@
         }, html);
       },
 
+      clearComboBox: function (removetags) {
+        var self = this, input = DOM.get(self.id + '_input');
+
+        // find and clear input element
+        input.value = '';
+        input.focus();
+
+        if (removetags) {
+          DOM.remove(DOM.select('.mceButtonTag', this.id));
+        }
+      },
+
       removeTag: function (btn) {
         var self = this;
 
@@ -23504,13 +23535,15 @@
       },
 
       addTag: function (value) {
-        var self = this;
+        var self = this, btn, inp;
 
-        var inp = DOM.get(self.id + '_input'),
-          btn = DOM.create('button', {
-            'class': 'mceButton mceButtonTag',
-            'value': value
-          }, '<label>' + value + '</label>');
+        inp = DOM.get(self.id + '_input');
+
+        btn = DOM.create('button', {
+          'class': 'mceButton mceButtonTag',
+          'value': value
+        }, '<label>' + value + '</label>');
+
         DOM.insertBefore(btn, inp);
 
         Event.add(btn, 'click', function (evt) {
