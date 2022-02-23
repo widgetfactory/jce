@@ -73,7 +73,7 @@
 
         tinymce.each(elm.childNodes, function (node) {
             if (node.nodeType == 3) {
-                if ("innerText" in elm) {
+                if ("innerText" in node) {
                     node.innerText = text;
                 } else {
                     node.textContent = text;
