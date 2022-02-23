@@ -71,12 +71,12 @@
         // replace white space
         text = text.replace(/^[\s ]/, '\uFEFF');
 
-        tinymce.each(elm.childNodes, function (elm) {
-            if (elm.nodeType == 3) {
+        tinymce.each(elm.childNodes, function (node) {
+            if (node.nodeType == 3) {
                 if ("innerText" in elm) {
-                    elm.innerText = text;
+                    node.innerText = text;
                 } else {
-                    elm.textContent = text;
+                    node.textContent = text;
                 }
             }
         });
