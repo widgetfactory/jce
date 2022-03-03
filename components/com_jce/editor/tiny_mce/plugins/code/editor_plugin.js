@@ -486,8 +486,10 @@
         if (e.keyCode == VK.UP && e.altKey) {
           node = ed.selection.getNode();
 
-          handleEnterInPre(ed, node, true);
-          e.preventDefault();
+          if (node.nodeName == 'PRE') {
+            handleEnterInPre(ed, node, true);
+            e.preventDefault();
+          }
         }
 
         // Check for tab but not ctrl/cmd+tab since it switches browser tabs
