@@ -22,8 +22,8 @@
 
       // Register buttons
       ed.addButton('italic', {
-        title : 'advanced.italic_desc',
-        onclick : function (e) {
+        title: 'advanced.italic_desc',
+        onclick: function (e) {
           e.preventDefault();
 
           // restore focus
@@ -187,7 +187,28 @@
       }];
 
       ed.onKeyDown.add(function (ed, e) {
-        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
+        
+        // select parent element with SHIFT + UP
+        /*if (e.keyCode == VK.UP && e.shiftKey) {
+          var p, n = ed.selection.getNode();
+
+          // Find parent element just before the document body
+          p = ed.dom.getParents(n, blocks.join(','));
+
+          // get the first block in the collection
+          var block = p[p.length - 1];
+
+          if (block === ed.getBody() || block === n) {
+            return;
+          }
+
+          // prevent default action
+          e.preventDefault();
+
+          ed.selection.select(block);
+        }*/
+        
+        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {  
           // clear blocks
           self._clearBlocks(ed, e);
         }
@@ -286,43 +307,6 @@
             break;
         }
       });
-
-      /*ed.onPreInit.add(function() {
-
-                function wrapList(node) {
-                    var sibling = node.prev;
-
-                    if (node.parent && node.parent.name === 'dl') {
-                        return;
-                    }
-
-                    if (sibling && (sibling.name === 'dl' || sibling.name === 'dl')) {
-                        sibling.append(node);
-                        return;
-                    }
-
-                    sibling = node.next;
-
-                    if (sibling && (sibling.name === 'dl' || sibling.name === 'dl')) {
-                        sibling.insert(node, sibling.firstChild, true);
-                        return;
-                    }
-
-                    node.wrap(ed.parser.filterNode(new tinymce.html.Node('dl', 1)));
-                }
-
-                ed.parser.addNodeFilter('dt,dd', function(nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        wrapList(nodes[i]);
-                    }
-                });
-
-                ed.serializer.addNodeFilter('dt,dd', function(nodes) {
-                    for (var i = 0, len = nodes.length; i < len; i++) {
-                        wrapList(nodes[i]);
-                    }
-                });
-            });*/
     },
     _clearBlocks: function (ed, e) {
       var p, n = ed.selection.getNode();
@@ -357,7 +341,7 @@
           ed.dom.insertAfter(el, block);
         } else {
           // insert after parent element
-          block.parentNode.insertBefore(el, block);
+          ed.dom.insertBefore(el, block);
         }
 
         // select and collapse
