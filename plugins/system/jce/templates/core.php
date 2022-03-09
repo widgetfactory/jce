@@ -14,35 +14,23 @@ class WfTemplateCore extends JPlugin
         if (!empty($files)) {
             return false;
         }
-        
-        // Joomla! 1.5 standard
-        $file = 'template.css';
-        $css = array();
 
-        $path = JPATH_SITE . '/templates/' . $template->name . '/css';
-
-        if (!is_dir($path)) {
+        // search for template.css file using JPath
+        $file = JPath::find(array(
+            JPATH_SITE . '/templates/' . $template->name . '/css',
+            JPATH_SITE . '/media/templates/site/' . $template->name . '/css'
+        ), 'template.css');
+                
+        if (!$file) {
             return false;
         }
 
-        $css = JFolder::files($path, '(base|core|template|template_css)\.(css|less)$', false, true);
+        // make relative
+        $file = str_replace(JPATH_SITE, '', $file);
+        
+        // remove leading slash
+        $file = trim($file, '/');
 
-        if (!empty($css)) {
-            // use the first result
-            $file = $css[0];
-        }
-
-        // check for php version, eg: template.css.php
-        if (is_file($path . '/' . $file . '.php')) {
-            $file .= '.php';
-        }
-
-        // get file name only
-        $file = basename($file);
-
-        // check for default css file
-        if (is_file($path . '/' . $file)) {
-            $files[] = 'templates/' . $template->name . '/css/' . $file;
-        }
+        $files[] = $file;
     }
 }

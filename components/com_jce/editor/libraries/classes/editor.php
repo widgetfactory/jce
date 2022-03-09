@@ -1090,17 +1090,26 @@ class WFEditor
         return $assigned;
     }
 
-    private static function isEditorStylesheet($path)
+    private static function hasEditorStylesheet($name)
     {
-        // check for editor.css file and return first one found
-        $file = $path . '/editor.css';
-
-        // editor.css only contains basic styles...
-        if (preg_match('#\/cassiopeia\/#', $path)) {
+        // editor.css file is not suitable
+        if ($name == 'cassiopeia') {
             return false;
         }
 
-        if (is_file($file) && filesize($file) > 0) {
+        // search for template.css file using JPath
+        $file = JPath::find(array(
+            JPATH_SITE . '/templates/' . $name . '/css',
+            JPATH_SITE . '/media/templates/site/' . $name . '/css'
+        ), 'editor.css');
+
+        if ($file && filesize($file) > 0) {
+            // make relative
+            $file = str_replace(JPATH_SITE, '', $file);
+        
+            // remove leading slash
+            $file = trim($file, '/');
+
             return $file;
         }
 
@@ -1199,13 +1208,11 @@ class WFEditor
             case 1:
                 $files = array();
 
-                $path = JPATH_SITE . '/templates/' . $template->name;
-
                 // check editor.css file first
-                $file = self::isEditorStylesheet($path . '/css');
+                $file = self::hasEditorStylesheet($template->name);
 
                 if ($file) {
-                    $files[] = 'templates/' . $template->name . '/css/editor.css';
+                    $files[] = $file;
                 } else {
                     JFactory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
                 }
