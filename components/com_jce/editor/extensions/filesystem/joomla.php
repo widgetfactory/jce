@@ -891,8 +891,11 @@ class WFJoomlaFileSystem extends WFFileSystem
             'filepath' => $dest,
         ));
 
+        // vars for Joomla events
+        $vars = array('com_jce.file', &$object_file, true, array());
+
         // trigger Joomla event before upload
-        $app->triggerEvent('onContentBeforeSave', array('com_jce.file', &$object_file, true));
+        $app->triggerEvent('onContentBeforeSave', $vars);
 
         if (JFile::upload($src, $dest, false, true)) {
             $result->state = true;
@@ -906,7 +909,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         $object_file->filepath = $result->path;
 
         // trigger Joomla event after upload
-        $app->triggerEvent('onContentAfterSave', array('com_jce.file', &$object_file, true));
+        $app->triggerEvent('onContentAfterSave', $vars);
 
         return $result;
     }
