@@ -2172,13 +2172,11 @@
       var bracketRe = '(?:\{|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
       function createLink(url) {
-          var attribs = ['href="' + url + '"'];
+          var attribs = { 'href': url }, params = ed.getParam('link', {});
 
-          if (ed.settings.default_link_target) {
-              attribs.push('target="' + ed.settings.default_link_target + '"');
-          }
+          attribs = tinymce.extend(attribs, params.attributes || {});
 
-          return '<a ' + attribs.join(' ') + '>' + url + '</a>';
+          return ed.dom.createHTML('a', attribs, url);
       }
 
       function wrapContent(content) {
@@ -2211,7 +2209,7 @@
           content = wrapContent(content);
 
           // find and link url if not already linked
-          content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {            
+          content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
               if (extra) {
                   return match;
               }
@@ -2471,7 +2469,7 @@
               };
 
               // only process externally sourced content
-              if (!internal) {                
+              if (!internal) {
                   // Execute pre process handlers
                   self.onPreProcess.dispatch(self, o);
 

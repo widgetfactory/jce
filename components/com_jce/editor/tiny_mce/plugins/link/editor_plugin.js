@@ -83,7 +83,7 @@
     };
 
     function createLink(ed, data) {
-        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'a[href]');
+        var node = ed.selection.getNode(), anchor = ed.dom.getParent(node, 'a[href]'), params = ed.getParam('link', {});
 
         if (typeof data === 'string') {
             data = { url: data, text: data };
@@ -112,10 +112,7 @@
             'href': data.url
         };
 
-        // set default target
-        if (ed.settings.default_link_target) {
-            args.target = ed.settings.default_link_target;
-        }
+        args = tinymce.extend(args, params.attributes || {});
 
         // no selection, so create a link from the url
         if (ed.selection.isCollapsed()) {
