@@ -74,7 +74,7 @@
 }
 
 .mceModernSkin .mceSplitButton .mce_backcolor .mceAction {
-    background:#bbb;
+    background: #bbb;
 }
 
 .mceModernSkin span.mce_forecolor:before,
@@ -865,24 +865,60 @@
     content: "\e90a";
 }
 
-.mceModernSkin span.mce_columns_layout_1_3:before {
+.mceModernSkin span.mce_columns_layout_1_1_1_2:before {
     content: "\e90b";
 }
 
-.mceModernSkin span.mce_columns_layout_3_1:before {
+.mceModernSkin span.mce_columns_layout_1_1_2:before {
     content: "\e90c";
 }
 
-.mceModernSkin span.mce_columns_layout_1_1_2:before {
+.mceModernSkin span.mce_columns_layout_1_1_3:before {
     content: "\e90d";
 }
 
-.mceModernSkin span.mce_columns_layout_2_1_1:before {
+.mceModernSkin span.mce_columns_layout_1_2_1:before {
     content: "\e90e";
 }
 
-.mceModernSkin span.mce_columns_layout_1_2_1:before {
+.mceModernSkin span.mce_columns_layout_1_3_1:before {
     content: "\e90f";
+}
+
+.mceModernSkin span.mce_columns_layout_1_3:before {
+    content: "\e911";
+}
+
+.mceModernSkin span.mce_columns_layout_1_4:before {
+    content: "\e912";
+}
+
+.mceModernSkin span.mce_columns_layout_2_1_1_1:before {
+    content: "\e913";
+}
+
+.mceModernSkin span.mce_columns_layout_2_1_1:before {
+    content: "\e915";
+}
+
+.mceModernSkin span.mce_columns_layout_2_3:before {
+    content: "\e916";
+}
+
+.mceModernSkin span.mce_columns_layout_3_1_1:before {
+    content: "\e917";
+}
+
+.mceModernSkin span.mce_columns_layout_3_1:before {
+    content: "\e918";
+}
+
+.mceModernSkin span.mce_columns_layout_3_2:before {
+    content: "\e919";
+}
+
+.mceModernSkin span.mce_columns_layout_4_1:before {
+    content: "\e91a";
 }
 
 .mceModernSkin span[class*="mce_columns_layout_"]:before {
@@ -901,7 +937,7 @@
 
 .mceModernSkin span.mce_file_link:before,
 .mceModernSkin span.mce_lnk:before {
-  content: "\e910";
+    content: "\e910";
 }
 
 .mceModernSkin span.mce_spinner:before {
