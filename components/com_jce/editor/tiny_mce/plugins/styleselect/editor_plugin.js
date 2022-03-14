@@ -79,7 +79,10 @@
                 format = {
                     inline: "span",
                     selector: '*',
-                    title: selectorText.substr(1)
+                    title: selectorText.substr(1),
+                    split: false,
+                    expand: false,
+                    deep: true
                 };
             }
 
@@ -127,7 +130,7 @@
 
                     // get list of inline text elements
                     var inlineTextElements = ed.schema.getTextInlineElements();
-                    
+
                     // check if valid text selection element
                     var isElement = function (elm) {
                         return elm && elm.nodeType == 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
@@ -161,7 +164,7 @@
 
                     each(matches, function (match) {
                         if (!name || match === name) {
-                            if (match) {                                
+                            if (match) {
                                 ed.execCommand('RemoveFormat', false, {
                                     name: match,
                                     args: {},
