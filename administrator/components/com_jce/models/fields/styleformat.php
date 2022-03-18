@@ -81,6 +81,9 @@ class JFormFieldStyleFormat extends JFormField
             foreach($fields as $field) {
                 $key = (string) $field->element['name'];
 
+                // default value
+                $field->value = "";
+
                 if (array_key_exists($key, $item)) {
                     $field->value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
                 }
