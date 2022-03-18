@@ -17,6 +17,11 @@
      * @returns {undefined}
      */
     function updateStyles(n, string) {
+        // validate style
+        if (/\s*([^:]+):\s*([^;]+);?/.test(string) == false) {
+            return;
+        }
+        
         $.each(string.split(';'), function (i, s) {
             var kv = $.trim(s).split(':');
 
@@ -158,7 +163,6 @@
 
                 if (key == "styles") {
                     $(title).attr('style', "");
-
                     updateStyles(title, val);
                 }
             }).trigger('change');
