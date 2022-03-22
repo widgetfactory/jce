@@ -44,6 +44,8 @@
                 img.attr('data-mce-contenteditable', 'true');
               });
             }
+
+            node.attr('data-wf-figure', '1');
           }
         });
 
@@ -114,6 +116,9 @@
           remove: 'all',
           ceFalseOverride: true,
           deep: false,
+          attributes: {
+            'data-wf-figure': '1'
+          },
           onformat: function (elm, fmt, vars, node) {
             vars = vars || {};
 
