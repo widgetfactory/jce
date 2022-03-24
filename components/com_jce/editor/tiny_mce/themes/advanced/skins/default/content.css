@@ -207,6 +207,9 @@ hr,
 .mce-item-anchor {
   cursor: default;
 }
+table {
+  width: 100%;
+}
 table td,
 table th {
   cursor: text;
