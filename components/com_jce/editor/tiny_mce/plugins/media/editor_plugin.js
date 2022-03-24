@@ -33,6 +33,158 @@
         return style.display == 'block' && style['margin-left'] == 'auto' && style['margin-right'] == 'auto';
     }
 
+    /**
+    * Get a default set of media properties based on the url
+    * @param {string} data 
+    * @param {string} provider 
+    */
+    function getMediaProps(ed, data, provider) {
+        var value = data.src || '';
+
+        // map of default values
+        var defaultValues = {
+            'youtube': {
+                'src': value,
+                'width': 560,
+                'height': 315,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen",
+                'allow': "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            },
+            'vimeo': {
+                'src': value,
+                'width': 560,
+                'height': 315,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen",
+                'allow': "autoplay; fullscreen"
+            },
+            'dailymotion': {
+                'src': value,
+                'width': 640,
+                'height': 360,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen",
+                'allow': "autoplay; fullscreen"
+            },
+            'video': {
+                'src': value,
+                'width': 560,
+                'height': 315,
+                'controls': true,
+                'type': 'video/mpeg'
+            },
+            'slideshare': {
+                'src': '',
+                'width': 427,
+                'height': 356,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen",
+                'allow': "fullscreen"
+            },
+            'soundcloud': {
+                'src': '',
+                'width': '100%',
+                'height': 400,
+                'frameborder': 0
+            },
+            'spotify': {
+                'src': value,
+                'width': 300,
+                'height': 380,
+                'frameborder': 0,
+                'allowtransparency': true,
+                'allow': "encrypted-media"
+            },
+            'ted': {
+                'src': '',
+                'width': 560,
+                'height': 316,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen"
+            },
+            'twitch': {
+                'src': '',
+                'width': 500,
+                'height': 281,
+                'frameborder': 0,
+                'allowfullscreen': "allowfullscreen"
+            }
+        };
+
+        // clean url for media providers
+        value = value.replace(/[^a-z0-9-_:&;=%\?\[\]\/\.]/gi, '');
+
+        if (!defaultValues[provider]) {
+            defaultValues[provider] = {};
+        }
+
+        defaultValues[provider].src = value;
+
+        // check for Youtube
+        if (provider === 'youtube') {
+            // process default values
+            var src = value.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
+                d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
+
+                if (b && !c) {
+                    c = '.com';
+                }
+
+                id = d.replace(/([^\?&#]+)/, function ($0, $1) {
+                    return $1;
+                });
+
+                return 'youtube' + c + '/embed/' + d;
+            });
+
+            defaultValues[provider].src = src;
+        }
+
+        // check for Vimeo
+        if (provider === 'vimeo') {
+            if (value.indexOf('player.vimeo.com/video/') == -1) {
+                // process default values
+                var id = '', hash = '', matches = /vimeo\.com\/(?:\w+\/){0,3}((?:[0-9]+\b)(?:\/[a-z0-9]+)?)/.exec(value);
+
+                if (matches && tinymce.is(matches, 'array')) {
+                    var params = matches[1].split('/');
+
+                    var id = params[0];
+
+                    if (params.length == 2) {
+                        hash = params[1];
+                    }
+
+                    value = 'https://player.vimeo.com/video/' + id + (hash ? '?h=' + hash : '');
+                }
+            }
+
+            defaultValues[provider].src = value;
+        }
+
+        // dailymotion
+        if (provider === 'dailymotion') {
+            var id = '', s = /dai\.?ly(motion)?(.+)?\/(swf|video)?\/?([a-z0-9]+)_?/.exec(value);
+
+            if (s && tinymce.is(s, 'array')) {
+                id = s.pop();
+            }
+
+            defaultValues[provider].src = 'https://dailymotion.com/embed/video/' + id;
+        }
+
+        if (provider === 'spotify') {
+            defaultValues[provider].src = value.replace(/open\.spotify\.com\/track\//, 'open.spotify.com/embed/track/');
+        }
+
+        if (provider === 'ted') {
+            defaultValues[provider].src = value.replace(/www\.ted.com\/talks\//, 'embed.ted.com/talks/');
+        }
+
+        return defaultValues[provider];
+    }
+
     function isSupportedMedia(url) {
         // youtube
         if (/youtu(\.)?be(.+)?\/(.+)/.test(url)) {
@@ -756,6 +908,20 @@
         var innerHtml;
         var styles;
 
+        // get node src (video, audio, iframe)
+        var src = sourceNode.attr('src');
+
+        // default attributes
+        if (src) {
+            var provider = isSupportedMedia(src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
+
+            each(defaultAttributes, function (val, name) {
+                if (!tinymce.is(sourceNode.attr(name))) {
+                    sourceNode.attr(name, val);
+                }
+            });
+        }
+
         var style = editor.dom.parseStyle(sourceNode.attr('style'));
 
         // get width an height
@@ -886,7 +1052,7 @@
         }
 
         // no src attribute set, use <source> node
-        if (!sourceNode.attr('src')) {
+        if (!src) {
             var sources = sourceNode.getAll('source');
 
             if (sources.length) {
