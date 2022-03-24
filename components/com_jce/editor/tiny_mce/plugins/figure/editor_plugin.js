@@ -36,14 +36,12 @@
               node.append(figcaption);
             }
 
-            if (node.getAll('img').length) {
-              node.attr('data-mce-image', '1');
-              node.attr('contenteditable', 'false');
+            node.attr('data-mce-image', '1');
+            node.attr('contenteditable', 'false');
 
-              each(node.getAll('img'), function (img) {
-                img.attr('data-mce-contenteditable', 'true');
-              });
-            }
+            each(node.getAll('img'), function (img) {
+              img.attr('data-mce-contenteditable', 'true');
+            });
 
             node.attr('data-wf-figure', '1');
           }
