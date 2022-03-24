@@ -29350,6 +29350,13 @@
           self.hasVisual = settings.visual;
         }
 
+        // add visualaid class to editor body
+        if (self.hasVisual) {
+          dom.addClass(self.getBody(), 'mce-visualaid');
+        } else {
+          dom.removeClass(self.getBody(), 'mce-visualaid');
+        }
+
         each(dom.select('table,a', elm), function (elm) {
           var value;
 
@@ -42694,14 +42701,12 @@
                 node.append(figcaption);
               }
 
-              if (node.getAll('img').length) {
-                node.attr('data-mce-image', '1');
-                node.attr('contenteditable', 'false');
+              node.attr('data-mce-image', '1');
+              node.attr('contenteditable', 'false');
 
-                each(node.getAll('img'), function (img) {
-                  img.attr('data-mce-contenteditable', 'true');
-                });
-              }
+              each(node.getAll('img'), function (img) {
+                img.attr('data-mce-contenteditable', 'true');
+              });
 
               node.attr('data-wf-figure', '1');
             }
