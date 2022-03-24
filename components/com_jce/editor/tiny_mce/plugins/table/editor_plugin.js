@@ -2062,6 +2062,7 @@
                 if (/^[0-9\.]+$/.test(width)) {
                     width += 'px';
                 }
+
                 // add width
                 if (width) {
                     styles.push('width:' + width);
@@ -2128,7 +2129,9 @@
                     var cols = DOM.select('td.selected', rows[y]).length;
 
                     for (var x = 0; x < cols; x++) {
-                        html += '<td><br data-mce-bogus="1"/></td>';
+                        var fill = ed.settings.validate ? '<br data-mce-bogus="1"/>' : '&nbsp;';
+                        
+                        html += '<td>' + fill + '</td>';
                     }
 
                     html += "</tr>";
