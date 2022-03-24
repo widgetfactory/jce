@@ -190,46 +190,46 @@
         if (/youtu(\.)?be(.+)?\/(.+)/.test(url)) {
             return 'youtube';
         }
+
         // vimeo
         if (/vimeo(.+)?\/(.+)/.test(url)) {
             return 'vimeo';
         }
+
         // Dailymotion
         if (/dai\.?ly(motion)?(\.com)?/.test(url)) {
             return 'dailymotion';
         }
+
         // Scribd
         if (/scribd\.com\/(.+)/.test(url)) {
             return 'scribd';
         }
+
         // Slideshare
         if (/slideshare\.net\/(.+)\/(.+)/.test(url)) {
             return 'slideshare';
         }
+
         // Soundcloud
         if (/soundcloud\.com\/(.+)/.test(url)) {
             return 'soundcloud';
         }
+
         // Spotify
         if (/spotify\.com\/(.+)/.test(url)) {
             return 'spotify';
         }
+
         // TED
         if (/ted\.com\/talks\/(.+)/.test(url)) {
             return 'ted';
         }
+
         // Twitch
         if (/twitch\.tv\/(.+)/.test(url)) {
             return 'twitch';
         }
-        // Facebook
-        /*if (/www\.facebook\.com\/(.+)?(posts|videos)\/(.+)/.test(url)) {
-            return 'facebook';
-        }
-        // Instagram
-        if (/instagr\.?am(.+)?\/(.+)/.test(url)) {
-            return 'instagram';
-        }*/
 
         // Video
         if (/\.(mp4|ogv|ogg|webm)$/.test(url)) {
@@ -560,14 +560,25 @@
         return placeHolder;
     };
 
+    function createReplacementNode(editor, node) {
+        var html = new tinymce.html.Serializer().serialize(node);
+
+        var div = editor.dom.create('div', {}, html);
+
+        return div.firstChild;
+    }
+
     var previewToPlaceholder = function (editor, node) {
         var obj = new tinymce.html.DomParser({}, editor.schema).parse(node.innerHTML);
         var ifr = obj.firstChild;
 
         var placeholder = createPlaceholderNode(editor, ifr);
-        var html = new tinymce.html.Serializer().serialize(placeholder);
 
-        editor.dom.replace(editor.dom.createFragment(html), node);
+        var replacement = createReplacementNode(editor, placeholder);
+
+        editor.dom.replace(replacement, node);
+
+        return replacement;
     };
 
     var placeholderToPreview = function (editor, node) {
@@ -587,9 +598,11 @@
 
         var preview = createPreviewNode(editor, elm);
 
-        var html = new tinymce.html.Serializer().serialize(preview);
+        var replacement = createReplacementNode(editor, preview);
 
-        editor.dom.replace(editor.dom.createFragment(html), node);
+        editor.dom.replace(replacement, node);
+
+        return replacement;
     };
 
     var createPreviewNode = function (editor, node) {
@@ -892,6 +905,8 @@
 
         node.replace(elm);
         node.empty();
+
+        return elm;
     };
 
     /**
@@ -933,7 +948,7 @@
         var legacyAttributes = ['bgcolor', 'align', 'border', 'vspace', 'hspace'];
 
         // attributes that should be styles
-        tinymce.each(legacyAttributes, function (na) {
+        each(legacyAttributes, function (na) {
             var v = sourceNode.attr(na);
 
             if (v) {
@@ -1377,12 +1392,12 @@
                 }
 
                 if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
-                    previewToPlaceholder(ed, node);
+                    // update the event target with the new node
+                    e.target = previewToPlaceholder(ed, node);
                 }
 
                 // prevent bubbling up to DragDropOverrides
                 e.stopImmediatePropagation();
-
                 e.preventDefault();
 
                 return;
@@ -1570,7 +1585,7 @@
                 if (node) {
                     if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
                         if (e.type === 'click' && VK.metaKeyPressed(e)) {
-                            return placeholderToPreview(ed, node);
+                            e.target = placeholderToPreview(ed, node);
                         }
                     }
                 }
