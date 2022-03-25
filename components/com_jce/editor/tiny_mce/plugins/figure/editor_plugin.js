@@ -137,8 +137,20 @@
           },
           onremove: function (node) {
             ed.dom.remove(ed.dom.select('figcaption', node));
+            ed.dom.remove(ed.dom.getParent('figure', node), 1);
           }
         });
+
+        /* Workaround to apply or remove figure to media preview with contenteditable:false */
+        /*function applyToMediaPreview(node) {
+          if (node && node.getAttribute('data-mce-object') && !node.contenteditable) {
+            node.setAttribute('contenteditable', 'true');
+
+            ed.formatter.toggle('figure');
+
+            node.setAttribute('contenteditable', 'false');
+          }
+        }*/
 
         ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
           var se = ed.selection,
@@ -148,7 +160,7 @@
             case 'JustifyRight':
             case 'JustifyLeft':
             case 'JustifyCenter':
-              if (n && n.nodeName === "IMG") {
+              if (n && ed.dom.is(n, 'img,span[data-mce-object]')) {
                 var parent = ed.dom.getParent(n, 'FIGURE');
 
                 if (parent) {
@@ -161,23 +173,17 @@
           }
         });
 
-        ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+        /*ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
           var n = ed.selection.getNode();
 
           switch (cmd) {
-            case 'JustifyRight':
-            case 'JustifyLeft':
-            case 'JustifyCenter':
-              if (n && n.nodeName === "FIGURE") {
-                var img = ed.dom.select('IMG', n);
-
-                if (img.length) {
-                  ed.selection.select(img[0]);
-                }
+            case 'FormatBlock':
+              if (v == 'figure') {
+                applyToMediaPreview(n);
               }
               break;
           }
-        });
+        });*/
 
         ed.onKeyDown.add(function (ed, e) {
           var isDelete, rng, container, offset, collapsed;

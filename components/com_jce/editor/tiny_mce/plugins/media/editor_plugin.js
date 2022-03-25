@@ -683,6 +683,7 @@
 
         previewWrapper = Node.create('span', {
             'contentEditable': 'false',
+            'data-mce-contenteditable': 'true',
             'data-mce-object': name,
             'class': classes.join(' '),
             'aria-details': msg,
