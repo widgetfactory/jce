@@ -324,7 +324,7 @@
                         return true;
                     }
 
-                    if (document.getElementById(key)) {
+                    if (document.getElementById(key) || key == 'class') {
                         return true;
                     }
 
