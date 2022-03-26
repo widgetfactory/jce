@@ -141,17 +141,6 @@
           }
         });
 
-        /* Workaround to apply or remove figure to media preview with contenteditable:false */
-        /*function applyToMediaPreview(node) {
-          if (node && node.getAttribute('data-mce-object') && !node.contenteditable) {
-            node.setAttribute('contenteditable', 'true');
-
-            ed.formatter.toggle('figure');
-
-            node.setAttribute('contenteditable', 'false');
-          }
-        }*/
-
         ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
           var se = ed.selection,
             n = se.getNode();
@@ -172,18 +161,6 @@
               break;
           }
         });
-
-        /*ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
-          var n = ed.selection.getNode();
-
-          switch (cmd) {
-            case 'FormatBlock':
-              if (v == 'figure') {
-                applyToMediaPreview(n);
-              }
-              break;
-          }
-        });*/
 
         ed.onKeyDown.add(function (ed, e) {
           var isDelete, rng, container, offset, collapsed;
