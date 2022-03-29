@@ -217,13 +217,13 @@
             // close on esc
             $('body').on('keyup.esc', function (e) {
                 if (e.keyCode === 27) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                   // cancel event
+                   e.preventDefault();
+                   e.stopPropagation();
 
                     // close an existing modal first
                     if ($('.uk-modal-close').length) {
-                        $('.uk-modal-close').trigger('click');
-
+                        $('.uk-modal-close').not(':submit').trigger('click');
                         return;
                     }
 

@@ -1,3 +1,5 @@
+/* global jQuery, Wf */
+
 (function ($, Wf) {
     function calculateWidth(n, cw, ch) {
         var ww = $(n).width() - 60,
@@ -400,7 +402,6 @@
                                     return;
                                 }
 
-                                var msg = Wf.translate('invalid_value', 'The value is invalid %s');
                                 var value = options.validate(n.value);
 
                                 if (value) {
@@ -469,7 +470,7 @@
                         icon: 'uk-icon-close',
                         attributes: {
                             "class": "uk-modal-close uk-hidden-small"
-                        },
+                        }
                     },
                     {
                         text: Wf.translate('browse', 'Add Files'),
@@ -571,8 +572,7 @@
          * Media Dialog
          */
         media: function (name, url, options) {
-            var self = this;
-            options = options || {};
+            var options = options || {};
 
             var w = options.width, h = options.height;
             var div = document.createElement('div');
@@ -696,8 +696,9 @@
                             for (i = 0; i < items.length; i += 2) {
                                 ext = items[i + 1].split(/ /);
 
-                                for (y = 0; y < ext.length; y++)
+                                for (y = 0; y < ext.length; y++) {
                                     mimes[ext[y]] = items[i];
+                                }
                             }
                         })("application/x-director,dcr," + "application/x-mplayer2,wmv wma avi," + "video/divx,divx," + "application/x-shockwave-flash,swf swfl," + "audio/mpeg,mpga mpega mp2 mp3," + "audio/ogg,ogg spx oga," + "audio/x-wav,wav," + "video/mpeg,mpeg mpg mpe," + "video/mp4,mp4 m4v," + "video/ogg,ogg ogv," + "video/webm,webm," + "video/quicktime,qt mov," + "video/x-flv,flv," + "video/vnd.rn-realvideo,rv," + "video/3gpp,3gp," + "video/x-matroska,mkv");
 
