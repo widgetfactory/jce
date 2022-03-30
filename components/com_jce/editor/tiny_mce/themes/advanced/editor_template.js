@@ -640,6 +640,10 @@
                 }
             }
 
+            function isBogusOrBookmarkOrCaret(node) {
+                return node.hasAttribute('data-mce-bogus') || node.getAttribute('data-mce-type') == 'bookmark' || node.id == '_mce_caret';
+            }
+
             cm.setActive('visualaid', ed.hasVisual);
             self._updateUndoStatus(ed);
             cm.setDisabled('outdent', !ed.queryCommandState('Outdent'));
@@ -668,12 +672,12 @@
                     }
 
                     // Ignore bogus/hidden elements
-                    if (n.getAttribute('data-mce-bogus')) {
+                    if (isBogusOrBookmarkOrCaret(n)) {
                         return;
                     }
 
                     // ignore linebreaks
-                    if (na === 'br') {
+                    if (na == 'br') {
                         return;
                     }
 
