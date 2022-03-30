@@ -72,7 +72,7 @@
         text = text.replace(/^[\s ]/, '\uFEFF');
 
         tinymce.each(elm.childNodes, function (node) {
-            if (node.nodeType == 3) {
+            if (node.nodeType == 3 && node.nodeValue != "") {
                 if ("innerText" in node) {
                     node.innerText = text;
                 } else {
