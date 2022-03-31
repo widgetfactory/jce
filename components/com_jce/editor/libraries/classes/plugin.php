@@ -194,7 +194,7 @@ class WFEditorPlugin extends JObject
         $document = WFDocument::getInstance();
 
         // ini language
-        $document->addScript(array('index.php?option=com_jce&' . $document->getQueryString(
+        $document->addScript(array(JURI::base(true) . '/index.php?option=com_jce&' . $document->getQueryString(
             array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode())
         )), 'joomla');
 
