@@ -39,13 +39,15 @@ abstract class WfBrowserHelper
         $app = JFactory::getApplication();
         $token = JFactory::getSession()->getFormToken();
 
+        $base = JURI::root(true);
+
         $url = 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
 
         if ($app->isClient('administrator')) {
-            return $url;
+            $base .= 'administrator/';
         }
 
-        return $url;
+        return $base . $url;
     }
 
     public static function getMediaFieldOptions($options = array())
