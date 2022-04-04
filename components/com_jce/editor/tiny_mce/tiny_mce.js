@@ -27198,6 +27198,162 @@
    */
 
   /**
+   * NodeChange.js
+   *
+   * Released under LGPL License.
+   * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+
+  /**
+   * This class handles the nodechange event dispatching both manual and through selection change events.
+   *
+   * @class tinymce.NodeChange
+   * @private
+   */
+
+  (function (tinymce) {
+      var lastPath = [];
+
+      var timer;
+
+      function nodeChanged(ed, e) {
+          if (timer) {
+              clearTimeout(timer);
+          }
+
+          // Normalize selection for example <b>a</b><i>|a</i> becomes <b>a|</b><i>a</i> except for Ctrl+A since it selects everything
+          if (e.keyCode != 65 || !tinymce.VK.metaKeyPressed(e)) {
+              ed.selection.normalize();
+          }
+
+          ed.nodeChanged();
+      }
+
+      /**
+       * Returns true/false if the current element path has been changed or not.
+       *
+       * @private
+       * @return {Boolean} True if the element path is the same false if it's not.
+       */
+      function isSameElementPath(ed, startElm) {
+          var i, currentPath;
+
+          currentPath = ed.dom.getParents(startElm, '*', ed.getBody());
+          currentPath.reverse();
+
+          if (currentPath.length === lastPath.length) {
+              for (i = currentPath.length; i >= 0; i--) {
+                  if (currentPath[i] !== lastPath[i]) {
+                      break;
+                  }
+              }
+
+              if (i === -1) {
+                  lastPath = currentPath;
+                  return true;
+              }
+          }
+
+          lastPath = currentPath;
+
+          return false;
+      }
+
+      tinymce.NodeChange = function (editor) {
+
+          // Selection change is delayed ~200ms on IE when you click inside the current range
+          editor.onSelectionChange.add(function (ed, e) {
+              var startElm = ed.selection.getStart(true);
+
+              lastPath = [startElm];
+
+              if (!isSameElementPath(ed, startElm) && ed.dom.isChildOf(startElm, ed.getBody())) {
+                  nodeChanged(ed, e);
+              }
+          });
+
+          /*var keyCodeMap = tinymce.makeMap([8, 13, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46]);
+      
+          self.onKeyUp.add(function (ed, e) {
+              var keyCode = e.keyCode;
+      
+              if (keyCodeMap[keyCode] || (tinymce.isMac && (keyCode == 91 || keyCode == 93)) || e.ctrlKey) {
+                  nodeChanged(ed, e);
+              }
+          });*/
+
+          // Fire an extra nodeChange on mouseup for compatibility reasons
+          editor.onMouseUp.add(function (ed, e) {
+              if (!e.isDefaultPrevented()) {
+                  // Delay nodeChanged call for WebKit edge case issue where the range
+                  // isn't updated until after you click outside a selected image
+                  if (ed.selection.getNode().nodeName == 'IMG') {
+                      timer = setTimeout(function () {
+                          nodeChanged(ed, e);
+                      }, 0);
+                  } else {
+                      nodeChanged(ed, e);
+                  }
+              }
+          });
+
+          /**
+           * Dispatches out a onNodeChange event to all observers. This method should be called when you
+           * need to update the UI states or element path etc.
+           *
+           * @method nodeChanged
+           * @param {Object} args Optional args to pass to NodeChange event handlers.
+           */
+          this.nodeChanged = function (args) {
+              var selection = editor.selection,
+                  node, root, parents;
+
+              // Fix for bug #1896577 it seems that this can not be fired while the editor is loading
+              if (editor.initialized && selection && !editor.settings.disable_nodechange && !editor.readonly) {
+                  // Get start node
+                  root = editor.getBody();
+                  node = selection.getStart(true) || root;
+
+                  // Make sure the node is within the editor root or is the editor root
+                  if (node.ownerDocument != editor.getDoc() || !editor.dom.isChildOf(node, root)) {
+                      node = root;
+                  }
+
+                  if (node.nodeType !== 1 || node.getAttribute('data-mce-bogus')) {
+                      node = node.parentNode;
+                  }
+
+                  // Get parents and add them to object
+                  parents = [];
+
+                  editor.dom.getParent(node, function (node) {
+                      if (node === root) {
+                          return true;
+                      }
+
+                      parents.push(node);
+                  });
+
+                  args = args || {};
+                  args.element = node;
+                  args.parents = parents;
+
+                  editor.onNodeChange.dispatch(
+                      editor,
+                      args ? args.controlManager || editor.controlManager : editor.controlManager,
+                      node,
+                      selection.isCollapsed(),
+                      args
+                  );
+              }
+          };
+      };
+  })(tinymce);
+
+  /**
    * EditorFocus.js
    *
    * Released under LGPL License.
@@ -27329,41 +27485,41 @@
       explode = tinymce.explode;
 
     /**
-  	 * This class contains the core logic for a TinyMCE editor.
-  	 *
-  	 * @class tinymce.Editor
-  	 * @example
-  	 * // Add a class to all paragraphs in the editor.
-  	 * tinymce.activeEditor.dom.addClass(tinymce.activeEditor.dom.select('p'), 'someclass');
-  	 *
-  	 * // Gets the current editors selection as text
-  	 * tinymce.activeEditor.selection.getContent({format : 'text'});
-  	 *
-  	 * // Creates a new editor instance
-  	 * var ed = new tinymce.Editor('textareaid', {
-  	 *     some_setting : 1
-  	 * });
-  	 *
-  	 * // Select each item the user clicks on
-  	 * ed.onClick.add(function(ed, e) {
-  	 *     ed.selection.select(e.target);
-  	 * });
-  	 *
-  	 * ed.render();
-  	 */
+     * This class contains the core logic for a TinyMCE editor.
+     *
+     * @class tinymce.Editor
+     * @example
+     * // Add a class to all paragraphs in the editor.
+     * tinymce.activeEditor.dom.addClass(tinymce.activeEditor.dom.select('p'), 'someclass');
+     *
+     * // Gets the current editors selection as text
+     * tinymce.activeEditor.selection.getContent({format : 'text'});
+     *
+     * // Creates a new editor instance
+     * var ed = new tinymce.Editor('textareaid', {
+     *     some_setting : 1
+     * });
+     *
+     * // Select each item the user clicks on
+     * ed.onClick.add(function(ed, e) {
+     *     ed.selection.select(e.target);
+     * });
+     *
+     * ed.render();
+     */
     tinymce.Editor = function (id, settings) {
       var self = this,
         TRUE = true;
 
       /**
-  		 * Name/value collection with editor settings.
-  		 *
-  		 * @property settings
-  		 * @type Object
-  		 * @example
-  		 * // Get the value of the theme setting
-  		 * tinymce.activeEditor.windowManager.alert("You are using the " + tinymce.activeEditor.settings.theme + " theme");
-  		 */
+       * Name/value collection with editor settings.
+       *
+       * @property settings
+       * @type Object
+       * @example
+       * // Get the value of the theme setting
+       * tinymce.activeEditor.windowManager.alert("You are using the " + tinymce.activeEditor.settings.theme + " theme");
+       */
       self.settings = settings = extend({
         id: id,
         language: 'en',
@@ -27408,85 +27564,85 @@
       }, settings);
 
       /**
-  		 * Editor instance id, normally the same as the div/textarea that was replaced.
-  		 *
-  		 * @property id
-  		 * @type String
-  		 */
+       * Editor instance id, normally the same as the div/textarea that was replaced.
+       *
+       * @property id
+       * @type String
+       */
       self.id = self.editorId = id;
 
       /**
-  		 * State to force the editor to return false on a isDirty call.
-  		 *
-  		 * @property isNotDirty
-  		 * @type Boolean
-  		 * @example
-  		 * function ajaxSave() {
-  		 *     var ed = tinymce.get('elm1');
-  		 *
-  		 *     // Save contents using some XHR call
-  		 *     alert(ed.getContent());
-  		 *
-  		 *     ed.isNotDirty = 1; // Force not dirty state
-  		 * }
-  		 */
+       * State to force the editor to return false on a isDirty call.
+       *
+       * @property isNotDirty
+       * @type Boolean
+       * @example
+       * function ajaxSave() {
+       *     var ed = tinymce.get('elm1');
+       *
+       *     // Save contents using some XHR call
+       *     alert(ed.getContent());
+       *
+       *     ed.isNotDirty = 1; // Force not dirty state
+       * }
+       */
       self.isNotDirty = false;
 
       /**
-  		 * Name/Value object containting plugin instances.
-  		 *
-  		 * @property plugins
-  		 * @type Object
-  		 * @example
-  		 * // Execute a method inside a plugin directly
-  		 * tinymce.activeEditor.plugins.someplugin.someMethod();
-  		 */
+       * Name/Value object containting plugin instances.
+       *
+       * @property plugins
+       * @type Object
+       * @example
+       * // Execute a method inside a plugin directly
+       * tinymce.activeEditor.plugins.someplugin.someMethod();
+       */
       self.plugins = {};
 
       /**
-  		 * URI object to document configured for the TinyMCE instance.
-  		 *
-  		 * @property documentBaseURI
-  		 * @type tinymce.util.URI
-  		 * @example
-  		 * // Get relative URL from the location of document_base_url
-  		 * tinymce.activeEditor.documentBaseURI.toRelative('/somedir/somefile.htm');
-  		 *
-  		 * // Get absolute URL from the location of document_base_ur\
-  		 * tinymce.activeEditor.documentBaseURI.toAbsolute('somefile.htm');
-  		 */
+       * URI object to document configured for the TinyMCE instance.
+       *
+       * @property documentBaseURI
+       * @type tinymce.util.URI
+       * @example
+       * // Get relative URL from the location of document_base_url
+       * tinymce.activeEditor.documentBaseURI.toRelative('/somedir/somefile.htm');
+       *
+       * // Get absolute URL from the location of document_base_ur\
+       * tinymce.activeEditor.documentBaseURI.toAbsolute('somefile.htm');
+       */
       self.documentBaseURI = new tinymce.util.URI(settings.document_base_url || tinymce.documentBaseURL, {
         base_uri: tinymce.baseURI
       });
 
       /**
-  		 * URI object to current document that holds the TinyMCE editor instance.
-  		 *
-  		 * @property baseURI
-  		 * @type tinymce.util.URI
-  		 * @example
-  		 * // Get relative URL from the location of the API
-  		 * tinymce.activeEditor.baseURI.toRelative('/somedir/somefile.htm');
-  		 *
-  		 * // Get absolute URL from the location of the API
-  		 * tinymce.activeEditor.baseURI.toAbsolute('somefile.htm');
-  		 */
+       * URI object to current document that holds the TinyMCE editor instance.
+       *
+       * @property baseURI
+       * @type tinymce.util.URI
+       * @example
+       * // Get relative URL from the location of the API
+       * tinymce.activeEditor.baseURI.toRelative('/somedir/somefile.htm');
+       *
+       * // Get absolute URL from the location of the API
+       * tinymce.activeEditor.baseURI.toAbsolute('somefile.htm');
+       */
       self.baseURI = tinymce.baseURI;
 
       /**
-  		 * Array with CSS files to load into the iframe.
-  		 *
-  		 * @property contentCSS
-  		 * @type Array
-  		 */
+       * Array with CSS files to load into the iframe.
+       *
+       * @property contentCSS
+       * @type Array
+       */
       self.contentCSS = [];
 
       /**
-  		 * Array of CSS styles to add to head of document when the editor loads.
-  		 *
-  		 * @property contentStyles
-  		 * @type Array
-  		 */
+       * Array of CSS styles to add to head of document when the editor loads.
+       *
+       * @property contentStyles
+       * @type Array
+       */
       self.contentStyles = [];
 
       // Creates all events like onClick, onSetContent etc see Editor.Events.js for the actual logic
@@ -27503,10 +27659,10 @@
 
     tinymce.Editor.prototype = {
       /**
-  		 * Renderes the editor/adds it to the page.
-  		 *
-  		 * @method render
-  		 */
+       * Renderes the editor/adds it to the page.
+       *
+       * @method render
+       */
       render: function () {
         var self = this,
           s = self.settings,
@@ -27549,24 +27705,24 @@
         }
 
         /**
-  			 * Window manager reference, use this to open new windows and dialogs.
-  			 *
-  			 * @property windowManager
-  			 * @type tinymce.WindowManager
-  			 * @example
-  			 * // Shows an alert message
-  			 * tinymce.activeEditor.windowManager.alert('Hello world!');
-  			 *
-  			 * // Opens a new dialog with the file.htm file and the size 320x240
-  			 * // It also adds a custom parameter this can be retrieved by using tinyMCEPopup.getWindowArg inside the dialog.
-  			 * tinymce.activeEditor.windowManager.open({
-  			 *    url : 'file.htm',
-  			 *    width : 320,
-  			 *    height : 240
-  			 * }, {
-  			 *    custom_param : 1
-  			 * });
-  			 */
+         * Window manager reference, use this to open new windows and dialogs.
+         *
+         * @property windowManager
+         * @type tinymce.WindowManager
+         * @example
+         * // Shows an alert message
+         * tinymce.activeEditor.windowManager.alert('Hello world!');
+         *
+         * // Opens a new dialog with the file.htm file and the size 320x240
+         * // It also adds a custom parameter this can be retrieved by using tinyMCEPopup.getWindowArg inside the dialog.
+         * tinymce.activeEditor.windowManager.open({
+         *    url : 'file.htm',
+         *    width : 320,
+         *    height : 240
+         * }, {
+         *    custom_param : 1
+         * });
+         */
         if (tinymce.WindowManager) {
           self.windowManager = new tinymce.WindowManager(self);
         }
@@ -27682,12 +27838,12 @@
       },
 
       /**
-  		 * Initializes the editor this will be called automatically when
-  		 * all plugins/themes and language packs are loaded by the rendered method.
-  		 * This method will setup the iframe and create the theme and plugin instances.
-  		 *
-  		 * @method init
-  		 */
+       * Initializes the editor this will be called automatically when
+       * all plugins/themes and language packs are loaded by the rendered method.
+       * This method will setup the iframe and create the theme and plugin instances.
+       *
+       * @method init
+       */
       init: function () {
         var self = this,
           s = self.settings,
@@ -27699,14 +27855,14 @@
         s.aria_label = s.aria_label || DOM.getAttrib(e, 'aria-label', self.getLang('aria.rich_text_area'));
 
         /**
-  			 * Reference to the theme instance that was used to generate the UI.
-  			 *
-  			 * @property theme
-  			 * @type tinymce.Theme
-  			 * @example
-  			 * // Executes a method on the theme directly
-  			 * tinymce.activeEditor.theme.someMethod();
-  			 */
+         * Reference to the theme instance that was used to generate the UI.
+         *
+         * @property theme
+         * @type tinymce.Theme
+         * @example
+         * // Executes a method on the theme directly
+         * tinymce.activeEditor.theme.someMethod();
+         */
         if (s.theme) {
           if (typeof s.theme != "function") {
             s.theme = s.theme.replace(/-/, '');
@@ -27746,14 +27902,14 @@
         each(explode(s.plugins.replace(/\-/g, '')), initPlugin);
 
         /**
-  			 * Control manager instance for the editor. Will enables you to create new UI elements and change their states etc.
-  			 *
-  			 * @property controlManager
-  			 * @type tinymce.ControlManager
-  			 * @example
-  			 * // Disables the bold button
-  			 * tinymce.activeEditor.controlManager.setDisabled('bold', true);
-  			 */
+         * Control manager instance for the editor. Will enables you to create new UI elements and change their states etc.
+         *
+         * @property controlManager
+         * @type tinymce.ControlManager
+         * @example
+         * // Disables the bold button
+         * tinymce.activeEditor.controlManager.setDisabled('bold', true);
+         */
         self.controlManager = new tinymce.ControlManager(self);
 
         // Enables users to override the control factory
@@ -27869,11 +28025,11 @@
 
         // Load the CSS by injecting them into the HTML this will reduce "flicker"
         /*for (i = 0; i < self.contentCSS.length; i++) {
-  				var cssUrl = tinymce._addVer(self.contentCSS[i]);
-  				self.iframeHTML += '<link type="text/css" data-cfasync="false" rel="stylesheet" href="' + cssUrl + '" />';
-  			}
+          var cssUrl = tinymce._addVer(self.contentCSS[i]);
+          self.iframeHTML += '<link type="text/css" data-cfasync="false" rel="stylesheet" href="' + cssUrl + '" />';
+        }
 
-  			self.contentCSS = [];*/
+        self.contentCSS = [];*/
 
         bi = s.body_id || 'tinymce';
 
@@ -27935,12 +28091,12 @@
       },
 
       /**
-  		 * This method get called by the init method ones the iframe is loaded.
-  		 * It will fill the iframe with contents, setups DOM and selection objects for the iframe.
-  		 * This method should not be called directly.
-  		 *
-  		 * @method initContentBody
-  		 */
+       * This method get called by the init method ones the iframe is loaded.
+       * It will fill the iframe with contents, setups DOM and selection objects for the iframe.
+       * This method should not be called directly.
+       *
+       * @method initContentBody
+       */
       initContentBody: function () {
         var self = this,
           settings = self.settings,
@@ -27980,22 +28136,22 @@
         body.disabled = false;
 
         /**
-  			 * Schema instance, enables you to validate elements and it's children.
-  			 *
-  			 * @property schema
-  			 * @type tinymce.html.Schema
-  			 */
+         * Schema instance, enables you to validate elements and it's children.
+         *
+         * @property schema
+         * @type tinymce.html.Schema
+         */
         self.schema = new tinymce.html.Schema(settings);
 
         /**
-  			 * DOM instance for the editor.
-  			 *
-  			 * @property dom
-  			 * @type tinymce.dom.DOMUtils
-  			 * @example
-  			 * // Adds a class to all paragraphs within the editor
-  			 * tinymce.activeEditor.dom.addClass(tinymce.activeEditor.dom.select('p'), 'someclass');
-  			 */
+         * DOM instance for the editor.
+         *
+         * @property dom
+         * @type tinymce.dom.DOMUtils
+         * @example
+         * // Adds a class to all paragraphs within the editor
+         * tinymce.activeEditor.dom.addClass(tinymce.activeEditor.dom.select('p'), 'someclass');
+         */
         self.dom = new tinymce.dom.DOMUtils(doc, {
           keep_values: true,
           url_converter: self.convertURL,
@@ -28008,11 +28164,11 @@
         });
 
         /**
-  			 * HTML parser will be used when contents is inserted into the editor.
-  			 *
-  			 * @property parser
-  			 * @type tinymce.html.DomParser
-  			 */
+         * HTML parser will be used when contents is inserted into the editor.
+         *
+         * @property parser
+         * @type tinymce.html.DomParser
+         */
         self.parser = new tinymce.html.DomParser(settings, self.schema);
 
         // Convert src and href into data-mce-src, data-mce-href and data-mce-style
@@ -28080,54 +28236,55 @@
         });
 
         /**
-  			 * DOM serializer for the editor. Will be used when contents is extracted from the editor.
-  			 *
-  			 * @property serializer
-  			 * @type tinymce.dom.Serializer
-  			 * @example
-  			 * // Serializes the first paragraph in the editor into a string
-  			 * tinymce.activeEditor.serializer.serialize(tinymce.activeEditor.dom.select('p')[0]);
-  			 */
+         * DOM serializer for the editor. Will be used when contents is extracted from the editor.
+         *
+         * @property serializer
+         * @type tinymce.dom.Serializer
+         * @example
+         * // Serializes the first paragraph in the editor into a string
+         * tinymce.activeEditor.serializer.serialize(tinymce.activeEditor.dom.select('p')[0]);
+         */
         self.serializer = new tinymce.dom.Serializer(settings, self.dom, self.schema);
 
         /**
-  			 * Selection instance for the editor.
-  			 *
-  			 * @property selection
-  			 * @type tinymce.dom.Selection
-  			 * @example
-  			 * // Sets some contents to the current selection in the editor
-  			 * tinymce.activeEditor.selection.setContent('Some contents');
-  			 *
-  			 * // Gets the current selection
-  			 * alert(tinymce.activeEditor.selection.getContent());
-  			 *
-  			 * // Selects the first paragraph found
-  			 * tinymce.activeEditor.selection.select(tinymce.activeEditor.dom.select('p')[0]);
-  			 */
+         * Selection instance for the editor.
+         *
+         * @property selection
+         * @type tinymce.dom.Selection
+         * @example
+         * // Sets some contents to the current selection in the editor
+         * tinymce.activeEditor.selection.setContent('Some contents');
+         *
+         * // Gets the current selection
+         * alert(tinymce.activeEditor.selection.getContent());
+         *
+         * // Selects the first paragraph found
+         * tinymce.activeEditor.selection.select(tinymce.activeEditor.dom.select('p')[0]);
+         */
         self.selection = new tinymce.dom.Selection(self.dom, self.getWin(), self.serializer, self);
 
         /**
-  			 * Formatter instance.
-  			 *
-  			 * @property formatter
-  			 * @type tinymce.Formatter
-  			 */
+         * Formatter instance.
+         *
+         * @property formatter
+         * @type tinymce.Formatter
+         */
         self.formatter = new tinymce.Formatter(self);
 
         /**
-  			 * Undo manager instance, responsible for handling undo levels.
-  			 /
-  			 * @property undoManager
-  			 * @type tinymce.UndoManager
-  			 * @example
-  			 * // Undoes the last modification to the editor
-  			 * tinymce.activeEditor.undoManager.undo();
-  			 */
+         * Undo manager instance, responsible for handling undo levels.
+         /
+         * @property undoManager
+         * @type tinymce.UndoManager
+         * @example
+         * // Undoes the last modification to the editor
+         * tinymce.activeEditor.undoManager.undo();
+         */
         self.undoManager = new tinymce.UndoManager(self);
 
         self.forceBlocks = new tinymce.ForceBlocks(self);
         self.enterKey = new tinymce.EnterKey(self);
+        self._nodeChangeDispatcher = new tinymce.NodeChange(self);
         self.editorCommands = new tinymce.EditorCommands(self);
 
         self._selectionOverrides = new tinymce.SelectionOverrides(self);
@@ -28203,15 +28360,15 @@
         });
 
         /**
-  			 * Is set to true after the editor instance has been initialized
-  			 *
-  			 * @property initialized
-  			 * @type Boolean
-  			 * @example
-  			 * function isEditorInitialized(editor) {
-  			 *     return editor && editor.initialized;
-  			 * }
-  			 */
+         * Is set to true after the editor instance has been initialized
+         *
+         * @property initialized
+         * @type Boolean
+         * @example
+         * function isEditorInitialized(editor) {
+         *     return editor && editor.initialized;
+         * }
+         */
         function initEditor() {
           self.initialized = true;
 
@@ -28263,24 +28420,24 @@
       },
 
       /**
-  		 * Focuses/activates the editor. This will set this editor as the activeEditor in the tinymce collection
-  		 * it will also place DOM focus inside the editor.
-  		 *
-  		 * @method focus
-  		 * @param {Boolean} skip_focus Skip DOM focus. Just set is as the active editor.
-  		 */
+       * Focuses/activates the editor. This will set this editor as the activeEditor in the tinymce collection
+       * it will also place DOM focus inside the editor.
+       *
+       * @method focus
+       * @param {Boolean} skip_focus Skip DOM focus. Just set is as the active editor.
+       */
       focus: function (skip_focus) {
         EditorFocus.focus(this, skip_focus);
       },
 
       /**
-  		 * Executes a legacy callback. This method is useful to call old 2.x option callbacks.
-  		 * There new event model is a better way to add callback so this method might be removed in the future.
-  		 *
-  		 * @method execCallback
-  		 * @param {String} n Name of the callback to execute.
-  		 * @return {Object} Return value passed from callback function.
-  		 */
+       * Executes a legacy callback. This method is useful to call old 2.x option callbacks.
+       * There new event model is a better way to add callback so this method might be removed in the future.
+       *
+       * @method execCallback
+       * @param {String} n Name of the callback to execute.
+       * @return {Object} Return value passed from callback function.
+       */
       execCallback: function (n) {
         var self = this,
           f = self.settings[n],
@@ -28311,13 +28468,13 @@
       },
 
       /**
-  		 * Translates the specified string by replacing variables with language pack items it will also check if there is
-  		 * a key mathcin the input.
-  		 *
-  		 * @method translate
-  		 * @param {String} s String to translate by the language pack data.
-  		 * @return {String} Translated string.
-  		 */
+       * Translates the specified string by replacing variables with language pack items it will also check if there is
+       * a key mathcin the input.
+       *
+       * @method translate
+       * @param {String} s String to translate by the language pack data.
+       * @return {String} Translated string.
+       */
       translate: function (s) {
         var c = this.settings.language || 'en',
           i18n = tinymce.i18n;
@@ -28332,31 +28489,31 @@
       },
 
       /**
-  		 * Returns a language pack item by name/key.
-  		 *
-  		 * @method getLang
-  		 * @param {String} n Name/key to get from the language pack.
-  		 * @param {String} dv Optional default value to retrive.
-  		 */
+       * Returns a language pack item by name/key.
+       *
+       * @method getLang
+       * @param {String} n Name/key to get from the language pack.
+       * @param {String} dv Optional default value to retrive.
+       */
       getLang: function (n, dv) {
         return tinymce.i18n[(this.settings.language || 'en') + '.' + n] || (is(dv) ? dv : '{#' + n + '}');
       },
 
       /**
-  		 * Returns a configuration parameter by name.
-  		 *
-  		 * @method getParam
-  		 * @param {String} n Configruation parameter to retrive.
-  		 * @param {String} dv Optional default value to return.
-  		 * @param {String} ty Optional type parameter.
-  		 * @return {String} Configuration parameter value or default value.
-  		 * @example
-  		 * // Returns a specific config value from the currently active editor
-  		 * var someval = tinymce.activeEditor.getParam('myvalue');
-  		 *
-  		 * // Returns a specific config value from a specific editor instance by id
-  		 * var someval2 = tinymce.get('my_editor').getParam('myvalue');
-  		 */
+       * Returns a configuration parameter by name.
+       *
+       * @method getParam
+       * @param {String} n Configruation parameter to retrive.
+       * @param {String} dv Optional default value to return.
+       * @param {String} ty Optional type parameter.
+       * @return {String} Configuration parameter value or default value.
+       * @example
+       * // Returns a specific config value from the currently active editor
+       * var someval = tinymce.activeEditor.getParam('myvalue');
+       *
+       * // Returns a specific config value from a specific editor instance by id
+       * var someval2 = tinymce.get('my_editor').getParam('myvalue');
+       */
       getParam: function (n, dv, ty) {
         var tr = tinymce.trim,
           v = is(this.settings[n]) ? this.settings[n] : dv,
@@ -28386,85 +28543,44 @@
       },
 
       /**
-  		 * Distpaches out a onNodeChange event to all observers. This method should be called when you
-  		 * need to update the UI states or element path etc.
-  		 *
-  		 * @method nodeChanged
-  		 * @param {Object} args Optional object to pass along for the node changed event.
-  		 */
+       * Distpaches out a onNodeChange event to all observers. This method should be called when you
+       * need to update the UI states or element path etc.
+       *
+       * @method nodeChanged
+       * @param {Object} args Optional object to pass along for the node changed event.
+       */
       nodeChanged: function (args) {
-        var self = this,
-          selection = self.selection,
-          node, root, parents;
-
-        // Fix for bug #1896577 it seems that this can not be fired while the editor is loading
-        if (self.initialized && selection && !self.settings.disable_nodechange && !self.readonly) {
-          // Get start node
-          root = self.getBody();
-          node = selection.getStart(true) || root;
-
-          // Make sure the node is within the editor root or is the editor root
-          if (node.ownerDocument != self.getDoc() || !self.dom.isChildOf(node, root)) {
-            node = root;
-          }
-
-          if (node.nodeType !== 1 || node.getAttribute('data-mce-bogus')) {
-            node = node.parentNode;
-          }
-
-          // Get parents and add them to object
-          parents = [];
-
-          self.dom.getParent(node, function (node) {
-            if (node === root) {
-              return true;
-            }
-
-            parents.push(node);
-          });
-
-          args = args || {};
-          args.element = node;
-          args.parents = parents;
-
-          self.onNodeChange.dispatch(
-            self,
-            args ? args.controlManager || self.controlManager : self.controlManager,
-            node,
-            selection.isCollapsed(),
-            args
-          );
-        }
+        this._nodeChangeDispatcher.nodeChanged(args);
       },
 
       /**
-  		 * Adds a button that later gets created by the ControlManager. This is a shorter and easier method
-  		 * of adding buttons without the need to deal with the ControlManager directly. But it's also less
-  		 * powerfull if you need more control use the ControlManagers factory methods instead.
-  		 *
-  		 * @method addButton
-  		 * @param {String} name Button name to add.
-  		 * @param {Object} settings Settings object with title, cmd etc.
-  		 * @example
-  		 * // Adds a custom button to the editor and when a user clicks the button it will open
-  		 * // an alert box with the selected contents as plain text.
-  		 * tinymce.init({
-  		 *    ...
-  		 *
-  		 *    theme_advanced_buttons1 : 'example,..'
-  		 *
-  		 *    setup : function(ed) {
-  		 *       // Register example button
-  		 *       ed.addButton('example', {
-  		 *          title : 'example.desc',
-  		 *          image : '../jscripts/tiny_mce/plugins/example/img/example.gif',
-  		 *          onclick : function() {
-  		 *             ed.windowManager.alert('Hello world!! Selection: ' + ed.selection.getContent({format : 'text'}));
-  		 *          }
-  		 *       });
-  		 *    }
-  		 * });
-  		 */
+       * Adds a button that later gets created by the ControlManager. This is a shorter and easier method
+       * of adding buttons without the need to deal with the ControlManager directly. But it's also less
+       * powerfull if you need more control use the ControlManagers factory methods instead.
+       *
+       * @method addButton
+       * @param {String} name Button name to add.
+       * @param {Object} settings Settings object with title, cmd etc.
+       * @example
+       * // Adds a custom button to the editor and when a user clicks the button it will open
+       * // an alert box with the selected contents as plain text.
+       * tinymce.init({
+       *    ...
+       *
+       *    theme_advanced_buttons1 : 'example,..'
+       *
+       *    setup : function(ed) {
+       *       // Register example button
+       *       ed.addButton('example', {
+       *          title : 'example.desc',
+       *          image : '../jscripts/tiny_mce/plugins/example/img/example.gif',
+       *          onclick : function() {
+       *             ed.windowManager.alert('Hello world!! Selection: ' + ed.selection.getContent({format : 'text'}));
+       *          }
+       *       });
+       *    }
+       * });
+       */
       addButton: function (name, settings) {
         var self = this;
 
@@ -28473,35 +28589,35 @@
       },
 
       /**
-  		 * Adds a custom command to the editor, you can also override existing commands with this method.
-  		 * The command that you add can be executed with execCommand.
-  		 *
-  		 * @method addCommand
-  		 * @param {String} name Command name to add/override.
-  		 * @param {addCommandCallback} callback Function to execute when the command occurs.
-  		 * @param {Object} scope Optional scope to execute the function in.
-  		 * @example
-  		 * // Adds a custom command that later can be executed using execCommand
-  		 * tinymce.init({
-  		 *    ...
-  		 *
-  		 *    setup : function(ed) {
-  		 *       // Register example command
-  		 *       ed.addCommand('mycommand', function(ui, v) {
-  		 *          ed.windowManager.alert('Hello world!! Selection: ' + ed.selection.getContent({format : 'text'}));
-  		 *       });
-  		 *    }
-  		 * });
-  		 */
+       * Adds a custom command to the editor, you can also override existing commands with this method.
+       * The command that you add can be executed with execCommand.
+       *
+       * @method addCommand
+       * @param {String} name Command name to add/override.
+       * @param {addCommandCallback} callback Function to execute when the command occurs.
+       * @param {Object} scope Optional scope to execute the function in.
+       * @example
+       * // Adds a custom command that later can be executed using execCommand
+       * tinymce.init({
+       *    ...
+       *
+       *    setup : function(ed) {
+       *       // Register example command
+       *       ed.addCommand('mycommand', function(ui, v) {
+       *          ed.windowManager.alert('Hello world!! Selection: ' + ed.selection.getContent({format : 'text'}));
+       *       });
+       *    }
+       * });
+       */
       addCommand: function (name, callback, scope) {
         /**
-  			 * Callback function that gets called when a command is executed.
-  			 *
-  			 * @callback addCommandCallback
-  			 * @param {Boolean} ui Display UI state true/false.
-  			 * @param {Object} value Optional value for command.
-  			 * @return {Boolean} True/false state if the command was handled or not.
-  			 */
+         * Callback function that gets called when a command is executed.
+         *
+         * @callback addCommandCallback
+         * @param {Boolean} ui Display UI state true/false.
+         * @param {Object} value Optional value for command.
+         * @return {Boolean} True/false state if the command was handled or not.
+         */
         this.execCommands[name] = {
           func: callback,
           scope: scope || this
@@ -28509,21 +28625,21 @@
       },
 
       /**
-  		 * Adds a custom query state command to the editor, you can also override existing commands with this method.
-  		 * The command that you add can be executed with queryCommandState function.
-  		 *
-  		 * @method addQueryStateHandler
-  		 * @param {String} name Command name to add/override.
-  		 * @param {addQueryStateHandlerCallback} callback Function to execute when the command state retrival occurs.
-  		 * @param {Object} scope Optional scope to execute the function in.
-  		 */
+       * Adds a custom query state command to the editor, you can also override existing commands with this method.
+       * The command that you add can be executed with queryCommandState function.
+       *
+       * @method addQueryStateHandler
+       * @param {String} name Command name to add/override.
+       * @param {addQueryStateHandlerCallback} callback Function to execute when the command state retrival occurs.
+       * @param {Object} scope Optional scope to execute the function in.
+       */
       addQueryStateHandler: function (name, callback, scope) {
         /**
-  			 * Callback function that gets called when a queryCommandState is executed.
-  			 *
-  			 * @callback addQueryStateHandlerCallback
-  			 * @return {Boolean} True/false state if the command is enabled or not like is it bold.
-  			 */
+         * Callback function that gets called when a queryCommandState is executed.
+         *
+         * @callback addQueryStateHandlerCallback
+         * @return {Boolean} True/false state if the command is enabled or not like is it bold.
+         */
         this.queryStateCommands[name] = {
           func: callback,
           scope: scope || this
@@ -28531,21 +28647,21 @@
       },
 
       /**
-  		 * Adds a custom query value command to the editor, you can also override existing commands with this method.
-  		 * The command that you add can be executed with queryCommandValue function.
-  		 *
-  		 * @method addQueryValueHandler
-  		 * @param {String} name Command name to add/override.
-  		 * @param {addQueryValueHandlerCallback} callback Function to execute when the command value retrival occurs.
-  		 * @param {Object} scope Optional scope to execute the function in.
-  		 */
+       * Adds a custom query value command to the editor, you can also override existing commands with this method.
+       * The command that you add can be executed with queryCommandValue function.
+       *
+       * @method addQueryValueHandler
+       * @param {String} name Command name to add/override.
+       * @param {addQueryValueHandlerCallback} callback Function to execute when the command value retrival occurs.
+       * @param {Object} scope Optional scope to execute the function in.
+       */
       addQueryValueHandler: function (name, callback, scope) {
         /**
-  			 * Callback function that gets called when a queryCommandValue is executed.
-  			 *
-  			 * @callback addQueryValueHandlerCallback
-  			 * @return {Object} Value of the command or undefined.
-  			 */
+         * Callback function that gets called when a queryCommandValue is executed.
+         *
+         * @callback addQueryValueHandlerCallback
+         * @return {Object} Value of the command or undefined.
+         */
         this.queryValueCommands[name] = {
           func: callback,
           scope: scope || this
@@ -28553,26 +28669,26 @@
       },
 
       /**
-  		 * Returns true/false if the command is supported or not.
-  		 *
-  		 * @method queryCommandSupported
-  		 * @param {String} cmd Command that we check support for.
-  		 * @return {Boolean} true/false if the command is supported or not.
-  		 */
+       * Returns true/false if the command is supported or not.
+       *
+       * @method queryCommandSupported
+       * @param {String} cmd Command that we check support for.
+       * @return {Boolean} true/false if the command is supported or not.
+       */
       queryCommandSupported: function (cmd) {
         return this.editorCommands.queryCommandSupported(cmd);
       },
 
       /**
-  		 * Adds a keyboard shortcut for some command or function.
-  		 *
-  		 * @method addShortcut
-  		 * @param {String} pa Shortcut pattern. Like for example: ctrl+alt+o.
-  		 * @param {String} desc Text description for the command.
-  		 * @param {String/Function} cmd_func Command name string or function to execute when the key is pressed.
-  		 * @param {Object} sc Optional scope to execute the function in.
-  		 * @return {Boolean} true/false state if the shortcut was added or not.
-  		 */
+       * Adds a keyboard shortcut for some command or function.
+       *
+       * @method addShortcut
+       * @param {String} pa Shortcut pattern. Like for example: ctrl+alt+o.
+       * @param {String} desc Text description for the command.
+       * @param {String/Function} cmd_func Command name string or function to execute when the key is pressed.
+       * @param {Object} sc Optional scope to execute the function in.
+       * @return {Boolean} true/false state if the shortcut was added or not.
+       */
       addShortcut: function (pattern, desc, cmdFunc, scope) {
         var self = this;
 
@@ -28659,47 +28775,47 @@
         }
 
         /*if (is(cmd_func, 'string')) {
-  				c = cmd_func;
+          c = cmd_func;
 
-  				cmd_func = function () {
-  					self.execCommand(c, false, null);
-  				};
-  			}
+          cmd_func = function () {
+            self.execCommand(c, false, null);
+          };
+        }
 
-  			if (is(cmd_func, 'object')) {
-  				c = cmd_func;
+        if (is(cmd_func, 'object')) {
+          c = cmd_func;
 
-  				cmd_func = function () {
-  					self.execCommand(c[0], c[1], c[2]);
-  				};
-  			}
+          cmd_func = function () {
+            self.execCommand(c[0], c[1], c[2]);
+          };
+        }
 
-  			each(explode(pa), function (pa) {
-  				var o = {
-  					func: cmd_func,
-  					scope: sc || this,
-  					desc: self.translate(desc),
-  					alt: false,
-  					ctrl: false,
-  					shift: false
-  				};
+        each(explode(pa), function (pa) {
+          var o = {
+            func: cmd_func,
+            scope: sc || this,
+            desc: self.translate(desc),
+            alt: false,
+            ctrl: false,
+            shift: false
+          };
 
-  				each(explode(pa, '+'), function (v) {
-  					switch (v) {
-  						case 'alt':
-  						case 'ctrl':
-  						case 'shift':
-  							o[v] = true;
-  							break;
+          each(explode(pa, '+'), function (v) {
+            switch (v) {
+              case 'alt':
+              case 'ctrl':
+              case 'shift':
+                o[v] = true;
+                break;
 
-  						default:
-  							o.charCode = v.charCodeAt(0);
-  							o.keyCode = v.toUpperCase().charCodeAt(0);
-  					}
-  				});
+              default:
+                o.charCode = v.charCodeAt(0);
+                o.keyCode = v.toUpperCase().charCodeAt(0);
+            }
+          });
 
-  				self.shortcuts[(o.ctrl ? 'ctrl' : '') + ',' + (o.alt ? 'alt' : '') + ',' + (o.shift ? 'shift' : '') + ',' + o.keyCode] = o;
-  			});*/
+          self.shortcuts[(o.ctrl ? 'ctrl' : '') + ',' + (o.alt ? 'alt' : '') + ',' + (o.shift ? 'shift' : '') + ',' + o.keyCode] = o;
+        });*/
 
         var cmd;
 
@@ -28724,18 +28840,18 @@
       },
 
       /**
-  		 * Executes a command on the current instance. These commands can be TinyMCE internal commands prefixed with "mce" or
-  		 * they can be build in browser commands such as "Bold". A compleate list of browser commands is available on MSDN or Mozilla.org.
-  		 * This function will dispatch the execCommand function on each plugin, theme or the execcommand_callback option if none of these
-  		 * return true it will handle the command as a internal browser command.
-  		 *
-  		 * @method execCommand
-  		 * @param {String} cmd Command name to execute, for example mceLink or Bold.
-  		 * @param {Boolean} ui True/false state if a UI (dialog) should be presented or not.
-  		 * @param {mixed} val Optional command value, this can be anything.
-  		 * @param {Object} a Optional arguments object.
-  		 * @return {Boolean} True/false if the command was executed or not.
-  		 */
+       * Executes a command on the current instance. These commands can be TinyMCE internal commands prefixed with "mce" or
+       * they can be build in browser commands such as "Bold". A compleate list of browser commands is available on MSDN or Mozilla.org.
+       * This function will dispatch the execCommand function on each plugin, theme or the execcommand_callback option if none of these
+       * return true it will handle the command as a internal browser command.
+       *
+       * @method execCommand
+       * @param {String} cmd Command name to execute, for example mceLink or Bold.
+       * @param {Boolean} ui True/false state if a UI (dialog) should be presented or not.
+       * @param {mixed} val Optional command value, this can be anything.
+       * @param {Object} a Optional arguments object.
+       * @return {Boolean} True/false if the command was executed or not.
+       */
       execCommand: function (cmd, ui, val, a) {
         var self = this,
           s = 0,
@@ -28802,12 +28918,12 @@
       },
 
       /**
-  		 * Returns a command specific state, for example if bold is enabled or not.
-  		 *
-  		 * @method queryCommandState
-  		 * @param {string} cmd Command to query state from.
-  		 * @return {Boolean} Command specific state, for example if bold is enabled or not.
-  		 */
+       * Returns a command specific state, for example if bold is enabled or not.
+       *
+       * @method queryCommandState
+       * @param {string} cmd Command to query state from.
+       * @return {Boolean} Command specific state, for example if bold is enabled or not.
+       */
       queryCommandState: function (cmd) {
         var self = this,
           o, s;
@@ -28845,12 +28961,12 @@
       },
 
       /**
-  		 * Returns a command specific value, for example the current font size.
-  		 *
-  		 * @method queryCommandValue
-  		 * @param {string} c Command to query value from.
-  		 * @return {Object} Command specific value, for example the current font size.
-  		 */
+       * Returns a command specific value, for example the current font size.
+       *
+       * @method queryCommandValue
+       * @param {string} c Command to query value from.
+       * @return {Object} Command specific value, for example the current font size.
+       */
       queryCommandValue: function (c) {
         var self = this,
           o, s;
@@ -28888,10 +29004,10 @@
       },
 
       /**
-  		 * Shows the editor and hides any textarea/div that the editor is supposed to replace.
-  		 *
-  		 * @method show
-  		 */
+       * Shows the editor and hides any textarea/div that the editor is supposed to replace.
+       *
+       * @method show
+       */
       show: function () {
         var self = this;
 
@@ -28903,10 +29019,10 @@
       },
 
       /**
-  		 * Hides the editor and shows any textarea/div that the editor is supposed to replace.
-  		 *
-  		 * @method hide
-  		 */
+       * Hides the editor and shows any textarea/div that the editor is supposed to replace.
+       *
+       * @method hide
+       */
       hide: function () {
         var self = this,
           doc = self.getDoc();
@@ -28927,34 +29043,34 @@
       },
 
       /**
-  		 * Returns true/false if the editor is hidden or not.
-  		 *
-  		 * @method isHidden
-  		 * @return {Boolean} True/false if the editor is hidden or not.
-  		 */
+       * Returns true/false if the editor is hidden or not.
+       *
+       * @method isHidden
+       * @return {Boolean} True/false if the editor is hidden or not.
+       */
       isHidden: function () {
         return !DOM.isHidden(this.id);
       },
 
       /**
-  		 * Sets the progress state, this will display a throbber/progess for the editor.
-  		 * This is ideal for asycronous operations like an AJAX save call.
-  		 *
-  		 * @method setProgressState
-  		 * @param {Boolean} b Boolean state if the progress should be shown or hidden.
-  		 * @param {Number} ti Optional time to wait before the progress gets shown.
-  		 * @param {Object} o Optional object to pass to the progress observers.
-  		 * @return {Boolean} Same as the input state.
-  		 * @example
-  		 * // Show progress for the active editor
-  		 * tinymce.activeEditor.setProgressState(true);
-  		 *
-  		 * // Hide progress for the active editor
-  		 * tinymce.activeEditor.setProgressState(false);
-  		 *
-  		 * // Show progress after 3 seconds
-  		 * tinymce.activeEditor.setProgressState(true, 3000);
-  		 */
+       * Sets the progress state, this will display a throbber/progess for the editor.
+       * This is ideal for asycronous operations like an AJAX save call.
+       *
+       * @method setProgressState
+       * @param {Boolean} b Boolean state if the progress should be shown or hidden.
+       * @param {Number} ti Optional time to wait before the progress gets shown.
+       * @param {Object} o Optional object to pass to the progress observers.
+       * @return {Boolean} Same as the input state.
+       * @example
+       * // Show progress for the active editor
+       * tinymce.activeEditor.setProgressState(true);
+       *
+       * // Hide progress for the active editor
+       * tinymce.activeEditor.setProgressState(false);
+       *
+       * // Show progress after 3 seconds
+       * tinymce.activeEditor.setProgressState(true, 3000);
+       */
       setProgressState: function (b, ti, o) {
         this.onSetProgressState.dispatch(this, b, ti, o);
 
@@ -28962,14 +29078,14 @@
       },
 
       /**
-  		 * Loads contents from the textarea or div element that got converted into an editor instance.
-  		 * This method will move the contents from that textarea or div into the editor by using setContent
-  		 * so all events etc that method has will get dispatched as well.
-  		 *
-  		 * @method load
-  		 * @param {Object} o Optional content object, this gets passed around through the whole load process.
-  		 * @return {String} HTML string that got set into the editor.
-  		 */
+       * Loads contents from the textarea or div element that got converted into an editor instance.
+       * This method will move the contents from that textarea or div into the editor by using setContent
+       * so all events etc that method has will get dispatched as well.
+       *
+       * @method load
+       * @param {Object} o Optional content object, this gets passed around through the whole load process.
+       * @return {String} HTML string that got set into the editor.
+       */
       load: function (o) {
         var self = this,
           e = self.getElement(),
@@ -28994,14 +29110,14 @@
       },
 
       /**
-  		 * Saves the contents from a editor out to the textarea or div element that got converted into an editor instance.
-  		 * This method will move the HTML contents from the editor into that textarea or div by getContent
-  		 * so all events etc that method has will get dispatched as well.
-  		 *
-  		 * @method save
-  		 * @param {Object} o Optional content object, this gets passed around through the whole save process.
-  		 * @return {String} HTML string that got set into the textarea/div.
-  		 */
+       * Saves the contents from a editor out to the textarea or div element that got converted into an editor instance.
+       * This method will move the HTML contents from the editor into that textarea or div by getContent
+       * so all events etc that method has will get dispatched as well.
+       *
+       * @method save
+       * @param {Object} o Optional content object, this gets passed around through the whole save process.
+       * @return {String} HTML string that got set into the textarea/div.
+       */
       save: function (o) {
         var self = this,
           e = self.getElement(),
@@ -29047,26 +29163,26 @@
       },
 
       /**
-  		 * Sets the specified content to the editor instance, this will cleanup the content before it gets set using
-  		 * the different cleanup rules options.
-  		 *
-  		 * @method setContent
-  		 * @param {String} content Content to set to editor, normally HTML contents but can be other formats as well.
-  		 * @param {Object} args Optional content object, this gets passed around through the whole set process.
-  		 * @return {String} HTML string that got set into the editor.
-  		 * @example
-  		 * // Sets the HTML contents of the activeEditor editor
-  		 * tinymce.activeEditor.setContent('<span>some</span> html');
-  		 *
-  		 * // Sets the raw contents of the activeEditor editor
-  		 * tinymce.activeEditor.setContent('<span>some</span> html', {format : 'raw'});
-  		 *
-  		 * // Sets the content of a specific editor (my_editor in this example)
-  		 * tinymce.get('my_editor').setContent(data);
-  		 *
-  		 * // Sets the bbcode contents of the activeEditor editor if the bbcode plugin was added
-  		 * tinymce.activeEditor.setContent('[b]some[/b] html', {format : 'bbcode'});
-  		 */
+       * Sets the specified content to the editor instance, this will cleanup the content before it gets set using
+       * the different cleanup rules options.
+       *
+       * @method setContent
+       * @param {String} content Content to set to editor, normally HTML contents but can be other formats as well.
+       * @param {Object} args Optional content object, this gets passed around through the whole set process.
+       * @return {String} HTML string that got set into the editor.
+       * @example
+       * // Sets the HTML contents of the activeEditor editor
+       * tinymce.activeEditor.setContent('<span>some</span> html');
+       *
+       * // Sets the raw contents of the activeEditor editor
+       * tinymce.activeEditor.setContent('<span>some</span> html', {format : 'raw'});
+       *
+       * // Sets the content of a specific editor (my_editor in this example)
+       * tinymce.get('my_editor').setContent(data);
+       *
+       * // Sets the bbcode contents of the activeEditor editor if the bbcode plugin was added
+       * tinymce.activeEditor.setContent('[b]some[/b] html', {format : 'bbcode'});
+       */
       setContent: function (content, args) {
         var self = this,
           body = self.getBody(),
@@ -29124,8 +29240,8 @@
 
           // Don't normalize selection if the focused element isn't the body in content editable mode since it will steal focus otherwise
           /*if (!self.settings.content_editable || document.activeElement === self.getBody()) {
-  					self.selection.normalize();
-  				}*/
+            self.selection.normalize();
+          }*/
         }
 
         return args.content;
@@ -29136,22 +29252,22 @@
       },
 
       /**
-  		 * Gets the content from the editor instance, this will cleanup the content before it gets returned using
-  		 * the different cleanup rules options.
-  		 *
-  		 * @method getContent
-  		 * @param {Object} args Optional content object, this gets passed around through the whole get process.
-  		 * @return {String} Cleaned content string, normally HTML contents.
-  		 * @example
-  		 * // Get the HTML contents of the currently active editor
-  		 * console.debug(tinymce.activeEditor.getContent());
-  		 *
-  		 * // Get the raw contents of the currently active editor
-  		 * tinymce.activeEditor.getContent({format : 'raw'});
-  		 *
-  		 * // Get content of a specific editor:
-  		 * tinymce.get('content id').getContent()
-  		 */
+       * Gets the content from the editor instance, this will cleanup the content before it gets returned using
+       * the different cleanup rules options.
+       *
+       * @method getContent
+       * @param {Object} args Optional content object, this gets passed around through the whole get process.
+       * @return {String} Cleaned content string, normally HTML contents.
+       * @example
+       * // Get the HTML contents of the currently active editor
+       * console.debug(tinymce.activeEditor.getContent());
+       *
+       * // Get the raw contents of the currently active editor
+       * tinymce.activeEditor.getContent({format : 'raw'});
+       *
+       * // Get content of a specific editor:
+       * tinymce.get('content id').getContent()
+       */
       getContent: function (args) {
         var self = this,
           content, body = self.getBody();
@@ -29192,14 +29308,14 @@
       },
 
       /**
-  		 * Returns true/false if the editor is dirty or not. It will get dirty if the user has made modifications to the contents.
-  		 *
-  		 * @method isDirty
-  		 * @return {Boolean} True/false if the editor is dirty or not. It will get dirty if the user has made modifications to the contents.
-  		 * @example
-  		 * if (tinymce.activeEditor.isDirty())
-  		 *     alert("You must save your contents.");
-  		 */
+       * Returns true/false if the editor is dirty or not. It will get dirty if the user has made modifications to the contents.
+       *
+       * @method isDirty
+       * @return {Boolean} True/false if the editor is dirty or not. It will get dirty if the user has made modifications to the contents.
+       * @example
+       * if (tinymce.activeEditor.isDirty())
+       *     alert("You must save your contents.");
+       */
       isDirty: function () {
         var self = this;
 
@@ -29209,12 +29325,12 @@
       },
 
       /**
-  		 * Returns the editors container element. The container element wrappes in
-  		 * all the elements added to the page for the editor. Such as UI, iframe etc.
-  		 *
-  		 * @method getContainer
-  		 * @return {Element} HTML DOM element for the editor container.
-  		 */
+       * Returns the editors container element. The container element wrappes in
+       * all the elements added to the page for the editor. Such as UI, iframe etc.
+       *
+       * @method getContainer
+       * @return {Element} HTML DOM element for the editor container.
+       */
       getContainer: function () {
         var self = this;
 
@@ -29226,32 +29342,32 @@
       },
 
       /**
-  		 * Returns the editors content area container element. The this element is the one who
-  		 * holds the iframe or the editable element.
-  		 *
-  		 * @method getContentAreaContainer
-  		 * @return {Element} HTML DOM element for the editor area container.
-  		 */
+       * Returns the editors content area container element. The this element is the one who
+       * holds the iframe or the editable element.
+       *
+       * @method getContentAreaContainer
+       * @return {Element} HTML DOM element for the editor area container.
+       */
       getContentAreaContainer: function () {
         return this.contentAreaContainer;
       },
 
       /**
-  		 * Returns the target element/textarea that got replaced with a TinyMCE editor instance.
-  		 *
-  		 * @method getElement
-  		 * @return {Element} HTML DOM element for the replaced element.
-  		 */
+       * Returns the target element/textarea that got replaced with a TinyMCE editor instance.
+       *
+       * @method getElement
+       * @return {Element} HTML DOM element for the replaced element.
+       */
       getElement: function () {
         return DOM.get(this.settings.content_element || this.id);
       },
 
       /**
-  		 * Returns the iframes window object.
-  		 *
-  		 * @method getWin
-  		 * @return {Window} Iframe DOM window object.
-  		 */
+       * Returns the iframes window object.
+       *
+       * @method getWin
+       * @return {Window} Iframe DOM window object.
+       */
       getWin: function () {
         var self = this,
           elm;
@@ -29268,11 +29384,11 @@
       },
 
       /**
-  		 * Returns the iframes document object.
-  		 *
-  		 * @method getDoc
-  		 * @return {Document} Iframe DOM document object.
-  		 */
+       * Returns the iframes document object.
+       *
+       * @method getDoc
+       * @return {Document} Iframe DOM document object.
+       */
       getDoc: function () {
         var self = this,
           win;
@@ -29289,26 +29405,26 @@
       },
 
       /**
-  		 * Returns the iframes body element.
-  		 *
-  		 * @method getBody
-  		 * @return {Element} Iframe body element.
-  		 */
+       * Returns the iframes body element.
+       *
+       * @method getBody
+       * @return {Element} Iframe body element.
+       */
       getBody: function () {
         return this.bodyElement || this.getDoc().body;
       },
 
       /**
-  		 * URL converter function this gets executed each time a user adds an img, a or
-  		 * any other element that has a URL in it. This will be called both by the DOM and HTML
-  		 * manipulation functions.
-  		 *
-  		 * @method convertURL
-  		 * @param {string} url URL to convert.
-  		 * @param {string} name Attribute name src, href etc.
-  		 * @param {string/HTMLElement} elm Tag name or HTML DOM element depending on HTML or DOM insert.
-  		 * @return {string} Converted URL string.
-  		 */
+       * URL converter function this gets executed each time a user adds an img, a or
+       * any other element that has a URL in it. This will be called both by the DOM and HTML
+       * manipulation functions.
+       *
+       * @method convertURL
+       * @param {string} url URL to convert.
+       * @param {string} name Attribute name src, href etc.
+       * @param {string/HTMLElement} elm Tag name or HTML DOM element depending on HTML or DOM insert.
+       * @return {string} Converted URL string.
+       */
       convertURL: function (url, name, elm) {
         var self = this,
           settings = self.settings;
@@ -29335,11 +29451,11 @@
       },
 
       /**
-  		 * Adds visual aid for tables, anchors etc so they can be more easily edited inside the editor.
-  		 *
-  		 * @method addVisual
-  		 * @param {Element} elm Optional root element to loop though to find tables etc that needs the visual aid.
-  		 */
+       * Adds visual aid for tables, anchors etc so they can be more easily edited inside the editor.
+       *
+       * @method addVisual
+       * @param {Element} elm Optional root element to loop though to find tables etc that needs the visual aid.
+       */
       addVisual: function (elm) {
         var self = this,
           settings = self.settings,
@@ -29400,10 +29516,10 @@
 
 
       /**
-  		 * Removes the editor from the dom and tinymce collection.
-  		 *
-  		 * @method remove
-  		 */
+       * Removes the editor from the dom and tinymce collection.
+       *
+       * @method remove
+       */
       remove: function () {
         var self = this,
           elm = self.getContainer(),
@@ -29447,13 +29563,13 @@
       },
 
       /**
-  		 * Destroys the editor instance by removing all events, element references or other resources
-  		 * that could leak memory. This method will be called automatically when the page is unloaded
-  		 * but you can also call it directly if you know what you are doing.
-  		 *
-  		 * @method destroy
-  		 * @param {Boolean} s Optional state if the destroy is an automatic destroy or user called one.
-  		 */
+       * Destroys the editor instance by removing all events, element references or other resources
+       * that could leak memory. This method will be called automatically when the page is unloaded
+       * but you can also call it directly if you know what you are doing.
+       *
+       * @method destroy
+       * @param {Boolean} s Optional state if the destroy is an automatic destroy or user called one.
+       */
       destroy: function (s) {
         var self = this;
 
@@ -30443,56 +30559,6 @@
   			}
   		}
 
-  		var timer;
-
-  		function nodeChanged(ed, e) {
-  			if (timer) {
-  				clearTimeout(timer);
-  			}
-
-  			// Normalize selection for example <b>a</b><i>|a</i> becomes <b>a|</b><i>a</i> except for Ctrl+A since it selects everything
-  			if (e.keyCode != 65 || !tinymce.VK.metaKeyPressed(e)) {
-  				self.selection.normalize();
-  			}
-
-  			self.nodeChanged();
-  		}
-
-  		var lastPath = [];
-
-  		/**
-  		 * Returns true/false if the current element path has been changed or not.
-  		 *
-  		 * @private
-  		 * @return {Boolean} True if the element path is the same false if it's not.
-  		 */
-  		function isSameElementPath(ed, startElm) {
-  			var i, currentPath;
-
-  			currentPath = ed.dom.getParents(startElm, '*', ed.getBody());
-
-  			if (tinymce.inArray(currentPath, startElm) === -1) {
-  				currentPath.push(startElm);
-  			}
-
-  			if (currentPath.length === lastPath.length) {
-  				for (i = currentPath.length; i >= 0; i--) {
-  					if (currentPath[i] !== lastPath[i]) {
-  						break;
-  					}
-  				}
-
-  				if (i === -1) {
-  					lastPath = currentPath;
-  					return true;
-  				}
-  			}
-
-  			lastPath = currentPath;
-
-  			return false;
-  		}
-
   		// Add DOM events
   		each(nativeToDispatcherMap, function (dispatcherName, nativeName) {
   			var root = settings.content_editable ? self.getBody() : self.getDoc();
@@ -30534,44 +30600,6 @@
   		dom.bind(getFocusTarget(), 'focus', function () {
   			self.focus(true);
   		});
-
-  		// Selection change is delayed ~200ms on IE when you click inside the current range
-  		self.onSelectionChange.add(function (ed, e) {
-  			var startElm = ed.selection.getStart(true);
-
-  			// it seems to be necessary to prefill this value with the current element before checking isSameElementPath...?
-  			//lastPath = [startElm];
-
-  			if (!isSameElementPath(ed, startElm) && ed.dom.isChildOf(startElm, ed.getBody())) {
-  				nodeChanged(ed, e);
-  			}
-  		});
-
-  		// Fire an extra nodeChange on mouseup for compatibility reasons
-  		self.onMouseUp.add(function (ed, e) {
-  			if (!e.isDefaultPrevented()) {
-  				// Delay nodeChanged call for WebKit edge case issue where the range
-  				// isn't updated until after you click outside a selected image
-  				if (ed.selection.getNode().nodeName == 'IMG') {
-  					timer = setTimeout(function () {
-  						nodeChanged(ed, e);
-  					}, 0);
-  				} else {
-  					nodeChanged(ed, e);
-  				}
-  			}
-  		});
-
-  		// Add node change handler
-  		//self.onMouseUp.add(nodeChanged);
-
-  		/*self.onKeyUp.add(function (ed, e) {
-  				var keyCode = e.keyCode;
-  	
-  				if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 13 || keyCode == 45 || keyCode == 46 || keyCode == 8 || (tinymce.isMac && (keyCode == 91 || keyCode == 93)) || e.ctrlKey) {
-  					nodeChanged(ed, e);
-  				}
-  			});*/
 
   		// Add reset handler
   		self.onReset.add(function () {
