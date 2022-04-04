@@ -164,13 +164,11 @@
 
                     each(matches, function (match) {
                         if (!name || match === name) {
+
                             if (match) {
-                                ed.execCommand('RemoveFormat', false, {
-                                    name: match,
-                                    args: {},
-                                    node: node
-                                });
+                                ed.formatter.remove(match, {}, node);
                             }
+
                             removedFormat = true;
                         }
                     });
@@ -178,25 +176,18 @@
                     if (!removedFormat) {
                         // registered style format
                         if (ed.formatter.get(name)) {
-                            ed.execCommand('ApplyFormat', false, {
-                                name: name,
-                                args: {},
-                                node: node
-                            });
+
+                            // apply or remove
+                            ed.formatter.toggle(name, {}, node);
+
                             // custom class
                         } else {
                             node = ed.selection.getNode();
 
                             if (ed.dom.hasClass(node, name)) {
                                 ed.dom.removeClass(node, name);
-                                // fire nodechange on custom format
-                                ed.nodeChanged();
                             } else {
-                                ed.execCommand('ApplyFormat', false, {
-                                    name: 'classname',
-                                    args: { 'value': name },
-                                    node: ed.selection.isCollapsed() ? node : null
-                                });
+                                ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
                             }
 
                             // add it to the list
@@ -205,6 +196,9 @@
                     }
 
                     ed.selection.moveToBookmark(bookmark);
+                    ed.selection.select(node);
+                    
+                    ed.nodeChanged();
 
                     return false; // No auto select
                 }
