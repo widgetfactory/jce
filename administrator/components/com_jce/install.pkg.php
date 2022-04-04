@@ -252,6 +252,11 @@ class pkg_jceInstallerScript
 
         $state = true;
 
+        // only for mysql / mysqli
+        if (strpos($db->getName(), 'mysql') === false) {
+            return $state;
+        }
+
         $query = "DESCRIBE #__wf_profiles";
         $db->setQuery($query);
         $items = $db->loadObjectList();
