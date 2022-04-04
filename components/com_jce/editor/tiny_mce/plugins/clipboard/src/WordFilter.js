@@ -566,7 +566,7 @@ function WordFilter(editor, content) {
 
     if (!validElements) {
         validElements = (
-            '-strong/b,-em/i,-u,-span,-p,-ol,-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
+            '-strong/b,-em/i,-u,-span,-p,-ol[type|start|reversed],-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
             '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
             'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
         );
