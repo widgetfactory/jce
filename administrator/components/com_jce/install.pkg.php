@@ -246,6 +246,39 @@ class pkg_jceInstallerScript
         }
     }
 
+    private function checkTableUpdate()
+    {
+        $db = JFactory::getDBO();
+
+        $state = true;
+
+        $query = "DESCRIBE #__wf_profiles";
+        $db->setQuery($query);
+        $items = $db->loadObjectList();
+        
+        foreach($items as $item) {
+        	if ($item->Field == 'checked_out') {
+        		if (strpos($item->Type, 'unsigned') === false) {
+                    $state = false;
+                }
+
+                if (strpos($item->Type, 'unsigned') === false) {
+                    $state = false;
+                }
+        	}
+
+            if ($item->Field == 'checked_out_time') {
+                $item = (array) $item;
+                
+                if (strtolower($item['Null']) == 'no') {
+                    $state = false;
+                }
+        	}
+        }
+
+        return $state;
+    }
+
     public function postflight($route, $installer)
     {
         $app = JFactory::getApplication();
@@ -379,19 +412,26 @@ class pkg_jceInstallerScript
                 }
             }
 
-            // fix checkout_out table
-            if (version_compare($current_version, '2.9.18', 'lt')) {
+            // check for "unsigend" in "checked_out" and default value in "checked_out_time" fields and update if necessary
+            if (false == $this->checkTableUpdate()) {
+                // fix checked_out table
                 $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out') . " " . $db->qn('checked_out') . " INT UNSIGNED NULL";
                 $db->setQuery($query);
                 $db->execute();
-            }
 
-            // fix checked_out_time deafult value
-            if (version_compare($current_version, '2.9.18', 'lt')) {                
+                // fix checked_out_time default value
                 $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out_time') . " " . $db->qn('checked_out_time') . " DATETIME NULL DEFAULT NULL";
                 $db->setQuery($query);
                 $db->execute();
             }
+
+            /*try {
+                $query = "SELECT DEFAULT (" . $db->qn('checked_out_time') . ") FROM #__wf_profiles";
+                $db->setQuery($query);
+                $db->execute();
+            } catch (Exception $e) {
+                
+            }*/
 
             self::cleanupInstall($installer);
         }
