@@ -1,4 +1,5 @@
-div[data-url].wf-media-wrapper > div.modal {
+div[data-url].wf-media-wrapper>div.modal,
+div[data-url] > div.modal-dialog > div.modal-content {
     height: 90vh;
 }
 
