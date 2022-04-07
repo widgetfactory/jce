@@ -681,6 +681,10 @@
                         return;
                     }
 
+                    if (n.hasAttribute('data-mce-bogus') || n.hasAttribute('data-mce-root') || n.hasAttribute('data-mce-internal')) {
+                        return;
+                    }
+
                     // ignore internal item/object
                     if (/mce-(item|object)-(hidden|removed|shim)/i.test(cls)) {
                         return;
