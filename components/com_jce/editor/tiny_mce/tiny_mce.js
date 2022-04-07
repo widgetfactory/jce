@@ -2271,9 +2271,13 @@
 
     var mceInternalUrlPrefix = 'data:text/mce-internal,';
     var mceInternalDataType = tinymce.isIE ? 'Text' : 'URL';
+
+    function isFakeRoot(node) {
+      return node.nodeType == 1 && node.hasAttribute('data-mce-root');
+    }
     /**
-  	 * Executes a command with a specific state this can be to enable/disable browser editing features.
-  	 */
+     * Executes a command with a specific state this can be to enable/disable browser editing features.
+     */
     function setEditorCommandState(cmd, state) {
       try {
         editor.getDoc().execCommand(cmd, false, state);
@@ -2283,23 +2287,23 @@
     }
 
     /**
-  	 * Returns true/false if the event is prevented or not.
-  	 *
-  	 * @param {Event} e Event object.
-  	 * @return {Boolean} true/false if the event is prevented or not.
-  	 */
+     * Returns true/false if the event is prevented or not.
+     *
+     * @param {Event} e Event object.
+     * @return {Boolean} true/false if the event is prevented or not.
+     */
     function isDefaultPrevented(e) {
       return e.isDefaultPrevented();
     }
 
     /**
-  	 * Sets Text/URL data on the event's dataTransfer object to a special data:text/mce-internal url.
-  	 * This is to workaround the inability to set custom contentType on IE and Safari.
-  	 * The editor's selected content is encoded into this url so drag and drop between editors will work.
-  	 *
-  	 * @private
-  	 * @param {DragEvent} e Event object
-  	 */
+     * Sets Text/URL data on the event's dataTransfer object to a special data:text/mce-internal url.
+     * This is to workaround the inability to set custom contentType on IE and Safari.
+     * The editor's selected content is encoded into this url so drag and drop between editors will work.
+     *
+     * @private
+     * @param {DragEvent} e Event object
+     */
     function setMceInternalContent(e) {
       var selectionHtml, internalContent;
 
@@ -2319,14 +2323,14 @@
     }
 
     /**
-  	 * Gets content of special data:text/mce-internal url on the event's dataTransfer object.
-  	 * This is to workaround the inability to set custom contentType on IE and Safari.
-  	 * The editor's selected content is encoded into this url so drag and drop between editors will work.
-  	 *
-  	 * @private
-  	 * @param {DragEvent} e Event object
-  	 * @returns {String} mce-internal content
-  	 */
+     * Gets content of special data:text/mce-internal url on the event's dataTransfer object.
+     * This is to workaround the inability to set custom contentType on IE and Safari.
+     * The editor's selected content is encoded into this url so drag and drop between editors will work.
+     *
+     * @private
+     * @param {DragEvent} e Event object
+     * @returns {String} mce-internal content
+     */
     function getMceInternalContent(e) {
       var internalContent;
 
@@ -2347,12 +2351,12 @@
     }
 
     /**
-  	 * Inserts contents using the paste clipboard command if it's available if it isn't it will fallback
-  	 * to the core command.
-  	 *
-  	 * @private
-  	 * @param {String} content Content to insert at selection.
-  	 */
+     * Inserts contents using the paste clipboard command if it's available if it isn't it will fallback
+     * to the core command.
+     *
+     * @private
+     * @param {String} content Content to insert at selection.
+     */
     function insertClipboardContents(content) {
       if (editor.queryCommandSupported('mceInsertClipboardContent')) {
         editor.execCommand('mceInsertClipboardContent', false, {
@@ -2364,32 +2368,32 @@
     }
 
     /**
-  	 * Fixes a WebKit bug when deleting contents using backspace or delete key.
-  	 * WebKit will produce a span element if you delete across two block elements.
-  	 *
-  	 * Example:
-  	 * <h1>a</h1><p>|b</p>
-  	 *
-  	 * Will produce this on backspace:
-  	 * <h1>a<span style="<all runtime styles>">b</span></p>
-  	 *
-  	 * This fixes the backspace to produce:
-  	 * <h1>a|b</p>
-  	 *
-  	 * See bug: https://bugs.webkit.org/show_bug.cgi?id=45784
-  	 *
-  	 * This fixes the following delete scenarios:
-  	 *  1. Delete by pressing backspace key.
-  	 *  2. Delete by pressing delete key.
-  	 *  3. Delete by pressing backspace key with ctrl/cmd (Word delete).
-  	 *  4. Delete by pressing delete key with ctrl/cmd (Word delete).
-  	 *  5. Delete by drag/dropping contents inside the editor.
-  	 *  6. Delete by using Cut Ctrl+X/Cmd+X.
-  	 *  7. Delete by selecting contents and writing a character.
-  	 *
-  	 * This code is a ugly hack since writing full custom delete logic for just this bug
-  	 * fix seemed like a huge task. I hope we can remove this before the year 2030.
-  	 */
+     * Fixes a WebKit bug when deleting contents using backspace or delete key.
+     * WebKit will produce a span element if you delete across two block elements.
+     *
+     * Example:
+     * <h1>a</h1><p>|b</p>
+     *
+     * Will produce this on backspace:
+     * <h1>a<span style="<all runtime styles>">b</span></p>
+     *
+     * This fixes the backspace to produce:
+     * <h1>a|b</p>
+     *
+     * See bug: https://bugs.webkit.org/show_bug.cgi?id=45784
+     *
+     * This fixes the following delete scenarios:
+     *  1. Delete by pressing backspace key.
+     *  2. Delete by pressing delete key.
+     *  3. Delete by pressing backspace key with ctrl/cmd (Word delete).
+     *  4. Delete by pressing delete key with ctrl/cmd (Word delete).
+     *  5. Delete by drag/dropping contents inside the editor.
+     *  6. Delete by using Cut Ctrl+X/Cmd+X.
+     *  7. Delete by selecting contents and writing a character.
+     *
+     * This code is a ugly hack since writing full custom delete logic for just this bug
+     * fix seemed like a huge task. I hope we can remove this before the year 2030.
+     */
     function cleanupStylesWhenDeleting() {
       var doc = editor.getDoc(),
         dom = editor.dom,
@@ -2629,11 +2633,11 @@
       }
 
       /**
-  		 * This retains the formatting if the last character is to be deleted.
-  		 *
-  		 * Backspace on this: <p><b><i>a|</i></b></p> would become <p>|</p> in WebKit.
-  		 * With this patch: <p><b><i>|<br></i></b></p>
-  		 */
+       * This retains the formatting if the last character is to be deleted.
+       *
+       * Backspace on this: <p><b><i>a|</i></b></p> would become <p>|</p> in WebKit.
+       * With this patch: <p><b><i>|<br></i></b></p>
+       */
       function handleLastBlockCharacterDelete(isForward, rng) {
         var path, blockElm, newBlockElm, clonedBlockElm, sibling,
           container, offset, br, currentFormatNodes;
@@ -2860,10 +2864,6 @@
             container = rng.startContainer,
             offset = rng.startOffset;
 
-          /*if (editor.settings.forced_root_block === false) {
-  					return;
-  				}*/
-
           // Shift+Delete is cut
           if (isForward && e.shiftKey) {
             return;
@@ -2893,66 +2893,66 @@
 
       // Handle case where text is deleted by typing over
       /*editor.onKeyPress.add(function (editor, e) {
-  			if (!isDefaultPrevented(e) && !selection.isCollapsed() && e.charCode > 31 && !VK.metaKeyPressed(e)) {
-  				var rng, currentFormatNodes, fragmentNode, blockParent, caretNode, charText;
+        if (!isDefaultPrevented(e) && !selection.isCollapsed() && e.charCode > 31 && !VK.metaKeyPressed(e)) {
+          var rng, currentFormatNodes, fragmentNode, blockParent, caretNode, charText;
 
-  				if (editor.settings.forced_root_block === false) {
-  					return;
-  				}
+          if (editor.settings.forced_root_block === false) {
+            return;
+          }
 
-  				rng = editor.selection.getRng();
-  				charText = String.fromCharCode(e.charCode);
-  				e.preventDefault();
+          rng = editor.selection.getRng();
+          charText = String.fromCharCode(e.charCode);
+          e.preventDefault();
 
-  				// Keep track of current format nodes
-  				currentFormatNodes = dom.getParents(rng.startContainer, function (node) {
-  					return !!editor.schema.getTextInlineElements()[node.nodeName];
-  				});
+          // Keep track of current format nodes
+          currentFormatNodes = dom.getParents(rng.startContainer, function (node) {
+            return !!editor.schema.getTextInlineElements()[node.nodeName];
+          });
 
-  				customDelete(true);
+          customDelete(true);
 
-  				// Check if the browser removed them
-  				currentFormatNodes = currentFormatNodes.filter(function (idx, node) {
-  					return !editor.getBody().contains(node);
-  				});
+          // Check if the browser removed them
+          currentFormatNodes = currentFormatNodes.filter(function (idx, node) {
+            return !editor.getBody().contains(node);
+          });
 
-  				// Then re-add them
-  				if (currentFormatNodes.length) {
-  					fragmentNode = dom.createFragment();
+          // Then re-add them
+          if (currentFormatNodes.length) {
+            fragmentNode = dom.createFragment();
 
-  					currentFormatNodes.each(function (idx, formatNode) {
-  						formatNode = formatNode.cloneNode(false);
+            currentFormatNodes.each(function (idx, formatNode) {
+              formatNode = formatNode.cloneNode(false);
 
-  						if (fragmentNode.hasChildNodes()) {
-  							formatNode.appendChild(fragmentNode.firstChild);
-  							fragmentNode.appendChild(formatNode);
-  						} else {
-  							caretNode = formatNode;
-  							fragmentNode.appendChild(formatNode);
-  						}
+              if (fragmentNode.hasChildNodes()) {
+                formatNode.appendChild(fragmentNode.firstChild);
+                fragmentNode.appendChild(formatNode);
+              } else {
+                caretNode = formatNode;
+                fragmentNode.appendChild(formatNode);
+              }
 
-  						fragmentNode.appendChild(formatNode);
-  					});
+              fragmentNode.appendChild(formatNode);
+            });
 
-  					caretNode.appendChild(editor.getDoc().createTextNode(charText));
+            caretNode.appendChild(editor.getDoc().createTextNode(charText));
 
-  					// Prevent edge case where older WebKit would add an extra BR element
-  					blockParent = dom.getParent(rng.startContainer, dom.isBlock);
-  					if (dom.isEmpty(blockParent)) {
-  						dom.empty(blockParent);
-  						dom.add(blockParent, fragmentNode);
-  					} else {
-  						rng.insertNode(fragmentNode);
-  					}
+            // Prevent edge case where older WebKit would add an extra BR element
+            blockParent = dom.getParent(rng.startContainer, dom.isBlock);
+            if (dom.isEmpty(blockParent)) {
+              dom.empty(blockParent);
+              dom.add(blockParent, fragmentNode);
+            } else {
+              rng.insertNode(fragmentNode);
+            }
 
-  					rng.setStart(caretNode.firstChild, 1);
-  					rng.setEnd(caretNode.firstChild, 1);
-  					editor.selection.setRng(rng);
-  				} else {
-  					editor.selection.setContent(charText);
-  				}
-  			}
-  		});*/
+            rng.setStart(caretNode.firstChild, 1);
+            rng.setEnd(caretNode.firstChild, 1);
+            editor.selection.setRng(rng);
+          } else {
+            editor.selection.setContent(charText);
+          }
+        }
+      });*/
 
       editor.addCommand('Delete', function () {
         customDelete();
@@ -2996,8 +2996,8 @@
     }
 
     /**
-  	 * Remove runtime styles from Chrome / Safari, eg: <span style="color: inherit; font-family: inherit; font-size: 1rem;">
-  	 */
+     * Remove runtime styles from Chrome / Safari, eg: <span style="color: inherit; font-family: inherit; font-size: 1rem;">
+     */
     function cleanupRuntimeStyles() {
       function removeRuntimeStyle(node) {
         var style = node.attr('style');
@@ -3031,17 +3031,17 @@
     }
 
     /**
-  	 * Makes sure that the editor body becomes empty when backspace or delete is pressed in empty editors.
-  	 *
-  	 * For example:
-  	 * <p><b>|</b></p>
-  	 *
-  	 * Or:
-  	 * <h1>|</h1>
-  	 *
-  	 * Or:
-  	 * [<h1></h1>]
-  	 */
+     * Makes sure that the editor body becomes empty when backspace or delete is pressed in empty editors.
+     *
+     * For example:
+     * <p><b>|</b></p>
+     *
+     * Or:
+     * <h1>|</h1>
+     *
+     * Or:
+     * [<h1></h1>]
+     */
     function emptyEditorWhenDeleting() {
       function serializeRng(rng) {
         var body = dom.create("body");
@@ -3083,7 +3083,14 @@
 
           // Selection is collapsed but the editor isn't empty
           if (isCollapsed && !dom.isEmpty(body)) {
-            return;
+
+            if (!isFakeRoot(body.firstChild)) {
+              return;
+            }
+
+            if (isFakeRoot(body.firstChild) && !dom.isEmpty(body.firstChild)) {
+              return;
+            }
           }
 
           // Selection isn't collapsed but not all the contents is selected
@@ -3107,9 +3114,9 @@
     }
 
     /**
-  	 * WebKit doesn't select all the nodes in the body when you press Ctrl+A.
-  	 * This selects the whole body so that backspace/delete logic will delete everything
-  	 */
+     * WebKit doesn't select all the nodes in the body when you press Ctrl+A.
+     * This selects the whole body so that backspace/delete logic will delete everything
+     */
     function selectAll() {
       editor.onKeyDown.add(function (editor, e) {
         if (!isDefaultPrevented(e) && e.keyCode == 65 && VK.metaKeyPressed(e)) {
@@ -3120,24 +3127,24 @@
     }
 
     /**
-  	 * WebKit has a weird issue where it some times fails to properly convert keypresses to input method keystrokes.
-  	 * The IME on Mac doesn't initialize when it doesn't fire a proper focus event.
-  	 *
-  	 * This seems to happen when the user manages to click the documentElement element then the window doesn't get proper focus until
-  	 * you enter a character into the editor.
-  	 *
-  	 * It also happens when the first focus in made to the body.
-  	 *
-  	 * See: https://bugs.webkit.org/show_bug.cgi?id=83566
-  	 */
+     * WebKit has a weird issue where it some times fails to properly convert keypresses to input method keystrokes.
+     * The IME on Mac doesn't initialize when it doesn't fire a proper focus event.
+     *
+     * This seems to happen when the user manages to click the documentElement element then the window doesn't get proper focus until
+     * you enter a character into the editor.
+     *
+     * It also happens when the first focus in made to the body.
+     *
+     * See: https://bugs.webkit.org/show_bug.cgi?id=83566
+     */
     function inputMethodFocus() {
       if (!editor.settings.content_editable) {
         // Case 1 IME doesn't initialize if you focus the document
         // Disabled since it was interferring with the cE=false logic
         // Also coultn't reproduce the issue on Safari 9
         /*dom.bind(editor.getDoc(), 'focusin', function() {
-  				selection.setRng(selection.getRng());
-  			});*/
+          selection.setRng(selection.getRng());
+        });*/
 
         // Case 2 IME doesn't initialize if you click the documentElement it also doesn't properly fire the focusin event
         // Needs to be both down/up due to weird rendering bug on Chrome Windows
@@ -3150,8 +3157,8 @@
 
             if (e.type == 'mousedown') {
               /*if (CaretContainer.isCaretContainer(rng.startContainer)) {
-  							return;
-  						}*/
+                return;
+              }*/
 
               // Edge case for mousedown, drag select and mousedown again within selection on Chrome Windows to render caret
               selection.placeCaretAt(e.clientX, e.clientY);
@@ -3164,14 +3171,14 @@
     }
 
     /**
-  	 * Backspacing in FireFox/IE from a paragraph into a horizontal rule results in a floating text node because the
-  	 * browser just deletes the paragraph - the browser fails to merge the text node with a horizontal rule so it is
-  	 * left there. TinyMCE sees a floating text node and wraps it in a paragraph on the key up event (ForceBlocks.js
-  	 * addRootBlocks), meaning the action does nothing. With this code, FireFox/IE matche the behaviour of other
-  	 * browsers.
-  	 *
-  	 * It also fixes a bug on Firefox where it's impossible to delete HR elements.
-  	 */
+     * Backspacing in FireFox/IE from a paragraph into a horizontal rule results in a floating text node because the
+     * browser just deletes the paragraph - the browser fails to merge the text node with a horizontal rule so it is
+     * left there. TinyMCE sees a floating text node and wraps it in a paragraph on the key up event (ForceBlocks.js
+     * addRootBlocks), meaning the action does nothing. With this code, FireFox/IE matche the behaviour of other
+     * browsers.
+     *
+     * It also fixes a bug on Firefox where it's impossible to delete HR elements.
+     */
     function removeHrOnBackspace() {
       editor.onKeyDown.add(function (editor, e) {
         if (!isDefaultPrevented(e) && e.keyCode === BACKSPACE) {
@@ -3200,17 +3207,17 @@
     }
 
     /**
-  	 * Fixes a Gecko bug where the style attribute gets added to the wrong element when deleting between two block elements.
-  	 *
-  	 * Fixes do backspace/delete on this:
-  	 * <p>bla[ck</p><p style="color:red">r]ed</p>
-  	 *
-  	 * Would become:
-  	 * <p>bla|ed</p>
-  	 *
-  	 * Instead of:
-  	 * <p style="color:red">bla|ed</p>
-  	 */
+     * Fixes a Gecko bug where the style attribute gets added to the wrong element when deleting between two block elements.
+     *
+     * Fixes do backspace/delete on this:
+     * <p>bla[ck</p><p style="color:red">r]ed</p>
+     *
+     * Would become:
+     * <p>bla|ed</p>
+     *
+     * Instead of:
+     * <p style="color:red">bla|ed</p>
+     */
     function removeStylesWhenDeletingAcrossBlockElements() {
       function getAttributeApplyFunction() {
         var template = dom.getAttribs(selection.getStart().cloneNode(false));
@@ -3230,7 +3237,7 @@
 
       function isSelectionAcrossElements() {
         return !selection.isCollapsed() &&
-  				dom.getParent(selection.getStart(), dom.isBlock) != dom.getParent(selection.getEnd(), dom.isBlock);
+          dom.getParent(selection.getStart(), dom.isBlock) != dom.getParent(selection.getEnd(), dom.isBlock);
       }
 
       editor.onKeyPress.add(function (editor, e) {
@@ -3259,34 +3266,34 @@
     }
 
     /**
-  	 * Fire a nodeChanged when the selection is changed on WebKit this fixes selection issues on iOS5. It only fires the nodeChange
-  	 * event every 50ms since it would other wise update the UI when you type and it hogs the CPU.
-  	 */
+     * Fire a nodeChanged when the selection is changed on WebKit this fixes selection issues on iOS5. It only fires the nodeChange
+     * event every 50ms since it would other wise update the UI when you type and it hogs the CPU.
+     */
     /*function selectionChangeNodeChanged() {
-  		var lastRng, selectionTimer;
+      var lastRng, selectionTimer;
 
-  		dom.bind(editor.getDoc(), 'selectionchange', function () {
-  			if (selectionTimer) {
-  				clearTimeout(selectionTimer);
-  				selectionTimer = 0;
-  			}
+      dom.bind(editor.getDoc(), 'selectionchange', function () {
+        if (selectionTimer) {
+          clearTimeout(selectionTimer);
+          selectionTimer = 0;
+        }
 
-  			selectionTimer = window.setTimeout(function () {
-  				var rng = selection.getRng();
+        selectionTimer = window.setTimeout(function () {
+          var rng = selection.getRng();
 
-  				// Compare the ranges to see if it was a real change or not
-  				if (!lastRng || !tinymce.dom.RangeUtils.compareRanges(rng, lastRng)) {
-  					editor.nodeChanged();
-  					lastRng = rng;
-  				}
-  			}, 50);
-  		});
-  	}*/
+          // Compare the ranges to see if it was a real change or not
+          if (!lastRng || !tinymce.dom.RangeUtils.compareRanges(rng, lastRng)) {
+            editor.nodeChanged();
+            lastRng = rng;
+          }
+        }, 50);
+      });
+    }*/
 
     /**
-  	 * Backspacing into a table behaves differently depending upon browser type.
-  	 * Therefore, disable Backspace when cursor immediately follows a table.
-  	 */
+     * Backspacing into a table behaves differently depending upon browser type.
+     * Therefore, disable Backspace when cursor immediately follows a table.
+     */
     function disableBackspaceIntoATable() {
       editor.onKeyDown.add(function (editor, e) {
         if (!isDefaultPrevented(e) && e.keyCode === BACKSPACE) {
@@ -3302,76 +3309,76 @@
     }
 
     /**
-  	 * Backspace or delete on WebKit will combine all visual styles in a span if the last character is deleted.
-  	 *
-  	 * For example backspace on:
-  	 * <p><b>x|</b></p>
-  	 *
-  	 * Will produce:
-  	 * <p><span style="font-weight: bold">|<br></span></p>
-  	 *
-  	 * When it should produce:
-  	 * <p><b>|<br></b></p>
-  	 *
-  	 * See: https://bugs.webkit.org/show_bug.cgi?id=81656
-  	 */
+     * Backspace or delete on WebKit will combine all visual styles in a span if the last character is deleted.
+     *
+     * For example backspace on:
+     * <p><b>x|</b></p>
+     *
+     * Will produce:
+     * <p><span style="font-weight: bold">|<br></span></p>
+     *
+     * When it should produce:
+     * <p><b>|<br></b></p>
+     *
+     * See: https://bugs.webkit.org/show_bug.cgi?id=81656
+     */
     /*function keepInlineElementOnDeleteBackspace() {
-  		editor.onKeyDown.add(function (editor, e) {
-  			var isDelete, rng, container, offset, brElm, sibling, collapsed;
+      editor.onKeyDown.add(function (editor, e) {
+        var isDelete, rng, container, offset, brElm, sibling, collapsed;
 
-  			isDelete = e.keyCode == DELETE;
-  			if (!isDefaultPrevented(e) && (isDelete || e.keyCode == BACKSPACE) && !VK.modifierPressed(e)) {
-  				rng = selection.getRng();
-  				container = rng.startContainer;
-  				offset = rng.startOffset;
-  				collapsed = rng.collapsed;
+        isDelete = e.keyCode == DELETE;
+        if (!isDefaultPrevented(e) && (isDelete || e.keyCode == BACKSPACE) && !VK.modifierPressed(e)) {
+          rng = selection.getRng();
+          container = rng.startContainer;
+          offset = rng.startOffset;
+          collapsed = rng.collapsed;
 
-  				// Override delete if the start container is a text node and is at the beginning of text or
-  				// just before/after the last character to be deleted in collapsed mode
-  				if (container.nodeType == 3 && container.nodeValue.length > 0 && ((offset === 0 && !collapsed) || (collapsed && offset === (isDelete ? 0 : 1)))) {
-  					// Edge case when deleting <p><b><img> |x</b></p>
-  					sibling = container.previousSibling;
-  					if (sibling && sibling.nodeName == "IMG") {
-  						return;
-  					}
+          // Override delete if the start container is a text node and is at the beginning of text or
+          // just before/after the last character to be deleted in collapsed mode
+          if (container.nodeType == 3 && container.nodeValue.length > 0 && ((offset === 0 && !collapsed) || (collapsed && offset === (isDelete ? 0 : 1)))) {
+            // Edge case when deleting <p><b><img> |x</b></p>
+            sibling = container.previousSibling;
+            if (sibling && sibling.nodeName == "IMG") {
+              return;
+            }
 
-  					nonEmptyElements = editor.schema.getNonEmptyElements();
+            nonEmptyElements = editor.schema.getNonEmptyElements();
 
-  					// Prevent default logic since it's broken
-  					e.preventDefault();
+            // Prevent default logic since it's broken
+            e.preventDefault();
 
-  					// Insert a BR before the text node this will prevent the containing element from being deleted/converted
-  					brElm = dom.create('br', {
-  						id: '__tmp'
-  					});
-  					container.parentNode.insertBefore(brElm, container);
+            // Insert a BR before the text node this will prevent the containing element from being deleted/converted
+            brElm = dom.create('br', {
+              id: '__tmp'
+            });
+            container.parentNode.insertBefore(brElm, container);
 
-  					// Do the browser delete
-  					editor.getDoc().execCommand(isDelete ? 'ForwardDelete' : 'Delete', false, null);
+            // Do the browser delete
+            editor.getDoc().execCommand(isDelete ? 'ForwardDelete' : 'Delete', false, null);
 
-  					// Check if the previous sibling is empty after deleting for example: <p><b></b>|</p>
-  					container = selection.getRng().startContainer;
-  					sibling = container.previousSibling;
-  					if (sibling && sibling.nodeType == 1 && !dom.isBlock(sibling) && dom.isEmpty(sibling) && !nonEmptyElements[sibling.nodeName.toLowerCase()]) {
-  						dom.remove(sibling);
-  					}
+            // Check if the previous sibling is empty after deleting for example: <p><b></b>|</p>
+            container = selection.getRng().startContainer;
+            sibling = container.previousSibling;
+            if (sibling && sibling.nodeType == 1 && !dom.isBlock(sibling) && dom.isEmpty(sibling) && !nonEmptyElements[sibling.nodeName.toLowerCase()]) {
+              dom.remove(sibling);
+            }
 
-  					// Remove the temp element we inserted
-  					dom.remove('__tmp');
-  				}
-  			}
-  		});
-  	}*/
+            // Remove the temp element we inserted
+            dom.remove('__tmp');
+          }
+        }
+      });
+    }*/
 
     /**
-  	 * Removes a blockquote when backspace is pressed at the beginning of it.
-  	 *
-  	 * For example:
-  	 * <blockquote><p>|x</p></blockquote>
-  	 *
-  	 * Becomes:
-  	 * <p>|x</p>
-  	 */
+     * Removes a blockquote when backspace is pressed at the beginning of it.
+     *
+     * For example:
+     * <blockquote><p>|x</p></blockquote>
+     *
+     * Becomes:
+     * <p>|x</p>
+     */
     function removeBlockQuoteOnBackSpace() {
       // Add block quote deletion handler
       editor.onKeyDown.add(function (editor, e) {
@@ -3410,8 +3417,8 @@
     }
 
     /**
-  	 * Sets various Gecko editing options on mouse down and before a execCommand to disable inline table editing that is broken etc.
-  	 */
+     * Sets various Gecko editing options on mouse down and before a execCommand to disable inline table editing that is broken etc.
+     */
     function setGeckoEditingOptions() {
       function setOpts() {
         setEditorCommandState("StyleWithCSS", false);
@@ -3429,15 +3436,15 @@
     }
 
     /**
-  	 * Fixes a gecko link bug, when a link is placed at the end of block elements there is
-  	 * no way to move the caret behind the link. This fix adds a bogus br element after the link.
-  	 *
-  	 * For example this:
-  	 * <p><b><a href="#">x</a></b></p>
-  	 *
-  	 * Becomes this:
-  	 * <p><b><a href="#">x</a></b><br></p>
-  	 */
+     * Fixes a gecko link bug, when a link is placed at the end of block elements there is
+     * no way to move the caret behind the link. This fix adds a bogus br element after the link.
+     *
+     * For example this:
+     * <p><b><a href="#">x</a></b></p>
+     *
+     * Becomes this:
+     * <p><b><a href="#">x</a></b><br></p>
+     */
     function addBrAfterLastLinks() {
       function fixLinks() {
         each(dom.select('a'), function (node) {
@@ -3470,9 +3477,9 @@
     }
 
     /**
-  	 * WebKit will produce DIV elements here and there by default. But since TinyMCE uses paragraphs by
-  	 * default we want to change that behavior.
-  	 */
+     * WebKit will produce DIV elements here and there by default. But since TinyMCE uses paragraphs by
+     * default we want to change that behavior.
+     */
     function setDefaultBlockType() {
       if (settings.forced_root_block) {
         editor.onInit.add(function () {
@@ -3482,25 +3489,25 @@
     }
 
     /**
-  	 * Forces Gecko to render a broken image icon if it fails to load an image.
-  	 */
+     * Forces Gecko to render a broken image icon if it fails to load an image.
+     */
     function showBrokenImageIcon() {
       editor.contentStyles.push(
         'img:-moz-broken {' +
-  			'-moz-force-broken-image-icon:1;' +
-  			'min-width:24px;' +
-  			'min-height:24px' +
-  			'}'
+        '-moz-force-broken-image-icon:1;' +
+        'min-width:24px;' +
+        'min-height:24px' +
+        '}'
       );
     }
 
     /**
-  	 * iOS has a bug where it's impossible to type if the document has a touchstart event
-  	 * bound and the user touches the document while having the on screen keyboard visible.
-  	 *
-  	 * The touch event moves the focus to the parent document while having the caret inside the iframe
-  	 * this fix moves the focus back into the iframe document.
-  	 */
+     * iOS has a bug where it's impossible to type if the document has a touchstart event
+     * bound and the user touches the document while having the on screen keyboard visible.
+     *
+     * The touch event moves the focus to the parent document while having the caret inside the iframe
+     * this fix moves the focus back into the iframe document.
+     */
     function restoreFocusOnKeyDown() {
       editor.onKeyDown.add(function () {
         if (document.activeElement == document.body) {
@@ -3510,14 +3517,14 @@
     }
 
     /**
-  	 * IE 11 has an annoying issue where you can't move focus into the editor
-  	 * by clicking on the white area HTML element. We used to be able to to fix this with
-  	 * the fixCaretSelectionOfDocumentElementOnIe fix. But since M$ removed the selection
-  	 * object it's not possible anymore. So we need to hack in a ungly CSS to force the
-  	 * body to be at least 150px. If the user clicks the HTML element out side this 150px region
-  	 * we simply move the focus into the first paragraph. Not ideal since you loose the
-  	 * positioning of the caret but good enough for most cases.
-  	 */
+     * IE 11 has an annoying issue where you can't move focus into the editor
+     * by clicking on the white area HTML element. We used to be able to to fix this with
+     * the fixCaretSelectionOfDocumentElementOnIe fix. But since M$ removed the selection
+     * object it's not possible anymore. So we need to hack in a ungly CSS to force the
+     * body to be at least 150px. If the user clicks the HTML element out side this 150px region
+     * we simply move the focus into the first paragraph. Not ideal since you loose the
+     * positioning of the caret but good enough for most cases.
+     */
     function bodyHeight() {
       if (!editor.inline) {
         editor.contentStyles.push('body {min-height: 150px}');
@@ -3544,9 +3551,9 @@
     }
 
     /**
-  	 * Firefox on Mac OS will move the browser back to the previous page if you press CMD+Left arrow.
-  	 * You might then loose all your work so we need to block that behavior and replace it with our own.
-  	 */
+     * Firefox on Mac OS will move the browser back to the previous page if you press CMD+Left arrow.
+     * You might then loose all your work so we need to block that behavior and replace it with our own.
+     */
     function blockCmdArrowNavigation() {
       if (tinymce.isMac) {
         editor.onKeyDown.add(function (editor, e) {
@@ -3559,17 +3566,17 @@
     }
 
     /**
-  	 * Disables the autolinking in IE 9+ this is then re-enabled by the autolink plugin.
-  	 */
+     * Disables the autolinking in IE 9+ this is then re-enabled by the autolink plugin.
+     */
     function disableAutoUrlDetect() {
       setEditorCommandState("AutoUrlDetect", false);
     }
 
     /**
-  	 * iOS 7.1 introduced two new bugs:
-  	 * 1) It's possible to open links within a contentEditable area by clicking on them.
-  	 * 2) If you hold down the finger it will display the link/image touch callout menu.
-  	 */
+     * iOS 7.1 introduced two new bugs:
+     * 1) It's possible to open links within a contentEditable area by clicking on them.
+     * 2) If you hold down the finger it will display the link/image touch callout menu.
+     */
     function tapLinksAndImages() {
       editor.onClick.add(function (editor, e) {
         var elm = e.target;
@@ -3586,66 +3593,66 @@
     }
 
     /**
-  	 * iOS Safari and possible other browsers have a bug where it won't fire
-  	 * a click event when a contentEditable is focused. This function fakes click events
-  	 * by using touchstart/touchend and measuring the time and distance travelled.
-  	 */
+     * iOS Safari and possible other browsers have a bug where it won't fire
+     * a click event when a contentEditable is focused. This function fakes click events
+     * by using touchstart/touchend and measuring the time and distance travelled.
+     */
     /*
-  	function touchClickEvent() {
-  		editor.on('touchstart', function(e) {
-  			var elm, time, startTouch, changedTouches;
+    function touchClickEvent() {
+      editor.on('touchstart', function(e) {
+        var elm, time, startTouch, changedTouches;
 
-  			elm = e.target;
-  			time = new Date().getTime();
-  			changedTouches = e.changedTouches;
+        elm = e.target;
+        time = new Date().getTime();
+        changedTouches = e.changedTouches;
 
-  			if (!changedTouches || changedTouches.length > 1) {
-  				return;
-  			}
+        if (!changedTouches || changedTouches.length > 1) {
+          return;
+        }
 
-  			startTouch = changedTouches[0];
+        startTouch = changedTouches[0];
 
-  			editor.once('touchend', function(e) {
-  				var endTouch = e.changedTouches[0], args;
+        editor.once('touchend', function(e) {
+          var endTouch = e.changedTouches[0], args;
 
-  				if (new Date().getTime() - time > 500) {
-  					return;
-  				}
+          if (new Date().getTime() - time > 500) {
+            return;
+          }
 
-  				if (Math.abs(startTouch.clientX - endTouch.clientX) > 5) {
-  					return;
-  				}
+          if (Math.abs(startTouch.clientX - endTouch.clientX) > 5) {
+            return;
+          }
 
-  				if (Math.abs(startTouch.clientY - endTouch.clientY) > 5) {
-  					return;
-  				}
+          if (Math.abs(startTouch.clientY - endTouch.clientY) > 5) {
+            return;
+          }
 
-  				args = {
-  					target: elm
-  				};
+          args = {
+            target: elm
+          };
 
-  				each('pageX pageY clientX clientY screenX screenY'.split(' '), function(key) {
-  					args[key] = endTouch[key];
-  				});
+          each('pageX pageY clientX clientY screenX screenY'.split(' '), function(key) {
+            args[key] = endTouch[key];
+          });
 
-  				args = editor.fire('click', args);
+          args = editor.fire('click', args);
 
-  				if (!args.isDefaultPrevented()) {
-  					// iOS WebKit can't place the caret properly once
-  					// you bind touch events so we need to do this manually
-  					// TODO: Expand to the closest word? Touble tap still works.
-  					editor.selection.placeCaretAt(endTouch.clientX, endTouch.clientY);
-  					editor.nodeChanged();
-  				}
-  			});
-  		});
-  	}
-  	*/
+          if (!args.isDefaultPrevented()) {
+            // iOS WebKit can't place the caret properly once
+            // you bind touch events so we need to do this manually
+            // TODO: Expand to the closest word? Touble tap still works.
+            editor.selection.placeCaretAt(endTouch.clientX, endTouch.clientY);
+            editor.nodeChanged();
+          }
+        });
+      });
+    }
+    */
 
     /**
-  	 * WebKit has a bug where it will allow forms to be submitted if they are inside a contentEditable element.
-  	 * For example this: <form><button></form>
-  	 */
+     * WebKit has a bug where it will allow forms to be submitted if they are inside a contentEditable element.
+     * For example this: <form><button></form>
+     */
     function blockFormSubmitInsideEditor() {
       editor.onInit.add(function () {
         editor.dom.bind(editor.getBody(), 'submit', function (e) {
@@ -3655,13 +3662,13 @@
     }
 
     /**
-  	 * Sometimes WebKit/Blink generates BR elements with the Apple-interchange-newline class.
-  	 *
-  	 * Scenario:
-  	 *  1) Create a table 2x2.
-  	 *  2) Select and copy cells A2-B2.
-  	 *  3) Paste and it will add BR element to table cell.
-  	 */
+     * Sometimes WebKit/Blink generates BR elements with the Apple-interchange-newline class.
+     *
+     * Scenario:
+     *  1) Create a table 2x2.
+     *  2) Select and copy cells A2-B2.
+     *  3) Paste and it will add BR element to table cell.
+     */
     function removeAppleInterchangeBrs() {
       parser.addNodeFilter('br', function (nodes) {
         var i = nodes.length;
@@ -3675,9 +3682,9 @@
     }
 
     /**
-  	 * IE cannot set custom contentType's on drag events, and also does not properly drag/drop between
-  	 * editors. This uses a special data:text/mce-internal URL to pass data when drag/drop between editors.
-  	 */
+     * IE cannot set custom contentType's on drag events, and also does not properly drag/drop between
+     * editors. This uses a special data:text/mce-internal URL to pass data when drag/drop between editors.
+     */
     function ieInternalDragAndDrop() {
       editor.dom.bind('dragstart', function (e) {
         setMceInternalContent(e);
@@ -3729,9 +3736,9 @@
     }
 
     /**
-  	 * WebKit has a bug where it isn't possible to select image, hr or anchor elements
-  	 * by clicking on them so we need to fake that.
-  	 */
+     * WebKit has a bug where it isn't possible to select image, hr or anchor elements
+     * by clicking on them so we need to fake that.
+     */
     function selectControlElements() {
       editor.onClick.add(function (editor, e) {
         var target = e.target;
@@ -3755,9 +3762,9 @@
     }
 
     /**
-  	 * Fixes selection issues where the caret can be placed between two inline elements like <b>a</b>|<b>b</b>
-  	 * this fix will lean the caret right into the closest inline element.
-  	 */
+     * Fixes selection issues where the caret can be placed between two inline elements like <b>a</b>|<b>b</b>
+     * this fix will lean the caret right into the closest inline element.
+     */
     function normalizeSelection() {
       var normalize = function (e) {
         if (e.keyCode != 65 || !VK.metaKeyPressed(e)) {
@@ -3770,63 +3777,134 @@
       editor.onMouseUp.add(normalize);
     }
 
-    /*function inlineBoundary() {
-      function isBoundaryNode(node) {
-        return node && node.nodeName === 'A';
-      }
+    function fakeRootBlock() {
+      settings.fake_root_block = 'rootblock';
 
-      function isLastChildOf(node) {
-        return node.parentNode && node.parentNode.lastChild === node;
-      }
+      editor.onBeforeSetContent.add(function (editor, o) {
+        if (!o.content) {
+          o.content = '<br data-mce-bogus="1">';
+        }
 
-      editor.onNodeChange.add(function () {
-        // remove existing selections
-        dom.removeAttrib(dom.select('a'), 'data-mce-selected');
+        o.content = '<main id="' + settings.fake_root_block + '" data-mce-root="1">' + o.content + '</main>';
+      });
 
-        var node = editor.selection.getNode(), node = dom.getParent(node, 'a');
+      editor.onSetContent.add(function () {
+        var root = dom.get(settings.fake_root_block), rng;
 
-        if (isBoundaryNode(node)) {
-          node.setAttribute('data-mce-selected', 'inline-boundary');
+        if (root) {
+          // Move the caret to the end of the marker
+          rng = dom.createRng();
+          rng.setStart(root, 0);
+          rng.setEnd(root, 0);
+          selection.setRng(rng);
         }
       });
 
-  		// Attempt to move caret after a container element like <a> or <code>
-      editor.onKeyDown.addToTop(function (editor, e) {
-        if (e.keyCode == VK.RIGHT) {
-          var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
+      editor.serializer.addAttributeFilter('data-mce-root', function (nodes) {
+        var i = nodes.length;
 
-          if (!node || node === editor.getBody()) {
-            return;
-          }
+        while (i--) {
+          nodes[i].unwrap();
+        }
+      });
 
-          node = dom.getParent(node, 'a');
+      editor.serializer.addAttributeFilter('data-mce-bogus', function (nodes) {
+        var i = nodes.length;
 
-          if (!isBoundaryNode(node) || !isLastChildOf(node)) {
-            return;
-          }
+        while (i--) {
+          nodes[i].remove();
+        }
+      });
+    }
 
-          if (container.nodeType === 3 && node) {
-            var text = container.data;
+    function inlineBoundary() {
 
-            if (text && text.length && rng.startOffset == text.length) {
-              var marker = dom.add(node.parentNode, 'span', {'data-mce-type': "bookmark"}, '\uFEFF');
+      function isBr(node) {
+        return node && node.nodeType == 1 && node.nodeName == 'BR';
+      }
+      
+      function isOnlyChild(node) {
+        var parent = node.parentNode;
 
-              // Move the caret to the end of the marker
-              rng = dom.createRng();
-              rng.setStart(marker, 0);
-              rng.setEnd(marker, 0);
-              selection.setRng(rng);
+        if (parent == editor.getBody() || isFakeRoot(parent)) {
+          return true;
+        }
 
-              // remove marker
-              dom.remove(marker);
+        /*if (parent.firstChild == parent.lastChild) {
+          return true;
+        }
 
-              editor.nodeChanged();
-              e.preventDefault();
+        if (parent.firstChild == node && isBr(parent.lastChild)) {
+          return true;
+        }*/
+
+        if (node == parent.lastChild) {
+          return true;
+        }
+
+        if (node.nextSibling && isBr(node.nextSibling) && node.nextSibling == parent.lastChild) {
+          return true;
+        }
+
+        return false;
+      }
+
+      function moveCursorToEnd(e) {
+        var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
+
+        if (!node || node === editor.getBody()) {
+          return;
+        }
+
+        node = dom.getParent(node, 'a');
+
+        if (!node) {
+          return;
+        }
+
+        if (!isOnlyChild(node) && !isBr(node.nextSibling)) {
+          return;
+        }
+
+        if (container.nodeType === 3 && dom.isChildOf(container, node.lastChild)) {
+          var text = container.data;
+
+          if (text && text.length && rng.startOffset == text.length) {
+            var marker = dom.create('span', { 'data-mce-type': "bookmark" }, '\uFEFF');
+
+            if (dom.isBlock(node.parentNode) && isOnlyChild(node)) {
+              dom.add(node.parentNode, marker);
+            } else {
+              dom.insertAfter(marker, node);
             }
+
+            // Move the caret to the end of the marker
+            rng = dom.createRng();
+            rng.setStart(marker, 0);
+            rng.setEnd(marker, 0);
+            rng.collapse();
+            selection.setRng(rng);
+
+            // remove marker
+            dom.remove(marker);
+
+            e.preventDefault();
+            editor.nodeChanged();
           }
         }
+      }
+
+      // Attempt to move caret after a container element like <a> or <code>
+      editor.onKeyDown.add(function (editor, e) {
+        if (e.keyCode == VK.RIGHT) {
+          moveCursorToEnd(e);
+        }
       });
-    }*/
+
+      editor.onMouseDown.add(function (editor, e) {
+        moveCursorToEnd(e);
+      });
+    }
 
     // All browsers
     normalizeSelection();
@@ -3834,7 +3912,11 @@
     removeBlockQuoteOnBackSpace();
     emptyEditorWhenDeleting();
 
-    //inlineBoundary();
+    inlineBoundary();
+
+    if (editor.settings.forced_root_block == false && editor.settings.fake_root_block != false) {
+      fakeRootBlock();
+    }
 
     // WebKit
     if (tinymce.isWebKit) {
@@ -5321,12 +5403,12 @@
     }
 
     /**
-       * Builds a schema lookup table
-       *
-       * @private
-       * @param {String} type html4, html5 or html5-strict schema type.
-       * @return {Object} Schema lookup table.
-       */
+     * Builds a schema lookup table
+     *
+     * @private
+     * @param {String} type html4, html5 or html5-strict schema type.
+     * @return {Object} Schema lookup table.
+     */
     function compileSchema(type) {
       var schema = {},
         globalAttributes, blockContent;
@@ -5406,16 +5488,16 @@
 
       // global event attributes
       eventAttributes = split("onclick ondblclick onmousedown " +
-              "onmouseup onmouseover onmousemove onmouseout onkeypress onkeydown onkeyup");
+        "onmouseup onmouseover onmousemove onmouseout onkeypress onkeydown onkeyup");
 
       // html5 mouse events
       if (type != "html4") {
         eventAttributes.push.apply(eventAttributes, split("onabort onblur oncancel oncanplay oncanplaythrough onchange onclose oncontextmenu oncuechange " +
-                  "ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended " +
-                  "onerror onfocus oninput oninvalid onload onloadeddata onloadedmetadata onloadstart " +
-                  "onmouseenter onmouseleave onmousewheel onpause onplay onplaying onprogress onratechange " +
-                  "onreset onscroll onseeked onseeking onseeking onselect onshow onstalled onsubmit onsuspend ontimeupdate onvolumechange " +
-                  "onwaiting onwheel"));
+          "ondrag ondragend ondragenter ondragleave ondragover ondragstart ondrop ondurationchange onemptied onended " +
+          "onerror onfocus oninput oninvalid onload onloadeddata onloadedmetadata onloadstart " +
+          "onmouseenter onmouseleave onmousewheel onpause onplay onplaying onprogress onratechange " +
+          "onreset onscroll onseeked onseeking onseeking onselect onshow onstalled onsubmit onsuspend ontimeupdate onvolumechange " +
+          "onwaiting onwheel"));
       }
 
       // Event attributes can be opt-in/opt-out
@@ -5435,17 +5517,17 @@
       // Phrasing content elements from the HTML5 spec (inline)
       phrasingContent = split(
         "a abbr b bdo br button cite code del dfn em embed i iframe img input ins kbd " +
-              "label map noscript object q s samp script select small span strong sub sup " +
-              "textarea u var link style #text #comment"
+        "label map noscript object q s samp script select small span strong sub sup " +
+        "textarea u var link style #text #comment"
       );
 
       // Add HTML5 items to globalAttributes, blockContent, phrasingContent
       if (type != "html4") {
         globalAttributes.push.apply(globalAttributes, split("contenteditable contextmenu draggable dropzone " +
-                  "hidden spellcheck translate"));
-        blockContent.push.apply(blockContent, split("article aside details dialog figure header footer hgroup section nav"));
+          "hidden spellcheck translate"));
+        blockContent.push.apply(blockContent, split("article aside details dialog figure header footer hgroup section nav main"));
         phrasingContent.push.apply(phrasingContent, split("audio canvas command datalist mark meter output picture " +
-                  "progress time wbr video ruby bdi keygen"));
+          "progress time wbr video ruby bdi keygen"));
       }
 
       // Add HTML4 elements unless it's html5-strict
@@ -5473,6 +5555,8 @@
       // Flow content elements from the HTML5 spec (block+inline)
       flowContent = flowContent || [].concat(blockContent, phrasingContent);
 
+      var bodyContent = [].concat(flowContent, ['main']);
+
       // HTML4 base schema TODO: Move HTML5 specific attributes to HTML5 specific if statement
       // Schema items <element name>, <specific attributes>, <children ..>
       add("html", "manifest", "head body");
@@ -5484,8 +5568,8 @@
       add("style", "media type scoped");
       add("script", "src async defer type charset");
       add("body", "onafterprint onbeforeprint onbeforeunload onblur onerror onfocus " +
-              "onhashchange onload onmessage onoffline ononline onpagehide onpageshow " +
-              "onpopstate onresize onscroll onstorage onunload", flowContent);
+        "onhashchange onload onmessage onoffline ononline onpagehide onpageshow " +
+        "onpopstate onresize onscroll onstorage onunload", bodyContent);
       add("address dt dd div caption", "", flowContent);
       add("h1 h2 h3 h4 h5 h6 pre p abbr code var samp kbd sub sup i b u bdo span legend em strong small s cite dfn", "", phrasingContent);
       add("blockquote", "cite", flowContent);
@@ -5514,7 +5598,7 @@
       add("fieldset", "disabled form name", flowContent, "legend");
       add("label", "form for", phrasingContent);
       add("input", "accept alt autocomplete checked dirname disabled form formaction formenctype formmethod formnovalidate " +
-              "formtarget height list max maxlength min multiple name pattern readonly required size src step type value width"
+        "formtarget height list max maxlength min multiple name pattern readonly required size src step type value width"
       );
       add("button", "disabled form formaction formenctype formmethod formnovalidate formtarget name type value",
         type == "html4" ? flowContent : phrasingContent);
@@ -5525,6 +5609,8 @@
       add("menu", "type label", flowContent, "li");
       add("noscript", "", flowContent);
 
+      add("main", "", flowContent);
+
       // Extend with HTML5 elements
       if (type != "html4") {
         add("wbr");
@@ -5533,7 +5619,7 @@
         add("mark rt rp summary bdi", "", phrasingContent);
         add("canvas", "width height", flowContent);
         add("video", "src crossorigin poster preload autoplay mediagroup loop " +
-                  "muted controls width height buffered controlslist playsinline", flowContent, "track source");
+          "muted controls width height buffered controlslist playsinline", flowContent, "track source");
         add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", flowContent, "track source");
         add("picture", "", "img source");
         add("source", "src srcset type media sizes");
@@ -5615,9 +5701,9 @@
 
         // media events
         addAttrs("video audio", "onabort oncanplay oncanplaythrough ondurationchange onemptied onended " +
-                  "onerror onloadeddata onloadedmetadata onloadstart onpause onplay onplaying onprogress " +
-                  "onratechange onreadystatechange onseeked onseeking onstalled onsuspend ontimeupdate " +
-                  "onvolumechange onwaiting");
+          "onerror onloadeddata onloadedmetadata onloadstart onpause onplay onplaying onprogress " +
+          "onratechange onreadystatechange onseeked onseeking onstalled onsuspend ontimeupdate " +
+          "onvolumechange onwaiting");
       }
 
       // Special: iframe, ruby, video, audio, label
@@ -5670,12 +5756,12 @@
     }
 
     /**
-       * Constructs a new Schema instance.
-       *
-       * @constructor
-       * @method Schema
-       * @param {Object} settings Name/value settings object.
-       */
+     * Constructs a new Schema instance.
+     *
+     * @constructor
+     * @method Schema
+     * @param {Object} settings Name/value settings object.
+     */
     tinymce.html.Schema = function (settings) {
       var self = this,
         elements = {},
@@ -5725,19 +5811,19 @@
       whiteSpaceElementsMap = createLookupTable('whitespace_elements', 'pre script noscript style textarea video audio iframe object');
       selfClosingElementsMap = createLookupTable('self_closing_elements', 'colgroup dd dt li option p td tfoot th thead tr');
       shortEndedElementsMap = createLookupTable('short_ended_elements', 'area base basefont br col frame hr img input isindex link ' +
-              'meta param embed source wbr track');
+        'meta param embed source wbr track');
       boolAttrMap = createLookupTable('boolean_attributes', 'async checked compact declare defer disabled ismap multiple nohref noresize ' +
-              'noshade nowrap readonly selected autoplay loop controls itemscope playsinline spellcheck contextmenu draggable hidden allowfullscreen');
+        'noshade nowrap readonly selected autoplay loop controls itemscope playsinline spellcheck contextmenu draggable hidden allowfullscreen');
 
       nonEmptyElementsMap = createLookupTable('non_empty_elements', 'td th iframe video audio object script pre code', shortEndedElementsMap);
       moveCaretBeforeOnEnterElementsMap = createLookupTable('move_caret_before_on_enter_elements', 'table', nonEmptyElementsMap);
       textBlockElementsMap = createLookupTable('text_block_elements', 'h1 h2 h3 h4 h5 h6 p div address pre form ' +
-              'blockquote center dir fieldset header footer article section hgroup aside nav figure');
+        'blockquote center dir fieldset header footer article section hgroup aside nav figure');
       blockElementsMap = createLookupTable('block_elements', 'hr table tbody thead tfoot ' +
-              'th tr td li ol ul caption dl dt dd noscript menu isindex option ' +
-              'datalist select optgroup', textBlockElementsMap);
+        'th tr td li ol ul caption dl dt dd noscript menu isindex option ' +
+        'datalist select optgroup', textBlockElementsMap);
       textInlineElementsMap = createLookupTable('text_inline_elements', 'span strong b em i font strike u var cite ' +
-              'dfn code mark q sup sub samp');
+        'dfn code mark q sup sub samp');
 
       each((settings.special || 'script noscript iframe noframes noembed title style textarea xmp').split(' '), function (name) {
         specialElements[name] = new RegExp('<\/' + name + '[^>]*>', 'gi');
@@ -6053,7 +6139,7 @@
         });
 
         // Padd these by default
-        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption'), function (name) {
+        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption main'), function (name) {
           elements[name].paddEmpty = true;
         });
 
@@ -6096,160 +6182,160 @@
       }
 
       /**
-           * Name/value map object with valid parents and children to those parents.
-           *
-           * @example
-           * children = {
-           *    div:{p:{}, h1:{}}
-           * };
-           * @field children
-           * @type Object
-           */
+       * Name/value map object with valid parents and children to those parents.
+       *
+       * @example
+       * children = {
+       *    div:{p:{}, h1:{}}
+       * };
+       * @field children
+       * @type Object
+       */
       self.children = children;
 
       /**
-           * Name/value map object with valid styles for each element.
-           *
-           * @method getValidStyles
-           * @type Object
-           */
+       * Name/value map object with valid styles for each element.
+       *
+       * @method getValidStyles
+       * @type Object
+       */
       self.getValidStyles = function () {
         return validStyles;
       };
 
       /**
-           * Name/value map object with valid styles for each element.
-           *
-           * @method getInvalidStyles
-           * @type Object
-           */
+       * Name/value map object with valid styles for each element.
+       *
+       * @method getInvalidStyles
+       * @type Object
+       */
       self.getInvalidStyles = function () {
         return invalidStyles;
       };
 
       /**
-           * Name/value map object with valid classes for each element.
-           *
-           * @method getValidClasses
-           * @type Object
-           */
+       * Name/value map object with valid classes for each element.
+       *
+       * @method getValidClasses
+       * @type Object
+       */
       self.getValidClasses = function () {
         return validClasses;
       };
 
       /**
-           * Returns a map with boolean attributes.
-           *
-           * @method getBoolAttrs
-           * @return {Object} Name/value lookup map for boolean attributes.
-           */
+       * Returns a map with boolean attributes.
+       *
+       * @method getBoolAttrs
+       * @return {Object} Name/value lookup map for boolean attributes.
+       */
       self.getBoolAttrs = function () {
         return boolAttrMap;
       };
 
       /**
-           * Returns a map with block elements.
-           *
-           * @method getBlockElements
-           * @return {Object} Name/value lookup map for block elements.
-           */
+       * Returns a map with block elements.
+       *
+       * @method getBlockElements
+       * @return {Object} Name/value lookup map for block elements.
+       */
       self.getBlockElements = function () {
         return blockElementsMap;
       };
 
       /**
-           * Returns a map with text block elements. Such as: p,h1-h6,div,address
-           *
-           * @method getTextBlockElements
-           * @return {Object} Name/value lookup map for block elements.
-           */
+       * Returns a map with text block elements. Such as: p,h1-h6,div,address
+       *
+       * @method getTextBlockElements
+       * @return {Object} Name/value lookup map for block elements.
+       */
       self.getTextBlockElements = function () {
         return textBlockElementsMap;
       };
 
       /**
-           * Returns a map of inline text format nodes for example strong/span or ins.
-           *
-           * @method getTextInlineElements
-           * @return {Object} Name/value lookup map for text format elements.
-           */
+       * Returns a map of inline text format nodes for example strong/span or ins.
+       *
+       * @method getTextInlineElements
+       * @return {Object} Name/value lookup map for text format elements.
+       */
       self.getTextInlineElements = function () {
         return textInlineElementsMap;
       };
 
       /**
-           * Returns a map with short ended elements such as BR or IMG.
-           *
-           * @method getShortEndedElements
-           * @return {Object} Name/value lookup map for short ended elements.
-           */
+       * Returns a map with short ended elements such as BR or IMG.
+       *
+       * @method getShortEndedElements
+       * @return {Object} Name/value lookup map for short ended elements.
+       */
       self.getShortEndedElements = function () {
         return shortEndedElementsMap;
       };
 
       /**
-           * Returns a map with self closing tags such as <li>.
-           *
-           * @method getSelfClosingElements
-           * @return {Object} Name/value lookup map for self closing tags elements.
-           */
+       * Returns a map with self closing tags such as <li>.
+       *
+       * @method getSelfClosingElements
+       * @return {Object} Name/value lookup map for self closing tags elements.
+       */
       self.getSelfClosingElements = function () {
         return selfClosingElementsMap;
       };
 
       /**
-           * Returns a map with elements that should be treated as contents regardless if it has text
-           * content in them or not such as TD, VIDEO or IMG.
-           *
-           * @method getNonEmptyElements
-           * @return {Object} Name/value lookup map for non empty elements.
-           */
+       * Returns a map with elements that should be treated as contents regardless if it has text
+       * content in them or not such as TD, VIDEO or IMG.
+       *
+       * @method getNonEmptyElements
+       * @return {Object} Name/value lookup map for non empty elements.
+       */
       self.getNonEmptyElements = function () {
         return nonEmptyElementsMap;
       };
 
       /**
-           * Returns a map with elements that the caret should be moved in front of after enter is
-           * pressed
-           *
-           * @method getMoveCaretBeforeOnEnterElements
-           * @return {Object} Name/value lookup map for elements to place the caret in front of.
-           */
+       * Returns a map with elements that the caret should be moved in front of after enter is
+       * pressed
+       *
+       * @method getMoveCaretBeforeOnEnterElements
+       * @return {Object} Name/value lookup map for elements to place the caret in front of.
+       */
       self.getMoveCaretBeforeOnEnterElements = function () {
         return moveCaretBeforeOnEnterElementsMap;
       };
 
       /**
-           * Returns a map with elements where white space is to be preserved like PRE or SCRIPT.
-           *
-           * @method getWhiteSpaceElements
-           * @return {Object} Name/value lookup map for white space elements.
-           */
+       * Returns a map with elements where white space is to be preserved like PRE or SCRIPT.
+       *
+       * @method getWhiteSpaceElements
+       * @return {Object} Name/value lookup map for white space elements.
+       */
       self.getWhiteSpaceElements = function () {
         return whiteSpaceElementsMap;
       };
 
       /**
-           * Returns a map with special elements. These are elements that needs to be parsed
-           * in a special way such as script, style, textarea etc. The map object values
-           * are regexps used to find the end of the element.
-           *
-           * @method getSpecialElements
-           * @return {Object} Name/value lookup map for special elements.
-           */
+       * Returns a map with special elements. These are elements that needs to be parsed
+       * in a special way such as script, style, textarea etc. The map object values
+       * are regexps used to find the end of the element.
+       *
+       * @method getSpecialElements
+       * @return {Object} Name/value lookup map for special elements.
+       */
       self.getSpecialElements = function () {
         return specialElements;
       };
 
       /**
-           * Returns true/false if the specified element and it's child is valid or not
-           * according to the schema.
-           *
-           * @method isValidChild
-           * @param {String} name Element name to check for.
-           * @param {String} child Element child to verify.
-           * @return {Boolean} True/false if the element is a valid child of the specified parent.
-           */
+       * Returns true/false if the specified element and it's child is valid or not
+       * according to the schema.
+       *
+       * @method isValidChild
+       * @param {String} name Element name to check for.
+       * @param {String} child Element child to verify.
+       * @return {Boolean} True/false if the element is a valid child of the specified parent.
+       */
       self.isValidChild = function (name, child) {
         var parent = children[name];
 
@@ -6257,14 +6343,14 @@
       };
 
       /**
-           * Returns true/false if the specified element name and optional attribute is
-           * valid according to the schema.
-           *
-           * @method isValid
-           * @param {String} name Name of element to check.
-           * @param {String} attr Optional attribute name to check for.
-           * @return {Boolean} True/false if the element and attribute is valid.
-           */
+       * Returns true/false if the specified element name and optional attribute is
+       * valid according to the schema.
+       *
+       * @method isValid
+       * @param {String} name Name of element to check.
+       * @param {String} attr Optional attribute name to check for.
+       * @return {Boolean} True/false if the element and attribute is valid.
+       */
       self.isValid = function (name, attr) {
         var attrPatterns, i, rule = getElementRule(name);
 
@@ -6296,60 +6382,60 @@
       };
 
       /**
-           * Returns true/false if the specified element is valid or not
-           * according to the schema.
-           *
-           * @method getElementRule
-           * @param {String} name Element name to check for.
-           * @return {Object} Element object or undefined if the element isn't valid.
-           */
+       * Returns true/false if the specified element is valid or not
+       * according to the schema.
+       *
+       * @method getElementRule
+       * @param {String} name Element name to check for.
+       * @return {Object} Element object or undefined if the element isn't valid.
+       */
       self.getElementRule = getElementRule;
 
       /**
-           * Returns an map object of all custom elements.
-           *
-           * @method getCustomElements
-           * @return {Object} Name/value map object of all custom elements.
-           */
+       * Returns an map object of all custom elements.
+       *
+       * @method getCustomElements
+       * @return {Object} Name/value map object of all custom elements.
+       */
       self.getCustomElements = function () {
         return customElementsMap;
       };
 
       /**
-           * Parses a valid elements string and adds it to the schema. The valid elements
-           * format is for example "element[attr=default|otherattr]".
-           * Existing rules will be replaced with the ones specified, so this extends the schema.
-           *
-           * @method addValidElements
-           * @param {String} valid_elements String in the valid elements format to be parsed.
-           */
+       * Parses a valid elements string and adds it to the schema. The valid elements
+       * format is for example "element[attr=default|otherattr]".
+       * Existing rules will be replaced with the ones specified, so this extends the schema.
+       *
+       * @method addValidElements
+       * @param {String} valid_elements String in the valid elements format to be parsed.
+       */
       self.addValidElements = addValidElements;
 
       /**
-           * Parses a valid elements string and sets it to the schema. The valid elements
-           * format is for example "element[attr=default|otherattr]".
-           * Existing rules will be replaced with the ones specified, so this extends the schema.
-           *
-           * @method setValidElements
-           * @param {String} valid_elements String in the valid elements format to be parsed.
-           */
+       * Parses a valid elements string and sets it to the schema. The valid elements
+       * format is for example "element[attr=default|otherattr]".
+       * Existing rules will be replaced with the ones specified, so this extends the schema.
+       *
+       * @method setValidElements
+       * @param {String} valid_elements String in the valid elements format to be parsed.
+       */
       self.setValidElements = setValidElements;
 
       /**
-           * Adds custom non HTML elements to the schema.
-           *
-           * @method addCustomElements
-           * @param {String} custom_elements Comma separated list of custom elements to add.
-           */
+       * Adds custom non HTML elements to the schema.
+       *
+       * @method addCustomElements
+       * @param {String} custom_elements Comma separated list of custom elements to add.
+       */
       self.addCustomElements = addCustomElements;
 
       /**
-           * Parses a valid children string and adds them to the schema structure. The valid children
-           * format is for example: "element[child1|child2]".
-           *
-           * @method addValidChildren
-           * @param {String} valid_children Valid children elements string to parse
-           */
+       * Parses a valid children string and adds them to the schema structure. The valid children
+       * format is for example: "element[child1|child2]".
+       *
+       * @method addValidChildren
+       * @param {String} valid_children Valid children elements string to parse
+       */
       self.addValidChildren = addValidChildren;
 
       self.elements = elements;
@@ -10095,7 +10181,7 @@
         var self = this,
           s = self.settings;
 
-        return (s && self.get(s.root_element)) || self.doc.body;
+          return (s && self.get(s.root_element)) || self.doc.body;
       },
 
       /**
@@ -12160,7 +12246,7 @@
         var contentEditable;
 
         // Check type
-        if (node.nodeType != 1) {
+        if (!node || node.nodeType != 1) {
           return null;
         }
 
@@ -37456,6 +37542,7 @@
 
           // Not in a block element or in a table cell or caption
           parentBlock = dom.getParent(container, dom.isBlock);
+
           if (!parentBlock || !canSplitBlock(parentBlock)) {
             parentBlock = parentBlock || editableRoot;
 
@@ -37612,9 +37699,15 @@
           var root = dom.getRoot(),
             parent, editableRoot;
 
+            if (!editor.settings.forced_root_block && editor.settings.fake_root_block) {
+              root = dom.get(editor.settings.fake_root_block) || root;
+            }
+
           // Get all parents until we hit a non editable parent or the root
           parent = node;
-          while (parent !== root && dom.getContentEditable(parent) !== "false") {
+
+          while (parent && parent !== root && dom.getContentEditable(parent) !== "false") {
+            
             if (dom.getContentEditable(parent) === "true") {
               editableRoot = parent;
             }
