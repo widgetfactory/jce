@@ -413,8 +413,6 @@
                     return;
                   }
 
-                  console.log(v);
-
                   if (v && classes.indexOf(v) === -1) {
                     classes.push(v);
                   }

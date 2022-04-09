@@ -211,8 +211,6 @@
       });
     });
 
-    //ed.settings.editable_root = false;
-
     if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
       fakeRootBlock();
     }

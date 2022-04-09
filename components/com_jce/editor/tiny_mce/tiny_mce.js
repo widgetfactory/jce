@@ -39121,8 +39121,6 @@
         });
       });
 
-      //ed.settings.editable_root = false;
-
       if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
         fakeRootBlock();
       }
@@ -41973,8 +41971,6 @@
                     if (/\.mce/.test(v) || (ed.settings.body_class && new RegExp('.(' + (ed.settings.body_class.split(' ').join('|')) + ')').test(v)) || !/\.[\w\-]+$/.test(v)) {
                       return;
                     }
-
-                    console.log(v);
 
                     if (v && classes.indexOf(v) === -1) {
                       classes.push(v);
