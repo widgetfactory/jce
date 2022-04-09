@@ -26,8 +26,9 @@
             if (option.value == value || (ignore_case && option.value.toLowerCase() == value.toLowerCase())) {
                 option.selected = true;
                 found = true;
-            } else
+            } else {
                 option.selected = false;
+            }
         }
 
         if (!found && add_custom && value != '') {
@@ -42,7 +43,7 @@
 
     function addSelectValue(field_name, name, value) {
         var s = document.getElementById(field_name);
-        
+
         // datalist or select
         s = s.list || s;
 
