@@ -409,9 +409,11 @@
                   v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                   // Is internal or it doesn't contain a class
-                  if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
+                  if (/\.mce/.test(v) || (ed.settings.body_class && new RegExp('.(' + (ed.settings.body_class.split(' ').join('|')) + ')').test(v)) || !/\.[\w\-]+$/.test(v)) {
                     return;
                   }
+
+                  console.log(v);
 
                   if (v && classes.indexOf(v) === -1) {
                     classes.push(v);
