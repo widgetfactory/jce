@@ -2272,9 +2272,6 @@
     var mceInternalUrlPrefix = 'data:text/mce-internal,';
     var mceInternalDataType = tinymce.isIE ? 'Text' : 'URL';
 
-    function isFakeRoot(node) {
-      return node.nodeType == 1 && node.hasAttribute('data-mce-root');
-    }
     /**
      * Executes a command with a specific state this can be to enable/disable browser editing features.
      */
@@ -3084,11 +3081,11 @@
           // Selection is collapsed but the editor isn't empty
           if (isCollapsed && !dom.isEmpty(body)) {
 
-            if (!isFakeRoot(body.firstChild)) {
+            if (!tinymce.util.isFakeRoot(body.firstChild)) {
               return;
             }
 
-            if (isFakeRoot(body.firstChild) && !dom.isEmpty(body.firstChild)) {
+            if (tinymce.util.isFakeRoot(body.firstChild) && !dom.isEmpty(body.firstChild)) {
               return;
             }
           }
@@ -3777,46 +3774,6 @@
       editor.onMouseUp.add(normalize);
     }
 
-    function fakeRootBlock() {
-      settings.fake_root_block = 'rootblock';
-
-      editor.onBeforeSetContent.add(function (editor, o) {
-        if (!o.content) {
-          o.content = '<br data-mce-bogus="1">';
-        }
-
-        o.content = '<main id="' + settings.fake_root_block + '" data-mce-root="1">' + o.content + '</main>';
-      });
-
-      editor.onSetContent.add(function () {
-        var root = dom.get(settings.fake_root_block), rng;
-
-        if (root) {
-          // Move the caret to the end of the marker
-          rng = dom.createRng();
-          rng.setStart(root, 0);
-          rng.setEnd(root, 0);
-          selection.setRng(rng);
-        }
-      });
-
-      editor.serializer.addAttributeFilter('data-mce-root', function (nodes) {
-        var i = nodes.length;
-
-        while (i--) {
-          nodes[i].unwrap();
-        }
-      });
-
-      editor.serializer.addAttributeFilter('data-mce-bogus', function (nodes) {
-        var i = nodes.length;
-
-        while (i--) {
-          nodes[i].remove();
-        }
-      });
-    }
-
     function inlineBoundary() {
 
       function isBr(node) {
@@ -3824,7 +3781,7 @@
       }
 
       function isRootNode(node) {
-        return node == editor.getBody() || isFakeRoot(node);
+        return node == editor.getBody() || tinymce.util.isFakeRoot(node);
       }
       
       function isLastChild(node) {
@@ -3846,17 +3803,14 @@
       }
 
       function isEmpty(node) {
-        if (!node) {
-          return false;
-        }
         // is linebreak or empty whitespace text node
-        return isBr(node) || (node.nodeType == 3 && /^[ \t\r\n]*$/.test(node.nodeValue));
+        return isBr(node) || (node && node.nodeType == 3 && /^[ \t\r\n]*$/.test(node.nodeValue));
       }
 
       function moveCursorToEnd(e) {
         var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
 
-        if (!node || node === editor.getBody()) {
+        if (!node || node == editor.getBody()) {
           return;
         }
 
@@ -3870,7 +3824,7 @@
           return;
         }
 
-        if (container.nodeType === 3 && dom.isChildOf(container, node.lastChild)) {
+        if (container.nodeType == 3 && dom.isChildOf(container, node.lastChild)) {
           var text = container.data;
 
           if (text && text.length && rng.startOffset == text.length) {
@@ -3921,10 +3875,6 @@
     emptyEditorWhenDeleting();
 
     inlineBoundary();
-
-    if (editor.settings.forced_root_block == false && editor.settings.fake_root_block != false) {
-      fakeRootBlock();
-    }
 
     // WebKit
     if (tinymce.isWebKit) {
@@ -5533,7 +5483,7 @@
       if (type != "html4") {
         globalAttributes.push.apply(globalAttributes, split("contenteditable contextmenu draggable dropzone " +
           "hidden spellcheck translate"));
-        blockContent.push.apply(blockContent, split("article aside details dialog figure header footer hgroup section nav main"));
+        blockContent.push.apply(blockContent, split("article aside details dialog figure header footer hgroup section nav"));
         phrasingContent.push.apply(phrasingContent, split("audio canvas command datalist mark meter output picture " +
           "progress time wbr video ruby bdi keygen"));
       }
@@ -5563,8 +5513,6 @@
       // Flow content elements from the HTML5 spec (block+inline)
       flowContent = flowContent || [].concat(blockContent, phrasingContent);
 
-      var bodyContent = [].concat(flowContent, ['main']);
-
       // HTML4 base schema TODO: Move HTML5 specific attributes to HTML5 specific if statement
       // Schema items <element name>, <specific attributes>, <children ..>
       add("html", "manifest", "head body");
@@ -5577,7 +5525,7 @@
       add("script", "src async defer type charset");
       add("body", "onafterprint onbeforeprint onbeforeunload onblur onerror onfocus " +
         "onhashchange onload onmessage onoffline ononline onpagehide onpageshow " +
-        "onpopstate onresize onscroll onstorage onunload", bodyContent);
+        "onpopstate onresize onscroll onstorage onunload", flowContent);
       add("address dt dd div caption", "", flowContent);
       add("h1 h2 h3 h4 h5 h6 pre p abbr code var samp kbd sub sup i b u bdo span legend em strong small s cite dfn", "", phrasingContent);
       add("blockquote", "cite", flowContent);
@@ -5616,8 +5564,6 @@
       add("textarea", "cols dirname disabled form maxlength name readonly required rows wrap");
       add("menu", "type label", flowContent, "li");
       add("noscript", "", flowContent);
-
-      add("main", "", flowContent);
 
       // Extend with HTML5 elements
       if (type != "html4") {
@@ -6147,7 +6093,7 @@
         });
 
         // Padd these by default
-        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption main'), function (name) {
+        each(split('p h1 h2 h3 h4 h5 h6 th td pre div address caption'), function (name) {
           elements[name].paddEmpty = true;
         });
 
@@ -23038,7 +22984,9 @@
 
         var item = DOM.add(menu, 'div', {
           id: o.id,
-          'class': cp + 'Item ' + cp + 'ItemEnabled'
+          'class': cp + 'Item ' + cp + 'ItemEnabled',
+          title: o.settings.title,
+          'aria-label': o.settings.title
         });
 
         if (s.html) {
@@ -23070,8 +23018,7 @@
 
           var txt = DOM.add(item, s.element || 'span', {
             'class': 'mceText',
-            title: o.settings.title,
-            'aria-label': o.settings.title
+            role: 'presentation'
           }, o.settings.title);
 
           if (o.settings.style) {
@@ -35075,7 +35022,8 @@
                 !isCaretNode(node) &&
                 !isBogusBr(node) &&
                 (!format.inline || !isBlock(node))) {
-                // Start wrapping
+                              
+                  // Start wrapping
                 if (!currentWrapElm) {
                   // Wrap the node
                   currentWrapElm = dom.clone(wrapElm, FALSE);
@@ -37236,10 +37184,10 @@
         // Returns true if the block can be split into two blocks or not
         function canSplitBlock(node) {
           return node &&
-                      dom.isBlock(node) &&
-                      !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) &&
-                      !/^(fixed|absolute)/i.test(node.style.position) &&
-                      dom.getContentEditable(node) !== "true";
+            dom.isBlock(node) &&
+            !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) &&
+            !/^(fixed|absolute)/i.test(node.style.position) &&
+            dom.getContentEditable(node) !== "true";
         }
 
         function isTableCell(node) {
@@ -37554,7 +37502,8 @@
           if (!parentBlock || !canSplitBlock(parentBlock)) {
             parentBlock = parentBlock || editableRoot;
 
-            if (parentBlock == editor.getBody() || isTableCell(parentBlock)) {
+            // check if parentBlock is root, ie: <body> or fake root
+            if (parentBlock == editableRoot || isTableCell(parentBlock)) {
               rootBlockName = parentBlock.nodeName.toLowerCase();
             } else {
               rootBlockName = parentBlock.parentNode.nodeName.toLowerCase();
@@ -37707,15 +37656,14 @@
           var root = dom.getRoot(),
             parent, editableRoot;
 
-            if (!editor.settings.forced_root_block && editor.settings.fake_root_block) {
-              root = dom.get(editor.settings.fake_root_block) || root;
-            }
+          // use optional editable root or body
+          root = dom.get(editor.settings.editable_root) || root;
 
           // Get all parents until we hit a non editable parent or the root
           parent = node;
 
           while (parent && parent !== root && dom.getContentEditable(parent) !== "false") {
-            
+
             if (dom.getContentEditable(parent) === "true") {
               editableRoot = parent;
             }
@@ -37830,6 +37778,7 @@
 
         // Find parent block and setup empty block paddings
         parentBlock = dom.getParent(container, dom.isBlock);
+
         containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
 
         // Setup block names
@@ -39005,6 +38954,10 @@
         return true;
       }
 
+      function isFakeRoot(node) {
+        return node && node.nodeType == 1 && node.hasAttribute('data-mce-root');
+      }
+
       var startup_content_html = ed.settings.startup_content_html || '';
 
       ed.onBeforeRenderUI.add(function () {
@@ -39050,6 +39003,70 @@
 
         return ed.execCommand(store.cmd, store.ui, store.value, store.args);
       });
+
+      function fakeRootBlock() {
+        ed.settings.editable_root = 'rootblock';
+
+        ed.onPreInit.add(function () {
+          var selection = ed.selection, dom = ed.dom;
+          
+          ed.schema.addValidElements('#mce:root[id|data-mce-root]');
+          // add children from body element
+          ed.schema.children['mce:root'] = ed.schema.children.body;
+          // add as valid child to body
+          ed.schema.addValidChildren('body[mce:root]');
+
+          // remove fake root when serializing
+          ed.serializer.addAttributeFilter('data-mce-root', function (nodes) {
+            var i = nodes.length;
+
+            while (i--) {
+              nodes[i].unwrap();
+            }
+          });
+
+          // remove <br data-mce-bogus="1">
+          ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes) {
+            var i = nodes.length;
+
+            while (i--) {
+              nodes[i].remove();
+            }
+          });
+          
+          // wrap content in fake root
+          ed.onBeforeSetContent.add(function (editor, o) {
+            if (!o.content) {
+              o.content = '<br data-mce-bogus="1">';
+            }
+    
+            o.content = '<mce:root id="' + ed.settings.editable_root + '" data-mce-root="1">' + o.content + '</mce:root>';
+          });
+
+          // reset selection to fake root
+          ed.onSetContent.add(function () {
+            var root = dom.get(ed.settings.editable_root), rng;
+    
+            if (root) {
+              // Move the caret to the end of the marker
+              rng = dom.createRng();
+              rng.setStart(root, 0);
+              rng.setEnd(root, 0);
+              selection.setRng(rng);
+            }
+          });
+    
+          // UndoManager gets content without event processing, so extract manually
+          ed.undoManager.onBeforeAdd.add(function (um, level) {
+            var container = ed.dom.create('div', {}, level.content);
+    
+            if (isFakeRoot(container.firstChild)) {
+              level.content = container.firstChild.innerHTML;
+            }
+    
+          });
+        });
+      }
 
       ed.onPreInit.add(function () {
         ed.onUpdateMedia.add(function (ed, o) {
@@ -39103,6 +39120,14 @@
           });
         });
       });
+
+      //ed.settings.editable_root = false;
+
+      if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
+        fakeRootBlock();
+      }
+
+      tinymce.util.isFakeRoot = isFakeRoot;
     });
   })();
 
@@ -39523,6 +39548,11 @@
             }
 
             each(elements, function (v, k) {
+              // skip internal elements
+              if (k.indexOf('mce:') == 0) {
+                return true;
+              }
+              
               // custom element
               if (tinymce.inArray(tags, k) === -1) {
                 ed.schema.addCustomElements(k);
@@ -41940,9 +41970,11 @@
                     v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                     // Is internal or it doesn't contain a class
-                    if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
+                    if (/\.mce/.test(v) || (ed.settings.body_class && new RegExp('.(' + (ed.settings.body_class.split(' ').join('|')) + ')').test(v)) || !/\.[\w\-]+$/.test(v)) {
                       return;
                     }
+
+                    console.log(v);
 
                     if (v && classes.indexOf(v) === -1) {
                       classes.push(v);
