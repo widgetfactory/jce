@@ -44,6 +44,10 @@
       return true;
     }
 
+    function isFakeRoot(node) {
+      return node && node.nodeType == 1 && node.hasAttribute('data-mce-root');
+    }
+
     var startup_content_html = ed.settings.startup_content_html || '';
 
     ed.onBeforeRenderUI.add(function () {
@@ -89,6 +93,70 @@
 
       return ed.execCommand(store.cmd, store.ui, store.value, store.args);
     });
+
+    function fakeRootBlock() {
+      ed.settings.editable_root = 'rootblock';
+
+      ed.onPreInit.add(function () {
+        var selection = ed.selection, dom = ed.dom;
+        
+        ed.schema.addValidElements('#mce:root[id|data-mce-root]');
+        // add children from body element
+        ed.schema.children['mce:root'] = ed.schema.children.body;
+        // add as valid child to body
+        ed.schema.addValidChildren('body[mce:root]');
+
+        // remove fake root when serializing
+        ed.serializer.addAttributeFilter('data-mce-root', function (nodes) {
+          var i = nodes.length;
+
+          while (i--) {
+            nodes[i].unwrap();
+          }
+        });
+
+        // remove <br data-mce-bogus="1">
+        ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes) {
+          var i = nodes.length;
+
+          while (i--) {
+            nodes[i].remove();
+          }
+        });
+        
+        // wrap content in fake root
+        ed.onBeforeSetContent.add(function (editor, o) {
+          if (!o.content) {
+            o.content = '<br data-mce-bogus="1">';
+          }
+  
+          o.content = '<mce:root id="' + ed.settings.editable_root + '" data-mce-root="1">' + o.content + '</mce:root>';
+        });
+
+        // reset selection to fake root
+        ed.onSetContent.add(function () {
+          var root = dom.get(ed.settings.editable_root), rng;
+  
+          if (root) {
+            // Move the caret to the end of the marker
+            rng = dom.createRng();
+            rng.setStart(root, 0);
+            rng.setEnd(root, 0);
+            selection.setRng(rng);
+          }
+        });
+  
+        // UndoManager gets content without event processing, so extract manually
+        ed.undoManager.onBeforeAdd.add(function (um, level) {
+          var container = ed.dom.create('div', {}, level.content);
+  
+          if (isFakeRoot(container.firstChild)) {
+            level.content = container.firstChild.innerHTML;
+          }
+  
+        });
+      });
+    }
 
     ed.onPreInit.add(function () {
       ed.onUpdateMedia.add(function (ed, o) {
@@ -142,5 +210,13 @@
         });
       });
     });
+
+    //ed.settings.editable_root = false;
+
+    if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
+      fakeRootBlock();
+    }
+
+    tinymce.util.isFakeRoot = isFakeRoot;
   });
 })();
