@@ -138,6 +138,11 @@
           }
 
           each(elements, function (v, k) {
+            // skip internal elements
+            if (k.indexOf('mce:') == 0) {
+              return true;
+            }
+            
             // custom element
             if (tinymce.inArray(tags, k) === -1) {
               ed.schema.addCustomElements(k);
