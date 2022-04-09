@@ -13,6 +13,10 @@
 (function ($) {
 	var mediaApi;
 
+	function isRootNode(ed, node) {
+		return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+	}
+
 	var XHTMLXtrasDialog = {
 		settings: {},
 
@@ -57,7 +61,7 @@
 
 			Wf.init();
 
-			if (n && n !== ed.getBody()) {
+			if (n && !isRootNode(ed, n)) {
 				var attribs = this.getAttributes(n);
 
 				if (!$.isEmptyObject(attribs)) {
@@ -212,11 +216,10 @@
 				var isTextSelection = !se.isCollapsed() && se.getContent() == se.getContent({ format: 'text' });
 
 				// is a body or text selection
-				if (n == ed.getBody() || isTextSelection) {
+				if (isRootNode(ed, n) || isTextSelection) {
 					ed.formatter.apply('attributes', args);
-					// attribute selection
+				// attribute selection
 				} else {
-					
 					if (mediaApi && mediaApi.isMediaObject(n)) {
 						mediaApi.updateMedia(args);
 					} else {

@@ -11,6 +11,11 @@
 (function () {
     tinymce.create('tinymce.plugins.StylePlugin', {
         init: function (ed, url) {
+            
+            function isRootNode(node) {
+                return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+            }
+            
             // Register commands
             ed.addCommand('mceStyleProps', function () {
                 var applyStyleToBlocks = false;
@@ -46,7 +51,7 @@
             });
 
             ed.onNodeChange.add(function (ed, cm, n) {
-                cm.setDisabled('style', (n.nodeName === 'BODY' || (n.nodeName === 'BR' && n.getAttribute('data-mce-bogus'))));
+                cm.setDisabled('style', isRootNode(n) || n.hasAttribute('data-mce-bogus'));
             });
 
             // Register buttons

@@ -15,6 +15,10 @@
         init: function (ed, url) {
             this.editor = ed;
 
+            function isRootNode(node) {
+                return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+            }
+
             // Register commands
             ed.addCommand('mceCite', function () {
                 ed.windowManager.open({
@@ -108,14 +112,16 @@
             });
 
             ed.onNodeChange.add(function (ed, cm, n, co) {
-                n = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
+                var p = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
 
                 cm.setDisabled('cite', co);
                 cm.setDisabled('acronym', co);
                 cm.setDisabled('abbr', co);
                 cm.setDisabled('del', co);
                 cm.setDisabled('ins', co);
-                cm.setDisabled('attribs', n && n.nodeName == 'BODY');
+
+                cm.setDisabled('attribs', n && isRootNode(n) && co);
+
                 cm.setActive('cite', 0);
                 cm.setActive('acronym', 0);
                 cm.setActive('abbr', 0);
@@ -123,11 +129,11 @@
                 cm.setActive('ins', 0);
 
                 // Activate all
-                if (n) {
+                if (p) {
                     do {
-                        cm.setDisabled(n.nodeName.toLowerCase(), 0);
-                        cm.setActive(n.nodeName.toLowerCase(), 1);
-                    } while ((n = n.parentNode));
+                        cm.setDisabled(p.nodeName.toLowerCase(), 0);
+                        cm.setActive(p.nodeName.toLowerCase(), 1);
+                    } while ((p = p.parentNode));
                 }
             });
 
