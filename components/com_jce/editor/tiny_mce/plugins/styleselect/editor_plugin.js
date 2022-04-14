@@ -180,7 +180,7 @@
                             // apply or remove
                             ed.formatter.toggle(name, {}, node);
 
-                            // custom class
+                        // custom class
                         } else {
                             node = ed.selection.getNode();
 
@@ -196,8 +196,12 @@
                     }
 
                     ed.selection.moveToBookmark(bookmark);
-                    ed.selection.select(node);
-                    
+
+                    // some formatting (replacing a block element) resets this
+                    if (node && node.parentNode) {
+                        ed.selection.select(node);
+                    }
+
                     ed.nodeChanged();
 
                     return false; // No auto select
