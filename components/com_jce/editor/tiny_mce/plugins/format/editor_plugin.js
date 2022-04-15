@@ -29,12 +29,9 @@
           // restore focus
           ed.focus();
 
-          if (e.shiftKey) {
-            ed.formatter.toggle('italic-i');
-            return;
-          }
+          e.shiftKey ? ed.formatter.toggle('italic-i') : ed.formatter.toggle('italic');
 
-          ed.formatter.toggle('italic');
+          ed.undoManager.add();
         }
       });
 
