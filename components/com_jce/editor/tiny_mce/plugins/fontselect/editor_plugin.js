@@ -70,8 +70,6 @@
                     if (cur && cur.value == v) {
                         ctrl.select(null);
                     }
-
-                    return false; // No auto select
                 }
             });
 

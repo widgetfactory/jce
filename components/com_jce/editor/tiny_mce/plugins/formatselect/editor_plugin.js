@@ -108,7 +108,6 @@
                 max_height: 384,
                 onselect: function (v) {
                     ed.execCommand('FormatBlock', false, v);
-                    return false;
                 }
             });
 
