@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss, NodeType = tinymce.dom.NodeType;
+    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss, NodeType = tinymce.dom.NodeType, DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
     function isInternalNode(node) {
         return NodeType.isBogus(node) || NodeType.isBookmark(node);
@@ -103,11 +103,59 @@
                 ed = this.editor,
                 ctrl;
 
+            function removeFilterTags() {
+                var filter = DOM.get(ctrl.id + '_menu_filter');
+
+                if (!filter) {
+                    return;
+                }
+
+                DOM.remove(DOM.select('button.mceButton', filter));
+            }
+
+            function removeFilterTag(tag, item) {
+                DOM.remove(tag);
+
+                if (!item) {
+                    each(ctrl.items, function (n) {                        
+                        if (n.value == tag.value) {
+                            item = n;
+                            return false;
+                        }
+                    });
+                }
+
+                if (item) {
+                    item.onAction && item.onAction();
+                }
+            }
+
+            function addFilterTag(item) {
+                var filter = DOM.get(ctrl.id + '_menu_filter'), btn = DOM.create('button', { 'class': 'mceButton', 'value': item.value }, '<label>' + item.title + '</label>');
+
+                if (!filter) {
+                    return;
+                }
+
+                DOM.insertBefore(btn, filter.lastChild);
+
+                Event.add(btn, 'click', function (evt) {
+                    evt.preventDefault();
+
+                    if (evt.target.nodeName === 'LABEL') {
+                        return;
+                    }
+
+                    removeFilterTag(btn, item);
+                });
+            }
+
             // Setup style select box
             ctrl = ed.controlManager.createListBox('styleselect', {
                 title: 'advanced.style_select',
-                filter: true,
                 max_height: 384,
+                filter: true,
+                keepopen: true,
                 onselect: function (name) {
                     var matches = [], removedFormat, node = ed.selection.getNode(), bookmark = ed.selection.getBookmark();
 
@@ -180,7 +228,7 @@
                             // apply or remove
                             ed.formatter.toggle(name, {}, node);
 
-                        // custom class
+                            // custom class
                         } else {
                             node = ed.selection.getNode();
 
@@ -195,17 +243,64 @@
                         }
                     }
 
-                    ed.selection.moveToBookmark(bookmark);
+                    // manual selection to prevent error using selection.select when a block element has been renamed
+                    var rng = ed.dom.createRng();
+                    rng.setStart(node, 0);
+                    rng.setEnd(node, 0);
+                    rng.collapse();
+                    ed.selection.setRng(rng);
 
-                    // some formatting (replacing a block element) resets this
-                    if (node && node.parentNode) {
-                        ed.selection.select(node);
-                    }
+                    ed.selection.moveToBookmark(bookmark);
 
                     ed.nodeChanged();
 
                     return false; // No auto select
                 }
+            });
+
+            ctrl.onBeforeRenderMenu.add(function (ctrl, menu) {
+                loadClasses();
+
+                menu.onShowMenu.add(function () {
+                    // remove all tags
+                    removeFilterTags();
+
+                    each(ctrl.items, function (item) {
+                        if (item.selected) {
+                            // add new tag
+                            addFilterTag(item);
+                        }
+                    });
+                });
+            });
+
+            ctrl.onRenderMenu.add(function (ctrl, menu) {
+                menu.onFilterInput.add(function (menu, evt) {
+                    // backspace
+                    if (evt.keyCode == 8) {
+                        var elm = evt.target, value = elm.value;
+
+                        // keep normal behaviour while input has a value
+                        if (value) {
+                            return;
+                        }
+
+                        var tags = DOM.select('button', elm.parentNode.parentNode);
+
+                        if (tags.length) {
+                            var tag = tags.pop(), val = tag.textContent;
+
+                            // remove tag
+                            removeFilterTag(tag);
+
+                            evt.preventDefault();
+
+                            // update value with tag value and focus
+                            elm.value = val;
+                            elm.focus();
+                        }
+                    }
+                });
             });
 
             if (ed.settings.styleselect_stylesheets === false) {
@@ -260,9 +355,15 @@
 
                     var matches = [];
 
+                    // remove all tags
+                    removeFilterTags();
+
                     each(ctrl.items, function (item) {
                         if (ed.formatter.matchNode(node, item.value)) {
                             matches.push(item.value);
+
+                            // add new tag
+                            addFilterTag(item);
                         }
                     });
 
@@ -375,6 +476,7 @@
                             val = val.replace(/^\./, '');
 
                             name = 'style_' + (counter++);
+
                             fmt = {
                                 inline: 'span',
                                 classes: val,
@@ -397,10 +499,6 @@
                         }
                     });
                 }
-
-                ctrl.onBeforeRenderMenu.add(function () {
-                    loadClasses();
-                });
             });
 
             return ctrl;
