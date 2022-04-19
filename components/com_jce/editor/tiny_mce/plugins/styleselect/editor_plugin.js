@@ -104,7 +104,7 @@
                 ctrl;
 
             function removeFilterTags() {
-                var filter = DOM.get(ctrl.id + '_menu_filter');
+                var filter = DOM.get('menu_' + ctrl.id + '_menu_filter');
 
                 if (!filter) {
                     return;
@@ -131,7 +131,11 @@
             }
 
             function addFilterTag(item) {
-                var filter = DOM.get(ctrl.id + '_menu_filter'), btn = DOM.create('button', { 'class': 'mceButton', 'value': item.value }, '<label>' + item.title + '</label>');
+                if (!ctrl.menu) {
+                    return;
+                }
+                
+                var filter = DOM.get('menu_' + ctrl.id + '_menu_filter'), btn = DOM.create('button', { 'class': 'mceButton', 'value': item.value }, '<label>' + item.title + '</label>');
 
                 if (!filter) {
                     return;
