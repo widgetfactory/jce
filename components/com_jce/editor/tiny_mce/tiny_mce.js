@@ -22474,6 +22474,12 @@
               item.settings.onAction(e);
             }
 
+            if (item.settings.onclick) {
+              self.selectItem(item, !item.selected);
+              item.settings.onclick(e);
+              self.close();
+            }
+
             self.clearFilterInput();
 
             return false; // Cancel to fix onbeforeunload problem
