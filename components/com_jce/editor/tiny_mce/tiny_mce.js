@@ -22320,7 +22320,7 @@
       update: function () {
         var self = this,
           s = self.settings,
-          m = DOM.get(self.id);
+          m = DOM.get('menu_' + self.id);
 
         if (s.max_width) {
           DOM.setStyle(m, 'width', s.max_width);
@@ -22378,7 +22378,7 @@
       },
 
       clearFilterInput: function () {
-        var self = this, filter = DOM.get(self.id + '_filter'), input = DOM.select('input', self.id + '_filter_input')[0];
+        var self = this, filter = DOM.get('menu_' + self.id + '_filter'), input = DOM.select('input', 'menu_' + self.id + '_filter_input')[0];
 
         if (!filter) {
           return;
@@ -22421,7 +22421,7 @@
             o.postRender();
           });
         } else {
-          co = DOM.get(self.id);
+          co = DOM.get('menu_' + self.id);
         }
 
         DOM.show(co);
@@ -22533,7 +22533,7 @@
           self.scrollTo(el);
         } else {
           // reset scroll position
-          DOM.get(self.id + '_items').scrollTop = 0;
+          DOM.get('menu_' + self.id + '_items').scrollTop = 0;
         }
 
         if (s.keyboard_focus) {
@@ -22542,7 +22542,7 @@
 
         if (s.filter) {
           // focus input
-          var input = DOM.select('input', self.id + '_filter_input');
+          var input = DOM.select('input', 'menu_' + self.id + '_filter_input');
 
           if (input) {
             input[0].focus();
@@ -22557,7 +22557,7 @@
        */
       hideMenu: function (c) {
         var self = this,
-          co = DOM.get(self.id),
+          co = DOM.get('menu_' + self.id),
           e;
 
         if (!self.isMenuVisible) {
@@ -22581,7 +22581,7 @@
           self.collapse(1);
         }
 
-        e = DOM.get(self.id);
+        e = DOM.get('menu_' + self.id);
 
         if (e) {
           DOM.removeClass(e.firstChild, self.classPrefix + 'ItemActive');
@@ -22604,7 +22604,7 @@
 
         o = self.parent(o);
 
-        if (self.isRendered && (co = DOM.get(self.id + '_items'))) {
+        if (self.isRendered && (co = DOM.get('menu_' + self.id + '_items'))) {
           self._add(co, o);
         }
 
@@ -22655,7 +22655,7 @@
        */
       destroy: function () {
         var self = this,
-          co = DOM.get(self.id);
+          co = DOM.get('menu_' + self.id);
 
         if (self.keyboardNav) {
           self.keyboardNav.destroy();
@@ -22682,7 +22682,7 @@
 
         menu = DOM.create('div', {
           role: 'menu',
-          id: self.id,
+          id: 'menu_' + self.id,
           'class': s['class'] + ' ' + self.classPrefix
         });
 
@@ -22693,12 +22693,12 @@
         // create autocomplete filter
         if (s.filter) {
           var filter = DOM.add(menu, 'div', {
-            id: self.id + '_filter',
+            id: 'menu_' + self.id + '_filter',
             'class': self.classPrefix + 'Filter'
           }, '');
 
           var filterInput = DOM.add(filter, 'div', {
-            id: self.id + '_filter_input',
+            id: 'menu_' + self.id + '_filter_input',
             'class': self.classPrefix + 'FilterInput'
           }, '<input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="..." />');
 
@@ -22709,7 +22709,7 @@
 
         items = DOM.add(menu, 'div', {
           role: 'presentation',
-          id: self.id + '_items',
+          id: 'menu_' + self.id + '_items',
           'class': self.classPrefix + 'Items'
         });
 
@@ -22732,13 +22732,13 @@
       // Internal functions
       _setupKeyboardNav: function () {
         var contextMenu, menuItems, self = this;
-        contextMenu = DOM.get(self.id);
+        contextMenu = DOM.get('menu_' + self.id);
 
-        menuItems = DOM.select('div[role="option"]', self.id);
+        menuItems = DOM.select('div[role="option"]', 'menu_' + self.id);
         menuItems.splice(0, 0, contextMenu);
 
         self.keyboardNav = new tinymce.ui.KeyboardNavigation({
-          root: self.id,
+          root: 'menu_' + self.id,
           items: menuItems,
           onCancel: function () {
             self.hideMenu();
@@ -22789,7 +22789,7 @@
 
       _updateKeyboardNav: function () {
         // update keyboard nav with new list
-        var items = DOM.select('div[role="option"]:not(.mceMenuItemHidden)', 'menu_' + this.id);
+        var items = DOM.select('div[role="option"]:not(.mceMenuItemHidden)', this.id + '');
         this.keyboardNav.update(items);
       },
 
@@ -22837,7 +22837,7 @@
         var self = this, tabIndex = 0;
 
         if (evt.keyCode == 9) {
-          var nodes = DOM.select('input, button, select, textarea', DOM.get(self.id));
+          var nodes = DOM.select('input, button, select, textarea', DOM.get('menu_' + self.id));
 
           nodes = tinymce.grep(nodes, function (node) {
             return !node.disabled && !DOM.isHidden(node) && node.getAttribute('tabindex') >= 0;
@@ -22962,7 +22962,7 @@
 
           if (s.parent) {
             DOM.setAttrib(txt, 'aria-haspopup', 'true');
-            DOM.setAttrib(txt, 'aria-owns', 'menu_' + o.id);
+            DOM.setAttrib(txt, 'aria-owns', o.id);
           }
         }
 
@@ -23786,6 +23786,7 @@
             case 38:
               self.showMenu();
               Event.cancel(evt);
+              self.menu.focus();
               break;
             // backspace
             case 8:
