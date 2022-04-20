@@ -22475,7 +22475,6 @@
             }
 
             if (item.settings.onclick) {
-              self.selectItem(item, !item.selected);
               item.settings.onclick(e);
               self.close();
             }
@@ -32847,11 +32846,9 @@
 
           s.title = ed.getLang(s.title, s.title);
 
-          if (!s.onclick) {
+          if (!s.onclick && s.cmd) {
             s.onclick = function () {
-              if (s.cmd) {
-                ed.execCommand(s.cmd, s.ui || false, s.value);
-              }
+              ed.execCommand(s.cmd, s.ui || false, s.value);
             };
           }
         });
