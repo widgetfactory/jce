@@ -165,6 +165,10 @@ class WFEditor
 
     public function init()
     {
+        if ($this->initialized) {
+            return $this;
+        }
+        
         $this->initialized = true;
 
         $settings = $this->getSettings();
