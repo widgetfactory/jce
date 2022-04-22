@@ -3807,6 +3807,14 @@
         return isBr(node) || (node && node.nodeType == 3 && /^[ \t\r\n]*$/.test(node.nodeValue));
       }
 
+      function isChildOf(container, node) {
+        if (node.lastChild && node.lastChild.nodeType == 1) {
+          node = node.lastChild;
+        }
+
+        return dom.isChildOf(container, node);
+      }
+
       function moveCursorToEnd(e) {
         var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
 
@@ -3824,9 +3832,9 @@
           return;
         }
 
-        if (container.nodeType == 3 && dom.isChildOf(container, node.lastChild)) {
+        if (container.nodeType == 3 && isChildOf(container, node)) {
           var text = container.data;
-
+          
           if (text && text.length && rng.startOffset == text.length) {
             var marker = dom.create('span', { 'data-mce-type': "bookmark" }, '\uFEFF');
 
@@ -22777,6 +22785,10 @@
                 e.target.value = '';
               }
             } else {
+              if (self.settings.onselect) {
+                self.settings.onselect(e.target);
+              }
+              
               self.hideMenu();
             }
 
@@ -22921,8 +22933,8 @@
         var item = DOM.add(menu, 'div', {
           id: o.id,
           'class': cp + 'Item ' + cp + 'ItemEnabled',
-          title: o.settings.title,
-          'aria-label': o.settings.title
+          title: o.settings.title || '',
+          'aria-label': o.settings.title || ''
         });
 
         if (s.html) {
@@ -24705,7 +24717,8 @@
           max_width: this.settings.max_width,
           max_height: this.settings.max_height,
           keyboard_focus: true,
-          onselect: this.settings.onselect
+          onselect: this.settings.onselect,
+          title: this.settings.title
         });
 
         m.onHideMenu.add(function () {
@@ -32844,7 +32857,9 @@
         c.onAddItem.add(function (c, o) {
           var s = o.settings;
 
-          s.title = ed.getLang(s.title, s.title);
+          if (s.title) {
+            s.title = ed.getLang(s.title, s.title);
+          }
 
           if (!s.onclick && s.cmd) {
             s.onclick = function () {
