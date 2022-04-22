@@ -617,8 +617,8 @@ function getDataTransferItems(dataTransfer) {
  * @return {Object} Object with mime types and data for those mime types.
  */
 function getClipboardContent(editor, clipboardEvent) {
-    //var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
-    var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
+    var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
+    //var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
     return content;
 }
