@@ -117,7 +117,7 @@
                 DOM.remove(tag);
 
                 if (!item) {
-                    each(ctrl.items, function (n) {                        
+                    each(ctrl.items, function (n) {
                         if (n.value == tag.value) {
                             item = n;
                             return false;
@@ -134,7 +134,7 @@
                 if (!ctrl.menu) {
                     return;
                 }
-                
+
                 var filter = DOM.get('menu_' + ctrl.id + '_menu_filter'), btn = DOM.create('button', { 'class': 'mceButton', 'value': item.value }, '<label>' + item.title + '</label>');
 
                 if (!filter) {
@@ -231,8 +231,7 @@
 
                             // apply or remove
                             ed.formatter.toggle(name, {}, node);
-
-                            // custom class
+                        // custom class
                         } else {
                             node = ed.selection.getNode();
 
@@ -247,12 +246,15 @@
                         }
                     }
 
-                    // manual selection to prevent error using selection.select when a block element has been renamed
-                    var rng = ed.dom.createRng();
-                    rng.setStart(node, 0);
-                    rng.setEnd(node, 0);
-                    rng.collapse();
-                    ed.selection.setRng(rng);
+                    // if the format is on a valid node, select
+                    if (node) {
+                        // manual selection to prevent error using selection.select when a block element has been renamed
+                        var rng = ed.dom.createRng();
+                        rng.setStart(node, 0);
+                        rng.setEnd(node, 0);
+                        rng.collapse();
+                        ed.selection.setRng(rng);
+                    }
 
                     ed.selection.moveToBookmark(bookmark);
 
