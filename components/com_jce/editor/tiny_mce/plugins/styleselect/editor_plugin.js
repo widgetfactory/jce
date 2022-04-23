@@ -215,10 +215,10 @@
                     }
 
                     each(matches, function (match) {
-                        if (!name || match === name) {
+                        if (!name || match == name) {
 
                             if (match) {
-                                ed.formatter.remove(match, {}, node);
+                                ed.execCommand('RemoveFormat', false, { name: match, node: node });
                             }
 
                             removedFormat = true;
@@ -230,16 +230,12 @@
                         if (ed.formatter.get(name)) {
 
                             // apply or remove
-                            ed.formatter.toggle(name, {}, node);
+                            ed.execCommand('ToggleFormat', false, { name: name, node: node });
                         // custom class
                         } else {
                             node = ed.selection.getNode();
 
-                            if (ed.dom.hasClass(node, name)) {
-                                ed.dom.removeClass(node, name);
-                            } else {
-                                ed.formatter.apply('classname', { 'value': name }, ed.selection.isCollapsed() ? node : null);
-                            }
+                            ed.execCommand('ToggleFormat', false, { name: 'classname', node: ed.selection.isCollapsed() ? node : null });
 
                             // add it to the list
                             ctrl.add(name, name);
@@ -258,7 +254,9 @@
 
                     ed.selection.moveToBookmark(bookmark);
 
-                    ed.nodeChanged();
+                    if (node) {
+                        ed.nodeChanged();
+                    }
 
                     return false; // No auto select
                 }
