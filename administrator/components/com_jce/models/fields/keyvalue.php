@@ -46,7 +46,26 @@ class JFormFieldKeyValue extends JFormField
         $values = $this->value;
 
         if (is_string($values) && !empty($values)) {
-            $values = json_decode(htmlspecialchars_decode($this->value), true);
+            $value = htmlspecialchars_decode($this->value);
+
+            $values = json_decode($value, true);
+
+            if (empty($values) && strpos($value, ':') !== false && strpos($value, '{') === false) {
+                $values = array();
+                
+                foreach (explode(',', $value) as $item) {
+                    $pair = explode(':', $item);
+
+                    array_walk($pair, function (&$val) {
+                        $val = trim($val, chr(0x22) . chr(0x27) . chr(0x38));
+                    });
+
+                    $values[] = array(
+                        'name'  => $pair[0],
+                        'value' => $pair[1]
+                    );
+                }
+            }
         }
 
         // default
