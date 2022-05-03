@@ -39005,10 +39005,11 @@
           var selection = ed.selection, dom = ed.dom;
           
           ed.schema.addValidElements('#mce:root[id|data-mce-root]');
+          
           // add children from body element
           ed.schema.children['mce:root'] = ed.schema.children.body;
-          // add as valid child to body
-          ed.schema.addValidChildren('body[mce:root]');
+          // set "mce:root" as a valid child of body
+          ed.schema.children.body['mce:root'] = {};
 
           // remove fake root when serializing
           ed.serializer.addAttributeFilter('data-mce-root', function (nodes) {
