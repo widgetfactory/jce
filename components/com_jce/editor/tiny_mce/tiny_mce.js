@@ -12403,13 +12403,20 @@
     function hasContentEditableState(value) {
       return function (node) {
         if (isElement(node)) {
+
+          // check contenteditable override
+          if (node.hasAttribute('data-mce-contenteditable')) {
+            return node.getAttribute('data-mce-contenteditable') === value;
+          }
+
+          // check attribute
           if (node.contentEditable === value) {
             return true;
           }
 
-          if (node.getAttribute('data-mce-contenteditable') === value) {
+          /*if (node.getAttribute('data-mce-contenteditable') === value) {
             return true;
-          }
+          }*/
         }
 
         return false;
