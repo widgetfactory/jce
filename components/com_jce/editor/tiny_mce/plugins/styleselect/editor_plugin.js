@@ -214,6 +214,9 @@
                         node = null;
                     }
 
+                    // reset to bookmark
+                    ed.selection.moveToBookmark(bookmark);
+
                     each(matches, function (match) {
                         if (!name || match == name) {
 
@@ -231,7 +234,7 @@
 
                             // apply or remove
                             ed.execCommand('ToggleFormat', false, { name: name, node: node });
-                        // custom class
+                            // custom class
                         } else {
                             node = ed.selection.getNode();
 
@@ -242,8 +245,26 @@
                         }
                     }
 
+                    if (ed.selection.isCollapsed()) {
+                        // if the format is on a valid node, select
+                        if (node) {
+                            // manual selection to prevent error using selection.select when a block element has been renamed
+                            var rng = ed.dom.createRng();
+                            rng.setStart(node, 0);
+                            rng.setEnd(node, 0);
+                            rng.collapse();
+                            ed.selection.setRng(rng);
+                        }
+
+                        ed.selection.moveToBookmark(bookmark);
+
+                        if (node) {
+                            ed.nodeChanged();
+                        }
+                    }
+
                     // if the format is on a valid node, select
-                    if (node) {
+                    /*if (node) {
                         // manual selection to prevent error using selection.select when a block element has been renamed
                         var rng = ed.dom.createRng();
                         rng.setStart(node, 0);
@@ -256,7 +277,7 @@
 
                     if (node) {
                         ed.nodeChanged();
-                    }
+                    }*/
 
                     return false; // No auto select
                 }
