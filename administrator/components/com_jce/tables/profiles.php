@@ -69,8 +69,8 @@ class JceTableProfiles extends JTable
 				$this->area = '0';
 			}
 			
-			// Params can be an empty json string
-			if (!empty($this->params))
+			// Params can be an empty json string for new tables
+			if (empty($this->params))
 			{
 				$this->params = '{}';
 			}
