@@ -1,3 +1,5 @@
+/* global jQuery, Wf */
+
 (function ($, Wf) {
     /**
      * Test if valid JSON string
@@ -153,7 +155,7 @@
                             showError(r.error || '');
                         }
                         // show error
-                    } else {
+                    } else {                        
                         // check for malformed JSON
                         if (/[{}]/.test(o)) {
                             showError('The server returned an invalid JSON response.');
@@ -162,7 +164,7 @@
                         }
                     }
                 } else {
-                    showError('The server returned an invalid JSON response.');
+                    showError('The server returned invalid or missing data.');
                 }
 
                 // clear instance
@@ -183,5 +185,5 @@
                 instance[func] = null;
             });
         }
-    }
+    };
 })(jQuery, Wf);
