@@ -38915,7 +38915,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -39137,7 +39137,7 @@
 
   /**
    * @package    JCE
-   * @copyright    Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @copyright    Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -39414,7 +39414,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -39958,7 +39958,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -40483,550 +40483,7 @@
             return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
           }
 
-          ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-            var node = e.target,
-              sel = ed.selection.getNode();
-
-            ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
-
-            // edge case where forced_root_block:false
-            if (node === ed.getBody() && isCodePlaceholder(sel)) {
-              if (sel.parentNode === node && !sel.nextSibling) {
-                ed.dom.insertAfter(ed.dom.create('br', {
-                  'data-mce-bogus': 1
-                }), sel);
-              }
-
-              return;
-            }
-
-            if (isCodePlaceholder(node)) {
-              e.preventDefault();
-              e.stopImmediatePropagation();
-
-              ed.selection.select(node);
-
-              // add a slight delay before adding selected class to avoid it being removed by the keyup event
-              window.setTimeout(function () {
-                ed.dom.addClass(node, 'mce-item-selected');
-              }, 10);
-
-              e.preventDefault();
-            }
-          });
-
-          var ctrl = ed.controlManager.get('formatselect');
-
-          if (ctrl) {
-            each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
-              // control element title
-              var title = ed.getLang('code.' + key, key);
-
-              if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
-                ctrl.add(title, key, {
-                  class: 'mce-code-' + key
-                });
-
-                ed.formatter.register('shortcode', {
-                  block: 'pre',
-                  attributes: {
-                    'data-mce-code': 'shortcode'
-                  }
-                });
-
-                return true;
-              }
-
-              // map settings value to simplified key
-              if (key === 'xml') {
-                ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
-              }
-
-              if (ed.getParam('code_allow_' + key) && code_blocks) {
-                ctrl.add(title, key, {
-                  class: 'mce-code-' + key
-                });
-
-                ed.formatter.register(key, {
-                  block: 'pre',
-                  attributes: {
-                    'data-mce-code': key
-                  },
-                  onformat: function (elm, fmt, vars) {
-                    // replace linebreaks with newlines
-                    each(ed.dom.select('br', elm), function (br) {
-                      ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
-                    });
-                  }
-                });
-              }
-            });
-          }
-
-          // store block elements from schema map
-          each(ed.schema.getBlockElements(), function (block, blockName) {
-            blockElements.push(blockName);
-          });
-
-          if (ed.plugins.textpattern && ed.settings.code_protect_shortcode) {
-            ed.plugins.textpattern.addPattern({
-              start: '{',
-              end: '}',
-              cmd: 'InsertShortCode',
-              remove: true
-            });
-
-            ed.plugins.textpattern.addPattern({
-              start: ' {',
-              end: '}',
-              format: 'inline-shortcode',
-              remove: false
-            });
-          }
-
-          ed.formatter.register('inline-shortcode', {
-            inline: 'span',
-            attributes: {
-              'data-mce-code': 'shortcode'
-            }
-          });
-
-          // remove paragraph parent of a pre block
-          ed.selection.onSetContent.add(function (sel, o) {
-            each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
-              var p = ed.dom.getParent(elm, 'p');
-
-              if (p && p.childNodes.length === 1) {
-                ed.dom.remove(p, 1);
-              }
-            });
-          });
-
-          // Convert script elements to span placeholder
-          ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              var node = nodes[i],
-                type = node.attr('type');
-
-              if (type) {
-                node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
-              }
-
-              // remove any code spans that are added to json-like syntax in code blocks
-              if (node.firstChild) {
-                node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
-                  if (attr.indexOf('data-mce-code') === -1) {
-                    return match;
-                  }
-
-                  return ed.dom.decode(content);
-                });
-              }
-
-              if (!code_blocks) {
-                var value = '';
-
-                if (node.firstChild) {
-                  value = tinymce.trim(node.firstChild.value);
-                }
-
-                var placeholder = Node.create('img', {
-                  src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                  'data-mce-code': node.name,
-                  'data-mce-type': 'placeholder',
-                  'data-mce-resize': 'false',
-                  title: ed.dom.encode(value)
-                });
-
-                // eslint-disable-next-line no-loop-func
-                each(node.attributes, function (attr) {
-                  placeholder.attr('data-mce-p-' + attr.name, attr.value);
-                });
-
-                if (value) {
-                  placeholder.attr('data-mce-value', escape(value));
-
-                  //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
-                  //placeholder.append(text);
-                }
-
-                node.replace(placeholder);
-
-                continue;
-              }
-
-              // serialize to string
-              value = new Serializer({
-                validate: false
-              }).serialize(node);
-
-              // trim
-              value = tinymce.trim(value);
-
-              var pre = new Node('pre', 1);
-              pre.attr({
-                'data-mce-code': node.name
-              });
-
-              var text = createTextNode(value, false);
-              pre.append(text);
-
-              node.replace(pre);
-            }
-          });
-
-          ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
-            var i = nodes.length,
-              node, parent;
-
-            function isBody(parent) {
-              return parent.name === 'body';
-            }
-
-            function isValidCode(type) {
-              return type === 'shortcode' || type === 'php';
-            }
-
-            function isBlockNode(node) {
-              return tinymce.inArray(blockElements, node.name) != -1;
-            }
-
-            function isInlineNode(node) {
-              if (node.name != 'span') {
-                return false;
-              }
-
-              if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
-                return true;
-              }
-
-              if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
-                return true;
-              }
-
-              return false;
-            }
-
-            while (i--) {
-              node = nodes[i], parent = node.parent;
-
-              // don't process placeholders
-              if (node.attr('data-mce-type') == 'placeholder') {
-                continue;
-              }
-
-              if (!isValidCode(node.attr(name))) {
-                continue;
-              }
-
-              var value = node.firstChild.value;
-
-              // replace linebreaks with newlines
-              if (value) {
-                node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
-              }
-
-              if (parent) {
-                // don't process shortcode in code blocks
-                if (parent.attr(name)) {
-                  node.unwrap();
-                  continue;
-                }
-
-                // rename shortcode blocks to <pre>
-                if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
-                  node.name = 'pre';
-                } else {
-                  // add whitespace after the span so a cursor can be set
-                  if (node.name == 'span' && node === parent.lastChild) {
-                    var nbsp = createTextNode('\u00a0');
-                    parent.append(nbsp);
-                  }
-                }
-              }
-            }
-          });
-
-          ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-            var i = nodes.length,
-              node, child;
-
-            function isXmlNode(node) {
-              return !/(shortcode|php)/.test(node.attr('data-mce-code'));
-            }
-
-            while (i--) {
-              var root_block = false;
-
-              node = nodes[i];
-
-              // get the code block type, eg: script, shortcode, style, php
-              var type = node.attr(name);
-
-              if (node.name === 'img') {
-                var elm = new Node(type, 1);
-
-                for (var key in node.attributes.map) {
-                  var val = node.attributes.map[key];
-
-                  if (key.indexOf('data-mce-p-') !== -1) {
-                    key = key.substr(11);
-                  } else {
-                    val = null;
-                  }
-
-                  elm.attr(key, val);
-                }
-
-                var value = node.attr('data-mce-value');
-
-                if (value) {
-                  var text = createTextNode(unescape(value));
-
-                  // only use text node if shortcode or php
-                  if (type == 'php' || type == 'shortcode') {
-                    elm = text;
-                  } else {
-                    elm.append(text);
-                  }
-                }
-
-                node.replace(elm);
-
-                continue;
-              }
-
-              // pre node is empty, remove
-              if (node.isEmpty()) {
-                node.remove();
-              }
-
-              // skip xml
-              if (type === 'xml') {
-                continue;
-              }
-
-              // set the root block type for script and style tags so the parser does the work wrapping free text
-              if (type === 'script' || type === 'style') {
-                root_block = type;
-              }
-
-              var child = node.firstChild,
-                newNode = node.clone(true),
-                text = '';
-
-              if (child) {
-                do {
-                  if (isXmlNode(node)) {
-                    var value = child.name == 'br' ? '\n' : child.value;
-
-                    if (value) {
-                      text += value;
-                    }
-                  }
-                } while ((child = child.next));
-              }
-
-              if (text) {
-                newNode.empty();
-
-                var parser = new DomParser({
-                  validate: false
-                });
-
-                // validate attributes of script and style tags
-                if (type === 'script' || type === 'style') {
-                  parser.addNodeFilter(type, function (items, name) {
-                    var n = items.length;
-
-                    while (n--) {
-                      var item = items[n];
-
-                      // eslint-disable-next-line no-loop-func
-                      each(item.attributes, function (attr) {
-                        if (!attr) {
-                          return true;
-                        }
-
-                        if (ed.schema.isValid(name, attr.name) === false) {
-                          item.attr(attr.name, null);
-                        }
-                      });
-                    }
-                  });
-                }
-
-                // parse text and process
-                var fragment = parser.parse(text, {
-                  forced_root_block: root_block
-                });
-                // append fragment to <pre> clone
-                newNode.append(fragment);
-              }
-
-              node.replace(newNode);
-
-              if (type === 'shortcode' && newNode.name === 'pre') {
-                // append newline to the end of shortcode blocks
-                var newline = createTextNode('\n');
-                newNode.append(newline);
-
-                // unwrap to text as further processing is not needed
-                newNode.unwrap();
-              }
-            }
-          });
-
-          if (ed.plugins.clipboard) {
-            ed.onGetClipboardContent.add(function (ed, content) {
-              var text = content['text/plain'] || '',
-                value;
-
-              // trim text
-              text = tinymce.trim(text);
-
-              if (text) {
-                var node = ed.selection.getNode();
-
-                // don't process into PRE tags
-                if (node && node.nodeName === 'PRE') {
-                  return;
-                }
-
-                value = processOnInsert(text);
-
-                // update with processed text
-                if (value !== text) {
-                  content['text/plain'] = '';
-                  content['text/html'] = content['x-tinymce/html'] = value;
-                }
-              }
-            });
-          }
-        });
-
-        ed.onInit.add(function () {
-          // Display "script" instead of "pre" in element path
-          if (ed.theme && ed.theme.onResolveName) {
-            ed.theme.onResolveName.add(function (theme, o) {
-              var node = o.node;
-
-              if (node.getAttribute('data-mce-code')) {
-                o.name = node.getAttribute('data-mce-code');
-              }
-            });
-          }
-        });
-
-        ed.onBeforeSetContent.add(function (ed, o) {
-          if (ed.settings.code_protect_shortcode) {
-            // process regularlabs sourcerer blocks first
-            o.content = processSourcerer(o.content);
-
-            if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
-              o.content = processShortcode(o.content);
-            }
-          }
-
-          if (ed.settings.code_allow_custom_xml) {
-            // only process content on "load"
-            if (o.content && o.load) {
-              o.content = processXML(o.content);
-            }
-          }
-
-          // test for PHP, Script or Style
-          if (/<(\?|script|style)/.test(o.content)) {
-            // Remove javascript if not enabled
-            if (!ed.settings.code_allow_script) {
-              o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
-            }
-
-            if (!ed.settings.code_allow_style) {
-              o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
-            }
-
-            o.content = processPhp(o.content);
-          }
-        });
-
-        ed.onPostProcess.add(function (ed, o) {
-          if (o.get) {
-            // Process converted php
-            if (/(data-mce-php|\[php:start\])/.test(o.content)) {
-              // attribute value
-              o.content = o.content.replace(/\[php:\s?start\]([^\[]]+)\[php:\s?end\]/g, function (a, b) {
-                return '<?php' + ed.dom.decode(b) + '?>';
-              });
-
-              // textarea
-              o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-                if (/&lt;\?php/.test(c)) {
-                  c = ed.dom.decode(c);
-                }
-                return '<textarea' + b + '>' + c + '</textarea>';
-              });
-
-              // as attribute
-              o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
-                return '<?php' + ed.dom.decode(b) + '?>';
-              });
-            }
-
-            // shortcode content will be encoded as text, so decode
-            if (ed.settings.code_protect_shortcode) {
-              o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
-                return '{' + ed.dom.decode(content) + '}';
-              });
-            }
-
-            // decode code snippets
-            o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
-              // not the droids etc.
-              if (attr.indexOf('data-mce-code') === -1) {
-                return match;
-              }
-
-              // trim content
-              content = tinymce.trim(content);
-
-              // decode content
-              content = ed.dom.decode(content);
-
-              // get element from match
-              var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
-
-              // replace linebreaks with newline in some blocks
-              if (type != 'script') {
-                content = content.replace(/<br[^>]*?>/gi, '\n');
-              }
-
-              // remove and replace <?php?> tags
-              if (type == 'php') {
-                content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
-                content = '<?php\n' + tinymce.trim(content) + '\n?>';
-              }
-
-              return content;
-            });
-
-            // decode protected code
-            o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
-              return unescape(content);
-            });
-          }
-        });
-      }
-    });
-    // Register plugin
-    tinymce.PluginManager.add('code', tinymce.plugins.CodePlugin);
-  })();
-
-  /**
-   * @package   	JCE
+          ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -41205,7 +40662,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -41561,7 +41018,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -42085,7 +41542,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -42120,7 +41577,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -42826,7 +42283,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -43221,8 +42678,487 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2022 Ryan Demmer
    * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
+   */
+
+  /*global tinymce:true */
+
+  (function () {
+      var each = tinymce.each, BlobCache = tinymce.file.BlobCache, Conversions = tinymce.file.Conversions, Uuid = tinymce.util.Uuid, DOM = tinymce.DOM;
+
+      var count = 0;
+
+      var uniqueId = function (prefix) {
+          return (prefix || 'blobid') + (count++);
+      };
+
+      function isSupportedImage(value) {
+          return /\.(jpg|jpeg|png|gif|webp|avif)$/.test(value);
+      }
+
+      function getImageExtension(value) {
+          if (isSupportedImage(value)) {
+              return value.substring(value.length, value.lastIndexOf('.') + 1);
+          }
+
+          return '';
+      }
+
+      function uploadHandler(settings, blobInfo, success, failure, progress) {
+          var xhr, formData;
+
+          xhr = new XMLHttpRequest();
+          xhr.open('POST', settings.url);
+
+          xhr.upload.onprogress = function (e) {
+              progress(e.loaded / e.total * 100);
+          };
+
+          xhr.onerror = function () {
+              failure("Image upload failed due to a XHR Transport error. Code: " + xhr.status);
+          };
+
+          xhr.onload = function () {
+              var json;
+
+              if (xhr.status < 200 || xhr.status >= 300) {
+                  failure("HTTP Error: " + xhr.status);
+                  return;
+              }
+
+              json = JSON.parse(xhr.responseText);
+
+              if (!json || json.error) {
+                  failure(json.error.message || 'Invalid JSON response!');
+                  return;
+              }
+
+              if (!json.result || !json.result.files) {
+                  failure(json.error.message || 'Invalid JSON response!');
+                  return;
+              }
+
+              success(json.result.files[0]);
+          };
+
+          formData = new FormData();
+          formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+          // Add multipart params
+          each(settings, function (value, name) {
+              if (name == 'url' || name == 'multipart') {
+                  return true;
+              }
+
+              formData.append(name, value);
+          });
+
+          xhr.send(formData);
+      }
+
+      function imageToBlobInfo(blobCache, img, resolve, reject) {
+          var base64, blobInfo;
+
+          if (img.src.indexOf('blob:') === 0) {
+              blobInfo = blobCache.getByUri(img.src);
+
+              if (blobInfo) {
+                  resolve({
+                      image: img,
+                      blobInfo: blobInfo
+                  });
+              } else {
+                  Conversions.uriToBlob(img.src).then(function (blob) {
+                      Conversions.blobToDataUri(blob).then(function (dataUri) {
+                          base64 = Conversions.parseDataUri(dataUri).data;
+                          blobInfo = blobCache.create(uniqueId(), blob, base64);
+                          blobCache.add(blobInfo);
+
+                          resolve({
+                              image: img,
+                              blobInfo: blobInfo
+                          });
+                      });
+                  }, function (err) {
+                      reject(err);
+                  });
+              }
+
+              return;
+          }
+
+          base64 = Conversions.parseDataUri(img.src).data;
+          blobInfo = blobCache.findFirst(function (cachedBlobInfo) {
+              return cachedBlobInfo.base64() === base64;
+          });
+
+          if (blobInfo) {
+              resolve({
+                  image: img,
+                  blobInfo: blobInfo
+              });
+          } else {
+              Conversions.uriToBlob(img.src).then(function (blob) {
+                  blobInfo = blobCache.create(uniqueId(), blob, base64);
+                  blobCache.add(blobInfo);
+
+                  resolve({
+                      image: img,
+                      blobInfo: blobInfo
+                  });
+              }, function (err) {
+                  reject(err);
+              });
+          }
+      }
+
+      tinymce.PluginManager.add('blobupload', function (ed, url) {
+          var uploaders = [];
+
+          ed.onPreInit.add(function () {
+              // get list of supported plugins
+              each(ed.plugins, function (plg, name) {
+                  if (tinymce.is(plg.getUploadConfig, 'function')) {
+
+                      var data = plg.getUploadConfig();
+
+                      if (data.inline && data.filetypes) {
+                          uploaders.push(plg);
+                      }
+                  }
+              });
+          });
+
+          function findMarker(marker) {
+              var found;
+
+              each(ed.dom.select('img[src]'), function (image) {
+                  if (image.src == marker.src) {
+                      found = image;
+
+                      return false;
+                  }
+              });
+
+              return found;
+          }
+
+          function removeMarker(marker) {
+              each(ed.dom.select('img[src]'), function (image) {
+                  if (image.src == marker.src) {
+                      ed.selection.select(image);
+                      ed.execCommand('mceRemoveNode');
+
+                      var node = ed.selection.getNode();
+
+                      // restore bogus break
+                      if (node.nodeName == 'P' && ed.dom.isEmpty(node)) {
+                          ed.dom.add(node, 'br', { 'data-mce-bogus': 1 });
+                      }
+                  }
+              });
+          }
+
+          function processImages(images) {
+              var cachedPromises = {};
+
+              var promises = tinymce.map(images, function (img) {
+                  var newPromise;
+
+                  if (cachedPromises[img.src]) {
+                      // Since the cached promise will return the cached image
+                      // We need to wrap it and resolve with the actual image
+                      return new Promise(function (resolve) {
+                          cachedPromises[img.src].then(function (imageInfo) {
+                              if (typeof imageInfo === 'string') { // error apparently
+                                  return imageInfo;
+                              }
+                              resolve({
+                                  image: img,
+                                  blobInfo: imageInfo.blobInfo
+                              });
+                          });
+                      });
+                  }
+
+                  newPromise = new Promise(function (resolve, reject) {
+                      imageToBlobInfo(BlobCache, img, resolve, reject);
+                  }).then(function (result) {
+                      delete cachedPromises[result.image.src];
+                      return result;
+                  })['catch'](function (error) {
+                      delete cachedPromises[img.src];
+                      return error;
+                  });
+
+                  cachedPromises[img.src] = newPromise;
+
+                  return newPromise;
+              });
+
+              return Promise.all(promises);
+          }
+
+          ed.onInit.add(function () {
+
+              if (!ed.plugins.clipboard) {
+                  return;
+              }
+
+              ed.onPasteBeforeInsert.add(function (ed, o) {
+                  var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+                  var node = ed.dom.create('div', 0, o.content), images = tinymce.grep(ed.dom.select('img[src]', node), function (img) {
+                      var src = img.getAttribute('src');
+
+                      if (img.hasAttribute('data-mce-bogus')) {
+                          return false;
+                      }
+
+                      if (img.hasAttribute('data-mce-placeholder')) {
+                          return false;
+                      }
+
+                      if (img.hasAttribute('data-mce-upload-marker')) {
+                          return false;
+                      }
+
+                      if (!src || src == transparentSrc) {
+                          return false;
+                      }
+
+                      if (src.indexOf('blob:') === 0) {
+                          return true;
+                      }
+
+                      if (src.indexOf('data:') === 0) {
+                          return true;
+                      }
+
+                      return false;
+                  });
+
+                  if (images.length) {
+                      var promises = [];
+
+                      processImages(images).then(function (result) {
+                          each(result, function (item) {
+                              if (typeof item == 'string') {
+                                  return;
+                              }
+
+                              ed.selection.select(findMarker(item.image));
+                              ed.selection.scrollIntoView();
+
+                              promises.push(uploadPastedImage(item.image, item.blobInfo));
+                          });
+                      });
+
+                      Promise.all(promises).then();
+                  }
+              });
+          });
+
+          function uploadPastedImage(marker, blobInfo) {
+              return new Promise(function (resolve, reject) {
+                  // no suitable uploaders, remove blob
+                  if (!uploaders.length) {
+                      removeMarker(marker);
+
+                      return resolve();
+                  }
+
+                  var html = '' +
+                      '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
+                      '<div class="mceModalRow">' +
+                      '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
+                      '   <div class="mceModalControl mceModalControlAppend">' +
+                      '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
+                      '       <span role="presentation"></span>' +
+                      '   </div>' +
+                      '</div>';
+
+                  var win = ed.windowManager.open({
+                      title: ed.getLang('dlg.name', 'Name'),
+                      content: html,
+                      size: 'mce-modal-landscape-small',
+                      buttons: [
+                          {
+                              title: ed.getLang('cancel', 'Cancel'),
+                              id: 'cancel'
+                          },
+                          {
+                              title: ed.getLang('submit', 'Submit'),
+                              id: 'submit',
+                              onclick: function (e) {
+                                  var filename = DOM.getValue(ed.id + '_blob_input');
+
+                                  if (!filename) {
+                                      removeMarker(marker);
+                                      return resolve();
+                                  }
+
+                                  // remove some common characters
+                                  filename = filename.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
+
+                                  // check for extension in file name, eg. image.php.jpg
+                                  if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
+                                      ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+                                      removeMarker(marker);
+                                      return resolve();
+                                  }
+
+                                  var url, uploader;
+
+                                  each(uploaders, function (instance) {
+                                      if (!url) {
+                                          url = instance.getUploadURL({ name: blobInfo.filename() });
+
+                                          if (url) {
+                                              uploader = instance;
+                                              return false;
+                                          }
+                                      }
+                                  });
+
+                                  if (!url) {
+                                      removeMarker(marker);
+                                      return resolve();
+                                  }
+
+                                  var props = {
+                                      method: 'upload',
+                                      id: Uuid.uuid('wf_'),
+                                      inline: 1,
+                                      name: filename,
+                                      url: url + '&' + ed.settings.query
+                                  };
+
+                                  var images = tinymce.grep(ed.dom.select('img[src]'), function (image) {
+                                      return image.src == marker.src;
+                                  });
+
+                                  ed.setProgressState(true);
+
+                                  uploadHandler(props, blobInfo, function (data) {
+                                      data.marker = images[0];
+
+                                      var elm = uploader.insertUploadedFile(data);
+
+                                      if (elm) {
+                                          ed.undoManager.add();
+                                          // replace marker with new element
+                                          ed.dom.replace(elm, images[0]);
+                                          // select new image
+                                          ed.selection.select(elm);
+                                      }
+
+                                      ed.setProgressState(false);
+
+                                      win.close();
+
+                                      return resolve();
+
+                                  }, function (error) {
+                                      ed.windowManager.alert(error);
+                                      ed.setProgressState(false);
+
+                                      return resolve();
+                                  }, function () { });
+                              },
+                              classes: 'primary'
+                          }
+                      ],
+                      open: function () {
+                          DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
+
+                          window.setTimeout(function () {
+                              DOM.get(ed.id + '_blob_input').focus();
+                          }, 10);
+                      },
+                      close: function () {
+                          removeMarker(marker);
+                          return resolve();
+                      }
+                  });
+              });
+          }
+      });
+  })();
+
+}());
+lizer.addAttributeFilter(contentEditableAttrName, function (nodes) {
+          var i = nodes.length, node;
+
+          while (i--) {
+            node = nodes[i];
+            if (!hasEditClass(node) && !hasNonEditClass(node)) {
+              continue;
+            }
+
+            if (nonEditableRegExps && node.attr('data-mce-content')) {
+              node.name = "#text";
+              node.type = 3;
+              node.raw = true;
+              node.value = node.attr('data-mce-content');
+            } else {
+              node.attr(contentEditableAttrName, null);
+            }
+          }
+        });
+      });
+    });
+  })();
+
+  /*global tinymce:true */
+
+  (function () {
+    var DOM = tinymce.DOM;
+
+    tinymce.create('tinymce.plugins.BrandingPlugin', {
+
+      init: function (ed, url) {
+
+        // turn off branding
+        if (ed.settings.branding === false) {
+          return;
+        }
+
+        ed.onPostRender.add(function () {
+          var container = ed.getContentAreaContainer();
+          DOM.insertAfter(DOM.create('div', { 'class' : 'mceBranding' }, 'Powered by JCE Core. <span id="mceBrandingMessage"></span><a href="https://www.joomlacontenteditor.net/purchase" target="_blank" title="Get JCE Pro">JCE Pro</a>'), container);
+        });
+
+        ed.onNodeChange.add(function (ed, cm, n, co) {
+          var container = ed.getContentAreaContainer(), msg = 'Get more features with ';
+
+          if (n.nodeName === "IMG") {
+            msg = 'Image resizing, thumbnails and editing in ';
+          }
+
+          if (ed.dom.is(n, '.mce-item-media')) {
+            msg = 'Upload and manage audio and video with ';
+          }
+
+          DOM.setHTML(DOM.get('mceBrandingMessage', container), msg);
+        });
+      }
+    });
+
+    // Register plugin
+    tinymce.PluginManager.add('branding', tinymce.plugins.BrandingPlugin);
+  })();
+
+  /**
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or

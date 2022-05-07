@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright     Copyright (c) 2009-2021 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * Adapted from the Joomla Search.contacts plugin - plugins/search/contacts/contacts.php
