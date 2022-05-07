@@ -8,7 +8,9 @@
  * other free or open source software licenses.
  */
 
-(function($, window, undef) {
+/* global jQuery */
+
+(function ($, window, undef) {
 
     var counter = 0;
 
@@ -39,7 +41,7 @@
     }
 
     // browser sniffer
-    var Env = (function() {
+    var Env = (function () {
         var nav = navigator,
             ua = nav.userAgent,
             o = {};
@@ -73,7 +75,7 @@
     }
 
     Transport.prototype = {
-        upload: function(file) {
+        upload: function (file) {
             // store current file
             this.file = file;
 
@@ -88,7 +90,7 @@
                 this.iframe();
             }
         },
-        error: function(status, text) {
+        error: function (status, text) {
             var callback = this.options.callback;
 
             var error = {
@@ -99,7 +101,7 @@
 
             callback('error', error);
         },
-        response: function(data) {
+        response: function (data) {
             var callback = this.options.callback;
 
             if (data) {
@@ -137,7 +139,7 @@
                 this.error();
             }
         },
-        xhr: function() {
+        xhr: function () {
             var self = this,
                 xhr = this.transport,
                 o = this.options,
@@ -149,7 +151,7 @@
 
             // progress
             if (xhr.upload) {
-                xhr.upload.onprogress = function(e) {
+                xhr.upload.onprogress = function (e) {
                     if (e.lengthComputable) {
                         file.loaded = Math.min(file.size, e.loaded);
                         callback('progress', file);
@@ -157,7 +159,7 @@
                 };
             }
 
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     // success
                     if (xhr.status === 200) {
@@ -182,7 +184,7 @@
             xhr.open("post", o.url, true);
 
             // Set custom headers
-            $.each(o.headers, function(name, value) {
+            $.each(o.headers, function (name, value) {
                 xhr.setRequestHeader(name, value);
             });
 
@@ -190,7 +192,7 @@
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
             // Add multipart params
-            $.each(o.multipart, function(name, value) {
+            $.each(o.multipart, function (name, value) {
                 if ($.type(value) === "object") {
                     formData.append(value.name, value.value);
                 } else {
@@ -200,7 +202,7 @@
 
             // add file specific data
             if (file.data) {
-                $.each(file.data, function(name, value) {
+                $.each(file.data, function (name, value) {
                     if ($.type(value) === "object") {
                         formData.append(value.name, value.value);
                     } else {
@@ -221,7 +223,7 @@
 
             return;
         },
-        cleanup: function() {
+        cleanup: function () {
             var file = this.file;
 
             if (file && file.input) {
@@ -231,13 +233,12 @@
 
             return false;
         },
-        iframe: function() {
+        iframe: function () {
             var self = this,
                 ifr = this.transport,
                 o = this.options,
                 callback = o.callback,
                 form = o.form,
-                inputs = [],
                 _uid = uid();
 
             // get file object and element
@@ -251,7 +252,7 @@
             input.setAttribute('name', o.data_name);
 
             // add other input data
-            $.each(o.multipart, function(name, value) {
+            $.each(o.multipart, function (name, value) {
                 if (name === o.data_name) {
                     return;
                 }
@@ -275,7 +276,7 @@
             tmp.innerHTML = '<iframe id="' + _uid + '_iframe" name="' + _uid + '_iframe" src="javascript:&quot;&quot;" style="display:none"></iframe>';
             ifr = tmp.firstChild;
 
-            $(ifr).on('load', function(e) {
+            $(ifr).on('load', function (e) {
                 var el;
 
                 try {
@@ -325,7 +326,7 @@
             form.setAttribute("action", o.url);
             form.submit();
         },
-        abort: function() {
+        abort: function () {
             if (this.transport instanceof XMLHttpRequest) {
                 this.transport.abort();
 
@@ -346,7 +347,9 @@
                             ifr.src = "about:blank";
                         }
                     }
-                } catch (ex) {}
+                } catch (ex) {
+                    // error
+                }
 
                 this.transport = null;
                 this.cleanup();
@@ -378,7 +381,7 @@
         var accept = [];
 
         if (this.options.filetypes.length > 1) {
-            accept = $.map(this.options.filetypes.split(','), function(val) {
+            accept = $.map(this.options.filetypes.split(','), function (val) {
                 return '.' + val;
             });
         }
@@ -410,7 +413,7 @@
          * @param {function} fct Event callback
          * @returns {void}
          */
-        on: function(event, fn) {
+        on: function (event, fn) {
             $(document).on('upload:' + event, fn);
 
             this._events.push(event);
@@ -422,7 +425,7 @@
          * @param {string} ev Event name
          * @returns {void}
          */
-        fire: function(event) {
+        fire: function (event) {
             $(document).trigger('upload:' + event, Array.prototype.slice.call(arguments, 1));
 
             return this;
@@ -431,7 +434,7 @@
          * Initialize Uploader
          * @returns {void}
          */
-        init: function() {
+        init: function () {
             // create empty files array
             var self = this,
                 o = this.options;
@@ -440,7 +443,7 @@
             if (o.drop_target && $.support.dragdrop) {
 
                 // Block browser default dragover dragenter, but fire event
-                $(o.drop_target).on('dragover', function(e) {
+                $(o.drop_target).on('dragover', function (e) {
                     var dataTransfer = e.originalEvent.dataTransfer;
 
                     self.fire('dragover');
@@ -451,21 +454,21 @@
                 });
 
                 // fire off other drag events
-                $(o.drop_target).on('dragstart dragenter dragleave dragend', function(e) {
+                $(o.drop_target).on('dragstart dragenter dragleave dragend', function (e) {
                     self.fire(e.type);
 
                     cancel(e);
                 });
 
                 // Attach drop handler and grab files
-                $(o.drop_target).on('drop', function(e) {
+                $(o.drop_target).on('drop', function (e) {
                     var dataTransfer = e.originalEvent.dataTransfer;
 
                     self.fire('drop');
 
                     // Add dropped files
                     if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-                        $.each(dataTransfer.files, function(i, file) {
+                        $.each(dataTransfer.files, function (i, file) {
                             self.addFile(file);
                         });
                         cancel(e);
@@ -492,9 +495,9 @@
                 $(btn).addClass('wf-uploader-button').wrap('<div class="wf-uploader-container" />');
 
                 // add change event to input
-                $(this.input).on('change', function() {
+                $(this.input).on('change', function () {
                     if (this.files && $.support.xhr2) {
-                        $.each(this.files, function(i, file) {
+                        $.each(this.files, function (i, file) {
                             self.addFile(file);
                         });
                     } else {
@@ -525,7 +528,7 @@
          * @param {object} file
          * @returns {void}
          */
-        addFile: function(file) {
+        addFile: function (file) {
             if (file && file.name) {
                 // shortcut for file.name
                 var name = file.name;
@@ -553,7 +556,7 @@
                 file.size = file.size || "";
 
                 // check file size
-                if (file.size && parseInt(file.size) > parseInt(this.options.max_size) * 1024) {
+                if (file.size && parseInt(file.size, 10) > parseInt(this.options.max_size, 10) * 1024) {
                     this.fire('error', { "code": 600, "message": 'FILE_SIZE_ERROR', "file": file });
                     return false;
                 }
@@ -587,7 +590,7 @@
                 this.files.push(file);
             }
         },
-        removeFile: function(file) {
+        removeFile: function (file) {
             // dispatch event
             this.fire('fileremoved', file);
 
@@ -600,7 +603,7 @@
 
             return this;
         },
-        getFileIndex: function(file) {
+        getFileIndex: function (file) {
             var i, files = this.files,
                 len = files.length;
 
@@ -612,7 +615,7 @@
 
             return -1;
         },
-        fileExists: function(file) {
+        fileExists: function (file) {
             var i, files = this.files,
                 len = files.length;
 
@@ -624,12 +627,12 @@
 
             return false;
         },
-        updateFile: function(file, property) {
+        updateFile: function (file, property) {
             var self = this,
                 i = this.getFileIndex(file);
 
             if (i !== -1) {
-                $.each(property, function(name, value) {
+                $.each(property, function (name, value) {
                     if (/^(size|type|element)$/.test(name) === false) {
                         self.files[i][name] = value;
                     }
@@ -638,11 +641,11 @@
 
             return this;
         },
-        renameFile: function(file, name) {
+        renameFile: function (file, name) {
             return this.updateFile(file, { 'filename': name });
         },
 
-        upload: function(file) {
+        upload: function (file) {
             var self = this,
                 o = this.options,
                 data;
@@ -660,7 +663,7 @@
                 url: o.url,
                 data_name: o.input_name,
                 multipart: data,
-                callback: function(ev, args) {
+                callback: function (ev, args) {
                     // fire event
                     self.fire(ev, args);
 
@@ -685,10 +688,10 @@
 
             return this;
         },
-        start: function() {
+        start: function () {
             var self = this;
 
-            $.each(this.files, function(i, file) {
+            $.each(this.files, function (i, file) {
                 // begin upload
                 self.fire('uploadstart', file);
 
@@ -697,7 +700,7 @@
 
             return this;
         },
-        clear: function() {
+        clear: function () {
             this.files = [];
 
             // clear input and remove all siblings
@@ -705,7 +708,7 @@
 
             return this;
         },
-        stop: function() {
+        stop: function () {
             if (this.transport) {
                 this.transport.abort();
 
@@ -714,7 +717,7 @@
 
             return this;
         },
-        destroy: function() {
+        destroy: function () {
             if (this.transport) {
                 this.transport.cleanup();
 
@@ -725,7 +728,7 @@
             this.fire('destroy');
 
             // unbind all events
-            $.each(this._events, function(i, ev) {
+            $.each(this._events, function (i, ev) {
                 $(document).off('upload:' + ev);
             });
 
