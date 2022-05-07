@@ -802,7 +802,7 @@ class JceModelProfile extends JModelAdmin
                 }
 
                 if ($key == 'params') {
-                    $buffer .= "\n\t\t\t" . '<' . $key . '>' . trim($value) . '</' . $key . '>';
+                    $buffer .= "\n\t\t\t" . '<' . $key . '><![CDATA[' . trim($value) . ']]></' . $key . '>';
                 } else {
                     $buffer .= "\n\t\t\t" . '<' . $key . '>' . JceProfilesHelper::encodeData($value) . '</' . $key . '>';
                 }
