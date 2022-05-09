@@ -280,7 +280,13 @@ abstract class JceProfilesHelper
         $n = 0;
 
         $app = JFactory::getApplication();
-        $xml = simplexml_load_file($file);
+
+        // load data from file
+        $data   = JFile::read($file);
+        // format params data as CDATA
+        $data   = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
+        // load processed string
+        $xml    = simplexml_load_string($data);
 
         $user = JFactory::getUser();
         $date = new JDate();
