@@ -2172,7 +2172,8 @@
       var bracketRe = '(?:\{|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
       function createLink(url) {
-          var attribs = { 'href': url }, params = ed.getParam('link', {});
+          // create attribs and decode url to prevent double encoding in dom.createHTML
+          var attribs = { 'href': ed.dom.decode(url) }, params = ed.getParam('link', {});
 
           attribs = tinymce.extend(attribs, params.attributes || {});
 
@@ -2738,7 +2739,7 @@
               return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
           }
 
-          function getContentAndInsert(e) {
+          function getContentAndInsert(e) {            
               // Getting content from the Clipboard can take some time
               var clipboardTimer = new Date().getTime();
               var clipboardContent = getClipboardContent(ed, e);
