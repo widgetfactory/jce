@@ -161,7 +161,7 @@
                 filter: true,
                 keepopen: true,
                 onselect: function (name) {
-                    var matches = [], removedFormat, node = ed.selection.getNode(), bookmark = ed.selection.getBookmark();
+                    var matches = [], removedFormat, node = ed.selection.getNode();
 
                     var collectNodesInRange = function (rng, predicate) {
                         if (rng.collapsed) {
@@ -179,105 +179,99 @@
                             return elements;
                         }
                     };
-
+        
                     // get list of inline text elements
                     var inlineTextElements = ed.schema.getTextInlineElements();
-
+        
                     // check if valid text selection element
                     var isElement = function (elm) {
                         return elm && elm.nodeType == 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
                     };
-
+        
                     var isOnlyTextSelected = function () {
                         // Collect all non inline text elements in the range and make sure no elements were found
                         var elements = collectNodesInRange(ed.selection.getRng(), isElement);
-
+        
                         return elements.length === 0;
                     };
 
-                    if (node === ed.getBody() && !isOnlyTextSelected()) {
-                        return false;
+                    var nodes = ed.selection.getSelectedBlocks();
+
+                    if (nodes.length <= 1) {
+                        nodes = [node];
                     }
 
                     ed.focus();
                     ed.undoManager.add();
 
-                    // Toggle off the current format(s)
-                    each(ctrl.items, function (item) {
-                        if (ed.formatter.matchNode(node, item.value)) {
-                            matches.push(item.value);
+                    each(nodes, function (node) {
+                        if (node === ed.getBody() && !isOnlyTextSelected()) {
+                            return false;
                         }
-                    });
 
-                    // reset node if there is a text only selection
-                    if (!ed.selection.isCollapsed() && isOnlyTextSelected()) {
-                        node = null;
-                    }
+                        var bookmark = ed.selection.getBookmark();
 
-                    // reset to bookmark
-                    ed.selection.moveToBookmark(bookmark);
-
-                    each(matches, function (match) {
-                        if (!name || match == name) {
-
-                            if (match) {
-                                ed.execCommand('RemoveFormat', false, { name: match, node: node });
+                        // Toggle off the current format(s)
+                        each(ctrl.items, function (item) {
+                            if (ed.formatter.matchNode(node, item.value)) {
+                                matches.push(item.value);
                             }
+                        });
 
-                            removedFormat = true;
-                        }
-                    });
-
-                    if (!removedFormat) {
-                        // registered style format
-                        if (ed.formatter.get(name)) {
-
-                            // apply or remove
-                            ed.execCommand('ToggleFormat', false, { name: name, node: node });
-                            // custom class
-                        } else {
-                            node = ed.selection.getNode();
-
-                            ed.execCommand('ToggleFormat', false, { name: 'classname', node: ed.selection.isCollapsed() ? node : null });
-
-                            // add it to the list
-                            ctrl.add(name, name);
-                        }
-                    }
-
-                    if (ed.selection.isCollapsed()) {
-                        // if the format is on a valid node, select
-                        if (node) {
-                            // manual selection to prevent error using selection.select when a block element has been renamed
-                            var rng = ed.dom.createRng();
-                            rng.setStart(node, 0);
-                            rng.setEnd(node, 0);
-                            rng.collapse();
-                            ed.selection.setRng(rng);
+                        // reset node if there is a text only selection
+                        if (!ed.selection.isCollapsed() && isOnlyTextSelected()) {
+                            node = null;
                         }
 
+                        // reset to bookmark
                         ed.selection.moveToBookmark(bookmark);
 
-                        if (node) {
-                            ed.nodeChanged();
+                        each(matches, function (match) {
+                            if (!name || match == name) {
+
+                                if (match) {
+                                    ed.execCommand('RemoveFormat', false, { name: match, node: node });
+                                }
+
+                                removedFormat = true;
+                            }
+                        });
+
+                        if (!removedFormat) {
+                            // registered style format
+                            if (ed.formatter.get(name)) {
+
+                                // apply or remove
+                                ed.execCommand('ToggleFormat', false, { name: name, node: node });
+                                // custom class
+                            } else {
+                                node = ed.selection.getNode();
+
+                                ed.execCommand('ToggleFormat', false, { name: 'classname', node: ed.selection.isCollapsed() ? node : null });
+
+                                // add it to the list
+                                ctrl.add(name, name);
+                            }
                         }
-                    }
 
-                    // if the format is on a valid node, select
-                    /*if (node) {
-                        // manual selection to prevent error using selection.select when a block element has been renamed
-                        var rng = ed.dom.createRng();
-                        rng.setStart(node, 0);
-                        rng.setEnd(node, 0);
-                        rng.collapse();
-                        ed.selection.setRng(rng);
-                    }
+                        if (ed.selection.isCollapsed()) {
+                            // if the format is on a valid node, select
+                            if (node) {
+                                // manual selection to prevent error using selection.select when a block element has been renamed
+                                var rng = ed.dom.createRng();
+                                rng.setStart(node, 0);
+                                rng.setEnd(node, 0);
+                                rng.collapse();
+                                ed.selection.setRng(rng);
+                            }
 
-                    ed.selection.moveToBookmark(bookmark);
+                            ed.selection.moveToBookmark(bookmark);
 
-                    if (node) {
-                        ed.nodeChanged();
-                    }*/
+                            if (node) {
+                                ed.nodeChanged();
+                            }
+                        }
+                    });
 
                     return false; // No auto select
                 }
