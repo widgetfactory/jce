@@ -1775,6 +1775,8 @@
                             $(inp).remove();
                         }
 
+                        evt.preventDefault();
+
                         return;
                     }
 
