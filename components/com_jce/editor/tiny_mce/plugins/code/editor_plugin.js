@@ -1024,7 +1024,7 @@
             o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
               return '{' + ed.dom.decode(content) + '}';
             });
-            
+
             // sourcerer with encoded content
             o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
               return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
