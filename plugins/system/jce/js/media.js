@@ -124,6 +124,50 @@
         return new RegExp('\.(' + mimes.split(',').join('|') + ')$', 'i').test(file.name);
     }
 
+    function getModalURL(elm) {
+        // Joomla 3.5.x / 4.x Media Field
+        var url = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
+
+        if (inst) {
+            if (inst.options) {
+                url = inst.options.url || '';
+            } else {
+                url = inst.url || $(inst).data('url') || '';
+            }
+        }
+
+        return url || $(elm).siblings('a.modal').attr('href') || '';
+    }
+
+    function isAdmin(value) {
+        return value && value.indexOf('/administrator/') != -1;
+    }
+
+    function getBasePath(elm) {
+        // Joomla 3.5.x / 4.x Media Field
+        var path = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
+
+        if (inst) {
+            // Joomla 3
+            if (inst.options) {
+                path = inst.options.basepath || '';
+            // Joomla 4
+            } else {
+                path = inst.basePath || '';
+            }
+        }
+
+        // get from input for some layout overrides
+        path = path || $(elm).data('basepath') || '';
+
+        // resolve path for admin
+        if (path && !isAdmin(path) && isAdmin(document.location.href)) {
+            path += 'administrator/';
+        }
+
+        return path;
+    }
+
     $.fn.WfMediaUpload = function () {
         return this.each(function () {
             // eslint-disable-next-line consistent-this
@@ -142,57 +186,13 @@
                 return true;
             }
 
-            function getModalURL() {
-                // Joomla 3.5.x / 4.x Media Field
-                var url = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
-
-                if (inst) {
-                    if (inst.options) {
-                        url = inst.options.url || '';
-                    } else {
-                        url = inst.url || $(inst).data('url') || '';
-                    }
-                }
-
-                return url || $(elm).siblings('a.modal').attr('href') || '';
-            }
-
-            function isAdmin(value) {
-                return value && value.indexOf('/administrator/') != -1;
-            }
-
-            function getBasePath() {
-                // Joomla 3.5.x / 4.x Media Field
-                var path = '', $wrapper = $(elm).parents('.field-media-wrapper'), inst = $wrapper.data('fieldMedia') || $wrapper.get(0);
-
-                if (inst) {
-                    // Joomla 3
-                    if (inst.options) {
-                        path = inst.options.basepath || '';
-                    // Joomla 4
-                    } else {
-                        path = inst.basePath || '';
-                    }
-                }
-
-                // get from input for some layout overrides
-                path = path || $(elm).data('basepath') || '';
-
-                // resolve path for admin
-                if (path && !isAdmin(path) && isAdmin(document.location.href)) {
-                    path += 'administrator/';
-                }
-
-                return path;
-            }
-
             function uploadAndInsert(url, file) {
                 // not a valid upload
                 if (!file.name) {
                     return false;
                 }
 
-                var params = parseUrl(url), url = getBasePath() + 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter', 'mediatype'];
+                var params = parseUrl(url), url = getBasePath(elm) + 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter', 'mediatype'];
 
                 var filter = params.filter || params.mediatype || 'images';
 
@@ -305,7 +305,7 @@
                 return true;
             }
 
-            var id = $(this).find('.field-media-input').attr('id');
+            var $inp = $(this).find('.field-media-input'), id = $inp.attr('id');
 
             if (!id) {
                 return true;
@@ -338,7 +338,7 @@
             }
 
             // create url
-            var url = 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
+            var url = getBasePath($inp) + 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
 
             if (options.context) {
                 url += '&context=' + options.context;
