@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global Wf, jQuery, tinyMCEPopup */
+
 (function ($) {
     var ImageManagerDialog = {
         settings: {},
@@ -16,7 +19,7 @@
             var ed = tinyMCEPopup.editor,
                 n = ed.selection.getNode(),
                 self = this,
-                br, el;
+                br;
 
             // add insert button action
             $('#insert').on('click', function (e) {
@@ -313,6 +316,7 @@
             br = el.nextSibling;
 
             if (el && el.nodeName == 'IMG') {
+
                 ed.dom.setAttribs(el, args);
                 // BR clear
                 if (br && br.nodeName == 'BR') {
@@ -329,8 +333,10 @@
                         ed.dom.insertAfter(br, el);
                     }
                 }
+
+                ed.onUpdateMedia.dispatch(ed, { node: el });
             } else {
-                ed.execCommand('mceInsertContent', false, ed.dom.createHTML('img', $.extend({}, args, {id : '__mce_tmp'})), {
+                ed.execCommand('mceInsertContent', false, ed.dom.createHTML('img', $.extend({}, args, { id: '__mce_tmp' })), {
                     skip_undo: 1
                 });
 
@@ -354,8 +360,7 @@
         },
 
         selectFile: function (file, data) {
-            var self = this,
-                name = data.title,
+            var name = data.title,
                 src = data.url;
 
             // get active tab
