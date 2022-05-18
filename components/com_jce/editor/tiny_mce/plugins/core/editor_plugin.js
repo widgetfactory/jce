@@ -99,9 +99,9 @@
 
       ed.onPreInit.add(function () {
         var selection = ed.selection, dom = ed.dom;
-        
+
         ed.schema.addValidElements('#mce:root[id|data-mce-root]');
-        
+
         // add children from body element
         ed.schema.children['mce:root'] = ed.schema.children.body;
         // set "mce:root" as a valid child of body
@@ -124,20 +124,20 @@
             nodes[i].remove();
           }
         });
-        
+
         // wrap content in fake root
         ed.onBeforeSetContent.add(function (editor, o) {
           if (!o.content) {
             o.content = '<br data-mce-bogus="1">';
           }
-  
+
           o.content = '<mce:root id="' + ed.settings.editable_root + '" data-mce-root="1">' + o.content + '</mce:root>';
         });
 
         // reset selection to fake root
         ed.onSetContent.add(function () {
           var root = dom.get(ed.settings.editable_root), rng;
-  
+
           if (root) {
             // Move the caret to the end of the marker
             rng = dom.createRng();
@@ -146,21 +146,25 @@
             selection.setRng(rng);
           }
         });
-  
+
         // UndoManager gets content without event processing, so extract manually
         ed.undoManager.onBeforeAdd.add(function (um, level) {
           var container = ed.dom.create('div', {}, level.content);
-  
+
           if (isFakeRoot(container.firstChild)) {
             level.content = container.firstChild.innerHTML;
           }
-  
+
         });
       });
     }
 
     ed.onPreInit.add(function () {
       ed.onUpdateMedia.add(function (ed, o) {
+
+        if (!o.before || !o.after) {
+          return;
+        }
 
         function updateSrcSet(elm, o) {
           // srcset

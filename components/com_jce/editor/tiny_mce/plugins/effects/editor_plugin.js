@@ -139,6 +139,10 @@
             });
 
             ed.onUpdateMedia.add(function (ed, o) {
+                if (!o.before || !o.after) {
+                    return;
+                }
+
                 each(ed.dom.select('img[data-mouseover]'), function (elm) {
                     var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 

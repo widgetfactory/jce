@@ -1410,6 +1410,10 @@
 
         ed.onPreInit.add(function () {
             ed.onUpdateMedia.add(function (ed, o) {
+                if (!o.before || !o.after) {
+                    return;
+                }
+
                 // only updating audio/video
                 if (!isSupportedMedia(o.before)) {
                     return;
