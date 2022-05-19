@@ -540,7 +540,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
@@ -1220,9 +1220,6 @@ class WFEditor
                 } else {
                     JFactory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
                 }
-
-                // clean up $files array
-                $files = array_unique(array_filter($files));
 
                 break;
             // Nothing, use editor default
