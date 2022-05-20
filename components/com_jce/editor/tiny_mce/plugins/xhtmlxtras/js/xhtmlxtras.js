@@ -139,7 +139,7 @@
 			}
 
 			// hide for non-media nodes
-			if (n.nodeName !== "IMG") {
+			if (n && n.nodeName !== "IMG") {
 				$('input.media').parents('.uk-form-row').hide();
 			}
 
