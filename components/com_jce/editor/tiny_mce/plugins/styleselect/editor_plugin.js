@@ -8,11 +8,11 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss, NodeType = tinymce.dom.NodeType, DOM = tinymce.DOM, Event = tinymce.dom.Event;
-
-    function isInternalNode(node) {
-        return NodeType.isBogus(node) || NodeType.isBookmark(node);
-    }
+    var each = tinymce.each,
+        PreviewCss = tinymce.util.PreviewCss,
+        NodeType = tinymce.dom.NodeType,
+        DOM = tinymce.DOM,
+        Event = tinymce.dom.Event;
 
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
@@ -90,7 +90,9 @@
             if (ed.settings.importcss_merge_classes !== false) {
                 format.classes = classes;
             } else {
-                format.attributes = { "class": classes };
+                format.attributes = {
+                    "class": classes
+                };
             }
 
             format.ceFalseOverride = true;
@@ -135,7 +137,11 @@
                     return;
                 }
 
-                var filter = DOM.get('menu_' + ctrl.id + '_menu_filter'), btn = DOM.create('button', { 'class': 'mceButton', 'value': item.value }, '<label>' + item.title + '</label>');
+                var filter = DOM.get('menu_' + ctrl.id + '_menu_filter'),
+                    btn = DOM.create('button', {
+                        'class': 'mceButton',
+                        'value': item.value
+                    }, '<label>' + item.title + '</label>');
 
                 if (!filter) {
                     return;
@@ -161,7 +167,9 @@
                 filter: true,
                 keepopen: true,
                 onselect: function (name) {
-                    var matches = [], removedFormat, node = ed.selection.getNode();
+                    var matches = [],
+                        removedFormat, selection = ed.selection,
+                        node = selection.getNode();
 
                     var collectNodesInRange = function (rng, predicate) {
                         if (rng.collapsed) {
@@ -179,37 +187,47 @@
                             return elements;
                         }
                     };
-        
+
                     // get list of inline text elements
                     var inlineTextElements = ed.schema.getTextInlineElements();
-        
+
                     // check if valid text selection element
                     var isElement = function (elm) {
-                        return elm && elm.nodeType == 1 && !isInternalNode(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
+                        return NodeType.isElement(elm) && !NodeType.isInternal(elm) && !inlineTextElements[elm.nodeName.toLowerCase()];
                     };
-        
+
                     var isOnlyTextSelected = function () {
                         // Collect all non inline text elements in the range and make sure no elements were found
                         var elements = collectNodesInRange(ed.selection.getRng(), isElement);
-        
+
                         return elements.length === 0;
                     };
 
-                    var nodes = ed.selection.getSelectedBlocks();
+                    var nodes = tinymce.grep(selection.getSelectedNodes(), function (n) {
+                        return NodeType.isElement(n) && !NodeType.isInternal(n);
+                    });
 
-                    if (nodes.length <= 1) {
+                    if (!nodes.length) {
                         nodes = [node];
                     }
 
                     ed.focus();
                     ed.undoManager.add();
 
+                    function isFakeRoot(node) {
+                        return NodeType.isElement(node) && node.hasAttribute('data-mce-root');
+                    }
+
                     each(nodes, function (node) {
-                        if (node === ed.getBody() && !isOnlyTextSelected()) {
+                        var bookmark = selection.getBookmark();
+
+                        if (node == ed.getBody() && !isOnlyTextSelected()) {
                             return false;
                         }
 
-                        var bookmark = ed.selection.getBookmark();
+                        if (isFakeRoot(node) && selection.isCollapsed()) {
+                            return false;
+                        }
 
                         // Toggle off the current format(s)
                         each(ctrl.items, function (item) {
@@ -219,7 +237,7 @@
                         });
 
                         // reset node if there is a text only selection
-                        if (!ed.selection.isCollapsed() && isOnlyTextSelected()) {
+                        if (!selection.isCollapsed() && isOnlyTextSelected()) {
                             node = null;
                         }
 
@@ -228,35 +246,41 @@
 
                         each(matches, function (match) {
                             if (!name || match == name) {
-
                                 if (match) {
-                                    ed.execCommand('RemoveFormat', false, { name: match, node: node });
+                                    ed.execCommand('RemoveFormat', false, {
+                                        name: match
+                                    });
+                                    removedFormat = true;
                                 }
-
-                                removedFormat = true;
                             }
                         });
 
                         if (!removedFormat) {
                             // registered style format
                             if (ed.formatter.get(name)) {
-
                                 // apply or remove
-                                ed.execCommand('ToggleFormat', false, { name: name, node: node });
+                                ed.execCommand('ToggleFormat', false, {
+                                    name: name
+                                });
                                 // custom class
                             } else {
                                 node = ed.selection.getNode();
-
-                                ed.execCommand('ToggleFormat', false, { name: 'classname', node: ed.selection.isCollapsed() ? node : null });
+                                ed.execCommand('ToggleFormat', false, {
+                                    name: 'classname',
+                                    node: ed.selection.isCollapsed() ? node : null
+                                });
 
                                 // add it to the list
                                 ctrl.add(name, name);
                             }
                         }
 
+                        // restore bookmark
+                        ed.selection.moveToBookmark(bookmark);
+
                         if (ed.selection.isCollapsed()) {
                             // if the format is on a valid node, select
-                            if (node) {
+                            if (node && node.parentNode) {
                                 // manual selection to prevent error using selection.select when a block element has been renamed
                                 var rng = ed.dom.createRng();
                                 rng.setStart(node, 0);
@@ -265,6 +289,7 @@
                                 ed.selection.setRng(rng);
                             }
 
+                            // restore bookmark
                             ed.selection.moveToBookmark(bookmark);
 
                             if (node) {
@@ -297,7 +322,8 @@
                 menu.onFilterInput.add(function (menu, evt) {
                     // backspace
                     if (evt.keyCode == 8) {
-                        var elm = evt.target, value = elm.value;
+                        var elm = evt.target,
+                            value = elm.value;
 
                         // keep normal behaviour while input has a value
                         if (value) {
@@ -307,7 +333,8 @@
                         var tags = DOM.select('button', elm.parentNode.parentNode);
 
                         if (tags.length) {
-                            var tag = tags.pop(), val = tag.textContent;
+                            var tag = tags.pop(),
+                                val = tag.textContent;
 
                             // remove tag
                             removeFilterTag(tag);
@@ -345,7 +372,11 @@
                     var name = 'style_' + (counter + idx);
 
                     if (typeof item === 'string') {
-                        item = { 'selector': item, 'class': '', 'style': '' };
+                        item = {
+                            'selector': item,
+                            'class': '',
+                            'style': ''
+                        };
                     }
 
                     var fmt = self.convertSelectorToFormat(item.selector);
@@ -396,10 +427,17 @@
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
                 // generic class format
-                ed.formatter.register('classname', { attributes: { 'class': '%value' }, 'selector': '*', ceFalseOverride: true });
+                ed.formatter.register('classname', {
+                    attributes: {
+                        'class': '%value'
+                    },
+                    'selector': '*',
+                    ceFalseOverride: true
+                });
 
                 function isValidAttribute(name) {
-                    var isvalid = true, invalid = ed.settings.invalid_attributes;
+                    var isvalid = true,
+                        invalid = ed.settings.invalid_attributes;
 
                     if (!invalid) {
                         return true;
@@ -442,7 +480,8 @@
                                 fmt.attributes = {};
 
                                 each(attribs, function (node) {
-                                    var key = node.name, value = '' + node.value;
+                                    var key = node.name,
+                                        value = '' + node.value;
 
                                     if (!isValidAttribute(key)) {
                                         return true;
