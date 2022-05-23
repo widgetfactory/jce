@@ -3775,7 +3775,8 @@
     }
 
     function inlineBoundary() {
-
+      var marker;
+      
       function isBr(node) {
         return node && node.nodeType == 1 && node.nodeName == 'BR';
       }
@@ -3836,12 +3837,12 @@
           var text = container.data;
           
           if (text && text.length && rng.startOffset == text.length) {
-            var marker = dom.create('span', { 'data-mce-type': "bookmark" }, '\uFEFF');
+            marker = dom.create('span', { 'data-mce-type': "bookmark" }, '\uFEFF');
 
             if (dom.isBlock(node.parentNode) && isLastChild(node)) {
               node.parentNode.appendChild(marker);
             } else {
-              // edge case for forced_root_block:false - some text <a href="link.html">link</a><br />
+              // edge case for - some text <a href="link.html">link</a><br />
               if (isBr(node.nextSibling) && node.nextSibling == node.parentNode.lastChild) {
                 node = node.nextSibling;
               }
@@ -3855,9 +3856,6 @@
             rng.collapse();
             selection.setRng(rng);
 
-            // remove marker
-            dom.remove(marker);
-
             e.preventDefault();
             editor.nodeChanged();
           }
@@ -3866,12 +3864,16 @@
 
       // Attempt to move caret after a container element like <a> or <code>
       editor.onKeyDown.add(function (editor, e) {
+        dom.remove(marker);
+
         if (e.keyCode == VK.RIGHT) {
           moveCursorToEnd(e);
         }
       });
 
       editor.onMouseDown.add(function (editor, e) {
+        dom.remove(marker);
+
         moveCursorToEnd(e);
       });
     }
@@ -12400,6 +12402,14 @@
       return isElement(node) && node.getAttribute('data-mce-type') == 'bookmark';
     }
 
+    function isCaret(node) {
+      return isElement(node) && node.id === '_mce_caret';
+    }
+
+    function isInternal(node) {
+      return isBogus(node) || isBookmark(node) || isCaret(node);
+    }
+
     function hasContentEditableState(value) {
       return function (node) {
         if (isElement(node)) {
@@ -12437,7 +12447,8 @@
       hasAttributeValue: hasAttributeValue,
       matchStyleValues: matchStyleValues,
       isBogus: isBogus,
-      isBookmark: isBookmark
+      isBookmark: isBookmark,
+      isInternal: isInternal
     };
 
   })(tinymce);
@@ -13173,7 +13184,7 @@
    */
   (function (tinymce) {
     var NodeType = tinymce.dom.NodeType, DOMUtils = tinymce.DOM;
-    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr, CaretPosition = tinymce.caret.CaretPosition;
+    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
 
     var isText = NodeType.isText,
       isBogus = NodeType.isBogus,
@@ -13339,7 +13350,7 @@
         offset = container.data.length;
       }
 
-      return new CaretPosition(container, offset);
+      return new tinymce.caret.CaretPosition(container, offset);
     }
 
     function resolve(rootNode, path) {
@@ -13377,7 +13388,7 @@
           offset = nodeIndex(container);
         }
 
-        return new CaretPosition(container.parentNode, offset);
+        return new tinymce.caret.CaretPosition(container.parentNode, offset);
       }
 
       return findTextPosition(container, parseInt(offset, 10));
@@ -23676,10 +23687,10 @@
 
         menu.onHideMenu.add(function () {
           self.hideMenu();
-          self.focus();
 
           if (self.settings.combobox) {
             menu.clearFilteredItems();
+            self.focus();
           }
 
         });
@@ -35024,8 +35035,8 @@
                 !isBogusBr(node) &&
                 !isBookmarkNode(node) &&
                 (!format.inline || !isBlock(node))) {
-                              
-                  // Start wrapping
+
+                // Start wrapping
                 if (!currentWrapElm) {
                   // Wrap the node
                   currentWrapElm = dom.clone(wrapElm, FALSE);
@@ -35191,7 +35202,7 @@
         }
 
         if (format) {
-          
+
           if (node) {
             if (node.nodeType) {
               if (!applyNodeStyle(formatList, node)) {
@@ -35580,7 +35591,7 @@
           return format;
         }
 
-        if (formatList && node) {        
+        if (formatList && node) {
           // Check each format in list
           for (i = 0; i < formatList.length; i++) {
             format = formatList[i];
@@ -35589,7 +35600,7 @@
             if (matchName(node, format) && matchItems(node, format, 'attributes') && matchItems(node, format, 'styles')) {
               // Match classes
               if ((classes = format.classes)) {
-                for (i = 0; i < classes.length; i++) {                
+                for (i = 0; i < classes.length; i++) {
                   if (!dom.hasClass(node, classes[i])) {
                     return;
                   }
@@ -37034,7 +37045,7 @@
         var container = rng.startContainer,
           offset = rng.startOffset,
           isAtEndOfText,
-          walker, node, nodes, tmpNode;
+          walker, node, nodes;
 
         if (rng.startContainer == rng.endContainer) {
           if (isInlineBlock(rng.startContainer.childNodes[rng.startOffset])) {
@@ -37063,18 +37074,9 @@
 
           for (node = walker.current(); node; node = walker.next()) {
             if (node.nodeType == 3 && !isWhiteSpaceNode(node)) {
-              // IE has a "neat" feature where it moves the start node into the closest element
-              // we can avoid this by inserting an element before it and then remove it after we set the selection
-              tmpNode = dom.create('a', {
-                'data-mce-bogus': 'all'
-              }, INVISIBLE_CHAR);
-              node.parentNode.insertBefore(tmpNode, node);
-
-              // Set selection and remove tmpNode
+              // Set selection
               rng.setStart(node, 0);
               selection.setRng(rng);
-              dom.remove(tmpNode);
-
               return;
             }
           }
@@ -39014,9 +39016,9 @@
 
         ed.onPreInit.add(function () {
           var selection = ed.selection, dom = ed.dom;
-          
+
           ed.schema.addValidElements('#mce:root[id|data-mce-root]');
-          
+
           // add children from body element
           ed.schema.children['mce:root'] = ed.schema.children.body;
           // set "mce:root" as a valid child of body
@@ -39039,20 +39041,20 @@
               nodes[i].remove();
             }
           });
-          
+
           // wrap content in fake root
           ed.onBeforeSetContent.add(function (editor, o) {
             if (!o.content) {
               o.content = '<br data-mce-bogus="1">';
             }
-    
+
             o.content = '<mce:root id="' + ed.settings.editable_root + '" data-mce-root="1">' + o.content + '</mce:root>';
           });
 
           // reset selection to fake root
           ed.onSetContent.add(function () {
             var root = dom.get(ed.settings.editable_root), rng;
-    
+
             if (root) {
               // Move the caret to the end of the marker
               rng = dom.createRng();
@@ -39061,21 +39063,25 @@
               selection.setRng(rng);
             }
           });
-    
+
           // UndoManager gets content without event processing, so extract manually
           ed.undoManager.onBeforeAdd.add(function (um, level) {
             var container = ed.dom.create('div', {}, level.content);
-    
+
             if (isFakeRoot(container.firstChild)) {
               level.content = container.firstChild.innerHTML;
             }
-    
+
           });
         });
       }
 
       ed.onPreInit.add(function () {
         ed.onUpdateMedia.add(function (ed, o) {
+
+          if (!o.before || !o.after) {
+            return;
+          }
 
           function updateSrcSet(elm, o) {
             // srcset
@@ -41172,6 +41178,10 @@
               });
 
               ed.onUpdateMedia.add(function (ed, o) {
+                  if (!o.before || !o.after) {
+                      return;
+                  }
+
                   each(ed.dom.select('img[data-mouseover]'), function (elm) {
                       var mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 
