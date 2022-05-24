@@ -154,6 +154,9 @@ body.mceContentReset h6 {
 body.mceContentReset[dir="ltr"] {
   text-align: left !important;
 }
+[data-mce-root] {
+  display: block;
+}
 h1 {
   font-size: 2em;
 }
