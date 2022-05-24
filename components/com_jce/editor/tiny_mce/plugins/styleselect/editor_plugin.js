@@ -167,7 +167,7 @@
                 filter: true,
                 keepopen: true,
                 onselect: function (name) {
-                    var matches = [],
+                    var matches = [], fmt,
                         removedFormat, selection = ed.selection,
                         node = selection.getNode();
 
@@ -203,7 +203,7 @@
                         return elements.length === 0;
                     };
 
-                    var nodes = tinymce.grep(selection.getSelectedNodes(), function (n) {
+                    var nodes = tinymce.grep(selection.getSelectedBlocks(), function (n) {
                         return NodeType.isElement(n) && !NodeType.isInternal(n);
                     });
 
@@ -231,10 +231,12 @@
 
                         // Toggle off the current format(s)
                         each(ctrl.items, function (item) {
-                            if (ed.formatter.matchNode(node, item.value)) {
-                                matches.push(item.value);
+                            if ((fmt = ed.formatter.matchNode(node, item.value))) {
+                                matches.push(fmt);
                             }
                         });
+
+                        node = nodes.length > 1 || selection.isCollapsed() ? node : null;
 
                         // reset node if there is a text only selection
                         if (!selection.isCollapsed() && isOnlyTextSelected()) {
@@ -242,16 +244,16 @@
                         }
 
                         // reset to bookmark
-                        ed.selection.moveToBookmark(bookmark);
+                        selection.moveToBookmark(bookmark);
 
                         each(matches, function (match) {
-                            if (!name || match == name) {
-                                if (match) {
-                                    ed.execCommand('RemoveFormat', false, {
-                                        name: match
-                                    });
-                                    removedFormat = true;
-                                }
+                            if (!name || match.name == name) {
+                                ed.execCommand('RemoveFormat', false, {
+                                    name: match.name,
+                                    node: match.block ? null : node
+                                });
+
+                                removedFormat = true;
                             }
                         });
 
@@ -260,14 +262,16 @@
                             if (ed.formatter.get(name)) {
                                 // apply or remove
                                 ed.execCommand('ToggleFormat', false, {
-                                    name: name
+                                    name: name,
+                                    node: node
                                 });
                                 // custom class
                             } else {
-                                node = ed.selection.getNode();
+                                node = selection.getNode();
+
                                 ed.execCommand('ToggleFormat', false, {
                                     name: 'classname',
-                                    node: ed.selection.isCollapsed() ? node : null
+                                    node: node
                                 });
 
                                 // add it to the list
@@ -276,9 +280,9 @@
                         }
 
                         // restore bookmark
-                        ed.selection.moveToBookmark(bookmark);
+                        selection.moveToBookmark(bookmark);
 
-                        if (ed.selection.isCollapsed()) {
+                        if (selection.isCollapsed()) {
                             // if the format is on a valid node, select
                             if (node && node.parentNode) {
                                 // manual selection to prevent error using selection.select when a block element has been renamed
@@ -287,12 +291,7 @@
                                 rng.setEnd(node, 0);
                                 rng.collapse();
                                 ed.selection.setRng(rng);
-                            }
 
-                            // restore bookmark
-                            ed.selection.moveToBookmark(bookmark);
-
-                            if (node) {
                                 ed.nodeChanged();
                             }
                         }
