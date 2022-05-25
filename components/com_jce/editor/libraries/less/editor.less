@@ -142,14 +142,47 @@ section[role="tabpanel"] .wf-editor-container {
         min-height: inherit;
     }
 
-    .wf-editor-tabs li {
-        float: none;
-    }
-
     .wf-editor-tabs {
         display: flex;
         justify-content: flex-end;
         margin: 0 0 0.25rem 0;
+
+        list-style: none;
+        border-bottom: 1px solid #ddd;
+
+        &:before,
+        &:after {
+            display: table;
+            content: "";
+            line-height: 0;
+        }
+
+        &:after {
+            clear: both;
+        }
+
+        > li {
+            float: none;
+            margin-bottom: -1px;
+
+            > a {
+                padding: 8px 12px;
+                margin-right: 2px;
+                line-height: 18px;
+                border: 1px solid transparent;
+                border-radius: 4px 4px 0 0;
+    
+                display: block;
+            }
+
+            &.active > a {
+                color: #555;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-bottom-color: transparent;
+                cursor: default;
+            }
+        }
     }
 
     .wf-editor-toggle {
