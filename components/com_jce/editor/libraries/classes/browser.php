@@ -175,24 +175,26 @@ class WFFileBrowser extends JObject
 
     public function getFileSystem()
     {
-        static $filesystem = array();
+        static $instances = array();
 
         $fs = $this->get('filesystem', 'joomla');
 
-        if (!isset($filesystem[$fs])) {
-            $wf = WFEditorPlugin::getInstance();
+        $wf = WFEditorPlugin::getInstance();
 
-            $config = array(
-                'dir' => $this->get('dir'),
-                'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
-                'upload_suffix' => $wf->getParam('editor.upload_suffix', '_copy'),
-                'filetypes' => $this->listFileTypes(),
-            );
+        $config = array(
+            'dir' => $this->get('dir'),
+            'upload_conflict' => $wf->getParam('editor.upload_conflict', 'overwrite'),
+            'upload_suffix' => $wf->getParam('editor.upload_suffix', '_copy'),
+            'filetypes' => $this->listFileTypes(),
+        );
 
-            $filesystem[$fs] = WFFileSystem::getInstance($fs, $config);
+        $signature = md5($fs . serialize($config));
+
+        if (!isset($instances[$signature])) {
+            $instances[$signature] = WFFileSystem::getInstance($fs, $config);
         }
 
-        return $filesystem[$fs];
+        return $instances[$signature];
     }
 
     private function getViewable()
@@ -386,7 +388,7 @@ class WFFileBrowser extends JObject
 
                     $return = false;
 
-                // hide this folder
+                    // hide this folder
                 } else {
                     $return = true;
 
@@ -486,7 +488,7 @@ class WFFileBrowser extends JObject
     {
         try {
             $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\pL\pM\pN\s\* ]#u', '', $query);
-        } catch (\Exception $e) {
+        } catch (\Exception$e) {
             // PCRE replace failed, use ASCII
             $q = preg_replace('#[^a-zA-Z0-9_\.\-\:~\s\* ]#', '', $query);
         }
@@ -796,8 +798,8 @@ class WFFileBrowser extends JObject
                 . '       <i class="uk-icon uk-icon-home"></i>'
                 . '     </span>'
                 . '     <span class="uk-tree-text">' . JText::_('WF_LABEL_HOME', 'Home') . '</span>'
-                . '   </a>'
-                . ' </div>';
+                    . '   </a>'
+                    . ' </div>';
 
                 $dir = '/';
             }
@@ -814,15 +816,15 @@ class WFFileBrowser extends JObject
                 $open = preg_match('#' . $name . '\b#', $treedir);
 
                 $result .= '<li data-id="' . $this->escape($name) . '" class="' . ($open ? 'uk-tree-open' : '') . '">'
-                . ' <div class="uk-tree-row">'
-                . '   <a href="#">'
-                . '     <span class="uk-tree-icon" role="presentation"></span>'
-                . '     <span class="uk-tree-text uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>'
-                . '   </a>'
-                . ' </div>';
-                
-                /*if ($open) {                    
-                    $result .= $this->getTreeItems($folder['id'], false, false);
+                    . ' <div class="uk-tree-row">'
+                    . '   <a href="#">'
+                    . '     <span class="uk-tree-icon" role="presentation"></span>'
+                    . '     <span class="uk-tree-text uk-text-truncate" title="' . $folder['name'] . '">' . $folder['name'] . '</span>'
+                    . '   </a>'
+                    . ' </div>';
+
+                /*if ($open) {
+                $result .= $this->getTreeItems($folder['id'], false, false);
                 }*/
 
                 $result .= '</li>';
