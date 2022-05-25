@@ -37194,7 +37194,9 @@
             dom.isBlock(node) &&
             !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) &&
             !/^(fixed|absolute)/i.test(node.style.position) &&
-            dom.getContentEditable(node) !== "true";
+            dom.getContentEditable(node) !== "true" &&
+            // prevent splitting of internal
+            !node.hasAttribute('data-mce-type');
         }
 
         function isTableCell(node) {
