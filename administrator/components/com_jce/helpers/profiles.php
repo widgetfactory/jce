@@ -282,7 +282,7 @@ abstract class JceProfilesHelper
         $app = JFactory::getApplication();
 
         // load data from file
-        $data   = JFile::read($file);
+        $data   = file_get_contents($file);
         // format params data as CDATA
         $data   = preg_replace('#<params>{(.+?)}<\/params>#', '<params><![CDATA[{$1}]]></params>', $data);
         // load processed string
