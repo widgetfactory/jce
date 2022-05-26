@@ -3776,7 +3776,7 @@
 
     function inlineBoundary() {
       var marker;
-      
+
       function isBr(node) {
         return node && node.nodeType == 1 && node.nodeName == 'BR';
       }
@@ -3784,7 +3784,7 @@
       function isRootNode(node) {
         return node == editor.getBody() || tinymce.util.isFakeRoot(node);
       }
-      
+
       function isLastChild(node) {
         var parent = node.parentNode;
 
@@ -3833,28 +3833,36 @@
           return;
         }
 
+        function moveToMarker() {
+          // Move the caret to the end of the marker
+          rng = dom.createRng();
+          rng.setStart(marker, 0);
+          rng.setEnd(marker, 0);
+          rng.collapse();
+          selection.setRng(rng);
+        }
+
         if (container.nodeType == 3 && isChildOf(container, node)) {
           var text = container.data;
-          
+
           if (text && text.length && rng.startOffset == text.length) {
-            marker = dom.create('span', { 'data-mce-type': "bookmark" }, '\uFEFF');
+            marker = dom.create('span', { 'data-mce-type': "caret" }, '\uFEFF');
 
             if (dom.isBlock(node.parentNode) && isLastChild(node)) {
               node.parentNode.appendChild(marker);
+
+              moveToMarker();
+              dom.remove(marker);
+
             } else {
               // edge case for - some text <a href="link.html">link</a><br />
               if (isBr(node.nextSibling) && node.nextSibling == node.parentNode.lastChild) {
                 node = node.nextSibling;
               }
               node.insertAdjacentElement('afterend', marker);
-            }
 
-            // Move the caret to the end of the marker
-            rng = dom.createRng();
-            rng.setStart(marker, 0);
-            rng.setEnd(marker, 0);
-            rng.collapse();
-            selection.setRng(rng);
+              moveToMarker();
+            }
 
             e.preventDefault();
             editor.nodeChanged();
