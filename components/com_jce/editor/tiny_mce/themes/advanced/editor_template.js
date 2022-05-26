@@ -641,7 +641,7 @@
             }
 
             function isBogusOrBookmarkOrCaret(node) {
-                return node.hasAttribute('data-mce-bogus') || node.getAttribute('data-mce-type') == 'bookmark' || node.id == '_mce_caret';
+                return node.hasAttribute('data-mce-bogus') || node.getAttribute('data-mce-type') == 'bookmark' || node.getAttribute('data-mce-type') == 'caret' || node.id == '_mce_caret';
             }
 
             cm.setActive('visualaid', ed.hasVisual);
