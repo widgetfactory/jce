@@ -171,6 +171,12 @@
                         removedFormat, selection = ed.selection,
                         node = selection.getNode();
 
+
+                    // ensure link nodes are fully selected
+                    if (node.nodeName == 'A' && selection.isCollapsed()) {
+                        selection.select(node);
+                    }
+
                     var collectNodesInRange = function (rng, predicate) {
                         if (rng.collapsed) {
                             return [];
