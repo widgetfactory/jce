@@ -208,7 +208,7 @@
                         return NodeType.isElement(n) && !NodeType.isInternal(n);
                     });
 
-                    if (!nodes.length) {
+                    if (!nodes.length || (node == ed.getBody() || isFakeRoot(node))) {
                         nodes = [node];
                     }
 
