@@ -171,17 +171,12 @@
                         removedFormat, selection = ed.selection,
                         node = selection.getNode();
 
-
-                    // ensure link nodes are fully selected
-                    if (node.nodeName == 'A' && selection.isCollapsed()) {
-                        selection.select(node);
-                    }
-
                     var collectNodesInRange = function (rng, predicate) {
                         if (rng.collapsed) {
                             return [];
                         } else {
                             var contents = rng.cloneContents();
+
                             var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
                             var elements = [];
                             var current = contents.firstChild;
@@ -251,6 +246,15 @@
 
                         // reset to bookmark
                         selection.moveToBookmark(bookmark);
+
+                        // reset selection on inline elements
+                        if (!node) {
+                            var sel = selection.getSel();
+
+                            if (sel.anchorNode && NodeType.isElement(sel.anchorNode) && !ed.dom.isBlock(sel.anchorNode)) {
+                                node = sel.anchorNode;
+                            }
+                        }
 
                         each(matches, function (match) {
                             if (!name || match.name == name) {
