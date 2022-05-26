@@ -262,6 +262,34 @@ section[role="tabpanel"] .wf-editor-container {
                 background: none;
                 box-shadow: inherit;
             }
+
+            .wf-editor-tabs {
+        
+                &:before,
+                &:after {
+                    display: table;
+                    content: "";
+                    line-height: 0;
+                }
+        
+                &:after {
+                    clear: both;
+                }
+        
+                > li {
+                    float: none;
+                    margin-bottom: 0;
+        
+                    > a {
+                        padding:0;
+                        margin-right: 0;
+                        line-height: inherit;
+                        border: 0 none;
+                        border-radius: inherit;
+                        display: block;
+                    }
+                }
+            }
         }
     }
 
