@@ -171,7 +171,7 @@ section[role="tabpanel"] .wf-editor-container {
                 line-height: 18px;
                 border: 1px solid transparent;
                 border-radius: 4px 4px 0 0;
-    
+                background-color: inherit;
                 display: block;
 
                 &:hover {
@@ -242,7 +242,10 @@ section[role="tabpanel"] .wf-editor-container {
             -moz-appearance: none;
             -webkit-appearance: none;
             border: 0 none;
+            border-radius: 0;
             background: transparent none;
+            
+            line-height: 1.25em;
 
             &.btn-link  {
                 color: inherit;
@@ -251,6 +254,8 @@ section[role="tabpanel"] .wf-editor-container {
                 &:focus,
                 &:active {
                     text-decoration: none;
+                    border-radius: 0;
+                    border: 0 none;
                 }
             }
         }
