@@ -40,7 +40,7 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="toggle" type="yesno" default="1" label="WF_PARAM_EDITOR_TOGGLE" description="WF_PARAM_EDITOR_TOGGLE_DESC">
+            <field name="toggle" type="yesno" default="0" label="WF_PARAM_EDITOR_TOGGLE" description="WF_PARAM_EDITOR_TOGGLE_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
