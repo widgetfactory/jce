@@ -425,7 +425,7 @@ class WFEditor
             $settings['content_css'] = implode(',', $stylesheets);
 
             // Editor Toggle
-            $settings['toggle'] = $wf->getParam('editor.toggle', 1, 1);
+            $settings['toggle'] = $wf->getParam('editor.toggle', 0, 0);
             $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
             $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
 
