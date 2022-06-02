@@ -529,7 +529,7 @@
                 }
 
                 function getSelectedTextBlocks() {
-                    var textBlocks = [], root = editor.getBody();
+                    var textBlocks = [], root = editor.dom.get(editor.settings.editable_root) || editor.getBody();
 
                     function isBookmarkNode(node) {
                         return node && node.tagName === 'SPAN' && node.getAttribute('data-mce-type') === 'bookmark';
@@ -631,7 +631,7 @@
             }
 
             function removeList() {
-                var bookmark = createBookmark(editor.selection.getRng(true)), root = editor.getBody();
+                var bookmark = createBookmark(editor.selection.getRng(true)), root = editor.dom.get(editor.settings.editable_root) || editor.getBody();
 
                 tinymce.each(getSelectedListItems(), function (li) {
                     var node, rootList;
