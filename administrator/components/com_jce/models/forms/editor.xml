@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
     <fields name="editor">
-        <fieldset name="features" addfieldpath="/administrator/components/com_categories/models/fields">
+        <fieldset name="editor.features" addfieldpath="/administrator/components/com_categories/models/fields">
             <field name="width" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_WIDTH" description="WF_PARAM_EDITOR_WIDTH_DESC" />
             <field name="height" type="text" size="5" default="" placeholder="auto" label="WF_PARAM_EDITOR_HEIGHT" description="WF_PARAM_EDITOR_HEIGHT_DESC" />
             <field name="toolbar_theme" type="list" default="modern" label="WF_PARAM_EDITOR_TOOLBAR_THEME" description="WF_PARAM_EDITOR_TOOLBAR_THEME_DESC">
@@ -40,15 +40,6 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-            <field name="toggle" type="yesno" default="0" label="WF_PARAM_EDITOR_TOGGLE" description="WF_PARAM_EDITOR_TOGGLE_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-            <field name="toggle_state" type="yesno" default="1" label="WF_PARAM_EDITOR_STATE" description="WF_PARAM_EDITOR_STATE_DESC" showon="toggle:1">
-                <option value="1">WF_OPTION_ON</option>
-                <option value="0">WF_OPTION_OFF</option>
-            </field>
-            <field name="toggle_label" type="text" default="" label="WF_PARAM_EDITOR_TOGGLE_LABEL" description="WF_PARAM_EDITOR_TOGGLE_LABEL_DESC" showon="toggle:1" />
             <field name="active_tab" type="list" default="wysiwyg" label="WF_PARAM_EDITOR_ACTIVE_TAB" description="WF_PARAM_EDITOR_ACTIVE_TAB_DESC">
                 <option value="wysiwyg">WF_PARAM_EDITOR_ACTIVE_TAB_WYSIWYG</option>
                 <option value="source">WF_PARAM_EDITOR_ACTIVE_TAB_CODE</option>
@@ -97,7 +88,6 @@
             <field name="custom_colors" type="textarea" rows="3" cols="50" default="" label="WF_PARAM_CUSTOM_COLORS" description="WF_PARAM_CUSTOM_COLORS_DESC" placeholder="eg: #CC0000,#FF0000" />
         </fieldset>
         <fieldset name="editor.filesystem">
-            <!-- Plugin fieldeters -->
             <field name="dir" type="text" default="" size="50" placeholder="images" label="WF_PARAM_DIRECTORY" description="WF_PARAM_DIRECTORY_DESC"/>
 
             <field name="dir_filter" type="repeatable" default="" label="WF_PARAM_DIRECTORY_FILTER" description="WF_PARAM_DIRECTORY_FILTER_DESC">

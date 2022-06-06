@@ -11,7 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 $this->name = JText::_('WF_PROFILES_FEATURES_LAYOUT');
-$this->fieldsname = 'features';
+$this->fieldsname = 'editor.features';
 echo JLayoutHelper::render('joomla.content.options_default', $this);
 ?>
 
