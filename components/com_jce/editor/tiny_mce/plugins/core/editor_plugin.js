@@ -11,14 +11,74 @@
 /*global tinymce:true */
 
 (function () {
-  var Entities = tinymce.html.Entities, each = tinymce.each;
+  var Entities = tinymce.html.Entities, each = tinymce.each,
+  extend = tinymce.extend,
+  DomParser = tinymce.html.DomParser,
+  HtmlSerializer = tinymce.html.Serializer,
+  Dispatcher = tinymce.util.Dispatcher;
+
+  function validateContent(ed, content) {
+    var args = {
+        "no_events": true,
+        "format": "raw"
+    };
+
+    // create new settings object
+    var settings = {};
+
+    // extend with editor settings
+    extend(settings, ed.settings);
+
+    // set content    
+    args.content = content;
+
+    if (ed.settings.validate) {
+        // trigger cleanup etc in editor
+        args.format = "html";
+
+        // set a load flag so code is processed as code blocks
+        args.load = true;
+
+        // onBeforeGetContent
+        ed.onBeforeGetContent.dispatch(ed, args);
+
+        // allow all tags
+        settings.verify_html = false;
+
+        // no root blocks
+        settings.forced_root_block = false;
+
+        // must validate
+        settings.validate = true;
+
+        // create dom parser
+        var parser = new DomParser(settings, ed.schema);
+
+        // create html serializer
+        var serializer = new HtmlSerializer(settings, ed.schema);
+
+        // clean content
+        args.content = serializer.serialize(parser.parse(args.content), args);
+
+        args.get = true;
+
+        // onPostProcess
+        ed.onPostProcess.dispatch(ed, args);
+
+        // pass content
+        content = args.content;
+    }
+
+    return content;
+}
 
   tinymce.PluginManager.add('core', function (ed, url) {
     // command store
     var store;
 
     // media update event
-    ed.onUpdateMedia = new tinymce.util.Dispatcher();
+    ed.onUpdateMedia = new Dispatcher();
+    ed.onWfEditorSave = new Dispatcher();
 
     var contentLoaded = false, elm = ed.getElement();
 
@@ -213,6 +273,10 @@
             ed.dom.setAttribs(elm, { 'href': o.after, 'data-mce-href': o.after });
           }
         });
+      });
+
+      ed.onWfEditorSave.add(function (ed, o) {
+        o.content = validateContent(ed, o.content);
       });
     });
 
