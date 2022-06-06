@@ -134,8 +134,13 @@
         },
 
         getContent: function () {
-            var content = this.editor.getElement().value;
-            return this.validateContent(content);
+            var ed = this.editor, args = {};
+
+            args.content = ed.getElement().value;
+
+            ed.onWfEditorSave.dispatch(ed, args);
+
+            return args.content;
         },
 
         save: function () {
