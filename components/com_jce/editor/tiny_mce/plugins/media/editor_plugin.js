@@ -924,6 +924,8 @@
         var innerHtml;
         var styles;
 
+        var boolAttrs = editor.schema.getBoolAttrs();
+
         // get node src (video, audio, iframe)
         var src = sourceNode.attr('src');
 
@@ -932,7 +934,7 @@
             var provider = isSupportedMedia(src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
 
             each(defaultAttributes, function (val, name) {
-                if (!tinymce.is(sourceNode.attr(name))) {
+                if (!tinymce.is(sourceNode.attr(name)) && !(name in boolAttrs)) {
                     sourceNode.attr(name, val);
                 }
             });
@@ -1026,6 +1028,11 @@
 
             if (htmlSchema.isValid(targetNode.name, attrName)) {
                 targetNode.attr(attrName, attrValue);
+            }
+
+            // remove "false" boolean attributes
+            if (tinymce.is(boolAttrs[attrName]) && !boolAttrs[attrName]) {
+                targetNode.attr(attrName, null);
             }
         }
 
@@ -1296,6 +1303,7 @@
 
     var updateMedia = function (ed, data, elm) {
         var preview, attribs = {}, node = ed.dom.getParent(elm || ed.selection.getNode(), '[data-mce-object]');
+        var boolAttrs = ed.schema.getBoolAttrs();
 
         var nodeName = node.nodeName.toLowerCase();
 
@@ -1330,8 +1338,18 @@
                 return true;
             }
 
+            // remove "false" boolean attributes
+            if (tinymce.is(boolAttrs[name]) && !value) {
+                value = null;
+
+                // remove autoplay fallback
+                if (name == 'autoplay') {
+                    attribs['data-mce-p-' + name] = null;
+                }
+            }
+
             // use prefix attributes for placeholder
-            if (nodeName === 'img' && (!htmlSchema.isValid(nodeName, name) || name === 'src')) {
+            if (nodeName === 'img' && (!htmlSchema.isValid(nodeName, name) || name === 'src') && value !== null) {
                 attribs['data-mce-p-' + name] = value;
                 return true;
             }
