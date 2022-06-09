@@ -54,7 +54,6 @@ JText::script('MESSAGE');
 					<!-- End Content -->
 			</div>
 			<input type="hidden" name="task" value="" />
-			<input type="hidden" name="id" value="<?php echo $this->item->id;?>" />
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
 	</form>

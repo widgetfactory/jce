@@ -12,6 +12,8 @@
             </field>
 
             <field name="ordering" type="Profileordering" label="JFIELD_ORDERING_LABEL" description="JFIELD_ORDERING_DESC"/>
+
+            <field name="id" type="hidden" />
         </fieldset>
         <fieldset name="assignment" addfieldpath="/administrator/components/com_categories/models/fields">
             <field name="area" type="checkboxes" multiple="multiple" class="inline" label="WF_PROFILES_AREA" description="WF_PROFILES_AREA_DESC" checked="1,2">
