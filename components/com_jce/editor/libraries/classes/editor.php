@@ -424,10 +424,12 @@ class WFEditor
             // set stylesheets as string
             $settings['content_css'] = implode(',', $stylesheets);
 
-            // Editor Toggle
-            $settings['toggle'] = $wf->getParam('editor.toggle', 0, 0);
-            $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
-            $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
+            if (WF_EDITOR_PRO) {
+                // Editor Toggle
+                $settings['toggle'] = $wf->getParam('editor.toggle', 0, 0);
+                $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
+                $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
+            }
 
             // use cookies to store state
             $settings['use_state_cookies'] = (bool) $wf->getParam('editor.use_cookies', 1);
