@@ -19,12 +19,24 @@ if ($app->input->get('task') === 'plugin') {
     throw new Exception('Restricted', 403);
 }
 
+$vName = $app->input->get('view');
+
 // fix legacy plugin url
-if ($app->input->get('view') === 'editor' && $app->input->get('layout') === 'plugin') {
+if ($vName == 'editor' && $app->input->get('layout') == 'plugin') {
 
     if ($app->input->get('plugin')) {
         $app->input->set('task', 'plugin.display');
-    }    
+    }
+    
+    $app->input->set('view', '');
+}
+
+$task = $app->input->get('task');
+
+if ($app->getClientId() == 0) {
+    if (empty($task) || ($vName && $vName != 'popup')) {
+        throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+    }
 }
 
 // constants and autoload 
