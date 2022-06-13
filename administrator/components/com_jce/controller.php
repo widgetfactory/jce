@@ -65,13 +65,9 @@ class JceController extends JControllerLegacy
         JFactory::getLanguage()->load('com_jce', JPATH_ADMINISTRATOR);
 
         // Set the default view name and format from the Request.
-        $vName = $app->input->get('view');
+        $vName = $app->input->get('view', 'cpanel');
         $vFormat = $document->getType();
         $lName = $app->input->get('layout', 'default');
-
-        if (empty($vName)) {
-            throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
-        }
 
         // legacy front-end popup view
         if ($vName === "popup") {
