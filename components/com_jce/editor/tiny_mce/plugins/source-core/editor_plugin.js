@@ -31,7 +31,15 @@
                 });
             }
 
+            function isEditorActive() {
+                return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+            }
+
             ed.onInit.add(function (ed) {
+                if (isEditorActive() == false) {
+                    return;
+                }
+                
                 // get the stored active tab
                 var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
 
