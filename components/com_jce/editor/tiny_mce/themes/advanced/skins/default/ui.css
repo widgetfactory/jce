@@ -2340,6 +2340,12 @@ select.mceNativeListBox {
     font-size: 14px;
 }
 
+.mceDefaultSkin .mceStatusbar .mceWordCount .mceText:before {
+    content: attr(title);
+    display: inline-block;
+    margin: 0 5px;
+}
+
 .mceDefaultSkin .mceWordCountLimit {
     font-weight: bold;
     color: #cc0000;
