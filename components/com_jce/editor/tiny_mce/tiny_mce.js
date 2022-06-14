@@ -35210,8 +35210,7 @@
         }
 
         if (format) {
-
-          if (node) {
+          if (node) {          
             if (node.nodeType) {
               if (!applyNodeStyle(formatList, node)) {
                 rng = dom.createRng();
