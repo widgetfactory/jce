@@ -18839,7 +18839,6 @@
         s.get = true;
         s.format = s.format || 'html';
         s.forced_root_block = '';
-
         self.onBeforeGetContent.dispatch(self, s);
 
         if (s.format == 'text') {
