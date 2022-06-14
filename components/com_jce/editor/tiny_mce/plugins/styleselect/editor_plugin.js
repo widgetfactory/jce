@@ -219,6 +219,10 @@
                         return NodeType.isElement(node) && node.hasAttribute('data-mce-root');
                     }
 
+                    function isRoot(node) {
+                        return isFakeRoot(node) || ed.getBody() === node;
+                    }
+
                     each(nodes, function (node) {
                         var bookmark = selection.getBookmark();
 
@@ -251,7 +255,7 @@
                         if (!node) {
                             var sel = selection.getSel();
 
-                            if (sel.anchorNode && NodeType.isElement(sel.anchorNode) && !ed.dom.isBlock(sel.anchorNode)) {
+                            if (sel.anchorNode && NodeType.isElement(sel.anchorNode) && !ed.dom.isBlock(sel.anchorNode) && !isRoot(sel.anchorNode)) {
                                 node = sel.anchorNode;
                             }
                         }
@@ -269,7 +273,7 @@
 
                         if (!removedFormat) {
                             // registered style format
-                            if (ed.formatter.get(name)) {
+                            if (ed.formatter.get(name)) {                                
                                 // apply or remove
                                 ed.execCommand('ToggleFormat', false, {
                                     name: name,
