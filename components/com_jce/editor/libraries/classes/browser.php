@@ -1722,7 +1722,17 @@ class WFFileBrowser extends JObject
                     $this->setResult(JText::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', WFUtility::mb_basename($new)), 'error');
                 }
             } else {
-                $this->fireEvent('onFolderNew', array($new));
+                $data = array(
+                    'name'  => WFUtility::mb_basename($new),
+                    'id'    => WFUtility::mb_basename($new)
+                );
+
+                $event = $this->fireEvent('onFolderNew', array($new));
+
+                // merge event data with default values
+                $data = array_merge($data, $event);
+
+                $this->setResult($data, $result->type);
             }
         }
 

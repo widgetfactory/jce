@@ -803,7 +803,9 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $result = new WFFileSystemResult();
 
-        $result->state = $this->folderCreate($path);
+        $result->state  = $this->folderCreate($path);
+        $result->path   = $path;
+        $result->type   = 'folders';
 
         JFactory::getApplication()->triggerEvent('onWfFileSystemCreateFolder', array($path, $result->state));
 

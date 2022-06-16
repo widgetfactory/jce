@@ -11,6 +11,9 @@
 /*
  * Depends: jquery.ui.core.js jquery.ui.widget.js
  */
+
+/* global Wf, jQuery */
+
 (function ($, Wf) {
 
     var Tree = function (element, options) {
@@ -49,7 +52,7 @@
             });
 
             // cancel scrolling animation
-            $(this.element).on(scrollEvents, function() {
+            $(this.element).on(scrollEvents, function () {
                 $(this).stop();
             });
         },
@@ -246,7 +249,6 @@
          */
         createNode: function (nodes, parent, sortNodes) {
             var self = this;
-            var e, p, h, l, np, i;
 
             // no nodes to create!
             if (!nodes.length) {
@@ -263,7 +265,7 @@
             }
 
             // filter nodes that already exist
-            nodes = $.grep(nodes, function(node) {
+            nodes = $.grep(nodes, function (node) {
                 return self._findNode(node.id, parent).length === 0;
             });
 
@@ -295,7 +297,7 @@
                         var title = node.name || node.id;
 
                         // decode name value from title
-                        name = Wf.String.decode(title);
+                        var name = Wf.String.decode(title);
 
                         // encode title
                         title = Wf.String.encode(title);
@@ -381,6 +383,9 @@
                 parent = this._findParent(parent);
             }
 
+            // remove leading or trailing slash
+            id = id.replace(/^\/|\/$/, '');
+
             return $(parent).find('li[data-id="' + this._escape(this._encode(id)) + '"]:first');
         },
         /**
@@ -407,9 +412,7 @@
 
             var parent = $(ex).parent();
 
-            $('li', parent).each(function () {
-                var el = this;
-
+            $('li', parent).each(function (i, el) {
                 if (el !== ex && $(el).parent() !== parent) {
                     self.toggleNodeState(el, 0);
 
@@ -486,8 +489,10 @@
             // decode first in case already encoded
             try {
                 s = decodeURIComponent(s);
-            } catch(e) {}
-            
+            } catch (e) {
+                // error
+            }
+
             // encode but decode backspace
             return encodeURIComponent(s).replace(/%2F/gi, '\/');
         },
@@ -513,7 +518,7 @@
             var el = this.element, node = this._findNode(id);
 
             if ($(node).length) {
-                var padding = parseInt($(node).css('padding-left')) + parseInt($(this.element).css('padding-left'));
+                var padding = parseInt($(node).css('padding-left'), 10) + parseInt($(this.element).css('padding-left'), 10);
 
                 var left = $(node).get(0).offsetLeft - padding;
                 var top = $(node).get(0).offsetTop - ($('.uk-tree-row', node).outerHeight() + 2);
@@ -522,10 +527,10 @@
                 $(el).find('.uk-tree-active').removeClass('uk-tree-active');
 
                 $(el).animate({
-                    scrollLeft: Math.round(left),
+                    scrollLeft: Math.round(left)
                 }, 500).animate({
                     scrollTop: Math.round(top)
-                }, 1500, function() {
+                }, 1500, function () {
                     $(this).off(scrollEvents);
                 });
 

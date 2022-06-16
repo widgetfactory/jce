@@ -1712,9 +1712,15 @@
 
                             Wf.JSON.request('folderNew', args, function (o) {
                                 if (o) {
-                                    $('#tree-body').trigger('tree:createnode', [o.folders, dir]);
+
+                                    // only create in root
+                                    if (self._isRoot()) {
+                                        $('#tree-body').trigger('tree:createnode', [o.folders, self._dir]);
+                                    }
+
                                     self._trigger('onFolderNew');
                                 }
+
                                 self.refresh();
                             });
                         }
