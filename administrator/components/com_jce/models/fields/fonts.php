@@ -115,9 +115,11 @@ class JFormFieldFonts extends JFormFieldCheckboxes
             }
         }
 
+        $checked = empty($exclude) ? true : false;
+        
         // assign empty (unchecked) options for unused fonts
         foreach (self::$fonts as $text => $value) {
-
+            
             if (in_array($text, $exclude)) {
                 continue;
             }
@@ -125,7 +127,7 @@ class JFormFieldFonts extends JFormFieldCheckboxes
             $tmp = array(
                 'value' => $value,
                 'text' => JText::alt($text, $fieldname),
-                'checked' => false,
+                'checked' => $checked,
                 'custom' => false,
             );
 
