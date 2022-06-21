@@ -134,13 +134,13 @@
 }
 
 .mceListBoxMenu {
-    overflow: hidden;
     min-width: calc(113px * 2);
     min-height: 68px;
     height: auto;
     max-height: 386px;
     /*(32px *  12 + 2);*/
     margin-top: 3px;
+    overflow: hidden;
 }
 
 .mceListBoxMenu .mceMenuItems .mceText {
