@@ -362,6 +362,9 @@
             $('#editor_toggle').toggle(v === 1);
         }).change();
 
+        // hide toggle display if required
+        $('#editor_toggle').prop('hidden', $('#jform_config_editor_toggle').length == 0);
+
         // editor toggle label
         $('#jform_config_editor_toggle_label').on('change keyup', function () {
             if (this.value) {
