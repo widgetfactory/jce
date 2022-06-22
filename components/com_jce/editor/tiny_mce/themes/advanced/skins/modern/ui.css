@@ -182,6 +182,7 @@
 }
 
 .mceModernSkin .mceListBoxMenu {
+    overflow: hidden;
 }
 
 .mceModernSkin .mceListBoxSelected .mceText,
