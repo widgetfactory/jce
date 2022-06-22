@@ -31,14 +31,6 @@ if ($vName == 'editor' && $app->input->get('layout') == 'plugin') {
     $app->input->set('view', '');
 }
 
-$task = $app->input->get('task');
-
-if ($app->getClientId() == 0) {
-    if (empty($task) || ($vName && $vName != 'popup')) {
-        throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
-    }
-}
-
 // constants and autoload 
 require_once __DIR__ . '/includes/base.php';
 
