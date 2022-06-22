@@ -186,7 +186,7 @@
         });
 
         // wrap content in fake root
-        ed.onBeforeSetContent.add(function (editor, o) {
+        ed.onBeforeSetContent.add(function (editor, o) {          
           if (!o.content) {
             o.content = '<br data-mce-bogus="1">';
           }
@@ -194,11 +194,20 @@
           o.content = '<mce:root id="' + ed.settings.editable_root + '" data-mce-root="1">' + o.content + '</mce:root>';
         });
 
+        function isEmptyRoot(node) {
+          return /^(&nbsp;|&#160;|\s|\u00a0|)$/.test(node.innerHTML);
+        }
+
         // reset selection to fake root
-        ed.onSetContent.add(function () {
+        ed.onSetContent.add(function (ed, o) {
           var root = dom.get(ed.settings.editable_root), rng;
 
-          if (root) {
+          if (root) {            
+            
+            if (isEmptyRoot(root)) {
+              root.innerHTML = '<br data-mce-bogus="1">';
+            }
+            
             // Move the caret to the end of the marker
             rng = dom.createRng();
             rng.setStart(root, 0);
@@ -206,7 +215,7 @@
             selection.setRng(rng);
           }
         });
-        
+
         // clear non-breaking space
         ed.onSaveContent.add(function (ed, o) {
           if (o.content === '&nbsp;') {
