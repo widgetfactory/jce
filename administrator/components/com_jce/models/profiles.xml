@@ -59,7 +59,7 @@
             <plugins>link,imgmanager,article,spellchecker,fullscreen,kitchensink,clipboard,contextmenu,lists,formatselect,styleselect,textpattern</plugins>
             <published>0</published>
             <ordering>3</ordering>
-            <params>{"editor":{"toolbar_theme":"modern","toggle":"0"}}</params>
+            <params>{"editor":{"toolbar_theme":"modern"}}</params>
         </profile>
         <profile name="Mobile">
             <name>Mobile</name>
@@ -73,7 +73,7 @@
             <plugins>fullscreen,kitchensink,spellchecker,article,link,lists,formatselect,styleselect,textpattern</plugins>
             <published>0</published>
             <ordering>4</ordering>
-            <params>{"editor":{"toolbar_theme":"modern.touch","resizing":"0","resize_horizontal":"0","resizing_use_cookie":"0","toggle":"0","links":{"popups":{"default":"","jcemediabox":{"enable":"0"},"window":{"enable":"0"}}}}}</params>
+            <params>{"editor":{"toolbar_theme":"modern.touch","resizing":"0","resize_horizontal":"0","resizing_use_cookie":"0","links":{"popups":{"default":"","jcemediabox":{"enable":"0"},"window":{"enable":"0"}}}}}</params>
         </profile>
         <profile>
             <name>Markdown</name>
