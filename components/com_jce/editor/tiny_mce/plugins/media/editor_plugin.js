@@ -15,9 +15,44 @@
         VK = tinymce.VK,
         Serializer = tinymce.html.Serializer,
         DomParser = tinymce.html.DomParser,
-        SaxParser = tinymce.html.SaxParser;
+        SaxParser = tinymce.html.SaxParser,
+        DOM = tinymce.DOM;
 
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
+
+    /**
+     * Check if a node is wrapped in a "responsive" container
+     * @param {Node} node 
+     * @returns boolean
+     */
+    function isResponsiveMedia(node) {
+        var parent = node.parent;
+
+        if (parent.name != 'div') {
+            return false;
+        }
+
+        var valid = true;
+
+        var pStyles = DOM.parseStyle(parent.attr('style')),
+            nStyles = DOM.parseStyle(node.attr('style')),
+            containerStyles = { 'padding-bottom': '56.25%', position: 'relative' },
+            mediaStyles = { position: 'absolute' };
+
+        each(containerStyles, function (val, key) {
+            if (!tinymce.is(pStyles[key]) || pStyles[key] != val) {
+                valid = false;
+            }
+        });
+
+        each(mediaStyles, function (val, key) {
+            if (!tinymce.is(nStyles[key]) || nStyles[key] != val) {
+                valid = false;
+            }
+        });
+
+        return valid;
+    }
 
     // media that can be previewed, eg: audio, video, iframe
     function isPreviewMedia(type) {
@@ -774,7 +809,7 @@
                     }
 
                     // if the attribute value exists, remove the style value
-                    if (tinymce.is(node.attr(key))) {
+                    if (tinymce.is(node.attr(key)) && node.attr(key) == styleObject[key]) {
                         delete styleObject[key];
                     }
                 });
@@ -1036,11 +1071,11 @@
             }
         }
 
-        if (width) {
+        if (width && !style.width) {
             style.width = /^[0-9.]+$/.test(width) ? (width + 'px') : width;
         }
 
-        if (height) {
+        if (height && !style.height) {
             style.height = /^[0-9.]+$/.test(height) ? (height + 'px') : height;
         }
 
@@ -1159,12 +1194,19 @@
                     continue;
                 }
 
-                if (editor.settings.media_live_embed && !isObjectEmbed(node.name)) {
+                if (editor.settings.media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node)) {
                     if (!isWithinEmbed(node)) {
                         node.replace(createPreviewNode(editor, node));
                     }
                 } else {
                     if (!isWithinEmbed(node)) {
+                        if (isResponsiveMedia(node)) {
+                            node.parent.attr({
+                                'contentEditable'   : 'false',
+                                'data-mce-contenteditable': 'true'
+                            });
+                        }
+    
                         node.replace(createPlaceholderNode(editor, node));
                     }
                 }
@@ -1312,9 +1354,6 @@
             ed.dom.removeClass(node, 'mce-object-preview-' + val);
         });
 
-        // clear styles on preview node
-        node.removeAttribute('style');
-
         // get iframe/video node
         if (node.className.indexOf('mce-object-preview') !== -1) {
             // set preview parent
@@ -1325,6 +1364,11 @@
 
             // transfer reference to media node
             node = ed.dom.select(nodeName, node)[0];
+        }
+
+        // clear styles on preview node
+        if (preview) {
+            preview.removeAttribute('style');
         }
 
         each(data, function (value, name) {
@@ -1360,9 +1404,22 @@
                 value = value.replace('autoplay=1', 'autoplay=1');
             }
 
+            // update classes
+            if (name == 'class') {
+                ed.dom.addClass(node, value);
+                return true;
+            }
+
+            // update styles
+            if (name == 'style') {
+                ed.dom.setStyles(node, ed.dom.parseStyle(value));
+                return true;
+            }
+
             attribs[name] = value;
         });
 
+        // update attributes
         ed.dom.setAttribs(node, attribs);
 
         var styleObject = ed.dom.parseStyle(node.getAttribute('style'));
