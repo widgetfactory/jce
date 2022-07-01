@@ -153,6 +153,9 @@ img.mce-object.mce-object-video {
   z-index: 1;
   display: block;
 }
+[data-mce-object] {
+  display: inline-block;
+}
 [data-mce-selected].mce-object-preview:not(.mce-resizing) .mce-object-shim {
   display: none;
 }
