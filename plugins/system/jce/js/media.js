@@ -408,7 +408,7 @@
             }
         });
 
-        $('.wf-media-input-upload').WfMediaUpload();
+        $('.wf-media-input-upload').not('[name*="media-repeat"]').WfMediaUpload();
 
         // remove modal heading
         $('.wf-media-wrapper .modal-header h3').html('&nbsp;');
