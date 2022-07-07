@@ -714,7 +714,7 @@ class JceModelProfile extends JModelAdmin
                 if (array_key_exists($item, $data['params'])) {
                     $value = $data['params'][$item];
                     // clean and add to json array for merging
-                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $json[$item] = filter_var_array($value, FILTER_SANITIZE_SPECIAL_CHARS);
                 }
             }
 
