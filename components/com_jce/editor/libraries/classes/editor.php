@@ -1103,7 +1103,7 @@ class WFEditor
             return false;
         }
 
-        // search for template.css file using JPath
+        // search for editor.css file using JPath
         $file = JPath::find(array(
             JPATH_SITE . '/templates/' . $name . '/css',
             JPATH_SITE . '/media/templates/site/' . $name . '/css'
