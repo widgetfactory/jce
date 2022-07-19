@@ -9309,7 +9309,8 @@
       webkitMovementX: 1,
       webkitMovementY: 1,
       keyIdentifier: 1,
-      mozPressure: 1
+      mozPressure: 1,
+      path: 1
     };
 
     /**
@@ -9877,11 +9878,7 @@
 
     namespace.EventUtils = EventUtils;
 
-    namespace.Event = new EventUtils(function (id) {
-      return function (evt) {
-        tinymce.dom.Event.callNativeHandler(id, evt);
-      };
-    });
+    namespace.Event = new EventUtils();
 
     // Bind ready event when tinymce script is loaded
     namespace.Event.bind(window, 'ready', function () { });
@@ -25620,7 +25617,7 @@
         my = vp.y + vp.h;
 
         if ((x + w) > mx) {
-          x =  Math.max(0, mx - w);
+          x = Math.max(0, mx - w);
         }
 
         if ((y + h) > my) {
@@ -26937,10 +26934,13 @@
 
         function initEditors() {
           var initCount = 0,
+            editors = [],
             targets;
 
           function createEditor(id, settings, targetElm) {
             var editor = new tinymce.Editor(id, settings, self);
+
+            editors.push(editor);
 
             editor.onInit.add(function () {
               if (++initCount === targets.length) ;
@@ -27444,8 +27444,8 @@
     };
     /*eslint no-unused-vars:0*/
     var focusEditor = function (editor) {
-      var controlElm, contentEditableHost, rng, doc = editor.getDoc(),
-        body = editor.getBody(),
+      var contentEditableHost, rng; editor.getDoc();
+        var body = editor.getBody(),
         contentEditable = editor.settings.content_editable,
         selection = editor.selection;
 
@@ -27453,7 +27453,7 @@
       rng = selection.getRng();
 
       if (rng.item) {
-        controlElm = rng.item(0);
+        rng.item(0);
       }
 
       // Move focus to contentEditable=true child if needed
@@ -43742,4 +43742,4 @@
       });
   })();
 
-}());
+})();
