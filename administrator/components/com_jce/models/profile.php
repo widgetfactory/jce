@@ -376,6 +376,8 @@ class JceModelProfile extends JModelAdmin
             // remove duplicates
             $rows = array_unique($rows);
 
+            $extensions = JcePluginsHelper::getExtensions();
+
             // only need plugins with xml files
             foreach (JcePluginsHelper::getPlugins() as $name => $plugin) {
                 $plugin->icon = empty($plugin->icon) ? array() : explode(',', $plugin->icon);
@@ -422,8 +424,6 @@ class JceModelProfile extends JModelAdmin
 
                     // bind data to the form
                     $plugin->form->bind($data->params);
-
-                    $extensions = JcePluginsHelper::getExtensions();
 
                     foreach ($extensions as $type => $items) {
 
