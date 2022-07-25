@@ -21,7 +21,7 @@ abstract class WFLinkHelper
      */
     public static function route($url)
     {
-        $app = JApplication::getInstance('site');
+        $app = Joomla\CMS\Application\CMSApplication::getInstance('site');
         $router = $app->getRouter('site');
 
         if (!$router) {
