@@ -1,3 +1,6 @@
+/* eslint-disable consistent-this */
+/* global tinyMCEPopup */
+
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
@@ -40,7 +43,7 @@
                 var self = this,
                     ed = tinyMCEPopup.editor,
                     cl = [],
-                    i, lo = {},
+                    lo = {},
                     f = ed.settings.class_filter,
                     ov;
 
@@ -84,7 +87,7 @@
 
                                         // Remove everything but class name
                                         ov = v;
-                                        v = v.replace(/.*\.([a-z0-9_\-]+).*/i, '$1')
+                                        v = v.replace(/.*\.([a-z0-9_\-]+).*/i, '$1');
 
                                         // Filter classes
                                         if (f && !(v = f(v, ov))) {
@@ -112,7 +115,7 @@
                                 break;
                         }
                     });
-                };
+                }
 
                 try {
                     each(ed.getDoc().styleSheets, addClasses);
@@ -138,7 +141,7 @@
                 // datalist element
                 lst = lst.list || lst;
 
-                if (!self.options.length) {                    
+                if (!self.options.length) {
                     if (ed.getParam('styleselect_custom_classes')) {
                         var custom = ed.getParam('styleselect_custom_classes');
 
@@ -153,7 +156,7 @@
                         // try extraction
                         if (Array.isArray(importcss_classes)) {
                             each(importcss_classes, function (item) {
-                                var val = item.class, ov = val;
+                                var val = item["class"], ov = val;
 
                                 // Filter classes
                                 if (filter && !(val = filter(val, ov))) {
@@ -182,10 +185,10 @@
                             item = { 'selector': item, 'class': '', 'style': '' };
                         }
 
-                        if (item.class) {
-                            var val = item.class;
-                            var opt = {title : item.title || val, value : val, style : ''}
-   
+                        if (item["class"]) {
+                            var val = item["class"];
+                            var opt = { title: item.title || val, value: val, style: '' };
+
                             var styles = item.style || '';
 
                             if (styles) {
@@ -204,7 +207,7 @@
                     if (opt.style) {
                         node.setAttribute('style', opt.style);
                     }
-                    
+
                     lst.appendChild(node);
                 });
             },
@@ -215,7 +218,8 @@
                 }
                 document.getElementById(parent.id + '_pick').style.backgroundColor = parent.value;
             }
-        }
+        };
+
         win.TinyMCE_Utils = TinyMCE_Utils;
     }
 })(window);
