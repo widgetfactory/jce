@@ -12,8 +12,7 @@
 
 (function () {
   var each = tinymce.each,
-    DOM = tinymce.DOM,
-    PreviewCss = tinymce.util.PreviewCss;
+    DOM = tinymce.DOM, PreviewCss = tinymce.util.PreviewCss;
 
   /* Make a css url absolute
      * @param u URL string
@@ -200,6 +199,13 @@
 
         self._setGuideLinesColor();
       });
+
+      // remove temp preview elements
+      ed.onNodeChange.add(function (ed) {
+        if (tinymce.is(ed.settings.importcss_classes)) {
+          ed.dom.remove(ed.dom.select('[data-mce-type="temp"]'));
+        }
+      });
     },
 
     _setHighContrastMode: function () {
@@ -358,6 +364,20 @@
         return filtered[href];
       }
 
+      var bodyRx = ed.settings.body_class ? new RegExp('.(' + (ed.settings.body_class.split(' ').join('|')) + ')') : false;
+
+      function isBodyClass(value) {
+        if (!bodyRx) {
+          return false;
+        }
+        
+        return bodyRx.test(value);
+      }
+
+      function isValidStyle(value) {
+        return /\.[\w\-]+$/.test(value);
+      }
+
       function parseCSS(stylesheet) {
         // IE style imports
         each(stylesheet.imports, function (r) {
@@ -404,18 +424,23 @@
                 return true;
               }
 
-              if (r.selectorText) {
-                each(r.selectorText.split(','), function (v) {
-                  v = v.replace(/^\s*|\s*$|^\s\./g, "");
+              if (r.selectorText) {                
+                each(r.selectorText.split(','), function (v) {                  
+                  v = v.trim();
 
-                  // Is internal or it doesn't contain a class
-                  if (/\.mce/.test(v) || (ed.settings.body_class && new RegExp('.(' + (ed.settings.body_class.split(' ').join('|')) + ')').test(v)) || !/\.[\w\-]+$/.test(v)) {
+                  if (v.indexOf('.mce') == 0) {
                     return;
                   }
 
-                  if (v && classes.indexOf(v) === -1) {
-                    classes.push(v);
+                  if (isBodyClass(v)) {
+                    return;
                   }
+
+                  if (!isValidStyle(v)) {
+                    return;
+                  }
+
+                  classes.push(v);
                 });
               }
 
@@ -503,7 +528,12 @@
       }
 
       // sort and expose if classes have been set
-      if (classes.length) {
+      if (classes.length) {        
+        // remove duplicates
+        classes = classes.filter(function (val, ind, arr) {
+            return arr.indexOf(val) === ind;
+        });
+
         // sort alphabetically
         if (ed.getParam('styleselect_sort', 1)) {
           classes.sort();
@@ -512,7 +542,8 @@
         ed.settings.importcss_classes = tinymce.map(classes, function (val) {
           var cls = cleanSelectorText(val);
 
-          var style = PreviewCss(ed, { styles: [], attributes: [], classes: cls.split(' ') });
+          var style = PreviewCss(ed, { classes: cls.split(' ') });
+
           return { 'selector': val, 'class': cls, 'style': style };
         });
       }
