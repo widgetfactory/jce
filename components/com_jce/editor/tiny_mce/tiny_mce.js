@@ -4064,119 +4064,130 @@
       return lvl >= 2;
     }
 
-    tinymce.util.PreviewCss = function (ed, fmt) {
-        var name, dom = ed.dom,
-          previewCss = {};
+    var getCssText = function (ed, fmt) {
+      var name, dom = ed.dom,
+        previewCss = {};
 
-        fmt = extend({ styles: [], attributes: [], classes: '' }, fmt);
+      fmt = extend({ styles: [], attributes: [], classes: '' }, fmt);
 
-        var previewStyles = ed.settings.preview_styles;
+      var previewStyles = ed.settings.preview_styles;
 
-        // No preview forced
-        if (previewStyles === false) {
-          return '';
+      // No preview forced
+      if (previewStyles === false) {
+        return '';
+      }
+
+      // Default preview
+      if (!previewStyles) {
+        previewStyles = 'font-family font-size font-weight text-decoration text-transform background-color color';
+      }
+
+      // Removes any variables since these can't be previewed
+      function removeVars(val) {
+        if (val && typeof (val) === "string") {
+          val = val.replace(/%(\w+)/g, '');
         }
 
-        // Default preview
-        if (!previewStyles) {
-          previewStyles = 'font-family font-size font-weight text-decoration text-transform background-color color';
+        return val;
+      }
+
+      // Create block/inline element to use for preview
+      name = fmt.block || fmt.inline || 'div';
+
+      if (!previewElm || previewElm.nodeName != name.toUpperCase()) {
+        previewElm = dom.create(name);
+        ed.getBody().appendChild(previewElm);
+      }
+
+      // clear preview element
+      dom.removeAllAttribs(previewElm);
+
+      // Add format styles to preview element
+      each(fmt.styles, function (value, name) {
+        value = removeVars(value);
+
+        if (value) {
+          dom.setStyle(previewElm, name, value);
+        }
+      });
+
+      // Add attributes to preview element
+      each(fmt.attributes, function (value, name) {
+        value = removeVars(value);
+
+        if (value) {
+          dom.setAttrib(previewElm, name, value);
+        }
+      });
+
+      // Add classes to preview element
+      each(fmt.classes, function (value) {
+        value = removeVars(value);
+
+        dom.addClass(previewElm, value);
+      });
+
+      // Add the previewElm outside the visual area
+      dom.setStyles(previewElm, {
+        position: 'absolute',
+        left: -0xFFFF
+      });
+
+      previewElm.setAttribute('data-mce-type', 'temp');
+
+      // get body background color and element background color
+      var bodybg = dom.getStyle(ed.getBody(), 'background-color', true), elmbg = dom.getStyle(previewElm, 'background-color', true);
+
+      var styles = previewStyles.split(' '), css = '';
+
+      for (var i = 0, len = styles.length; i < len; i++) {
+        var key = styles[i], value = dom.getStyle(previewElm, key, true);
+
+        // skip if already added
+        if (previewCss[key]) {
+          continue;
         }
 
-        // Removes any variables since these can't be previewed
-        function removeVars(val) {
-          if (val && typeof (val) === "string") {
-            val = val.replace(/%(\w+)/g, '');
+        // If text color is white and the background color is white or transparent, override with default color
+        if (key == 'color') {
+          // default to white if transparent
+          if (/transparent|rgba\s*\([^)]+,\s*0\)/.test(elmbg)) {
+            elmbg = white;
           }
 
-          return val;
-        }
-
-        // Create block/inline element to use for preview
-        name = fmt.block || fmt.inline || 'div';
-
-        if (!previewElm || previewElm.nodeName != name.toUpperCase()) {
-          previewElm = dom.create(name);
-          ed.getBody().appendChild(previewElm);
-        }
-
-        // clear preview element
-        dom.removeAllAttribs(previewElm);
-
-        // Add format styles to preview element
-        each(fmt.styles, function (value, name) {
-          value = removeVars(value);
-
-          if (value) {
-            dom.setStyle(previewElm, name, value);
-          }
-        });
-
-        // Add attributes to preview element
-        each(fmt.attributes, function (value, name) {
-          value = removeVars(value);
-
-          if (value) {
-            dom.setAttrib(previewElm, name, value);
-          }
-        });
-
-        // Add classes to preview element
-        each(fmt.classes, function (value) {
-          value = removeVars(value);
-
-          dom.addClass(previewElm, value);
-        });
-
-        // Add the previewElm outside the visual area
-        dom.setStyles(previewElm, {
-          position: 'absolute',
-          left: -0xFFFF
-        });
-
-        previewElm.setAttribute('data-mce-type', 'temp');
-
-        // get body background color and element background color
-        var bodybg = dom.getStyle(ed.getBody(), 'background-color', true), elmbg = dom.getStyle(previewElm, 'background-color', true);
-
-        var styles = previewStyles.split(' '), css = '';
-
-        for (var i = 0, len = styles.length; i < len; i++) {
-          var key = styles[i], value = dom.getStyle(previewElm, key, true);
-
-          // skip if already added
-          if (previewCss[key]) {
-            continue;
-          }
-
-          // If text color is white and the background color is white or transparent, override with default color
-          if (key == 'color') {
-            // default to white if transparent
-            if (/transparent|rgba\s*\([^)]+,\s*0\)/.test(elmbg)) {
-              elmbg = white;
+          // if background color produces unreadable text, try body background color
+          if (!isReadable(value, elmbg)) {
+            // use body background color
+            if (isReadable(value, bodybg)) {
+              value = bodybg;
+            } else {
+              value = 'inherit';
             }
-
-            // if background color produces unreadable text, try body background color
-            if (!isReadable(value, elmbg)) {
-              // use body background color
-              if (isReadable(value, bodybg)) {
-                value = bodybg;
-              } else {
-                value = 'inherit';
-              }
-            }
           }
-
-          // set to default if value is 0
-          if (key == 'font-size' && parseInt(value, 10) === 0) {
-            value = 'inherit';
-          }
-
-          previewCss[key] = value;
-
-          css += key + ':' + value + ';';
         }
 
-        return css;
+        // set to default if value is 0
+        if (key == 'font-size' && parseInt(value, 10) === 0) {
+          value = 'inherit';
+        }
+
+        previewCss[key] = value;
+
+        css += key + ':' + value + ';';
+      }
+
+      return css;
+    };
+
+    var reset = function () {
+      if (previewElm && previewElm.parentNode) {
+        previewElm.parentNode.removeChild(previewElm);
+      }
+    };
+
+    tinymce.util.PreviewCss = {
+      getCssText: getCssText,
+      reset: reset
     };
   })(tinymce);
 
@@ -33059,9 +33070,11 @@
             each(classes, function (cls) {
               ctrl.add(cls, cls, {
                 style: function () {
-                  return item.style || PreviewCss(ed, { classes: cls });
+                  return item.style || PreviewCss.getCssText(ed, { classes: cls });
                 }
               });
+
+              PreviewCss.reset();
             });
 
           });
@@ -41885,13 +41898,6 @@
 
           self._setGuideLinesColor();
         });
-
-        // remove temp preview elements
-        ed.onNodeChange.add(function (ed) {
-          if (tinymce.is(ed.settings.importcss_classes)) {
-            ed.dom.remove(ed.dom.select('[data-mce-type="temp"]'));
-          }
-        });
       },
 
       _setHighContrastMode: function () {
@@ -42228,10 +42234,12 @@
           ed.settings.importcss_classes = tinymce.map(classes, function (val) {
             var cls = cleanSelectorText(val);
 
-            var style = PreviewCss(ed, { classes: cls.split(' ') });
+            var style = PreviewCss.getCssText(ed, { classes: cls.split(' ') });
 
             return { 'selector': val, 'class': cls, 'style': style };
           });
+
+          PreviewCss.reset();
         }
       }
     });
