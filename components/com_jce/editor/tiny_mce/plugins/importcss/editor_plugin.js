@@ -199,13 +199,6 @@
 
         self._setGuideLinesColor();
       });
-
-      // remove temp preview elements
-      ed.onNodeChange.add(function (ed) {
-        if (tinymce.is(ed.settings.importcss_classes)) {
-          ed.dom.remove(ed.dom.select('[data-mce-type="temp"]'));
-        }
-      });
     },
 
     _setHighContrastMode: function () {
@@ -542,10 +535,12 @@
         ed.settings.importcss_classes = tinymce.map(classes, function (val) {
           var cls = cleanSelectorText(val);
 
-          var style = PreviewCss(ed, { classes: cls.split(' ') });
+          var style = PreviewCss.getCssText(ed, { classes: cls.split(' ') });
 
           return { 'selector': val, 'class': cls, 'style': style };
         });
+
+        PreviewCss.reset();
       }
     }
   });

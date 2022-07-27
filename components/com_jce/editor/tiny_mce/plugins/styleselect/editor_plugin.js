@@ -528,7 +528,7 @@
 
                             ctrl.add(fmt.title, name, {
                                 style: function () {
-                                    return PreviewCss(ed, fmt);
+                                    return PreviewCss.getCssText(ed, fmt);
                                 }
                             });
                         } else {
@@ -564,12 +564,14 @@
 
                             ctrl.add(ed.translate(key), name, {
                                 style: function () {
-                                    return PreviewCss(ed, fmt);
+                                    return PreviewCss.getCssText(ed, fmt);
                                 }
                             });
                         }
                     });
                 }
+
+                PreviewCss.reset();
             });
 
             return ctrl;
