@@ -116,12 +116,14 @@
                     ctrl.add(ed.getLang(value, key), key, {
                         'class': 'mce_formatPreview mce_' + key,
                         style: function () {
-                            return PreviewCss(ed, {
+                            return PreviewCss.getCssText(ed, {
                                 'block': key
                             });
                         }
                     });
                 });
+
+                PreviewCss.reset();
             }
 
             return ctrl;
