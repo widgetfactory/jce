@@ -4,131 +4,13 @@
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
-        var each = tinymce.each, filtered = {};
-
-        function isAllowedStylesheet(href) {
-            var styleselect = tinyMCEPopup.editor.getParam('styleselect_stylesheet');
-
-            if (!styleselect) {
-                return true;
-            }
-
-            if (typeof filtered[href] !== 'undefined') {
-                return filtered[href];
-            }
-
-            filtered[href] = (href.indexOf(styleselect) !== -1);
-
-            return filtered[href];
-        }
-
-        function isEditorContentCss(url) {
-            return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
-        }
+        var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss;;
 
         var TinyMCE_Utils = {
 
             options: [],
 
             classes: [],
-
-            /**
-             * Returns a array of all single CSS classes in the document. A single CSS class is a simple
-             * rule like ".class" complex ones like "div td.class" will not be added to output.
-             *
-             * @method getClasses
-             * @return {Array} Array with class objects each object has a class field might be other fields in the future.
-             */
-            getClasses: function () {
-                var self = this,
-                    ed = tinyMCEPopup.editor,
-                    cl = [],
-                    lo = {},
-                    f = ed.settings.class_filter,
-                    ov;
-
-                if (self.classes.length) {
-                    return self.classes;
-                }
-
-                function addClasses(s) {
-                    // IE style imports
-                    each(s.imports, function (r) {
-                        addClasses(r);
-                    });
-
-                    var href = s.href;
-
-                    if (!href) {
-                        return;
-                    }
-
-                    if (isEditorContentCss(href)) {
-                        return;
-                    }
-
-                    each(s.cssRules || s.rules, function (r) {
-                        // Real type or fake it on IE
-                        switch (r.type || 1) {
-                            // Rule
-                            case 1:
-                                if (!isAllowedStylesheet(s.href)) {
-                                    return true;
-                                }
-
-                                if (r.selectorText) {
-                                    each(r.selectorText.split(','), function (v) {
-                                        v = v.replace(/^\s*|\s*$|^\s\./g, "");
-
-                                        // Is internal or it doesn't contain a class
-                                        if (/\.mce/.test(v) || !/\.[\w\-]+$/.test(v)) {
-                                            return;
-                                        }
-
-                                        // Remove everything but class name
-                                        ov = v;
-                                        v = v.replace(/.*\.([a-z0-9_\-]+).*/i, '$1');
-
-                                        // Filter classes
-                                        if (f && !(v = f(v, ov))) {
-                                            return;
-                                        }
-
-                                        if (!lo[v]) {
-                                            cl.push({
-                                                'class': v
-                                            });
-                                            lo[v] = 1;
-                                        }
-                                    });
-                                }
-                                break;
-
-                            // Import
-                            case 3:
-                                try {
-                                    addClasses(r.styleSheet);
-                                } catch (ex) {
-                                    // Ignore
-                                }
-
-                                break;
-                        }
-                    });
-                }
-
-                try {
-                    each(ed.getDoc().styleSheets, addClasses);
-                } catch (ex) {
-                    // Ignore
-                }
-
-                if (cl.length > 0) {
-                    self.classes = cl;
-                }
-
-                return cl;
-            },
 
             fillClassList: function (id) {
                 var self = this, ed = tinyMCEPopup.editor,
@@ -142,6 +24,8 @@
                 lst = lst.list || lst;
 
                 if (!self.options.length) {
+                    var classes = [];
+                    
                     if (ed.getParam('styleselect_custom_classes')) {
                         var custom = ed.getParam('styleselect_custom_classes');
 
@@ -151,7 +35,7 @@
                     }
 
                     if (ed.getParam('styleselect_stylesheet') !== false) {
-                        var importcss_classes = ed.settings.importcss_classes, classes = [];
+                        var importcss_classes = ed.settings.importcss_classes || ed.plugins.importcss.get();
 
                         // try extraction
                         if (Array.isArray(importcss_classes)) {
@@ -165,8 +49,6 @@
 
                                 classes.push(item);
                             });
-                        } else {
-                            classes = this.getClasses();
                         }
 
                         if (classes.length) {
@@ -174,8 +56,8 @@
                         }
 
                         // remove duplicates
-                        values.filter(function (val, index, self) {
-                            return self.indexOf(val) === index;
+                        values = values.filter(function (val, ind, arr) {
+                            return arr.indexOf(val) === ind;
                         });
                     }
 
@@ -189,7 +71,7 @@
                             var val = item["class"];
                             var opt = { title: item.title || val, value: val, style: '' };
 
-                            var styles = item.style || '';
+                            var styles = item.style || PreviewCss.getCssText(val);
 
                             if (styles) {
                                 opt.style = ed.dom.serializeStyle(ed.dom.parseStyle(styles));
@@ -198,6 +80,8 @@
                             self.options.push(opt);
                         }
                     });
+
+                    PreviewCss.reset();
                 }
 
                 // add to select list
