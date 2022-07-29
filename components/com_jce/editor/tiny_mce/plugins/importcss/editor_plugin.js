@@ -177,7 +177,7 @@
           return;
         }
 
-        self._import();
+        self.get();
       });
 
       // attempt to import when the editor is initialised
@@ -332,7 +332,7 @@
       }
     },
 
-    _import: function () {
+    get: function () {
       var self = this,
         ed = this.editor,
         doc = ed.getDoc(), href = '',
@@ -541,6 +541,8 @@
         });
 
         PreviewCss.reset();
+
+        return ed.settings.importcss_classes;
       }
     }
   });
