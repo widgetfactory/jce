@@ -4,7 +4,7 @@
 (function (win) {
     // check for tinyMCEPopup
     if (win.tinyMCEPopup) {
-        var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss;;
+        var each = tinymce.each, PreviewCss = tinymce.util.PreviewCss;
 
         var TinyMCE_Utils = {
 
