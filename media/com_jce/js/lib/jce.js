@@ -7,8 +7,11 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global jQuery */
+
 (function ($) {
- 
+
     function init() {
         // remove loader
         $(document).ready(function () {
@@ -18,10 +21,10 @@
 
     $.fn.popover = function () {
         return this;
-    }
+    };
 
     // run init when the doc is ready
-    $(document).ready(function() {
+    $(document).ready(function () {
         // add popover tips if help is not inline
 
         $('.form-horizontal', '.ui-jce').not('.form-help-inline').find('.hasPopover').tips();

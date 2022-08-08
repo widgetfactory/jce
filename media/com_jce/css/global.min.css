@@ -302,20 +302,46 @@
     opacity: 1;
 }
 
-.popover.center {
+.popover[role="tooltip"] {
+    background-color: #fff;
+    padding: 0.25em;
+}
+
+.popover[role="tooltip"].center {
     text-align: initial;
 }
 .popover .close {
     padding: 5px 10px;
     font-size: 24px;
+    float: right;
+    line-height: 18px;
+    font-weight: bold;
+    color: #000;
+    opacity: 0.2;
+    cursor: pointer;
 }
 
+.popover .popover-header {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    background-color: inherit;
+    border-bottom: 1px solid #ebebeb;
+    border-radius: 5px 5px 0 0;
+}
 .popover .close::after {
     content: "\00d7";
 }
 
 .popover .popover-content {
     min-height: 1em;
+    padding: 0.5rem;
+}
+
+.popover .popover-arrow {
+    left: calc(50% - 0.5em);
 }
 .colorpicker+.colorpicker_widget {
     display: inline-block;
@@ -545,7 +571,7 @@
 }
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or

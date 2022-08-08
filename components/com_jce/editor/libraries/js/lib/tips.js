@@ -7,6 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
+/* global jQuery */
+
 (function ($) {
 
     $.support.canvas = false; //!!document.createElement('canvas').getContext;
@@ -128,6 +131,10 @@
             }
 
             $tips.addClass(options.className);
+
+            if ($tips.hasClass('popover')) {
+                $tips.find('.arrow').addClass('popover-arrow');
+            }
         }
 
         /**
@@ -181,7 +188,7 @@
                 $(element).attr('aria-describedby', 'uk-tooltip');
 
                 // Set tooltip text html
-                h += '<p>' + text + '</p>';
+                h += '<div class="uk-tooltip-content"><p>' + text + '</p></div>';
             }
 
             // Set tooltip html
@@ -189,7 +196,7 @@
 
             if ($(element).hasClass('hasPopover')) {
                 $('.uk-tooltip-inner > h4', $tips).addClass('popover-title popover-header');
-                $('.uk-tooltip-inner > p', $tips).addClass('popover-content popover-body');
+                $('.uk-tooltip-inner > .uk-tooltip-content', $tips).addClass('popover-content popover-body');
             }
 
             // Set visible
@@ -204,6 +211,7 @@
             }, 1);
         }
 
+        // eslint-disable-next-line no-unused-vars
         function close() {
             return end();
         }
@@ -352,6 +360,10 @@
 
             $.each(position.split(' '), function (i, s) {
                 $tips.addClass(s).addClass('uk-tooltip-' + s);
+
+                if ($tips.hasClass('popover')) {
+                    $tips.addClass(s).addClass('bs-popover-' + s);
+                }
             });
 
             $tips.css(style[position]);
