@@ -808,8 +808,14 @@
                         return true;
                     }
 
+                    var attrValue = tinymce.is(node.attr(key)) ? node.attr(key) : '';
+
+                    if (attrValue && !/\D/.test(attrValue)) {
+                        attrValue += 'px';
+                    }
+
                     // if the attribute value exists, remove the style value
-                    if (tinymce.is(node.attr(key)) && node.attr(key) == styleObject[key]) {
+                    if (attrValue && attrValue == styleObject[key]) {
                         delete styleObject[key];
                     }
                 });
