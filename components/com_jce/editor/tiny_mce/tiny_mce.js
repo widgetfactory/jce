@@ -10028,7 +10028,7 @@
       isIE = tinymce.isIE,
       Entities = tinymce.html.Entities,
       simpleSelectorRe = /^([a-z0-9],?)+$/i,
-      whiteSpaceRegExp = /^[ \t\r\n]*$/;
+      whiteSpaceRegExp = /^[ \t\r\n\s]*$/;
 
     /**
      * Utility class for various DOM manipulation and retrival functions.
