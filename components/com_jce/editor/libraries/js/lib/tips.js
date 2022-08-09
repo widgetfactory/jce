@@ -188,7 +188,7 @@
                 $(element).attr('aria-describedby', 'uk-tooltip');
 
                 // Set tooltip text html
-                h += '<div class="uk-tooltip-content"><p>' + text + '</p></div>';
+                h += '<div class="uk-tooltip-content">' + text + '</div>';
             }
 
             // Set tooltip html
