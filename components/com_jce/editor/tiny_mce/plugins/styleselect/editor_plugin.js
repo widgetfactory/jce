@@ -226,9 +226,9 @@
                     each(nodes, function (node) {
                         var bookmark = selection.getBookmark();
 
-                        if (node == ed.getBody() && !isOnlyTextSelected()) {
+                        /*if (node == ed.getBody() && !isOnlyTextSelected()) {
                             return false;
-                        }
+                        }*/
 
                         if (isFakeRoot(node) && selection.isCollapsed()) {
                             return false;
@@ -271,7 +271,7 @@
                             }
                         });
 
-                        if (!removedFormat) {
+                        if (!removedFormat) {                            
                             // registered style format
                             if (ed.formatter.get(name)) {                                
                                 // apply or remove
@@ -528,7 +528,7 @@
 
                             ctrl.add(fmt.title, name, {
                                 style: function () {
-                                    return PreviewCss.getCssText(ed, fmt);
+                                    return PreviewCss.getCssText(ed, fmt, true);
                                 }
                             });
                         } else {
@@ -564,14 +564,12 @@
 
                             ctrl.add(ed.translate(key), name, {
                                 style: function () {
-                                    return PreviewCss.getCssText(ed, fmt);
+                                    return PreviewCss.getCssText(ed, fmt, true);
                                 }
                             });
                         }
                     });
                 }
-
-                PreviewCss.reset();
             });
 
             return ctrl;
