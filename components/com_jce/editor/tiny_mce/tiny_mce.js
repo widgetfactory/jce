@@ -4064,7 +4064,15 @@
       return lvl >= 2;
     }
 
-    var getCssText = function (ed, fmt) {
+    var resetElm = function () {
+      if (previewElm && previewElm.parentNode) {
+        previewElm.parentNode.removeChild(previewElm);
+
+        previewElm = null;
+      }
+    };
+
+    var getCssText = function (ed, fmt, reset) {
       var name, dom = ed.dom,
         previewCss = {};
 
@@ -4138,7 +4146,9 @@
       // get body background color and element background color
       var bodybg = dom.getStyle(ed.getBody(), 'background-color', true), elmbg = dom.getStyle(previewElm, 'background-color', true);
 
-      var styles = previewStyles.split(' '), css = '';
+      var styles = previewStyles.split(' ');
+
+      var css = '';
 
       for (var i = 0, len = styles.length; i < len; i++) {
         var key = styles[i], value = dom.getStyle(previewElm, key, true);
@@ -4158,12 +4168,17 @@
           // if background color produces unreadable text, try body background color
           if (!isReadable(value, elmbg)) {
             // use body background color
-            if (isReadable(value, bodybg)) {
+            if (value && isReadable(value, bodybg)) {
               value = bodybg;
             } else {
               value = 'inherit';
             }
           }
+        }
+
+        // default to inherit
+        if (!value) {
+          value = 'inherit';
         }
 
         // set to default if value is 0
@@ -4176,18 +4191,16 @@
         css += key + ':' + value + ';';
       }
 
-      return css;
-    };
-
-    var reset = function () {
-      if (previewElm && previewElm.parentNode) {
-        previewElm.parentNode.removeChild(previewElm);
+      if (reset) {
+        resetElm();
       }
+
+      return css;
     };
 
     tinymce.util.PreviewCss = {
       getCssText: getCssText,
-      reset: reset
+      reset: resetElm
     };
   })(tinymce);
 
