@@ -204,13 +204,13 @@
                         return elements.length === 0;
                     };
 
-                    var nodes = tinymce.grep(selection.getSelectedBlocks(), function (n) {
+                    /*var nodes = tinymce.grep(selection.getSelectedBlocks(), function (n) {
                         return NodeType.isElement(n) && !NodeType.isInternal(n);
                     });
 
                     if (!nodes.length || (node == ed.getBody() || isFakeRoot(node))) {
                         nodes = [node];
-                    }
+                    }*/
 
                     ed.focus();
                     ed.undoManager.add();
@@ -223,7 +223,7 @@
                         return isFakeRoot(node) || ed.getBody() === node;
                     }
 
-                    each(nodes, function (node) {
+                    //each(nodes, function (node) {
                         var bookmark = selection.getBookmark();
 
                         /*if (node == ed.getBody() && !isOnlyTextSelected()) {
@@ -241,7 +241,8 @@
                             }
                         });
 
-                        node = nodes.length > 1 || selection.isCollapsed() ? node : null;
+                        //node = nodes.length > 1 || selection.isCollapsed() ? node : null;
+                        node = selection.isCollapsed() ? node : null;
 
                         // reset node if there is a text only selection
                         if (!selection.isCollapsed() && isOnlyTextSelected()) {
@@ -309,7 +310,7 @@
                                 ed.nodeChanged();
                             }
                         }
-                    });
+                    //});
 
                     return false; // No auto select
                 }
