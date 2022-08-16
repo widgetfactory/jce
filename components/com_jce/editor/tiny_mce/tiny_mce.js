@@ -35254,9 +35254,9 @@
         }
 
         if (format) {
-
-          if (node) {
-            if (node.nodeType) {
+          // check for parent node for active node?
+          if (node && node.parentNode) {
+            if (node.nodeType) {            
               if (!applyNodeStyle(formatList, node)) {
                 rng = dom.createRng();
                 rng.setStartBefore(node);
