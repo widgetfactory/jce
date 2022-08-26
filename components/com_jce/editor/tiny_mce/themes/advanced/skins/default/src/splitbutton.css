@@ -101,13 +101,13 @@
 }
 
 /* ColorSplitButton */
-.mceDefaultSkin .mceColorSplitMenu table {
+.mceDefaultSkin .mceColorSplitMenu {
     background: #fff;
-}
-
-.mceDefaultSkin .mceColorSplitMenu td {
-    padding: 1px;
-    vertical-align: top;
+    background: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 203px;
+    gap: 1px;
 }
 
 .mceDefaultSkin .mceColorSplitMenu button {
@@ -127,25 +127,12 @@
     outline: none;
 }
 
-.mceDefaultSkin .mceColorSplitMenu .mceMoreColors {
-    padding: 1px;
-}
-
-.mceDefaultSkin .mceColorSplitMenu .mceRemoveColor button:after {
+.mceDefaultSkin .mceColorSplitMenu .mceRemoveColor {
     color: #444;
-    display: block;
-    font-family: Arial, sans-serif;
-    font-size: 24px;
     font-weight: bold;
-    line-height: 24px;
-    text-align: center;
-    text-decoration: none;
-    content: "\00d7";
-    cursor: pointer;
-    margin-left: 1px;
 }
 
-.mceDefaultSkin .mceColorSplitMenu .mceMoreColors button {
+.mceDefaultSkin .mceColorSplitMenu .mceMoreColors {
     width: 100%;
     height: auto;
     text-align: center;
@@ -154,7 +141,7 @@
     cursor: pointer;
 }
 
-.mceDefaultSkin .mceColorSplitMenu .mceMoreColors:hover button {
+.mceDefaultSkin .mceColorSplitMenu .mceMoreColors:hover {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
