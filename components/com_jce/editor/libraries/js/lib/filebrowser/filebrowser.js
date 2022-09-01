@@ -180,21 +180,19 @@
                 // move to parent if target is span or i (size, date, thumbnail)
                 if ($(n).is('.uk-icon, span, a, img')) {
                     n = $(n).parents('li').get(0);
-                    p = n.parentNode;
-
-                    e.preventDefault();
                 }
-
-                // checkbox
-                /*if ($(n).hasClass('uk-item-checkbox')) {
-                    n = n.firstChild;
-                }*/
 
                 if (n.nodeName === "LI") {
                     if ($(n).hasClass('folder')) {
                         var u = $(n).data('url') || self._getPreviousDir();
                         return self._changeDir(u);
                     }
+
+                    // bail before preventDefault
+                    if (e.altKey && $(n).find('a[download]').length) {
+                        return true;
+                    }
+
                     // set target to node
                     e.target = n;
 
@@ -205,6 +203,8 @@
                         // trigger event
                         self._trigger('onFileClick', [n, data]);
                     });
+
+                    e.preventDefault();
 
                     return true;
                 }
@@ -937,12 +937,19 @@
 
                     var ext = Wf.String.getExt(e.name);
                     var name = Wf.String.stripExt(e.name);
+                    var filename = name + '.' + ext;
                     var icon = ext.toLowerCase();
+
+                    var download = '';
+
+                    if (self.options.allow_download && e.properties.preview) {
+                        download = ' download="' + filename + '"';
+                    }
 
                     h += '<li class="uk-grid uk-grid-collapse uk-flex file ' + ext.toLowerCase() + ' ' + classes.join(' ') + '" title="' + e.name + '"' + data.join(' ') + '>';
                     h += '  <label class="uk-width-0-10 uk-item-checkbox" aria-label="' + self._translate('select', 'Select') + '"><input type="checkbox" /></label>';
                     h += '  <i class="uk-width-1-10 uk-icon uk-icon-file uk-icon-file-' + getMimeType(icon) + ' file ' + icon + '"></i>';
-                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="#">';
+                    h += '  <a class="uk-width-1-5 uk-padding-remove uk-flex-item-auto" href="' + (e.properties.preview || '#') + '"' + download + '>';
                     h += '      <span class="uk-item-text uk-text-truncate uk-display-inline-block">' + name + '</span>';
                     h += '      <span class="uk-item-extension uk-display-inline-block">.' + ext + '</span>';
                     h += '  </a>';

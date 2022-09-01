@@ -266,7 +266,8 @@ class WFMediaManagerBase extends WFEditorPlugin
             'date_format' => $this->getParam('editor.date_format', '%d/%m/%Y, %H:%M'),
             'position' => $this->getParam('editor.filebrowser_position', $this->getParam('editor.browser_position', 'bottom')),
             'use_state_cookies' => $this->getParam('editor.use_cookies', true),
-            'search_depth' => $this->getParam('editor.filebrowser_search_depth', 3)
+            'search_depth' => $this->getParam('editor.filebrowser_search_depth', 3),
+            'allow_download' => $this->getParam('allow_download', 0)
         );
 
         return WFUtility::array_merge_recursive_distinct($base, $config);

@@ -55,6 +55,11 @@
                 <option value="0">JNO</option>
             </field>
 
+            <field name="allow_download" type="yesno" default="0" label="WF_BROWSER_ALLOW_DOWNLOAD" description="WF_BROWSER_ALLOW_DOWNLOAD_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field type="container" pro="true">
                 <field name="image_editor" type="yesno" default="1" label="WF_MANAGER_IMAGE_EDITOR" description="WF_MANAGER_IMAGE_EDITOR_DESC">
                     <option value="1">JYES</option>
