@@ -31,12 +31,21 @@
                 });
             }
 
-            function isEditorActive() {
-                return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+            function isCodeEditorActive() {
+                return ed.getElement().style.display == 'block';
             }
 
             ed.onInit.add(function (ed) {
-                if (isEditorActive() == false) {
+                ed.onBeforeGetContent.add(function (ed, e) {
+                	if (isCodeEditorActive() == false) {
+                    	return;
+                	}
+                	
+                	// cancel events
+                	e.no_events = true;
+                });
+                
+                if (isCodeEditorActive() == false) {
                     return;
                 }
                 
