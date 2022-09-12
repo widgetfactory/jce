@@ -191,13 +191,13 @@ class WFLinkSearchExtension extends WFSearchExtension
         $text = preg_replace("'<(br[^/>]*?/|hr[^/>]*?/|/(div|h[1-6]|li|p|td))>'si", ' ', $text);
 
         // clean text
-        $text = filter_var($text, FILTER_SANITIZE_STRING);
+        $text = htmlspecialchars(strip_tags($text));
 
         // remove shortcode
         $text = preg_replace('#{.+?}#', '', $text);
 
         // truncate text based around searchword
-        $text = $this->truncateText(strip_tags($text), $searchword);
+        $text = $this->truncateText($text, $searchword);
 
         // highlight searchword
         $text = preg_replace('#\b(' . preg_quote($searchword, '#') . ')\b#i', '<mark>$1</mark>', $text);
