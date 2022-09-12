@@ -31,7 +31,7 @@ class JceModelProfiles extends JModelList
                 'checked_out', 'checked_out',
                 'checked_out_time', 'checked_out_time',
                 'published', 'published',
-                'ordering', 'ordering',
+                'ordering', 'ordering'
             );
         }
 
@@ -49,7 +49,7 @@ class JceModelProfiles extends JModelList
      * @note    Calling getState in this method will result in recursion.
      * @since   1.6
      */
-    protected function populateState($ordering = null, $direction = null)
+    protected function populateState($ordering = 'id', $direction = 'asc')
     {
         // Load the filter state.
         $this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
