@@ -40213,7 +40213,7 @@
           }
 
           // process as sourcerer
-          if (html.indexOf('{source') === 0) {
+          if (html.indexOf('{source') != -1) {
             return processSourcerer(html);
           }
 
@@ -40248,9 +40248,9 @@
           }
 
           // shortcode blocks eg: {source}html{/source}
-          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
+          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {          
             // already wrapped in a tag
-            if (match.charAt(0) === '<') {
+            if (match.charAt(0) === '<' || match.charAt(0) === '"') {
               return match;
             }
 
@@ -41066,8 +41066,13 @@
             // Process converted php
             if (/(data-mce-php|\[php:start\])/.test(o.content)) {
               // attribute value
-              o.content = o.content.replace(/\[php:\s?start\]([^\[]]+)\[php:\s?end\]/g, function (a, b) {
-                return '<?php' + ed.dom.decode(b) + '?>';
+              o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
+                // skip regularlabs source match
+                if (pre) {
+                  return match;
+                }
+                
+                return '<?php' + ed.dom.decode(code) + '?>';
               });
 
               // textarea
