@@ -41067,12 +41067,7 @@
             if (/(data-mce-php|\[php:start\])/.test(o.content)) {
               // attribute value
               o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
-                // skip regularlabs source match
-                if (pre) {
-                  return match;
-                }
-                
-                return '<?php' + ed.dom.decode(code) + '?>';
+                return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
               });
 
               // textarea
