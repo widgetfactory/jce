@@ -586,7 +586,8 @@
                     var langList = cm.createListBox('language_lang', {
                         label: ed.getLang('langcode.label', 'Language'),
                         onselect: function (v) { },
-                        name: 'language'
+                        name: 'language',
+                        filter: true
                     });
 
                     langList.add('--', '');
