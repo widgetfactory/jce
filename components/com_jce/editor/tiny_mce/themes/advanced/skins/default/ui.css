@@ -1764,16 +1764,16 @@ select.mceNativeListBox {
     background-position: -580px -40px;
 }
 
-.mceDefaultSkin span.mce_columns_stack {
-    background-position: -600px -40px;
-}
-
 .mceDefaultSkin span.mce_joomla {
     background-position: -600px -40px;
 }
 
 .mceDefaultSkin span.mce_upload {
     background-position: -620px -40px;
+}
+
+.mceDefaultSkin span.mce_langcode {
+    background-position: -640px -40px;
 }
 
 .mceDefaultSkin span.mce_codesample {

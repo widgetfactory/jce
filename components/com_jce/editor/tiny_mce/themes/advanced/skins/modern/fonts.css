@@ -940,6 +940,10 @@
     content: "\e910";
 }
 
+.mceModernSkin span.mce_langcode:before {
+    content: "\e9c9";
+}
+
 .mceModernSkin span.mce_spinner:before {
     content: "";
     border: 0.125rem solid #444;

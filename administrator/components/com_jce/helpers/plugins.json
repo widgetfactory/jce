@@ -165,6 +165,14 @@
         "core": 1,
         "class": "split-button"
     },
+    "langcode": {
+        "title": "WF_LANGCODE_TITLE",
+        "description": "WF_LANGCODE_DESC",
+        "icon": "langcode",
+        "editable": 0,
+        "row": 4,
+        "core": 1
+    },
     "layer": {
         "title": "WF_LAYER_TITLE",
         "description": "WF_LAYER_DESC",
