@@ -508,6 +508,7 @@
 
 .mceMenu .mceMenuFilter+.mceMenuItems {
     height: calc(100% - 40px);
+    max-height: 346px;
 }
 
 .mceMenu .mceMenuItems .mceMenuItemHidden {
