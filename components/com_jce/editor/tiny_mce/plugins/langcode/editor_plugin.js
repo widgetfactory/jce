@@ -8,552 +8,133 @@
  * other free or open source software licenses.
  */
 (function () {
-    var languageValues = [
-        {
-            'text': 'Abkhazian',
-            'value': 'ab'
-        },
-        {
-            'text': 'Afar',
-            'value': 'aa'
-        },
-        {
-            'text': 'Afrikaans',
-            'value': 'af'
-        },
-        {
-            'text': 'Albanian',
-            'value': 'sq'
-        },
-        {
-            'text': 'Amharic',
-            'value': 'am'
-        },
-        {
-            'text': 'Arabic',
-            'value': 'ar'
-        },
-        {
-            'text': 'Armenian',
-            'value': 'hy'
-        },
-        {
-            'text': 'Assamese',
-            'value': 'as'
-        },
-        {
-            'text': 'Aymara',
-            'value': 'ay'
-        },
-        {
-            'text': 'Azerbaijani',
-            'value': 'az'
-        },
-        {
-            'text': 'Bashkir',
-            'value': 'ba'
-        },
-        {
-            'text': 'Basque',
-            'value': 'eu'
-        },
-        {
-            'text': 'Bengali, Bangla',
-            'value': 'bn'
-        },
-        {
-            'text': 'Bhutani',
-            'value': 'dz'
-        },
-        {
-            'text': 'Bihari',
-            'value': 'bh'
-        },
-        {
-            'text': 'Bislama',
-            'value': 'bi'
-        },
-        {
-            'text': 'Breton',
-            'value': 'br'
-        },
-        {
-            'text': 'Bulgarian',
-            'value': 'bg'
-        },
-        {
-            'text': 'Burmese',
-            'value': 'my'
-        },
-        {
-            'text': 'Byelorussian',
-            'value': 'be'
-        },
-        {
-            'text': 'Cambodian',
-            'value': 'km'
-        },
-        {
-            'text': 'Catalan',
-            'value': 'ca'
-        },
-        {
-            'text': 'Chinese',
-            'value': 'zh'
-        },
-        {
-            'text': 'Corsican',
-            'value': 'co'
-        },
-        {
-            'text': 'Croatian',
-            'value': 'hr'
-        },
-        {
-            'text': 'Czech',
-            'value': 'cs'
-        },
-        {
-            'text': 'Danish',
-            'value': 'da'
-        },
-        {
-            'text': 'Dutch',
-            'value': 'nl'
-        },
-        {
-            'text': 'English ',
-            'value': 'en'
-        },
-        {
-            'text': 'Esperanto',
-            'value': 'eo'
-        },
-        {
-            'text': 'Estonian',
-            'value': 'et'
-        },
-        {
-            'text': 'Faeroese',
-            'value': 'fo'
-        },
-        {
-            'text': 'Fiji',
-            'value': 'fj'
-        },
-        {
-            'text': 'Finnish',
-            'value': 'fi'
-        },
-        {
-            'text': 'French',
-            'value': 'fr'
-        },
-        {
-            'text': 'Frisian',
-            'value': 'fy'
-        },
-        {
-            'text': 'Gaelic (Scots Gaelic)',
-            'value': 'gd'
-        },
-        {
-            'text': 'Galician',
-            'value': 'gl'
-        },
-        {
-            'text': 'Georgian',
-            'value': 'ka'
-        },
-        {
-            'text': 'German',
-            'value': 'de'
-        },
-        {
-            'text': 'Greek',
-            'value': 'el'
-        },
-        {
-            'text': 'Greenlandic',
-            'value': 'kl'
-        },
-        {
-            'text': 'Guarani',
-            'value': 'gn'
-        },
-        {
-            'text': 'Gujarati',
-            'value': 'gu'
-        },
-        {
-            'text': 'Hausa',
-            'value': 'ha'
-        },
-        {
-            'text': 'Hebrew',
-            'value': 'iw'
-        },
-        {
-            'text': 'Hindi',
-            'value': 'hi'
-        },
-        {
-            'text': 'Hungarian',
-            'value': 'hu'
-        },
-        {
-            'text': 'Icelandic',
-            'value': 'is'
-        },
-        {
-            'text': 'Indonesian',
-            'value': 'in'
-        },
-        {
-            'text': 'Interlingua',
-            'value': 'ia'
-        },
-        {
-            'text': 'Interlingue',
-            'value': 'ie'
-        },
-        {
-            'text': 'Inupiak',
-            'value': 'ik'
-        },
-        {
-            'text': 'Irish',
-            'value': 'ga'
-        },
-        {
-            'text': 'Italian',
-            'value': 'it'
-        },
-        {
-            'text': 'Japanese',
-            'value': 'ja'
-        },
-        {
-            'text': 'Javanese',
-            'value': 'jw'
-        },
-        {
-            'text': 'Kannada',
-            'value': 'kn'
-        },
-        {
-            'text': 'Kashmiri',
-            'value': 'ks'
-        },
-        {
-            'text': 'Kazakh',
-            'value': 'kk'
-        },
-        {
-            'text': 'Kinyarwanda',
-            'value': 'rw'
-        },
-        {
-            'text': 'Kirghiz',
-            'value': 'ky'
-        },
-        {
-            'text': 'Kirundi',
-            'value': 'rn'
-        },
-        {
-            'text': 'Korean',
-            'value': 'ko'
-        },
-        {
-            'text': 'Kurdish',
-            'value': 'ku'
-        },
-        {
-            'text': 'Laothian',
-            'value': 'lo'
-        },
-        {
-            'text': 'Latin',
-            'value': 'la'
-        },
-        {
-            'text': 'Latvian, Lettish',
-            'value': 'lv'
-        },
-        {
-            'text': 'Lingala',
-            'value': 'ln'
-        },
-        {
-            'text': 'Lithuanian',
-            'value': 'lt'
-        },
-        {
-            'text': 'Macedonian',
-            'value': 'mk'
-        },
-        {
-            'text': 'Malagasy',
-            'value': 'mg'
-        },
-        {
-            'text': 'Malay',
-            'value': 'ms'
-        },
-        {
-            'text': 'Malayalam',
-            'value': 'ml'
-        },
-        {
-            'text': 'Maltese',
-            'value': 'mt'
-        },
-        {
-            'text': 'Maori',
-            'value': 'mi'
-        },
-        {
-            'text': 'Marathi',
-            'value': 'mr'
-        },
-        {
-            'text': 'Moldavian',
-            'value': 'mo'
-        },
-        {
-            'text': 'Mongolian',
-            'value': 'mn'
-        },
-        {
-            'text': 'Nauru',
-            'value': 'na'
-        },
-        {
-            'text': 'Nepali',
-            'value': 'ne'
-        },
-        {
-            'text': 'Norwegian',
-            'value': 'no'
-        },
-        {
-            'text': 'Occitan',
-            'value': 'oc'
-        },
-        {
-            'text': 'Oriya',
-            'value': 'or'
-        },
-        {
-            'text': 'Oromo, Afan',
-            'value': 'om'
-        },
-        {
-            'text': 'Pashto, Pushto',
-            'value': 'ps'
-        },
-        {
-            'text': 'Persian',
-            'value': 'fa'
-        },
-        {
-            'text': 'Polish',
-            'value': 'pl'
-        },
-        {
-            'text': 'Portuguese',
-            'value': 'pt'
-        },
-        {
-            'text': 'Punjabi',
-            'value': 'pa'
-        },
-        {
-            'text': 'Quechua',
-            'value': 'qu'
-        },
-        {
-            'text': 'Rhaeto-Romance',
-            'value': 'rm'
-        },
-        {
-            'text': 'Romanian',
-            'value': 'ro'
-        },
-        {
-            'text': 'Russian',
-            'value': 'ru'
-        },
-        {
-            'text': 'Samoan',
-            'value': 'sm'
-        },
-        {
-            'text': 'Sangro',
-            'value': 'sg'
-        },
-        {
-            'text': 'Sanskrit',
-            'value': 'sa'
-        },
-        {
-            'text': 'Serbian',
-            'value': 'sr'
-        },
-        {
-            'text': 'Serbo-Croatian',
-            'value': 'sh'
-        },
-        {
-            'text': 'Sesotho',
-            'value': 'st'
-        },
-        {
-            'text': 'Setswana',
-            'value': 'tn'
-        },
-        {
-            'text': 'Shona',
-            'value': 'sn'
-        },
-        {
-            'text': 'Sindhi',
-            'value': 'sd'
-        },
-        {
-            'text': 'Singhalese',
-            'value': 'si'
-        },
-        {
-            'text': 'Siswati',
-            'value': 'ss'
-        },
-        {
-            'text': 'Slovak',
-            'value': 'sk'
-        },
-        {
-            'text': 'Slovenian',
-            'value': 'sl'
-        },
-        {
-            'text': 'Somali',
-            'value': 'so'
-        },
-        {
-            'text': 'Spanish',
-            'value': 'es'
-        },
-        {
-            'text': 'Sudanese',
-            'value': 'su'
-        },
-        {
-            'text': 'Swahili',
-            'value': 'sw'
-        },
-        {
-            'text': 'Swedish',
-            'value': 'sv'
-        },
-        {
-            'text': 'Tagalog',
-            'value': 'tl'
-        },
-        {
-            'text': 'Tajik',
-            'value': 'tg'
-        },
-        {
-            'text': 'Tamil',
-            'value': 'ta'
-        },
-        {
-            'text': 'Tatar',
-            'value': 'tt'
-        },
-        {
-            'text': 'Tegulu',
-            'value': 'te'
-        },
-        {
-            'text': 'Thai',
-            'value': 'th'
-        },
-        {
-            'text': 'Tibetan',
-            'value': 'bo'
-        },
-        {
-            'text': 'Tigrinya',
-            'value': 'ti'
-        },
-        {
-            'text': 'Tonga',
-            'value': 'to'
-        },
-        {
-            'text': 'Tsonga',
-            'value': 'ts'
-        },
-        {
-            'text': 'Turkish',
-            'value': 'tr'
-        },
-        {
-            'text': 'Turkmen',
-            'value': 'tk'
-        },
-        {
-            'text': 'Twi',
-            'value': 'tw'
-        },
-        {
-            'text': 'Ukrainian',
-            'value': 'uk'
-        },
-        {
-            'text': 'Urdu',
-            'value': 'ur'
-        },
-        {
-            'text': 'Uzbek',
-            'value': 'uz'
-        },
-        {
-            'text': 'Vietnamese',
-            'value': 'vi'
-        },
-        {
-            'text': 'Volapuk',
-            'value': 'vo'
-        },
-        {
-            'text': 'Welsh',
-            'value': 'cy'
-        },
-        {
-            'text': 'Wolof',
-            'value': 'wo'
-        },
-        {
-            'text': 'Xhosa',
-            'value': 'xh'
-        },
-        {
-            'text': 'Yiddish',
-            'value': 'ji'
-        },
-        {
-            'text': 'Yoruba',
-            'value': 'yo'
-        },
-        {
-            'text': 'Zulu',
-            'value': 'zu'
-        }
-    ];
+    var languageValues = {
+        'Afrikaans': 'af',
+        'Albanian': 'sq',
+        'Arabic (Algeria)': 'ar-DZ',
+        'Arabic (Bahrain)': 'ar-BH',
+        'Arabic (Egypt)': 'ar-EG',
+        'Arabic (Iraq)': 'ar-IQ',
+        'Arabic (Jordan)': 'ar-JO',
+        'Arabic (Kuwait)': 'ar-KW',
+        'Arabic (Lebanon)': 'ar-LB',
+        'Arabic (Libya)': 'ar-LY',
+        'Arabic (Morocco)': 'ar-MA',
+        'Arabic (Oman)': 'ar-OM',
+        'Arabic (Qatar)': 'ar-QA',
+        'Arabic (Saudi Arabia)': 'ar-SA',
+        'Arabic (Syria)': 'ar-SY',
+        'Arabic (Tunisia)': 'ar-TN',
+        'Arabic (U.A.E.)': 'ar-AE',
+        'Arabic (Yemen)': 'ar-YE',
+        'Basque': 'eu',
+        'Belarusian': 'be',
+        'Bulgarian': 'bg',
+        'Catalan': 'ca',
+        'Chinese (Hong Kong)': 'zh-HK',
+        'Chinese (PRC)': 'zh-CN',
+        'Chinese (Singapore)': 'zh-SG',
+        'Chinese (Taiwan)': 'zh-TW',
+        'Croatian': 'hr',
+        'Czech': 'cs',
+        'Danish': 'da',
+        'Dutch (Belgium)': 'nl-BE',
+        'Dutch (Standard)': 'nl',
+        'English': 'en',
+        'English (Australia)': 'en-AU',
+        'English (Belize)': 'en-BZ',
+        'English (Canada)': 'en-CA',
+        'English (Ireland)': 'en-IE',
+        'English (Jamaica)': 'en-JM',
+        'English (New Zealand)': 'en-NZ',
+        'English (South Africa)': 'en-ZA',
+        'English (Trinidad)': 'en-TT',
+        'English (United Kingdom)': 'en-GB',
+        'English (United States)': 'en-US',
+        'Estonian': 'et',
+        'Faeroese': 'fo',
+        'Farsi': 'fa',
+        'Finnish': 'fi',
+        'French (Belgium)': 'fr-BE',
+        'French (Canada)': 'fr-CA',
+        'French (Luxembourg)': 'fr-LU',
+        'French (Standard)': 'fr',
+        'French (Switzerland)': 'fr-CH',
+        'Gaelic (Scotland)': 'gd',
+        'German (Austria)': 'de-AT',
+        'German (Liechtenstein)': 'de-LI',
+        'German (Luxembourg)': 'de-LU',
+        'German (Standard)': 'de',
+        'German (Switzerland)': 'de-CH',
+        'Greek': 'el',
+        'Hebrew': 'he',
+        'Hindi': 'hi',
+        'Hungarian': 'hu',
+        'Icelandic': 'is',
+        'Indonesian': 'id',
+        'Irish': 'ga',
+        'Italian (Standard)': 'it',
+        'Italian (Switzerland)': 'it-CH',
+        'Japanese': 'ja',
+        'Korean': 'ko',
+        'Korean (Johab)': 'ko',
+        'Kurdish': 'ku',
+        'Latvian': 'lv',
+        'Lithuanian': 'lt',
+        'Macedonian (FYROM)': 'mk',
+        'Malayalam': 'ml',
+        'Malaysian': 'ms',
+        'Maltese': 'mt',
+        'Norwegian': 'no',
+        'Norwegian (Bokmål)': 'nb',
+        'Norwegian (Nynorsk)': 'nn',
+        'Polish': 'pl',
+        'Portuguese (Brazil)': 'pt-BR',
+        'Portuguese (Portugal)': 'pt',
+        'Punjabi': 'pa',
+        'Rhaeto-Romanic': 'rm',
+        'Romanian': 'ro',
+        'Romanian (Republic of Moldova)': 'ro-MD',
+        'Russian': 'ru',
+        'Russian (Republic of Moldova)': 'ru-MD',
+        'Serbian': 'sr',
+        'Slovak': 'sk',
+        'Slovenian': 'sl',
+        'Sorbian': 'sb',
+        'Spanish (Argentina)': 'es-AR',
+        'Spanish (Bolivia)': 'es-BO',
+        'Spanish (Chile)': 'es-CL',
+        'Spanish (Colombia)': 'es-CO',
+        'Spanish (Costa Rica)': 'es-CR',
+        'Spanish (Dominican Republic)': 'es-DO',
+        'Spanish (Ecuador)': 'es-EC',
+        'Spanish (El Salvador)': 'es-SV',
+        'Spanish (Guatemala)': 'es-GT',
+        'Spanish (Honduras)': 'es-HN',
+        'Spanish (Mexico)': 'es-MX',
+        'Spanish (Nicaragua)': 'es-NI',
+        'Spanish (Panama)': 'es-PA',
+        'Spanish (Paraguay)': 'es-PY',
+        'Spanish (Peru)': 'es-PE',
+        'Spanish (Puerto Rico)': 'es-PR',
+        'Spanish (Spain)': 'es',
+        'Spanish (Uruguay)': 'es-UY',
+        'Spanish (Venezuela)': 'es-VE',
+        'Swedish': 'sv',
+        'Swedish (Finland)': 'sv-FI',
+        'Thai': 'th',
+        'Tsonga': 'ts',
+        'Tswana': 'tn',
+        'Turkish': 'tr',
+        'Ukrainian': 'ua',
+        'Urdu': 'ur',
+        'Venda': 've',
+        'Vietnamese': 'vi',
+        'Welsh': 'cy',
+        'Xhosa': 'xh',
+        'Yiddish': 'ji',
+        'Zulu': 'zu'
+    };
 
     tinymce.create('tinymce.plugins.LanguageCodePlugin', {
         init: function (ed, url) {
@@ -592,8 +173,8 @@
 
                     langList.add('--', '');
 
-                    tinymce.each(languageValues, function (item) {
-                        langList.add(item.text, item.value);
+                    tinymce.each(languageValues, function (value, name) {
+                        langList.add(name, value);
                     });
 
                     form.add(langList);
@@ -626,14 +207,14 @@
 
                                 // is a body or text selection
                                 if (isRootNode(ed, node) || isTextSelection) {
-                                    
+
                                     if (!data.language) {
                                         ed.formatter.remove('langcode');
                                     } else {
                                         ed.formatter.apply('langcode', { value: data.language });
                                     }
-  
-                                // element selection
+
+                                    // element selection
                                 } else {
                                     ed.dom.setAttrib(node, 'lang', data.language);
                                 }
