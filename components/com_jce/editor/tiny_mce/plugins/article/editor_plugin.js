@@ -23,11 +23,11 @@
 
             function isReadMore(n) {
                 return ed.dom.is(n, 'hr.mce-item-readmore');
-            };
+            }
 
             function isPageBreak(n) {
                 return ed.dom.is(n, 'hr.mce-item-pagebreak');
-            };
+            }
 
             // Register commands
             ed.addCommand('mceReadMore', function () {
@@ -111,7 +111,7 @@
                         return false;
                     };
                 });
-            };
+            }
 
             ed.onBeforeSetContent.add(function (ed, o) {
                 o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+)>/gi, '<hr$1data-mce-alt="$2"$3>');
@@ -276,7 +276,7 @@
                 o = {
                     title: ed.dom.getAttrib(n, 'title', ''),
                     alt: ed.dom.getAttrib(n, 'data-mce-alt', '')
-                }
+                };
             }
 
             return o;
@@ -388,7 +388,7 @@
 
             ed.dom.replace(hr, marker);
             ed.undoManager.add();
-        },
+        }
 
         /*createControl: function (n, cm) {
             var self = this,
