@@ -505,12 +505,12 @@
   		 * tinymce.create('tinymce.somepackage.SomeSubClass:tinymce.somepackage.SomeClass', {
   		 *     SomeSubClass: function() {
   		 *         // Class constructor
-  		 *         this.parent(); // Call parent constructor
+  		 *         this._super(); // Call parent constructor
   		 *     },
   		 *
   		 *     method : function() {
   		 *         // Some method
-  		 *         this.parent(); // Call parent method
+  		 *         this._super(); // Call parent method
   		 *     },
   		 *
   		 *     'static' : {
@@ -579,7 +579,7 @@
           } else {
             // Add inherit constructor
             ns[cn] = function () {
-              this.parent = sp[scn];
+              this._super = sp[scn];
               return c.apply(this, arguments);
             };
           }
@@ -595,7 +595,7 @@
             // Extend methods if needed
             if (sp[n]) {
               ns[cn].prototype[n] = function () {
-                this.parent = sp[n];
+                this._super = sp[n];
                 return f.apply(this, arguments);
               };
             } else {
@@ -8611,7 +8611,7 @@
   	 */
     tinymce.html.Serializer = function (settings, schema) {
       var self = this,
-        writer = new tinymce.html.Writer(settings);
+        writer = new tinymce.html.Writer(settings, schema);
 
       settings = settings || {};
       settings.validate = "validate" in settings ? settings.validate : true;
@@ -8778,7 +8778,7 @@
    * @method Writer
    * @param {Object} settings Name/value settings object.
    */
-  tinymce.html.Writer = function (settings) {
+  tinymce.html.Writer = function (settings, schema) {
     var html = [],
       indent, indentBefore, indentAfter, encode, htmlOutput;
 
@@ -8829,7 +8829,13 @@
         if (!empty || htmlOutput) {
           html[html.length] = '>';
         } else {
-          html[html.length] = ' />';
+          // use void tag
+          if (settings.schema == 'html5-strict') {
+            html[html.length] = '>';
+          // use self-closing tag
+          } else {
+            html[html.length] = ' />';
+          }
         }
 
         if (empty && indent && indentAfter[name] && html.length > 0) {
@@ -21676,14 +21682,15 @@
   		 * @param {Element} n HTML DOM element to add control to.
   		 */
       renderTo: function (n) {
-        DOM.setHTML(n, this.renderHTML());
+        var frag = DOM.createFragment(this.renderHTML());
+        n.appendChild(frag);
 
         this.postRender();
       },
 
       /**
   		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
   		 *
   		 * @method postRender
   		 */
@@ -21702,6 +21709,16 @@
           this.active = -1;
           this.setActive(state);
         }
+
+        this._elm = DOM.get(this.id);
+      },
+
+      parent: function (ctrl) {
+        if (!ctrl) {
+          return this._parent || null;
+        }
+        
+        this._parent = ctrl;
       },
 
       /**
@@ -21711,8 +21728,9 @@
   		 * @method remove
   		 */
       remove: function () {
-        DOM.remove(this.id);
         this.destroy();
+
+        DOM.remove(this.id);
       },
 
       /**
@@ -21720,7 +21738,7 @@
   		 *
   		 * @method destroy
   		 */
-      destroy: function () {
+       destroy: function () {
         tinymce.dom.Event.clear(this.id);
       }
     });
@@ -21743,6 +21761,7 @@
    * @class tinymce.ui.Container
    * @extends tinymce.ui.Control
    */
+
   tinymce.create('tinymce.ui.Container:tinymce.ui.Control', {
   	/**
   	 * Base contrustor a new container control instance.
@@ -21753,7 +21772,11 @@
   	 * @param {Object} settings Optional name/value settings object.
   	 */
   	Container: function (id, settings, editor) {
-  		this.parent(id, settings, editor);
+  		var self = this;
+
+  		settings = settings || {};
+
+  		this._super(id, settings, editor);
 
   		/**
   		 * Array of controls added to the container.
@@ -21764,6 +21787,22 @@
   		this.controls = [];
 
   		this.lookup = {};
+
+  		if (settings.controls) {
+  			tinymce.each(settings.controls, function (ctrl) {
+  				self.add(ctrl);
+  			});
+  		}
+  	},
+
+  	postRender: function () {
+  		var i;
+
+  		this._super();
+
+  		for (i = 0; i < this.controls.length; i++) {
+  			this.controls[i].postRender();
+  		}
   	},
 
   	/**
@@ -21777,7 +21816,21 @@
   		this.lookup[ctrl.id] = ctrl;
   		this.controls.push(ctrl);
 
+  		ctrl.parent(this);
+
   		return ctrl;
+  	},
+
+  	destroy: function () {
+  		var i;
+
+  		this._super();
+
+  		for (i = 0; i < this.controls.length; i++) {
+  			this.controls[i].destroy();
+  		}
+
+  		delete this.lookup[this.id];
   	},
 
   	/**
@@ -21805,29 +21858,27 @@
     // Shorten class names
     var dom = tinymce.DOM;
     /**
-  	 * This class is used to create layouts. A layout is a container for other controls like buttons etc.
-  	 *
-  	 * @class tinymce.ui.Form
-  	 * @extends tinymce.ui.Container
-  	 */
+     * This class is used to create layouts. A layout is a container for other controls like buttons etc.
+     *
+     * @class tinymce.ui.Form
+     * @extends tinymce.ui.Container
+     */
     tinymce.create('tinymce.ui.Form:tinymce.ui.Container', {
 
       /**
-  			 * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
-  			 * creating a whole toolbar with buttons it does make a lot of difference.
-  			 *
-  			 * @method renderHTML
-  			 * @return {String} HTML for the toolbar control.
-  			 */
+         * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
+         * creating a whole toolbar with buttons it does make a lot of difference.
+         *
+         * @method renderHTML
+         * @return {String} HTML for the toolbar control.
+         */
       renderHTML: function () {
         var html = '',
           settings = this.settings,
           i;
 
-        var controls = settings.controls || this.controls;
-
-        for (i = 0; i < controls.length; i++) {
-          var ctrl = controls[i], s = ctrl.settings;
+        for (i = 0; i < this.controls.length; i++) {
+          var ctrl = this.controls[i], s = ctrl.settings;
 
           html += '<div class="mceFormRow">';
 
@@ -21836,29 +21887,23 @@
           }
 
           html += '	<div class="mceFormControl">';
-          html += controls[i].renderHTML();
+          html += ctrl.renderHTML();
           html += '	</div>';
           html += '</div>';
-
         }
-
-        this.controls = controls;
 
         return dom.createHTML('div', {
           id: this.id,
-          'class': 'mceForm ' + (settings['class'] ? ' ' + settings['class'] : ''),
+          'class': 'mceForm' + (settings['class'] ? ' ' + settings['class'] : ''),
           role: 'group'
         }, html);
       },
 
       submit: function () {
-        var settings = this.settings,
-          i, data = {};
+        var i, data = {};
 
-        var controls = settings.controls || this.controls;
-
-        for (i = 0; i < controls.length; i++) {
-          var ctrl = controls[i];
+        for (i = 0; i < this.controls.length; i++) {
+          var ctrl = this.controls[i];
 
           if (typeof ctrl.value === 'function') {
             data[ctrl.name] = ctrl.value();
@@ -21868,26 +21913,25 @@
         return data;
       },
 
-      postRender: function () {
-        var settings = this.settings,
-          i;
+      update: function (data) {
+        var i;
 
-        this.parent();
+        for (i = 0; i < this.controls.length; i++) {
+          var ctrl = this.controls[i];
 
-        var controls = settings.controls || this.controls;
-
-        for (i = 0; i < controls.length; i++) {
-          controls[i].postRender();
+          if (data[ctrl.name]) {
+            if (typeof ctrl.value === 'function') {
+              ctrl.value(data[ctrl.name]);
+            }
+          }
         }
       },
 
       empty: function () {
         var i;
 
-        var controls = this.controls;
-
-        for (i = 0; i < controls.length; i++) {
-          controls[i].remove();
+        for (i = 0; i < this.controls.length; i++) {
+          this.controls[i].remove();
         }
 
         this.controls = [];
@@ -21896,21 +21940,10 @@
 
       add: function (ctrl) {
         if (!this.get(ctrl.id)) {
-          this.parent(ctrl);
+          return this._super(ctrl);
         }
-      },
 
-      destroy: function () {
-        var settings = this.settings,
-          i;
-
-        this.parent();
-
-        var controls = settings.controls || this.controls;
-
-        for (i = 0; i < controls.length; i++) {
-          controls[i].destroy();
-        }
+        return false;
       }
     });
   })(tinymce);
@@ -21941,7 +21974,7 @@
        * @param {Object} s Optional name/value settings object.
        */
     Separator: function (id, s) {
-      this.parent(id, s);
+      this._super(id, s);
       this.classPrefix = 'mceSeparator';
       this.setDisabled(true);
     },
@@ -21991,7 +22024,7 @@
   		 * @param {Object} s Optional name/value settings object.
   		 */
   		MenuItem: function (id, settings) {
-  			this.parent(id, settings);
+  			this._super(id, settings);
   		},
 
   		/**
@@ -22024,7 +22057,7 @@
   		 * @method postRender
   		 */
   		postRender: function () {
-  			this.parent();
+  			this._super();
 
   			// Set pending state
   			if (tinymce.is(this.selected)) {
@@ -22065,7 +22098,7 @@
   		 * @param {Object} s Optional name/value settings object.
   		 */
       Menu: function (id, settings) {
-        this.parent(id, settings);
+        this._super(id, settings);
         this.items = {};
         this.collapsed = false;
         this.menuCount = 0;
@@ -22340,7 +22373,7 @@
         s.vp_offset_x = s.vp_offset_x || 0;
         s.vp_offset_y = s.vp_offset_y || 0;
 
-        this.parent(id, s);
+        this._super(id, s);
         this.onShowMenu = new tinymce.util.Dispatcher(this);
         this.onHideMenu = new tinymce.util.Dispatcher(this);
         this.onFilterInput = new tinymce.util.Dispatcher(this);
@@ -22678,7 +22711,7 @@
         var self = this,
           co;
 
-        o = self.parent(o);
+        o = self._super(o);
 
         if (self.isRendered && (co = DOM.get('menu_' + self.id + '_items'))) {
           self._add(co, o);
@@ -22694,7 +22727,7 @@
        * @param {Boolean} d Optional deep state. If this is set to true all children will be collapsed as well.
        */
       collapse: function (d) {
-        this.parent(d);
+        this._super(d);
         this.hideMenu(1);
       },
 
@@ -22721,7 +22754,7 @@
         DOM.remove(o.id);
         this.destroy();
 
-        return this.parent(o);
+        return this._super(o);
       },
 
       /**
@@ -23092,7 +23125,7 @@
   		 * @param {Editor} ed Optional the editor instance this button is for.
   		 */
       Button: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
         this.classPrefix = 'mceButton';
 
         /**
@@ -23269,7 +23302,7 @@
        * @param {Editor} ed Optional the editor instance this button is for.
        */
       ListBox: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         /**
          * Array of ListBox items.
@@ -23780,7 +23813,7 @@
 
       /**
        * Post render event. This will be executed after the control has been rendered and can be used to
-       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
        *
        * @method postRender
        */
@@ -23934,7 +23967,7 @@
        * @method destroy
        */
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id + '_text');
         Event.clear(this.id + '_open');
@@ -23981,7 +24014,7 @@
   		 * @param {Object} settings Optional name/value settings object.
   		 */
       NativeListBox: function (id, settings) {
-        this.parent(id, settings);
+        this._super(id, settings);
       },
 
       /**
@@ -24198,56 +24231,57 @@
   (function (tinymce) {
     var DOM = tinymce.DOM,
       Event = tinymce.dom.Event,
-      each = tinymce.each,
       Dispatcher = tinymce.util.Dispatcher;
 
     /**
-  	 * This class is used to create text / input boxes.
-  	 *
-  	 * @class tinymce.ui.TextBox
-  	 * @extends tinymce.ui.Control
-  	 * @example
-  	 */
+     * This class is used to create text / input boxes.
+     *
+     * @class tinymce.ui.TextBox
+     * @extends tinymce.ui.Control
+     * @example
+     */
     tinymce.create('tinymce.ui.TextBox:tinymce.ui.Control', {
       /**
-  		 * Constructs a new textbox control instance.
-  		 *
-  		 * @constructor
-  		 * @method TextBox
-  		 * @param {String} id Control id for the list box.
-  		 * @param {Object} s Optional name/value settings object.
-  		 * @param {Editor} ed Optional the editor instance this button is for.
-  		 */
+       * Constructs a new textbox control instance.
+       *
+       * @constructor
+       * @method TextBox
+       * @param {String} id Control id for the list box.
+       * @param {Object} s Optional name/value settings object.
+       * @param {Editor} ed Optional the editor instance this button is for.
+       */
       TextBox: function (id, s, ed) {
 
-        this.parent(id, s, ed);
+        s = tinymce.extend({
+          class: '',
+          title: ''
+        }, s);
 
-        // store value
-        this._value = '';
+        this._super(id, s, ed);
 
         /**
-  			 * Fires when the selection has been changed.
-  			 *
-  			 * @event onChange
-  			 */
+         * Fires when the selection has been changed.
+         *
+         * @event onChange
+         */
         this.onChange = new Dispatcher(this);
 
         /**
-  			 * Fires after the element has been rendered to DOM.
-  			 *
-  			 * @event onPostRender
-  			 */
+         * Fires after the element has been rendered to DOM.
+         *
+         * @event onPostRender
+         */
         this.onPostRender = new Dispatcher(this);
 
         this.classPrefix = 'mceTextBox';
       },
 
       /**
-  		 * Sets / gets the input value.
-  		 *
-  		 * @method select
-  		 * @param {String/function} val Value to set for the textbox.
-  		 */
+       * Sets / gets the input value.
+       *
+       * @method select
+       * @param {String/function} val Value to set for the textbox.
+       */
       value: function (val) {
         if (!arguments.length) {
           return DOM.getValue(this.id);
@@ -24257,45 +24291,52 @@
       },
 
       /**
-  		 * Renders the text box as a HTML string. This method is much faster than using the DOM and when
-  		 * creating a whole toolbar with buttons it does make a lot of difference.
-  		 *
-  		 * @method renderHTML
-  		 * @return {String} HTML for the text control element.
-  		 */
+       * Renders the text box as a HTML string. This method is much faster than using the DOM and when
+       * creating a whole toolbar with buttons it does make a lot of difference.
+       *
+       * @method renderHTML
+       * @return {String} HTML for the text control element.
+       */
       renderHTML: function () {
         var html = '',
           prefix = this.classPrefix, s = this.settings;
 
         var type = s.subtype ? s.subtype : 'text';
 
+        var attribs = {
+          type: type,
+          id: this.id,
+          class: prefix + ' ' + s['class'],
+          title: DOM.encode(s.title),
+          tabindex: 0,
+          autofocus: true
+        };
+
+        attribs = tinymce.extend(attribs, s.attributes || {});
+
         if (s.multiline) {
-          html += '<textarea id="' + this.id + '" class="' + prefix + ' ' + s['class'] + '" title="' + DOM.encode(s.title) + '" tabindex="0" autofocus>' + DOM.encode(this._value);
+          html += DOM.createHTML('textarea', attribs);
         } else {
-          html += '<input type="' + type + '" id="' + this.id + '" value="' + this._value + '" class="' + prefix + ' ' + s['class'] + '" title="' + DOM.encode(s.title) + '" tabindex="0" autofocus';
+          html += DOM.createHTML('input', attribs);
         }
 
-        if (s.attributes) {
-          each(s.attributes, function (val, key) {
-            html += ' ' + key + '="' + val + '"';
-          });
-        }
-
-        if (s.multiline) {
-          html += '</textarea>';
-        } else {
-          html += ' />';
+        if (s.button) {
+          html += DOM.createHTML('button', {
+            id: this.id + '_button',
+            class: 'mceButton',
+            title: DOM.encode(s.button.label || '')
+          }, '<span role="presentation" class="mceIcon mce_' + s.button.icon + '"></span>');
         }
 
         return html;
       },
 
       /**
-  		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
-  		 *
-  		 * @method postRender
-  		 */
+       * Post render event. This will be executed after the control has been rendered and can be used to
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
+       *
+       * @method postRender
+       */
       postRender: function () {
         var self = this, s = this.settings;
 
@@ -24311,28 +24352,36 @@
           self.onChange.dispatch(this, DOM.get(self.id));
         });
 
+        if (s.button) {
+          Event.add(this.id + '_button', 'click', function (e) {
+            e.preventDefault();
+
+            s.button.click.apply(self);
+          });
+        }
+
         this.onPostRender.dispatch(this, DOM.get(this.id));
       },
 
       /**
-  		 * Sets the disabled state for the control. This will add CSS classes to the
-  		 * element that contains the control. So that it can be disabled visually.
-  		 *
-  		 * @method setDisabled
-  		 * @param {Boolean} state Boolean state if the control should be disabled or not.
-  		 */
+       * Sets the disabled state for the control. This will add CSS classes to the
+       * element that contains the control. So that it can be disabled visually.
+       *
+       * @method setDisabled
+       * @param {Boolean} state Boolean state if the control should be disabled or not.
+       */
       setDisabled: function (state) {
-        this.parent(state);
+        this._super(state);
         DOM.get(this.id).disabled = state;
       },
 
       /**
-  		 * Destroys the TextBox i.e. clear memory and events.
-  		 *
-  		 * @method destroy
-  		 */
+       * Destroys the TextBox i.e. clear memory and events.
+       *
+       * @method destroy
+       */
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id);
       }
@@ -24370,7 +24419,7 @@
 
         s["class"] = 'mceUrlBox';
 
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
       },
 
       /**
@@ -24381,7 +24430,7 @@
        * @return {String} HTML for the text control element.
        */
       renderHTML: function () {
-        var html = this.parent(),
+        var html = this._super(),
           s = this.settings;
 
         if (s.picker) {
@@ -24424,20 +24473,20 @@
        * @param {Boolean} state Boolean state if the control should be disabled or not.
        */
       setDisabled: function (state) {
-        this.parent(state);
+        this._super(state);
         DOM.get(this.id + '_upload').disabled = state;
       },
 
       /**
        * Post render event. This will be executed after the control has been rendered and can be used to
-       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+       * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
        *
        * @method postRender
        */
       postRender: function () {
         var self = this, s = this.settings;
 
-        this.parent();
+        this._super();
 
         if (s.picker) {
           DOM.addClass(this.id, 'mceUrlBoxPicker');
@@ -24519,7 +24568,7 @@
   		 */
       CheckBox: function (id, s, ed) {
 
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         if (typeof s.value === 'undefined') {
           s.value = '';
@@ -24603,7 +24652,7 @@
 
       /**
   		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
   		 *
   		 * @method postRender
   		 */
@@ -24633,7 +24682,7 @@
   		 * @param {Boolean} state Boolean state if the control should be disabled or not.
   		 */
       setDisabled: function (state) {
-        this.parent(state);
+        this._super(state);
         DOM.get(this.id).disabled = state;
       },
 
@@ -24643,7 +24692,7 @@
   		 * @method destroy
   		 */
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id);
       }
@@ -24712,7 +24761,7 @@
   		 * @param {Editor} ed Optional the editor instance this button is for.
   		 */
       MenuButton: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         /**
   			 * Fires when the menu is rendered.
@@ -24909,7 +24958,7 @@
   		 * @param {Editor} ed Optional the editor instance this button is for.
   		 */
       SplitButton: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
         this.classPrefix = 'mceSplitButton';
       },
 
@@ -25023,7 +25072,7 @@
       },
 
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id + '_action');
         Event.clear(this.id + '_open');
@@ -25066,7 +25115,7 @@
   		 * @param {Editor} editor The editor instance this button is for.
   		 */
       ColorSplitButton: function (id, settings, editor) {
-        this.parent(id, settings, editor);
+        this._super(id, settings, editor);
 
         /**
   			 * Settings object.
@@ -25237,7 +25286,8 @@
               backgroundColor: val
             },
             'title': self.editor.getLang('colors.' + color, val),
-            'data-mce-color': val
+            'data-mce-color': val,
+            'class': 'mceColorButton'
           };
 
           // adding a proper ARIA role = button causes JAWS to read things incorrectly on IE.
@@ -25316,12 +25366,12 @@
 
       /**
   		 * Post render event. This will be executed after the control has been rendered and can be used to
-  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this.parent().
+  		 * set states, add events to the control etc. It's recommended for subclasses of the control to call this method by using this._super().
   		 *
   		 * @method postRender
   		 */
       postRender: function () {
-        this.parent();
+        this._super();
 
         DOM.add(this.id + '_action', 'span', {
           id: this.id + '_preview',
@@ -25339,7 +25389,7 @@
   		 * @method destroy
   		 */
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id + '_menu');
         Event.clear(this.id + '_more');
@@ -25431,7 +25481,7 @@
       },
 
       destroy: function () {
-        this.parent();
+        this._super();
         this.keyNav.destroy();
         Event.clear(this.id);
       }
@@ -25562,7 +25612,7 @@
            * @param {Editor} ed Optional the editor instance this button is for.
            */
       Panel: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         this.settings = s = tinymce.extend({
           content: '',
@@ -25833,7 +25883,7 @@
       },
 
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id);
         DOM.remove(this.id);
@@ -25866,7 +25916,7 @@
            * @param {Editor} ed Optional the editor instance this button is for.
            */
       ContextPanel: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         this.settings = s = tinymce.extend({
           content: '',
@@ -25879,7 +25929,7 @@
       renderPanel: function () {
         var self = this;
 
-        this.parent();
+        this._super();
 
         DOM.addClass(DOM.select('.mcePanel', DOM.get(this.id)), 'mceContextPanel');
 
@@ -25902,7 +25952,7 @@
            * @method showPanel
            */
       showPanel: function (elm) {
-        this.parent(elm);
+        this._super(elm);
 
         this.target = elm;
 
@@ -25972,7 +26022,7 @@
 
       destroy: function () {
         Event.remove(this.editor.getWin(), 'scroll', self.scrollFunc);
-        this.parent();
+        this._super();
       }
     });
   })();
@@ -26002,7 +26052,7 @@
            * @param {Editor} ed Optional the editor instance this button is for.
            */
       PanelButton: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
 
         this.settings = s = tinymce.extend({
         }, this.settings);
@@ -26117,7 +26167,7 @@
       },
 
       destroy: function () {
-        this.parent();
+        this._super();
 
         Event.clear(this.id + '_panel');
         DOM.remove(this.id + '_panel');
@@ -26149,7 +26199,7 @@
            * @param {Editor} ed Optional the editor instance this button is for.
            */
       PanelSplitButton: function (id, s, ed) {
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
       },
 
       /**
@@ -26294,7 +26344,7 @@
         this.onShowDialog = new Dispatcher(this);
         this.onHideDialog = new Dispatcher(this);
 
-        this.parent(id, s, ed);
+        this._super(id, s, ed);
       },
 
       showDialog: function () {
@@ -26312,6 +26362,305 @@
       hideDialog: function (e) {
         this.hidePanel(e);
         this.onHideDialog.dispatch(this);
+      }
+    });
+  })(tinymce);
+
+  /**
+   * Form.js
+   *
+   * Copyright, Moxiecode Systems AB
+   * Released under LGPL License.
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+  (function (tinymce) {
+    // Shorten class names
+    var DOM = tinymce.DOM, count = 0;
+    /**
+     * This class is used to create layouts. A layout is a container for other controls like buttons etc.
+     *
+     * @class tinymce.ui.Repeatable
+     * @extends tinymce.ui.Container
+     */
+    tinymce.create('tinymce.ui.RepeatableItem:tinymce.ui.Container', {
+
+      RepeatableItem: function (id, settings) {            
+        this._super(id, settings);
+
+        // add integer increment
+        var id = settings.controls[0].id + '_' + (count++);
+
+        delete this.lookup[id];
+
+        this.controls[0].id = id;
+      },
+
+      /**
+         * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
+         * creating a whole toolbar with buttons it does make a lot of difference.
+         *
+         * @method renderHTML
+         * @return {String} HTML for the toolbar control.
+         */
+      renderHTML: function () {
+        var html = '';
+
+        html += this.controls[0].renderHTML();
+        html += '<button class="mceButton"><span role="presentation" class="mceIcon mce_plus"></span><span role="presentation" class="mceIcon mce_trash"></span></button>';
+
+        return DOM.createHTML('div', {
+          id: this.id,
+          class: 'mceRepeatableItem mceForm mceFormRow'
+        }, html);
+      },
+
+      value: function (value) {
+        if (arguments.length) {
+
+          if (Array.isArray(value)) {
+            value = value.shift();
+          }
+
+          this.controls[0].value(value);
+
+          return this;
+        }
+
+        return this.controls[0].value();
+      }
+    });
+  })(tinymce);
+
+  /**
+   * Form.js
+   *
+   * Copyright, Moxiecode Systems AB
+   * Released under LGPL License.
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+  (function (tinymce) {
+    // Shorten class names
+    var dom = tinymce.DOM, each = tinymce.each, count = 0;
+    /**
+     * This class is used to create layouts. A layout is a container for other controls like buttons etc.
+     *
+     * @class tinymce.ui.Repeatable
+     * @extends tinymce.ui.Container
+     */
+    tinymce.create('tinymce.ui.Repeatable:tinymce.ui.Container', {
+      /**
+         * Renders the toolbar as a HTML string. This method is much faster than using the DOM and when
+         * creating a whole toolbar with buttons it does make a lot of difference.
+         *
+         * @method renderHTML
+         * @return {String} HTML for the toolbar control.
+         */
+      renderHTML: function () {
+        var settings = this.settings, i, html = '', controls = this.controls;
+
+        for (i = 0; i < controls.length; i++) {
+          html += controls[i].renderHTML();
+        }
+
+        return dom.createHTML('div', {
+          id: this.id,
+          'class': 'mceForm mceRepeatable' + (settings['class'] ? ' ' + settings['class'] : ''),
+          role: 'group'
+        }, html);
+      },
+
+      value: function (values) {
+        var self = this, i, controls = this.controls;
+
+        if (arguments.length) {
+          // update all items with values
+          for (i = 0; i < controls.length; i++) {
+            controls[i].value(values.shift());
+          }
+
+          // for each set of remaining values, create a repeatable item
+          each(values, function (val) {
+            self.addItem(val);
+          });
+
+          return this;
+        }
+
+        var values = [];
+
+        for (i = 0; i < this.controls.length; i++) {
+          var value = this.controls[i].value();
+
+          if (value) {
+            values = values.concat(value);
+          }
+        }
+
+        return values;
+      },
+
+      getItemControl: function () {
+        var settings = this.settings;
+
+        var item = settings.item || { type : 'TextBox', settings : {} }, cls = tinymce.ui[item.type || 'TextBox'];
+
+        return new cls(this.id + '_item_' + item.id, item.settings || {}, this.editor);
+      },
+
+      addItem: function (value) {
+        var self = this;
+
+        var item = this.getItemControl();
+
+        var ctrl = new tinymce.ui.RepeatableItem(self.id + '_item_' + (count++), {
+          controls: [item]
+        });
+
+        self.add(ctrl);
+        ctrl.renderTo(dom.get(self.id));
+
+        if (value) {
+          ctrl.value(value);
+        }
+
+        return ctrl;
+      },
+
+      postRender: function () {
+        var self = this, elm = dom.get(this.id);
+
+        dom.bind(elm, 'click', function (e) {
+          e.preventDefault();
+
+          var btn = dom.getParent(e.target, 'button');
+
+          if (!btn) {
+            return;
+          }
+
+          var ctrlElm = btn.parentNode, index = dom.nodeIndex(ctrlElm);
+
+          if (index == 0) {
+            self.addItem();
+          } else {
+            self.get(ctrlElm.id).remove();
+          }
+        });
+
+        this.addItem();
+      },
+
+      destroy: function () {
+        this._super();
+        this.controls = [];
+      }
+    });
+  })(tinymce);
+
+  /**
+   * CustomValue.js
+   */
+
+  (function (tinymce) {
+    var each = tinymce.each;
+
+    /**
+     * This class is used to create text / input boxes.
+     *
+     * @class tinymce.ui.CustomValue
+     * @extends tinymce.ui.Control
+     * @example
+     */
+    tinymce.create('tinymce.ui.CustomValue:tinymce.ui.Form', {
+      /**
+       * Constructs a new textbox control instance.
+       *
+       * @constructor
+       * @method TextBox
+       * @param {String} id Control id for the list box.
+       * @param {Object} s Optional name/value settings object.
+       * @param {Editor} ed Optional the editor instance this button is for.
+       */
+      CustomValue: function (id, settings, ed) {
+        settings = tinymce.extend(settings, {
+          class: 'mceFormRow'
+        });
+
+        this._super(id, settings, ed);
+
+        var name = new tinymce.ui.TextBox(this.id + '_name', {
+          name: 'name',
+          label: ed.getLang('label_name', 'Name'),
+          attributes: {
+            autocomplete: false
+          }
+        });
+
+        var value = new tinymce.ui.TextBox(this.id + '_value', {
+          name: 'value',
+          label: ed.getLang('label_value', 'Value'),
+          attributes: {
+            autocomplete: false
+          }
+        });
+
+        if (settings.values && settings.values.length) {
+          name = new tinymce.ui.ListBox(this.id + '_name', {
+            name: 'name',
+            label: ed.getLang('label_name', 'Name'),
+            combobox: true
+          });
+
+          each(settings.values, function (val) {
+            name.add(val, val);
+          });
+        }
+
+        this.add(name);
+        this.add(value);
+      },
+
+      renderHTML: function () {
+        var self = this;
+        
+        for (var i = 0; i < this.controls.length; i++) {
+          var ctrl = this.controls[i];
+          ctrl.id = self.id + '_' + ctrl.name;
+        }
+
+        return this._super();
+      },
+
+      value: function (values) {
+        if (arguments.length) {
+
+          if (typeof values != "object") {
+            return this;
+          }
+
+          for (var key in values) {
+            this.controls[0].value(key);
+            this.controls[1].value(values[key]);
+          }
+
+          return this;
+        }
+
+        var key = this.controls[0].value();
+
+        if (key) {
+          var data = {};
+
+          data[key] = this.controls[1].value();
+
+          return data;
+        }
+
+        return '';
       }
     });
   })(tinymce);
@@ -32792,7 +33141,7 @@
        * @return {tinymce.ui.Control} Control instance that got disabled or null if it wasn't found.
        */
       setDisabled: function (id, s) {
-        var c = c = this.get(id);
+        var c = this.get(id);
 
         if (c) {
           c.setDisabled(s);
@@ -33331,6 +33680,45 @@
         return self.add(c);
       },
 
+      createCustomValue: function (id, s) {
+        var self = this,
+          ed = self.editor,
+          c;
+
+        id = self.prefix + id;
+
+        c = new tinymce.ui.CustomValue(id, s, ed);
+
+        return self.add(c);
+      },
+
+      createRepeatable: function (id, s) {
+        var self = this,
+          ed = self.editor,
+          c, cls;
+
+        id = self.prefix + id;
+
+        c = self.get(id);
+
+        if (c) {
+          return c;
+        }
+
+        s.scope = s.scope || ed;
+
+        s = extend({
+          'class': 'mce_' + id,
+          scope: s.scope,
+          control_manager: self
+        }, s);
+
+        cls = tinymce.ui.Repeatable;
+        c = new cls(id, s, ed);
+
+        return self.add(c);
+      },
+
       /**
        * Creates a panel container control instance by id.
        *
@@ -33430,21 +33818,14 @@
        * @method createLayout
        * @param {String} id Unique id for the new toolbar container control instance. For example "toolbar1".
        * @param {Object} s Optional settings object for the control.
-       * @param {Object} cc Optional control class to use instead of the default one.
        * @return {tinymce.ui.Control} Control instance that got created and added.
        */
-      createForm: function (id, s, cc) {
+      createForm: function (id, s) {
         var c, self = this,
           cls;
 
-        c = self.get(id);
-
-        if (c) {
-          return c;
-        }
-
         id = self.prefix + id;
-        cls = cc || self._cls.form || tinymce.ui.Form;
+        cls = tinymce.ui.Form;
         c = new cls(id, s, self.editor);
 
         return self.add(c);
@@ -33778,14 +34159,13 @@
             }
 
             each(f.items, function (ctrl) {
-              DOM.add(id + '_content', 'form', {}, ctrl.renderHTML());
-              ctrl.postRender();
+              var form = DOM.add(id + '_content', 'form');
+
+              ctrl.renderTo(form);
 
               // add onClose event to destroy controls
               self.onClose.add(function () {
-                if (this.id === id) {
-                  ctrl.destroy();
-                }
+                ctrl.destroy();
               });
             });
           }
@@ -40007,7 +40387,7 @@
 
             // Remove empty contents
             if (ed.settings.padd_empty_editor) {
-              o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br \/>[\r\n]*)$/, '');
+              o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
             }
           }
         });
