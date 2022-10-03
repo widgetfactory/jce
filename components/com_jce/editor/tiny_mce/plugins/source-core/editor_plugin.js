@@ -45,10 +45,6 @@
                 	e.no_events = true;
                 });
                 
-                if (isCodeEditorActive() == false) {
-                    return;
-                }
-                
                 // get the stored active tab
                 var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
 
