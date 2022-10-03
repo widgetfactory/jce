@@ -485,7 +485,7 @@
 
           // Remove empty contents
           if (ed.settings.padd_empty_editor) {
-            o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br \/>[\r\n]*)$/, '');
+            o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
           }
         }
       });
