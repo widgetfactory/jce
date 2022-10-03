@@ -175,7 +175,7 @@
 .mceModernSkin span.mce_cite:before {
     content: "\201C...\201D";
     font-family: 'Times New Roman', Times, serif;
-    font-size: 1em;
+    font-size: 0.75em;
     font-weight: 600;
 }
 
@@ -942,6 +942,10 @@
 
 .mceModernSkin span.mce_langcode:before {
     content: "\e9c9";
+}
+
+.mceModernSkin span.mce_date:before {
+    content: "\e94e";
 }
 
 .mceModernSkin span.mce_spinner:before {

@@ -15,6 +15,14 @@
         "row": 4,
         "editable": 0
     },
+    "attributes": {
+        "title": "WF_ATTRIBUTES_TITLE",
+        "description": "WF_ATTRIBUTES_DESC",
+        "icon": "attribs",
+        "editable": 0,
+        "row": 4,
+        "core": 1
+    },
     "autosave": {
         "title": "WF_AUTOSAVE_TITLE",
         "description": "WF_AUTOSAVE_DESC",
@@ -321,10 +329,10 @@
         "row": 0,
         "core": 1
     },
-    "xhtmlxtras": {
-        "title": "WF_XHTMLXTRAS_TITLE",
-        "description": "WF_XHTMLXTRAS_DESC",
-        "icon": "cite,abbr,acronym,del,ins,attribs",
+    "reference": {
+        "title": "WF_REFERENCE_TITLE",
+        "description": "WF_REFERENCE_DESC",
+        "icon": "cite,abbr,acronym,del,ins",
         "editable": 1,
         "row": 4,
         "core": 1
