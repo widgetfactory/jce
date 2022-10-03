@@ -9,8 +9,8 @@
 	<copyright>Ryan Demmer</copyright>
 	<license>@@licence@@</license>
 	<description>WF_LANGCODE_DESC</description>
-	<icon>anchor</icon>
-	<layout>anchor</layout>
+	<icon>langcode</icon>
+	<layout>langcode</layout>
 	<files></files>
 	<languages></languages>
 	<help></help>

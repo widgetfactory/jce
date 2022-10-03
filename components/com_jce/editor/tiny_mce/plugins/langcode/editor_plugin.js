@@ -136,6 +136,8 @@
         'Zulu': 'zu'
     };
 
+    var DOM = tinymce.DOM;
+
     tinymce.create('tinymce.plugins.LanguageCodePlugin', {
         init: function (ed, url) {
             this.editor = ed;
@@ -188,6 +190,8 @@
 
                             if (node.hasAttribute('lang')) {
                                 value = node.getAttribute('lang');
+
+                                DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
                             }
 
                             langList.value(value);
