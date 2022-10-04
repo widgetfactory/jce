@@ -241,11 +241,13 @@
                             }
                         });
 
+                        var isCollapsed = selection.isCollapsed();
+
                         //node = nodes.length > 1 || selection.isCollapsed() ? node : null;
-                        node = selection.isCollapsed() ? node : null;
+                        //node = isCollapsed ? node : null;
 
                         // reset node if there is a text only selection
-                        if (!selection.isCollapsed() && isOnlyTextSelected()) {
+                        if (!isCollapsed && isOnlyTextSelected()) {
                             node = null;
                         }
 
@@ -253,7 +255,7 @@
                         selection.moveToBookmark(bookmark);
 
                         // reset selection on inline elements
-                        if (!node) {
+                        if (!node && isCollapsed) {
                             var sel = selection.getSel();
 
                             if (sel.anchorNode && NodeType.isElement(sel.anchorNode) && !ed.dom.isBlock(sel.anchorNode) && !isRoot(sel.anchorNode)) {
