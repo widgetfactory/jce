@@ -136,7 +136,7 @@
         'Zulu': 'zu'
     };
 
-    var each = tinymce.each, extend = tinymce.extend, DOM = tinymce.DOM;
+    var each = tinymce.each, extend = tinymce.extend;
 
     function getAttributes(node) {
         var i, attrs = node.attributes, attribs = {};
@@ -178,7 +178,7 @@
             });
 
             function openDialog() {
-                var cm = ed.controlManager, node = ed.selection.getNode(), update, mediaApi;
+                var cm = ed.controlManager, node = ed.selection.getNode(), mediaApi;
 
                 var nodeAttribs = getAttributes(node), attribsMap = { id: '', title: '', class: '', lang: '', dir: '' }, custom = [];
 
@@ -202,8 +202,6 @@
                             custom.push(attr);
                         }
                     }
-
-                    update = true;
                 });
 
                 var form = cm.createForm('attributes_form');
@@ -270,10 +268,6 @@
                     items: [form],
                     size: 'mce-modal-landscape-large',
                     open: function () {
-                        if (update) {
-                            DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
-                        }
-
                         form.update(attribsMap);
                         repeatable.value(custom);
                     },
@@ -282,7 +276,7 @@
                         id: 'cancel'
                     },
                     {
-                        title: ed.getLang('common.insert', 'Insert'),
+                        title: ed.getLang('common.update', 'Update'),
                         id: 'insert',
                         onsubmit: function (e) {
                             var node = ed.selection.getNode(), selection = ed.selection;
