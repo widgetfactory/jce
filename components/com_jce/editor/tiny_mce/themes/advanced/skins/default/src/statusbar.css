@@ -10,14 +10,15 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    border: 0 solid #ddd;
 }
 
 .mceDefaultSkin .mceStatusbar:first-child {
-    border-bottom: 1px solid #ddd;
+    border-bottom-width: 1px;
 }
 
-.mceDefaultSkin .mceIframeContainer + .mceStatusbar {
-    border-top: 1px solid #ddd;
+.mceDefaultSkin .mceStatusbar:last-child {
+    border-top-width: 1px;
 }
 
 .defaultSkin .mceStatusbar:empty {

@@ -64,12 +64,20 @@
     border-top: 1px solid #ddd;
 }
 
+.mceDefaultSkin .mceToolbar:nth-child(2):not(:last-child) {
+    border-bottom: 0;
+}
+
 .mceDefaultSkin .mceIframeContainer:first-child {
     border-bottom: 1px solid #ddd;
 }
 
 .mceDefaultSkin .mceIframeContainer:last-child {
     border-top: 1px solid #ddd;
+}
+
+.mceDefaultSkin .mceIframeContainer:nth-child(2) {
+    border-top-width: 0;
 }
 
 /* Separator */

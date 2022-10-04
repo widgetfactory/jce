@@ -352,7 +352,8 @@ section[role="tabpanel"] .wf-editor-container {
 }
 
 .wf-editor,
-.wf-no-editor {
+.wf-no-editor,
+.wf-editor-source textarea {
     background: #fff none;
     font-family: monospace;
     font-size: 12px;
@@ -393,6 +394,11 @@ section[role="tabpanel"] .wf-editor-container {
     position: relative;
     width: 100%;
     height: 100%;
+}
+
+.wf-editor-source textarea {
+    resize: none;
+    border: 0 none;
 }
 
 .wf-editor-preview iframe {
