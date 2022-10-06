@@ -59,15 +59,13 @@
                 return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
             }
 
-            this.isActive = false;
-
             ed.onInit.add(function (ed) {
                 if (isEditorActive() == false) {
                     return;
                 }
 
                 // get the stored active tab
-                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || "";
+                var activeTab = ed.settings.active_tab || "";
 
                 if (activeTab === "wf-editor-source") {
                     // hide editor

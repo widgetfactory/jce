@@ -35,7 +35,7 @@
                 }
                 
                 // get the stored active tab
-                var activeTab = sessionStorage.getItem('wf-editor-tabs-' + ed.id) || ed.settings.active_tab || '';
+                var activeTab = ed.settings.active_tab || '';
 
                 if (activeTab === "wf-editor-preview") {
                     // hide editor
