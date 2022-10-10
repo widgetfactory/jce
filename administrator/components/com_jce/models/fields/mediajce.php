@@ -4,7 +4,7 @@
  * @package     JCE
  *
  * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2017 Ryan Demmer All rights reserved.
+ * @copyright   Copyright (C) 2022 Ryan Demmer All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -96,5 +96,27 @@ class JFormFieldMediaJce extends MediaField
         }
 
         return array_merge($data, $extraData);
+    }
+
+     /**
+     * Allow to override renderer include paths in child fields
+     *
+     * @return  array
+     *
+     * @since   3.5
+     */
+    protected function getLayoutPaths()
+    {
+        $paths = parent::getLayoutPaths();
+        
+        if (!empty($paths)) {
+            
+            // Joomla 4 custom path
+            if (isset($this->types)) {
+                return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts');
+        	}
+        }
+        
+        return $paths;
     }
 }

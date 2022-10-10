@@ -1,5 +1,5 @@
 div[data-url].wf-media-wrapper>div.modal,
-div[data-url] > div.modal-dialog > div.modal-content {
+div[data-url]>div.modal-dialog>div.modal-content {
     height: 90vh;
 }
 
@@ -41,7 +41,7 @@ div[data-url] > div.modal-dialog > div.modal-content {
     overflow: hidden;
 }
 
-.wf-media-upload-button > input[type="file"] {
+.wf-media-upload-button>input[type="file"] {
     position: absolute;
     left: 0;
     top: 0;
@@ -65,4 +65,16 @@ input.wf-media-upload-busy {
     .input-append input.wf-media-input-upload {
         width: 100px;
     }
+}
+
+.field-media-preview img+.field-media-preview-icon {
+    display: none;
+}
+
+.field-media-preview img[src=""] {
+    display: none;
+}
+
+.field-media-preview img[src=""]+.field-media-preview-icon {
+    display: block;
 }

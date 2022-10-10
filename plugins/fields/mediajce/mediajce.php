@@ -10,15 +10,15 @@
 
 defined('_JEXEC') or die;
 
-JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
+use Joomla\CMS\Form\Form;
 
-JForm::addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
+Form::addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
 
 /**
  * Fields MediaJce Plugin
  *
  * @since  2.6.27
  */
-class PlgFieldsMediaJce extends FieldsPlugin
+class PlgFieldsMediaJce extends \Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin
 {
 }

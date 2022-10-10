@@ -26,6 +26,11 @@
 
         Wf.init();
 
+        // remove #joomlaImage options
+        if (src && src.indexOf('#joomlaImage') != -1) {
+            src = src.substring(0, src.indexOf('#'));
+        }
+
         if (/(:\/\/|www|index.php(.*)\?option)/gi.test(src)) {
             src = '';
         }
