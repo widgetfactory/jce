@@ -40,6 +40,11 @@
 
                 $(document).trigger('subform-row-add', [this]);
             });
+
+            // other modals
+            if (window.SqueezeBox && window.SqueezeBox.assign) {
+                window.SqueezeBox.assign($item.find('a.modal').get(), { parse: 'rel' });
+            }
         });
 
         $('.controls').on('click', '.form-field-repeatable-remove', function (e) {
