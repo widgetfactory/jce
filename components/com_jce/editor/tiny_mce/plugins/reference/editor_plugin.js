@@ -63,7 +63,7 @@
                             icon: 'date',
                             label: ed.getLang('reference.label_datetime', 'Date/Time'),
                             click: function () {
-                                this.value(getDateTime(new Date(), "%Y-%m-%dT%H:%M:%S"));
+                                this.value(getDateTime(new Date(), ed.getParam('reference.datetime', '%Y-%m-%dT%H:%M:%S')));
                             }
                         }
                     }));

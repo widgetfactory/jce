@@ -19,6 +19,8 @@
                 <option value="del">WF_DEL_TITLE</option>
                 <option value="ins">WF_INS_TITLE</option>
             </field>
+
+            <field name="datetime_format" type="text" size="100" default="" hint="%Y-%m-%dT%H:%M:%S" label="WF_REFERENCE_DATETIME_FORMAT" description="WF_REFERENCE_DATETIME_FORMAT_DESC" />
         </fieldset>
     </fields>
     <help>
