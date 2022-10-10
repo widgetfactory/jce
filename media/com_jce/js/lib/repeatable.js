@@ -34,7 +34,11 @@
             // fix media field
             $item.find('.field-media-wrapper').each(function () {
                 // re-initlialize
-                $(this).fieldMedia();
+                if ($.fn.fieldMedia) {
+                    $(this).fieldMedia();
+                }
+
+                $(document).trigger('subform-row-add', [this]);
             });
         });
 
