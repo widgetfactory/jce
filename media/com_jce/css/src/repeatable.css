@@ -61,8 +61,8 @@
     display: none;
 }
 
-.form-field-repeatable-item+.form-field-repeatable-item {
-    padding-top: 10px;
+.form-field-repeatable-item {
+    padding: 5px 0;
 }
 
 /*.form-horizontal .form-field-repeatable-item-group {
