@@ -54,6 +54,11 @@ class JFormFieldMediaJce extends MediaField
 
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
+
+            // Joomla 4 custom layout
+            if (isset($this->types)) {
+                $this->layout = 'joomla.form.field.mediacustom';
+        	}
         }
 
         return $result;
@@ -96,27 +101,5 @@ class JFormFieldMediaJce extends MediaField
         }
 
         return array_merge($data, $extraData);
-    }
-
-     /**
-     * Allow to override renderer include paths in child fields
-     *
-     * @return  array
-     *
-     * @since   3.5
-     */
-    protected function getLayoutPaths()
-    {
-        $paths = parent::getLayoutPaths();
-        
-        if (!empty($paths)) {
-            
-            // Joomla 4 custom path
-            if (isset($this->types)) {
-                return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts');
-        	}
-        }
-        
-        return $paths;
     }
 }
