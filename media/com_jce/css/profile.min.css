@@ -1203,3 +1203,9 @@ a.browser {
 .ui-jce .hide {
     display: none;
 }
+
+.ui-jce .textarea-code {
+    font-family: monospace;
+    font-size: 12px;
+    color: #444;
+}
