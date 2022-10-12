@@ -198,6 +198,11 @@
                         var attr = {};
 
                         if (value) {
+
+                            if (name.indexOf('on') == 0) {
+                                value = ed.dom.getAttrib(node, 'data-mce-' + name) || value;
+                            }
+
                             attr[name] = value;
                             custom.push(attr);
                         }
@@ -290,6 +295,20 @@
                                 delete data.custom;
                             }
 
+                            // manage onclick type events and update nodeAttribs map
+                            each(data, function (value, name) {
+                                if (name == 'onclick' || name == 'ondblclick') {
+                                    // remove original value
+                                    delete data[name];
+                                    // add proxy value
+                                    data['data-mce-' + name] = value;
+
+                                    delete nodeAttribs['data-mce-' + name];
+                                }
+
+                                delete nodeAttribs[name];
+                            });
+
                             var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
 
                             // is a body or text selection
@@ -299,8 +318,10 @@
                             } else {
                                 // remove attributes that have been removed or nulled
                                 each(nodeAttribs, function (val, name) {
-                                    if (!tinymce.is(data[name])) {
-                                        data[name] = null;
+                                    data[name] = null;
+
+                                    if (name == 'onclick' || name == 'ondblclick') {
+                                        data['data-mce-' + name] = null;
                                     }
                                 });
 
