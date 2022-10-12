@@ -54,6 +54,12 @@ class JFormFieldMediaJce extends MediaField
 
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
+
+            if (isset($this->types)) {
+                if (MediaHelper::isImage($this->value)) {
+                    $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
+                }
+            }
         }
 
         return $result;
@@ -93,6 +99,61 @@ class JFormFieldMediaJce extends MediaField
 
         if ($options['upload'] == 1) {
             $extraData['class'] .= ' wf-media-input-upload';
+        }
+
+        // Joomla 4
+        if (isset($this->types)) {
+
+            $mediaData = array(
+                'imagesAllowedExt'    => '',
+                'audiosAllowedExt'    => '',
+                'videosAllowedExt'    => '',
+                'documentsAllowedExt' => ''
+            );
+
+            $allowable = array('jpg,jpeg,png,gif', 'mp3,m4a,mp4a,ogg', 'mp4,mp4v,mpeg,mov,webm', 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv', 'zip,tar,gz');
+
+            if (!empty($options['accept'])) {
+                $accept = explode(',', $options['accept']);
+
+                array_walk($allowable, function (&$item) use ($accept) {
+                    $items = explode(',', $item);
+
+                    $values = array_intersect($items, $accept);
+                    $item   = empty($values) ? '' : implode(',', $values);
+                });
+            }
+
+            switch ($this->mediatype) {
+                case 'images':
+                    $mediaType = [0];
+                    $mediaData['imagesAllowedExt'] = $allowable[0];
+                    break;
+                case 'media':
+                    $mediaType = [1, 2];
+                    $mediaData['audiosAllowedExt'] = $allowable[1];
+                    $mediaData['videosAllowedExt'] = $allowable[2];
+                    break;
+                case 'documents':
+                    $mediaType = [3];
+                    $mediaData['documentsAllowedExt'] = $allowable[3];
+                    break;
+                case 'files':
+                    $mediaType = [0, 1, 2, 3];
+
+                    $mediaData = array(
+                        'imagesAllowedExt'    => $allowable[0],
+                        'audiosAllowedExt'    => $allowable[1],
+                        'videosAllowedExt'    => $allowable[2],
+                        'documentsAllowedExt' => $allowable[3]
+                    );
+
+                    break;
+            }
+
+            $mediaData['mediaTypes'] = implode(',', $mediaType);
+
+            $extraData = array_merge($extraData, $mediaData);
         }
 
         return array_merge($data, $extraData);

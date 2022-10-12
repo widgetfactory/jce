@@ -93,6 +93,9 @@ abstract class WfBrowserHelper
                 }
             }
 
+            // get allowed extensions
+            $data['accept'] = $wf->getParam('browser.extensions', 'jpg,jpeg,png,gif,mp3,m4a,mp4a,ogg,mp4,mp4v,mpeg,mov,webm,doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv,zip,tar,gz');
+
             $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
         }
 

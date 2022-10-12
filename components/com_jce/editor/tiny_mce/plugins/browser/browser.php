@@ -53,6 +53,7 @@ class WFBrowserPlugin extends WFMediaManager
             $map = array(
                 'images' => 'jpg,jpeg,png,apng,gif,webp,avif',
                 'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
+                'documents' => 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv',
                 'files' => $filetypes,
             );
 
