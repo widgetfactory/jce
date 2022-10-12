@@ -212,12 +212,20 @@
                                 // is a body or text selection
                                 if (isRootNode(ed, node) || isTextSelection) {
 
-                                    if (!data.language) {
-                                        ed.formatter.remove('langcode');
-                                    } else {
-                                        ed.formatter.apply('langcode', { value: data.language });
-                                    }
+                                    var blocks = selection.getSelectedBlocks();
 
+                                    if (blocks.length > 1) {
+                                        tinymce.each(blocks, function (elm) {
+                                            ed.dom.setAttrib(elm, 'lang', data.language);
+                                        });
+                                    } else {                                                                                
+                                        if (!data.language) {
+                                            ed.formatter.remove('langcode');
+                                        } else {
+                                            ed.formatter.apply('langcode', { value: data.language });
+                                        }
+                                    }
+      
                                     // element selection
                                 } else {
                                     ed.dom.setAttrib(node, 'lang', data.language);
