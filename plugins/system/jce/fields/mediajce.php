@@ -124,10 +124,43 @@ class JFormFieldMediaJce extends MediaField
                 });
             }
 
+            $mediaMap = array('images', 'audio', 'video', 'documents', 'media', 'files');
+
+            // find mediatype value if passed in values is an extension list, eg: pdf,docx
+            if (!in_array($this->mediatype, $mediaMap)) {
+                $accept = explode(',', $this->mediatype);
+
+                $mediatypes = array();
+
+                array_walk($allowable, function (&$item, $key) use ($accept, $mediaMap, &$mediatypes) {
+                    $items  = explode(',', $item);
+                    $values = array_intersect($items, $accept);
+
+                    if (!empty($values)) {
+                        $mediatypes[] = $mediaMap[$key];
+                        $item = implode(',', $values);
+                    }
+                });
+
+                if (count($mediatypes) == 2 && $mediatypes[0] == 'audio' && $mediatypes[1] == 'video') {
+                    $this->mediatype = 'media';
+                } else if (count($mediatypes) > 1) {
+                    $this->mediatype = 'files';
+                }
+            }
+
             switch ($this->mediatype) {
                 case 'images':
                     $mediaType = [0];
                     $mediaData['imagesAllowedExt'] = $allowable[0];
+                    break;
+                case 'audio':
+                    $mediaType = [1];
+                    $mediaData['audiosAllowedExt'] = $allowable[1];
+                    break;
+                case 'video':
+                    $mediaType = [2];
+                    $mediaData['videosAllowedExt'] = $allowable[2];
                     break;
                 case 'media':
                     $mediaType = [1, 2];

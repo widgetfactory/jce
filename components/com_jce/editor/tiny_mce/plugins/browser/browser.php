@@ -62,10 +62,20 @@ class WFBrowserPlugin extends WFMediaManager
                 $map['images'] .= ',svg';
             }
 
+            $accept = explode(',', $filetypes);
+
             if (array_key_exists($mediatype, $map)) {
+                // process the map to filter permitted extensions
+                array_walk($map, function (&$item, $key) use ($accept) {
+                    $items = explode(',', $item);
+
+                    $values = array_intersect($items, $accept);
+                    $item   = empty($values) ? '' : implode(',', $values);
+                });
+
                 $filetypes = $map[$mediatype];
             } else {
-                $filetypes = $mediatype;
+                $filetypes = implode(',', array_intersect(explode(',', $mediatype), $accept));
             }
 
             // set updated filetypes

@@ -26,6 +26,7 @@
 					type="combo"
 					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_LABEL"
 					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_DESC"
+					layout="joomla.form.field.list-fancy-select"
 				>
 				<option value="images">images</option>
 				<option value="media">media</option>
