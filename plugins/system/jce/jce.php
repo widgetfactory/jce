@@ -170,7 +170,7 @@ class PlgSystemJce extends JPlugin
 
             if ($type) {
                 // joomla media field and flexi-content converted media field
-                if (strtolower($type) === 'media' || strtolower($type) === 'fcmedia') {
+                if (strtolower($type) == 'media' || strtolower($type) == 'fcmedia') {
 
                     // media replacement disabled, skip...
                     if ((bool) $params->get('replace_media_manager', 1) === false) {
@@ -184,13 +184,13 @@ class PlgSystemJce extends JPlugin
                 }
 
                 // jce media field
-                if (strtolower($type) === 'mediajce') {
+                if (strtolower($type) == 'mediajce' || strtolower($type) == 'extendedmedia') {
                     $hasMedia = true;
                 }
             }
         }
 
-        // form has a converted media field
+        // form has a media field
         if ($hasMedia) {
             if ((bool) $params->get('replace_media_manager', 1)) {
                 $option     = $app->input->getCmd('option'); 

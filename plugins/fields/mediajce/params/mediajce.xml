@@ -9,6 +9,8 @@
 					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_DESC"
 				>
 				<option value="images">images</option>
+				<option value="media">media</option>
+				<option value="documents">documents</option>
 				<option value="files">files</option>
 				</field>
 				<field

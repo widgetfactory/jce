@@ -1,17 +1,19 @@
 <?php
 
 /**
- * @package     JCE
- *
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2017 Ryan Demmer All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     JCE - System Plugin
+ * @subpackage  Fields
+ * 
+ * @copyright  (C) 2017 Open Source Matters, Inc. <https://www.joomla.org>
+ * @copyright  (C) 2017 - 2022 Ryan Demmer. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Form\Field\MediaField;
 use Joomla\CMS\Helper\MediaHelper;
+use Joomla\Registry\Registry;
 
 /**
  * Provides a modal media selector field for the JCE File Browser
@@ -56,9 +58,7 @@ class JFormFieldMediaJce extends MediaField
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
             if (isset($this->types)) {
-                if (MediaHelper::isImage($this->value)) {
-                    $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
-                }
+                $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
             }
         }
 
@@ -102,8 +102,7 @@ class JFormFieldMediaJce extends MediaField
         }
 
         // Joomla 4
-        if (isset($this->types)) {
-
+        if (isset($this->types)) {            
             $mediaData = array(
                 'imagesAllowedExt'    => '',
                 'audiosAllowedExt'    => '',
@@ -149,6 +148,8 @@ class JFormFieldMediaJce extends MediaField
                 }
             }
 
+            $mediaType = [0, 1, 2, 3];
+
             switch ($this->mediatype) {
                 case 'images':
                     $mediaType = [0];
@@ -190,5 +191,41 @@ class JFormFieldMediaJce extends MediaField
         }
 
         return array_merge($data, $extraData);
+    }
+
+    /**
+     * Method to post-process a field value.
+     * Remove Joomla 4.2 Media Field parameters
+     *
+     * @param   mixed     $value  The optional value to use as the default for the field.
+     * @param   string    $group  The optional dot-separated form group path on which to find the field.
+     * @param   Registry  $input  An optional Registry object with the entire data set to filter
+     *                            against the entire form.
+     *
+     * @return  mixed   The processed value.
+     *
+     * @since   2.9.31
+     */
+    public function postProcess($value, $group = null, Registry $input = null)
+    {        
+        $value = MediaHelper::getCleanMediaFieldValue($value);
+
+        return $value;
+    }
+
+    /**
+     * Allow to override renderer include paths in child fields
+     *
+     * @return  array
+     *
+     * @since   3.5
+     */
+    protected function getLayoutPaths()
+    {
+        if (isset($this->types)) {
+            return array(JPATH_PLUGINS . '/system/jce/layouts', JPATH_SITE . '/layouts');
+        }
+        
+        return parent::getLayoutPaths();
     }
 }
