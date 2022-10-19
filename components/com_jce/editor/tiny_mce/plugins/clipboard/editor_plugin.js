@@ -126,7 +126,7 @@
       editor.onCopy.add(copy);
   };
 
-  var DomParser = tinymce.html.DomParser, Schema = tinymce.html.Schema;
+  var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema;
 
   function filter(content, items) {
     tinymce.each(items, function (v) {
@@ -148,8 +148,8 @@
    * @return {String} String of text with line feeds.
    */
   function innerText(html) {
-    var schema = new Schema(),
-      domParser = new DomParser({}, schema),
+    var schema = new Schema$1(),
+      domParser = new DomParser$2({}, schema),
       text = '';
     var shortEndedElements = schema.getShortEndedElements();
     var ignoreElements = tinymce.makeMap('script noscript style textarea video audio iframe object', ' ');
@@ -467,10 +467,10 @@
     return value.toLowerCase();
   }
 
-  var each = tinymce.each,
-      Schema$1 = tinymce.html.Schema,
+  var each$2 = tinymce.each,
+      Schema = tinymce.html.Schema,
       DomParser$1 = tinymce.html.DomParser,
-      Serializer = tinymce.html.Serializer,
+      Serializer$1 = tinymce.html.Serializer,
       Node = tinymce.html.Node;
 
   // Open Office
@@ -491,9 +491,9 @@
       var classes = [],
           rules = parseCssToRules(content);
 
-      each(rules, function (r) {
+      each$2(rules, function (r) {
           if (r.selectorText) {
-              each(r.selectorText.split(','), function (v) {
+              each$2(r.selectorText.split(','), function (v) {
                   v = v.replace(/^\s*|\s*$|^\s\./g, "");
 
                   // Is internal or it doesn't contain a class
@@ -528,7 +528,7 @@
           return true; // Mark the pasted contents as word specific content
       }
 
-      // Word
+      // Word / Google Docs
       return (
           (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
           (/class="OutlineElement/).test(content) ||
@@ -565,7 +565,7 @@
 
       text = text.replace(/^[\u00a0 ]+/, '');
 
-      each(patterns, function (pattern, type) {
+      each$2(patterns, function (pattern, type) {
           if (pattern.test(text)) {
               found = type;
               return false;
@@ -618,7 +618,7 @@
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
           var styleProps$1 = tinymce.explode(keepStyles);
 
-          each(styleProps$1, function (style, i) {
+          each$2(styleProps$1, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
                   styleProps$1 = styleProps$1.concat(borderStyles);
@@ -631,7 +631,7 @@
       if (removeStyles && tinymce.is(removeStyles, 'string')) {
           var removeProps = tinymce.explode(removeStyles);
 
-          each(removeProps, function (style, i) {
+          each$2(removeProps, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
                   removeProps = removeProps.concat(borderStyles);
@@ -645,10 +645,10 @@
           });
       }
 
-      each(styleProps$1, function (style) {
+      each$2(styleProps$1, function (style) {
           // add all border styles if "border" is set
           if (style === "border") {
-              each(borderStyles, function (name) {
+              each$2(borderStyles, function (name) {
                   validStyles[name] = {};
               });
 
@@ -660,7 +660,10 @@
 
       // remove valid styles if we are removing all styles
       if (editor.getParam('clipboard_paste_remove_styles', 1)) {
-          validStyles = {};
+          validStyles = {
+              'font-weight' : {},
+              'font-style'  : {}
+          };
       }
 
       /**
@@ -854,7 +857,7 @@
           var outputStyles = {},
               matches, styles = editor.dom.parseStyle(styleValue);
 
-          each(styles, function (value, name) {
+          each$2(styles, function (value, name) {
               // Convert various MS styles to W3C styles
               switch (name) {
                   case 'mso-list':
@@ -954,15 +957,15 @@
           });
 
           // Convert bold style to "b" element
-          if (/(bold)/i.test(outputStyles["font-weight"])) {
+          if (/(bold|700|800|900)/i.test(outputStyles["font-weight"])) {
               delete outputStyles["font-weight"];
-              node.wrap(new Node("b", 1));
+              node.wrap(new Node("strong", 1));
           }
 
           // Convert italic style to "i" element
           if (/(italic)/i.test(outputStyles["font-style"])) {
               delete outputStyles["font-style"];
-              node.wrap(new Node("i", 1));
+              node.wrap(new Node("em", 1));
           }
 
           // Serialize the styles and see if there is something left to keep
@@ -1040,14 +1043,14 @@
       }
 
       // Setup strict schema
-      var schema = new Schema$1({
+      var schema = new Schema({
           valid_elements: validElements,
           valid_children: '-li[p]'
       });
 
       // Add style/class attribute to all element rules since the user might have removed them from
       // paste_word_valid_elements config option and we need to check them for properties
-      each(schema.elements, function (rule) {
+      each$2(schema.elements, function (rule) {
           /*eslint dot-notation:0*/
           if (!rule.attributes["class"]) {
               rule.attributes["class"] = {};
@@ -1242,7 +1245,7 @@
       }
 
       // Serialize DOM back to HTML
-      content = new Serializer({
+      content = new Serializer$1({
           validate: settings.validate
       }, schema).serialize(rootNode);
 
@@ -1528,7 +1531,7 @@
           }
 
           if (container.nodeType == 1) {
-            top = dom.getPos(container,  body).y;
+            top = dom.getPos(container, body).y;
           }
         }
       }
@@ -1684,10 +1687,10 @@
    * other free or open source software licenses.
    */
 
-  var each$2 = tinymce.each,
+  var each = tinymce.each,
       VK = tinymce.VK,
-      DomParser$2 = tinymce.html.DomParser,
-      Serializer$1 = tinymce.html.Serializer,
+      DomParser = tinymce.html.DomParser,
+      Serializer = tinymce.html.Serializer,
       DOM = tinymce.DOM,
       Dispatcher = tinymce.util.Dispatcher,
       BlobCache = tinymce.file.BlobCache;
@@ -1788,20 +1791,20 @@
       }
 
       // Remove Apple style spans
-      each$2(dom.select('span.Apple-style-span', o.node), function (n) {
+      each(dom.select('span.Apple-style-span', o.node), function (n) {
           dom.remove(n, 1);
       });
 
       // Remove all classes
       if (ed.getParam('clipboard_paste_strip_class_attributes', 2) == 1) {
           // Remove class attribute
-          each$2(dom.select('*[class]', o.node), function (el) {
+          each(dom.select('*[class]', o.node), function (el) {
               el.removeAttribute('class');
           });
       }
 
       // Convert width and height attributes to styles
-      each$2(dom.select('table, td, th', o.node), function (n) {
+      each(dom.select('table, td, th', o.node), function (n) {
           var width = dom.getAttrib(n, 'width');
 
           if (width) {
@@ -1820,7 +1823,7 @@
       // Remove all styles
       if (ed.getParam('clipboard_paste_remove_styles', 1)) {
           // Remove style attribute
-          each$2(dom.select('*[style]', o.node), function (el) {
+          each(dom.select('*[style]', o.node), function (el) {
               el.removeAttribute('style');
               el.removeAttribute('data-mce-style');
           });
@@ -1834,10 +1837,10 @@
           var borderColors = ['border-top-color', 'border-right-color', 'border-bottom-color', 'border-left-color'];
           var positions = ['top', 'right', 'bottom', 'left'];
 
-          each$2(dom.select('table[style], td[style], th[style]', o.node), function (n) {
+          each(dom.select('table[style], td[style], th[style]', o.node), function (n) {
               var styles = {};
 
-              each$2(borderStyles, function (name) {
+              each(borderStyles, function (name) {
                   // process each side, eg: border-left-width
                   if (/-(top|right|bottom|left)-/.test(name)) {
                       // get style
@@ -1846,7 +1849,7 @@
                       // replace default values with black
                       if (name.indexOf('color') !== -1) {
                           if (value === 'currentcolor' || value === 'windowtext') {
-                              each$2(borderColors, function (str) {
+                              each(borderColors, function (str) {
                                   if (str === name) {
                                       return true;
                                   }
@@ -1884,7 +1887,7 @@
               });
 
               // convert padding and margin to pixels
-              each$2(positions, function (pos) {
+              each(positions, function (pos) {
                   var padding = dom.getStyle(n, 'padding-' + pos);
                   var margin = dom.getStyle(n, 'margin-' + pos);
 
@@ -1897,7 +1900,7 @@
                   }
               });
 
-              each$2(styles, function (value, name) {
+              each(styles, function (value, name) {
 
                   // remove styles with no width value
                   if (name.indexOf('-width') !== -1 && value === "") {
@@ -1914,7 +1917,7 @@
                   }
               });
 
-              each$2(backgroundStyles, function (def, name) {
+              each(backgroundStyles, function (def, name) {
                   var value = dom.getStyle(n, name);
 
                   if (value === def) {
@@ -1934,7 +1937,7 @@
           });
 
           // update indent conversion
-          each$2(dom.select('[data-mce-indent]', o.node), function (el) {
+          each(dom.select('[data-mce-indent]', o.node), function (el) {
               if (el.nodeName === "p") {
                   var value = dom.getAttrib(el, 'data-mce-indent');
                   var style = ed.settings.indent_use_margin ? 'margin-left' : 'padding-left';
@@ -1945,7 +1948,7 @@
               dom.setAttrib(el, 'data-mce-indent', '');
           });
 
-          each$2(dom.select('[data-mce-word-list]', o.node), function (el) {
+          each(dom.select('[data-mce-word-list]', o.node), function (el) {
               el.removeAttribute('data-mce-word-list');
           });
       }
@@ -1961,7 +1964,7 @@
       }
 
       // Process images - remove local
-      each$2(dom.select('img', o.node), function (el) {
+      each(dom.select('img', o.node), function (el) {
           var src = dom.getAttrib(el, 'src');
 
           // remove or processs for upload img element if blank, local file url or base64 encoded
@@ -1984,8 +1987,8 @@
 
       // remove font and underline tags in IE
       if (isIE) {
-          each$2(dom.select('a', o.node), function (el) {
-              each$2(dom.select('font,u'), function (n) {
+          each(dom.select('a', o.node), function (el) {
+              each(dom.select('font,u'), function (n) {
                   dom.remove(n, 1);
               });
           });
@@ -2010,7 +2013,7 @@
       } else {
           ed.dom.remove(dom.select('span:empty', o.node));
 
-          each$2(dom.select('span', o.node), function (n) {
+          each(dom.select('span', o.node), function (n) {
               // remove span without children eg: <span></span>
               if (!n.childNodes || n.childNodes.length === 0) {
                   dom.remove(n);
@@ -2026,7 +2029,7 @@
       if (ed.getParam('clipboard_paste_remove_empty_paragraphs', true)) {
           dom.remove(dom.select('p:empty', o.node));
 
-          each$2(dom.select('p', o.node), function (n) {
+          each(dom.select('p', o.node), function (n) {
               var h = n.innerHTML;
 
               // remove paragraph without children eg: <p></p>
@@ -2071,7 +2074,7 @@
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
           var styleProps$1 = tinymce.explode(keepStyles);
 
-          each$2(styleProps$1, function (style, i) {
+          each(styleProps$1, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
                   styleProps$1 = styleProps$1.concat(borderStyles);
@@ -2084,7 +2087,7 @@
       if (removeStyles && tinymce.is(removeStyles, 'string')) {
           var removeProps = tinymce.explode(removeStyles);
 
-          each$2(removeProps, function (style, i) {
+          each(removeProps, function (style, i) {
               if (style === "border") {
                   // add expanded border styles
                   removeProps = removeProps.concat(borderStyles);
@@ -2099,7 +2102,7 @@
       }
 
       // Retains some style properties
-      each$2(dom.select('*[style]', node), function (n) {
+      each(dom.select('*[style]', node), function (n) {
           var ns = {},
               x = 0;
 
@@ -2107,7 +2110,7 @@
           var styles = dom.parseStyle(n.style.cssText);
 
           // check style against styleProps array
-          each$2(styles, function (v, k) {
+          each(styles, function (v, k) {
               if (tinymce.inArray(styleProps$1, k) != -1) {
                   ns[k] = v;
                   x++;
@@ -2137,7 +2140,7 @@
       });
 
       // convert some attributes
-      each$2(dom.select('*[align]', node), function (el) {
+      each(dom.select('*[align]', node), function (el) {
           var v = dom.getAttrib(el, 'align');
 
           if (v === "left" || v === "right" || v === "center") {
@@ -2418,7 +2421,7 @@
           }
 
           function sanitizePastedHTML(html) {
-              var parser = new DomParser$2({ allow_event_attributes: !!ed.settings.clipboard_paste_allow_event_attributes }, ed.schema);
+              var parser = new DomParser({ allow_event_attributes: !!ed.settings.clipboard_paste_allow_event_attributes }, ed.schema);
 
               // Strip elements
               parser.addNodeFilter('meta,svg,script,noscript', function (nodes) {
@@ -2455,7 +2458,7 @@
 
               var fragment = parser.parse(html, { forced_root_block: false, isRootContent: true });
 
-              return new Serializer$1({ validate: ed.settings.validate }, ed.schema).serialize(fragment);
+              return new Serializer({ validate: ed.settings.validate }, ed.schema).serialize(fragment);
           }
 
           function pasteHtml(content, internal) {
@@ -2505,7 +2508,7 @@
                   if (ed.getParam('clipboard_paste_filter')) {
                       var re, rules = ed.getParam('clipboard_paste_filter').split(';');
 
-                      each$2(rules, function (s) {
+                      each(rules, function (s) {
                           // if it is already in Regular Expression format...
                           if (/^\/.*\/(g|i|m)*$/.test(s)) {
                               re = (new Function('return ' + s))();
@@ -2956,7 +2959,7 @@
           }
 
           // Add commands
-          each$2(['mcePasteText', 'mcePaste'], function (cmd) {
+          each(['mcePasteText', 'mcePaste'], function (cmd) {
               ed.addCommand(cmd, function () {
                   var doc = ed.getDoc(),
                       failed;
@@ -3043,4 +3046,4 @@
   // Register plugin
   tinymce.PluginManager.add('clipboard', tinymce.plugins.ClipboardPlugin);
 
-}());
+})();

@@ -61,7 +61,7 @@ function isWordContent(editor, content) {
         return true; // Mark the pasted contents as word specific content
     }
 
-    // Word
+    // Word / Google Docs
     return (
         (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
         (/class="OutlineElement/).test(content) ||
@@ -193,7 +193,10 @@ function WordFilter(editor, content) {
 
     // remove valid styles if we are removing all styles
     if (editor.getParam('clipboard_paste_remove_styles', 1)) {
-        validStyles = {};
+        validStyles = {
+            'font-weight' : {},
+            'font-style'  : {}
+        };
     }
 
     /**
@@ -487,15 +490,15 @@ function WordFilter(editor, content) {
         });
 
         // Convert bold style to "b" element
-        if (/(bold)/i.test(outputStyles["font-weight"])) {
+        if (/(bold|700|800|900)/i.test(outputStyles["font-weight"])) {
             delete outputStyles["font-weight"];
-            node.wrap(new Node("b", 1));
+            node.wrap(new Node("strong", 1));
         }
 
         // Convert italic style to "i" element
         if (/(italic)/i.test(outputStyles["font-style"])) {
             delete outputStyles["font-style"];
-            node.wrap(new Node("i", 1));
+            node.wrap(new Node("em", 1));
         }
 
         // Serialize the styles and see if there is something left to keep
