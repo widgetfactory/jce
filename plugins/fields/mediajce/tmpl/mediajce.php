@@ -62,15 +62,16 @@ $extension = File::getExt($data->media_src);
 // lowercase
 $extension = strtolower($extension);
 
-// default tag is an anchor
-$tag = 'link';
-$element = '<a href="%s"%s>%s</a>';
-
 array_walk($allowable, function ($values, $key) use ($extension, &$tag) {
     if (in_array($extension, explode(',', $values))) {
         $tag = $key;
     }
 });
+
+// reset tag type
+if ($data->media_type == 'link' && $tag != 'img') {
+    $tag = 'link';
+}
 
 $attribs = array();
 
@@ -85,6 +86,10 @@ if ($data->media_text) {
 }
 
 switch ($tag) {
+    case 'link':
+    default:
+        $element = '<a href="%s"%s>%s</a>';
+        break;
     case 'img':
         $element = '<img src="%s"%s alt="%s" />';
 
