@@ -377,6 +377,10 @@
         }
     }
 
+    function isImage(value) {   
+        return value && /\.(jpg|jpeg|png|gif|svg|apng|webp)$/.test(value);
+    }
+
     $(document).ready(function ($) {
         var options = Joomla.getOptions('plg_system_jce', {});
 
@@ -430,10 +434,11 @@
 
             $('.wf-media-input', elm).on('change', function () {
                 var path = Joomla.getOptions('system.paths', {}).root || '';
-                var src = this.value;
 
-                if (src) {
-                    src = path + '/' + src;
+                var src = '';
+
+                if (isImage(this.value)) {
+                    src = path + '/' + this.value;
                 }
 
                 $('.field-media-preview img', elm).attr('src', src);
@@ -461,9 +466,16 @@
             if (field.inputElement) {
                 // clean value before processing
                 cleanInputValue(field.inputElement);
+
+                // prevent validation and update of field value
+                field.inputElement.addEventListener('change', function (e) {
+                    e.stopImmediatePropagation();
+                    field.markValid();
+                    field.updatePreview();
+                }, true);
                 
                 // cancel all change handlers on the input event
-                $(field.inputElement).on('change', function () {
+                /*$(field.inputElement).on('change', function () {
                     // eslint-disable-next-line consistent-this
                     var el = this, value = this.value;
 
@@ -473,7 +485,7 @@
                             cleanInputValue(el);
                         }
                     }, 100); 
-                });
+                });*/
             }
 
             createElementMedia(this);
