@@ -31,7 +31,7 @@ class PlgFieldsMediaJce extends \Joomla\Component\Fields\Administrator\Plugin\Fi
 	 *
 	 * @return  DOMElement
 	 *
-	 * @since   4.0.0
+	 * @since   3.7.0
 	 */
 	public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form)
 	{
@@ -42,10 +42,65 @@ class PlgFieldsMediaJce extends \Joomla\Component\Fields\Administrator\Plugin\Fi
 			return $fieldNode;
 		}
 
-		if ($this->params->get('extendedmedia', 1)) {
+		$fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
+
+		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
 			$fieldNode->setAttribute('type', 'extendedmedia');
 		}
 
 		return $fieldNode;
+	}
+
+	/**
+	 * Before prepares the field value.
+	 *
+	 * @param   string     $context  The context.
+	 * @param   \stdclass  $item     The item.
+	 * @param   \stdclass  $field    The field.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.7.0
+	 */
+	public function onCustomFieldsBeforePrepareField($context, $item, $field)
+	{
+		// Check if the field should be processed by us
+		if (!$this->isTypeSupported($field->type))
+		{
+			return;
+		}
+
+		// Check if the field value is an old (string) value
+		$field->value = $this->checkValue($field->value);
+
+		$fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
+
+		// if extendedmedia is disabled, use restricted media support
+		if ((int) $fieldParams->get('extendedmedia', 0) == 0) {
+			$field->value['media_supported'] = array('img', 'a');
+		}
+	}
+
+	/**
+	 * Before prepares the field value.
+	 *
+	 * @param   string  $value  The value to check.
+	 *
+	 * @return  array  The checked value
+	 *
+	 * @since   4.0.0
+	 */
+	private function checkValue($value)
+	{
+		json_decode($value);
+
+		if (json_last_error() === JSON_ERROR_NONE)
+		{
+			return (array) json_decode($value, true);
+		}
+
+		return array('media_src' => $value, 'media_text' => '');
 	}
 }
