@@ -17,6 +17,8 @@ namespace Joomla\CMS\Form\Field;
 
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\Registry\Registry;
 
 /**
  * Extended the JCE Media Field with additional options
@@ -126,5 +128,36 @@ class ExtendedMediaField extends FormField
         $html = $renderer->render($data);
 
         return $html;
+    }
+
+    /**
+     * Method to post-process a field value.
+     *
+     * @param   mixed     $value  The optional value to use as the default for the field.
+     * @param   string    $group  The optional dot-separated form group path on which to find the field.
+     * @param   Registry  $input  An optional Registry object with the entire data set to filter
+     *                            against the entire form.
+     *
+     * @return  mixed   The processed value.
+     *
+     * @since   2.9.31
+     */
+    public function postProcess($value, $group = null, Registry $input = null)
+    {        
+        $media = array('img', 'video', 'audio', 'iframe', 'a');
+        
+        $value->media_supported = array_filter($media, function ($tag) {
+			$html = '<' . $tag . '></' . $tag . '>';
+            
+            if ($tag == 'img') {
+				$html = '<' . $tag . '/>';
+			}
+
+            $html = ComponentHelper::filterText($html);
+
+			return !empty($html);
+ 		});
+
+        return $value;
     }
 }
