@@ -14,18 +14,10 @@ use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Helper\MediaHelper;
-use Joomla\CMS\Filter\InputFilter;
 
-if ($field->value == '') {
-    return;
-}
-
-$data = json_decode($field->value, true);
-
-if (!$data) {
-    $data = array(
-        'media_src' => $field->value
-    );
+if (empty($field->value) || empty($field->value['media_src']))
+{
+	return;
 }
 
 $data = array_merge(array(
@@ -34,8 +26,9 @@ $data = array_merge(array(
     'media_type'        => (string) $fieldParams->get('mediatype', 'embed'),
     'media_target'      => (string) $fieldParams->get('media_target', ''),
     'media_class'       => (string) $fieldParams->get('media_class', ''),
-    'media_caption'     => ''
-), $data);
+    'media_caption'     => '',
+    'media_supported'   => array('img', 'video', 'audio', 'iframe', 'a')
+), $field->value);
 
 // convert to object
 $data = (object) $data;
@@ -62,21 +55,28 @@ $extension = File::getExt($data->media_src);
 // lowercase
 $extension = strtolower($extension);
 
+// get tag from extension
 array_walk($allowable, function ($values, $key) use ($extension, &$tag) {
     if (in_array($extension, explode(',', $values))) {
         $tag = $key;
     }
 });
 
+// reset media_type as link
+if (false == in_array($tag, $data->media_supported)) {
+    $data->media_type = 'link';
+}
+
 // reset tag type
-if ($data->media_type == 'link' && $tag != 'img') {
-    $tag = 'link';
+if ($data->media_type == 'link') {
+    $tag = 'a';
 }
 
 $attribs = array();
 
 if ($data->media_class) {
-    $attribs['class'] = htmlentities($data->media_class, ENT_COMPAT, 'UTF-8', true);
+    $data->media_class = preg_replace('/[^A-Z0-9_- ]/i', '', $data->media_class);
+    $attribs['class'] = trim($data->media_class);
 }
 
 $text = '';
@@ -86,7 +86,7 @@ if ($data->media_text) {
 }
 
 switch ($tag) {
-    case 'link':
+    case 'a':
     default:
         $element = '<a href="%s"%s>%s</a>';
         break;
@@ -110,8 +110,8 @@ switch ($tag) {
         $element = '<video src="%s"%s></video>';
         $attribs['controls'] = 'controls';
 
-        $attribs['width']    = $data->media_width || '';
-        $attribs['height']     = $data->media_height || '';
+        $attribs['width']    = isset($data->media_width) ? $data->media_width : '';
+        $attribs['height']   = isset($data->media_height) ? $data->media_height : '';
 
         if ($text) {
             $attribs['title'] = $text;
@@ -134,7 +134,15 @@ switch ($tag) {
 }
 
 if ($data->media_type == 'embed' && $data->media_caption) {
-    $element = '<figure>' . $element . '<figcaption>' . htmlentities($data->media_caption, ENT_COMPAT, 'UTF-8', true) . '</figcaption></figure>';
+    $fig_attribs = '';
+    $caption_class = (string) $fieldParams->get('media_caption_class', '');
+
+    if ($caption_class) {
+        $caption_class = preg_replace('/[^A-Z0-9_- ]/i', '', $caption_class);
+        $fig_attribs = ' class="' . $caption_class . '"';
+    }
+
+    $element = '<figure' . $fig_attribs . '>' . $element . '<figcaption>' . htmlentities($data->media_caption, ENT_COMPAT, 'UTF-8', true) . '</figcaption></figure>';
 }
 
 $buffer = '';
@@ -157,14 +165,14 @@ if ($path) {
     // check path is valid
     if (is_file($fullpath)) {
         // set text as basename if not an image
-        if (!$text && $data->media_type == "files") {
+        if (!$text && $data->media_type == "link") {
             $text = basename($path);
 
-            if ($target) {
-                if ($target == 'download') {
+            if ($data->media_target) {
+                if ($data->media_target == 'download') {
                     $attribs['download'] = $path;
                 } else {
-                    $attribs['target'] = $target;
+                    $attribs['target'] = $data->media_target;
                 }
             }
         }
