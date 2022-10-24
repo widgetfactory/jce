@@ -51,16 +51,12 @@ class JFormFieldMediaJce extends MediaField
      * @see     JFormField::setup()
      */
     public function setup(SimpleXMLElement $element, $value, $group = null)
-    {
+    {        
         // decode value if it is a string
         if (is_string($value)) {
             $json = json_decode($value, true);
-
-            if (!$json) {
-                if (!is_file(JPATH_ROOT . '/' . $value)) {
-                    $value = '';
-                }
-            } else {
+            
+            if ($json) {
                 $value = isset($json['media_src']) ? $json['media_src'] : '';
             }
         } elseif (is_array($value)) {
