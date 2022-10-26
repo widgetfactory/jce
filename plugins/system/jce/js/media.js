@@ -132,7 +132,7 @@
             if (inst.options) {
                 url = inst.options.url || '';
             } else {
-                url = inst.url || $(inst).attr('url') || $(inst).data('url') || '';
+                url = inst.getAttribute('data-url') || inst.getAttribute('url') || '';
             }
         }
 
@@ -201,12 +201,11 @@
                     return false;
                 }
 
+                // rewrite task
+                params.task = 'plugin.rpc';
+
                 // delete some unused stuff
                 $.each(params, function (key, value) {
-                    if (key === 'task') {
-                        value = 'plugin.rpc';
-                    }
-
                     if ($.inArray(key, validParams) === -1) {
                         delete params[key];
                     }
@@ -294,9 +293,53 @@
                         uploadAndInsert(url, file);
                     }
                 }
+
+                $(this).removeClass('wf-media-upload-hover');
             });
         });
     };
+
+    function createElementMedia(elm, options) {                        
+        // custom media element only  
+        if (false == $(elm).is('joomla-field-media, .wf-media-wrapper-custom')) {
+            return;
+        }
+
+        // only for custom layouts, eg: templatemanager parameters
+        if (false == $(elm).hasClass('wf-media-wrapper-custom')) {
+            return;
+        }
+
+        var modalElement = $('.joomla-modal', elm).get(0);
+
+        if (modalElement && window.bootstrap && window.bootstrap.Modal) {
+            Joomla.initialiseModal(modalElement, {
+                isJoomla: true
+            });
+
+            $('.button-select', elm).on('click', function (e) {
+                e.preventDefault();
+                modalElement.open();
+            });
+        }
+
+        $('.button-clear', elm).on('click', function (e) {
+            e.preventDefault();
+            $('.wf-media-input', elm).val('').trigger('change');
+        });
+
+        $('.wf-media-input', elm).on('change', function () {
+            var path = Joomla.getOptions('system.paths', {}).root || '';
+
+            var src = '';
+
+            if (isImage(this.value)) {
+                src = path + '/' + this.value;
+            }
+
+            $('.field-media-preview img', elm).attr('src', src);
+        }).trigger('change');
+    }
 
     function updateMediaUrl(row, options, repeatable) {
         $(row).find('.field-media-wrapper').add(row).each(function () {
@@ -310,6 +353,11 @@
             if (!id) {
                 return true;
             }
+
+            // update field id with index
+            id = id.replace('rowX', 'row' + $(row).index());
+
+            createElementMedia(this, options);
 
             $(this).addClass('wf-media-wrapper');
 
@@ -350,7 +398,7 @@
             }
 
             // update custom element
-            if ($(this).is('joomla-field-media')) {
+            if ($(this).is('joomla-field-media, .wf-media-wrapper-custom')) {
                 $(this).attr('url', url);
 
                 // create new iframe
@@ -401,50 +449,6 @@
             updateMediaUrl(row, options, true);
         });
 
-        function createElementMedia(elm) {            
-            // custom media element only  
-            if (false == $(elm).is('joomla-field-media, .wf-media-wrapper-custom')) {
-                return;
-            }
-
-            updateMediaUrl(elm, options, true);
-
-            // only for custom layouts, eg: templatemanager parameters
-            if (false == $(elm).hasClass('wf-media-wrapper-custom')) {
-                return;
-            }
-
-            var modalElement = $('.joomla-modal', elm).get(0);
-
-            if (modalElement && window.bootstrap && window.bootstrap.Modal) {
-                Joomla.initialiseModal(modalElement, {
-                    isJoomla: true
-                });
-
-                $('.button-select', elm).on('click', function (e) {
-                    e.preventDefault();
-                    modalElement.open();
-                });
-            }
-
-            $('.button-clear', elm).on('click', function (e) {
-                e.preventDefault();
-                $('.wf-media-input', elm).val('').trigger('change');
-            });
-
-            $('.wf-media-input', elm).on('change', function () {
-                var path = Joomla.getOptions('system.paths', {}).root || '';
-
-                var src = '';
-
-                if (isImage(this.value)) {
-                    src = path + '/' + this.value;
-                }
-
-                $('.field-media-preview img', elm).attr('src', src);
-            }).trigger('change');
-        }
-
         $(window).on('load', function () {
             $('joomla-field-media.wf-media-wrapper').each(function () {
                 // eslint-disable-next-line consistent-this
@@ -470,7 +474,7 @@
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
                     e.stopImmediatePropagation();
-                    field.markValid();
+                    field.markValid && field.markValid();
                     field.updatePreview();
                 }, true);
                 
@@ -488,11 +492,11 @@
                 });*/
             }
 
-            createElementMedia(this);
+            updateMediaUrl(this, options, true);
         });
 
         $('.wf-media-wrapper-custom').each(function () {
-            createElementMedia(this);
+            updateMediaUrl(this, options, true);
         });
 
         // repeatable when created
@@ -504,8 +508,6 @@
             if (originalEvent && originalEvent.detail) {
                 row = originalEvent.detail.row || row;
             }
-
-            createElementMedia(row);
 
             if (canProcessField(row)) {
                 $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input wf-media-input-active');
