@@ -458,8 +458,10 @@
                 // clean value before processing
                 cleanInputValue(field.inputElement);
 
+                // copy markValid function or noop
                 var markValidFunction = field.markValid || function () {};
 
+                // override markValid and treat as a callback to clean the input value
                 field.markValid = function () {
                     cleanInputValue(this.inputElement);
                     markValidFunction.apply(this);
@@ -468,7 +470,9 @@
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
                     e.stopImmediatePropagation();
-                    field.markValid();
+                    // markValid and...
+                    markValidFunction.apply(this);
+                    // updatePreview
                     field.updatePreview();
                 }, true);
             }
