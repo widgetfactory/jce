@@ -462,7 +462,7 @@
 
                 field.markValid = function () {
                     cleanInputValue(this.inputElement);
-                    markValidFunction();
+                    markValidFunction.apply(this);
                 };
 
                 // prevent validation and update of field value
