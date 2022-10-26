@@ -492,7 +492,7 @@
                 });*/
             }
 
-            updateMediaUrl(this, options, true);
+            updateMediaUrl(this, options);
         });
 
         $('.wf-media-wrapper-custom').each(function () {
