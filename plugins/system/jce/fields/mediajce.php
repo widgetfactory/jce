@@ -234,7 +234,7 @@ class JFormFieldMediaJce extends MediaField
     protected function getLayoutPaths()
     {
         if (isset($this->types)) {
-            return array(JPATH_PLUGINS . '/system/jce/layouts', JPATH_SITE . '/layouts');
+            return array(JPATH_SITE . '/layouts', JPATH_PLUGINS . '/system/jce/layouts');
         }
         
         return parent::getLayoutPaths();
