@@ -157,6 +157,9 @@ class PlgSystemJce extends JPlugin
         $hasMedia = false;
         $fields = $form->getFieldset();
 
+        // should the Joomla Media field be converted?
+        $replace_media_manager = (bool) $params->get('replace_media_manager', 1);
+
         foreach ($fields as $field) {
             if (method_exists($field, 'getAttribute') === false) {
                 continue;
@@ -176,7 +179,7 @@ class PlgSystemJce extends JPlugin
                 if (strtolower($type) == 'media' || strtolower($type) == 'fcmedia') {
 
                     // media replacement disabled, skip...
-                    if ((bool) $params->get('replace_media_manager', 1) === false) {
+                    if ($replace_media_manager == false) {
                         continue;
                     }
 
@@ -199,7 +202,7 @@ class PlgSystemJce extends JPlugin
             $component  = JComponentHelper::getComponent($option);   
 
             JFactory::getDocument()->addScriptOptions('plg_system_jce', array(
-                'replace_media' => (bool) $params->get('replace_media_manager', 1), 
+                'replace_media' => $replace_media_manager, 
                 'context' => $component->id
             ), true);
 
