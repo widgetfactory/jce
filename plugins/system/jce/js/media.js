@@ -449,19 +449,6 @@
             updateMediaUrl(row, options, true);
         });
 
-        $(window).on('load', function () {
-            $('joomla-field-media.wf-media-wrapper').each(function () {
-                // eslint-disable-next-line consistent-this
-                var field = this;
-                
-                if (field.inputElement) {
-                    setTimeout(function () {
-                        cleanInputValue(field.inputElement);
-                    }, 100);   
-                }                        
-            });
-        });
-
         // joomla custom attribute and media field override
         $('joomla-field-media.wf-media-wrapper').each(function () {
             // eslint-disable-next-line consistent-this
@@ -470,6 +457,13 @@
             if (field.inputElement) {
                 // clean value before processing
                 cleanInputValue(field.inputElement);
+
+                var markValidFunction = field.markValid || function () {};
+
+                field.markValid = function () {
+                    cleanInputValue(this.inputElement);
+                    markValidFunction();
+                };
 
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
