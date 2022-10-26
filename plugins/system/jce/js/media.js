@@ -468,22 +468,9 @@
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
                     e.stopImmediatePropagation();
-                    field.markValid && field.markValid();
+                    field.markValid();
                     field.updatePreview();
                 }, true);
-                
-                // cancel all change handlers on the input event
-                /*$(field.inputElement).on('change', function () {
-                    // eslint-disable-next-line consistent-this
-                    var el = this, value = this.value;
-
-                    // keep validation but remove #joomlaImage hash
-                    setTimeout(function () {                        
-                        if (value != el.value) {
-                            cleanInputValue(el);
-                        }
-                    }, 100); 
-                });*/
             }
 
             updateMediaUrl(this, options);
