@@ -7,6 +7,9 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+
 /**
  * JCE.
  *
@@ -192,11 +195,13 @@ class PlgSystemJce extends JPlugin
 
         // form has a media field
         if ($hasMedia) {
-            if ((bool) $params->get('replace_media_manager', 1)) {
-                $option     = $app->input->getCmd('option'); 
-                $component  = JComponentHelper::getComponent($option);                
-                JFactory::getDocument()->addScriptOptions('plg_system_jce', array('replace_media' => true, 'context' => $component->id), true);
-            }
+            $option     = $app->input->getCmd('option'); 
+            $component  = JComponentHelper::getComponent($option);   
+
+            JFactory::getDocument()->addScriptOptions('plg_system_jce', array(
+                'replace_media' => (bool) $params->get('replace_media_manager', 1), 
+                'context' => $component->id
+            ), true);
 
             $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
 
