@@ -377,6 +377,9 @@
             // set mediatype default to "images"
             var mediatype = 'images';
 
+            // set plugin (may contain caller), defaults to browser
+            var plugin = params.plugin ? params.plugin : '';
+
             // process a parameter
             if (params.mediatype) {
                 mediatype = params.mediatype;
@@ -386,7 +389,7 @@
             }
 
             // create url
-            var url = getBasePath($inp) + 'index.php?option=com_jce&task=mediafield.display&fieldid=' + id + '&mediatype=' + mediatype;
+            var url = getBasePath($inp) + 'index.php?option=com_jce&task=mediafield.display&plugin=' + plugin + '&fieldid=' + id + '&mediatype=' + mediatype;
 
             if (options.context) {
                 url += '&context=' + options.context;

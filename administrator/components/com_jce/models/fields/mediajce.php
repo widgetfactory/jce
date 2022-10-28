@@ -79,6 +79,10 @@ class JFormFieldMediaJce extends MediaField
             'converted' => (int) $this->element['converted'] ? true : false
         );
 
+        if (isset($this->element['plugin'])) {
+            $config['plugin'] = (string) $this->element['plugin'];
+        }
+
         $options = WFBrowserHelper::getMediaFieldOptions($config);
 
         $this->link = $options['url'];

@@ -34,16 +34,12 @@ abstract class WfBrowserHelper
         return $options['url'];
     }
 
-    private static function getUrl()
+    public static function getMediaFieldOptions($options = array())
     {
         $app = JFactory::getApplication();
         $token = JFactory::getSession()->getFormToken();
 
-        return 'index.php?option=com_jce&task=plugin.display&plugin=browser&standalone=1&' . $token . '=1&client=' . $app->getClientId();
-    }
 
-    public static function getMediaFieldOptions($options = array())
-    {
         if (!isset($options['element'])) {
             $options['element'] = null;
         }
@@ -80,12 +76,25 @@ abstract class WfBrowserHelper
                 return $data;
             }
 
-            $data['url'] = self::getUrl();
+            $data['url'] = 'index.php?option=com_jce&task=plugin.display';
 
             // add default context
             if (!isset($options['context'])) {
                 $options['context'] = $wf->getContext();
             }
+
+            // append "caller" plugin
+            if (!empty($options['plugin'])) {
+                if (strpos($options['plugin'], 'browser') === false) {
+                    $options['plugin'] = 'browser.' . $options['plugin'];
+                }
+            } else {
+                $options['plugin'] = 'browser';
+            }
+
+            $options['standalone'] = 1;
+            $options[$token] = 1;
+            $options['client'] = $app->getClientId();
 
             foreach ($options as $key => $value) {
                 if ($value) {
