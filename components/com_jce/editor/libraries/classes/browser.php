@@ -274,37 +274,25 @@ class WFFileBrowser extends JObject
         return $this->getFileTypes('list', $list);
     }
 
+    /**
+     * Set filetypes and update upload properties
+     */
     public function setFileTypes($list = 'jpg,jpeg,png,gif')
     {
         if ($list && $list[0] === '=') {
             $list = substr($list, 1);
         }
 
-        $this->set('filetypes', $list);
-    }
+        // get existing upload values
+        $upload = $this->get('upload', array());
 
-    public function addFileTypes($filetypes)
-    {
-        $list = $this->get('filetypes');
+        // set updated filetypes
+        $upload['filetypes'] = $list;
 
-        if (strpos($list, '=') === false) {
-            // convert to array if needed
-            if (is_string($list)) {
-                $list = explode(',', $list);
-            }
-            // combine
-            $list = array_unique(array_merge($list, $filetypes));
-            // convert to string
-            $list = implode(',', $list);
-        } else {
-            $list = explode(';', $list);
-
-            foreach ($filetypes as $group => $extensions) {
-                $list[] = $group . '=' . $extensions;
-            }
-
-            $list = implode(';', $list);
-        }
+        // update filetypes
+        $this->setProperties(array(
+            'upload' => $upload
+        ));
 
         $this->set('filetypes', $list);
     }
