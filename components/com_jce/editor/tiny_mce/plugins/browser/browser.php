@@ -54,6 +54,7 @@ class WFBrowserPlugin extends WFMediaManager
                 'images' => 'jpg,jpeg,png,apng,gif,webp,avif',
                 'media' => 'avi,wmv,wm,asf,asx,wmx,wvx,mov,qt,mpg,mpeg,m4a,m4v,swf,dcr,rm,ra,ram,divx,mp4,ogv,ogg,webm,flv,f4v,mp3,ogg,wav,xap',
                 'documents' => 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv',
+                'html' => 'html,htm,txt,md',
                 'files' => $filetypes,
             );
 
@@ -70,7 +71,7 @@ class WFBrowserPlugin extends WFMediaManager
                     $items = explode(',', $item);
 
                     $values = array_intersect($items, $accept);
-                    $item   = empty($values) ? '' : implode(',', $values);
+                    $item = empty($values) ? '' : implode(',', $values);
                 });
 
                 $filetypes = $map[$mediatype];
@@ -79,19 +80,17 @@ class WFBrowserPlugin extends WFMediaManager
             }
 
             // set updated filetypes
-            $browser->setFileTypes($filetypes);
-
-            $properties = array();
-
-            // get existing upload values
-            $upload = $browser->get('upload', array());
-            $upload['filetypes'] = $filetypes;
-
-            // update upload filetypes
-            $properties['upload'] = $upload;
-
-            $browser->setProperties($properties);
+            $this->setFileTypes($filetypes);
         }
+    }
+
+    public function setFileTypes($filetypes = '')
+    {
+        // get file browser reference
+        $browser = $this->getFileBrowser();
+        
+        // set updated filetypes
+        $browser->setFileTypes($filetypes);
     }
 
     /**
