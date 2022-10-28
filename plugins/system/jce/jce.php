@@ -258,4 +258,8 @@ class PlgSystemJce extends CMSPlugin
             }
         }
     }
+
+    public function onWfPluginInit($instance)
+    {
+    }
 }
