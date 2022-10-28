@@ -11,12 +11,18 @@
 // Do not allow direct access
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Layout\LayoutHelper;
+
 /**
  * JCE WYSIWYG Editor Plugin.
  *
  * @since 1.5
  */
-class plgEditorJCE extends JPlugin
+class plgEditorJCE extends CMSPlugin
 {
     protected static $instances = array();
     
@@ -66,9 +72,12 @@ class plgEditorJCE extends JPlugin
      */
     public function onInit()
     {
-        $language = JFactory::getLanguage();
-
-        $document = JFactory::getDocument();
+        if (!ComponentHelper::isEnabled('com_jce')) {
+            return false;
+        }
+        
+        $language = Factory::getLanguage();
+        $document = Factory::getDocument();
 
         $language->load('plg_editors_jce', JPATH_ADMINISTRATOR);
         $language->load('com_jce', JPATH_ADMINISTRATOR);
@@ -169,8 +178,12 @@ class plgEditorJCE extends JPlugin
         // Render Editor markup
         $html = '<div class="editor wf-editor-container' . $classes . '">';
         $html .= '<div class="wf-editor-header"></div>';
-        $html .= JLayoutHelper::render('editor.textarea', $textarea, __DIR__ . '/layouts');
+        $html .= LayoutHelper::render('editor.textarea', $textarea, __DIR__ . '/layouts');
         $html .= '</div>';
+
+        if (!ComponentHelper::isEnabled('com_jce')) {
+            return $html;
+        }
 
         $editor = $this->getEditorInstance();
 
@@ -189,11 +202,11 @@ class plgEditorJCE extends JPlugin
                     'joomla_xtd_buttons' => $list,
                 );
 
-                JFactory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
+                Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
             }
 
             // render empty container for dynamic buttons
-            $html .= JLayoutHelper::render('joomla.editors.buttons', array());
+            $html .= LayoutHelper::render('joomla.editors.buttons', array());
         }
 
         return $html;
@@ -282,7 +295,7 @@ class plgEditorJCE extends JPlugin
                 }
             });
 
-            return JLayoutHelper::render('joomla.editors.buttons', $buttons);
+            return LayoutHelper::render('joomla.editors.buttons', $buttons);
         }
     }
 }

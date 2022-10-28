@@ -13,6 +13,7 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Form\Field\MediaField;
 use Joomla\CMS\Helper\MediaHelper;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\Registry\Registry;
 
 /**
@@ -83,6 +84,11 @@ class JFormFieldMediaJce extends MediaField
      */
     public function getLayoutData()
     {
+        // component must be installed and enabled
+        if (!ComponentHelper::isEnabled('com_jce')) {
+            return parent::getLayoutData();
+        }
+        
         require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
         $config = array(
