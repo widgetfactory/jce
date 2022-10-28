@@ -180,6 +180,8 @@ class WFEditorPlugin extends JObject
 
         // set standalone mode
         $document->set('standalone', $wf->input->getInt('standalone', 0));
+
+        JFactory::getApplication()->triggerEvent('onWfPluginInit', array($this));
     }
 
     public function execute()
@@ -253,6 +255,8 @@ class WFEditorPlugin extends JObject
         if (is_file(JPATH_SITE . '/media/jce/css/plugin.css')) {
             $document->addStyleSheet(array('media/jce/css/plugin.css'), 'joomla');
         }
+
+        JFactory::getApplication()->triggerEvent('onWfPluginDisplay', array($this));
     }
 
     /**
