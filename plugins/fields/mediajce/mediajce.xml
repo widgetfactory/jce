@@ -11,6 +11,8 @@
 	<description>PLG_FIELDS_MEDIAJCE_XML_DESCRIPTION</description>
 	<files folder="plugins/fields/mediajce">
 		<filename plugin="mediajce">mediajce.php</filename>
+		<folder>fields</folder>
+		<folder>layouts</folder>
 		<folder>params</folder>
 		<folder>tmpl</folder>
 	</files>

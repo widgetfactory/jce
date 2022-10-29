@@ -13,7 +13,6 @@
     <file plugin="jce">jce.php</file>
     <folder>css</folder>
     <folder>js</folder>
-    <folder>fields</folder>
     <folder>templates</folder>
   </files>
   <languages folder="administrator/language/en-GB">
