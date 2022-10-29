@@ -542,14 +542,18 @@ class pkg_jceInstallerScript
             $site . '/editor/tiny_mce/plugins/imgmanager_ext/img'
         );
 
-        // remove getid3
+        // remove fields folder
         $folders['2.9.7'] = array(
-            $site . '/editor/libraries/classes/vendor/getid3'
+            JPATH_PLUGINS . '/system/jce/fields'
         );
 
         // remove media folder
         $folders['2.9.17'] = array(
             $admin . '/media'
+        );
+
+        $folders['2.9.31'] = array(
+
         );
 
         // remove font manifest and window
