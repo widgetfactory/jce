@@ -261,5 +261,32 @@ class PlgSystemJce extends CMSPlugin
 
     public function onWfPluginInit($instance)
     {
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
+
+        // set mediatype values for Template Manager parameters
+        if ($app->input->getCmd('plugin') == 'browser.templatemanager') {
+
+            // only in "admin"
+            if ($app->getClientId() !== 1) {
+                return;
+            }
+            
+            // restrict to admin with component manage access
+            if (!$user->authorise('core.manage', 'com_jce')) {
+                return false;
+            }
+
+            // check for element and standalone should indicate mediafield
+            if ($app->input->getVar('element') && $app->input->getInt('standalone')) {
+                $mediatype = $app->input->getVar('mediatype');
+
+                if (!$mediatype) {
+                    return false;
+                }
+
+                $instance->setFileTypes($mediatype);
+            }
+        }
     }
 }
