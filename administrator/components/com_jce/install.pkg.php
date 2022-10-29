@@ -196,8 +196,8 @@ class pkg_jceInstallerScript
         $jversion = new JVersion();
 
         // joomla version check
-        if (version_compare($jversion->getShortVersion(), '3.9', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.9 or later - ' . $requirements);
+        if (version_compare($jversion->getShortVersion(), '3.10', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
         }
 
         // set current package version and variant
