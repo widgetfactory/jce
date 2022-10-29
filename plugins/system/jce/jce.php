@@ -143,7 +143,7 @@ class PlgSystemJce extends CMSPlugin
         $version = new Joomla\CMS\Version();
 
         // Joomla 3.10 or later...
-        if (!$version->isCompatible('3.10')) {
+        if (!$version->isCompatible('3.9')) {
             return true;
         }
 
