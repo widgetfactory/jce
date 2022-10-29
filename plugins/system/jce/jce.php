@@ -7,12 +7,12 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Plugin\PluginHelper;
 
 /**
  * JCE.
@@ -38,11 +38,11 @@ class PlgSystemJce extends CMSPlugin
         $plugin = $app->input->getCmd('plugin', '');
 
         $options = WFBrowserHelper::getMediaFieldOptions(array(
-            'element'   => $id,
+            'element' => $id,
             'converted' => true,
             'mediatype' => $mediatype,
-            'context'   => $context,
-            'plugin'    => $plugin
+            'context' => $context,
+            'plugin' => $plugin,
         ));
 
         if (empty($options['url'])) {
@@ -96,7 +96,7 @@ class PlgSystemJce extends CMSPlugin
         if (false == $this->isEditorEnabled()) {
             return false;
         }
-        
+
         if ($this->canRedirectMedia() && $this->isEditorEnabled()) {
             // redirect to file browser
             $this->redirectMedia();
@@ -142,8 +142,8 @@ class PlgSystemJce extends CMSPlugin
 
         $version = new Joomla\CMS\Version();
 
-        // Joomla 3.9 or later...
-        if (!$version->isCompatible('3.9')) {
+        // Joomla 3.10 or later...
+        if (!$version->isCompatible('3.10')) {
             return true;
         }
 
@@ -208,12 +208,12 @@ class PlgSystemJce extends CMSPlugin
 
         // form has a media field
         if ($hasMedia) {
-            $option     = $app->input->getCmd('option'); 
-            $component  = ComponentHelper::getComponent($option);   
+            $option = $app->input->getCmd('option');
+            $component = ComponentHelper::getComponent($option);
 
             Factory::getDocument()->addScriptOptions('plg_system_jce', array(
-                'replace_media' => $replace_media_manager, 
-                'context' => $component->id
+                'replace_media' => $replace_media_manager,
+                'context' => $component->id,
             ), true);
 
             $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
@@ -241,20 +241,20 @@ class PlgSystemJce extends CMSPlugin
             $dispatcher = JEventDispatcher::getInstance();
         }
 
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $name = basename($item, '.php');
 
             $className = 'WfTemplate' . ucfirst($name);
 
-            require_once($item);
+            require_once $item;
 
-			if (class_exists($className)) {
+            if (class_exists($className)) {
                 // Instantiate and register the event
-				$plugin = new $className($dispatcher);
+                $plugin = new $className($dispatcher);
 
-				if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
+                if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
                     $plugin->registerListeners();
-				}
+                }
             }
         }
     }
