@@ -10,17 +10,18 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 
-Form::addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
+require_once JPATH_PLUGINS . '/fields/media/media.php';
+
+Form::addFieldPath(__DIR__ . '/fields');
 
 /**
  * Fields MediaJce Plugin
  *
  * @since  2.6.27
  */
-class PlgFieldsMediaJce extends \Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin
+class PlgFieldsMediaJce extends PlgFieldsMedia
 {    
     /**
 	 * Transforms the field into a DOM XML element and appends it as a child on the given parent.
@@ -44,6 +45,9 @@ class PlgFieldsMediaJce extends \Joomla\Component\Fields\Administrator\Plugin\Fi
 
 		$fieldParams = clone $this->params;
         $fieldParams->merge($field->fieldparams);
+
+		// reset from parent
+		$fieldNode->setAttribute('type', 'mediajce');
 
 		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
 			$fieldNode->setAttribute('type', 'extendedmedia');
