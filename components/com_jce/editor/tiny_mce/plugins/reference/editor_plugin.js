@@ -70,7 +70,7 @@
                 }
 
                 ed.windowManager.open({
-                    title: ed.getLang('reference.title', 'Reference'),
+                    title: ed.getLang('reference.' + tag + '_title', 'Reference'),
                     items: [form],
                     size: 'mce-modal-landscape-small',
                     open: function () {
@@ -131,7 +131,7 @@
 
             // Register buttons
             ed.addButton('cite', {
-                title: 'reference.cite_desc',
+                title: 'reference.cite_title',
                 onclick: function () {
                     openDialog('cite');
                 }
@@ -140,7 +140,7 @@
             // acronym is deprecated in HTML5
             if (ed.settings.schema !== "html5-strict") {
                 ed.addButton('acronym', {
-                    title: 'reference.acronym_desc',
+                    title: 'reference.acronym_title',
                     onclick: function () {
                         openDialog('acronym');
                     }
@@ -148,21 +148,21 @@
             }
 
             ed.addButton('abbr', {
-                title: 'reference.abbr_desc',
+                title: 'reference.abbr_title',
                 onclick: function () {
                     openDialog('abbr');
                 }
             });
 
             ed.addButton('del', {
-                title: 'reference.del_desc',
+                title: 'reference.del_title',
                 onclick: function () {
                     openDialog('del');
                 }
             });
 
             ed.addButton('ins', {
-                title: 'reference.ins_desc',
+                title: 'reference.ins_title',
                 onclick: function () {
                     openDialog('ins');
                 }
