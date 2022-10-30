@@ -285,6 +285,14 @@ class PlgSystemJce extends CMSPlugin
                     return false;
                 }
 
+                $accept = $instance->getParam('templatemanager.extensions', '');
+
+                if ($accept) {
+                    $instance->setFileTypes($accept);
+                    $accept = $instance->getFileTypes();
+                    $mediatype = implode(',', array_intersect(explode(',', $mediatype), $accept));
+                }
+
                 $instance->setFileTypes($mediatype);
             }
         }
