@@ -216,7 +216,7 @@ class PlgSystemJce extends CMSPlugin
                 'context' => $component->id,
             ), true);
 
-            $form->addFieldPath(JPATH_PLUGINS . '/system/jce/fields');
+            $form->addFieldPath(JPATH_PLUGINS . '/fields/mediajce/fields');
 
             // Include jQuery
             HTMLHelper::_('jquery.framework');
