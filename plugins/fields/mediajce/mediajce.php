@@ -12,7 +12,8 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Form;
 
-require_once JPATH_PLUGINS . '/fields/media/media.php';
+// use legacy import to support J3.9
+JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
 
 Form::addFieldPath(__DIR__ . '/fields');
 
@@ -21,7 +22,7 @@ Form::addFieldPath(__DIR__ . '/fields');
  *
  * @since  2.6.27
  */
-class PlgFieldsMediaJce extends PlgFieldsMedia
+class PlgFieldsMediaJce extends FieldsPlugin
 {    
     /**
 	 * Transforms the field into a DOM XML element and appends it as a child on the given parent.
