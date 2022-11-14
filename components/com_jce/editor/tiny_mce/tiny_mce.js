@@ -32503,10 +32503,11 @@
         // Override justify commands
         'JustifyLeft,JustifyCenter,JustifyRight,JustifyFull': function (command) {
           var name = 'align' + command.substring(7);
-          var nodes = selection.isCollapsed() ? [dom.getParent(selection.getNode(), dom.isBlock)] : selection.getSelectedBlocks();
+          var node = selection.getNode(), nodes = selection.isCollapsed() ? [dom.getParent(node, dom.isBlock)] : selection.getSelectedBlocks();
 
-          if (selection.getNode().nodeName === 'FIGCAPTION') {
-            nodes = [selection.getNode()];
+          // special case for figcaption
+          if (node.nodeName == 'FIGCAPTION') {
+            nodes = [node];
           }
 
           var matches = tinymce.map(nodes, function (node) {
@@ -34812,7 +34813,7 @@
 
           alignleft: [
             {
-              selector: 'figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+              selector: 'figure,figcaption,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
               styles: {
                 textAlign: 'left'
               },
@@ -34876,7 +34877,7 @@
 
           alignright: [
             {
-              selector: 'figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
+              selector: 'figure,figcaption,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li',
               styles: {
                 textAlign: 'right'
               },
@@ -34902,7 +34903,7 @@
 
           alignfull: [
             {
-              selector: 'figure,p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li',
+              selector: 'figure,figcaption,p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li',
               styles: {
                 textAlign: 'justify'
               },
