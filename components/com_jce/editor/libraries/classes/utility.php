@@ -159,10 +159,15 @@ abstract class WFUtility
             return false;
         }
 
+        // permitted characters below 127, eg: () Although reserved characters (sub-delims https://www.rfc-editor.org/rfc/rfc3986#section-2), probably OK in file paths
+        $permitted = array(40, 41);
+
         if (preg_match('#([^\w\.\-\/\\\\\s ])#i', $string, $matches)) {
             foreach ($matches as $match) {
+                $ord = ord($match);
+                
                 // not a safe UTF-8 character
-                if (ord($match) < 127) {
+                if ($ord < 127 && !in_array($ord, $permitted)) {
                     return false;
                 }
             }
