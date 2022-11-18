@@ -1,4 +1,4 @@
-// out: ../css/editor.min.css, sourcemap: false, compress: true
+// out: ../css/editor.min.css, sourcemap: false, compress: false
 
 /**
  * @package   	JCE
@@ -161,35 +161,35 @@ section[role="tabpanel"] .wf-editor-container {
             clear: both;
         }
 
-        >li {
-            float: none;
-            margin-bottom: -1px;
+        >button {
+            appearance: none;
+            background: transparent none;
+            
+            padding: 0.75em 1.25em;
+            margin-right: 2px;
+            line-height: 1.5em;
+            border: 1px solid transparent;
+            border-radius: 2px 2px 0 0;
+            background-color: inherit;
+            display: block;
+            cursor: pointer;
 
-            >a {
-                padding: 0;
-                margin-right: 2px;
-                line-height: 18px;
-                border: 1px solid transparent;
-                border-radius: 4px 4px 0 0;
-                background-color: inherit;
-                display: block;
-
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.05);
-                }
-
-                button {
-                    padding: 0.75em 1em;
-                    margin-bottom: -1px;
-                }
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.05);
             }
 
-            &.active>a {
+            &.active {
                 color: #555;
                 background-color: #fff;
                 border: 1px solid #ddd;
                 border-bottom-color: transparent;
                 cursor: default;
+
+                margin-bottom: -1px;
+
+                &:hover {
+                    background-color: #fff;
+                }
             }
         }
     }
@@ -206,7 +206,7 @@ section[role="tabpanel"] .wf-editor-container {
         z-index: 10;
         border: 0 none;
         background: none;
-        -webkit-appearance: none;
+        appearance: none;
         line-height: 1;
 
         color: inherit;
@@ -226,84 +226,6 @@ section[role="tabpanel"] .wf-editor-container {
 
         &:hover>svg {
             fill: #888;
-        }
-    }
-
-    joomla-tab {
-        width: 100%;
-
-        ul {
-            justify-content: right;
-            width: 100%;
-        }
-
-        button {
-            appearance: none;
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            border: 0 none;
-            border-radius: 0;
-            background: transparent none;
-
-            line-height: 1.25em;
-
-            &.btn-link {
-                color: inherit;
-
-                &:hover,
-                &:focus,
-                &:active {
-                    text-decoration: none;
-                    border-radius: 0;
-                    border: 0 none;
-                }
-            }
-        }
-    }
-}
-
-/* Joomla 4 */
-.joomla4 {
-    joomla-tab {
-        div[role="tablist"] {
-            border-bottom: 1px solid #ddd;
-            background: none;
-            box-shadow: inherit;
-
-            ul {
-                margin: 0 0 1px 0;
-                border: 0 none;
-                background: none;
-                box-shadow: inherit;
-            }
-
-            .wf-editor-tabs {
-                >li {
-                    float: none;
-                    margin-bottom: 0;
-
-                    >a {
-                        padding: 0;
-                        margin-right: 0;
-                        line-height: inherit;
-                        border: 0 none;
-                        border-radius: inherit;
-                        display: block;
-
-                        &:hover {
-                            background-color: inherit;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    &.wf-editor-toggle-off {
-        joomla-tab {
-            div[role="tablist"] {
-                border: 0 none;
-            }
         }
     }
 }
@@ -377,6 +299,7 @@ section[role="tabpanel"] .wf-editor-container {
 
 .wf-editor-source textarea {
     border: 0 none;
+
     &:focus {
         border: 0 none;
     }
