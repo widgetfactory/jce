@@ -2213,9 +2213,7 @@
           content = wrapContent(content);
 
           // find and link url if not already linked
-          content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
-              console.log(extra);
-              
+          content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {            
               if (extra) {
                   return match;
               }
