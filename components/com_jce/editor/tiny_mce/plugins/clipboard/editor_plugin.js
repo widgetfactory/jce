@@ -2172,7 +2172,7 @@
       var ux = '((?:news|telnet|nttp|file|http|ftp|https)://[-!#$%&\'\*\+\\/0-9=?A-Z^_`a-z{|}~;]+\.[-!#$%&\'\*\+\\./0-9=?A-Z^_`a-z{|}~;]+)';
 
       var attribRe = '(?:(?:[a-z0-9_-]+)=["\'])'; // match attribute before url, eg: href="url"
-      var bracketRe = '(?:\{|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
+      var bracketRe = '(?:\}|\].?)'; // match shortcode and markdown, eg: {url} or [url] or [text](url)
 
       function createLink(url) {
           // create attribs and decode url to prevent double encoding in dom.createHTML
@@ -2214,6 +2214,8 @@
 
           // find and link url if not already linked
           content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
+              console.log(extra);
+              
               if (extra) {
                   return match;
               }
