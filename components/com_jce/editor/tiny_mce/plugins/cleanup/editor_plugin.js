@@ -142,7 +142,7 @@
             if (k.indexOf('mce:') == 0) {
               return true;
             }
-            
+
             // custom element
             if (tinymce.inArray(tags, k) === -1) {
               ed.schema.addCustomElements(k);
@@ -513,6 +513,7 @@
         cmd: 'mceCleanup'
       });
     },
+
     convertFromGeshi: function (h) {
       h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
         var attr = '';
@@ -526,6 +527,7 @@
 
       return h;
     },
+    
     convertToGeshi: function (h) {
       h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
         var s = b + d;
