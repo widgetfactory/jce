@@ -230,6 +230,28 @@ section[role="tabpanel"] .wf-editor-container {
     }
 }
 
+/* Joomla 4 overrides */
+joomla-tab {
+    .wf-editor-tabs {
+        button[role="tab"] {
+            border: unset;
+            box-shadow: inherit;
+            color: inherit;
+            padding: 0.75em 1.25em;
+
+            &[aria-expanded="true"] {
+                background: none;
+                background-color: #fff;
+                box-shadow: inherit;
+
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
 .mce-fullscreen {
     .mce-resizehandle {
         display: none;
