@@ -40050,7 +40050,7 @@
               if (k.indexOf('mce:') == 0) {
                 return true;
               }
-              
+
               // custom element
               if (tinymce.inArray(tags, k) === -1) {
                 ed.schema.addCustomElements(k);
@@ -40421,6 +40421,7 @@
           cmd: 'mceCleanup'
         });
       },
+
       convertFromGeshi: function (h) {
         h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
           var attr = '';
@@ -40434,6 +40435,7 @@
 
         return h;
       },
+      
       convertToGeshi: function (h) {
         h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
           var s = b + d;
@@ -40599,25 +40601,29 @@
           }
 
           // process as sourcerer
-          if (html.indexOf('{source') != -1) {
-            return processSourcerer(html);
+          if (html.indexOf('{/source}') != -1) {
+            html = processSourcerer(html);
           }
 
           // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
           tagName = tagName || 'span';
 
           // shortcode blocks eg: {article}html{/article}
-          html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {
+          //html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {
+          /*html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)(.*?)\}\n([\s\S]+?)\{\/\4\}/g, function (match) {
+
             // already wrapped in a tag
             if (match.charAt(0) === '<') {
               return match;
             }
 
             return createShortcodePre(match, tagName);
-          });
+          });*/
 
           // inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
-          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+          //return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
+            //return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:(.*?)\{\/\4\})?/g, function (match) {
+            return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
             // already wrapped in a tag
             if (match.charAt(0) === '<') {
               return match;
@@ -40629,7 +40635,7 @@
 
         function processSourcerer(html) {
           // quick check to see if we should proceed
-          if (html.indexOf('{source') === -1) {
+          if (html.indexOf('{/source}') === -1) {
             return html;
           }
 
@@ -41415,10 +41421,8 @@
           }
         });
 
-        ed.onBeforeSetContent.add(function (ed, o) {
+        ed.onBeforeSetContent.addToTop(function (ed, o) {
           if (ed.settings.code_protect_shortcode) {
-            // process regularlabs sourcerer blocks first
-            o.content = processSourcerer(o.content);
 
             if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
               o.content = processShortcode(o.content);
@@ -41480,6 +41484,12 @@
               // sourcerer with encoded content
               o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
                 return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
+              });
+
+              // other shotcode tags
+              o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
+              //o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}([\s\S]+?)\{\/1\}/gi, function (match, start, attr, content) {
+              return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
               });
             }
 
