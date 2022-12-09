@@ -33,9 +33,6 @@ class WFFileSystem extends WFExtension
     /**
      * Returns a reference to a plugin object.
      *
-     * This method must be invoked as:
-     *    <pre>  $advlink =AdvLink::getInstance();</pre>
-     *
      * @return JCE The editor object
      *
      * @since 1.5
