@@ -192,6 +192,7 @@
     flex-direction: row;
     align-items: center;
     border: 0 solid #ddd;
+    justify-content: end;
 }
 
 .mceDefaultSkin .mceStatusbar:first-child {
@@ -217,6 +218,7 @@
     cursor: se-resize;
     margin: 0;
     order: 3;
+    display: flex;
 }
 
 .mceDefaultSkin .mceStatusbar .mceResize span {
@@ -496,7 +498,7 @@
 }
 
 .mceMenu .mceMenuItems .mceImage {
-    height: 5rem;
+    height: 4rem;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
