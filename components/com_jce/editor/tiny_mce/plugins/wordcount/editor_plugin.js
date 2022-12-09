@@ -95,12 +95,12 @@
             target_id = ed.getParam('wordcount_target_id', target_id);
 
             if (!DOM.get(target_id)) {
-                var row = DOM.get(ed.id + '_path_row');
+                var statusbar = DOM.select('div.mceStatusbar', ed.getContainer());
 
-                if (row) {
+                if (statusbar.length) {
                     var label = ed.getLang('wordcount.words', 'Words:');
 
-                    DOM.add(row.parentNode, 'div', {
+                    DOM.add(statusbar[0], 'div', {
                         'class': 'mceWordCount'
                     }, '<span title="' + label + '" id="' + target_id + '" class="mceText">0</span>');
                 }
