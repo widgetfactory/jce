@@ -1370,6 +1370,11 @@ select.mceNativeListBox {
     margin: auto;
 }
 
+.mceDefaultSkin .mceIcon svg {
+    width: 1em;
+    height: 1em;
+}
+
 .mceDefaultSkin .mceIconImage {
     display: flex;
     background: none;
@@ -2820,7 +2825,7 @@ select.mceNativeListBox {
 .mceModal .mce-modal-landscape-full .mceModalContentIframe,
 .mceModal .mce-modal-portrait-full .mceModalContentIframe {
     padding: 0;
-    height: calc(100% - 48px);
+    height: calc(100% - 96px);
 }
 
 .mceModal .mce-modal-square-small {
