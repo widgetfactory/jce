@@ -32,6 +32,10 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+            <field name="wordcount" type="yesno" default="1" label="WF_PARAM_EDITOR_WORDCOUNT" description="WF_PARAM_EDITOR_WORDCOUNT_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
             <field name="resizing" type="list" default="1" label="WF_PARAM_EDITOR_RESIZING" description="WF_PARAM_EDITOR_RESIZING_DESC" showon="statusbar_location:top[OR]statusbar_location:bottom">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -208,10 +212,15 @@
             </field>
 
             <field type="spacer" hr="true" />
-            <field name="wordcount_limit" type="number" default="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
-            <field name="wordcount_alert" type="yesno" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+
+            <field type="container" showon="wordcount:1">
+
+                <field name="wordcount_limit" type="number" default="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
+                <field name="wordcount_alert" type="yesno" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+
             </field>
 
             <field type="spacer" hr="true" />

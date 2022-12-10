@@ -878,8 +878,8 @@ class WFEditor
                     $items[] = 'advlist';
                 }
 
-                // Load wordcount if path is enabled
-                if ($wf->getParam('editor.path', 1)) {
+                // Load wordcount if enabled
+                if ($wf->getParam('editor.wordcount', 1)) {
                     $items[] = 'wordcount';
                 }
 
