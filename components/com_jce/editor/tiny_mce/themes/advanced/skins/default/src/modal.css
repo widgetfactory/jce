@@ -422,7 +422,7 @@
 .mceModal .mce-modal-landscape-full .mceModalContentIframe,
 .mceModal .mce-modal-portrait-full .mceModalContentIframe {
     padding: 0;
-    height: calc(100% - 48px);
+    height: calc(100% - 96px);
 }
 
 .mceModal .mce-modal-square-small {
