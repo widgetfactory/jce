@@ -18,6 +18,11 @@
     margin: auto;
 }
 
+.mceDefaultSkin .mceIcon svg {
+    width: 1em;
+    height: 1em;
+}
+
 .mceDefaultSkin .mceIconImage {
     display: flex;
     background: none;
