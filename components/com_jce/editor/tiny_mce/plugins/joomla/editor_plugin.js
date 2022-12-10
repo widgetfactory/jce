@@ -54,18 +54,39 @@
                         id: ed.dom.uniqueId(),
                         title: plg.title,
                         icon: plg.icon,
+                        svg: plg.svg || '',
                         onclick: function (e) {
+                            var buttons = [
+                                {
+                                    id: 'cancel',
+                                    title: ed.getLang('cancel', 'Cancel')
+                                }
+                            ];
+
                             // store bookmark
                             ed.lastSelectionBookmark = ed.selection.getBookmark(1);
 
                             if (href) {
+
+                                if (plg.options && plg.options.confirmCallback) {
+                                    buttons.unshift({
+                                        id: 'confirm',
+                                        title: plg.options.confirmText || ed.getLang('insert', 'Insert'),
+                                        classes: 'primary',
+                                        onsubmit: function (e) {
+                                            new Function(plg.options.confirmCallback).apply();
+                                        }
+                                    });
+                                }
+
                                 ed.windowManager.open({
                                     file: href,
                                     title: plg.title,
                                     width: Math.max(vp.w - 40, 896),
                                     height: Math.max(vp.h - 40, 707),
                                     size: 'mce-modal-landscape-full',
-                                    addver: false
+                                    addver: false,
+                                    buttons: buttons
                                 });
 
                                 // pass the windowManager object as the current Joomla Modal window
