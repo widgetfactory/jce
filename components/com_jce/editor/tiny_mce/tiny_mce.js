@@ -23060,6 +23060,12 @@
             });
           }
 
+          if (s.svg) {
+            DOM.add(item, 'span', {
+              'class': 'mceIcon mceIconSvg'
+            }, s.svg);
+          }
+
           var txt = DOM.add(item, s.element || 'span', {
             'class': 'mceText',
             role: 'presentation'
@@ -34052,6 +34058,8 @@
           });
         }
 
+        f.buttons = f.buttons || [];
+
         url = f.url || f.file;
 
         if (url) {
@@ -34075,73 +34083,13 @@
             DOM.addClass(id, 'mceModal' + ucfirst(f.type));
           }
 
-          f.buttons = f.buttons || [
-            {
+          if (!f.buttons.length) {
+            f.buttons.push({
               id: 'cancel',
               title: self.editor.getLang('cancel', 'Cancel'),
               onclick: function (e) {
                 Event.cancel(e);
                 self.close(null, id);
-              }
-            }
-          ];
-
-          if (f.buttons.length) {
-            // add footer
-            DOM.add(DOM.select('.mceModalContainer', id), 'div', { 'class': 'mceModalFooter', id: id + '_footer' });
-
-            // add buttons
-            each(f.buttons, function (button) {
-
-              // patch in close function for cancel button
-              if (button.id === 'cancel') {
-                button.onclick = function (e) {
-                  self.close(null, id);
-                };
-              }
-
-              var attribs = {
-                id: id + '_' + button.id,
-                'class': 'mceButton',
-                type: 'button'
-              };
-
-              if (button.autofocus) {
-                attribs.autofocus = true;
-              }
-
-              button.title = button.title || 'OK';
-
-              var btn = DOM.add(id + '_footer', 'button', attribs, button.title);
-
-              if (button.icon) {
-                DOM.add(btn, 'span', { 'class': 'mceIcon mce_' + button.icon, 'role': 'presentation' });
-              }
-
-              each(tinymce.explode(button.classes), function (cls) {
-                DOM.addClass(btn, 'mceButton' + ucfirst(cls));
-              });
-
-              // process passed in onclick
-              if (button.onclick) {
-                Event.add(btn, 'click', function (e) {
-                  Event.cancel(e);
-                  button.onclick.call(self, e);
-                });
-              }
-
-              // a submit is simply an onclick with a built in close
-              if (button.onsubmit) {
-                Event.add(btn, 'click', function (e) {
-                  Event.cancel(e);
-                  button.onsubmit.call(self, e);
-
-                  if (e.cancelSubmit) {
-                    return;
-                  }
-
-                  self.close(null, id);
-                });
               }
             });
           }
@@ -34222,6 +34170,66 @@
 
               e.preventDefault();
               e.stopImmediatePropagation();
+            }
+          });
+        }
+
+        if (f.buttons.length) {
+          // add footer
+          DOM.add(DOM.select('.mceModalContainer', id), 'div', { 'class': 'mceModalFooter', id: id + '_footer' });
+
+          // add buttons
+          each(f.buttons, function (button) {
+
+            // patch in close function for cancel button
+            if (button.id === 'cancel') {
+              button.onclick = function (e) {
+                self.close(null, id);
+              };
+            }
+
+            var attribs = {
+              id: id + '_' + button.id,
+              'class': 'mceButton',
+              type: 'button'
+            };
+
+            if (button.autofocus) {
+              attribs.autofocus = true;
+            }
+
+            button.title = button.title || 'OK';
+
+            var btn = DOM.add(id + '_footer', 'button', attribs, button.title);
+
+            if (button.icon) {
+              DOM.add(btn, 'span', { 'class': 'mceIcon mce_' + button.icon, 'role': 'presentation' });
+            }
+
+            each(tinymce.explode(button.classes), function (cls) {
+              DOM.addClass(btn, 'mceButton' + ucfirst(cls));
+            });
+
+            // process passed in onclick
+            if (button.onclick) {
+              Event.add(btn, 'click', function (e) {
+                Event.cancel(e);
+                button.onclick.call(self, e);
+              });
+            }
+
+            // a submit is simply an onclick with a built in close
+            if (button.onsubmit) {
+              Event.add(btn, 'click', function (e) {
+                Event.cancel(e);
+                button.onsubmit.call(self, e);
+
+                if (e.cancelSubmit) {
+                  return;
+                }
+
+                self.close(null, id);
+              });
             }
           });
         }
@@ -40608,22 +40616,8 @@
           // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
           tagName = tagName || 'span';
 
-          // shortcode blocks eg: {article}html{/article}
-          //html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)\s{0,1}([^\}]*)\}\n([\s\S]+)\{\/\4\}/g, function (match) {
-          /*html = html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)\{([a-z]+)(.*?)\}\n([\s\S]+?)\{\/\4\}/g, function (match) {
-
-            // already wrapped in a tag
-            if (match.charAt(0) === '<') {
-              return match;
-            }
-
-            return createShortcodePre(match, tagName);
-          });*/
-
-          // inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
-          //return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\/\w-]+)(.*)(?:\})(?:(.*)(?:\{\/\1\}))?/g, function (match) {
-            //return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:(.*?)\{\/\4\})?/g, function (match) {
-            return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
+          // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
+          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
             // already wrapped in a tag
             if (match.charAt(0) === '<') {
               return match;
@@ -40640,7 +40634,7 @@
           }
 
           // shortcode blocks eg: {source}html{/source}
-          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {          
+          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
             // already wrapped in a tag
             if (match.charAt(0) === '<' || match.charAt(0) === '"') {
               return match;
@@ -41476,7 +41470,7 @@
 
             // shortcode content will be encoded as text, so decode
             if (ed.settings.code_protect_shortcode) {
-              
+
               o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
                 return '{' + ed.dom.decode(content) + '}';
               });
@@ -41488,8 +41482,7 @@
 
               // other shotcode tags
               o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
-              //o.content = o.content.replace(/\{([\w-]+)([^\}]*?)\}([\s\S]+?)\{\/1\}/gi, function (match, start, attr, content) {
-              return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
+                return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
               });
             }
 
