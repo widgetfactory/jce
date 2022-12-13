@@ -68,8 +68,12 @@
 
             tc = getCount();
 
+            DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words', 'Words:'));
+
             // if a limit is set, set the count as words remaining
             if (limit) {
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_remain', 'Remaining Words:'));
+                
                 tc = limit - tc;
 
                 if (tc < 0) {
@@ -84,7 +88,6 @@
                 }
             }
 
-            DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words', 'Words:'));
             DOM.setHTML(target_id, tc.toString());
 
             ed.onWordCount.dispatch(ed, tc);
@@ -123,8 +126,14 @@
             }
         }, update_rate);
 
-        // update on selection or content change
-        ed.onSelectionChange.add(countSelection);
+        ed.onKeyUp.add(countSelection);
+        ed.onSetContent.add(countSelection);
+        ed.onUndo.add(countSelection);
+        ed.onRedo.add(countSelection);
+
+        ed.onPreInit.add(function () {
+            ed.selection.onSetContent.add(countSelection);
+        });
 
         // set total count when editor loads
         ed.onInit.add(countAll);
