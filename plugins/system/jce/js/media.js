@@ -299,7 +299,7 @@
         });
     };
 
-    function createElementMedia(elm, options) {                        
+    function createElementMedia(elm, options) {
         // custom media element only  
         if (false == $(elm).is('joomla-field-media, .wf-media-wrapper-custom')) {
             return;
@@ -405,7 +405,7 @@
                 $(this).attr('url', url);
 
                 // create new iframe
-                var ifrHtml = Joomla.sanitizeHtml('<iframe src="' + url + '" class="iframe" title="" width="100%" height="100%"></iframe>', { iframe : ['src', 'class', 'title', 'width', 'height'] });
+                var ifrHtml = Joomla.sanitizeHtml('<iframe src="' + url + '" class="iframe" title="" width="100%" height="100%"></iframe>', { iframe: ['src', 'class', 'title', 'width', 'height'] });
 
                 // update attributes
                 $(this).find('.joomla-modal').attr('data-url', url).attr('data-iframe', ifrHtml);
@@ -420,7 +420,7 @@
 
     function cleanInputValue(elm) {
         var val = $(elm).val() || '';
-        
+
         // clean value first
         if (val.indexOf('#joomlaImage') != -1) {
             val = val.substring(0, val.indexOf('#'));
@@ -428,7 +428,7 @@
         }
     }
 
-    function isImage(value) {   
+    function isImage(value) {
         return value && /\.(jpg|jpeg|png|gif|svg|apng|webp)$/.test(value);
     }
 
@@ -462,21 +462,33 @@
                 cleanInputValue(field.inputElement);
 
                 // copy markValid function or noop
-                var markValidFunction = field.markValid || function () {};
+                var markValidFunction = field.markValid || function () { };
 
                 // override markValid and treat as a callback to clean the input value
                 field.markValid = function () {
                     cleanInputValue(this.inputElement);
-                    markValidFunction.apply(this);
+
+                    // markValid (check for label)
+                    if (field.querySelector('label[for="' + this.inputElement.id + '"]')) {
+                        markValidFunction.apply(this);
+                    }
                 };
 
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
                     e.stopImmediatePropagation();
-                    // markValid and...
-                    markValidFunction.apply(this);
+
+                    // markValid (check for label) and...
+                    if (field.querySelector('label[for="' + this.id + '"]')) {
+                        markValidFunction.apply(this);
+                    }
+
                     // updatePreview
                     field.updatePreview();
+
+                    // trigger update for t4 builder
+                    $(document).trigger('t4:media-selected', { selectedUrl: field.basePath + this.value });
+
                 }, true);
             }
 
