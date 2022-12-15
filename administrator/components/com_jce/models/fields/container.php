@@ -79,7 +79,7 @@ class JFormFieldContainer extends JFormField
         // And finaly build a main container
         $str = array();
 
-        if ($this->class === 'inset') {
+        if ($this->class == 'inset') {
             $this->class .= ' well well-small well-light p-4 bg-light';
         }
 
@@ -111,7 +111,7 @@ class JFormFieldContainer extends JFormField
         for ($i = 0; $i < $count; $i++) {
 
             if ($repeatable) {
-                $str[] = '<div class="form-field-repeatable-item well well-small p-3 bg-light m-2">';
+                $str[] = '<div class="form-field-repeatable-item well well-small p-3 bg-light my-2">';
                 $str[] = '  <div class="form-field-repeatable-item-group">';
             }
 
