@@ -25,6 +25,13 @@
                 // clean id of trailing digit, eg: _1
                 var id = this.id.replace(/(_\d+)$/, '');
 
+                // find and update the associated label if any
+                $p.find('label[for]').each(function () {
+                    if ($(this).attr('for') == elm.id) {
+                        $(this).attr('for', id);
+                    }
+                });
+
                 // create new id
                 $(this).attr('id', id + '_' + idx + '_' + x);
             }).trigger('change');
