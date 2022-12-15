@@ -36,7 +36,8 @@
                 $(this).attr('id', id + '_' + idx + '_' + x);
             }).trigger('change');
 
-            $item.find(':input[name]').val('').trigger('change');
+            $item.find(':input[name]').val('').trigger('change').removeClass('isdirty');
+            $item.find('select[name]').find('option:first').prop('selected', true).parent().trigger('change').removeClass('isdirty');
 
             // fix media field
             $item.find('.field-media-wrapper').each(function () {
