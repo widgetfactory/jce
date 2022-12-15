@@ -51,17 +51,7 @@ class JFormFieldContainer extends JFormField
     {
         $group = $this->group;
 
-        // subfields require JCE Pro
-        if (isset($this->element['pro']) && !WF_EDITOR_PRO) {
-            return "";
-        }
-
-        $subForm = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
         $children = $this->element->children();
-
-        $subForm->load($children);
-        $subForm->setFields($children);
-
         $data = $this->form->getData()->toObject();
 
         // extract relevant data level using group
@@ -71,21 +61,20 @@ class JFormFieldContainer extends JFormField
             }
         }
 
-        $subForm->bind($data);
-        $fields = $subForm->getFieldset();
-
         $count = 1;
 
-        // find number of potential repeatable fields
-        foreach ($fields as $field) {
-            $name = (string) $field->element['name'];
+        $repeatable = (string) $this->element['repeatable'];
 
-            if (isset($data->$name) && is_array($data->$name)) {
-                $count = max(count($data->$name), $count);
+        if ($repeatable) {            
+            // find number of potential repeatable fields
+            foreach ($children as $child) {
+                $name = (string) $child->attributes()['name'];
+
+                if (isset($data->$name) && is_array($data->$name)) {
+                    $count = max(count($data->$name), $count);
+                }
             }
         }
-
-        $repeatable = (string) $this->element['repeatable'];
 
         // And finaly build a main container
         $str = array();
@@ -117,43 +106,43 @@ class JFormFieldContainer extends JFormField
         // repeatable
         if ($repeatable) {
             $str[] = '<div class="form-field-repeatable">';
-
-            $class = '';
-
-            // highlight grouped fields
-            if ($count > 1) {
-                $class = ' well well-small p-4 bg-light';
-            }
         }
 
         for ($i = 0; $i < $count; $i++) {
 
             if ($repeatable) {
-                $str[] = '<div class="form-field-repeatable-item' . $class . '">';
+                $str[] = '<div class="form-field-repeatable-item well well-small p-3 bg-light m-2">';
                 $str[] = '  <div class="form-field-repeatable-item-group">';
             }
 
+            $subForm = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
+
+            $subForm->load($children);
+            $subForm->setFields($children);
+
+            $subForm->bind($data);
+            $fields = $subForm->getFieldset();
+
             foreach ($fields as $field) {
-                if ($repeatable) {                    
-                    $field->element['multiple'] = true;
-                    
-                    $name   = (string) $field->element['name'];
-                    $value  = (string) $field->element['default'];
+                $name = (string) $field->element['name'];
+                $value = (string) $field->element['default'];
 
-                    if (isset($data->$name)) {
-                        $value = $data->$name;
-                    }
+                if (isset($data->$name)) {
+                    $value = $data->$name;
+                }
 
-                    if (is_array($value)) {
-                        $value = isset($value[$i]) ? $value[$i] : '';
-                    }
-     
-                    // escape value
-                    $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-    
+                if (is_array($value)) {
+                    $value = isset($value[$i]) ? $value[$i] : '';
+                }
+
+                // escape value
+                $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+                $field->setup($field->element, $field->value);
+
+                if ($repeatable) {
                     // reset id
                     $field->id .= '_' . $i;
-    
+
                     if (strpos($field->name, '[]') === false) {
                         $field->name .= '[]';
                     }
@@ -164,7 +153,7 @@ class JFormFieldContainer extends JFormField
 
             if ($repeatable) {
                 $str[] = '</div>';
-                
+
                 $str[] = '<div class="form-field-repeatable-item-control">';
                 $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
                 $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
