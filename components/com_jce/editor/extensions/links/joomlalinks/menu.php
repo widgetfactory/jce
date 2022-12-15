@@ -190,12 +190,14 @@ class JoomlalinksMenu extends JObject
 
     private function resolveLink($menu)
     {
+        $wf = WFEditorPlugin::getInstance();
+        
         // get link from menu object
         $link = $menu->link;
 
         // internal link
         if ($link && strpos($link, 'index.php') === 0) {
-            if ((int) $this->get('menu_resolve_alias', 1)) {
+            if ((bool) $wf->getParam('links.joomlalinks.menu_resolve_alias', 0)) {
                 // no Itemid
                 if (strpos($link, 'Itemid=') === false) {
                     $link .= '&Itemid=' . $menu->id;

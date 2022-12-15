@@ -53,6 +53,10 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+            <field name="menu_resolve_alias" type="yesno" default="0" label="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK" description="WF_LINKS_JOOMLALINKS_PARAM_ARTICLE_MENU_LINK_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
             <field name="tags" type="yesno" default="1" label="WF_LINKS_JOOMLALINKS_PARAM_TAGS" description="WF_LINKS_JOOMLALINKS_PARAM_TAGS_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
