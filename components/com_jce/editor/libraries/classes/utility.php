@@ -452,7 +452,13 @@ abstract class WFUtility
         // check if multibyte string, use dirname() if not
         if (function_exists('mb_strlen')) {
             if (mb_strlen($path) === strlen($path)) {
-                return dirname($path);
+                $dir = dirname($path);
+                
+                if ($dir == ".") {
+                    return "";
+                }
+
+                return $dir;
             }
         }
 
@@ -463,7 +469,13 @@ abstract class WFUtility
         $slash = strrpos($path, '/') + 1;
 
         // return dirname
-        return substr($path, 0, $slash);
+        $dir = substr($path, 0, $slash);
+
+        if ($dir == ".") {
+            return "";
+        }
+
+        return $dir;
     }
 
     public static function mb_basename($path, $ext = '')
