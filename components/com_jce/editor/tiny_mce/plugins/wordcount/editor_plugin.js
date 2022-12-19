@@ -21,6 +21,8 @@
 
         ed.onWordCount = new tinymce.util.Dispatcher(self);
 
+        var count = 0;
+
         function processText(tx) {
             var tc = 0;
 
@@ -53,44 +55,39 @@
             return processText(tx);
         }
 
-        function countChars(tc) {
+        var limit = parseInt(ed.getParam('wordcount_limit', 0), 10), showAlert = ed.getParam('wordcount_alert', 0);
+
+        function updateLabel(value) {
+            DOM.removeClass(target_id, 'mceWordCountLimit');
+
+            if (value < 0) {
+                DOM.addClass(target_id, 'mceWordCountLimit');
+            }
+            
+            // if a limit is set...
+            if (limit) {
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_remain', 'Words Remaining:'));
+            } else {
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words', 'Words:'));
+            }
+
+            DOM.setHTML(target_id, value.toString());
+        }
+
+        function countChars() {
 
             if (ed.destroyed) {
                 return;
             }
 
-            if (tc) {
-                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.selection', 'Selected Words:'));
-                return DOM.setHTML(target_id, tc.toString());
+            count = limit - getCount();
+
+            if (count < 0 && showAlert) {
+                ed.windowManager.alert(ed.getLang('wordcount.limit_alert', 'You have reached the word limit set for this content.'));
             }
 
-            var limit = parseInt(ed.getParam('wordcount_limit', 0), 10), showAlert = ed.getParam('wordcount_alert', 0);
-
-            tc = getCount();
-
-            DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words', 'Words:'));
-
-            // if a limit is set, set the count as words remaining
-            if (limit) {
-                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_remain', 'Remaining Words:'));
-                
-                tc = limit - tc;
-
-                if (tc < 0) {
-                    DOM.addClass(target_id, 'mceWordCountLimit');
-
-                    if (showAlert) {
-                        ed.windowManager.alert(ed.getLang('wordcount.limit_alert', 'You have reached the word limit set for this content.'));
-                    }
-
-                } else {
-                    DOM.removeClass(target_id, 'mceWordCountLimit');
-                }
-            }
-
-            DOM.setHTML(target_id, tc.toString());
-
-            ed.onWordCount.dispatch(ed, tc);
+            updateLabel(count);
+            ed.onWordCount.dispatch(ed, count);
         }
 
         ed.onPostRender.add(function (ed, cm) {
@@ -101,7 +98,7 @@
                 var statusbar = DOM.select('div.mceStatusbar', ed.getContainer());
 
                 if (statusbar.length) {
-                    var label = ed.getLang('wordcount.words', 'Words:');
+                    var label = ed.getLang('wordcount.words_selected', 'Words Selected:');
 
                     DOM.add(statusbar[0], 'div', {
                         'class': 'mceWordCount'
@@ -115,25 +112,36 @@
         }, update_rate);
 
         var countSelection = Delay.debounce(function () {
-            var rng = ed.selection.getRng(), sel = ed.selection.getSel();
+            if (ed.destroyed) {
+                return;
+            }
+            
+            var rng = ed.selection.getRng(), sel = ed.selection.getSel(), value;
 
+            // content is selected
             if (!rng.collapsed) {
                 var text = rng.text || (sel.toString ? sel.toString() : '');
-                var count = processText(text);
-                countChars(count);
+                value = processText(text);
+
+                DOM.removeClass(target_id, 'mceWordCountLimit');
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_selected', 'Words Selected:'));
+                DOM.setHTML(target_id, value.toString());
+
             } else {
-                countChars();
+                updateLabel(count);
             }
         }, update_rate);
 
-        ed.onKeyUp.add(countSelection);
-        ed.onSetContent.add(countSelection);
-        ed.onUndo.add(countSelection);
-        ed.onRedo.add(countSelection);
+        ed.onKeyUp.add(countAll);
+        ed.onSetContent.add(countAll);
+        ed.onUndo.add(countAll);
+        ed.onRedo.add(countAll);
 
         ed.onPreInit.add(function () {
-            ed.selection.onSetContent.add(countSelection);
+            ed.selection.onSetContent.add(countAll);
         });
+
+        ed.onSelectionChange.add(countSelection);
 
         // set total count when editor loads
         ed.onInit.add(countAll);
