@@ -83,7 +83,7 @@ if ($data->media_type == 'link') {
 $attribs = array();
 
 if ($data->media_class) {
-    $data->media_class = preg_replace('/[^A-Z0-9_- ]/i', '', $data->media_class);
+    $data->media_class = preg_replace('#[^-\w ]#i', '', $data->media_class);
     $attribs['class'] = trim($data->media_class);
 }
 
