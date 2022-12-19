@@ -9,9 +9,7 @@
     text-align: center;
     cursor: pointer;
     user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -webkit-appearance: none;
+    appearance: none;
     background: #fff;
 }
 
