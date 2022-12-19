@@ -80,7 +80,11 @@
                 return;
             }
 
-            count = limit - getCount();
+            count = getCount();
+
+            if (limit) {
+                count = limit - count;
+            }
 
             if (count < 0 && showAlert) {
                 ed.windowManager.alert(ed.getLang('wordcount.limit_alert', 'You have reached the word limit set for this content.'));
