@@ -215,7 +215,7 @@
 
             <field type="container" showon="wordcount:1">
 
-                <field name="wordcount_limit" type="number" default="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
+                <field name="wordcount_limit" type="number" default="0" hint="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
                 <field name="wordcount_alert" type="yesno" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
