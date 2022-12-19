@@ -101,6 +101,28 @@ class PlgSystemJce extends CMSPlugin
             // redirect to file browser
             $this->redirectMedia();
         }
+
+        /*$app = Factory::getApplication();
+        $params = ComponentHelper::getParams('com_jce');
+
+        // flexi-content mediafield
+        if ($app->input->getCmd('option') == 'com_media') {
+            if ((bool) $params->get('replace_media_manager', 1) == true) {
+                $vars = $app->input->getArray();
+
+                $valid = true;
+
+                foreach($vars as $key => $value) {
+                    if ($key == 'task' || strpos('api', $key) !== false) {
+                        $valid = false;
+                    }
+                }
+
+                if ($valid) {
+                    Factory::getApplication()->redirect('index.php?option=com_jce&view=browser');
+                }
+            }
+        }*/
     }
 
     public function onAfterDispatch()
@@ -271,7 +293,7 @@ class PlgSystemJce extends CMSPlugin
             if ($app->getClientId() !== 1) {
                 return;
             }
-            
+
             // restrict to admin with component manage access
             if (!$user->authorise('core.manage', 'com_jce')) {
                 return false;
