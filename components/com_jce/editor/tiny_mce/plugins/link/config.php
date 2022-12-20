@@ -22,18 +22,19 @@ class WFLinkPluginConfig
         );
 
         // expose globally for use by Autolink and Clipboard
-        $settings['default_link_target'] = $plugin->getParam('link.target', '');
+        $settings['default_link_target'] = $plugin->getParam('target', '');
         
         // expose globally for use by Autolink and Clipboard
-        $settings['autolink_email'] = $plugin->getParam('link.autolink_email', 1, 1);
-        $settings['autolink_url'] = $plugin->getParam('link.autolink_url', 1, 1);
+        $settings['autolink_email'] = $plugin->getParam('autolink_email', 1, 1);
+        $settings['autolink_url'] = $plugin->getParam('autolink_url', 1, 1);
 
         if ($plugin->getParam('link.quicklink', 1) == 0) {
             $config['quicklink'] = false;
         }
 
-        if ($plugin->getParam('link.basic_dialog', 0) == 1) {
+        if ($plugin->getParam('link.basic_dialog', 0) == 1) {            
             $config['basic_dialog'] = true;
+            $config['file_browser'] = $plugin->getParam('file_browser', 1);
         }
 
         $settings['link'] = $config;

@@ -164,14 +164,45 @@
 
                 var cm = ed.controlManager, form = cm.createForm('link_form');
 
-                urlCtrl = cm.createTextBox('link_url', {
+                var args = {
                     label: ed.getLang('url', 'URL'),
                     name: 'url',
                     clear: true,
                     attributes: {
                         required: true
                     }
-                });
+                };
+
+                if (params.file_browser) {
+                    tinymce.extend(args, {
+                        picker: true,
+                        picker_label: 'browse',
+                        picker_icon: 'files',
+                        onpick: function () {
+                            ed.execCommand('mceFileBrowser', true, {
+                                caller: 'link',
+                                callback: function (selected, data) {
+                                    if (data.length) {
+                                        var src = data[0].url, title = data[0].title;
+                                        urlCtrl.value(src);
+
+                                        // clean up title by removing extension
+                                        title = title.replace(/\.[^.]+$/i, '');
+
+                                        textCtrl.value(title);
+
+                                        window.setTimeout(function () {
+                                            urlCtrl.focus();
+                                        }, 10);
+                                    }
+                                },
+                                filter: params.filetypes || 'files'
+                            });
+                        }
+                    });
+                }
+
+                urlCtrl = cm.createUrlBox('link_url', args);
 
                 form.add(urlCtrl);
 
