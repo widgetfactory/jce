@@ -24441,7 +24441,7 @@
 
         if (s.picker) {
           var icon = s.picker_icon || 'file';
-          html += '<button class="mceButton mceButtonPicker" id="' + this.id + '_picker" title="' + DOM.encode(s.picker_label || '') + '"><span role="presentation" class="mceIcon mce_' + icon + '"></span></button>';
+          html += '<button type="button" class="mceButton mceButtonPicker" id="' + this.id + '_picker" title="' + DOM.encode(s.picker_label || '') + '"><span role="presentation" class="mceIcon mce_' + icon + '"></span></button>';
         }
 
         if (s.upload) {
@@ -24497,8 +24497,9 @@
         if (s.picker) {
           DOM.addClass(this.id, 'mceUrlBoxPicker');
 
-          Event.add(this.id + '_picker', 'click', function (e) {
-            Event.cancel(e);
+          Event.add(this.id + '_picker', 'click', function (e) {          
+            
+            e.preventDefault();
             s.onpick.call(self);
           });
         }
@@ -24511,11 +24512,11 @@
               s.upload.call(self, e, this.files[0]);
             }
 
-            Event.cancel(e);
+            e.preventDefault();
           });
 
           DOM.bind(this.id, 'drag dragstart dragend dragover dragenter dragleave', function (e) {
-            Event.cancel(e);
+            e.preventDefault();
           });
 
           DOM.bind(this.id, 'dragover dragenter', function () {
@@ -24538,7 +24539,7 @@
               }
             }
 
-            Event.cancel(e);
+            e.preventDefault();
           });
         }
       }
@@ -34118,8 +34119,10 @@
               ctrl.renderTo(form);
 
               // add onClose event to destroy controls
-              self.onClose.add(function () {
-                ctrl.destroy();
+              self.onClose.add(function (e, win) {              
+                if (win.id == id) {
+                  ctrl.destroy();
+                }
               });
             });
           }
@@ -34383,7 +34386,7 @@
           self.editor.focus();
         }
 
-        self.onClose.dispatch(self);
+        self.onClose.dispatch(self, win);
 
         var f = win.features || {};
 
