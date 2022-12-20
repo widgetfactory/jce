@@ -228,6 +228,11 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
+
+            <field name="figure_tag_style" type="yesno" default="1" label="WF_PARAM_FIGURE_TAG_STYLE" description="WF_PARAM_FIGURE_TAG_STYLE_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
         </fieldset>
     </fields>
 </form>
