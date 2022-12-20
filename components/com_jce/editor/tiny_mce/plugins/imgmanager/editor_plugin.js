@@ -169,7 +169,8 @@
                                         }, 10);
                                     }
                                 },
-                                filter: params.filetypes || 'images'
+                                filter: params.filetypes || 'images',
+                                value : urlCtrl.value()
                             });
                         }
                     });

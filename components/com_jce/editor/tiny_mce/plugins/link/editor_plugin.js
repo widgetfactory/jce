@@ -178,7 +178,7 @@
                         picker: true,
                         picker_label: 'browse',
                         picker_icon: 'files',
-                        onpick: function () {
+                        onpick: function (e) {                            
                             ed.execCommand('mceFileBrowser', true, {
                                 caller: 'link',
                                 callback: function (selected, data) {
@@ -196,7 +196,8 @@
                                         }, 10);
                                     }
                                 },
-                                filter: params.filetypes || 'files'
+                                filter: params.filetypes || 'files',
+                                value : urlCtrl.value()
                             });
                         }
                     });
