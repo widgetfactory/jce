@@ -43405,7 +43405,9 @@
                 img.attr('data-mce-contenteditable', 'true');
               });
 
-              node.attr('data-wf-figure', '1');
+              if (ed.settings.figure_data_attribute !== false) {
+                node.attr('data-wf-figure', '1');
+              }
             }
           });
 
@@ -43476,9 +43478,6 @@
             remove: 'all',
             ceFalseOverride: true,
             deep: false,
-            attributes: {
-              'data-wf-figure': '1'
-            },
             onformat: function (elm, fmt, vars, node) {
               vars = vars || {};
 
@@ -43495,6 +43494,12 @@
                   'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
                   'contenteditable': true
                 }, vars.caption || '');
+
+                if (ed.settings.figure_data_attribute !== false) {
+                  ed.dom.setAttribs(elm, {
+                    'data-wf-figure' : '1'
+                  });
+                }
               }
             },
             onremove: function (node) {
