@@ -273,9 +273,9 @@ class WFEditor
                 $userParams = json_decode($userParams, true);
             }
 
-            // Remove values with invalid key
+            // Remove values with invalid key, must be indexed array
             $userParams = array_filter($userParams, function ($key) {
-                return !is_numeric($key);
+                return is_numeric($key);
             }, ARRAY_FILTER_USE_KEY);
 
             foreach ($userParams as $userParam) {
@@ -293,7 +293,14 @@ class WFEditor
                 }
 
                 if ($name && $value !== '') {
-                    $settings[$name] = trim($value, " \t\n\r\0\x0B'\"");
+                    $value = trim($value, " \t\n\r\0\x0B'\"");
+
+                    // convert to boolean
+                    if (is_bool($value)) {
+                        $value = (bool) $value;
+                    }
+                    
+                    $settings[$name] = $value;
                 }
             }
         }
