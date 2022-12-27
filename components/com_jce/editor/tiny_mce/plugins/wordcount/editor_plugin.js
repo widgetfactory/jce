@@ -66,7 +66,7 @@
             
             // if a limit is set...
             if (limit) {
-                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_remain', 'Words Remaining:'));
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.remain', 'Words Remaining:'));
             } else {
                 DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words', 'Words:'));
             }
@@ -102,7 +102,7 @@
                 var statusbar = DOM.select('div.mceStatusbar', ed.getContainer());
 
                 if (statusbar.length) {
-                    var label = ed.getLang('wordcount.words_selected', 'Words Selected:');
+                    var label = ed.getLang('wordcount.selection', 'Words Selected:');
 
                     DOM.add(statusbar[0], 'div', {
                         'class': 'mceWordCount'
@@ -128,7 +128,7 @@
                 value = processText(text);
 
                 DOM.removeClass(target_id, 'mceWordCountLimit');
-                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.words_selected', 'Words Selected:'));
+                DOM.setAttrib(target_id, 'title', ed.getLang('wordcount.selection', 'Words Selected:'));
                 DOM.setHTML(target_id, value.toString());
 
             } else {
