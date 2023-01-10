@@ -6,7 +6,7 @@
         $('.controls').on('click', '.form-field-repeatable-add', function (e) {
             e.preventDefault();
             // get repeatable container, clone item
-            var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent(), $item = $repeatable.clone();
+            var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent(), $item = $repeatable.clone(true);
 
             // append
             $parent.append($item);
