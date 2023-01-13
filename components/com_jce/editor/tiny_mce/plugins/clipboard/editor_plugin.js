@@ -614,35 +614,43 @@
       // styles to remove
       removeStyles = settings.clipboard_paste_remove_style_properties;
 
-      // split to array if string
-      if (keepStyles && tinymce.is(keepStyles, 'string')) {
-          var styleProps$1 = tinymce.explode(keepStyles);
+      // remove valid styles if we are removing all styles
+      if (editor.getParam('clipboard_paste_remove_styles', 1)) {
+          validStyles = {
+              'font-weight': {},
+              'font-style': {}
+          };
 
-          each$2(styleProps$1, function (style, i) {
-              if (style === "border") {
-                  // add expanded border styles
-                  styleProps$1 = styleProps$1.concat(borderStyles);
-                  return true;
-              }
-          });
-      }
+          // split to array if string
+          if (keepStyles && tinymce.is(keepStyles, 'string')) {
+              var styleProps$1 = tinymce.explode(keepStyles);
 
-      // split to array if string
-      if (removeStyles && tinymce.is(removeStyles, 'string')) {
-          var removeProps = tinymce.explode(removeStyles);
+              each$2(styleProps$1, function (style, i) {
+                  if (style === "border") {
+                      // add expanded border styles
+                      styleProps$1 = styleProps$1.concat(borderStyles);
+                      return true;
+                  }
+              });
+          }
+      } else {
+          // split to array if string
+          if (removeStyles && tinymce.is(removeStyles, 'string')) {
+              var removeProps = tinymce.explode(removeStyles);
 
-          each$2(removeProps, function (style, i) {
-              if (style === "border") {
-                  // add expanded border styles
-                  removeProps = removeProps.concat(borderStyles);
-                  return true;
-              }
-          });
+              each$2(removeProps, function (style, i) {
+                  if (style === "border") {
+                      // add expanded border styles
+                      removeProps = removeProps.concat(borderStyles);
+                      return true;
+                  }
+              });
 
-          // remove from core styleProps array
-          styleProps$1 = tinymce.grep(styleProps$1, function (prop) {
-              return tinymce.inArray(removeProps, prop) === -1;
-          });
+              // remove from core styleProps array
+              styleProps$1 = tinymce.grep(styleProps$1, function (prop) {
+                  return tinymce.inArray(removeProps, prop) === -1;
+              });
+          }
       }
 
       each$2(styleProps$1, function (style) {
@@ -657,14 +665,6 @@
 
           validStyles[style] = {};
       });
-
-      // remove valid styles if we are removing all styles
-      if (editor.getParam('clipboard_paste_remove_styles', 1)) {
-          validStyles = {
-              'font-weight' : {},
-              'font-style'  : {}
-          };
-      }
 
       /**
        * Converts fake bullet and numbered lists to real semantic OL/UL.
@@ -1084,7 +1084,7 @@
               node.attr('style', filterStyles(node, style));
 
               // Remove pointess spans
-              if (node.name == 'span' && node.parent && !node.attributes.length) {                
+              if (node.name == 'span' && node.parent && !node.attributes.length) {
                   node.unwrap();
               }
           }

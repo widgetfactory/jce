@@ -147,35 +147,43 @@ function WordFilter(editor, content) {
     // styles to remove
     removeStyles = settings.clipboard_paste_remove_style_properties;
 
-    // split to array if string
-    if (keepStyles && tinymce.is(keepStyles, 'string')) {
-        var styleProps = tinymce.explode(keepStyles);
+    // remove valid styles if we are removing all styles
+    if (editor.getParam('clipboard_paste_remove_styles', 1)) {
+        validStyles = {
+            'font-weight': {},
+            'font-style': {}
+        };
 
-        each(styleProps, function (style, i) {
-            if (style === "border") {
-                // add expanded border styles
-                styleProps = styleProps.concat(Utils.borderStyles);
-                return true;
-            }
-        });
-    }
+        // split to array if string
+        if (keepStyles && tinymce.is(keepStyles, 'string')) {
+            var styleProps = tinymce.explode(keepStyles);
 
-    // split to array if string
-    if (removeStyles && tinymce.is(removeStyles, 'string')) {
-        var removeProps = tinymce.explode(removeStyles);
+            each(styleProps, function (style, i) {
+                if (style === "border") {
+                    // add expanded border styles
+                    styleProps = styleProps.concat(Utils.borderStyles);
+                    return true;
+                }
+            });
+        }
+    } else {
+        // split to array if string
+        if (removeStyles && tinymce.is(removeStyles, 'string')) {
+            var removeProps = tinymce.explode(removeStyles);
 
-        each(removeProps, function (style, i) {
-            if (style === "border") {
-                // add expanded border styles
-                removeProps = removeProps.concat(Utils.borderStyles);
-                return true;
-            }
-        });
+            each(removeProps, function (style, i) {
+                if (style === "border") {
+                    // add expanded border styles
+                    removeProps = removeProps.concat(Utils.borderStyles);
+                    return true;
+                }
+            });
 
-        // remove from core styleProps array
-        styleProps = tinymce.grep(styleProps, function (prop) {
-            return tinymce.inArray(removeProps, prop) === -1;
-        });
+            // remove from core styleProps array
+            styleProps = tinymce.grep(styleProps, function (prop) {
+                return tinymce.inArray(removeProps, prop) === -1;
+            });
+        }
     }
 
     each(styleProps, function (style) {
@@ -190,14 +198,6 @@ function WordFilter(editor, content) {
 
         validStyles[style] = {};
     });
-
-    // remove valid styles if we are removing all styles
-    if (editor.getParam('clipboard_paste_remove_styles', 1)) {
-        validStyles = {
-            'font-weight' : {},
-            'font-style'  : {}
-        };
-    }
 
     /**
      * Converts fake bullet and numbered lists to real semantic OL/UL.
@@ -617,7 +617,7 @@ function WordFilter(editor, content) {
             node.attr('style', filterStyles(node, style));
 
             // Remove pointess spans
-            if (node.name == 'span' && node.parent && !node.attributes.length) {                
+            if (node.name == 'span' && node.parent && !node.attributes.length) {
                 node.unwrap();
             }
         }
