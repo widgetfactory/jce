@@ -1,15 +1,16 @@
-(function($) {
-    $(document).ready(function() {
-        
-        $('.controls').on('change', '.wf-keyvalue :input', function(e) {
+/* global jQuery */
+(function ($) {
+    $(document).ready(function () {
+
+        $('.controls').on('change', '.wf-keyvalue :input', function (e) {
             var $parent = $(this).parents('.wf-keyvalue'), $ctrl = $parent.parent();
 
             var items = [];
 
-            $('.wf-keyvalue', $ctrl).each(function() {
+            $('.wf-keyvalue', $ctrl).each(function () {
                 var data = {};
 
-                $(':input[name]', this).each(function() {
+                $(':input[name]', this).each(function () {
                     var name = $(this).attr('name'), val = $(this).val();
 
                     // must have "key"

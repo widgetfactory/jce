@@ -1,3 +1,4 @@
+/* global jQuery */
 (function ($) {
 
     window.WfSelectUsers = function () {
@@ -27,7 +28,7 @@
 
         // update value and "chosen"
         $('#jform_users_select').val(value).trigger('chosen:updated').trigger('liszt:updated.chosen');
-        
+
         // udpdate fancy-select "choices"
         $('#jform_users_select').parents('joomla-field-fancy-select').each(function () {
             if (!this.choicesInstance) {

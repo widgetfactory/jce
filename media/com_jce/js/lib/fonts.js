@@ -1,8 +1,10 @@
+/* global jQuery */
 (function ($) {
 
     $(document).ready(function () {
 
         $('.fontlist').each(function () {
+            // eslint-disable-next-line consistent-this
             var el = this;
 
             // trigger input change

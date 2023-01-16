@@ -7,13 +7,12 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+/* global jQuery */
 (function ($) {
 
     $(document).ready(function () {
         $('.filetype').each(function () {
-            var self = this,
-                value = [],
-                $parent = $(self).parent();
+            var self = this;
 
             // create hidden input
             var $input = $('input[type="hidden"]', this);
