@@ -113,6 +113,23 @@
         return this;
     };
 
+    function htmlspecialchars_decode(str) {
+        var reverseEntities = {
+            '&lt;': '<',
+            '&gt;': '>',
+            '&amp;': '&',
+            '&quot;': '"',
+            '&apos;': "'"
+        };
+        return str.replace(/&(#)?([\w]+);/g, function (all, numeric, value) {
+            if (numeric) {
+                return String.fromCharCode(value);
+            }
+
+            return reverseEntities[all];
+        });
+    }
+
     $(document).ready(function () {
         $('select[data-toggle]').on('change', function () {
             var key = $(this).attr('data-toggle'), value = $(this).val();
@@ -378,6 +395,15 @@
             if (this.value < 1) {
                 this.value = "";
             }
+        });
+
+        // fix encoding of some characters in text fields
+        $('input[data-decode]').val(function (index, value) {
+            if (value) {
+                value = htmlspecialchars_decode(value);
+            }
+
+            return value;
         });
 
         skip = false;
