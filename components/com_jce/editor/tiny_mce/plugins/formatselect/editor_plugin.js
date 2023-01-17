@@ -111,14 +111,16 @@
                 }
             });
 
+            var preview_styles = ed.getParam('formatselect_preview_styles', true);
+
             if (ctrl) {
                 each(ed.getParam('formatselect_blockformats', fmts, 'hash'), function (value, key) {
                     ctrl.add(ed.getLang(value, key), key, {
                         'class': 'mce_formatPreview mce_' + key,
                         style: function () {
-                            return PreviewCss.getCssText(ed, {
+                            return preview_styles ? PreviewCss.getCssText(ed, {
                                 'block': key
-                            });
+                            }) : '';
                         }
                     });
                 });

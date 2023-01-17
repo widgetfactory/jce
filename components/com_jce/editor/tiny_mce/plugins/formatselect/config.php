@@ -54,6 +54,8 @@ class WFFormatselectPluginConfig
         // get blockformats from parameter
         $blockformats = $wf->getParam('formatselect.blockformats');
 
+        $settings['formatselect_preview_styles'] = $wf->getParam('formatselect.preview_styles', 1, 1);
+
         // handle empty list
         if (empty($blockformats)) {
             if (!empty($legacy)) {

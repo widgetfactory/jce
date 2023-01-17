@@ -13,6 +13,11 @@
     <fields name="formatselect">
         <fieldset name="config">
             <field name="blockformats" type="blockformats" default="" label="WF_PARAM_BLOCK_FORMAT" description="WF_PARAM_BLOCK_FORMAT_DESC" />
+
+            <field name="preview_styles" type="yesno" default="1" label="WF_BLOCK_FORMAT_PREVIEW_STYLES" description="WF_BLOCK_FORMAT_PREVIEW_STYLES_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
         </fieldset>
     </fields>
     <help></help>
