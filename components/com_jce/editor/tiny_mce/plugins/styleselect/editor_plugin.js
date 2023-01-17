@@ -384,6 +384,8 @@
                     return;
                 }
 
+                var preview_styles = ed.getParam('styleselect_preview_styles', true);
+
                 each(ed.settings.importcss_classes, function (item, idx) {
                     var name = 'style_' + (counter + idx);
 
@@ -402,7 +404,7 @@
 
                         ctrl.add(fmt.title, name, {
                             style: function () {
-                                return item.style || '';
+                                return preview_styles ? (item.style || '') : '';
                             }
                         });
                     }
@@ -441,6 +443,8 @@
             ed.onPreInit.add(function () {
                 var formats = ed.getParam('style_formats'),
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
+
+                    var preview_styles = ed.getParam('styleselect_preview_styles', true);
 
                 // generic class format
                 ed.formatter.register('classname', {
@@ -531,7 +535,7 @@
 
                             ctrl.add(fmt.title, name, {
                                 style: function () {
-                                    return PreviewCss.getCssText(ed, fmt, true);
+                                    return preview_styles ? PreviewCss.getCssText(ed, fmt, true) : '';
                                 }
                             });
                         } else {
@@ -567,7 +571,7 @@
 
                             ctrl.add(ed.translate(key), name, {
                                 style: function () {
-                                    return PreviewCss.getCssText(ed, fmt, true);
+                                    return preview_styles ? PreviewCss.getCssText(ed, fmt, true) : '';
                                 }
                             });
                         }

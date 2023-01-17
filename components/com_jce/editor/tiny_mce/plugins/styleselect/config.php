@@ -206,6 +206,7 @@ class WFStyleselectPluginConfig
         }
 
         $settings['styleselect_sort'] = $wf->getParam('styleselect.sort', 1, 1);
+        $settings['styleselect_preview_styles'] = $wf->getParam('styleselect.preview_styles', 1, 1);
     }
 
     protected static function cleanString($string)
