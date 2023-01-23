@@ -265,7 +265,7 @@ class WFEditor
         // Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
 
-        if ($userParams) {
+        if ($userParams) {            
             // legacy format, eg: key:value;key:value
             if (!WFUtility::isJson($userParams)) {
                 $userParams = explode(';', $userParams);
@@ -274,11 +274,15 @@ class WFEditor
             }
 
             // Remove values with invalid key, must be indexed array
-            $userParams = array_filter($userParams, function ($key) {
-                return is_numeric($key);
-            }, ARRAY_FILTER_USE_KEY);
+            $userParams = array_filter($userParams, function ($value, $key) {
+                return is_numeric($key) && $value != "";
+            }, ARRAY_FILTER_USE_BOTH);
 
             foreach ($userParams as $userParam) {
+                if (empty($userParam)) {
+                    continue;
+                }
+                                
                 $name = '';
                 $value = '';
 
