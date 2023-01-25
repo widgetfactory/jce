@@ -79,7 +79,9 @@ class WFJoomlaPluginConfig
                 $href = '';
             }
 
-            $list[] = array(
+            $id = $button->get('name');
+
+            $list[$id] = array(
                 'name' => $name,
                 'title' => $title,
                 'icon' => $icon,
@@ -92,6 +94,6 @@ class WFJoomlaPluginConfig
             $i++;
         }
 
-        $settings['joomla_xtd_buttons'] = json_encode($list);
+        $settings['joomla_xtd_buttons'] = json_encode(array_values($list));
     }
 }

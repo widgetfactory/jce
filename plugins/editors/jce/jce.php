@@ -199,7 +199,7 @@ class plgEditorJCE extends CMSPlugin
 
             if (!empty($list)) {
                 $options = array(
-                    'joomla_xtd_buttons' => $list,
+                    'joomla_xtd_buttons' => array_values($list)
                 );
 
                 Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
@@ -246,7 +246,9 @@ class plgEditorJCE extends CMSPlugin
                         $href = '';
                     }
 
-                    $list[] = array(
+                    $id = $button->get('name');
+
+                    $list[$id] = array(
                         'name' => $name,
                         'title' => $title,
                         'icon' => $icon,
@@ -258,6 +260,7 @@ class plgEditorJCE extends CMSPlugin
                 }
             }
         }
+
         return $list;
     }
 
