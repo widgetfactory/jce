@@ -487,6 +487,11 @@
           if (ed.settings.padd_empty_editor) {
             o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
           }
+
+          // fix self-closing hr tags for pagebreak
+          o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*)\/?>/gi, '<hr$1class="system-pagebreak"$2 />');
+          // fix self-closing hr tags for readmore
+          o.content = o.content.replace(/<hr id="system-readmore"(.*)>/gi, '<hr id="system-readmore" />');
         }
       });
 
