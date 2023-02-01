@@ -19,6 +19,30 @@ class WFBrowserPlugin extends WFMediaManager
      */
     protected $_filetypes = 'doc,docx,dot,dotx,ppt,pps,pptx,ppsx,xls,xlsx,gif,jpeg,jpg,png,webp,apng,avif,pdf,zip,tar,gz,swf,rar,mov,mp4,m4a,flv,mkv,webm,ogg,ogv,qt,wmv,asx,asf,avi,wav,mp3,aiff,oga,odt,odg,odp,ods,odf,rtf,txt,csv';
 
+    private function isMediaField()
+    {
+        $app = JFactory::getApplication();
+        return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid');
+    }
+    
+    protected function getFileBrowserConfig($config = array())
+    {
+        $app = JFactory::getApplication();
+        
+        $config = parent::getFileBrowserConfig($config);
+
+        // update folder path if a value is passed from a mediafield url
+        if ($this->isMediaField()) {
+            $folder = $app->input->getString('folder', '');
+
+            if ($folder) {
+                $config['dir'] = WFUtility::makePath($config['dir'], trim(rawurldecode($folder)));
+            }
+        }
+
+        return $config;
+    }
+    
     public function __construct($config = array())
     {
         $app = JFactory::getApplication();
