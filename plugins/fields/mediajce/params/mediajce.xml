@@ -2,15 +2,16 @@
 <form>
 	<fields name="fieldparams">
 			<fieldset name="fieldparams">
-				<!--field
+				<field
 					name="extendedmedia"
 					type="list"
 					label="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_LABEL"
 					description="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_DESC"
+					default="0"
 				>
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
-				</field-->
+				</field>
 				
 				<field
 					name="mediatype"
@@ -52,13 +53,20 @@
 					<option value="download">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_DOWNLOAD</option>
 				</field>
 
-				<!--field
+				<field
+					name="media_folder"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_FOLDER_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_FOLDER_DESC"
+				/>
+
+				<field
 					name="media_caption_class"
 					type="text"
 					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CAPTION_CLASS_LABEL"
 					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CAPTION_CLASS_DESC"
 					showon="extendedmedia:1"
-				/-->
+				/>
 			</fieldset>
 		</fields>
 </form>

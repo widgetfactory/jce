@@ -109,6 +109,10 @@ class JFormFieldMediaJce extends MediaField
             return $data;
         }
 
+        if ($this->element['media_folder']) {
+            $this->link .= '&folder=' . rawurlencode($this->element['media_folder']);
+        }
+
         $extraData = array(
             'link'      => $this->link,
             'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'

@@ -341,7 +341,7 @@
         }).trigger('change');
     }
 
-    function updateMediaUrl(row, options, repeatable) {
+    function updateMediaUrl(row, options, repeatable) {        
         $(row).find('.field-media-wrapper').add(row).each(function () {
             // only subform and custom elements
             if ($(this).find('.wf-media-input-upload').length && !repeatable) {
