@@ -105,7 +105,7 @@ WFAggregator.add('youtube', {
 
         // process src
         src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
-            d = d.replace(/(watch\?v=|v\/|embed\/)/, '');
+            d = d.replace(/(watch\?v=|v\/|embed\/|live\/)/, '');
 
             if (b && !c) {
                 c = '.com';
@@ -212,7 +212,7 @@ WFAggregator.add('youtube', {
             id = query.v;
             delete query.v;
         } else {
-            var s = /\/?(embed|v)?\/([\w-]+)\b/.exec(u.path);
+            var s = /\/?(embed|live|v)?\/([\w-]+)\b/.exec(u.path);
 
             if (s && $.type(s) === "array") {
                 id = s.pop();
