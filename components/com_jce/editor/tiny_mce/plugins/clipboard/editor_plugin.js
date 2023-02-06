@@ -2698,7 +2698,7 @@
                               hadImage = true;
                               e.preventDefault();
 
-                              if (ed.settings.clipboard_paste_data_images) {
+                              if (ed.settings.clipboard_paste_data_images !== false) {
                                   var blob = item.getAsFile ? item.getAsFile() : item;
 
                                   var reader = new FileReader();

@@ -40,7 +40,7 @@ class WFClipboardPluginConfig
         $settings['clipboard_paste_keep_tags'] = $wf->getParam('clipboard.paste_keep_tags', '', '');
         $settings['clipboard_paste_filter'] = $wf->getParam('clipboard.paste_filter', '', '');
 
-        $settings['clipboard_paste_data_images'] = $wf->getParam('clipboard.paste_data_images', 0, 0, 'boolean');
+        $settings['clipboard_paste_data_images'] = $wf->getParam('clipboard.paste_data_images', 1, 1, 'boolean');
 
         // clean to remove duplicate items and empty values
         foreach(['clipboard_paste_retain_style_properties', 'clipboard_paste_remove_style_properties', 'clipboard_paste_remove_attributes', 'clipboard_paste_remove_tags', 'clipboard_paste_keep_tags'] as $key) {

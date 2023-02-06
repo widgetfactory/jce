@@ -44066,13 +44066,36 @@
                   }
 
                   var html = '' +
+                      '<div class="mceForm">' +
                       '<p>' + ed.getLang('upload.name_description', 'Please supply a name for this file') + '</p>' +
                       '<div class="mceModalRow">' +
                       '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.name', 'Name') + '</label>' +
                       '   <div class="mceModalControl mceModalControlAppend">' +
                       '       <input type="text" id="' + ed.id + '_blob_input" autofocus />' +
-                      '       <span role="presentation"></span>' +
+                      '       <select id="' + ed.id + '_blob_mimetype">' +
+                      '           <option value="jpeg">jpeg</option>' +
+                      '           <option value="png">png</option>' +
+                      '       </select>' +
                       '   </div>' +
+                      '</div>' +
+                      '<div class="mceModalRow">' +
+                      '   <label for="' + ed.id + '_blob_input">' + ed.getLang('dlg.quality', 'Quality') + '</label>' +
+                      '   <div class="mceModalControl">' +
+                      '       <select id="' + ed.id + '_blob_quality" class="mce-flex-25">' +
+                      '           <option value="100">100</option>' +
+                      '           <option value="90">90</option>' +
+                      '           <option value="80">80</option>' +
+                      '           <option value="70">70</option>' +
+                      '           <option value="60">60</option>' +
+                      '           <option value="50">50</option>' +
+                      '           <option value="40">40</option>' +
+                      '           <option value="30">30</option>' +
+                      '           <option value="20">20</option>' +
+                      '           <option value="10">10</option>' +
+                      '       </select>' +
+                      '       <span role="presentation">%</span>' +
+                      '   </div>' +
+                      '</div>' +
                       '</div>';
 
                   var win = ed.windowManager.open({
@@ -44124,12 +44147,19 @@
                                       return resolve();
                                   }
 
+                                  var ext = getImageExtension(blobInfo.filename()) || 'jpeg';
+
+                                  var quality = DOM.getValue(ed.id + '_blob_quality') || 100;
+                                  var mimetype = DOM.getValue(ed.id + '_blob_mimetype') || ext;
+
                                   var props = {
                                       method: 'upload',
                                       id: Uuid.uuid('wf_'),
                                       inline: 1,
                                       name: filename,
-                                      url: url + '&' + ed.settings.query
+                                      url: url + '&' + ed.settings.query,
+                                      mimetype: 'image/' + mimetype,
+                                      quality: quality
                                   };
 
                                   var images = tinymce.grep(ed.dom.select('img[src]'), function (image) {
@@ -44168,7 +44198,7 @@
                           }
                       ],
                       open: function () {
-                          DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
+                          //DOM.select('input + span', this.elm)[0].innerText = '.' + getImageExtension(blobInfo.filename());
 
                           window.setTimeout(function () {
                               DOM.get(ed.id + '_blob_input').focus();

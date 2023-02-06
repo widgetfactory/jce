@@ -473,6 +473,10 @@
     font-size: 14px;
 }
 
+.mceModal .mceModalContent select {
+    line-height: 1.5;
+}
+
 .mceModal .mceModalContent input[type]:disabled,
 .mceModal .mceModalContent textarea:disabled,
 .mceModal .mceModalContent select:disabled,
@@ -703,4 +707,16 @@
     opacity: 0;
     cursor: pointer;
     font-size: 500px;
+}
+
+.mceModalContent .mce-flex-25 {
+    flex-basis: 25%;
+}
+
+.mceModalContent .mce-flex-50 {
+    flex-basis: 50%;
+}
+
+.mceModalContent .mce-flex-75 {
+    flex-basis: 75%;
 }

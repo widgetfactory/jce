@@ -48,8 +48,6 @@
 }
 
 .mceDefaultSkin button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
 }
 
@@ -353,7 +351,7 @@
     padding: 0;
     line-height: 1rem;
     vertical-align: middle;
-    -webkit-appearance: none;
+    appearance: none;
     cursor: pointer;
     font-size: 16px;
     text-align: center;
@@ -627,8 +625,7 @@
 }
 
 .mceMenu .mceMenuItems .mceMenuHtml select:not([multiple]):not([size]) {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     padding-right: 20px;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;
@@ -693,8 +690,6 @@
     padding: 4px;
     min-width: 32px;
     min-height: 32px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     cursor: pointer;
     outline: none;
@@ -2020,8 +2015,7 @@ select.mceNativeListBox {
 }
 
 .mceDefaultSkin .mcePanel select:not([multiple]):not([size]) {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     padding-right: 20px;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;
@@ -2037,7 +2031,7 @@ select.mceNativeListBox {
 }
 
 .mceDefaultSkin .mcePanel .mcePanelFooter .mceButton {
-    -webkit-appearance: none;
+    appearance: none;
     margin: 0 0 0 5px;
     border: none;
     overflow: visible;
@@ -2182,9 +2176,7 @@ select.mceNativeListBox {
     text-align: center;
     cursor: pointer;
     user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -webkit-appearance: none;
+    appearance: none;
     background: #fff;
 }
 
@@ -2876,6 +2868,10 @@ select.mceNativeListBox {
     font-size: 14px;
 }
 
+.mceModal .mceModalContent select {
+    line-height: 1.5;
+}
+
 .mceModal .mceModalContent input[type]:disabled,
 .mceModal .mceModalContent textarea:disabled,
 .mceModal .mceModalContent select:disabled,
@@ -2987,8 +2983,7 @@ select.mceNativeListBox {
 
 /* style select */
 .mceModal .mceModalContent select:not([multiple]):not([size]) {
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    appearance: none;
     padding-right: 20px;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
     background-repeat: no-repeat;
@@ -3103,10 +3098,22 @@ select.mceNativeListBox {
     width: 100%;
     height: 100%;
     left: 0;
-    -webkit-appearance: none;
+    appearance: none;
     opacity: 0;
     cursor: pointer;
     font-size: 500px;
+}
+
+.mceModalContent .mce-flex-25 {
+    flex-basis: 25%;
+}
+
+.mceModalContent .mce-flex-50 {
+    flex-basis: 50%;
+}
+
+.mceModalContent .mce-flex-75 {
+    flex-basis: 75%;
 }.mceForm {
     width: 100%;
     height: 100%;
