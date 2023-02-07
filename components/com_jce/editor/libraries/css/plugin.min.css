@@ -2141,6 +2141,24 @@ input.colour {
         display: none;
     }
 }
+
+.uk-button.uk-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.uk-input-clear .uk-icon {
+    opacity: 0.5;
+}
+
+.uk-input-clear .uk-icon:hover {
+    opacity: 0.75;
+}
+
+.uk-input-clear .uk-icon:before {
+    font-size: 0.625em;
+}
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
@@ -3070,8 +3088,7 @@ div#previewblock {
   width: 16px;
   overflow: hidden;
   vertical-align: middle;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  appearance: none;
   background-color: #fff;
   background-repeat: no-repeat;
   background-position: 50% 50%;

@@ -436,3 +436,21 @@ input.colour {
         display: none;
     }
 }
+
+.uk-button.uk-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.uk-input-clear .uk-icon {
+    opacity: 0.5;
+}
+
+.uk-input-clear .uk-icon:hover {
+    opacity: 0.75;
+}
+
+.uk-input-clear .uk-icon:before {
+    font-size: 0.625em;
+}

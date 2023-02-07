@@ -123,6 +123,8 @@
 
             $('.uk-datalist').datalist({ loading: self.translate('message_load', 'Loading...') });
 
+            $('.uk-input-clear').clearable();
+
             // activate tooltips
             $('.hastip, .tip, .tooltip').tips();
 

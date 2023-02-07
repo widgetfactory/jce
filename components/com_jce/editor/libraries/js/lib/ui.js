@@ -401,6 +401,18 @@
         return this;
     };
 
+    $.fn.clearable = function () {
+        return this.each(function () {
+            var el = this;
+
+            $(this).addClass('uk-form-icon uk-form-icon-flip');
+            
+            $('<button class="uk-icon uk-icon-close uk-button uk-button-link">').on('click', function () {
+                $(el).find('input').val('').trigger('change');
+            }).appendTo(this);
+        });
+    };
+
     $.fn.dialog = function () {
         return this;
     };
