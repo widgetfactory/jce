@@ -166,9 +166,6 @@
                 // Longdesc may contain absolute url too
                 $('#longdesc').val(ed.convertURL(ed.dom.getAttrib(n, 'longdesc')));
 
-                // onmouseover / onmouseout
-                $('#onmouseout').val(src);
-
                 $.each(['mouseover', 'mouseout'], function (i, key) {
                     // get value from data-* attributes
                     var val = ed.dom.getAttrib(n, 'data-' + key);
@@ -178,6 +175,12 @@
                     val = val.replace(/^\s*this.src\s*=\s*\'([^\']+)\';?\s*$/, '$1').replace(/^\s*|\s*$/g, '');
                     // convert to relative
                     val = ed.convertURL(val);
+
+                    // set src as default
+                    if (key == 'mouseout' && !val) {
+                        val = src;
+                    }
+
                     // update value with on prefix
                     $('#on' + key).val(val);
                 });
@@ -305,12 +308,15 @@
             var over = $('#onmouseover').val(),
                 out = $('#onmouseout').val();
 
-            if (over && out) {
-                args = $.extend(args, {
-                    'data-mouseover': ed.convertURL(over),
-                    'data-mouseout': ed.convertURL(out)
-                });
+            // must have both values, otherwise remove
+            if (!over) {
+                out = '';
             }
+            
+            args = $.extend(args, {
+                'data-mouseover': over ? ed.convertURL(over) : '',
+                'data-mouseout': out ? ed.convertURL(out) : ''
+            });
 
             el = ed.selection.getNode();
             br = el.nextSibling;
