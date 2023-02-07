@@ -1969,8 +1969,8 @@
 
           // remove or processs for upload img element if blank, local file url or base64 encoded
           if (!src || isValidDataUriImage(src)) {
-              // leave it as it is to be processed as a blob
-              if (ed.settings.clipboard_paste_data_images) {
+              // leave it as it is to be processed as a blob (but skip file:// images)
+              if (ed.settings.clipboard_paste_data_images !== false && src.indexOf('file://') === -1) {
                   return true;
               }
 
@@ -2479,6 +2479,8 @@
 
                   // sanitize content
                   o.content = sanitizePastedHTML(o.content);
+
+                  console.log(o.content);
 
                   // convert urls in content
                   if (ed.getParam('clipboard_paste_convert_urls', true)) {
