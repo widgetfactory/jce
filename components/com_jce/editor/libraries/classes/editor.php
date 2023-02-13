@@ -1083,7 +1083,7 @@ class WFEditor
         }
 
         $query = $db->getQuery(true);
-        $query->select('id, template AS name, params, home')->from('#__template_styles')->where(array('client_id = 0'));
+        $query->select('*, template AS name')->from('#__template_styles')->where(array('client_id = 0'));
 
         $db->setQuery($query);
         $templates = $db->loadObjectList();

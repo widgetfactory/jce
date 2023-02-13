@@ -15,6 +15,24 @@ class WfTemplateCore extends JPlugin
             return false;
         }
 
+        // search for parent template.css file using JPath
+        if ($template->parent) {
+            $file = JPath::find(array(
+                JPATH_SITE . '/templates/' . $template->parent . '/css',
+                JPATH_SITE . '/media/templates/site/' . $template->parent . '/css'
+            ), 'template.css');
+
+            if ($file) {
+                // make relative
+                $file = str_replace(JPATH_SITE, '', $file);
+                
+                // remove leading slash
+                $file = trim($file, '/');
+
+                $files[] = $file;
+            }
+        }
+
         // search for template.css file using JPath
         $file = JPath::find(array(
             JPATH_SITE . '/templates/' . $template->name . '/css',
