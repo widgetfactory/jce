@@ -33,7 +33,7 @@ class WFBrowserPlugin extends WFMediaManager
 
         // update folder path if a value is passed from a mediafield url
         if ($this->isMediaField()) {
-            $folder = $app->input->getString('folder', '');
+            $folder = $app->input->getString('mediafolder', '');
 
             if ($folder) {
                 $config['dir'] = WFUtility::makePath($config['dir'], trim(rawurldecode($folder)));
