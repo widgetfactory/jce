@@ -110,7 +110,7 @@ class JFormFieldMediaJce extends MediaField
         }
 
         if ($this->element['media_folder']) {
-            $this->link .= '&folder=' . rawurlencode($this->element['media_folder']);
+            $this->link .= '&mediafolder=' . rawurlencode($this->element['media_folder']);
         }
 
         $extraData = array(
