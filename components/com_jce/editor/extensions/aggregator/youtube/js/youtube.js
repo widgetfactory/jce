@@ -22,6 +22,7 @@ WFAggregator.add('youtube', {
     props: {
         rel: 1,
         autoplay: 0,
+        mute: 0,
         controls: 1,
         modestbranding: 0,
         enablejsapi: 0,
@@ -35,6 +36,12 @@ WFAggregator.add('youtube', {
         $.each(this.params, function (k, v) {
             $('#youtube_' + k).val(v).filter(':checkbox, :radio').prop('checked', !!v);
         });
+
+        $('#youtube_autoplay').on('change', function () {
+            if (this.checked) {
+                $('#youtube_mute').prop('checked', true);
+            }
+        }).trigger('change');
     },
     getTitle: function () {
         return this.title || this.name;
@@ -102,6 +109,10 @@ WFAggregator.add('youtube', {
 
             args[k] = v;
         });
+
+        if (args.autoplay == 1) {
+            args.mute = 1;
+        }
 
         // process src
         src = src.replace(/youtu(\.)?be([^\/]+)?\/(.+)/, function (a, b, c, d) {
@@ -228,6 +239,10 @@ WFAggregator.add('youtube', {
             }
 
             if (key == 'autoplay') {
+                val = parseInt(val, 10);
+            }
+
+            if (key == 'mute') {
                 val = parseInt(val, 10);
             }
 

@@ -31,35 +31,47 @@ defined('_WF_EXT') or die('RESTRICTED');
       </label>
     </div>
     <div class="uk-width-6-10">
-      <input type="checkbox" id="youtube_privacy" />
-      <label for="youtube_privacy" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>" class="tooltip">
-        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?>
+      <input type="checkbox" id="youtube_mute" />
+      <label for="youtube_mute" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MUTE_DESC') ?>" class="tooltip">
+        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MUTE') ?>
       </label>
     </div>
   </div>
   <div class="uk-form-row uk-grid uk-grid-small">
-    <div class="uk-width-4-10 uk-grid uk-grid-collapse">
+    <div class="uk-width-4-10">
       <input type="checkbox" id="youtube_modestbranding" checked />
       <label for="youtube_modestbranding" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING_DESC') ?>" class="tooltip">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_MODESTBRANDING') ?>
       </label>
     </div>
 
-    <div class="uk-width-6-10 uk-grid uk-grid-collapse">
+    <div class="uk-width-6-10">
+      <input type="checkbox" id="youtube_privacy" />
+      <label for="youtube_privacy" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY_DESC') ?>" class="tooltip">
+        <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_PRIVACY') ?>
+      </label>
+    </div>
+
+  </div>
+
+  <div class="uk-grid uk-grid-small">
       <label for="youtube_rel" class="uk-form-label uk-width-1-5 tooltip" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_DESC') ?>">
         <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED') ?>
       </label>
 
-      <select id="youtube_rel">
-        <option value="1">
-          <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_ALL') ?>
-        </option>
-        <option value="0">
-          <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_CHANNEL') ?>
-        </option>
-      </select>
+      <div class="uk-form-controls uk-width-4-5">
+
+        <select id="youtube_rel">
+          <option value="1">
+            <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_ALL') ?>
+          </option>
+          <option value="0">
+            <?php echo JText::_('WF_AGGREGATOR_YOUTUBE_RELATED_CHANNEL') ?>
+          </option>
+        </select>
+
+      </div>
     </div>
-  </div>
 
   <div class="uk-grid uk-grid-small">
     <label for="youtube_start" title="<?php echo JText::_('WF_AGGREGATOR_YOUTUBE_START_DESC') ?>" class="tooltip uk-form-label uk-width-2-10">
