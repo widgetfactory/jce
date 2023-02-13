@@ -20,6 +20,16 @@
 
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
 
+    function isNonEditable(node) {
+        var nonEditClass = tinymce.settings.noneditable_noneditable_class || 'mceNonEditable';
+        
+        if (node.attr) {
+            return node.hasClass(nonEditClass);
+        }
+
+        return DOM.hasClass(node, nonEditClass);
+    }
+
     /**
      * Check if a node is wrapped in a "responsive" container
      * @param {Node} node 
@@ -313,6 +323,11 @@
     var validateIframe = function (editor, node) {
         var src = node.attr('src');
 
+        // keep nonEditable nodes
+        if (isNonEditable(node)) {
+            return true;
+        }
+
         if (editor.settings.iframes_allow_supported) {
             if (!src) {
                 return false;
@@ -591,6 +606,11 @@
             src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
             "data-mce-object": node.name
         });
+
+        if (isNonEditable(node)) {
+            placeHolder.attr('contenteditable', 'false');
+            placeHolder.attr('data-mce-resize', 'false');
+        }
 
         return placeHolder;
     };
@@ -1172,7 +1192,7 @@
     };
 
     var placeHolderConverter = function (editor) {
-        var invalid_elements = editor.settings.invalid_elements.split(',');
+        var invalid_elements = editor.settings.invalid_elements.split(','), valid_elements = editor.settings.media_valid_elements.split(',');
 
         return function (nodes) {
             var i = nodes.length;
@@ -1191,16 +1211,19 @@
 
                 // mark iframe for removal if invalid
                 if (node.name === 'iframe' && validateIframe(editor, node) === false) {
-                    invalid_elements.push('iframe');
-                }
-
-                // if valid node (validate == false)
-                if (tinymce.inArray(invalid_elements, node.name) !== -1) {
+                    //invalid_elements.push('iframe');
                     node.remove();
                     continue;
                 }
 
-                if (editor.settings.media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node)) {
+                // if valid node (validate == false)
+                if (tinymce.inArray(valid_elements, node.name) === -1 && !isNonEditable(node)) {
+                    //invalid_elements.push(node.name);
+                    node.remove();
+                    continue;
+                }
+
+                if (editor.settings.media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(node)) {
                     if (!isWithinEmbed(node)) {
                         node.replace(createPreviewNode(editor, node));
                     }
@@ -1217,6 +1240,8 @@
                     }
                 }
             }
+
+            editor.settings.invalid_elements = invalid_elements.join(',');
         };
     };
 
@@ -1466,7 +1491,7 @@
         function objectActivate(ed, e) {
             var node = ed.dom.getParent(e.target, '.mce-object-preview');
 
-            if (node) {
+            if (node && !isNonEditable(node)) {
                 ed.selection.select(node);
 
                 if (ed.dom.getAttrib(node, 'data-mce-selected')) {
@@ -1670,6 +1695,10 @@
 
                 if (node) {
                     if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
+                        if (isNonEditable(node)) {
+                            return;
+                        }
+                        
                         if (e.type === 'click' && VK.metaKeyPressed(e)) {
                             e.target = placeholderToPreview(ed, node);
                         }
@@ -1738,6 +1767,12 @@
                     }
 
                     if (isMediaNode(node)) {
+                        
+                        if (isNonEditable(node)) {
+                            e.preventDefault();
+                            return;
+                        }
+                        
                         node = ed.dom.getParent(node, '[data-mce-object]') || node;
                         ed.dom.remove(node);
 
