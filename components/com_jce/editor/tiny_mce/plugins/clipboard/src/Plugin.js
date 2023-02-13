@@ -543,7 +543,7 @@ function convertURLs(ed, content) {
         content = wrapContent(content);
 
         // find and link url if not already linked
-        content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {            
+        content = content.replace(new RegExp('(' + attribRe + '|' + bracketRe + ')?' + ux, 'gi'), function (match, extra, url) {
             if (extra) {
                 return match;
             }
@@ -692,7 +692,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             }
 
             if (data.content) {
-                pasteHtml(data.content);
+                pasteHtml(data.content, data.internal || false);
             }
         });
 
@@ -809,8 +809,6 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
                 // sanitize content
                 o.content = sanitizePastedHTML(o.content);
-
-                console.log(o.content);
 
                 // convert urls in content
                 if (ed.getParam('clipboard_paste_convert_urls', true)) {
@@ -1074,7 +1072,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
         }
 
-        function getContentAndInsert(e) {            
+        function getContentAndInsert(e) {
             // Getting content from the Clipboard can take some time
             var clipboardTimer = new Date().getTime();
             var clipboardContent = getClipboardContent(ed, e);
@@ -1176,6 +1174,8 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                 '   <div class="mceModalControl">' + ctrl + '</div>' +
                 '</div>';
 
+            var isInternalContent = false;
+
             ed.windowManager.open({
                 title: title,
                 content: html,
@@ -1214,6 +1214,18 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
                     window.setTimeout(function () {
                         ifr.contentWindow.focus();
+
+                        doc.addEventListener('paste', function (e) {
+                            var clipboardContent = getDataTransferItems(e.clipboardData || e.dataTransfer || doc.dataTransfer);
+
+                            if (clipboardContent) {
+                                
+                                isInternalContent = hasContentType(clipboardContent, 'x-tinymce/html');                                
+                                doc.body.innerHTML = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'] || '';
+                                e.preventDefault();
+                            }
+                        });
+
                     }, 10);
                 },
                 buttons: [
@@ -1233,8 +1245,12 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                                 var content = node.contentWindow.document.body.innerHTML;
                                 // Remove styles
                                 content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
+                                // Remove meta (Chrome)
+                                content = content.replace(/<meta([^>]+)>/, '');
                                 // trim and assign
                                 data.content = tinymce.trim(content);
+                                // set internal flag
+                                data.internal = isInternalContent;
                             }
 
                             ed.execCommand('mceInsertClipboardContent', false, data);
