@@ -41677,6 +41677,8 @@
               });
 
               ed.onUpdateMedia.add(function (ed, o) {
+                  bindMouseoverEvent(ed);
+                  
                   if (!o.before || !o.after) {
                       return;
                   }
@@ -41700,10 +41702,12 @@
           });
 
           function bindMouseoverEvent(ed) {
-              each(ed.dom.select('img[data-mouseover]'), function (elm) {
-                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover');
+              each(ed.dom.select('img'), function (elm) {
+                  var src = elm.getAttribute('src'), mouseover = elm.getAttribute('data-mouseover'), mouseout = elm.getAttribute('data-mouseout');
 
-                  if (!src || !mouseover) {
+                  elm.onmouseover = elm.onmouseout = null;
+
+                  if (!src || !mouseover || !mouseout) {
                       return true;
                   }
 
