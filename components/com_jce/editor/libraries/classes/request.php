@@ -176,17 +176,19 @@ final class WFRequest extends JObject
                 $fn = JFilterInput::getInstance()->clean($fn, 'cmd');
 
                 // pass params to input and flatten
-                if (!empty($json->params)) {
-                    // check query
-                    $this->checkQuery($json->params);
+                if (empty($json->params)) {   
+                    $json->params = "";
+                }
+                    
+                // check query
+                $this->checkQuery($json->params);
 
-                    // merge array with args
-                    if (is_array($json->params)) {
-                        $args = array_merge($args, $json->params);
-                    // pass through string or object
-                    } else {
-                        $args[] = $json->params;
-                    }
+                // merge array with args
+                if (is_array($json->params)) {
+                    $args = array_merge($args, $json->params);
+                // pass through string or object
+                } else {
+                    $args[] = $json->params;
                 }
             } else {
                 $fn = $method;
