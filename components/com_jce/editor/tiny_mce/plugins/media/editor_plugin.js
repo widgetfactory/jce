@@ -78,6 +78,18 @@
         return style.display == 'block' && style['margin-left'] == 'auto' && style['margin-right'] == 'auto';
     }
 
+    var mediaProviders = {
+        'youtube' : /youtu(\.)?be(.+)?\/(.+)/,
+        'vimeo' : /vimeo(.+)?\/(.+)/,
+        'dailymotion' : /dai\.?ly(motion)?(\.com)?/,
+        'scribd' : /scribd\.com\/(.+)/,
+        'slideshare' : /slideshare\.net\/(.+)\/(.+)/,
+        'soundcloud' : /soundcloud\.com\/(.+)/,
+        'spotify' : /spotify\.com\/(.+)/,
+        'ted' : /ted\.com\/talks\/(.+)/,
+        'twitch' : /twitch\.tv\/(.+)/
+    };
+
     /**
     * Get a default set of media properties based on the url
     * @param {string} data 
@@ -319,6 +331,23 @@
 
         return true;
     };
+
+    function isSupportedIframe(ed, url) {
+        var providers = ed.settings.iframe_supported || [];
+
+        var supported = false;
+
+        each(providers, function (value) {
+            var rx = mediaProviders[value] || (value + '\/(.+)/');
+            supported = new RegExp(rx).test(url);
+
+            if (supported) {
+                return true;
+            }
+        });
+
+        return supported;
+    }
 
     var validateIframe = function (editor, node) {
         var src = node.attr('src');
@@ -1285,7 +1314,7 @@
         var node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
 
         // validate node
-        if (!node) {
+        if (!node || node.nodeType != 1) {
             return data;
         }
 
@@ -1310,7 +1339,7 @@
             }
 
             // reset node to iframe
-            node = node.firstChild;
+            node = ed.dom.select('iframe', node)[0];
         }
 
         // mediatype
@@ -1642,7 +1671,7 @@
                         var src = ed.dom.getAttrib(node, 'src') || ed.dom.getAttrib(node, 'data-mce-p-src') || '';
 
                         if (src) {
-                            var str = isSupportedMedia(ed, src) || '';
+                            var str = isSupportedMedia(src) || '';
 
                             if (str) {
                                 name = str[0].toUpperCase() + str.slice(1);
