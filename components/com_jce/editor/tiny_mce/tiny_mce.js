@@ -33410,7 +33410,7 @@
 
             var classes = selector[2].substr(1).split('.');
 
-            each(classes, function (cls) {
+            each(classes, function (cls) {            
               ctrl.add(cls, cls, {
                 style: function () {
                   return item.style || PreviewCss.getCssText(ed, { classes: cls });
@@ -42502,7 +42502,7 @@
                   each(r.selectorText.split(','), function (v) {                  
                     v = v.trim();
 
-                    if (v.indexOf('.mce') == 0) {
+                    if (v.indexOf('.mce') == 0 || v.indexOf('.mce-') !== -1) {
                       return;
                     }
 
