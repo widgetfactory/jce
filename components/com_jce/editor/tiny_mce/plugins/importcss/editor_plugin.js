@@ -421,7 +421,7 @@
                 each(r.selectorText.split(','), function (v) {                  
                   v = v.trim();
 
-                  if (v.indexOf('.mce') == 0) {
+                  if (v.indexOf('.mce') == 0 || v.indexOf('.mce-') !== -1) {
                     return;
                   }
 
