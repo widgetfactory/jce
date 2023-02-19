@@ -295,7 +295,7 @@
                 e = DOM.getParent(e.target, 'a');
 
                 if (e && e.nodeName == 'A') {
-                    self._sel(e.className.replace(/^.*mcePath_([0-9]+).*$/, '$1'));
+                    ed.execCommand('mceSelectNodeDepth', false, e.getAttribute('data-index') || 0);
                     return false;
                 }
             });
@@ -616,28 +616,43 @@
 
         _nodeChanged: function (ed, cm, n, co, ob) {
             var self = this,
-                p, de = 0,
-                v, s = self.settings;
+                p, s = self.settings;
 
             tinymce.each(self.stateControls, function (c) {
                 cm.setActive(c, ed.queryCommandState(self.controls[c][1]));
             });
 
-            function getParent(name) {
-                var i, parents = ob.parents,
-                    func = name;
+            function getParents(node) {
+                var outParents = [], parents = node.parents, i = parents.length;
 
-                if (typeof (name) == 'string') {
-                    func = function (node) {
-                        return node.nodeName == name;
-                    };
-                }
+                for (var i = 0, l = parents.length; i < l; i++) {
+                    parent = parents[i];
 
-                for (i = 0; i < parents.length; i++) {
-                    if (func(parents[i])) {
-                        return parents[i];
+                    var cls = parent.className || '';
+                    
+                    // Ignore non element 
+                    if (parent.nodeType != 1) {
+                        continue;
                     }
+
+                    // Ignore bogus/hidden elements
+                    if (isBogusOrBookmarkOrCaret(parent)) {
+                        continue;
+                    }
+
+                    // ignore linebreaks
+                    if (parent.nodeName == 'BR') {
+                        continue;
+                    }
+
+                    if (parent.hasAttribute('data-mce-bogus') || parent.hasAttribute('data-mce-root') || parent.hasAttribute('data-mce-internal')) {
+                        continue;
+                    }
+
+                    outParents.push(parent);
                 }
+
+                return outParents;
             }
 
             function isBogusOrBookmarkOrCaret(node) {
@@ -661,139 +676,31 @@
 
                 DOM.setHTML(p, '');
 
-                getParent(function (n) {
-                    var na = n.nodeName.toLowerCase(), pi, ti = '';
+                var parents = getParents(ob), html = '';
 
-                    var cls = n.className || '';
+                for (var i = 0, l = parents.length; i < l; i++) {
+                    var parent = parents[i];
 
-                    // Ignore non element 
-                    if (n.nodeType != 1) {
-                        return;
-                    }
-
-                    // Ignore bogus/hidden elements
-                    if (isBogusOrBookmarkOrCaret(n)) {
-                        return;
-                    }
-
-                    // ignore linebreaks
-                    if (na == 'br') {
-                        return;
-                    }
-
-                    if (n.hasAttribute('data-mce-bogus') || n.hasAttribute('data-mce-root') || n.hasAttribute('data-mce-internal')) {
-                        return;
-                    }
-
-                    // ignore internal item/object
-                    if (/mce-(item|object)-(hidden|removed|shim)/i.test(cls)) {
-                        return;
-                    }
-
-                    // Remove internal prefix
-                    na = na.replace(/mce\:/g, '');
-
-                    // Handle node name
-                    switch (na) {
-                        case 'b':
-                            na = 'strong';
-                            break;
-
-                        case 'img':
-                            if ((v = DOM.getAttrib(n, 'src'))) {
-                                ti += 'src: ' + v + ' ';
-                            }
-                            break;
-
-                        case 'a':
-                            if ((v = DOM.getAttrib(n, 'href'))) {
-                                ti += 'href: ' + v + ' ';
-                            }
-
-                            break;
-
-                        case 'font':
-                            if ((v = DOM.getAttrib(n, 'face'))) {
-                                ti += 'font: ' + v + ' ';
-                            }
-
-                            if ((v = DOM.getAttrib(n, 'size'))) {
-                                ti += 'size: ' + v + ' ';
-                            }
-
-                            if ((v = DOM.getAttrib(n, 'color'))) {
-                                ti += 'color: ' + v + ' ';
-                            }
-
-                            break;
-
-                        case 'span':
-                            if ((v = DOM.getAttrib(n, 'style'))) {
-                                ti += 'style: ' + v + ' ';
-                            }
-
-                            break;
-                    }
-
-                    if ((v = DOM.getAttrib(n, 'id'))) {
-                        ti += 'id: ' + v + ' ';
-                    }
-
-                    if (ed.settings.theme_path_show_classnames !== false) {
-                        v = DOM.getAttrib(n, 'class');
-
-                        if (v) {
-                            v = v.replace(/mce-item-[\w]+/g, '');
-                            v = tinymce.trim(v);
-
-                            if (v) {
-                                ti += 'class: ' + v + ' ';
-
-                                if (ed.dom.isBlock(n) || na == 'img' || na == 'span') {
-                                    na += '.' + v;
-                                }
-                            }
-                        }
-                    }
-
-                    na = na.replace(/(html:)/g, '');
+                    var name = parent.nodeName.toLowerCase();
 
                     var args = {
-                        name: na,
-                        node: n,
-                        title: ti
+                        name: name,
+                        node: parent,
+                        title: name
                     };
 
                     self.onResolveName.dispatch(self, args);
 
-                    ti = args.title;
-                    na = args.name;
-
-                    if (na) {
-                        pi = DOM.create('span', {
-                            class: 'mceText'
-                        }, na);
-
+                    if (args.name) {
                         if (!args.disabled) {
-                            pi = DOM.create('a', {
-                                href: "#",
-                                role: 'button',
-                                title: ti,
-                                class: 'mcePath_' + (de++)
-                            }, pi);
-                        }
-
-                        if (p.hasChildNodes()) {
-                            p.insertBefore(DOM.create('span', {
-                                'aria-hidden': 'true'
-                            }, '\u00a0\u00bb '), p.firstChild);
-                            p.insertBefore(pi, p.firstChild);
+                            html = '<a role="button" title="' + args.title + '" data-index="' + i + '"><span class="mceText">' + args.name + '</span></a>' + html;
                         } else {
-                            p.appendChild(pi);
+                            html = '<span class="mceText">' + args.name + '</span>' + html;
                         }
                     }
+                }
 
-                }, ed.getBody());
+                DOM.setHTML(p, html);
 
                 if (DOM.select('a', p).length > 0) {
                     self.statusKeyboardNavigation = new tinymce.ui.KeyboardNavigation({
@@ -826,11 +733,6 @@
                     }
                 });
             }
-        },
-
-        // Commands gets called by execCommand
-        _sel: function (v) {
-            this.editor.execCommand('mceSelectNodeDepth', false, v);
         },
 
         _mceNewDocument: function () {

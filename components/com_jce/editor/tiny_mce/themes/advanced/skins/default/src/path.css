@@ -23,6 +23,13 @@
     cursor: pointer;
 }
 
+.mcePathPath a:not(:last-child):after {
+    content: "\00bb";
+    display: inline-block;
+    text-decoration: none;
+    margin: 0 0.25em;
+}
+
 .mcePathHidden:after {
     content: "...";
     display: inline-block;
@@ -34,6 +41,7 @@
     min-width: 32px;
     margin: 0 5px 0 0;
     font-size: 14px;
+    user-select: none; 
 }
 
 .mcePathPath {
