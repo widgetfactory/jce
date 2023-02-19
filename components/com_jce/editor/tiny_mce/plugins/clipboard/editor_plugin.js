@@ -2877,17 +2877,14 @@
 
                       // Write content into iframe
                       doc.open();
-                      doc.write('<html><head><base href="' + ed.settings.base_url + '" />' + cssHTML + '</head><body class="mceContentBody" spellcheck="false">&nbsp;</body></html>');
+                      doc.write('<html><head><base href="' + ed.settings.base_url + '" />' + cssHTML + '</head><body class="mceContentBody" spellcheck="false" contenteditable="true">&nbsp;</body></html>');
                       doc.close();
-
-                      doc.designMode = 'on';
 
                       window.setTimeout(function () {
                           var win = ifr.contentWindow;
-
                           win.focus();
 
-                          doc.addEventListener('paste', function (e) {
+                            doc.addEventListener('paste', function (e) {
                               var clipboardContent = getDataTransferItems(e.clipboardData || e.dataTransfer || doc.dataTransfer);
 
                               if (clipboardContent) {
