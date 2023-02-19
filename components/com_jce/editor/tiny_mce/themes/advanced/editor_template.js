@@ -627,8 +627,6 @@
 
                 for (var i = 0, l = parents.length; i < l; i++) {
                     parent = parents[i];
-
-                    var cls = parent.className || '';
                     
                     // Ignore non element 
                     if (parent.nodeType != 1) {
