@@ -32018,8 +32018,10 @@
         mceSelectNodeDepth: function (command, ui, value) {
           var counter = 0;
 
-          dom.getParent(selection.getNode(), function (node) {
-            if (node.nodeType == 1 && counter++ == value) {
+          value = parseInt(value, 10);
+
+          dom.getParent(selection.getNode(), function (node) {          
+            if (node.nodeType == 1 && counter++ == value) {            
               selection.select(node);
               return FALSE;
             }
