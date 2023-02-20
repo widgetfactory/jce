@@ -127,8 +127,19 @@ class JFormFieldContainer extends JFormField
                 $name = (string) $field->element['name'];
                 $value = (string) $field->element['default'];
 
+                if (empty($name)) {
+                    continue;
+                }
+
                 if (isset($data->$name)) {
                     $value = $data->$name;
+                }
+
+                $type = (string) $field->element['type'];
+
+                // convert checkboxes value to string
+                if ($type == 'checkboxes') {
+                    $value = is_array($value) ? implode(',', $value) : $value;
                 }
 
                 if (is_array($value)) {
