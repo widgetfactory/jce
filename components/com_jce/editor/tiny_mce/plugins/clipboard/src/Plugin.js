@@ -15,17 +15,15 @@ import * as Newlines from './Newlines';
 import * as InternalHtml from './InternalHtml';
 import * as Utils from './Utils';
 import * as WordFilter from './WordFilter';
+import * as Dialog from './Dialog.js';
 import PasteBin from './PasteBin.js';
 
 var each = tinymce.each,
     VK = tinymce.VK,
     DomParser = tinymce.html.DomParser,
     Serializer = tinymce.html.Serializer,
-    DOM = tinymce.DOM,
     Dispatcher = tinymce.util.Dispatcher,
     BlobCache = tinymce.file.BlobCache;
-
-var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
 function getBase64FromUri(uri) {
     var idx;
@@ -576,41 +574,6 @@ function convertURLs(ed, content) {
 }
 
 /**
- * Gets various content types out of a datatransfer object.
- *
- * @param {DataTransfer} dataTransfer Event fired on paste.
- * @return {Object} Object with mime types and data for those mime types.
- */
-function getDataTransferItems(dataTransfer) {
-    var items = {};
-
-    if (dataTransfer) {
-        // Use old WebKit/IE API
-        if (dataTransfer.getData) {
-            var legacyText = dataTransfer.getData('Text');
-            if (legacyText && legacyText.length > 0) {
-                if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
-                    items['text/plain'] = legacyText;
-                }
-            }
-        }
-
-        if (dataTransfer.types) {
-            for (var i = 0; i < dataTransfer.types.length; i++) {
-                var contentType = dataTransfer.types[i];
-                try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
-                    items[contentType] = dataTransfer.getData(contentType);
-                } catch (ex) {
-                    items[contentType] = ""; // useless in general, but for consistency across browsers
-                }
-            }
-        }
-    }
-
-    return items;
-}
-
-/**
  * Gets various content types out of the Clipboard API. It will also get the
  * plain text using older IE and WebKit API:s.
  *
@@ -618,7 +581,7 @@ function getDataTransferItems(dataTransfer) {
  * @return {Object} Object with mime types and data for those mime types.
  */
 function getClipboardContent(editor, clipboardEvent) {
-    var content = getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
+    var content = Utils.getDataTransferItems(clipboardEvent.clipboardData || clipboardEvent.dataTransfer || editor.getDoc().dataTransfer);
     //var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
 
     return content;
@@ -628,12 +591,8 @@ function isKeyboardPasteEvent(e) {
     return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
 }
 
-function hasContentType(clipboardContent, mimeType) {
-    return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
-}
-
 function hasHtmlOrText(content) {
-    return (hasContentType(content, 'text/html') || hasContentType(content, 'text/plain')) && !content.Files;
+    return (Utils.hasContentType(content, 'text/html') || Utils.hasContentType(content, 'text/plain')) && !content.Files;
 }
 
 // IE flag to include Edge
@@ -927,7 +886,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             if (self.pasteAsPlainText) {
                 // Use plain text contents from Clipboard API unless the HTML contains paragraphs then
                 // we should convert the HTML to plain text since works better when pasting HTML/Word contents as plain text
-                if (hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
+                if (Utils.hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
                     content = clipboardContent['text/plain'];
                 } else {
                     content = Utils.innerText(content);
@@ -1005,7 +964,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
         }
 
         function isHtmlPaste(content) {
-            if (!hasContentType(content, "text/html")) {
+            if (!Utils.hasContentType(content, "text/html")) {
                 return false;
             }
 
@@ -1086,7 +1045,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                 return (new Date().getTime() - keyboardPasteTimeStamp - clipboardDelay) < 1000;
             }
 
-            var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
+            var internal = Utils.hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
 
             keyboardPastePlainTextState = false;
 
@@ -1101,7 +1060,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             }
 
             // Try IE only method if paste isn't a keyboard paste
-            if (isIE && (!isKeyBoardPaste() || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+            if (isIE && (!isKeyBoardPaste() || e.ieFake) && !Utils.hasContentType(clipboardContent, 'text/html')) {
                 pasteBin.create();
 
                 ed.dom.bind(ed.dom.get('mcepastebin'), 'paste', function (e) {
@@ -1149,155 +1108,6 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                     ed.dom.unbind(ed.getDoc(), 'keydown', block);
                 }, 0);
             }
-        }
-
-        function openWin(cmd) {
-            var title = '', ctrl;
-
-            var msg = ed.getLang('clipboard.paste_dlg_title', 'Use %s+V on your keyboard to paste text into the window.');
-            msg = msg.replace(/%s/g, tinymce.isMac ? 'CMD' : 'CTRL');
-
-            if (cmd === "mcePaste") {
-                title = ed.getLang('clipboard.paste_desc');
-                ctrl = '<iframe id="' + ed.id + '_paste_content" src="javascript:;" frameborder="0" title="' + msg + '"></iframe>';
-
-            } else {
-                title = ed.getLang('clipboard.paste_text_desc');
-                ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7" autofocus></textarea>';
-            }
-
-            var html = '' +
-                '<div class="mceModalRow mceModalStack">' +
-                '   <label for="' + ed.id + '_paste_content">' + msg + '</label>' +
-                '</div>' +
-                '<div class="mceModalRow">' +
-                '   <div class="mceModalControl">' + ctrl + '</div>' +
-                '</div>';
-
-            var isInternalContent = false;
-
-            ed.windowManager.open({
-                title: title,
-                content: html,
-                size: 'mce-modal-landscape-medium',
-                open: function () {
-                    var ifr = DOM.get(ed.id + '_paste_content');
-
-                    if (ifr.nodeName !== "IFRAME") {
-                        window.setTimeout(function () {
-                            ifr.focus();
-                        }, 10);
-
-                        return;
-                    }
-
-                    var doc = ifr.contentWindow.document;
-
-                    var css, cssHTML = '';
-
-                    // Force absolute CSS urls
-                    css = tinymce.explode(ed.settings.content_css) || [];
-                    css.push(ed.baseURI.toAbsolute("themes/" + ed.settings.theme + "/skins/" + ed.settings.skin + "/content.css"));
-
-                    cssHTML += '<style type="text/css">body {background-color:white;color:black;text-align:left;}</style>';
-
-                    tinymce.each(css, function (u) {
-                        cssHTML += '<link href="' + ed.documentBaseURI.toAbsolute('' + u) + '" rel="stylesheet" type="text/css" />';
-                    });
-
-                    // Write content into iframe
-                    doc.open();
-                    doc.write('<html><head><base href="' + ed.settings.base_url + '" />' + cssHTML + '</head><body class="mceContentBody" spellcheck="false" contenteditable="true">&nbsp;</body></html>');
-                    doc.close();
-
-                    window.setTimeout(function () {
-                        var win = ifr.contentWindow;
-                        win.focus();
-
-                          doc.addEventListener('paste', function (e) {
-                            var clipboardContent = getDataTransferItems(e.clipboardData || e.dataTransfer || doc.dataTransfer);
-
-                            if (clipboardContent) {
-                                isInternalContent = hasContentType(clipboardContent, 'x-tinymce/html');
-                                var content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'] || '';
-
-                                var sel = doc.getSelection();
-
-                                if (sel != null) {
-                                    var rng = sel.getRangeAt(0);
-
-                                    if (rng != null) {
-                                        // Make caret marker since insertNode places the caret in the beginning of text after insert
-                                        content += '<span id="__mce_caret">_</span>';
-
-                                        // Delete and insert new node
-                                        if (rng.startContainer == doc && rng.endContainer == doc) {
-                                            // WebKit will fail if the body is empty since the range is then invalid and it can't insert contents
-                                            doc.body.innerHTML = content;
-                                        } else {
-                                            rng.deleteContents();
-
-                                            if (doc.body.childNodes.length === 0) {
-                                                doc.body.innerHTML = content;
-                                            } else {
-                                                rng.insertNode(rng.createContextualFragment(content));
-                                            }
-                                        }
-
-                                        // Move to caret marker
-                                        var caretNode = doc.getElementById('__mce_caret');
-                                        
-                                        rng = doc.createRange();
-                                        rng.setStartBefore(caretNode);
-                                        rng.setEndBefore(caretNode);
-                                        sel.removeAllRanges();
-                                        sel.addRange(rng);
-
-                                        // Remove the caret position
-                                        if (caretNode.parentNode) {
-                                            caretNode.parentNode.removeChild(caretNode);
-                                        }
-                                    }
-                                }
-
-                                e.preventDefault();
-                            }
-                        });
-
-                    }, 10);
-                },
-                buttons: [
-                    {
-                        title: ed.getLang('cancel', 'Cancel'),
-                        id: 'cancel'
-                    },
-                    {
-                        title: ed.getLang('insert', 'Insert'),
-                        id: 'insert',
-                        onsubmit: function (e) {
-                            var node = DOM.get(ed.id + '_paste_content'), data = {};
-
-                            if (node.nodeName == 'TEXTAREA') {
-                                data.text = node.value;
-                            } else {
-                                var content = node.contentWindow.document.body.innerHTML;
-                                // Remove styles
-                                content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
-                                // Remove meta (Chrome)
-                                content = content.replace(/<meta([^>]+)>/, '');
-                                // trim and assign
-                                data.content = tinymce.trim(content);
-                                // set internal flag
-                                data.internal = isInternalContent;
-                            }
-
-                            ed.execCommand('mceInsertClipboardContent', false, data);
-                        },
-                        classes: 'primary',
-                        autofocus: true
-                    }
-                ]
-            });
         }
 
         // Grab contents on paste event
@@ -1352,7 +1162,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
                 // just open the window
                 if (ed.getParam('paste_use_dialog')) {
-                    return openWin(cmd);
+                    return Dialog.openWin(ed, cmd);
                 } else {
                     try {
                         // set plain text mode
@@ -1369,7 +1179,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                     }
 
                     if (failed) {
-                        return openWin(cmd);
+                        return Dialog.openWin(ed, cmd);
                     }
                 }
             });

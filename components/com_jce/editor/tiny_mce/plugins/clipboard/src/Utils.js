@@ -1,5 +1,46 @@
 var DomParser = tinymce.html.DomParser, Schema = tinymce.html.Schema;
 
+var mceInternalUrlPrefix = 'data:text/mce-internal,';
+
+function hasContentType(clipboardContent, mimeType) {
+    return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+}
+
+/**
+ * Gets various content types out of a datatransfer object.
+ *
+ * @param {DataTransfer} dataTransfer Event fired on paste.
+ * @return {Object} Object with mime types and data for those mime types.
+ */
+function getDataTransferItems(dataTransfer) {
+    var items = {};
+
+    if (dataTransfer) {
+        // Use old WebKit/IE API
+        if (dataTransfer.getData) {
+            var legacyText = dataTransfer.getData('Text');
+            if (legacyText && legacyText.length > 0) {
+                if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
+                    items['text/plain'] = legacyText;
+                }
+            }
+        }
+
+        if (dataTransfer.types) {
+            for (var i = 0; i < dataTransfer.types.length; i++) {
+                var contentType = dataTransfer.types[i];
+                try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
+                    items[contentType] = dataTransfer.getData(contentType);
+                } catch (ex) {
+                    items[contentType] = ""; // useless in general, but for consistency across browsers
+                }
+            }
+        }
+    }
+
+    return items;
+}
+
 function filter(content, items) {
   tinymce.each(items, function (v) {
     if (v.constructor == RegExp) {
@@ -363,5 +404,7 @@ export {
   backgroundStyles,
   pixelStyles,
   styleProps,
-  namedColorToHex
+  namedColorToHex,
+  hasContentType,
+  getDataTransferItems
 };
