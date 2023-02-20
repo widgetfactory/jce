@@ -242,50 +242,38 @@
         return defaultValues[provider];
     }
 
-    function isSupportedMedia(url) {
-        // youtube
-        if (/youtu(\.)?be(.+)?\/(.+)/.test(url)) {
-            return 'youtube';
+    function isSupportedIframe(editor, url) {
+        var providers = editor.settings.iframes_supported_media || Object.keys(mediaProviders);
+        var supported = false;
+
+        if (typeof providers === 'string') {
+            providers = providers.split(',');
+        }
+ 
+        for (var i = 0; i < providers.length; i++) {
+            var value = providers[i];
+            
+            if (!value) {
+                continue;
+            }
+
+            value = value.replace(/\/$/, '');            
+            var rx = mediaProviders[value] || new RegExp(value + '\/(.+)/');
+
+            if (rx.test(url)) {
+                supported = value;
+                break;
+            }
         }
 
-        // vimeo
-        if (/vimeo(.+)?\/(.+)/.test(url)) {
-            return 'vimeo';
-        }
+        return supported;
+    }
 
-        // Dailymotion
-        if (/dai\.?ly(motion)?(\.com)?/.test(url)) {
-            return 'dailymotion';
-        }
+    function isSupportedMedia(editor, url) {
+        var value = isSupportedIframe(editor, url);
 
-        // Scribd
-        if (/scribd\.com\/(.+)/.test(url)) {
-            return 'scribd';
-        }
-
-        // Slideshare
-        if (/slideshare\.net\/(.+)\/(.+)/.test(url)) {
-            return 'slideshare';
-        }
-
-        // Soundcloud
-        if (/soundcloud\.com\/(.+)/.test(url)) {
-            return 'soundcloud';
-        }
-
-        // Spotify
-        if (/spotify\.com\/(.+)/.test(url)) {
-            return 'spotify';
-        }
-
-        // TED
-        if (/ted\.com\/talks\/(.+)/.test(url)) {
-            return 'ted';
-        }
-
-        // Twitch
-        if (/twitch\.tv\/(.+)/.test(url)) {
-            return 'twitch';
+        if (value) {
+            return value;
         }
 
         // Video
@@ -332,23 +320,6 @@
         return true;
     };
 
-    function isSupportedIframe(ed, url) {
-        var providers = ed.settings.iframe_supported || [];
-
-        var supported = false;
-
-        each(providers, function (value) {
-            var rx = mediaProviders[value] || (value + '\/(.+)/');
-            supported = new RegExp(rx).test(url);
-
-            if (supported) {
-                return true;
-            }
-        });
-
-        return supported;
-    }
-
     var validateIframe = function (editor, node) {
         var src = node.attr('src');
 
@@ -366,7 +337,7 @@
                 return true;
             }
 
-            if (isSupportedMedia(src) !== false) {
+            if (isSupportedMedia(editor, src) !== false) {
                 return true;
             }
 
@@ -721,7 +692,7 @@
             }
 
             if (node.name === 'iframe') {
-                if (isSupportedMedia(node.attr('src'))) {
+                if (isSupportedMedia(editor, node.attr('src'))) {
                     return 'proportional';
                 }
 
@@ -1021,7 +992,7 @@
 
         // default attributes
         if (src) {
-            var provider = isSupportedMedia(src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
+            var provider = isSupportedMedia(editor, src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
 
             each(defaultAttributes, function (val, name) {
                 if (!tinymce.is(sourceNode.attr(name)) && !(name in boolAttrs)) {
@@ -1550,7 +1521,7 @@
                 }
 
                 // only updating audio/video
-                if (!isSupportedMedia(o.before)) {
+                if (!isSupportedMedia(ed, o.before)) {
                     return;
                 }
 
@@ -1671,7 +1642,7 @@
                         var src = ed.dom.getAttrib(node, 'src') || ed.dom.getAttrib(node, 'data-mce-p-src') || '';
 
                         if (src) {
-                            var str = isSupportedMedia(src) || '';
+                            var str = isSupportedMedia(ed, src) || '';
 
                             if (str) {
                                 name = str[0].toUpperCase() + str.slice(1);

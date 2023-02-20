@@ -18,6 +18,27 @@
                 <option value="2">WF_MEDIA_PARAM_IFRAMES_LOCAL</option>
                 <option value="3">WF_MEDIA_PARAM_IFRAMES_SUPPORTED_MEDIA</option>
             </field>
+
+            <field type="container" label="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA" class="well well-small p-3 bg-light" description="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA_DESC">
+
+                <field name="iframes_supported_media" type="checkboxes" class="flex-row" default="youtube,vimeo,dailymotion,scribd,slideshare,soundcloud,spotify,ted,twitch">
+                    <option value="youtube">youtube</option>
+                    <option value="vimeo">vimeo</option>
+                    <option value="dailymotion">dailymotion</option>
+                    <option value="scribd">scribd</option>
+                    <option value="slideshare">slideshare</option>
+                    <option value="soundcloud">soundcloud</option>
+                    <option value="spotify">spotify</option>
+                    <option value="ted">ted</option>
+                    <option value="twitch">twitch</option>
+                </field>
+
+                <field type="repeatable" name="iframes_supported_media_custom" default="" label="Custom URL" description="">
+                    <field type="text" hiddenLabel="true" size="50" />
+                </field>
+
+            </field>
+
             <field name="audio" type="yesno" default="1" label="WF_MEDIA_PARAM_AUDIO" description="WF_MEDIA_PARAM_AUDIO_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

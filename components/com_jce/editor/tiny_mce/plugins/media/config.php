@@ -28,6 +28,9 @@ class WFMediaPluginConfig
 
             if ($allow_iframes == 3) {
                 $settings['iframes_allow_supported'] = true;
+                $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array());
+
+                $settings['iframes_supported_media'] = array_merge($iframes_supported_media, $wf->getParam('media.iframes_supported_media_custom',  array()));
             }
         }
 
