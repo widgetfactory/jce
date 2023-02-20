@@ -90,6 +90,14 @@
 .ui-jce .choices.is-disabled .choices__inner input[type="text"]::placeholder {
   color: #aaa;
 }
+.ui-jce .checkboxes.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.ui-jce .checkboxes.flex-row .form-check-inline {
+  padding-left: 0;
+}
 .ui-jce .row {
     margin-right: -7.5px;
     margin-left: -7.5px;
