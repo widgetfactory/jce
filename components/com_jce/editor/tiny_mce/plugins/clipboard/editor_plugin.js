@@ -1628,8 +1628,7 @@
                       var inp = DOM.get(ed.id + '_paste_content'), data = {};
 
                       if (cmd === "mcePaste") {
-                          //var content = node.contentWindow.document.body.innerHTML;
-                          var content = tinymce.get(inp).getContent();
+                          var content = tinymce.get(inp.id).getContent();
                           // Remove styles
                           content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
                           // Remove meta (Chrome)
