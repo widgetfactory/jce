@@ -1844,6 +1844,10 @@
 
             isMediaObject: function (node) {
                 return isMediaObject(ed, node);
+            },
+
+            isSupportedMedia: function (url) {
+                return isSupportedMedia(ed, url);
             }
         };
     });
