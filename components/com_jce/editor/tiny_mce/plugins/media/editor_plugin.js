@@ -22,7 +22,7 @@
 
     function isNonEditable(node) {
         var nonEditClass = tinymce.settings.noneditable_noneditable_class || 'mceNonEditable';
-        
+
         if (node.attr) {
             return node.hasClass(nonEditClass);
         }
@@ -66,7 +66,7 @@
 
     // media that can be previewed, eg: audio, video, iframe
     function isPreviewMedia(type) {
-        return type === 'iframe' || type === 'video' || type === 'audio';
+        return type == 'iframe' || type == 'video' || type == 'audio';
     }
 
     // media that use the <object> tag, eg: flash, quicktime etc.
@@ -79,15 +79,15 @@
     }
 
     var mediaProviders = {
-        'youtube' : /youtu(\.)?be(.+)?\/(.+)/,
-        'vimeo' : /vimeo(.+)?\/(.+)/,
-        'dailymotion' : /dai\.?ly(motion)?(\.com)?/,
-        'scribd' : /scribd\.com\/(.+)/,
-        'slideshare' : /slideshare\.net\/(.+)\/(.+)/,
-        'soundcloud' : /soundcloud\.com\/(.+)/,
-        'spotify' : /spotify\.com\/(.+)/,
-        'ted' : /ted\.com\/talks\/(.+)/,
-        'twitch' : /twitch\.tv\/(.+)/
+        'youtube': /youtu(\.)?be(.+)?\/(.+)/,
+        'vimeo': /vimeo(.+)?\/(.+)/,
+        'dailymotion': /dai\.?ly(motion)?(\.com)?/,
+        'scribd': /scribd\.com\/(.+)/,
+        'slideshare': /slideshare\.net\/(.+)\/(.+)/,
+        'soundcloud': /soundcloud\.com\/(.+)/,
+        'spotify': /spotify\.com\/(.+)/,
+        'ted': /ted\.com\/talks\/(.+)/,
+        'twitch': /twitch\.tv\/(.+)/
     };
 
     /**
@@ -246,18 +246,18 @@
         var providers = editor.settings.iframes_supported_media || Object.keys(mediaProviders);
         var supported = false;
 
-        if (typeof providers === 'string') {
+        if (typeof providers == 'string') {
             providers = providers.split(',');
         }
- 
+
         for (var i = 0; i < providers.length; i++) {
             var value = providers[i];
-            
+
             if (!value) {
                 continue;
             }
 
-            value = value.replace(/\/$/, '');            
+            value = value.replace(/\/$/, '');
             var rx = mediaProviders[value] || new RegExp(value + '\/(.+)/');
 
             if (rx.test(url)) {
@@ -269,35 +269,40 @@
         return supported;
     }
 
+    function isValidElement(editor, value) {
+        var elements = editor.getParam('media_valid_elements', '', 'hash');
+        return elements[value] || false;
+    }
+
     function isSupportedMedia(editor, url) {
         var value = isSupportedIframe(editor, url);
 
-        if (value) {
+        if (value && isValidElement(editor, 'iframe')) {
             return value;
         }
 
         // Video
-        if (/\.(mp4|ogv|ogg|webm)$/.test(url)) {
+        if (/\.(mp4|ogv|ogg|webm)$/.test(url) && isValidElement(editor, 'video')) {
             return 'video';
         }
 
         // Audio
-        if (/\.(mp3|ogg|webm|wav|m4a|aiff)$/.test(url)) {
+        if (/\.(mp3|ogg|webm|wav|m4a|aiff)$/.test(url) && isValidElement(editor, 'audio')) {
             return 'audio';
         }
 
         // Quicktime
-        if (/\.(mov|qt|mpg|mpeg|m4a|aiff)$/.test(url)) {
+        if (/\.(mov|qt|mpg|mpeg|m4a|aiff)$/.test(url) && isValidElement(editor, 'object')) {
             return 'quicktime';
         }
 
         // Flash
-        if (/\.swf$/.test(url)) {
+        if (/\.swf$/.test(url) && isValidElement(editor, 'object')) {
             return 'flash';
         }
 
         // Quicktime
-        if (/\.(avi|wmv|wm|asf|asx|wmx|wvx)$/.test(url)) {
+        if (/\.(avi|wmv|wm|asf|asx|wmx|wvx)$/.test(url) && isValidElement(editor, 'object')) {
             return 'windowsmedia';
         }
 
@@ -1192,8 +1197,6 @@
     };
 
     var placeHolderConverter = function (editor) {
-        var invalid_elements = editor.settings.invalid_elements.split(','), valid_elements = editor.settings.media_valid_elements.split(',');
-
         return function (nodes) {
             var i = nodes.length;
             var node;
@@ -1211,14 +1214,12 @@
 
                 // mark iframe for removal if invalid
                 if (node.name === 'iframe' && validateIframe(editor, node) === false) {
-                    //invalid_elements.push('iframe');
                     node.remove();
                     continue;
                 }
 
                 // if valid node (validate == false)
-                if (tinymce.inArray(valid_elements, node.name) === -1 && !isNonEditable(node)) {
-                    //invalid_elements.push(node.name);
+                if (!isValidElement(editor, node.name) && !isNonEditable(node)) {
                     node.remove();
                     continue;
                 }
@@ -1231,17 +1232,15 @@
                     if (!isWithinEmbed(node)) {
                         if (isResponsiveMedia(node)) {
                             node.parent.attr({
-                                'contentEditable'   : 'false',
+                                'contentEditable': 'false',
                                 'data-mce-contenteditable': 'true'
                             });
                         }
-    
+
                         node.replace(createPlaceholderNode(editor, node));
                     }
                 }
             }
-
-            editor.settings.invalid_elements = invalid_elements.join(',');
         };
     };
 
@@ -1698,7 +1697,7 @@
                         if (isNonEditable(node)) {
                             return;
                         }
-                        
+
                         if (e.type === 'click' && VK.metaKeyPressed(e)) {
                             e.target = placeholderToPreview(ed, node);
                         }
@@ -1767,12 +1766,12 @@
                     }
 
                     if (isMediaNode(node)) {
-                        
+
                         if (isNonEditable(node)) {
                             e.preventDefault();
                             return;
                         }
-                        
+
                         node = ed.dom.getParent(node, '[data-mce-object]') || node;
                         ed.dom.remove(node);
 
@@ -1794,6 +1793,23 @@
 
         ed.onSetContent.add(function (ed, o) {
             updatePreviewSelection(ed);
+        });
+
+        /**
+         * Validate content on save.
+         */
+        ed.onWfEditorSave.add(function (ed, o) {
+            var body = DOM.create('div', {}, o.content);
+
+            each(DOM.select('audio,video,object,iframe,embed', body), function (tag) {
+                var name = tag.nodeName.toLowerCase();
+
+                if (!isValidElement(ed, name) && !isNonEditable(tag)) {
+                    DOM.remove(tag);
+                }
+            });
+
+            o.content = body.innerHTML;
         });
 
         tinymce.util.MediaEmbed = {
