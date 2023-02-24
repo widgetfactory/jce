@@ -213,7 +213,7 @@
 
             <field type="spacer" hr="true" />
 
-            <field type="container" showon="wordcount:1">
+            <field type="container" showon="wordcount:1" label="WF_PARAM_EDITOR_WORDCOUNT" description="">
 
                 <field name="wordcount_limit" type="number" default="0" hint="0" label="WF_PARAM_WORDCOUNT_LIMIT" description="WF_PARAM_WORDCOUNT_LIMIT_DESC" class="input-small" />
                 <field name="wordcount_alert" type="yesno" default="0" label="WF_PARAM_WORDCOUNT_ALERT" description="WF_PARAM_WORDCOUNT_ALERT_DESC">
@@ -227,6 +227,13 @@
             <field name="object_resizing" type="yesno" default="1" label="WF_PARAM_OBJECT_RESIZING" description="WF_PARAM_OBJECT_RESIZING_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
+            </field>
+
+            <field type="container" label="WF_NONEDITABLE_TITLE" description="WF_NONEDITABLE_DESC">
+
+                <field name="noneditable_class" type="text" default="" hint="mceNonEditable" label="WF_NONEDITABLE_NONEDITABLE_CLASS" description="WF_NONEDITABLE_NONEDITABLE_CLASS_DESC" />
+			    <field name="editable_class" type="text" default="" hint="mceEditable" label="WF_NONEDITABLE_EDITABLE_CLASS" description="WF_NONEDITABLE_EDITABLE_CLASS_DESC" />
+
             </field>
 
             <!--field name="figure_tag_style" type="yesno" default="1" label="WF_PARAM_FIGURE_TAG_STYLE" description="WF_PARAM_FIGURE_TAG_STYLE_DESC">

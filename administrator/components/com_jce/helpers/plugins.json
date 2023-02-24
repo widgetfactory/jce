@@ -227,7 +227,7 @@
         "title": "WF_NONEDITABLE_TITLE",
         "description": "WF_NONEDITABLE_DESC",
         "icon": "",
-        "editable": 1,
+        "editable": 0,
         "row": 0,
         "core": 1
     },
