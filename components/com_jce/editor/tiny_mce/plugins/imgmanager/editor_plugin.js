@@ -127,8 +127,10 @@
                 cmd: 'mceImage'
             });
 
-            ed.onNodeChange.add(function (ed, cm, n) {
-                cm.setActive('imgmanager', isImage(n));
+            ed.onNodeChange.add(function (ed, cm, n, collapsed) {
+                var state = isImage(n);
+                cm.setDisabled('imgmanager', !state && !collapsed);
+                cm.setActive('imgmanager', state);
             });
 
             ed.onPreInit.add(function () {
