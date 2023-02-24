@@ -562,6 +562,10 @@
     cursor: default;
 }
 
+.mceMenu .mceMenuItems .mceMenuItem.mceDisabled {
+    opacity: 0.5;
+}
+
 .mceMenu .mceMenuItemsItemDisabled .mceText {
     color: #888
 }
