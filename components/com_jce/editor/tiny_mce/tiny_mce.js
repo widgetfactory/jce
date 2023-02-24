@@ -21711,6 +21711,8 @@
         }
 
         this._elm = DOM.get(this.id);
+
+        this.rendered = true;
       },
 
       parent: function (ctrl) {
@@ -22528,6 +22530,10 @@
           co = DOM.get('menu_' + self.id);
         }
 
+        if (!co) {
+          return;
+        }
+
         DOM.show(co);
         self.update();
 
@@ -23217,6 +23223,8 @@
             return s.onclick.call(s.scope, e);
           }
         });
+
+        this.rendered = true;
 
         this.onPostRender.dispatch(this, DOM.get(this.id));
       }
@@ -23965,6 +23973,8 @@
         });
 
         this.onPostRender.dispatch(this, DOM.get(this.id));
+
+        this.rendered = true;
       },
 
       /**
@@ -25076,6 +25086,8 @@
         Event.add([self.id, self.id + '_open'], 'blur', function () {
           self._focused = 0;
         });
+
+        this.rendered = true;
       },
 
       destroy: function () {
@@ -27757,6 +27769,7 @@
                   args = args || {};
                   args.element = node;
                   args.parents = parents;
+                  args.contenteditable = tinymce.dom.NodeType.isContentEditableTrue(node);
 
                   editor.onNodeChange.dispatch(
                       editor,
@@ -33412,7 +33425,7 @@
 
             var classes = selector[2].substr(1).split('.');
 
-            each(classes, function (cls) {            
+            each(classes, function (cls) {
               ctrl.add(cls, cls, {
                 style: function () {
                   return item.style || PreviewCss.getCssText(ed, { classes: cls });
@@ -38935,14 +38948,16 @@
           editor.dom.bind(editor.getBody(), 'touchend', function (e) {
             var contentEditableRoot = getContentEditableRoot(e.target);
 
-            if (isContentEditableFalse(contentEditableRoot)) {
-              if (!moved) {
-                e.preventDefault();
-                setContentEditableSelection(selectNode(contentEditableRoot));
-
-                // fire fake event
-                editor.onContentEditableSelect.dispatch(editor, e);
+            if (contentEditableRoot) {
+              if (isContentEditableFalse(contentEditableRoot)) {
+                if (!moved) {
+                  e.preventDefault();
+                  setContentEditableSelection(selectNode(contentEditableRoot));
+                }
               }
+
+              // fire fake event
+              editor.onContentEditableSelect.dispatch(editor, e);
             }
           });
         }
@@ -38996,8 +39011,7 @@
               e.preventDefault();
               setContentEditableSelection(selectNode(contentEditableRoot));
 
-              // fire fake event
-              editor.onContentEditableSelect.dispatch(editor, e);
+
             } else {
               /*if (!isXYWithinRange(e.clientX, e.clientY, editor.selection.getRng())) {
                 editor.selection.placeCaretAt(e.clientX, e.clientY);
@@ -39007,6 +39021,9 @@
                 editor.selection.placeCaretAt(e.clientX, e.clientY);
               }
             }
+
+            // fire fake event
+            editor.onContentEditableSelect.dispatch(editor, e);
           } else {
             // Remove needs to be called here since the mousedown might alter the selection without calling selection.setRng
             // and therefore not fire the AfterSetSelectionRange event.
@@ -43619,6 +43636,8 @@
   /*global tinymce:true */
 
   (function () {
+    var DOM = tinymce.DOM;
+
     tinymce.PluginManager.add('noneditable', function (editor) {
       var nonEditableRegExps, contentEditableAttrName = 'contenteditable';
 
@@ -43629,6 +43648,22 @@
         return function (node) {
           return (" " + node.attr("class") + " ").indexOf(checkClassName) !== -1;
         };
+      }
+
+      function isNonEditable(node) {
+        if (node.attr) {
+          return node.hasClass(nonEditClass);
+        }
+
+        return DOM.hasClass(node, nonEditClass);
+      }
+
+      function isEditable(node) {
+        if (node.attr) {
+          return node.hasClass(editClass);
+        }
+
+        return DOM.hasClass(node, editClass);
       }
 
       function convertRegExpsToNonEditable(e) {
@@ -43732,6 +43767,24 @@
           }
         });
       });
+
+      /*editor.onInit.add(function () {
+        // disable all controls if a non-editable is selected
+        editor.onNodeChange.add(function (ed, cm, n, collapsed) {
+          var state = !collapsed && isNonEditable(n);
+
+          tinymce.each(cm.controls, function (c) {
+            if (c && c.isRendered()) {
+              c.setDisabled(state);
+            }
+          });
+        });
+      });*/
+
+      return {
+        isNonEditable: isNonEditable,
+        isEditable: isEditable
+      };
     });
   })();
 
