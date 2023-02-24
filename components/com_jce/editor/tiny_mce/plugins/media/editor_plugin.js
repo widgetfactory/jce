@@ -30,6 +30,12 @@
         return DOM.hasClass(node, nonEditClass);
     }
 
+    var alignStylesMap = {
+        left: { float: 'left' },
+        center: { 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' },
+        right: { float: 'right' }
+    };
+
     /**
      * Check if a node is wrapped in a "responsive" container
      * @param {Node} node 
@@ -768,7 +774,7 @@
     };
 
     function processNodeAttributes(editor, tag, node) {
-        var attribs = {};
+        var attribs = {}, styles = {};
 
         // get boolean attributes
         var boolAttrs = editor.schema.getBoolAttrs();
@@ -816,6 +822,18 @@
             }
 
             if (key === 'class') {
+                var align = value.match(/mce-object-preview-(left|center|right)/);
+
+                if (align) {
+                    styles = extend(styles, alignStylesMap[align[1]]);
+
+                    if (!node.attr('style')) {
+                        node.attr('style', editor.dom.serializeStyle(styles));
+                    }
+
+                    console.log(styles);
+                }
+
                 value = cleanClassValue(value);
             }
 
@@ -844,6 +862,8 @@
                         delete styleObject[key];
                     }
                 });
+
+                styleObject = extend(styleObject, styles);
 
                 value = editor.dom.serializeStyle(styleObject);
 
@@ -1309,7 +1329,7 @@
             }
 
             // reset node to iframe
-            node = ed.dom.select('iframe', node)[0];
+            node = ed.dom.select('audio,video,iframe', node)[0];
         }
 
         // mediatype
@@ -1476,19 +1496,24 @@
         });
     };
 
-    function isMediaObject(ed, node) {
-        node = node || ed.selection.getNode();
-        return ed.dom.getParent(node, '[data-mce-object]');
-    }
-
     // Register plugin
     tinymce.PluginManager.add('media', function (ed, url) {
+        function isMediaObject(node) {
+            node = node || ed.selection.getNode();
+            return ed.dom.getParent(node, '[data-mce-object]');
+        }
+
         function isMediaNode(node) {
-            return node && isMediaObject(ed, node);
+            return node && isMediaObject(node);
+        }
+
+        function findMediaNode(elm, nodeName) {
+            var nodes = ed.dom.select(nodeName, elm);
+            return nodes.length ? nodes[0] : null;
         }
 
         function objectActivate(ed, e) {
-            var node = ed.dom.getParent(e.target, '.mce-object-preview');
+            var node = isMediaObject(e.target);
 
             if (node && !isNonEditable(node)) {
                 ed.selection.select(node);
@@ -1512,6 +1537,12 @@
 
         ed.onMouseDown.add(objectActivate);
         ed.onKeyDown.add(objectActivate);
+
+        ed.onNodeChange.addToTop(function (ed, cm, n, collapsed, o) {
+            if (isMediaNode(n) && !isNonEditable(n) && !o.contenteditable) {
+                o.contenteditable = true;
+            }
+        });
 
         ed.onPreInit.add(function () {
             ed.onUpdateMedia.add(function (ed, o) {
@@ -1599,12 +1630,6 @@
         ed.onInit.add(function () {
             var settings = ed.settings;
 
-            var alignStylesMap = {
-                left: { float: 'left' },
-                center: { 'display': 'block', 'margin-left': 'auto', 'margin-right': 'auto' },
-                right: { float: 'right' }
-            };
-
             each(['left', 'right', 'center'], function (align) {
                 ed.formatter.register('align' + align, {
                     selector: 'span[data-mce-object]',
@@ -1612,12 +1637,9 @@
                     ceFalseOverride: true,
                     classes: 'mce-object-preview-' + align,
                     deep: true,
-                    onformat: function (elm) {
-                        ed.dom.setStyles(ed.dom.select('iframe,video,audio', elm), alignStylesMap[align]);
-                    },
                     onremove: function (elm) {
-                        each(alignStylesMap[align], function (val, key) {
-                            ed.dom.setStyle(ed.dom.select('iframe,video,audio', elm), key, null);
+                        each(['left', 'right', 'center'], function (val) {
+                            ed.dom.removeClass(elm, 'mce-object-preview-' + val);
                         });
                     }
                 });
@@ -1705,11 +1727,6 @@
                 }
             });
 
-            function findMediaNode(elm, nodeName) {
-                var nodes = ed.dom.select(nodeName, elm);
-                return nodes.length ? nodes[0] : null;
-            }
-
             ed.onBeforeExecCommand.add(function (ed, cmd, ui, values, o) {
                 // RemoveFormat, ApplyFormat, ToggleFormat
                 if (cmd && (cmd == 'ApplyFormat' || cmd == 'RemoveFormat' || cmd == 'ToggleFormat')) {
@@ -1752,6 +1769,16 @@
                     }
                 }
             });
+
+            /*ed.onContentEditableSelect.add(function (ed, e) {
+                // get selected node
+                var node = isMediaObject();
+
+                if (node && !isNonEditable(node)) {
+                    ed.selection.select(node);
+                    node.setAttribute('data-mce-selected', '1');
+                }
+            });*/
         });
 
         // Remove iframe preview on backspace or delete
@@ -1780,6 +1807,46 @@
                 }
             }
         });
+
+        function setClipboardData(ed, e) {
+            var clipboardData = e.clipboardData;
+
+            if (!clipboardData) {
+                return;
+            }
+
+            // get selected node
+            var node = isMediaObject();
+
+            if (!node) {
+                return;
+            }
+
+            // clear operation for non-editable
+            if (isNonEditable(node)) {
+                clipboardData.clearData();
+                return;
+            }
+
+            ed.selection.select(node);
+
+            var content = ed.selection.getContent({
+                contextual: true
+            });
+
+            var data = {
+                html: content,
+                text: content.toString()
+            };
+
+            clipboardData.clearData();
+            clipboardData.setData('text/html', data.html);
+            clipboardData.setData('text/plain', data.text);
+        }
+
+        // update clipboardData 
+        ed.onCopy.add(setClipboardData);
+        ed.onCut.add(setClipboardData);
 
         function updatePreviewSelection(ed) {
             each(ed.dom.select('.mce-object-preview', ed.getBody()), function (node) {
@@ -1859,7 +1926,7 @@
             },
 
             isMediaObject: function (node) {
-                return isMediaObject(ed, node);
+                return isMediaObject(node);
             },
 
             isSupportedMedia: function (url) {
