@@ -36,6 +36,10 @@ class WFBrowserPlugin extends WFMediaManager
             $folder = $app->input->getString('mediafolder', '');
 
             if ($folder) {
+                if (empty($config['dir'])) {
+                    $config['dir'] = 'images';
+                }
+                
                 $config['dir'] = WFUtility::makePath($config['dir'], trim(rawurldecode($folder)));
             }
         }
