@@ -1610,6 +1610,14 @@
                           e.preventDefault();
                       }
                   });
+
+                  this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {
+                      var i = nodes.length;
+
+                      while (i--) {
+                          nodes[i].remove();
+                      }
+                  });
               });
 
               pasteEd.render();
