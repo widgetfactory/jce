@@ -21,8 +21,11 @@ extract($displayData);
 
 if (!empty($options['showonEnabled']))
 {
+	// joomla 3
 	JHtml::_('jquery.framework');
 	JHtml::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true));
+	// joomla 4
+	JHtml::_('script', 'jui/showon.js', array('version' => 'auto', 'relative' => true));
 }
 
 $class = empty($options['class']) ? '' : ' ' . $options['class'];
