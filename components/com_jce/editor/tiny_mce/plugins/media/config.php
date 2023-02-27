@@ -21,6 +21,8 @@ class WFMediaPluginConfig
         if ($allow_iframes) {
             $tags[] = 'iframe';
 
+            $settings['iframes_supported_media'] = array();
+
             // may be overwritten by mediamanager config - ../mediamanager/config.php
             if ($allow_iframes == 2) {
                 $settings['iframes_allow_local'] = true;
@@ -55,6 +57,7 @@ class WFMediaPluginConfig
             $tags[] = 'param';
         }
 
+        // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param'));
 
         $settings['media_valid_elements'] = $tags;
