@@ -19,7 +19,7 @@
                 <option value="3">WF_MEDIA_PARAM_IFRAMES_SUPPORTED_MEDIA</option>
             </field>
 
-            <field type="container" label="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA" class="well well-small p-3 bg-light" description="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA_DESC">
+            <field type="container" label="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA" class="well well-small p-3 bg-light" description="WF_MEDIA_IFRAMES_SUPPORTED_MEDIA_DESC" showon="iframes:3">
 
                 <field name="iframes_supported_media" type="checkboxes" class="flex-row" default="youtube,vimeo,dailymotion,scribd,slideshare,soundcloud,spotify,ted,twitch">
                     <option value="youtube">youtube</option>
