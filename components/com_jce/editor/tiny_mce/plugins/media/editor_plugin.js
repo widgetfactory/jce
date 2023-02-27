@@ -248,7 +248,13 @@
         return defaultValues[provider];
     }
 
-    function isSupportedIframe(editor, url) {
+    /**
+     * Validate a url against a list default or custom providers urls, eg: Youtube, Vimeo etc.
+     * @param {Object} editor 
+     * @param {String} url 
+     * @returns Supportd provide value
+     */
+    function isSupportedProvider(editor, url) {
         var providers = editor.settings.iframes_supported_media || Object.keys(mediaProviders);
         var supported = false;
 
@@ -267,12 +273,47 @@
             var rx = mediaProviders[value] || new RegExp(value + '\/(.+)/');
 
             if (rx.test(url)) {
-                supported = value;
+                supported = mediaProviders[value] ? value : 'iframe';
                 break;
             }
         }
 
         return supported;
+    }
+
+    function isSupportedIframe(editor, url) {
+        // iframes not supported
+        if (!isValidElement(editor, 'iframe')) {
+            return false;
+        }
+        
+        if (!url) {
+            return false;
+        }
+
+        // allow local only
+        if (editor.settings.iframes_allow_local) {
+            return isLocalUrl(editor, url);
+        }
+
+        var value = isSupportedProvider(editor, url);
+        
+        // allow local an support
+        if (editor.settings.iframes_allow_supported) {
+            if (isLocalUrl(editor, url)) {
+                return true;
+            }
+
+            return value;
+        }
+
+        // return any supported provider
+        if (value) {
+            return value;
+        }
+
+        // allow all
+        return true;
     }
 
     function isValidElement(editor, value) {
@@ -283,8 +324,8 @@
     function isSupportedMedia(editor, url) {
         var value = isSupportedIframe(editor, url);
 
-        if (value && isValidElement(editor, 'iframe')) {
-            return value;
+        if (value) {
+            return typeof value == 'string' ? value : 'iframe';
         }
 
         // Video
@@ -339,31 +380,7 @@
             return true;
         }
 
-        if (editor.settings.iframes_allow_supported) {
-            if (!src) {
-                return false;
-            }
-
-            if (isLocalUrl(editor, src)) {
-                return true;
-            }
-
-            if (isSupportedMedia(editor, src) !== false) {
-                return true;
-            }
-
-            return false;
-        }
-
-        if (editor.settings.iframes_allow_local) {
-            if (!src) {
-                return false;
-            }
-
-            return isLocalUrl(editor, src);
-        }
-
-        return true;
+        return isSupportedIframe(editor, src);
     };
 
     var sanitize = function (editor, html) {
