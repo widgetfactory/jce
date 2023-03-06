@@ -211,6 +211,11 @@
                 <option value="0">JNO</option>
             </field>
 
+             <field name="object_resizing" type="yesno" default="1" label="WF_PARAM_OBJECT_RESIZING" description="WF_PARAM_OBJECT_RESIZING_DESC">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
             <field type="spacer" hr="true" />
 
             <field type="container" showon="wordcount:1" label="WF_PARAM_EDITOR_WORDCOUNT" description="">
@@ -224,11 +229,7 @@
             </field>
 
             <field type="spacer" hr="true" />
-            <field name="object_resizing" type="yesno" default="1" label="WF_PARAM_OBJECT_RESIZING" description="WF_PARAM_OBJECT_RESIZING_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
+           
             <field type="container" label="WF_NONEDITABLE_TITLE" description="WF_NONEDITABLE_DESC">
 
                 <field name="noneditable_class" type="text" default="" hint="mceNonEditable" label="WF_NONEDITABLE_NONEDITABLE_CLASS" description="WF_NONEDITABLE_NONEDITABLE_CLASS_DESC" />
