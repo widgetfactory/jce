@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/* global jQuery */
+/* global jQuery, Joomla */
 
 (function ($) {
 
@@ -30,5 +30,7 @@
         $('.form-horizontal', '.ui-jce').not('.form-help-inline').find('.hasPopover').tips();
 
         init();
+
+        Joomla.Showon.initialise(document);
     });
 })(jQuery);
