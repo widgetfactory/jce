@@ -126,12 +126,92 @@
       editor.onCopy.add(copy);
   };
 
-  var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema;
+  var DomParser$2 = tinymce.html.DomParser, Schema$1 = tinymce.html.Schema, each$3 = tinymce.each, DOM$1 = tinymce.DOM;
 
   var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
+  var parseCssToRules = function (content) {
+    var doc = document.implementation.createHTMLDocument(""),
+      styleElement = document.createElement("style");
+
+    styleElement.textContent = content;
+
+    doc.body.appendChild(styleElement);
+
+    return styleElement.sheet.cssRules;
+  };
+
+  function parseCSS(content) {
+    var rules, classes = {};
+
+    rules = parseCssToRules(content);
+
+    function isValue(val) {
+      return val !== "" && val !== "normal" && val !== "inherit" && val !== "none" && val !== "initial";
+    }
+
+    function isValidStyle(value) {
+      return Object.values(value).length;
+    }
+
+    each$3(rules, function (r) {
+
+      if (r.selectorText) {
+        var styles = {};
+
+        each$3(r.style, function (name) {
+          var value = r.style.getPropertyValue(name);
+
+          if (isValue(value)) {
+            styles[name] = value;
+          }
+
+        });
+
+        each$3(r.selectorText.split(','), function (selector) {
+          selector = selector.trim();
+
+          if (selector.indexOf('.mce') == 0 || selector.indexOf('.mce-') !== -1 || selector.indexOf('.mso-') !== -1) {
+            return;
+          }
+
+          if (isValidStyle(styles)) {
+            classes[selector] = {
+              styles: styles,
+              text: r.cssText
+            };
+          }
+        });
+      }
+    });
+
+    return classes;
+  }
+
+  function processStylesheets(content, embed_stylesheet) {
+    var div = DOM$1.create('div', {}, content), styles = {}, css = '';
+
+    styles = tinymce.extend(styles, parseCSS(content));
+
+    each$3(styles, function (value, selector) {
+      if (!embed_stylesheet) {
+        DOM$1.setStyles(DOM$1.select(selector, div), value.styles);
+      } else {
+        css += value.text;
+      }
+    });
+
+    if (css) {
+      div.prepend(DOM$1.create('style', { type: 'text/css' }, css));
+    }
+
+    content = div.innerHTML;
+
+    return content;
+  }
+
   function hasContentType(clipboardContent, mimeType) {
-      return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+    return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
   }
 
   /**
@@ -141,32 +221,32 @@
    * @return {Object} Object with mime types and data for those mime types.
    */
   function getDataTransferItems(dataTransfer) {
-      var items = {};
+    var items = {};
 
-      if (dataTransfer) {
-          // Use old WebKit/IE API
-          if (dataTransfer.getData) {
-              var legacyText = dataTransfer.getData('Text');
-              if (legacyText && legacyText.length > 0) {
-                  if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
-                      items['text/plain'] = legacyText;
-                  }
-              }
+    if (dataTransfer) {
+      // Use old WebKit/IE API
+      if (dataTransfer.getData) {
+        var legacyText = dataTransfer.getData('Text');
+        if (legacyText && legacyText.length > 0) {
+          if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
+            items['text/plain'] = legacyText;
           }
-
-          if (dataTransfer.types) {
-              for (var i = 0; i < dataTransfer.types.length; i++) {
-                  var contentType = dataTransfer.types[i];
-                  try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
-                      items[contentType] = dataTransfer.getData(contentType);
-                  } catch (ex) {
-                      items[contentType] = ""; // useless in general, but for consistency across browsers
-                  }
-              }
-          }
+        }
       }
 
-      return items;
+      if (dataTransfer.types) {
+        for (var i = 0; i < dataTransfer.types.length; i++) {
+          var contentType = dataTransfer.types[i];
+          try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
+            items[contentType] = dataTransfer.getData(contentType);
+          } catch (ex) {
+            items[contentType] = ""; // useless in general, but for consistency across browsers
+          }
+        }
+      }
+    }
+
+    return items;
   }
 
   function filter(content, items) {
@@ -282,7 +362,7 @@
     }
 
     html = filter(getInnerFragment(html), [
-      /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
+      /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/gi, // Remove anything but the contents within the BODY element
       /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
       [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
       /<br class="Apple-interchange-newline">/g,
@@ -294,23 +374,28 @@
   }
 
   function convertToPixels(v) {
+    // return pixel value
+    if (v.indexOf('px') !== -1) {
+      return v;
+    }
+
     // retun integer 0 for 0 values, eg: 0cm, 0pt etc. 
     if (parseInt(v, 10) === 0) {
-        return 0;
+      return 0;
     }
 
     // convert pt to px
     if (v.indexOf('pt') !== -1) {
-        // convert to integer
-        v = parseInt(v, 10);
-        // convert to pixel value (round up to 1)
-        v = Math.ceil(v / 1.33333);
-        // convert to absolute integer
-        v = Math.abs(v);
+      // convert to integer
+      v = parseInt(v, 10);
+      // convert to pixel value (round up to 1)
+      v = Math.ceil(v / 1.33333);
+      // convert to absolute integer
+      v = Math.abs(v);
     }
 
     if (v) {
-        v += 'px';
+      v += 'px';
     }
 
     return v;
@@ -356,6 +441,11 @@
     'background-attachment': 'scroll',
     'background-color': 'transparent'
   };
+
+  var fontStyles = [
+    'font', 'font-family', 'font-size', 
+    'font-style', 'font-variant', 'font-weight'
+  ];
 
   var namedColors = {
     '#F0F8FF': 'AliceBlue',
@@ -499,10 +589,10 @@
 
   function namedColorToHex(value) {
     tinymce.each(namedColors, function (name, hex) {
-        if (value.toLowerCase() === name.toLowerCase()) {
-            value = hex;
-            return false;
-        }
+      if (value.toLowerCase() === name.toLowerCase()) {
+        value = hex;
+        return false;
+      }
     });
 
     return value.toLowerCase();
@@ -516,17 +606,6 @@
 
   // Open Office
   var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
-
-  var parseCssToRules = function (content) {
-      var doc = document.implementation.createHTMLDocument(""),
-          styleElement = document.createElement("style");
-
-      styleElement.textContent = content;
-
-      doc.body.appendChild(styleElement);
-
-      return styleElement.sheet.cssRules;
-  };
 
   function cleanCssContent(content) {
       var classes = [],
@@ -571,7 +650,7 @@
 
       // Word / Google Docs
       return (
-          (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
+          (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument|Excel\.Sheet|Microsoft Excel\s\d+/i).test(content) ||
           (/class="OutlineElement/).test(content) ||
           (/id="?docs\-internal\-guid\-/.test(content))
       );
@@ -630,16 +709,12 @@
 
       // remove styles
       content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, function (match, attr, value) {
-          // remove style tag
-          if (settings.clipboard_paste_keep_word_styles !== true) {
-              return "";
-          }
-
           // process to remove mso junk
           value = cleanCssContent(value);
 
           return '<style' + attr + '>' + value + '</style>';
       });
+
       // Copy paste from Java like Open Office will produce this junk on FF
       content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
 
@@ -898,7 +973,7 @@
           var outputStyles = {},
               matches, styles = editor.dom.parseStyle(styleValue);
 
-          each$2(styles, function (value, name) {
+          each$2(styles, function (value, name) {            
               // Convert various MS styles to W3C styles
               switch (name) {
                   case 'mso-list':
@@ -978,12 +1053,12 @@
 
               if (name.indexOf('mso-comment') === 0) {
                   node.remove();
-                  return;
+                  return true;
               }
 
               // Never allow mso- prefixed names
               if (name.indexOf('mso-') === 0) {
-                  return;
+                  return true;
               }
 
               // convert to pixel values
@@ -998,13 +1073,13 @@
           });
 
           // Convert bold style to "b" element
-          if (/(bold|700|800|900)/i.test(outputStyles["font-weight"])) {
+          if (/(bold|700|800|900)/i.test(outputStyles["font-weight"]) && editor.schema.isValidChild('strong', node.name)) {
               delete outputStyles["font-weight"];
               node.wrap(new Node("strong", 1));
           }
 
           // Convert italic style to "i" element
-          if (/(italic)/i.test(outputStyles["font-style"])) {
+          if (/(italic)/i.test(outputStyles["font-style"]) && editor.schema.isValidChild('em', node.name)) {
               delete outputStyles["font-style"];
               node.wrap(new Node("em", 1));
           }
@@ -1030,7 +1105,7 @@
 
           // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
           // MS Office namespaced tags, and a few other tags
-          /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
+          /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
 
           // Convert <s> into <strike> for line-though
           [/<(\/?)s>/gi, "<$1strike>"],
@@ -1081,6 +1156,11 @@
               '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
               'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
           );
+      }
+
+      // keep style tags for process_stylesheets
+      if (settings.clipboard_paste_process_stylesheets == 'style') {
+          validElements += ',style';
       }
 
       // Setup strict schema
@@ -1568,6 +1648,12 @@
                           isInternalContent = hasContentType(clipboardContent, 'x-tinymce/html');
                           var content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'] || clipboardContent['text/plain'] || '';
 
+                          if (ed.settings.clipboard_process_stylesheets !== false) {
+                              content = processStylesheets(content);
+                          }
+
+                          content = trimHtml(content);
+
                           var sel = doc.getSelection();
 
                           if (sel != null) {
@@ -1610,12 +1696,13 @@
                           e.preventDefault();
                       }
                   });
-
+                  
+                  // remove fragment attribute (from InsertContent)
                   this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {
                       var i = nodes.length;
 
                       while (i--) {
-                          nodes[i].remove();
+                          nodes[i].attr('data-mce-fragment', null);
                       }
                   });
               });
@@ -1638,7 +1725,9 @@
                       if (cmd === "mcePaste") {
                           var content = tinymce.get(inp.id).getContent();
                           // Remove styles
-                          content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
+                          if (ed.settings.code_allow_style !== true) {
+                              content = content.replace(/<style[^>]*>[\s\S]+?<\/style>/gi, '');
+                          }
                           // Remove meta (Chrome)
                           content = content.replace(/<meta([^>]+)>/, '');
                           // trim and assign
@@ -1967,8 +2056,6 @@
           return;
       }
 
-      o.wordContent = isWordContent(ed, h) && !o.internal;
-
       if (o.wordContent) {
           h = WordFilter(ed, h);
       }
@@ -2279,9 +2366,23 @@
           var styleProps$1 = tinymce.explode(keepStyles);
 
           each(styleProps$1, function (style, i) {
-              if (style === "border") {
+              if (style == "border") {
                   // add expanded border styles
                   styleProps$1 = styleProps$1.concat(borderStyles);
+                  return true;
+              }
+
+              if (style == "font") {
+                  // add expanded border styles
+                  styleProps$1 = styleProps$1.concat(fontStyles);
+                  return true;
+              }
+
+              if (style == "padding" || style == "margin") {
+                  each(['top', 'bottom', 'right', 'left'], function (side) {
+                      styleProps$1.push(style + '-' + side);
+                  });
+
                   return true;
               }
           });
@@ -2295,6 +2396,20 @@
               if (style === "border") {
                   // add expanded border styles
                   removeProps = removeProps.concat(borderStyles);
+                  return true;
+              }
+
+              if (style == "font") {
+                  // add expanded border styles
+                  removeProps = removeProps.concat(fontStyles);
+                  return true;
+              }
+
+              if (style == "padding" || style == "margin") {
+                  each(['top', 'bottom', 'right', 'left'], function (side) {
+                      removeProps.push(style + '-' + side);
+                  });
+
                   return true;
               }
           });
@@ -2639,6 +2754,17 @@
 
               // only process externally sourced content
               if (!internal) {
+                  // set wordContent flag
+                  o.wordContent = isWordContent(ed, o.content);
+
+                  // process stylesheets into content
+                  if (ed.settings.clipboard_paste_process_stylesheets) {
+                      o.content = processStylesheets(o.content);
+                  }
+
+                   // trim
+                  o.content = trimHtml(o.content);
+
                   // Execute pre process handlers
                   self.onPreProcess.dispatch(self, o);
 
@@ -2725,9 +2851,6 @@
               // unmark content
               content = unmark(content);
 
-              // trim
-              content = trimHtml(content);
-
               // pasting content into a pre element so encode html first, then insert using setContent
               if (isPasteInPre()) {
                   var text = clipboardContent['text/plain'];
@@ -2737,6 +2860,7 @@
 
                   // prefer plain text, otherwise use encoded html
                   if (content && !text) {
+                      content = trimHtml(content);
                       text = ed.dom.encode(content);
                   }
 

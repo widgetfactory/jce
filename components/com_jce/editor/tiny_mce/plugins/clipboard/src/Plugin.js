@@ -91,8 +91,6 @@ function preProcess(e, o) {
         return;
     }
 
-    o.wordContent = WordFilter.isWordContent(ed, h) && !o.internal;
-
     if (o.wordContent) {
         h = WordFilter.WordFilter(ed, h);
     }
@@ -403,9 +401,23 @@ function processStyles(editor, node) {
         var styleProps = tinymce.explode(keepStyles);
 
         each(styleProps, function (style, i) {
-            if (style === "border") {
+            if (style == "border") {
                 // add expanded border styles
                 styleProps = styleProps.concat(Utils.borderStyles);
+                return true;
+            }
+
+            if (style == "font") {
+                // add expanded border styles
+                styleProps = styleProps.concat(Utils.fontStyles);
+                return true;
+            }
+
+            if (style == "padding" || style == "margin") {
+                each(['top', 'bottom', 'right', 'left'], function (side) {
+                    styleProps.push(style + '-' + side);
+                });
+
                 return true;
             }
         });
@@ -419,6 +431,20 @@ function processStyles(editor, node) {
             if (style === "border") {
                 // add expanded border styles
                 removeProps = removeProps.concat(Utils.borderStyles);
+                return true;
+            }
+
+            if (style == "font") {
+                // add expanded border styles
+                removeProps = removeProps.concat(Utils.fontStyles);
+                return true;
+            }
+
+            if (style == "padding" || style == "margin") {
+                each(['top', 'bottom', 'right', 'left'], function (side) {
+                    removeProps.push(style + '-' + side);
+                });
+
                 return true;
             }
         });
@@ -763,6 +789,17 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
             // only process externally sourced content
             if (!internal) {
+                // set wordContent flag
+                o.wordContent = WordFilter.isWordContent(ed, o.content);
+
+                // process stylesheets into content
+                if (ed.settings.clipboard_paste_process_stylesheets) {
+                    o.content = Utils.processStylesheets(o.content);
+                }
+
+                 // trim
+                o.content = Utils.trimHtml(o.content);
+
                 // Execute pre process handlers
                 self.onPreProcess.dispatch(self, o);
 
@@ -849,9 +886,6 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             // unmark content
             content = InternalHtml.unmark(content);
 
-            // trim
-            content = Utils.trimHtml(content);
-
             // pasting content into a pre element so encode html first, then insert using setContent
             if (isPasteInPre()) {
                 var text = clipboardContent['text/plain'];
@@ -861,6 +895,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
                 // prefer plain text, otherwise use encoded html
                 if (content && !text) {
+                    content = Utils.trimHtml(content);
                     text = ed.dom.encode(content);
                 }
 

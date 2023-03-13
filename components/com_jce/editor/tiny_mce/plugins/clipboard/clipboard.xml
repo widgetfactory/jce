@@ -67,6 +67,12 @@
                 <option value="remove">WF_PASTE_PARAM_PROCESS_FOOTNOTES_REMOVE</option>
             </field>
 
+            <!--field name="paste_process_stylesheets" type="list" default="0" label="WF_PASTE_PARAM_PROCESS_STYLESHEETS" description="WF_PASTE_PARAM_PROCESS_STYLESHEETS_DESC">
+                <option value="0">JNO</option>
+                <option value="inline">WF_PASTE_PARAM_PROCESS_STYLESHEETS_INLINE</option>
+                <option value="embed">WF_PASTE_PARAM_PROCESS_STYLESHEETS_EMBED</option>
+            </field-->
+
             <field name="paste_upload_images" type="yesno" default="0" label="WF_PASTE_PARAM_UPLOAD_IMAGES" description="WF_PASTE_PARAM_UPLOAD_IMAGES_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

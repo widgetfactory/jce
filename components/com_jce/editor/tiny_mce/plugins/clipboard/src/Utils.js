@@ -1,9 +1,89 @@
-var DomParser = tinymce.html.DomParser, Schema = tinymce.html.Schema;
+var DomParser = tinymce.html.DomParser, Schema = tinymce.html.Schema, each = tinymce.each, DOM = tinymce.DOM;
 
 var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
+var parseCssToRules = function (content) {
+  var doc = document.implementation.createHTMLDocument(""),
+    styleElement = document.createElement("style");
+
+  styleElement.textContent = content;
+
+  doc.body.appendChild(styleElement);
+
+  return styleElement.sheet.cssRules;
+};
+
+function parseCSS(content) {
+  var rules, classes = {};
+
+  rules = parseCssToRules(content);
+
+  function isValue(val) {
+    return val !== "" && val !== "normal" && val !== "inherit" && val !== "none" && val !== "initial";
+  }
+
+  function isValidStyle(value) {
+    return Object.values(value).length;
+  }
+
+  each(rules, function (r) {
+
+    if (r.selectorText) {
+      var styles = {};
+
+      each(r.style, function (name) {
+        var value = r.style.getPropertyValue(name);
+
+        if (isValue(value)) {
+          styles[name] = value;
+        }
+
+      });
+
+      each(r.selectorText.split(','), function (selector) {
+        selector = selector.trim();
+
+        if (selector.indexOf('.mce') == 0 || selector.indexOf('.mce-') !== -1 || selector.indexOf('.mso-') !== -1) {
+          return;
+        }
+
+        if (isValidStyle(styles)) {
+          classes[selector] = {
+            styles: styles,
+            text: r.cssText
+          };
+        }
+      });
+    }
+  });
+
+  return classes;
+}
+
+function processStylesheets(content, embed_stylesheet) {
+  var div = DOM.create('div', {}, content), styles = {}, css = '';
+
+  styles = tinymce.extend(styles, parseCSS(content));
+
+  each(styles, function (value, selector) {
+    if (!embed_stylesheet) {
+      DOM.setStyles(DOM.select(selector, div), value.styles);
+    } else {
+      css += value.text;
+    }
+  });
+
+  if (css) {
+    div.prepend(DOM.create('style', { type: 'text/css' }, css));
+  }
+
+  content = div.innerHTML;
+
+  return content;
+}
+
 function hasContentType(clipboardContent, mimeType) {
-    return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
+  return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
 }
 
 /**
@@ -13,32 +93,32 @@ function hasContentType(clipboardContent, mimeType) {
  * @return {Object} Object with mime types and data for those mime types.
  */
 function getDataTransferItems(dataTransfer) {
-    var items = {};
+  var items = {};
 
-    if (dataTransfer) {
-        // Use old WebKit/IE API
-        if (dataTransfer.getData) {
-            var legacyText = dataTransfer.getData('Text');
-            if (legacyText && legacyText.length > 0) {
-                if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
-                    items['text/plain'] = legacyText;
-                }
-            }
+  if (dataTransfer) {
+    // Use old WebKit/IE API
+    if (dataTransfer.getData) {
+      var legacyText = dataTransfer.getData('Text');
+      if (legacyText && legacyText.length > 0) {
+        if (legacyText.indexOf(mceInternalUrlPrefix) === -1) {
+          items['text/plain'] = legacyText;
         }
-
-        if (dataTransfer.types) {
-            for (var i = 0; i < dataTransfer.types.length; i++) {
-                var contentType = dataTransfer.types[i];
-                try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
-                    items[contentType] = dataTransfer.getData(contentType);
-                } catch (ex) {
-                    items[contentType] = ""; // useless in general, but for consistency across browsers
-                }
-            }
-        }
+      }
     }
 
-    return items;
+    if (dataTransfer.types) {
+      for (var i = 0; i < dataTransfer.types.length; i++) {
+        var contentType = dataTransfer.types[i];
+        try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
+          items[contentType] = dataTransfer.getData(contentType);
+        } catch (ex) {
+          items[contentType] = ""; // useless in general, but for consistency across browsers
+        }
+      }
+    }
+  }
+
+  return items;
 }
 
 function filter(content, items) {
@@ -154,7 +234,7 @@ function trimHtml(html) {
   }
 
   html = filter(getInnerFragment(html), [
-    /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/g, // Remove anything but the contents within the BODY element
+    /^[\s\S]*<body[^>]*>\s*|\s*<\/body[^>]*>[\s\S]*$/gi, // Remove anything but the contents within the BODY element
     /<!--StartFragment-->|<!--EndFragment-->/g, // Inner fragments (tables from excel on mac)
     [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
     /<br class="Apple-interchange-newline">/g,
@@ -179,23 +259,28 @@ var isMsEdge = function () {
 };
 
 function convertToPixels(v) {
+  // return pixel value
+  if (v.indexOf('px') !== -1) {
+    return v;
+  }
+
   // retun integer 0 for 0 values, eg: 0cm, 0pt etc. 
   if (parseInt(v, 10) === 0) {
-      return 0;
+    return 0;
   }
 
   // convert pt to px
   if (v.indexOf('pt') !== -1) {
-      // convert to integer
-      v = parseInt(v, 10);
-      // convert to pixel value (round up to 1)
-      v = Math.ceil(v / 1.33333);
-      // convert to absolute integer
-      v = Math.abs(v);
+    // convert to integer
+    v = parseInt(v, 10);
+    // convert to pixel value (round up to 1)
+    v = Math.ceil(v / 1.33333);
+    // convert to absolute integer
+    v = Math.abs(v);
   }
 
   if (v) {
-      v += 'px';
+    v += 'px';
   }
 
   return v;
@@ -241,6 +326,11 @@ var backgroundStyles = {
   'background-attachment': 'scroll',
   'background-color': 'transparent'
 };
+
+var fontStyles = [
+  'font', 'font-family', 'font-size', 
+  'font-style', 'font-variant', 'font-weight'
+];
 
 var namedColors = {
   '#F0F8FF': 'AliceBlue',
@@ -384,10 +474,10 @@ var namedColors = {
 
 function namedColorToHex(value) {
   tinymce.each(namedColors, function (name, hex) {
-      if (value.toLowerCase() === name.toLowerCase()) {
-          value = hex;
-          return false;
-      }
+    if (value.toLowerCase() === name.toLowerCase()) {
+      value = hex;
+      return false;
+    }
   });
 
   return value.toLowerCase();
@@ -404,7 +494,10 @@ export {
   backgroundStyles,
   pixelStyles,
   styleProps,
+  fontStyles,
   namedColorToHex,
   hasContentType,
-  getDataTransferItems
+  getDataTransferItems,
+  parseCssToRules,
+  processStylesheets
 };

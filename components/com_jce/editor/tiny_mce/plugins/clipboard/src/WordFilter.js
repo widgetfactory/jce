@@ -9,20 +9,9 @@ var each = tinymce.each,
 // Open Office
 var ooRe = /(Version:[\d\.]+)\s*?((Start|End)(HTML|Fragment):[\d]+\s*?){4}/;
 
-var parseCssToRules = function (content) {
-    var doc = document.implementation.createHTMLDocument(""),
-        styleElement = document.createElement("style");
-
-    styleElement.textContent = content;
-
-    doc.body.appendChild(styleElement);
-
-    return styleElement.sheet.cssRules;
-};
-
 function cleanCssContent(content) {
     var classes = [],
-        rules = parseCssToRules(content);
+        rules = Utils.parseCssToRules(content);
 
     each(rules, function (r) {
         if (r.selectorText) {
@@ -63,7 +52,7 @@ function isWordContent(editor, content) {
 
     // Word / Google Docs
     return (
-        (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i).test(content) ||
+        (/<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument|Excel\.Sheet|Microsoft Excel\s\d+/i).test(content) ||
         (/class="OutlineElement/).test(content) ||
         (/id="?docs\-internal\-guid\-/.test(content))
     );
@@ -122,16 +111,12 @@ function WordFilter(editor, content) {
 
     // remove styles
     content = content.replace(/<style([^>]*)>([\w\W]*?)<\/style>/gi, function (match, attr, value) {
-        // remove style tag
-        if (settings.clipboard_paste_keep_word_styles !== true) {
-            return "";
-        }
-
         // process to remove mso junk
         value = cleanCssContent(value);
 
         return '<style' + attr + '>' + value + '</style>';
     });
+
     // Copy paste from Java like Open Office will produce this junk on FF
     content = content.replace(/Version:[\d.]+\nStartHTML:\d+\nEndHTML:\d+\nStartFragment:\d+\nEndFragment:\d+/gi, '');
 
@@ -390,7 +375,7 @@ function WordFilter(editor, content) {
         var outputStyles = {},
             matches, styles = editor.dom.parseStyle(styleValue);
 
-        each(styles, function (value, name) {
+        each(styles, function (value, name) {            
             // Convert various MS styles to W3C styles
             switch (name) {
                 case 'mso-list':
@@ -470,12 +455,12 @@ function WordFilter(editor, content) {
 
             if (name.indexOf('mso-comment') === 0) {
                 node.remove();
-                return;
+                return true;
             }
 
             // Never allow mso- prefixed names
             if (name.indexOf('mso-') === 0) {
-                return;
+                return true;
             }
 
             // convert to pixel values
@@ -490,13 +475,13 @@ function WordFilter(editor, content) {
         });
 
         // Convert bold style to "b" element
-        if (/(bold|700|800|900)/i.test(outputStyles["font-weight"])) {
+        if (/(bold|700|800|900)/i.test(outputStyles["font-weight"]) && editor.schema.isValidChild('strong', node.name)) {
             delete outputStyles["font-weight"];
             node.wrap(new Node("strong", 1));
         }
 
         // Convert italic style to "i" element
-        if (/(italic)/i.test(outputStyles["font-style"])) {
+        if (/(italic)/i.test(outputStyles["font-style"]) && editor.schema.isValidChild('em', node.name)) {
             delete outputStyles["font-style"];
             node.wrap(new Node("em", 1));
         }
@@ -522,7 +507,7 @@ function WordFilter(editor, content) {
 
         // Remove comments, scripts (e.g., msoShowComment), XML tag, VML content,
         // MS Office namespaced tags, and a few other tags
-        /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|style|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
+        /<(!|script[^>]*>.*?<\/script(?=[>\s])|\/?(\?xml(:\w+)?|meta|link|\w:\w+)(?=[\s\/>]))[^>]*>/gi,
 
         // Convert <s> into <strike> for line-though
         [/<(\/?)s>/gi, "<$1strike>"],
@@ -573,6 +558,11 @@ function WordFilter(editor, content) {
             '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width],tr,' +
             'td[colspan|rowspan|width],th[colspan|rowspan|width],thead,tfoot,tbody'
         );
+    }
+
+    // keep style tags for process_stylesheets
+    if (settings.clipboard_paste_process_stylesheets == 'style') {
+        validElements += ',style';
     }
 
     // Setup strict schema
