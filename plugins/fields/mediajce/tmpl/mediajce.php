@@ -146,7 +146,7 @@ if ($data->media_type == 'embed' && $data->media_caption) {
     $caption_class = (string) $fieldParams->get('media_caption_class', '');
 
     if ($caption_class) {
-        $caption_class = preg_replace('/[^A-Z0-9_- ]/i', '', $caption_class);
+        $caption_class = preg_replace('#[^ \w-]#i', '', $caption_class);
         $fig_attribs = ' class="' . $caption_class . '"';
     }
 
