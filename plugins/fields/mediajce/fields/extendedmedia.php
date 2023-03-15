@@ -1,12 +1,11 @@
 <?php
-
 /**
- * @package     JCE - System Plugin
- * @subpackage  Fields
- * 
- * @copyright  (C) 2020 Open Source Matters, Inc. <https://www.joomla.org>
- * @copyright  (C) 2022 Ryan Demmer. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     JCE
+ * @subpackage  Fields.MediaJce
+ *
+ * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2020 - 2023 Ryan Demmer. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 namespace Joomla\CMS\Form\Field;

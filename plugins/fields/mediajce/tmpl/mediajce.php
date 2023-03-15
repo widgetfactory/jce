@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @package     Joomla.Plugin
+ * @package     JCE
  * @subpackage  Fields.MediaJce
  *
- * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2020 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2020 - 2023 Ryan Demmer. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
