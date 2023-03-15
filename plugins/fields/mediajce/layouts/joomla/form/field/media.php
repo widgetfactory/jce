@@ -130,7 +130,7 @@ $modalHTML = HTMLHelper::_(
 $wam->useStyle('webcomponent.field-media');
 
 ?>
-<div class="field-media-wrapper wf-media-wrapper-custom" data-url="<?php echo $url; ?>">
+<div class="field-media-wrapper wf-media-wrapper wf-media-wrapper-custom" data-url="<?php echo $url; ?>">
     <?php echo $modalHTML; ?>
     <?php if ($showPreview) : ?>
         <div class="field-media-preview">
