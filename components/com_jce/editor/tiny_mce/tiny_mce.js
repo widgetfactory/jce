@@ -27769,7 +27769,7 @@
                   args = args || {};
                   args.element = node;
                   args.parents = parents;
-                  args.contenteditable = tinymce.dom.NodeType.isContentEditableTrue(node);
+                  args.contenteditable = !node.hasAttribute('contenteditable') || tinymce.dom.NodeType.isContentEditableTrue(node);
 
                   editor.onNodeChange.dispatch(
                       editor,
