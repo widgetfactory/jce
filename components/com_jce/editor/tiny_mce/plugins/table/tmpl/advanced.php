@@ -51,7 +51,7 @@ defined('JPATH_PLATFORM') or die;
     <label class="uk-form-label uk-width-1-5" for="backgroundimage">
         <?php echo JText::_('WF_TABLE_BGIMAGE'); ?></label>
     <div class="uk-form-controls uk-width-4-5">
-        <input id="backgroundimage" type="text" value="" class="browser" />
+        <input id="backgroundimage" type="text" value="" class="browser images" />
     </div>
 </div>
 <?php if ($this->plugin->getLayout() == 'table'):
