@@ -21711,8 +21711,6 @@
         }
 
         this._elm = DOM.get(this.id);
-
-        this.rendered = true;
       },
 
       parent: function (ctrl) {
@@ -22616,7 +22614,7 @@
                 r = DOM.getRect(n);
                 m.showMenu((r.x + r.w - ot), r.y - ot, r.x);
                 self.lastMenu = m;
-                DOM.addClass(DOM.get(m.id).firstChild, cp + 'ItemActive');
+                //DOM.addClass(DOM.get(m.id).firstChild, cp + 'ItemActive');
               }
             }
 
