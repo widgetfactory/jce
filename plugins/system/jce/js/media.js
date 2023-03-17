@@ -328,7 +328,7 @@
             $('.wf-media-input', elm).val('').trigger('change');
         });
 
-        $('.wf-media-input', elm).on('change', function () {
+        $('.wf-media-input', elm).not('.wf-media-input-converted').on('change', function () {
             var path = Joomla.getOptions('system.paths', {}).root || '';
 
             var src = '';
@@ -453,7 +453,9 @@
         });
 
         // joomla custom attribute and media field override
-        $('joomla-field-media.wf-media-wrapper').each(function () {
+        $('joomla-field-media.wf-media-wrapper').filter(function () {
+            return $(this).find('input.wf-media-input-converted').length == 0;
+        }).each(function () {
             // eslint-disable-next-line consistent-this
             var field = this;
 

@@ -121,6 +121,10 @@ class JFormFieldMediaJce extends MediaField
             $extraData['class'] .= ' wf-media-input-upload';
         }
 
+        if ($config['converted']) {
+            $extraData['class'] .= ' wf-media-input-converted';
+        }
+
         // Joomla 4
         if (isset($this->types)) {            
             $mediaData = array(
