@@ -24,6 +24,40 @@ class WFBrowserPlugin extends WFMediaManager
         $app = JFactory::getApplication();
         return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid');
     }
+
+    /**
+     * Get a parameter by key.
+     *
+     * @param string $key        Parameter key eg: editor.width
+     * @param mixed  $fallback   Fallback value
+     * @param mixed  $default    Default value
+     * @param string $type       Variable type eg: string, boolean, integer, array
+     *
+     * @return mixed
+     */
+    public function getParam($key, $fallback = '', $default = '', $type = 'string')
+    {
+        $wf = WFApplication::getInstance();
+        
+        $value = parent::getParam($key, $fallback, $default, $type);
+
+        // get all keys
+        $keys = explode('.', $key);
+
+        // get caller if any
+        $caller = $this->get('caller');
+
+        // splice in namespace key
+        if ($caller && $keys[0] === $caller) {
+            array_splice($keys, 1, 0, 'browser');
+            // keys to string
+            $key = implode('.', $keys);
+            // get namespaced value, fallback to base parameter
+            $value = $wf->getParam($key, $value, $default, $type);
+        }
+
+        return $value;
+    }
     
     protected function getFileBrowserConfig($config = array())
     {
