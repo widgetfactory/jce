@@ -68,7 +68,7 @@ class JFormFieldMediaJce extends MediaField
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
-            if (isset($this->types)) {
+            if (isset($this->types) && (bool) $this->element['converted'] === false) {
                 $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
             }
         }
@@ -123,6 +123,8 @@ class JFormFieldMediaJce extends MediaField
 
         if ($config['converted']) {
             $extraData['class'] .= ' wf-media-input-converted';
+        } else {
+            $extraData['class'] .= ' wf-media-input-core';
         }
 
         // Joomla 4
@@ -232,7 +234,9 @@ class JFormFieldMediaJce extends MediaField
      */
     public function postProcess($value, $group = null, Registry $input = null)
     {        
-        $value = MediaHelper::getCleanMediaFieldValue($value);
+        if ((bool) $this->element['converted'] === false) {
+            $value = MediaHelper::getCleanMediaFieldValue($value);
+        }
 
         return $value;
     }
