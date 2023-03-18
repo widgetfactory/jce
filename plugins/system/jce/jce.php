@@ -206,7 +206,12 @@ class PlgSystemJce extends CMSPlugin
 
             $type = $field->getAttribute('type');
 
-            if ($type) {
+            if ($type) {                
+                // jce media field
+                if (strtolower($type) == 'mediajce' || strtolower($type) == 'extendedmedia') {
+                    $hasMedia = true;
+                }
+                
                 // joomla media field and flexi-content converted media field
                 if (strtolower($type) == 'media' || strtolower($type) == 'fcmedia') {
 
@@ -218,11 +223,6 @@ class PlgSystemJce extends CMSPlugin
                     $group = (string) $field->group;
                     $form->setFieldAttribute($name, 'type', 'mediajce', $group);
                     $form->setFieldAttribute($name, 'converted', '1', $group);
-                    $hasMedia = true;
-                }
-
-                // jce media field
-                if (strtolower($type) == 'mediajce' || strtolower($type) == 'extendedmedia') {
                     $hasMedia = true;
                 }
             }
