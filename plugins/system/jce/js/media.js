@@ -441,7 +441,7 @@
 
         if (options.replace_media) {
             // process joomla and flexi-content media fields
-            $('.field-media-wrapper, .fc-field-value-properties-box').find('.field-media-input').addClass('wf-media-input');
+            $('.field-media-wrapper, .fc-field-value-properties-box').find('.field-media-input').addClass('wf-media-input').not('.wf-media-input-core').addClass('wf-media-input-converted');
         }
 
         // remove readonly
@@ -453,13 +453,32 @@
         });
 
         // joomla custom attribute and media field override
-        $('joomla-field-media.wf-media-wrapper').filter(function () {
-            return $(this).find('input.wf-media-input-converted').length == 0;
-        }).each(function () {
+        $('joomla-field-media.wf-media-wrapper').each(function () {
             // eslint-disable-next-line consistent-this
             var field = this;
 
             if (field.inputElement) {
+                // force validation of value to convert to joomlaImage string
+                if ($(this).find('input.wf-media-input-converted').length) {
+                    // convert/update input fields if required
+                    updateMediaUrl(this, options, true);
+
+                    field.inputElement.addEventListener('change', function (e) {
+                        e.stopImmediatePropagation();
+                        // skip empty input
+                        if (field.inputElement.value == '') {
+                            return;
+                        }
+                        
+                        // reset validatedUrl store
+                        field.validatedUrl = '';
+                        // trigger validation and url conversion
+                        field.validateValue(e);
+                    });
+
+                    return;
+                }
+
                 // clean value before processing
                 cleanInputValue(field.inputElement);
 
@@ -479,6 +498,8 @@
                 // prevent validation and update of field value
                 field.inputElement.addEventListener('change', function (e) {
                     e.stopImmediatePropagation();
+
+                    cleanInputValue(this);
 
                     // markValid (check for label) and...
                     if (field.querySelector('label[for="' + this.id + '"]')) {
