@@ -47,11 +47,10 @@ class WFBrowserPlugin extends WFMediaManager
         // get caller if any
         $caller = $this->get('caller');
 
-        // splice in namespace key
-        if ($caller && $keys[0] === $caller) {
-            array_splice($keys, 1, 0, 'browser');
-            // keys to string
-            $key = implode('.', $keys);
+        // create new namespaced key
+        if ($caller && ($keys[0] === $caller || count($keys) == 1)) {
+            // create new key
+            $key = $caller . '.' . 'browser' . '.' . array_pop($keys);	
             // get namespaced value, fallback to base parameter
             $value = $wf->getParam($key, $value, $default, $type);
         }
@@ -101,7 +100,7 @@ class WFBrowserPlugin extends WFMediaManager
             $mediatype = (string) preg_replace('/[^\w_,]/i', '', strtolower($mediatype));
 
             // get filetypes from params
-            $filetypes = $this->getParam('browser.extensions', $this->get('_filetypes'));
+            $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
 
             // get file browser reference
             $browser = $this->getFileBrowser();
