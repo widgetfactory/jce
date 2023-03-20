@@ -489,9 +489,9 @@
           }
 
           // fix self-closing hr tags for pagebreak
-          o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*)\/?>/gi, '<hr$1class="system-pagebreak"$2 />');
+          o.content = o.content.replace(/<hr(.*)class="system-pagebreak"([^\/]+)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
           // fix self-closing hr tags for readmore
-          o.content = o.content.replace(/<hr id="system-readmore"(.*)>/gi, '<hr id="system-readmore" />');
+          o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
         }
       });
 
