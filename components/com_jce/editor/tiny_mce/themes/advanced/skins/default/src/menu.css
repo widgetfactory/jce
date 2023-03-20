@@ -156,6 +156,10 @@
     background: url(img/menu_arrow.gif) no-repeat center right;
 }
 
+.mceMenu .mceMenuItems .mceMenuItemSub .mceText {
+    margin-left: 1em;
+}
+
 /* Rtl */
 .mceRtl .mceMenuItem .mceText {
     text-align: right
