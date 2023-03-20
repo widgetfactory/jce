@@ -58,7 +58,7 @@ class WFMediaPluginConfig
         }
 
         // allow all elements
-        $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param'));
+        $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
 
         $settings['media_valid_elements'] = $tags;
 
