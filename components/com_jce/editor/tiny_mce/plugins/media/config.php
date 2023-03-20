@@ -57,11 +57,13 @@ class WFMediaPluginConfig
             $tags[] = 'param';
         }
 
-        // allow all elements
+        // allow all elements - media will remove tags not included in media_valid_elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
 
+        // list of allowed tags
         $settings['media_valid_elements'] = $tags;
 
+        // allow live embed previews
         $settings['media_live_embed'] = $wf->getParam('media.live_embed', 1);
     }
 }
