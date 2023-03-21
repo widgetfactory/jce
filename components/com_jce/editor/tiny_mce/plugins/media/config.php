@@ -21,18 +21,18 @@ class WFMediaPluginConfig
         if ($allow_iframes) {
             $tags[] = 'iframe';
 
-            $settings['iframes_supported_media'] = array();
-
             // may be overwritten by mediamanager config - ../mediamanager/config.php
             if ($allow_iframes == 2) {
                 $settings['iframes_allow_local'] = true;
             }
 
             if ($allow_iframes == 3) {
+                $settings['iframes_supported_media'] = array();
+                
                 $settings['iframes_allow_supported'] = true;
                 $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array());
 
-                $settings['iframes_supported_media'] = array_merge($iframes_supported_media, $wf->getParam('media.iframes_supported_media_custom',  array()));
+                $settings['iframes_supported_media'] = array_merge($iframes_supported_media, $wf->getParam('media.iframes_supported_media_custom', array()));
             }
         }
 
@@ -57,13 +57,11 @@ class WFMediaPluginConfig
             $tags[] = 'param';
         }
 
-        // allow all elements - media will remove tags not included in media_valid_elements
+        // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
 
-        // list of allowed tags
-        $settings['media_valid_elements'] = $tags;
+        $settings['media_valid_elements'] = array_values($tags);
 
-        // allow live embed previews
         $settings['media_live_embed'] = $wf->getParam('media.live_embed', 1);
     }
 }
