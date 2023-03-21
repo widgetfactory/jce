@@ -874,14 +874,16 @@ class WFEditor
         if (is_object($this->profile)) {
             if (!is_array($plugins)) {
                 // get plugin items from profile
-                $items = explode(',', $this->profile->plugins);
+                $profile_plugins = explode(',', $this->profile->plugins);
+
+				$items = array();
 
                 // get core and installed plugins list
                 $list = JcePluginsHelper::getPlugins();
-
+                
                 // check that the plugin is available
-                $items = array_filter($items, function ($item) use ($list) {
-                    return in_array($item, array_keys($list));
+                $items = array_filter(array_keys($list), function ($item) use ($profile_plugins) {
+                    return in_array($item, $profile_plugins);
                 });
 
                 // add advlists plugin if lists are loaded
