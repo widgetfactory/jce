@@ -114,12 +114,12 @@
             }
 
             ed.onBeforeSetContent.add(function (ed, o) {
-                o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+)>/gi, '<hr$1data-mce-alt="$2"$3>');
+                o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+?)>/gi, '<hr$1data-mce-alt="$2"$3>');
             });
 
             ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
-                    o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+)>/gi, '<hr$1alt="$2"$3>');
+                    o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+?)>/gi, '<hr$1alt="$2"$3>');
                 }
             });
 
@@ -202,15 +202,15 @@
                     onclick: function () {
 
                         var html = '' +
-                            '<div class="mceModalRow">' +
+                            '<div class="mceFormRow">' +
                             '   <label for="' + ed.id + 'article_title">' + ed.getLang('article.title', 'Title') + '</label>' +
-                            '   <div class="mceModalControl">' +
+                            '   <div class="mceFormControl">' +
                             '       <input type="text" id="' + ed.id + '_article_title" autofocus />' +
                             '   </div>' +
                             '</div>' +
-                            '<div class="mceModalRow">' +
+                            '<div class="mceFormRow">' +
                             '   <label for="' + ed.id + '_article_alt">' + ed.getLang('article.alias', 'Alias') + '</label>' +
-                            '   <div class="mceModalControl">' +
+                            '   <div class="mceFormControl">' +
                             '       <input type="text" id="' + ed.id + '_article_alt" />' +
                             '   </div>' +
                             '</div>';
