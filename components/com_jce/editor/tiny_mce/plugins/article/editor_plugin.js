@@ -114,12 +114,12 @@
             }
 
             ed.onBeforeSetContent.add(function (ed, o) {
-                o.content = o.content.replace(/<hr(.*)\salt="([^"]+)"([^>]+?)>/gi, '<hr$1 data-alt="$2"$3>');
+                o.content = o.content.replace(/<hr(.*?) alt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
             });
 
             ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
-                    o.content = o.content.replace(/<hr(.*)data-alt="([^"]+)"([^>]+?)>/gi, '<hr$1alt="$2"$3>');
+                    o.content = o.content.replace(/<hr(.*?)data-alt="([^"]+)"([^>]*?)>/gi, '<hr$1alt="$2"$3>');
                 }
             });
 
@@ -153,8 +153,8 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
-                ed.selection.onBeforeSetContent.add(function (ed, o) {
-                    o.content = o.content.replace(/<hr(.*)\salt="([^"]+)"([^>]+?)>/gi, '<hr$1data-alt="$2"$3>');
+                ed.selection.onBeforeSetContent.addToTop(function (ed, o) {
+                    o.content = o.content.replace(/<hr(.*?) alt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
                 });
 
                 ed.parser.addNodeFilter('hr', function (nodes) {
@@ -163,8 +163,8 @@
                             id = node.attr('id') || '',
                             cls = node.attr('class') || '';
 
-                        if (id == 'system-readmore' || /system-pagebreak/.test(cls)) {
-                            var cls = /system-pagebreak/.test(cls) ? 'mce-item-pagebreak' : 'mce-item-readmore';
+                        if (id == 'system-readmore' || /(mce-item|system)-pagebreak/.test(cls)) {
+                            var cls = /(mce-item|system)-pagebreak/.test(cls) ? 'mce-item-pagebreak' : 'mce-item-readmore';
 
                             node.attr('class', cls);
 
