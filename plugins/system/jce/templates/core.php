@@ -37,33 +37,21 @@ class WfTemplateCore extends JPlugin
         }
 
         if ($template->parent) {
-            // template.css
-            $file = $this->findFile($template->parent, 'template.css');
+            foreach(array('template.css', 'user.css') as $name) {
+                $file = $this->findFile($template->parent, $name);
+
+                if ($file) {
+                    $files[] = $file;
+                }
+            }
+        }
+
+        foreach(array('template.css', 'user.css') as $name) {
+            $file = $this->findFile($template->name, $name);
 
             if ($file) {
                 $files[] = $file;
             }
-
-            // user.css
-            $file = $this->findFile($template->parent, 'user.css');
-
-            if ($file) {
-                $files[] = $file;
-            }
-        }
-
-        // template.css
-        $file = $this->findFile($template->name, 'template.css');
-
-        if ($file) {
-            $files[] = $file;
-        }
-
-        // user.css
-        $file = $this->findFile($template->name, 'user.css');
-
-        if ($file) {
-            $files[] = $file;
         }
     }
 }
