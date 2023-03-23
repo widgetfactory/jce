@@ -114,12 +114,12 @@
             }
 
             ed.onBeforeSetContent.add(function (ed, o) {
-                o.content = o.content.replace(/<hr([^>]*)alt="([^"]+)"([^>]+?)>/gi, '<hr$1data-mce-alt="$2"$3>');
+                o.content = o.content.replace(/<hr(.*)\salt="([^"]+)"([^>]+?)>/gi, '<hr$1 data-alt="$2"$3>');
             });
 
             ed.onPostProcess.add(function (ed, o) {
                 if (o.get) {
-                    o.content = o.content.replace(/<hr([^>]*)data-mce-alt="([^"]+)"([^>]+?)>/gi, '<hr$1alt="$2"$3>');
+                    o.content = o.content.replace(/<hr(.*)data-alt="([^"]+)"([^>]+?)>/gi, '<hr$1alt="$2"$3>');
                 }
             });
 
@@ -153,6 +153,10 @@
                     ed.dom.loadCSS(url + "/css/content.css");
                 }
 
+                ed.selection.onBeforeSetContent.add(function (ed, o) {
+                    o.content = o.content.replace(/<hr(.*)\salt="([^"]+)"([^>]+?)>/gi, '<hr$1data-alt="$2"$3>');
+                });
+
                 ed.parser.addNodeFilter('hr', function (nodes) {
                     for (var i = 0; i < nodes.length; i++) {
                         var node = nodes[i],
@@ -165,7 +169,7 @@
                             node.attr('class', cls);
 
                             if (node.attr('alt')) {
-                                node.attr('data-mce-alt', node.attr('alt'));
+                                node.attr('data-alt', node.attr('alt'));
                                 node.attr('alt', null);
                             }
                         }
@@ -184,10 +188,9 @@
                                 node.attr('id', 'system-readmore');
                             }
 
-                            if (node.attr('data-mce-alt')) {
-                                node.attr('alt', node.attr('data-mce-alt'));
-
-                                node.attr('data-mce-alt', null);
+                            if (node.attr('data-alt')) {
+                                node.attr('alt', node.attr('data-alt'));
+                                node.attr('data-alt', null);
                             }
                         }
                     }
@@ -275,7 +278,7 @@
             if (ed.dom.is(n, 'hr.mce-item-pagebreak')) {
                 o = {
                     title: ed.dom.getAttrib(n, 'title', ''),
-                    alt: ed.dom.getAttrib(n, 'data-mce-alt', '')
+                    alt: ed.dom.getAttrib(n, 'data-alt', '')
                 };
             }
 
@@ -286,7 +289,7 @@
             var ed = this.editor;
 
             tinymce.extend(v, {
-                'data-mce-alt': v.alt || ''
+                'data-alt': v.alt || ''
             });
 
             v.alt = null;
@@ -307,7 +310,7 @@
 
             tinymce.extend(args, {
                 'class': s == 'pagebreak' ? 'mce-item-pagebreak' : 'mce-item-readmore',
-                'data-mce-alt': args.alt || null
+                'data-alt': args.alt || null
             });
 
             // remove alt
