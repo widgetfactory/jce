@@ -18757,7 +18757,7 @@
       self.onBeforeSetContent.add(function (e, args) {
         if (args.format !== 'raw') {
           var node = new tinymce.html.DomParser(editor.settings, editor.schema).parse(args.content, extend(args, { isRootContent: true, forced_root_block: false }));
-          args.content = new tinymce.html.Serializer({ validate: editor.settings.validate }, editor.schema).serialize(node);
+          args.content = new tinymce.html.Serializer({ validate: false }, editor.schema).serialize(node);
         }
       });
 
@@ -40425,7 +40425,7 @@
             }
 
             // fix self-closing hr tags for pagebreak
-            o.content = o.content.replace(/<hr(.*)class="system-pagebreak"([^\/]+?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
+            o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
             // fix self-closing hr tags for readmore
             o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
           }
