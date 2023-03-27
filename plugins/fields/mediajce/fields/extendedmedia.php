@@ -94,7 +94,7 @@ class ExtendedMediaField extends FormField
      */
     protected function getInput()
     {
-        $xml = file_get_contents(__DIR__ . '/media.xml');
+        $xml = file_get_contents(__DIR__ . '/mediajce.xml');
 
         $formname   = 'subform.' . str_replace(array('jform[', '[', ']'), array('', '.', ''), $this->name);
         $subForm     = Form::getInstance($formname, $xml, array('control' => $this->name));
