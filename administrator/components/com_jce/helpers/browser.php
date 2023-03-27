@@ -60,6 +60,7 @@ abstract class WfBrowserHelper
         $data = array(
             'url' => '',
             'upload' => 0,
+            'converted' => false
         );
 
         // load editor class
@@ -70,10 +71,9 @@ abstract class WfBrowserHelper
 
         // check the current user is in a profile
         if ($wf->getProfile('browser')) {
-
             // is conversion enabled?
-            if ($options['converted'] && (int) $wf->getParam('browser.mediafield_conversion', 1) === 0) {
-                return $data;
+            if ($options['converted']) {
+                $data['converted'] = (bool) $wf->getParam('browser.mediafield_conversion', 1);
             }
 
             $data['url'] = 'index.php?option=com_jce&task=plugin.display';
