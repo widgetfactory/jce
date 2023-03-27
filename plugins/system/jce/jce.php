@@ -26,7 +26,7 @@ class PlgSystemJce extends CMSPlugin
         return $this->onContentPrepareForm($form, $data);
     }
 
-    private function getMediaRedirectUrl()
+    private function getMediaRedirectOptions()
     {
         $app = Factory::getApplication();
 
@@ -49,15 +49,15 @@ class PlgSystemJce extends CMSPlugin
             return false;
         }
 
-        return $options['url'];
+        return $options;
     }
 
     private function redirectMedia()
     {
-        $url = $this->getMediaRedirectUrl();
+        $options = $this->getMediaRedirectOptions();
 
-        if ($url) {
-            Factory::getApplication()->redirect($url);
+        if ($options && isset($options['url'])) {
+            Factory::getApplication()->redirect($options['url']);
         }
     }
 
@@ -148,6 +148,17 @@ class PlgSystemJce extends CMSPlugin
         $article->text = '<style type="text/css">@import url("' . JURI::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
     }
 
+    /*public function onCustomFieldsPrepareDom($field, $fieldset, $form)
+    {
+        if ($field->type == 'media') {
+            $name = (string) $field->name;
+
+            $field->type = 'mediajce';
+            $field->params->set('converted', '1');
+            $field->params->set('class', $field->params->get('class') . ' wf-media-input-converted');
+        }
+    }*/
+
     /**
      * adds additional fields to the user editing form.
      *
@@ -179,8 +190,11 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        // File Browser not enabled
-        if (false == $this->getMediaRedirectUrl()) {
+        // Get File Browser options
+        $options = $this->getMediaRedirectOptions();
+
+        // not enabled
+        if (false == $options) {
             return true;
         }
 
@@ -190,7 +204,7 @@ class PlgSystemJce extends CMSPlugin
         $fields = $form->getFieldset();
 
         // should the Joomla Media field be converted?
-        $replace_media_manager = (bool) $params->get('replace_media_manager', 1);
+        $replace_media_manager = (bool) $params->get('replace_media_manager', 1) && $options['converted'];
 
         foreach ($fields as $field) {
             if (method_exists($field, 'getAttribute') === false) {
@@ -223,6 +237,12 @@ class PlgSystemJce extends CMSPlugin
                     $group = (string) $field->group;
                     $form->setFieldAttribute($name, 'type', 'mediajce', $group);
                     $form->setFieldAttribute($name, 'converted', '1', $group);
+
+                    $class = $form->getFieldAttribute($name, 'class');
+                    $class .= ' wf-media-input-converted';
+
+                    $form->setFieldAttribute($name, 'class', $class, $group);
+
                     $hasMedia = true;
                 }
             }
@@ -234,7 +254,7 @@ class PlgSystemJce extends CMSPlugin
             $component = ComponentHelper::getComponent($option);
 
             Factory::getDocument()->addScriptOptions('plg_system_jce', array(
-                'replace_media' => $replace_media_manager,
+                'convert_mediafield' => $replace_media_manager,
                 'context' => $component->id,
             ), true);
 

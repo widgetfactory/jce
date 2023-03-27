@@ -436,16 +436,23 @@
         var options = Joomla.getOptions('plg_system_jce', {});
 
         function canProcessField(elm) {
-            return options.replace_media || $(elm).find('.wf-media-input').length;
+            return options.convert_mediafield || $(elm).find('.wf-media-input').length;
         }
 
-        if (options.replace_media) {
+        // process fields marked for conversion (intro image etc.)
+        $('.wf-media-input-converted').addClass('wf-media-input');
+
+        // process media input wrapper
+        $('.wf-media-input').parents('.field-media-wrapper, .fc-field-value-properties-box').addClass('wf-media-wrapper');
+
+        // process other fields
+        if (options.convert_mediafield) {
             // process joomla and flexi-content media fields
-            $('.field-media-wrapper, .fc-field-value-properties-box').find('.field-media-input').addClass('wf-media-input').not('.wf-media-input-core').addClass('wf-media-input-converted');
+            $('.field-media-wrapper, .fc-field-value-properties-box').not('.wf-media-wrapper').addClass('wf-media-wrapper').find('.field-media-input').addClass('wf-media-input wf-media-input-converted');
         }
 
         // remove readonly
-        $('.wf-media-input').removeAttr('readonly').parents('.field-media-wrapper').addClass('wf-media-wrapper');
+        $('.wf-media-input').removeAttr('readonly');
 
         // update existing repeatable
         $('.wf-media-input').parents('.subform-repeatable-group').each(function (i, row) {
@@ -533,7 +540,12 @@
             }
 
             if (canProcessField(row)) {
-                $(row).find('.wf-media-input, .field-media-input').removeAttr('readonly').addClass('wf-media-input wf-media-input-active');
+                if (options.convert_mediafield) {
+                    $(row).find('.field-media-input').addClass('wf-media-input wf-media-input-converted');
+                }
+
+                $(row).find('.wf-media-input').removeAttr('readonly').addClass('wf-media-input-active');
+
                 updateMediaUrl(row, options, true);
             }
         });
