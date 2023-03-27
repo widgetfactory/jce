@@ -10,6 +10,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\Field\MediaField;
 use Joomla\CMS\Helper\MediaHelper;
 use Joomla\CMS\Component\ComponentHelper;
@@ -239,21 +240,5 @@ class JFormFieldMediaJce extends MediaField
         }
 
         return $value;
-    }
-
-    /**
-     * Allow to override renderer include paths in child fields
-     *
-     * @return  array
-     *
-     * @since   3.5
-     */
-    protected function getLayoutPaths()
-    {
-        if (isset($this->types)) {
-            return array(JPATH_SITE . '/layouts', JPATH_PLUGINS . '/fields/mediajce/layouts');
-        }
-        
-        return parent::getLayoutPaths();
     }
 }
