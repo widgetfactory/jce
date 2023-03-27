@@ -339,7 +339,13 @@
                 value = 'mce' + ucfirst(value) + 'Skin';
             }
 
+            // editor layout
             $('.editor-layout .mceEditor, .editor-button-pool .mceEditor').attr('class', function (i, value) {
+                return $.trim(value.replace(/mce([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
+            }).addClass('mceDefaultSkin ' + value);
+
+            // tabs
+            $('.mceDefaultSkin', '#profile-plugins').attr('class', function (i, value) {
                 return $.trim(value.replace(/mce([a-z0-9]+)Skin([a-z0-9]*)/gi, ''));
             }).addClass('mceDefaultSkin ' + value);
 

@@ -1082,7 +1082,7 @@ a.browser {
 .checkboxes .mceButton>input[type="checkbox"] {
     vertical-align: middle;
     line-height: 20px;
-    margin: 0 3px;
+    margin: 5px 10px 5px 5px;
 }
 
 .checkboxes .mceButton .mceIcon,
@@ -1091,7 +1091,6 @@ a.browser {
     display: inline-block;
     vertical-align: middle;
     margin-left: 5px;
-    font-family: inherit;
 }
 
 .tabs-left .nav-tabs,

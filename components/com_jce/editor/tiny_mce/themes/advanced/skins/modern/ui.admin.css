@@ -19,12 +19,19 @@
   margin: 0;
 }
 
+.nav-item .mceToolbarItem,
+.nav-item .mceToolbarItem .mceButton {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .mceModernSkin .mceToolbarItem .mceButton:not(.mceListBox),
 .mceModernSkin .mceToolbarItem .mceSplitButton:after {
   border-color: transparent;
   background-color: transparent;
 }
 
+.nav-item .mceModernSkin .mceToolbarItem .mceButton,
 .mceModernSkin .mceToolbarItem .mceButton:hover,
 .mceModernSkin .mceToolbarItem.ui-sortable-helper .mceButton {
   border-color: #ddd;
