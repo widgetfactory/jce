@@ -17,7 +17,7 @@
     list-style: none;
     padding: 0;
     margin: 5px 0 10px 0;
-    width: 250px;
+    width: 300px;
     box-sizing: border-box;
     position: relative;
 }
@@ -34,6 +34,9 @@
     margin: 2px 0;
     background-color: #fff;
     box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .ui-jce .filetype .filetype-list .filetype-item .file {
@@ -52,18 +55,19 @@
 .ui-jce .filetype .filetype-list label {
     padding: 0;
     margin: 0 0 0 0;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     width: calc(100% - 44px);
     line-height: 28px;
-    vertical-align: middle;
 }
 
 .ui-jce .filetype .filetype-list input[type="text"] {
     margin: 0;
+    flex: 1;
 }
 
 .ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
-    margin: 5px;
+    margin: 9px;
 }
 
 .ui-jce .filetype .filetype-list .filetype-custom .filetype-remove {

@@ -10,7 +10,7 @@
 
 .file,
 .file.default {
-    background: url(../../components/com_jce/editor/libraries/img/ext.png) no-repeat 0 0;
+    background: url(../../../components/com_jce/editor/libraries/img/ext.png) no-repeat 0 0;
 }
 
 .file.txt {
