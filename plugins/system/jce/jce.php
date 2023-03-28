@@ -148,17 +148,6 @@ class PlgSystemJce extends CMSPlugin
         $article->text = '<style type="text/css">@import url("' . JURI::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
     }
 
-    /*public function onCustomFieldsPrepareDom($field, $fieldset, $form)
-    {
-        if ($field->type == 'media') {
-            $name = (string) $field->name;
-
-            $field->type = 'mediajce';
-            $field->params->set('converted', '1');
-            $field->params->set('class', $field->params->get('class') . ' wf-media-input-converted');
-        }
-    }*/
-
     /**
      * adds additional fields to the user editing form.
      *
