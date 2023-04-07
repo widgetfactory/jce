@@ -261,7 +261,7 @@ class WFLanguageParser extends JObject
                     $i = 0;
 
                     foreach ($strings as $k => $v) {
-                        if (array_key_exists(strtoupper($k), $overrides)) {
+                        if (!empty($overrides) && array_key_exists(strtoupper($k), $overrides)) {
                             $v = $overrides[$k];
                         }
 
