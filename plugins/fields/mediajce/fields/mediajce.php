@@ -38,6 +38,14 @@ class JFormFieldMediaJce extends MediaField
      */
     protected $layout = 'joomla.form.field.media';
 
+     /**
+     * The mediatype for the form field.
+     *
+     * @var    string
+     * @since  2.9.37
+     */
+    protected $mediatype = 'images';
+
     /**
      * Method to attach a JForm object to the field.
      *
