@@ -66,6 +66,11 @@ function processStylesheets(content, embed_stylesheet) {
   styles = tinymce.extend(styles, parseCSS(content));
 
   each(styles, function (value, selector) {
+    // skip Word stuff
+    if (selector.indexOf('Mso') !== -1) {
+      return true;
+    }
+    
     if (!embed_stylesheet) {
       DOM.setStyles(DOM.select(selector, div), value.styles);
     } else {

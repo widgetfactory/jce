@@ -772,6 +772,7 @@ function WordFilter(editor, content) {
         validate: settings.validate
     }, schema).serialize(rootNode);
 
+
     return content;
 }
 

@@ -51,7 +51,8 @@ class WFClipboardPluginConfig
             }
         }
 
-        $settings['clipboard_paste_process_stylesheets'] = 1;//$wf->getParam('clipboard.paste_process_stylesheets', 0, 0);
+        // experimental, disabled
+        $settings['clipboard_paste_process_stylesheets'] = $wf->getParam('clipboard.paste_process_stylesheets', 0, 0);
     }
 
     private static function cleanStringList($value)

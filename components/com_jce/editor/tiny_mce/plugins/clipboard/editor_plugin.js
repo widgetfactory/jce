@@ -194,6 +194,11 @@
     styles = tinymce.extend(styles, parseCSS(content));
 
     each$3(styles, function (value, selector) {
+      // skip Word stuff
+      if (selector.indexOf('Mso') !== -1) {
+        return true;
+      }
+      
       if (!embed_stylesheet) {
         DOM$1.setStyles(DOM$1.select(selector, div), value.styles);
       } else {
@@ -1369,6 +1374,7 @@
       content = new Serializer$1({
           validate: settings.validate
       }, schema).serialize(rootNode);
+
 
       return content;
   }
