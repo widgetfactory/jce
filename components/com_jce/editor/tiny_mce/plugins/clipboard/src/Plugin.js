@@ -16,6 +16,7 @@ import * as InternalHtml from './InternalHtml';
 import * as Utils from './Utils';
 import * as WordFilter from './WordFilter';
 import * as Dialog from './Dialog.js';
+import * as DragDrop from './DragDrop';
 import PasteBin from './PasteBin.js';
 
 var each = tinymce.each,
@@ -617,10 +618,6 @@ function isKeyboardPasteEvent(e) {
     return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
 }
 
-function hasHtmlOrText(content) {
-    return (Utils.hasContentType(content, 'text/html') || Utils.hasContentType(content, 'text/plain')) && !content.Files;
-}
-
 // IE flag to include Edge
 var isIE = tinymce.isIE || tinymce.isIE12;
 
@@ -850,7 +847,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
 
             ed.onPasteBeforeInsert.dispatch(ed, o);
 
-            self._insert(o.content);
+            self.insertData(o.content);
 
             // reset pasteAsPlainText state
             self.pasteAsPlainText = false;
@@ -1057,10 +1054,6 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
             return ed.settings.html_paste_in_pre !== false && node && node.nodeName === 'PRE';
         }
 
-        function getCaretRangeFromEvent(e) {
-            return tinymce.dom.RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
-        }
-
         function isPlainTextFileUrl(content) {
             var plainTextContent = content['text/plain'];
             return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
@@ -1111,7 +1104,7 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                 return;
             }
 
-            if (!hasHtmlOrText(clipboardContent) && pasteImageData(e, pasteBin.getLastRng())) {
+            if (!Utils.hasHtmlOrText(clipboardContent) && pasteImageData(e, pasteBin.getLastRng())) {
                 pasteBin.remove();
                 return;
             }
@@ -1151,43 +1144,8 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
         });
 
         ed.onInit.add(function () {
-            var draggingInternally;
-
-            ed.dom.bind(ed.getBody(), ['dragstart', 'dragend'], function (e) {
-                draggingInternally = e.type == 'dragstart';
-            });
-
-            ed.dom.bind(ed.getBody(), 'drop', function (e) {
-                var rng = getCaretRangeFromEvent(e);
-
-                if (e.isDefaultPrevented() || draggingInternally) {
-                    return;
-                }
-
-                if (rng && ed.settings.clipboard_paste_filter_drop !== false) {
-                    ed.selection.setRng(rng);
-                    getContentAndInsert(e);
-                }
-            });
-
-            ed.dom.bind(ed.getBody(), ['dragover', 'dragend'], function (e) {
-                if (ed.settings.clipboard_paste_data_images) {
-                    e.preventDefault();
-                }
-            });
+            DragDrop.setup(ed, self);
         });
-
-        // Block all drag/drop events
-        if (ed.getParam('clipboard_paste_block_drop')) {
-            ed.onInit.add(function () {
-                ed.dom.bind(ed.getBody(), ['dragend', 'dragover', 'draggesture', 'dragdrop', 'drop', 'drag'], function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    return false;
-                });
-            });
-        }
 
         // Add commands
         each(['mcePasteText', 'mcePaste'], function (cmd) {
@@ -1252,13 +1210,14 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
                 icon: 'copy'
             });
         }
-    },
 
+        self.pasteImageData = pasteImageData;
+    },
 
     /**
      * Inserts the specified contents at the caret position.
      */
-    _insert: function (content, skip_undo) {
+    insertData: function (content, skip_undo) {
         var ed = this.editor;
 
         // get validate setting

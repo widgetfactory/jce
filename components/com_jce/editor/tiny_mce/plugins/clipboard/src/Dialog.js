@@ -32,7 +32,7 @@ function openWin(ed, cmd) {
         var pasteEd = new tinymce.Editor(elm.id, {
             plugins: '',
             language_load: false,
-            forced_root_block: ed.settings.forced_root_block,
+            forced_root_block: false,
             verify_html: false,
             invalid_elements: ed.settings.invalid_elements,
             base_url: ed.settings.base_url,

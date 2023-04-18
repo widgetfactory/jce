@@ -219,6 +219,10 @@
     return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
   }
 
+  function hasHtmlOrText(content) {
+    return (hasContentType(content, 'text/html') || hasContentType(content, 'text/plain')) && !content.Files;
+  }
+
   /**
    * Gets various content types out of a datatransfer object.
    *
@@ -1609,7 +1613,7 @@
           var pasteEd = new tinymce.Editor(elm.id, {
               plugins: '',
               language_load: false,
-              forced_root_block: ed.settings.forced_root_block,
+              forced_root_block: false,
               verify_html: false,
               invalid_elements: ed.settings.invalid_elements,
               base_url: ed.settings.base_url,
@@ -1760,6 +1764,110 @@
           ]
       });
   }
+
+  var RangeUtils = tinymce.dom.RangeUtils, Delay = tinymce.util.Delay;
+
+  var getCaretRangeFromEvent = function (editor, e) {
+      return RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, editor.getDoc());
+  };
+
+  var isPlainTextFileUrl = function (content) {
+      var plainTextContent = content['text/plain'];
+      return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
+  };
+
+  var setFocusedRange = function (editor, rng) {
+      editor.focus();
+      editor.selection.setRng(rng);
+  };
+
+  var draggingInternallyState = false;
+
+  var setup = function (editor, clipboard) {
+      // Block all drag/drop events
+      if (editor.settings.clipboard_paste_block_drop) {
+          editor.dom.bind(editor.getBody(), ['dragend', 'dragover', 'draggesture', 'dragdrop', 'drop', 'drag'], function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+          });
+      }
+
+      // Prevent users from dropping data images on Gecko
+      if (editor.settings.clipboard_paste_data_images === false) {
+          editor.dom.bind(editor.getBody(), 'drop', function (e) {
+              var dataTransfer = e.dataTransfer;
+
+              if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
+                  e.preventDefault();
+              }
+          });
+      }
+
+      editor.dom.bind(editor.getBody(), 'drop', function (e) {
+          var dropContent, rng;
+
+          rng = getCaretRangeFromEvent(editor, e);
+
+          if (e.isDefaultPrevented()) {
+              return;
+          }
+
+          dropContent = getDataTransferItems(e.dataTransfer);
+          var internal = hasContentType(dropContent, internalHtmlMime()) || draggingInternallyState;
+
+          if ((!hasHtmlOrText(dropContent) || isPlainTextFileUrl(dropContent)) && clipboard.pasteImageData(e, rng)) {
+              return;
+          }
+
+          if (rng && editor.settings.clipboard_paste_filter_drop !== false) {
+              var content = dropContent[internalHtmlMime()] || dropContent['text/html'] || dropContent['text/plain'];
+
+              if (content) {
+                  e.preventDefault();
+
+                  // FF 45 doesn't paint a caret when dragging in text in due to focus call by execCommand
+                  Delay.setEditorTimeout(editor, function () {
+                      editor.undoManager.add();
+                      
+                      if (internal) {                        
+                          editor.execCommand('Delete', false, null, { skip_undo : true });
+                          editor.selection.getRng().deleteContents();
+                      }
+
+                      setFocusedRange(editor, rng);
+
+                      content = trimHtml(content);
+
+                      var data = {};
+
+                      if (!dropContent['text/html']) {
+                          data.text = content;
+                      } else {
+                          data.content = content;
+                          data.internal = internal || draggingInternallyState;
+                      }
+
+                      editor.execCommand('mceInsertClipboardContent', false, data, { skip_undo : true });
+                  });
+              }
+          }
+      });
+
+      editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
+          draggingInternallyState = true;
+      });
+
+      editor.dom.bind(editor.getBody(), ['dragover', 'dragend'], function (e) {
+          if (editor.settings.clipboard_paste_data_images && draggingInternallyState == false) {
+              e.preventDefault();
+              setFocusedRange(editor, getCaretRangeFromEvent(editor, e));
+          }
+
+          if (e.type == 'dragend') {
+              draggingInternallyState = false;
+          }
+      });
+  };
 
   /**
    * Creates a paste bin element as close as possible to the current caret location and places the focus inside that element
@@ -2596,10 +2704,6 @@
       return (VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45);
   }
 
-  function hasHtmlOrText(content) {
-      return (hasContentType(content, 'text/html') || hasContentType(content, 'text/plain')) && !content.Files;
-  }
-
   // IE flag to include Edge
   var isIE = tinymce.isIE || tinymce.isIE12;
 
@@ -2829,7 +2933,7 @@
 
               ed.onPasteBeforeInsert.dispatch(ed, o);
 
-              self._insert(o.content);
+              self.insertData(o.content);
 
               // reset pasteAsPlainText state
               self.pasteAsPlainText = false;
@@ -3036,10 +3140,6 @@
               return ed.settings.html_paste_in_pre !== false && node && node.nodeName === 'PRE';
           }
 
-          function getCaretRangeFromEvent(e) {
-              return tinymce.dom.RangeUtils.getCaretRangeFromPoint(e.clientX, e.clientY, ed.getDoc());
-          }
-
           function isPlainTextFileUrl(content) {
               var plainTextContent = content['text/plain'];
               return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
@@ -3130,43 +3230,8 @@
           });
 
           ed.onInit.add(function () {
-              var draggingInternally;
-
-              ed.dom.bind(ed.getBody(), ['dragstart', 'dragend'], function (e) {
-                  draggingInternally = e.type == 'dragstart';
-              });
-
-              ed.dom.bind(ed.getBody(), 'drop', function (e) {
-                  var rng = getCaretRangeFromEvent(e);
-
-                  if (e.isDefaultPrevented() || draggingInternally) {
-                      return;
-                  }
-
-                  if (rng && ed.settings.clipboard_paste_filter_drop !== false) {
-                      ed.selection.setRng(rng);
-                      getContentAndInsert(e);
-                  }
-              });
-
-              ed.dom.bind(ed.getBody(), ['dragover', 'dragend'], function (e) {
-                  if (ed.settings.clipboard_paste_data_images) {
-                      e.preventDefault();
-                  }
-              });
+              setup(ed, self);
           });
-
-          // Block all drag/drop events
-          if (ed.getParam('clipboard_paste_block_drop')) {
-              ed.onInit.add(function () {
-                  ed.dom.bind(ed.getBody(), ['dragend', 'dragover', 'draggesture', 'dragdrop', 'drop', 'drag'], function (e) {
-                      e.preventDefault();
-                      e.stopPropagation();
-
-                      return false;
-                  });
-              });
-          }
 
           // Add commands
           each(['mcePasteText', 'mcePaste'], function (cmd) {
@@ -3231,13 +3296,14 @@
                   icon: 'copy'
               });
           }
-      },
 
+          self.pasteImageData = pasteImageData;
+      },
 
       /**
        * Inserts the specified contents at the caret position.
        */
-      _insert: function (content, skip_undo) {
+      insertData: function (content, skip_undo) {
           var ed = this.editor;
 
           // get validate setting

@@ -91,6 +91,10 @@ function hasContentType(clipboardContent, mimeType) {
   return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
 }
 
+function hasHtmlOrText(content) {
+  return (hasContentType(content, 'text/html') || hasContentType(content, 'text/plain')) && !content.Files;
+}
+
 /**
  * Gets various content types out of a datatransfer object.
  *
@@ -504,5 +508,6 @@ export {
   hasContentType,
   getDataTransferItems,
   parseCssToRules,
-  processStylesheets
+  processStylesheets,
+  hasHtmlOrText
 };
