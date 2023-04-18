@@ -19,6 +19,9 @@ class WfTemplateHelix extends JPlugin
         // add bootstrap
         $files[] = 'templates/' . $template->name . '/css/bootstrap.min.css';
 
+        // add font-awesome
+        $files[] = 'templates/' . $template->name . '/css/font-awesome.min.css';
+
         // add base template.css file
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
