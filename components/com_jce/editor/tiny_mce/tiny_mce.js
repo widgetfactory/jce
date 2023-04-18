@@ -2392,11 +2392,10 @@
      * fix seemed like a huge task. I hope we can remove this before the year 2030.
      */
     function cleanupStylesWhenDeleting() {
-      var doc = editor.getDoc(),
-        dom = editor.dom,
+      editor.getDoc();
+        var dom = editor.dom,
         selection = editor.selection;
-      var MutationObserver = window.MutationObserver,
-        dragStartRng;
+      var MutationObserver = window.MutationObserver;
 
       function isTrailingBr(node) {
         var blockElements = dom.schema.getBlockElements(),
@@ -2847,11 +2846,6 @@
         });
       }
 
-      function transactCustomDelete(isForward) {
-        customDelete(isForward);
-        editor.undoManager.add();
-      }
-
       editor.onKeyDown.add(function (editor, e) {
         var isForward = e.keyCode == DELETE,
           isMetaOrCtrl = e.ctrlKey || e.metaKey;
@@ -2959,7 +2953,7 @@
         customDelete(true);
       });
 
-      editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
+      /*editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
         dragStartRng = selection.getRng();
         setMceInternalContent(e);
       });
@@ -2989,7 +2983,7 @@
             }, 0);
           }
         }
-      });
+      });*/
     }
 
     /**
@@ -38425,8 +38419,9 @@
    * @class tinymce.DragDropOverrides
    */
   (function (tinymce) {
-    var NodeType = tinymce.dom.NodeType; tinymce.dom.DOMUtils; var Delay = tinymce.util.Delay, Arr = tinymce.util.Arr, MousePosition = tinymce.dom.MousePosition, Fun = tinymce.util.Fun;
 
+    var NodeType = tinymce.dom.NodeType;
+    var Fun = tinymce.util.Fun, Arr = tinymce.util.Arr, Delay = tinymce.util.Delay, MousePosition = tinymce.dom.MousePosition;
     var isContentEditableFalse = NodeType.isContentEditableFalse,
       isContentEditableTrue = NodeType.isContentEditableTrue;
 
@@ -38567,14 +38562,7 @@
         var movement = Math.max(Math.abs(e.screenX - state.screenX), Math.abs(e.screenY - state.screenY));
 
         if (hasDraggableElement(state) && !state.dragging && movement > 10) {
-          //var args = editor.fire('dragstart', { target: state.element });
-
-          var args = {
-            target: state.element
-          };
-
-          editor.dom.fire(editor.getBody(), 'dragstart', args);
-
+          var args = editor.dom.fire(editor.getBody(), 'dragstart', { target: state.element });
           if (args.isDefaultPrevented()) {
             return;
           }
@@ -38607,39 +38595,34 @@
           if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
             var targetClone = cloneElement(state.element);
 
-            /*var args = editor.fire('drop', {
+            var args = editor.dom.fire(editor.getBody(), 'drop', {
               targetClone: targetClone,
               clientX: e.clientX,
               clientY: e.clientY
-            });*/
-
-            var args = {
-              targetClone: targetClone,
-              clientX: e.clientX,
-              clientY: e.clientY
-            };
-
-            editor.dom.fire(editor.getBody(), 'drop', args);
+            });
 
             if (!args.isDefaultPrevented()) {
               targetClone = args.targetClone;
 
-              /*editor.undoManager.transact(function () {
+              editor.undoManager.transact(function () {
                 removeElement(state.element);
                 editor.insertContent(editor.dom.getOuterHTML(targetClone));
                 editor._selectionOverrides.hideFakeCaret();
-              });*/
-
-              editor.undoManager.add();
-
-              removeElement(state.element);
-              editor.insertContent(editor.dom.getOuterHTML(targetClone));
-              editor._selectionOverrides.hideFakeCaret();
+              });
             }
           }
         }
 
         removeDragState(state);
+      };
+    };
+
+    var stop = function (state, editor) {
+      return function () {
+        removeDragState(state);
+        if (state.dragging) {
+          editor.dom.fire(editor.getBody(), 'dragend');
+        }
       };
     };
 
@@ -38650,35 +38633,30 @@
     };
 
     var bindFakeDragEvents = function (editor) {
-      var state = {}, dragStartHandler, dragHandler, dropHandler;
+      var state = {}, pageDom, dragStartHandler, dragHandler, dropHandler, dragEndHandler, rootDocument;
+
+      pageDom = tinymce.DOM;
+      rootDocument = document;
       dragStartHandler = start(state, editor);
       dragHandler = move(state, editor);
       dropHandler = drop(state, editor);
+      dragEndHandler = stop(state, editor);
 
-      //editor.on('mousedown', dragStartHandler);
-      //editor.on('mousemove', dragHandler);
-      //editor.on('mouseup', dropHandler);
+     editor.dom.bind(editor.getBody(), 'mousedown', dragStartHandler);
+     editor.dom.bind(editor.getBody(), 'mousemove', dragHandler);
+     editor.dom.bind(editor.getBody(), 'mouseup', dropHandler);
 
-      editor.dom.bind(editor.getBody(), 'mousedown', dragStartHandler);
-      editor.dom.bind(editor.getBody(), 'mousemove', dragHandler);
-      editor.dom.bind(editor.getBody(), 'mouseup', dropHandler);
+      pageDom.bind(rootDocument, 'mousemove', dragHandler);
+      pageDom.bind(rootDocument, 'mouseup', dragEndHandler);
 
-      //pageDom.bind(rootDocument, 'mousemove', dragHandler);
-      //pageDom.bind(rootDocument, 'mouseup', dragEndHandler);
-
-      /*editor.on('remove', function () {
+     editor.dom.bind(editor.getBody(), 'remove', function () {
         pageDom.unbind(rootDocument, 'mousemove', dragHandler);
         pageDom.unbind(rootDocument, 'mouseup', dragEndHandler);
-      });*/
-
-      /*editor.onRemove.add(function () {
-        pageDom.unbind(rootDocument, 'mousemove', dragHandler);
-        pageDom.unbind(rootDocument, 'mouseup', dragEndHandler);
-      });*/
+      });
     };
 
     var blockIeDrop = function (editor) {
-      editor.dom.bind(editor.getBody(), 'drop', function (e) {
+     editor.dom.bind(editor.getBody(), 'drop', function (e) {
         // FF doesn't pass out clientX/clientY for drop since this is for IE we just use null instead
         var realTarget = typeof e.clientX !== 'undefined' ? editor.getDoc().elementFromPoint(e.clientX, e.clientY) : null;
 
@@ -38688,15 +38666,12 @@
       });
     };
 
-    var init = function (editor) {
-      bindFakeDragEvents(editor);
-      blockIeDrop(editor);
-    };
-
     tinymce.DragDropOverrides = {
-      init: init
+        init : function (editor) {
+          bindFakeDragEvents(editor);
+          blockIeDrop(editor);
+        }
     };
-
   })(tinymce);
 
   /**
@@ -38730,7 +38705,7 @@
     var NodeType = tinymce.dom.NodeType, RangeUtils = tinymce.dom.RangeUtils;
     var VK = tinymce.VK, Fun = tinymce.util.Fun, Arr = tinymce.util.Arr;
 
-    var Dispatcher = tinymce.util.Dispatcher; tinymce.DragDropOverrides;
+    var Dispatcher = tinymce.util.Dispatcher, DragDropOverrides = tinymce.DragDropOverrides;
 
     var curry = Fun.curry,
       isContentEditableTrue = NodeType.isContentEditableTrue,
@@ -39585,7 +39560,7 @@
           }
         });
 
-        //DragDropOverrides.init(editor);
+        DragDropOverrides.init(editor);
       }
 
       function isWithinCaretContainer(node) {
