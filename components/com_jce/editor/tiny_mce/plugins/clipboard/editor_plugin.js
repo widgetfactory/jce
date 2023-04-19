@@ -130,6 +130,16 @@
 
   var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
+  var resetStyleAttribute = function (content) {
+    var div = DOM$1.create('div', {}, content);
+
+    each$3(DOM$1.select('[style]', div), function (elm) {
+        elm.setAttribute('style', elm.getAttribute('data-mce-style') || '');
+    });
+
+    return div.innerHTML;
+  };
+
   var parseCssToRules = function (content) {
     var doc = document.implementation.createHTMLDocument(""),
       styleElement = document.createElement("style");
@@ -1828,9 +1838,9 @@
                   // FF 45 doesn't paint a caret when dragging in text in due to focus call by execCommand
                   Delay.setEditorTimeout(editor, function () {
                       editor.undoManager.add();
-                      
-                      if (internal) {                        
-                          editor.execCommand('Delete', false, null, { skip_undo : true });
+
+                      if (internal) {
+                          editor.execCommand('Delete', false, null, { skip_undo: true });
                           editor.selection.getRng().deleteContents();
                       }
 
@@ -1843,11 +1853,14 @@
                       if (!dropContent['text/html']) {
                           data.text = content;
                       } else {
+                          // reset styles, replacing style attribute with data-mce-style value or remove
+                          content = resetStyleAttribute(content);
+
                           data.content = content;
                           data.internal = internal || draggingInternallyState;
                       }
 
-                      editor.execCommand('mceInsertClipboardContent', false, data, { skip_undo : true });
+                      editor.execCommand('mceInsertClipboardContent', false, data, { skip_undo: true });
                   });
               }
           }

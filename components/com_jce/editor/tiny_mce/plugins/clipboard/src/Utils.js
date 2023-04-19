@@ -2,6 +2,16 @@ var DomParser = tinymce.html.DomParser, Schema = tinymce.html.Schema, each = tin
 
 var mceInternalUrlPrefix = 'data:text/mce-internal,';
 
+var resetStyleAttribute = function (content) {
+  var div = DOM.create('div', {}, content);
+
+  each(DOM.select('[style]', div), function (elm) {
+      elm.setAttribute('style', elm.getAttribute('data-mce-style') || '');
+  });
+
+  return div.innerHTML;
+};
+
 var parseCssToRules = function (content) {
   var doc = document.implementation.createHTMLDocument(""),
     styleElement = document.createElement("style");
@@ -509,5 +519,6 @@ export {
   getDataTransferItems,
   parseCssToRules,
   processStylesheets,
-  hasHtmlOrText
+  hasHtmlOrText,
+  resetStyleAttribute
 };

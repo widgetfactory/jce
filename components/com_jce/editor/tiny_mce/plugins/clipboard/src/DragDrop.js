@@ -64,9 +64,9 @@ var setup = function (editor, clipboard) {
                 // FF 45 doesn't paint a caret when dragging in text in due to focus call by execCommand
                 Delay.setEditorTimeout(editor, function () {
                     editor.undoManager.add();
-                    
-                    if (internal) {                        
-                        editor.execCommand('Delete', false, null, { skip_undo : true });
+
+                    if (internal) {
+                        editor.execCommand('Delete', false, null, { skip_undo: true });
                         editor.selection.getRng().deleteContents();
                     }
 
@@ -79,11 +79,14 @@ var setup = function (editor, clipboard) {
                     if (!dropContent['text/html']) {
                         data.text = content;
                     } else {
+                        // reset styles, replacing style attribute with data-mce-style value or remove
+                        content = Utils.resetStyleAttribute(content);
+
                         data.content = content;
                         data.internal = internal || draggingInternallyState;
                     }
 
-                    editor.execCommand('mceInsertClipboardContent', false, data, { skip_undo : true });
+                    editor.execCommand('mceInsertClipboardContent', false, data, { skip_undo: true });
                 });
             }
         }
