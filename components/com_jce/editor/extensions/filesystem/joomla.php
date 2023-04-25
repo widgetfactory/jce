@@ -518,7 +518,7 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $data['preview'] = WFUtility::cleanPath($url, '/');
 
-        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png|svg)#i', $file)) {
+        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png|apng|webp|svg)#i', $file)) {
             $image = array();
 
             if ($count <= 100) {
