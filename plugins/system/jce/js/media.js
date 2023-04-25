@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* global jQuery, Joomla */
 (function ($) {
 
@@ -341,7 +342,7 @@
         }).trigger('change');
     }
 
-    function updateMediaUrl(row, options, repeatable) {        
+    function updateMediaUrl(row, options, repeatable) {
         $(row).find('.field-media-wrapper').add(row).each(function () {
             // only subform and custom elements
             if ($(this).find('.wf-media-input-upload').length && !repeatable) {
@@ -470,18 +471,27 @@
                     // convert/update input fields if required
                     updateMediaUrl(this, options, true);
 
-                    field.inputElement.addEventListener('change', function (e) {
-                        e.stopImmediatePropagation();
-                        // skip empty input
-                        if (field.inputElement.value == '') {
-                            return;
+                    var setValueFunction = field.setValue || function () { };
+
+                    // override setValue function
+                    field.setValue = function (value, data) {
+                        if (field.markValid) {
+                            field.markValid();
+
+                            // create Joomla 4 specific media field url
+                            if (value && value.indexOf('://') === -1) {
+                                var parts = value.split('/'), base = parts.shift();
+
+                                value += '#joomlaImage://local-' + base + '/' + parts.join('/');
+                                
+                                if (data && typeof data === "object") {
+                                   value += '?width=' + data.width + '&height=' + data.height;
+                                }
+                            }
+
+                            setValueFunction(value);
                         }
-                        
-                        // reset validatedUrl store
-                        field.validatedUrl = '';
-                        // trigger validation and url conversion
-                        field.validateValue(e);
-                    });
+                    };
 
                     return;
                 }
