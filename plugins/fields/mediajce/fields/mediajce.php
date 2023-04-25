@@ -145,7 +145,7 @@ class JFormFieldMediaJce extends MediaField
                 'documentsAllowedExt' => ''
             );
 
-            $allowable = array('jpg,jpeg,png,gif', 'mp3,m4a,mp4a,ogg', 'mp4,mp4v,mpeg,mov,webm', 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv', 'zip,tar,gz');
+            $allowable = array('jpg,jpeg,png,apng,gif,webp', 'mp3,m4a,mp4a,ogg', 'mp4,mp4v,mpeg,mov,webm', 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv', 'zip,tar,gz');
 
             if (!empty($options['accept'])) {
                 $accept = explode(',', $options['accept']);
