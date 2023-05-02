@@ -67,7 +67,7 @@ div#search-browser input[type="radio"] {
 }
 
 #search-browser.loading .uk-icon-spinner {
-    display: block;
+    display: flex;
     opacity: 1;
 }
 
