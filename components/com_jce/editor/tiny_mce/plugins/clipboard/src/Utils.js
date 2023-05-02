@@ -258,7 +258,8 @@ function trimHtml(html) {
     [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
     /<br class="Apple-interchange-newline">/g,
     /^<meta[^>]+>/g, // Chrome weirdness
-    /<br>$/i // Trailing BR elements
+    /<br>$/i, // Trailing BR elements,
+    /&nbsp;$/ // trailing non-breaking space
   ]);
 
   return html;
