@@ -2392,8 +2392,7 @@
      * fix seemed like a huge task. I hope we can remove this before the year 2030.
      */
     function cleanupStylesWhenDeleting() {
-      editor.getDoc();
-        var dom = editor.dom,
+      var dom = editor.dom,
         selection = editor.selection;
       var MutationObserver = window.MutationObserver;
 
@@ -28791,7 +28790,6 @@
         self.editorCommands = new tinymce.EditorCommands(self);
 
         self._selectionOverrides = new tinymce.SelectionOverrides(self);
-        self._selectionOverrides = new tinymce.SelectionOverrides(self);
 
         self.onExecCommand.add(function (editor, command) {
           // Don't refresh the select lists until caret move
@@ -35710,7 +35708,7 @@
         if (format) {
           // check for parent node for active node?
           if (node && node.parentNode) {
-            if (node.nodeType) {            
+            if (node.nodeType) {
               if (!applyNodeStyle(formatList, node)) {
                 rng = dom.createRng();
                 rng.setStartBefore(node);
@@ -35925,27 +35923,27 @@
                 });
                 splitToFormatRoot(startContainer);
                 startContainer = unwrap(TRUE);
-                return;
+              } else {
+                // Wrap start/end nodes in span element since these might be cloned/moved
+                startContainer = wrap(startContainer, 'span', {
+                  id: '_start',
+                  'data-mce-type': 'bookmark'
+                });
+
+                endContainer = wrap(endContainer, 'span', {
+                  id: '_end',
+                  'data-mce-type': 'bookmark'
+                });
+
+                // Split start/end
+                splitToFormatRoot(startContainer);
+                splitToFormatRoot(endContainer);
+
+                // Unwrap start/end to get real elements again
+                startContainer = unwrap(TRUE);
+                endContainer = unwrap();
               }
 
-              // Wrap start/end nodes in span element since these might be cloned/moved
-              startContainer = wrap(startContainer, 'span', {
-                id: '_start',
-                'data-mce-type': 'bookmark'
-              });
-
-              endContainer = wrap(endContainer, 'span', {
-                id: '_end',
-                'data-mce-type': 'bookmark'
-              });
-
-              // Split start/end
-              splitToFormatRoot(startContainer);
-              splitToFormatRoot(endContainer);
-
-              // Unwrap start/end to get real elements again
-              startContainer = unwrap(TRUE);
-              endContainer = unwrap();
             } else {
               startContainer = endContainer = splitToFormatRoot(startContainer);
             }
