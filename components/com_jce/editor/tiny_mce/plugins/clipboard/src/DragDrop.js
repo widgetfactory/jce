@@ -94,6 +94,11 @@ var setup = function (editor, clipboard) {
 
     editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
         draggingInternallyState = true;
+
+        if (e.altKey) {
+            e.dataTransfer.effectAllowed = "copy";
+            e.dataTransfer.dropEffect = "copy";
+        }
     });
 
     editor.dom.bind(editor.getBody(), ['dragover', 'dragend'], function (e) {
