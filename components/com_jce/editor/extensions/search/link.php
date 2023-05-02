@@ -425,8 +425,9 @@ class WFLinkSearchExtension extends WFSearchExtension
     {
         $wf = WFEditorPlugin::getInstance();
 
+        // remove link alias
         if ((bool) $wf->getParam('search.link.remove_alias', 0)) {
-            $url = WFLinkHelper::route($url);
+            $url = WFLinkHelper::removeAlias($url);
         }
 
         // remove Itemid if "home"

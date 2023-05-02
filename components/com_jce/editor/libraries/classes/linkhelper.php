@@ -42,6 +42,13 @@ abstract class WFLinkHelper
         return $url;
     }
 
+    public static function removeAlias($url)
+    {
+        $url = preg_replace('#\:[\w-]+#ui', '', $url);
+
+        return $url;
+    }
+
     public static function removeHomeItemId($url) {
         if (strpos($url, 'Itemid') === false) {
             return $url;
