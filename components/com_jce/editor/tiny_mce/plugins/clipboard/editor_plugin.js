@@ -386,7 +386,8 @@
       [/( ?)<span class="Apple-converted-space">(\u00a0|&nbsp;)<\/span>( ?)/g, trimSpaces],
       /<br class="Apple-interchange-newline">/g,
       /^<meta[^>]+>/g, // Chrome weirdness
-      /<br>$/i // Trailing BR elements
+      /<br>$/i, // Trailing BR elements,
+      /&nbsp;$/ // trailing non-breaking space
     ]);
 
     return html;
@@ -1868,6 +1869,11 @@
 
       editor.dom.bind(editor.getBody(), 'dragstart', function (e) {
           draggingInternallyState = true;
+
+          if (e.altKey) {
+              e.dataTransfer.effectAllowed = "copy";
+              e.dataTransfer.dropEffect = "copy";
+          }
       });
 
       editor.dom.bind(editor.getBody(), ['dragover', 'dragend'], function (e) {
