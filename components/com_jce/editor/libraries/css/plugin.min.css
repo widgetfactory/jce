@@ -1703,6 +1703,12 @@ select:not([multiple]):not([size]) {
 .uk-panel-box-secondary {
     border: 0 none;
 }
+
+.uk-form-icon-flip>[class*="uk-icon-"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .uk-datalist-control {
     position: relative;
     display: flex;
