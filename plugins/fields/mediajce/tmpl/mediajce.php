@@ -155,8 +155,8 @@ if ($data->media_type == 'embed' && $data->media_caption) {
 
 $buffer = '';
 
-// remove some common characters
-$path = preg_replace('#[\+\\\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]#', '', $data->media_src);
+// perform pcre replacement of common invalid characters
+$path = preg_replace('#[\+\\\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$]#u', '', $data->media_src);
 
 // trim
 $path = trim($path);
