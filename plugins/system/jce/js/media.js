@@ -557,6 +557,9 @@
                 $(row).find('.wf-media-input').removeAttr('readonly').addClass('wf-media-input-active');
 
                 updateMediaUrl(row, options, true);
+
+                // process uploadable inputs
+                $(row).find('.wf-media-input-upload').WfMediaUpload();
             }
         });
 
