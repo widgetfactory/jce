@@ -125,8 +125,8 @@ class JFormFieldMediaJce extends MediaField
             'link'      => $this->link,
             'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
         );
-
-        if ($options['upload'] == 1) {
+        
+        if ($options['upload']) {
             $extraData['class'] .= ' wf-media-input-upload';
         }
 

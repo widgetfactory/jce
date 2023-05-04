@@ -113,7 +113,7 @@ abstract class WfBrowserHelper
 
             $data['accept'] = implode(',', array_filter($data['accept']));
 
-            $data['upload'] = (int) $wf->getParam('browser.mediafield_upload', 1);
+            $data['upload'] = (bool) $wf->getParam('browser.mediafield_upload', 1);
         }
 
         return $data;
