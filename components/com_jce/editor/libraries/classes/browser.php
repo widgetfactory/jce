@@ -811,9 +811,9 @@ class WFFileBrowser extends JObject
                     . '   </a>'
                     . ' </div>';
 
-                /*if ($open) {
-                $result .= $this->getTreeItems($folder['id'], false, false);
-                }*/
+                if ($open) {
+                    $result .= $this->getTreeItems($folder['id'], false, false);
+                }
 
                 $result .= '</li>';
             }
