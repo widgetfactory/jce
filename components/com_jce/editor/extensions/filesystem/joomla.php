@@ -87,6 +87,9 @@ class WFJoomlaFileSystem extends WFFileSystem
                 self::$restricted = $restricted;
             }
 
+            // clean array
+            self::$restricted = array_filter(self::$restricted);
+
             // is root allowed?
             self::$allowroot = (bool) $wf->getParam('filesystem.joomla.allow_root', 0);
 
