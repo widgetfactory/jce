@@ -513,6 +513,73 @@
         return tinymce.inArray(['src', 'data', 'movie', 'url', 'source'], name) !== -1;
     }
 
+    function stripQuery(value) {
+        // remove query to check file type (eg: S3 Private URL)
+        if (value.indexOf('?') !== -1) {
+            value = value.substring(0, value.indexOf('?'));
+        }
+
+        return value;
+    }
+
+    /**
+     * Convert media data into appropriate HTML
+     * @param {object} ed Editor
+     * @param {mixed} value Media source or data object
+     */
+    function getMediaHtml(ed, value) {
+        if (typeof value == "string") {
+            value = { 'src': value };
+        }
+
+        var html, nodeName = 'iframe', attribs = {}, innerHTML = '';
+
+        var src = stripQuery(value.src);
+
+        if (/\.(mp4|m4v|ogg|webm|ogv)$/.test(src)) {
+            nodeName = 'video';
+        } else if (/\.(mp3|m4a|oga)$/.test(src)) {
+            nodeName = 'audio';
+        }
+
+        nodeName = value.mediatype || nodeName;
+
+        var boolAttrs = ed.schema.getBoolAttrs();
+
+        each(value, function (val, name) {
+            // allow for boolean attribues to have empty values
+            if (val == '' && !boolAttrs[name]) {
+                return true;
+            }
+
+            if (value.html) {
+                innerHTML = value.html;
+            }
+
+            if (ed.schema.isValid(nodeName, name) || name.indexOf('-') !== -1) {
+                if (name == 'class') {
+                    val = val.replace(/mce-(\S+)/g, '').replace(/\s+/g, ' ').trim();
+                }
+                
+                attribs[name] = val;
+            }
+        });
+
+        html = ed.dom.createHTML(nodeName, attribs, innerHTML);
+
+        return html;
+    }
+
+    function isMediaHtml(ed, html) {
+        var div = ed.dom.create('div', {}, html), node = div.firstChild;
+
+        if (!node || node.nodeType !== 1) {
+            return false;
+        }
+
+        return isPreviewMedia(node.tagName.toLowerCase());
+    }
+
     // Media types supported by this plugin
     var mediaTypes = {
         // Type, clsid, mime types, codebase
@@ -1407,6 +1474,8 @@
             data[name] = value;
         }
 
+        data.mediatype = mediatype;
+
         return data;
     };
 
@@ -1948,6 +2017,14 @@
 
             isSupportedMedia: function (url) {
                 return isSupportedMedia(ed, url);
+            },
+
+            getMediaHtml: function (data) {
+                return getMediaHtml(ed, data);
+            },
+
+            isMediaHtml: function (html) {
+                return isMediaHtml(ed, html);
             }
         };
     });
