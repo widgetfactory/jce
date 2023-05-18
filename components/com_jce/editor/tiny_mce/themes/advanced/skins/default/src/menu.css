@@ -185,6 +185,7 @@
     display: block;
     line-height: 2;
     vertical-align: middle;
+    width: 96px;
 }
 
 .mceMenu .mceMenuItems .mceMenuHtml input[type="text"],

@@ -130,20 +130,20 @@
     cursor: move;
 }
 
-.mceModal .mceModalContent {
+.mceModalBody .mceModalContent {
     background: #fff;
     position: relative;
     /**/
     height: auto;
 }
 
-.mceModal .mceModalContentIframe {
+.mceModalBody .mceModalContentIframe {
     height: calc(100% - 48px);
 }
 
-.mceModal .mceModalConfirm .mceModalContent,
-.mceModal .mceModalAlert .mceModalContent,
-.mceModal .mceModalPrompt .mceModalContent {
+.mceModalBody .mceModalConfirm .mceModalContent,
+.mceModalBody .mceModalAlert .mceModalContent,
+.mceModalBody .mceModalPrompt .mceModalContent {
     /*height: calc(100% - 98px);*/
     min-height: 5em;
     display: flex;
@@ -151,12 +151,12 @@
     justify-content: center;
 }
 
-.mceModal .mceModalContent iframe {
+.mceModalBody .mceModalContent iframe {
     width: 100%;
     min-height: inherit;
 }
 
-.mceModal .mceModalFooter {
+.mceModalBody .mceModalFooter {
     margin: 0;
     padding: 8px;
     /*border-top: 1px solid #e5e5e5;*/
@@ -166,7 +166,7 @@
     background-color: #fff;
 }
 
-.mceModal .mceModalBody {
+.mceModalBody .mceModalBody {
     cursor: default;
     display: block;
     margin: 0 auto;
@@ -176,7 +176,7 @@
     min-width: 160px;
 }
 
-.mceModal .mceModalContainer {
+.mceModalBody .mceModalContainer {
     overflow: hidden;
     max-width: 100%;
     /*height: auto;*/
@@ -191,7 +191,7 @@
     flex-direction: column;
 }
 
-.mceModal .mceModalClose {
+.mceModalBody .mceModalClose {
     width: 32px;
     height: 32px;
     border-radius: 2px;
@@ -199,13 +199,13 @@
     background: #fff;
 }
 
-.mceModal .mceModalClose:hover,
-.mceModal .mceModalClose:focus {
+.mceModalBody .mceModalClose:hover,
+.mceModalBody .mceModalClose:focus {
     background: #e5e5e5;
     border: 0 none;
 }
 
-.mceModal .mceModalClose:after {
+.mceModalBody .mceModalClose:after {
     color: #444;
     display: block;
     font-family: Arial, sans-serif;
@@ -218,15 +218,15 @@
     content: "\00d7";
 }
 
-.mceModal .mceModalContent>div,
-.mceModal .mceModalContent>form {
+.mceModalBody .mceModalContent>div,
+.mceModalBody .mceModalContent>form {
     height: auto;
     padding: 8px;
     text-align: center;
     line-height: 1;
 }
 
-.mceModal .mceModalContent iframe {
+.mceModalBody .mceModalContent iframe {
     border: 0 none;
     top: 0;
     left: 0;
@@ -235,7 +235,7 @@
     position: absolute;
 }
 
-.mceModal .mceModalPlaceHolder {
+.mceModalBody .mceModalPlaceHolder {
     border: 1px solid #000;
     background: #888;
     top: 0;
@@ -243,7 +243,7 @@
     opacity: 0.5;
 }
 
-.mceModal .mceButton {
+.mceModalBody .mceButton {
     min-width: 5em;
     height: 32px;
     line-height: 1;
@@ -255,55 +255,55 @@
     padding: 0 8px;
 }
 
-.mceModal .mceButton:focus,
-.mceModal .mceButton:hover {
+.mceModalBody .mceButton:focus,
+.mceModalBody .mceButton:hover {
     color: #444;
     outline: 0;
     text-decoration: none;
 }
 
-.mceModal .mceButton:focus,
-.mceModal .mceButton:hover {
+.mceModalBody .mceButton:focus,
+.mceModalBody .mceButton:hover {
     border-color: #888;
     background: #fff;
 }
 
-.mceModal .mceButton:disabled,
-.mceModal .mceButton:focus:disabled,
-.mceModal .mceButton:hover:disabled {
+.mceModalBody .mceButton:disabled,
+.mceModalBody .mceButton:focus:disabled,
+.mceModalBody .mceButton:hover:disabled {
     color: #888;
     background: #f5f5f5;
     border-color: #eee;
     cursor: not-allowed;
 }
 
-.mceModal .mceModalFooter .mceButton {
+.mceModalBody .mceModalFooter .mceButton {
     border-color: #ddd;
 }
 
-.mceModal .mceModalFooter .mceButton:focus,
-.mceModal .mceModalFooter .mceButton:hover {
+.mceModalBody .mceModalFooter .mceButton:focus,
+.mceModalBody .mceModalFooter .mceButton:hover {
     border-color: #888;
     background: #fff;
 }
 
-.mceModal .mceButtonDefault {
+.mceModalBody .mceButtonDefault {
     border-color: #ddd;
 }
 
-.mceModal .mceButtonDefault:focus,
-.mceModal .mceButtonDefault:hover {
+.mceModalBody .mceButtonDefault:focus,
+.mceModalBody .mceButtonDefault:hover {
     border-color: #888;
 }
 
-.mceModal .mceModalFooter .mceButtonPrimary {
+.mceModalBody .mceModalFooter .mceButtonPrimary {
     background-color: #337ab7;
     border: 1px solid rgba(0, 0, 0, 0.06);
     color: #fff;
 }
 
-.mceModal .mceModalFooter .mceButtonPrimary:hover,
-.mceModal .mceModalFooter .mceButtonPrimary:focus {
+.mceModalBody .mceModalFooter .mceButtonPrimary:hover,
+.mceModalBody .mceModalFooter .mceButtonPrimary:focus {
     background-color: #286090;
     color: #fff;
     border-color: rgba(0, 0, 0, .21);
@@ -455,10 +455,10 @@
     padding-bottom: calc(83.46% - 48px);
 }
 
-.mceModal .mceModalContent input[type="text"],
-.mceModal .mceModalContent input[type="number"],
-.mceModal .mceModalContent textarea,
-.mceModal .mceModalContent select {
+.mceModalBody .mceModalContent input[type="text"],
+.mceModalBody .mceModalContent input[type="number"],
+.mceModalBody .mceModalContent textarea,
+.mceModalBody .mceModalContent select {
     height: 32px;
     width: 100%;
     padding: 4px;
@@ -473,57 +473,57 @@
     font-size: 14px;
 }
 
-.mceModal .mceModalContent select {
+.mceModalBody .mceModalContent select {
     line-height: 1.5;
 }
 
-.mceModal .mceModalContent input[type]:disabled,
-.mceModal .mceModalContent textarea:disabled,
-.mceModal .mceModalContent select:disabled,
-.mceModal .mceModalContent select option:disabled {
+.mceModalBody .mceModalContent input[type]:disabled,
+.mceModalBody .mceModalContent textarea:disabled,
+.mceModalBody .mceModalContent select:disabled,
+.mceModalBody .mceModalContent select option:disabled {
     color: #888;
     background-color: #eee;
     cursor: not-allowed;
 }
 
-.mceModal .mceModalContent button {
+.mceModalBody .mceModalContent button {
     min-width: 32px;
     margin: 0;
 }
 
-.mceModal .mceModalContent textarea {
+.mceModalBody .mceModalContent textarea {
     height: auto;
     line-height: 1.5;
     resize: vertical;
     white-space: pre-wrap;
 }
 
-.mceModal .mceModalContent input[type]:focus,
-.mceModal .mceModalContent textarea:focus {
+.mceModalBody .mceModalContent input[type]:focus,
+.mceModalBody .mceModalContent textarea:focus {
     border-color: #66afe9;
     outline: 0;
     background-color: #f5fbfe;
     color: #444;
 }
 
-.mceModal .mceModalContent input[type="radio"]:focus {
+.mceModalBody .mceModalContent input[type="radio"]:focus {
     border-radius: 100%
 }
 
-.mceModal .mceModalContent label {
+.mceModalBody .mceModalContent label {
     line-height: 1.25;
     width: 96px;
 }
 
-.mceModal .mceModalContent .mceModalStack label {
+.mceModalBody .mceModalContent .mceModalStack label {
     width: 100%;
 }
 
-.mceModal .mceModalContent input+label {
+.mceModalBody .mceModalContent input+label {
     display: inline-block;
 }
 
-.mceModal .mceModalContent .mceModalRow {
+.mceModalBody .mceModalContent .mceModalRow {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -531,7 +531,7 @@
     min-height: 32px;
 }
 
-.mceModal .mceModalContent .mceModalControl {
+.mceModalBody .mceModalContent .mceModalControl {
     flex: 1;
     margin: 0;
     display: flex;
@@ -539,29 +539,29 @@
     gap: 4px;
 }
 
-.mceModal .mceModalContent .mceModalFlexNone {
+.mceModalBody .mceModalContent .mceModalFlexNone {
     flex: inherit;
     display: flex;
 }
 
-.mceModal .mceModalContent .mceModalControl button {
+.mceModalBody .mceModalContent .mceModalControl button {
     margin-left: 2px;
 }
 
-.mceModal .mceListBox .mceOpen {
+.mceModalBody .mceListBox .mceOpen {
     min-width: 24px;
 }
 
-.mceModal .mceModalContent .mceModalControl iframe {
+.mceModalBody .mceModalContent .mceModalControl iframe {
     position: relative;
     border: 1px solid #ddd;
 }
 
-.mceModal .mceModalContent .mceModalControlAppend input {
+.mceModalBody .mceModalContent .mceModalControlAppend input {
     padding-right: 42px;
 }
 
-.mceModal .mceModalContent .mceModalControlAppend input + span {
+.mceModalBody .mceModalContent .mceModalControlAppend input + span {
     position: absolute;
     right: 4px;
     display: block;
@@ -570,24 +570,24 @@
     line-height: 2rem;
 }
 
-.mceModal .mceModalContent .mceModalControlAppend input + select {
+.mceModalBody .mceModalContent .mceModalControlAppend input + select {
     max-width: 5em;
 }
 
-.mceModal .mceModalContent p {
+.mceModalBody .mceModalContent p {
     margin: 0.5rem 0;
     font-size: 14px;
     line-height: 2rem;
 }
 
-.mceModal .mceModalConfirm .mceModalContent p,
-.mceModal .mceModalAlert .mceModalContent p {
+.mceModalBody .mceModalConfirm .mceModalContent p,
+.mceModalBody .mceModalAlert .mceModalContent p {
     margin: 0;
     text-align: center;
 }
 
 /* style select */
-.mceModal .mceModalContent select:not([multiple]):not([size]) {
+.mceModalBody .mceModalContent select:not([multiple]):not([size]) {
     appearance: none;
     padding-right: 20px;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
@@ -601,11 +601,11 @@
 }
 
 @media (max-height: 640px) {
-    .mceModal .mceModalHeader {
+    .mceModalBody .mceModalHeader {
         padding: 4px 8px;
     }
 
-    .mceModal .mceModalContentIframe {
+    .mceModalBody .mceModalContentIframe {
         height: calc(100% - 40px);
     }
 
@@ -654,11 +654,11 @@
     display: none;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_upload {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_upload {
     display: none;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_spinner {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_spinner {
     display: flex;
 }
 
@@ -679,16 +679,16 @@
     right: 32px;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker,
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxUpload {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxPicker,
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload {
     padding-right: 32px;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxPicker.mceUrlBoxUpload {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxPicker.mceUrlBoxUpload {
     padding-right: 64px;
 }
 
-.mceModal .mceModalContent .mceFormControl .mceUrlBoxUploadHover {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUploadHover {
     background-color: #eee;
 }
 
