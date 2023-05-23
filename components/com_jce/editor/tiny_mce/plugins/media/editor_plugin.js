@@ -515,7 +515,7 @@
 
     function stripQuery(value) {
         // remove query to check file type (eg: S3 Private URL)
-        if (value.indexOf('?') !== -1) {
+        if (value && value.indexOf('?') !== -1) {
             value = value.substring(0, value.indexOf('?'));
         }
 
@@ -552,8 +552,8 @@
                 return true;
             }
 
-            if (value.html) {
-                innerHTML = value.html;
+            if (value.innerHTML) {
+                innerHTML = value.innerHTML;
             }
 
             if (ed.schema.isValid(nodeName, name) || name.indexOf('-') !== -1) {
@@ -1376,7 +1376,7 @@
 
                 data[node.value.name] = node.value.value;
             } else {
-                data.html = node.value;
+                data.innerHTML = node.value;
             }
         });
 
@@ -1508,7 +1508,7 @@
         }
 
         each(data, function (value, name) {
-            if (name === 'html' && value) {
+            if (name === 'innerHTML' && value) {
                 attribs['data-mce-html'] = escape(value);
                 return true;
             }
