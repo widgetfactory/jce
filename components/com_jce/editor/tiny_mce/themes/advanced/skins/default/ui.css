@@ -3194,10 +3194,6 @@ select.mceNativeListBox {
     right: 0;
 }
 
-.mceFormControl .mceTextBox + .mceButton .mceIcon {
-    opacity: 0.5;
-}
-
 .mceFormControl .mceListBox:focus .mceText,
 .mceFormControl .mceListBox:focus .mceOpen {
     border-color: #66afe9;
