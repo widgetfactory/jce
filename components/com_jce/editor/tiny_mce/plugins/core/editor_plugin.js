@@ -15,7 +15,8 @@
     extend = tinymce.extend,
     DomParser = tinymce.html.DomParser,
     HtmlSerializer = tinymce.html.Serializer,
-    Dispatcher = tinymce.util.Dispatcher;
+    Dispatcher = tinymce.util.Dispatcher,
+    DOM = tinymce.DOM;
 
   function validateContent(ed, content) {
     var args = {
@@ -79,6 +80,8 @@
     // media update event
     ed.onUpdateMedia = new Dispatcher();
     ed.onWfEditorSave = new Dispatcher();
+
+    var isSpPageBuilder = DOM.get('sp-inline-popover') && DOM.isChildOf(ed.getElement(), DOM.get('sp-inline-popover'));
 
     var contentLoaded = false, elm = ed.getElement();
 
@@ -186,7 +189,7 @@
         });
 
         // wrap content in fake root
-        ed.onBeforeSetContent.add(function (editor, o) {          
+        ed.onBeforeSetContent.add(function (editor, o) {
           if (!o.content) {
             o.content = '<br data-mce-bogus="1">';
           }
@@ -202,12 +205,12 @@
         ed.onSetContent.add(function (ed, o) {
           var root = dom.get(ed.settings.editable_root), rng;
 
-          if (root) {            
-            
+          if (root) {
+
             if (isEmptyRoot(root)) {
               root.innerHTML = '<br data-mce-bogus="1">';
             }
-            
+
             // Move the caret to the end of the marker
             rng = dom.createRng();
             rng.setStart(root, 0);
@@ -294,6 +297,18 @@
       ed.onWfEditorSave.add(function (ed, o) {
         o.content = validateContent(ed, o.content);
       });
+
+
+      if (isSpPageBuilder) {
+
+        // run cleanup on sppagebuilder code
+        ed.onGetContent.addToTop(function (ed, o) {
+          if (o.format == "raw") {
+            var args = tinymce.extend(o, { format: 'html' });
+            o.content = ed.serializer.serialize(ed.getBody(), args);
+          }
+        });
+      }
     });
 
     if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
