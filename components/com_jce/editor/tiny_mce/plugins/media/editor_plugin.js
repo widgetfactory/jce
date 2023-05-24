@@ -1349,7 +1349,9 @@
     };
 
     function htmlToData(ed, mediatype, html) {
-        var data = {};
+        var data = {
+            innerHTML : ''
+        };
 
         try {
             html = unescape(html);
@@ -1360,7 +1362,7 @@
         var nodes = parseHTML(html);
 
         each(nodes, function (node, i) {
-            if (node.name === "source") {
+            if (node.name == "source") {
                 // create empty source array
                 if (!data.source) {
                     data.source = [];
@@ -1369,14 +1371,22 @@
                 var val = ed.convertURL(node.value.src);
 
                 data.source.push(val);
-            } else if (node.name === "param") {
+            }
+            
+            if (node.name == "param") {
                 if (isUrlValue(node.value.name)) {
                     node.value.value = ed.convertURL(node.value.value);
                 }
 
                 data[node.value.name] = node.value.value;
-            } else {
-                data.innerHTML = node.value;
+            }
+            
+            if (node.name == "track") {
+                data.innerHTML += ed.dom.createHTML(node.name, node.value);
+            }
+
+            if (node.name == "html") {
+                data.innerHTML += node.value;
             }
         });
 
@@ -1423,7 +1433,7 @@
         var html = ed.dom.getAttrib(node, 'data-mce-html');
 
         if (html) {
-            extend(data, htmlToData(ed, mediatype, html));
+            data = extend(data, htmlToData(ed, mediatype, html));
         }
 
         // set src value
