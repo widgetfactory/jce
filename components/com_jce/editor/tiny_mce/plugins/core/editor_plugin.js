@@ -306,10 +306,18 @@
       if (isSpPageBuilder()) {
         // run cleanup on sppagebuilder code
         ed.onGetContent.addToTop(function (ed, o) {
-          if (o.format == "raw") {
-            var args = tinymce.extend(o, { format: 'html' });
-            o.content = ed.serializer.serialize(ed.getBody(), args);
+          // double-check for sppagebuilder
+          if (ed.id.indexOf('sppbeditor-') == -1) {
+            return;
           }
+          
+          // only for "raw" format
+          if (o.format != "raw") {
+            return;
+          }
+
+          var args = tinymce.extend(o, { format: 'html' });
+          o.content = ed.serializer.serialize(ed.getBody(), args);
         });
       }
     });
