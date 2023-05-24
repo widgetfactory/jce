@@ -39789,7 +39789,12 @@
       ed.onUpdateMedia = new Dispatcher();
       ed.onWfEditorSave = new Dispatcher();
 
-      var isSpPageBuilder = DOM.get('sp-inline-popover') && DOM.isChildOf(ed.getElement(), DOM.get('sp-inline-popover'));
+      // is the editor in SPPageBuilder
+      function isSpPageBuilder() {
+        var pb = DOM.get('sp-inline-popover');
+
+        return pb && DOM.isChildOf(ed.getElement(), pb) || false;
+      }
 
       var contentLoaded = false, elm = ed.getElement();
 
@@ -40006,9 +40011,7 @@
           o.content = validateContent(ed, o.content);
         });
 
-
-        if (isSpPageBuilder) {
-
+        if (isSpPageBuilder()) {
           // run cleanup on sppagebuilder code
           ed.onGetContent.addToTop(function (ed, o) {
             if (o.format == "raw") {
