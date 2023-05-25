@@ -440,6 +440,8 @@
             return options.convert_mediafield || $(elm).find('.wf-media-input').length;
         }
 
+        $('[data-wf-converted]').addClass('wf-media-input-converted');
+
         // process fields marked for conversion (intro image etc.)
         $('.wf-media-input-converted').addClass('wf-media-input');
 

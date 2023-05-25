@@ -249,10 +249,8 @@ class PlgSystemJce extends CMSPlugin
                     $form->setFieldAttribute($name, 'type', 'mediajce', $group);
                     $form->setFieldAttribute($name, 'converted', '1', $group);
 
-                    $class = $form->getFieldAttribute($name, 'class');
-                    $class .= ' wf-media-input-converted';
-
-                    $form->setFieldAttribute($name, 'class', $class, $group);
+                    // set converted attribute flag instead of class attribute (extension conflict?)
+                    $form->setFieldAttribute($name, 'data-wf-converted', '1', $group);
 
                     $hasMedia = true;
                 }
