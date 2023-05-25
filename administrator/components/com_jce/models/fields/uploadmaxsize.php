@@ -35,16 +35,17 @@ class JFormFieldUploadMaxSize extends JFormFieldNumber
      */
     protected function getInput()
     {
-        $this->max = (int) $this->getUploadValue();
-        $this->class = trim($this->class.' input-small');
+        $max = $this->getUploadValue();
+        
+        $this->max = (int) $max;
+        $this->class = trim($this->class . ' input-small');
 
         $html = '<div class="input-append input-group">';
-
         $html .= parent::getInput();
         $html .= '  <div class="input-group-append">';
         $html .= '      <span class="add-on input-group-text">Kb</span>';
         $html .= '  </div>';
-        $html .= '	<small class="help-inline form-text">&nbsp;<em>'.JText::_('WF_SERVER_UPLOAD_SIZE').' : '.$this->getUploadValue().'</em></small>';
+        $html .= '	<small class="help-inline form-text">&nbsp;<em>' . JText::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . (string) $max . '</em></small>';
         $html .= '</div>';
 
         return $html;
