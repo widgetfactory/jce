@@ -28708,8 +28708,8 @@
           }
         });
 
-        // Keep scripts from executing
-        self.parser.addNodeFilter('script', function (nodes) {
+        // Keep scripts from executing - removed as this is handled by the Code plugin by placeholder conversion
+        /*self.parser.addNodeFilter('script', function (nodes) {
           var i = nodes.length,
             node;
 
@@ -28717,7 +28717,7 @@
             node = nodes[i];
             node.attr('type', 'mce-' + (node.attr('type') || 'text/javascript'));
           }
-        });
+        });*/
 
         self.parser.addNodeFilter('#cdata', function (nodes) {
           var i = nodes.length,
@@ -41508,12 +41508,7 @@
               node;
 
             while (i--) {
-              var node = nodes[i],
-                type = node.attr('type');
-
-              if (type) {
-                node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
-              }
+              var node = nodes[i];
 
               // remove any code spans that are added to json-like syntax in code blocks
               if (node.firstChild) {
