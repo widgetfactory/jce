@@ -640,12 +640,7 @@
             node;
 
           while (i--) {
-            var node = nodes[i],
-              type = node.attr('type');
-
-            if (type) {
-              node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
-            }
+            var node = nodes[i];
 
             // remove any code spans that are added to json-like syntax in code blocks
             if (node.firstChild) {
