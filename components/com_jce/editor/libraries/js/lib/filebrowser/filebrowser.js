@@ -79,6 +79,9 @@
 
         // initialise
         this._init();
+
+        // target element that triggered the current action
+        this.actionTarget = null;
     };
 
     // Global options object - can be set externally
@@ -182,6 +185,9 @@
                     n = $(n).parents('li').get(0);
                 }
 
+                // set target element
+                self.actionTarget = n;
+
                 if (n.nodeName === "LI") {
                     if ($(n).hasClass('folder')) {
                         var u = $(n).data('url') || self._getPreviousDir();
@@ -244,6 +250,9 @@
                             return;
                         }
 
+                        // set target element
+                        self.actionTarget = n;
+
                         var p = $(n).parents('li');
 
                         if ($(n).hasClass('folder')) {
@@ -269,6 +278,9 @@
 
             $('.folder-up', '#browser').on('click', function (e) {
                 e.preventDefault();
+
+                // reset target element
+                self.actionTarget = null;
 
                 var u = self._getPreviousDir();
                 return self._changeDir(u);
@@ -1006,6 +1018,8 @@
                 });
 
             }).on('tree:nodeclick', function (e, evt, node) {
+                self.actionTarget = node;
+
                 self._changeDir($(node).attr('data-id'));
             }).on('tree:nodeload', function (e, node) {
                 self._refreshTree(node);
@@ -1031,7 +1045,7 @@
         /**
          * Reset the Manager
          */
-        _reset: function () {
+        _reset: function () {            
             // Clear selects
             this._deselectItems();
             // Clear returns
@@ -1310,6 +1324,8 @@
         refresh: function (e) {
             this._reset();
 
+            this.targetElement = null;
+
             // show loading message
             this._setLoader();
 
@@ -1441,7 +1457,11 @@
 
                 if (this._treeLoaded()) {
                     $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
-                    $('#tree-body').trigger('tree:scroll', this._dir);
+
+                    /// don't scroll on tree click
+                    if ($(this.actionTarget).is('[role="treeitem"]') === false) {
+                        $('#tree-body').trigger('tree:scroll', this._dir);
+                    }
                 }
             }
 
