@@ -192,8 +192,10 @@ class plgEditorJCE extends CMSPlugin
             return $html;
         }
 
-        if (!$editor->hasPlugin('joomla')) {
-            $html .= $this->displayButtons($id, $buttons, $asset, $author);
+        if (!$editor->hasPlugin('joomla')) {            
+            if ((bool) $editor->getParam('editor.xtd_buttons', 1)) {                
+                $html .= $this->displayButtons($id, $buttons, $asset, $author);
+            }
         } else {
             $list = $this->getXtdButtonsList($id, $buttons, $asset, $author);
 
