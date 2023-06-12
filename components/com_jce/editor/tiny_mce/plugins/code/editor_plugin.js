@@ -600,15 +600,15 @@
           blockElements.push(blockName);
         });
 
-        if (ed.plugins.textpattern && ed.settings.code_protect_shortcode) {
-          ed.plugins.textpattern.addPattern({
+        if (ed.settings.code_protect_shortcode) {
+          ed.textPattern.addPattern({
             start: '{',
             end: '}',
             cmd: 'InsertShortCode',
             remove: true
           });
 
-          ed.plugins.textpattern.addPattern({
+          ed.textPattern.addPattern({
             start: ' {',
             end: '}',
             format: 'inline-shortcode',
