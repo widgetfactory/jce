@@ -21,6 +21,7 @@
 .mceDefaultSkin .mceIcon svg {
     width: 1em;
     height: 1em;
+    fill: #444;
 }
 
 .mceDefaultSkin .mceIconImage {
