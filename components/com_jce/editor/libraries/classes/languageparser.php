@@ -356,18 +356,30 @@ class WFLanguageParser extends JObject
 
             if (!empty($plugins)) {
                 foreach ($plugins['external'] as $name => $plugin) {
-                    // add English file
-                    $ini = JPATH_ADMINISTRATOR . '/language/en-GB/en-GB.plg_jce_editor_' . $name . '.ini';
 
-                    if (is_file($ini)) {
+                    $filename = 'en-GB.plg_jce_editor-' . $name . '.ini';
+                    
+                    // add English file
+                    $ini = JPath::find(array(
+                        JPATH_ADMINISTRATOR . '/language/en-GB',
+                        JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/en-GB'
+                    ), $filename);
+
+                    if ($ini && is_file($ini)) {
                         $files[] = $ini;
                     }
 
                     // non-english language
                     if ($tag != 'en-GB') {
-                        $ini = JPATH_ADMINISTRATOR . '/language/' . $tag . '/' . $tag . '.plg_jce_editor_' . $name . '.ini';
 
-                        if (is_file($ini)) {
+                        $filename = $tag . '.plg_jce_editor-' . $name . '.ini';
+
+                        $ini = JPath::find(array(
+                            JPATH_ADMINISTRATOR . '/language/' . $tag,
+                            JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/' . $tag
+                        ), $filename);
+
+                        if ($ini && is_file($ini)) {
                             $files[] = $ini;
                         }
                     }
