@@ -121,6 +121,11 @@ class PlgSystemJce extends CMSPlugin
 
         $document = Factory::getDocument();
 
+        // must be an html doctype
+        if($document->getType() !== 'html') {
+            return true;
+        }
+
         // only if enabled
         if ((int) $this->params->get('column_styles', 1)) {
             $hash = md5_file(__DIR__ . '/css/content.css');
@@ -183,6 +188,12 @@ class PlgSystemJce extends CMSPlugin
     public function onContentPrepareForm($form, $data)
     {
         $app = Factory::getApplication();
+        $docType = Factory::getDocument()->getType();
+
+        // must be an html doctype
+        if($docType !== 'html') {
+            return true;
+        }
 
         $version = new Joomla\CMS\Version();
 
