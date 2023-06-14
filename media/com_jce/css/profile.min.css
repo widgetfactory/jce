@@ -230,8 +230,9 @@ dd.file.notsafe {
     margin: 0 0 0 0;
     display: flex;
     align-items: center;
-    width: calc(100% - 44px);
+    width: 100%;
     line-height: 28px;
+    max-width: inherit;
 }
 
 .ui-jce .filetype .filetype-list input[type="text"] {
@@ -241,6 +242,10 @@ dd.file.notsafe {
 
 .ui-jce .filetype .filetype-list .filetype-item input[type="checkbox"] {
     margin: 9px;
+}
+
+.ui-jce .filetype .filetype-list .filetype-item .filetype-remove {
+    display: none;
 }
 
 .ui-jce .filetype .filetype-list .filetype-custom .filetype-remove {
