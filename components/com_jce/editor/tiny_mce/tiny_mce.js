@@ -14640,7 +14640,7 @@
       removeStyles = settings.paste_remove_style_properties;
 
       // remove valid styles if we are removing all styles
-      if (editor.getParam('paste_remove_styles', 1)) {
+      if (settings.paste_remove_styles !== false) {
           validStyles = {
               'font-weight': {},
               'font-style': {}
@@ -15053,15 +15053,11 @@
           content = content.replace(/<br><br>/gi, '');
       }
 
-      var validElements = settings.paste_word_valid_elements;
-
-      if (!validElements) {
-          validElements = (
-              '-strong/b,-em/i,-u,-span,-p,-ol[type|start|reversed],-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
-              '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width|border|cellpadding|cellspacing],tr,' +
-              'td[colspan|rowspan|width|valign],th[colspan|rowspan|width],thead,tfoot,tbody'
-          );
-      }
+      var validElements = settings.paste_word_valid_elements || (
+          '-strong/b,-em/i,-u,-span,-p,-ol[type|start|reversed],-ul,-li,-h1,-h2,-h3,-h4,-h5,-h6,' +
+          '-p/div,-a[href|name],img[src|alt|width|height],sub,sup,strike,br,del,table[width|border|cellpadding|cellspacing],tr,' +
+          'td[colspan|rowspan|width|valign],th[colspan|rowspan|width],thead,tfoot,tbody'
+      );
 
       // keep style tags for process_stylesheets
       if (settings.paste_process_stylesheets == 'style') {
@@ -15131,7 +15127,7 @@
                   continue;
               }
 
-              if (/^Mso[\w]+/i.test(className) || editor.getParam('paste_strip_class_attributes', 2)) {
+              if (/^Mso[\w]+/i.test(className) || settings.paste_strip_class_attributes !== 0) {
                   node.attr('class', null);
 
                   if (className && className.indexOf('MsoList') !== -1 && node.name !== 'li') {
@@ -15169,7 +15165,7 @@
           }
       });
 
-      var footnotes = editor.getParam('paste_process_footnotes', 'convert');
+      var footnotes = settings.paste_process_footnotes || 'convert';
 
       // Keep some of the links and anchors
       domParser.addNodeFilter('a', function (nodes) {
@@ -15247,7 +15243,7 @@
       });
 
       // Remove single paragraphs in table cells
-      if (editor.getParam('paste_remove_paragraph_in_table_cell')) {
+      if (settings.paste_remove_paragraph_in_table_cell) {
           domParser.addNodeFilter('td', function (nodes) {
               var i = nodes.length,
                   node, firstChild, lastChild;
@@ -15307,10 +15303,10 @@
   }
 
   function postProcess(editor, o) {
-      var dom = editor.dom;
+      var dom = editor.dom, settings = editor.settings;
 
       // remove url conversion containers
-      editor.dom.remove(editor.dom.select('div[data-mce-convert]', o.node), 1);
+      dom.remove(dom.select('div[data-mce-convert]', o.node), 1);
 
       // skip plain text
       if (o.pasteAsPlainText) {
@@ -15323,7 +15319,7 @@
       });
 
       // Remove all classes
-      if (editor.settings.paste_strip_class_attributes == 1) {
+      if (settings.paste_strip_class_attributes == 1) {
           // Remove class attribute
           each$1(dom.select('*[class]', o.node), function (el) {
               el.removeAttribute('class');
@@ -15348,9 +15344,9 @@
       });
 
       // Remove all styles if none are retained
-      if (editor.settings.paste_remove_styles !== false && !editor.settings.paste_retain_style_properties) {
+      if (settings.paste_remove_styles !== false && !settings.paste_retain_style_properties) {
           // Remove style attribute
-          each$1(dom.select('*[style]', o.node), function (el) {
+          each$1(dom.select('*[style]', o.node), function (el) {            
               el.removeAttribute('style');
               el.removeAttribute('data-mce-style');
           });
@@ -15380,13 +15376,13 @@
           // remove or processs for upload img element if blank, local file url or base64 encoded
           if (!src || isValidDataUriImage(src)) {
               // leave it as it is to be processed as a blob (but skip file:// images)
-              if (editor.settings.paste_data_images !== false && src.indexOf('file://') === -1) {
+              if (settings.paste_data_images !== false && src.indexOf('file://') === -1) {
                   return true;
               }
 
-              if (editor.settings.paste_upload_data_images != false && canUploadDataImage()) {
+              if (settings.paste_upload_data_images != false && canUploadDataImage()) {
                   // add marker
-                  editor.dom.setAttrib(el, 'data-mce-upload-marker', '1');
+                  dom.setAttrib(el, 'data-mce-upload-marker', '1');
               } else {
                   dom.remove(el);
               }
@@ -15405,23 +15401,23 @@
       }
 
       // remove tags
-      if (editor.settings.paste_remove_tags) {
-          dom.remove(dom.select(editor.settings.paste_remove_tags, o.node), 1);
+      if (settings.paste_remove_tags) {
+          dom.remove(dom.select(settings.paste_remove_tags, o.node), 1);
       }
 
       // keep tags
-      if (editor.settings.paste_keep_tags) {
-          var tags = editor.settings.paste_keep_tags;
+      if (settings.paste_keep_tags) {
+          var tags = settings.paste_keep_tags;
 
           dom.remove(dom.select('*:not(' + tags + ')', o.node), 1);
       }
 
       // remove all spans
-      if (editor.settings.paste_remove_spans) {
+      if (settings.paste_remove_spans) {
           dom.remove(dom.select('span', o.node), 1);
           // remove empty spans
       } else {
-          editor.dom.remove(dom.select('span:empty', o.node));
+          dom.remove(dom.select('span:empty', o.node));
 
           each$1(dom.select('span', o.node), function (n) {
               // remove span without children eg: <span></span>
@@ -15436,7 +15432,7 @@
           });
       }
 
-      if (editor.settings.paste_remove_empty_paragraphs !== false) {
+      if (settings.paste_remove_empty_paragraphs !== false) {
           dom.remove(dom.select('p:empty', o.node));
 
           each$1(dom.select('p', o.node), function (n) {
@@ -15450,7 +15446,7 @@
       }
 
       // replace paragraphs with linebreaks
-      /*if (!editor.settings.forced_root_block')) {
+      /*if (!settings.forced_root_block')) {
           var frag = dom.createFragment('<br /><br />');
 
           each(dom.select('p,div', o.node), function (n) {
@@ -15469,13 +15465,13 @@
    * @param node Node to process
    */
   function processStyles(editor, node) {
-      var dom = editor.dom, styleProps$1 = styleProps;
+      var dom = editor.dom, settings = editor.settings, styleProps$1 = styleProps;
 
       // Style to keep
-      var keepStyles = editor.settings.paste_retain_style_properties;
+      var keepStyles = settings.paste_retain_style_properties;
 
       // Style to remove
-      var removeStyles = editor.settings.paste_remove_style_properties;
+      var removeStyles = settings.paste_remove_style_properties;
 
       // split to array if string
       if (keepStyles && tinymce.is(keepStyles, 'string')) {
@@ -15672,7 +15668,7 @@
       return blocks.length === 1 ? blocks[0] : tagOpen + blocks.join(tagClose + tagOpen) + tagClose;
   };
 
-  var convert = function (text, rootTag, rootAttrs) {
+  var convert = function (text, rootTag, rootAttrs) {    
       return rootTag ? toBlockElements(text, rootTag, rootAttrs) : toBRs(text);
   };
 
@@ -15852,7 +15848,7 @@
       editor.settings.validate = validate;
   }
 
-  function pasteText(editor, text) {
+  function pasteText(editor, text) {    
       // encode text and replace returns
       text = editor.dom.encode(text).replace(/\r\n/g, '\n');
 
@@ -16253,6 +16249,8 @@
           }
 
           getContentAndInsert(e);
+
+          e.preventDefault();
       });
 
       function removePasteBinOnKeyUp(e) {
