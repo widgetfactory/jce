@@ -907,32 +907,30 @@
           }
         });
 
-        if (ed.plugins.clipboard) {
-          ed.onGetClipboardContent.add(function (ed, content) {
-            var text = content['text/plain'] || '',
-              value;
+        ed.onGetClipboardContent.add(function (ed, content) {
+          var text = content['text/plain'] || '',
+            value;
 
-            // trim text
-            text = tinymce.trim(text);
+          // trim text
+          text = tinymce.trim(text);
 
-            if (text) {
-              var node = ed.selection.getNode();
+          if (text) {
+            var node = ed.selection.getNode();
 
-              // don't process into PRE tags
-              if (node && node.nodeName === 'PRE') {
-                return;
-              }
-
-              value = processOnInsert(text, node);
-
-              // update with processed text
-              if (value !== text) {
-                content['text/plain'] = '';
-                content['text/html'] = content['x-tinymce/html'] = value;
-              }
+            // don't process into PRE tags
+            if (node && node.nodeName === 'PRE') {
+              return;
             }
-          });
-        }
+
+            value = processOnInsert(text, node);
+
+            // update with processed text
+            if (value !== text) {
+              content['text/plain'] = '';
+              content['text/html'] = content['x-tinymce/html'] = value;
+            }
+          }
+        });
       });
 
       ed.onInit.add(function () {
