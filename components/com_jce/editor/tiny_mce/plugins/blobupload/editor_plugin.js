@@ -227,11 +227,6 @@
         }
 
         ed.onInit.add(function () {
-
-            if (!ed.plugins.clipboard) {
-                return;
-            }
-
             ed.onPasteBeforeInsert.add(function (ed, o) {
                 var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
