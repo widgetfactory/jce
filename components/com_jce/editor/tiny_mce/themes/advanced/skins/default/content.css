@@ -175,10 +175,16 @@ h5 {
 h6 {
   font-size: 0.75em;
 }
-.mce-item-table,
+.mce-item-table:not([border]),
 .mce-item-table td,
-.mce-item-table th,
-.mce-item-table caption,
+.mce-item-table tr,
+.mce-item-table caption {
+  border: 1px dashed #757575;
+  /* #1976d2 */
+  border-color: var(--mce-guidelines);
+  border-collapse: separate;
+  border-spacing: 1px;
+}
 .mce-item-visualaid {
   border: 1px dashed #757575;
   /* #1976d2 */

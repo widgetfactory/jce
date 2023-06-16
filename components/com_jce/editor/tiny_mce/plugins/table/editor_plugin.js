@@ -916,6 +916,21 @@
             ed.onPreInit.add(function () {
                 ed.onSetContent.add(function (ed, e) {
                     cleanup(true);
+
+                    ed.dom.addClass(ed.dom.select('table'), 'mce-item-table');
+                });
+
+                ed.onPastePostProcess.add(function (ed, args) {
+                    var dom = ed.dom;
+    
+                    // ensure internal table class is set
+                    dom.addClass(dom.select('table', args.node), 'mce-item-table');
+    
+                    each(dom.select('td[valign]', args.node), function (elm) {
+                        // fix valign
+                        dom.setStyle(elm, 'vertical-align', elm.getAttribute('valign'));
+                        elm.removeAttribute('valign');
+                    });
                 });
             });
 

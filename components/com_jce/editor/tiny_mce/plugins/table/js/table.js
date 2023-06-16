@@ -557,7 +557,6 @@
             bgColor = valueToHex($('#bgcolor').val());
             background = $('#backgroundimage').val();
 
-
             // get compile styles attribute value
             style = this.getStyles();
 

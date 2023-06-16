@@ -214,10 +214,17 @@ h6 {
     font-size: .75em
 }
 
-.mce-item-table,
-.mce-item-table td,
-.mce-item-table th,
-.mce-item-table caption,
+.mce-item-table {
+    &:not([border]),
+    td, tr, caption {
+        border: 1px dashed #757575;
+        /* #1976d2 */
+        border-color: var(--mce-guidelines);
+        border-collapse: separate;
+        border-spacing: 1px;
+    }
+}
+
 .mce-item-visualaid {
     border: 1px dashed #757575;
     /* #1976d2 */
