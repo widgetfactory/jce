@@ -601,14 +601,14 @@
         });
 
         if (ed.settings.code_protect_shortcode) {
-          ed.textPattern.addPattern({
+          ed.textpattern.addPattern({
             start: '{',
             end: '}',
             cmd: 'InsertShortCode',
             remove: true
           });
 
-          ed.textPattern.addPattern({
+          ed.textpattern.addPattern({
             start: ' {',
             end: '}',
             format: 'inline-shortcode',
