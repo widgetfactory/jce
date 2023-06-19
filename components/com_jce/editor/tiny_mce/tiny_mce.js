@@ -9398,10 +9398,10 @@
         var body = eventDoc.body;
 
         event.pageX = originalEvent.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
-                  (doc && doc.clientLeft || body && body.clientLeft || 0);
+          (doc && doc.clientLeft || body && body.clientLeft || 0);
 
         event.pageY = originalEvent.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) -
-                  (doc && doc.clientTop || body && body.clientTop || 0);
+          (doc && doc.clientTop || body && body.clientTop || 0);
       }
 
       // Add preventDefault method
@@ -9755,14 +9755,14 @@
       };
 
       /**
-           * Fires the specified event on the specified target.
-           *
-           * @method fire
-           * @param {Object} target Target node/window or custom object.
-           * @param {String} name Event name to fire.
-           * @param {Object} args Optional arguments to send to the observers.
-           * @return {EventUtils} Event utils instance.
-           */
+       * Fires the specified event on the specified target.
+       *
+       * @method fire
+       * @param {Object} target Target node/window or custom object.
+       * @param {String} name Event name to fire.
+       * @param {Object} args Optional arguments to send to the observers.
+       * @return {EventUtils} Event utils instance.    
+       */
       self.fire = function (target, name, args) {
         var id;
 
@@ -9791,13 +9791,13 @@
       };
 
       /**
-           * Removes all bound event listeners for the specified target. This will also remove any bound
-           * listeners to child nodes within that target.
-           *
-           * @method clean
-           * @param {Object} target Target node/window object.
-           * @return {EventUtils} Event utils instance.
-           */
+        * Removes all bound event listeners for the specified target. This will also remove any bound
+        * listeners to child nodes within that target.
+        *
+        * @method clean
+        * @param {Object} target Target node/window object.
+        * @return {EventUtils} Event utils instance.
+        */
       self.clean = function (target) {
         var i, children, unbind = self.unbind;
 
@@ -13490,7 +13490,8 @@
                   if (!pattern) {
                       return;
                   }
-
+                  
+                  // cancel newline on enter if the format removes the original pattern
                   if (pattern.remove) {
                       e.preventDefault();
                   }
@@ -13605,7 +13606,7 @@
           }
       });
 
-      editor.onKeyUp.add(function (ed, e) {
+      editor.onKeyUp.add(function (ed, e) {        
           if (e.keyCode == 32 && !tinymce.VK.modifierPressed(e)) {
               handleSpace();
           }
@@ -32158,6 +32159,14 @@
          */
         self.formatter = new tinymce.Formatter(self);
 
+         /**
+         * Textpattern instance.
+         *
+         * @property textpattern
+         * @type tinymce.Textpattern
+         */
+        self.textpattern = new tinymce.TextPattern(self);
+
         /**
          * Undo manager instance, responsible for handling undo levels.
          /
@@ -32178,8 +32187,6 @@
         self._selectionOverrides = new tinymce.SelectionOverrides(self);
         // internal with no external interface
         self._clipBoard = new tinymce.Clipboard(self);
-
-        self.textPattern = new tinymce.TextPattern(self);
 
         self.onExecCommand.add(function (editor, command) {
           // Don't refresh the select lists until caret move
@@ -44852,14 +44859,14 @@
           });
 
           if (ed.settings.code_protect_shortcode) {
-            ed.textPattern.addPattern({
+            ed.textpattern.addPattern({
               start: '{',
               end: '}',
               cmd: 'InsertShortCode',
               remove: true
             });
 
-            ed.textPattern.addPattern({
+            ed.textpattern.addPattern({
               start: ' {',
               end: '}',
               format: 'inline-shortcode',
