@@ -556,8 +556,10 @@ main>div+div+div {
 }
 
 #browser-message.load .uk-icon-spinner {
-  display: inline-block;
+  display: inline-flex;
   height: 30px;
+  align-items: center;
+  justify-content: center;
 }
 
 .pathway {
