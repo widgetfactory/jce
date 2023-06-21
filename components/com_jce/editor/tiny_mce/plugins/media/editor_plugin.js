@@ -1021,13 +1021,11 @@
                     inner.raw = true;
                     inner.value = sanitize(editor, child.value);
                     elm.append(inner);
-                } else {
+                } else {                    
                     var inner = new Node(child.name, 1);
 
-                    // short ended for <param /> and <source />
-                    if (child.name != 'embed') {
-                        inner.shortEnded = true;
-                    }
+                    // short ended for <embed />, <param /> and <source />
+                    inner.shortEnded = true;
 
                     each(child.value, function (val, key) {
                         if (htmlSchema.isValid(inner.name, key)) {
@@ -1050,6 +1048,8 @@
         // add embed for some object media
         if (tag === 'object' && elm.getAll('embed').length === 0 && elm.attr('type') !== 'application/x-shockwave-flash') {
             var embed = new Node('embed', 1);
+
+            embed.shortEnded = true;
 
             each(attribs, function (value, name) {
                 if (name === 'data') {

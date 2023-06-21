@@ -12,7 +12,8 @@ img.mce-object.mce-object-generic {
   min-height: 50px;
 }
 img.mce-object.mce-object-generic,
-img.mce-object.mce-object-embed {
+img.mce-object.mce-object-embed,
+img.mce-object.mce-object-object {
   background-image: url(../img/generic.svg);
   background-size: 16px;
 }
@@ -37,7 +38,8 @@ img.mce-object.mce-object-divx {
 img.mce-object.mce-object-silverlight {
   background-image: url(../img/video.svg);
 }
-img.mce-object.mce-object-pdf {
+img.mce-object.mce-object-pdf,
+img.mce-object[data-mce-p-type="application/pdf"] {
   background-image: url(../img/pdf.svg);
 }
 img.mce-object.mce-object-iframe {

@@ -16,7 +16,8 @@ img.mce-object {
     }
 
     &.mce-object-generic,
-    &.mce-object-embed {
+    &.mce-object-embed,
+    &.mce-object-object {
         background-image: url(../img/generic.svg);
         background-size: 16px;
     }
@@ -49,7 +50,8 @@ img.mce-object {
         background-image: url(../img/video.svg);
     }
 
-    &.mce-object-pdf {
+    &.mce-object-pdf,
+    &[data-mce-p-type="application/pdf"] {
         background-image: url(../img/pdf.svg);
     }
 
