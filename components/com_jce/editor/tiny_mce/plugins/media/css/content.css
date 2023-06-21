@@ -42,6 +42,14 @@ img.mce-object.mce-object-pdf,
 img.mce-object[data-mce-p-type="application/pdf"] {
   background-image: url(../img/pdf.svg);
 }
+img.mce-object[data-mce-p-data$=".doc"],
+img.mce-object[data-mce-p-data$=".docx"] {
+  background-image: url(../img/word.svg);
+}
+img.mce-object[data-mce-p-data$=".xls"],
+img.mce-object[data-mce-p-data$=".xlsx"] {
+  background-image: url(../img/excel.svg);
+}
 img.mce-object.mce-object-iframe {
   background-image: url(../img/iframe.svg);
 }

@@ -55,6 +55,16 @@ img.mce-object {
         background-image: url(../img/pdf.svg);
     }
 
+    &[data-mce-p-data$=".doc"],
+    &[data-mce-p-data$=".docx"] {
+        background-image: url(../img/word.svg);
+    }
+
+    &[data-mce-p-data$=".xls"],
+    &[data-mce-p-data$=".xlsx"] {
+        background-image: url(../img/excel.svg);
+    }
+
     &.mce-object-iframe {
         background-image: url(../img/iframe.svg);
     }
