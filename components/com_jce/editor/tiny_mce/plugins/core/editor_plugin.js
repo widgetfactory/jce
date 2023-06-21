@@ -128,19 +128,28 @@
       }
     });
 
-    // special quotes shortcute
-    ed.onKeyUp.add(function (ed, e) {
-      // default is CTRL + SHIFT + ' and “text”
-      var quoted = '&ldquo;{$selection}&rdquo;';
+    var quoteMap = {
+      en : {
+        '\u0022' : '&ldquo;{$selection}&rdquo;',
+        '\u0027' : '&lsquo;{$selection}&rsquo;'
+      },
 
-      // use different keyCode for German quotes, eg: „text“
-      if (ed.settings.language == 'de') {
-        quoted = '&bdquo;{$selection}&ldquo;';
+      de : {
+        '\u0022' : '&bdquo;{$selection}&ldquo;',
+        '\u0027' : '&sbquo;{$selection}&rsquo;'
       }
+    };
 
-      if ((e.key === '\u0027' || e.key == '\u0022') && e.shiftKey && e.ctrlKey) {
+    // special quotes shortcute
+    ed.onKeyUp.add(function (ed, e) {      
+      // eslint-disable-next-line dot-notation
+      var map = quoteMap[ed.settings.language] || quoteMap['en'];
+
+      if ((e.key == '\u0022' || e.key == '\u0027') && e.shiftKey && e.ctrlKey) {
+        var value = map[e.key];
+        
         ed.undoManager.add();
-        ed.execCommand('mceReplaceContent', false, quoted);
+        ed.execCommand('mceReplaceContent', false, value);
       }
     });
 
