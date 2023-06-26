@@ -1517,7 +1517,7 @@
             preview.removeAttribute('style');
         }
 
-        each(data, function (value, name) {
+        each(data, function (value, name) {            
             if (name === 'innerHTML' && value) {
                 attribs['data-mce-html'] = escape(value);
                 return true;
@@ -1551,13 +1551,13 @@
             }
 
             // update classes
-            if (name == 'class') {
+            if (name == 'class' && value) {
                 ed.dom.addClass(node, value);
                 return true;
             }
 
             // update styles
-            if (name == 'style') {
+            if (name == 'style' && value) {
                 ed.dom.setStyles(node, ed.dom.parseStyle(value));
                 return true;
             }
