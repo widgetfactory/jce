@@ -32,7 +32,17 @@ class WFMediaPluginConfig
                 $settings['iframes_allow_supported'] = true;
                 $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array());
 
-                $settings['iframes_supported_media'] = array_merge($iframes_supported_media, $wf->getParam('media.iframes_supported_media_custom', array()));
+                // get values only
+                $iframes_supported_media = array_values($iframes_supported_media);
+
+                $iframes_supported_media_custom = $wf->getParam('media.iframes_supported_media_custom', array());
+
+                // get values only
+                if (!empty($iframes_supported_media_custom)) {
+                    $iframes_supported_media_custom = array_values($iframes_supported_media_custom);
+                }
+
+                $settings['iframes_supported_media'] = array_merge($iframes_supported_media, $iframes_supported_media_custom);
             }
         }
 
