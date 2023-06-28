@@ -251,6 +251,11 @@
                             node = null;
                         }
 
+                        // reset if root
+                        if (isRoot(node)) {
+                            node = null;
+                        }
+
                         // reset to bookmark
                         selection.moveToBookmark(bookmark);
 
