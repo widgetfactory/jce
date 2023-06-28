@@ -199,11 +199,11 @@
 
       if (cmd === "mcePaste") {
           title = ed.getLang('clipboard.paste_desc');
-          ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7" autofocus></textarea>';
+          ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7"></textarea>';
 
       } else {
           title = ed.getLang('clipboard.paste_text_desc');
-          ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7" autofocus></textarea>';
+          ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7"></textarea>';
       }
 
       var html = '' +
@@ -318,6 +318,18 @@
               });
           });
 
+          pasteEd.onInit.add(function () {
+              window.setTimeout(function () {
+                  pasteEd.focus();
+
+                  var tmp = pasteEd.dom.add('br', { 'data-mce-bogus' : '1' });
+
+                  pasteEd.selection.select(tmp);
+                  pasteEd.selection.collapse();
+                  pasteEd.dom.remove(tmp);
+              }, 100);
+          });
+
           pasteEd.render();
       }
 
@@ -332,6 +344,12 @@
               if (cmd == "mcePaste") {
                   createEditor(inp);
               }
+
+              window.setTimeout(function () {
+                  inp.focus();
+              }, 0);
+
+              
           },
           close: function () {
           },
@@ -365,8 +383,7 @@
 
                       ed.execCommand('mceInsertClipboardContent', false, data);
                   },
-                  classes: 'primary',
-                  autofocus: true
+                  classes: 'primary'
               }
           ]
       });
