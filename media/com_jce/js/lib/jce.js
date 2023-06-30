@@ -31,6 +31,9 @@
 
         init();
 
-        Joomla.Showon.initialise(document);
+        if (Joomla.Showon) {
+            Joomla.Showon.initialise(document);
+        }
+
     });
 })(jQuery);
