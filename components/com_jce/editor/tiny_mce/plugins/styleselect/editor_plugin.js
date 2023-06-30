@@ -219,20 +219,35 @@
                         return NodeType.isElement(node) && node.hasAttribute('data-mce-root');
                     }
 
+                    var nodes = [node];
+
                     function isRoot(node) {
                         return isFakeRoot(node) || ed.getBody() === node;
                     }
 
-                    //each(nodes, function (node) {
+                    var isCollapsed = selection.isCollapsed();
+
+                    // special consideration for fake root
+                    if (isFakeRoot(node)) {
+                        // avoid applying style to fake root element
+                        if (isCollapsed) {
+                            return false;
+                        }
+                        
+                        // apply to children as Formatter can't deal with fake root
+                        var blocks = selection.getSelectedBlocks();
+
+                        if (blocks.length) {
+                            nodes = blocks;
+                        }
+                    }
+
+                    each(nodes, function (node) {
                         var bookmark = selection.getBookmark();
 
                         /*if (node == ed.getBody() && !isOnlyTextSelected()) {
                             return false;
                         }*/
-
-                        if (isFakeRoot(node) && selection.isCollapsed()) {
-                            return false;
-                        }
 
                         // Toggle off the current format(s)
                         each(ctrl.items, function (item) {
@@ -240,8 +255,6 @@
                                 matches.push(fmt);
                             }
                         });
-
-                        var isCollapsed = selection.isCollapsed();
 
                         //node = nodes.length > 1 || selection.isCollapsed() ? node : null;
                         //node = isCollapsed ? node : null;
@@ -279,9 +292,9 @@
                             }
                         });
 
-                        if (!removedFormat) {                            
+                        if (!removedFormat) {
                             // registered style format
-                            if (ed.formatter.get(name)) {                                
+                            if (ed.formatter.get(name)) {
                                 // apply or remove
                                 ed.execCommand('ToggleFormat', false, {
                                     name: name,
@@ -317,7 +330,7 @@
                                 ed.nodeChanged();
                             }
                         }
-                    //});
+                    });
 
                     return false; // No auto select
                 }
@@ -449,7 +462,7 @@
                 var formats = ed.getParam('style_formats'),
                     styles = ed.getParam('styleselect_custom_classes', '', 'hash');
 
-                    var preview_styles = ed.getParam('styleselect_preview_styles', true);
+                var preview_styles = ed.getParam('styleselect_preview_styles', true);
 
                 // generic class format
                 ed.formatter.register('classname', {

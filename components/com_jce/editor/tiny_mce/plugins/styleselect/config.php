@@ -143,7 +143,7 @@ class WFStyleselectPluginConfig
 
                     // edge case for forced_root_block=false
                     if ($settings['forced_root_block'] === false) {
-                        if (!isset($style->element)) {
+                        if (!isset($style->element) && !isset($style->selector)) {
                             $style->inline = 'span';
                             $style->selector = '*';
                         }
