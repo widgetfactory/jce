@@ -130,6 +130,10 @@ body.mceContentReset {
   color: #000 !important;
   /* https://www.w3.org/TR/html5/rendering.html#phrasing-content-0 */
 }
+body.mceContentReset ::selection {
+  background: #ccc;
+  color: #000;
+}
 body.mceContentReset a,
 body.mceContentReset a:link {
   color: #0000EE;
