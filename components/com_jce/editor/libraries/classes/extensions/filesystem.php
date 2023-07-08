@@ -135,7 +135,17 @@ class WFFileSystem extends WFExtension
                 '/\$year/'
             );
 
-            $path_replacement = array($user->id, $user->username, $user->name, $usertype, $profile->name, date('H'), date('d'), date('m'), date('Y'));
+            $path_replacement = array(
+                $user->id, 
+                $user->username, 
+                $user->name, 
+                $usertype, 
+                $profile->name, 
+                date('H'), 
+                date('d'), 
+                date('m'), 
+                date('Y')
+            );
 
             $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
 
