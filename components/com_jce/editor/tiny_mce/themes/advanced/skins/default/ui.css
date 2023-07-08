@@ -1382,6 +1382,7 @@ select.mceNativeListBox {
 .mceDefaultSkin .mceIcon svg {
     width: 1em;
     height: 1em;
+    fill: #444;
 }
 
 .mceDefaultSkin .mceIconImage {
@@ -1947,6 +1948,10 @@ select.mceNativeListBox {
 
 .mceDefaultSkin .mce_spinner {
     background: url(img/load.gif?@@etag@@) no-repeat 0 0;
+}
+
+.mceDefaultSkin .mce_none {
+    font-family: inherit;
 }/* Panel */
 
 .mceDefaultSkin .mcePanel {

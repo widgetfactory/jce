@@ -588,3 +588,7 @@
 .mceDefaultSkin .mce_spinner {
     background: url(img/load.gif?@@etag@@) no-repeat 0 0;
 }
+
+.mceDefaultSkin .mce_none {
+    font-family: inherit;
+}
