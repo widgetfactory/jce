@@ -67,7 +67,7 @@ class WFJoomlaPluginConfig
             }
 
             // Set some vars
-            $icon = 'none icon-' . $button->get('icon', $button->get('name'));
+            $icon = 'icon-' . $button->get('icon', $button->get('name'));
 
             $name = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
             $title = $button->get('text');
