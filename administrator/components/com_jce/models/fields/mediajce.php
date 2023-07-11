@@ -36,6 +36,14 @@ class JFormFieldMediaJce extends MediaField
     protected $layout = 'joomla.form.field.media';
 
     /**
+     * Default mediatype
+     *
+     * @var    string
+     * @since  2.9.39
+     */
+    protected $mediatype;
+
+    /**
      * Method to attach a JForm object to the field.
      *
      * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the `<field>` tag for the form field object.

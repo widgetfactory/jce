@@ -41,7 +41,7 @@ class JFormFieldSearchPlugins extends JFormFieldPlugins
 		if ($return)
 		{
             $this->folder = 'search';
-            $this->useaccess = true;
+            $this->element['useaccess'] = 'true';
 		}
 
 		return $return;
