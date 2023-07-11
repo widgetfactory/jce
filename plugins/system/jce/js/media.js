@@ -2,6 +2,89 @@
 /* global jQuery, Joomla */
 (function ($) {
 
+    /**
+     * Extension - return the file extension, eg: jpg
+     */
+    var getExtension = function (string) {
+        if (string && /\.[a-z0-9]{2,4}$/i.test(string)) {
+            return string.substring(string.lastIndexOf(".") + 1).toLowerCase();
+        }
+        return "";
+    };
+
+    var mimeTypeMap = {
+        // documents
+        "doc": "application/msword",
+        "xls": "application/vnd.ms-excel",
+        "ppt": "application/vnd.ms-powerpoint",
+        "dot": "application/msword",
+        "pps": "application/vnd.ms-powerpoint",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "dotx": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+        "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "xlsm": "application/vnd.ms-excel.sheet.macroEnabled.12",
+        "ppsx": "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+        "sldx": "application/vnd.openxmlformats-officedocument.presentationml.slide",
+        "potx": "application/vnd.openxmlformats-officedocument.presentationml.template",
+        "xltx": "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+        "odt": "application/vnd.oasis.opendocument.text",
+        "odg": "application/vnd.oasis.opendocument.graphics",
+        "odp": "application/vnd.oasis.opendocument.presentation",
+        "ods": "application/vnd.oasis.opendocument.spreadsheet",
+        "odf": "application/vnd.oasis.opendocument.formula",
+        "txt": "text/plain",
+        "rtf": "application/rtf",
+        "md": "text/markdown",
+        "pdf": "application/pdf",
+        // images
+        "gif": "image/gif",
+        "jpeg": "image/jpeg",
+        "jpg": "image/jpeg",
+        "png": "image/png",
+        "apng": "image/apng",
+        "webp": "image/webp",
+        "avif": "image/avif",
+        // compressed
+        "zip": "application/zip",
+        "tar": "application/x-tar",
+        "gz": "application/gzip",
+        // video
+        "avi": "video/x-msvideo",
+        "wmv": "video/x-ms-wmv",
+        "wm": "video/x-ms-wm",
+        "asf": "video/x-ms-asf",
+        "asx": "video/x-ms-asf",
+        "wmx": "video/x-ms-wmx",
+        "wvx": "video/x-ms-wvx",
+        "mov": "video/quicktime",
+        "qt": "video/quicktime",
+        "mpg": "video/mpeg",
+        "mpeg": "video/mpeg",
+        "swf": "application/x-shockwave-flash",
+        "dcr": "application/x-director",
+        "rm": "application/vnd.rn-realmedia",
+        "ra": "audio/vnd.rn-realaudio",
+        "ram": "audio/vnd.rn-realaudio",
+        "divx": "video/divx",
+        "mp4": "video/mp4",
+        "ogv": "video/ogg",
+        "ogg": "audio/ogg",
+        "webm": "video/webm",
+        "flv": "video/x-flv",
+        "f4v": "video/x-f4v",
+        // audio
+        "mp3": "audio/mpeg",
+        "wav": "audio/wav",
+        "m4a": "audio/mp4",
+        "xap": "application/x-silverlight-app",
+        "aiff": "audio/aiff"
+    };
+
+    var getMime = function (extension) {
+        return mimeTypeMap[extension.toLowerCase()] || "";
+    };
+
     var counter = 0;
 
     /**
@@ -485,9 +568,9 @@
                                 var parts = value.split('/'), base = parts.shift();
 
                                 value += '#joomlaImage://local-' + base + '/' + parts.join('/');
-                                
+
                                 if (data && typeof data === "object") {
-                                   value += '?width=' + data.width + '&height=' + data.height;
+                                    value += '?width=' + data.width + '&height=' + data.height;
                                 }
                             }
 
@@ -525,8 +608,13 @@
                         markValidFunction.apply(this);
                     }
 
-                    // updatePreview
-                    field.updatePreview();
+                    fetch(field.basePath + this.value).then(function (response) {
+                        return response.blob();
+                    }).then(function (blob) {
+                        field.mimeType = blob.type;
+                        // updatePreview
+                        field.updatePreview();
+                    });
 
                     // trigger update for t4 builder
                     $(document).trigger('t4:media-selected', { selectedUrl: field.basePath + this.value });
