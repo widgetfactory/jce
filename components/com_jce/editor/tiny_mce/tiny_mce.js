@@ -2398,7 +2398,7 @@
 
       function isTrailingBr(node) {
         var blockElements = dom.schema.getBlockElements(),
-          rootNode = editor.getBody();
+          rootNode = dom.getRoot();
 
         if (node.nodeName != 'BR') {
           return false;
@@ -2430,14 +2430,14 @@
       }
 
       function findCaretNode(node, forward, startNode) {
-        var walker, current, nonEmptyElements;
+        var walker, current, nonEmptyElements, rootNode = dom.getRoot();
 
         // Protect against the possibility we are asked to find a caret node relative
         // to a node that is no longer in the DOM tree. In this case attempting to
         // select on any match leads to a scenario where selection is completely removed
         // from the editor. This scenario is met in real world at a minimum on
         // WebKit browsers when selecting all and Cmd-X cutting to delete content.
-        if (!dom.isChildOf(node, editor.getBody())) {
+        if (!dom.isChildOf(node, rootNode)) {
           return;
         }
 
@@ -2759,16 +2759,16 @@
       }
 
       function customDelete(isForward) {
-        var mutationObserver, rng, caretElement;
+        var mutationObserver, rng, caretElement, rootNode = editor.dom.getRoot();
 
         if (handleTextBlockMergeDelete(isForward)) {
           return;
         }
 
-        tinymce.each(editor.getBody().getElementsByTagName('*'), function (elm) {
+        tinymce.each(rootNode.getElementsByTagName('*'), function (elm) {
           // Mark existing spans
           if (elm.tagName == 'SPAN') {
-            elm.setAttribute('mce-data-marked', 1);
+            elm.setAttribute('data-mce-marked', 1);
           }
 
           // Make sure all elements has a data-mce-style attribute
@@ -2792,7 +2792,7 @@
         caretElement = rng.startContainer.parentNode;
 
         tinymce.each(mutationObserver.takeRecords(), function (record) {
-          if (!dom.isChildOf(record.target, editor.getBody())) {
+          if (!dom.isChildOf(record.target, rootNode)) {
             return;
           }
 
@@ -2818,7 +2818,7 @@
               node.removeAttribute("style");
             }
 
-            if (node.nodeName == "SPAN" && !node.getAttribute('mce-data-marked')) {
+            if (node.nodeName == "SPAN" && !node.getAttribute('data-mce-marked')) {
               var offset, container;
 
               if (node == caretElement) {
@@ -2840,8 +2840,8 @@
         mutationObserver.disconnect();
 
         // Remove any left over marks
-        tinymce.each(editor.dom.select('span[mce-data-marked]'), function (span) {
-          span.removeAttribute('mce-data-marked');
+        tinymce.each(editor.dom.select('span[data-mce-marked]', editor.dom.getRoot()), function (span) {
+          span.removeAttribute('data-mce-marked');
         });
       }
 
@@ -3064,23 +3064,16 @@
 
       editor.onKeyDown.add(function (editor, e) {
         var keyCode = e.keyCode,
-          isCollapsed, body;
+          isCollapsed, root;
 
         // Empty the editor if it's needed for example backspace at <p><b>|</b></p>
         if (!isDefaultPrevented(e) && (keyCode == DELETE || keyCode == BACKSPACE)) {
           isCollapsed = editor.selection.isCollapsed();
-          body = editor.getBody();
+          root = dom.getRoot();//editor.getBody();
 
           // Selection is collapsed but the editor isn't empty
-          if (isCollapsed && !dom.isEmpty(body)) {
-
-            if (!tinymce.util.isFakeRoot(body.firstChild)) {
-              return;
-            }
-
-            if (tinymce.util.isFakeRoot(body.firstChild) && !dom.isEmpty(body.firstChild)) {
-              return;
-            }
+          if (isCollapsed && !dom.isEmpty(root)) {
+            return;
           }
 
           // Selection isn't collapsed but not all the contents is selected
@@ -3092,10 +3085,10 @@
           e.preventDefault();
           editor.setContent('');
 
-          if (body.firstChild && dom.isBlock(body.firstChild)) {
-            editor.selection.setCursorLocation(body.firstChild, 0);
+          if (root.firstChild && dom.isBlock(root.firstChild)) {
+            editor.selection.setCursorLocation(root.firstChild, 0);
           } else {
-            editor.selection.setCursorLocation(body, 0);
+            editor.selection.setCursorLocation(root, 0);
           }
 
           editor.nodeChanged();
@@ -3215,7 +3208,7 @@
         return function () {
           var target = selection.getStart();
 
-          if (target !== editor.getBody()) {
+          if (target !== dom.getRoot()) {
             dom.setAttrib(target, "style", null);
 
             each(template, function (attr) {
@@ -3775,7 +3768,7 @@
       }
 
       function isRootNode(node) {
-        return node == editor.getBody() || tinymce.util.isFakeRoot(node);
+        return node == editor.dom.getRoot();
       }
 
       function isLastChild(node) {
@@ -3812,7 +3805,7 @@
       function moveCursorToEnd(e) {
         var rng = selection.getRng(), container = rng.startContainer, node = container.parentNode;
 
-        if (!node || node == editor.getBody()) {
+        if (!node || node == editor.dom.getRoot()) {
           return;
         }
 
@@ -6251,6 +6244,19 @@
        */
       self.getTextBlockElements = function () {
         return textBlockElementsMap;
+      };
+
+      /**
+       * Returns a map with text block root elements.
+       *
+       * @method getTextRootBlockElements
+       * @return {Object} Name/value lookup map for block elements.
+       */
+      self.getTextRootBlockElements = function () {
+        return makeMap(
+          'td th li dt dd figcaption caption details summary',
+          textBlockElementsMap
+        );
       };
 
       /**
@@ -23364,6 +23370,21 @@
         return self;
       },
 
+      getScrollContainer: function () {
+        var scrollContainer, node = this.dom.getRoot();
+    
+        while (node && node.nodeName != 'BODY') {
+          if (node.scrollHeight > node.clientHeight) {
+            scrollContainer = node;
+            break;
+          }
+    
+          node = node.parentNode;
+        }
+    
+        return scrollContainer;
+      },
+
       scrollIntoView: function (elm, alignToTop) {
         tinymce.dom.ScrollIntoView(this.editor, elm, alignToTop);
       },
@@ -38238,6 +38259,38 @@
         undef,
         getContentEditable = dom.getContentEditable;
 
+      var hasCaretNodeSibling = function (node) {
+        var sibling = node.parentNode.firstChild;
+
+        while (sibling) {
+          if (sibling !== node && isCaretNode(sibling)) {
+            return true;
+          }
+
+          sibling = sibling.nextSibling;
+        }
+
+        return false;
+      };
+
+      var canFormatBR = function (editor, format, node, parentName) {
+        // TINY-6483: Can format 'br' if it is contained in a valid empty block and an inline format is being applied
+        if (editor.settings.format_empty_lines !== false && format.inline && node.parentNode) {
+          
+          // allow links to wrap br tags
+          if (format.inline == 'a') {
+            return true;
+          }
+
+          var validBRParentElements = editor.schema.getTextRootBlockElements();
+
+          // If a caret node is present, the format should apply to that, not the br (applicable to collapsed selections)
+          return validBRParentElements[parentName] && !editor.dom.isEmpty(node.parentNode) && !hasCaretNodeSibling(node);
+        }
+
+        return false;
+      };
+
       function isTextBlock(name) {
         if (name.nodeType) {
           name = name.nodeName;
@@ -38507,7 +38560,7 @@
 
           blockquote: {
             block: 'blockquote',
-            wrapper: 1,
+            wrapper: true,
             remove: 'all'
           },
 
@@ -38578,28 +38631,6 @@
         // Register user defined formats
         register(ed.settings.formats);
       }
-
-      /*function addKeyboardShortcuts() {
-        // Add some inline shortcuts
-        ed.addShortcut('ctrl+b', 'bold_desc', 'Bold');
-        ed.addShortcut('ctrl+i', 'italic_desc', 'Italic');
-        ed.addShortcut('ctrl+u', 'underline_desc', 'Underline');
-
-        // BlockFormat shortcuts keys
-        for (var i = 1; i <= 6; i++) {
-          //ed.addShortcut('alt+shift+' + i, '', ['FormatBlock', false, 'h' + i]);
-          // keep legacy shortcuts
-          ed.addShortcut('ctrl+' + i, '', ['FormatBlock', false, 'h' + i]);
-
-        }
-
-        each(['p', 'div', 'address'], function (name, i) {
-          var n = 7 + i;
-
-          //ed.addShortcut('alt+shift+' + n, '', ['FormatBlock', false, name]);
-          ed.addShortcut('ctrl+' + n, '', ['FormatBlock', false, name]);
-        });
-      }*/
 
       function addKeyboardShortcuts() {
         // Add some inline shortcuts
@@ -38880,8 +38911,8 @@
                 hasContentEditableState = !isShortEnded(node); // We don't want to wrap the container only it's children
               }
 
-              // Stop wrapping on br elements - not sure if this should still be used... TODO
-              /*if (isEq(nodeName, 'br')) {
+              // Stop wrapping on br elements, but skip links
+              if (isEq(nodeName, 'br') && !canFormatBR(ed, format, node, parentName)) {
                 currentWrapElm = 0;
 
                 // Remove any br elements when we wrap things
@@ -38890,7 +38921,7 @@
                 }
 
                 return;
-              }*/
+              }
 
               // If node is wrapper type
               if (format.wrapper && matchNode(node, name, vars)) {
@@ -39028,6 +39059,11 @@
             if ((newWrappers.length > 1 || !isBlock(node)) && childCount === 0) {
               dom.remove(node, 1);
               return;
+            }
+
+            // remove leading linebreak, eg: <div><br />Some text</div>
+            if (childCount > 1 && isEq(node.firstChild.nodeName, 'BR')) {
+              dom.remove(node.firstChild);
             }
 
             // fontSize defines the line height for the whole branch of nested style wrappers,
@@ -41563,9 +41599,6 @@
           var root = dom.getRoot(),
             parent, editableRoot;
 
-          // use optional editable root or body
-          root = dom.get(editor.settings.editable_root) || root;
-
           // Get all parents until we hit a non editable parent or the root
           parent = node;
 
@@ -43272,6 +43305,9 @@
         ed.onPreInit.add(function () {
           var selection = ed.selection, dom = ed.dom;
 
+          // set dom root element for getRoot method
+          dom.settings.root_element = ed.settings.editable_root;
+
           ed.schema.addValidElements('#mce:root[id|data-mce-root]');
 
           // add children from body element
@@ -43429,8 +43465,6 @@
       if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
         fakeRootBlock();
       }
-
-      tinymce.util.isFakeRoot = isFakeRoot;
     });
   })();
 
