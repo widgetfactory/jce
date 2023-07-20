@@ -317,3 +317,13 @@ figure figcaption:empty[data-mce-empty]::after {
 [data-mce-selected="inline-boundary"] {
   background-color: #b4d7ff;
 }
+.mce-item-hidden-spellword {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: red;
+}
+.mce-item-hidden-grammar {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: lightblue;
+}

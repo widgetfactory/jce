@@ -220,8 +220,11 @@ h6 {
 }
 
 .mce-item-table {
+
     &:not([border]),
-    td, tr, caption {
+    td,
+    tr,
+    caption {
         border: 1px dashed #757575;
         /* #1976d2 */
         border-color: var(--mce-guidelines);
@@ -268,7 +271,7 @@ hr,
 }
 
 table {
-    width : 100%;
+    width: 100%;
 }
 
 table td,
@@ -358,7 +361,7 @@ figure {
     figcaption {
         display: block;
         caption-side: bottom;
-    
+
         &:empty::after {
             content: "...";
             text-align: center;
@@ -368,7 +371,7 @@ figure {
             color: var(--mce-guidelines);
             pointer-events: none;
         }
-    
+
         &:empty[data-mce-empty]::after {
             content: attr(data-mce-empty);
         }
@@ -387,4 +390,16 @@ figure {
 
 [data-mce-selected="inline-boundary"] {
     background-color: #b4d7ff;
+}
+
+.mce-item-hidden-spellword {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: red;
+}
+
+.mce-item-hidden-grammar {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: lightblue;
 }
