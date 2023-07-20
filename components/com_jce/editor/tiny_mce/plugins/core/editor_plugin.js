@@ -177,6 +177,9 @@
       ed.onPreInit.add(function () {
         var selection = ed.selection, dom = ed.dom;
 
+        // set dom root element for getRoot method
+        dom.settings.root_element = ed.settings.editable_root;
+
         ed.schema.addValidElements('#mce:root[id|data-mce-root]');
 
         // add children from body element
@@ -334,7 +337,5 @@
     if (ed.settings.forced_root_block == false && ed.settings.editable_root != false) {
       fakeRootBlock();
     }
-
-    tinymce.util.isFakeRoot = isFakeRoot;
   });
 })();

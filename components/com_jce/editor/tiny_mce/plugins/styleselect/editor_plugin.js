@@ -204,36 +204,32 @@
                         return elements.length === 0;
                     };
 
+                    var isRoot = function (node) {
+                        return node === ed.dom.getRoot();
+                    };
+
                     /*var nodes = tinymce.grep(selection.getSelectedBlocks(), function (n) {
                         return NodeType.isElement(n) && !NodeType.isInternal(n);
                     });
 
-                    if (!nodes.length || (node == ed.getBody() || isFakeRoot(node))) {
+                    if (!nodes.length || (isRoot(node))) {
                         nodes = [node];
                     }*/
 
                     ed.focus();
                     ed.undoManager.add();
 
-                    function isFakeRoot(node) {
-                        return NodeType.isElement(node) && node.hasAttribute('data-mce-root');
-                    }
-
                     var nodes = [node];
-
-                    function isRoot(node) {
-                        return isFakeRoot(node) || ed.getBody() === node;
-                    }
-
                     var isCollapsed = selection.isCollapsed();
 
                     // special consideration for fake root
-                    if (isFakeRoot(node)) {
+                    if (isRoot(node)) {
+
                         // avoid applying style to fake root element
                         if (isCollapsed) {
                             return false;
                         }
-                        
+
                         // apply to children as Formatter can't deal with fake root
                         var blocks = selection.getSelectedBlocks();
 

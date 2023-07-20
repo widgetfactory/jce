@@ -13,7 +13,7 @@
         init: function (ed, url) {
             
             function isRootNode(node) {
-                return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+                return node == ed.dom.getRoot();
             }
             
             // Register commands

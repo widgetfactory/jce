@@ -139,7 +139,13 @@
     var each = tinymce.each, extend = tinymce.extend;
 
     function getAttributes(node) {
-        var i, attrs = node.attributes, attribs = {};
+        var i, attribs = {};
+
+        if (!node) {
+            return attribs;
+        }
+
+        var attrs = node.attributes;
 
         // map all attributes
         for (i = attrs.length - 1; i >= 0; i--) {
@@ -160,7 +166,7 @@
         init: function (ed, url) {
 
             function isRootNode(node) {
-                return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+                return node == ed.dom.getRoot();
             }
 
             ed.onPreInit.add(function () {
@@ -179,6 +185,10 @@
 
             function openDialog() {
                 var cm = ed.controlManager, node = ed.selection.getNode(), mediaApi;
+
+                if (isRootNode(node)) {
+                    node = null;
+                }
 
                 var nodeAttribs = getAttributes(node), attribsMap = { id: '', title: '', class: '', lang: '', dir: '' }, custom = [];
 
@@ -259,9 +269,9 @@
                     label: 'Other',
                     name: 'custom',
                     item: {
-                        type : 'CustomValue',
-                        id : 'attributes_custom',
-                        settings : {}
+                        type: 'CustomValue',
+                        id: 'attributes_custom',
+                        settings: {}
                     }
                 }
                 );
@@ -311,11 +321,11 @@
 
                             var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
 
-                            // is a body or text selection
-                            if (isRootNode(ed, node) || isTextSelection) {
+                            // is a text selection
+                            if (isTextSelection) {
                                 ed.formatter.apply('attributes', data);
-                                // element selection
-                            } else {
+                                // non-root element selection
+                            } else if (node && !isRootNode(node)) {
                                 // remove attributes that have been removed or nulled
                                 each(nodeAttribs, function (val, name) {
                                     data[name] = null;

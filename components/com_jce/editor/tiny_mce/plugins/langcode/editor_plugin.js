@@ -155,8 +155,8 @@
                 });
             });
 
-            function isRootNode(ed, node) {
-                return node == ed.getBody() || tinymce.util.isFakeRoot(node);
+            function isRootNode(node) {
+                return node == ed.dom.getRoot();
             }
 
             ed.addButton('langcode', {
@@ -209,25 +209,21 @@
 
                                 var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
 
-                                // is a body or text selection
-                                if (isRootNode(ed, node) || isTextSelection) {
-
+                                if (isTextSelection) {
                                     var blocks = selection.getSelectedBlocks();
 
                                     if (blocks.length > 1) {
                                         tinymce.each(blocks, function (elm) {
                                             ed.dom.setAttrib(elm, 'lang', data.language);
                                         });
-                                    } else {                                                                                
+                                    } else {
                                         if (!data.language) {
                                             ed.formatter.remove('langcode');
                                         } else {
                                             ed.formatter.apply('langcode', { value: data.language });
                                         }
                                     }
-      
-                                    // element selection
-                                } else {
+                                } else if (node && !isRootNode(node)) {
                                     ed.dom.setAttrib(node, 'lang', data.language);
                                 }
 
