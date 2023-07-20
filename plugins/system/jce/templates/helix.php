@@ -35,5 +35,10 @@ class WfTemplateHelix extends JPlugin
                 $files[] = 'templates/' . $template->name . '/css/presets/' . $data->preset . '.css';
             }
         }
+
+        // add custom.css
+        if (is_file($path . '/css/custom.css')) {
+            $files[] = 'templates/' . $template->name . '/css/custom.css';
+        }
     }
 }
