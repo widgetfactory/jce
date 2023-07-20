@@ -85,18 +85,18 @@
                 }
             });
 
-            // show menus if enabled
-            if (ed.getParam("spellchecker_suggestions", true)) {
-                ed.onClick.add(self._showMenu, self);
-                ed.onContextMenu.add(self._showMenu, self);
-            }
-
             ed.onNodeChange.add(function (ed, cm) {
                 cm.setActive('spellchecker', !!self.active);
             });
 
             // only required for PHP spellchecker
             if (!self.native_spellchecker) {
+                // show menus if enabled
+                if (ed.getParam("spellchecker_suggestions", true)) {
+                    ed.onClick.add(self._showMenu, self);
+                    ed.onContextMenu.add(self._showMenu, self);
+                }
+
                 ed.onPreInit.add(function () {
                     if (ed.settings.content_css !== false) {
                         ed.dom.loadCSS(url + "/css/content.css");
