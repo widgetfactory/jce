@@ -534,11 +534,6 @@
                         'href': args.href,
                         'data-mce-tmp': '1'
                     });
-
-                    if (txt) {
-                        // update the text on the selected node, not the anchor
-                        api.updateTextContent(currNode || node, txt);
-                    }
                 } else {
                     // insert link on selection
                     ed.execCommand('mceInsertLink', false, {
@@ -563,6 +558,11 @@
                     // remove id on multiple links
                     if (i > 0 && args.id) {
                         ed.dom.setAttrib(elm, 'id', '');
+                    }
+
+                    if (txt) {
+                        // update the text on the selected node, not the anchor
+                        api.updateTextContent(elm, txt);
                     }
                 });
 

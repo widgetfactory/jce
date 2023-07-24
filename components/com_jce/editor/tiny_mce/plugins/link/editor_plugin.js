@@ -19,19 +19,50 @@
         return isAnchor(elm) && elm.querySelector('span.wf_file_text') && elm.childNodes.length === 1;
     };
 
+    function containsTextAndElementNodes(nodes) {
+        var hasTextNodes = false;
+        var hasElementNodes = false;
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+
+            if (node.nodeType === 3) { // Text node
+                hasTextNodes = true;
+            } else if (node.nodeType === 1) { // Element node
+                hasElementNodes = true;
+            }
+
+            // If we have both types of nodes, we can return true immediately
+            if (hasTextNodes && hasElementNodes) {
+                return true;
+            }
+        }
+
+        // If we reach this point, the array contains either text nodes or element nodes, but not both
+        return false;
+    }
+
     var collectNodesInRange = function (rng, predicate) {
         if (rng.collapsed) {
             return [];
         } else {
             var contents = rng.cloneContents();
             var walker = new tinymce.dom.TreeWalker(contents.firstChild, contents);
-            var elements = [];
+            var elements = [], nodes = [];
             var current = contents.firstChild;
+
             do {
                 if (predicate(current)) {
                     elements.push(current);
+                } else {
+                    nodes.push(current);
                 }
             } while ((current = walker.next()));
+
+            if (nodes.length && containsTextAndElementNodes(nodes)) {
+                return nodes;
+            }
+
             return elements;
         }
     };
@@ -44,6 +75,7 @@
         };
         // Collect all non inline text elements in the range and make sure no elements were found
         var elements = collectNodesInRange(ed.selection.getRng(), isElement);
+
         return elements.length === 0;
     };
 
@@ -178,7 +210,7 @@
                         picker: true,
                         picker_label: 'browse',
                         picker_icon: 'files',
-                        onpick: function (e) {                            
+                        onpick: function (e) {
                             ed.execCommand('mceFileBrowser', true, {
                                 caller: 'link',
                                 callback: function (selected, data) {
@@ -197,7 +229,7 @@
                                     }
                                 },
                                 filter: params.filetypes || 'files',
-                                value : urlCtrl.value()
+                                value: urlCtrl.value()
                             });
                         }
                     });
