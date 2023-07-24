@@ -10411,7 +10411,7 @@
         var self = this;
 
         /*eslint new-cap:0 */
-        return tinymce.dom.Sizzle(selector, self.get(scope) || self.settings.root_element || self.doc, []);
+        return tinymce.dom.Sizzle(selector, self.get(scope) || self.get(self.settings.root_element) || self.doc, []);
       },
 
       unique: function (arr) {
@@ -43302,7 +43302,7 @@
       function fakeRootBlock() {
         ed.settings.editable_root = 'rootblock';
 
-        ed.onPreInit.add(function () {
+        ed.onPreInit.addToTop(function () {
           var selection = ed.selection, dom = ed.dom;
 
           // set dom root element for getRoot method
@@ -43347,7 +43347,7 @@
           }
 
           // reset selection to fake root
-          ed.onSetContent.add(function (ed, o) {
+          ed.onSetContent.addToTop(function (ed, o) {
             var root = dom.get(ed.settings.editable_root), rng;
 
             if (root) {
