@@ -174,7 +174,7 @@
     function fakeRootBlock() {
       ed.settings.editable_root = 'rootblock';
 
-      ed.onPreInit.add(function () {
+      ed.onPreInit.addToTop(function () {
         var selection = ed.selection, dom = ed.dom;
 
         // set dom root element for getRoot method
@@ -219,7 +219,7 @@
         }
 
         // reset selection to fake root
-        ed.onSetContent.add(function (ed, o) {
+        ed.onSetContent.addToTop(function (ed, o) {
           var root = dom.get(ed.settings.editable_root), rng;
 
           if (root) {
