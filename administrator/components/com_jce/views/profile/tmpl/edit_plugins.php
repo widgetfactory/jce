@@ -42,8 +42,10 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
         
         if (!empty($plugin->icon)) {
 
+            $image = !empty($plugin->image) ? '<img src="' . $plugin->image . '" alt="" />' : '';
+            
             foreach ($plugin->icon as $icon) {
-                $icons .= '<div class="mce-widget mce-btn mceButton ' . $plugin->class . '" title="' . $plugin->title . '"><span class="mce-ico mce-i-' . $icon . ' mceIcon mce_' . $icon . '"></span></div>';
+                $icons .= '<div class="mce-widget mce-btn mceButton ' . $plugin->class . '" title="' . $plugin->title . '"><span class="mce-ico mce-i-' . $icon . ' mceIcon mce_' . $icon . '">' . $image . '</span></div>';
             }
 
             $title .= '<div class="mceEditor mceDefaultSkin"><div class="mce-container mce-toolbar mceToolbarItem">' . $icons . '</div></div>';
