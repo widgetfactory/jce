@@ -44,6 +44,7 @@ class JFormFieldComponents extends JFormFieldList
             'com_fields',
             'com_finder',
             'com_installer',
+            'com_jce',
             'com_languages',
             'com_login',
             'com_mailto',
@@ -58,7 +59,7 @@ class JFormFieldComponents extends JFormFieldList
             'com_wrapper',
             'com_search',
             'com_user',
-            'com_updates',
+            'com_updates'
         );
 
         // Get list of plugins
@@ -77,14 +78,10 @@ class JFormFieldComponents extends JFormFieldList
 
         // load component languages
         for ($i = 0; $i < count($components); ++$i) {
-            if (!in_array($components[$i]->value, $exclude)) {
+            if (!in_array($components[$i]->value, $exclude)) {                              
                 // load system language file
                 $language->load($components[$i]->value.'.sys', JPATH_ADMINISTRATOR);
                 $language->load($components[$i]->value, JPATH_ADMINISTRATOR);
-
-                if ($components[$i]->text === "COM_JCE") {
-                    $components[$i]->text = "WF_CPANEL_BROWSER";
-                }
 
                 // translate name
                 $components[$i]->text = JText::_($components[$i]->text, true);

@@ -225,7 +225,15 @@ class WFApplication extends JObject
 
                 // check component
                 if (!empty($item->components)) {
-                    if (in_array($options['option'], explode(',', $item->components)) === false) {
+                    $components = explode(',', $item->components);
+                    
+                    // add com_jce
+                    array_push($components, 'com_jce');
+
+                    // ensure com_jce is included
+                    $components = array_unique($components);
+                    
+                    if (in_array($options['option'], $components) === false) {
                         continue;
                     }
                 }
