@@ -255,7 +255,7 @@
      * @returns Supportd provide value
      */
     function isSupportedProvider(editor, url) {
-        var providers = editor.settings.iframes_supported_media || Object.keys(mediaProviders);
+        var providers = editor.settings.media_iframes_supported_media || Object.keys(mediaProviders);
         var supported = false;
 
         if (typeof providers == 'string') {
@@ -292,14 +292,14 @@
         }
 
         // allow local only
-        if (editor.settings.iframes_allow_local) {
+        if (editor.settings.media_iframes_allow_local) {
             return isLocalUrl(editor, url);
         }
 
         var value = isSupportedProvider(editor, url);
         
         // allow local an support
-        if (editor.settings.iframes_allow_supported) {
+        if (editor.settings.media_iframes_allow_supported) {
             if (isLocalUrl(editor, url)) {
                 return true;
             }
@@ -321,6 +321,14 @@
         return elements[value] || false;
     }
 
+    function isSupportedUrl(editor, tag, url) {        
+        if (editor.settings['media_' + tag + '_allow_local']) {
+            return isLocalUrl(url);
+        }
+
+        return true;
+    }
+
     function isSupportedMedia(editor, url) {
         var value = isSupportedIframe(editor, url);
 
@@ -330,27 +338,43 @@
 
         // Video
         if (/\.(mp4|ogv|ogg|webm)$/.test(url) && isValidElement(editor, 'video')) {
-            return 'video';
+            
+            // check for valid url
+            if (isSupportedUrl(editor, 'video', url)) {
+                return 'video';
+            }
         }
 
         // Audio
         if (/\.(mp3|ogg|webm|wav|m4a|aiff)$/.test(url) && isValidElement(editor, 'audio')) {
-            return 'audio';
+            // check for valid url
+            if (isSupportedUrl(editor, 'audio', url)) {
+                return 'audio';
+            }
         }
 
         // Quicktime
         if (/\.(mov|qt|mpg|mpeg|m4a|aiff)$/.test(url) && isValidElement(editor, 'object')) {
-            return 'quicktime';
+            // check for valid url
+            if (isSupportedUrl(editor, 'object', url)) {
+                return 'quicktime';
+            }
         }
 
         // Flash
         if (/\.swf$/.test(url) && isValidElement(editor, 'object')) {
-            return 'flash';
+            // check for valid url
+            if (isSupportedUrl(editor, 'object', url)) {
+                return 'flash';
+            }
         }
 
-        // Quicktime
+        // windowsmedia
         if (/\.(avi|wmv|wm|asf|asx|wmx|wvx)$/.test(url) && isValidElement(editor, 'object')) {
-            return 'windowsmedia';
+            // check for valid url
+            if (isSupportedUrl(editor, 'object', url)) {
+                return 'windowsmedia';
+            }
         }
 
         return false;
