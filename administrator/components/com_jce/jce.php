@@ -9,15 +9,10 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-
 // define admin base path
 define('WF_ADMIN', __DIR__);
 
-$app = Factory::getApplication();
+$app = JFactory::getApplication();
 
 // throw exception for legacy task
 if ($app->input->get('task') === 'plugin') {
@@ -39,7 +34,7 @@ if ($vName == 'editor' && $app->input->get('layout') == 'plugin') {
 // constants and autoload 
 require_once __DIR__ . '/includes/base.php';
 
-$controller = BaseController::getInstance('Jce', array('base_path' => __DIR__));
+$controller = JControllerLegacy::getInstance('Jce', array('base_path' => __DIR__));
 
 $controller->execute($app->input->get('task'));
 $controller->redirect();

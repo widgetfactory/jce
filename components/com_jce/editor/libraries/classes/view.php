@@ -10,10 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Filesystem\Path;
-
-final class WFView extends CMSObject
+final class WFView extends JObject
 {
     private $path = array();
 
@@ -47,6 +44,7 @@ final class WFView extends CMSObject
      *                    automatically searches through the template paths
      *
      * @throws object An JError object.
+     *                JView::display()
      *
      * @copyright Copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved
      * @license GNU/GPL, see LICENSE.php
@@ -95,6 +93,8 @@ final class WFView extends CMSObject
      *
      * @return string The output of the the template script.
      *
+     * JView::loadTemplate()
+     *
      * @copyright Copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved
      * @license GNU/GPL, see LICENSE.php
      */
@@ -114,9 +114,12 @@ final class WFView extends CMSObject
             $tpl = preg_replace('/[^A-Z0-9_\.-]/i', '', $tpl);
         }
 
+        // load the template script
+        jimport('joomla.filesystem.path');
+
         $path = $this->getTemplatePath();
 
-        $template = Path::find($path, $file . '.php');
+        $template = JPath::find($path, $file . '.php');
 
         if ($template != false) {
             // unset so as not to introduce into template scope

@@ -6,8 +6,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\NumberField;
+JFormHelper::loadFieldClass('number');
 
 /**
  * Form Field class for the Joomla Platform.
@@ -16,7 +15,7 @@ use Joomla\CMS\Form\Field\NumberField;
  * @link        http://www.w3.org/TR/html-markup/input.text.html#input.text
  * @since       11.1
  */
-class JFormFieldUploadMaxSize extends NumberField
+class JFormFieldUploadMaxSize extends JFormFieldNumber
 {
     /**
      * The form field type.
@@ -46,7 +45,7 @@ class JFormFieldUploadMaxSize extends NumberField
         $html .= '  <div class="input-group-append">';
         $html .= '      <span class="add-on input-group-text">Kb</span>';
         $html .= '  </div>';
-        $html .= '	<small class="help-inline form-text">&nbsp;<em>' . Text::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . (string) $max . '</em></small>';
+        $html .= '	<small class="help-inline form-text">&nbsp;<em>' . JText::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . (string) $max . '</em></small>';
         $html .= '</div>';
 
         return $html;

@@ -10,16 +10,16 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-
-class JoomlalinksWeblinks extends CMSObject
+class JoomlalinksWeblinks extends JObject
 {
     private $option = 'com_weblinks';
 
     /**
      * Returns a reference to a editor object.
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
+     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -42,7 +42,7 @@ class JoomlalinksWeblinks extends CMSObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_weblinks&view=categories" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_WEBLINKS') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_weblinks&view=categories" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_WEBLINKS') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -162,12 +162,12 @@ class JoomlalinksWeblinks extends CMSObject
     {
         $wf = WFEditorPlugin::getInstance();
         
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
 
         $dbquery = $db->getQuery(true);
 
-        $section = Text::_('Web Links');
+        $section = JText::_('Web Links');
 
         $query = $db->getQuery(true);
 

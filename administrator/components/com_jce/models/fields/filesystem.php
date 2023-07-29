@@ -2,12 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\Field\ListField;
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldFilesystem extends ListField
+class JFormFieldFilesystem extends JFormFieldList
 {
     /**
      * The form field type.
@@ -70,13 +67,13 @@ class JFormFieldFilesystem extends ListField
         $html .= '<div class="controls-row">';
 
         $html .= '<div class="control-group">';
-        $html .= HTMLHelper::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
+        $html .= JHtml::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
         $html .= '</div>';
 
         $html .= '<div class="filesystem-options clearfix">';
 
         foreach ($plugins as $plugin) {            
-            $form = Form::getInstance('plg_jce_' . $this->name . '_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
+            $form = JForm::getInstance('plg_jce_' . $this->name . '_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
 
             if ($form) {
                 // get the data for this form, if set
@@ -136,7 +133,7 @@ class JFormFieldFilesystem extends ListField
 
         /*$options[] = array(
             'value' => '',
-            'text' => Text::_('WF_OPTION_NOT_SET'),
+            'text' => JText::_('WF_OPTION_NOT_SET'),
         );*/
 
         $plugins = $this->getPlugins();
@@ -147,7 +144,7 @@ class JFormFieldFilesystem extends ListField
 
             $tmp = array(
                 'value' => $value,
-                'text' => Text::alt($text, $fieldname),
+                'text' => JText::alt($text, $fieldname),
                 'disable' => false,
                 'class' => '',
                 'selected' => false,

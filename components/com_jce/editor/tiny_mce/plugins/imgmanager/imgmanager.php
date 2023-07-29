@@ -10,8 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-
 class WFImgManagerPlugin extends WFMediaManager
 {
     public $_filetypes = 'jpg,jpeg,png,apng,gif,webp,avif';
@@ -67,7 +65,7 @@ class WFImgManagerPlugin extends WFMediaManager
 
     public function onUpload($file, $relative = '')
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {

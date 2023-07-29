@@ -10,14 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
 use Joomla\String\StringHelper;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Filter\InputFilter;
 
 class WFLinkSearchExtension extends WFSearchExtension
 {
@@ -25,13 +18,13 @@ class WFLinkSearchExtension extends WFSearchExtension
 
     protected function loadDefaultAdapter($plugin)
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         
         // create component name from plugin - special case for "contacts"
         $component = ($plugin == 'contacts') ? 'com_contact' : 'com_' . $plugin;
 
         // check for associated component
-        if (!ComponentHelper::isEnabled($component)) {
+        if (!JComponentHelper::isEnabled($component)) {
             return;
         }
 
@@ -106,12 +99,12 @@ class WFLinkSearchExtension extends WFSearchExtension
             }
 
             // plugin must be enabled
-            if (!PluginHelper::isEnabled('search', $plugin)) {
+            if (!JPluginHelper::isEnabled('search', $plugin)) {
                 continue;
             }
 
             // check plugin imports correctly - plugin may have a db entry, but is missing files
-            if (PluginHelper::importPlugin('search', $plugin)) {
+            if (JPluginHelper::importPlugin('search', $plugin)) {
                 $this->enabled[] = $plugin;
             }
         }
@@ -137,7 +130,7 @@ class WFLinkSearchExtension extends WFSearchExtension
      */
     public function getAreas()
     {
-        $app = Factory::getApplication('site');
+        $app = JFactory::getApplication('site');
 
         $areas = array();
         $results = array();
@@ -151,7 +144,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         }
 
         foreach ($areas as $k => $v) {
-            $results[$k] = Text::_($v);
+            $results[$k] = JText::_($v);
         }
 
         return $results;
@@ -167,7 +160,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         // Calculate number of characters to display around the result
         $term_length = StringHelper::strlen($searchword);
 
-        $lang = Factory::getLanguage();
+        $lang = JFactory::getLanguage();
         $desc_length = $lang->getSearchDisplayedCharactersNumber();
 
         $pad_length = $term_length < $desc_length ? (int) floor(($desc_length - $term_length) / 2) : 0;
@@ -182,7 +175,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         $space = StringHelper::strpos($text, ' ', $start > 0 ? $start - 1 : 0);
         $start = ($space && $space < $pos) ? $space + 1 : $start;
 
-        $text = HTMLHelper::_('string.truncate', StringHelper::substr($text, $start), $desc_length, false);
+        $text = JHtml::_('string.truncate', StringHelper::substr($text, $start), $desc_length, false);
 
         return $text;
     }
@@ -226,20 +219,20 @@ class WFLinkSearchExtension extends WFSearchExtension
 
         // built select lists
         $orders = array();
-        $orders[] = HTMLHelper::_('select.option', 'newest', Text::_('WF_SEARCH_NEWEST_FIRST'));
-        $orders[] = HTMLHelper::_('select.option', 'oldest', Text::_('WF_SEARCH_OLDEST_FIRST'));
-        $orders[] = HTMLHelper::_('select.option', 'popular', Text::_('WF_SEARCH_MOST_POPULAR'));
-        $orders[] = HTMLHelper::_('select.option', 'alpha', Text::_('WF_SEARCH_ALPHABETICAL'));
-        $orders[] = HTMLHelper::_('select.option', 'category', Text::_('WF_CATEGORY'));
+        $orders[] = JHtml::_('select.option', 'newest', JText::_('WF_SEARCH_NEWEST_FIRST'));
+        $orders[] = JHtml::_('select.option', 'oldest', JText::_('WF_SEARCH_OLDEST_FIRST'));
+        $orders[] = JHtml::_('select.option', 'popular', JText::_('WF_SEARCH_MOST_POPULAR'));
+        $orders[] = JHtml::_('select.option', 'alpha', JText::_('WF_SEARCH_ALPHABETICAL'));
+        $orders[] = JHtml::_('select.option', 'category', JText::_('WF_CATEGORY'));
 
         $lists = array();
-        $lists['ordering'] = HTMLHelper::_('select.genericlist', $orders, 'ordering', 'class="inputbox"', 'value', 'text');
+        $lists['ordering'] = JHtml::_('select.genericlist', $orders, 'ordering', 'class="inputbox"', 'value', 'text');
 
         $searchphrases = array();
-        $searchphrases[] = HTMLHelper::_('select.option', 'all', Text::_('WF_SEARCH_ALL_WORDS'));
-        $searchphrases[] = HTMLHelper::_('select.option', 'any', Text::_('WF_SEARCH_ANY_WORDS'));
-        $searchphrases[] = HTMLHelper::_('select.option', 'exact', Text::_('WF_SEARCH_EXACT_PHRASE'));
-        $lists['searchphrase'] = HTMLHelper::_('select.radiolist', $searchphrases, 'searchphrase', '', 'value', 'text', 'all');
+        $searchphrases[] = JHtml::_('select.option', 'all', JText::_('WF_SEARCH_ALL_WORDS'));
+        $searchphrases[] = JHtml::_('select.option', 'any', JText::_('WF_SEARCH_ANY_WORDS'));
+        $searchphrases[] = JHtml::_('select.option', 'exact', JText::_('WF_SEARCH_EXACT_PHRASE'));
+        $lists['searchphrase'] = JHtml::_('select.radiolist', $searchphrases, 'searchphrase', '', 'value', 'text', 'all');
 
         $view = $this->getView(array('name' => 'search', 'layout' => 'search'));
 
@@ -263,7 +256,7 @@ class WFLinkSearchExtension extends WFSearchExtension
             return "";
         }
 
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         $option = $values['option'];
 
@@ -271,7 +264,7 @@ class WFLinkSearchExtension extends WFSearchExtension
         $language->load($option . '.sys', JPATH_ADMINISTRATOR);
         $language->load($option, JPATH_ADMINISTRATOR);
 
-        return Text::_($option);
+        return JText::_($option);
     }
 
     /**
@@ -315,8 +308,8 @@ class WFLinkSearchExtension extends WFSearchExtension
             JLoader::register('JSite', JPATH_SITE . '/includes/application.php');
         }
 
-        $app = Factory::getApplication('site');
-        $filter = InputFilter::getInstance();
+        $app = JFactory::getApplication('site');
+        $filter = JFilterInput::getInstance();
         $router = $app::getRouter('site');
 
         // get router mode
@@ -403,8 +396,8 @@ class WFLinkSearchExtension extends WFSearchExtension
             $row->text = $this->prepareSearchContent($row->text, $needle);
 
             // remove base url
-            if (Uri::base(true) && strpos($row->href, Uri::base(true)) !== false) {
-                $row->href = substr_replace($row->href, '', 0, strlen(Uri::base(true)) + 1);
+            if (JURI::base(true) && strpos($row->href, JURI::base(true)) !== false) {
+                $row->href = substr_replace($row->href, '', 0, strlen(JURI::base(true)) + 1);
             }
 
             // remove the alias or ItemId from a link

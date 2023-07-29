@@ -10,13 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Filter\InputFilter;
-use Joomla\CMS\Language\Text;
-
-final class WFRequest extends CMSObject
+final class WFRequest extends JObject
 {
     protected static $instance;
 
@@ -122,7 +116,7 @@ final class WFRequest extends CMSObject
             }
 
             if (strpos($key, '\u0000') !== false || strpos($value, '\u0000') !== false) {
-                throw new JAccessExceptionNotallowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
+                JError::raiseError(403, 'RESTRICTED');
             }
         }
     }
@@ -139,9 +133,9 @@ final class WFRequest extends CMSObject
         }
 
         // Check for request forgeries
-        Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         // empty arguments
         $args = array();
@@ -179,7 +173,7 @@ final class WFRequest extends CMSObject
                 $fn = $json->method;
 
                 // clean function
-                $fn = InputFilter::getInstance()->clean($fn, 'cmd');
+                $fn = JFilterInput::getInstance()->clean($fn, 'cmd');
 
                 // pass params to input and flatten
                 if (empty($json->params)) {   

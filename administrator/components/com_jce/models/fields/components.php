@@ -6,16 +6,14 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\ListField;
+JFormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for the Joomla Framework.
  *
  * @since       11.4
  */
-class JFormFieldComponents extends ListField
+class JFormFieldComponents extends JFormFieldList
 {
     /**
      * The field type.
@@ -35,7 +33,7 @@ class JFormFieldComponents extends ListField
      */
     protected function getOptions()
     {
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         $exclude = array(
             'com_admin',
@@ -65,7 +63,7 @@ class JFormFieldComponents extends ListField
         );
 
         // Get list of plugins
-        $db = Factory::getDbo();
+        $db = JFactory::getDbo();
         $query = $db->getQuery(true)
                 ->select('element AS value, name AS text')
                 ->from('#__extensions')
@@ -86,7 +84,7 @@ class JFormFieldComponents extends ListField
                 $language->load($components[$i]->value, JPATH_ADMINISTRATOR);
 
                 // translate name
-                $components[$i]->text = Text::_($components[$i]->text, true);
+                $components[$i]->text = JText::_($components[$i]->text, true);
 
                 $components[$i]->disable = '';
 

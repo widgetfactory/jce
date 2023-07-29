@@ -9,18 +9,12 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\CMS\Router\Route;
-
 // Include the component HTML helpers.
-HTMLHelper::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 
-HTMLHelper::_('behavior.multiselect');
+JHtml::_('behavior.multiselect');
 
-$user       = Factory::getUser();
+$user       = JFactory::getUser();
 $listOrder	= $this->escape($this->state->get('list.ordering'));
 $listDirn	= $this->escape($this->state->get('list.direction'));
 
@@ -29,10 +23,10 @@ $saveOrder = $listOrder == 'ordering';
 if ($saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_jce&task=profiles.saveOrderAjax&tmpl=component';
-	HTMLHelper::_('sortablelist.sortable', 'profileList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	JHtml::_('sortablelist.sortable', 'profileList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 ?>
-<form action="<?php echo Route::_('index.php?option=com_jce&view=profiles'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_jce&view=profiles'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="adminForm">
     <div class="ui-jce row">
     <?php if (!empty($this->sidebar)): ?>
         <div id="j-sidebar-container" class="j-sidebar-container span2 col-md-2">
@@ -44,33 +38,33 @@ if ($saveOrder)
             <div id="j-main-container" class="j-main-container span10">
         <?php endif;?>
 
-                <?php echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
+                <?php echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this)); ?>
 
                 <?php if (empty($this->items)): ?>
                     <div class="alert alert-no-items">
-                        <?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+                        <?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
                     </div>
                 <?php else : ?>
                     <table class="table table-striped" id="profileList">
                         <thead>
                             <tr>
                                 <th width="1%" class="nowrap center hidden-phone text-center d-none d-md-table-cell">
-                                    <?php echo HTMLHelper::_('searchtools.sort', '', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+                                    <?php echo JHtml::_('searchtools.sort', '', 'ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
                                 </th>
                                 <th style="width:1%" class="nowrap center text-center">
-                                    <?php echo HTMLHelper::_('grid.checkall'); ?>
+                                    <?php echo JHtml::_('grid.checkall'); ?>
                                 </th>
                                 <th style="width:1%" class="nowrap center text-center">
-                                    <?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'published', $listDirn, $listOrder); ?>
+                                    <?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'published', $listDirn, $listOrder); ?>
                                 </th>
                                 <th class="title">
-                                    <?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'name', $listDirn, $listOrder); ?>
+                                    <?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'name', $listDirn, $listOrder); ?>
                                 </th>
                                 <th class="title hidden-phone">
-                                    <?php echo Text::_('JGLOBAL_DESCRIPTION'); ?>
+                                    <?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>
                                 </th>
                                 <th style="width:5%" class="nowrap hidden-phone center d-none d-md-table-cell text-center">
-                                    <?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
+                                    <?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'id', $listDirn, $listOrder); ?>
                                 </th>
                             </tr>
                         </thead>
@@ -99,7 +93,7 @@ if ($saveOrder)
                                     }
                                     elseif (!$saveOrder)
                                     {
-                                        $iconClass = ' inactive tip-top hasTooltip" title="' . HTMLHelper::_('tooltipText', 'JORDERINGDISABLED');
+                                        $iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::_('tooltipText', 'JORDERINGDISABLED');
                                     }
                                     ?>
                                     <span class="sortable-handler<?php echo $iconClass; ?>">
@@ -110,18 +104,18 @@ if ($saveOrder)
                                     <?php endif; ?>
                                 </td>
                                 <td class="center text-center">
-                                    <?php echo HTMLHelper::_('grid.id', $i, $item->id); ?>
+                                    <?php echo JHtml::_('grid.id', $i, $item->id); ?>
                                 </td>
                                 <td class="center text-center">
-                                    <?php echo HTMLHelper::_('jgrid.published', $item->published, $i, 'profiles.', $canChange); ?>
+                                    <?php echo JHtml::_('jgrid.published', $item->published, $i, 'profiles.', $canChange); ?>
                                 </td>
                                 <td>
                                     <?php if ($item->checked_out) : ?>
-                                        <?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->checked_out, $item->checked_out_time, 'profiles.', $canCheckin); ?>
+                                        <?php echo JHtml::_('jgrid.checkedout', $i, $item->checked_out, $item->checked_out_time, 'profiles.', $canCheckin); ?>
                                     <?php endif; ?>
                                     <?php if ($canEdit) : ?>
                                         <?php $editIcon = $item->checked_out ? '' : '<span class="mr-2" aria-hidden="true"></span>'; ?>
-                                        <a class="hasTooltip" href="<?php echo Route::_('index.php?option=com_jce&task=profile.edit&id=' . (int) $item->id); ?>" title="<?php echo Text::_('JACTION_EDIT'); ?> <?php echo $this->escape(addslashes($item->name)); ?>">
+                                        <a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_jce&task=profile.edit&id=' . (int) $item->id); ?>" title="<?php echo JText::_('JACTION_EDIT'); ?> <?php echo $this->escape(addslashes($item->name)); ?>">
                                             <?php echo $editIcon; ?><?php echo $item->name; ?></a>
                                     <?php else : ?>
                                             <?php echo $item->name; ?>
@@ -141,7 +135,7 @@ if ($saveOrder)
 
                 <input type="hidden" name="task" value="" />
                 <input type="hidden" name="boxchecked" value="0" />
-                <?php echo HTMLHelper::_('form.token'); ?>
+                <?php echo JHtml::_('form.token'); ?>
             </div>
         </div>
     </div>

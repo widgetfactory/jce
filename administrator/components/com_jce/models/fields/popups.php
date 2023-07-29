@@ -2,10 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\ListField;
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldPopups extends ListField
+class JFormFieldPopups extends JFormFieldList
 {
     /**
      * The form field type.
@@ -32,7 +31,7 @@ class JFormFieldPopups extends ListField
         foreach ($extensions as $item) {
             $option = new StdClass;
 
-            $option->text = Text::_($item->title, true);
+            $option->text = JText::_($item->title, true);
             $option->disable = '';
             $option->value = $item->name;
 

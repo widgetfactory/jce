@@ -11,7 +11,9 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Form;
-use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
+
+// use legacy import to support J3.9
+JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
 
 Form::addFieldPath(__DIR__ . '/fields');
 

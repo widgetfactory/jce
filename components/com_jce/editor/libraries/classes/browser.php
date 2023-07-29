@@ -10,15 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-
-class WFFileBrowser extends CMSObject
+class WFFileBrowser extends JObject
 {
     /* @var array */
     private $_buttons = array();
@@ -128,7 +120,7 @@ class WFFileBrowser extends CMSObject
      */
     public function render()
     {
-        $session = Factory::getSession();
+        $session = JFactory::getSession();
 
         $view = new WFView(array(
             'name' => 'filebrowser',
@@ -165,7 +157,7 @@ class WFFileBrowser extends CMSObject
     {
         $wf = WFEditorPlugin::getInstance();
 
-        $context = Factory::getApplication()->input->getInt('context');
+        $context = JFactory::getApplication()->input->getInt('context');
 
         $query = '';
 
@@ -178,7 +170,7 @@ class WFFileBrowser extends CMSObject
             $query .= '&' . $k . '=' . $v;
         }
 
-        return URI::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
+        return JURI::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
     }
 
     public function getFileSystem()
@@ -793,7 +785,7 @@ class WFFileBrowser extends CMSObject
                 . '     <span class="uk-tree-icon" role="presentation">'
                 . '       <i class="uk-icon uk-icon-home"></i>'
                 . '     </span>'
-                . '     <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>'
+                . '     <span class="uk-tree-text">' . JText::_('WF_LABEL_HOME', 'Home') . '</span>'
                     . '   </a>'
                     . ' </div>';
 
@@ -875,7 +867,7 @@ class WFFileBrowser extends CMSObject
      */
     private function addDefaultActions()
     {
-        $this->addAction('help', array('title' => Text::_('WF_BUTTON_HELP')));
+        $this->addAction('help', array('title' => JText::_('WF_BUTTON_HELP')));
 
         if ($this->checkFeature('upload')) {
             $this->addAction('upload');
@@ -912,7 +904,7 @@ class WFFileBrowser extends CMSObject
         }
 
         if (!array_key_exists('title', $options)) {
-            $options['title'] = Text::_('WF_BUTTON_' . strtoupper($name));
+            $options['title'] = JText::_('WF_BUTTON_' . strtoupper($name));
         }
 
         $this->_actions[$name] = $options;
@@ -1011,7 +1003,7 @@ class WFFileBrowser extends CMSObject
         }
 
         if (!array_key_exists('title', $options)) {
-            $options['title'] = Text::_('WF_BUTTON_' . strtoupper($name));
+            $options['title'] = JText::_('WF_BUTTON_' . strtoupper($name));
         }
 
         if (!array_key_exists('multiple', $options)) {
@@ -1111,9 +1103,9 @@ class WFFileBrowser extends CMSObject
      */
     public function getFileIcon($ext)
     {
-        if (File::exists(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
+        if (JFile::exists(WF_EDITOR_LIBRARIES . '/img/icons/' . $ext . '.gif')) {
             return $this->image('libraries.icons/' . $ext . '.gif');
-        } elseif (File::exists($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
+        } elseif (JFile::exists($this->getPluginPath() . '/img/icons/' . $ext . '.gif')) {
             return $this->image('plugins.icons/' . $ext . '.gif');
         } else {
             return $this->image('libraries.icons/def.gif');
@@ -1149,7 +1141,7 @@ class WFFileBrowser extends CMSObject
 
         if (is_array($allowed) && !empty($allowed) && in_array(strtolower($ext), $allowed) === false) {
             @unlink($file['tmp_name']);
-            throw new InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
+            throw new InvalidArgumentException(JText::_('WF_MANAGER_UPLOAD_INVALID_EXT_ERROR'));
         }
 
         $size = round(filesize($file['tmp_name']) / 1024);
@@ -1162,14 +1154,14 @@ class WFFileBrowser extends CMSObject
         if ($size > (int) $upload['max_size']) {
             @unlink($file['tmp_name']);
 
-            throw new InvalidArgumentException(Text::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
+            throw new InvalidArgumentException(JText::sprintf('WF_MANAGER_UPLOAD_SIZE_ERROR', $file['name'], $size, $upload['max_size']));
         }
 
         // validate mimetype
         if ($upload['validate_mimetype']) {
             if (WFMimeType::check($file['name'], $file['tmp_name']) === false) {
                 @unlink($file['tmp_name']);
-                throw new InvalidArgumentException(Text::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_UPLOAD_MIME_ERROR'));
             }
         }
 
@@ -1184,16 +1176,17 @@ class WFFileBrowser extends CMSObject
     public function upload()
     {
         // Check for request forgeries
-        Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
 
         // check for feature access
         if (!$this->checkFeature('upload')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         $filesystem = $this->getFileSystem();
+        jimport('joomla.filesystem.file');
 
         // create a filesystem result object
         $result = new WFFileSystemResult();
@@ -1262,7 +1255,7 @@ class WFFileBrowser extends CMSObject
         // Check file number limits
         if (!empty($upload['total_files'])) {
             if ($filesystem->countFiles($dir, true) > $upload['total_files']) {
-                throw new InvalidArgumentException(Text::_('WF_MANAGER_FILE_LIMIT_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_FILE_LIMIT_ERROR'));
             }
         }
 
@@ -1271,7 +1264,7 @@ class WFFileBrowser extends CMSObject
             $size = $filesystem->getTotalSize($dir);
 
             if (($size / 1024 / 1024) > $upload['total_size']) {
-                throw new InvalidArgumentException(Text::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
+                throw new InvalidArgumentException(JText::_('WF_MANAGER_FILE_SIZE_LIMIT_ERROR'));
             }
         }
 
@@ -1296,7 +1289,7 @@ class WFFileBrowser extends CMSObject
 
             if (!$result->state) {
                 if (empty($result->message)) {
-                    $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
+                    $result->message = JText::_('WF_MANAGER_UPLOAD_ERROR');
                 }
 
                 $result->code = 103;
@@ -1306,7 +1299,7 @@ class WFFileBrowser extends CMSObject
         } else {
             $result->state = false;
             $result->code = 103;
-            $result->message = Text::_('WF_MANAGER_UPLOAD_ERROR');
+            $result->message = JText::_('WF_MANAGER_UPLOAD_ERROR');
         }
 
         // upload finished
@@ -1347,7 +1340,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('delete', 'folder') && !$this->checkFeature('delete', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1362,13 +1355,13 @@ class WFFileBrowser extends CMSObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('delete', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = $item;
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('delete', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = dirname($item);
@@ -1386,7 +1379,7 @@ class WFFileBrowser extends CMSObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(Text::sprintf('WF_MANAGER_DELETE_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_DELETE_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
                     }
                 } else {
                     $this->fireEvent('on' . ucfirst($result->type) . 'Delete', array($item));
@@ -1410,7 +1403,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('rename', 'folder') && !$this->checkFeature('rename', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $args = func_get_args();
@@ -1440,13 +1433,13 @@ class WFFileBrowser extends CMSObject
 
         if ($filesystem->is_file($source)) {
             if ($this->checkFeature('rename', 'file') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
             }
 
             $path = dirname($source);
         } elseif ($filesystem->is_dir($source)) {
             if ($this->checkFeature('rename', 'folder') === false) {
-                throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
             }
 
             $path = $source;
@@ -1463,7 +1456,7 @@ class WFFileBrowser extends CMSObject
 
         if ($result instanceof WFFileSystemResult) {
             if (!$result->state) {
-                $this->setResult(Text::sprintf('WF_MANAGER_RENAME_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($source)), 'error');
+                $this->setResult(JText::sprintf('WF_MANAGER_RENAME_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($source)), 'error');
                 if ($result->message) {
                     $this->setResult($result->message, 'error');
                 }
@@ -1496,7 +1489,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1532,13 +1525,13 @@ class WFFileBrowser extends CMSObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = dirname($item);
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
 
                 $path = $item;
@@ -1562,7 +1555,7 @@ class WFFileBrowser extends CMSObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(Text::sprintf('WF_MANAGER_COPY_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_COPY_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
                     }
                 } else {
                     $data = array(
@@ -1594,7 +1587,7 @@ class WFFileBrowser extends CMSObject
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $filesystem = $this->getFileSystem();
@@ -1629,11 +1622,11 @@ class WFFileBrowser extends CMSObject
 
             if ($filesystem->is_file($item)) {
                 if ($this->checkFeature('move', 'file') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
             } elseif ($filesystem->is_dir($item)) {
                 if ($this->checkFeature('move', 'folder') === false) {
-                    throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+                    throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
                 }
             }
 
@@ -1650,7 +1643,7 @@ class WFFileBrowser extends CMSObject
                     if ($result->message) {
                         $this->setResult($result->message, 'error');
                     } else {
-                        $this->setResult(Text::sprintf('WF_MANAGER_MOVE_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
+                        $this->setResult(JText::sprintf('WF_MANAGER_MOVE_' . strtoupper($result->type) . '_ERROR', WFUtility::mb_basename($item)), 'error');
                     }
                 } else {
                     $data = array(
@@ -1681,7 +1674,7 @@ class WFFileBrowser extends CMSObject
     public function folderNew()
     {
         if ($this->checkFeature('create', 'folder') === false) {
-            throw new Exception(Text::_('JERROR_ALERTNOAUTHOR'));
+            throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
         }
 
         $args = func_get_args();
@@ -1714,7 +1707,7 @@ class WFFileBrowser extends CMSObject
                 if ($result->message) {
                     $this->setResult($result->message, 'error');
                 } else {
-                    $this->setResult(Text::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', WFUtility::mb_basename($new)), 'error');
+                    $this->setResult(JText::sprintf('WF_MANAGER_NEW_FOLDER_ERROR', WFUtility::mb_basename($new)), 'error');
                 }
             } else {
                 $data = array(

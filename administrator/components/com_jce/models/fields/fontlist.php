@@ -2,9 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\Field\FileListField;
+JFormHelper::loadFieldClass('filelist');
 
-class JFormFieldFontList extends FileListField
+class JFormFieldFontList extends JFormFieldFileList
 {
     /**
      * The form field type.

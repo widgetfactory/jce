@@ -10,12 +10,9 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Controller\AdminController;
-use Joomla\CMS\Factory;
-
 require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
-class JceControllerPlugin extends AdminController
+class JceControllerPlugin extends JControllerLegacy
 {
     private static $map = array(
         'image'     => 'imgmanager',
@@ -43,7 +40,7 @@ class JceControllerPlugin extends AdminController
         $wf->getProfile() or jexit('Invalid Profile');
 
         // load language files
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 

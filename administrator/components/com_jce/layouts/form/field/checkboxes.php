@@ -9,9 +9,6 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-
 extract($displayData);
 
 /**
@@ -46,8 +43,8 @@ extract($displayData);
  */
 
 // Including fallback code for HTML5 non supported browsers.
-HTMLHelper::_('jquery.framework');
-HTMLHelper::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
+JHtml::_('jquery.framework');
+JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
 
 /**
  * The format of the input tag to be filled in using sprintf.
@@ -58,6 +55,7 @@ HTMLHelper::_('script', 'system/html5fallback.js', array('version' => 'auto', 'r
  */
 $format = '<input type="checkbox" id="%1$s" name="%2$s" value="%3$s" %4$s />';
 
+// The alt option for JText::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 ?>
 

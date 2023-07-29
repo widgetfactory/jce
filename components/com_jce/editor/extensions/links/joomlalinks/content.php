@@ -10,18 +10,16 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Helper\RouteHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Table\Table;
-use Joomla\CMS\Language\Text;
-
-class JoomlalinksContent extends CMSObject
+class JoomlalinksContent extends JObject
 {
     private $option = 'com_content';
 
     /**
      * Returns a reference to a editor object.
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
+     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -44,7 +42,7 @@ class JoomlalinksContent extends CMSObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -78,7 +76,7 @@ class JoomlalinksContent extends CMSObject
                         $language = $category->language;
                     }
 
-                    $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
+                    $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
 
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::getMenuLink($id);
@@ -141,7 +139,7 @@ class JoomlalinksContent extends CMSObject
                         }
 
                         $url = '';
-                        $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
+                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
 
                         // get sub-categories
                         if (count($sub)) {
@@ -212,7 +210,7 @@ class JoomlalinksContent extends CMSObject
             preg_match('#Itemid=([\d]+)#', $url, $matches);
             // get link from menu
             if (count($matches) > 1) {
-                $menu = Table::getInstance('menu');
+                $menu = JTable::getInstance('menu');
                 $menu->load($matches[1]);
 
                 if ($menu->link) {
@@ -226,8 +224,8 @@ class JoomlalinksContent extends CMSObject
 
     private function getArticles($id)
     {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
 
         $wf = WFEditorPlugin::getInstance();
 

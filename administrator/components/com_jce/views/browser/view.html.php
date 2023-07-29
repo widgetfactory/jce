@@ -3,17 +3,7 @@
 // Check to ensure this file is included in Joomla!
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\View\HtmlView;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\HTML\Helpers\Sidebar;
-use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\Uri\Uri;
-
-class JceViewBrowser extends HtmlView
+class JceViewBrowser extends JViewLegacy
 {
     protected $icons;
     protected $state;
@@ -23,29 +13,31 @@ class JceViewBrowser extends HtmlView
      */
     public function display($tpl = null)
     {
-        if (!PluginHelper::isEnabled('quickicon', 'jce')) {
-            Factory::getApplication()->redirect('index.php?option=com_jce');
+        if (!JPluginHelper::isEnabled('quickicon', 'jce')) {
+            JFactory::getApplication()->redirect('index.php?option=com_jce');
         }
         
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
         
         $this->state    = $this->get('State');
-        $this->params   = ComponentHelper::getParams('com_jce');
+        $this->params   = JComponentHelper::getParams('com_jce');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            throw new GenericDataException(implode("\n", $errors), 500);
+            JError::raiseError(500, implode("\n", $errors));
+
+            return false;
         }
 
-        HTMLHelper::_('jquery.framework');
+        JHtml::_('jquery.framework');
 
-        $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/browser.min.css');
+        $document = JFactory::getDocument();
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/browser.min.css');
 
         $this->addToolbar();
 
-        if (Factory::getApplication()->input->getInt('sidebar', 1) == 1) {
-            $this->sidebar = Sidebar::render();
+        if (JFactory::getApplication()->input->getInt('sidebar', 1) == 1) {
+            $this->sidebar = JHtmlSidebar::render();
         }
 
         parent::display($tpl);
@@ -58,7 +50,7 @@ class JceViewBrowser extends HtmlView
      */
     protected function addToolbar()
     {
-        ToolbarHelper::title('JCE - ' . Text::_('WF_BROWSER_TITLE'), 'picture');
-        Sidebar::setAction('index.php?option=com_jce&view=browser');
+        JToolbarHelper::title('JCE - ' . JText::_('WF_BROWSER_TITLE'), 'picture');
+        JHtmlSidebar::setAction('index.php?option=com_jce&view=browser');
     }
 }

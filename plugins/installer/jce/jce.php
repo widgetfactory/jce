@@ -5,18 +5,12 @@
  */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Http\HttpFactory;
-
 /**
  * Handle commercial extension update authorization.
  *
  * @since       2.6
  */
-class plgInstallerJce extends CMSPlugin
+class plgInstallerJce extends JPlugin
 {    
     /**
      * Handle adding credentials to package download request.
@@ -30,9 +24,9 @@ class plgInstallerJce extends CMSPlugin
      */
     public function onInstallerBeforePackageDownload(&$url, &$headers)
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
-        $uri = Uri::getInstance($url);
+        $uri = JUri::getInstance($url);
         $host = $uri->getHost();
 
         if ($host !== 'www.joomlacontenteditor.net') {
@@ -40,10 +34,11 @@ class plgInstallerJce extends CMSPlugin
         }
 
         // Get the subscription key
-        $component = ComponentHelper::getComponent('com_jce');
+        JLoader::import('joomla.application.component.helper');
+        $component = JComponentHelper::getComponent('com_jce');
 
         // load plugin language for warning messages
-        Factory::getLanguage()->load('plg_installer_jce', JPATH_ADMINISTRATOR);
+        JFactory::getLanguage()->load('plg_installer_jce', JPATH_ADMINISTRATOR);
 
         // check if the key has already been set via the dlid field
         $dlid = $uri->getVar('key', '');
@@ -55,7 +50,7 @@ class plgInstallerJce extends CMSPlugin
         if (empty($key)) {
             // if we are attempting to update JCE Pro, display a notice message
             if (strpos($url, 'pkg_jce_pro') !== false) {
-                $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
+                $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
             }
 
             return true;
@@ -75,12 +70,12 @@ class plgInstallerJce extends CMSPlugin
             $tmpUri->setVar('task', 'update.validate');
             $tmpUri->delVar('file');
             $tmpUrl = $tmpUri->toString();
-            $response = HttpFactory::getHttp()->get($tmpUrl, array());
+            $response = JHttpFactory::getHttp()->get($tmpUrl, array());
         } catch (RuntimeException $exception) {}
 
         // invalid key, display a notice message
         if (403 == $response->code) {
-            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
+            $app->enqueueMessage(JText::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
         return true;

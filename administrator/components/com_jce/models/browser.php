@@ -10,9 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
 class JceModelBrowser extends JModelLegacy
@@ -26,14 +23,14 @@ class JceModelBrowser extends JModelLegacy
      */
     protected function populateState($ordering = null, $direction = null)
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         
         $filter = $app->input->getCmd('filter', '');
         
         $url = WfBrowserHelper::getBrowserLink(null, $filter);
 
         if (empty($url)) {
-            $app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
             $app->redirect('index.php?option=com_jce');
         }
 

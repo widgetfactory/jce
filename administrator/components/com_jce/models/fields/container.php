@@ -10,16 +10,13 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\FormField;
-
 /**
  * Form Field class for the JCE.
  * Display a field with a repeatable set of defined sub fields
  *
  * @since       2.8.13
  */
-class JFormFieldContainer extends FormField
+class JFormFieldContainer extends JFormField
 {
     /**
      * The form field type.
@@ -93,14 +90,14 @@ class JFormFieldContainer extends FormField
 
         if ($this->element['label']) {
             $text = $this->element['label'];
-            $text = $this->translateLabel ? Text::_($text) : $text;
+            $text = $this->translateLabel ? JText::_($text) : $text;
 
             $str[] = '<legend>' . $text . '</legend>';
         }
 
         if ((string) $this->element['description']) {
             $text = $this->element['description'];
-            $text = $this->translateLabel ? Text::_($text) : $text;
+            $text = $this->translateLabel ? JText::_($text) : $text;
 
             $str[] = '<small class="description">' . $text . '</small>';
 
@@ -171,8 +168,8 @@ class JFormFieldContainer extends FormField
                 $str[] = '</div>';
 
                 $str[] = '<div class="form-field-repeatable-item-control">';
-                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
                 $str[] = '</div>';
 
                 $str[] = '</div>';

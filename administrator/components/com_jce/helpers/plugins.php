@@ -10,14 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Table\Table;
-use Joomla\CMS\Filesystem\Folder;
-use Joomla\CMS\Filesystem\File;
-
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 abstract class JcePluginsHelper
@@ -41,7 +33,7 @@ abstract class JcePluginsHelper
 
     public static function getPlugins()
     {
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         static $plugins;
 
@@ -112,7 +104,7 @@ abstract class JcePluginsHelper
             }
 
             // get all installed plugins
-            $installed = PluginHelper::getPlugin('jce');
+            $installed = JPluginHelper::getPlugin('jce');
 
             foreach ($installed as $item) {
                 // check for delimiter, only load editor plugins
@@ -168,7 +160,7 @@ abstract class JcePluginsHelper
                         }
 
                         if ($attribs->image) {
-                            $attribs->image = Uri::root(true) . '/' . $attribs->image;
+                            $attribs->image = JURI::root(true) . '/' . $attribs->image;
                         }
 
                         // can't be editable without parameters
@@ -213,7 +205,7 @@ abstract class JcePluginsHelper
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         static $extensions;
 
@@ -221,7 +213,7 @@ abstract class JcePluginsHelper
             $extensions = array();
 
             // recursively get all extension files
-            $files = Folder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
+            $files = JFolder::files(WF_EDITOR_EXTENSIONS, '\.xml$', true, true);
 
             foreach ($files as $file) {
                 $name = basename($file, '.xml');
@@ -246,7 +238,7 @@ abstract class JcePluginsHelper
             }
 
             // get all installed plugins
-            $installed = PluginHelper::getPlugin('jce');
+            $installed = JPluginHelper::getPlugin('jce');
 
             if (!empty($installed)) {
                 foreach ($installed as $p) {
@@ -308,10 +300,10 @@ abstract class JcePluginsHelper
 
     public static function addToProfile($id, $plugin)
     {
-        Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
+        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // Add to Default Group
-        $profile = Table::getInstance('Profiles', 'JceTable');
+        $profile = JTable::getInstance('Profiles', 'JceTable');
 
         if ($profile->load($id)) {
             // Add to plugins list
@@ -344,7 +336,7 @@ abstract class JcePluginsHelper
             }
 
             if (!$profile->store()) {
-                throw new Exception(Text::_('WF_INSTALLER_PLUGIN_PROFILE_ERROR'));
+                throw new Exception(JText::_('WF_INSTALLER_PLUGIN_PROFILE_ERROR'));
             }
         }
 
@@ -353,10 +345,10 @@ abstract class JcePluginsHelper
 
     public static function removeFromProfile($id, $plugin)
     {
-        Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
+        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // Add to Default Group
-        $profile = Table::getInstance('Profiles', 'JceTable');
+        $profile = JTable::getInstance('Profiles', 'JceTable');
 
         if ($profile->load($id)) {
             // remove from plugins list
@@ -385,7 +377,7 @@ abstract class JcePluginsHelper
                 }
 
                 if (!$profile->store()) {
-                    throw new Exception(Text::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
+                    throw new Exception(JText::sprintf('WF_INSTALLER_REMOVE_FROM_GROUP_ERROR', $plugin->name));
                 }
             }
         }
@@ -405,20 +397,20 @@ abstract class JcePluginsHelper
         $file = JPATH_ADMINISTRATOR . '/components/com_jce/index.html';
 
         if (is_file($file) && is_dir($path)) {
-            File::copy($file, $path . '/' . basename($file));
+            JFile::copy($file, $path . '/' . basename($file));
 
             // admin component
-            $folders = Folder::folders($path, '.', true, true);
+            $folders = JFolder::folders($path, '.', true, true);
 
             foreach ($folders as $folder) {
-                File::copy($file, $folder . '/' . basename($file));
+                JFile::copy($file, $folder . '/' . basename($file));
             }
         }
     }
 
     public static function postInstall($route, $plugin, $installer)
     {
-        $db = Factory::getDBO();
+        $db = JFactory::getDBO();
 
         jimport('joomla.filesystem.folder');
 

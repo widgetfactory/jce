@@ -10,9 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Controller\FormController;
-
-class JceControllerMediabox extends FormController
+class JceControllerMediabox extends JControllerForm
 {
     public function __construct($config = array())
 	{

@@ -10,14 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Controller\AdminController;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Response\JsonResponse;
-
-class JceControllerProfiles extends AdminController
+class JceControllerProfiles extends JControllerAdmin
 {
     /**
      * Method to import profile data from an XML file.
@@ -27,16 +20,16 @@ class JceControllerProfiles extends AdminController
     public function import()
     {
         // Check for request forgeries
-        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         $model = $this->getModel();
 
         $result = $model->import();
 
         // Get redirect URL
-        $redirect_url = Route::_('index.php?option=com_jce&view=profiles', false);
+        $redirect_url = JRoute::_('index.php?option=com_jce&view=profiles', false);
 
         // Push message queue to session because we will redirect page by Javascript, not $app->redirect().
         // The "application.queue" is only set in redirect() method, so we must manually store it.
@@ -44,7 +37,7 @@ class JceControllerProfiles extends AdminController
 
         header('Content-Type: application/json');
 
-        echo new JsonResponse(array('redirect' => $redirect_url), "", !$result);
+        echo new JResponseJson(array('redirect' => $redirect_url), "", !$result);
 
         exit();
     }
@@ -52,7 +45,7 @@ class JceControllerProfiles extends AdminController
     public function repair()
     {
         // Check for request forgeries
-        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
 
         $model = $this->getModel('profiles');
 
@@ -68,25 +61,25 @@ class JceControllerProfiles extends AdminController
     public function copy()
     {
         // Check for request forgeries
-        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
         $cid = $this->input->get('cid', array(), 'array');
 
         // Access checks.
         if (!$user->authorise('core.create', 'com_jce')) {
-            throw new Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
+            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
         }
 
         if (empty($cid)) {
-            throw new Exception(Text::_('No Item Selected'));
+            throw new Exception(JText::_('No Item Selected'));
         } else {
             $model = $this->getModel();
             // Copy the items.
             try {
                 $model->copy($cid);
                 $ntext = $this->text_prefix . '_N_ITEMS_COPIED';
-                $this->setMessage(Text::plural($ntext, count($cid)));
+                $this->setMessage(JText::plural($ntext, count($cid)));
             } catch (Exception $e) {
                 $this->setMessage($e->getMessage(), 'error');
             }
@@ -98,18 +91,18 @@ class JceControllerProfiles extends AdminController
     public function export()
     {
         // Check for request forgeries
-        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
         $ids = $this->input->get('cid', array(), 'array');
 
         // Access checks.
         if (!$user->authorise('core.create', 'com_jce')) {
-            throw new Exception(Text::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
+            throw new Exception(JText::_('JLIB_APPLICATION_ERROR_CREATE_NOT_PERMITTED'));
         }
 
         if (empty($ids)) {
-            throw new Exception(Text::_('No Item Selected'));
+            throw new Exception(JText::_('No Item Selected'));
         } else {
             $model = $this->getModel();
             // Publish the items.

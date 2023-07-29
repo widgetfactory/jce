@@ -2,7 +2,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-require_once __DIR__ . '/filetype.php';
+JFormHelper::loadFieldClass('filetype');
 
 class JFormFieldExtension extends JFormFieldFiletype
 {

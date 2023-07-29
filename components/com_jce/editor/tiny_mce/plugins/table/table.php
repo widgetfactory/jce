@@ -10,9 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-
 require_once WF_EDITOR_LIBRARIES . '/classes/plugin.php';
 
 class WFTablePlugin extends WFEditorPlugin
@@ -24,7 +21,7 @@ class WFTablePlugin extends WFEditorPlugin
 
     public function getLayout()
     {
-        return Factory::getApplication()->input->getCmd('slot', 'table');
+        return JFactory::getApplication()->input->getCmd('slot', 'table');
     }
 
     /**
@@ -42,7 +39,7 @@ class WFTablePlugin extends WFEditorPlugin
 
         // update title
         if ($layout !== 'table') {
-            $document->setTitle(Text::_('WF_TABLE_' . strtoupper($layout) . '_TITLE'));
+            $document->setTitle(JText::_('WF_TABLE_' . strtoupper($layout) . '_TITLE'));
         }
 
         $settings = $this->getSettings();

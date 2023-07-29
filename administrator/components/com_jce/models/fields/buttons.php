@@ -2,9 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\Field\CheckboxesField;
+JFormHelper::loadFieldClass('checkboxes');
 
-class JFormFieldButtons extends CheckboxesField
+class JFormFieldButtons extends JFormFieldCheckboxes
 {
     /**
      * The form field type.

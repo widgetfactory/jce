@@ -10,17 +10,10 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Uri\Uri;
-
 /**
  * JCE class.
  */
-class WFEditorPlugin extends CMSObject
+class WFEditorPlugin extends JObject
 {
     // Editor Plugin instance
     private static $instance;
@@ -40,7 +33,7 @@ class WFEditorPlugin extends CMSObject
         parent::__construct();
 
         // get plugin name from url, fallback to default name if set
-        $name = Factory::getApplication()->input->getCmd('plugin', $this->get('name'));
+        $name = JFactory::getApplication()->input->getCmd('plugin', $this->get('name'));
 
         // get name and caller from plugin name
         if (strpos($name, '.') !== false) {
@@ -87,6 +80,10 @@ class WFEditorPlugin extends CMSObject
 
     /**
      * Returns a reference to a editor object.
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =JCE::getInstance();</pre>
+     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -153,7 +150,7 @@ class WFEditorPlugin extends CMSObject
 
     protected function isRtl()
     {
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         if ($language->getTag() === WFLanguage::getTag()) {
             return $language->isRTL();
@@ -164,7 +161,7 @@ class WFEditorPlugin extends CMSObject
 
     protected function initialize()
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         $wf = WFApplication::getInstance();
 
         $version = $this->getVersion();
@@ -181,7 +178,7 @@ class WFEditorPlugin extends CMSObject
         // create the document
         $document = WFDocument::getInstance(array(
             'version' => $version,
-            'title' => Text::_('WF_' . strtoupper($this->getName() . '_TITLE')),
+            'title' => JText::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
             'language' => WFLanguage::getTag(),
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
@@ -192,7 +189,7 @@ class WFEditorPlugin extends CMSObject
         // set standalone mode
         $document->set('standalone', $wf->input->getInt('standalone', 0));
 
-        Factory::getApplication()->triggerEvent('onWfPluginInit', array($this));
+        JFactory::getApplication()->triggerEvent('onWfPluginInit', array($this));
     }
 
     public function execute()
@@ -207,7 +204,7 @@ class WFEditorPlugin extends CMSObject
         $document = WFDocument::getInstance();
 
         // ini language
-        $document->addScript(array(Uri::base(true) . '/index.php?option=com_jce&' . $document->getQueryString(
+        $document->addScript(array(JURI::base(true) . '/index.php?option=com_jce&' . $document->getQueryString(
             array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode())
         )), 'joomla');
 
@@ -244,10 +241,11 @@ class WFEditorPlugin extends CMSObject
     public function display()
     {
         // check session on get request
-        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
+        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
 
         $this->initialize();
 
+        jimport('joomla.filesystem.folder');
         $document = WFDocument::getInstance();
 
         if ($document->get('standalone') == 0) {
@@ -266,7 +264,7 @@ class WFEditorPlugin extends CMSObject
             $document->addStyleSheet(array('media/jce/css/plugin.css'), 'joomla');
         }
 
-        Factory::getApplication()->triggerEvent('onWfPluginDisplay', array($this));
+        JFactory::getApplication()->triggerEvent('onWfPluginDisplay', array($this));
     }
 
     /**
@@ -336,7 +334,7 @@ class WFEditorPlugin extends CMSObject
 
         // get parameter defaults
         if (is_file($manifest)) {
-            $form = Form::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
+            $form = JForm::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
             $fields = $form->getFieldset($fieldset);
 
             foreach ($fields as $field) {

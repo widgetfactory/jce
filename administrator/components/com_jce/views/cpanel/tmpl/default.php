@@ -10,11 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Layout\LayoutHelper;
-
-$user = Factory::getUser();
+$user = JFactory::getUser();
 $canEditPref = $user->authorise('core.admin', 'com_jce');
 
 ?>
@@ -27,35 +23,35 @@ $canEditPref = $user->authorise('core.admin', 'com_jce');
 		</nav>    
 
         <dl class="dl-horizontal card card-body well">
-            <dt class="wf-tooltip" title="<?php echo Text::_('WF_CPANEL_SUPPORT') . '::' . Text::_('WF_CPANEL_SUPPORT_DESC'); ?>">
-                <?php echo Text::_('WF_CPANEL_SUPPORT'); ?>
+            <dt class="wf-tooltip" title="<?php echo JText::_('WF_CPANEL_SUPPORT') . '::' . JText::_('WF_CPANEL_SUPPORT_DESC'); ?>">
+                <?php echo JText::_('WF_CPANEL_SUPPORT'); ?>
             </dt>
             <dd><a href="https://www.joomlacontenteditor.net/support" target="_new">https://www.joomlacontenteditor.com/support</a></dd>
-            <dt class="wf-tooltip" title="<?php echo Text::_('WF_CPANEL_LICENCE') . '::' . Text::_('WF_CPANEL_LICENCE_DESC'); ?>">
-                <?php echo Text::_('WF_CPANEL_LICENCE'); ?>
+            <dt class="wf-tooltip" title="<?php echo JText::_('WF_CPANEL_LICENCE') . '::' . JText::_('WF_CPANEL_LICENCE_DESC'); ?>">
+                <?php echo JText::_('WF_CPANEL_LICENCE'); ?>
             </dt>
             <dd><?php echo $this->state->get('licence'); ?></dd>
-            <dt class="wf-tooltip" title="<?php echo Text::_('WF_CPANEL_VERSION') . '::' . Text::_('WF_CPANEL_VERSION_DESC'); ?>">
-                <?php echo Text::_('WF_CPANEL_VERSION'); ?>
+            <dt class="wf-tooltip" title="<?php echo JText::_('WF_CPANEL_VERSION') . '::' . JText::_('WF_CPANEL_VERSION_DESC'); ?>">
+                <?php echo JText::_('WF_CPANEL_VERSION'); ?>
             </dt>
             <dd><?php echo $this->state->get('version'); ?></dd>
             <?php if ($this->params->get('feed', 0) || $canEditPref): ?>
-                <dt class="wf-tooltip" title="<?php echo Text::_('WF_CPANEL_FEED') . '::' . Text::_('WF_CPANEL_FEED_DESC'); ?>">
-                    <?php echo Text::_('WF_CPANEL_FEED'); ?>
+                <dt class="wf-tooltip" title="<?php echo JText::_('WF_CPANEL_FEED') . '::' . JText::_('WF_CPANEL_FEED_DESC'); ?>">
+                    <?php echo JText::_('WF_CPANEL_FEED'); ?>
                 </dt>
                 <dd>
                 <?php if ($this->params->get('feed', 0)): ?>
                     <ul class="unstyled wf-cpanel-newsfeed">
-                        <li><?php echo Text::_('WF_CPANEL_FEED_NONE'); ?></li>
+                        <li><?php echo JText::_('WF_CPANEL_FEED_NONE'); ?></li>
                     </ul>
                 <?php else: ?>
-                    <?php echo Text::_('WF_CPANEL_FEED_DISABLED'); ?> :: <a id="newsfeed_enable" title="<?php echo Text::_('WF_PREFERENCES'); ?>" href="#">[<?php echo Text::_('WF_CPANEL_FEED_ENABLE'); ?>]</a>
+                    <?php echo JText::_('WF_CPANEL_FEED_DISABLED'); ?> :: <a id="newsfeed_enable" title="<?php echo JText::_('WF_PREFERENCES'); ?>" href="#">[<?php echo JText::_('WF_CPANEL_FEED_ENABLE'); ?>]</a>
                 <?php endif;?>
                 </dd>
             <?php endif;?>
         </dl>
         <?php if (!WF_EDITOR_PRO):
-            echo LayoutHelper::render('message.upgrade', $this);
+            echo JLayoutHelper::render('message.upgrade', $this);
         endif;?>
     </div>
 </div>

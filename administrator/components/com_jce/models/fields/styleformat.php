@@ -10,14 +10,12 @@
  */
 defined('JPATH_BASE') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\FormField;
 use Joomla\Utilities\ArrayHelper;
 
 /**
  * Renders a select element.
  */
-class JFormFieldStyleFormat extends FormField
+class JFormFieldStyleFormat extends JFormField
 {
     /*
      * Element type
@@ -115,7 +113,7 @@ class JFormFieldStyleFormat extends FormField
             $x++;
         }
 
-        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . Text::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
+        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . JText::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
 
         // hidden field
         $output[] = '<input type="hidden" name="' . $this->name . '" value="" />';

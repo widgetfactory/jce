@@ -8,14 +8,10 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
-
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Layout\LayoutHelper;
-
 ?>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-    <div class="ui-jce container-fluid">
+    <div class="ui-jce container row-fluid">
         <?php if (!empty($this->sidebar)): ?>
             <div id="j-sidebar-container" class="span2 col-md-2">
                 <?php echo $this->sidebar; ?>
@@ -25,12 +21,12 @@ use Joomla\CMS\Layout\LayoutHelper;
             <div id="j-main-container">
         <?php endif;?>
                 <fieldset class="adminform panelform">
-                    <?php echo LayoutHelper::render('joomla.content.options_default', $this); ?>
+                    <?php echo JLayoutHelper::render('joomla.content.options_default', $this);?>
                 </fieldset>
             </div>
     </div>
     <input type="hidden" name="option" value="com_jce" />
     <input type="hidden" name="view" value="mediabox" />
     <input type="hidden" name="task" value="" />
-    <?php echo HTMLHelper::_('form.token'); ?>
+    <?php echo JHTML::_('form.token'); ?>
 </form>

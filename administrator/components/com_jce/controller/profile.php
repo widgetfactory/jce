@@ -11,9 +11,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Controller\FormController;
-
-class JceControllerProfile extends FormController
+class JceControllerProfile extends JControllerForm
 {
     /**
 	 * The URL option for the component.

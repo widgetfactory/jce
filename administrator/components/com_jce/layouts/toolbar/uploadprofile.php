@@ -10,9 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-
-$title = Text::_('WF_PROFILES_IMPORT_IMPORT');
+$title = JText::_('WF_PROFILES_IMPORT_IMPORT');
 ?>
 <joomla-toolbar-button>
     <div class="upload-profile-container">

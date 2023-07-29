@@ -10,20 +10,14 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\View\HtmlView;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Toolbar\ToolbarHelper;
-
-class JceViewMediabox extends HtmlView
+class JceViewMediabox extends JViewLegacy
 {
     public $form;
     public $data;
 
     public function display($tpl = null)
     {
-        $document = Factory::getDocument();
+        $document = JFactory::getDocument();
 
         $form = $this->get('Form');
         $data = $this->get('Data');
@@ -36,11 +30,11 @@ class JceViewMediabox extends HtmlView
         $this->form = $form;
         $this->data = $data;
 
-        $this->name = Text::_('WF_MEDIABOX');
+        $this->name = JText::_('WF_MEDIABOX');
         $this->fieldsname = "";
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
-        $params = ComponentHelper::getParams('com_jce');
+        $params = JComponentHelper::getParams('com_jce');
 
         if ($params->get('inline_help', 1)) {
             $this->formclass .= ' form-help-inline';
@@ -57,20 +51,20 @@ class JceViewMediabox extends HtmlView
      */
     protected function addToolbar()
     {
-        Factory::getApplication()->input->set('hidemainmenu', true);
+        JFactory::getApplication()->input->set('hidemainmenu', true);
 
-        $user = Factory::getUser();
-        ToolbarHelper::title(Text::_('WF_MEDIABOX'), 'pictures');
+        $user = JFactory::getUser();
+        JToolbarHelper::title(JText::_('WF_MEDIABOX'), 'pictures');
 
         // If not checked out, can save the item.
         if ($user->authorise('jce.config', 'com_jce')) {
-            ToolbarHelper::apply('mediabox.apply');
-            ToolbarHelper::save('mediabox.save');
+            JToolbarHelper::apply('mediabox.apply');
+            JToolbarHelper::save('mediabox.save');
         }
 
-        ToolbarHelper::cancel('mediabox.cancel', 'JTOOLBAR_CLOSE');
+        JToolbarHelper::cancel('mediabox.cancel', 'JTOOLBAR_CLOSE');
 
-        ToolbarHelper::divider();
-        ToolbarHelper::help('WF_MEDIABOX_EDIT');
+        JToolbarHelper::divider();
+        JToolbarHelper::help('WF_MEDIABOX_EDIT');
     }
 }

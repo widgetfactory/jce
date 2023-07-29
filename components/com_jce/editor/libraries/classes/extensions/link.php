@@ -10,11 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Filter\InputFilter;
-use Joomla\CMS\Application\SiteApplication;
-
 class WFLinkExtension extends WFExtension
 {
     /*
@@ -102,7 +97,7 @@ class WFLinkExtension extends WFExtension
 
     private static function cleanInput($args, $method = 'string')
     {
-        $filter = InputFilter::getInstance();
+        $filter = JFilterInput::getInstance();
 
         foreach ($args as $k => $v) {
             $args->$k = $filter->clean($v, $method);
@@ -147,13 +142,16 @@ class WFLinkExtension extends WFExtension
      */
     public static function getCategory($section, $parent = 1)
     {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
         $wf = WFEditorPlugin::getInstance();
 
         $query = $db->getQuery(true);
 
         $where = array();
+
+        $version = new JVersion();
+        $language = $version->isCompatible('3.0') ? ', language' : '';
 
         $where[] = 'parent_id = ' . (int) $parent;
         $where[] = 'extension = ' . $db->Quote($section);
@@ -180,7 +178,7 @@ class WFLinkExtension extends WFExtension
         }
 
         $where[] = 'published = 1';
-        $query->select('id AS slug, id AS id, title, alias, access, language' . $case)->from('#__categories')->where($where)->order('title');
+        $query->select('id AS slug, id AS id, title, alias, access' . $language . $case)->from('#__categories')->where($where)->order('title');
 
         $db->setQuery($query);
 
@@ -199,11 +197,14 @@ class WFLinkExtension extends WFExtension
     {
         $match = null;
 
-        $app = SiteApplication::getInstance();
+        //require_once(JPATH_SITE . '/includes/application.php');
+        $app = JApplication::getInstance('site');
 
-        $component = ComponentHelper::getComponent($component);
+        $tag = defined('JPATH_PLATFORM') ? 'component_id' : 'componentid';
+
+        $component = JComponentHelper::getComponent($component);
         $menu = $app->getMenu('site');
-        $items = $menu->getItems('component_id', $component->id);
+        $items = $menu->getItems($tag, $component->id);
 
         if ($items) {
             foreach ($needles as $needle => $id) {

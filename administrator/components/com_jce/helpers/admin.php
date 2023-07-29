@@ -2,12 +2,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\HTML\Helpers\Sidebar;
-use Joomla\CMS\Language\Text;
-
 /**
  * Admin helper.
  *
@@ -24,33 +18,33 @@ class JceHelperAdmin
      */
     public static function addSubmenu($vName)
     {
-        $uri = (string) Uri::getInstance();
+        $uri = (string)JUri::getInstance();
         $return = urlencode(base64_encode($uri));
 
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
 
-        Sidebar::addEntry(
-            Text::_('WF_CPANEL'),
+        JHtmlSidebar::addEntry(
+            JText::_('WF_CPANEL'),
             'index.php?option=com_jce&view=cpanel',
             $vName == 'cpanel'
         );
 
         $views = array(
-            'config' => 'WF_CONFIGURATION',
-            'profiles' => 'WF_PROFILES',
-            'browser' => 'WF_CPANEL_BROWSER',
-            'mediabox' => 'WF_MEDIABOX',
+            'config'    => 'WF_CONFIGURATION',
+            'profiles'  => 'WF_PROFILES',
+            'browser'   => 'WF_CPANEL_BROWSER',
+            'mediabox'  => 'WF_MEDIABOX'
         );
 
-        foreach ($views as $key => $label) {
-
-            if ($key === "mediabox" && !PluginHelper::isEnabled('system', 'jcemediabox')) {
+        foreach($views as $key => $label) {
+            
+            if ($key === "mediabox" && !JPluginHelper::isEnabled('system', 'jcemediabox')) {
                 continue;
             }
-
+            
             if ($user->authorise('jce.' . $key, 'com_jce')) {
-                Sidebar::addEntry(
-                    Text::_($label),
+                JHtmlSidebar::addEntry(
+                    JText::_($label),
                     'index.php?option=com_jce&view=' . $key,
                     $vName == $key
                 );
@@ -60,7 +54,7 @@ class JceHelperAdmin
 
     public static function getTemplateStylesheets()
     {
-        require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
+        require_once(JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php');
 
         return WFEditor::getTemplateStyleSheets();
     }

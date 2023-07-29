@@ -3,17 +3,9 @@
 // Check to ensure this file is included in Joomla!
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\View\HtmlView;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\HTML\Helpers\Sidebar;
-use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\Uri\Uri;
+jimport('joomla.application.component.view');
 
-class JceViewCpanel extends HtmlView
+class JceViewCpanel extends JViewLegacy
 {
     protected $icons;
     protected $state;
@@ -23,25 +15,27 @@ class JceViewCpanel extends HtmlView
      */
     public function display($tpl = null)
     {
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
         
         $this->state    = $this->get('State');
         $this->icons    = $this->get('Icons');
-        $this->params   = ComponentHelper::getParams('com_jce');
+        $this->params   = JComponentHelper::getParams('com_jce');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            throw new GenericDataException(implode("\n", $errors), 500);
+            JError::raiseError(500, implode("\n", $errors));
+
+            return false;
         }
 
-        HTMLHelper::_('jquery.framework');
+        JHtml::_('jquery.framework');
 
-        $document = Factory::getDocument();
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/cpanel.min.js');
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/cpanel.min.css');
+        $document = JFactory::getDocument();
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/cpanel.min.js');
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/cpanel.min.css');
 
         $this->addToolbar();
-        $this->sidebar = Sidebar::render();
+        $this->sidebar = JHtmlSidebar::render();
         parent::display($tpl);
     }
 
@@ -53,14 +47,16 @@ class JceViewCpanel extends HtmlView
     protected function addToolbar()
     {
         $state = $this->get('State');
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
 
-        ToolbarHelper::title('JCE - ' . Text::_('WF_CPANEL'), 'home');
+        JToolbarHelper::title('JCE - ' . JText::_('WF_CPANEL'), 'home');
 
-        Sidebar::setAction('index.php?option=com_jce&view=cpanel');
+        $bar = JToolBar::getInstance('toolbar');
+
+        JHtmlSidebar::setAction('index.php?option=com_jce&view=cpanel');
 
         if ($user->authorise('core.admin', 'com_jce')) {
-            ToolbarHelper::preferences('com_jce');
+            JToolbarHelper::preferences('com_jce');
         }
     }
 }

@@ -10,16 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\View\HtmlView;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Layout\LayoutHelper;
-use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\Uri\Uri;
-
-class JceViewProfile extends HtmlView
+class JceViewProfile extends JViewLegacy
 {
     protected $state;
     protected $item;
@@ -36,7 +27,7 @@ class JceViewProfile extends HtmlView
 
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
-        $params = ComponentHelper::getParams('com_jce');
+        $params = JComponentHelper::getParams('com_jce');
 
         if ($params->get('inline_help', 1)) {
             $this->formclass .= ' form-help-inline';
@@ -48,16 +39,18 @@ class JceViewProfile extends HtmlView
         $this->additional = $this->get('AdditionalPlugins');
 
         // load language files
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
         $language->load('com_jce', JPATH_SITE);
         $language->load('com_jce_pro', JPATH_SITE);
 
         // set JLayoutHelper base path
-        LayoutHelper::$defaultBasePath = JPATH_COMPONENT_ADMINISTRATOR;
+        JLayoutHelper::$defaultBasePath = JPATH_COMPONENT_ADMINISTRATOR;
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            throw new GenericDataException(implode("\n", $errors), 500);
+            JError::raiseError(500, implode("\n", $errors));
+
+            return false;
         }
 
         $this->addToolbar();
@@ -65,23 +58,23 @@ class JceViewProfile extends HtmlView
 
         // only in Joomla 3.x
         if (version_compare(JVERSION, '4', 'lt')) {
-            HTMLHelper::_('formbehavior.chosen', 'select');
+            JHtml::_('formbehavior.chosen', 'select');
         }
 
         // version hash
         $hash = md5(WF_VERSION);
 
-        $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/profile.min.css?' . $hash);
-        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
+        $document = JFactory::getDocument();
+        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/profile.min.css?' . $hash);
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
 
-        $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
+        $document->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
 
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
+        $document->addScript(JURI::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
 
         // default theme
-        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
+        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
     }
 
     /**
@@ -91,27 +84,27 @@ class JceViewProfile extends HtmlView
      */
     protected function addToolbar()
     {
-        Factory::getApplication()->input->set('hidemainmenu', true);
+        JFactory::getApplication()->input->set('hidemainmenu', true);
 
-        $user       = Factory::getUser();
+        $user       = JFactory::getUser();
         $canEdit    = $user->authorise('core.create', 'com_jce');
 
-        ToolbarHelper::title(Text::_('WF_PROFILES_EDIT'), 'user');
+        JToolbarHelper::title(JText::_('WF_PROFILES_EDIT'), 'user');
 
         // For new records, check the create permission.
         if ($canEdit) {
-            ToolbarHelper::apply('profile.apply');
-            ToolbarHelper::save('profile.save');
-            ToolbarHelper::save2new('profile.save2new');
+            JToolbarHelper::apply('profile.apply');
+            JToolbarHelper::save('profile.save');
+            JToolbarHelper::save2new('profile.save2new');
         }
 
         if (empty($this->item->id)) {
-            ToolbarHelper::cancel('profile.cancel');
+            JToolbarHelper::cancel('profile.cancel');
         } else {
-            ToolbarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
+            JToolbarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
         }
 
-        ToolbarHelper::divider();
-        ToolbarHelper::help('WF_PROFILES_EDIT');
+        JToolbarHelper::divider();
+        JToolbarHelper::help('WF_PROFILES_EDIT');
     }
 }

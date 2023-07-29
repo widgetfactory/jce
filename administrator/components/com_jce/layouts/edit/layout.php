@@ -1,11 +1,8 @@
 <?php
-use Joomla\CMS\Language\Text;
-use Joomla\Registry\Registry;
-
 $item = $displayData->get('Item');
 $form = $displayData->getForm();
 
-$data = new Registry($form->getValue('config'));
+$data = new JRegistry($form->getValue('config'));
 
 $rows = $displayData->get('Rows');
 $plugins = $displayData->get('Plugins');
@@ -25,7 +22,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 ?>
 <div class="control-group mt-3 mb-0 <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
-        <label class="hasPopover" title="<?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
+        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
     </div>
     <div class="controls">
         <div class="editor-layout">
@@ -85,7 +82,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 </div>
 <div class="control-group mt-3 mb-4 <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
-        <label class="hasPopover" title="<?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
+        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
     </div>
     <div class="controls">
         <div class="editor-button-pool">

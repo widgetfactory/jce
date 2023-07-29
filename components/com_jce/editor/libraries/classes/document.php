@@ -10,14 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\Path;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Uri\Uri;
-
-class WFDocument extends CMSObject
+class WFDocument extends JObject
 {
     /**
      * Array of linked scripts.
@@ -164,10 +157,10 @@ class WFDocument extends CMSObject
     private function getURL($relative = false)
     {
         if ($relative) {
-            return Uri::root(true) . '/components/com_jce/editor';
+            return JURI::root(true) . '/components/com_jce/editor';
         }
 
-        return Uri::root() . 'components/com_jce/editor';
+        return JURI::root() . 'components/com_jce/editor';
     }
 
     /**
@@ -266,13 +259,13 @@ class WFDocument extends CMSObject
                     $pre = $base . 'extensions';
                     break;
                 case 'joomla':
-                    return Uri::root(true);
+                    return JURI::root(true);
                     break;
                 case 'media':
-                    return Uri::root(true) . '/media/system';
+                    return JURI::root(true) . '/media/system';
                     break;
                 case 'component':
-                    $pre = Uri::root(true) . '/administrator/components/com_jce/media/' . $type;
+                    $pre = JURI::root(true) . '/administrator/components/com_jce/media/' . $type;
                     break;
                 default:
                     $pre = $base . $path;
@@ -299,14 +292,16 @@ class WFDocument extends CMSObject
      */
     private function urlToPath($url)
     {
-        $root = Uri::root(true);
+        jimport('joomla.filesystem.path');
+
+        $root = JURI::root(true);
 
         // remove root from url
         if (!empty($root)) {
             $url = substr($url, strlen($root));
         }
 
-        return WFUtility::makePath(JPATH_SITE, Path::clean($url));
+        return WFUtility::makePath(JPATH_SITE, JPath::clean($url));
     }
 
     /**
@@ -467,7 +462,7 @@ class WFDocument extends CMSObject
 
     public function getQueryString($query = array())
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         // get plugin name and assign to query
         $name = $this->get('name');
@@ -489,7 +484,7 @@ class WFDocument extends CMSObject
         $query['context'] = $app->input->getInt('context');
 
         // get token
-        $token = Session::getFormToken();
+        $token = JSession::getFormToken();
 
         // set token
         $query[$token] = 1;
@@ -538,7 +533,7 @@ class WFDocument extends CMSObject
 
         // render stylesheets
         if ($this->get('compress_css', 0)) {
-            $file = Uri::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack', 'type' => 'css'));
+            $file = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack', 'type' => 'css'));
             // add hash
             $file .= '&' . $this->getHash(array_keys($this->styles));
 
@@ -558,7 +553,7 @@ class WFDocument extends CMSObject
 
         // Render scripts
         if ($this->get('compress_javascript', 0)) {
-            $script = Uri::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack'));
+            $script = JURI::base(true) . '/index.php?option=com_jce&' . $this->getQueryString(array('task' => 'plugin.pack'));
             // add hash
             $script .= '&' . $this->getHash(array_keys($this->scripts));
 
@@ -639,12 +634,12 @@ class WFDocument extends CMSObject
      */
     public function pack($minify = true, $gzip = false)
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         if ($app->input->getCmd('task') == 'pack') {
 
             // check token
-            Session::checkToken('get') or jexit();
+            JSession::checkToken('get') or jexit();
 
             $type = $app->input->getWord('type', 'javascript');
 

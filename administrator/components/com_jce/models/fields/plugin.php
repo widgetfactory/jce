@@ -1,13 +1,8 @@
 <?php
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\Field\ListField;
-
 defined('JPATH_PLATFORM') or die;
 
-class JFormFieldPlugin extends ListField
+class JFormFieldPlugin extends JFormFieldFileList
 {
     /**
      * The form field type.
@@ -66,7 +61,7 @@ class JFormFieldPlugin extends ListField
         foreach ($plugins as $plugin) {
             $name = (string) str_replace($this->name.'-', '', $plugin->element);
 
-            $form = Form::getInstance('plg_jce_'.$plugin->element, $plugin->manifest, array('control' => $this->name.'['.$name.']'), true, '//extension');
+            $form = JForm::getInstance('plg_jce_'.$plugin->element, $plugin->manifest, array('control' => $this->name.'['.$name.']'), true, '//extension');
 
             if ($form) {
                 $html .= $form->renderFieldset('extension.'.$name.'.'.$name);
@@ -90,9 +85,9 @@ class JFormFieldPlugin extends ListField
         static $plugins;
 
         if (!isset($plugins)) {
-            $language = Factory::getLanguage();
+            $language = JFactory::getLanguage();
 
-            $db = Factory::getDbo();
+            $db = JFactory::getDbo();
             $query = $db->getQuery(true)
                 ->select('name, element')
                 ->from('#__extensions')

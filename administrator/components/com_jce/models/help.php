@@ -10,16 +10,11 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Model\AdminModel;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Language\Text;
-
-class JceModelHelp extends AdminModel
+class JceModelHelp extends JModelLegacy
 {
     public function getLanguage()
     {
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
         $tag = $language->getTag();
 
         return substr($tag, 0, strpos($tag, '-'));
@@ -46,7 +41,7 @@ class JceModelHelp extends AdminModel
                     if ($file) {
                         $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                     } else {
-                        $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link"><i class="icon-copy"></i>&nbsp;' . trim(Text::_($title)) . '</a>';
+                        $result .= '<li id="' . $key . '" class="nav-item ' . $class . '"><a href="#" class="nav-link"><i class="icon-copy"></i>&nbsp;' . trim(JText::_($title)) . '</a>';
                     }
 
                     if (count($subtopics)) {
@@ -56,7 +51,7 @@ class JceModelHelp extends AdminModel
 
                             // if a file is set load it as sub-subtopics
                             if ($file = (string) $subtopic->attributes()->file) {
-                                $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(Text::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li class="nav-item subtopics"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
                                 $result .= '<ul class="nav nav-list hidden">';
                                 $result .= $this->getTopics(JPATH_SITE . '/components/com_jce/editor/' . $file);
                                 $result .= '</ul>';
@@ -65,12 +60,12 @@ class JceModelHelp extends AdminModel
                                 $id = $subtopic->attributes()->key ? ' id="' . (string) $subtopic->attributes()->key . '"' : '';
 
                                 $class = count($sub_subtopics) ? ' class="nav-item subtopics"' : '';
-                                $result .= '<li' . $class . $id . '><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(Text::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li' . $class . $id . '><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
 
                                 if (count($sub_subtopics)) {
                                     $result .= '<ul class="nav nav-list hidden">';
                                     foreach ($sub_subtopics as $sub_subtopic) {
-                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '" class="nav-item"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(Text::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
+                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '" class="nav-item"><a href="#" class="nav-link"><i class="icon-file"></i>&nbsp;' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
                                     }
                                     $result .= '</ul>';
                                 }
@@ -96,18 +91,18 @@ class JceModelHelp extends AdminModel
      */
     public function renderTopics()
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         $section = $app->input->getWord('section', 'admin');
         $category = $app->input->getWord('category', 'cpanel');
 
-        $document = Factory::getDocument();
-        $language = Factory::getLanguage();
+        $document = JFactory::getDocument();
+        $language = JFactory::getLanguage();
 
         $language->load('com_jce', JPATH_SITE);
         $language->load('com_jce_pro', JPATH_SITE);
 
-        $document->setTitle(Text::_('WF_HELP') . ' : ' . Text::_('WF_' . strtoupper($category) . '_TITLE'));
+        $document->setTitle(JText::_('WF_HELP') . ' : ' . JText::_('WF_' . strtoupper($category) . '_TITLE'));
 
         switch ($section) {
             case 'admin':
@@ -117,7 +112,7 @@ class JceModelHelp extends AdminModel
                 $file = JPATH_SITE . '/components/com_jce/editor/tiny_mce/plugins/' . $category . '/' . $category . '.xml';
 
                 // check for installed plugin
-                $plugin = PluginHelper::getPlugin('jce', 'editor-' . $category);
+                $plugin = JPluginHelper::getPlugin('jce', 'editor-' . $category);
 
                 if ($plugin) {
                     $file = JPATH_PLUGINS . '/jce/editor-' . $category . '/editor-' . $category . '.xml';
@@ -134,7 +129,7 @@ class JceModelHelp extends AdminModel
 
         $result = '';
 
-        $result .= '<ul class="nav nav-list" id="help-menu"><li class="nav-header">' . Text::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
+        $result .= '<ul class="nav nav-list" id="help-menu"><li class="nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
         $result .= $this->getTopics($file);
         $result .= '</ul>';
 

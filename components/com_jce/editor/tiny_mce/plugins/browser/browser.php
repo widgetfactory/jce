@@ -10,11 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-
 require_once WF_EDITOR_LIBRARIES . '/classes/manager.php';
 
 class WFBrowserPlugin extends WFMediaManager
@@ -26,7 +21,7 @@ class WFBrowserPlugin extends WFMediaManager
 
     private function isMediaField()
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid');
     }
 
@@ -65,7 +60,7 @@ class WFBrowserPlugin extends WFMediaManager
     
     protected function getFileBrowserConfig($config = array())
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         
         $config = parent::getFileBrowserConfig($config);
 
@@ -87,7 +82,7 @@ class WFBrowserPlugin extends WFMediaManager
     
     public function __construct($config = array())
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         $config = array(
             'layout' => 'browser',
@@ -166,14 +161,14 @@ class WFBrowserPlugin extends WFMediaManager
     {
         parent::display();
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         $document = WFDocument::getInstance();
         $slot = $app->input->getCmd('slot', 'plugin');
 
         // update some document variables
         $document->setName('browser');
-        $document->setTitle(Text::_('WF_BROWSER_TITLE'));
+        $document->setTitle(JText::_('WF_BROWSER_TITLE'));
 
         if ($document->get('standalone') == 1) {
             if ($slot === 'plugin') {
@@ -188,11 +183,11 @@ class WFBrowserPlugin extends WFMediaManager
                 }
 
                 $settings = array(
-                    'site_url' => Uri::base(true) . '/',
-                    'document_base_url' => Uri::root(),
+                    'site_url' => JURI::base(true) . '/',
+                    'document_base_url' => JURI::root(),
                     'language' => WFLanguage::getCode(),
                     'element' => $element,
-                    'token' => Session::getFormToken(),
+                    'token' => JSession::getFormToken(),
                 );
 
                 if ($callback) {
@@ -215,7 +210,7 @@ class WFBrowserPlugin extends WFMediaManager
     {
         parent::onUpload($file, $relative);
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {

@@ -10,11 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Filesystem\Path;
-
-class WFLanguageParser extends CMSObject
+class WFLanguageParser extends JObject
 {
     protected $mode = 'editor';
     protected $plugins = array();
@@ -182,7 +178,7 @@ class WFLanguageParser extends CMSObject
     protected static function getOverrides()
     {
         // get the language file
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
         // get language tag
         $tag = $language->getTag();
 
@@ -364,7 +360,7 @@ class WFLanguageParser extends CMSObject
                     $filename = 'en-GB.plg_jce_editor-' . $name . '.ini';
                     
                     // add English file
-                    $ini = Path::find(array(
+                    $ini = JPath::find(array(
                         JPATH_ADMINISTRATOR . '/language/en-GB',
                         JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/en-GB'
                     ), $filename);
@@ -378,7 +374,7 @@ class WFLanguageParser extends CMSObject
 
                         $filename = $tag . '.plg_jce_editor-' . $name . '.ini';
 
-                        $ini = Path::find(array(
+                        $ini = JPath::find(array(
                             JPATH_ADMINISTRATOR . '/language/' . $tag,
                             JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/' . $tag
                         ), $filename);

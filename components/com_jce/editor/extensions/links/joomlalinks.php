@@ -10,9 +10,6 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Filesystem\Folder;
-
 class WFLinkBrowser_Joomlalinks
 {
     public $_option = array();
@@ -24,11 +21,14 @@ class WFLinkBrowser_Joomlalinks
     public function __construct($options = array())
     {
         $wf = WFEditorPlugin::getInstance();
+        
+        jimport('joomla.filesystem.folder');
+        jimport('joomla.filesystem.file');
 
         $path = __DIR__ . '/joomlalinks';
 
         // Get all files
-        $files = Folder::files($path, '\.(php)$');
+        $files = JFolder::files($path, '\.(php)$');
 
         if (!empty($files)) {
             foreach ($files as $file) {
@@ -39,7 +39,7 @@ class WFLinkBrowser_Joomlalinks
                 }
 
                 // skip weblinks if it doesn't exist!
-                if ($name == 'weblinks' && !ComponentHelper::isEnabled('com_weblinks')) {
+                if ($name == 'weblinks' && !JComponentHelper::isEnabled('com_weblinks')) {
                     continue;
                 }
 

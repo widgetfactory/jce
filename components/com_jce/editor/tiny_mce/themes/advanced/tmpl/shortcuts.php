@@ -9,11 +9,8 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
-
-use Joomla\CMS\Language\Text;
-
 ?>
-<h1><?php echo Text::_('WF_ACCESSABILITY_USAGE_TITLE'); ?></h1>
+<h1><?php echo JText::_('WF_ACCESSABILITY_USAGE_TITLE'); ?></h1>
 <h2>Toolbars</h2>
 <p>Press ALT-F10 to move focus to the toolbars. Navigate through the buttons using the arrow keys.
     Press enter to activate a button and return focus to the editor.

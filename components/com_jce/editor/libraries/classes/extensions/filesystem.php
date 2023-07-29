@@ -10,11 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\User\UserHelper;
-use Joomla\CMS\Table\Table;
-use Joomla\CMS\Uri\Uri;
-
 class WFFileSystem extends WFExtension
 {
     /**
@@ -95,7 +90,7 @@ class WFFileSystem extends WFExtension
      */
     public function getBaseURL()
     {
-        return WFUtility::makePath(Uri::root(true), $this->getRootDir());
+        return WFUtility::makePath(JURI::root(true), $this->getRootDir());
     }
 
     private function getPathVariables()
@@ -103,11 +98,13 @@ class WFFileSystem extends WFExtension
         static $variables;
 
         if (!isset($variables)) {
-            $user = Factory::getUser();
+            $user = JFactory::getUser();
             $wf = WFApplication::getInstance();
             $profile = $wf->getProfile();
 
-            $groups = UserHelper::getUserGroups($user->id);
+            jimport('joomla.user.helper');
+
+            $groups = JUserHelper::getUserGroups($user->id);
 
             // get keys only
             $groups = array_keys($groups);
@@ -117,7 +114,7 @@ class WFFileSystem extends WFExtension
 
             if (is_int($group_id)) {
                 // usergroup table
-                $group = Table::getInstance('Usergroup');
+                $group = JTable::getInstance('Usergroup');
                 $group->load($group_id);
                 // usertype
                 $usertype = $group->title;

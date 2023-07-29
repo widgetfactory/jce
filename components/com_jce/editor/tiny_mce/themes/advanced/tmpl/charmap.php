@@ -9,12 +9,9 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
-
-use Joomla\CMS\Language\Text;
-
 ?>
 <div id="charmap" role="presentation">
-	<h3><?php echo Text::_('WF_ADVANCED_CHARMAP_TITLE'); ?></h3>
+	<h3><?php echo JText::_('WF_ADVANCED_CHARMAP_TITLE'); ?></h3>
 	<div id="charmapView"><!-- Chars will be rendered here --></div>
 	<div id="charmapDescription">
 		<div id="codeV"></div>

@@ -14,14 +14,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-
 /**
  * Contacts search plugin.
  */
-class PlgWfSearchContacts extends CMSPlugin
+class PlgWfSearchContacts extends JPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -59,9 +55,9 @@ class PlgWfSearchContacts extends CMSPlugin
 	 */
 	public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
-		$db     = Factory::getDbo();
-		$app    = Factory::getApplication();
-		$user   = Factory::getUser();
+		$db     = JFactory::getDbo();
+		$app    = JFactory::getApplication();
+		$user   = JFactory::getUser();
 		$groups = implode(',', $user->getAuthorisedViewLevels());
 
 		// create a new RouteHelper instance
@@ -81,7 +77,7 @@ class PlgWfSearchContacts extends CMSPlugin
 			return array();
 		}
 
-		$section = Text::_('PLG_SEARCH_CONTACTS_CONTACTS');
+		$section = JText::_('PLG_SEARCH_CONTACTS_CONTACTS');
 
 		switch ($ordering)
 		{
@@ -146,7 +142,7 @@ class PlgWfSearchContacts extends CMSPlugin
 		catch (RuntimeException $e)
 		{
 			$rows = array();
-			Factory::getApplication()->enqueueMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
+			JFactory::getApplication()->enqueueMessage(JText::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
 		}
 
 		if ($rows)

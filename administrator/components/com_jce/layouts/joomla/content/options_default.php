@@ -9,10 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Form\FormHelper;
-
 ?>
 
 <fieldset class="<?php echo !empty($displayData->formclass) ? $displayData->formclass : 'form-horizontal'; ?>">
@@ -26,9 +22,9 @@ use Joomla\CMS\Form\FormHelper;
 			<?php $datashowon = ''; ?>
 			<?php $groupClass = $field->type === 'Spacer' ? ' field-spacer' : ''; ?>
 			<?php if ($field->showon) : ?>
-				<?php HTMLHelper::_('jquery.framework'); ?>
-				<?php HTMLHelper::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true)); ?>
-				<?php $datashowon = ' data-showon=\'' . json_encode(FormHelper::parseShowOnConditions($field->showon, $field->formControl, $field->group)) . '\''; ?>
+				<?php JHtml::_('jquery.framework'); ?>
+				<?php JHtml::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true)); ?>
+				<?php $datashowon = ' data-showon=\'' . json_encode(JFormHelper::parseShowOnConditions($field->showon, $field->formControl, $field->group)) . '\''; ?>
 			<?php endif; ?>
 			<div class="control-group<?php echo $groupClass; ?>"<?php echo $datashowon; ?>>
 				<?php if (!isset($displayData->showlabel) || $displayData->showlabel) : ?>
@@ -36,7 +32,7 @@ use Joomla\CMS\Form\FormHelper;
 				<?php endif; ?>
 				<div class="controls"><?php echo $field->input; ?></div>
 				<?php if ($field->description) : ?>
-					<small class="description"><?php echo Text::_($field->description); ?></small>
+					<small class="description"><?php echo JText::_($field->description); ?></small>
 				<?php endif; ?>
 			</div>
 		<?php endforeach; ?>

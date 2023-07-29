@@ -10,22 +10,13 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Filter\InputFilter;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Table\Table;
-
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/constants.php';
 
-class JceModelCpanel extends BaseDatabaseModel
+class JceModelCpanel extends JModelLegacy
 {
     public function getIcons()
     {
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
 
         $icons = array();
 
@@ -39,7 +30,7 @@ class JceModelCpanel extends BaseDatabaseModel
         foreach ($views as $name => $icon) {
 
             // if its mediabox, check the plugin is installed and enabled
-            if ($name === "mediabox" && !PluginHelper::isEnabled('system', 'jcemediabox')) {
+            if ($name === "mediabox" && !JPluginHelper::isEnabled('system', 'jcemediabox')) {
                 continue;
             }
 
@@ -49,17 +40,17 @@ class JceModelCpanel extends BaseDatabaseModel
             }
 
             $link = 'index.php?option=com_jce&amp;view=' . $name;
-            $title = Text::_('WF_' . strtoupper($name));
+            $title = JText::_('WF_' . strtoupper($name));
 
             if ($name === "browser") {
-                if (!PluginHelper::isEnabled('quickicon', 'jce')) {
+                if (!JPluginHelper::isEnabled('quickicon', 'jce')) {
                     continue;
                 }
                 
-                $title = Text::_('WF_' . strtoupper($name) . '_TITLE');
+                $title = JText::_('WF_' . strtoupper($name) . '_TITLE');
             }
 
-            $icons[] = '<li class="quickicon mb-3"><a title="' . Text::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '" class="btn btn-default" role="button"><div class="quickicon-icon d-flex align-items-end" role="presentation"><span class="icon-' . $icon . '" aria-hidden="true" role="presentation"></span></div><div class="quickicon-text d-flex align-items-center"><span class="j-links-link">' . $title . '</span></div></a></li>';
+            $icons[] = '<li class="quickicon mb-3"><a title="' . JText::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '" class="btn btn-default" role="button"><div class="quickicon-icon d-flex align-items-end" role="presentation"><span class="icon-' . $icon . '" aria-hidden="true" role="presentation"></span></div><div class="quickicon-text d-flex align-items-center"><span class="j-links-link">' . $title . '</span></div></a></li>';
         }
 
         return $icons;
@@ -67,8 +58,8 @@ class JceModelCpanel extends BaseDatabaseModel
 
     public function getFeeds()
     {
-        $app = Factory::getApplication();
-        $params = ComponentHelper::getParams('com_jce');
+        $app = JFactory::getApplication();
+        $params = JComponentHelper::getParams('com_jce');
         $limit = $params->get('feed_limit', 2);
 
         $feeds = array();
@@ -83,7 +74,7 @@ class JceModelCpanel extends BaseDatabaseModel
         }
 
         jimport('joomla.filter.input');
-        $filter = InputFilter::getInstance();
+        $filter = JFilterInput::getInstance();
 
         $count = count($xml->channel->item);
 

@@ -2,10 +2,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\CheckboxesField;
-
-class JFormFieldFonts extends CheckboxesField
+class JFormFieldFonts extends JFormFieldCheckboxes
 {
     /**
      * The form field type.
@@ -104,7 +101,7 @@ class JFormFieldFonts extends CheckboxesField
 
             $item = array(
                 'value' => $value,
-                'text' => Text::alt($text, $fieldname),
+                'text' => JText::alt($text, $fieldname),
                 'checked' => true,
                 'custom' => $isCustom,
             );
@@ -129,7 +126,7 @@ class JFormFieldFonts extends CheckboxesField
 
             $tmp = array(
                 'value' => $value,
-                'text' => Text::alt($text, $fieldname),
+                'text' => JText::alt($text, $fieldname),
                 'checked' => $checked,
                 'custom' => false,
             );

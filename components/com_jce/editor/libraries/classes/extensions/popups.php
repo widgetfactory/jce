@@ -10,9 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Language\Text;
-
 class WFPopupsExtension extends WFExtension
 {
     protected static $instance;
@@ -126,13 +123,13 @@ class WFPopupsExtension extends WFExtension
     {
         $options = array();
 
-        $options[] = HTMLHelper::_('select.option', '', '-- ' . Text::_('WF_POPUP_TYPE_SELECT') . ' --');
+        $options[] = JHTML::_('select.option', '', '-- ' . JText::_('WF_POPUP_TYPE_SELECT') . ' --');
 
         foreach ($this->getPopups() as $popup) {
-            $options[] = HTMLHelper::_('select.option', $popup->name, Text::_('WF_POPUPS_' . strtoupper($popup->name) . '_TITLE'));
+            $options[] = JHTML::_('select.option', $popup->name, JText::_('WF_POPUPS_' . strtoupper($popup->name) . '_TITLE'));
         }
 
-        return HTMLHelper::_('select.genericlist', $options, 'popup_list', '', 'value', 'text', $this->get('default'));
+        return JHTML::_('select.genericlist', $options, 'popup_list', '', 'value', 'text', $this->get('default'));
     }
 
     public function getPopupTemplates()

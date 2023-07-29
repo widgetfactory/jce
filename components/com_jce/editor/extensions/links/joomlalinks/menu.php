@@ -10,18 +10,16 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
-use Joomla\Registry\Registry;
-
-class JoomlalinksMenu extends CMSObject
+class JoomlalinksMenu extends JObject
 {
     private $option = 'com_menu';
 
     /**
      * Returns a reference to a editor object.
+     *
+     * This method must be invoked as:
+     *         <pre>  $browser =JContentEditor::getInstance();</pre>
+     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -44,7 +42,7 @@ class JoomlalinksMenu extends CMSObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_menu" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_MENU') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_menu" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_MENU') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -175,7 +173,7 @@ class JoomlalinksMenu extends CMSObject
     private static function toSSL($link)
     {
         if (strcasecmp(substr($link, 0, 4), 'http') && (strpos($link, 'index.php?') !== false)) {
-            $uri = Uri::getInstance();
+            $uri = JURI::getInstance();
 
             // Get prefix
             $prefix = $uri->toString(array('host', 'port'));
@@ -215,7 +213,7 @@ class JoomlalinksMenu extends CMSObject
 
     private static function getMenuTypes()
     {
-        $db = Factory::getDBO();
+        $db = JFactory::getDBO();
 
         $query = $db->getQuery(true);
 
@@ -228,15 +226,15 @@ class JoomlalinksMenu extends CMSObject
 
     private static function getAlias($id)
     {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
 
         $query = $db->getQuery(true);
 
         $query->select('params')->from('#__menu')->where('id = ' . (int) $id);
 
         $db->setQuery($query, 0);
-        $params = new Registry($db->loadResult());
+        $params = new JRegistry($db->loadResult());
 
         $query->clear();
         $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
@@ -254,8 +252,8 @@ class JoomlalinksMenu extends CMSObject
 
     private static function getChildren($id)
     {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
 
         $query = $db->getQuery(true);
 
@@ -276,8 +274,8 @@ class JoomlalinksMenu extends CMSObject
 
     private static function getMenu($parent = 0, $type = 0)
     {
-        $db = Factory::getDBO();
-        $user = Factory::getUser();
+        $db = JFactory::getDBO();
+        $user = JFactory::getUser();
 
         $query = $db->getQuery(true);
 
@@ -310,7 +308,7 @@ class JoomlalinksMenu extends CMSObject
 
     private function getLangauge($language)
     {
-        $db = Factory::getDBO();
+        $db = JFactory::getDBO();
         $query = $db->getQuery(true);
 
         $link = '';

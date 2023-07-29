@@ -2,10 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\ListField;
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldElementList extends ListField
+class JFormFieldElementList extends JFormFieldList
 {
     /**
      * The form field type.
@@ -36,7 +35,7 @@ class JFormFieldElementList extends ListField
 
             $tmp = array(
                 'value' => $value,
-                'text' => Text::alt($text, $fieldname),
+                'text' => JText::alt($text, $fieldname),
                 'disable' => false,
                 'class' => '',
                 'selected' => false,

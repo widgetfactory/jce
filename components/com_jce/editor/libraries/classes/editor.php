@@ -10,14 +10,6 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Language;
-use Joomla\CMS\Filesystem\Path;
-use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Session\Session;
-use Joomla\CMS\Uri\Uri;
-
 class WFEditor
 {
     // Editor instance
@@ -118,7 +110,7 @@ class WFEditor
 
     public function __construct($config = array())
     {
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
         $wf = WFApplication::getInstance();
 
         if (!isset($config['plugin'])) {
@@ -181,7 +173,7 @@ class WFEditor
 
         $settings = $this->getSettings();
 
-        Factory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
+        JFactory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
         $this->render($settings);
 
@@ -213,7 +205,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // check for joomla debug mode
-        $debug = Factory::getConfig()->get('debug');
+        $debug = JFactory::getConfig()->get('debug');
 
         // default compression states
         $options = array(
@@ -320,7 +312,7 @@ class WFEditor
 
     private function isSkinRtl()
     {
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
 
         if ($language->getTag() === WFLanguage::getTag()) {
             return $language->isRTL();
@@ -331,11 +323,11 @@ class WFEditor
 
     private function getLanguageDirection()
     {
-        $user = Factory::getUser();
-        $params = ComponentHelper::getParams('com_languages');
+        $user = JFactory::getUser();
+        $params = JComponentHelper::getParams('com_languages');
         $locale = $user->getParam('language', $params->get('site', 'en-GB'));
 
-        $language = Language::getInstance($locale);
+        $language = JLanguage::getInstance($locale);
 
         return $language->isRTL() ? 'rtl' : 'ltr';
     }
@@ -356,17 +348,17 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // create token
-        $token = Session::getFormToken();
+        $token = JSession::getFormToken();
 
         // get editor version
         $version = self::getVersion();
 
         // get form token
-        $token = Session::getFormToken();
+        $token = JSession::getFormToken();
 
         $settings = array(
-            'token' => Session::getFormToken(),
-            'base_url' => URI::root(),
+            'token' => JSession::getFormToken(),
+            'base_url' => JURI::root(),
             'language' => $this->getLanguageCode(),
             'directionality' => $this->getLanguageDirection(),
             'theme' => 'none',
@@ -380,6 +372,8 @@ class WFEditor
 
         // if a profile is set
         if (is_object($this->profile)) {
+            jimport('joomla.filesystem.folder');
+
             $settings['query']['profile_id'] = $this->profile->id;
 
             $settings = array_merge($settings, array('theme' => 'advanced'), $this->getToolbar());
@@ -473,7 +467,7 @@ class WFEditor
 
         // set css compression
         if ($settings['compress']['css']) {
-            $this->addStyleSheet(URI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&' . http_build_query((array) $settings['query']));
+            $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&' . http_build_query((array) $settings['query']));
         } else {
             // CSS
             $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
@@ -498,7 +492,7 @@ class WFEditor
 
         // set javascript compression script
         if ($settings['compress']['javascript']) {
-            $this->addScript(URI::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
+            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
         } else {
             // Tinymce
             $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
@@ -508,7 +502,7 @@ class WFEditor
         }
 
         // language
-        $this->addScript(URI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
+        $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
 
         $this->getCustomConfig($settings);
 
@@ -565,23 +559,23 @@ class WFEditor
 
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
-                $this->addScript(URI::root(true) . '/' . $wf->getParam('editor.callback_file'));
+                $this->addScript(JURI::root(true) . '/' . $wf->getParam('editor.callback_file'));
             }
             // add callback file if exists
             if (is_file(JPATH_SITE . '/media/jce/js/editor.js')) {
-                $this->addScript(URI::root(true) . '/media/jce/js/editor.js');
+                $this->addScript(JURI::root(true) . '/media/jce/js/editor.js');
             }
 
             // add custom editor.css if exists
             if (is_file(JPATH_SITE . '/media/jce/css/editor.css')) {
-                $this->addStyleSheet(URI::root(true) . '/media/jce/css/editor.css');
+                $this->addStyleSheet(JURI::root(true) . '/media/jce/css/editor.css');
             }
         }
     }
 
     private function getOutput()
     {
-        $document = Factory::getDocument();
+        $document = JFactory::getDocument();
 
         $end = $document->_getLineEnd();
         $tab = $document->_getTab();
@@ -939,7 +933,7 @@ class WFEditor
                     $items = array_values($items);
 
                     // add to array
-                    $plugins['external'][$name] = URI::root(true) . '/' . $attribs->url . '/editor_plugin.js';
+                    $plugins['external'][$name] = JURI::root(true) . '/' . $attribs->url . '/editor_plugin.js';
                 }
 
                 // remove missing plugins
@@ -986,7 +980,7 @@ class WFEditor
 
             foreach ($installed as $plugin => $path) {
                 $path = dirname($path);
-                $root = URI::root(true);
+                $root = JURI::root(true);
 
                 if (empty($root)) {
                     $path = WFUtility::makePath(JPATH_SITE, $path);
@@ -1076,8 +1070,8 @@ class WFEditor
      */
     private static function getSiteTemplates()
     {
-        $db = Factory::getDBO();
-        $app = Factory::getApplication();
+        $db = JFactory::getDBO();
+        $app = JFactory::getApplication();
         $id = 0;
 
         // only process when front-end editing
@@ -1123,7 +1117,7 @@ class WFEditor
         }
 
         // search for editor.css file using JPath
-        $file = Path::find(array(
+        $file = JPath::find(array(
             JPATH_SITE . '/templates/' . $name . '/css',
             JPATH_SITE . '/media/templates/site/' . $name . '/css'
         ), 'editor.css');
@@ -1143,6 +1137,9 @@ class WFEditor
 
     private static function getTemplateStyleSheetsList($absolute = false)
     {
+        jimport('joomla.filesystem.folder');
+        jimport('joomla.filesystem.file');
+
         // set default url as empty value
         $url = '';
         // set default template as empty value
@@ -1236,7 +1233,7 @@ class WFEditor
                 if ($file) {
                     $files[] = $file;
                 } else {
-                    Factory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
+                    JFactory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
                 }
 
                 break;
@@ -1314,7 +1311,7 @@ class WFEditor
         $files = array_unique(array_filter($files));
 
         // get the root directory
-        $root = $absolute ? JPATH_SITE : URI::root(true);
+        $root = $absolute ? JPATH_SITE : JURI::root(true);
 
         // check for existence of each file and make array of stylesheets
         foreach ($files as $file) {
@@ -1333,7 +1330,7 @@ class WFEditor
 
             $fullpath = JPATH_SITE . '/' . $file;
 
-            if (File::exists($fullpath)) {
+            if (JFile::exists($fullpath)) {
                 // less
                 if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
                     $stylesheets[] = $fullpath;
@@ -1367,10 +1364,10 @@ class WFEditor
         // process less files etc.
         if (!empty($less)) {
             // create token
-            $token = Session::getFormToken();
+            $token = JSession::getFormToken();
             $version = self::getVersion();
 
-            return URI::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
+            return JURI::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
         }
 
         return $stylesheets;
@@ -1386,10 +1383,10 @@ class WFEditor
     private function getURL($relative = false)
     {
         if ($relative) {
-            return URI::root(true) . '/components/com_jce/editor';
+            return JURI::root(true) . '/components/com_jce/editor';
         }
 
-        return URI::root() . 'components/com_jce/editor';
+        return JURI::root() . 'components/com_jce/editor';
     }
 
     /**
@@ -1474,7 +1471,7 @@ class WFEditor
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
-                        if (File::exists($style)) {
+                        if (JFile::exists($style)) {
                             $files[] = $style;
                         }
                     }
@@ -1483,7 +1480,7 @@ class WFEditor
                     foreach ($plugins['core'] as $plugin) {
                         $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
 
-                        if (File::exists($content)) {
+                        if (JFile::exists($content)) {
                             $files[] = $content;
                         }
                     }
@@ -1492,7 +1489,7 @@ class WFEditor
                     foreach ($plugins['external'] as $plugin => $path) {
                         $content = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/css/content.css';
 
-                        if (File::exists($content)) {
+                        if (JFile::exists($content)) {
                             $files[] = $content;
                         }
                     }
@@ -1502,7 +1499,7 @@ class WFEditor
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
                     foreach ($styles as $style) {
-                        if (File::exists($style)) {
+                        if (JFile::exists($style)) {
                             $files[] = $style;
                         }
                     }
@@ -1557,7 +1554,7 @@ class WFEditor
 
     public function getToken($id)
     {
-        return '<input type="hidden" name="' . Session::getFormToken() . '" value="1" />';
+        return '<input type="hidden" name="' . JSession::getFormToken() . '" value="1" />';
     }
 
     /**

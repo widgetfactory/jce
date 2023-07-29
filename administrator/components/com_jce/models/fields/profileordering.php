@@ -5,15 +5,14 @@
  */
 defined('JPATH_BASE') or die;
 
-use Joomla\CMS\Factory;
-use Joomla\CMS\Form\Field\OrderingField;
+JFormHelper::loadFieldClass('ordering');
 
 /**
  * Supports an HTML select list of plugins.
  *
  * @since       1.6
  */
-class JFormFieldProfileordering extends OrderingField
+class JFormFieldProfileordering extends JFormFieldOrdering
 {
     /**
      * The form field type.
@@ -31,7 +30,7 @@ class JFormFieldProfileordering extends OrderingField
      */
     protected function getQuery()
     {
-        $db = Factory::getDbo();
+        $db = JFactory::getDbo();
 
         // Build the query for the ordering list.
         $query = $db->getQuery(true)

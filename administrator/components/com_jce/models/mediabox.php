@@ -13,14 +13,9 @@ defined('JPATH_PLATFORM') or die;
 // load base model
 jimport('joomla.application.component.modelform');
 
-use Joomla\CMS\MVC\Model\FormModel;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Table\Table;
 use Joomla\Utilities\ArrayHelper;
 
-class JceModelMediabox extends FormModel
+class JceModelMediabox extends JModelForm
 {
     /**
      * Returns a Table object, always creating it.
@@ -35,7 +30,7 @@ class JceModelMediabox extends FormModel
      */
     public function getTable($type = 'Extension', $prefix = 'JTable', $config = array())
     {
-        return Table::getInstance($type, $prefix, $config);
+        return JTable::getInstance($type, $prefix, $config);
     }
     
     /**
@@ -50,10 +45,10 @@ class JceModelMediabox extends FormModel
      */
     public function getForm($data = array(), $loadData = true)
     {
-        Form::addFormPath(JPATH_PLUGINS . '/system/jcemediabox');
+        JForm::addFormPath(JPATH_PLUGINS . '/system/jcemediabox');
 
-        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
-        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_PLUGINS . '/system/jcemediabox');
+        JFactory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
+        JFactory::getLanguage()->load('plg_system_jcemediabox', JPATH_PLUGINS . '/system/jcemediabox');
 
         // Get the form.
         $form = $this->loadForm('com_jce.mediabox', 'jcemediabox', array('control' => 'jform', 'load_data' => $loadData), true, '//config');
@@ -75,7 +70,7 @@ class JceModelMediabox extends FormModel
     protected function loadFormData()
     {
         // Check the session for previously entered form data.
-        $data = Factory::getApplication()->getUserState('com_jce.mediabox.plugin.data', array());
+        $data = JFactory::getApplication()->getUserState('com_jce.mediabox.plugin.data', array());
 
         if (empty($data)) {
             $data = $this->getData();
@@ -98,7 +93,7 @@ class JceModelMediabox extends FormModel
     public function getData()
     {
         // Get the editor data
-        $plugin = PluginHelper::getPlugin('system', 'jcemediabox');
+        $plugin = JPluginHelper::getPlugin('system', 'jcemediabox');
 
         // json_decode
         $json = json_decode($plugin->params, true);

@@ -2,10 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\ListField;
+JFormHelper::loadFieldClass('list');
 
-class JFormFieldFiletype extends ListField
+class JFormFieldFiletype extends JFormFieldText
 {
     /**
      * The form field type.
@@ -139,7 +138,7 @@ class JFormFieldFiletype extends ListField
                 $group = str_replace('-', '', $group);
 
                 $groupKey = 'WF_FILEGROUP_' . strtoupper($group);
-                $groupName = Text::_('WF_FILEGROUP_' . strtoupper($group));
+                $groupName = JText::_('WF_FILEGROUP_' . strtoupper($group));
 
                 // create simple label if there is no translation
                 if ($groupName === $groupKey) {
@@ -172,7 +171,7 @@ class JFormFieldFiletype extends ListField
                 $html[] = '</dd>';
             }
 
-            $html[] = '<dd class="filetype-item filetype-custom row form-row"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="" placeholder="' . Text::_('WF_EXTENSION_MAPPER_TYPE_NEW') . '" /><button class="pull-right float-right btn btn-link filetype-add"><span class="icon-plus"></span></button><button class="pull-right float-right btn btn-link filetype-remove"><span class="icon-trash"></span></button></dd>';
+            $html[] = '<dd class="filetype-item filetype-custom row form-row"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="" placeholder="' . JText::_('WF_EXTENSION_MAPPER_TYPE_NEW') . '" /><button class="pull-right float-right btn btn-link filetype-add"><span class="icon-plus"></span></button><button class="pull-right float-right btn btn-link filetype-remove"><span class="icon-trash"></span></button></dd>';
 
             $html[] = '</dl>';
         }

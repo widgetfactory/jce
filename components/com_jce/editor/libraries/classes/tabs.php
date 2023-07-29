@@ -10,10 +10,7 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Language\Text;
-
-final class WFTabs extends CMSObject
+final class WFTabs extends JObject
 {
     private $_tabs = array();
     private $_panels = array();
@@ -177,7 +174,7 @@ final class WFTabs extends CMSObject
                     $class .= ' uk-hidden';
                 }
 
-                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1" value="' . $name . '">' . Text::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
+                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1" value="' . $name . '">' . JText::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
                 ++$x;
             }
 

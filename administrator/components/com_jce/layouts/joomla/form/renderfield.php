@@ -9,9 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\HTML\HTMLHelper;
-
 extract($displayData);
 
 /**
@@ -25,10 +22,10 @@ extract($displayData);
 if (!empty($options['showonEnabled']))
 {
 	// joomla 3
-	HTMLHelper::_('jquery.framework');
-	HTMLHelper::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true));
+	JHtml::_('jquery.framework');
+	JHtml::_('script', 'jui/cms.js', array('version' => 'auto', 'relative' => true));
 	// joomla 4
-	HTMLHelper::_('script', 'jui/showon.js', array('version' => 'auto', 'relative' => true));
+	JHtml::_('script', 'jui/showon.js', array('version' => 'auto', 'relative' => true));
 }
 
 $class = empty($options['class']) ? '' : ' ' . $options['class'];
@@ -40,6 +37,6 @@ $rel   = empty($options['rel']) ? '' : ' ' . $options['rel'];
 	<?php endif; ?>
 	<div class="controls"><?php echo $input; ?></div>
 	<?php if (!empty($options['description'])) : ?>
-		<small class="description"><?php echo Text::_($options['description']);?></small>
+		<small class="description"><?php echo JText::_($options['description']);?></small>
 	<?php endif; ?>
 </div>

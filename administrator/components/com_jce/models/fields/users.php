@@ -2,16 +2,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Table\Table;
-use Joomla\CMS\Language\Text;
-use Joomla\CMS\Form\Field\UserField;
-
 /**
  * Field to select a user ID from a modal list.
  *
  * @since  1.6
  */
-class JFormFieldUsers extends UserField
+class JFormFieldUsers extends JFormFieldUser
 {
 	/**
 	 * The form field type.
@@ -98,7 +94,7 @@ class JFormFieldUsers extends UserField
 		}
 
 		$fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
-		$table = Table::getInstance('user');
+		$table = JTable::getInstance('user');
 
 		// clean value
 		$this->value = str_replace('"', '', $this->value);
@@ -110,7 +106,7 @@ class JFormFieldUsers extends UserField
 			
 			if ($table->load((int) $id)) {
                 $text = htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8');
-				$text = Text::alt($text, $fieldname);
+				$text = JText::alt($text, $fieldname);
 
 				$tmp = array(
 					'value' => $id,

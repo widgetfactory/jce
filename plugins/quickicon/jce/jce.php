@@ -10,26 +10,21 @@
  */
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
-use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Language\Text;
-
 /**
  * JCE File Browser Quick Icon plugin.
  *
  * @since		2.1
  */
-class plgQuickiconJce extends CMSPlugin
+class plgQuickiconJce extends JPlugin
 {
     public function __construct(&$subject, $config)
     {
         parent::__construct($subject, $config);
 
-        $app = Factory::getApplication();
+        $app = JFactory::getApplication();
 
         // only in Admin and only if the component is enabled
-        if ($app->getClientId() !== 1 || ComponentHelper::getComponent('com_jce', true)->enabled === false) {
+        if ($app->getClientId() !== 1 || JComponentHelper::getComponent('com_jce', true)->enabled === false) {
             return;
         }
 
@@ -42,20 +37,20 @@ class plgQuickiconJce extends CMSPlugin
             return;
         }
 
-        $user = Factory::getUser();
+        $user = JFactory::getUser();
 
         if (!$user->authorise('jce.browser', 'com_jce')) {
             return;
         }
 
-        $language = Factory::getLanguage();
+        $language = JFactory::getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
         return array(array(
             'link'      => 'index.php?option=com_jce&view=browser',
             'image'     => 'picture fa fa-image',
             'access'    => array('jce.browser', 'com_jce'),
-            'text'      => Text::_('PLG_QUICKICON_JCE_TITLE'),
+            'text'      => JText::_('PLG_QUICKICON_JCE_TITLE'),
             'id'        => 'plg_quickicon_jce',
         ));
     }
