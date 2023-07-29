@@ -2,9 +2,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Language\Text;
 
 /**
  * Admin helper.
