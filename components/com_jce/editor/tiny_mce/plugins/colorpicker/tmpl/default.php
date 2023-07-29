@@ -9,20 +9,23 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+
 ?>
 <div id="colorpicker">
     <div id="colorpicker_tabs">
         <ul class="uk-tab" role="tablist">
-            <li role="presentation" aria-selected="true" class="uk-active"><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_picker" tabindex="-1"><?php echo JText::_('WF_COLORPICKER_PICKER'); ?></button></li>
-            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_web" tabindex="-1"><?php echo JText::_('WF_COLORPICKER_PALETTE'); ?></button></li>
-            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_named" tabindex="-1"><?php echo JText::_('WF_COLORPICKER_NAMED'); ?></button></li>
-            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_template" tabindex="-1"><?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?></button></li>
+            <li role="presentation" aria-selected="true" class="uk-active"><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_picker" tabindex="-1"><?php echo Text::_('WF_COLORPICKER_PICKER'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_web" tabindex="-1"><?php echo Text::_('WF_COLORPICKER_PALETTE'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_named" tabindex="-1"><?php echo Text::_('WF_COLORPICKER_NAMED'); ?></button></li>
+            <li role="presentation" aria-selected="false" ><button type="button" class="uk-button uk-button-link" aria-controls="colorpicker_template" tabindex="-1"><?php echo Text::_('WF_COLORPICKER_TEMPLATE'); ?></button></li>
         </ul>
         <div id="tab-content" class="uk-switcher">
-            <div id="colorpicker_picker" title="<?php echo JText::_('WF_COLORPICKER_PICKER'); ?>" data-type="picker" class="uk-active" role="tabpanel" aria-hidden="false"><!-- Will be filled with color wheel --></div>
-            <div id="colorpicker_web" title="<?php echo JText::_('WF_COLORPICKER_PALETTE'); ?>" data-type="web" role="tabpanel" aria-hidden="true"><!-- Gets filled with web safe colors--></div>
-            <div id="colorpicker_named" title="<?php echo JText::_('WF_COLORPICKER_NAMED'); ?>" data-type="named" role="tabpanel" aria-hidden="true"><!-- Gets filled with named colors--></div>
-            <div id="colorpicker_template" title="<?php echo JText::_('WF_COLORPICKER_TEMPLATE'); ?>" data-type="template" role="tabpanel" aria-hidden="true"><!-- Gets filled with template colors--></div>
+            <div id="colorpicker_picker" title="<?php echo Text::_('WF_COLORPICKER_PICKER'); ?>" data-type="picker" class="uk-active" role="tabpanel" aria-hidden="false"><!-- Will be filled with color wheel --></div>
+            <div id="colorpicker_web" title="<?php echo Text::_('WF_COLORPICKER_PALETTE'); ?>" data-type="web" role="tabpanel" aria-hidden="true"><!-- Gets filled with web safe colors--></div>
+            <div id="colorpicker_named" title="<?php echo Text::_('WF_COLORPICKER_NAMED'); ?>" data-type="named" role="tabpanel" aria-hidden="true"><!-- Gets filled with named colors--></div>
+            <div id="colorpicker_template" title="<?php echo Text::_('WF_COLORPICKER_TEMPLATE'); ?>" data-type="template" role="tabpanel" aria-hidden="true"><!-- Gets filled with template colors--></div>
         </div>
     </div>
 <input type="hidden" id="tmp_color" />
@@ -36,5 +39,5 @@ defined('JPATH_PLATFORM') or die;
       </div>
   </div>
 
-    <button type="button" class="uk-button uk-button-primary" id="colorpicker_insert" onclick="ColorPicker.insert();"><i class="uk-icon-check"></i><span class="uk-button-text"><?php echo JText::_('WF_LABEL_APPLY'); ?></span></button>
+    <button type="button" class="uk-button uk-button-primary" id="colorpicker_insert" onclick="ColorPicker.insert();"><i class="uk-icon-check"></i><span class="uk-button-text"><?php echo Text::_('WF_LABEL_APPLY'); ?></span></button>
 </div>

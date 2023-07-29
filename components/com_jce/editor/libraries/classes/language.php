@@ -8,6 +8,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
+
+use Joomla\CMS\Factory;
+
 abstract class WFLanguage
 {
     /* Map language code to generic tag */
@@ -31,7 +34,7 @@ abstract class WFLanguage
      */
     public static function getDir()
     {
-        return JFactory::getLanguage()->isRTL() ? 'rtl' : 'ltr';
+        return Factory::getLanguage()->isRTL() ? 'rtl' : 'ltr';
     }
 
     /**
@@ -41,7 +44,7 @@ abstract class WFLanguage
      */
     public static function getTag()
     {
-        $tag = JFactory::getLanguage()->getTag();
+        $tag = Factory::getLanguage()->getTag();
 
         $code = substr($tag, 0, strpos($tag, '-'));
 
@@ -76,6 +79,6 @@ abstract class WFLanguage
      */
     public static function load($prefix, $path = JPATH_SITE)
     {
-        JFactory::getLanguage()->load($prefix, $path);
+        Factory::getLanguage()->load($prefix, $path);
     }
 }

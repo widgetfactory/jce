@@ -9,13 +9,16 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+
 ?>
 <div class="uk-grid uk-grid-small uk-form-row">
-    <label class="uk-form-label uk-width-7-10"><?php echo JText::_('WF_TABLE_COLS'); ?>:</label>
+    <label class="uk-form-label uk-width-7-10"><?php echo Text::_('WF_TABLE_COLS'); ?>:</label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="number" min="1" id="numcols" value=""/>
     </div>
-    <label class="uk-form-label uk-width-7-10"><?php echo JText::_('WF_TABLE_ROWS'); ?>:</label>
+    <label class="uk-form-label uk-width-7-10"><?php echo Text::_('WF_TABLE_ROWS'); ?>:</label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="number" min="1" id="numrows" value=""/>
     </div>

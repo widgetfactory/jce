@@ -10,6 +10,8 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
+
 abstract class WfBrowserHelper
 {
     public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
@@ -36,8 +38,8 @@ abstract class WfBrowserHelper
 
     public static function getMediaFieldOptions($options = array())
     {
-        $app = JFactory::getApplication();
-        $token = JFactory::getSession()->getFormToken();
+        $app = Factory::getApplication();
+        $token = Factory::getSession()->getFormToken();
 
 
         if (!isset($options['element'])) {

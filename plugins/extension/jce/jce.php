@@ -6,12 +6,19 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Installer\Installer;
+
 /**
  * JCE extension plugin.
  *
  * @since  2.6
  */
-class PlgExtensionJce extends JPlugin
+class PlgExtensionJce extends CMSPlugin
 {
     /**
      * Check the installer is for a valid plugin group.
@@ -40,7 +47,7 @@ class PlgExtensionJce extends JPlugin
         if ((string) $type === "file") {
 
             // get a reference to the current installer
-            $manifestPath = JInstaller::getInstance()->getPath('manifest');
+            $manifestPath = Installer::getInstance()->getPath('manifest');
 
             if (empty($manifestPath)) {
                 return true;
@@ -54,11 +61,11 @@ class PlgExtensionJce extends JPlugin
                 // find an existing legacy language install, eg: jce-de-DE
                 $element = str_replace('pkg_jce_', 'jce-', $element);
 
-                $table = JTable::getInstance('extension');
+                $table = Table::getInstance('extension');
                 $id = $table->find(array('type' => 'file', 'element' => $element));
 
                 if ($id) {
-                    $installer = new JInstaller();
+                    $installer = new Installer();
 
                     // try unisntall, if this fails, delete database entry
                     if (!$installer->uninstall('file', $id)) {
@@ -92,7 +99,7 @@ class PlgExtensionJce extends JPlugin
             require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
 
             // enable plugin
-            $plugin = JTable::getInstance('extension');
+            $plugin = Table::getInstance('extension');
             $plugin->load($eid);
             $plugin->publish();
 
@@ -124,15 +131,15 @@ class PlgExtensionJce extends JPlugin
 
                 // delete manifest
                 if (is_file($path . '/' . $plugin->name . '.xml')) {
-                    JFile::delete($path . '/' . $plugin->name . '.xml');
+                    File::delete($path . '/' . $plugin->name . '.xml');
                 }
                 // delete file
                 if (is_file($path . '/' . $plugin->name . '.php')) {
-                    JFile::delete($path . '/' . $plugin->name . '.php');
+                    File::delete($path . '/' . $plugin->name . '.php');
                 }
                 // delete folder
                 if (is_dir($path . '/' . $plugin->name)) {
-                    JFolder::delete($path . '/' . $plugin->name);
+                    Folder::delete($path . '/' . $plugin->name);
                 }
             }
         }
@@ -194,12 +201,12 @@ class PlgExtensionJce extends JPlugin
         $params = json_decode($table->params, true);
 
         if ($params && !empty($params['updates_key'])) {
-            $updatesite = JTable::getInstance('Updatesite');
+            $updatesite = Table::getInstance('Updatesite');
 
             // sanitize key
             $key = preg_replace("/[^a-zA-Z0-9]/", "", $params['updates_key']);
 
-            $db = JFactory::getDBO();
+            $db = Factory::getDBO();
 
             $query = $db->getQuery(true);
             $query->select($db->qn('update_site_id'))->from('#__update_sites_extensions')->where($db->qn('extension_id') . '=' . (int) $table->package_id);

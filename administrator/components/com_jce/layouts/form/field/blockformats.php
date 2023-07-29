@@ -50,9 +50,8 @@ extract($displayData);
  *     %4 = any other attributes
  */
 $format = '<input type="checkbox" id="%1$s" value="%3$s" name="%2$s" %5$s /><label for="%1$s" class="checkbox blockformat-%3$s">%4$s</label>';
-
-// The alt option for JText::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
+
 ?>
 
 <fieldset id="<?php echo $id; ?>" class="<?php echo trim($class . ' checkboxes blockformats'); ?>">

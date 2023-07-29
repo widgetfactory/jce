@@ -10,7 +10,10 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class JceControllerCpanel extends JControllerLegacy
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+
+class JceControllerCpanel extends AdminController
 {
     public function feed()
     {
@@ -21,6 +24,6 @@ class JceControllerCpanel extends JControllerLegacy
         ));
 
         // Close the application
-		JFactory::getApplication()->close();
+		Factory::getApplication()->close();
     }
 }

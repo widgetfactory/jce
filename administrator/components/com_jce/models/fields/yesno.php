@@ -2,9 +2,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('radio');
+use Joomla\CMS\Form\Field\RadioField;
 
-class JFormFieldYesNo extends JFormFieldRadio
+class JFormFieldYesNo extends RadioField
 {
     /**
      * The form field type.

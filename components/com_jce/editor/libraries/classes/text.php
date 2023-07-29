@@ -10,15 +10,17 @@
  */
 defined('JPATH_PLATFORM') or die('RESTRICTED');
 
+use Joomla\CMS\Language\Text;
+
 abstract class WFText
 {
     public static function _($string, $default = '')
     {
-        return JText::_($string);
+        return Text::_($string);
     }
 
     public static function sprintf($string)
     {
-        return JText::sprintf($string);
+        return Text::sprintf($string);
     }
 }

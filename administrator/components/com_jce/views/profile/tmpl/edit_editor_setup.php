@@ -10,6 +10,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$this->name = JText::_('WF_PROFILES_EDITOR_SETUP');
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+
+$this->name = Text::_('WF_PROFILES_EDITOR_SETUP');
 $this->fieldsname = 'editor.setup';
-echo JLayoutHelper::render('joomla.content.options_default', $this);
+echo LayoutHelper::render('joomla.content.options_default', $this);

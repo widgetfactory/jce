@@ -8,6 +8,10 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+
 ?>
 <style type="text/css">
     /* Reset template style sheet */
@@ -22,7 +26,7 @@ defined('JPATH_PLATFORM') or die;
     <?php if ($this->features['mode'] && $this->features['print']) {
     ?>
         <div class="buttonheading"><a href="javascript:;" onClick="window.print();
-                return false"><img src="<?php echo JURI::root(); ?>media/com_jce/img/print.png" width="16" height="16" alt="<?php echo JText::_('Print'); ?>" title="<?php echo JText::_('Print'); ?>" /></a></div>
+                return false"><img src="<?php echo Uri::root(); ?>media/com_jce/img/print.png" width="16" height="16" alt="<?php echo Text::_('Print'); ?>" title="<?php echo Text::_('Print'); ?>" /></a></div>
 <?php 
 } ?>
     <div><img src="<?php echo $this->features['img']; ?>" width="<?php echo $this->features['width']; ?>" height="<?php echo $this->features['height']; ?>" alt="<?php echo $this->features['alt']; ?>" onclick="window.close();" /></div>

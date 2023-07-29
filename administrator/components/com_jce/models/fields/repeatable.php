@@ -10,13 +10,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormField;
+
 /**
  * Form Field class for the JCE.
  * Display a field with a repeatable set of defined sub fields
  *
  * @since       2.7
  */
-class JFormFieldRepeatable extends JFormField
+class JFormFieldRepeatable extends FormField
 {
     /**
      * The form field type.
@@ -97,8 +100,8 @@ class JFormFieldRepeatable extends JFormField
             $str[] = '  </div>';
 
             $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
             $str[] = '  </div>';
 
             $str[] = '</div>';

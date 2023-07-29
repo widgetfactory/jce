@@ -14,11 +14,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
 /**
  * Content search plugin.
  *
  */
-class PlgWfSearchContent extends JPlugin
+class PlgWfSearchContent extends CMSPlugin
 {
     /**
      * Determine areas searchable by this plugin.
@@ -50,12 +54,12 @@ class PlgWfSearchContent extends JPlugin
      */
     public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
     {
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $serverType = $db->getServerType();
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
         $groups = implode(',', $user->getAuthorisedViewLevels());
-        $tag = JFactory::getLanguage()->getTag();
+        $tag = Factory::getLanguage()->getTag();
 
         $searchText = $text;
 
@@ -66,7 +70,7 @@ class PlgWfSearchContent extends JPlugin
         $limit = $this->params->def('search_limit', 50);
 
         $nullDate = $db->getNullDate();
-        $date = JFactory::getDate();
+        $date = Factory::getDate();
         $now = $date->toSql();
 
         $text = trim($text);
@@ -183,7 +187,7 @@ class PlgWfSearchContent extends JPlugin
                 $rows = $db->loadObjectList();
             } catch (RuntimeException $e) {
                 $rows = array();
-                JFactory::getApplication()->enqueueMessage(JText::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
+                Factory::getApplication()->enqueueMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
             }
 
             if ($rows) {

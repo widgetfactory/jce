@@ -11,14 +11,17 @@
 // no direct access
 defined('JPATH_PLATFORM') or die;
 
-JLoader::import('joomla.application.component.controller');
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 /**
  * JCE Component Controller.
  *
  * @since 1.5
  */
-class JceController extends JControllerLegacy
+class JceController extends AdminController
 {
     /**
      * @var string The extension for which the categories apply
@@ -58,11 +61,11 @@ class JceController extends JControllerLegacy
     public function display($cachable = false, $urlparams = false)
     {
         // Get the document object.
-        $document = JFactory::getDocument();
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $document = Factory::getDocument();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
 
-        JFactory::getLanguage()->load('com_jce', JPATH_ADMINISTRATOR);
+        Factory::getLanguage()->load('com_jce', JPATH_ADMINISTRATOR);
 
         // Set the default view name and format from the Request.
         $vName = $app->input->get('view', 'cpanel');
@@ -85,7 +88,7 @@ class JceController extends JControllerLegacy
         $adminViews = array('config', 'profiles', 'profile', 'mediabox');
 
         if (in_array($vName, $adminViews) && !$user->authorise('core.manage', 'com_jce')) {
-            throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+            throw new JAccessExceptionNotallowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
         }
 
         // create view
@@ -101,7 +104,7 @@ class JceController extends JControllerLegacy
                 }
 
                 if (!$user->authorise('jce.' . $vName, 'com_jce')) {
-                    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+                    throw new JAccessExceptionNotallowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
                 }
             }
             
@@ -125,7 +128,7 @@ class JceController extends JControllerLegacy
                 JceHelperAdmin::addSubmenu($vName);
             }
 
-            $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/global.min.css?' . md5(WF_VERSION));
+            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/global.min.css?' . md5(WF_VERSION));
 
             $view->display();
         }

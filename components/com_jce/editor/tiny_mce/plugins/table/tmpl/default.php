@@ -9,6 +9,9 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+
 $tabs = WFTabs::getInstance();
 ?>
 <form onsubmit="return false;" class="uk-form uk-form-horizontal" data-layout="<?php echo $this->plugin->getLayout(); ?>">
@@ -17,23 +20,23 @@ $tabs = WFTabs::getInstance();
 	<?php if ($this->plugin->getLayout() == 'cell') : ?>
 		<div class="uk-form-row uk-float-left">
 			<select id="action" name="action">
-				<option value="cell"><?php echo JText::_('WF_TABLE_CELL_CELL'); ?></option>
-				<option value="row"><?php echo JText::_('WF_TABLE_CELL_ROW'); ?></option>
-				<option value="all"><?php echo JText::_('WF_TABLE_CELL_ALL'); ?></option>
+				<option value="cell"><?php echo Text::_('WF_TABLE_CELL_CELL'); ?></option>
+				<option value="row"><?php echo Text::_('WF_TABLE_CELL_ROW'); ?></option>
+				<option value="all"><?php echo Text::_('WF_TABLE_CELL_ALL'); ?></option>
 			</select>
 		</div>
 	<?php endif;
     if ($this->plugin->getLayout() == 'row') : ?>
 		<div class="uk-form-row uk-float-left">
 			<select id="action" name="action">
-				<option value="row"><?php echo JText::_('WF_TABLE_ROW_ROW'); ?></option>
-				<option value="odd"><?php echo JText::_('WF_TABLE_ROW_ODD'); ?></option>
-				<option value="even"><?php echo JText::_('WF_TABLE_ROW_EVEN'); ?></option>
-				<option value="all"><?php echo JText::_('WF_TABLE_ROW_ALL'); ?></option>
+				<option value="row"><?php echo Text::_('WF_TABLE_ROW_ROW'); ?></option>
+				<option value="odd"><?php echo Text::_('WF_TABLE_ROW_ODD'); ?></option>
+				<option value="even"><?php echo Text::_('WF_TABLE_ROW_EVEN'); ?></option>
+				<option value="all"><?php echo Text::_('WF_TABLE_ROW_ALL'); ?></option>
 			</select>
 		</div>
 	<?php endif; ?>
-	<button type="button" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL'); ?></button>
-	<button type="submit" id="insert" onclick="TableDialog.insert();"><?php echo JText::_('WF_LABEL_INSERT'); ?></button>
+	<button type="button" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL'); ?></button>
+	<button type="submit" id="insert" onclick="TableDialog.insert();"><?php echo Text::_('WF_LABEL_INSERT'); ?></button>
 	</div>
 </form>

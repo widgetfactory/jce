@@ -10,14 +10,19 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Language\Text;
+
 require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
-class JceControllerEditor extends JControllerLegacy
+class JceControllerEditor extends AdminController
 {
     public function execute($task)
     {
         // check for session token
-        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
         $editor = new WFEditor();
 

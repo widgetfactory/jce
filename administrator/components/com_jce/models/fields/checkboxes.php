@@ -9,7 +9,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\Field\ListField;
 
 /**
  * Form Field class for the Joomla Platform.
@@ -19,7 +19,7 @@ JFormHelper::loadFieldClass('list');
  * @see    JFormFieldCheckbox
  * @since  1.7.0
  */
-class JFormFieldCheckboxes extends JFormFieldList
+class JFormFieldCheckboxes extends ListField
 {
 	/**
 	 * The form field type.

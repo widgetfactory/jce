@@ -8,6 +8,10 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses
  */
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+
 class WFStyleselectPluginConfig
 {
     /**
@@ -15,8 +19,8 @@ class WFStyleselectPluginConfig
      */
     private static function getSiteTemplates()
     {
-        $db = JFactory::getDBO();
-        $app = JFactory::getApplication();
+        $db = Factory::getDBO();
+        $app = Factory::getApplication();
         $id = 0;
 
         if ($app->getClientId() === 0) {
@@ -194,7 +198,7 @@ class WFStyleselectPluginConfig
 
                     // explode to array
                     $content_css = explode(',', $settings['content_css']);
-                    $content_css[] = JURI::root(true) . '/' . $stylesheet . $etag;
+                    $content_css[] = Uri::root(true) . '/' . $stylesheet . $etag;
 
                     // remove duplicates and empty values
                     $content_css = array_unique(array_filter($content_css));

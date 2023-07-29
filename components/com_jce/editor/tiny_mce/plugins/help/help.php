@@ -10,6 +10,11 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Language\Text;
+
 class WFHelpPlugin extends WFEditorPlugin
 {
     protected $name = 'help';
@@ -26,14 +31,14 @@ class WFHelpPlugin extends WFEditorPlugin
     {
         parent::display();
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $section = $app->input->getWord('section');
         $category = $app->input->getWord('category');
         $article = $app->input->getWord('article');
         $language = $app->input->getWord('lang');
 
-        $params = JComponentHelper::getParams('com_jce');
+        $params = ComponentHelper::getParams('com_jce');
 
         $url = $params->get('help_url', 'https://www.joomlacontenteditor.net');
         $method = $params->get('help_method', 'reference');
@@ -92,7 +97,7 @@ class WFHelpPlugin extends WFEditorPlugin
 
     public function getLanguage()
     {
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
         $tag = $language->getTag();
 
         return substr($tag, 0, strpos($tag, '-'));
@@ -119,7 +124,7 @@ class WFHelpPlugin extends WFEditorPlugin
                     if ($file) {
                         $result .= $this->getTopics(WF_EDITOR . '/' . $file);
                     } else {
-                        $result .= '<li id="' . $key . '" class="' . $class . '"><a href="#"><span class="uk-icon uk-icon-copy uk-margin-small-right"></span>&nbsp;' . trim(JText::_($title)) . '</a>';
+                        $result .= '<li id="' . $key . '" class="' . $class . '"><a href="#"><span class="uk-icon uk-icon-copy uk-margin-small-right"></span>&nbsp;' . trim(Text::_($title)) . '</a>';
                     }
 
                     if (count($subtopics)) {
@@ -129,7 +134,7 @@ class WFHelpPlugin extends WFEditorPlugin
 
                             // if a file is set load it as sub-subtopics
                             if ($file = (string) $subtopic->attributes()->file) {
-                                $result .= '<li class="subtopics uk-parent"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li class="subtopics uk-parent"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(Text::_((string) $subtopic->attributes()->title)) . '</a>';
                                 $result .= '<ul class="uk-nav uk-nav-side uk-list-space hidden">';
                                 $result .= $this->getTopics(WF_EDITOR . '/' . $file);
                                 $result .= '</ul>';
@@ -139,12 +144,12 @@ class WFHelpPlugin extends WFEditorPlugin
 
                                 $class = count($sub_subtopics) ? ' class="subtopics uk-parent"' : '';
                                 $icon  = count($sub_subtopics) ? 'uk-icon-copy' : 'uk-icon-file';
-                                $result .= '<li' . $class . $id . '><a href="#"><span class="uk-icon ' . $icon . ' uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $subtopic->attributes()->title)) . '</a>';
+                                $result .= '<li' . $class . $id . '><a href="#"><span class="uk-icon ' . $icon . ' uk-margin-small-right"></span>&nbsp;' . trim(Text::_((string) $subtopic->attributes()->title)) . '</a>';
 
                                 if (count($sub_subtopics)) {
                                     $result .= '<ul class="uk-nav uk-nav-side hidden">';
                                     foreach ($sub_subtopics as $sub_subtopic) {
-                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(JText::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
+                                        $result .= '<li id="' . (string) $sub_subtopic->attributes()->key . '"><a href="#"><span class="uk-icon uk-icon-file uk-margin-small-right"></span>&nbsp;' . trim(Text::_((string) $sub_subtopic->attributes()->title)) . '</a></li>';
                                     }
                                     $result .= '</ul>';
                                 }
@@ -170,18 +175,18 @@ class WFHelpPlugin extends WFEditorPlugin
      */
     public function renderTopics()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $section = $app->input->getWord('section', 'admin');
         $category = $app->input->getWord('category', 'cpanel');
 
-        $document = JFactory::getDocument();
-        $language = JFactory::getLanguage();
+        $document = Factory::getDocument();
+        $language = Factory::getLanguage();
 
         $language->load('com_jce', JPATH_SITE);
         $language->load('com_jce_pro', JPATH_SITE);
 
-        $document->setTitle(JText::_('WF_HELP') . ' : ' . JText::_('WF_' . strtoupper($category) . '_TITLE'));
+        $document->setTitle(Text::_('WF_HELP') . ' : ' . Text::_('WF_' . strtoupper($category) . '_TITLE'));
 
         switch ($section) {
             case 'admin':
@@ -191,7 +196,7 @@ class WFHelpPlugin extends WFEditorPlugin
                 $file = WF_EDITOR_PLUGINS . '/' . $category . '/' . $category . '.xml';
 
                 // check for installed plugin
-                $plugin = JPluginHelper::getPlugin('jce', 'editor-' . $category);
+                $plugin = PluginHelper::getPlugin('jce', 'editor-' . $category);
 
                 if ($plugin) {
                     $file = JPATH_PLUGINS . '/jce/editor-' . $category . '/editor-' . $category . '.xml';
@@ -208,7 +213,7 @@ class WFHelpPlugin extends WFEditorPlugin
 
         $result = '';
 
-        $result .= '<ul class="uk-nav" id="help-menu"><li class="uk-nav-header">' . JText::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
+        $result .= '<ul class="uk-nav" id="help-menu"><li class="uk-nav-header">' . Text::_('WF_' . strtoupper($category) . '_TITLE') . '</li>';
         $result .= $this->getTopics($file);
         $result .= '</ul>';
 

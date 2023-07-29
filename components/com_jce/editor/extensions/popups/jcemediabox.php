@@ -10,6 +10,8 @@
  */
 defined('_WF_EXT') or die('RESTRICTED');
 
+use Joomla\CMS\Plugin\PluginHelper;
+
 class WFPopupsExtension_Jcemediabox
 {
     /**
@@ -49,7 +51,7 @@ class WFPopupsExtension_Jcemediabox
     {
         $wf = WFEditorPlugin::getInstance();
 
-        if ((JPluginHelper::isEnabled('system', 'jcemediabox') || JPluginHelper::isEnabled('system', 'wf_lightcase')) && $wf->getParam('popups.jcemediabox.enable', 1) == 1) {
+        if ((PluginHelper::isEnabled('system', 'jcemediabox') || PluginHelper::isEnabled('system', 'wf_lightcase')) && $wf->getParam('popups.jcemediabox.enable', 1) == 1) {
             return true;
         }
 

@@ -14,11 +14,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
 /**
  * Tags search plugin.
  *
  */
-class PlgWfSearchTags extends JPlugin
+class PlgWfSearchTags extends CMSPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -59,13 +63,13 @@ class PlgWfSearchTags extends JPlugin
 	 */
 	public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
-		$db    = JFactory::getDbo();
+		$db    = Factory::getDbo();
 		$query = $db->getQuery(true);
-		$app   = JFactory::getApplication();
-		$user  = JFactory::getUser();
-		$lang  = JFactory::getLanguage();
+		$app   = Factory::getApplication();
+		$user  = Factory::getUser();
+		$lang  = Factory::getLanguage();
 
-		$section = JText::_('PLG_SEARCH_TAGS_TAGS');
+		$section = Text::_('PLG_SEARCH_TAGS_TAGS');
 		$limit   = $this->params->def('search_limit', 50);
 
 		if (is_array($areas) && !array_intersect($areas, array_keys($this->onContentSearchAreas())))
@@ -139,7 +143,7 @@ class PlgWfSearchTags extends JPlugin
 		catch (RuntimeException $e)
 		{
 			$rows = array();
-			JFactory::getApplication()->enqueueMessage(JText::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
+			Factory::getApplication()->enqueueMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
 		}
 
 		if ($rows)

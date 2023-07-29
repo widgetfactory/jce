@@ -10,7 +10,9 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class JceControllerConfig extends JControllerForm
+use Joomla\CMS\MVC\Controller\FormController;
+
+class JceControllerConfig extends FormController
 {
 	public function __construct($config = array())
 	{

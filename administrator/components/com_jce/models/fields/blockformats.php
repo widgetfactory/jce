@@ -2,7 +2,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-class JFormFieldBlockformats extends JFormFieldCheckboxes
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\Field\CheckboxesField;
+
+class JFormFieldBlockformats extends CheckboxesField
 {
     /**
      * The form field type.
@@ -86,7 +89,7 @@ class JFormFieldBlockformats extends JFormFieldCheckboxes
 
             $tmp = array(
                 'value' => $format,
-                'text'  => JText::alt($text, $fieldname),
+                'text'  => Text::alt($text, $fieldname),
                 'checked' => in_array($format, $values)
             );
 

@@ -10,6 +10,11 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
+
 class WFPreviewPlugin extends WFEditorPlugin
 {
     /**
@@ -31,11 +36,11 @@ class WFPreviewPlugin extends WFEditorPlugin
      */
     public function showPreview()
     {
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
 
         // reset document type
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
         $document->setType('html');
 
         // required by module loadposition
@@ -61,7 +66,7 @@ class WFPreviewPlugin extends WFEditorPlugin
         $context = "";
 
         $extension_id = $app->input->getInt('extension_id');
-        $extension = JTable::getInstance('extension');
+        $extension = Table::getInstance('extension');
 
         if ($extension->load($extension_id)) {
             $option = $extension->element;
@@ -71,7 +76,7 @@ class WFPreviewPlugin extends WFEditorPlugin
             $context = $option . '.article';
         }
 
-        $article = JTable::getInstance('content');
+        $article = Table::getInstance('content');
 
         $article->id = 0;
         $article->created_by = $user->get('id');
@@ -79,7 +84,7 @@ class WFPreviewPlugin extends WFEditorPlugin
         $article->text = $data;
 
         // load system plugins
-        JPluginHelper::importPlugin('system');
+        PluginHelper::importPlugin('system');
 
         $app->triggerEvent('onWfContentPreview', array($context, &$article, &$params, 0));
 
@@ -88,7 +93,7 @@ class WFPreviewPlugin extends WFEditorPlugin
             $page = 0;
 
             // load content plugins
-            JPluginHelper::importPlugin('content');
+            PluginHelper::importPlugin('content');
 
             // set error reporting off to produce empty string on Fatal error
             error_reporting(0);
@@ -108,7 +113,7 @@ class WFPreviewPlugin extends WFEditorPlugin
      */
     private function processURLS(&$article)
     {
-        $base = JURI::root(true) . '/';
+        $base = Uri::root(true) . '/';
         $buffer = $article->text;
 
         $protocols = '[a-zA-Z0-9]+:'; //To check for all unknown protocals (a protocol must contain at least one alpahnumeric fillowed by :

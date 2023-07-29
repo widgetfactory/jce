@@ -10,7 +10,10 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class WFPacker extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Uri\Uri;
+
+class WFPacker extends CMSObject
 {
     const IMPORT_RX = '#@import.*?(?:\(([^\)]+)\);|(?:[\'"]([^\'"]+)[\'"]);)#i'; // match @import url('...'); or @import '...'; or @import "...";
 
@@ -383,7 +386,7 @@ class WFPacker extends JObject
                 $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase') . '/' . $path));
 
                 if ($path) {
-                    return "url('" . JURI::root(true) . str_replace('\\', '/', $path) . $query . "')";
+                    return "url('" . Uri::root(true) . str_replace('\\', '/', $path) . $query . "')";
                 }
 
                 return "url('" . $data[1] . "')";

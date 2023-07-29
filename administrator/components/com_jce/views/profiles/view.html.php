@@ -3,7 +3,19 @@
 // Check to ensure this file is included in Joomla!
 defined('JPATH_PLATFORM') or die;
 
-class JceViewProfiles extends JViewLegacy
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Layout\FileLayout;
+
+class JceViewProfiles extends HtmlView
 {
     protected $items;
     protected $pagination;
@@ -12,7 +24,7 @@ class JceViewProfiles extends JViewLegacy
     protected function isEmpty()
     {
         // Create a new query object.
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $query = $db->getQuery(true);
 
         // Select the required fields from the table.
@@ -34,33 +46,31 @@ class JceViewProfiles extends JViewLegacy
         $this->filterForm = $this->get('FilterForm');
         $this->activeFilters = $this->get('ActiveFilters');
 
-        $this->params = JComponentHelper::getParams('com_jce');
+        $this->params = ComponentHelper::getParams('com_jce');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode("\n", $errors));
-
-            return false;
+            throw new GenericDataException(implode("\n", $errors), 500);
         }
 
         if ($this->isEmpty()) {
-            $link = JHTML::link('index.php?option=com_jce&task=profiles.repair&' . JSession::getFormToken() . '=1', JText::_('WF_DB_CREATE_RESTORE'), array('class' => 'wf-profiles-repair'));
-            JFactory::getApplication()->enqueueMessage(JText::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
+            $link = HTMLHelper::link('index.php?option=com_jce&task=profiles.repair&' . Session::getFormToken() . '=1', Text::_('WF_DB_CREATE_RESTORE'), array('class' => 'wf-profiles-repair'));
+            Factory::getApplication()->enqueueMessage(Text::_('WF_DB_PROFILES_ERROR') . ' - ' . $link, 'error');
         }
 
-        JHtml::_('jquery.framework');
+        HTMLHelper::_('jquery.framework');
 
         // only in Joomla 3.x
         if (version_compare(JVERSION, '4', 'lt')) {
-            JHtml::_('formbehavior.chosen', 'select');
+            HTMLHelper::_('formbehavior.chosen', 'select');
         }
 
-        $document = JFactory::getDocument();
-        $document->addScript(JURI::root(true) . '/media/com_jce/js/profiles.min.js');
-        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/profiles.min.css');
+        $document = Factory::getDocument();
+        $document->addScript(Uri::root(true) . '/media/com_jce/js/profiles.min.js');
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/profiles.min.css');
 
         $this->addToolbar();
-        $this->sidebar = JHtmlSidebar::render();
+        $this->sidebar = Sidebar::render();
         parent::display($tpl);
     }
 
@@ -72,32 +82,32 @@ class JceViewProfiles extends JViewLegacy
     protected function addToolbar()
     {
         $state = $this->get('State');
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
 
-        JToolbarHelper::title('JCE - ' . JText::_('WF_PROFILES'), 'users');
+        ToolbarHelper::title('JCE - ' . Text::_('WF_PROFILES'), 'users');
 
-        $bar = JToolBar::getInstance('toolbar');
+        $bar = ToolBar::getInstance('toolbar');
 
         if ($user->authorise('jce.profiles', 'com_jce')) {
-            JToolbarHelper::addNew('profile.add');
-            JToolbarHelper::custom('profiles.copy', 'copy', 'copy', 'WF_PROFILES_COPY', true);
+            ToolbarHelper::addNew('profile.add');
+            ToolbarHelper::custom('profiles.copy', 'copy', 'copy', 'WF_PROFILES_COPY', true);
             
             // Instantiate a new JLayoutFile instance and render the layout
-            $layout = new JLayoutFile('toolbar.uploadprofile');
+            $layout = new FileLayout('toolbar.uploadprofile');
             $bar->appendButton('Custom', $layout->render(array()), 'upload');
 
-            JToolbarHelper::custom('profiles.export', 'download', 'download', 'WF_PROFILES_EXPORT', true);
+            ToolbarHelper::custom('profiles.export', 'download', 'download', 'WF_PROFILES_EXPORT', true);
 
-            JToolbarHelper::publish('profiles.publish', 'JTOOLBAR_PUBLISH', true);
-            JToolbarHelper::unpublish('profiles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+            ToolbarHelper::publish('profiles.publish', 'JTOOLBAR_PUBLISH', true);
+            ToolbarHelper::unpublish('profiles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 
-            JToolbarHelper::deleteList('', 'profiles.delete', 'JTOOLBAR_DELETE');
+            ToolbarHelper::deleteList('', 'profiles.delete', 'JTOOLBAR_DELETE');
         }
 
-        JHtmlSidebar::setAction('index.php?option=com_jce&view=profiles');
+        Sidebar::setAction('index.php?option=com_jce&view=profiles');
 
         if ($user->authorise('core.admin', 'com_jce')) {
-            JToolbarHelper::preferences('com_jce');
+            ToolbarHelper::preferences('com_jce');
         }
     }
 
@@ -111,10 +121,10 @@ class JceViewProfiles extends JViewLegacy
     protected function getSortFields()
     {
         return array(
-            'ordering' => JText::_('JGRID_HEADING_ORDERING'),
-            'name' => JText::_('JGLOBAL_TITLE'),
-            'published' => JText::_('JSTATUS'),
-            'id' => JText::_('JGRID_HEADING_ID'),
+            'ordering' => Text::_('JGRID_HEADING_ORDERING'),
+            'name' => Text::_('JGLOBAL_TITLE'),
+            'published' => Text::_('JSTATUS'),
+            'id' => Text::_('JGRID_HEADING_ID'),
         );
     }
 }

@@ -10,16 +10,17 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class JoomlalinksContact extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Helper\RouteHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
+class JoomlalinksContact extends CMSObject
 {
     private $option = 'com_contact';
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
-     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -42,7 +43,7 @@ class JoomlalinksContact extends JObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_CONTACTS') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_contact" class="folder contact nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_CONTACTS') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -53,7 +54,7 @@ class JoomlalinksContact extends JObject
         $language = '';
 
         // create a new RouteHelper instance
-        $router = new JHelperRoute();
+        $router = new RouteHelper();
 
         switch ($view) {
             default:
@@ -65,7 +66,7 @@ class JoomlalinksContact extends JObject
                         $language = $category->language;
                     }
 
-                    $url = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
+                    $url = RouteHelper::getCategoryRoute($category->id, $language, 'com_contact');
                     
                     // convert to SEF
                     $url = self::route($url);
@@ -90,9 +91,9 @@ class JoomlalinksContact extends JObject
                     }
 
                     if ($children) {
-                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
+                        $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_contact');
                     } else {
-                        $id = JHelperRoute::getCategoryRoute($category->slug, $language, 'com_contact');
+                        $id = RouteHelper::getCategoryRoute($category->slug, $language, 'com_contact');
                     }
 
                     // convert to SEF
@@ -150,8 +151,8 @@ class JoomlalinksContact extends JObject
 
     private static function getContacts($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $query = $db->getQuery(true);
         $query->select('id, name, alias, language')->from('#__contact_details')->where(array('catid=' . (int) $id, 'published = 1'));

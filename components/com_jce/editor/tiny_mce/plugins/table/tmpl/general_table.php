@@ -9,16 +9,19 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+
 ?>
     <div class="uk-form-row uk-grid">
         <label class="uk-form-label uk-width-2-10" for="cols">
-            <?php echo JText::_('WF_TABLE_COLS'); ?></label>
+            <?php echo Text::_('WF_TABLE_COLS'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="cols" type="number" min="1" value="" required />
         </div>
 
         <label class="uk-form-label uk-width-2-10" for="rows">
-            <?php echo JText::_('WF_TABLE_ROWS'); ?></label>
+            <?php echo Text::_('WF_TABLE_ROWS'); ?></label>
         <div class="uk-form-controls uk-width-3-10">
             <input id="rows" type="number" value="" required />
         </div>
@@ -26,44 +29,44 @@ defined('JPATH_PLATFORM') or die;
 
 <div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="cellpadding">
-        <?php echo JText::_('WF_TABLE_CELLPADDING'); ?></label>
+        <?php echo Text::_('WF_TABLE_CELLPADDING'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <input id="cellpadding" type="number" value="" />
     </div>
 
     <label class="uk-form-label uk-width-2-10" for="cellspacing">
-        <?php echo JText::_('WF_TABLE_CELLSPACING'); ?></label>
+        <?php echo Text::_('WF_TABLE_CELLSPACING'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <input id="cellspacing" type="number" value="" />
     </div>
 </div>
 <div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="align">
-        <?php echo JText::_('WF_TABLE_ALIGN'); ?></label>
+        <?php echo Text::_('WF_TABLE_ALIGN'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <select id="align">
-            <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
-            <option value="center"><?php echo JText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
-            <option value="left"><?php echo JText::_('WF_TABLE_ALIGN_LEFT'); ?></option>
-            <option value="right"><?php echo JText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
+            <option value=""><?php echo Text::_('WF_OPTION_NOT_SET'); ?></option>
+            <option value="center"><?php echo Text::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
+            <option value="left"><?php echo Text::_('WF_TABLE_ALIGN_LEFT'); ?></option>
+            <option value="right"><?php echo Text::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select>
     </div>
 
     <label class="uk-form-label uk-width-2-10" for="table_border">
-        <?php echo JText::_('WF_TABLE_BORDER'); ?></label>
+        <?php echo Text::_('WF_TABLE_BORDER'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <input id="table_border" type="number" value="" />
     </div>
 </div>
 <div class="uk-form-row uk-grid">
     <label class="uk-form-label uk-width-2-10" for="width">
-        <?php echo JText::_('WF_TABLE_WIDTH'); ?></label>
+        <?php echo Text::_('WF_TABLE_WIDTH'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="text" id="width" value="" />
     </div>
 
     <label class="uk-form-label uk-width-2-10" for="height">
-        <?php echo JText::_('WF_TABLE_HEIGHT'); ?></label>
+        <?php echo Text::_('WF_TABLE_HEIGHT'); ?></label>
     <div class="uk-form-controls uk-width-3-10">
         <input type="text" id="height" value="" />
     </div>
@@ -71,5 +74,5 @@ defined('JPATH_PLATFORM') or die;
 <div class="uk-form-row">
     <input id="caption" type="checkbox" />
     <label for="caption">
-        <?php echo JText::_('WF_TABLE_CAPTION'); ?></label>
+        <?php echo Text::_('WF_TABLE_CAPTION'); ?></label>
 </div>

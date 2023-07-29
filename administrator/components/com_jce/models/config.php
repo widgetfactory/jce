@@ -10,10 +10,11 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-// load base model
-jimport('joomla.application.component.modelform');
+use Joomla\CMS\MVC\Model\FormModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
 
-class JceModelConfig extends JModelForm
+class JceModelConfig extends FormModel
 {
     /**
      * Returns a Table object, always creating it.
@@ -28,7 +29,7 @@ class JceModelConfig extends JModelForm
      */
     public function getTable($type = 'Extension', $prefix = 'JTable', $config = array())
     {
-        return JTable::getInstance($type, $prefix, $config);
+        return Table::getInstance($type, $prefix, $config);
     }
 
     /**
@@ -63,7 +64,7 @@ class JceModelConfig extends JModelForm
     protected function loadFormData()
     {
         // Check the session for previously entered form data.
-        $data = JFactory::getApplication()->getUserState('com_jce.config.data', array());
+        $data = Factory::getApplication()->getUserState('com_jce.config.data', array());
 
         if (empty($data)) {
             $data = $this->getData();

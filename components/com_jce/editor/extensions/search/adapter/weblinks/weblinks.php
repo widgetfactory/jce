@@ -14,13 +14,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+
 require_once JPATH_SITE . '/components/com_weblinks/helpers/route.php';
 
 /**
  * Weblinks search plugin.
  *
  */
-class PlgWfSearchWeblinks extends JPlugin
+class PlgWfSearchWeblinks extends CMSPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -61,8 +64,8 @@ class PlgWfSearchWeblinks extends JPlugin
 	 */
 	public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
 	{
-		$db = JFactory::getDbo();
-		$groups = implode(',', JFactory::getUser()->getAuthorisedViewLevels());
+		$db = Factory::getDbo();
+		$groups = implode(',', Factory::getUser()->getAuthorisedViewLevels());
 
 		$searchText = $text;
 

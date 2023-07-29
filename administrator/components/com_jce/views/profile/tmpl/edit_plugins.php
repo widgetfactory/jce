@@ -8,14 +8,15 @@
  * other free or open source software licenses
  */
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+
 $plugins = array_values(array_filter($this->plugins, function($plugin) {
     return $plugin->editable && !empty($plugin->form);
 }));
 
 ?>
 <div class="<?php echo $this->formclass;?> tabbable tabs-left flex-column">
-    <?php //echo JHtml::_('bootstrap.startTabSet', 'profile-plugins', array('active' => 'profile-plugins-' . $plugins[0]->name));?>
-
     <ul class="nav nav-tabs" id="profile-plugins-tabs">
 
     <?php
@@ -51,7 +52,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
             $title .= '<div class="mceEditor mceDefaultSkin"><div class="mce-container mce-toolbar mceToolbarItem">' . $icons . '</div></div>';
         }
 
-        //echo JHtml::_('bootstrap.addTab', 'profile-plugins', 'profile-plugins-' . $plugin->name, $title); ?>
+        ?>
         <li class="nav-item <?php echo $plugin->state;?>"><a href="#profile-plugins-<?php echo $plugin->name;?>" class="nav-link"><?php echo $title;?></a></li>
     <?php endforeach;?>
 
@@ -65,20 +66,20 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
                     $plugin->fieldsname = "config";
                     $plugin->name = $plugin->title;
                     $plugin->description = "";
-                    echo JLayoutHelper::render('joomla.content.options_default', $plugin);
+                    echo LayoutHelper::render('joomla.content.options_default', $plugin);
                     
                     foreach ($plugin->extensions as $type => $extensions) : ?>
                         
-                        <h3><?php echo JText::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE', true); ?></h3>
+                        <h3><?php echo Text::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE', true); ?></h3>
 
                         <?php foreach ($extensions as $name => $extension) : ?>
                             <div class="row-fluid">  
                                         
                                 <?php if ($extension->form) :
                                     $extension->fieldsname = "";
-                                    $extension->name = JText::_($extension->title, true);
+                                    $extension->name = Text::_($extension->title, true);
                                     $extension->description = "";
-                                    echo JLayoutHelper::render('joomla.content.options_default', $extension);
+                                    echo LayoutHelper::render('joomla.content.options_default', $extension);
 
                                 endif; ?>
 
@@ -90,9 +91,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
 
                 endif; ?>
             </div>
-            <?php //echo JHtml::_('bootstrap.endTab');?>
         </div>
         <?php endforeach;?>
     </div>
-    <?php //echo JHtml::_('bootstrap.endTabSet'); ?>
 </div>

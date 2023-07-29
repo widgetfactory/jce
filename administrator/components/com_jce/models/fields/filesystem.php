@@ -2,9 +2,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\Field\ListField;
 
-class JFormFieldFilesystem extends JFormFieldList
+class JFormFieldFilesystem extends ListField
 {
     /**
      * The form field type.
@@ -67,13 +70,13 @@ class JFormFieldFilesystem extends JFormFieldList
         $html .= '<div class="controls-row">';
 
         $html .= '<div class="control-group">';
-        $html .= JHtml::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
+        $html .= HTMLHelper::_('select.genericlist', $options, $this->name . '[name]', 'data-toggle="filesystem-options" class="custom-select"', 'value', 'text', $value['name']);
         $html .= '</div>';
 
         $html .= '<div class="filesystem-options clearfix">';
 
         foreach ($plugins as $plugin) {            
-            $form = JForm::getInstance('plg_jce_' . $this->name . '_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
+            $form = Form::getInstance('plg_jce_' . $this->name . '_' . $plugin->name, $plugin->manifest, array('control' => $this->name . '[' . $plugin->name . ']'), true, '//extension');
 
             if ($form) {
                 // get the data for this form, if set
@@ -133,7 +136,7 @@ class JFormFieldFilesystem extends JFormFieldList
 
         /*$options[] = array(
             'value' => '',
-            'text' => JText::_('WF_OPTION_NOT_SET'),
+            'text' => Text::_('WF_OPTION_NOT_SET'),
         );*/
 
         $plugins = $this->getPlugins();
@@ -144,7 +147,7 @@ class JFormFieldFilesystem extends JFormFieldList
 
             $tmp = array(
                 'value' => $value,
-                'text' => JText::alt($text, $fieldname),
+                'text' => Text::alt($text, $fieldname),
                 'disable' => false,
                 'class' => '',
                 'selected' => false,

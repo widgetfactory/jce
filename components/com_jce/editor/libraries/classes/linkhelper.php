@@ -10,6 +10,9 @@
  */
 defined('JPATH_PLATFORM') or die('RESTRICTED');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Application\CMSApplication;
+
 abstract class WFLinkHelper
 {
     /**
@@ -64,7 +67,7 @@ abstract class WFLinkHelper
         }
 
         // get menus
-		$menus = JFactory::getApplication()->getMenu('site');
+		$menus = Factory::getApplication()->getMenu('site');
         // get "default" menu
         $default = $menus->getDefault();
         

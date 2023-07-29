@@ -10,6 +10,12 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\Registry\Registry;
+
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
 
 /**
@@ -19,7 +25,7 @@ require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/base.php';
  *
  * @since    1.5
  */
-class WFApplication extends JObject
+class WFApplication extends CMSObject
 {
     // Editor instance
     protected static $instance;
@@ -41,15 +47,11 @@ class WFApplication extends JObject
         $this->setProperties($config);
 
         // store a reference to the Joomla Application input
-        $this->input = JFactory::getApplication()->input;
+        $this->input = Factory::getApplication()->input;
     }
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
-     *
      * @return JCE The editor object
      */
     public static function getInstance($config = array())
@@ -78,7 +80,7 @@ class WFApplication extends JObject
     protected function getComponent($id = null, $option = null)
     {
         if ($id) {
-            $components = JComponentHelper::getComponents();
+            $components = ComponentHelper::getComponents();
 
             foreach ($components as $option => $component) {
                 if ($id == $component->id) {
@@ -87,21 +89,21 @@ class WFApplication extends JObject
             }
         }
 
-        return JComponentHelper::getComponent($option);
+        return ComponentHelper::getComponent($option);
     }
 
     public function getContext()
     {
-        $option = JFactory::getApplication()->input->getCmd('option');
-        $component = JComponentHelper::getComponent($option, true);
+        $option = Factory::getApplication()->input->getCmd('option');
+        $component = ComponentHelper::getComponent($option, true);
 
         return $component->id;
     }
 
     private function getProfileVars()
     {
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
         $option = $this->getComponentOption();
 
         $settings = array(
@@ -181,9 +183,9 @@ class WFApplication extends JObject
         $signature = md5(serialize($options));
 
         if (!isset(self::$profile[$signature])) {
-            $db = JFactory::getDBO();
-            $user = JFactory::getUser();
-            $app = JFactory::getApplication();
+            $db = Factory::getDBO();
+            $user = Factory::getUser();
+            $app = Factory::getApplication();
 
             $query = $db->getQuery(true);
             $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
@@ -283,7 +285,7 @@ class WFApplication extends JObject
      */
     public function getComponentOption()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $option = $app->input->getCmd('option', '');
 
@@ -313,7 +315,7 @@ class WFApplication extends JObject
      */
     public function getParams($options = array())
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         if (!isset(self::$params)) {
             self::$params = array();
@@ -356,7 +358,7 @@ class WFApplication extends JObject
 
         if (empty(self::$params[$signature])) {
             // get plugin
-            $editor = JPluginHelper::getPlugin('editors', 'jce');
+            $editor = PluginHelper::getPlugin('editors', 'jce');
 
             if (empty($editor->params)) {
                 $editor->params = '{}';
@@ -391,7 +393,7 @@ class WFApplication extends JObject
             $data = WFUtility::array_merge_recursive_distinct($data1, $data2, true);
 
             // create new registry with params
-            $params = new JRegistry($data);
+            $params = new Registry($data);
 
             self::$params[$signature] = $params;
         }

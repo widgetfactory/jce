@@ -53,8 +53,6 @@ class JFormFieldMediaJce extends MediaField
      *                                      full field name would end up being "bar[foo]".
      *
      * @return  boolean  True on success.
-     *
-     * @see     JFormField::setup()
      */
     public function setup(SimpleXMLElement $element, $value, $group = null)
     {

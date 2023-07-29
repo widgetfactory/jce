@@ -14,12 +14,18 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Helper\RouteHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Language\Text;
+
 /**
  * Categories search plugin.
  *
  * @since  1.6
  */
-class PlgWfSearchCategories extends JPlugin
+class PlgWfSearchCategories extends CMSPlugin
 {
     /**
      * Load the language file on instantiation.
@@ -62,9 +68,9 @@ class PlgWfSearchCategories extends JPlugin
      */
     public function onContentSearch($text, $phrase = '', $ordering = '', $areas = null)
     {
-        $db = JFactory::getDbo();
-        $user = JFactory::getUser();
-        $app = JFactory::getApplication();
+        $db = Factory::getDbo();
+        $user = Factory::getUser();
+        $app = Factory::getApplication();
         $groups = implode(',', $user->getAuthorisedViewLevels());
         $searchText = $text;
 
@@ -120,13 +126,13 @@ class PlgWfSearchCategories extends JPlugin
         {
             $rows = $db->loadObjectList();
         } catch (RuntimeException $e) {
-            JFactory::getApplication()->enqueueMessage(JText::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
+            Factory::getApplication()->enqueueMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
         }
 
         if ($rows) {
             foreach ($rows as $i => $row) {
-                $rows[$i]->href = JHelperRoute::getCategoryRoute($row->slug, $row->language, 'com_content');
-                $rows[$i]->section = JText::_('JCATEGORY');
+                $rows[$i]->href = RouteHelper::getCategoryRoute($row->slug, $row->language, 'com_content');
+                $rows[$i]->section = Text::_('JCATEGORY');
             }
         }
 

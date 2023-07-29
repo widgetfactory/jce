@@ -10,9 +10,11 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Table\Table;
+
 require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php');
 
-class JceTableProfiles extends JTable
+class JceTableProfiles extends Table
 {
     public function __construct(&$db)
     {

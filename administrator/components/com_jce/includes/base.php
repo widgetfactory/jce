@@ -13,6 +13,12 @@ defined('JPATH_PLATFORM') or die;
 // load constants
 require_once __DIR__ . '/constants.php';
 
+// base admin prefix
+JLoader::registerPrefix('Jce', WF_ADMINISTRATOR);
+
+JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php');
+JLoader::register('JceEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
+
 // register classes
 JLoader::register('WFApplication', WF_EDITOR_CLASSES . '/application.php');
 JLoader::register('WFEditor', WF_EDITOR_CLASSES . '/editor.php');
@@ -45,9 +51,6 @@ JLoader::register('WFMediaManager', WF_EDITOR_CLASSES . '/manager.php');
 JLoader::register('WFFileBrowser', WF_EDITOR_CLASSES . '/browser.php');
 JLoader::register('Wf_Mobile_Detect', WF_EDITOR_CLASSES . '/mobile.php');
 
-JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php');
-JLoader::register('JceEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
-
 JLoader::register('WFLinkHelper', WF_EDITOR_CLASSES . '/linkhelper.php');
 
 // Defuse
@@ -63,6 +66,7 @@ JLoader::register('WFText', WF_EDITOR_CLASSES . '/text.php');
 JLoader::register('WFModelEditor', WF_ADMINISTRATOR . '/models/editor.php');
 
 // legacy function prevent fatal errors in 3rd party extensions
-function wfimport($path = ""){
+function wfimport($path = "")
+{
     return true;
 }

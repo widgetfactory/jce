@@ -10,6 +10,9 @@
  */
 defined('WF_EDITOR') or die('RESTRICTED');
 
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Language\Text;
+
 $tabs = WFTabs::getInstance();
 
 ?>
@@ -17,10 +20,10 @@ $tabs = WFTabs::getInstance();
 	<!-- Render Tabs -->
 	<?php $tabs->render(); ?>
 	<!-- Token -->	
-	<input type="hidden" id="token" name="<?php echo JSession::getFormToken(); ?>" value="1" />
+	<input type="hidden" id="token" name="<?php echo Session::getFormToken(); ?>" value="1" />
 </form>
 <div class="actionPanel">
-	<button class="button" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
-	<button class="button" id="help"><?php echo JText::_('WF_LABEL_HELP')?></button>
-	<button class="button" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
+	<button class="button" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL')?></button>
+	<button class="button" id="help"><?php echo Text::_('WF_LABEL_HELP')?></button>
+	<button class="button" id="insert"><?php echo Text::_('WF_LABEL_INSERT')?></button>
 </div>

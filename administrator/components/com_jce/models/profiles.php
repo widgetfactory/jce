@@ -10,9 +10,15 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
+
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/profiles.php';
 
-class JceModelProfiles extends JModelList
+class JceModelProfiles extends ListModel
 {
     /**
      * Constructor.
@@ -55,7 +61,7 @@ class JceModelProfiles extends JModelList
         $this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
 
         // Load the parameters.
-        $params = JComponentHelper::getParams('com_jce');
+        $params = ComponentHelper::getParams('com_jce');
         $this->setState('params', $params);
 
         // List state information.
@@ -144,7 +150,7 @@ class JceModelProfiles extends JModelList
         // Create a new query object.
         $db = $this->getDbo();
         $query = $db->getQuery(true);
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
 
         // Select the required fields from the table.
         $query->select(
@@ -202,26 +208,26 @@ class JceModelProfiles extends JModelList
 		$file = __DIR__ . '/profiles.xml';
 
         if (!is_file($file)) {
-            $this->setError(JText::_('WF_PROFILES_REPAIR_ERROR'));
+            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
         $xml = simplexml_load_file($file);
 
         if (!$xml) {
-            $this->setError(JText::_('WF_PROFILES_REPAIR_ERROR'));
+            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
         foreach ($xml->profiles->children() as $profile) {
 			$groups = JceProfilesHelper::getUserGroups((int) $profile->children('area'));
 
-			$table = JTable::getInstance('Profiles', 'JceTable');
+			$table = Table::getInstance('Profiles', 'JceTable');
 
             foreach ($profile->children() as $item) {
                 switch ((string) $item->getName()) {
 					case 'description':
-                        $table->description = JText::_((string) $item);
+                        $table->description = Text::_((string) $item);
                     case 'types':
                         $table->types = implode(',', $groups);
                         break;

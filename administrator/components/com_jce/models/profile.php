@@ -11,6 +11,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
+
 require JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
 
 require JPATH_ADMINISTRATOR . '/components/com_jce/helpers/plugins.php';
@@ -21,7 +31,7 @@ require JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
  *
  * @since       1.6
  */
-class JceModelProfile extends JModelAdmin
+class JceModelProfile extends AdminModel
 {
     /**
      * The type alias for this content type.
@@ -54,7 +64,7 @@ class JceModelProfile extends JModelAdmin
      */
     public function getTable($type = 'Profiles', $prefix = 'JceTable', $config = array())
     {
-        return JTable::getInstance($type, $prefix, $config);
+        return Table::getInstance($type, $prefix, $config);
     }
 
     /* Override to prevent plugins from processing form data */
@@ -149,7 +159,7 @@ class JceModelProfile extends JModelAdmin
 
     public function getForm($data = array(), $loadData = true)
     {
-        JFormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
+        FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
         // Get the setup form.
         $form = $this->loadForm('com_jce.profile', 'profile', array('control' => 'jform', 'load_data' => false));
@@ -158,7 +168,7 @@ class JceModelProfile extends JModelAdmin
             return false;
         }
 
-        JFactory::getLanguage()->load('com_jce_pro', JPATH_SITE);
+        Factory::getLanguage()->load('com_jce_pro', JPATH_SITE);
 
         // editor manifest
         $manifest = __DIR__ . '/forms/editor.xml';
@@ -346,10 +356,10 @@ class JceModelProfile extends JModelAdmin
                 $command->editable = (int) $command->editable;
 
                 // translate title
-                $command->title = JText::_($command->title);
+                $command->title = Text::_($command->title);
 
                 // translate description
-                $command->description = JText::_($command->description);
+                $command->description = Text::_($command->description);
 
                 $command->name = $name;
 
@@ -395,10 +405,10 @@ class JceModelProfile extends JModelAdmin
                 }, $plugin->class);
 
                 // translate title
-                $plugin->title = JText::_($plugin->title);
+                $plugin->title = Text::_($plugin->title);
 
                 // translate description
-                $plugin->description = JText::_($plugin->description);
+                $plugin->description = Text::_($plugin->description);
 
                 // cast row to integer
                 $plugin->row = (int) $plugin->row;
@@ -507,8 +517,8 @@ class JceModelProfile extends JModelAdmin
      */
     protected function prepareTable($table)
     {
-        $date = JFactory::getDate();
-        $user = JFactory::getUser();
+        $date = Factory::getDate();
+        $user = Factory::getUser();
 
         foreach ($table->getProperties() as $key => $value) {
             switch ($key) {
@@ -585,7 +595,7 @@ class JceModelProfile extends JModelAdmin
 
     public function validate($form, $data, $group = null)
     {
-        $filter = JFilterInput::getInstance();
+        $filter = InputFilter::getInstance();
 
         // get unfiltered config data
         $config = isset($data['config']) ? $data['config'] : array();
@@ -654,7 +664,7 @@ class JceModelProfile extends JModelAdmin
      */
     public function save($data)
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // get profile table
         $table = $this->getTable();
@@ -737,14 +747,14 @@ class JceModelProfile extends JModelAdmin
     public function copy($ids)
     {
         // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
         $table = $this->getTable();
 
         foreach ($ids as $id) {
             if (!$table->load($id)) {
                 $this->setError($table->getError());
             } else {
-                $name = JText::sprintf('WF_PROFILES_COPY_OF', $table->name);
+                $name = Text::sprintf('WF_PROFILES_COPY_OF', $table->name);
                 $table->name = $name;
                 $table->id = 0;
                 $table->published = 0;
@@ -770,7 +780,7 @@ class JceModelProfile extends JModelAdmin
 
     public function export($ids)
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
         $buffer .= "\n" . '<export type="profiles">';
@@ -821,7 +831,7 @@ class JceModelProfile extends JModelAdmin
 
         $name = 'jce_editor_profile_' . date('Y_m_d') . '.xml';
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $app->allowCache(false);
         $app->setHeader('Content-Transfer-Encoding', 'binary');
@@ -847,11 +857,11 @@ class JceModelProfile extends JModelAdmin
     public function import()
     {
         // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
         jimport('joomla.filesystem.file');
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         $tmp = $app->getCfg('tmp_path');
 
         jimport('joomla.filesystem.file');
@@ -860,44 +870,44 @@ class JceModelProfile extends JModelAdmin
 
         // check for valid uploaded file
         if (empty($file) || !is_uploaded_file($file['tmp_name'])) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         if ($file['error'] || $file['size'] < 1) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         // sanitize the file name
-        $name = JFile::makeSafe($file['name']);
+        $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
         // Build the appropriate paths.
-        $config = JFactory::getConfig();
+        $config = Factory::getConfig();
         $destination = $config->get('tmp_path') . '/' . $name;
         $source = $file['tmp_name'];
 
         // Move uploaded file.
-        JFile::upload($source, $destination, false, true);
+        File::upload($source, $destination, false, true);
 
         if (!is_file($destination)) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
             return false;
         }
 
         $result = JceProfilesHelper::processImport($destination);
 
         if ($result === false) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        $app->enqueueMessage(JText::sprintf('WF_PROFILES_IMPORT_SUCCESS', $result));
+        $app->enqueueMessage(Text::sprintf('WF_PROFILES_IMPORT_SUCCESS', $result));
 
         return true;
     }

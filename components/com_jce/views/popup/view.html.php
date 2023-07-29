@@ -9,15 +9,18 @@
  * other free or open source software licenses
  */
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+
 class JceViewPopup extends JViewLegacy
 {
     public function display($tpl = null)
     {
-        $app = JFactory::getApplication();
-        $document = JFactory::getDocument();
+        $app = Factory::getApplication();
+        $document = Factory::getDocument();
 
-        $document->addScript(JURI::root(true) . '/media/com_jce/js/popup.min.js');
-        $document->addStylesheet(JURI::root(true) . '/media/com_jce/css/popup.min.css');
+        $document->addScript(Uri::root(true) . '/media/com_jce/js/popup.min.js');
+        $document->addStylesheet(Uri::root(true) . '/media/com_jce/css/popup.min.css');
 
         // Get variables
         $img    = $app->input->get('img', '', 'STRING');
@@ -29,7 +32,7 @@ class JceViewPopup extends JViewLegacy
         $dim = array('', '');
 
         if (strpos('://', $img) === false) {
-            $path = JPATH_SITE . '/' . trim(str_replace(JURI::root(), '', $img), '/');
+            $path = JPATH_SITE . '/' . trim(str_replace(Uri::root(), '', $img), '/');
             if (is_file($path)) {
                 $dim = @getimagesize($path);
             }
@@ -53,7 +56,7 @@ class JceViewPopup extends JViewLegacy
         // img src must be passed
         if ($img) {
             $features = array(
-                'img' => str_replace(JURI::root(), '', $img),
+                'img' => str_replace(Uri::root(), '', $img),
                 'title' => $title,
                 'alt' => $title,
                 'mode' => $mode,

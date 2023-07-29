@@ -10,14 +10,17 @@
 
 defined('JPATH_PLATFORM') or die;
 
-$this->name = JText::_('WF_PROFILES_FEATURES_LAYOUT');
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+
+$this->name = Text::_('WF_PROFILES_FEATURES_LAYOUT');
 $this->fieldsname = 'editor.features';
-echo JLayoutHelper::render('joomla.content.options_default', $this);
+echo LayoutHelper::render('joomla.content.options_default', $this);
 ?>
 
 <div class="form-horizontal">
-    <?php echo JLayoutHelper::render('edit.layout', $this);?>
-    <?php echo JLayoutHelper::render('edit.additional', $this);?>
+    <?php echo LayoutHelper::render('edit.layout', $this);?>
+    <?php echo LayoutHelper::render('edit.additional', $this);?>
 </div>
 <input type="hidden" name="jform[plugins]" value="" />
 <input type="hidden" name="jform[rows]" value="" />

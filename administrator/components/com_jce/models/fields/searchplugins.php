@@ -2,9 +2,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('plugins');
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\Field\PluginsField;
 
-class JFormFieldSearchPlugins extends JFormFieldPlugins
+class JFormFieldSearchPlugins extends PluginsField
 {
     /**
      * The form field type.
@@ -79,7 +80,7 @@ class JFormFieldSearchPlugins extends JFormFieldPlugins
 
 			$option = new StdClass;
 
-            $option->text = JText::_('PLG_SEARCH_' . strtoupper($name) . '_' . strtoupper($name), true);
+            $option->text = Text::_('PLG_SEARCH_' . strtoupper($name) . '_' . strtoupper($name), true);
             $option->disable = '';
             $option->value = $name;
 

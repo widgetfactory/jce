@@ -12,19 +12,23 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+
 // Load tooltips behavior
-JHtml::_('behavior.formvalidator');
-JHtml::_('behavior.keepalive');
+HTMLHelper::_('behavior.formvalidator');
+HTMLHelper::_('behavior.keepalive');
 
 // Load JS message titles
-JText::script('ERROR');
-JText::script('WARNING');
-JText::script('NOTICE');
-JText::script('MESSAGE');
+Text::script('ERROR');
+Text::script('WARNING');
+Text::script('NOTICE');
+Text::script('MESSAGE');
 ?>
 <div class="ui-jce loading">
 	<div class="donut"></div>
-	<form action="<?php echo JRoute::_('index.php?option=com_jce'); ?>" id="adminForm" method="post" name="adminForm" class="form-validate">
+	<form action="<?php echo Route::_('index.php?option=com_jce'); ?>" id="adminForm" method="post" name="adminForm" class="form-validate">
 		
 	<?php if (!empty( $this->sidebar)) : ?>
 		<div id="j-sidebar-container" class="span2">
@@ -38,24 +42,24 @@ JText::script('MESSAGE');
 			<div class="row row-fluid">
 					<!-- Begin Content -->
 					<div class="span12 col-md-12">
-						<?php echo JHtml::_('bootstrap.startTabSet', 'profile', array('active' => 'profile-setup'));?>
+						<?php echo HTMLHelper::_('bootstrap.startTabSet', 'profile', array('active' => 'profile-setup'));?>
 						<?php foreach(array('setup', 'features', 'editor', 'plugins') as $item) :?>
-							<?php echo JHtml::_('bootstrap.addTab', 'profile', 'profile-' . $item, JText::_('WF_PROFILES_' . strtoupper($item), true));?>
+							<?php echo HTMLHelper::_('bootstrap.addTab', 'profile', 'profile-' . $item, Text::_('WF_PROFILES_' . strtoupper($item), true));?>
 
 							<div class="row-fluid">
 								<?php echo $this->loadTemplate($item); ?>
 							</div>
 
-							<?php echo JHtml::_('bootstrap.endTab');?>
+							<?php echo HTMLHelper::_('bootstrap.endTab');?>
 						<?php endforeach;?>
 
-						<?php echo JHtml::_('bootstrap.endTabSet'); ?>
+						<?php echo HTMLHelper::_('bootstrap.endTabSet'); ?>
 					</div>
 					<!-- End Content -->
 			</div>
 			<input type="hidden" name="task" value="" />
 			<input type="hidden" name="id" value="<?php echo $this->item->id;?>" />
-			<?php echo JHtml::_('form.token'); ?>
+			<?php echo HTMLHelper::_('form.token'); ?>
 		</div>
 	</form>
 </div>

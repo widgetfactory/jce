@@ -10,6 +10,8 @@
  */
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Filesystem\Folder;
+
 class WFAggregatorExtension extends WFExtension
 {
     protected static $instance;
@@ -74,15 +76,13 @@ class WFAggregatorExtension extends WFExtension
         $format = $this->get('format');
 
         if (empty($aggregators[$format])) {
-            jimport('joomla.filesystem.folder');
-
             // get a plugin instance
             $plugin = WFEditorPlugin::getInstance();
 
             $aggregators[$format] = array();
 
             $path = WF_EDITOR_EXTENSIONS . '/aggregator';
-            $files = JFolder::files($path, '\.php$', false, true);
+            $files = Folder::files($path, '\.php$', false, true);
 
             foreach ($files as $file) {
                 require_once $file;

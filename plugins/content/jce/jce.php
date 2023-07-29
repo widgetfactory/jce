@@ -7,15 +7,18 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+
 /**
  * JCE.
  *
  * @since       2.5.20
  */
-class PlgContentJce extends JPlugin
+class PlgContentJce extends CMSPlugin
 {
     public function onContentPrepareForm($form, $data)
     {
-        JFactory::getApplication()->triggerEvent('onPlgSystemJceContentPrepareForm', array($form, $data));
+        Factory::getApplication()->triggerEvent('onPlgSystemJceContentPrepareForm', array($form, $data));
     }
 }

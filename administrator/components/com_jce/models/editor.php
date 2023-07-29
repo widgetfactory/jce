@@ -10,7 +10,10 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class WFModelEditor extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Factory;
+
+class WFModelEditor extends CMSObject
 {
     private static $editor;
 
@@ -46,7 +49,7 @@ class WFModelEditor extends JObject
 
         self::$editor->render($settings);
 
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
 
         foreach (self::$editor->getScripts() as $script) {
             $document->addScript($script, array('version' => 'auto'), array('defer' => 'defer'));

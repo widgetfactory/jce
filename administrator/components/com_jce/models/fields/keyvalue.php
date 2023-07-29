@@ -1,8 +1,11 @@
 <?php
 
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Form\FormField;
+
 defined('JPATH_PLATFORM') or die;
 
-class JFormFieldKeyValue extends JFormField
+class JFormFieldKeyValue extends FormField
 {
 
     /**
@@ -121,8 +124,8 @@ class JFormFieldKeyValue extends JFormField
             $str[] = '  </div>';
 
             $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
             $str[] = '  </div>';
 
             $str[] = '</div>';

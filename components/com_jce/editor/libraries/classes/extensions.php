@@ -14,7 +14,13 @@ if (!defined('_WF_EXT')) {
     define('_WF_EXT', 1);
 }
 
-class WFExtension extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\File;
+
+class WFExtension extends CMSObject
 {
     /**
      * Constructor activating the default information of the class.
@@ -59,10 +65,7 @@ class WFExtension extends JObject
      */
     private static function _load($types = array(), $extension = null, $config = array())
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         $extensions = array();
 
@@ -77,7 +80,7 @@ class WFExtension extends JObject
         $types = (array) $types;
 
         // get all installed plugins
-        $installed = JPluginHelper::getPlugin('jce');
+        $installed = PluginHelper::getPlugin('jce');
 
         if (!empty($installed)) {
             foreach ($installed as $p) {
@@ -114,7 +117,7 @@ class WFExtension extends JObject
         }
 
         // get legacy extensions
-        $legacy = JFolder::folders(WF_EDITOR . '/extensions', '.', false, true);
+        $legacy = Folder::folders(WF_EDITOR . '/extensions', '.', false, true);
 
         $core = array(
             'aggregator' => array(
@@ -148,7 +151,7 @@ class WFExtension extends JObject
             }
 
             // specific extension
-            if ($extension && !JFile::exists($item . '/' . $extension . '.php')) {
+            if ($extension && !File::exists($item . '/' . $extension . '.php')) {
                 continue;
             }
 
@@ -160,7 +163,7 @@ class WFExtension extends JObject
 
                 $files = array($item . '/' . $extension . '.xml');
             } else {
-                $files = JFolder::files($item, '\.xml$', false, true);
+                $files = Folder::files($item, '\.xml$', false, true);
             }
 
             foreach ($files as $file) {
@@ -194,9 +197,6 @@ class WFExtension extends JObject
      */
     public static function loadExtensions($type, $extension = null, $config = array())
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         if (!isset($config['base_path'])) {
             $config['base_path'] = WF_EDITOR;
         }

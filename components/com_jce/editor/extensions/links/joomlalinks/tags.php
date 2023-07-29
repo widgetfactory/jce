@@ -10,16 +10,17 @@
  */
 defined('JPATH_PLATFORM') or die;
 
-class JoomlalinksTags extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Language\Multilanguage;
+
+class JoomlalinksTags extends CMSObject
 {
     private $option = 'com_tags';
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
-     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -42,7 +43,7 @@ class JoomlalinksTags extends JObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_tags" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_TAGS') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_tags" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_TAGS') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -89,8 +90,8 @@ class JoomlalinksTags extends JObject
 
     private static function getTags($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $wf = WFEditorPlugin::getInstance();
 
@@ -117,8 +118,8 @@ class JoomlalinksTags extends JObject
             $query->where('a.access IN (' . $groups . ')');
         }
 
-        if (JLanguageMultilang::isEnabled()) {
-            $tag = JFactory::getLanguage()->getTag();
+        if (Multilanguage::isEnabled()) {
+            $tag = Factory::getLanguage()->getTag();
             $query->where('a.language in (' . $db->quote($tag) . ',' . $db->quote('*') . ')');
         }
 
