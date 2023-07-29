@@ -24,9 +24,6 @@ class pkg_jceInstallerScript
 {    
     private function addIndexfiles($paths)
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         // get the base file
         $file = JPATH_ADMINISTRATOR . '/components/com_jce/index.html';
 
