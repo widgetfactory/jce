@@ -13,6 +13,7 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE.
@@ -129,13 +130,13 @@ class PlgSystemJce extends CMSPlugin
         // only if enabled
         if ((int) $this->params->get('column_styles', 1)) {
             $hash = md5_file(__DIR__ . '/css/content.css');
-            $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/content.css?' . $hash);
+            $document->addStyleSheet(Uri::root(true) . '/plugins/system/jce/css/content.css?' . $hash);
         }
     }
 
     public function onWfContentPreview($context, &$article, &$params, $page)
     {
-        $article->text = '<style type="text/css">@import url("' . JURI::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
+        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
     }
 
     private function loadMediaFiles($form, $replace_media_manager = true)
@@ -149,7 +150,7 @@ class PlgSystemJce extends CMSPlugin
         $option = $app->input->getCmd('option');
         $component = ComponentHelper::getComponent($option);
 
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
 
         $document->addScriptOptions('plg_system_jce', array(
             'convert_mediafield' => $replace_media_manager,
@@ -161,9 +162,9 @@ class PlgSystemJce extends CMSPlugin
         // Include jQuery
         HTMLHelper::_('jquery.framework');
 
-        $document = JFactory::getDocument();
-        $document->addScript(JURI::root(true) . '/plugins/system/jce/js/media.js', array('version' => 'auto'));
-        $document->addStyleSheet(JURI::root(true) . '/plugins/system/jce/css/media.css', array('version' => 'auto'));
+        $document = Factory::getDocument();
+        $document->addScript(Uri::root(true) . '/plugins/system/jce/js/media.js', array('version' => 'auto'));
+        $document->addStyleSheet(Uri::root(true) . '/plugins/system/jce/css/media.css', array('version' => 'auto'));
 
         $this->mediaLoaded = true;
     }
