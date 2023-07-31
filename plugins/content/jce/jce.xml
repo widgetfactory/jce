@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.6" type="plugin" group="content" method="upgrade">
+<extension version="3.9" type="plugin" group="content" method="upgrade">
   <name>plg_content_jce</name>
   <version>@@version@@</version>
   <creationDate>@@date@@</creationDate>
