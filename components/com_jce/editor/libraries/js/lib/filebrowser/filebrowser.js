@@ -1162,7 +1162,7 @@
                         path = parts.slice(0, i + 1).join('/');
                     }
 
-                    var $item = $('<li title="' + s + '" />').on('click', function (e) {
+                    var $item = $('<li title="' + s + '"></li>').on('click', function (e) {
                         self._changeDir(path);
                     }).append('<a>' + s + '</a>').insertBefore($count);
 
@@ -2107,13 +2107,13 @@
                 var icon = (map[name] || name);
 
                 $.each(icon.split(' '), function (i, k) {
-                    $(action).prepend('<i class="uk-icon uk-icon-small uk-icon-' + cls + ' uk-icon-' + k + '" />');
+                    $(action).prepend('<i class="uk-icon uk-icon-small uk-icon-' + cls + ' uk-icon-' + k + '"></i>');
                 });
 
                 // stack icons
                 if (icon.indexOf(' ') >= 0) {
                     $('.uk-icon', action).first().addClass('uk-icon-stack uk-text-contrast').removeClass('uk-icon-medium');
-                    $('<span class="uk-stack uk-stack-medium" />').prependTo(action).append($('.uk-icon', action));
+                    $('<span class="uk-stack uk-stack-medium"></span>').prependTo(action).append($('.uk-icon', action));
                 }
 
                 if (o.name) {
@@ -2211,14 +2211,14 @@
                     var icons = o.icon.split(' ');
 
                     $.each(icons, function (i, icon) {
-                        $(button).append('<i class="uk-icon uk-icon-' + (map[icon] || icon) + '" />');
+                        $(button).append('<i class="uk-icon uk-icon-' + (map[icon] || icon) + '"></i>');
                     });
 
                     if (icons.length > 1) {
-                        $('<span class="uk-stack" />').append($('.uk-icon', button)).appendTo(button);
+                        $('<span class="uk-stack"></span>').append($('.uk-icon', button)).appendTo(button);
                     }
                 } else {
-                    $(button).prepend('<i class="uk-icon uk-icon-' + (map[name] || name) + '" />');
+                    $(button).prepend('<i class="uk-icon uk-icon-' + (map[name] || name) + '"></i>');
                 }
 
                 if (name) {

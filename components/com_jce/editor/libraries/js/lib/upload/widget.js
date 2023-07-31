@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 
-/*global Wf, jQuery */
+/*global Wf, jQuery, Uploader */
 
 (function ($, Wf) {
 
@@ -57,7 +57,7 @@
     }
 
     function UploadWidget(element, options) {
-        this.element = element || $('<div />');
+        this.element = element || $('<div></div>');
 
         // uplaoder object
         this.uploader = {};
@@ -76,7 +76,7 @@
             websafe_mode: 'utf-8',
             browse_button: '#upload-browse',
             upload_button: '#upload-start',
-            drop_target: '#upload-body',
+            drop_target: '#upload-body'
         }, options);
 
         this.init();
@@ -99,8 +99,6 @@
             $(this.element).trigger('uploadwidget:' + ev.toLowerCase(), args);
         },
         init: function () {
-            var self = this;
-
             // clear old uploader
             if (this.uploader instanceof Uploader) {
                 this.uploader.destroy();
@@ -202,16 +200,13 @@
             }
             
             // encode as text
-            error.message = $('<textarea />').html(error.message).text();
+            error.message = $('<textarea></textarea>').html(error.message).text();
 
             // create language key from message
             var msg = error.message.replace(/[^a-z_ ]/gi, '').replace(/\s+/g, '_').toLowerCase();
 
-            // get code as string
-            var code = error.code.toString();
-
             // get details
-            var details = ''//Wf.translate('error_' + code.replace(/[\D]/g, ''), "");
+            var details = '';
             var message = Wf.translate(msg, error.message);
 
             // clean up message a bit
@@ -252,7 +247,7 @@
 
             if (error.code < 600) {
                 $('.uk-progress', file.element).hide();
-                $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center" />').html(message).appendTo(file.element);
+                $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center"></div>').html(message).appendTo(file.element);
             } else {
                 Wf.Modal.alert(message);
                 this.errors--;
@@ -275,8 +270,7 @@
             return false;
         },
         _onComplete: function (o) {
-            var self = this,
-                file = o.file;
+            var file = o.file;
 
             // add success class
             $(file.element).removeClass('queue-item-loading').addClass('queue-item-complete');
@@ -365,7 +359,7 @@
 
                     if (s.message) {
                         $('.uk-progress', file.element).hide();
-                        $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center" />').html(s.message).appendTo(file.element);
+                        $('<div class="uk-alert uk-alert-danger uk-width-1-1 uk-text-center"></div>').html(s.message).appendTo(file.element);
                     }
                 }
             }
@@ -403,7 +397,7 @@
                 '       <i class="uk-icon-cloud-upload uk-icon-medium uk-margin-right uk-text-muted uk-comment-avatar"></i><h4 class="uk-comment-title">' + Wf.translate('upload_drop', 'Drop files here') + '</h4>' +
                 '   </div>' +
                 '   <p class="uk-margin-small uk-comment-meta uk-width-1-2 uk-text-center">' + msg + '</p>' +
-                '</div>').appendTo('#upload-queue-block').show()
+                '</div>').appendTo('#upload-queue-block').show();
         },
         /**
          * Rename a file in the uploader files list
@@ -470,7 +464,7 @@
             file.element = document.createElement('div');
 
             // status / delete
-            var remove = $('<button class="uk-button uk-button-link" />').attr({
+            var remove = $('<button class="uk-button uk-button-link"></button>').attr({
                 'title': Wf.translate('delete', 'Delete')
             }).addClass('queue-item-action').on('click', function (e) {
                 e.preventDefault();
@@ -480,19 +474,19 @@
                 }
 
                 return self._removeFile(file);
-            }).append('<i class="uk-icon uk-icon-trash" />');
+            }).append('<i class="uk-icon uk-icon-trash"></i>');
 
             // extension
             var ext = file.extension.toLowerCase();
             // input
-            var input = $('<i class="uk-icon uk-icon-file-' + mapIcon(ext) + '" /><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
-            var name = $('<div class="queue-item-name uk-width-3-4 uk-width-small-4-5 uk-form-icon uk-form-icon-both" />').append(input);
+            var input = $('<i class="uk-icon uk-icon-file-' + mapIcon(ext) + '"></i><input type="text" value="' + title + '" class="uk-width-1-1" /><span class="queue-item-extension uk-text-muted uk-icon-none">.' + file.extension + '</span>');
+            var name = $('<div class="queue-item-name uk-width-3-4 uk-width-small-4-5 uk-form-icon uk-form-icon-both"></div>').append(input);
 
             var buttons = [remove];
 
             // add optional buttons
             $.each(self.options.buttons, function (name, props) {
-                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '" />').addClass(props['class']).on('click', function (e) {
+                var btn = $('<button class="uk-button uk-button-link" title="' + props.title || name + '"></button>').addClass(props['class']).on('click', function (e) {
                     if ($(this).hasClass('disabled')) {
                         e.preventDefault();
                         return;
@@ -508,10 +502,10 @@
             });
 
             // size
-            var size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center uk-hidden-mini" title="' + Wf.String.formatSize(file.size) + '" role="presentation" />').html(Wf.String.formatSize(file.size));
+            var size = $('<div class="queue-item-size uk-flex-item-auto uk-text-center uk-hidden-mini" title="' + Wf.String.formatSize(file.size) + '" role="presentation"></div>').html(Wf.String.formatSize(file.size));
 
             // create actions container
-            var actions = $('<div class="queue-item-actions uk-flex uk-width-1-4 uk-width-small-1-5 uk-text-right" />').appendTo(file.element).append(size).append(buttons);
+            var actions = $('<div class="queue-item-actions uk-flex uk-width-1-4 uk-width-small-1-5 uk-text-right"></div>').appendTo(file.element).append(size).append(buttons);
             var progress = $('<div class="uk-progress uk-width-1-1"><div class="uk-progress-bar"></div></div>');
 
             $(file.element).addClass('queue-item uk-width-1-1 uk-flex uk-flex-wrap').appendTo($(self.element)).append([name, actions, progress]);
@@ -541,13 +535,10 @@
 
     // jQuery hook
     $.fn.uploader = function (options) {
-        var self = this,
-            inst = new UploadWidget(this, options);
+        var inst = new UploadWidget(this, options);
 
         $(this).on('uploadwidget:upload', function (e, data) {
             if (inst.isUploading()) {
-                cancel(e);
-
                 return false;
             }
 

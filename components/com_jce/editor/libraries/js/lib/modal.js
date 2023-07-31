@@ -59,11 +59,11 @@
             $(div).addClass('uk-modal');
 
             if ($('.uk-modal-overlay').length === 0) {
-                $(div).append('<div class="uk-modal-overlay uk-position-cover uk-overlay-background" />');
+                $(div).append('<div class="uk-modal-overlay uk-position-cover uk-overlay-background"></div>');
             }
 
             // create modal
-            var modal = $('<div class="uk-modal-dialog" role="dialog" aria-modal="true" aria-label="' + title + '" />').appendTo(div);
+            var modal = $('<div class="uk-modal-dialog" role="dialog" aria-modal="true" aria-label="' + title + '"></div>').appendTo(div);
 
             // add classes to modal
             $(modal).addClass(options.classes);
@@ -85,14 +85,14 @@
             }
 
             // add body and data
-            $('<div class="uk-modal-body uk-overflow-container" id="' + options.id + '" />').appendTo(modal).append(data);
+            $('<div class="uk-modal-body uk-overflow-container" id="' + options.id + '"></div>').appendTo(modal).append(data);
 
             // add buttons
             if (options.buttons) {
-                footer = $('<div class="uk-modal-footer uk-text-right" />');
+                footer = $('<div class="uk-modal-footer uk-text-right"></div>');
 
                 $.each(options.buttons, function (i, o) {
-                    var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '" />').on('click', function (e) {
+                    var btn = $('<button class="uk-button uk-margin-small-left" id="' + options.id + '_button_' + i + '"></button>').on('click', function (e) {
                         e.preventDefault();
 
                         if ($.isFunction(o.click)) {
@@ -119,7 +119,7 @@
 
                     // add icon
                     if (o.icon) {
-                        $(btn).prepend('<i class="uk-icon ' + o.icon + '" aria-hidden="true" />&nbsp;');
+                        $(btn).prepend('<i class="uk-icon ' + o.icon + '" aria-hidden="true"></i>&nbsp;');
                     }
 
                     $(footer).append(btn);
@@ -450,7 +450,7 @@
          * Upload Dialog
          */
         upload: function (options) {
-            var div = $('<div />').attr('id', 'upload-body').append(
+            var div = $('<div></div>').attr('id', 'upload-body').append(
                 '<div id="upload-queue-block" class="uk-placeholder">' +
                 '   <div id="upload-queue"></div>' +
                 '   <input type="file" size="40" tabindex="-1" />' +

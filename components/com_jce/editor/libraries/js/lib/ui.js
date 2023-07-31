@@ -239,7 +239,7 @@
             if (options.icons && options.icons.primary) {
                 var icon = map[options.icons.primary] || options.icons.primary || "";
 
-                $('<i />').addClass('uk-margin-small-right uk-icon ' + icon).prependTo(this);
+                $('<i class="uk-margin-small-right uk-icon ' + icon + '"></i>').prependTo(this);
             }
         });
     };
@@ -264,7 +264,7 @@
             $(this).children('ul').addClass('uk-tab');
 
             if ($(this).children('.uk-switcher').length === 0) {
-                $('<div class="uk-switcher" />').append($(this).children('div')).appendTo(this);
+                $('<div class="uk-switcher"></div>').append($(this).children('div')).appendTo(this);
             }
 
             $(this).children('.uk-switcher').addClass('uk-tabs-panel').children().first().addClass('uk-active').attr('aria-hidden', false);

@@ -737,9 +737,9 @@
                                 $('<h3 class="uk-margin-top uk-margin-left uk-text-bold">' + name + '</h3>').appendTo('#search-result');
 
                                 $.each(items, function (i, item) {
-                                    var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
+                                    var $dl = $('<dl class="uk-margin-small"></dl>').appendTo('#search-result');
 
-                                    $('<dt class="link uk-margin-small" />').text(item.title).on('click', function () {
+                                    $('<dt class="link uk-margin-small"></dt>').text(item.title).on('click', function () {
                                         var url = item.link, text = item.title;
 
                                         url = Wf.String.decode(url);
@@ -747,7 +747,7 @@
                                         text = $.trim(text.split('/')[0]);
 
                                         self.insertLink({ 'url': url, text: text });
-                                    }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right" />').appendTo($dl);
+                                    }).prepend('<i class="uk-icon uk-icon-file-text uk-margin-small-right"></i>').appendTo($dl);
 
                                     $('<dd class="text">' + item.text + '</dd>').appendTo($dl);
 

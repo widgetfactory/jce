@@ -1,3 +1,4 @@
+/* eslint-disable consistent-this */
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
@@ -7,20 +8,23 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-(function($) {
 
-    $.fn.listsort = function(options) {
+/* global jQuery */
+
+(function ($) {
+
+    $.fn.listsort = function (options) {
         options = $.extend({
             fields: {}
         }, options);
 
         var el = this;
 
-        $.each(options.fields, function(element, props) {
-            $(element).addClass('asc').on('click', function() {
+        $.each(options.fields, function (element, props) {
+            $(element).addClass('asc').on('click', function () {
                 var direction = 'asc';
 
-                $(this).toggleClass(function() {
+                $(this).toggleClass(function () {
                     if ($(this).is('.asc')) {
                         $(this).removeClass('asc');
                         direction = 'desc';
@@ -38,17 +42,17 @@
                     selector = [selector];
                 }
 
-                $.each(selector, function(i, s) {
+                $.each(selector, function (i, s) {
                     sortList(s, $(element).data('sort-type'), props.attribute, direction);
                 });
             });
         });
 
         function sortList(selector, type, attribute, direction) {
-            var self = this, fn;
+            var fn;
 
             switch (type) {
-                case 'date' :
+                case 'date':
                     fn = sortDate;
                     break;
                 default:
@@ -57,7 +61,7 @@
             }
 
             // create the list to sort
-            var list = $(selector, el).map(function() {
+            var list = $(selector, el).map(function () {
                 var v = $(this).attr(attribute) || $(this).text();
 
                 if (type == 'number') {
@@ -85,14 +89,14 @@
                 list.reverse();
             }
 
-            $.each(list, function(i, item) {
+            $.each(list, function (i, item) {
                 $(el).append(item.element);
             });
 
             // destroy list
             list = null;
 
-            $(el).trigger('listsort:sort', {'type': type, 'direction': direction});
+            $(el).trigger('listsort:sort', { 'type': type, 'direction': direction });
         }
         function sortDate(a, b) {
             var x = a.value, y = b.value, r = 0, d1 = 0, d2 = 0, t1 = 0, t2 = 0;

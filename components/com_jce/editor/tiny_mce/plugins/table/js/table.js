@@ -37,7 +37,7 @@
     Wf.setStyles = function () {
         var ed = tinyMCEPopup.editor;
         // create proxy element to extract styles from
-        var $proxy = $('<div />'),
+        var $proxy = $('<div></div>'),
             proxy = $proxy.get(0);
         // update with table styles
         $proxy.attr('style', $('#style').val());
@@ -533,7 +533,7 @@
                 border = 0,
                 cellpadding = -1,
                 cellspacing = -1,
-                align, width, height, className, caption, frame, rules, id, summary, dir, lang, borderColor, bgColor, background, style, html = '',
+                align, width, height, className, caption, frame, rules, id, summary, dir, lang, bgColor, style, html = '',
                 capEl, elm;
 
             // Get form data
@@ -552,10 +552,7 @@
             dir = $('#dir').val();
             lang = $('#lang').val();
             caption = $('#caption').is(':checked');
-
-            borderColor = valueToHex($('#border_color').val());
             bgColor = valueToHex($('#bgcolor').val());
-            background = $('#backgroundimage').val();
 
             // get compile styles attribute value
             style = this.getStyles();
@@ -944,10 +941,7 @@
                 ed = tinyMCEPopup.editor,
                 dom = ed.dom,
                 doc = ed.getDoc(),
-                v, height,
-                bgColor,
-                align,
-                valign;
+                v;
 
             var curRowType = tr.parentNode.nodeName.toLowerCase();
             var rowtype = $('#rowtype').val();
@@ -963,20 +957,6 @@
                 if (rows.length === 1 || tinymce.is(value)) {
                     dom.setAttrib(elm, name, value);
                 }
-            }
-
-            // Get form data
-            height = $('#height').val();
-            align = $('#align').val();
-            valign = $('#valign').val();
-            bgColor = valueToHex($('#bgcolor').val());
-
-            // remove values for html5
-            if (!isHTML4) {
-                height = "";
-                bgColor = "";
-                align = "";
-                valign = "";
             }
 
             // update values

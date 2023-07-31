@@ -35,7 +35,7 @@
             }
 
             // wrap in control div
-            $(this).wrap('<div class="uk-datalist-control" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-owns="' + id + '_datalist_menu" data-label-loading="' + settings.loading + '" />');
+            $(this).wrap('<div class="uk-datalist-control" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-expanded="false" aria-owns="' + id + '_datalist_menu" data-label-loading="' + settings.loading + '"></div>');
 
             // set the parent container
             var container = $(this).parent();
@@ -50,10 +50,10 @@
             var input = $('<input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="..." />');
 
             // create list button - non-focusable
-            var btn = $('<button type="button" class="uk-button uk-datalist-button" tabindex="-1" />');
+            var btn = $('<button type="button" class="uk-button uk-datalist-button" tabindex="-1"></button');
 
             // wrap combobox elements
-            var combobox = $('<div class="uk-datalist-combobox" />').appendTo(container).append([input, btn]);
+            var combobox = $('<div class="uk-datalist-combobox"></div>').appendTo(container).append([input, btn]);
 
             // not a datalist
             if (this.nodeName === 'SELECT') {

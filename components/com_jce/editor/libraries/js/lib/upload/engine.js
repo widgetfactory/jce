@@ -246,7 +246,7 @@
                 input = file.input;
 
             // add input name and create form
-            $(input).wrap('<form method="post" encoding="multipart/form-data" enctype="multipart/form-data" />');
+            $(input).wrap('<form method="post" encoding="multipart/form-data" enctype="multipart/form-data"></form>');
 
             var form = input.parentNode;
             input.setAttribute('name', o.data_name);
@@ -492,7 +492,7 @@
             if (o.browse_button) {
                 var btn = o.browse_button;
                 // add button class and wrap in a div
-                $(btn).addClass('wf-uploader-button').wrap('<div class="wf-uploader-container" />');
+                $(btn).addClass('wf-uploader-button').wrap('<div class="wf-uploader-container"></div>');
 
                 // add change event to input
                 $(this.input).on('change', function () {
