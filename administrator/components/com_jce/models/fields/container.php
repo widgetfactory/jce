@@ -114,7 +114,7 @@ class JFormFieldContainer extends JFormField
 
             if ($repeatable) {
                 $str[] = '<div class="form-field-repeatable-item well well-small p-3 bg-light my-2">';
-                $str[] = '  <div class="form-field-repeatable-item-group">';
+                $str[] = '  <div class="form-field-repeatable-item-group row">';
             }
 
             $subForm = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
