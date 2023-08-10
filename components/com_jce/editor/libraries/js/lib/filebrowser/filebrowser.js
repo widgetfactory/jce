@@ -2989,7 +2989,7 @@
                     mime = getMimeType(ext);
 
                     // only process mime-types that can have dimensions or duration
-                    if (mime) {
+                    if (mime && /^(image|video|audio)$/.test(mime)) {                        
                         // check if image has dimensions
                         if (mime === "image") {
                             if (data.width && data.height) {
