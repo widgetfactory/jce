@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -19,65 +19,64 @@ final class WFResponse
     private $error = null;
 
     private $headers = array(
-      'Content-Type' => 'text/json;charset=UTF-8',
-  );
+        'Content-Type' => 'application/json;charset=UTF-8',
+    );
 
-  /**
-   * Constructor.
-   *
-   * @param $id Request id
-   * @param null $content Response content
-   * @param array $headers Optional headers
-   */
-  public function __construct($id, $content = null, $headers = array())
-  {
-      // et response content
-      $this->setContent($content);
+    /**
+     * Constructor.
+     *
+     * @param $id Request id
+     * @param null $content Response content
+     * @param array $headers Optional headers
+     */
+    public function __construct($id, $content = null, $headers = array())
+    {
+        // et response content
+        $this->setContent($content);
 
-      // set id
-      $this->id = $id;
+        // set id
+        $this->id = $id;
 
-      // set header
-      $this->setHeaders($headers);
+        // set header
+        $this->setHeaders($headers);
 
-      return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * Send response.
-   *
-   * @param array $data
-   */
-  public function send($data = array())
-  {
-      $data = array_merge($data, array(
-          'jsonrpc' => '2.0',
-          'id' => $this->id,
-          'result' => $this->getContent(),
-          'error' => $this->getError(),
-      ));
+    /**
+     * Send response.
+     *
+     * @param array $data
+     */
+    public function send($data = array())
+    {
+        $data = array_merge($data, array(
+            'jsonrpc' => '2.0',
+            'id' => $this->id,
+            'result' => $this->getContent(),
+            'error' => $this->getError(),
+        ));
 
-      ob_start();
+        ob_start();
 
-      // set custom headers
-      foreach ($this->headers as $key => $value) {
-          header($key.': '.$value);
-      }
+        // set output headers
+        header('Expires: Mon, 04 Apr 1984 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: no-cache');
 
-      // set output headers
-      header('Expires: Mon, 4 April 1984 05:00:00 GMT');
-      header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-      header('Cache-Control: no-store, no-cache, must-revalidate');
-      header('Cache-Control: post-check=0, pre-check=0', false);
-      header('Pragma: no-cache');
+        // set custom headers
+        foreach ($this->headers as $key => $value) {
+            header($key . ': ' . $value);
+        }
 
-      // only echo response if an id is set
-      if (!empty($this->id)) {
-          echo json_encode($data);
-      }
+        // only echo response if an id is set
+        if (!empty($this->id)) {
+            echo json_encode($data);
+        }
 
-      exit(ob_get_clean());
-  }
+        exit(ob_get_clean());
+    }
 
     public function getHeader()
     {
@@ -93,15 +92,15 @@ final class WFResponse
         return $this;
     }
 
-  /**
-   * @param array $error
-   */
-  public function setError($error = array('code' => -32603, 'message' => 'Internal error'))
-  {
-      $this->error = $error;
+    /**
+     * @param array $error
+     */
+    public function setError($error = array('code' => -32603, 'message' => 'Internal error'))
+    {
+        $this->error = $error;
 
-      return $this;
-  }
+        return $this;
+    }
 
     public function getError()
     {
