@@ -679,25 +679,17 @@ class JceModelProfile extends JModelAdmin
         $pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
 
         if ($pk && $table->load($pk)) {
-
-            if (empty($data['rows'])) {
-                $data['rows'] = $table->rows;
-            }
-
-            if (empty($data['plugins'])) {
-                $data['plugins'] = $table->plugins;
-            }
-
             $json = array();
             $params = empty($table->params) ? '' : $table->params;
 
             // convert params to json data array
             $params = (array) json_decode($params, true);
 
-            $plugins = isset($data['plugins']) ? $data['plugins'] : $table->plugins;
+            $plugins = isset($data['plugins']) ? $data['plugins'] : '';
 
             // get plugins
             $items = explode(',', $plugins);
+
             // add "editor"
             $items[] = 'editor';
 

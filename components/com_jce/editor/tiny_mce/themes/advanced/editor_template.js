@@ -30,22 +30,13 @@
             justifycenter: ['justifycenter_desc', 'JustifyCenter'],
             justifyright: ['justifyright_desc', 'JustifyRight'],
             justifyfull: ['justifyfull_desc', 'JustifyFull'],
-            //bullist : ['bullist_desc', 'InsertUnorderedList'],
-            //numlist : ['numlist_desc', 'InsertOrderedList'],
             outdent: ['outdent_desc', 'Outdent'],
             indent: ['indent_desc', 'Indent'],
-            //cut : ['cut_desc', 'Cut'],
-            //copy : ['copy_desc', 'Copy'],
-            //paste : ['paste_desc', 'Paste'],
             undo: ['undo_desc', 'Undo'],
             redo: ['redo_desc', 'Redo'],
-            //link : ['link_desc', 'mceLink'],
             unlink: ['unlink_desc', 'unlink'],
-            //image : ['image_desc', 'mceImage'],
             cleanup: ['cleanup_desc', 'mceCleanup'],
-            //help: ['help_desc', 'mceHelp'],
             code: ['code_desc', 'mceCodeEditor'],
-            //hr: ['hr_desc', 'InsertHorizontalRule'],
             removeformat: ['removeformat_desc', 'RemoveFormat'],
             sub: ['sub_desc', 'subscript'],
             sup: ['sup_desc', 'superscript'],
@@ -53,9 +44,7 @@
             forecolorpicker: ['forecolor_desc', 'mceForeColor'],
             backcolor: ['backcolor_desc', 'HiliteColor'],
             backcolorpicker: ['backcolor_desc', 'mceBackColor'],
-            //charmap : ['charmap_desc', 'mceCharMap'],
             visualaid: ['visualaid_desc', 'mceToggleVisualAid'],
-            //anchor : ['anchor_desc', 'mceInsertAnchor'],
             newdocument: ['newdocument_desc', 'mceNewDocument'],
             blockquote: ['blockquote_desc', 'mceBlockQuote']
         },
@@ -72,15 +61,6 @@
             self.onResize = new tinymce.util.Dispatcher(this);
 
             s = ed.settings;
-
-            // Setup default buttons
-            if (!s.theme_buttons1) {
-                s = extend({
-                    theme_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect",
-                    theme_buttons2: "bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code",
-                    theme_buttons3: "hr,removeformat,visualaid,|,sub,sup,|,charmap"
-                }, s);
-            }
 
             // Default settings
             self.settings = s = extend({
