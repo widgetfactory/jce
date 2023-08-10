@@ -3,10 +3,9 @@
 (function ($) {
     $(document).ready(function () {
         // repeatable
-        $('.controls').on('click', '.form-field-repeatable-add', function (e) {
+        $('.controls').on('click', '.form-field-repeatable-add', function (e) {            
             e.preventDefault();
             e.stopPropagation();
-
             // get repeatable container, clone item
             var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent(), $item = $repeatable.clone(true);
 
@@ -24,8 +23,12 @@
                     }
                 });
 
+                this.name = this.name.replace(/(\[\d+\])$/, '[' + idx + ']');
+
                 // clean id of trailing digit, eg: _1
                 var id = this.id.replace(/(_\d+)$/, '');
+
+                id = id + '_' + idx + '_' + x;
 
                 // find and update the associated label if any
                 $p.find('label[for]').each(function () {
@@ -35,7 +38,7 @@
                 });
 
                 // create new id
-                $(this).attr('id', id + '_' + idx + '_' + x);
+                $(this).attr('id', id);
             }).trigger('change');
 
             $item.find(':input[name]').val('').trigger('change').removeClass('isdirty');
@@ -50,6 +53,10 @@
 
                 $(document).trigger('subform-row-add', [this]);
             });
+            // reset radio items
+            $parent.find('input[type="radio"][checked]').each(function () {
+                this.checked = !!this.getAttribute('checked');
+            });
 
             // other modals
             if (window.SqueezeBox && window.SqueezeBox.assign) {
@@ -57,7 +64,7 @@
             }
         });
 
-        $('.controls').on('click', '.form-field-repeatable-remove', function (e) {
+        $('.controls').on('click', '.form-field-repeatable-remove', function (e) {            
             e.preventDefault();
             var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent();
             // remove
