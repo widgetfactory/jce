@@ -125,6 +125,10 @@
     background-color: #f5f5f5;
 }
 
+.mceMenu .mceMenuItems .mceMenuItemFooter {
+    border-top: 1px solid #ddd;
+}
+
 .mceMenu .mceMenuItems .mceMenuItemTitle .mceText {
     font-weight: bold;
     cursor: default;

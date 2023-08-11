@@ -327,3 +327,12 @@ figure figcaption:empty[data-mce-empty]::after {
   text-decoration-style: wavy;
   text-decoration-color: lightblue;
 }
+.mce-item-hidden-ins {
+  border-bottom: 1px solid green;
+  text-decoration: none;
+  color: green;
+}
+.mce-item-hidden-del {
+  color: red;
+  text-decoration: line-through;
+}

@@ -429,6 +429,17 @@
 input::placeholder,
 textarea::placeholder {
     margin: 0 0.5em;
+}
+
+.mce-item-hidden-ins {
+    border-bottom: 1px solid green;
+    text-decoration: none;
+    color: green
+}
+
+.mce-item-hidden-del {
+    color: red;
+    text-decoration: line-through
 }/* Menu */
 
 .mceMenu {
@@ -554,6 +565,10 @@ textarea::placeholder {
 
 .mceMenu .mceMenuItems .mceMenuItemTitle:hover {
     background-color: #f5f5f5;
+}
+
+.mceMenu .mceMenuItems .mceMenuItemFooter {
+    border-top: 1px solid #ddd;
 }
 
 .mceMenu .mceMenuItems .mceMenuItemTitle .mceText {
@@ -2872,7 +2887,7 @@ select.mceNativeListBox {
 }
 
 .mceModal .mce-modal-square-medium .mceModalContentIframe,
-.mceModal .mce-modal-square-small .mceModalContentIframe, 
+.mceModal .mce-modal-square-small .mceModalContentIframe,
 .mceModal .mce-modal-square-large .mceModalContentIframe,
 .mceModal .mce-modal-square-xlarge .mceModalContentIframe {
     padding-bottom: calc(83.46% - 48px);
@@ -2946,6 +2961,10 @@ select.mceNativeListBox {
     display: inline-block;
 }
 
+.mceModalBody .mceModalContent input[type="checkbox"]+label {
+    width: auto;
+}
+
 .mceModalBody .mceModalContent .mceModalRow {
     display: flex;
     flex-wrap: wrap;
@@ -2984,7 +3003,7 @@ select.mceNativeListBox {
     padding-right: 42px;
 }
 
-.mceModalBody .mceModalContent .mceModalControlAppend input + span {
+.mceModalBody .mceModalContent .mceModalControlAppend input+span {
     position: absolute;
     right: 4px;
     display: block;
@@ -2993,7 +3012,7 @@ select.mceNativeListBox {
     line-height: 2rem;
 }
 
-.mceModalBody .mceModalContent .mceModalControlAppend input + select {
+.mceModalBody .mceModalContent .mceModalControlAppend input+select {
     max-width: 5em;
 }
 
@@ -3077,11 +3096,11 @@ select.mceNativeListBox {
     display: none;
 }
 
-.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_upload {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"]~.mceButtonUpload .mce_upload {
     display: none;
 }
 
-.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"] ~ .mceButtonUpload .mce_spinner {
+.mceModalBody .mceModalContent .mceFormControl .mceUrlBoxUpload[aria-busy="true"]~.mceButtonUpload .mce_spinner {
     display: flex;
 }
 
@@ -3098,7 +3117,7 @@ select.mceNativeListBox {
     color: #444;
 }
 
-.mceModalContent .mceButton.mceButtonPicker + .mceButton.mceButtonUpload {
+.mceModalContent .mceButton.mceButtonPicker+.mceButton.mceButtonUpload {
     right: 32px;
 }
 
