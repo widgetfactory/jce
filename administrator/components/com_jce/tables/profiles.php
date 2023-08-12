@@ -14,7 +14,15 @@ require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php');
 
 class JceTableProfiles extends JTable
 {
-    public function __construct(&$db)
+    /**
+     * Indicates that columns fully support the NULL value in the database
+     *
+     * @var    boolean
+     * @since  4.0.0
+     */
+    protected $_supportNullValue = true;
+	
+	public function __construct(&$db)
     {
         parent::__construct('#__wf_profiles', 'id', $db);
     }
