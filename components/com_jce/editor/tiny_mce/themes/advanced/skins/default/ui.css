@@ -429,17 +429,6 @@
 input::placeholder,
 textarea::placeholder {
     margin: 0 0.5em;
-}
-
-.mce-item-hidden-ins {
-    border-bottom: 1px solid green;
-    text-decoration: none;
-    color: green
-}
-
-.mce-item-hidden-del {
-    color: red;
-    text-decoration: line-through
 }/* Menu */
 
 .mceMenu {
@@ -2963,6 +2952,10 @@ select.mceNativeListBox {
 
 .mceModalBody .mceModalContent input[type="checkbox"]+label {
     width: auto;
+}
+
+.mceModalBody .mceModalContent input[disabled]+label {
+    color: #888;
 }
 
 .mceModalBody .mceModalContent .mceModalRow {
