@@ -28,7 +28,7 @@
 
             if (node.nodeType === 3) { // Text node
                 hasTextNodes = true;
-            } else if (node.nodeType === 1) { // Element node
+            } else if (node.nodeType === 1 && node.tagName != 'A') { // Element node
                 hasElementNodes = true;
             }
 
