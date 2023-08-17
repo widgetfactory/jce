@@ -36118,7 +36118,8 @@
         // Remove whitespace before/after and remove pure bogus nodes
         return tinymce.trim(editor.getContent({
           format: 'raw',
-          no_events: 1
+          no_events: 1,
+          undo: true
         }).replace(/<span[^>]+data-mce-bogus[^>]+>[\u200B\uFEFF]+<\/span>/g, ''));
       }
 
@@ -36306,7 +36307,7 @@
           // Add undo level if needed
           lastLevel = data[index];
 
-          if (lastLevel && lastLevel.content == level.content) {
+          if (lastLevel && lastLevel.content == level.content) {          
             return null;
           }
 
@@ -36363,7 +36364,8 @@
             level = data[--index];
 
             editor.setContent(level.content, {
-              format: 'raw'
+              format: 'raw',
+              undo: true
             });
 
             editor.selection.moveToBookmark(level.beforeBookmark);
@@ -36387,7 +36389,8 @@
             level = data[++index];
 
             editor.setContent(level.content, {
-              format: 'raw'
+              format: 'raw',
+              undo: true
             });
 
             editor.selection.moveToBookmark(level.bookmark);
