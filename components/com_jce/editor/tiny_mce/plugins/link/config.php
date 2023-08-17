@@ -24,9 +24,9 @@ class WFLinkPluginConfig
         // expose globally for use by Autolink and Clipboard
         $settings['default_link_target'] = $plugin->getParam('target', '');
         
-        // expose globally for use by Autolink and Clipboard
-        $settings['autolink_email'] = $plugin->getParam('autolink_email', 1, 1);
-        $settings['autolink_url'] = $plugin->getParam('autolink_url', 1, 1);
+        // expose globally for use by Autolink and Clipboard (must be boolean)
+        $settings['autolink_email'] = $plugin->getParam('autolink_email', 1, 1, 'boolean');
+        $settings['autolink_url'] = $plugin->getParam('autolink_url', 1, 1, 'boolean');
 
         if ($plugin->getParam('link.quicklink', 1) == 0) {
             $config['quicklink'] = false;
