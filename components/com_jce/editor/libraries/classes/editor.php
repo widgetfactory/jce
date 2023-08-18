@@ -346,6 +346,8 @@ class WFEditor
     {
         // get an editor instance
         $wf = WFApplication::getInstance();
+        $app = JFactory::getApplication();
+        $input = $app->getInput();
 
         // create token
         $token = JSession::getFormToken();
@@ -369,6 +371,12 @@ class WFEditor
                 'context' => $this->context,
             ),
         );
+
+        // Get ID of the article from input, for frontend, we use a_id while backend uses id
+        $articleId = $app->isClient('site') ? $input->getInt('a_id', null) : $input->getInt('id', null);
+        if (is_int($articleId)) {
+            $settings['query']['articleId'] = $articleId;
+        }
 
         // if a profile is set
         if (is_object($this->profile)) {
@@ -463,7 +471,7 @@ class WFEditor
         }
 
         // get compression options stylesheet
-        $settings['compress'] = $this->getCompressionOptions();
+        $settings['compress'] = $this->ressionOptions();
 
         // set css compression
         if ($settings['compress']['css']) {

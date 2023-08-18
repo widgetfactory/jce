@@ -101,6 +101,19 @@ class WFFileSystem extends WFExtension
             $user = JFactory::getUser();
             $wf = WFApplication::getInstance();
             $profile = $wf->getProfile();
+            $app = JFactory::getApplication();
+
+            $articleId = $app->input->getInt('articleId', null);
+            $context = $app->input->getInt('context', null);
+
+            if (is_int($context)) {
+                foreach (JComponentHelper::getComponents() as $component) {
+                    if ($context == $component->id) {
+                        $contextName = str_replace('com_', '', $component->option);
+                        break;
+                    }
+                }
+            }
 
             jimport('joomla.user.helper');
 
@@ -129,6 +142,8 @@ class WFFileSystem extends WFExtension
                 '/\$name/', 
                 '/\$user(group|type)/', 
                 '/\$(group|profile)/',
+                '/\$context/',
+                '/\$articleId/',
                 '/\$hour/',
                 '/\$day/', 
                 '/\$month/', 
@@ -140,7 +155,9 @@ class WFFileSystem extends WFExtension
                 $user->username, 
                 $user->name, 
                 $usertype, 
-                $profile->name, 
+                $profile->name,
+                $contextName,
+                $articleId,
                 date('H'), 
                 date('d'), 
                 date('m'), 
