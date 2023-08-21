@@ -20,6 +20,11 @@ class WfTemplateAstroid extends JPlugin
                 $files[] = 'media/templates/site/' . $template->name . '/css/' . basename($item);
             }
 
+            // add custom css file
+            if (is_file($path . '/css/custom.css')) {
+                $files[] = 'media/templates/site/' . $template->name . '/css/custom.css';
+            }
+
             return true;
         }
         
@@ -32,6 +37,11 @@ class WfTemplateAstroid extends JPlugin
             foreach($items as $item) {
                 // add compiled css file
                 $files[] = 'templates/' . $template->name . '/css/' . basename($item);
+            }
+
+            // add custom css file
+            if (is_file($path . '/css/custom.css')) {
+                $files[] = 'templates/' . $template->name . '/css/custom.css';
             }
         }
     }
