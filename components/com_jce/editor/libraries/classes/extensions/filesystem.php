@@ -98,6 +98,7 @@ class WFFileSystem extends WFExtension
         static $variables;
 
         if (!isset($variables)) {
+            $app = JFactory::getApplication();
             $user = JFactory::getUser();
             $wf = WFApplication::getInstance();
             $profile = $wf->getProfile();
