@@ -15189,7 +15189,7 @@
                   href = editor.convertURL(href);
               }
 
-              if (href && href.indexOf('#') !== -1) {
+              if (href && href.indexOf('#') == 0) {
                   href = href.substr(href.indexOf('#'));
               }
 
