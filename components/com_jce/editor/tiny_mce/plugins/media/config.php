@@ -66,12 +66,12 @@ class WFMediaPluginConfig
             }
         }
 
-        $settings['media_valid_elements'] = array_unique(array_values($tags));
+        $tags = array_unique(array_values($tags));
+
+        $settings['media_valid_elements'] = array_values($tags);
         $settings['media_live_embed'] = $wf->getParam('media.live_embed', 1);
 
         // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
-
-        
     }
 }

@@ -322,8 +322,8 @@
     }
 
     function isSupportedUrl(editor, tag, url) {        
-        if (editor.settings['media_' + tag + '_allow_local']) {
-            return isLocalUrl(url);
+        if (editor.settings['media_' + tag + '_allow_local']) {            
+            return isLocalUrl(editor, url);
         }
 
         return true;
@@ -380,11 +380,19 @@
         return false;
     }
 
-    var isAbsoluteUrl = function (url) {
-        return url && (url.indexOf('://') > 0 || url.indexOf('//') === 0);
+    var isAbsoluteUrl = function (url) {        
+        if (!url) {
+            return false;
+        }
+
+        if (url.indexOf('//') === 0) {
+            return true;
+        }
+
+        return url.indexOf('://') > 0;
     };
 
-    var isLocalUrl = function (editor, url) {
+    var isLocalUrl = function (editor, url) {        
         if (isAbsoluteUrl(url)) {
             // try and convert to relative
             var relative = editor.documentBaseURI.toRelative(url);
@@ -1350,6 +1358,17 @@
                 if (!isValidElement(editor, node.name) && !isNonEditable(node)) {
                     node.remove();
                     continue;
+                }
+                
+                // validate non-iframe node
+                if (node.name !== 'iframe') {
+                    var src = node.attr('src') || node.attr('data') || '';
+
+                    // validate 
+                    if (src && !isSupportedUrl(editor, node.name, src)) {
+                        node.remove();
+                        continue;
+                    }
                 }
 
                 if (editor.settings.media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(node)) {
