@@ -5802,19 +5802,25 @@
 
       // Setup map objects
       whiteSpaceElementsMap = createLookupTable('whitespace_elements', 'pre script noscript style textarea video audio iframe object');
+
       selfClosingElementsMap = createLookupTable('self_closing_elements', 'colgroup dd dt li option p td tfoot th thead tr');
+
       shortEndedElementsMap = createLookupTable('short_ended_elements', 'area base basefont br col frame hr img input isindex link ' +
         'meta param embed source wbr track');
+
       boolAttrMap = createLookupTable('boolean_attributes', 'async checked compact declare defer disabled ismap multiple nohref noresize ' +
         'noshade nowrap readonly selected autoplay loop controls itemscope playsinline spellcheck contextmenu draggable hidden allowfullscreen muted');
 
       nonEmptyElementsMap = createLookupTable('non_empty_elements', 'td th iframe video audio object script pre code', shortEndedElementsMap);
       moveCaretBeforeOnEnterElementsMap = createLookupTable('move_caret_before_on_enter_elements', 'table', nonEmptyElementsMap);
+
       textBlockElementsMap = createLookupTable('text_block_elements', 'h1 h2 h3 h4 h5 h6 p div address pre form ' +
-        'blockquote center dir fieldset header footer article section hgroup aside nav figure');
+        'blockquote center dir fieldset header footer article section hgroup aside main nav figure');
+
       blockElementsMap = createLookupTable('block_elements', 'hr table tbody thead tfoot ' +
         'th tr td li ol ul caption dl dt dd noscript menu isindex option ' +
-        'datalist select optgroup', textBlockElementsMap);
+        'datalist select optgroup figcaption details summary', textBlockElementsMap);
+
       textInlineElementsMap = createLookupTable('text_inline_elements', 'span strong b em i font strike u var cite ' +
         'dfn code mark q sup sub samp');
 
