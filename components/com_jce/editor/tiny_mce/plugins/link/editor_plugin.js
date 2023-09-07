@@ -88,28 +88,11 @@
         return trimCaretContainers(text);
     };
 
-    var updateTextContent = function (elm, text) {
-        /*// update the selected node so as not to overwrite with anchor text
-        if (elm.firstChild && elm.firstChild.nodeType === 1) {
-            elm = elm.firstChild;
-        }
-
-        if ("innerText" in elm) {
-            elm.innerText = text;
-        } else {
-            elm.textContent = text;
-        }*/
-
-        // replace white space
-        text = text.replace(/^[\s ]/, '\uFEFF');
-
+    var updateTextContent = function (elm, text) {        
         tinymce.each(elm.childNodes, function (node) {
-            if (node.nodeType == 3 && node.nodeValue != "") {
-                if ("innerText" in node) {
-                    node.innerText = text;
-                } else {
-                    node.textContent = text;
-                }
+            // If it's a text node and has non-whitespace content
+            if (node.nodeType == 3 && node.nodeValue.trim() !== "") {
+                node.textContent = text;
             }
         });
     };
