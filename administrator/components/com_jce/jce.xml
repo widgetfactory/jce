@@ -68,7 +68,7 @@
             <file>controller.php</file>
             <file>index.html</file>
             <file>jce.php</file>
-            <file>licence.txt</file>
+            <file>LICENCE.txt</file>
         </files>
 
         <languages folder="administrator/language/en-GB">
