@@ -1,13 +1,16 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Layout
+ * @package     JCE
+ * @subpackage  Admin
  *
- * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
+
+use Joomla\CMS\Language\Text;
 
 extract($displayData);
 
@@ -49,8 +52,8 @@ extract($displayData);
  *     %3 - value
  *     %4 = any other attributes
  */
-$standard 	= '<input type="checkbox" id="%1$s" value="%3$s=%2$s" %4$s /><label for="%1$s" class="checkbox" style="font-family:%2$s">%3$s</label>';
-$custom 	= '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . JText::_('WF_LABEL_NAME') . '" /></div><div class="span6 col-md-6"><input type="text" class="form-control span12" value="%2$s" placeholder="' . JText::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class="span2 col-md-2"><a href="#" class="font-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a></div>';
+$standard = '<input type="checkbox" id="%1$s" value="%3$s=%2$s" %4$s /><label for="%1$s" class="checkbox" style="font-family:%2$s">%3$s</label>';
+$custom = '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . Text::_('WF_LABEL_NAME') . '" /></div><div class="span6 col-md-6"><input type="text" class="form-control span12" value="%2$s" placeholder="' . JText::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class="span2 col-md-2"><a href="#" class="font-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a></div>';
 
 // The alt option for JText::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
@@ -60,21 +63,21 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 
 	<?php foreach ($options as $i => $option): ?>
 		<?php
-			// Initialize some option attributes.
-			$checked = $option->checked ? 'checked' : '';
+// Initialize some option attributes.
+$checked = $option->checked ? 'checked' : '';
 
-			$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
+$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
 
-			$oid = $id . $i;
-			$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
-			$attributes = array_filter(array($checked, $optionDisabled));
+$oid = $id . $i;
+$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
+$attributes = array_filter(array($checked, $optionDisabled));
 
-			$format = $standard;
+$format = $standard;
 
-			if ($option->custom) {
-				$format = $custom;
-			}
-		?>
+if ($option->custom) {
+    $format = $custom;
+}
+?>
         <div class="font-item row form-row" title="<?php echo $option->text; ?>">
             <?php echo sprintf($format, $oid, $value, $option->text, implode(' ', $attributes)); ?>
         </div>
@@ -88,8 +91,8 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
         <?php echo sprintf($custom, '', '', '', ''); ?>
 	</div>
 
-	<a href="#" class="btn btn-link font-item-plus"><span class="span10 col-md-10 text-left"><?php echo JText::_('WF_PARAM_FONTS_NEW');?></span><i class="icon icon-plus pull-right float-right"></i></a>
+	<a href="#" class="btn btn-link font-item-plus"><span class="span10 col-md-10 text-left"><?php echo Text::_('WF_PARAM_FONTS_NEW'); ?></span><i class="icon icon-plus pull-right float-right"></i></a>
 
-	<input type="hidden" name="<?php echo $name;?>" value="" />
+	<input type="hidden" name="<?php echo $name; ?>" value="" />
 
 </fieldset>

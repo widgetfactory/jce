@@ -1,17 +1,19 @@
 <?php
 /**
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-/**
- * Form Field class for the Joomla Platform.
- * Provides spacer markup to be used in form layouts.
- *
- * @since  11.1
- */
-class JFormFieldHeading extends JFormField
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
+
+class JFormFieldHeading extends FormField
 {
     /**
      * The form field type.
@@ -47,12 +49,12 @@ class JFormFieldHeading extends JFormField
     protected function getLabel()
     {
         $html = array();
-        $class = !empty($this->class) ? ' class="'.$this->class.'"' : '';
-        $html[] = '<h3'.$class.'>';
+        $class = !empty($this->class) ? ' class="' . $this->class . '"' : '';
+        $html[] = '<h3' . $class . '>';
 
         // Get the label text from the XML element, defaulting to the element name.
         $text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-        $text = $this->translateLabel ? JText::_($text) : $text;
+        $text = $this->translateLabel ? Text::_($text) : $text;
 
         $html[] = $text;
 
@@ -60,7 +62,7 @@ class JFormFieldHeading extends JFormField
 
         // If a description is specified, use it to build a tooltip.
         if (!empty($this->description)) {
-            $html[] = '<small>'.JText::_($this->description).'</small>';
+            $html[] = '<small>' . Text::_($this->description) . '</small>';
         }
 
         return implode('', $html);

@@ -1,14 +1,20 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Registry\Registry;
 
 class WFPreviewPlugin extends WFEditorPlugin
 {
@@ -31,11 +37,11 @@ class WFPreviewPlugin extends WFEditorPlugin
      */
     public function showPreview()
     {
-        $app = JFactory::getApplication();
-        $user = JFactory::getUser();
+        $app = Factory::getApplication();
+        $user = Factory::getUser();
 
         // reset document type
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
         $document->setType('html');
 
         // required by module loadposition
@@ -54,14 +60,14 @@ class WFPreviewPlugin extends WFEditorPlugin
         $data = preg_replace(array('#<!DOCTYPE([^>]+)>#i', '#<(head|title|meta)([^>]*)>([\w\W]+)<\/1>#i', '#<\/?(html|body)([^>]*)>#i'), '', rawurldecode($data));
 
         // create params registry object
-        $params = new JRegistry();
+        $params = new Registry();
         $params->loadString("");
 
         // create context
         $context = "";
 
         $extension_id = $app->input->getInt('extension_id');
-        $extension = JTable::getInstance('extension');
+        $extension = Table::getInstance('extension');
 
         if ($extension->load($extension_id)) {
             $option = $extension->element;
@@ -71,15 +77,15 @@ class WFPreviewPlugin extends WFEditorPlugin
             $context = $option . '.article';
         }
 
-        $article = JTable::getInstance('content');
+        $article = Table::getInstance('content');
 
         $article->id = 0;
         $article->created_by = $user->get('id');
-        $article->parameters = new JRegistry();
+        $article->parameters = new Registry();
         $article->text = $data;
 
         // load system plugins
-        JPluginHelper::importPlugin('system');
+        PluginHelper::importPlugin('system');
 
         $app->triggerEvent('onWfContentPreview', array($context, &$article, &$params, 0));
 
@@ -88,7 +94,7 @@ class WFPreviewPlugin extends WFEditorPlugin
             $page = 0;
 
             // load content plugins
-            JPluginHelper::importPlugin('content');
+            PluginHelper::importPlugin('content');
 
             // set error reporting off to produce empty string on Fatal error
             error_reporting(0);
@@ -108,7 +114,7 @@ class WFPreviewPlugin extends WFEditorPlugin
      */
     private function processURLS(&$article)
     {
-        $base = JURI::root(true) . '/';
+        $base = Uri::root(true) . '/';
         $buffer = $article->text;
 
         $protocols = '[a-zA-Z0-9]+:'; //To check for all unknown protocals (a protocol must contain at least one alpahnumeric fillowed by :

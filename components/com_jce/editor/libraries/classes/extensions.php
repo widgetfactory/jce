@@ -1,20 +1,27 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
+
 // set as an extension parent
 if (!defined('_WF_EXT')) {
     define('_WF_EXT', 1);
 }
 
-class WFExtension extends JObject
+class WFExtension extends CMSObject
 {
     /**
      * Constructor activating the default information of the class.
@@ -59,10 +66,7 @@ class WFExtension extends JObject
      */
     private static function _load($types = array(), $extension = null, $config = array())
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         $extensions = array();
 
@@ -77,7 +81,7 @@ class WFExtension extends JObject
         $types = (array) $types;
 
         // get all installed plugins
-        $installed = JPluginHelper::getPlugin('jce');
+        $installed = PluginHelper::getPlugin('jce');
 
         if (!empty($installed)) {
             foreach ($installed as $p) {
@@ -114,7 +118,7 @@ class WFExtension extends JObject
         }
 
         // get legacy extensions
-        $legacy = JFolder::folders(WF_EDITOR . '/extensions', '.', false, true);
+        $legacy = Folder::folders(WF_EDITOR . '/extensions', '.', false, true);
 
         $core = array(
             'aggregator' => array(
@@ -148,7 +152,7 @@ class WFExtension extends JObject
             }
 
             // specific extension
-            if ($extension && !JFile::exists($item . '/' . $extension . '.php')) {
+            if ($extension && !File::exists($item . '/' . $extension . '.php')) {
                 continue;
             }
 
@@ -160,7 +164,7 @@ class WFExtension extends JObject
 
                 $files = array($item . '/' . $extension . '.xml');
             } else {
-                $files = JFolder::files($item, '\.xml$', false, true);
+                $files = Folder::files($item, '\.xml$', false, true);
             }
 
             foreach ($files as $file) {

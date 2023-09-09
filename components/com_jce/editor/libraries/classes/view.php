@@ -1,16 +1,19 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-final class WFView extends JObject
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Object\CMSObject;
+
+final class WFView extends CMSObject
 {
     private $path = array();
 
@@ -42,9 +45,6 @@ final class WFView extends JObject
      *
      * @param string $tpl The name of the template file to parse;
      *                    automatically searches through the template paths
-     *
-     * @throws object An JError object.
-     *                JView::display()
      *
      * @copyright Copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved
      * @license GNU/GPL, see LICENSE.php
@@ -93,8 +93,6 @@ final class WFView extends JObject
      *
      * @return string The output of the the template script.
      *
-     * JView::loadTemplate()
-     *
      * @copyright Copyright Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved
      * @license GNU/GPL, see LICENSE.php
      */
@@ -119,7 +117,7 @@ final class WFView extends JObject
 
         $path = $this->getTemplatePath();
 
-        $template = JPath::find($path, $file . '.php');
+        $template = Path::find($path, $file . '.php');
 
         if ($template != false) {
             // unset so as not to introduce into template scope

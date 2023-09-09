@@ -371,17 +371,17 @@ final class Core
     {
         // Type checks:
         if (! \is_string($algorithm)) {
-            throw new \InvalidArgumentException(
+            throw new \Exception(
                 'pbkdf2(): algorithm must be a string'
             );
         }
         if (! \is_string($password)) {
-            throw new \InvalidArgumentException(
+            throw new \Exception(
                 'pbkdf2(): password must be a string'
             );
         }
         if (! \is_string($salt)) {
-            throw new \InvalidArgumentException(
+            throw new \Exception(
                 'pbkdf2(): salt must be a string'
             );
         }

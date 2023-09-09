@@ -1,14 +1,17 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('WF_EDITOR') or die('RESTRICTED');
+
+ defined('JPATH_PLATFORM') or die;
+
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Language\Text;
+ use Joomla\CMS\Session\Session;
 
 $tabs = WFTabs::getInstance();
 
@@ -17,10 +20,10 @@ $tabs = WFTabs::getInstance();
 	<!-- Render Tabs -->
 	<?php $tabs->render(); ?>
 	<!-- Token -->	
-	<input type="hidden" id="token" name="<?php echo JSession::getFormToken(); ?>" value="1" />
+	<input type="hidden" id="token" name="<?php echo Session::getFormToken(); ?>" value="1" />
 </form>
 <div class="actionPanel">
-	<button class="button" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
-	<button class="button" id="help"><?php echo JText::_('WF_LABEL_HELP')?></button>
-	<button class="button" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
+	<button class="button" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL')?></button>
+	<button class="button" id="help"><?php echo Text::_('WF_LABEL_HELP')?></button>
+	<button class="button" id="insert"><?php echo Text::_('WF_LABEL_INSERT')?></button>
 </div>

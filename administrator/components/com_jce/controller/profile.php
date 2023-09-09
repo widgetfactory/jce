@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -11,26 +11,28 @@
 
 defined('JPATH_PLATFORM') or die;
 
-class JceControllerProfile extends JControllerForm
+use Joomla\CMS\MVC\Controller\FormController;
+
+class JceControllerProfile extends FormController
 {
     /**
-	 * The URL option for the component.
-	 *
-	 * @var    string
-	 */
-	protected $option = 'com_jce';
-    
+     * The URL option for the component.
+     *
+     * @var    string
+     */
+    protected $option = 'com_jce';
+
     /**
-	 * The URL view item variable.
-	 *
-	 * @var    string
-	 */
+     * The URL view item variable.
+     *
+     * @var    string
+     */
     protected $view_item = 'profile';
 
     /**
-	 * The URL view list variable.
-	 *
-	 * @var    string
-	 */
+     * The URL view list variable.
+     *
+     * @var    string
+     */
     protected $view_list = 'profiles';
 }

@@ -1,13 +1,19 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Editor\Editor;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Uri\Uri;
+
 class WFJoomlaPluginConfig
 {
     public static function getConfig(&$settings)
@@ -17,10 +23,10 @@ class WFJoomlaPluginConfig
             return;
         }
 
-        $plugins = JPluginHelper::getPlugin('editors-xtd');
+        $plugins = PluginHelper::getPlugin('editors-xtd');
 
         $list = array();
-        $editor = JEditor::getInstance('jce');
+        $editor = Editor::getInstance('jce');
 
         $excluded = array('readmore', 'pagebreak', 'image');
 
@@ -33,7 +39,7 @@ class WFJoomlaPluginConfig
             }
 
             // fully load plugin instance
-            JPluginHelper::importPlugin('editors-xtd', $plugin->name, true);
+            PluginHelper::importPlugin('editors-xtd', $plugin->name, true);
 
             // create the button class name
             $className = 'PlgEditorsXtd' . $plugin->name;
@@ -62,7 +68,7 @@ class WFJoomlaPluginConfig
             }
 
             // should be a CMSObject
-            if (!($button instanceof Joomla\CMS\Object\CMSObject)) {
+            if (!($button instanceof CMSObject)) {
                 continue;
             }
 
@@ -74,7 +80,7 @@ class WFJoomlaPluginConfig
             $onclick = $button->get('onclick', '');
 
             if ($button->get('link') !== '#') {
-                $href = JUri::base() . $button->get('link');
+                $href = Uri::base() . $button->get('link');
             } else {
                 $href = '';
             }
@@ -88,7 +94,7 @@ class WFJoomlaPluginConfig
                 'href' => $href,
                 'onclick' => $onclick,
                 'svg' => $button->get('iconSVG'),
-                'options' => $button->get('options', array())
+                'options' => $button->get('options', array()),
             );
 
             $i++;

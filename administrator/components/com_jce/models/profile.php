@@ -1,15 +1,26 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\AdminModel;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Table\Table;
+use Joomla\String\StringHelper;
+use Joomla\Registry\Registry;
 
 require JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
 
@@ -21,7 +32,7 @@ require JPATH_ADMINISTRATOR . '/components/com_jce/helpers/profiles.php';
  *
  * @since       1.6
  */
-class JceModelProfile extends JModelAdmin
+class JceModelProfile extends AdminModel
 {
     /**
      * The type alias for this content type.
@@ -54,18 +65,18 @@ class JceModelProfile extends JModelAdmin
      */
     public function getTable($type = 'Profiles', $prefix = 'JceTable', $config = array())
     {
-        return JTable::getInstance($type, $prefix, $config);
+        return Table::getInstance($type, $prefix, $config);
     }
 
     /* Override to prevent plugins from processing form data */
-	protected function preprocessData($context, &$data, $group = 'system')
-	{
+    protected function preprocessData($context, &$data, $group = 'system')
+    {
         if (!isset($data->config)) {
             return;
         }
 
         $config = $data->config;
-        
+
         if (is_string($config)) {
             $config = json_decode($config, true);
         }
@@ -79,19 +90,19 @@ class JceModelProfile extends JModelAdmin
             if (!empty($config['editor']['toolbar_theme']) && $config['editor']['toolbar_theme'] === 'mobile') {
                 $config['editor']['toolbar_theme'] = 'default.touch';
             }
-    
+
             if (isset($config['editor']['relative_urls']) && !isset($config['editor']['convert_urls'])) {
                 $config['editor']['convert_urls'] = $config['editor']['relative_urls'] == 0 ? 'absolute' : 'relative';
             }
         }
 
         // decode config values for display
-        array_walk_recursive($config, function(&$value) {
+        array_walk_recursive($config, function (&$value) {
             $value = htmlspecialchars_decode($value);
         });
 
         $data->config = $config;
-	}
+    }
 
     /**
      * Method to allow derived classes to preprocess the form.
@@ -105,10 +116,10 @@ class JceModelProfile extends JModelAdmin
      *
      * @throws Exception if there is an error in the form event
      */
-    protected function preprocessForm(JForm $form, $data, $group = 'content')
+    protected function preprocessForm(Form $form, $data, $group = 'content')
     {
         if (!empty($data)) {
-            $registry = new JRegistry($data->config);
+            $registry = new Registry($data->config);
 
             // process individual fields to remove default value if required
             $fields = $form->getFieldset();
@@ -137,7 +148,7 @@ class JceModelProfile extends JModelAdmin
                 }
 
                 // reset the "default" attribute value if a value is set
-                if ($registry->exists($group)) {                    
+                if ($registry->exists($group)) {
                     $form->setFieldAttribute($name, 'default', '', (string) $field->group);
                 }
             }
@@ -149,7 +160,7 @@ class JceModelProfile extends JModelAdmin
 
     public function getForm($data = array(), $loadData = true)
     {
-        JFormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
+        FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
         // Get the setup form.
         $form = $this->loadForm('com_jce.profile', 'profile', array('control' => 'jform', 'load_data' => false));
@@ -158,7 +169,7 @@ class JceModelProfile extends JModelAdmin
             return false;
         }
 
-        JFactory::getLanguage()->load('com_jce_pro', JPATH_SITE);
+        Factory::getLanguage()->load('com_jce_pro', JPATH_SITE);
 
         // editor manifest
         $manifest = __DIR__ . '/forms/editor.xml';
@@ -210,7 +221,7 @@ class JceModelProfile extends JModelAdmin
 
         // convert to array if set
         if (!empty($data->device)) {
-        	$data->device = explode(',', $data->device);
+            $data->device = explode(',', $data->device);
         }
 
         if (!empty($data->components)) {
@@ -218,9 +229,9 @@ class JceModelProfile extends JModelAdmin
             $data->components_select = 1;
         }
 
-        $data->types    = explode(',', $data->types);
-        $data->config   = $data->params;
-        
+        $data->types = explode(',', $data->types);
+        $data->config = $data->params;
+
         $this->preprocessData('com_jce.profiles', $data);
 
         return $data;
@@ -346,10 +357,10 @@ class JceModelProfile extends JModelAdmin
                 $command->editable = (int) $command->editable;
 
                 // translate title
-                $command->title = JText::_($command->title);
+                $command->title = Text::_($command->title);
 
                 // translate description
-                $command->description = JText::_($command->description);
+                $command->description = Text::_($command->description);
 
                 $command->name = $name;
 
@@ -395,10 +406,10 @@ class JceModelProfile extends JModelAdmin
                 }, $plugin->class);
 
                 // translate title
-                $plugin->title = JText::_($plugin->title);
+                $plugin->title = Text::_($plugin->title);
 
                 // translate description
-                $plugin->description = JText::_($plugin->description);
+                $plugin->description = Text::_($plugin->description);
 
                 // cast row to integer
                 $plugin->row = (int) $plugin->row;
@@ -507,8 +518,8 @@ class JceModelProfile extends JModelAdmin
      */
     protected function prepareTable($table)
     {
-        $date = JFactory::getDate();
-        $user = JFactory::getUser();
+        $date = Factory::getDate();
+        $user = Factory::getUser();
 
         foreach ($table->getProperties() as $key => $value) {
             switch ($key) {
@@ -520,10 +531,10 @@ class JceModelProfile extends JModelAdmin
                     $value = implode(',', filter_var_array($value, FILTER_SANITIZE_STRING));
                     break;
                 case 'area':
-                    if (is_array($value)) {                        
+                    if (is_array($value)) {
                         // remove empty value
                         $value = array_filter($value, 'strlen');
-                        
+
                         // for simplicity, set multiple area selections as "0"
                         if (count($value) > 1) {
                             $value = 0;
@@ -585,7 +596,7 @@ class JceModelProfile extends JModelAdmin
 
     public function validate($form, $data, $group = null)
     {
-        $filter = JFilterInput::getInstance();
+        $filter = InputFilter::getInstance();
 
         // get unfiltered config data
         $config = isset($data['config']) ? $data['config'] : array();
@@ -619,10 +630,10 @@ class JceModelProfile extends JModelAdmin
     private static function cleanParamData($data)
     {
         // clean up link plugin parameters
-        array_walk($data, function(&$params, $plugin) {
+        array_walk($data, function (&$params, $plugin) {
             if ($plugin === "link") {
                 if (isset($params['dir'])) {
-                    
+
                     if (!empty($params['dir']) && empty($params['direction'])) {
                         $params['direction'] = $params['dir'];
                     }
@@ -632,7 +643,7 @@ class JceModelProfile extends JModelAdmin
             }
 
             if (is_array($params) && WFUtility::is_associative_array($params)) {
-                array_walk($params, function(&$value, $key) {
+                array_walk($params, function (&$value, $key) {
                     if (is_string($value) && WFUtility::isJson($value)) {
                         $value = json_decode($value, true);
                     }
@@ -654,7 +665,7 @@ class JceModelProfile extends JModelAdmin
      */
     public function save($data)
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // get profile table
         $table = $this->getTable();
@@ -667,7 +678,7 @@ class JceModelProfile extends JModelAdmin
 
             while ($table->load(array('name' => $name))) {
                 if ($name == $table->name) {
-                    $name = Joomla\String\StringHelper::increment($name);
+                    $name = StringHelper::increment($name);
                 }
             }
 
@@ -685,7 +696,7 @@ class JceModelProfile extends JModelAdmin
             if (empty($data['plugins'])) {
                 $data['plugins'] = $table->plugins;
             }
-            
+
             $json = array();
             $params = empty($table->params) ? '' : $table->params;
 
@@ -723,7 +734,7 @@ class JceModelProfile extends JModelAdmin
 
         // set a default value for validation
         if (empty($data['params'])) {
-        	$data['params'] = '{}';
+            $data['params'] = '{}';
         }
 
         if (parent::save($data)) {
@@ -736,14 +747,14 @@ class JceModelProfile extends JModelAdmin
     public function copy($ids)
     {
         // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
         $table = $this->getTable();
 
         foreach ($ids as $id) {
             if (!$table->load($id)) {
                 $this->setError($table->getError());
             } else {
-                $name = JText::sprintf('WF_PROFILES_COPY_OF', $table->name);
+                $name = Text::sprintf('WF_PROFILES_COPY_OF', $table->name);
                 $table->name = $name;
                 $table->id = 0;
                 $table->published = 0;
@@ -769,7 +780,7 @@ class JceModelProfile extends JModelAdmin
 
     public function export($ids)
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $buffer = '<?xml version="1.0" encoding="utf-8" standalone="yes"?>';
         $buffer .= "\n" . '<export type="profiles">';
@@ -820,7 +831,7 @@ class JceModelProfile extends JModelAdmin
 
         $name = 'jce_editor_profile_' . date('Y_m_d') . '.xml';
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $app->allowCache(false);
         $app->setHeader('Content-Transfer-Encoding', 'binary');
@@ -846,11 +857,11 @@ class JceModelProfile extends JModelAdmin
     public function import()
     {
         // Check for request forgeries
-        JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
         jimport('joomla.filesystem.file');
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         $tmp = $app->getCfg('tmp_path');
 
         jimport('joomla.filesystem.file');
@@ -859,44 +870,44 @@ class JceModelProfile extends JModelAdmin
 
         // check for valid uploaded file
         if (empty($file) || !is_uploaded_file($file['tmp_name'])) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         if ($file['error'] || $file['size'] < 1) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_NOFILE'), 'error');
             return false;
         }
 
         // sanitize the file name
-        $name = JFile::makeSafe($file['name']);
+        $name = File::makeSafe($file['name']);
 
         if (empty($name)) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
         // Build the appropriate paths.
-        $config = JFactory::getConfig();
+        $config = Factory::getConfig();
         $destination = $config->get('tmp_path') . '/' . $name;
         $source = $file['tmp_name'];
 
         // Move uploaded file.
-        JFile::upload($source, $destination, false, true);
+        File::upload($source, $destination, false, true);
 
         if (!is_file($destination)) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
             return false;
         }
 
         $result = JceProfilesHelper::processImport($destination);
 
         if ($result === false) {
-            $app->enqueueMessage(JText::_('WF_PROFILES_IMPORT_ERROR'), 'error');
+            $app->enqueueMessage(Text::_('WF_PROFILES_IMPORT_ERROR'), 'error');
             return false;
         }
 
-        $app->enqueueMessage(JText::sprintf('WF_PROFILES_IMPORT_SUCCESS', $result));
+        $app->enqueueMessage(Text::sprintf('WF_PROFILES_IMPORT_SUCCESS', $result));
 
         return true;
     }

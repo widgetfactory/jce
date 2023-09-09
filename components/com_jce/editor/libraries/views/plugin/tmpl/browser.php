@@ -1,13 +1,22 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+ defined('JPATH_PLATFORM') or die;
+
+ use Joomla\CMS\Client\ClientHelper;
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Filesystem\File;
+ use Joomla\CMS\Filesystem\Folder;
+ use Joomla\CMS\Language\Text;
+ use Joomla\CMS\Uri\Uri;
+ 
 defined('WF_EDITOR') or die('RESTRICTED');
 ?>
 <div class="uk-position-cover uk-browser uk-browser-external">
@@ -16,7 +25,7 @@ defined('WF_EDITOR') or die('RESTRICTED');
 	<input type="hidden" value="" class="filebrowser" data-filebrowser />
 </div>
 <div class="actionPanel uk-modal-footer">
-	<button class="uk-button cancel" id="cancel"><?php echo JText::_('WF_LABEL_CANCEL')?></button>
-	<button class="uk-button" id="refresh"><?php echo JText::_('WF_LABEL_REFRESH')?></button>
-	<button class="uk-button confirm" id="insert"><?php echo JText::_('WF_LABEL_INSERT')?></button>
+	<button class="uk-button cancel" id="cancel"><?php echo Text::_('WF_LABEL_CANCEL')?></button>
+	<button class="uk-button" id="refresh"><?php echo Text::_('WF_LABEL_REFRESH')?></button>
+	<button class="uk-button confirm" id="insert"><?php echo Text::_('WF_LABEL_INSERT')?></button>
 </div>

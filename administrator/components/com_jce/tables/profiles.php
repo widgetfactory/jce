@@ -1,18 +1,20 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_BASE') or die;
 
-require_once(JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php');
+defined('JPATH_PLATFORM') or die;
 
-class JceTableProfiles extends JTable
+use Joomla\CMS\Table\Table;
+
+require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/encrypt.php';
+
+class JceTableProfiles extends Table
 {
     /**
      * Indicates that columns fully support the NULL value in the database
@@ -21,8 +23,8 @@ class JceTableProfiles extends JTable
      * @since  4.0.0
      */
     protected $_supportNullValue = true;
-	
-	public function __construct(&$db)
+
+    public function __construct(&$db)
     {
         parent::__construct('#__wf_profiles', 'id', $db);
     }
@@ -42,48 +44,42 @@ class JceTableProfiles extends JTable
     }
 
     /**
-	 * Overloaded check function
-	 *
-	 * @return  boolean  True on success, false on failure
-	 *
-	 * @see     Table::check()
-	 * @since   2.9.18
-	 */
-	public function check()
-	{
-		try
-		{
-			parent::check();
-		}
-		catch (\Exception $e)
-		{
-			$this->setError($e->getMessage());
+     * Overloaded check function
+     *
+     * @return  boolean  True on success, false on failure
+     *
+     * @see     Table::check()
+     * @since   2.9.18
+     */
+    public function check()
+    {
+        try
+        {
+            parent::check();
+        } catch (Exception $e) {
+            $this->setError($e->getMessage());
 
-			return false;
-		}
-		
-		/**
-		 * Ensure any new items have compulsory fields set
-		 */
-		if (!$this->id)
-		{
-			if (!isset($this->device))
-			{
-				$this->device = 'desktop,tablet,phone';
-			}
-			
-			if (!isset($this->area))
-			{
-				$this->area = '0';
-			}
-			
-			// Params can be an empty json string for new tables
-			if (empty($this->params))
-			{
-				$this->params = '{}';
-			}
-		}
-		
-		return true;
-	}
+            return false;
+        }
+
+        /**
+         * Ensure any new items have compulsory fields set
+         */
+        if (!$this->id) {
+            if (!isset($this->device)) {
+                $this->device = 'desktop,tablet,phone';
+            }
+
+            if (!isset($this->area)) {
+                $this->area = '0';
+            }
+
+            // Params can be an empty json string for new tables
+            if (empty($this->params)) {
+                $this->params = '{}';
+            }
+        }
+
+        return true;
+    }
 }

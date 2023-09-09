@@ -1,9 +1,10 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Layout
+ * @package     JCE
+ * @subpackage  Admin
  *
  * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -42,10 +43,6 @@ extract($displayData);
  * @var   array    $options         Options available for this field.
  */
 
-// Including fallback code for HTML5 non supported browsers.
-JHtml::_('jquery.framework');
-JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relative' => true, 'conditional' => 'lt IE 9'));
-
 /**
  * The format of the input tag to be filled in using sprintf.
  *     %1 - id
@@ -55,7 +52,7 @@ JHtml::_('script', 'system/html5fallback.js', array('version' => 'auto', 'relati
  */
 $format = '<input type="checkbox" id="%1$s" name="%2$s" value="%3$s" %4$s />';
 
-// The alt option for JText::alt
+// The alt option for Text::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 ?>
 
@@ -63,29 +60,29 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 	<?php echo $required ? 'required aria-required="true"' : ''; ?>
 	<?php echo $autofocus ? 'autofocus' : ''; ?>>
 
-	<?php foreach ($options as $i => $option) : ?>
+	<?php foreach ($options as $i => $option): ?>
 		<?php
-			// Initialize some option attributes.
-			$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
+// Initialize some option attributes.
+$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
 
-			// In case there is no stored value, use the option's default state.
-			$checked        = (!$hasValue && $option->checked) ? 'checked' : $checked;
-			$optionClass    = !empty($option->class) ? 'class="' . $option->class . '"' : '';
-			$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
+// In case there is no stored value, use the option's default state.
+$checked = (!$hasValue && $option->checked) ? 'checked' : $checked;
+$optionClass = !empty($option->class) ? 'class="' . $option->class . '"' : '';
+$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
 
-			// Initialize some JavaScript option attributes.
-			$onclick  = !empty($option->onclick) ? 'onclick="' . $option->onclick . '"' : '';
-			$onchange = !empty($option->onchange) ? 'onchange="' . $option->onchange . '"' : '';
+// Initialize some JavaScript option attributes.
+$onclick = !empty($option->onclick) ? 'onclick="' . $option->onclick . '"' : '';
+$onchange = !empty($option->onchange) ? 'onchange="' . $option->onchange . '"' : '';
 
-			$oid        = $id . $i;
-			$value      = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
-			$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
-		?>
+$oid = $id . $i;
+$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
+$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
+?>
 
 		<label for="<?php echo $oid; ?>" class="checkbox">
 			<?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
 		<?php echo $option->text; ?></label>
-	<?php endforeach; ?>
+	<?php endforeach;?>
 
-	<input type="hidden" name="<?php echo $name;?>" value="" />
+	<input type="hidden" name="<?php echo $name; ?>" value="" />
 </fieldset>

@@ -1,16 +1,22 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class WFDocument extends JObject
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+
+class WFDocument extends CMSObject
 {
     /**
      * Array of linked scripts.
@@ -69,8 +75,8 @@ class WFDocument extends JObject
     public $direction = 'ltr';
 
     private static $queryMap = array(
-        'imgmanager'=> 'image',
-        'imgmanager_ext' => 'imagepro'
+        'imgmanager' => 'image',
+        'imgmanager_ext' => 'imagepro',
     );
 
     /**
@@ -294,14 +300,14 @@ class WFDocument extends JObject
     {
         jimport('joomla.filesystem.path');
 
-        $root = JURI::root(true);
+        $root = Uri::root(true);
 
         // remove root from url
         if (!empty($root)) {
             $url = substr($url, strlen($root));
         }
 
-        return WFUtility::makePath(JPATH_SITE, JPath::clean($url));
+        return WFUtility::makePath(JPATH_SITE, Path::clean($url));
     }
 
     /**
@@ -462,7 +468,7 @@ class WFDocument extends JObject
 
     public function getQueryString($query = array())
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // get plugin name and assign to query
         $name = $this->get('name');
@@ -484,7 +490,7 @@ class WFDocument extends JObject
         $query['context'] = $app->input->getInt('context');
 
         // get token
-        $token = JSession::getFormToken();
+        $token = Session::getFormToken();
 
         // set token
         $query[$token] = 1;
@@ -634,12 +640,12 @@ class WFDocument extends JObject
      */
     public function pack($minify = true, $gzip = false)
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         if ($app->input->getCmd('task') == 'pack') {
 
             // check token
-            JSession::checkToken('get') or jexit();
+            Session::checkToken('get') or jexit();
 
             $type = $app->input->getWord('type', 'javascript');
 
@@ -665,7 +671,7 @@ class WFDocument extends JObject
                         'plugins' => array('core' => array($this->getName()), 'external' => array()),
                         'sections' => array('dlg', $this->getName() . '_dlg'),
                         'mode' => 'plugin',
-                        'language' => WFLanguage::getTag()
+                        'language' => WFLanguage::getTag(),
                     ));
 
                     $data .= $parser->load();

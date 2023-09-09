@@ -1,16 +1,24 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_PLATFORM') or die;
 
-final class WFRequest extends JObject
+ defined('JPATH_PLATFORM') or die;
+
+ use Joomla\CMS\Object\CMSObject;
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Filesystem\File;
+ use Joomla\CMS\Filesystem\Folder;
+ use Joomla\CMS\Filesystem\Path;
+ use Joomla\CMS\Language\Text;
+ use Joomla\CMS\Session\Session;
+
+final class WFRequest extends CMSObject
 {
     protected static $instance;
 
@@ -116,7 +124,7 @@ final class WFRequest extends JObject
             }
 
             if (strpos($key, '\u0000') !== false || strpos($value, '\u0000') !== false) {
-                JError::raiseError(403, 'RESTRICTED');
+               throw new InvalidArgumentException('Invalid Data', 403);
             }
         }
     }
@@ -133,9 +141,9 @@ final class WFRequest extends JObject
         }
 
         // Check for request forgeries
-        JSession::checkToken('request') or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // empty arguments
         $args = array();
@@ -179,9 +187,13 @@ final class WFRequest extends JObject
                 if (empty($json->params)) {   
                     $json->params = "";
                 }
-                    
-                // check query
-                $this->checkQuery($json->params);
+
+                try {
+                    // check query
+                    $this->checkQuery($json->params);
+                } catch (Exception $e) {
+                    $response->setError(array('code' => $e->getCode(), 'message' => $e->getMessage()))->send();
+                }
 
                 // merge array with args
                 if (is_array($json->params)) {

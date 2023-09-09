@@ -1,8 +1,20 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+
+FormHelper::loadFieldClass('list');
 
 class JFormFieldPopups extends JFormFieldList
 {
@@ -31,7 +43,7 @@ class JFormFieldPopups extends JFormFieldList
         foreach ($extensions as $item) {
             $option = new StdClass;
 
-            $option->text = JText::_($item->title, true);
+            $option->text = Text::_($item->title, true);
             $option->disable = '';
             $option->value = $item->name;
 

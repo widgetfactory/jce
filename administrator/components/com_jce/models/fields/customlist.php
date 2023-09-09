@@ -1,8 +1,18 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('list');
 
 class JFormFieldCustomList extends JFormFieldList
 {
@@ -31,8 +41,8 @@ class JFormFieldCustomList extends JFormFieldList
     public function setup(SimpleXMLElement $element, $value, $group = null)
     {
         $return = parent::setup($element, $value, $group);
-        
-        $this->class = trim($this->class.' com_jce_select_custom');
+
+        $this->class = trim($this->class . ' com_jce_select_custom');
 
         return $return;
     }
@@ -48,13 +58,13 @@ class JFormFieldCustomList extends JFormFieldList
         foreach ($this->value as $value) {
             $tmp = array(
                 'value' => $value,
-                'text'  => $value,
+                'text' => $value,
                 'selected' => true,
             );
 
             $found = false;
 
-            foreach($options as $option) {
+            foreach ($options as $option) {
                 if ($option->value === $value) {
                     $found = true;
                 }
@@ -66,7 +76,7 @@ class JFormFieldCustomList extends JFormFieldList
         }
 
         // Merge any additional options in the XML definition.
-		$options = array_merge($options, $custom);
+        $options = array_merge($options, $custom);
 
         return $options;
     }

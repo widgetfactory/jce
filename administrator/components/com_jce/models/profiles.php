@@ -1,18 +1,24 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\CMS\Table\Table;
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/profiles.php';
 
-class JceModelProfiles extends JModelList
+class JceModelProfiles extends ListModel
 {
     /**
      * Constructor.
@@ -31,7 +37,7 @@ class JceModelProfiles extends JModelList
                 'checked_out', 'checked_out',
                 'checked_out_time', 'checked_out_time',
                 'published', 'published',
-                'ordering', 'ordering'
+                'ordering', 'ordering',
             );
         }
 
@@ -55,7 +61,7 @@ class JceModelProfiles extends JModelList
         $this->setState('filter.search', $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search', '', 'string'));
 
         // Load the parameters.
-        $params = JComponentHelper::getParams('com_jce');
+        $params = ComponentHelper::getParams('com_jce');
         $this->setState('params', $params);
 
         // List state information.
@@ -80,32 +86,32 @@ class JceModelProfiles extends JModelList
         // Compile the store id.
         $id .= ':' . $this->getState('filter.search');
         $id .= ':' . $this->getState('filter.published');
-		$id .= ':' . $this->getState('filter.components');
+        $id .= ':' . $this->getState('filter.components');
 
         return parent::getStoreId($id);
     }
 
     /**
-	 * Method to get an array of data items.
-	 *
-	 * @return  mixed  An array of data items on success, false on failure.
-	 *
-	 * @since   1.6
-	 */
-	public function getItems()
-	{
+     * Method to get an array of data items.
+     *
+     * @return  mixed  An array of data items on success, false on failure.
+     *
+     * @since   1.6
+     */
+    public function getItems()
+    {
         $items = parent::getItems();
 
         // Filter by device
         $device = $this->getState('filter.device');
-        
+
         // Filter by component
         $components = $this->getState('filter.components');
-        
-        // Filter by user groups
-		$usergroups = $this->getState('filter.usergroups');
 
-        $items = array_filter($items, function($item) use ($device, $components, $usergroups) {
+        // Filter by user groups
+        $usergroups = $this->getState('filter.usergroups');
+
+        $items = array_filter($items, function ($item) use ($device, $components, $usergroups) {
             $state = true;
 
             if ($device) {
@@ -125,12 +131,12 @@ class JceModelProfiles extends JModelList
 
         // Get a storage key.
         $store = $this->getStoreId();
-        
+
         // update cache store
         $this->cache[$store] = $items;
 
         return $items;
-	}
+    }
 
     /**
      * Build an SQL query to load the list data.
@@ -144,7 +150,7 @@ class JceModelProfiles extends JModelList
         // Create a new query object.
         $db = $this->getDbo();
         $query = $db->getQuery(true);
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
 
         // Select the required fields from the table.
         $query->select(
@@ -157,23 +163,19 @@ class JceModelProfiles extends JModelList
         $query->from($db->quoteName('#__wf_profiles'));
 
         // Filter by published state
-		$published = $this->getState('filter.published');
+        $published = $this->getState('filter.published');
 
-		if (is_numeric($published))
-		{
-			$query->where($db->quoteName('published') . ' = ' . (int) $published);
-		}
-		elseif ($published === '')
-		{
-			$query->where('(' . $db->quoteName('published') . ' = 0 OR ' . $db->quoteName('published') . ' = 1)');
+        if (is_numeric($published)) {
+            $query->where($db->quoteName('published') . ' = ' . (int) $published);
+        } elseif ($published === '') {
+            $query->where('(' . $db->quoteName('published') . ' = 0 OR ' . $db->quoteName('published') . ' = 1)');
         }
 
         // Filter by area
-		$area = (int) $this->getState('filter.area');
+        $area = (int) $this->getState('filter.area');
 
-		if ($area)
-		{
-			$query->where($db->quoteName('area') . ' = ' . (int) $area);
+        if ($area) {
+            $query->where($db->quoteName('area') . ' = ' . (int) $area);
         }
 
         // Filter by search in title
@@ -199,29 +201,29 @@ class JceModelProfiles extends JModelList
 
     public function repair()
     {
-		$file = __DIR__ . '/profiles.xml';
+        $file = __DIR__ . '/profiles.xml';
 
         if (!is_file($file)) {
-            $this->setError(JText::_('WF_PROFILES_REPAIR_ERROR'));
+            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
         $xml = simplexml_load_file($file);
 
         if (!$xml) {
-            $this->setError(JText::_('WF_PROFILES_REPAIR_ERROR'));
+            $this->setError(Text::_('WF_PROFILES_REPAIR_ERROR'));
             return false;
         }
 
         foreach ($xml->profiles->children() as $profile) {
-			$groups = JceProfilesHelper::getUserGroups((int) $profile->children('area'));
+            $groups = JceProfilesHelper::getUserGroups((int) $profile->children('area'));
 
-			$table = JTable::getInstance('Profiles', 'JceTable');
+            $table = Table::getInstance('Profiles', 'JceTable');
 
             foreach ($profile->children() as $item) {
                 switch ((string) $item->getName()) {
-					case 'description':
-                        $table->description = JText::_((string) $item);
+                    case 'description':
+                        $table->description = Text::_((string) $item);
                     case 'types':
                         $table->types = implode(',', $groups);
                         break;
@@ -259,8 +261,8 @@ class JceModelProfiles extends JModelList
 
                 return false;
             }
-		}
-		
-		return true;
+        }
+
+        return true;
     }
 }

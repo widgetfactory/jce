@@ -1,16 +1,19 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-final class WFTabs extends JObject
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+
+final class WFTabs extends CMSObject
 {
     private $_tabs = array();
     private $_panels = array();
@@ -68,7 +71,7 @@ final class WFTabs extends JObject
      *
      * @param object $layout Layout (panel) name
      *
-     * @return panel JView object
+     * @return panel WFView object
      */
     private function loadPanel($panel, $state)
     {
@@ -113,7 +116,7 @@ final class WFTabs extends JObject
 
             // array is not empty and is associative
             if (!empty($values) && array_values($values) !== $values) {
-                foreach($values as $key => $value) {
+                foreach ($values as $key => $value) {
                     $panel->$key = $value;
                 }
             }
@@ -174,7 +177,7 @@ final class WFTabs extends JObject
                     $class .= ' uk-hidden';
                 }
 
-                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1" value="' . $name . '">' . JText::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
+                $output .= "\t" . '<li role="presentation" aria-selected="false" class="' . $class . '"><button type="button" class="uk-button uk-button-link uk-button-tab" tabindex="-1" value="' . $name . '">' . Text::_('WF_TAB_' . strtoupper($name)) . '</button></li>' . "\n";
                 ++$x;
             }
 

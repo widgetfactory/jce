@@ -1,17 +1,16 @@
 <?php
-
 /**
  * @package     JCE
+ * @subpackage  Admin
  *
- * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2022 Ryan Demmer All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Form\Field\MediaField;
-use Joomla\CMS\Helper\MediaHelper;
 
 /**
  * Provides a modal media selector field for the JCE File Browser
@@ -66,7 +65,7 @@ class JFormFieldMediaJce extends MediaField
             // Joomla 4 custom layout
             if (isset($this->types)) {
                 $this->layout = 'joomla.form.field.mediacustom';
-        	}
+            }
         }
 
         return $result;
@@ -84,7 +83,7 @@ class JFormFieldMediaJce extends MediaField
         $config = array(
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
-            'converted' => (int) $this->element['converted'] ? true : false
+            'converted' => (int) $this->element['converted'] ? true : false,
         );
 
         if (isset($this->element['plugin'])) {
@@ -104,8 +103,8 @@ class JFormFieldMediaJce extends MediaField
         }
 
         $extraData = array(
-            'link'      => $this->link,
-            'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
+            'link' => $this->link,
+            'class' => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active',
         );
 
         if ($options['upload'] == 1) {

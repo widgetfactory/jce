@@ -1,14 +1,20 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\UserHelper;
 
 class WFFileSystem extends WFExtension
 {
@@ -90,7 +96,7 @@ class WFFileSystem extends WFExtension
      */
     public function getBaseURL()
     {
-        return WFUtility::makePath(JURI::root(true), $this->getRootDir());
+        return WFUtility::makePath(Uri::root(true), $this->getRootDir());
     }
 
     private function getPathVariables()
@@ -98,14 +104,14 @@ class WFFileSystem extends WFExtension
         static $variables;
 
         if (!isset($variables)) {
-            $app = JFactory::getApplication();
-            $user = JFactory::getUser();
+            $app = Factory::getApplication();
+            $user = Factory::getUser();
             $wf = WFApplication::getInstance();
             $profile = $wf->getProfile();
 
             jimport('joomla.user.helper');
 
-            $groups = JUserHelper::getUserGroups($user->id);
+            $groups = UserHelper::getUserGroups($user->id);
 
             // get keys only
             $groups = array_keys($groups);
@@ -115,7 +121,7 @@ class WFFileSystem extends WFExtension
 
             if (is_int($group_id)) {
                 // usergroup table
-                $group = JTable::getInstance('Usergroup');
+                $group = Table::getInstance('Usergroup');
                 $group->load($group_id);
                 // usertype
                 $usertype = $group->title;
@@ -128,7 +134,7 @@ class WFFileSystem extends WFExtension
             $contextName = '';
 
             if (is_int($context)) {
-                foreach (JComponentHelper::getComponents() as $component) {
+                foreach (ComponentHelper::getComponents() as $component) {
                     if ($context == $component->id) {
                         $contextName = $component->option;
                         break;
@@ -138,29 +144,29 @@ class WFFileSystem extends WFExtension
 
             // Replace any path variables
             $path_pattern = array(
-                '/\$id/', 
-                '/\$username/', 
-                '/\$name/', 
-                '/\$user(group|type)/', 
+                '/\$id/',
+                '/\$username/',
+                '/\$name/',
+                '/\$user(group|type)/',
                 '/\$(group|profile)/',
                 '/\$context/',
                 '/\$hour/',
-                '/\$day/', 
-                '/\$month/', 
-                '/\$year/'
+                '/\$day/',
+                '/\$month/',
+                '/\$year/',
             );
 
             $path_replacement = array(
-                $user->id, 
-                $user->username, 
-                $user->name, 
-                $usertype, 
-                $profile->name, 
+                $user->id,
+                $user->username,
+                $user->name,
+                $usertype,
+                $profile->name,
                 $contextName,
-                date('H'), 
-                date('d'), 
-                date('m'), 
-                date('Y')
+                date('H'),
+                date('d'),
+                date('m'),
+                date('Y'),
             );
 
             $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
@@ -217,7 +223,7 @@ class WFFileSystem extends WFExtension
 
                 // Remove first leading slash
                 $root = ltrim($root, '/');
-                
+
                 // Force default directory if base param is now empty or starts with a variable or a . eg $id
                 if (empty($root) || preg_match('/[\.\$]/', $root[0])) {
                     $root = 'images';

@@ -1,12 +1,19 @@
 <?php
-
 /**
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('number');
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+
+FormHelper::loadFieldClass('number');
 
 /**
  * Form Field class for the Joomla Platform.
@@ -36,7 +43,7 @@ class JFormFieldUploadMaxSize extends JFormFieldNumber
     protected function getInput()
     {
         $max = $this->getUploadValue();
-        
+
         $this->max = (int) $max;
         $this->class = trim($this->class . ' input-small');
 
@@ -45,7 +52,7 @@ class JFormFieldUploadMaxSize extends JFormFieldNumber
         $html .= '  <div class="input-group-append">';
         $html .= '      <span class="add-on input-group-text">Kb</span>';
         $html .= '  </div>';
-        $html .= '	<small class="help-inline form-text">&nbsp;<em>' . JText::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . (string) $max . '</em></small>';
+        $html .= '	<small class="help-inline form-text">&nbsp;<em>' . Text::_('WF_SERVER_UPLOAD_SIZE') . ' : ' . (string) $max . '</em></small>';
         $html .= '</div>';
 
         return $html;

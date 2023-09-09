@@ -1,16 +1,20 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class WFLanguageParser extends JObject
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Object\CMSObject;
+
+class WFLanguageParser extends CMSObject
 {
     protected $mode = 'editor';
     protected $plugins = array();
@@ -178,7 +182,7 @@ class WFLanguageParser extends JObject
     protected static function getOverrides()
     {
         // get the language file
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
         // get language tag
         $tag = $language->getTag();
 
@@ -320,7 +324,7 @@ class WFLanguageParser extends JObject
     {
         // get language tag
         $tag = $this->language;
-        
+
         // base language path
         $path = JPATH_SITE . '/language/' . $tag;
 
@@ -358,11 +362,11 @@ class WFLanguageParser extends JObject
                 foreach ($plugins['external'] as $name => $plugin) {
 
                     $filename = 'en-GB.plg_jce_editor-' . $name . '.ini';
-                    
+
                     // add English file
-                    $ini = JPath::find(array(
+                    $ini = Path::find(array(
                         JPATH_ADMINISTRATOR . '/language/en-GB',
-                        JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/en-GB'
+                        JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/en-GB',
                     ), $filename);
 
                     if ($ini && is_file($ini)) {
@@ -374,9 +378,9 @@ class WFLanguageParser extends JObject
 
                         $filename = $tag . '.plg_jce_editor-' . $name . '.ini';
 
-                        $ini = JPath::find(array(
+                        $ini = Path::find(array(
                             JPATH_ADMINISTRATOR . '/language/' . $tag,
-                            JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/' . $tag
+                            JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/' . $tag,
                         ), $filename);
 
                         if ($ini && is_file($ini)) {

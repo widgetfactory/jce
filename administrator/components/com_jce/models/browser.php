@@ -1,18 +1,22 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
 require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
-class JceModelBrowser extends JModelLegacy
+class JceModelBrowser extends BaseDatabaseModel
 {
     /**
      * Method to auto-populate the model state.
@@ -23,14 +27,14 @@ class JceModelBrowser extends JModelLegacy
      */
     protected function populateState($ordering = null, $direction = null)
     {
-        $app = JFactory::getApplication();
-        
+        $app = Factory::getApplication();
+
         $filter = $app->input->getCmd('filter', '');
-        
+
         $url = WfBrowserHelper::getBrowserLink(null, $filter);
 
         if (empty($url)) {
-            $app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+            $app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');
             $app->redirect('index.php?option=com_jce');
         }
 

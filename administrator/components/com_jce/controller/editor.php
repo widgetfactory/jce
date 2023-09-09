@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 3 - http://www.gnu.org/copyleft/gpl.html
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license       GNU/GPL 3 - http://www.gnu.org/copyleft/gpl.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -12,12 +12,16 @@ defined('JPATH_PLATFORM') or die;
 
 require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
-class JceControllerEditor extends JControllerLegacy
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
+
+class JceControllerEditor extends BaseController
 {
     public function execute($task)
     {
         // check for session token
-        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
         $editor = new WFEditor();
 

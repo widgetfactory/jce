@@ -1,13 +1,14 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+defined('JPATH_PLATFORM') or die;
+
 class WFCharmapPluginConfig
 {
     public static function getConfig(&$settings)
@@ -18,8 +19,8 @@ class WFCharmapPluginConfig
 
         if (!empty($append)) {
             $values = array();
-            
-            foreach($append as $item) {
+
+            foreach ($append as $item) {
                 $item = (object) $item;
 
                 // invalid values
@@ -30,7 +31,7 @@ class WFCharmapPluginConfig
                 $item->name = html_entity_decode($item->name);
                 $values[$item->name] = $item->value;
             }
-            
+
             $settings['charmap_append'] = $values;
         }
     }

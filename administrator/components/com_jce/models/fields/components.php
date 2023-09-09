@@ -1,12 +1,20 @@
 <?php
-
 /**
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-JFormHelper::loadFieldClass('list');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+
+FormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for the Joomla Framework.
@@ -33,7 +41,7 @@ class JFormFieldComponents extends JFormFieldList
      */
     protected function getOptions()
     {
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         $exclude = array(
             'com_admin',
@@ -59,17 +67,17 @@ class JFormFieldComponents extends JFormFieldList
             'com_wrapper',
             'com_search',
             'com_user',
-            'com_updates'
+            'com_updates',
         );
 
         // Get list of plugins
-        $db = JFactory::getDbo();
+        $db = Factory::getDbo();
         $query = $db->getQuery(true)
-                ->select('element AS value, name AS text')
-                ->from('#__extensions')
-                ->where('type = '.$db->quote('component'))
-                ->where('enabled = 1')
-                ->order('ordering, name');
+            ->select('element AS value, name AS text')
+            ->from('#__extensions')
+            ->where('type = ' . $db->quote('component'))
+            ->where('enabled = 1')
+            ->order('ordering, name');
         $db->setQuery($query);
 
         $components = $db->loadObjectList();
@@ -78,13 +86,13 @@ class JFormFieldComponents extends JFormFieldList
 
         // load component languages
         for ($i = 0; $i < count($components); ++$i) {
-            if (!in_array($components[$i]->value, $exclude)) {                              
+            if (!in_array($components[$i]->value, $exclude)) {
                 // load system language file
-                $language->load($components[$i]->value.'.sys', JPATH_ADMINISTRATOR);
+                $language->load($components[$i]->value . '.sys', JPATH_ADMINISTRATOR);
                 $language->load($components[$i]->value, JPATH_ADMINISTRATOR);
 
                 // translate name
-                $components[$i]->text = JText::_($components[$i]->text, true);
+                $components[$i]->text = Text::_($components[$i]->text, true);
 
                 $components[$i]->disable = '';
 

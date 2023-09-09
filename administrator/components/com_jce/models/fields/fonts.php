@@ -1,6 +1,19 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+
+FormHelper::loadFieldClass('checkboxes');
 
 class JFormFieldFonts extends JFormFieldCheckboxes
 {
@@ -94,14 +107,14 @@ class JFormFieldFonts extends JFormFieldCheckboxes
 
             // add to $exclude array
             $exclude[] = $text;
-            
+
             $value = htmlspecialchars_decode($value, ENT_QUOTES);
 
             $isCustom = !in_array($value, array_values(self::$fonts));
 
             $item = array(
                 'value' => $value,
-                'text' => JText::alt($text, $fieldname),
+                'text' => Text::alt($text, $fieldname),
                 'checked' => true,
                 'custom' => $isCustom,
             );
@@ -116,17 +129,17 @@ class JFormFieldFonts extends JFormFieldCheckboxes
         }
 
         $checked = empty($exclude) ? true : false;
-        
+
         // assign empty (unchecked) options for unused fonts
         foreach (self::$fonts as $text => $value) {
-            
+
             if (in_array($text, $exclude)) {
                 continue;
             }
 
             $tmp = array(
                 'value' => $value,
-                'text' => JText::alt($text, $fieldname),
+                'text' => Text::alt($text, $fieldname),
                 'checked' => $checked,
                 'custom' => false,
             );

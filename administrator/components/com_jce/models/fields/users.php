@@ -1,7 +1,20 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
+
+FormHelper::loadFieldClass('user');
 /**
  * Field to select a user ID from a modal list.
  *
@@ -9,62 +22,61 @@ defined('JPATH_PLATFORM') or die;
  */
 class JFormFieldUsers extends JFormFieldUser
 {
-	/**
-	 * The form field type.
-	 *
-	 * @var    string
-	 * @since  2.7
-	 */
-	public $type = 'Users';
+    /**
+     * The form field type.
+     *
+     * @var    string
+     * @since  2.7
+     */
+    public $type = 'Users';
 
-	/**
-	 * Method to get the user field input markup.
-	 *
-	 * @return  string  The field input markup.
-	 *
-	 * @since   1.6
-	 */
-	protected function getInput()
-	{
-		if (empty($this->layout))
-		{
-			throw new \UnexpectedValueException(sprintf('%s has no layout assigned.', $this->name));
-		}
+    /**
+     * Method to get the user field input markup.
+     *
+     * @return  string  The field input markup.
+     *
+     * @since   1.6
+     */
+    protected function getInput()
+    {
+        if (empty($this->layout)) {
+            throw new \UnexpectedValueException(sprintf('%s has no layout assigned.', $this->name));
+        }
 
-		$options = $this->getOptions();
+        $options = $this->getOptions();
 
-		$name = $this->name;
+        $name = $this->name;
 
-		// clear name
-		$this->name = "";
+        // clear name
+        $this->name = "";
 
-		// set onchange to update 
-		$this->onchange = "(function(){WfSelectUsers();})();";
+        // set onchange to update
+        $this->onchange = "(function(){WfSelectUsers();})();";
 
-		// remove autocomplete
-		$this->autocomplete = false;
+        // remove autocomplete
+        $this->autocomplete = false;
 
-		// clear value
-		$this->value = "";
+        // clear value
+        $this->value = "";
 
-		$html  = $this->getRenderer($this->layout)->render($this->getLayoutData());
-		$html  .= '<div class="users-select">';
+        $html = $this->getRenderer($this->layout)->render($this->getLayoutData());
+        $html .= '<div class="users-select">';
 
-		// add "joomla-field-fancy-select" manually for Joomla 4
-		$html .= '<joomla-field-fancy-select placeholder="...">';
-		$html .= '<select name="' . $name . '" id="' . $this->id . '_select" class="custom-select" data-placeholder="..." multiple>';
-		
-		foreach ($options as $option) {
-			$html  .= '<option value="' . $option->value . '" selected>' . $option->text . '</option>';
-		}
+        // add "joomla-field-fancy-select" manually for Joomla 4
+        $html .= '<joomla-field-fancy-select placeholder="...">';
+        $html .= '<select name="' . $name . '" id="' . $this->id . '_select" class="custom-select" data-placeholder="..." multiple>';
 
-		$html .= '</select>';
-		$html .= '</joomla-field-fancy-select>';
-		$html .= '</div>';
+        foreach ($options as $option) {
+            $html .= '<option value="' . $option->value . '" selected>' . $option->text . '</option>';
+        }
 
-		return $html;
+        $html .= '</select>';
+        $html .= '</joomla-field-fancy-select>';
+        $html .= '</div>';
 
-	}
+        return $html;
+
+    }
 
     /**
      * Allow to override renderer include paths in child fields
@@ -76,9 +88,9 @@ class JFormFieldUsers extends JFormFieldUser
     protected function getLayoutPaths()
     {
         return array(JPATH_ADMINISTRATOR . '/components/com_jce/layouts', JPATH_SITE . '/layouts');
-	}
-	
-	/**
+    }
+
+    /**
      * Method to get the field options.
      *
      * @return array The field option objects
@@ -87,34 +99,34 @@ class JFormFieldUsers extends JFormFieldUser
      */
     protected function getOptions()
     {
-		$options = array();
-		
-		if (empty($this->value)) {
-			return $options;
-		}
+        $options = array();
 
-		$fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
-		$table = JTable::getInstance('user');
+        if (empty($this->value)) {
+            return $options;
+        }
 
-		// clean value
-		$this->value = str_replace('"', '', $this->value);
+        $fieldname = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname);
+        $table = Table::getInstance('user');
+
+        // clean value
+        $this->value = str_replace('"', '', $this->value);
 
         foreach (explode(',', $this->value) as $id) {
             if (empty($id)) {
-				continue;
-			}
-			
-			if ($table->load((int) $id)) {
-                $text = htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8');
-				$text = JText::alt($text, $fieldname);
+                continue;
+            }
 
-				$tmp = array(
-					'value' => $id,
-					'text' => $text
-				);
-	
-				// Add the option object to the result set.
-				$options[] = (object) $tmp;
+            if ($table->load((int) $id)) {
+                $text = htmlspecialchars($table->name, ENT_COMPAT, 'UTF-8');
+                $text = Text::alt($text, $fieldname);
+
+                $tmp = array(
+                    'value' => $id,
+                    'text' => $text,
+                );
+
+                // Add the option object to the result set.
+                $options[] = (object) $tmp;
             }
         }
 

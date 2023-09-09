@@ -1,14 +1,18 @@
 <?php
 /**
  * @package     JCE
- * @subpackage  Component
+ * @subpackage  Admin
  *
- * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2006 - 2020 Ryan Demmer. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
 
 /**
  * Form Field class for the JCE.
@@ -16,7 +20,7 @@ defined('JPATH_PLATFORM') or die;
  *
  * @since       2.7
  */
-class JFormFieldRepeatable extends JFormField
+class JFormFieldRepeatable extends FormField
 {
     /**
      * The form field type.
@@ -35,7 +39,7 @@ class JFormFieldRepeatable extends JFormField
      */
     protected function getInput()
     {
-        $subForm = new JForm($this->name, array('control' => $this->formControl));
+        $subForm = new Form($this->name, array('control' => $this->formControl));
         $children = $this->element->children();
         $subForm->load($children);
         $subForm->setFields($children);
@@ -55,13 +59,13 @@ class JFormFieldRepeatable extends JFormField
         $str[] = '<div class="form-field-repeatable">';
 
         foreach ($values as $value) {
-            $class  = '';
+            $class = '';
 
             // highlight grouped fields
             if (count($fields) > 1) {
                 $class = ' well well-small p-3 bg-light my-2';
             }
-            
+
             $str[] = '<div class="form-field-repeatable-item">';
             $str[] = '  <div class="form-field-repeatable-item-group' . $class . '">';
 
@@ -76,7 +80,7 @@ class JFormFieldRepeatable extends JFormField
                 if (is_array($value)) {
                     $value = isset($value[$n]) ? $value[$n] : $value[0];
                 }
- 
+
                 // escape value
                 $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 
@@ -90,15 +94,15 @@ class JFormFieldRepeatable extends JFormField
                 }
 
                 $str[] = $field->renderField(array('description' => $field->description));
-                
+
                 $n++;
             }
 
             $str[] = '  </div>';
 
             $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
             $str[] = '  </div>';
 
             $str[] = '</div>';

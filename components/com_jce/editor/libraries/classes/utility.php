@@ -1,14 +1,14 @@
 <?php
-
 /**
- * @copyright    Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_PLATFORM') or die('RESTRICTED');
+
+defined('JPATH_PLATFORM') or die;
 
 /* Set internal character encoding to UTF-8 */
 if (function_exists('mb_internal_encoding')) {
@@ -131,7 +131,7 @@ abstract class WFUtility
                 $prefix = '\\';
             }
         }
-        
+
         // clean path, removing double slashes, replacing back/forward slashes with DIRECTORY_SEPARATOR
         $path = preg_replace('#[/\\\\]+#', $ds, $path);
 
@@ -165,7 +165,7 @@ abstract class WFUtility
         if (preg_match('#([^\w\.\-\/\\\\\s ])#i', $string, $matches)) {
             foreach ($matches as $match) {
                 $ord = ord($match);
-                
+
                 // not a safe UTF-8 character
                 if ($ord < 127 && !in_array($ord, $permitted)) {
                     return false;
@@ -453,7 +453,7 @@ abstract class WFUtility
         if (function_exists('mb_strlen')) {
             if (mb_strlen($path) === strlen($path)) {
                 $dir = dirname($path);
-                
+
                 if ($dir == ".") {
                     return "";
                 }
@@ -499,7 +499,7 @@ abstract class WFUtility
         if ($ext === '.' . self::getExtension($path)) {
             $path = self::stripExtension($path);
         }
-    
+
         return $path;
     }
 

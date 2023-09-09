@@ -1,21 +1,23 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_BASE') or die;
 
-use Joomla\Utilities\ArrayHelper;
+defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
 
 /**
  * Renders a select element.
  */
-class JFormFieldStyleFormat extends JFormField
+class JFormFieldStyleFormat extends FormField
 {
     /*
      * Element type
@@ -62,7 +64,7 @@ class JFormFieldStyleFormat extends JFormField
             $items = array($default);
         }
 
-        $subForm = new JForm($this->name);
+        $subForm = new Form($this->name);
 
         // editor manifest
         $manifest = JPATH_ADMINISTRATOR . '/components/com_jce/models/forms/styleformat.xml';
@@ -78,7 +80,7 @@ class JFormFieldStyleFormat extends JFormField
         foreach ($items as $item) {
             $elements = array('<div class="styleformat">');
 
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 $key = (string) $field->element['name'];
 
                 // default value
@@ -113,7 +115,7 @@ class JFormFieldStyleFormat extends JFormField
             $x++;
         }
 
-        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . JText::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
+        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . Text::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
 
         // hidden field
         $output[] = '<input type="hidden" name="' . $this->name . '" value="" />';

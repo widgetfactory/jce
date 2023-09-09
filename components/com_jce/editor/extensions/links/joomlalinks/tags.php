@@ -1,25 +1,26 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class JoomlalinksTags extends JObject
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Multilanguage;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+
+class JoomlalinksTags extends CMSObject
 {
     private $option = 'com_tags';
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
-     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -42,7 +43,7 @@ class JoomlalinksTags extends JObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_tags" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_TAGS') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_tags" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_TAGS') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -54,7 +55,7 @@ class JoomlalinksTags extends JObject
 
         $language = '';
 
-        // create a new RouteHelper instance
+        // create a new JHelperRoute instance
         $router = new JHelperRoute();
 
         $tags = array();
@@ -89,15 +90,15 @@ class JoomlalinksTags extends JObject
 
     private static function getTags($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $wf = WFEditorPlugin::getInstance();
 
         $query = $db->getQuery(true);
         $query->select('a.id, a.title, a.alias');
 
-        if ($wf->getParam('links.joomlalinks.tag_alias', 1)) {    
+        if ($wf->getParam('links.joomlalinks.tag_alias', 1)) {
             $case_when_item_alias = ' CASE WHEN ';
             $case_when_item_alias .= $query->charLength('a.alias', '!=', '0');
             $case_when_item_alias .= ' THEN ';
@@ -117,8 +118,8 @@ class JoomlalinksTags extends JObject
             $query->where('a.access IN (' . $groups . ')');
         }
 
-        if (JLanguageMultilang::isEnabled()) {
-            $tag = JFactory::getLanguage()->getTag();
+        if (Multilanguage::isEnabled()) {
+            $tag = Factory::getLanguage()->getTag();
             $query->where('a.language in (' . $db->quote($tag) . ',' . $db->quote('*') . ')');
         }
 
@@ -132,7 +133,7 @@ class JoomlalinksTags extends JObject
     private static function route($url)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         if ((bool) $wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkHelper::route($url);
         }

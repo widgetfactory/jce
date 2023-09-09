@@ -1,14 +1,17 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_WF_EXT') or die('RESTRICTED');
+
+defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filesystem\Folder;
 
 class WFLinkBrowser_Joomlalinks
 {
@@ -21,14 +24,14 @@ class WFLinkBrowser_Joomlalinks
     public function __construct($options = array())
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         jimport('joomla.filesystem.folder');
         jimport('joomla.filesystem.file');
 
         $path = __DIR__ . '/joomlalinks';
 
         // Get all files
-        $files = JFolder::files($path, '\.(php)$');
+        $files = Folder::files($path, '\.(php)$');
 
         if (!empty($files)) {
             foreach ($files as $file) {
@@ -39,7 +42,7 @@ class WFLinkBrowser_Joomlalinks
                 }
 
                 // skip weblinks if it doesn't exist!
-                if ($name == 'weblinks' && !JComponentHelper::isEnabled('com_weblinks')) {
+                if ($name == 'weblinks' && !ComponentHelper::isEnabled('com_weblinks')) {
                     continue;
                 }
 
@@ -57,7 +60,7 @@ class WFLinkBrowser_Joomlalinks
     protected function checkOptionAccess($option)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         $option = str_replace('com_', '', $option);
 
         if ($option === "contact") {
@@ -103,14 +106,14 @@ class WFLinkBrowser_Joomlalinks
     public function getLinks($args)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         foreach ($this->_adapters as $adapter) {
             if ($adapter->getOption() == $args->option) {
-                
+
                 if (!$this->checkOptionAccess($args->option)) {
                     continue;
                 }
-                
+
                 return $adapter->getLinks($args);
             }
         }

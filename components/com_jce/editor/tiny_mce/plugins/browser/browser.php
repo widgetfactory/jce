@@ -1,14 +1,18 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+*
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 require_once WF_EDITOR_LIBRARIES . '/classes/manager.php';
 
@@ -21,7 +25,7 @@ class WFBrowserPlugin extends WFMediaManager
 
     private function isMediaField()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid');
     }
 
@@ -38,7 +42,7 @@ class WFBrowserPlugin extends WFMediaManager
     public function getParam($key, $fallback = '', $default = '', $type = 'string')
     {
         $wf = WFApplication::getInstance();
-        
+
         $value = parent::getParam($key, $fallback, $default, $type);
 
         // get all keys
@@ -50,18 +54,18 @@ class WFBrowserPlugin extends WFMediaManager
         // create new namespaced key
         if ($caller && ($keys[0] === $caller || count($keys) == 1)) {
             // create new key
-            $key = $caller . '.' . 'browser' . '.' . array_pop($keys);	
+            $key = $caller . '.' . 'browser' . '.' . array_pop($keys);
             // get namespaced value, fallback to base parameter
             $value = $wf->getParam($key, $value, $default, $type);
         }
 
         return $value;
     }
-    
+
     protected function getFileBrowserConfig($config = array())
     {
-        $app = JFactory::getApplication();
-        
+        $app = Factory::getApplication();
+
         $config = parent::getFileBrowserConfig($config);
 
         // update folder path if a value is passed from a mediafield url
@@ -72,17 +76,17 @@ class WFBrowserPlugin extends WFMediaManager
                 if (empty($config['dir'])) {
                     $config['dir'] = 'images';
                 }
-                
+
                 $config['dir'] = WFUtility::makePath($config['dir'], trim(rawurldecode($folder)));
             }
         }
 
         return $config;
     }
-    
+
     public function __construct($config = array())
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $config = array(
             'layout' => 'browser',
@@ -149,7 +153,7 @@ class WFBrowserPlugin extends WFMediaManager
     {
         // get file browser reference
         $browser = $this->getFileBrowser();
-        
+
         // set updated filetypes
         $browser->setFileTypes($filetypes);
     }
@@ -161,14 +165,14 @@ class WFBrowserPlugin extends WFMediaManager
     {
         parent::display();
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         $document = WFDocument::getInstance();
         $slot = $app->input->getCmd('slot', 'plugin');
 
         // update some document variables
         $document->setName('browser');
-        $document->setTitle(JText::_('WF_BROWSER_TITLE'));
+        $document->setTitle(Text::_('WF_BROWSER_TITLE'));
 
         if ($document->get('standalone') == 1) {
             if ($slot === 'plugin') {
@@ -183,11 +187,11 @@ class WFBrowserPlugin extends WFMediaManager
                 }
 
                 $settings = array(
-                    'site_url' => JURI::base(true) . '/',
-                    'document_base_url' => JURI::root(),
+                    'site_url' => Uri::base(true) . '/',
+                    'document_base_url' => Uri::root(),
                     'language' => WFLanguage::getCode(),
                     'element' => $element,
-                    'token' => JSession::getFormToken(),
+                    'token' => Session::getFormToken(),
                 );
 
                 if ($callback) {
@@ -210,7 +214,7 @@ class WFBrowserPlugin extends WFMediaManager
     {
         parent::onUpload($file, $relative);
 
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {

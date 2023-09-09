@@ -1,14 +1,18 @@
 <?php
 /**
  * @package     JCE
- * @subpackage  Component
+ * @subpackage  Admin
  *
- * @copyright   Copyright (C) 2005 - 2019 Open Source Matters, Inc. All rights reserved.
- * @copyright   Copyright (C) 2006 - 2020 Ryan Demmer. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
 
 /**
  * Form Field class for the JCE.
@@ -16,7 +20,7 @@ defined('JPATH_PLATFORM') or die;
  *
  * @since       2.8.13
  */
-class JFormFieldContainer extends JFormField
+class JFormFieldContainer extends FormField
 {
     /**
      * The form field type.
@@ -67,7 +71,7 @@ class JFormFieldContainer extends JFormField
 
         $repeatable = (string) $this->element['repeatable'];
 
-        if ($repeatable) {            
+        if ($repeatable) {
             // find number of potential repeatable fields
             foreach ($children as $child) {
                 $name = (string) $child->attributes()['name'];
@@ -90,7 +94,7 @@ class JFormFieldContainer extends JFormField
 
         if ($this->element['label']) {
             $text = $this->element['label'];
-            $text = $this->translateLabel ? JText::_($text) : $text;
+            $text = $this->translateLabel ? Text::_($text) : $text;
 
             $str[] = '<legend>' . $text . '</legend>';
         }
@@ -117,7 +121,7 @@ class JFormFieldContainer extends JFormField
                 $str[] = '  <div class="form-field-repeatable-item-group row">';
             }
 
-            $subForm = new JForm('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
+            $subForm = new Form('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
 
             $subForm->load($children);
             $subForm->setFields($children);
@@ -168,8 +172,8 @@ class JFormFieldContainer extends JFormField
                 $str[] = '</div>';
 
                 $str[] = '<div class="form-field-repeatable-item-control">';
-                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
                 $str[] = '</div>';
 
                 $str[] = '</div>';

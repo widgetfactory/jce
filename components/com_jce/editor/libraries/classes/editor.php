@@ -1,14 +1,23 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Filesystem\Path;
+use Joomla\CMS\Language\Language;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Session\Session;
 
 class WFEditor
 {
@@ -110,7 +119,7 @@ class WFEditor
 
     public function __construct($config = array())
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         $wf = WFApplication::getInstance();
 
         if (!isset($config['plugin'])) {
@@ -168,12 +177,12 @@ class WFEditor
         if ($this->initialized) {
             return $this;
         }
-        
+
         $this->initialized = true;
 
         $settings = $this->getSettings();
 
-        JFactory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
+        Factory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
         $this->render($settings);
 
@@ -205,7 +214,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // check for joomla debug mode
-        $debug = JFactory::getConfig()->get('debug');
+        $debug = Factory::getConfig()->get('debug');
 
         // default compression states
         $options = array(
@@ -265,7 +274,7 @@ class WFEditor
         // Other - user specified
         $userParams = $wf->getParam('editor.custom_config', '');
 
-        if ($userParams) {            
+        if ($userParams) {
             // legacy format, eg: key:value;key:value
             if (!WFUtility::isJson($userParams)) {
                 $userParams = explode(';', $userParams);
@@ -282,7 +291,7 @@ class WFEditor
                 if (empty($userParam)) {
                     continue;
                 }
-                                
+
                 $name = '';
                 $value = '';
 
@@ -303,7 +312,7 @@ class WFEditor
                     if (is_bool($value)) {
                         $value = (bool) $value;
                     }
-                    
+
                     $settings[$name] = $value;
                 }
             }
@@ -312,7 +321,7 @@ class WFEditor
 
     private function isSkinRtl()
     {
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         if ($language->getTag() === WFLanguage::getTag()) {
             return $language->isRTL();
@@ -323,11 +332,11 @@ class WFEditor
 
     private function getLanguageDirection()
     {
-        $user = JFactory::getUser();
-        $params = JComponentHelper::getParams('com_languages');
+        $user = Factory::getUser();
+        $params = ComponentHelper::getParams('com_languages');
         $locale = $user->getParam('language', $params->get('site', 'en-GB'));
 
-        $language = JLanguage::getInstance($locale);
+        $language = Language::getInstance($locale);
 
         return $language->isRTL() ? 'rtl' : 'ltr';
     }
@@ -348,16 +357,13 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // create token
-        $token = JSession::getFormToken();
+        $token = Session::getFormToken();
 
         // get editor version
         $version = self::getVersion();
 
-        // get form token
-        $token = JSession::getFormToken();
-
         $settings = array(
-            'token' => JSession::getFormToken(),
+            'token' => $token,
             'base_url' => JURI::root(),
             'language' => $this->getLanguageCode(),
             'directionality' => $this->getLanguageDirection(),
@@ -575,7 +581,7 @@ class WFEditor
 
     private function getOutput()
     {
-        $document = JFactory::getDocument();
+        $document = Factory::getDocument();
 
         $end = $document->_getLineEnd();
         $tab = $document->_getTab();
@@ -876,11 +882,11 @@ class WFEditor
                 // get plugin items from profile
                 $profile_plugins = explode(',', $this->profile->plugins);
 
-				$items = array();
+                $items = array();
 
                 // get core and installed plugins list
                 $list = JcePluginsHelper::getPlugins();
-                
+
                 // check that the plugin is available
                 $items = array_filter(array_keys($list), function ($item) use ($profile_plugins) {
                     return in_array($item, $profile_plugins);
@@ -1070,8 +1076,8 @@ class WFEditor
      */
     private static function getSiteTemplates()
     {
-        $db = JFactory::getDBO();
-        $app = JFactory::getApplication();
+        $db = Factory::getDBO();
+        $app = Factory::getApplication();
         $id = 0;
 
         // only process when front-end editing
@@ -1116,16 +1122,16 @@ class WFEditor
             return false;
         }
 
-        // search for editor.css file using JPath
-        $file = JPath::find(array(
+        // search for editor.css file using Path
+        $file = Path::find(array(
             JPATH_SITE . '/templates/' . $name . '/css',
-            JPATH_SITE . '/media/templates/site/' . $name . '/css'
+            JPATH_SITE . '/media/templates/site/' . $name . '/css',
         ), 'editor.css');
 
         if ($file && filesize($file) > 0) {
             // make relative
             $file = str_replace(JPATH_SITE, '', $file);
-        
+
             // remove leading slash
             $file = trim($file, '/');
 
@@ -1233,7 +1239,7 @@ class WFEditor
                 if ($file) {
                     $files[] = $file;
                 } else {
-                    JFactory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
+                    Factory::getApplication()->triggerEvent('onWfGetTemplateStylesheets', array(&$files, $template));
                 }
 
                 break;
@@ -1330,7 +1336,7 @@ class WFEditor
 
             $fullpath = JPATH_SITE . '/' . $file;
 
-            if (JFile::exists($fullpath)) {
+            if (File::exists($fullpath)) {
                 // less
                 if (pathinfo($file, PATHINFO_EXTENSION) == 'less') {
                     $stylesheets[] = $fullpath;
@@ -1364,7 +1370,7 @@ class WFEditor
         // process less files etc.
         if (!empty($less)) {
             // create token
-            $token = JSession::getFormToken();
+            $token = Session::getFormToken();
             $version = self::getVersion();
 
             return JURI::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
@@ -1471,7 +1477,7 @@ class WFEditor
                     $styles = self::getTemplateStyleSheetsList(true);
 
                     foreach ($styles as $style) {
-                        if (JFile::exists($style)) {
+                        if (File::exists($style)) {
                             $files[] = $style;
                         }
                     }
@@ -1480,7 +1486,7 @@ class WFEditor
                     foreach ($plugins['core'] as $plugin) {
                         $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
 
-                        if (JFile::exists($content)) {
+                        if (File::exists($content)) {
                             $files[] = $content;
                         }
                     }
@@ -1489,7 +1495,7 @@ class WFEditor
                     foreach ($plugins['external'] as $plugin => $path) {
                         $content = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/css/content.css';
 
-                        if (JFile::exists($content)) {
+                        if (File::exists($content)) {
                             $files[] = $content;
                         }
                     }
@@ -1499,7 +1505,7 @@ class WFEditor
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
                     foreach ($styles as $style) {
-                        if (JFile::exists($style)) {
+                        if (File::exists($style)) {
                             $files[] = $style;
                         }
                     }
@@ -1554,7 +1560,7 @@ class WFEditor
 
     public function getToken($id)
     {
-        return '<input type="hidden" name="' . JSession::getFormToken() . '" value="1" />';
+        return '<input type="hidden" name="' . Session::getFormToken() . '" value="1" />';
     }
 
     /**

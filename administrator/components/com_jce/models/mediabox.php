@@ -1,21 +1,22 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-// load base model
-jimport('joomla.application.component.modelform');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\MVC\Model\FormModel;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Table;
 
-use Joomla\Utilities\ArrayHelper;
-
-class JceModelMediabox extends JModelForm
+class JceModelMediabox extends FormModel
 {
     /**
      * Returns a Table object, always creating it.
@@ -24,15 +25,15 @@ class JceModelMediabox extends JModelForm
      * @param string $prefix A prefix for the table class name. Optional
      * @param array  $config Configuration array for model. Optional
      *
-     * @return JTable A database object
+     * @return Joomla\CMS\Table\Table A database object
      *
      * @since   1.6
      */
     public function getTable($type = 'Extension', $prefix = 'JTable', $config = array())
     {
-        return JTable::getInstance($type, $prefix, $config);
+        return Table::getInstance($type, $prefix, $config);
     }
-    
+
     /**
      * Method to get a form object.
      *
@@ -41,14 +42,14 @@ class JceModelMediabox extends JModelForm
      *
      * @return mixed A JForm object on success, false on failure
      *
-     * @since	1.6
+     * @since    1.6
      */
     public function getForm($data = array(), $loadData = true)
     {
         JForm::addFormPath(JPATH_PLUGINS . '/system/jcemediabox');
 
-        JFactory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
-        JFactory::getLanguage()->load('plg_system_jcemediabox', JPATH_PLUGINS . '/system/jcemediabox');
+        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
+        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_PLUGINS . '/system/jcemediabox');
 
         // Get the form.
         $form = $this->loadForm('com_jce.mediabox', 'jcemediabox', array('control' => 'jform', 'load_data' => $loadData), true, '//config');
@@ -65,12 +66,12 @@ class JceModelMediabox extends JModelForm
      *
      * @return mixed The data for the form
      *
-     * @since	1.6
+     * @since    1.6
      */
     protected function loadFormData()
     {
         // Check the session for previously entered form data.
-        $data = JFactory::getApplication()->getUserState('com_jce.mediabox.plugin.data', array());
+        $data = Factory::getApplication()->getUserState('com_jce.mediabox.plugin.data', array());
 
         if (empty($data)) {
             $data = $this->getData();
@@ -88,17 +89,17 @@ class JceModelMediabox extends JModelForm
      *
      * @return array An array containg all global config data
      *
-     * @since	1.6
+     * @since    1.6
      */
     public function getData()
     {
         // Get the editor data
-        $plugin = JPluginHelper::getPlugin('system', 'jcemediabox');
+        $plugin = PluginHelper::getPlugin('system', 'jcemediabox');
 
         // json_decode
         $json = json_decode($plugin->params, true);
 
-        array_walk($json, function(&$value, $key) {
+        array_walk($json, function (&$value, $key) {
             if (is_numeric($value)) {
                 $value = $value + 0;
             }
@@ -124,10 +125,10 @@ class JceModelMediabox extends JModelForm
         $table = $this->getTable();
 
         $id = $table->find(array(
-            'type'      => 'plugin',
-            'element'   => 'jcemediabox',
-            'folder'    => 'system'
-        )); 
+            'type' => 'plugin',
+            'element' => 'jcemediabox',
+            'folder' => 'system',
+        ));
 
         if (!$id) {
             $this->setError('Invalid plugin');
@@ -135,24 +136,23 @@ class JceModelMediabox extends JModelForm
         }
 
         // Load the previous Data
-		if (!$table->load($id))
-		{
-			$this->setError($table->getError());
+        if (!$table->load($id)) {
+            $this->setError($table->getError());
             return false;
         }
 
-		// Bind the data.
+        // Bind the data.
         if (!$table->bind($data)) {
             $this->setError($table->getError());
             return false;
         }
 
-		// Check the data.
+        // Check the data.
         if (!$table->check()) {
             $this->setError($table->getError());
             return false;
         }
-        
+
         // Store the data.
         if (!$table->store()) {
             $this->setError($table->getError());

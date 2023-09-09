@@ -1,13 +1,18 @@
 <?php
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+
 ?>
 <style type="text/css">
     /* Reset template style sheet */
@@ -22,7 +27,7 @@ defined('JPATH_PLATFORM') or die;
     <?php if ($this->features['mode'] && $this->features['print']) {
     ?>
         <div class="buttonheading"><a href="javascript:;" onClick="window.print();
-                return false"><img src="<?php echo JURI::root(); ?>media/com_jce/img/print.png" width="16" height="16" alt="<?php echo JText::_('Print'); ?>" title="<?php echo JText::_('Print'); ?>" /></a></div>
+                return false"><img src="<?php echo Uri::root(); ?>media/com_jce/img/print.png" width="16" height="16" alt="<?php echo Text::_('Print'); ?>" title="<?php echo Text::_('Print'); ?>" /></a></div>
 <?php 
 } ?>
     <div><img src="<?php echo $this->features['img']; ?>" width="<?php echo $this->features['width']; ?>" height="<?php echo $this->features['height']; ?>" alt="<?php echo $this->features['alt']; ?>" onclick="window.close();" /></div>

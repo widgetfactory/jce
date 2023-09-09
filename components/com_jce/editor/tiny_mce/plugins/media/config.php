@@ -1,13 +1,14 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+defined('JPATH_PLATFORM') or die;
+
 class WFMediaPluginConfig
 {
     public static function getConfig(&$settings)
@@ -17,12 +18,11 @@ class WFMediaPluginConfig
         $tags = array();
 
         $elements = array(
-            'audio'     => array('audio', 'source'),
-            'video'     => array('video', 'source'),
-            'embed'     => array('embed'),
-            'object'    => array('object', 'param')
+            'audio' => array('audio', 'source'),
+            'video' => array('video', 'source'),
+            'embed' => array('embed'),
+            'object' => array('object', 'param'),
         );
-
 
         $allow_iframes = (int) $wf->getParam('media.iframes', 0);
 
@@ -36,7 +36,7 @@ class WFMediaPluginConfig
 
             if ($allow_iframes == 3) {
                 $settings['media_iframes_supported_media'] = array();
-                
+
                 $settings['media_iframes_allow_supported'] = true;
                 $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array());
 

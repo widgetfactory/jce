@@ -1,13 +1,13 @@
 <?php
-
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
 class WFMediaPlayerExtension extends WFExtension
@@ -46,7 +46,7 @@ class WFMediaPlayerExtension extends WFExtension
                 $player = parent::loadExtensions('mediaplayer', $name);
 
                 if ($player) {
-                    $classname = 'WFMediaPlayerExtension_'.ucfirst($player->name);
+                    $classname = 'WFMediaPlayerExtension_' . ucfirst($player->name);
                 }
             }
 
@@ -68,14 +68,14 @@ class WFMediaPlayerExtension extends WFExtension
 
         if ($this->isEnabled() && $this->get('name')) {
             $document->addScript(array(
-                'mediaplayer/'.$this->get('name').'/js/'.$this->get('name'),
-                    ), 'extensions');
+                'mediaplayer/' . $this->get('name') . '/js/' . $this->get('name'),
+            ), 'extensions');
 
             $document->addStyleSheet(array(
-                'mediaplayer/'.$this->get('name').'/css/'.$this->get('name'),
-                    ), 'extensions');
+                'mediaplayer/' . $this->get('name') . '/css/' . $this->get('name'),
+            ), 'extensions');
 
-            $document->addScriptDeclaration('WFExtensions.MediaPlayer.init('.json_encode($this->getProperties()).')');
+            $document->addScriptDeclaration('WFExtensions.MediaPlayer.init(' . json_encode($this->getProperties()) . ')');
         }
     }
 
@@ -116,18 +116,18 @@ class WFMediaPlayerExtension extends WFExtension
         $output = '';
 
         if ($this->isEnabled()) {
-            $path = WF_EDITOR_EXTENSIONS.'/mediaplayer/'.$this->get('name');
+            $path = WF_EDITOR_EXTENSIONS . '/mediaplayer/' . $this->get('name');
 
             $file = 'default.php';
 
             if ($tpl) {
-                $file = 'default_'.$tpl.'.php';
+                $file = 'default_' . $tpl . '.php';
             }
 
-            if (file_exists($path.'/tmpl/'.$file)) {
+            if (file_exists($path . '/tmpl/' . $file)) {
                 ob_start();
 
-                include $path.'/tmpl/'.$file;
+                include $path . '/tmpl/' . $file;
 
                 $output .= ob_get_contents();
                 ob_end_clean();

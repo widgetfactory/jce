@@ -1,6 +1,20 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormHelper;
+
+FormHelper::loadFieldClass('filelist');
 
 class JFormFieldPlugin extends JFormFieldFileList
 {
@@ -59,12 +73,12 @@ class JFormFieldPlugin extends JFormFieldFileList
 
         $html = '<div class="span9">';
         foreach ($plugins as $plugin) {
-            $name = (string) str_replace($this->name.'-', '', $plugin->element);
+            $name = (string) str_replace($this->name . '-', '', $plugin->element);
 
-            $form = JForm::getInstance('plg_jce_'.$plugin->element, $plugin->manifest, array('control' => $this->name.'['.$name.']'), true, '//extension');
+            $form = Form::getInstance('plg_jce_' . $plugin->element, $plugin->manifest, array('control' => $this->name . '[' . $name . ']'), true, '//extension');
 
             if ($form) {
-                $html .= $form->renderFieldset('extension.'.$name.'.'.$name);
+                $html .= $form->renderFieldset('extension.' . $name . '.' . $name);
             }
         }
 
@@ -85,17 +99,17 @@ class JFormFieldPlugin extends JFormFieldFileList
         static $plugins;
 
         if (!isset($plugins)) {
-            $language = JFactory::getLanguage();
+            $language = Factory::getLanguage();
 
-            $db = JFactory::getDbo();
+            $db = Factory::getDbo();
             $query = $db->getQuery(true)
                 ->select('name, element')
                 ->from('#__extensions')
                 ->where('enabled = 1')
-                ->where('type ='.$db->quote('plugin'))
+                ->where('type =' . $db->quote('plugin'))
                 ->where('state IN (0,1)')
-                ->where('folder = '.$db->quote('jce'))
-                ->where('element LIKE '.$db->quote($this->name.'-%'))
+                ->where('folder = ' . $db->quote('jce'))
+                ->where('element LIKE ' . $db->quote($this->name . '-%'))
                 ->order('ordering');
 
             $plugins = $db->setQuery($query)->loadObjectList();
@@ -104,10 +118,10 @@ class JFormFieldPlugin extends JFormFieldFileList
                 $name = str_replace($this->name, '', $plugin->element);
 
                 // load language file
-                $language->load('plg_jce_'.$this->name.'_'.$name, JPATH_ADMINISTRATOR);
+                $language->load('plg_jce_' . $this->name . '_' . $name, JPATH_ADMINISTRATOR);
 
                 // create manifest path
-                $plugin->manifest = JPATH_PLUGINS.'/jce/'.$plugin->element.'/'.$plugin->element.'.xml';
+                $plugin->manifest = JPATH_PLUGINS . '/jce/' . $plugin->element . '/' . $plugin->element . '.xml';
             }
         }
 

@@ -1,16 +1,25 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class JceViewProfile extends JViewLegacy
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Uri\Uri;
+
+class JceViewProfile extends HtmlView
 {
     protected $state;
     protected $item;
@@ -27,7 +36,7 @@ class JceViewProfile extends JViewLegacy
 
         $this->formclass = 'form-horizontal options-grid-form options-grid-form-full';
 
-        $params = JComponentHelper::getParams('com_jce');
+        $params = ComponentHelper::getParams('com_jce');
 
         if ($params->get('inline_help', 1)) {
             $this->formclass .= ' form-help-inline';
@@ -39,18 +48,16 @@ class JceViewProfile extends JViewLegacy
         $this->additional = $this->get('AdditionalPlugins');
 
         // load language files
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
         $language->load('com_jce', JPATH_SITE);
         $language->load('com_jce_pro', JPATH_SITE);
 
         // set JLayoutHelper base path
-        JLayoutHelper::$defaultBasePath = JPATH_COMPONENT_ADMINISTRATOR;
+        LayoutHelper::$defaultBasePath = JPATH_COMPONENT_ADMINISTRATOR;
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode("\n", $errors));
-
-            return false;
+            throw new Exception(implode("\n", $errors), 500);
         }
 
         $this->addToolbar();
@@ -58,23 +65,23 @@ class JceViewProfile extends JViewLegacy
 
         // only in Joomla 3.x
         if (version_compare(JVERSION, '4', 'lt')) {
-            JHtml::_('formbehavior.chosen', 'select');
+            HTMLHelper::_('formbehavior.chosen', 'select');
         }
 
         // version hash
         $hash = md5(WF_VERSION);
 
-        $document = JFactory::getDocument();
-        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/profile.min.css?' . $hash);
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
+        $document = Factory::getDocument();
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/profile.min.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
 
-        $document->addScript(JURI::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
 
-        $document->addScript(JURI::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
-        $document->addScript(JURI::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
 
         // default theme
-        $document->addStyleSheet(JURI::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
     }
 
     /**
@@ -84,27 +91,27 @@ class JceViewProfile extends JViewLegacy
      */
     protected function addToolbar()
     {
-        JFactory::getApplication()->input->set('hidemainmenu', true);
+        Factory::getApplication()->input->set('hidemainmenu', true);
 
-        $user       = JFactory::getUser();
-        $canEdit    = $user->authorise('core.create', 'com_jce');
+        $user = Factory::getUser();
+        $canEdit = $user->authorise('core.create', 'com_jce');
 
-        JToolbarHelper::title(JText::_('WF_PROFILES_EDIT'), 'user');
+        ToolbarHelper::title(Text::_('WF_PROFILES_EDIT'), 'user');
 
         // For new records, check the create permission.
         if ($canEdit) {
-            JToolbarHelper::apply('profile.apply');
-            JToolbarHelper::save('profile.save');
-            JToolbarHelper::save2new('profile.save2new');
+            ToolbarHelper::apply('profile.apply');
+            ToolbarHelper::save('profile.save');
+            ToolbarHelper::save2new('profile.save2new');
         }
 
         if (empty($this->item->id)) {
-            JToolbarHelper::cancel('profile.cancel');
+            ToolbarHelper::cancel('profile.cancel');
         } else {
-            JToolbarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
+            ToolbarHelper::cancel('profile.cancel', 'JTOOLBAR_CLOSE');
         }
 
-        JToolbarHelper::divider();
-        JToolbarHelper::help('WF_PROFILES_EDIT');
+        ToolbarHelper::divider();
+        ToolbarHelper::help('WF_PROFILES_EDIT');
     }
 }

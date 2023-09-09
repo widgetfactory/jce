@@ -9,8 +9,19 @@
  */
 defined('JPATH_PLATFORM') or die('RESTRICTED');
 
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Table;
+
 class pkg_jceInstallerScript
-{    
+{
     private function addIndexfiles($paths)
     {
         // get the base file
@@ -20,10 +31,10 @@ class pkg_jceInstallerScript
             foreach ((array) $paths as $path) {
                 if (is_dir($path)) {
                     // admin component
-                    $folders = JFolder::folders($path, '.', true, true);
+                    $folders = Folder::folders($path, '.', true, true);
 
                     foreach ($folders as $folder) {
-                        JFile::copy($file, $folder . '/' . basename($file));
+                        File::copy($file, $folder . '/' . basename($file));
                     }
                 }
             }
@@ -39,7 +50,7 @@ class pkg_jceInstallerScript
     public function install($installer)
     {
         // enable plugins
-        $plugin = JTable::getInstance('extension');
+        $plugin = Table::getInstance('extension');
 
         $plugins = array(
             'content' => 'jce',
@@ -65,34 +76,34 @@ class pkg_jceInstallerScript
         // install profiles
         $this->installProfiles();
 
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
         $language->load('com_jce', JPATH_ADMINISTRATOR, null, true);
         $language->load('com_jce.sys', JPATH_ADMINISTRATOR, null, true);
 
         // set layout base path
-        JLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce/layouts';
+        LayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/com_jce/layouts';
 
         // override existing message
-        $message  = '';
+        $message = '';
         $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark well" style="text-align:left;">';
         $message .= '   <div class="card-header"><h1>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1></div>';
         $message .= '   <div class="card-body">';
 
         // variant messates
         if ((string) $parent->manifest->variant != 'pro') {
-            $message .= JLayoutHelper::render('message.upgrade');
+            $message .= LayoutHelper::render('message.upgrade');
         } else {
             // show core to pro upgrade message
             if ($parent->isUpgrade()) {
                 $variant = (string) $parent->get('current_variant', 'core');
-    
+
                 if ($variant == 'core') {
-                    $message .= JLayoutHelper::render('message.welcome');
+                    $message .= LayoutHelper::render('message.welcome');
                 }
             }
         }
 
-        $message .= JText::_('COM_JCE_XML_DESCRIPTION');
+        $message .= Text::_('COM_JCE_XML_DESCRIPTION');
 
         $message .= '   </div>';
         $message .= '</div>';
@@ -111,14 +122,14 @@ class pkg_jceInstallerScript
 
     private function checkTable()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $tables = $db->getTableList();
 
         if (!empty($tables)) {
             // swap array values with keys, convert to lowercase and return array keys as values
             $tables = array_keys(array_change_key_case(array_flip($tables)));
-            $app = JFactory::getApplication();
+            $app = Factory::getApplication();
             $match = str_replace('#__', strtolower($app->getCfg('dbprefix', '')), '#__wf_profiles');
 
             return in_array($match, $tables);
@@ -135,7 +146,7 @@ class pkg_jceInstallerScript
 
     public function uninstall()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         if ($this->checkTable() === false) {
             return true;
@@ -193,8 +204,8 @@ class pkg_jceInstallerScript
         $jversion = new JVersion();
 
         // joomla version check
-        if (version_compare($jversion->getShortVersion(), '3.9', 'lt')) {
-            throw new RuntimeException('JCE requires Joomla 3.9 or later - ' . $requirements);
+        if (version_compare($jversion->getShortVersion(), '3.10', 'lt')) {
+            throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
         }
 
         // set current package version and variant
@@ -216,7 +227,7 @@ class pkg_jceInstallerScript
             return true;
         }
 
-        $extension = JTable::getInstance('extension');
+        $extension = Table::getInstance('extension');
 
         // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
         foreach (array('content', 'system', 'quickicon') as $folder) {
@@ -245,7 +256,7 @@ class pkg_jceInstallerScript
 
     private function checkTableUpdate()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $state = true;
 
@@ -257,25 +268,25 @@ class pkg_jceInstallerScript
         $query = "DESCRIBE #__wf_profiles";
         $db->setQuery($query);
         $items = $db->loadObjectList();
-        
-        foreach($items as $item) {
-        	if ($item->Field == 'checked_out') {
-        		if (strpos($item->Type, 'unsigned') === false) {
+
+        foreach ($items as $item) {
+            if ($item->Field == 'checked_out') {
+                if (strpos($item->Type, 'unsigned') === false) {
                     $state = false;
                 }
 
                 if (strpos($item->Type, 'unsigned') === false) {
                     $state = false;
                 }
-        	}
+            }
 
             if ($item->Field == 'checked_out_time') {
                 $item = (array) $item;
-                
+
                 if (strtolower($item['Null']) == 'no') {
                     $state = false;
                 }
-        	}
+            }
         }
 
         return $state;
@@ -283,19 +294,19 @@ class pkg_jceInstallerScript
 
     public function postflight($route, $installer)
     {
-        $app = JFactory::getApplication();
-        $extension = JTable::getInstance('extension');
+        $app = Factory::getApplication();
+        $extension = Table::getInstance('extension');
         $parent = $installer->getParent();
 
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
-        JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
+        Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
         // remove legacy jcefilebrowser quickicon
-        $plugin = JPluginHelper::getPlugin('quickicon', 'jcefilebrowser');
+        $plugin = PluginHelper::getPlugin('quickicon', 'jcefilebrowser');
 
         if ($plugin) {
-            $inst = new JInstaller();
+            $inst = new Installer();
             // try uninstall
             if (!$inst->uninstall('plugin', $plugin->id)) {
 
@@ -315,7 +326,7 @@ class pkg_jceInstallerScript
                 $branding = JPATH_SITE . '/components/com_jce/editor/tiny_mce/plugins/branding';
 
                 if (is_dir($branding)) {
-                    JFolder::delete($branding);
+                    Folder::delete($branding);
                 }
 
                 // clean up updates sites
@@ -327,8 +338,8 @@ class pkg_jceInstallerScript
                 $id = $db->loadResult();
 
                 if ($id) {
-                    JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_installer/models');
-                    $model = JModelLegacy::getInstance('Updatesites', 'InstallerModel');
+                    BaseDatabaseModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_installer/models');
+                    $model = BaseDatabaseModel::getInstance('Updatesites', 'InstallerModel');
 
                     if ($model) {
                         $model->delete(array($id));
@@ -350,7 +361,7 @@ class pkg_jceInstallerScript
 
             // update toolbar_theme if one has been set
             if ($theme) {
-                $table = JTable::getInstance('Profiles', 'JceTable');
+                $table = Table::getInstance('Profiles', 'JceTable');
 
                 $query = $db->getQuery(true);
 
@@ -376,14 +387,14 @@ class pkg_jceInstallerScript
                         }
 
                         $param = array(
-                            'toolbar_theme' => $theme
+                            'toolbar_theme' => $theme,
                         );
 
                         // add variant for "mobile" profile
                         if ($profile->name === "Mobile") {
                             $param['toolbar_theme'] .= '.touch';
                         }
- 
+
                         if (empty($data['editor']['toolbar_theme'])) {
                             $data['editor']['toolbar_theme'] = $param['toolbar_theme'];
 
@@ -428,11 +439,11 @@ class pkg_jceInstallerScript
             }
 
             /*try {
-                $query = "SELECT DEFAULT (" . $db->qn('checked_out_time') . ") FROM #__wf_profiles";
-                $db->setQuery($query);
-                $db->execute();
+            $query = "SELECT DEFAULT (" . $db->qn('checked_out_time') . ") FROM #__wf_profiles";
+            $db->setQuery($query);
+            $db->execute();
             } catch (Exception $e) {
-                
+
             }*/
 
             self::cleanupInstall($installer);
@@ -502,14 +513,14 @@ class pkg_jceInstallerScript
         );
 
         // remove flexicontent
-        if (!JComponentHelper::isInstalled('com_flexicontent')) {
+        if (!ComponentHelper::isInstalled('com_flexicontent')) {
             $files['2.7'] = array(
                 $site . '/editor/extensions/links/flexicontentlinks.php',
                 $site . '/editor/extensions/links/flexicontentlinks.xml',
             );
 
             $folders['2.7'] = array(
-                $site . '/editor/extensions/links/flexicontentlinks'
+                $site . '/editor/extensions/links/flexicontentlinks',
             );
         }
 
@@ -526,27 +537,27 @@ class pkg_jceInstallerScript
 
         // remove help files
         $folders['2.8.6'] = array(
-            $admin . '/views/help'
+            $admin . '/views/help',
         );
 
         // remove mediaplayer
         $folders['2.8.11'] = array(
-            $site . '/editor/libraries/mediaplayer'
+            $site . '/editor/libraries/mediaplayer',
         );
 
         // delete img folder in Image Manager Extended
         $folders['2.9.1'] = array(
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/img'
+            $site . '/editor/tiny_mce/plugins/imgmanager_ext/img',
         );
 
         // remove fields folder
         $folders['2.9.7'] = array(
-            JPATH_PLUGINS . '/system/jce/fields'
+            JPATH_PLUGINS . '/system/jce/fields',
         );
 
         // remove media folder
         $folders['2.9.17'] = array(
-            $admin . '/media'
+            $admin . '/media',
         );
 
         $folders['2.9.31'] = array(
@@ -556,7 +567,7 @@ class pkg_jceInstallerScript
         // remove font manifest and window
         $files['2.9.18'] = array(
             $site . '/editor/libraries/fonts/selection.json',
-            $site . '/editor/tiny_mce/plugins/browser/js/window.min.js'
+            $site . '/editor/tiny_mce/plugins/browser/js/window.min.js',
         );
 
         $files['2.6.38'] = array(
@@ -636,11 +647,11 @@ class pkg_jceInstallerScript
         // remove help files
         $files['2.8.6'] = array(
             $admin . '/controller/help.php',
-            $admin . '/models/help.php'
+            $admin . '/models/help.php',
         );
 
         $files['2.8.11'] = array(
-            $admin . '/views/cpanel/default_pro.php'
+            $admin . '/views/cpanel/default_pro.php',
         );
 
         foreach ($folders as $version => $list) {
@@ -654,29 +665,29 @@ class pkg_jceInstallerScript
                     continue;
                 }
 
-                $items = JFolder::files($folder, '.', false, true, array(), array());
+                $items = Folder::files($folder, '.', false, true, array(), array());
 
                 foreach ($items as $file) {
                     if (!@unlink($file)) {
                         try {
-                            JFile::delete($file);
+                            File::delete($file);
                         } catch (Exception $e) {}
                     }
                 }
 
-                $items = JFolder::folders($folder, '.', false, true, array(), array());
+                $items = Folder::folders($folder, '.', false, true, array(), array());
 
                 foreach ($items as $dir) {
                     if (!@rmdir($dir)) {
                         try {
-                            JFolder::delete($dir);
+                            Folder::delete($dir);
                         } catch (Exception $e) {}
                     }
                 }
 
                 if (!@rmdir($folder)) {
                     try {
-                        JFolder::delete($folder);
+                        Folder::delete($folder);
                     } catch (Exception $e) {}
                 }
             }
@@ -698,7 +709,7 @@ class pkg_jceInstallerScript
                 }
 
                 try {
-                    JFile::delete($file);
+                    File::delete($file);
                 } catch (Exception $e) {}
             }
         }

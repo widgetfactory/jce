@@ -1,8 +1,12 @@
 <?php
+
+use Joomla\CMS\Language\Text;
+use Joomla\Registry\Registry;
+
 $item = $displayData->get('Item');
 $form = $displayData->getForm();
 
-$data = new JRegistry($form->getValue('config'));
+$data = new Registry($form->getValue('config'));
 
 $rows = $displayData->get('Rows');
 $plugins = $displayData->get('Plugins');
@@ -22,7 +26,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 ?>
 <div class="control-group mt-3 mb-0 <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
-        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
+        <label class="hasPopover" title="<?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR_DESC'); ?>"><?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_EDITOR'); ?></label>
     </div>
     <div class="controls">
         <div class="editor-layout">
@@ -36,29 +40,29 @@ if (is_numeric($height) && strpos('%', $height) === false) {
             <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout mceDefaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout" style="max-width:<?php echo $width; ?>" role="presentation">
                     <div class="mceToolbar sortableList" role="group">
-                        <?php foreach ($rows as $key => $groups) : ?>
-                            <div class="mce-container mce-toolbar mce-stack-layout-item mceToolbarRow mceToolbarRow<?php echo $key;?> Enabled sortableListItem">
-                                <?php foreach ($groups as $buttons) : ?>
+                        <?php foreach ($rows as $key => $groups): ?>
+                            <div class="mce-container mce-toolbar mce-stack-layout-item mceToolbarRow mceToolbarRow<?php echo $key; ?> Enabled sortableListItem">
+                                <?php foreach ($groups as $buttons): ?>
                                     <!--div class="mce-container mce-flow-layout-item mce-btn-group" role="group"-->
-                                    <?php foreach ($buttons as $button) : ?>
-                                        <?php if (!empty($button->icon)) : ?>
+                                    <?php foreach ($buttons as $button): ?>
+                                        <?php if (!empty($button->icon)): ?>
                                             <div tabindex="-1" class="mceToolbarItem <?php echo $button->type; ?> mce-widget mce-btn" data-name="<?php echo $button->name; ?>" role="button" aria-label="<?php echo $button->title; ?>" aria-description="<?php echo $button->description; ?>">
                                                 <?php foreach ($button->icon as $icon): ?>
                                                     <div tabindex="-1" class="mceButton <?php echo $button->class; ?>" role="presentation" title="<?php echo $button->title; ?>">
-                                                    <?php if ($button->image) : ?>
+                                                    <?php if ($button->image): ?>
                                                         <span class="mceIcon mceIconImage"><img src="<?php echo $button->image; ?>" alt="" /></span>
-                                                    <?php else : ?>
+                                                    <?php else: ?>
                                                         <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
-                                                    <?php endif; ?>
+                                                    <?php endif;?>
                                                     </div>
-                                                <?php endforeach; ?>
+                                                <?php endforeach;?>
                                             </div>
-                                        <?php endif; ?>      
-                                    <?php endforeach; ?>
+                                        <?php endif;?>
+                                    <?php endforeach;?>
                                     <!--/div-->
-                                <?php endforeach; ?>
+                                <?php endforeach;?>
                             </div>
-                        <?php endforeach; ?>
+                        <?php endforeach;?>
                     </div>
 
                     <div class="mce-edit-area mce-container mce-panel mce-stack-layout-item mceIframeContainer">
@@ -70,7 +74,7 @@ if (is_numeric($height) && strpos('%', $height) === false) {
                     <div class="mce-statusbar mce-container mce-panel mce-last mce-stack-layout-item mceStatusbar mceLast">
                         <div class="mce-container-body mce-flow-layout mcePathRow" role="group" tabindex="-1">
                             <div class="mcePathLabel">Path: </div>
-                            <div aria-level="0" tabindex="-1" data-index="0" class="mce-path-item mce-last mcePathPath" role="button">p</div>    
+                            <div aria-level="0" tabindex="-1" data-index="0" class="mce-path-item mce-last mcePathPath" role="button">p</div>
                         </div>
                         <div class="mce-flow-layout-item mce-last mce-resizehandle mceResize" tabindex="-1"></div>
                         <div class="mce-wordcount mce-widget mce-label mce-flow-layout-item mceWordCount">Words: 69</div>
@@ -82,34 +86,34 @@ if (is_numeric($height) && strpos('%', $height) === false) {
 </div>
 <div class="control-group mt-3 mb-4 <?php echo !empty($displayData->formclass) ? $displayData->formclass : ''; ?>">
     <div class="control-label">
-        <label class="hasPopover" title="<?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo JText::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
+        <label class="hasPopover" title="<?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE_DESC'); ?>"><?php echo Text::_('WF_PROFILES_FEATURES_LAYOUT_AVAILABLE'); ?></label>
     </div>
     <div class="controls">
         <div class="editor-button-pool">
             <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout defaultSkin" role="application">
                 <div class="mce-container-body mce-stack-layout mceLayout">
                     <div class="mce-toolbar-grp mce-container mce-panel mce-stack-layout-item mceToolbar sortableList" role="toolbar">
-                    <?php for ($i = 0; $i < max(count($rows), 5); ++$i) : ?>
-                                <div class="mce-container mce-toolbar mce-stack-layout-item mceToolbarRow mceToolbarRow<?php echo $i;?> Enabled sortableListItem">
+                    <?php for ($i = 0; $i < max(count($rows), 5); ++$i): ?>
+                                <div class="mce-container mce-toolbar mce-stack-layout-item mceToolbarRow mceToolbarRow<?php echo $i; ?> Enabled sortableListItem">
                                     <!--div class="mce-container mce-flow-layout-item mce-btn-group"-->
-                                        <?php foreach ($available as $plugin) : ?>
+                                        <?php foreach ($available as $plugin): ?>
                                             <?php if ($plugin->row && $plugin->row === $i): ?>
                                                 <div tabindex="-1" class="mceToolbarItem <?php echo $plugin->type; ?> mce-widget mce-btn" data-name="<?php echo $plugin->name; ?>" role="button" aria-label="<?php echo $plugin->title; ?>" aria-description="<?php echo $plugin->description; ?>">
                                                     <?php foreach ($plugin->icon as $icon): ?>
                                                         <div tabindex="-1" class="mceButton <?php echo $plugin->class; ?>" role="presentation" title="<?php echo $plugin->title; ?>">
-                                                            <?php if ($plugin->image) : ?>
+                                                            <?php if ($plugin->image): ?>
                                                                 <span class="mceIcon mceIconImage"><img src="<?php echo $plugin->image; ?>" alt="" /></span>
-                                                            <?php else : ?>
+                                                            <?php else: ?>
                                                                 <span class="mce-ico mce-i-<?php echo $icon; ?> mceIcon mce_<?php echo $icon; ?>"></span>
-                                                            <?php endif; ?>
+                                                            <?php endif;?>
                                                         </div>
-                                                    <?php endforeach; ?>
+                                                    <?php endforeach;?>
                                                 </div>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
+                                            <?php endif;?>
+                                        <?php endforeach;?>
                                     <!--/div-->
                                 </div>
-                            <?php endfor; ?>
+                            <?php endfor;?>
                     </div>
                 </div>
             </div>

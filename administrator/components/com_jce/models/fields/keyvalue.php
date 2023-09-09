@@ -1,8 +1,20 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
 defined('JPATH_PLATFORM') or die;
 
-class JFormFieldKeyValue extends JFormField
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormField;
+use Joomla\CMS\Language\Text;
+
+class JFormFieldKeyValue extends FormField
 {
 
     /**
@@ -52,7 +64,7 @@ class JFormFieldKeyValue extends JFormField
 
             if (empty($values) && strpos($value, ':') !== false && strpos($value, '{') === false) {
                 $values = array();
-                
+
                 foreach (explode(',', $value) as $item) {
                     $pair = explode(':', $item);
 
@@ -61,8 +73,8 @@ class JFormFieldKeyValue extends JFormField
                     });
 
                     $values[] = array(
-                        'name'  => $pair[0],
-                        'value' => $pair[1]
+                        'name' => $pair[0],
+                        'value' => $pair[1],
                     );
                 }
             }
@@ -78,7 +90,7 @@ class JFormFieldKeyValue extends JFormField
             );
         }
 
-        $subForm = new JForm($this->name, array('control' => $this->formControl));
+        $subForm = new Form($this->name, array('control' => $this->formControl));
         $children = $this->element->children();
 
         $subForm->load($children);
@@ -101,7 +113,7 @@ class JFormFieldKeyValue extends JFormField
                 $name = (string) $field->element['name'];
 
                 $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
- 
+
                 // escape value
                 $field->value = htmlspecialchars_decode($val);
 
@@ -114,15 +126,15 @@ class JFormFieldKeyValue extends JFormField
                 $field->name = $name;
 
                 $str[] = $field->renderField(array('description' => $field->description));
-                
+
                 $n++;
             }
 
             $str[] = '  </div>';
 
             $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . JText::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . JText::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
             $str[] = '  </div>';
 
             $str[] = '</div>';

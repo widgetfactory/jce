@@ -1,16 +1,19 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class WFPacker extends JObject
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Uri\Uri;
+
+class WFPacker extends CMSObject
 {
     const IMPORT_RX = '#@import.*?(?:\(([^\)]+)\);|(?:[\'"]([^\'"]+)[\'"]);)#i'; // match @import url('...'); or @import '...'; or @import "...";
 
@@ -170,7 +173,7 @@ class WFPacker extends JObject
             $etag = $this->getEtag($hash);
             // set etag header
             header('ETag: ' . $etag);
-            
+
             // check for sent etag against hash
             if (!headers_sent() && isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
                 $_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
@@ -185,7 +188,7 @@ class WFPacker extends JObject
         // Generate GZIP'd content
         if ($gzip) {
             $encoding = self::getEncoding();
-            
+
             $zlib = function_exists('ini_get') && extension_loaded('zlib') && ini_get('zlib.output_compression');
 
             if (!empty($encoding) && !$zlib && function_exists('gzencode')) {
@@ -383,7 +386,7 @@ class WFPacker extends JObject
                 $path = str_replace(JPATH_SITE, '', realpath($this->get('_imgbase') . '/' . $path));
 
                 if ($path) {
-                    return "url('" . JURI::root(true) . str_replace('\\', '/', $path) . $query . "')";
+                    return "url('" . Uri::root(true) . str_replace('\\', '/', $path) . $query . "')";
                 }
 
                 return "url('" . $data[1] . "')";

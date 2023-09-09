@@ -10,6 +10,8 @@
  */
 defined('JPATH_PLATFORM') or die('RESTRICTED');
 
+use Joomla\CMS\Uri\Uri;
+
 // Some shortcuts to make life easier
 define('WF_VERSION', '@@version@@');
 
@@ -36,7 +38,7 @@ define('WF_EDITOR_CLASSES',    WF_EDITOR_LIBRARIES.'/classes');
 // JCE Editor Extensions
 define('WF_EDITOR_EXTENSIONS', WF_EDITOR.'/extensions');
 
-define('WF_EDITOR_URI', JURI::root(true) . '/components/com_jce/editor');
+define('WF_EDITOR_URI', Uri::root(true) . '/components/com_jce/editor');
 
 define('WF_EDITOR_PRO', '@@is_pro@@');
 

@@ -1,25 +1,26 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class JoomlalinksMenu extends JObject
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\Registry\Registry;
+
+class JoomlalinksMenu extends CMSObject
 {
     private $option = 'com_menu';
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
-     *
      * @return JCE The editor object
      *
      * @since    1.5
@@ -42,7 +43,7 @@ class JoomlalinksMenu extends JObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_menu" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_MENU') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_menu" class="folder menu nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_MENU') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -73,9 +74,9 @@ class JoomlalinksMenu extends JObject
 
                     // bypass errors in menu parameters syntax
                     try {
-                        $params = new JRegistry($menu->params);
+                        $params = new Registry($menu->params);
                     } catch (Exception $e) {
-                        $params = new JRegistry();
+                        $params = new Registry();
                     }
 
                     switch ($menu->type) {
@@ -137,7 +138,7 @@ class JoomlalinksMenu extends JObject
                     $title = isset($menu->name) ? $menu->name : $menu->title;
 
                     // get params
-                    $params = new JRegistry($menu->params);
+                    $params = new Registry($menu->params);
 
                     // resolve link
                     $link = $this->resolveLink($menu);
@@ -191,7 +192,7 @@ class JoomlalinksMenu extends JObject
     private function resolveLink($menu)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         // get link from menu object
         $link = $menu->link;
 
@@ -213,7 +214,7 @@ class JoomlalinksMenu extends JObject
 
     private static function getMenuTypes()
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
 
         $query = $db->getQuery(true);
 
@@ -226,23 +227,23 @@ class JoomlalinksMenu extends JObject
 
     private static function getAlias($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $query = $db->getQuery(true);
 
         $query->select('params')->from('#__menu')->where('id = ' . (int) $id);
 
         $db->setQuery($query, 0);
-        $params = new JRegistry($db->loadResult());
+        $params = new Registry($db->loadResult());
 
         $query->clear();
         $query->select('id, name, link, alias')->from('#__menu')->where(array('published = 1', 'id = ' . (int) $params->get('menu_item')));
-        
+
         if (!$user->authorise('core.admin')) {
             $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
         }
-        
+
         $query->order('name');
 
         $db->setQuery($query, 0);
@@ -252,13 +253,13 @@ class JoomlalinksMenu extends JObject
 
     private static function getChildren($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $query = $db->getQuery(true);
 
         $query->select('COUNT(id)')->from('#__menu')->where(array('published = 1', 'client_id = 0'));
-        
+
         if (!$user->authorise('core.admin')) {
             $query->where('access IN (' . implode(',', $user->getAuthorisedViewLevels()) . ')');
         }
@@ -274,8 +275,8 @@ class JoomlalinksMenu extends JObject
 
     private static function getMenu($parent = 0, $type = 0)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $query = $db->getQuery(true);
 
@@ -308,7 +309,7 @@ class JoomlalinksMenu extends JObject
 
     private function getLangauge($language)
     {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $query = $db->getQuery(true);
 
         $link = '';
@@ -331,7 +332,7 @@ class JoomlalinksMenu extends JObject
     private static function route($url)
     {
         $wf = WFEditorPlugin::getInstance();
-        
+
         if ((bool) $wf->getParam('links.joomlalinks.sef_url', 0)) {
             $url = WFLinkHelper::route($url);
         }

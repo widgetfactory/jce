@@ -1,24 +1,26 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
 
-class JoomlalinksContent extends JObject
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Table\Table;
+
+class JoomlalinksContent extends CMSObject
 {
     private $option = 'com_content';
 
     /**
      * Returns a reference to a editor object.
-     *
-     * This method must be invoked as:
-     *         <pre>  $browser =JContentEditor::getInstance();</pre>
      *
      * @return JCE The editor object
      *
@@ -42,7 +44,7 @@ class JoomlalinksContent extends JObject
 
     public function getList()
     {
-        return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . JText::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
+        return '<li id="index.php?option=com_content" class="folder content nolink"><div class="uk-tree-row"><a href="#"><span class="uk-tree-icon"></span><span class="uk-tree-text">' . Text::_('WF_LINKS_JOOMLALINKS_CONTENT') . '</span></a></div></li>';
     }
 
     public function getLinks($args)
@@ -52,7 +54,7 @@ class JoomlalinksContent extends JObject
 
         $language = '';
 
-        // create a new RouteHelper instance
+        // create a new JHelperRoute instance
         $router = new JHelperRoute();
 
         switch ($view) {
@@ -210,7 +212,7 @@ class JoomlalinksContent extends JObject
             preg_match('#Itemid=([\d]+)#', $url, $matches);
             // get link from menu
             if (count($matches) > 1) {
-                $menu = JTable::getInstance('menu');
+                $menu = Table::getInstance('menu');
                 $menu->load($matches[1]);
 
                 if ($menu->link) {
@@ -224,8 +226,8 @@ class JoomlalinksContent extends JObject
 
     private function getArticles($id)
     {
-        $db = JFactory::getDBO();
-        $user = JFactory::getUser();
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
 
         $wf = WFEditorPlugin::getInstance();
 

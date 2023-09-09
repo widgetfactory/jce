@@ -1,9 +1,24 @@
 <?php
+/**
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
 
-// Check to ensure this file is included in Joomla!
 defined('JPATH_PLATFORM') or die;
 
-class JceViewBrowser extends JViewLegacy
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Uri\Uri;
+
+class JceViewBrowser extends HtmlView
 {
     protected $icons;
     protected $state;
@@ -13,30 +28,28 @@ class JceViewBrowser extends JViewLegacy
      */
     public function display($tpl = null)
     {
-        if (!JPluginHelper::isEnabled('quickicon', 'jce')) {
-            JFactory::getApplication()->redirect('index.php?option=com_jce');
+        if (!PluginHelper::isEnabled('quickicon', 'jce')) {
+            Factory::getApplication()->redirect('index.php?option=com_jce');
         }
-        
-        $user = JFactory::getUser();
-        
-        $this->state    = $this->get('State');
-        $this->params   = JComponentHelper::getParams('com_jce');
+
+        $user = Factory::getUser();
+
+        $this->state = $this->get('State');
+        $this->params = ComponentHelper::getParams('com_jce');
 
         // Check for errors.
         if (count($errors = $this->get('Errors'))) {
-            JError::raiseError(500, implode("\n", $errors));
-
-            return false;
+            throw new Exception(implode("\n", $errors), 500);
         }
 
-        JHtml::_('jquery.framework');
+        HTMLHelper::_('jquery.framework');
 
-        $document = JFactory::getDocument();
-        $document->addStyleSheet(JURI::root(true) . '/media/com_jce/css/browser.min.css');
+        $document = Factory::getDocument();
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/browser.min.css');
 
         $this->addToolbar();
 
-        if (JFactory::getApplication()->input->getInt('sidebar', 1) == 1) {
+        if (Factory::getApplication()->input->getInt('sidebar', 1) == 1) {
             $this->sidebar = JHtmlSidebar::render();
         }
 
@@ -50,7 +63,7 @@ class JceViewBrowser extends JViewLegacy
      */
     protected function addToolbar()
     {
-        JToolbarHelper::title('JCE - ' . JText::_('WF_BROWSER_TITLE'), 'picture');
+        ToolbarHelper::title('JCE - ' . JText::_('WF_BROWSER_TITLE'), 'picture');
         JHtmlSidebar::setAction('index.php?option=com_jce&view=browser');
     }
 }

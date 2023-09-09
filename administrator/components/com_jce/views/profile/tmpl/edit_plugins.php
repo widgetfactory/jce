@@ -1,12 +1,29 @@
 <?php
 /**
- * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Admin
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+ defined('JPATH_PLATFORM') or die;
+
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Component\ComponentHelper;
+ use Joomla\CMS\MVC\View\HtmlView;
+ use Joomla\CMS\Language\Text;
+ use Joomla\CMS\HTML\HTMLHelper;
+ ;
+ use Joomla\CMS\Plugin\PluginHelper;
+ use Joomla\CMS\Table\Table;
+ use Joomla\CMS\Uri\Uri;
+ use Joomla\CMS\Toolbar\ToolbarHelper;
+ use Joomla\CMS\Toolbar\Toolbar;
+ use Joomla\CMS\Session\Session;
+ use Joomla\CMS\Layout\LayoutHelper;
+ use Joomla\CMS\Router\Route;
 
 $plugins = array_values(array_filter($this->plugins, function($plugin) {
     return $plugin->editable && !empty($plugin->form);
@@ -14,7 +31,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
 
 ?>
 <div class="<?php echo $this->formclass;?> tabbable tabs-left flex-column">
-    <?php //echo JHtml::_('bootstrap.startTabSet', 'profile-plugins', array('active' => 'profile-plugins-' . $plugins[0]->name));?>
+    <?php //echo HTMLHelper::_('bootstrap.startTabSet', 'profile-plugins', array('active' => 'profile-plugins-' . $plugins[0]->name));?>
 
     <ul class="nav nav-tabs" id="profile-plugins-tabs">
 
@@ -51,7 +68,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
             $title .= '<div class="mceEditor mceDefaultSkin"><div class="mce-container mce-toolbar mceToolbarItem">' . $icons . '</div></div>';
         }
 
-        //echo JHtml::_('bootstrap.addTab', 'profile-plugins', 'profile-plugins-' . $plugin->name, $title); ?>
+        //echo HTMLHelper::_('bootstrap.addTab', 'profile-plugins', 'profile-plugins-' . $plugin->name, $title); ?>
         <li class="nav-item <?php echo $plugin->state;?>"><a href="#profile-plugins-<?php echo $plugin->name;?>" class="nav-link"><?php echo $title;?></a></li>
     <?php endforeach;?>
 
@@ -65,20 +82,20 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
                     $plugin->fieldsname = "config";
                     $plugin->name = $plugin->title;
                     $plugin->description = "";
-                    echo JLayoutHelper::render('joomla.content.options_default', $plugin);
+                    echo LayoutHelper::render('joomla.content.options_default', $plugin);
                     
                     foreach ($plugin->extensions as $type => $extensions) : ?>
                         
-                        <h3><?php echo JText::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE', true); ?></h3>
+                        <h3><?php echo Text::_('WF_EXTENSIONS_' . strtoupper($type) . '_TITLE', true); ?></h3>
 
                         <?php foreach ($extensions as $name => $extension) : ?>
                             <div class="row-fluid">  
                                         
                                 <?php if ($extension->form) :
                                     $extension->fieldsname = "";
-                                    $extension->name = JText::_($extension->title, true);
+                                    $extension->name = Text::_($extension->title, true);
                                     $extension->description = "";
-                                    echo JLayoutHelper::render('joomla.content.options_default', $extension);
+                                    echo LayoutHelper::render('joomla.content.options_default', $extension);
 
                                 endif; ?>
 
@@ -90,9 +107,9 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
 
                 endif; ?>
             </div>
-            <?php //echo JHtml::_('bootstrap.endTab');?>
+            <?php //echo HTMLHelper::_('bootstrap.endTab');?>
         </div>
         <?php endforeach;?>
     </div>
-    <?php //echo JHtml::_('bootstrap.endTabSet'); ?>
+    <?php //echo HTMLHelper::_('bootstrap.endTabSet'); ?>
 </div>

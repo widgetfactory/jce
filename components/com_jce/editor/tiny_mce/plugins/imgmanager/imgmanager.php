@@ -1,14 +1,15 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
 
 class WFImgManagerPlugin extends WFMediaManager
 {
@@ -65,7 +66,7 @@ class WFImgManagerPlugin extends WFMediaManager
 
     public function onUpload($file, $relative = '')
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
 
         // inline upload
         if ($app->input->getInt('inline', 0) === 1) {
@@ -100,7 +101,7 @@ class WFImgManagerPlugin extends WFMediaManager
                 'margin' => $this->getParam('attributes_margin', 1),
                 'border' => $this->getParam('attributes_border', 1),
             ),
-            'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1)
+            'always_include_dimensions' => (bool) $this->getParam('always_include_dimensions', 1),
         );
 
         return parent::getSettings($settings);

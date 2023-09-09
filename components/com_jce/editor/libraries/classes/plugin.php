@@ -1,19 +1,25 @@
 <?php
-
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
- * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * JCE is free software. This version may have been modified pursuant
- * to the GNU General Public License, and as distributed it includes or
- * is derivative of works licensed under the GNU General Public License or
- * other free or open source software licenses
+ * @package     JCE
+ * @subpackage  Editor
+ *
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Session\Session;
 
 /**
  * JCE class.
  */
-class WFEditorPlugin extends JObject
+class WFEditorPlugin extends CMSObject
 {
     // Editor Plugin instance
     private static $instance;
@@ -33,7 +39,7 @@ class WFEditorPlugin extends JObject
         parent::__construct();
 
         // get plugin name from url, fallback to default name if set
-        $name = JFactory::getApplication()->input->getCmd('plugin', $this->get('name'));
+        $name = Factory::getApplication()->input->getCmd('plugin', $this->get('name'));
 
         // get name and caller from plugin name
         if (strpos($name, '.') !== false) {
@@ -150,7 +156,7 @@ class WFEditorPlugin extends JObject
 
     protected function isRtl()
     {
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         if ($language->getTag() === WFLanguage::getTag()) {
             return $language->isRTL();
@@ -161,7 +167,7 @@ class WFEditorPlugin extends JObject
 
     protected function initialize()
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         $wf = WFApplication::getInstance();
 
         $version = $this->getVersion();
@@ -178,7 +184,7 @@ class WFEditorPlugin extends JObject
         // create the document
         $document = WFDocument::getInstance(array(
             'version' => $version,
-            'title' => JText::_('WF_' . strtoupper($this->getName() . '_TITLE')),
+            'title' => Text::_('WF_' . strtoupper($this->getName() . '_TITLE')),
             'name' => $name,
             'language' => WFLanguage::getTag(),
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
@@ -189,7 +195,7 @@ class WFEditorPlugin extends JObject
         // set standalone mode
         $document->set('standalone', $wf->input->getInt('standalone', 0));
 
-        JFactory::getApplication()->triggerEvent('onWfPluginInit', array($this));
+        Factory::getApplication()->triggerEvent('onWfPluginInit', array($this));
     }
 
     public function execute()
@@ -241,7 +247,7 @@ class WFEditorPlugin extends JObject
     public function display()
     {
         // check session on get request
-        JSession::checkToken('get') or jexit(JText::_('JINVALID_TOKEN'));
+        Session::checkToken('get') or jexit(Text::_('JINVALID_TOKEN'));
 
         $this->initialize();
 
@@ -264,7 +270,7 @@ class WFEditorPlugin extends JObject
             $document->addStyleSheet(array('media/jce/css/plugin.css'), 'joomla');
         }
 
-        JFactory::getApplication()->triggerEvent('onWfPluginDisplay', array($this));
+        Factory::getApplication()->triggerEvent('onWfPluginDisplay', array($this));
     }
 
     /**
@@ -334,7 +340,7 @@ class WFEditorPlugin extends JObject
 
         // get parameter defaults
         if (is_file($manifest)) {
-            $form = JForm::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
+            $form = Form::getInstance('com_jce.plugin.' . $form_id, $manifest, array('load_data' => false), true, '//extension');
             $fields = $form->getFieldset($fieldset);
 
             foreach ($fields as $field) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 3 - http://www.gnu.org/copyleft/gpl.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -12,26 +12,30 @@ defined('JPATH_PLATFORM') or die;
 
 require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/application.php';
 
-class JceControllerPlugin extends JControllerLegacy
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\BaseController;
+
+class JceControllerPlugin extends BaseController
 {
     private static $map = array(
-        'image'     => 'imgmanager',
-        'imagepro'  => 'imgmanager_ext'
+        'image' => 'imgmanager',
+        'imagepro' => 'imgmanager_ext',
     );
 
-    private function createClassName($name) {
+    private function createClassName($name)
+    {
         $delim = array('-', '_');
 
         $name = str_replace($delim, ' ', $name);
 
         $className = 'WF' . ucwords($name) . 'Plugin';
-        
+
         // remove space
         $className = str_replace(' ', '', $className);
 
         return $className;
     }
-    
+
     public function execute($task)
     {
         $wf = WFApplication::getInstance();
@@ -40,7 +44,7 @@ class JceControllerPlugin extends JControllerLegacy
         $wf->getProfile() or jexit('Invalid Profile');
 
         // load language files
-        $language = JFactory::getLanguage();
+        $language = Factory::getLanguage();
 
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
@@ -74,7 +78,7 @@ class JceControllerPlugin extends JControllerLegacy
         }
 
         if (!file_exists($path . '/' . $plugin . '.php')) {
-            throw new InvalidArgumentException(ucfirst($plugin) . '" not found!');
+            throw new Exception(ucfirst($plugin) . '" not found!');
         }
 
         include_once $path . '/' . $plugin . '.php';
@@ -94,12 +98,12 @@ class JceControllerPlugin extends JControllerLegacy
             if ($task === 'display') {
                 $task = 'execute';
             }
-    
+
             // default to execute if task is not available
             if (is_callable(array($instance, $task)) === false) {
                 $task = 'execute';
             }
-    
+
             $instance->$task();
         }
 

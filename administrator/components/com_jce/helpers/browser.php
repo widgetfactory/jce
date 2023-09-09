@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright     Copyright (c) 2009-2022 Ryan Demmer. All rights reserved
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license       GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -9,6 +9,8 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Factory;
 
 abstract class WfBrowserHelper
 {
@@ -36,9 +38,8 @@ abstract class WfBrowserHelper
 
     public static function getMediaFieldOptions($options = array())
     {
-        $app = JFactory::getApplication();
-        $token = JFactory::getSession()->getFormToken();
-
+        $app = Factory::getApplication();
+        $token = Factory::getSession()->getFormToken();
 
         if (!isset($options['element'])) {
             $options['element'] = null;
@@ -60,7 +61,7 @@ abstract class WfBrowserHelper
         $data = array(
             'url' => '',
             'upload' => 0,
-            'converted' => false
+            'converted' => false,
         );
 
         // load editor class
@@ -104,8 +105,8 @@ abstract class WfBrowserHelper
 
             // get allowed extensions
             $accept = $wf->getParam('browser.extensions', 'jpg,jpeg,png,gif,mp3,m4a,mp4a,ogg,mp4,mp4v,mpeg,mov,webm,doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv,zip,tar,gz');
-            
-            $data['accept'] = array_map(function ($value) {                
+
+            $data['accept'] = array_map(function ($value) {
                 if ($value[0] != '-') {
                     return $value;
                 }

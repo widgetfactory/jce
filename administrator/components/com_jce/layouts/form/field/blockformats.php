@@ -1,9 +1,10 @@
 <?php
 /**
- * @package     Joomla.Site
- * @subpackage  Layout
+ * @package     JCE
+ * @subpackage  Admin
  *
- * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2020 Open Source Matters, Inc. All rights reserved.
+ * @copyright     Copyright (c) 2009-2023 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -59,17 +60,17 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 
 	<?php foreach ($options as $i => $option): ?>
 		<?php
-			// Initialize some option attributes.
-			$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
+// Initialize some option attributes.
+$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
 
-			// In case there is no stored value, use the option's default state.
-			$checked = (!$hasValue && $option->checked) ? 'checked' : $checked;
-			$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
+// In case there is no stored value, use the option's default state.
+$checked = (!$hasValue && $option->checked) ? 'checked' : $checked;
+$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
 
-			$oid = $id . $i;
-			$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
-			$attributes = array_filter(array($checked, $optionDisabled));
-		?>
+$oid = $id . $i;
+$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
+$attributes = array_filter(array($checked, $optionDisabled));
+?>
         <div class="blockformat-item" title="<?php echo $option->text; ?>">
             <?php echo sprintf($format, $oid, $name, $value, $option->text, implode(' ', $attributes)); ?>
         </div>
