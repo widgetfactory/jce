@@ -10,13 +10,15 @@
 
 defined('JPATH_PLATFORM') or die;
 
-;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Layout\LayoutHelper;
-?>
 
+if (version_compare(JVERSION, 4, '<')) {
+    HTMLHelper::_('formbehavior.chosen', 'select');
+}
+?>
 <form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">
-    <div class="ui-jce container row-fluid">
+    <div class="ui-jce container-fluid">
         <?php if (!empty($this->sidebar)): ?>
             <div id="j-sidebar-container" class="span2 col-md-2">
                 <?php echo $this->sidebar; ?>
