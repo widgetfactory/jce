@@ -506,13 +506,18 @@
     }
 
     function setRows() {
+        // set a default non-value. Will be cleaned before saving
+        var v = '*';
+        
         var rows = $.map($('.editor-layout .mce-toolbar').has('.mce-btn'), function (toolbar) {
             return $.map($('.mce-btn', toolbar), function (button) {
                 return $(button).data('name');
             }).join(',');
         });
 
-        var v = rows.join(';');
+        if (rows.length) {
+            v = rows.join(';');
+        }
 
         // set rows and trigger change
         $('input[name="jform\\[rows\\]"]').val(v).change();

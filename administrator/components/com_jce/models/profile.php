@@ -693,6 +693,7 @@ class JceModelProfile extends AdminModel
             if (empty($data['rows'])) {
                 $data['rows'] = $table->rows;
             }
+
             if (empty($data['plugins'])) {
                 $data['plugins'] = $table->plugins;
             }
