@@ -1193,7 +1193,6 @@ class WFFileBrowser extends CMSObject
         $app = Factory::getApplication();
 
         $filesystem = $this->getFileSystem();
-        jimport('joomla.filesystem.file');
 
         // create a filesystem result object
         $result = new WFFileSystemResult();

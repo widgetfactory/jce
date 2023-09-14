@@ -198,9 +198,6 @@ class WFExtension extends CMSObject
      */
     public static function loadExtensions($type, $extension = null, $config = array())
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         if (!isset($config['base_path'])) {
             $config['base_path'] = WF_EDITOR;
         }

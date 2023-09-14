@@ -76,7 +76,6 @@ class WFAggregatorExtension extends WFExtension
         $format = $this->get('format');
 
         if (empty($aggregators[$format])) {
-            jimport('joomla.filesystem.folder');
 
             // get a plugin instance
             $plugin = WFEditorPlugin::getInstance();

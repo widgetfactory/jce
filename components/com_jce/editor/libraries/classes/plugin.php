@@ -251,7 +251,6 @@ class WFEditorPlugin extends CMSObject
 
         $this->initialize();
 
-        jimport('joomla.filesystem.folder');
         $document = WFDocument::getInstance();
 
         if ($document->get('standalone') == 0) {

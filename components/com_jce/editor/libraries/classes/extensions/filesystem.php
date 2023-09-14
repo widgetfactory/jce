@@ -109,8 +109,6 @@ class WFFileSystem extends WFExtension
             $wf = WFApplication::getInstance();
             $profile = $wf->getProfile();
 
-            jimport('joomla.user.helper');
-
             $groups = UserHelper::getUserGroups($user->id);
 
             // get keys only

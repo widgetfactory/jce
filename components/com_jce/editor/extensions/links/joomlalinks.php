@@ -25,9 +25,6 @@ class WFLinkBrowser_Joomlalinks
     {
         $wf = WFEditorPlugin::getInstance();
 
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         $path = __DIR__ . '/joomlalinks';
 
         // Get all files

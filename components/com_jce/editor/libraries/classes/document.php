@@ -298,8 +298,6 @@ class WFDocument extends CMSObject
      */
     private function urlToPath($url)
     {
-        jimport('joomla.filesystem.path');
-
         $root = Uri::root(true);
 
         // remove root from url

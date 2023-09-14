@@ -44,12 +44,6 @@ class WFPreviewPlugin extends WFEditorPlugin
         $document = Factory::getDocument();
         $document->setType('html');
 
-        // required by module loadposition
-        jimport('joomla.application.module.helper');
-
-        // load paramter class
-        jimport('joomla.html.parameter');
-
         // register autoload for ContentHelperRoute
         JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 

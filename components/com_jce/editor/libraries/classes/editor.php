@@ -19,6 +19,8 @@ use Joomla\CMS\Language\Language;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+
 class WFEditor
 {
     // Editor instance
@@ -353,6 +355,8 @@ class WFEditor
 
     public function getSettings()
     {
+        $app = Factory::getApplication();
+        
         // get an editor instance
         $wf = WFApplication::getInstance();
 
@@ -378,8 +382,6 @@ class WFEditor
 
         // if a profile is set
         if (is_object($this->profile)) {
-            jimport('joomla.filesystem.folder');
-
             $settings['query']['profile_id'] = $this->profile->id;
 
             $settings = array_merge($settings, array('theme' => 'advanced'), $this->getToolbar());
@@ -1143,9 +1145,6 @@ class WFEditor
 
     private static function getTemplateStyleSheetsList($absolute = false)
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         // set default url as empty value
         $url = '';
         // set default template as empty value

@@ -159,7 +159,6 @@ class WFJoomlaFileSystem extends WFFileSystem
     public function isFtp()
     {
         // Initialize variables
-        jimport('joomla.client.helper');
         $FTPOptions = ClientHelper::getCredentials('ftp');
 
         return $FTPOptions['enabled'] == 1;
@@ -167,8 +166,6 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function getTotalSize($path, $recurse = true)
     {
-        jimport('joomla.filesystem.folder');
-
         $total = 0;
 
         if (strpos($path, $this->getBaseDir()) === false) {
@@ -195,8 +192,6 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function countFiles($path, $recurse = false)
     {
-        jimport('joomla.filesystem.folder');
-
         if (strpos($path, $this->getBaseDir()) === false) {
             $path = $this->toAbsolute($path);
         }
@@ -219,8 +214,6 @@ class WFJoomlaFileSystem extends WFFileSystem
      */
     public function countFolders($path)
     {
-        jimport('joomla.filesystem.folder');
-
         if (strpos($path, $this->getBaseDir()) === false) {
             $path = $this->toAbsolute($path);
         }
@@ -840,8 +833,6 @@ class WFJoomlaFileSystem extends WFFileSystem
 
     public function upload($method, $src, $dir, $name, $chunks = 1, $chunk = 0)
     {
-        jimport('joomla.filesystem.file');
-
         $app = Factory::getApplication();
 
         // full destination directory path

@@ -112,9 +112,6 @@ final class WFView extends CMSObject
             $tpl = preg_replace('/[^A-Z0-9_\.-]/i', '', $tpl);
         }
 
-        // load the template script
-        jimport('joomla.filesystem.path');
-
         $path = $this->getTemplatePath();
 
         $template = Path::find($path, $file . '.php');
