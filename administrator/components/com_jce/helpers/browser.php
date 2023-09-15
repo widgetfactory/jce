@@ -97,12 +97,13 @@ abstract class WfBrowserHelper
             $options[$token] = 1;
             $options['client'] = $app->getClientId();
 
-            foreach ($options as $key => $value) {
-                if ($value) {
-                    $data['url'] .= '&' . $key . '=' . $value;
-                }
-            }
+            // filter options values
+            $options = array_filter($options, function ($value) {
+                return $value !== '' && $value !== null;
+            });
 
+            $data['url'] .= '&' . http_build_query($options);
+ 
             // get allowed extensions
             $accept = $wf->getParam('browser.extensions', 'jpg,jpeg,png,gif,mp3,m4a,mp4a,ogg,mp4,mp4v,mpeg,mov,webm,doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv,zip,tar,gz');
 
