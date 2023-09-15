@@ -793,8 +793,9 @@
         var shimNode;
         var name = node.name;
 
-        var msg = editor.getLang('media.preview_hint', 'Click to activate, %s + Click to toggle placeholder');
-        msg = msg.replace(/%s/g, tinymce.isMac ? 'CMD' : 'CTRL');
+        var msg = editor.getLang('media.preview_hint', 'Click to activate, ALT + Click to toggle placeholder');
+        // b/c replacement
+        msg = msg.replace(/%s/g, 'ALT');
 
         // disable autoplay
         if (node.attr('autoplay')) {
@@ -1661,7 +1662,7 @@
                     node.setAttribute('data-mce-selected', '2');
                 }
 
-                if (e.type === 'mousedown' && VK.metaKeyPressed(e)) {
+                if (e.type === 'mousedown' && e.altKey) {
                     // update the event target with the new node
                     e.target = previewToPlaceholder(ed, node);
                 }
@@ -1848,6 +1849,10 @@
             ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
                 var node = ed.selection.getNode();
 
+                if (!node.hasAttribute('data-mce-object')) {
+                    return;
+                }
+
                 // pause all video and audio in preview elements
                 each(ed.dom.select('.mce-object-preview video, .mce-object-preview audio'), function (elm) {
                     elm.pause();
@@ -1859,7 +1864,7 @@
                             return;
                         }
 
-                        if (e.type === 'click' && VK.metaKeyPressed(e)) {
+                        if (e.type === 'click' && e.altKey) {
                             e.target = placeholderToPreview(ed, node);
                         }
                     }
