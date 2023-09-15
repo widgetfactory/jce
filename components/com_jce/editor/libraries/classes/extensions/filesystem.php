@@ -227,6 +227,8 @@ class WFFileSystem extends WFExtension
                     $root = 'images';
                 }
 
+                Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetRootDir', array(&$root));
+
                 $this->processPath($root);
             }
         }
