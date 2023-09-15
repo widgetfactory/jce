@@ -192,7 +192,13 @@
                     return false;
                 }
 
-                var params = parseUrl(url), url = getBasePath(elm) + 'index.php?option=com_jce', validParams = ['task', 'context', 'plugin', 'filter', 'mediatype'];
+                var params = parseUrl(url), url = getBasePath(elm) + 'index.php?option=com_jce&task=plugin.rpc', invalidParams = ['option', 'task'];
+
+                $.each(invalidParams, function (i, key) {
+                    delete params[key];
+                });
+
+                url += '&' + $.param(params);
 
                 var filter = params.filter || params.mediatype || 'images';
 
@@ -200,18 +206,6 @@
                     alert('The selected file is not supported.');
                     return false;
                 }
-
-                // rewrite task
-                params.task = 'plugin.rpc';
-
-                // delete some unused stuff
-                $.each(params, function (key, value) {
-                    if ($.inArray(key, validParams) === -1) {
-                        delete params[key];
-                    }
-                });
-
-                url += '&' + $.param(params);
 
                 // set disabled
                 $(elm).prop('disabled', true).addClass('wf-media-upload-busy');
@@ -392,8 +386,16 @@
             var url = getBasePath($inp) + 'index.php?option=com_jce&task=mediafield.display&plugin=' + plugin + '&fieldid=' + id + '&mediatype=' + mediatype;
 
             if (options.context) {
-                url += '&context=' + options.context;
+                params.context = options.context;
             }
+
+            var invalidParams = ['option', 'task', 'plugin', 'fieldid', 'mediatype', 'element'];
+
+            $.each(invalidParams, function (i, key) {
+                delete params[key];
+            });
+
+            url += '&' + $.param(params);
 
             // update data url attribute
             if ($(this).data('url')) {
