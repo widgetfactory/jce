@@ -45941,7 +45941,7 @@
     }
 
     function isEditorContentCss(url) {
-      return url.indexOf('/tiny_mce/') !== -1 && url.indexOf('content.css') !== -1;
+      return /\/(tiny_mce|plugins\/jce)\//.match(url) !== -1 && url.indexOf('content.css') !== -1;
     }
 
     function cleanSelectorText(selectorText) {
@@ -46279,7 +46279,7 @@
         }
 
         function isValidStyle(value) {
-          return /\.[\w\-]+$/.test(value);
+          return /\.[\w\-\:]+$/.test(value);
         }
 
         function parseCSS(stylesheet) {
