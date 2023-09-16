@@ -41,6 +41,11 @@
                 return;
             }
 
+            // skip pseudo selectors
+            if (selectorText.indexOf(':') !== -1) {
+                return;
+            }
+
             // Parse simple element.class1, .class1
             var selector = /^(?:([a-z0-9\-_]+))?(\.[a-z0-9_\-\.]+)$/i.exec(selectorText);
 
