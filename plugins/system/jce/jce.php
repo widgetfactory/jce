@@ -5,6 +5,7 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved
  * @license     GNU General Public License version 2 or later
  */
+
 defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
@@ -196,13 +197,6 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        $version = new Joomla\CMS\Version();
-
-        // Joomla 3.10 or later...
-        if (!$version->isCompatible('3.9')) {
-            return true;
-        }
-
         if (!($form instanceof Form)) {
             $this->_subject->setError('JERROR_NOT_A_FORM');
             return false;
@@ -277,17 +271,36 @@ class PlgSystemJce extends CMSPlugin
         return true;
     }
 
-    public function onBeforeWfEditorLoad()
+    private function getDummyDispatcher()
     {
-        $items = glob(__DIR__ . '/templates/*.php');
-
         $app = Factory::getApplication();
-
+        
         if (method_exists($app, 'getDispatcher')) {
             $dispatcher = Factory::getApplication()->getDispatcher();
         } else {
             $dispatcher = JEventDispatcher::getInstance();
         }
+
+        return $dispatcher;
+    }
+
+    private function bootCustomPlugin($className, $config = array())
+    {
+        if (class_exists($className)) {
+            $dispatcher = $this->getDummyDispatcher();
+            
+            // Instantiate and register the event
+            $plugin = new $className($dispatcher, $config);
+
+            if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
+                $plugin->registerListeners();
+            }
+        }
+    }
+
+    public function onBeforeWfEditorLoad()
+    {
+        $items = glob(__DIR__ . '/templates/*.php');
 
         foreach ($items as $item) {
             $name = basename($item, '.php');
@@ -296,14 +309,7 @@ class PlgSystemJce extends CMSPlugin
 
             require_once $item;
 
-            if (class_exists($className)) {
-                // Instantiate and register the event
-                $plugin = new $className($dispatcher);
-
-                if ($plugin instanceof \Joomla\CMS\Extension\PluginInterface) {
-                    $plugin->registerListeners();
-                }
-            }
+            $this->bootCustomPlugin($classname);
         }
     }
 
