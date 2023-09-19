@@ -467,6 +467,14 @@ textarea::placeholder {
     /* override values in some template stylesheets */
     min-height: inherit;
     float: inherit;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mceMenu .mceMenuItems .mceMenuItem  > div {
+    width: 100%;
 }
 
 .mceMenu .mceMenuItems .mceText {
