@@ -29,7 +29,7 @@ class PlgSystemJce extends CMSPlugin
      * @var boolean
      */
     private $mediaLoaded = false;
-    
+
     public function onPlgSystemJceContentPrepareForm($form, $data)
     {
         return $this->onContentPrepareForm($form, $data);
@@ -124,7 +124,7 @@ class PlgSystemJce extends CMSPlugin
         $document = Factory::getDocument();
 
         // must be an html doctype
-        if($document->getType() !== 'html') {
+        if ($document->getType() !== 'html') {
             return true;
         }
 
@@ -133,6 +133,10 @@ class PlgSystemJce extends CMSPlugin
             $hash = md5_file(__DIR__ . '/css/content.css');
             $document->addStyleSheet(Uri::root(true) . '/plugins/system/jce/css/content.css?' . $hash);
         }
+
+        $this->bootEditorPlugins();
+
+        $app->triggerEvent('onWfPluginAfterDispatch');
     }
 
     public function onWfContentPreview($context, &$article, &$params, $page)
@@ -145,7 +149,7 @@ class PlgSystemJce extends CMSPlugin
         if ($this->mediaLoaded) {
             return;
         }
-        
+
         $app = Factory::getApplication();
 
         $option = $app->input->getCmd('option');
@@ -193,7 +197,7 @@ class PlgSystemJce extends CMSPlugin
         $docType = Factory::getDocument()->getType();
 
         // must be an html doctype
-        if($docType !== 'html') {
+        if ($docType !== 'html') {
             return true;
         }
 
@@ -274,7 +278,7 @@ class PlgSystemJce extends CMSPlugin
     private function getDummyDispatcher()
     {
         $app = Factory::getApplication();
-        
+
         if (method_exists($app, 'getDispatcher')) {
             $dispatcher = Factory::getApplication()->getDispatcher();
         } else {
@@ -284,11 +288,34 @@ class PlgSystemJce extends CMSPlugin
         return $dispatcher;
     }
 
+    private function bootEditorPlugins()
+    {
+        $plugins = PluginHelper::getPlugin('jce');
+
+        foreach ($plugins as $plugin) {
+            if (strpos($plugin->name, 'editor-') === false) {
+                continue;
+            }
+
+            $path = JPATH_PLUGINS . '/jce/' . $plugin->name;
+
+            // only modern plugins
+            if (!is_dir($path . '/src')) {
+                continue;
+            }
+
+            $plugin = Factory::getApplication()->bootPlugin($plugin->name, $plugin->type);
+            $plugin->setDispatcher(Factory::getApplication()->getDispatcher());
+
+            $plugin->registerListeners();
+        }
+    }
+
     private function bootCustomPlugin($className, $config = array())
     {
         if (class_exists($className)) {
             $dispatcher = $this->getDummyDispatcher();
-            
+
             // Instantiate and register the event
             $plugin = new $className($dispatcher, $config);
 
@@ -309,7 +336,7 @@ class PlgSystemJce extends CMSPlugin
 
             require_once $item;
 
-            $this->bootCustomPlugin($classname);
+            $this->bootCustomPlugin($className);
         }
     }
 
