@@ -16,11 +16,6 @@ use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
 
-// set as an extension parent
-if (!defined('_WF_EXT')) {
-    define('_WF_EXT', 1);
-}
-
 class WFExtension extends CMSObject
 {
     /**
