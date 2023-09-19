@@ -1024,7 +1024,7 @@ class WFEditor
             $classname = str_replace(' ', '', $classname);
 
             // Check class and method are callable, and call
-            if (class_exists($classname) && method_exists($classname, 'getConfig')) {
+            if (class_exists($classname) && method_exists($classname, 'getConfig')) {                
                 call_user_func_array(array($classname, 'getConfig'), array(&$settings));
             }
         }
