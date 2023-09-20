@@ -86,7 +86,7 @@ class pkg_jceInstallerScript
         // override existing message
         $message = '';
         $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark well" style="text-align:left;">';
-        $message .= '   <div class="card-header"><h1>' . JText::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1></div>';
+        $message .= '   <div class="card-header"><h1>' . Text::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1></div>';
         $message .= '   <div class="card-body">';
 
         // variant messates
@@ -201,10 +201,8 @@ class pkg_jceInstallerScript
             throw new RuntimeException('JCE requires PHP 7.4 or later - ' . $requirements);
         }
 
-        $jversion = new JVersion();
-
         // joomla version check
-        if (version_compare($jversion->getShortVersion(), '3.10', 'lt')) {
+        if (version_compare(JVERSION, '3.10', 'lt')) {
             throw new RuntimeException('JCE requires Joomla 3.10 or later - ' . $requirements);
         }
 
