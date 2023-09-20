@@ -148,12 +148,21 @@ class JFormFieldContainer extends FormField
                     $value = is_array($value) ? implode(',', $value) : $value;
                 }
 
-                if (is_array($value)) {
+                // extract value if this is a repeatable container
+                if (is_array($value) && $repeatable) {
                     $value = isset($value[$i]) ? $value[$i] : '';
                 }
 
-                // escape value
-                $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+                // escape values
+                if (is_array($value)) {
+                    array_walk($value, function(&$item) {
+                        $item = htmlspecialchars($item, ENT_COMPAT, 'UTF-8');
+                    });
+                } else {
+                    $value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+                }
+
+                $field->value = $value;
                 $field->setup($field->element, $field->value);
 
                 if ($repeatable) {
