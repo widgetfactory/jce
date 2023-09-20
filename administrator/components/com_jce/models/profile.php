@@ -229,7 +229,10 @@ class JceModelProfile extends AdminModel
             $data->components_select = 1;
         }
 
-        $data->types = explode(',', $data->types);
+        if (!empty($data->types)) {
+            $data->types = explode(',', $data->types);
+        }
+
         $data->config = $data->params;
 
         $this->preprocessData('com_jce.profiles', $data);
@@ -242,7 +245,7 @@ class JceModelProfile extends AdminModel
         $data = $this->getItem();
 
         $array = array();
-        $rows = explode(';', $data->rows);
+        $rows = empty($data->rows) ? array() : explode(';', $data->rows);
 
         $plugins = $this->getButtons();
 
@@ -287,6 +290,11 @@ class JceModelProfile extends AdminModel
             $array[$i] = $groups;
 
             ++$i;
+        }
+        
+        // allow for empty toolbar row when creating a new profile
+        if (empty($array)) {
+            $array[$i] = array();
         }
 
         return $array;
@@ -333,7 +341,7 @@ class JceModelProfile extends AdminModel
 
         if (empty($commands)) {
             $data = $this->getItem();
-            $rows = preg_split('#[;,]#', $data->rows);
+            $rows = empty($data->rows) ? array() : preg_split('#[;,]#', $data->rows);
 
             $commands = array();
 
@@ -382,7 +390,7 @@ class JceModelProfile extends AdminModel
             $data = $this->loadFormData();
 
             // array or profile plugin items
-            $rows = explode(',', $data->plugins);
+            $rows = empty($data->plugins) ? array() : explode(',', $data->plugins);
 
             // remove duplicates
             $rows = array_unique($rows);
