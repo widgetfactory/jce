@@ -71,23 +71,37 @@ class JceControllerPlugin extends BaseController
             $this->input->set('plugin', $mapped);
         }
 
+        // create classname
+        $className = $this->createClassName($plugin);
+
+        // package plugins
         $path = WF_EDITOR_PLUGINS . '/' . $plugin;
 
+        // fullpath
+        $filepath = $path . '/' . $plugin . '.php';
+
+        // installed plugins
         if (strpos($plugin, 'editor-') !== false) {
             $path = JPATH_PLUGINS . '/jce/' . $plugin;
+
+            // check for alternate path
+            if (is_dir($path . '/src/Editor')) {
+                // rename plugin
+                $name = str_replace('editor-', '', $plugin);
+                // reset filepath
+                $filepath = $path . '/src/Editor/' . $name . '.php';
+            }
         }
 
-        if (!file_exists($path . '/' . $plugin . '.php')) {
+        if (!file_exists($filepath)) {
             throw new Exception(ucfirst($plugin) . '" not found!');
         }
 
-        include_once $path . '/' . $plugin . '.php';
+        include_once $filepath;
 
-        $className = $this->createClassName($plugin);
-
-        if (class_exists($className)) {
+        if (class_exists($className)) {            
             // load language file if any
-            $language->load('plg_jce_' . basename($path), $path);
+            $language->load('plg_jce_' . $plugin, $path);
 
             $instance = new $className();
 

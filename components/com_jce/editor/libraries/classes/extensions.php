@@ -90,9 +90,7 @@ class WFExtension extends CMSObject
                 $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
 
                 // get type and name
-                $parts = explode('-', $p->name);
-                $p->folder = $parts[0];
-                $p->extension = $parts[1];
+                list($p->folder, $p->extension) = explode('-', $p->name);
 
                 // load the correct type if set
                 if (!empty($types) && !in_array($p->folder, $types)) {
@@ -228,6 +226,10 @@ class WFExtension extends CMSObject
                         $root = $path . '/' . $name . '.php';
                         // redefine path
                         $item->path = $path . '/' . $name;
+                    }
+
+                    if (is_dir($path . '/src')) {
+                        $root = $path . '/src/' . $type . '.php'; 
                     }
 
                     if (file_exists($root)) {
