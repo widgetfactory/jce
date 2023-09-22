@@ -101,7 +101,7 @@ class JFormFieldContainer extends FormField
 
         if ((string) $this->element['description']) {
             $text = $this->element['description'];
-            $text = $this->translateLabel ? JText::_($text) : $text;
+            $text = $this->translateLabel ? Text::_($text) : $text;
 
             $str[] = '<small class="description">' . $text . '</small>';
 
@@ -122,6 +122,8 @@ class JFormFieldContainer extends FormField
             }
 
             $subForm = new Form('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
+
+            $subForm::addFieldPath(__DIR__);
 
             $subForm->load($children);
             $subForm->setFields($children);
@@ -145,7 +147,9 @@ class JFormFieldContainer extends FormField
 
                 // convert checkboxes value to string
                 if ($type == 'checkboxes') {
-                    $value = is_array($value) ? implode(',', $value) : $value;
+                    if (is_array($value)) {
+                        $value = implode(',', $value);
+                    }
                 }
 
                 // extract value if this is a repeatable container
