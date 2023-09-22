@@ -9,12 +9,25 @@
  */
 
 (function () {
-    var DOM = tinymce.DOM;
+    var DOM = tinymce.DOM, Storage = tinymce.util.Storage;
 
     tinymce.create('tinymce.plugins.KitchenSink', {
         init: function (ed, url) {
 
             var state = false, h = 0, el = ed.getElement(), s = ed.settings;
+
+            // get state from cookie
+            if (ed.getParam('use_state_cookies', true)) {
+                state = Storage.get('wf_toggletoolbars_state');
+            }
+
+            if (tinymce.is(state, "string")) {
+                if (state === "null" || state === "false") {
+                    state = false;
+                }
+    
+                state = !!state;
+            }
 
             function toggle() {
                 var row = DOM.getParents(ed.id + '_kitchensink', '.mceToolbarRow');
@@ -26,13 +39,10 @@
                 var n = DOM.getNext(row[0], '.mceToolbarRow');
 
                 while (n) {
-                    if (DOM.isHidden(n)) {
+                    if (state) {
                         DOM.setStyle(n, 'display', '');
-                        state = true;
-
                     } else {
                         DOM.hide(n);
-                        state = false;
                     }
 
                     n = DOM.getNext(n, '.mceToolbarRow');
@@ -45,10 +55,21 @@
                     DOM.setStyle(ed.id + '_ifr', 'height', h);
                 }
 
+                if (ed.getParam('use_state_cookies', true)) {
+                    Storage.set('wf_toggletoolbars_state', state);
+                }
+
                 ed.controlManager.setActive('kitchensink', state);
             }
 
-            ed.addCommand('mceKitchenSink', toggle);
+            ed.addCommand('mceKitchenSink', function () {
+                state = !state;
+                toggle();
+            });
+    
+            ed.onSetContent.add(function () {
+                ed.controlManager.setActive('visualblocks', state);
+            });
 
             ed.addButton('kitchensink', {
                 title: 'kitchensink.desc',
