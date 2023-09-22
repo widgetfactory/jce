@@ -62,26 +62,29 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 
 	<?php foreach ($options as $i => $option): ?>
 		<?php
-// Initialize some option attributes.
-$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
+		// Initialize some option attributes.
+		$checked = in_array((string) $option->value, $checkedOptions, true) ? 'checked' : '';
 
-// In case there is no stored value, use the option's default state.
-$checked = (!$hasValue && $option->checked) ? 'checked' : $checked;
-$optionClass = !empty($option->class) ? 'class="' . $option->class . '"' : '';
-$optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
+		// In case there is no stored value, use the option's default state.
+		$checked        = (!$hasValue && $option->checked) ? 'checked' : $checked;
+        $optionClass    = !empty($option->class) ? 'class="form-check-input ' . $option->class . '"' : ' class="form-check-input"';
+        $optionDisabled = !empty($option->disable) || $disabled ? 'disabled' : '';
 
-// Initialize some JavaScript option attributes.
-$onclick = !empty($option->onclick) ? 'onclick="' . $option->onclick . '"' : '';
-$onchange = !empty($option->onchange) ? 'onchange="' . $option->onchange . '"' : '';
+		// Initialize some JavaScript option attributes.
+		$onclick = !empty($option->onclick) ? 'onclick="' . $option->onclick . '"' : '';
+		$onchange = !empty($option->onchange) ? 'onchange="' . $option->onchange . '"' : '';
 
-$oid = $id . $i;
-$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
-$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
-?>
+		$oid = $id . $i;
+		$value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
+		$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
+		?>
 
-		<label for="<?php echo $oid; ?>" class="checkbox">
-			<?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
-		<?php echo $option->text; ?></label>
+		<div class="form-check form-check-inline">
+        <?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
+            <label for="<?php echo $oid; ?>" class="checkbox form-check-label">
+                <?php echo $option->text; ?>
+            </label>
+        </div>
 	<?php endforeach;?>
 
 	<input type="hidden" name="<?php echo $name; ?>" value="" />
