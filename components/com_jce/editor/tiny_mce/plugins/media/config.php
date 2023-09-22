@@ -38,7 +38,8 @@ class WFMediaPluginConfig
                 $settings['media_iframes_supported_media'] = array();
 
                 $settings['media_iframes_allow_supported'] = true;
-                $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array());
+
+                $iframes_supported_media = $wf->getParam('media.iframes_supported_media', array('youtube', 'vimeo', 'dailymotion', 'scribd', 'slideshare', 'soundcloud', 'spotify', 'ted', 'twitch'));
 
                 // get values only
                 $iframes_supported_media = array_values($iframes_supported_media);
