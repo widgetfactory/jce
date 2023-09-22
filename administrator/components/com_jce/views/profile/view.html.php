@@ -76,6 +76,7 @@ class JceViewProfile extends HtmlView
         $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
 
         $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.touch.min.js?' . $hash);
 
         $document->addScript(Uri::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
         $document->addScript(Uri::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
