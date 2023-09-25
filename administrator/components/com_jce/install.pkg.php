@@ -507,7 +507,7 @@ class pkg_jceInstallerScript
         );
 
         // remove folders moved to media/com_jce
-        $folders['2.9.41'] = array(
+        $folders['2.9.50'] = array(
             $site . '/editor/tiny_mce',
             $site . '/editor/libraries/css',
             $site . '/editor/libraries/fonts',
