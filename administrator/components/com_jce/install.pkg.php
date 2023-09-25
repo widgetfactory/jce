@@ -577,7 +577,7 @@ class pkg_jceInstallerScript
 
         foreach ($folders as $version => $list) {
             // version check
-            if (version_compare($version, $current_version, 'gt')) {
+            if (version_compare($version, $current_version, 'lt')) {
                 continue;
             }
 
