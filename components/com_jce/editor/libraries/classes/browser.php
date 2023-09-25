@@ -118,8 +118,8 @@ class WFFileBrowser extends CMSObject
         // Get the Document instance
         $document = WFDocument::getInstance();
 
-        $document->addScript(array('filebrowser.min'), 'libraries');
-        $document->addStyleSheet(array('filebrowser.min'), 'libraries');
+        $document->addScript(array('filebrowser.min'), 'media');
+        $document->addStyleSheet(array('filebrowser.min'), 'media');
     }
 
     /**

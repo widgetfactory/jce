@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<extension type="component" version="3.9" method="upgrade">
+<extension type="component" version="3.10" method="upgrade">
     <name>COM_JCE</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
@@ -13,16 +13,14 @@
     <files folder="components/com_jce">
         <folder>editor</folder>
         <folder>views</folder>
-        <!--file>index.html</file-->
         <file>jce.php</file>
-        <file>licence.txt</file>
     </files>
 
     <!-- Component Media -->
     <media folder="media/com_jce" destination="com_jce">
-        <folder>css</folder>
-        <folder>img</folder>
-        <folder>js</folder>
+        <folder>admin</folder>
+        <folder>editor</folder>
+        <folder>site</folder>
     </media>
 
     <languages folder="language/en-GB">

@@ -18,6 +18,7 @@ use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Language\Language;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
@@ -368,7 +369,7 @@ class WFEditor
 
         $settings = array(
             'token' => $token,
-            'base_url' => JURI::root(),
+            'base_url' => Uri::root(),
             'language' => $this->getLanguageCode(),
             'directionality' => $this->getLanguageDirection(),
             'theme' => 'none',
@@ -475,22 +476,22 @@ class WFEditor
 
         // set css compression
         if ($settings['compress']['css']) {
-            $this->addStyleSheet(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&' . http_build_query((array) $settings['query']));
+            $this->addStyleSheet(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&type=css&' . http_build_query((array) $settings['query']));
         } else {
             // CSS
-            $this->addStyleSheet($this->getURL(true) . '/libraries/css/editor.min.css');
+            $this->addStyleSheet($this->getURL(true) . '/css/editor.min.css');
 
             // load default skin
-            $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/default/ui.css');
+            $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/advanced/skins/default/ui.css');
 
             // load other skin
             if ($settings['skin'] != 'default') {
-                $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui.css');
+                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/advanced/skins/' . $settings['skin'] . '/ui.css');
             }
 
             // load variant
             if (isset($settings['skin_variant'])) {
-                $this->addStyleSheet($this->getURL(true) . '/tiny_mce/themes/advanced/skins/' . $settings['skin'] . '/ui_' . $settings['skin_variant'] . '.css');
+                $this->addStyleSheet($this->getURL(true) . '/tinymce/themes/advanced/skins/' . $settings['skin'] . '/ui_' . $settings['skin_variant'] . '.css');
             }
         }
 
@@ -500,17 +501,17 @@ class WFEditor
 
         // set javascript compression script
         if ($settings['compress']['javascript']) {
-            $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
+            $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
         } else {
             // Tinymce
-            $this->addScript($this->getURL(true) . '/tiny_mce/tiny_mce.js');
+            $this->addScript($this->getURL(true) . '/tinymce/tinymce.js');
 
             // Editor
-            $this->addScript($this->getURL(true) . '/libraries/js/editor.min.js');
+            $this->addScript($this->getURL(true) . '/js/editor.min.js');
         }
 
         // language
-        $this->addScript(JURI::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
+        $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.loadlanguages&lang=' . $settings['language'] . '&' . http_build_query((array) $settings['query']));
 
         $this->getCustomConfig($settings);
 
@@ -567,16 +568,16 @@ class WFEditor
 
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
-                $this->addScript(JURI::root(true) . '/' . $wf->getParam('editor.callback_file'));
+                $this->addScript(Uri::root(true) . '/' . $wf->getParam('editor.callback_file'));
             }
             // add callback file if exists
             if (is_file(JPATH_SITE . '/media/jce/js/editor.js')) {
-                $this->addScript(JURI::root(true) . '/media/jce/js/editor.js');
+                $this->addScript(Uri::root(true) . '/media/jce/js/editor.js');
             }
 
             // add custom editor.css if exists
             if (is_file(JPATH_SITE . '/media/jce/css/editor.css')) {
-                $this->addStyleSheet(JURI::root(true) . '/media/jce/css/editor.css');
+                $this->addStyleSheet(Uri::root(true) . '/media/jce/css/editor.css');
             }
         }
     }
@@ -940,8 +941,12 @@ class WFEditor
                     // reset index
                     $items = array_values($items);
 
-                    // add to array
-                    $plugins['external'][$name] = JURI::root(true) . '/' . $attribs->url . '/editor_plugin.js';
+                    // legacy file name
+                    if (is_file($attribs->path . '/editor_plugin.js')) {
+                        $plugins['external'][$name] = Uri::root(true) . '/' . $attribs->url . '/editor_plugin.js';
+                    } else {
+                        $plugins['external'][$name] = Uri::root(true) . '/' . $attribs->url . '/plugin.js';
+                    }
                 }
 
                 // remove missing plugins
@@ -950,7 +955,7 @@ class WFEditor
                         return false;
                     }
 
-                    return is_file(WF_EDITOR_PLUGINS . '/' . $item . '/editor_plugin.js');
+                    return is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $item . '/plugin.js');
                 });
 
                 // update core plugins
@@ -988,7 +993,7 @@ class WFEditor
 
             foreach ($installed as $plugin => $path) {
                 $path = dirname($path);
-                $root = JURI::root(true);
+                $root = Uri::root(true);
 
                 if (empty($root)) {
                     $path = WFUtility::makePath(JPATH_SITE, $path);
@@ -1316,7 +1321,7 @@ class WFEditor
         $files = array_unique(array_filter($files));
 
         // get the root directory
-        $root = $absolute ? JPATH_SITE : JURI::root(true);
+        $root = $absolute ? JPATH_SITE : Uri::root(true);
 
         // check for existence of each file and make array of stylesheets
         foreach ($files as $file) {
@@ -1372,7 +1377,7 @@ class WFEditor
             $token = Session::getFormToken();
             $version = self::getVersion();
 
-            return JURI::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
+            return Uri::base(true) . '/index.php?option=com_jce&task=editor.compileless&' . $token . '=1';
         }
 
         return $stylesheets;
@@ -1388,10 +1393,10 @@ class WFEditor
     private function getURL($relative = false)
     {
         if ($relative) {
-            return JURI::root(true) . '/components/com_jce/editor';
+            return Uri::root(true) . '/media/com_jce/editor';
         }
 
-        return JURI::root() . 'components/com_jce/editor';
+        return Uri::root() . 'media/com_jce/editor';
     }
 
     /**
@@ -1439,11 +1444,11 @@ class WFEditor
                 $files = array();
 
                 // add core file
-                $files[] = WF_EDITOR . '/tiny_mce/tiny_mce' . $suffix . '.js';
+                $files[] = WF_EDITOR_MEDIA . '/tinymce/tinymce' . $suffix . '.js';
 
                 // Add themes in dev mode
                 foreach ($themes as $theme) {
-                    $files[] = WF_EDITOR . '/tiny_mce/themes/' . $theme . '/editor_template' . $suffix . '.js';
+                    $files[] = WF_EDITOR_MEDIA . '/tinymce/themes/' . $theme . '/theme' . $suffix . '.js';
                 }
 
                 // Add core plugins
@@ -1452,7 +1457,7 @@ class WFEditor
                         continue;
                     }
 
-                    $files[] = WF_EDITOR_PLUGINS . '/' . $plugin . '/editor_plugin' . $suffix . '.js';
+                    $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/plugin' . $suffix . '.js';
                 }
 
                 // add external plugins
@@ -1461,7 +1466,7 @@ class WFEditor
                 }
 
                 // add Editor file
-                $files[] = WF_EDITOR . '/libraries/js/editor.min.js';
+                $files[] = WF_EDITOR_MEDIA . '/js/editor.min.js';
 
                 break;
             case 'css':
@@ -1483,7 +1488,7 @@ class WFEditor
 
                     // Add core plugins
                     foreach ($plugins['core'] as $plugin) {
-                        $content = WF_EDITOR_PLUGINS . '/' . $plugin . '/css/content.css';
+                        $content = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/css/content.css';
 
                         if (File::exists($content)) {
                             $files[] = $content;
@@ -1500,7 +1505,7 @@ class WFEditor
                     }
                 } elseif ($slot == 'preview') {
                     $files = array();
-                    $files[] = WF_EDITOR_PLUGINS . '/preview/css/preview.css';
+                    $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/preview/css/preview.css';
                     // get template stylesheets
                     $styles = self::getTemplateStyleSheetsList(true);
                     foreach ($styles as $style) {
@@ -1511,7 +1516,7 @@ class WFEditor
                 } else {
                     $files = array();
 
-                    $files[] = WF_EDITOR_LIBRARIES . '/css/editor.min.css';
+                    $files[] = WF_EDITOR_MEDIA . '/css/editor.min.css';
 
                     $variant = '';
 

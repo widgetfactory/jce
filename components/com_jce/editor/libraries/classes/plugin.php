@@ -254,7 +254,7 @@ class WFEditorPlugin extends CMSObject
         $document = WFDocument::getInstance();
 
         if ($document->get('standalone') == 0) {
-            $document->addScript(array('tiny_mce_popup'), 'tiny_mce');
+            $document->addScript(array('tinymce.popup'), 'tinymce');
         }
 
         $document->addScript(array('jquery.min'), 'jquery');
@@ -262,7 +262,7 @@ class WFEditorPlugin extends CMSObject
         $document->addScript(array('jquery-ui.touch.min'), 'jquery');
 
         $document->addScript(array('plugin.min.js'));
-        $document->addStyleSheet(array('plugin.min.css'), 'libraries');
+        $document->addStyleSheet(array('plugin.min.css'), 'media');
 
         // add custom plugin.css if exists
         if (is_file(JPATH_SITE . '/media/jce/css/plugin.css')) {

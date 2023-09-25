@@ -11,8 +11,6 @@
   <description>PLG_SYSTEM_JCE_XML_DESCRIPTION</description>
   <files folder="plugins/system/jce">
     <file plugin="jce">jce.php</file>
-    <folder>css</folder>
-    <folder>js</folder>
     <folder>templates</folder>
   </files>
   <languages folder="administrator/language/en-GB">

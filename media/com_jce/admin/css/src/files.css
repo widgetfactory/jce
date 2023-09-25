@@ -1,0 +1,173 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2021 Ryan Demmer. All rights reserved.
+ * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
+
+.file,
+.file.default {
+    background: url('../../editor/img/ext.png') no-repeat 0 0;
+}
+
+.file.txt {
+    background-position: 0 -20px;
+}
+
+.file.zip,
+.file.tar,
+.file.gz,
+.file.rar {
+    background-position: 0 -40px;
+}
+
+.file.html,
+.file.htm {
+    background-position: 0 -60px;
+}
+
+.file.mp3,
+.file.wav,
+.file.aiff,
+.file.m4a,
+.file.oga {
+    background-position: 0 -80px;
+}
+
+.file.php {
+    background-position: 0 -100px;
+}
+
+.file.sql {
+    background-position: 0 -120px;
+}
+
+.file.gif {
+    background-position: 0 -140px;
+}
+
+.file.jpg,
+.file.jpeg {
+    background-position: 0 -160px;
+}
+
+.file.png,
+.file.apng,
+.file.webp {
+    background-position: 0 -180px;
+}
+
+.file.webm,
+.file.ogg,
+.file.ogv,
+.file.mp4,
+.file.mpeg,
+.file.mpg,
+.file.mkv,
+.file.m4v {
+    background-position: 0 -200px;
+}
+
+.file.js,
+.file.xml,
+.file.xaml {
+    background-position: 0 -220px;
+}
+
+.file.css {
+    background-position: 0 -420px;
+}
+
+.file.rtf {
+    background-position: 0 -300px;
+}
+
+.file.notwritable,
+dd.file.notwritable,
+.file.duplicate {
+    background: url(../img/icons.png) no-repeat 0 -620px;
+}
+
+.file.notsafe,
+dd.file.notsafe {
+    background: url(../img/icons.png) no-repeat 0 -640px;
+}
+
+/* Adobe Flash Player */
+.file.swf,
+.file.as,
+.file.fla {
+    background-position: 0 -340px;
+}
+
+/* Adobe Flash Video */
+.file.flv,
+.file.f4v,
+.file.f4p,
+.file.f4a,
+.file.f4b {
+    background-position: 0 -340px;
+}
+
+/* Microsoft Word */
+.file.doc,
+.file.docx,
+.file.dot,
+.file.dotx {
+    background-position: 0 -400px;
+}
+
+/* Microsoft Excel */
+.file.xls,
+.file.xlsx,
+.file.xlsm {
+    background-position: 0 -320px;
+}
+
+/* Microsoft Powerpoint */
+.file.ppt,
+.file.pptx,
+.file.pps,
+.file.ppsx {
+    background-position: 0 -380px;
+}
+
+/* Adobe® Acrobat */
+.file.pdf {
+    background-position: 0 -360px;
+}
+
+/** Application specific file types. These currently use a generic set of icons but can be edited to use custom / specific icons where the user has licence from the trademark holders to use such icons **/
+
+/* Apple Quicktime */
+.file.mov,
+.file.qt {
+    background-position: 0 -200px;
+}
+
+/* RealPlayer */
+.file.ra,
+.file.rm,
+.file.ram {
+    background-position: 0 -200px;
+}
+
+/* Adobe Shockwave */
+.file.dcr {
+    background-position: 0 -200px;
+}
+
+/* Windows Media Player */
+.file.wmv,
+.file.wma,
+.file.wm,
+.file.wmx,
+.file.wvx,
+.file.asf,
+.file.asx,
+.file.avi {
+    background-position: 0 -200px;
+}

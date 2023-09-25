@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension type="package" version="3.9" method="upgrade">
+<extension type="package" version="3.10" method="upgrade">
     <name>PKG_JCE</name>
     <author>Ryan Demmer</author>
     <creationDate>@@date@@</creationDate>
@@ -36,6 +36,7 @@
     <compatibility>
         <version>3</version>
         <version>4</version>
+        <version>5</version>
     </compatibility>
 
 </extension>

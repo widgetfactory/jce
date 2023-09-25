@@ -40,7 +40,7 @@ class JceViewConfig extends HtmlView
         $this->addToolbar();
         parent::display($tpl);
 
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/core.min.js?' . md5(WF_VERSION));
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/core.min.js?' . md5(WF_VERSION));
     }
 
     /**

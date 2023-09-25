@@ -130,8 +130,8 @@ class PlgSystemJce extends CMSPlugin
 
         // only if enabled
         if ((int) $this->params->get('column_styles', 1)) {
-            $hash = md5_file(__DIR__ . '/css/content.css');
-            $document->addStyleSheet(Uri::root(true) . '/plugins/system/jce/css/content.css?' . $hash);
+            $hash = md5_file(JPATH_SITE . '/media/com_jce/css/content.min.css');
+            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/content.min.css?' . $hash);
         }
 
         $this->bootEditorPlugins();
@@ -141,7 +141,7 @@ class PlgSystemJce extends CMSPlugin
 
     public function onWfContentPreview($context, &$article, &$params, $page)
     {
-        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/plugins/system/jce/css/content.css");</style>' . $article->text;
+        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/media/com_jce/css/content.min.css");</style>' . $article->text;
     }
 
     private function loadMediaFiles($form, $replace_media_manager = true)
@@ -168,8 +168,8 @@ class PlgSystemJce extends CMSPlugin
         HTMLHelper::_('jquery.framework');
 
         $document = Factory::getDocument();
-        $document->addScript(Uri::root(true) . '/plugins/system/jce/js/media.js', array('version' => 'auto'));
-        $document->addStyleSheet(Uri::root(true) . '/plugins/system/jce/css/media.css', array('version' => 'auto'));
+        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
 
         $this->mediaLoaded = true;
     }

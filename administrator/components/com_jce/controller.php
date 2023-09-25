@@ -128,7 +128,7 @@ class JceController extends BaseController
                 JceHelperAdmin::addSubmenu($vName);
             }
 
-            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/global.min.css?' . md5(WF_VERSION));
+            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/global.min.css?' . md5(WF_VERSION));
 
             $view->display();
         }

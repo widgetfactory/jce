@@ -19,8 +19,8 @@ class JceViewPopup extends AbstractView
         $app = Factory::getApplication();
         $document = Factory::getDocument();
 
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/popup.min.js');
-        $document->addStylesheet(Uri::root(true) . '/media/com_jce/css/popup.min.css');
+        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/popup.min.js');
+        $document->addStylesheet(Uri::root(true) . '/media/com_jce/site/css/popup.min.css');
 
         // Get variables
         $img = $app->input->get('img', '', 'STRING');

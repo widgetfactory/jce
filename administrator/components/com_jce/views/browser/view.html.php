@@ -45,7 +45,7 @@ class JceViewBrowser extends HtmlView
         HTMLHelper::_('jquery.framework');
 
         $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/browser.min.css');
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/browser.min.css');
 
         $this->addToolbar();
 

@@ -1,0 +1,21 @@
+# Ignore everything
+*
+
+!pro
+!tinymce/plugins/caption
+!tinymce/plugins/filemanager
+!tinymce/plugins/iframe
+!tinymce/plugins/imgmanager_ext
+!tinymce/plugins/mediamanager
+!tinymce/plugins/microdata
+!tinymce/plugins/templatemanager
+!tinymce/plugins/source
+!tinymce/plugins/textpattern
+!tinymce/plugins/columns
+
+# config
+!.gitignore
+package.json
+.DS_Store
+**/.DS_Store
+.gitattributes

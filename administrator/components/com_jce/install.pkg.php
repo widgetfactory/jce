@@ -321,7 +321,7 @@ class pkg_jceInstallerScript
             // process core to pro upgrade - remove branding plugin
             if ((string) $parent->manifest->variant === "pro") {
                 // remove branding plugin
-                $branding = JPATH_SITE . '/components/com_jce/editor/tiny_mce/plugins/branding';
+                $branding = JPATH_SITE . '/media/com_jce/editor/tinymce/plugins/branding';
 
                 if (is_dir($branding)) {
                     Folder::delete($branding);
@@ -470,44 +470,7 @@ class pkg_jceInstallerScript
             // site
             $site . '/editor/elements',
             $site . '/editor/extensions/aggregator/vine',
-            $site . '/editor/extensions/popups/window',
-            // site - tinymce plugins
-            $site . '/editor/tiny_mce/plugins/advlist/classes',
-            $site . '/editor/tiny_mce/plugins/article/classes',
-            $site . '/editor/tiny_mce/plugins/browser/classes',
-            $site . '/editor/tiny_mce/plugins/caption/classes',
-            $site . '/editor/tiny_mce/plugins/charmap/classes',
-            $site . '/editor/tiny_mce/plugins/cleanup/classes',
-            $site . '/editor/tiny_mce/plugins/clipboard/classes',
-            $site . '/editor/tiny_mce/plugins/code/classes',
-            $site . '/editor/tiny_mce/plugins/colorpicker/classes',
-            $site . '/editor/tiny_mce/plugins/emotions/classes',
-            $site . '/editor/tiny_mce/plugins/filemanager/classes',
-            $site . '/editor/tiny_mce/plugins/fontcolor/classes',
-            $site . '/editor/tiny_mce/plugins/fontselect/classes',
-            $site . '/editor/tiny_mce/plugins/fontsizeselect/classes',
-            $site . '/editor/tiny_mce/plugins/format/classes',
-            $site . '/editor/tiny_mce/plugins/formatselect/classes',
-            $site . '/editor/tiny_mce/plugins/iframe/classes',
-            $site . '/editor/tiny_mce/plugins/imgmanager/classes',
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/classes',
-            $site . '/editor/tiny_mce/plugins/inlinepopups/classes',
-            $site . '/editor/tiny_mce/plugins/link/classes',
-            $site . '/editor/tiny_mce/plugins/media/classes',
-            $site . '/editor/tiny_mce/plugins/mediamanager/classes',
-            $site . '/editor/tiny_mce/plugins/microdata/classes',
-            $site . '/editor/tiny_mce/plugins/preview/classes',
-            $site . '/editor/tiny_mce/plugins/searchreplace/classes',
-            $site . '/editor/tiny_mce/plugins/source/classes',
-            $site . '/editor/tiny_mce/plugins/style/classes',
-            $site . '/editor/tiny_mce/plugins/styleselect/classes',
-            $site . '/editor/tiny_mce/plugins/tabfocus/classes',
-            $site . '/editor/tiny_mce/plugins/table/classes',
-            $site . '/editor/tiny_mce/plugins/templatemanager/classes',
-            $site . '/editor/tiny_mce/plugins/textpattern/classes',
-            $site . '/editor/tiny_mce/plugins/visualblocks/classes',
-            $site . '/editor/tiny_mce/plugins/visualchars/classes',
-            $site . '/editor/tiny_mce/plugins/xhtmlxtras/classes',
+            $site . '/editor/extensions/popups/window'
         );
 
         // remove flexicontent
@@ -522,17 +485,6 @@ class pkg_jceInstallerScript
             );
         }
 
-        // remove inlinepopups
-        $folders['2.7.13'] = array(
-            $site . '/editor/tiny_mce/plugins/inlinepopups',
-        );
-
-        // remove classpath / classbar
-        $folders['2.8.0'] = array(
-            $site . '/editor/tiny_mce/plugins/classpath',
-            $site . '/editor/tiny_mce/plugins/classbar',
-        );
-
         // remove help files
         $folders['2.8.6'] = array(
             $admin . '/views/help',
@@ -541,11 +493,6 @@ class pkg_jceInstallerScript
         // remove mediaplayer
         $folders['2.8.11'] = array(
             $site . '/editor/libraries/mediaplayer',
-        );
-
-        // delete img folder in Image Manager Extended
-        $folders['2.9.1'] = array(
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/img',
         );
 
         // remove fields folder
@@ -558,14 +505,17 @@ class pkg_jceInstallerScript
             $admin . '/media',
         );
 
-        $folders['2.9.31'] = array(
-
-        );
-
-        // remove font manifest and window
-        $files['2.9.18'] = array(
-            $site . '/editor/libraries/fonts/selection.json',
-            $site . '/editor/tiny_mce/plugins/browser/js/window.min.js',
+        // remove folders moved to media/com_jce
+        $folders['2.9.50'] = array(
+            $site . '/editor/tiny_mce',
+            $site . '/editor/libraries/css',
+            $site . '/editor/libraries/fonts',
+            $site . '/editor/libraries/img',
+            $site . '/editor/libraries/js',
+            $site . '/editor/libraries/pro/css',
+            $site . '/editor/libraries/pro/fonts',
+            $site . '/editor/libraries/pro/img',
+            $site . '/editor/libraries/pro/js'
         );
 
         $files['2.6.38'] = array(
@@ -583,19 +533,6 @@ class pkg_jceInstallerScript
             $admin . '/helpers/xml.php',
             // includes
             $admin . '/includes/loader.php',
-            // css
-            $admin . '/media/css/cpanel.css',
-            $admin . '/media/css/legacy.min.css',
-            $admin . '/media/css/module.css',
-            $admin . '/media/css/preferences.css',
-            $admin . '/media/css/updates.css',
-            $admin . '/media/css/users.css',
-            // js
-            $admin . '/media/js/cpanel.js',
-            $admin . '/media/js/jce.js',
-            $admin . '/media/js/preferences.js',
-            $admin . '/media/js/updates.js',
-            $admin . '/media/js/users.js',
             // models
             $admin . '/models/commands.json',
             $admin . '/models/config.xml',
@@ -621,25 +558,7 @@ class pkg_jceInstallerScript
             $site . '/editor/extensions/popups/window.php',
             $site . '/editor/extensions/popups/window.xml',
             // site - libraries
-            $site . '/editor/libraries/classes/token.php',
-            // site - fonts
-            $site . '/editor/libraries/fonts/fontawesome-webfont.eot',
-            $site . '/editor/libraries/fonts/fontawesome-webfont.woff',
-            // sites - img
-            $site . '/editor/libraries/img/cloud.png',
-            $site . '/editor/libraries/img/power.png',
-            $site . '/editor/libraries/img/spacer.gif',
-            // site - tinymce plugins
-            $site . '/editor/tiny_mce/plugins/caption/licence.txt',
-            $site . '/editor/tiny_mce/plugins/caption/README',
-            $site . '/editor/tiny_mce/plugins/iframe/licence.txt',
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/install.php',
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/licence.txt',
-            $site . '/editor/tiny_mce/plugins/imgmanager_ext/README',
-            $site . '/editor/tiny_mce/plugins/mediamanager/README',
-            $site . '/editor/tiny_mce/plugins/spellchecker/classes/config.php',
-            $site . '/editor/tiny_mce/plugins/templatemanager/licence.txt',
-            $site . '/editor/tiny_mce/plugins/templatemanager/README',
+            $site . '/editor/libraries/classes/token.php'
         );
 
         // remove help files

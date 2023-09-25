@@ -42,8 +42,8 @@ class JceViewCpanel extends HtmlView
         HTMLHelper::_('jquery.framework');
 
         $document = Factory::getDocument();
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/cpanel.min.js');
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/cpanel.min.css');
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/cpanel.min.js');
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/cpanel.min.css');
 
         $this->addToolbar();
         $this->sidebar = JHtmlSidebar::render();

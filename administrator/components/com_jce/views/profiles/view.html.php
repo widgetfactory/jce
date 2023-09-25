@@ -73,8 +73,8 @@ class JceViewProfiles extends HtmlView
         }
 
         $document = Factory::getDocument();
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/profiles.min.js');
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/profiles.min.css');
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/profiles.min.js');
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/profiles.min.css');
 
         $this->addToolbar();
         $this->sidebar = JHtmlSidebar::render();

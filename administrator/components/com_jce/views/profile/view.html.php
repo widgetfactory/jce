@@ -72,17 +72,17 @@ class JceViewProfile extends HtmlView
         $hash = md5(WF_VERSION);
 
         $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/profile.min.css?' . $hash);
-        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/css/jquery-ui.min.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/profile.min.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/editor/vendor/jquery/css/jquery-ui.min.css?' . $hash);
 
-        $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.min.js?' . $hash);
-        $document->addScript(Uri::root(true) . '/components/com_jce/editor/libraries/vendor/jquery/js/jquery-ui.touch.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/editor/vendor/jquery/js/jquery-ui.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/editor/vendor/jquery/js/jquery-ui.touch.min.js?' . $hash);
 
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/core.min.js?' . $hash);
-        $document->addScript(Uri::root(true) . '/media/com_jce/js/profile.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/core.min.js?' . $hash);
+        $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/profile.min.js?' . $hash);
 
         // default theme
-        $document->addStyleSheet(Uri::root(true) . '/components/com_jce/editor/tiny_mce/themes/advanced/skins/default/ui.admin.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/editor/tinymce/themes/advanced/skins/default/ui.admin.css?' . $hash);
     }
 
     /**

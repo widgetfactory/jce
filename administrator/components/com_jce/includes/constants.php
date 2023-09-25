@@ -27,10 +27,12 @@ if (defined('JPATH_PLATFORM')) {
 }
 // JCE Editor
 define('WF_EDITOR', WF_SITE . '/editor');
+// JCE Editor Media
+define('WF_EDITOR_MEDIA', JPATH_SITE . '/media/com_jce/editor');
 // JCE Editor Plugins
-define('WF_EDITOR_PLUGINS', WF_EDITOR . '/tiny_mce/plugins');
+define('WF_EDITOR_PLUGINS', WF_EDITOR . '/plugins');
 // JCE Editor Themes
-define('WF_EDITOR_THEMES', WF_EDITOR . '/tiny_mce/themes');
+define('WF_EDITOR_THEMES', WF_EDITOR_MEDIA . '/tinymce/themes');
 // JCE Editor Libraries
 define('WF_EDITOR_LIBRARIES', WF_EDITOR . '/libraries');
 // JCE Editor Classes

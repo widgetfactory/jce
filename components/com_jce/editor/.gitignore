@@ -1,25 +1,24 @@
 # Ignore everything
 *
 
+extensions/*
 libraries/*
-tiny_mce/*
-tiny_mce/plugins/*
+views/*
 
 !libraries/pro
-!tiny_mce/plugins/caption
-!tiny_mce/plugins/filemanager
-!tiny_mce/plugins/iframe
-!tiny_mce/plugins/imgmanager_ext
-!tiny_mce/plugins/mediamanager
-!tiny_mce/plugins/microdata
-!tiny_mce/plugins/templatemanager
-!tiny_mce/plugins/source
-!tiny_mce/plugins/textpattern
-!tiny_mce/plugins/columns
+!plugins/caption
+!plugins/filemanager
+!plugins/iframe
+!plugins/imgmanager_ext
+!plugins/mediamanager
+!plugins/microdata
+!plugins/templatemanager
+!plugins/source
+!plugins/textpattern
+!plugins/columns
 
 # config
 !.gitignore
 !.tx
-
-
+package.json
 .DS_Store

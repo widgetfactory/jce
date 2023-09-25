@@ -1,0 +1,233 @@
+.ui-jce {
+    .styleformat {
+        .icon-chevron-up {
+            display: inline-block;
+        }
+
+        .icon-chevron-down {
+            display: none;
+        }
+
+        &.styleformat-collapse {
+
+            >div {
+                display: none;
+            }
+            
+            .styleformat-header,
+            .styleformat-item-title {
+                display: block;
+            }
+    
+            .icon-chevron-down {
+                display: inline-block;
+            }
+    
+            .icon-chevron-up {
+                display: none;
+            }
+        }
+    }
+
+    .styleformat-list {
+        .styleformat-item-plus {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            margin: 2px 0;
+            max-width: 400px;
+            position: relative;
+            background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .styleformat-item-plus {
+            border-style: dashed;
+
+            span {
+                display: inline-block;
+                font-size: 1.2rem;
+                vertical-align: middle;
+                line-height: 2rem;
+                text-align: left;
+            }
+
+            .icon {
+                margin-right: 10px;
+                line-height: 2rem;
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        .styleformat-item-trash {
+            position: absolute;
+            right: 0;
+            top: 5px;
+            padding: 4px 8px;
+        }
+
+        .styleformat {
+            .styleformat-item-handle {
+                position: absolute;
+                left: 40px;
+                top: 0;
+                cursor: move;
+                width: calc(100% - 80px);
+                display: block;
+                height: 32px;
+                right: 40px;
+            }
+
+            .collapse {
+                position: absolute;
+                left: 0;
+                top: 5px;
+                font-size: 16px;
+                width: 28px;
+                height: 28px;
+                display: block;
+                padding: 4px 8px;
+                line-height: 1;
+            }
+
+            .styleformat-header {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                left: 0;
+                height: 32px;
+                margin: 0;
+                padding: 0;
+            }
+
+            .control-group {
+                margin: 0;
+
+                .control-label,
+                .controls {
+                    width: 100%;
+                }
+            }
+
+            +div {
+                margin-top: 10px;
+            }
+
+            >div {
+                margin: 5px 0;
+                padding: 5px 10px 5px 5px;
+                position: relative;
+            }
+
+            .styleformat-item-title {
+                background-color: #eee;
+            }
+
+            div {
+                input,
+                select {
+                    max-width: 100%;
+                    width: 365px;
+                }
+
+                select {
+                    width: 100%;
+                }
+            }
+
+            .styleformat-item-title {
+                /* Values based on HTML4 stylesheet - http://www.w3.org/TR/CSS2/sample.html */
+                input {
+                    font-size: inherit;
+                    color: inherit;
+                    float: none;
+
+                    &.stc_code,
+                    &.stc_samp {
+                        font-family: monospace
+                    }
+
+                    &.stc_strong {
+                        font-weight: bolder
+                    }
+
+                    &.stc_em {
+                        font-style: italic
+                    }
+
+                    &.stc_sub {
+                        vertical-align: sub
+                    }
+
+                    &.stc_sup {
+                        vertical-align: super
+                    }
+
+                    &.stc_h1 {
+                        font-size: 2em;
+                    }
+                    
+                    &.stc_h2 {
+                        font-size: 1.5em;
+                    }
+                    
+                    &.stc_h3 {
+                        font-size: 1.17em;
+                    }
+                    
+                    &.stc_h4 {
+                        font-size: 1em;
+                    }
+                    
+                    &.stc_h5 {
+                        font-size: .83em;
+                    }
+                    
+                    &.stc_h6 {
+                        font-size: .75em;
+                    }
+                }
+            }
+
+            label {
+                display: block;
+                min-width: 100px;
+
+                +input,
+                +select {
+                    margin: 0;
+                }
+            }
+
+            .styleformat-item-element {
+                clear: left;
+
+                option:first-child {
+                    margin: 5px 0;
+                }
+            }
+        }
+
+        .styleformat,
+        .styleformat-highlight {
+            border: 1px solid #CCCCCC;
+            padding: 30px 5px 5px;
+            max-width: 400px;
+            position: relative;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        .styleformat-highlight {
+            border-style: dashed;
+            min-height: 46px;
+            margin: 10px 0;
+            background-color: #F7F7F7;
+        }
+    }
+}
+
+[dir="rtl"] .ui-jce .styleformat-list .styleformat-item-plus span {
+    text-align: right;
+}

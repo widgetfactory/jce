@@ -163,10 +163,10 @@ class WFDocument extends CMSObject
     private function getURL($relative = false)
     {
         if ($relative) {
-            return JURI::root(true) . '/components/com_jce/editor';
+            return JURI::root(true) . '/media/com_jce/editor';
         }
 
-        return JURI::root() . 'components/com_jce/editor';
+        return JURI::root() . 'media/com_jce/editor';
     }
 
     /**
@@ -243,22 +243,22 @@ class WFDocument extends CMSObject
                     $pre = $base . '';
                     break;
                 // JCE libraries resource folder
-                case 'libraries':
-                    $pre = $base . 'libraries/' . $type;
+                case 'media':
+                    $pre = $base . '/' . $type;
                     break;
                 case 'pro':
-                    $pre = $base . 'libraries/pro/' . $type;
+                    $pre = $base . 'pro/' . $type;
                     break;
                 case 'jquery':
-                    $pre = $base . 'libraries/vendor/jquery/' . $type;
+                    $pre = $base . 'vendor/jquery/' . $type;
                     break;
                 // TinyMCE folder
-                case 'tiny_mce':
-                    $pre = $base . 'tiny_mce';
+                case 'tinymce':
+                    $pre = $base . 'tinymce';
                     break;
                 // Tinymce plugins folder
                 case 'plugins':
-                    $pre = $base . 'tiny_mce/plugins/' . $plugin . '/' . $type;
+                    $pre = $base . 'tinymce/plugins/' . $plugin . '/' . $type;
                     break;
                 // Extensions folder
                 case 'extensions':
@@ -267,11 +267,8 @@ class WFDocument extends CMSObject
                 case 'joomla':
                     return JURI::root(true);
                     break;
-                case 'media':
-                    return JURI::root(true) . '/media/system';
-                    break;
                 case 'component':
-                    $pre = JURI::root(true) . '/administrator/components/com_jce/media/' . $type;
+                    $pre = JURI::root(true) . '/media/com_jce/admin/' . $type;
                     break;
                 default:
                     $pre = $base . $path;
@@ -317,7 +314,7 @@ class WFDocument extends CMSObject
      *
      * @since 1.5
      */
-    public function image($image, $root = 'libraries')
+    public function image($image, $root = 'media')
     {
         $parts = explode('.', $image);
         $parts = preg_replace('#[^A-Z0-9-_]#i', '', $parts);
@@ -331,13 +328,13 @@ class WFDocument extends CMSObject
         return $this->getBaseURL($root) . implode('/', $parts);
     }
 
-    public function removeScript($file, $root = 'libraries')
+    public function removeScript($file, $root = 'media')
     {
         $file = $this->buildScriptPath($file, $root);
         unset($this->scripts[$file]);
     }
 
-    public function removeCss($file, $root = 'libraries')
+    public function removeCss($file, $root = 'media')
     {
         $file = $this->buildStylePath($file, $root);
         unset($this->styles[$file]);
@@ -391,7 +388,7 @@ class WFDocument extends CMSObject
      *
      * @since 1.5
      */
-    public function addScript($files, $root = 'libraries', $type = 'text/javascript')
+    public function addScript($files, $root = 'media', $type = 'text/javascript')
     {
         $files = (array) $files;
 
@@ -417,7 +414,7 @@ class WFDocument extends CMSObject
      *
      * @since 1.5
      */
-    public function addStyleSheet($files, $root = 'libraries', $type = 'text/css')
+    public function addStyleSheet($files, $root = 'media', $type = 'text/css')
     {
         $files = (array) $files;
 
