@@ -455,6 +455,7 @@ class pkg_jceInstallerScript
 
         $admin = JPATH_ADMINISTRATOR . '/components/com_jce';
         $site = JPATH_SITE . '/components/com_jce';
+        $media = JPATH_SITE . '/media/com_jce';
 
         $folders = array();
         $files = array();
@@ -506,7 +507,7 @@ class pkg_jceInstallerScript
         );
 
         // remove folders moved to media/com_jce
-        $folders['2.9.50'] = array(
+        $folders['2.9.41'] = array(
             $site . '/editor/tiny_mce',
             $site . '/editor/libraries/css',
             $site . '/editor/libraries/fonts',
@@ -515,7 +516,10 @@ class pkg_jceInstallerScript
             $site . '/editor/libraries/pro/css',
             $site . '/editor/libraries/pro/fonts',
             $site . '/editor/libraries/pro/img',
-            $site . '/editor/libraries/pro/js'
+            $site . '/editor/libraries/pro/js',
+            $media . '/css',
+            $media . '/img',
+            $media . '/js'
         );
 
         $files['2.6.38'] = array(
