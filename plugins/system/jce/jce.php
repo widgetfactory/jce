@@ -130,8 +130,8 @@ class PlgSystemJce extends CMSPlugin
 
         // only if enabled
         if ((int) $this->params->get('column_styles', 1)) {
-            $hash = md5_file(JPATH_SITE . '/media/com_jce/css/content.min.css');
-            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/css/content.min.css?' . $hash);
+            $hash = md5_file(JPATH_SITE . '/media/com_jce/site/css/content.min.css');
+            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/content.min.css?' . $hash);
         }
 
         $this->bootEditorPlugins();
