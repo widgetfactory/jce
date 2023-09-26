@@ -141,7 +141,7 @@ class PlgSystemJce extends CMSPlugin
 
     public function onWfContentPreview($context, &$article, &$params, $page)
     {
-        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/media/com_jce/css/content.min.css");</style>' . $article->text;
+        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/media/com_jce/site/css/content.min.css");</style>' . $article->text;
     }
 
     private function loadMediaFiles($form, $replace_media_manager = true)
