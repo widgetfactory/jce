@@ -562,7 +562,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
@@ -992,23 +992,16 @@ class WFEditor
             $installed = (array) $settings['external_plugins'];
 
             foreach ($installed as $plugin => $path) {
-                $path = dirname($path);
-                $root = Uri::root(true);
+                $file = Path::find(array(
+                    // new path
+                    JPATH_PLUGINS . '/jce/editor_' . $plugin,
+                    // old path
+                    JPATH_PLUGINS . '/jce/editor-' . $plugin,
+                    // legacy path
+                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes'
+                ), 'config.php');
 
-                if (empty($root)) {
-                    $path = WFUtility::makePath(JPATH_SITE, $path);
-                } else {
-                    $path = str_replace($root, JPATH_SITE, $path);
-                }
-
-                $file = $path . '/config.php';
-
-                // try legacy path...
-                if (!is_file($file)) {
-                    $file = $path . '/classes/config.php';
-                }
-
-                if (is_file($file)) {
+                if ($file) {
                     require_once $file;
                     // add plugin name to array
                     $items[] = $plugin;

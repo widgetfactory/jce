@@ -360,30 +360,33 @@ class WFLanguageParser extends CMSObject
 
             if (!empty($plugins)) {
                 foreach ($plugins['external'] as $name => $plugin) {
+                    // rewrite name from plugin url
+                    $name = basename(dirname($plugin));
+                    $name = str_replace('plg_jce_', '', $name);
 
-                    $filename = 'en-GB.plg_jce_editor-' . $name . '.ini';
+                    $filename = 'en-GB.plg_jce_' . $name . '.ini';
 
                     // add English file
                     $ini = Path::find(array(
                         JPATH_ADMINISTRATOR . '/language/en-GB',
-                        JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/en-GB',
+                        JPATH_PLUGINS . '/jce/' . $name . '/language/en-GB'
                     ), $filename);
 
-                    if ($ini && is_file($ini)) {
+                    if ($ini) {
                         $files[] = $ini;
                     }
 
                     // non-english language
                     if ($tag != 'en-GB') {
 
-                        $filename = $tag . '.plg_jce_editor-' . $name . '.ini';
+                        $filename = $tag . '.plg_jce_' . $name . '.ini';
 
                         $ini = Path::find(array(
                             JPATH_ADMINISTRATOR . '/language/' . $tag,
-                            JPATH_SITE . '/plugins/jce/editor-' . $name . '/language/' . $tag,
+                            JPATH_PLUGINS . '/jce/' . $name . '/language/' . $tag
                         ), $filename);
 
-                        if ($ini && is_file($ini)) {
+                        if ($ini) {
                             $files[] = $ini;
                         }
                     }

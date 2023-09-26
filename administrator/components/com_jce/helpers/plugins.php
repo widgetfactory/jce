@@ -116,7 +116,7 @@ abstract class JcePluginsHelper
 
             foreach ($installed as $item) {
                 // check for delimiter, only load editor plugins
-                if (strpos($item->name, 'editor-') === false) {
+                if (!preg_match('/^editor[-_]/', $item->name)) {
                     continue;
                 }
 
@@ -140,12 +140,8 @@ abstract class JcePluginsHelper
                             continue;
                         }
 
-                        // check for editor_plugins.js file
-                        if (!is_file($path . '/js')) {
-                            continue;
-                        }
-
-                        $name = str_replace('editor-', '', $item->name);
+                        // remove "editor-" or "editor_"
+                        $name = substr($item->name, 7);
 
                         $attribs = new StdClass();
                         $attribs->name = $name;
@@ -192,6 +188,15 @@ abstract class JcePluginsHelper
                         // relative path
                         $attribs->path = $path;
                         $attribs->url = 'plugins/jce/' . $item->name;
+
+                        // get snake-case name to check for media folder
+                        $snake_case_name = str_replace('-', '_', $item->name);
+
+                        // url in Joomla media folder
+                        if (is_dir(JPATH_SITE . '/media/plg_jce_' . $snake_case_name)) {
+                            $attribs->url = 'media/plg_jce_' . $snake_case_name;
+                        }
+
                         $attribs->type = 'plugin';
 
                         $plugins[$name] = $attribs;
@@ -250,21 +255,20 @@ abstract class JcePluginsHelper
 
             if (!empty($installed)) {
                 foreach ($installed as $p) {
-
-                    // check for delimiter
-                    if (strpos($p->name, '-') === false) {
+                    // check for delimiter to remove legacy extensions
+                    if (!preg_match('/[-_]/', $p->name)) {
                         continue;
                     }
 
                     // only load "extensions", not editor plugins
-                    if (strpos($p->name, 'editor-') !== false) {
+                    if (preg_match('/^editor[-_]/', $p->name)) {
                         continue;
                     }
 
                     // set path
                     $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
 
-                    $parts = explode('-', $p->name);
+                    $parts = preg_split('/[-_]/', $p->name, 2);
 
                     // get type and name
                     $p->folder = $parts[0];
@@ -276,7 +280,11 @@ abstract class JcePluginsHelper
                     $p->plugins = array();
                     $p->description = '';
 
-                    list($p->type, $p->name) = preg_split('/-/', $p->name);
+                    // load language
+                    $language->load('plg_jce_' . $p->name, JPATH_ADMINISTRATOR);
+                    $language->load('plg_jce_' . $p->name, $p->path);
+
+                    list($p->type, $p->name) = preg_split('/[-_]/', $p->name, 2);
 
                     // create title from name parts, eg: plg_jce_filesystem_joomla
                     $p->title = 'plg_jce_' . $p->type . '_' . $p->name;
@@ -289,10 +297,6 @@ abstract class JcePluginsHelper
 
                     // set as not editable by default
                     $p->editable = 0;
-
-                    // load language
-                    $language->load('plg_jce_' . $p->type . '-' . $p->name, JPATH_ADMINISTRATOR);
-                    $language->load('plg_jce_' . $p->type . '-' . $p->name, $p->path);
 
                     $extensions[$p->type][] = $p;
                 }

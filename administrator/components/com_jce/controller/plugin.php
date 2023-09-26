@@ -81,13 +81,14 @@ class JceControllerPlugin extends BaseController
         $filepath = $path . '/' . $plugin . '.php';
 
         // installed plugins
-        if (strpos($plugin, 'editor-') !== false) {
+        if (preg_match('/^editor[-_]/', $plugin)) {
             $path = JPATH_PLUGINS . '/jce/' . $plugin;
 
             // check for alternate path
             if (is_dir($path . '/src')) {
                 // rename plugin
-                $name = str_replace('editor-', '', $plugin);
+                $name = substr($plugin, 7);
+                
                 // reset filepath
                 $filepath = $path . '/src/' . $name . '.php';
             }
