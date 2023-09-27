@@ -305,7 +305,7 @@ class PlgSystemJce extends CMSPlugin
         $plugins = PluginHelper::getPlugin('jce');
 
         foreach ($plugins as $plugin) {
-            if (strpos($plugin->name, 'editor-') === false) {
+            if (!preg_match('/^editor[-_]/', $plugin->name)) {
                 continue;
             }
 

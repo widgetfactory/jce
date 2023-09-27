@@ -92,7 +92,8 @@ class PlgExtensionJce extends CMSPlugin
 
             $basename = basename($installer->getPath('extension_root'));
 
-            if (strpos($basename, '-') === false) {
+            // must be a valid plugin
+            if (!preg_match('/^(editor|filesystem|links|popups)[-_]/', $basename)) {
                 return false;
             }
 
@@ -103,14 +104,12 @@ class PlgExtensionJce extends CMSPlugin
             $plugin->load($eid);
             $plugin->publish();
 
-            $parts = explode('-', $basename);
-            $type = $parts[0];
-            $name = $parts[1];
+            [$type, $name] = preg_split('/[-_]/', $basename, 2);
 
             $plugin = new StdClass();
             $plugin->name = $name;
 
-            if ($type === 'editor') {
+            if ($type == 'editor') {
                 $plugin->icon = (string) $installer->manifest->icon;
                 $plugin->row = (int) (string) $installer->manifest->attributes()->row;
                 $plugin->type = 'plugin';
