@@ -160,7 +160,7 @@
 
                 ed.windowManager.open({
                     file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=link',
-                    size: 'mce-modal-portrait-large'
+                    size: 'mce-modal-square-xlarge'
                 }, {
                     plugin_url: url
                 });
