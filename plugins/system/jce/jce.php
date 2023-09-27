@@ -290,6 +290,18 @@ class PlgSystemJce extends CMSPlugin
 
     private function bootEditorPlugins()
     {
+        $app = Factory::getApplication();
+
+        // only in "site"
+        if ($app->getClientId() !== 0) {
+            return;
+        }
+
+        // Joomla 4+ only
+        if (!method_exists($app, 'bootPlugin')) {
+            return;
+        }
+
         $plugins = PluginHelper::getPlugin('jce');
 
         foreach ($plugins as $plugin) {
@@ -304,8 +316,8 @@ class PlgSystemJce extends CMSPlugin
                 continue;
             }
 
-            $plugin = Factory::getApplication()->bootPlugin($plugin->name, $plugin->type);
-            $plugin->setDispatcher(Factory::getApplication()->getDispatcher());
+            $plugin = $app->bootPlugin($plugin->name, $plugin->type);
+            $plugin->setDispatcher($app->getDispatcher());
 
             $plugin->registerListeners();
         }
