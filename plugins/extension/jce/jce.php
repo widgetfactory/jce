@@ -123,9 +123,6 @@ class PlgExtensionJce extends CMSPlugin
 
             // clean up legacy extensions
             if ($plugin->type == 'extension') {
-                jimport('joomla.filesystem.folder');
-                jimport('joomla.filesystem.file');
-
                 $path = JPATH_SITE . '/components/com_jce/editor/extensions/' . $type;
 
                 // delete manifest
