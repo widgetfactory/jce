@@ -402,9 +402,6 @@ abstract class JcePluginsHelper
      */
     private static function addIndexfiles($path)
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         // get the base file
         $file = JPATH_ADMINISTRATOR . '/components/com_jce/index.html';
 
@@ -423,8 +420,6 @@ abstract class JcePluginsHelper
     public static function postInstall($route, $plugin, $installer)
     {
         $db = Factory::getDBO();
-
-        jimport('joomla.filesystem.folder');
 
         // load the plugin and enable
         if (isset($plugin->row) && $plugin->row > 0) {
