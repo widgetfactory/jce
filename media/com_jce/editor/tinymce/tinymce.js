@@ -26404,7 +26404,7 @@
           return;
         }
 
-        var matcher = new RegExp('^' + escapeRegExChars(value), "i");
+        var matcher = new RegExp('' + escapeRegExChars(value), "i");
 
         each(self.items, function (o, id) {
           var s = o.settings,
