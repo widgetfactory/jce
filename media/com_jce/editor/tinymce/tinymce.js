@@ -46564,7 +46564,7 @@
           o.content = o.content.replace(/(&nbsp;|\u00a0)<\/media>/g, '</media>');
         });
 
-        ed.schema.addCustomElements('~media[type|width|height|class|style|title|*]');
+        ed.schema.addValidElements('+media[type|width|height|class|style|title|*]');
 
         if (!ed.settings.compress.css) {
           ed.dom.loadCSS(url + "/css/content.css");
