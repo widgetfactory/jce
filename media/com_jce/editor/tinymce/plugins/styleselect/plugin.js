@@ -22,7 +22,17 @@
      * @returns
      */
     function compileFilter(filter) {
-        if (typeof filter == "string") {
+        if (Array.isArray(filter)) {
+            var filters = filter.map(compileFilter);
+
+            return function (value) {
+                return filters.every(function (filterFunc) {
+                    return filterFunc(value);
+                });
+            };
+        }
+
+        if (typeof filter == "string" && filter) {
             return function (value) {
                 return value.indexOf(filter) !== -1;
             };
