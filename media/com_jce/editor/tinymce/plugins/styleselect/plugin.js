@@ -14,6 +14,27 @@
         DOM = tinymce.DOM,
         Event = tinymce.dom.Event;
 
+    /**
+     * Compile a filter regex or string into a function
+     * From - https://github.com/tinymce/tinymce/blob/4.5.x/js/tinymce/plugins/importcss/plugin.js
+     * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+     * @param {*} filter 
+     * @returns
+     */
+    function compileFilter(filter) {
+        if (typeof filter == "string") {
+            return function (value) {
+                return value.indexOf(filter) !== -1;
+            };
+        } else if (filter instanceof RegExp) {
+            return function (value) {
+                return filter.test(value);
+            };
+        }
+
+        return filter;
+    }
+
     tinymce.create('tinymce.plugins.StyleSelectPlugin', {
         init: function (ed, url) {
             this.editor = ed;
@@ -41,9 +62,13 @@
                 return;
             }
 
-            // skip pseudo selectors
-            if (selectorText.indexOf(':') !== -1) {
-                return;
+            // process filters
+            if (ed.settings.styleselect_selector_filter) {
+                var selectorFilter = compileFilter(ed.settings.styleselect_selector_filter);
+
+                if (selectorFilter(selectorText)) {
+                    return;
+                }
             }
 
             // Parse simple element.class1, .class1
