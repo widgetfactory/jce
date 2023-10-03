@@ -191,6 +191,9 @@
                 if (n.nodeName === "LI") {
                     if ($(n).hasClass('folder')) {
                         var u = $(n).data('url') || self._getPreviousDir();
+
+                        e.preventDefault();
+
                         return self._changeDir(u);
                     }
 
@@ -1453,7 +1456,7 @@
 
             // Add folder-up button
             if (!this._isRoot()) {
-                $('#folder-list').append('<li class="folder-up" title="Up"><a href="javascript:;>...</a></li>');
+                $('#folder-list').append('<li class="folder-up" title="Up"><a href="#">...</a></li>');
 
                 if (this._treeLoaded()) {
                     $('#tree-body').trigger('tree:createnode', [o.folders, this._dir]);
