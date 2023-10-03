@@ -31975,7 +31975,7 @@
           self.onLoad.dispatch();
         };
 
-        DOM.setAttrib(ifr, "src", url || 'javascript:""');
+        DOM.setAttrib(ifr, "src", url || 'about:blank');
 
         self.contentAreaContainer = o.iframeContainer;
 
@@ -37584,7 +37584,7 @@
 
           DOM.addClass(id + '_content', 'mceModalContentIframe');
 
-          var iframe = DOM.add(id + '_content', 'iframe', { id: id + '_ifr', src: 'javascript:""', frameBorder: 0, 'aria-label': 'Dialog Content Iframe' });
+          var iframe = DOM.add(id + '_content', 'iframe', { id: id + '_ifr', src: 'about:blank', frameBorder: 0, 'aria-label': 'Dialog Content Iframe' });
           DOM.setAttrib(iframe, 'src', url);
 
           Event.add(iframe, 'load', function () {
@@ -37907,7 +37907,7 @@
 
         Event.clear(id);
         Event.clear(id + '_ifr');
-        DOM.setAttrib(id + '_ifr', 'src', 'javascript:""'); // Prevent leak
+        DOM.setAttrib(id + '_ifr', 'src', 'about:blank'); // Prevent leak
 
         // remove frame
         DOM.remove(id + '_frame');
