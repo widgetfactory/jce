@@ -140,7 +140,7 @@
                             {
                                 title: editor.getLang('remove', 'Remove'),
                                 id: 'remove',
-                                onclick: function() {
+                                onclick: function () {
                                     applyListFormat();
                                     this.close();
                                 }
@@ -162,11 +162,11 @@
                                         return;
                                     }
 
-                                    each(data, function(value, key) {
+                                    each(data, function (value, key) {
                                         if (!value) {
                                             value = null;
                                         }
-                                         
+
                                         if (key == 'start' && value == '1') {
                                             value = null;
                                         }
@@ -240,14 +240,16 @@
                                         }
                                     });
 
-                                    if (state)
+                                    if (state) {
                                         item.setSelected(1);
+                                    }
                                 }
                             });
 
                             // Select the current format
-                            if (!list)
+                            if (!list) {
                                 menu.items[format.id].setSelected(1);
+                            }
                         }
 
                         editor.focus();
