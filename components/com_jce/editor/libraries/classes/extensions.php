@@ -82,7 +82,7 @@ class WFExtension extends CMSObject
             foreach ($installed as $p) {
 
                 // check for delimiter, only load "extensions"
-                if (strpos($p->name, '-') === false || strpos($p->name, 'editor-') !== false) {
+                if (!preg_match('/[-_]/', $p->name) || preg_match('/^editor[-_]/', $p->name)) {
                     continue;
                 }
 
@@ -90,7 +90,7 @@ class WFExtension extends CMSObject
                 $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
 
                 // get type and name
-                list($p->folder, $p->extension) = explode('-', $p->name);
+                list($p->folder, $p->extension) = preg_split('/[-_]/', $p->name, 2);
 
                 // load the correct type if set
                 if (!empty($types) && !in_array($p->folder, $types)) {
