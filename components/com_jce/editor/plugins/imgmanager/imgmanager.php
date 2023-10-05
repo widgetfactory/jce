@@ -66,6 +66,8 @@ class WFImgManagerPlugin extends WFMediaManager
 
     public function onUpload($file, $relative = '')
     {
+        parent::onUpload($file, $relative);
+        
         $app = Factory::getApplication();
 
         // inline upload
