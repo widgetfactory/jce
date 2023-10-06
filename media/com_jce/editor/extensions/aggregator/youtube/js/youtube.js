@@ -315,7 +315,7 @@ WFAggregator.add('youtube', {
                 return;
             }
 
-            args['youtube_' + k] = v;
+            args[k] = v;
         });
 
         args = $.extend(args, {
