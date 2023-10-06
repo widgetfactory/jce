@@ -7,81 +7,83 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+/* global WFExtensions */
 
+// eslint-disable-next-line no-unused-vars
 var WFAggregator = WFExtensions.add('Aggregator', {
-    
+
     // array of aggregators
-    aggregators : {},
-    
-    add : function(name, o) {
-    	this.aggregators[name] = o || {};
-    },
-    
-    get : function(name) {
-    	return this.aggregators[name] || null;
+    aggregators: {},
+
+    add: function (name, o) {
+        this.aggregators[name] = o || {};
     },
 
-    setup : function(options) {
+    get: function (name) {
+        return this.aggregators[name] || null;
+    },
+
+    setup: function (options) {
         var self = this;
-        
+
         options = options || {};
 
-        tinymce.each(this.aggregators, function(o, k) {
+        tinymce.each(this.aggregators, function (o, k) {
             self.setParams(o, options);
-            
+
             return self._call(o, 'setup');
         });
     },
 
-    getTitle : function(name) {
+    getTitle: function (name) {
         var f = this.get(name);
-        
+
         if (f) {
-        	return f.title;
+            return f.title;
         }
-        
+
         return name;
     },
 
-    getType : function(name) {
+    getType: function (name) {
         var f = this.get(name);
-        
+
         if (f) {
-        	return f.getType();
+            return f.getType();
         }
-        
+
         return '';
     },
-    
-    getValues : function(name, src) {
-    	var f = this.get(name);
-        
+
+    getValues: function (name, src) {
+        var f = this.get(name);
+
         if (f) {
-        	return this._call(f, 'getValues', src);
+            return this._call(f, 'getValues', src);
         }
     },
-    
-    setValues : function(name, data) {
-    	var f = this.get(name);
-        
+
+    setValues: function (name, data) {
+        var f = this.get(name);
+
         if (f) {
-        	return this._call(f, 'setValues', data);
+            return this._call(f, 'setValues', data);
         }
     },
-    
-    getAttributes : function(name, args) {
-    	var f = this.get(name);
-        
+
+    getAttributes: function (name, args) {
+        var f = this.get(name);
+
         if (f) {
-        	return this._call(f, 'getAttributes', args);
+            return this._call(f, 'getAttributes', args);
         }
     },
-    
-    setAttributes : function(name, args, callback) {
-    	var f = this.get(name);
-        
+
+    setAttributes: function (name, args, callback) {
+        var f = this.get(name);
+
         if (f) {
-        	var data = this._call(f, 'setAttributes', args);
+            var data = this._call(f, 'setAttributes', args);
 
             if (typeof callback === "function") {
                 callback(data);
@@ -94,13 +96,13 @@ var WFAggregator = WFExtensions.add('Aggregator', {
     /**
      * Check whether a media type is supported
      */
-    isSupported : function(args) {
+    isSupported: function (args) {
         var self = this, r, v;
-        
-        tinymce.each(this.aggregators, function(o) {
-        	if (v = self._call(o, 'isSupported', args)) {
-        		r = v;
-        	}
+
+        tinymce.each(this.aggregators, function (o) {
+            if ((v = self._call(o, 'isSupported', args))) {
+                r = v;
+            }
         });
 
         return r;
@@ -110,13 +112,13 @@ var WFAggregator = WFExtensions.add('Aggregator', {
      * Return an aggregator parameter value
      * @param {String} Parameter
      */
-    getParam : function(name, param) {
+    getParam: function (name, param) {
         var f = this.get(name);
-        
+
         if (f) {
-        	return f.params[param] || '';
+            return f.params[param] || '';
         }
-        
+
         return '';
     },
 
@@ -124,33 +126,33 @@ var WFAggregator = WFExtensions.add('Aggregator', {
      * Set Aggregator Parameters
      * @param {Object} o Parameter Object
      */
-    setParams : function(name, o) {
+    setParams: function (name, o) {
         var f = this.get(name);
-        
+
         if (f) {
-        	tinymce.extend(f.params, o);
+            tinymce.extend(f.params, o);
         }
     },
 
-    onSelectFile : function(name) {
-    	var f = this.get(name);
-    	
-    	if (f) {
-        	return this._call(f, 'onSelectFile');
+    onSelectFile: function (name) {
+        var f = this.get(name);
+
+        if (f) {
+            return this._call(f, 'onSelectFile');
         }
     },
-    
-    onInsert : function(name) {  
-    	var self = this, f = this.get(name);
-    	
-    	if (f) {
-        	return self._call(f, 'onInsert');
-        }  	
+
+    onInsert: function (name) {
+        var self = this, f = this.get(name);
+
+        if (f) {
+            return self._call(f, 'onInsert');
+        }
     },
-    
-    _call : function(o, fn, vars) {
-    	var f = o[fn] || function(){};
-    	
-    	return f.call(o, vars);
+
+    _call: function (o, fn, vars) {
+        var f = o[fn] || function () { };
+
+        return f.call(o, vars);
     }
 });
