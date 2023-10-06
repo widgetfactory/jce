@@ -158,9 +158,11 @@
 
             var pairs = s.replace(/&amp;/g, '&').split('&');
 
-            $.each(pairs, function () {
-                var pair = this.split('=');
-                p[pair[0]] = pair[1];
+            $.each(pairs, function (i, item) {            
+                if (item) {
+                    var pair = item.split('=');
+                    p[pair[0]] = pair[1];
+                }
             });
 
             return p;
