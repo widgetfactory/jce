@@ -180,6 +180,8 @@ class WFFileSystem extends WFExtension
             $variables = compact('path_pattern', 'path_replacement', 'websafe_textcase', 'websafe_mode', 'websafe_allow_spaces');
         }
 
+        Factory::getApplication()->triggerEvent('onWfFileSystemGetPathVariables', array(&$variables));
+
         return $variables;
     }
 
