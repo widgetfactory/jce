@@ -134,7 +134,7 @@ class WFEditor
         }
 
         // trigger event
-        $app->triggerEvent('onBeforeWfEditorLoad');
+        $app->triggerEvent('onBeforeWfEditorLoad', array(&$config));
 
         // set profile
         $this->profile = $wf->getProfile($config['plugin'], $config['profile_id']);
