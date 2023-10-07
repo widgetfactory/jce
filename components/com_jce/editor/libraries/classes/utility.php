@@ -451,27 +451,31 @@ abstract class WFUtility
     {
         // check if multibyte string, use dirname() if not
         if (function_exists('mb_strlen')) {
-            if (mb_strlen($path) === strlen($path)) {
-                $dir = dirname($path);
+            $dir = dirname($path);
 
-                if ($dir == ".") {
-                    return "";
-                }
-
-                return $dir;
+            if ($dir == ".") {
+                return "";
             }
+
+            return $dir;
         }
 
-        // clean
+        // Normalize the path for non-multibyte environments
         $path = self::cleanPath($path, '/');
 
-        // get last slash position
-        $slash = strrpos($path, '/') + 1;
+        // Get last slash position
+        $slash = strrpos($path, '/');
 
-        // return dirname
+        // If there's no slash in the path, return ''
+        if ($slash === false) {
+            return "";
+        }
+
+        // Return directory part
         $dir = substr($path, 0, $slash);
 
-        if ($dir == ".") {
+        // If it's an empty string after substr, then it was a root path
+        if ($dir === ".") {
             return "";
         }
 
@@ -482,9 +486,7 @@ abstract class WFUtility
     {
         // check if multibyte string, use basename() if not
         if (function_exists('mb_strlen')) {
-            if (mb_strlen($path) === strlen($path)) {
-                return basename($path, $ext);
-            }
+            return basename($path, $ext);
         }
 
         // clean
