@@ -22031,7 +22031,7 @@
         });
 
         // Toogle resize when image is selected
-        editor.onNodeChange.add(function () {
+        editor.onNodeChange.add(function () {        
           setTimeout(function () {
             throttledUpdateResizeRect({
               type: ''
@@ -46332,7 +46332,7 @@
                   each(r.selectorText.split(','), function (v) {                  
                     v = v.trim();
 
-                    if (v.indexOf('.mce') == 0 || v.indexOf('.mce-') !== -1) {
+                    if (/\.mce[-A-Za-z0-9]/.test(v)) {
                       return;
                     }
 
