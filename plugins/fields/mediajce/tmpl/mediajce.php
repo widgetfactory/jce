@@ -45,6 +45,9 @@ if (isset($data->src)) {
     $data->media_src = $data->src;
 }
 
+// add "image" to supported media to allow for "image" and "img"
+$data->media_supported[] = 'image';
+
 // clean Joomla 4 media stuff
 if ($pos = strpos($data->media_src, '#')) {
     $data->media_src = substr($data->media_src, 0, $pos);
@@ -72,9 +75,9 @@ array_walk($allowable, function ($values, $key) use ($extension, &$layout) {
     }
 });
 
-// reset media_type as link
-if (false == in_array($layout, $data->media_supported)) {
-    $data->media_type = 'link';
+// reset layout as link
+if (!in_array($layout, $data->media_supported) || $data->media_type == 'link') {
+    $layout = 'link';
 }
 
 $attribs = array();
@@ -169,7 +172,7 @@ if ($path) {
 
         LayoutHelper::$defaultBasePath = JPATH_PLUGINS . '/fields/mediajce/layouts';
 
-        $buffer = LayoutHelper::render('joomla.html.' . $layout, $attribs);
+        $buffer = LayoutHelper::render('plugins.fields.mediajce.' . $layout, $attribs);
 
         if ($data->media_type == 'embed' && $data->media_caption) {
             
@@ -184,7 +187,7 @@ if ($path) {
             $figure['caption'] = $data->media_caption;
             $figure['html'] = $buffer;
 
-            $buffer = LayoutHelper::render('joomla.html.figure', $figure);
+            $buffer = LayoutHelper::render('plugins.fields.mediajce.', $figure);
         }
     }
 }
