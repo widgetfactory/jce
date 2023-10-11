@@ -6,10 +6,12 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateYootheme extends JPlugin
+use Joomla\CMS\Plugin\CMSPlugin;
+
+class WfTemplateYootheme extends CMSPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
-    {                        
+    {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
         // not a yootheme / warp template

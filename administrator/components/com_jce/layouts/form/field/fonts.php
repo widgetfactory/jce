@@ -53,7 +53,7 @@ extract($displayData);
  *     %4 = any other attributes
  */
 $standard = '<input type="checkbox" id="%1$s" value="%3$s=%2$s" %4$s /><label for="%1$s" class="checkbox" style="font-family:%2$s">%3$s</label>';
-$custom = '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . Text::_('WF_LABEL_NAME') . '" /></div><div class="span6 col-md-6"><input type="text" class="form-control span12" value="%2$s" placeholder="' . JText::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class="span2 col-md-2"><a href="#" class="font-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a></div>';
+$custom = '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . Text::_('WF_LABEL_NAME') . '" /></div><div class="span6 col-md-6"><input type="text" class="form-control span12" value="%2$s" placeholder="' . Text::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class="span2 col-md-2"><a href="#" class="font-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a></div>';
 
 // The alt option for JText::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);

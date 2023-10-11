@@ -6,7 +6,9 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateAstroid extends JPlugin
+use Joomla\CMS\Plugin\CMSPlugin;
+
+class WfTemplateAstroid extends CMSPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
     {                        

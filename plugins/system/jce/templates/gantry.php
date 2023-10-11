@@ -6,7 +6,9 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateGantry extends JPlugin
+use Joomla\CMS\Plugin\CMSPlugin;
+
+class WfTemplateGantry extends CMSPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
     {
@@ -40,7 +42,7 @@ class WfTemplateGantry extends JPlugin
             $files[] = 'media/gantry5/assets/css/bootstrap-gantry.css';
             $files[] = 'media/gantry5/engines/nucleus/css-compiled/nucleus.css';
 
-            $items  = array();
+            $items = array();
             $custom = array();
 
             $list = glob($gantry5 . '/*_[0-9]*.css');
@@ -71,7 +73,7 @@ class WfTemplateGantry extends JPlugin
             if (!empty($custom)) {
                 // sort custom by modified time key
                 ksort($custom, SORT_NUMERIC);
-                
+
                 // get the last custom file in the array
                 $custom_file = end($custom);
                 // create custom file url

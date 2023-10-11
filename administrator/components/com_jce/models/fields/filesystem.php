@@ -144,11 +144,6 @@ class JFormFieldFilesystem extends JFormFieldList
 
         $options = parent::getOptions();
 
-        /*$options[] = array(
-        'value' => '',
-        'text' => JText::_('WF_OPTION_NOT_SET'),
-        );*/
-
         $plugins = $this->getPlugins();
 
         foreach ($plugins as $plugin) {

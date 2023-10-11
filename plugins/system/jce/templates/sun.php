@@ -6,10 +6,13 @@
  */
 defined('JPATH_BASE') or die;
 
-class WfTemplateSun extends JPlugin
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Registry\Registry;
+
+class WfTemplateSun extends CMSPlugin
 {
     public function onWfGetTemplateStylesheets(&$files, $template)
-    {                        
+    {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
         if (!is_file($path . '/template.defines.php')) {
@@ -22,7 +25,7 @@ class WfTemplateSun extends JPlugin
         // add base template.css file
         $files[] = 'templates/' . $template->name . '/css/template.css';
 
-        $params = new JRegistry($template->params);
+        $params = new Registry($template->params);
         $preset = $params->get('preset', '');
 
         $data = json_decode($preset);

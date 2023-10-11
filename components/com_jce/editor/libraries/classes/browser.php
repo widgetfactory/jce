@@ -16,6 +16,7 @@ use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 class WFFileBrowser extends CMSObject
 {
@@ -177,7 +178,7 @@ class WFFileBrowser extends CMSObject
             $query .= '&' . $k . '=' . $v;
         }
 
-        return JURI::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
+        return Uri::base(true) . '/index.php?option=com_jce&task=plugin.rpc' . $query;
     }
 
     public function getFileSystem()

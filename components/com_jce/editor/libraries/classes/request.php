@@ -8,15 +8,13 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
- defined('JPATH_PLATFORM') or die;
+defined('JPATH_PLATFORM') or die;
 
- use Joomla\CMS\Object\CMSObject;
- use Joomla\CMS\Factory;
- use Joomla\CMS\Filesystem\File;
- use Joomla\CMS\Filesystem\Folder;
- use Joomla\CMS\Filesystem\Path;
- use Joomla\CMS\Language\Text;
- use Joomla\CMS\Session\Session;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Session\Session;
 
 final class WFRequest extends CMSObject
 {
@@ -124,7 +122,7 @@ final class WFRequest extends CMSObject
             }
 
             if (strpos($key, '\u0000') !== false || strpos($value, '\u0000') !== false) {
-               throw new InvalidArgumentException('Invalid Data', 403);
+                throw new InvalidArgumentException('Invalid Data', 403);
             }
         }
     }
@@ -154,10 +152,10 @@ final class WFRequest extends CMSObject
         // get and encode json data
         if ($json) {
             // remove slashes
-          $json = stripslashes($json);
+            $json = stripslashes($json);
 
-          // convert to JSON object
-          $json = json_decode($json);
+            // convert to JSON object
+            $json = json_decode($json);
         }
 
         // get current request id
@@ -181,10 +179,10 @@ final class WFRequest extends CMSObject
                 $fn = $json->method;
 
                 // clean function
-                $fn = JFilterInput::getInstance()->clean($fn, 'cmd');
+                $fn = InputFilter::getInstance()->clean($fn, 'cmd');
 
                 // pass params to input and flatten
-                if (empty($json->params)) {   
+                if (empty($json->params)) {
                     $json->params = "";
                 }
 
@@ -198,7 +196,7 @@ final class WFRequest extends CMSObject
                 // merge array with args
                 if (is_array($json->params)) {
                     $args = array_merge($args, $json->params);
-                // pass through string or object
+                    // pass through string or object
                 } else {
                     $args[] = $json->params;
                 }

@@ -15,6 +15,7 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE class.
@@ -210,7 +211,7 @@ class WFEditorPlugin extends CMSObject
         $document = WFDocument::getInstance();
 
         // ini language
-        $document->addScript(array(JURI::base(true) . '/index.php?option=com_jce&' . $document->getQueryString(
+        $document->addScript(array(Uri::base(true) . '/index.php?option=com_jce&' . $document->getQueryString(
             array('task' => 'plugin.loadlanguages', 'lang' => WFLanguage::getCode())
         )), 'joomla');
 
