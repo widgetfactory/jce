@@ -17,6 +17,7 @@ use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Language\Text;
 
 class JceViewBrowser extends HtmlView
 {
@@ -63,7 +64,7 @@ class JceViewBrowser extends HtmlView
      */
     protected function addToolbar()
     {
-        ToolbarHelper::title('JCE - ' . JText::_('WF_BROWSER_TITLE'), 'picture');
+        ToolbarHelper::title('JCE - ' . Text::_('WF_BROWSER_TITLE'), 'picture');
         JHtmlSidebar::setAction('index.php?option=com_jce&view=browser');
     }
 }
