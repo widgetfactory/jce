@@ -100,6 +100,31 @@ class PlgSystemJce extends CMSPlugin
         return false;
     }
 
+    public function onAfterInitialiseDocument($event)
+    {        
+        if (PluginHelper::isEnabled('behaviour', 'compat')) {
+            return;
+        }
+
+        JLoader::registerAlias('FieldsPlugin', '\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin', '5.0');
+
+        JLoader::registerAlias('JFormFieldCheckbox', '\\Joomla\\CMS\\Form\\Field\\CheckboxField', '6.0');
+        JLoader::registerAlias('JFormFieldCheckboxes', '\\Joomla\\CMS\\Form\\Field\\CheckboxesField', '6.0');
+        JLoader::registerAlias('JFormFieldFileList', '\\Joomla\\CMS\\Form\\Field\\FilelistField', '6.0');
+        JLoader::registerAlias('JFormFieldList', '\\Joomla\\CMS\\Form\\Field\\ListField', '6.0');
+        JLoader::registerAlias('JFormFieldNumber', '\\Joomla\\CMS\\Form\\Field\\NumberField', '6.0');
+        JLoader::registerAlias('JFormFieldOrdering', '\\Joomla\\CMS\\Form\\Field\\OrderingField', '6.0');
+        JLoader::registerAlias('JFormFieldPlugins', '\\Joomla\\CMS\\Form\\Field\\PluginsField', '6.0');
+        JLoader::registerAlias('JFormFieldRadio', '\\Joomla\\CMS\\Form\\Field\\RadioField', '6.0');
+        JLoader::registerAlias('JFormFieldText', '\\Joomla\\CMS\\Form\\Field\\TextField', '6.0');
+        JLoader::registerAlias('JFormFieldTextarea', '\\Joomla\\CMS\\Form\\Field\\TextareaField', '6.0');
+        JLoader::registerAlias('JFormFieldUser', '\\Joomla\\CMS\\Form\\Field\\UserField', '6.0');
+
+        JLoader::registerAlias('JHelperRoute', '\\Joomla\\CMS\\Helper\\RouteHelper', '6.0');
+
+        JLoader::registerAlias('JHtmlSidebar', '\\Joomla\\CMS\\HTML\\Helpers\\Sidebar', '6.0');
+    }
+
     public function onAfterRoute()
     {
         if (false == $this->isEditorEnabled()) {
