@@ -12,7 +12,6 @@ $text = basename($displayData['href']);
 
 if (isset($displayData['title'])) {
     $text = $displayData['title'];
-    unset($displayData['title']);
 }
 
 array_walk($displayData, function (&$value, $key) {

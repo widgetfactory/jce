@@ -94,7 +94,7 @@ if ($data->media_text) {
 }
 
 if ($layout == 'link') {
-    $attribs['text'] = $text;
+    $attribs['title'] = $text;
 }
 
 // images
