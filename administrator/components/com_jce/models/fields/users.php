@@ -10,17 +10,16 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\UserField;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
 
-FormHelper::loadFieldClass('user');
 /**
  * Field to select a user ID from a modal list.
  *
  * @since  1.6
  */
-class JFormFieldUsers extends JFormFieldUser
+class JFormFieldUsers extends UserField
 {
     /**
      * The form field type.

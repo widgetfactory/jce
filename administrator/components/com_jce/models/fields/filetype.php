@@ -10,12 +10,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\TextField;
 use Joomla\CMS\Language\Text;
 
-FormHelper::loadFieldClass('text');
-
-class JFormFieldFiletype extends JFormFieldText
+class JFormFieldFiletype extends TextField
 {
     /**
      * The form field type.

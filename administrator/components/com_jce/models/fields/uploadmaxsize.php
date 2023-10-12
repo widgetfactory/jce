@@ -10,10 +10,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\NumberField;
 use Joomla\CMS\Language\Text;
-
-FormHelper::loadFieldClass('number');
 
 /**
  * Form Field class for the Joomla Platform.
@@ -22,7 +20,7 @@ FormHelper::loadFieldClass('number');
  * @link        http://www.w3.org/TR/html-markup/input.text.html#input.text
  * @since       11.1
  */
-class JFormFieldUploadMaxSize extends JFormFieldNumber
+class JFormFieldUploadMaxSize extends NumberField
 {
     /**
      * The form field type.

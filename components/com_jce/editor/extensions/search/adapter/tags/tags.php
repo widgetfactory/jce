@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\RouteHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
@@ -137,8 +138,8 @@ class PlgWfSearchTags extends CMSPlugin
         }
 
         if ($rows) {
-            // create a new JHelperRoute instance
-            $router = new JHelperRoute();
+            // create a new RouteHelper instance
+            $router = new RouteHelper();
 
             foreach ($rows as $key => $row) {
                 $rows[$key]->href = $router->getRoute($row->slug, 'com_tags.tag', '', $row->language);

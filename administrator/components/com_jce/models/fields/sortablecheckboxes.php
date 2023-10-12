@@ -10,11 +10,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\CheckboxesField;
 
-FormHelper::loadFieldClass('checkboxes');
-
-class JFormFieldSortableCheckboxes extends JFormFieldCheckboxes
+class JFormFieldSortableCheckboxes extends CheckboxesField
 {
     /**
      * The form field type.

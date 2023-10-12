@@ -12,11 +12,9 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\FilelistField;
 
-FormHelper::loadFieldClass('filelist');
-
-class JFormFieldPlugin extends JFormFieldFileList
+class JFormFieldPlugin extends FilelistField
 {
     /**
      * The form field type.

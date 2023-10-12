@@ -10,12 +10,10 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Form\Field\PluginsField;
 use Joomla\CMS\Language\Text;
 
-FormHelper::loadFieldClass('plugins');
-
-class JFormFieldSearchPlugins extends JFormFieldPlugins
+class JFormFieldSearchPlugins extends PluginsField
 {
     /**
      * The form field type.

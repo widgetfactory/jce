@@ -10,13 +10,11 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Form\Field\ListField;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\FormHelper;
 use Joomla\CMS\Language\Text;
 
-FormHelper::loadFieldClass('list');
-
-class JFormFieldPopups extends JFormFieldList
+class JFormFieldPopups extends ListField
 {
     /**
      * The form field type.
