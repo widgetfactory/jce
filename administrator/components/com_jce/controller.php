@@ -96,7 +96,7 @@ class JceController extends BaseController
 
         // Get and render the view.
         if ($view) {
-            
+
             if ($vName != "cpanel") {
                 // use "profiles" for validating "profile" view
                 if ($vName == "profile") {
@@ -123,8 +123,9 @@ class JceController extends BaseController
 
             // only for Joomla 3.x
             if (version_compare(JVERSION, '4', 'lt')) {
-                // Load the submenu.
-                require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/admin.php';
+                
+                require_once __DIR__ . '/includes/classmap.php';
+
                 JceHelperAdmin::addSubmenu($vName);
             }
 
