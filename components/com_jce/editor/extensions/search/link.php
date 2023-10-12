@@ -310,24 +310,10 @@ class WFLinkSearchExtension extends WFSearchExtension
             }
         }
 
-        if (!class_exists('JSite')) {
-            // Load JSite class
-            JLoader::register('JSite', JPATH_SITE . '/includes/application.php');
-        }
-
         $app = Factory::getApplication('site');
         $filter = InputFilter::getInstance();
-        $router = $app::getRouter('site');
-
-        // get router mode
-        $sef = (int) $wf->getParam('search.link.sef_url', 0);
 
         $limit = (int) $wf->getParam('search.link.limit', 50);
-
-        // set router off so a raw url is returned by the Search plugin
-        if ($router) {
-            //$router->setMode(0);
-        }
 
         // slashes cause errors, <> get stripped anyway later on. # causes problems.
         $searchword = trim(str_replace(array('#', '>', '<', '\\'), '', $filter->clean($query)));
