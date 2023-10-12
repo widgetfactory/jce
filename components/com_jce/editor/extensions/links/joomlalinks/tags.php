@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\RouteHelper;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
@@ -55,8 +56,8 @@ class JoomlalinksTags extends CMSObject
 
         $language = '';
 
-        // create a new JHelperRoute instance
-        $router = new JHelperRoute();
+        // create a new RouteHelper instance
+        $router = new RouteHelper();
 
         $tags = array();
 

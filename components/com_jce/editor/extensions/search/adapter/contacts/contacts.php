@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\RouteHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
@@ -60,8 +61,8 @@ class PlgWfSearchContacts extends CMSPlugin
         $user = Factory::getUser();
         $groups = implode(',', $user->getAuthorisedViewLevels());
 
-        // create a new JHelperRoute instance
-        $router = new JHelperRoute();
+        // create a new RouteHelper instance
+        $router = new RouteHelper();
 
         if (is_array($areas) && !array_intersect($areas, array_keys($this->onContentSearchAreas()))) {
             return array();
@@ -141,8 +142,8 @@ class PlgWfSearchContacts extends CMSPlugin
         }
 
         if ($rows) {
-            // create a new JHelperRoute instance
-            $router = new JHelperRoute();
+            // create a new RouteHelper instance
+            $router = new RouteHelper();
 
             foreach ($rows as $key => $row) {
                 $rows[$key]->href = $router->getRoute($row->slug, 'com_contact.contact', '', $row->language, $row->catslug);

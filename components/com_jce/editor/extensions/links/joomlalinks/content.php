@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\RouteHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Table\Table;
@@ -54,8 +55,8 @@ class JoomlalinksContent extends CMSObject
 
         $language = '';
 
-        // create a new JHelperRoute instance
-        $router = new JHelperRoute();
+        // create a new RouteHelper instance
+        $router = new RouteHelper();
 
         switch ($view) {
             // get top-level categories
@@ -78,7 +79,7 @@ class JoomlalinksContent extends CMSObject
                         $language = $category->language;
                     }
 
-                    $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
+                    $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
 
                     if (strpos($id, 'index.php?Itemid=') !== false) {
                         $url = self::getMenuLink($id);
@@ -141,7 +142,7 @@ class JoomlalinksContent extends CMSObject
                         }
 
                         $url = '';
-                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_content');
+                        $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_content');
 
                         // get sub-categories
                         if (count($sub)) {

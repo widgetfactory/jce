@@ -11,6 +11,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\RouteHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 
@@ -125,7 +126,7 @@ class PlgWfSearchCategories extends CMSPlugin
 
         if ($rows) {
             foreach ($rows as $i => $row) {
-                $rows[$i]->href = JHelperRoute::getCategoryRoute($row->slug, $row->language, 'com_content');
+                $rows[$i]->href = RouteHelper::getCategoryRoute($row->slug, $row->language, 'com_content');
                 $rows[$i]->section = Text::_('JCATEGORY');
             }
         }

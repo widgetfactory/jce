@@ -13,6 +13,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
+use Joomla\CMS\Helper\RouteHelper;
 
 class JoomlalinksContact extends CMSObject
 {
@@ -53,8 +54,8 @@ class JoomlalinksContact extends CMSObject
 
         $language = '';
 
-        // create a new JHelperRoute instance
-        $router = new JHelperRoute();
+        // create a new RouteHelper instance
+        $router = new RouteHelper();
 
         switch ($view) {
             default:
@@ -66,7 +67,7 @@ class JoomlalinksContact extends CMSObject
                         $language = $category->language;
                     }
 
-                    $url = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
+                    $url = RouteHelper::getCategoryRoute($category->id, $language, 'com_contact');
 
                     // convert to SEF
                     $url = self::route($url);
@@ -91,9 +92,9 @@ class JoomlalinksContact extends CMSObject
                     }
 
                     if ($children) {
-                        $id = JHelperRoute::getCategoryRoute($category->id, $language, 'com_contact');
+                        $id = RouteHelper::getCategoryRoute($category->id, $language, 'com_contact');
                     } else {
-                        $id = JHelperRoute::getCategoryRoute($category->slug, $language, 'com_contact');
+                        $id = RouteHelper::getCategoryRoute($category->slug, $language, 'com_contact');
                     }
 
                     // convert to SEF
