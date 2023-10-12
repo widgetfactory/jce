@@ -14,11 +14,15 @@ class WfTemplateYootheme extends CMSPlugin
     {
         $path = JPATH_SITE . '/templates/' . $template->name;
 
-        // not a yootheme / warp template
-        if (!is_dir($path . '/warp') && !is_dir($path . '/vendor/yootheme')) {
-            return false;
+        // not a yootheme template
+        if ($template->name != 'yootheme') {
+            // not a warp template
+            if (!is_dir($path . '/warp')) {
+                return false;
+            }
         }
 
+        // legacy "warp" templates
         if (is_dir($path . '/warp')) {
             $file = 'css/theme.css';
 
@@ -52,7 +56,8 @@ class WfTemplateYootheme extends CMSPlugin
             }
         }
 
-        if (is_dir($path . '/vendor/yootheme')) {
+        // youtheme pagebuilder
+        if ($template->name == 'yootheme') {
             $files[] = 'templates/' . $template->name . '/css/theme.css';
 
             // add custom css file
