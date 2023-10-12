@@ -11,11 +11,12 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Form;
+use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
 
-// use legacy import to support J3.9
-JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
-
-Form::addFieldPath(__DIR__ . '/fields');
+if (version_compare(JVERSION, 4, '<') && !class_exists('\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin', false)) {
+	JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
+	class_alias('FieldsPlugin', '\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin');
+}
 
 /**
  * Fields MediaJce Plugin
