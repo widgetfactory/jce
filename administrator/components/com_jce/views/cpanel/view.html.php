@@ -12,6 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
@@ -46,7 +47,7 @@ class JceViewCpanel extends HtmlView
         $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/cpanel.min.css');
 
         $this->addToolbar();
-        $this->sidebar = JHtmlSidebar::render();
+        $this->sidebar = Sidebar::render();
         parent::display($tpl);
     }
 
@@ -62,7 +63,7 @@ class JceViewCpanel extends HtmlView
 
         ToolbarHelper::title('JCE - ' . Text::_('WF_CPANEL'), 'home');
 
-        JHtmlSidebar::setAction('index.php?option=com_jce&view=cpanel');
+        Sidebar::setAction('index.php?option=com_jce&view=cpanel');
 
         if ($user->authorise('core.admin', 'com_jce')) {
             ToolbarHelper::preferences('com_jce');

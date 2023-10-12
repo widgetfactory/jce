@@ -12,6 +12,7 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
@@ -77,7 +78,7 @@ class JceViewProfiles extends HtmlView
         $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/profiles.min.css');
 
         $this->addToolbar();
-        $this->sidebar = JHtmlSidebar::render();
+        $this->sidebar = Sidebar::render();
         parent::display($tpl);
     }
 
@@ -111,7 +112,7 @@ class JceViewProfiles extends HtmlView
             ToolbarHelper::deleteList('', 'profiles.delete', 'JTOOLBAR_DELETE');
         }
 
-        JHtmlSidebar::setAction('index.php?option=com_jce&view=profiles');
+        Sidebar::setAction('index.php?option=com_jce&view=profiles');
 
         if ($user->authorise('core.admin', 'com_jce')) {
             ToolbarHelper::preferences('com_jce');

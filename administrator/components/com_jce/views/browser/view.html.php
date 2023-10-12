@@ -12,12 +12,13 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Language\Text;
 
 class JceViewBrowser extends HtmlView
 {
@@ -51,7 +52,7 @@ class JceViewBrowser extends HtmlView
         $this->addToolbar();
 
         if (Factory::getApplication()->input->getInt('sidebar', 1) == 1) {
-            $this->sidebar = JHtmlSidebar::render();
+            $this->sidebar = Sidebar::render();
         }
 
         parent::display($tpl);
@@ -65,6 +66,6 @@ class JceViewBrowser extends HtmlView
     protected function addToolbar()
     {
         ToolbarHelper::title('JCE - ' . Text::_('WF_BROWSER_TITLE'), 'picture');
-        JHtmlSidebar::setAction('index.php?option=com_jce&view=browser');
+        Sidebar::setAction('index.php?option=com_jce&view=browser');
     }
 }
