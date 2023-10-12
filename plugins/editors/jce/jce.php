@@ -16,6 +16,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * JCE WYSIWYG Editor Plugin.
@@ -243,7 +244,7 @@ class plgEditorJCE extends CMSPlugin
                     $onclick = $button->get('onclick', '');
 
                     if ($button->get('link') !== '#') {
-                        $href = JUri::base() . $button->get('link');
+                        $href = Uri::base() . $button->get('link');
                     } else {
                         $href = '';
                     }
