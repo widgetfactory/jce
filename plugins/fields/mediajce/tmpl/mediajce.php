@@ -10,10 +10,14 @@
  */
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Layout\LayoutHelper;
+
+// load helper
+require_once JPATH_PLUGINS . '/fields/mediajce/helper/mediahelper.php';
 
 if (empty($field->value) || empty($field->value['media_src'])) {
     return;
@@ -26,7 +30,7 @@ $data = array(
     'media_target' => (string) $fieldParams->get('media_target', ''),
     'media_class' => (string) $fieldParams->get('media_class', ''),
     'media_caption' => '',
-    'media_supported' => array('img', 'video', 'audio', 'iframe', 'a'),
+    'media_supported' => array('img', 'video', 'audio', 'iframe', 'a', 'object'),
 );
 
 foreach ($field->value as $key => $value) {
@@ -53,27 +57,14 @@ if ($pos = strpos($data->media_src, '#')) {
     $data->media_src = substr($data->media_src, 0, $pos);
 }
 
-$allowable = array(
-    'image'     => 'jpg,jpeg,png,gif',
-    'audio'     => 'mp3,m4a,mp4a,ogg',
-    'video'     => 'mp4,mp4v,mpeg,mov,webm',
-    'iframe'    => 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv',
-);
-
 // get file extension to determine tag
 $extension = File::getExt($data->media_src);
+
 // lowercase
 $extension = strtolower($extension);
 
-// default layout
-$layout = 'link';
-
-// get tag from extension
-array_walk($allowable, function ($values, $key) use ($extension, &$layout) {
-    if (in_array($extension, explode(',', $values))) {
-        $layout = $key;
-    }
-});
+// get layout from extension
+$layout = WfMediaHelper::getLayoutFromExtension($extension);
 
 // reset layout as link
 if (!in_array($layout, $data->media_supported) || $data->media_type == 'link') {
@@ -129,6 +120,26 @@ if ($layout == 'video') {
     }
 }
 
+// object
+if ($layout == 'object') {
+    $attribs['width'] = isset($data->media_width) ? $data->media_width : '100%';
+    $attribs['height'] = isset($data->media_height) ? $data->media_height : '100%';
+
+    if ($text) {
+        $attribs['title'] = $text;
+    }
+
+    $attribs['data'] = $data->media_src;
+
+    $mimetype = WfMediaHelper::getMimeType($extension);
+
+    if ($mimetype) {
+        $attribs['type'] = $mimetype;
+    } else {
+        $layout = 'iframe';
+    }
+}
+
 // iframe
 if ($layout == 'iframe') {
     $attribs['frameborder'] = 0;
@@ -154,15 +165,13 @@ if ($path) {
     $path = Path::clean($path);
     
     // set text as basename if not an image
-    if ($layout == 'link' && !$text) {
-        $text = basename($path);
+    if ($layout == 'link') {
+        // set default target
+        $attribs['target'] = $data->media_target;
 
-        if ($data->media_target) {
-            if ($data->media_target == 'download') {
-                $attribs['download'] = $path;
-            } else {
-                $attribs['target'] = $data->media_target;
-            }
+        // set target as download
+        if ($data->media_target == 'download') {
+            $attribs['download'] = $path;
         }
     }
 

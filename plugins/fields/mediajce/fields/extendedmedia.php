@@ -143,7 +143,7 @@ class ExtendedMediaField extends FormField
      */
     public function postProcess($value, $group = null, Registry $input = null)
     {        
-        $media = array('img', 'video', 'audio', 'iframe', 'a');
+        $media = array('img', 'video', 'audio', 'iframe', 'a', 'object');
         
         $value->media_supported = array_filter($media, function ($tag) {
 			$html = '<' . $tag . '></' . $tag . '>';
