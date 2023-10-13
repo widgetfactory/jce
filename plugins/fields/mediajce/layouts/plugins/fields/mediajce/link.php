@@ -8,10 +8,15 @@ $displayData['href'] = $displayData['src'];
 
 unset($displayData['src']);
 
-$text = isset($displayData['title']) ? $displayData['title'] : basename($displayData['href']);
+$attribs = array();
 
-array_walk($displayData, function (&$value, $key) {
-    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-});
+foreach ($displayData as $key => $value) {
+    if ($value !== '') {
+        $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        $attribs[$key] = $value;
+    }
+};
 
-echo '<a ' . ArrayHelper::toString($displayData) . '>' . htmlspecialchars($text, ENT_QUOTES, 'UTF-8') . '</a>';
+$text = isset($attribs['title']) ? $attribs['title'] : basename($attribs['href']);
+
+echo '<a ' . ArrayHelper::toString($attribs) . '>' . htmlspecialchars($text, ENT_QUOTES, 'UTF-8') . '</a>';
