@@ -84,6 +84,7 @@ if ($data->media_text) {
     $text = htmlentities($data->media_text, ENT_COMPAT, 'UTF-8', true);
 }
 
+// links
 if ($layout == 'link') {
     $attribs['title'] = $text;
 }
