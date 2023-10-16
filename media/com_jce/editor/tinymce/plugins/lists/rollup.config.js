@@ -8,6 +8,6 @@ export default [
       intro : '/* eslint-disable */'
     },
 
-    plugins: [ ]
+    plugins: []
   }
 ];
