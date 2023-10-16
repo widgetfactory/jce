@@ -20,8 +20,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-
 class WFEditor
 {
     // Editor instance
@@ -357,7 +355,7 @@ class WFEditor
     public function getSettings()
     {
         $app = Factory::getApplication();
-        
+
         // get an editor instance
         $wf = WFApplication::getInstance();
 
@@ -443,13 +441,6 @@ class WFEditor
 
             // set stylesheets as string
             $settings['content_css'] = implode(',', $stylesheets);
-
-            if (WF_EDITOR_PRO) {
-                // Editor Toggle
-                $settings['toggle'] = $wf->getParam('editor.toggle', 0, 0);
-                $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
-                $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
-            }
 
             // use cookies to store state
             $settings['use_state_cookies'] = (bool) $wf->getParam('editor.use_cookies', 1);
@@ -951,10 +942,6 @@ class WFEditor
 
                 // remove missing plugins
                 $items = array_filter($items, function ($item) {
-                    if (WF_EDITOR_PRO && $item == 'branding') {
-                        return false;
-                    }
-
                     return is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $item . '/plugin.js');
                 });
 
@@ -993,12 +980,14 @@ class WFEditor
 
             foreach ($installed as $plugin => $path) {
                 $file = Path::find(array(
+                    // pro plugins
+                    JPATH_PLUGINS . '/jcepro/editor/plugins/' . $plugin,
                     // new path
                     JPATH_PLUGINS . '/jce/editor_' . $plugin,
                     // old path
                     JPATH_PLUGINS . '/jce/editor-' . $plugin,
                     // legacy path
-                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes'
+                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes',
                 ), 'config.php');
 
                 if ($file) {
@@ -1022,7 +1011,7 @@ class WFEditor
             $classname = str_replace(' ', '', $classname);
 
             // Check class and method are callable, and call
-            if (class_exists($classname) && method_exists($classname, 'getConfig')) {                
+            if (class_exists($classname) && method_exists($classname, 'getConfig')) {
                 call_user_func_array(array($classname, 'getConfig'), array(&$settings));
             }
         }
@@ -1455,7 +1444,12 @@ class WFEditor
 
                 // add external plugins
                 foreach ($plugins['external'] as $plugin => $path) {
-                    $files[] = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/editor_plugin' . $suffix . '.js';
+                    
+                    $file = str_replace(Uri::root(true), JPATH_SITE, $path);
+                    
+                    if (is_file($file)) {
+                        $files[] = $file;
+                    }
                 }
 
                 // add Editor file

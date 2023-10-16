@@ -14,8 +14,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 
-require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
-
 class JceModelBrowser extends BaseDatabaseModel
 {
     /**

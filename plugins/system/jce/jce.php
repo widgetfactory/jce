@@ -128,12 +128,6 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        // only if enabled
-        if ((int) $this->params->get('column_styles', 1)) {
-            $hash = md5_file(JPATH_SITE . '/media/com_jce/site/css/content.min.css');
-            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/content.min.css?' . $hash);
-        }
-
         $this->bootEditorPlugins();
 
         $app->triggerEvent('onWfPluginAfterDispatch');
@@ -192,7 +186,7 @@ class PlgSystemJce extends CMSPlugin
      * @since   2.5.20
      */
     public function onContentPrepareForm($form, $data)
-    {
+    {       
         $app = Factory::getApplication();
         $docType = Factory::getDocument()->getType();
 
@@ -349,45 +343,6 @@ class PlgSystemJce extends CMSPlugin
             require_once $item;
 
             $this->bootCustomPlugin($className);
-        }
-    }
-
-    public function onWfPluginInit($instance)
-    {
-        $app = Factory::getApplication();
-        $user = Factory::getUser();
-
-        // set mediatype values for Template Manager parameters
-        if ($app->input->getCmd('plugin') == 'browser.templatemanager') {
-
-            // only in "admin"
-            if ($app->getClientId() !== 1) {
-                return;
-            }
-
-            // restrict to admin with component manage access
-            if (!$user->authorise('core.manage', 'com_jce')) {
-                return false;
-            }
-
-            // check for element and standalone should indicate mediafield
-            if ($app->input->getVar('element') && $app->input->getInt('standalone')) {
-                $mediatype = $app->input->getVar('mediatype');
-
-                if (!$mediatype) {
-                    return false;
-                }
-
-                $accept = $instance->getParam('templatemanager.extensions', '');
-
-                if ($accept) {
-                    $instance->setFileTypes($accept);
-                    $accept = $instance->getFileTypes();
-                    $mediatype = implode(',', array_intersect(explode(',', $mediatype), $accept));
-                }
-
-                $instance->setFileTypes($mediatype);
-            }
         }
     }
 }

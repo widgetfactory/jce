@@ -17,8 +17,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Plugin\PluginHelper;
 
-require_once JPATH_ADMINISTRATOR . '/components/com_jce/includes/constants.php';
-
 class JceModelCpanel extends BaseDatabaseModel
 {
     public function getIcons()
@@ -120,15 +118,18 @@ class JceModelCpanel extends BaseDatabaseModel
         $licence = "";
         $version = "";
 
+        $ispro = PluginHelper::isEnabled('system', 'jcepro');
+
         if ($xml = simplexml_load_file(JPATH_ADMINISTRATOR . '/components/com_jce/jce.xml')) {
             $licence = (string) $xml->license;
             $version = (string) $xml->version;
 
-            if (WF_EDITOR_PRO) {
+            if ($ispro) {
                 $version = '<span class="badge badge-info badge-primary bg-primary">Pro</span>&nbsp;' . $version;
             }
         }
-
+        
+        $this->setState('pro', $ispro);
         $this->setState('version', $version);
         $this->setState('licence', $licence);
     }

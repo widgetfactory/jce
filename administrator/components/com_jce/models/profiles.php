@@ -16,8 +16,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\CMS\Table\Table;
 
-require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/profiles.php';
-
 class JceModelProfiles extends ListModel
 {
     /**

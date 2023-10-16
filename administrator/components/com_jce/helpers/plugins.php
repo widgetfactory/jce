@@ -50,6 +50,7 @@ abstract class JcePluginsHelper
 
             // get core json
             $core = file_get_contents(__DIR__ . '/plugins.json');
+
             // decode to object
             $data = json_decode($core);
 
@@ -78,9 +79,13 @@ abstract class JcePluginsHelper
                     $plugins[$name] = $attribs;
                 }
             }
+
             // get pro json
-            if (is_file(__DIR__ . '/pro.json')) {
-                $pro = @file_get_contents(__DIR__ . '/pro.json');
+            $pro_json = WF_EDITOR_PRO_LIBRARIES . '/pro.json';
+
+            if (is_file($pro_json)) {
+                $pro = @file_get_contents($pro_json);
+
                 // decode to object
                 if ($pro) {
                     $data = json_decode($pro);
@@ -88,19 +93,25 @@ abstract class JcePluginsHelper
                     if ($data) {
                         foreach ($data as $name => $attribs) {
                             // skip if the plugin file is missing
-                            if (!is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $name . '/plugin.js')) {
+                            if (!is_file(WF_EDITOR_PRO_MEDIA . '/plugins/' . $name . '/plugin.js')) {
                                 continue;
                             }
+
+                            $url = ltrim(str_replace(JPATH_SITE, '', WF_EDITOR_PRO_MEDIA), '/');
+
                             // update attributes
                             $attribs->type = 'plugin';
-                            $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
-                            $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
+                            $attribs->path = WF_EDITOR_PRO_PLUGINS . '/' . $name;
+                            $attribs->url = $url . '/plugins/' . $name;
+                            $attribs->manifest = WF_EDITOR_PRO_PLUGINS . '/' . $name . '/' . $name . '.xml';
 
                             $attribs->image = '';
 
                             if (!isset($attribs->class)) {
                                 $attribs->class = '';
                             }
+
+                            $attribs->core = 0;
 
                             // compatability
                             $attribs->name = $name;
@@ -215,9 +226,6 @@ abstract class JcePluginsHelper
      */
     public static function getExtensions($type = '')
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         $language = Factory::getLanguage();
 
         static $extensions;

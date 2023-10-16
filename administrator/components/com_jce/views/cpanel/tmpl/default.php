@@ -54,8 +54,8 @@ $canEditPref = $user->authorise('core.admin', 'com_jce');
                 </dd>
             <?php endif;?>
         </dl>
-        <?php if (!WF_EDITOR_PRO):
-    echo LayoutHelper::render('message.upgrade', $this);
-endif;?>
+        <?php if (!$this->state->get('pro')):
+            echo LayoutHelper::render('message.upgrade', $this);
+        endif;?>
     </div>
 </div>

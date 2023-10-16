@@ -14,6 +14,7 @@ require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/applicat
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {
@@ -45,12 +46,7 @@ class JceControllerPlugin extends BaseController
 
         // load language files
         $language = Factory::getLanguage();
-
         $language->load('com_jce', JPATH_ADMINISTRATOR);
-
-        if (WF_EDITOR_PRO) {
-            $language->load('com_jce_pro', JPATH_SITE);
-        }
 
         $plugin = $this->input->get('plugin');
 
@@ -71,30 +67,37 @@ class JceControllerPlugin extends BaseController
             $this->input->set('plugin', $mapped);
         }
 
+        Factory::getApplication()->triggerEvent('onWfPluginBeforeInit', array($plugin));
+
         // create classname
         $className = $this->createClassName($plugin);
 
-        // package plugins
-        $path = WF_EDITOR_PLUGINS . '/' . $plugin;
-
-        // fullpath
-        $filepath = $path . '/' . $plugin . '.php';
+        $filepath = Path::find(
+            // search "pro" path first
+            array(
+                WF_EDITOR_PRO_PLUGINS . '/' . $plugin,
+                WF_EDITOR_PLUGINS . '/' . $plugin
+            ),
+            $plugin . '.php'
+        );
 
         // installed plugins
         if (preg_match('/^editor[-_]/', $plugin)) {
             $path = JPATH_PLUGINS . '/jce/' . $plugin;
-            
-            // installed plugin path
-            $filepath = $path . '/' . $plugin . '.php';
 
             // check for alternate path
             if (is_dir($path . '/src')) {
-                // rename plugin
-                $name = substr($plugin, 7);
-                
-                // reset filepath
-                $filepath = $path . '/src/' . $name . '.php';
+                // rename plugin, eg: editor-chatgpt -> chatgpt
+                $plugin = substr($plugin, 7);
             }
+
+            $filepath = Path::find(
+                array(
+                    $path,
+                    $path . '/src'
+                ),
+                $plugin . '.php'
+            );
         }
 
         if (!file_exists($filepath)) {
@@ -105,7 +108,7 @@ class JceControllerPlugin extends BaseController
 
         if (class_exists($className)) {            
             // load language file if any
-            $language->load('plg_jce_' . $plugin, $path);
+            $language->load('plg_jce_' . $plugin, dirname($filepath));
 
             $instance = new $className();
 

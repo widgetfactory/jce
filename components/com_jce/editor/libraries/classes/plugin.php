@@ -37,7 +37,7 @@ class WFEditorPlugin extends CMSObject
     public function __construct($config = array())
     {
         // Call parent
-        parent::__construct();
+        parent::__construct($config);
 
         // get plugin name from url, fallback to default name if set
         $name = Factory::getApplication()->input->getCmd('plugin', $this->get('name'));

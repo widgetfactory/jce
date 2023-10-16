@@ -41,12 +41,15 @@ JLoader::register('WFPopupsExtension', WF_EDITOR_CLASSES . '/extensions/popups.p
 JLoader::register('WFSearchExtension', WF_EDITOR_CLASSES . '/extensions/search.php');
 
 JLoader::register('WFMediaManagerBase', WF_EDITOR_CLASSES . '/manager/base.php');
-JLoader::register('WFMediaManager', WF_EDITOR_CLASSES . '/manager.php');
+JLoader::register('WFMediaManager', WF_EDITOR_CLASSES . '/manager/manager.php');
 JLoader::register('WFFileBrowser', WF_EDITOR_CLASSES . '/browser.php');
 JLoader::register('Wf_Mobile_Detect', WF_EDITOR_CLASSES . '/mobile.php');
 
+// Admin classes
+JLoader::register('JceProfilesHelper', WF_ADMINISTRATOR . '/helpers/profiles.php');
 JLoader::register('JcePluginsHelper', WF_ADMINISTRATOR . '/helpers/plugins.php');
 JLoader::register('JceEncryptHelper', WF_ADMINISTRATOR . '/helpers/encrypt.php');
+JLoader::register('WfBrowserHelper', WF_ADMINISTRATOR . '/helpers/browser.php');
 
 JLoader::register('WFLinkHelper', WF_EDITOR_CLASSES . '/linkhelper.php');
 
