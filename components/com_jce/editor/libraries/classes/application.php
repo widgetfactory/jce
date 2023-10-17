@@ -157,6 +157,11 @@ class WFApplication extends CMSObject
         return $settings;
     }
 
+    public function isValidPlugin($name)
+    {
+        return JcePluginsHelper::isValidPlugin($name);
+    }
+
     private function isCorePlugin($plugin)
     {
         return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui'));

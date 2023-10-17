@@ -65,7 +65,7 @@ class JceControllerPlugin extends BaseController
         }
 
         // cehck this is a valid plugin
-        JcePluginsHelper::isValidPlugin($plugin) or jexit('Invalid Plugin');
+        $wf->isValidPlugin($plugin) or jexit('Invalid Plugin');
 
         // check a valid profile exists
         $wf->getProfile($plugin) or jexit('Invalid Profile');
