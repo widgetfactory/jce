@@ -522,6 +522,33 @@ class pkg_jceInstallerScript
             $media . '/js'
         );
 
+        // remove pro folders from components/com_jce and media/com_jce
+        $folders['2.9.51'] = array(
+            $site . '/editor/libraries/pro',
+
+            $site . '/editor/plugins/caption',
+            $site . '/editor/plugins/columns',
+            $site . '/editor/plugins/filemanager',
+            $site . '/editor/plugins/iframe',
+            $site . '/editor/plugins/imgmanager_ext',
+            $site . '/editor/plugins/mediamanager',
+            $site . '/editor/plugins/microdata',
+            $site . '/editor/plugins/source',
+            $site . '/editor/plugins/templatemanager',
+            $site . '/editor/plugins/textpattern',
+
+            $site . '/media/com_jce/editor/tinymce/plugins/caption',
+            $site . '/media/com_jce/editor/tinymce/plugins/columns',
+            $site . '/media/com_jce/editor/tinymce/plugins/filemanager',
+            $site . '/media/com_jce/editor/tinymce/plugins/iframe',
+            $site . '/media/com_jce/editor/tinymce/plugins/imgmanager_ext',
+            $site . '/media/com_jce/editor/tinymce/plugins/mediamanager',
+            $site . '/media/com_jce/editor/tinymce/plugins/microdata',
+            $site . '/media/com_jce/editor/tinymce/plugins/source',
+            $site . '/media/com_jce/editor/tinymce/plugins/templatemanager',
+            $site . '/media/com_jce/editor/tinymce/plugins/textpattern'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',

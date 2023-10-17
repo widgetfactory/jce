@@ -137,6 +137,10 @@ div#search-browser #search-options label {
     display: inline-block;
 }
 
+#search-button .uk-button-text {
+    width: 100%;
+}
+
 @media (max-width: 375px) {
     #search-button span {
         display: none;

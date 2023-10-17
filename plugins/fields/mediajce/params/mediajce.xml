@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="fieldparams">
+			<fieldset name="fieldparams">
+				<field
+					name="extendedmedia"
+					type="list"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_DESC"
+					default="0"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field>
+				
+				<field
+					name="mediatype"
+					type="combo"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_DESC"
+				>
+				<option value="images">images</option>
+				<option value="media">media</option>
+				<option value="documents">documents</option>
+				<option value="files">files</option>
+				</field>
+				<field
+					name="media_class"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_DESC"
+				/>
+				<field
+					name="media_description"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_DESCRIPTION_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_DESCRIPTION_DESC"
+				/>
+
+				<field
+					name="media_target"
+					type="list"
+					default=""
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_DESC"
+					showon="mediatype!:images"
+				>
+                    <option value=""></option>
+					<option value="_blank">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_BLANK</option>
+					<option value="_self">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_SELF</option>
+                    <option value="_parent">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_PARENT</option>
+                    <option value="_top">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_TOP</option>
+					<option value="download">PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_TARGET_DOWNLOAD</option>
+				</field>
+
+				<field
+					name="media_folder"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_FOLDER_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_FOLDER_DESC"
+				/>
+
+				<field
+					name="media_caption_class"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CAPTION_CLASS_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CAPTION_CLASS_DESC"
+					showon="extendedmedia:1"
+				/>
+			</fieldset>
+		</fields>
+</form>

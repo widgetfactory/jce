@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="plugin" version="3.8" group="fields" method="upgrade">
+	<name>plg_fields_mediajce</name>
+	 <version>@@version@@</version>
+  	<creationDate>@@date@@</creationDate>
+  	<author>Ryan Demmer</author>
+  	<authorEmail>@@email@@</authorEmail>
+  	<authorUrl>https://www.joomlacontenteditor.net</authorUrl>
+  	<copyright>@@copyright@@</copyright>
+  	<license>@@licence@@</license>
+	<description>PLG_FIELDS_MEDIAJCE_XML_DESCRIPTION</description>
+	<files folder="plugins/fields/mediajce">
+		<filename plugin="mediajce">mediajce.php</filename>
+		<folder>fields</folder>
+		<folder>helper</folder>
+		<folder>layouts</folder>
+		<folder>params</folder>
+		<folder>tmpl</folder>
+	</files>
+	<languages folder="administrator/language/en-GB">
+		<language tag="en-GB">en-GB.plg_fields_mediajce.ini</language>
+		<language tag="en-GB">en-GB.plg_fields_mediajce.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<!--field
+					name="extendedmedia"
+					type="list"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_EXTENDEDMEDIA_DESC"
+				>
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+				</field-->
+				<field
+					name="mediatype"
+					type="combo"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIATYPE_DESC"
+					layout="joomla.form.field.list-fancy-select"
+				>
+				<option value="images">images</option>
+				<option value="media">media</option>
+				<option value="documents">documents</option>
+				<option value="files">files</option>
+				</field>
+				<field
+					name="media_class"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_CLASS_DESC"
+				/>
+				<field
+					name="media_description"
+					type="text"
+					label="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_DESCRIPTION_LABEL"
+					description="PLG_FIELDS_MEDIAJCE_PARAMS_MEDIA_DESCRIPTION_DESC"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

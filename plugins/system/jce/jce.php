@@ -186,7 +186,7 @@ class PlgSystemJce extends CMSPlugin
      * @since   2.5.20
      */
     public function onContentPrepareForm($form, $data)
-    {       
+    {
         $app = Factory::getApplication();
         $docType = Factory::getDocument()->getType();
 
