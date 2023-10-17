@@ -39,6 +39,12 @@ abstract class JcePluginsHelper
         return $commands;
     }
 
+    public static function isValidPlugin($name)
+    {
+        $plugins = self::getPlugins();
+        return isset($plugins[$name]);
+    }
+
     public static function getPlugins()
     {
         $language = Factory::getLanguage();

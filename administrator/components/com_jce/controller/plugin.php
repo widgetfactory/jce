@@ -14,6 +14,8 @@ require_once JPATH_SITE . '/components/com_jce/editor/libraries/classes/applicat
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Language\Text;
 
 class JceControllerPlugin extends BaseController
 {
@@ -38,19 +40,10 @@ class JceControllerPlugin extends BaseController
 
     public function execute($task)
     {
+        // check for session token
+        Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
+        
         $wf = WFApplication::getInstance();
-
-        // check a valid profile exists
-        $wf->getProfile() or jexit('Invalid Profile');
-
-        // load language files
-        $language = Factory::getLanguage();
-
-        $language->load('com_jce', JPATH_ADMINISTRATOR);
-
-        if (WF_EDITOR_PRO) {
-            $language->load('com_jce_pro', JPATH_SITE);
-        }
 
         $plugin = $this->input->get('plugin');
 
@@ -69,6 +62,21 @@ class JceControllerPlugin extends BaseController
             }
 
             $this->input->set('plugin', $mapped);
+        }
+
+        // cehck this is a valid plugin
+        JcePluginsHelper::isValidPlugin($plugin) or jexit('Invalid Plugin');
+
+        // check a valid profile exists
+        $wf->getProfile($plugin) or jexit('Invalid Profile');
+
+        // load language files
+        $language = Factory::getLanguage();
+
+        $language->load('com_jce', JPATH_ADMINISTRATOR);
+
+        if (WF_EDITOR_PRO) {
+            $language->load('com_jce_pro', JPATH_SITE);
         }
 
         // create classname
@@ -98,7 +106,7 @@ class JceControllerPlugin extends BaseController
         }
 
         if (!file_exists($filepath)) {
-            throw new Exception(ucfirst($plugin) . '" not found!');
+            jexit('Invalid Plugin');
         }
 
         include_once $filepath;
