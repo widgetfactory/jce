@@ -101,7 +101,7 @@ class JceControllerProfiles extends AdminController
         Session::checkToken() or jexit(Text::_('JINVALID_TOKEN'));
 
         $user = JFactory::getUser();
-        $ids = $this->input->get('cid', array(), 'array');
+        $ids = (array) $this->input->get('cid', array(), 'int');
 
         // Access checks.
         if (!$user->authorise('core.create', 'com_jce')) {
