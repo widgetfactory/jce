@@ -20,8 +20,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-
 class WFEditor
 {
     // Editor instance
@@ -357,7 +355,7 @@ class WFEditor
     public function getSettings()
     {
         $app = Factory::getApplication();
-        
+
         // get an editor instance
         $wf = WFApplication::getInstance();
 
@@ -998,7 +996,7 @@ class WFEditor
                     // old path
                     JPATH_PLUGINS . '/jce/editor-' . $plugin,
                     // legacy path
-                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes'
+                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes',
                 ), 'config.php');
 
                 if ($file) {
@@ -1022,7 +1020,7 @@ class WFEditor
             $classname = str_replace(' ', '', $classname);
 
             // Check class and method are callable, and call
-            if (class_exists($classname) && method_exists($classname, 'getConfig')) {                
+            if (class_exists($classname) && method_exists($classname, 'getConfig')) {
                 call_user_func_array(array($classname, 'getConfig'), array(&$settings));
             }
         }
