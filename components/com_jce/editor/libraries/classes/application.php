@@ -174,7 +174,7 @@ class WFApplication extends CMSObject
                 return false;
             }
 
-            return  $plugin->checksum == hash_file('sha256', $path);
+            return  $plugin->checksum === hash_file('sha256', $path);
         }
 
         return true;
