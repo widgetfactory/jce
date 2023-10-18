@@ -62,6 +62,11 @@ JLoader::register('WFText', WF_EDITOR_CLASSES . '/text.php');
 // legacy class for backwards compatability
 JLoader::register('WFModelEditor', WF_ADMINISTRATOR . '/models/editor.php');
 
+// only for Joomla 3.x
+if (version_compare(JVERSION, '4', 'lt')) {      
+    require_once __DIR__ . '/classmap.php';
+}
+
 // legacy function prevent fatal errors in 3rd party extensions
 function wfimport($path = ""){
     return true;
