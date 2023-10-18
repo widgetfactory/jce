@@ -44,6 +44,7 @@ class JceControllerPlugin extends BaseController
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
         
         $wf = WFApplication::getInstance();
+        $language = Factory::getLanguage();
 
         $plugin = $this->input->get('plugin');
 
@@ -71,13 +72,8 @@ class JceControllerPlugin extends BaseController
         $wf->getProfile($plugin) or jexit('Invalid Profile');
 
         // load language files
-        $language = Factory::getLanguage();
-
         $language->load('com_jce', JPATH_ADMINISTRATOR);
-
-        if (WF_EDITOR_PRO) {
-            $language->load('com_jce_pro', JPATH_SITE);
-        }
+        $language->load('com_jce_pro', JPATH_SITE);
 
         // create classname
         $className = $this->createClassName($plugin);
@@ -116,21 +112,7 @@ class JceControllerPlugin extends BaseController
             $language->load('plg_jce_' . $plugin, $path);
 
             $instance = new $className();
-
-            if (strpos($task, '.') !== false) {
-                list($name, $task) = explode('.', $task);
-            }
-
-            if ($task === 'display') {
-                $task = 'execute';
-            }
-
-            // default to execute if task is not available
-            if (is_callable(array($instance, $task)) === false) {
-                $task = 'execute';
-            }
-
-            $instance->$task();
+            $instance->execute($task);
         }
 
         jexit();
