@@ -159,12 +159,30 @@ class WFApplication extends CMSObject
 
     public function isValidPlugin($name)
     {
-        return JcePluginsHelper::isValidPlugin($name);
+        $plugins = JcePluginsHelper::getPlugins();
+
+        if (!isset($plugins[$name])) {
+            return false;
+        }
+        
+        $plugin = $plugins[$name];
+
+        if (isset($plugin->checksum) && strlen($plugin->checksum) == 64) {
+            $path = $plugin->path . '/' . $plugin->name . '.php';
+
+            if (!is_file($path)) {
+                return false;
+            }
+
+            return  $plugin->checksum == hash_file('sha256', $path);
+        }
+
+        return true;
     }
 
     private function isCorePlugin($plugin)
     {
-        return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui'));
+        return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
     }
 
     /**

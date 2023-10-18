@@ -5,7 +5,8 @@
         "icon": "caption_add,caption_delete",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:caption}"
     },
     "columns": {
         "title": "WF_COLUMNS_TITLE",
@@ -21,7 +22,8 @@
         "icon": "iframe",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:iframe}"
     },
     "filemanager": {
         "title": "WF_FILEMANAGER_TITLE",
@@ -29,7 +31,8 @@
         "icon": "filemanager",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:filemanager}"
     },
     "imgmanager_ext": {
         "title": "WF_IMGMANAGER_EXT_TITLE",
@@ -37,7 +40,8 @@
         "icon": "imgmanager_ext",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:imgmanager_ext}"
     },
     "mediamanager": {
         "title": "WF_MEDIAMANAGER_TITLE",
@@ -45,7 +49,8 @@
         "icon": "mediamanager",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:mediamanager}"
     },
     "templatemanager": {
         "title": "WF_TEMPLATEMANAGER_TITLE",
@@ -53,7 +58,8 @@
         "icon": "templatemanager",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:templatemanager}"
     },
     "microdata": {
         "title": "WF_MICRODATA_TITLE",
@@ -61,7 +67,8 @@
         "icon": "microdata",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:microdata}"
     },
     "source": {
         "title": "WF_SOURCE_TITLE",
@@ -69,7 +76,8 @@
         "icon": "",
         "editable": 1,
         "row": 0,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:source}"
     },
     "textpattern": {
         "title": "WF_TEXTPATTERN_TITLE",

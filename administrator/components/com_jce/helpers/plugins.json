@@ -37,7 +37,8 @@
         "icon": "",
         "editable": 1,
         "row": 0,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:browser}"
     },
     "charmap": {
         "title": "WF_CHARMAP_TITLE",
@@ -77,7 +78,8 @@
         "icon": "",
         "editable": 0,
         "row": 0,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:colorpicker}"
     },
     "contextmenu": {
         "title": "WF_CONTEXTMENU_TITLE",
@@ -154,7 +156,8 @@
         "icon": "help",
         "editable": 0,
         "row": 1,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:help}"
     },
     "imgmanager": {
         "title": "WF_IMGMANAGER_TITLE",
@@ -162,7 +165,8 @@
         "icon": "imgmanager",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:imgmanager}"
     },
     "joomla": {
         "title": "WF_JOOMLABUTTONS_TITLE",
@@ -196,7 +200,8 @@
         "editable": 1,
         "row": 4,
         "core": 1,
-        "class": "split-button"
+        "class": "split-button",
+        "checksum": "${checksum:link}"
     },
     "lists": {
         "title": "WF_LISTS_TITLE",
@@ -237,7 +242,8 @@
         "icon": "",
         "editable": 1,
         "row": 0,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:preview}"
     },
     "print": {
         "title": "WF_PRINT_TITLE",
@@ -269,7 +275,8 @@
         "icon": "spellchecker",
         "editable": 1,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:spellchecker}"
     },
     "style": {
         "title": "WF_STYLE_TITLE",
@@ -277,7 +284,8 @@
         "icon": "style",
         "editable": 0,
         "row": 4,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:style}"
     },
     "styleselect": {
         "title": "WF_STYLESELECT_TITLE",
@@ -302,7 +310,8 @@
         "icon": "table_insert,delete_table,row_props,cell_props,row_before,row_after,delete_row,col_before,col_after,delete_col,split_cells,merge_cells",
         "editable": 1,
         "row": 3,
-        "core": 1
+        "core": 1,
+        "checksum": "${checksum:table}"
     },
     "textcase": {
         "title": "WF_TEXTCASE_TITLE",
