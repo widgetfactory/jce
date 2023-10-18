@@ -1167,8 +1167,6 @@ class WFEditor
             }
         }
 
-        require_once WF_EDITOR_CLASSES . '/editor.php';
-
         $wf = WFApplication::getInstance();
 
         $global = intval($wf->getParam('editor.content_css', 1));
@@ -1395,9 +1393,6 @@ class WFEditor
      */
     public function pack()
     {
-        require_once WF_EDITOR_CLASSES . '/packer.php';
-        require_once WF_EDITOR_CLASSES . '/language.php';
-
         $wf = WFApplication::getInstance();
         $type = $wf->input->getWord('type', 'javascript');
 
