@@ -199,8 +199,12 @@ class WFEditorPlugin extends CMSObject
         Factory::getApplication()->triggerEvent('onWfPluginInit', array($this));
     }
 
-    public function execute()
+    public function execute($task)
     {
+        if ($task == 'loadlanguages') {
+            return $this->loadlanguages();
+        }
+        
         $this->initialize();
 
         // process requests if any - method will end here
@@ -227,7 +231,7 @@ class WFEditorPlugin extends CMSObject
         $document->render();
     }
 
-    public function loadlanguages()
+    protected function loadlanguages()
     {
         $name = $this->get('name');
 
