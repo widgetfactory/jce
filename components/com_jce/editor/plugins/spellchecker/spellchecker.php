@@ -32,8 +32,6 @@ class WFSpellCheckerPlugin extends WFEditorPlugin
         $request->setRequest(array($engine, 'ignoreWord'));
         $request->setRequest(array($engine, 'ignoreWords'));
         $request->setRequest(array($engine, 'learnWord'));
-
-        $this->execute();
     }
 
     private function getConfig()

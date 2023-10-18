@@ -28,8 +28,6 @@ class WFPreviewPlugin extends WFEditorPlugin
         $request = WFRequest::getInstance();
         // Setup plugin XHR callback functions
         $request->setRequest(array($this, 'showPreview'));
-
-        $this->execute();
     }
 
     /**
