@@ -1,4 +1,15 @@
 /* eslint-disable */
+/* 
+ * This file includes original and modified code from various versions of Tinymce. 
+ * 
+ * Source: https://github.com/widgetfactory/tinymce-muon 
+ * Copyright (c) Tiny Technologies, Inc. All rights reserved. 
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved. 
+ * Copyright, Moxiecode Systems AB. All rights reserved. 
+ * Copyright (c) 2009 - 2023 Ryan Demmer. All rights reserved. 
+ * For a detailed history of modifications, refer to the Git commit history. 
+ * Licensed under the GNU/LGPL 2.1 or later: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html 
+ */
 (function () {
   'use strict';
 
@@ -8,8 +19,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /* global CollectGarbage */
@@ -36,30 +48,6 @@
   	 *   console.log("IE");
   	 */
     var tinymce = {
-      /**
-  		 * Major version of TinyMCE build.
-  		 *
-  		 * @property majorVersion
-  		 * @type String
-  		 */
-      majorVersion: '@@tinymce_major_version@@',
-
-      /**
-  		 * Major version of TinyMCE build.
-  		 *
-  		 * @property minorVersion
-  		 * @type String
-  		 */
-      minorVersion: '@@tinymce_minor_version@@',
-
-      /**
-  		 * Release date of TinyMCE build.
-  		 *
-  		 * @property releaseDate
-  		 * @type String
-  		 */
-      releaseDate: '@@tinymce_release_date@@',
-
       /**
   		 * Initializes the TinyMCE global namespace this will setup browser detection and figure out where TinyMCE is running from.
   		 */
@@ -976,8 +964,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2016 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -1012,8 +1001,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -1208,8 +1198,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -1345,8 +1336,11 @@
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
+   * 
+   * Include modified and updated code from https://github.com/tinymce/tinymce/blob/release/5.10/modules/tinymce/src/core/main/ts/api/util/URI.ts
    */
 
   (function (tinymce) {
@@ -1360,19 +1354,25 @@
       'mailto': 25
     };
 
+    var safeSvgDataUrlElements = [ 'img', 'video' ];
+
+    function isNonNullable(value) {
+      return value !== null && value !== undefined;
+    }
+
     /**
-  	 * This class handles parsing, modification and serialization of URI/URL strings.
-  	 * @class tinymce.util.URI
-  	 */
+     * This class handles parsing, modification and serialization of URI/URL strings.
+     * @class tinymce.util.URI
+     */
     tinymce.create('tinymce.util.URI', {
       /**
-  		 * Constucts a new URI instance.
-  		 *
-  		 * @constructor
-  		 * @method URI
-  		 * @param {String} u URI string to parse.
-  		 * @param {Object} s Optional settings object.
-  		 */
+       * Constucts a new URI instance.
+       *
+       * @constructor
+       * @method URI
+       * @param {String} u URI string to parse.
+       * @param {Object} s Optional settings object.
+       */
       URI: function (url, settings) {
         var self = this,
           baseUri, base_url;
@@ -1450,11 +1450,11 @@
       },
 
       /**
-  		 * Sets the internal path part of the URI.
-  		 *
-  		 * @method setPath
-  		 * @param {string} path Path string to set.
-  		 */
+       * Sets the internal path part of the URI.
+       *
+       * @method setPath
+       * @param {string} path Path string to set.
+       */
       setPath: function (path) {
         var self = this;
 
@@ -1471,15 +1471,15 @@
       },
 
       /**
-  		 * Converts the specified URI into a relative URI based on the current URI instance location.
-  		 *
-  		 * @method toRelative
-  		 * @param {String} uri URI to convert into a relative path/URI.
-  		 * @return {String} Relative URI from the point specified in the current URI instance.
-  		 * @example
-  		 * // Converts an absolute URL to an relative URL url will be somedir/somefile.htm
-  		 * var url = new tinymce.util.URI('http://www.site.com/dir/').toRelative('http://www.site.com/dir/somedir/somefile.htm');
-  		 */
+       * Converts the specified URI into a relative URI based on the current URI instance location.
+       *
+       * @method toRelative
+       * @param {String} uri URI to convert into a relative path/URI.
+       * @return {String} Relative URI from the point specified in the current URI instance.
+       * @example
+       * // Converts an absolute URL to an relative URL url will be somedir/somefile.htm
+       * var url = new tinymce.util.URI('http://www.site.com/dir/').toRelative('http://www.site.com/dir/somedir/somefile.htm');
+       */
       toRelative: function (uri) {
         var self = this,
           output;
@@ -1494,7 +1494,7 @@
 
         // Not on same domain/port or protocol
         if ((uri.host != 'mce_host' && self.host != uri.host && uri.host) || self.port != uri.port ||
-  				(self.protocol != uri.protocol && uri.protocol !== "")) {
+          (self.protocol != uri.protocol && uri.protocol !== "")) {
           return uri.getURI();
         }
 
@@ -1522,16 +1522,16 @@
       },
 
       /**
-  		 * Converts the specified URI into a absolute URI based on the current URI instance location.
-  		 *
-  		 * @method toAbsolute
-  		 * @param {String} uri URI to convert into a relative path/URI.
-  		 * @param {Boolean} noHost No host and protocol prefix.
-  		 * @return {String} Absolute URI from the point specified in the current URI instance.
-  		 * @example
-  		 * // Converts an relative URL to an absolute URL url will be http://www.site.com/dir/somedir/somefile.htm
-  		 * var url = new tinymce.util.URI('http://www.site.com/dir/').toAbsolute('somedir/somefile.htm');
-  		 */
+       * Converts the specified URI into a absolute URI based on the current URI instance location.
+       *
+       * @method toAbsolute
+       * @param {String} uri URI to convert into a relative path/URI.
+       * @param {Boolean} noHost No host and protocol prefix.
+       * @return {String} Absolute URI from the point specified in the current URI instance.
+       * @example
+       * // Converts an relative URL to an absolute URL url will be http://www.site.com/dir/somedir/somefile.htm
+       * var url = new tinymce.util.URI('http://www.site.com/dir/').toAbsolute('somedir/somefile.htm');
+       */
       toAbsolute: function (uri, noHost) {
         uri = new tinymce.util.URI(uri, {
           base_uri: this
@@ -1541,14 +1541,14 @@
       },
 
       /**
-  		 * Determine whether the given URI has the same origin as this URI.  Based on RFC-6454.
-  		 * Supports default ports for protocols listed in DEFAULT_PORTS.  Unsupported protocols will fail safe: they
-  		 * won't match, if the port specifications differ.
-  		 *
-  		 * @method isSameOrigin
-  		 * @param {tinymce.util.URI} uri Uri instance to compare.
-  		 * @returns {Boolean} True if the origins are the same.
-  		 */
+       * Determine whether the given URI has the same origin as this URI.  Based on RFC-6454.
+       * Supports default ports for protocols listed in DEFAULT_PORTS.  Unsupported protocols will fail safe: they
+       * won't match, if the port specifications differ.
+       *
+       * @method isSameOrigin
+       * @param {tinymce.util.URI} uri Uri instance to compare.
+       * @returns {Boolean} True if the origins are the same.
+       */
       isSameOrigin: function (uri) {
         if (this.host == uri.host && this.protocol == uri.protocol) {
           if (this.port == uri.port) {
@@ -1565,12 +1565,12 @@
       },
 
       /**
-  		 * Converts a absolute path into a relative path.
-  		 *
-  		 * @method toRelPath
-  		 * @param {String} base Base point to convert the path from.
-  		 * @param {String} path Absolute path to convert into a relative path.
-  		 */
+       * Converts a absolute path into a relative path.
+       *
+       * @method toRelPath
+       * @param {String} base Base point to convert the path from.
+       * @param {String} path Absolute path to convert into a relative path.
+       */
       toRelPath: function (base, path) {
         var items, breakPoint = 0,
           out = '',
@@ -1619,12 +1619,12 @@
       },
 
       /**
-  		 * Converts a relative path into a absolute path.
-  		 *
-  		 * @method toAbsPath
-  		 * @param {String} base Base point to convert the path from.
-  		 * @param {String} path Relative path to convert into an absolute path.
-  		 */
+       * Converts a relative path into a absolute path.
+       *
+       * @method toAbsPath
+       * @param {String} base Base point to convert the path from.
+       * @param {String} path Relative path to convert into an absolute path.
+       */
       toAbsPath: function (base, path) {
         var i, nb = 0,
           o = [],
@@ -1689,11 +1689,11 @@
       },
 
       /**
-  		 * Returns the full URI of the internal structure.
-  		 *
-  		 * @method getURI
-  		 * @param {Boolean} noProtoHost Optional no host and protocol part. Defaults to false.
-  		 */
+       * Returns the full URI of the internal structure.
+       *
+       * @method getURI
+       * @param {Boolean} noProtoHost Optional no host and protocol part. Defaults to false.
+       */
       getURI: function (noProtoHost) {
         var s, self = this;
 
@@ -1740,6 +1740,25 @@
       }
     });
 
+    var blockSvgDataUris = function (allowSvgDataUrls, tagName) {
+      if (isNonNullable(allowSvgDataUrls)) {
+        return !allowSvgDataUrls;
+      } else {
+        // Only allow SVGs by default on images/videos since the browser won't execute scripts on those elements
+        return isNonNullable(tagName) ? tinymce.inArray(safeSvgDataUrlElements, tagName) == -1 : true;
+      }
+    };
+
+    var isInvalidUri = function (settings, uri, tagName) {
+      if (settings.allow_html_data_urls) {
+        return false;
+      } else if (/^data:image\//i.test(uri)) {
+        return blockSvgDataUris(settings.allow_svg_data_urls, tagName) && /^data:image\/svg\+xml/i.test(uri);
+      } else {
+        return /^data:/i.test(uri);
+      }
+    };
+
     tinymce.util.URI.parseDataUri = function (uri) {
       var type, matches;
 
@@ -1776,6 +1795,41 @@
 
       return baseUrl;
     };
+
+    /**
+     * Check to see if a URI is safe to use in the Document Object Model (DOM). This will return
+     * true if the URI can be used in the DOM without potentially triggering a security issue.
+     *
+     * @method isDomSafe
+     * @static
+     * @param {String} uri The URI to be validated.
+     * @param {Object} context An optional HTML tag name where the element is being used.
+     * @param {Object} options An optional set of options to use when determining if the URI is safe.
+     * @return {Boolean} True if the URI is safe, otherwise false.
+     */
+    tinymce.util.URI.isDomSafe = function (uri, context, options) {
+      if (options.allow_script_urls) {
+        return true;
+      } else {
+        // eslint-disable-next-line no-control-regex
+        let decodedUri = tinymce.html.Entities.decode(uri).replace(/[\s\u0000-\u001F]+/g, '');
+
+        try {
+          // Might throw malformed URI sequence
+          decodedUri = decodeURIComponent(decodedUri);
+        } catch (ex) {
+          // Fallback to non UTF-8 decoder
+          decodedUri = unescape(decodedUri);
+        }
+
+        // Ensure we don't have a javascript URI, as that is not safe since it allows arbitrary JavaScript execution
+        if (/((java|vb)script|mhtml):/i.test(decodedUri)) {
+          return false;
+        }
+
+        return !isInvalidUri(options, decodedUri, context);
+      }
+    };
   })(tinymce);
 
   /**
@@ -1784,8 +1838,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -1914,8 +1969,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -1972,8 +2028,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   tinymce.create('static tinymce.util.JSONP', {
@@ -2008,8 +2065,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -2090,8 +2148,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -2207,8 +2266,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -2250,8 +2310,9 @@
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -4196,8 +4257,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -4399,8 +4461,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -4490,8 +4553,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -4605,8 +4669,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -4727,8 +4792,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /*jshint bitwise:false */
@@ -5016,8 +5082,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -5382,8 +5449,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -6460,65 +6528,87 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
     /**
-  	 * This class parses HTML code using pure JavaScript and executes various events for each item it finds. It will
-  	 * always execute the events in the right order for tag soup code like <b><p></b></p>. It will also remove elements
-  	 * and attributes that doesn't fit the schema if the validate setting is enabled.
-  	 *
-  	 * @example
-  	 * var parser = new tinymce.html.SaxParser({
-  	 *     validate: true,
-  	 *
-  	 *     comment: function(text) {
-  	 *         console.log('Comment:', text);
-  	 *     },
-  	 *
-  	 *     cdata: function(text) {
-  	 *         console.log('CDATA:', text);
-  	 *     },
-  	 *
-  	 *     text: function(text, raw) {
-  	 *         console.log('Text:', text, 'Raw:', raw);
-  	 *     },
-  	 *
-  	 *     start: function(name, attrs, empty) {
-  	 *         console.log('Start:', name, attrs, empty);
-  	 *     },
-  	 *
-  	 *     end: function(name) {
-  	 *         console.log('End:', name);
-  	 *     },
-  	 *
-  	 *     pi: function(name, text) {
-  	 *         console.log('PI:', name, text);
-  	 *     },
-  	 *
-  	 *     doctype: function(text) {
-  	 *         console.log('DocType:', text);
-  	 *     }
-  	 * }, schema);
-  	 * @class tinymce.html.SaxParser
-  	 * @version 3.4
-  	 */
+     * This class parses HTML code using pure JavaScript and executes various events for each item it finds. It will
+     * always execute the events in the right order for tag soup code like <b><p></b></p>. It will also remove elements
+     * and attributes that doesn't fit the schema if the validate setting is enabled.
+     *
+     * @example
+     * var parser = new tinymce.html.SaxParser({
+     *     validate: true,
+     *
+     *     comment: function(text) {
+     *         console.log('Comment:', text);
+     *     },
+     *
+     *     cdata: function(text) {
+     *         console.log('CDATA:', text);
+     *     },
+     *
+     *     text: function(text, raw) {
+     *         console.log('Text:', text, 'Raw:', raw);
+     *     },
+     *
+     *     start: function(name, attrs, empty) {
+     *         console.log('Start:', name, attrs, empty);
+     *     },
+     *
+     *     end: function(name) {
+     *         console.log('End:', name);
+     *     },
+     *
+     *     pi: function(name, text) {
+     *         console.log('PI:', name, text);
+     *     },
+     *
+     *     doctype: function(text) {
+     *         console.log('DocType:', text);
+     *     }
+     * }, schema);
+     * @class tinymce.html.SaxParser
+     * @version 3.4
+     */
 
     var each = tinymce.each,
       Entities = tinymce.html.Entities;
 
+    // A list of form control or other elements whereby a name/id would override a form or document property
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/elements#value
+    // https://portswigger.net/research/dom-clobbering-strikes-back
+    var filteredClobberElements = tinymce.makeMap('button,fieldset,form,iframe,img,image,input,object,output,select,textarea');
+
+    // Create a temp document and return a cached version of it in subsequent calls
+    var getTempDocument = (function () {
+      var cachedDocument = null;
+
+      return function () {
+
+        if (!cachedDocument) {
+          cachedDocument = document.implementation.createHTMLDocument('parser');
+        }
+
+        return cachedDocument;
+      };
+    })();
+    
     /**
-  	 * Constructs a new SaxParser instance.
-  	 *
-  	 * @constructor
-  	 * @method SaxParser
-  	 * @param {Object} settings Name/value collection of settings. comment, cdata, text, start and end are callbacks.
-  	 * @param {tinymce.html.Schema} schema HTML Schema class to use when parsing.
-  	 */
+     * Constructs a new SaxParser instance.
+     *
+     * @constructor
+     * @method SaxParser
+     * @param {Object} settings Name/value collection of settings. comment, cdata, text, start and end are callbacks.
+     * @param {tinymce.html.Schema} schema HTML Schema class to use when parsing.
+     */
     tinymce.html.SaxParser = function (settings, schema) {
       var self = this;
+
+      var doc = getTempDocument(), form = doc.createElement('form');
 
       function noop() { }
 
@@ -6545,16 +6635,16 @@
       });
 
       /**
-  		 * Returns the index of the end tag for a specific start tag. This can be
-  		 * used to skip all children of a parent element from being processed.
-  		 *
-  		 * @private
-  		 * @method findEndTag
-  		 * @param {tinymce.html.Schema} schema Schema instance to use to match short ended elements.
-  		 * @param {String} html HTML string to find the end tag in.
-  		 * @param {Number} startIndex Indext to start searching at should be after the start tag.
-  		 * @return {Number} Index of the end tag.
-  		 */
+       * Returns the index of the end tag for a specific start tag. This can be
+       * used to skip all children of a parent element from being processed.
+       *
+       * @private
+       * @method findEndTag
+       * @param {tinymce.html.Schema} schema Schema instance to use to match short ended elements.
+       * @param {String} html HTML string to find the end tag in.
+       * @param {Number} startIndex Indext to start searching at should be after the start tag.
+       * @return {Number} Index of the end tag.
+       */
       self.findEndTag = function (schema, html, startIndex) {
         var count = 1,
           index, matches, tokenRegExp, shortEndedElements;
@@ -6585,13 +6675,13 @@
       };
 
       /**
-  		 * Parses the specified HTML string and executes the callbacks for each item it finds.
-  		 *
-  		 * @example
-  		 * new SaxParser({...}).parse('<b>text</b>');
-  		 * @method parse
-  		 * @param {String} html Html string to sax parse.
-  		 */
+       * Parses the specified HTML string and executes the callbacks for each item it finds.
+       *
+       * @example
+       * new SaxParser({...}).parse('<b>text</b>');
+       * @method parse
+       * @param {String} html Html string to sax parse.
+       */
       self.parse = function (html, format) {
         var self = this,
           matches, index = 0,
@@ -6603,7 +6693,7 @@
         var anyAttributesRequired, selfClosing, tokenRegExp, attrRegExp, specialElements, attrValue, idCount = 0;
         var decode = Entities.decode,
           fixSelfClosing, filteredUrlAttrs = tinymce.makeMap('src,href,data,background,formaction,poster,xlink:href');
-        var scriptUriRegExp = /((java|vb)script|mhtml):/i;
+        //var scriptUriRegExp = /((java|vb)script|mhtml):/i;
         var processHtml;
 
         // parser format - html, xml
@@ -6636,7 +6726,7 @@
           }
         }
 
-        function isInvalidUri(settings, uri) {
+        /*function isInvalidUri(settings, uri) {
           if (settings.allow_html_data_urls) {
             return false;
           } else if (/^data:image\//i.test(uri)) {
@@ -6644,7 +6734,7 @@
           } else {
             return /^data:/i.test(uri);
           }
-        }
+        }*/
 
         // a data attribute is any attribute with a hyphen, eg: data- or ng- or v-
         function isDataAttribute(name) {
@@ -6653,6 +6743,10 @@
 
         function isEventAttribute(name) {
           return name.indexOf('on') == 0;
+        }
+
+        function isFilterdUrlAttribute(name) {
+          return name in filteredUrlAttrs;
         }
 
         function processComment(value) {
@@ -6731,8 +6825,8 @@
           }
         }
 
-        function parseAttribute(match, name, value, val2, val3) {
-          var attrRule, i, trimRegExp = /[\s\u0000-\u001F]+/g;
+        function parseAttribute(tagName, name, value, val2, val3) {
+          var attrRule, i;// trimRegExp = /[\s\u0000-\u001F]+/g;
 
           name = name.toLowerCase();
           value = name in fillAttrsMap ? name : decode(value || val2 || val3 || ''); // Handle boolean attribute than value attribute
@@ -6774,8 +6868,21 @@
             }
           }
 
+          // Attempt to block any dom clobbering on document or forms
+          // See https://www.slideshare.net/x00mario/in-the-dom-no-one-will-hear-you-scream
+          var isNameOrId = name === 'name' || name === 'id';
+
+          if (isNameOrId && tagName in filteredClobberElements && (value in doc || value in form)) {
+            return;
+          }
+
           // Block any javascript: urls or non image data uris
-          if (filteredUrlAttrs[name] && !settings.allow_script_urls) {
+          if (isFilterdUrlAttribute(name) && !tinymce.util.URI.isDomSafe(value, tagName, settings)) {
+            return;
+          }
+
+          // Block any javascript: urls or non image data uris
+          /*if (filteredUrlAttrs[name] && !settings.allow_script_urls) {
             var uri = value.replace(trimRegExp, '');
 
             try {
@@ -6793,12 +6900,18 @@
             if (isInvalidUri(settings, uri)) {
               return;
             }
-          }
+          }*/
 
           // Block data or event attributes on elements marked as internal
-          /*if (isInternalElement && (name in filteredUrlAttrs || name.indexOf('on') === 0)) {
-  					return;
-  				}*/
+          if (isInternalElement) {
+            if (isFilterdUrlAttribute(name)) {
+              return;
+            }
+            // only allow event attributes if enabled
+            if (isEventAttribute(name) && !settings.allow_event_attributes) {
+              return;
+            }
+          }
 
           // Add attribute to list and map
           attrList.map[name] = value;
@@ -6810,13 +6923,13 @@
 
         // Precompile RegExps and map objects
         tokenRegExp = new RegExp('<(?:' +
-  				'(?:!--([\\w\\W]*?)--!?>)|' + // Comment
-  				'(?:!\\[CDATA\\[([\\w\\W]*?)\\]\\]>)|' + // CDATA
-  				'(?:![Dd][Oo][Cc][Tt][Yy][Pp][Ee]([\\w\\W]*?)>)|' + // DOCTYPE (case insensitive)
-  				'(?:\\?([^\\s\\/<>]+) ?([\\w\\W]*?)[?/]>)|' + // PI
-  				'(?:\\/([A-Za-z][A-Za-z0-9\\-_\\:\\.]*)>)|' + // End element
-  				'(?:([A-Za-z][A-Za-z0-9\\-_\\:\\.]*)((?:\\s+[^"\'>]+(?:(?:"[^"]*")|(?:\'[^\']*\')|[^>]*))*|\\/|\\s+)>)' + // Start element
-  				')', 'g');
+          '(?:!--([\\w\\W]*?)--!?>)|' + // Comment
+          '(?:!\\[CDATA\\[([\\w\\W]*?)\\]\\]>)|' + // CDATA
+          '(?:![Dd][Oo][Cc][Tt][Yy][Pp][Ee]([\\w\\W]*?)>)|' + // DOCTYPE (case insensitive)
+          '(?:\\?([^\\s\\/<>]+) ?([\\w\\W]*?)[?/]>)|' + // PI
+          '(?:\\/([A-Za-z][A-Za-z0-9\\-_\\:\\.]*)>)|' + // End element
+          '(?:([A-Za-z][A-Za-z0-9\\-_\\:\\.]*)((?:\\s+[^"\'>]+(?:(?:"[^"]*")|(?:\'[^\']*\')|[^>]*))*|\\/|\\s+)>)' + // Start element
+          ')', 'g');
 
         attrRegExp = /([\w:\-]+)(?:\s*=\s*(?:(?:\"((?:[^\"])*)\")|(?:\'((?:[^\'])*)\')|([^>\s]+)))?/g;
 
@@ -6902,7 +7015,12 @@
                 attrList = [];
                 attrList.map = {};
 
-                attribsValue.replace(attrRegExp, parseAttribute);
+                //attribsValue.replace(attrRegExp, parseAttribute);
+                // eslint-disable-next-line no-loop-func
+                attribsValue.replace(attrRegExp, (match, name, val, val2, val3) => {
+                  parseAttribute(value, name, val, val2, val3);
+                  return '';
+                });
               } else {
                 attrList = [];
                 attrList.map = {};
@@ -7056,15 +7174,15 @@
             self.pi(value, matches[5]);
 
             /*if (format === 'xml') {
-  						self.pi(value, matches[5]);
-  					} else {
-  						// Processing Instructions aren't valid in HTML so it should be treated as a bogus comment.
-  						// See https://html.spec.whatwg.org/multipage/parsing.html#tag-open-state
-  						index = processMalformedComment('?', matches.index + 2); // <? === 2 chars
+              self.pi(value, matches[5]);
+            } else {
+              // Processing Instructions aren't valid in HTML so it should be treated as a bogus comment.
+              // See https://html.spec.whatwg.org/multipage/parsing.html#tag-open-state
+              index = processMalformedComment('?', matches.index + 2); // <? === 2 chars
 
-  						tokenRegExp.lastIndex = index;
-  						continue;
-  					}*/
+              tokenRegExp.lastIndex = index;
+              continue;
+            }*/
           }
 
           index = matches.index + matches[0].length;
@@ -7093,8 +7211,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -7138,24 +7257,24 @@
     }
 
     /**
-  	 * This class is a minimalistic implementation of a DOM like node used by the DomParser class.
-  	 *
-  	 * @example
-  	 * var node = new tinymce.html.Node('strong', 1);
-  	 * someRoot.append(node);
-  	 *
-  	 * @class tinymce.html.Node
-  	 * @version 3.4
-  	 */
+     * This class is a minimalistic implementation of a DOM like node used by the DomParser class.
+     *
+     * @example
+     * var node = new tinymce.html.Node('strong', 1);
+     * someRoot.append(node);
+     *
+     * @class tinymce.html.Node
+     * @version 3.4
+     */
 
     /**
-  	 * Constructs a new Node instance.
-  	 *
-  	 * @constructor
-  	 * @method Node
-  	 * @param {String} name Name of the node type.
-  	 * @param {Number} type Numeric type representing the node.
-  	 */
+     * Constructs a new Node instance.
+     *
+     * @constructor
+     * @method Node
+     * @param {String} name Name of the node type.
+     * @param {Number} type Numeric type representing the node.
+     */
     function Node(name, type) {
       this.name = name;
       this.type = type;
@@ -7168,15 +7287,15 @@
 
     tinymce.extend(Node.prototype, {
       /**
-  		 * Replaces the current node with the specified one.
-  		 *
-  		 * @example
-  		 * someNode.replace(someNewNode);
-  		 *
-  		 * @method replace
-  		 * @param {tinymce.html.Node} node Node to replace the current node with.
-  		 * @return {tinymce.html.Node} The old node that got replaced.
-  		 */
+       * Replaces the current node with the specified one.
+       *
+       * @example
+       * someNode.replace(someNewNode);
+       *
+       * @method replace
+       * @param {tinymce.html.Node} node Node to replace the current node with.
+       * @return {tinymce.html.Node} The old node that got replaced.
+       */
       replace: function (node) {
         var self = this;
 
@@ -7191,18 +7310,18 @@
       },
 
       /**
-  		 * Gets/sets or removes an attribute by name.
-  		 *
-  		 * @example
-  		 * someNode.attr("name", "value"); // Sets an attribute
-  		 * console.log(someNode.attr("name")); // Gets an attribute
-  		 * someNode.attr("name", null); // Removes an attribute
-  		 *
-  		 * @method attr
-  		 * @param {String} name Attribute name to set or get.
-  		 * @param {String} value Optional value to set.
-  		 * @return {String/tinymce.html.Node} String or undefined on a get operation or the current node on a set operation.
-  		 */
+       * Gets/sets or removes an attribute by name.
+       *
+       * @example
+       * someNode.attr("name", "value"); // Sets an attribute
+       * console.log(someNode.attr("name")); // Gets an attribute
+       * someNode.attr("name", null); // Removes an attribute
+       *
+       * @method attr
+       * @param {String} name Attribute name to set or get.
+       * @param {String} value Optional value to set.
+       * @return {String/tinymce.html.Node} String or undefined on a get operation or the current node on a set operation.
+       */
       attr: function (name, value) {
         var self = this,
           attrs, i, undef;
@@ -7324,15 +7443,15 @@
       },
 
       /**
-  		 * Does a shallow clones the node into a new node. It will also exclude id attributes since
-  		 * there should only be one id per document.
-  		 *
-  		 * @example
-  		 * var clonedNode = node.clone();
-  		 *
-  		 * @method clone
-  		 * @return {tinymce.html.Node} New copy of the original node.
-  		 */
+       * Does a shallow clones the node into a new node. It will also exclude id attributes since
+       * there should only be one id per document.
+       *
+       * @example
+       * var clonedNode = node.clone();
+       *
+       * @method clone
+       * @return {tinymce.html.Node} New copy of the original node.
+       */
       clone: function (deep) {
         var self = this,
           clone = new Node(self.name, self.type),
@@ -7375,13 +7494,13 @@
       },
 
       /**
-  		 * Wraps the node in in another node.
-  		 *
-  		 * @example
-  		 * node.wrap(wrapperNode);
-  		 *
-  		 * @method wrap
-  		 */
+       * Wraps the node in in another node.
+       *
+       * @example
+       * node.wrap(wrapperNode);
+       *
+       * @method wrap
+       */
       wrap: function (wrapper) {
         var self = this;
 
@@ -7392,13 +7511,13 @@
       },
 
       /**
-  		 * Unwraps the node in other words it removes the node but keeps the children.
-  		 *
-  		 * @example
-  		 * node.unwrap();
-  		 *
-  		 * @method unwrap
-  		 */
+       * Unwraps the node in other words it removes the node but keeps the children.
+       *
+       * @example
+       * node.unwrap();
+       *
+       * @method unwrap
+       */
       unwrap: function () {
         var self = this,
           node, next;
@@ -7413,14 +7532,14 @@
       },
 
       /**
-  		 * Removes the node from it's parent.
-  		 *
-  		 * @example
-  		 * node.remove();
-  		 *
-  		 * @method remove
-  		 * @return {tinymce.html.Node} Current node that got removed.
-  		 */
+       * Removes the node from it's parent.
+       *
+       * @example
+       * node.remove();
+       *
+       * @method remove
+       * @return {tinymce.html.Node} Current node that got removed.
+       */
       remove: function () {
         var self = this,
           parent = self.parent,
@@ -7455,15 +7574,15 @@
       },
 
       /**
-  		 * Appends a new node as a child of the current node.
-  		 *
-  		 * @example
-  		 * node.append(someNode);
-  		 *
-  		 * @method append
-  		 * @param {tinymce.html.Node} node Node to append as a child of the current one.
-  		 * @return {tinymce.html.Node} The node that got appended.
-  		 */
+       * Appends a new node as a child of the current node.
+       *
+       * @example
+       * node.append(someNode);
+       *
+       * @method append
+       * @param {tinymce.html.Node} node Node to append as a child of the current one.
+       * @return {tinymce.html.Node} The node that got appended.
+       */
       append: function (node) {
         var self = this,
           last;
@@ -7487,17 +7606,17 @@
       },
 
       /**
-  		 * Inserts a node at a specific position as a child of the current node.
-  		 *
-  		 * @example
-  		 * parentNode.insert(newChildNode, oldChildNode);
-  		 *
-  		 * @method insert
-  		 * @param {tinymce.html.Node} node Node to insert as a child of the current node.
-  		 * @param {tinymce.html.Node} ref_node Reference node to set node before/after.
-  		 * @param {Boolean} before Optional state to insert the node before the reference node.
-  		 * @return {tinymce.html.Node} The node that got inserted.
-  		 */
+       * Inserts a node at a specific position as a child of the current node.
+       *
+       * @example
+       * parentNode.insert(newChildNode, oldChildNode);
+       *
+       * @method insert
+       * @param {tinymce.html.Node} node Node to insert as a child of the current node.
+       * @param {tinymce.html.Node} ref_node Reference node to set node before/after.
+       * @param {Boolean} before Optional state to insert the node before the reference node.
+       * @return {tinymce.html.Node} The node that got inserted.
+       */
       insert: function (node, ref_node, before) {
         var parent;
 
@@ -7535,12 +7654,12 @@
       },
 
       /**
-  		 * Get all children by name.
-  		 *
-  		 * @method getAll
-  		 * @param {String} name Name of the child nodes to collect.
-  		 * @return {Array} Array with child nodes matchin the specified name.
-  		 */
+       * Get all children by name.
+       *
+       * @method getAll
+       * @param {String} name Name of the child nodes to collect.
+       * @return {Array} Array with child nodes matchin the specified name.
+       */
       getAll: function (name) {
         var self = this,
           node, collection = [];
@@ -7549,6 +7668,23 @@
           if (node.name === name) {
             collection.push(node);
           }
+        }
+
+        return collection;
+      },
+
+      /**
+       * Get all children of this node.
+       *
+       * @method children
+       * @return {Array} Array containing child nodes.
+     */
+      children: function () {
+        var self = this,
+          node, collection = [];
+
+        for (node = self.firstChild; node; node = node.next) {
+          collection.push(node);
         }
 
         return collection;
@@ -7587,14 +7723,14 @@
       },
 
       /**
-  		 * Returns true/false if the node is to be considered empty or not.
-  		 *
-  		 * @example
-  		 * node.isEmpty({img : true});
-  		 * @method isEmpty
-  		 * @param {Object} elements Name/value object with elements that are automatically treated as non empty elements.
-  		 * @return {Boolean} true/false if the node is empty or not.
-  		 */
+       * Returns true/false if the node is to be considered empty or not.
+       *
+       * @example
+       * node.isEmpty({img : true});
+       * @method isEmpty
+       * @param {Object} elements Name/value object with elements that are automatically treated as non empty elements.
+       * @return {Boolean} true/false if the node is empty or not.
+       */
       isEmpty: function (elements) {
         var self = this,
           node = self.firstChild,
@@ -7648,8 +7784,8 @@
 
               // Keep elements with attributes
               /*if (node.attributes.length) {
-  							return false;
-  						}*/
+                return false;
+              }*/
             }
 
             // Keep comments
@@ -7668,12 +7804,12 @@
       },
 
       /**
-  		 * Walks to the next or previous node and returns that node or null if it wasn't found.
-  		 *
-  		 * @method walk
-  		 * @param {Boolean} prev Optional previous node state defaults to false.
-  		 * @return {tinymce.html.Node} Node that is next to or previous of the current node.
-  		 */
+       * Walks to the next or previous node and returns that node or null if it wasn't found.
+       *
+       * @method walk
+       * @param {Boolean} prev Optional previous node state defaults to false.
+       * @return {tinymce.html.Node} Node that is next to or previous of the current node.
+       */
       walk: function (prev) {
         return walk(this, null, prev);
       }
@@ -7681,13 +7817,13 @@
 
     tinymce.extend(Node, {
       /**
-  		 * Creates a node of a specific type.
-  		 *
-  		 * @static
-  		 * @method create
-  		 * @param {String} name Name of the node type to create for example "b" or "#text".
-  		 * @param {Object} attrs Name/value collection of attributes that will be applied to elements.
-  		 */
+       * Creates a node of a specific type.
+       *
+       * @static
+       * @method create
+       * @param {String} name Name of the node type to create for example "b" or "#text".
+       * @param {Object} attrs Name/value collection of attributes that will be applied to elements.
+       */
       create: function (name, attrs) {
         var node, attrName;
 
@@ -7714,8 +7850,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -7726,25 +7863,25 @@
       makeMap = tinymce.makeMap;
 
     /**
-  	 * This class parses HTML code into a DOM like structure of nodes it will remove redundant whitespace and make
-  	 * sure that the node tree is valid according to the specified schema. So for example: <p>a<p>b</p>c</p> will become <p>a</p><p>b</p><p>c</p>
-  	 *
-  	 * @example
-  	 * var parser = new tinymce.html.DomParser({validate: true}, schema);
-  	 * var rootNode = parser.parse('<h1>content</h1>');
-  	 *
-  	 * @class tinymce.html.DomParser
-  	 * @version 3.4
-  	 */
+     * This class parses HTML code into a DOM like structure of nodes it will remove redundant whitespace and make
+     * sure that the node tree is valid according to the specified schema. So for example: <p>a<p>b</p>c</p> will become <p>a</p><p>b</p><p>c</p>
+     *
+     * @example
+     * var parser = new tinymce.html.DomParser({validate: true}, schema);
+     * var rootNode = parser.parse('<h1>content</h1>');
+     *
+     * @class tinymce.html.DomParser
+     * @version 3.4
+     */
 
     /**
-  	 * Constructs a new DomParser instance.
-  	 *
-  	 * @constructor
-  	 * @method DomParser
-  	 * @param {Object} settings Name/value collection of settings. comment, cdata, text, start and end are callbacks.
-  	 * @param {tinymce.html.Schema} schema HTML Schema class to use when parsing.
-  	 */
+     * Constructs a new DomParser instance.
+     *
+     * @constructor
+     * @method DomParser
+     * @param {Object} settings Name/value collection of settings. comment, cdata, text, start and end are callbacks.
+     * @param {tinymce.html.Schema} schema HTML Schema class to use when parsing.
+     */
     tinymce.html.DomParser = function (settings, schema) {
       var self = this,
         nodeFilters = {},
@@ -7765,6 +7902,24 @@
         nonEmptyElements = schema.getNonEmptyElements();
         textBlockElements = schema.getTextBlockElements();
         specialElements = schema.getSpecialElements();
+
+        var removeOrUnwrapInvalidNode = function (node, originalNodeParent) {
+          if (specialElements[node.name]) {
+            node.empty().remove();
+          } else {
+            // are the children of `node` valid children of the top level parent?
+            // if not, remove or unwrap them too
+            var children = node.children();
+
+            for (var childNode of children) {
+              if (!schema.isValidChild(originalNodeParent.name, childNode.name)) {
+                removeOrUnwrapInvalidNode(childNode, originalNodeParent);
+              }
+            }
+
+            node.unwrap();
+          }
+        };
 
         for (ni = 0; ni < nodes.length; ni++) {
           node = nodes[ni];
@@ -7798,49 +7953,55 @@
 
           // Get list of all parent nodes until we find a valid parent to stick the child into
           parents = [node];
+
           for (parent = node.parent; parent && !schema.isValidChild(parent.name, node.name) &&
-  					!nonSplitableElements[parent.name]; parent = parent.parent) {
+            !nonSplitableElements[parent.name]; parent = parent.parent) {
             parents.push(parent);
           }
 
           // Found a suitable parent
           if (parent && parents.length > 1) {
-            // Reverse the array since it makes looping easier
-            parents.reverse();
+            // If the node is a valid child of the parent, then try to move it. Otherwise unwrap it
+            if (schema.isValidChild(parent.name, node.name)) {
+              // Reverse the array since it makes looping easier
+              parents.reverse();
 
-            // Clone the related parent and insert that after the moved node
-            newParent = currentNode = self.filterNode(parents[0].clone());
+              // Clone the related parent and insert that after the moved node
+              newParent = currentNode = self.filterNode(parents[0].clone());
 
-            // Start cloning and moving children on the left side of the target node
-            for (i = 0; i < parents.length - 1; i++) {
-              if (schema.isValidChild(currentNode.name, parents[i].name)) {
-                tempNode = self.filterNode(parents[i].clone());
-                currentNode.append(tempNode);
+              // Start cloning and moving children on the left side of the target node
+              for (i = 0; i < parents.length - 1; i++) {
+                if (schema.isValidChild(currentNode.name, parents[i].name)) {
+                  tempNode = self.filterNode(parents[i].clone());
+                  currentNode.append(tempNode);
+                } else {
+                  tempNode = currentNode;
+                }
+
+                for (childNode = parents[i].firstChild; childNode && childNode != parents[i + 1];) {
+                  nextNode = childNode.next;
+                  tempNode.append(childNode);
+                  childNode = nextNode;
+                }
+
+                currentNode = tempNode;
+              }
+
+              if (!newParent.isEmpty(nonEmptyElements)) {
+                parent.insert(newParent, parents[0], true);
+                parent.insert(node, newParent);
               } else {
-                tempNode = currentNode;
+                parent.insert(node, parents[0], true);
               }
 
-              for (childNode = parents[i].firstChild; childNode && childNode != parents[i + 1];) {
-                nextNode = childNode.next;
-                tempNode.append(childNode);
-                childNode = nextNode;
+              // Check if the element is empty by looking through it's contents and special treatment for <p><br /></p>
+              parent = parents[0];
+
+              if (parent.isEmpty(nonEmptyElements) || parent.firstChild === parent.lastChild && parent.firstChild.name === 'br') {
+                parent.empty().remove();
               }
-
-              currentNode = tempNode;
-            }
-
-            if (!newParent.isEmpty(nonEmptyElements)) {
-              parent.insert(newParent, parents[0], true);
-              parent.insert(node, newParent);
             } else {
-              parent.insert(node, parents[0], true);
-            }
-
-            // Check if the element is empty by looking through it's contents and special treatment for <p><br /></p>
-            parent = parents[0];
-
-            if (parent.isEmpty(nonEmptyElements) || parent.firstChild === parent.lastChild && parent.firstChild.name === 'br') {
-              parent.empty().remove();
+              removeOrUnwrapInvalidNode(node, node.parent);
             }
           } else if (node.parent) {
             // If it's an LI try to find a UL/OL for it or wrap it
@@ -7865,24 +8026,20 @@
             if (schema.isValidChild(node.parent.name, 'div') && schema.isValidChild('div', node.name)) {
               node.wrap(self.filterNode(new Node('div', 1)));
             } else {
-              // We failed wrapping it, then remove or unwrap it
-              if (specialElements[node.name]) {
-                node.empty().remove();
-              } else {
-                node.unwrap();
-              }
+              // We failed wrapping it, remove or unwrap it
+              removeOrUnwrapInvalidNode(node, node.parent);
             }
           }
         }
       }
 
       /**
-  		 * Runs the specified node though the element and attributes filters.
-  		 *
-  		 * @method filterNode
-  		 * @param {tinymce.html.Node} Node the node to run filters on.
-  		 * @return {tinymce.html.Node} The passed in node.
-  		 */
+       * Runs the specified node though the element and attributes filters.
+       *
+       * @method filterNode
+       * @param {tinymce.html.Node} Node the node to run filters on.
+       * @return {tinymce.html.Node} The passed in node.
+       */
       self.filterNode = function (node) {
         var i, name, list;
 
@@ -7917,19 +8074,19 @@
       };
 
       /**
-  		 * Adds a node filter function to the parser, the parser will collect the specified nodes by name
-  		 * and then execute the callback ones it has finished parsing the document.
-  		 *
-  		 * @example
-  		 * parser.addNodeFilter('p,h1', function(nodes, name) {
-  		 *		for (var i = 0; i < nodes.length; i++) {
-  		 *			console.log(nodes[i].name);
-  		 *		}
-  		 * });
-  		 * @method addNodeFilter
-  		 * @method {String} name Comma separated list of nodes to collect.
-  		 * @param {function} callback Callback function to execute once it has collected nodes.
-  		 */
+       * Adds a node filter function to the parser, the parser will collect the specified nodes by name
+       * and then execute the callback ones it has finished parsing the document.
+       *
+       * @example
+       * parser.addNodeFilter('p,h1', function(nodes, name) {
+       *		for (var i = 0; i < nodes.length; i++) {
+       *			console.log(nodes[i].name);
+       *		}
+       * });
+       * @method addNodeFilter
+       * @method {String} name Comma separated list of nodes to collect.
+       * @param {function} callback Callback function to execute once it has collected nodes.
+       */
       self.addNodeFilter = function (name, callback) {
         each(explode(name), function (name) {
           var list = nodeFilters[name];
@@ -7943,19 +8100,19 @@
       };
 
       /**
-  		 * Adds a attribute filter function to the parser, the parser will collect nodes that has the specified attributes
-  		 * and then execute the callback ones it has finished parsing the document.
-  		 *
-  		 * @example
-  		 * parser.addAttributeFilter('src,href', function(nodes, name) {
-  		 *		for (var i = 0; i < nodes.length; i++) {
-  		 *			console.log(nodes[i].name);
-  		 *		}
-  		 * });
-  		 * @method addAttributeFilter
-  		 * @method {String} name Comma separated list of nodes to collect.
-  		 * @param {function} callback Callback function to execute once it has collected nodes.
-  		 */
+       * Adds a attribute filter function to the parser, the parser will collect nodes that has the specified attributes
+       * and then execute the callback ones it has finished parsing the document.
+       *
+       * @example
+       * parser.addAttributeFilter('src,href', function(nodes, name) {
+       *		for (var i = 0; i < nodes.length; i++) {
+       *			console.log(nodes[i].name);
+       *		}
+       * });
+       * @method addAttributeFilter
+       * @method {String} name Comma separated list of nodes to collect.
+       * @param {function} callback Callback function to execute once it has collected nodes.
+       */
       self.addAttributeFilter = function (name, callback) {
         each(explode(name), function (name) {
           var i;
@@ -7975,15 +8132,15 @@
       };
 
       /**
-  		 * Parses the specified HTML string into a DOM like node tree and returns the result.
-  		 *
-  		 * @example
-  		 * var rootNode = new DomParser({...}).parse('<b>text</b>');
-  		 * @method parse
-  		 * @param {String} html Html string to sax parse.
-  		 * @param {Object} args Optional args object that gets passed to all filter functions.
-  		 * @return {tinymce.html.Node} Root node containing the tree.
-  		 */
+       * Parses the specified HTML string into a DOM like node tree and returns the result.
+       *
+       * @example
+       * var rootNode = new DomParser({...}).parse('<b>text</b>');
+       * @method parse
+       * @param {String} html Html string to sax parse.
+       * @param {Object} args Optional args object that gets passed to all filter functions.
+       * @return {tinymce.html.Node} Root node containing the tree.
+       */
       self.parse = function (html, args) {
         var parser, rootNode, node, nodes, i, l, fi, fl, list, name, validate;
         var blockElements, startWhiteSpaceRegExp, invalidChildren = [],
@@ -8290,14 +8447,14 @@
                 // Trim start white space
                 // Removed due to: #5424
                 /*textNode = node.prev;
-  							if (textNode && textNode.type === 3) {
-  								text = textNode.value.replace(startWhiteSpaceRegExp, '');
+                if (textNode && textNode.type === 3) {
+                  text = textNode.value.replace(startWhiteSpaceRegExp, '');
 
-  								if (text.length > 0)
-  									textNode.value = text;
-  								else
-  									textNode.remove();
-  							}*/
+                  if (text.length > 0)
+                    textNode.value = text;
+                  else
+                    textNode.remove();
+                }*/
               }
 
               // Check if we exited a whitespace preserved element
@@ -8591,8 +8748,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -8759,8 +8917,9 @@
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -8968,8 +9127,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -9113,8 +9273,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -9335,8 +9496,9 @@
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   // JSLint defined globals
@@ -9938,8 +10100,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   tinymce.dom.TreeWalker = function (startNode, rootNode) {
@@ -10040,8 +10203,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -12375,8 +12539,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -12510,8 +12675,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -12575,8 +12741,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
   (function (tinymce) {
   	var each = tinymce.each,
@@ -13118,8 +13285,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -13194,13 +13362,119 @@
   })(tinymce);
 
   /**
+   * Copyright (c) Tiny Technologies, Inc. All rights reserved.
+   * Licensed under the LGPL or a commercial license.
+   * For LGPL see License.txt in the project root for license information.
+   * For commercial licenses see https://www.tiny.cloud/
+   * 
+   * This is a modified version of the original TrimBody.ts file for es5 compatibility.
+   * Source: https://github.com/tinymce/tinymce/blob/release/5.10/modules/tinymce/src/core/main/ts/dom/TrimBody.ts
+   */
+
+  (function (tinymce) {    
+      var ZWSP = '\uFEFF';
+
+      function getTemporaryNodeSelector(tempAttrs) {
+          return "" + (tempAttrs.length === 0 ? '' : tempAttrs.map(function (attr) {
+              return "[" + attr + "]";
+          }).join(',') + ",") + "[data-mce-bogus=\"all\"]";
+      }
+
+      function getTemporaryNodes(body, tempAttrs) {
+          return body.querySelectorAll(getTemporaryNodeSelector(tempAttrs));
+      }
+
+      function createCommentWalker(body) {
+          return document.createTreeWalker(body, NodeFilter.SHOW_COMMENT, null, false);
+      }
+
+      function hasComments(body) {
+          return createCommentWalker(body).nextNode() !== null;
+      }
+
+      function hasTemporaryNodes(body, tempAttrs) {
+          return body.querySelector(getTemporaryNodeSelector(tempAttrs)) !== null;
+      }
+
+      function trimTemporaryNodes(body, tempAttrs) {
+          tinymce.each(getTemporaryNodes(body, tempAttrs), function (elm) {
+              if (elm.getAttribute('data-mce-bogus') === 'all') {
+                  if (elm && elm.parentNode) {
+                      elm.parentNode.removeChild(elm);
+                  }
+              } else {
+                  tinymce.each(tempAttrs, function (attr) {
+                      if (elm.hasAttribute(attr)) {
+                          elm.removeAttribute(attr);
+                      }
+                  });
+              }
+          });
+      }
+
+      function removeCommentsContainingZwsp(body) {
+          var walker = createCommentWalker(body);
+          var nextNode = walker.nextNode();
+          while (nextNode !== null) {
+              var comment = walker.currentNode;
+              nextNode = walker.nextNode();
+              if (typeof comment.nodeValue === 'string' && comment.nodeValue.indexOf(ZWSP) !== -1) {
+                  if (comment && comment.parentNode) {
+                      comment.parentNode.removeChild(comment);
+                  }
+              }
+          }
+      }
+
+      function deepClone(body) {
+          return body.cloneNode(true);
+      }
+
+      function trim(body, tempAttrs) {
+          var trimmed = body;
+
+          if (hasComments(body)) {
+              trimmed = deepClone(body);
+              removeCommentsContainingZwsp(trimmed);
+              if (hasTemporaryNodes(trimmed, tempAttrs)) {
+                  trimTemporaryNodes(trimmed, tempAttrs);
+              }
+          } else if (hasTemporaryNodes(body, tempAttrs)) {
+              trimmed = deepClone(body);
+              trimTemporaryNodes(trimmed, tempAttrs);
+          }
+
+          return trimmed;
+      }
+
+
+      /**
+       * Constucts a new DOM serializer class.
+       *
+       * @constructor
+       * @method Serializer
+       * @param {Object} settings Serializer settings object.
+       * @param {tinymce.dom.DOMUtils} dom DOMUtils instance reference.
+       * @param {tinymce.html.Schema} schema Optional schema reference.
+       */
+      tinymce.dom.TrimBody = {
+          trim: trim,
+          hasComments: hasComments,
+          hasTemporaryNodes: hasTemporaryNodes,
+          trimTemporaryNodes: trimTemporaryNodes,
+          removeCommentsContainingZwsp: removeCommentsContainingZwsp
+      };
+  })(tinymce);
+
+  /**
    * ExtendingChar.js
    *
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -13253,8 +13527,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -13292,8 +13567,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -16633,6 +16909,7 @@
    * other free or open source software licenses.
    */
 
+
   var Dispatcher = tinymce.util.Dispatcher;
 
   tinymce.Clipboard = function (editor) {
@@ -16662,8 +16939,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -16926,8 +17204,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -17084,8 +17363,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -17170,8 +17450,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
   (function (tinymce) {
     var NodeType = tinymce.dom.NodeType, Zwsp = tinymce.text.Zwsp, CaretContainer = tinymce.caret.CaretContainer, CaretPosition = tinymce.caret.CaretPosition;
@@ -17279,8 +17560,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -17648,8 +17930,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -17964,8 +18247,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -18206,8 +18490,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -18408,8 +18693,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -18544,8 +18830,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -20777,8 +21064,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
 
@@ -20865,8 +21153,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -21379,8 +21668,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
 
@@ -22093,8 +22383,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -23508,8 +23799,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -23544,6 +23836,8 @@
       schema = schema || new tinymce.html.Schema(settings);
       settings.entity_encoding = settings.entity_encoding || 'named';
       settings.remove_trailing_brs = "remove_trailing_brs" in settings ? settings.remove_trailing_brs : true;
+
+      var tempAttrs = ['data-mce-selected'];
 
       /**
        * IE 11 has a fantastic bug where it will produce two trailing BR elements to iframe bodies when
@@ -23994,6 +24288,24 @@
          */
         setRules: function (rules) {
           schema.setValidElements(rules);
+        },
+
+        addTempAttr: function (name) {
+          if (tinymce.inArray(tempAttrs, name) === -1) {
+            htmlParser.addAttributeFilter(name, function (nodes, name) {
+              var i = nodes.length;
+
+              while (i--) {
+                nodes[i].attr(name, null);
+              }
+            });
+
+            tempAttrs.push(name);
+          }
+        },
+
+        getTempAttrs: function () {
+          return tempAttrs;
         }
       };
     };
@@ -24005,8 +24317,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /*eslint no-console:1 */
@@ -24557,8 +24870,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -24782,8 +25096,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -25004,8 +25319,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -25223,8 +25539,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -25314,8 +25631,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
   (function (tinymce) {
     // Shorten class names
@@ -25427,8 +25745,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -25475,8 +25794,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -25546,8 +25866,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -25739,8 +26060,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -26584,8 +26906,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -26711,8 +27034,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -27477,8 +27801,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -28196,8 +28521,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -28393,8 +28719,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -28582,8 +28909,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -28903,8 +29231,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -28989,8 +29318,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -29038,8 +29368,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -29867,8 +30198,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
   (function (tinymce) {
     // Shorten class names
@@ -29934,8 +30266,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
   (function (tinymce) {
     // Shorten class names
@@ -30166,8 +30499,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -30542,8 +30876,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -31108,8 +31443,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -31265,8 +31601,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
 
@@ -31372,8 +31709,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -31388,7 +31726,9 @@
       ThemeManager = tinymce.ThemeManager,
       PluginManager = tinymce.PluginManager,
       EditorFocus = tinymce.EditorFocus,
-      explode = tinymce.explode;
+      explode = tinymce.explode,
+      Zwsp = tinymce.text.Zwsp,
+      TrimBody = tinymce.dom.TrimBody;
 
     /**
      * This class contains the core logic for a TinyMCE editor.
@@ -33208,7 +33548,7 @@
 
         // Get raw contents or by default the cleaned contents
         if (args.format == 'raw') {
-          content = body.innerHTML;
+          content = tinymce.trim(Zwsp.trim(TrimBody.trim(body, self.serializer.getTempAttrs()).innerHTML));
         } else if (args.format == 'text') {
           content = body.innerText || body.textContent;
         } else {
@@ -33564,8 +33904,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -34619,8 +34960,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2016 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -34800,8 +35142,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2016 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -35203,8 +35546,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -36103,8 +36447,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -36126,7 +36471,7 @@
           format: 'raw',
           no_events: 1,
           undo: true
-        }).replace(/<span[^>]+data-mce-bogus[^>]+>[\u200B\uFEFF]+<\/span>/g, ''));
+        }));
       }
 
       function addNonTypingUndoLevel() {
@@ -36449,8 +36794,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   tinymce.ForceBlocks = function (editor) {
@@ -36591,8 +36937,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+    * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+    * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -37401,8 +37748,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -38223,8 +38571,9 @@
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -41034,8 +41383,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   tinymce.onAddEditor.add(function (tinymce, ed) {
@@ -41102,8 +41452,9 @@
    * Copyright, Moxiecode Systems AB
    * Released under LGPL License.
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   (function (tinymce) {
@@ -41842,8 +42193,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -42114,8 +42466,9 @@
    * Released under LGPL License.
    * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
    *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://www.tinymce.com/contributing
+   * License: http://www.tinymce.com/license - Inactive
+   * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
   /**
@@ -46332,10 +46685,17 @@
                   each(r.selectorText.split(','), function (v) {                  
                     v = v.trim();
 
+                    // internal styles
                     if (/\.mce[-A-Za-z0-9]/.test(v)) {
                       return;
                     }
 
+                    // wf-* styles
+                    if (/\.wf[e]?-/.test(v)) {
+                      return;
+                    }
+
+                    // custom body classes
                     if (isBodyClass(v)) {
                       return;
                     }
