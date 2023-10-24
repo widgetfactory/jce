@@ -421,10 +421,17 @@
                 each(r.selectorText.split(','), function (v) {                  
                   v = v.trim();
 
+                  // internal styles
                   if (/\.mce[-A-Za-z0-9]/.test(v)) {
                     return;
                   }
 
+                  // wf-* styles
+                  if (/\.wf[e]?-/.test(v)) {
+                    return;
+                  }
+
+                  // custom body classes
                   if (isBodyClass(v)) {
                     return;
                   }
