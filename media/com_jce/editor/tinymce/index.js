@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import '../../../../../tinymce-muon-retina/jscripts/tiny_mce/index.js';
+import '../../../../../tinymce-muon-retina/tinymce/index.js';
 
 import './plugins/core/plugin.js';
 import './plugins/help/plugin.js';
