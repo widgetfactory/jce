@@ -4,8 +4,9 @@
  * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
  *
- * License: http://www.tinymce.com/license
- * Contributing: http://www.tinymce.com/contributing
+ * License: http://www.tinymce.com/license - Inactive
+ * Licence: GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * Contributing: http://www.tinymce.com/contributing - Inactive
  */
 
 // Some global instances
