@@ -62,9 +62,9 @@ function openWin(ed, cmd) {
         pasteEd.contentCSS = ed.contentCSS;
 
         pasteEd.onPreInit.add(function () {
-            var doc = this.getDoc();
-
-            this.onPaste.add(function (el, e) {
+            /*var doc = this.getDoc();
+            
+            this.onPaste.addToTop(function (el, e) {                
                 var clipboardContent = Utils.getDataTransferItems(e.clipboardData || e.dataTransfer || doc.dataTransfer);
 
                 if (clipboardContent) {
@@ -76,6 +76,7 @@ function openWin(ed, cmd) {
                     }
 
                     content = Utils.trimHtml(content);
+                    content = Utils.sanitizeHtml(ed, content);
 
                     var sel = doc.getSelection();
 
@@ -118,7 +119,7 @@ function openWin(ed, cmd) {
 
                     e.preventDefault();
                 }
-            });
+            });*/
 
             // remove fragment attribute (from InsertContent)
             this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {
