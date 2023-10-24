@@ -1,5 +1,3 @@
-import * as Utils from './Utils.js';
-
 var DOM = tinymce.DOM;
 
 function openWin(ed, cmd) {
@@ -62,65 +60,6 @@ function openWin(ed, cmd) {
         pasteEd.contentCSS = ed.contentCSS;
 
         pasteEd.onPreInit.add(function () {
-            /*var doc = this.getDoc();
-            
-            this.onPaste.addToTop(function (el, e) {                
-                var clipboardContent = Utils.getDataTransferItems(e.clipboardData || e.dataTransfer || doc.dataTransfer);
-
-                if (clipboardContent) {
-                    isInternalContent = Utils.hasContentType(clipboardContent, 'x-tinymce/html');
-                    var content = clipboardContent['x-tinymce/html'] || clipboardContent['text/html'] || clipboardContent['text/plain'] || '';
-
-                    if (ed.settings.clipboard_process_stylesheets !== false) {
-                        content = Utils.processStylesheets(content);
-                    }
-
-                    content = Utils.trimHtml(content);
-                    content = Utils.sanitizeHtml(ed, content);
-
-                    var sel = doc.getSelection();
-
-                    if (sel != null) {
-                        var rng = sel.getRangeAt(0);
-
-                        if (rng != null) {
-                            // Make caret marker since insertNode places the caret in the beginning of text after insert
-                            content += '<span id="__mce_caret">_</span>';
-
-                            // Delete and insert new node
-                            if (rng.startContainer == doc && rng.endContainer == doc) {
-                                // WebKit will fail if the body is empty since the range is then invalid and it can't insert contents
-                                doc.body.innerHTML = content;
-                            } else {
-                                rng.deleteContents();
-
-                                if (doc.body.childNodes.length === 0) {
-                                    doc.body.innerHTML = content;
-                                } else {
-                                    rng.insertNode(rng.createContextualFragment(content));
-                                }
-                            }
-
-                            // Move to caret marker
-                            var caretNode = doc.getElementById('__mce_caret');
-
-                            rng = doc.createRange();
-                            rng.setStartBefore(caretNode);
-                            rng.setEndBefore(caretNode);
-                            sel.removeAllRanges();
-                            sel.addRange(rng);
-
-                            // Remove the caret position
-                            if (caretNode.parentNode) {
-                                caretNode.parentNode.removeChild(caretNode);
-                            }
-                        }
-                    }
-
-                    e.preventDefault();
-                }
-            });*/
-
             // remove fragment attribute (from InsertContent)
             this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {
                 var i = nodes.length;
