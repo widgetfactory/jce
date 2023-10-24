@@ -603,13 +603,15 @@
     }
 
     function isMediaHtml(ed, html) {
-        var div = ed.dom.create('div', {}, html), node = div.firstChild;
+        var trimmedString = html.trim();
+        // find the first tag, eg: <video
+        var match = trimmedString.match(/^<([a-zA-Z0-9]+)\b/);
 
-        if (!node || node.nodeType !== 1) {
-            return false;
+        if (match) {
+            return isPreviewMedia(match[1].toLowerCase());
         }
 
-        return isPreviewMedia(node.tagName.toLowerCase());
+        return false;
     }
 
     // Media types supported by this plugin
