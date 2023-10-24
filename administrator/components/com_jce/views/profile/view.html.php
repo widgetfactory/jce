@@ -82,6 +82,8 @@ class JceViewProfile extends HtmlView
         $document->addScript(Uri::root(true) . '/media/com_jce/admin/js/profile.min.js?' . $hash);
 
         // default theme
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/editor/tinymce/themes/advanced/skins/default/ui.css?' . $hash);
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/editor/tinymce/themes/advanced/skins/default/ui_touch.css?' . $hash);
         $document->addStyleSheet(Uri::root(true) . '/media/com_jce/editor/tinymce/themes/advanced/skins/default/ui.admin.css?' . $hash);
     }
 
