@@ -38391,6 +38391,12 @@
               autofocus: true,
               onsubmit: function () {
                 var value = DOM.getValue(self.editor.id + '_prompt_input');
+                // decode
+                value = DOM.decode(value);
+                // simple sanitize for most use cases
+                value = value.replace(/[^\w\s\._\u0080-\uFFFF]/g, '');
+
+                console.log(value);
 
                 if (cb) {
                   cb.call(s || self, value);
