@@ -208,6 +208,9 @@
                                 onsubmit: function (e) {
                                     var value = DOM.getValue(ed.id + '_anchor_input');
 
+                                    // remove invalid characters
+                                    value = value.replace(/[^\w\:\._]/g, '');
+
                                     if (!value) {
                                         e.cancelSubmit = true;
                                     }
