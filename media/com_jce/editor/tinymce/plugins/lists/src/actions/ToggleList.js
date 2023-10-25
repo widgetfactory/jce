@@ -17,6 +17,10 @@ import SplitList from '../core/SplitList.js';
 
 var BookmarkManager = tinymce.dom.BookmarkManager;
 
+var getRoot = function (editor) {
+  return editor.dom.getRoot();
+};
+
 var updateListStyle = function (dom, el, detail) {
   var type = detail['list-style-type'] ? detail['list-style-type'] : null;
   dom.setStyle(el, 'list-style-type', type);
@@ -41,7 +45,7 @@ var updateListWithDetails = function (dom, el, detail) {
 };
 
 var getEndPointNode = function (editor, rng, start) {
-  var container, offset, root = editor.getBody();
+  var container, offset, root = getRoot(editor);
 
   container = rng[start ? 'startContainer' : 'endContainer'];
   offset = rng[start ? 'startOffset' : 'endOffset'];
@@ -63,11 +67,13 @@ var getEndPointNode = function (editor, rng, start) {
     container = container.parentNode;
   }
 
+  console.log(container);
+
   return container;
 };
 
 var getSelectedTextBlocks = function (editor, rng) {
-  var textBlocks = [], root = editor.getBody(), dom = editor.dom;
+  var textBlocks = [], root = getRoot(editor), dom = editor.dom;
 
   var startNode = getEndPointNode(editor, rng, true);
   var endNode = getEndPointNode(editor, rng, false);
@@ -167,7 +173,7 @@ var applyList = function (editor, listName, detail) {
 };
 
 var removeList = function (editor) {
-  var bookmark = Bookmark.createBookmark(editor.selection.getRng(true)), root = editor.getBody();
+  var bookmark = Bookmark.createBookmark(editor.selection.getRng(true)), root = getRoot(editor);
   var listItems = Selection.getSelectedListItems(editor);
   var emptyListItems = tinymce.grep(listItems, function (li) {
     return editor.dom.isEmpty(li);
@@ -272,7 +278,7 @@ var hasListStyleDetail = function (detail) {
 };
 
 var toggleSingleList = function (editor, parentList, listName, detail) {
-  if (parentList === editor.getBody()) {
+  if (parentList === getRoot(editor)) {
     return;
   }
 

@@ -135,6 +135,7 @@
    * Contributing: http://www.tinymce.com/contributing
    */
 
+
   var DOM$5 = tinymce.DOM;
 
   /**
@@ -397,6 +398,7 @@
    * Contributing: http://www.tinymce.com/contributing
    */
 
+
   var DOM$3 = tinymce.DOM;
 
   var normalizeList = function (dom, ul) {
@@ -657,7 +659,7 @@
 
     if (listElements.length) {
       var bookmark = Bookmark.createBookmark(editor.selection.getRng(true));
-      var i, y, root = editor.getBody();
+      var i, y, root = editor.dom.getRoot();
 
       i = listElements.length;
       while (i--) {
@@ -704,7 +706,12 @@
    * Contributing: http://www.tinymce.com/contributing
    */
 
+
   var BookmarkManager = tinymce.dom.BookmarkManager;
+
+  var getRoot = function (editor) {
+    return editor.dom.getRoot();
+  };
 
   var updateListStyle = function (dom, el, detail) {
     var type = detail['list-style-type'] ? detail['list-style-type'] : null;
@@ -730,7 +737,7 @@
   };
 
   var getEndPointNode = function (editor, rng, start) {
-    var container, offset, root = editor.getBody();
+    var container, offset, root = getRoot(editor);
 
     container = rng[start ? 'startContainer' : 'endContainer'];
     offset = rng[start ? 'startOffset' : 'endOffset'];
@@ -752,11 +759,13 @@
       container = container.parentNode;
     }
 
+    console.log(container);
+
     return container;
   };
 
   var getSelectedTextBlocks = function (editor, rng) {
-    var textBlocks = [], root = editor.getBody(), dom = editor.dom;
+    var textBlocks = [], root = getRoot(editor), dom = editor.dom;
 
     var startNode = getEndPointNode(editor, rng, true);
     var endNode = getEndPointNode(editor, rng, false);
@@ -856,7 +865,7 @@
   };
 
   var removeList = function (editor) {
-    var bookmark = Bookmark.createBookmark(editor.selection.getRng(true)), root = editor.getBody();
+    var bookmark = Bookmark.createBookmark(editor.selection.getRng(true)), root = getRoot(editor);
     var listItems = Selection.getSelectedListItems(editor);
     var emptyListItems = tinymce.grep(listItems, function (li) {
       return editor.dom.isEmpty(li);
@@ -961,7 +970,7 @@
   };
 
   var toggleSingleList = function (editor, parentList, listName, detail) {
-    if (parentList === editor.getBody()) {
+    if (parentList === getRoot(editor)) {
       return;
     }
 
@@ -1248,6 +1257,7 @@
    * License: http://www.tinymce.com/license
    * Contributing: http://www.tinymce.com/contributing
    */
+
 
   var VK = tinymce.VK;
 

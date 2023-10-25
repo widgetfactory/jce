@@ -93,7 +93,7 @@ var outdentSelection = function (editor) {
 
   if (listElements.length) {
     var bookmark = Bookmark.createBookmark(editor.selection.getRng(true));
-    var i, y, root = editor.getBody();
+    var i, y, root = editor.dom.getRoot();
 
     i = listElements.length;
     while (i--) {
