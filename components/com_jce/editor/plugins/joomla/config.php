@@ -9,6 +9,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -23,7 +24,10 @@ class WFJoomlaPluginConfig
             return;
         }
 
-        $plugins = PluginHelper::getPlugin('editors-xtd');
+        // everything below is only required for SP Page Builder...
+        if (Factory::getApplication()->input->get('option') !== 'com_sppagebuilder') {
+            return;
+        }
 
         $list = array();
         $editor = Editor::getInstance('jce');
@@ -32,43 +36,11 @@ class WFJoomlaPluginConfig
 
         $i = 0;
 
-        foreach ($plugins as $plugin) {
+        $buttons = $editor->getButtons('__jce__');
+
+        foreach($buttons as $button) {
             // skip buttons better implemented by editor
-            if (in_array($plugin->name, $excluded)) {
-                continue;
-            }
-
-            // fully load plugin instance
-            PluginHelper::importPlugin('editors-xtd', $plugin->name, true);
-
-            // create the button class name
-            $className = 'PlgEditorsXtd' . $plugin->name;
-
-            // or an alternative
-            if (!class_exists($className)) {
-                $className = 'PlgButton' . $plugin->name;
-            }
-
-            $instance = null;
-
-            if (class_exists($className)) {
-                $dispatcher = is_subclass_of($editor, 'Joomla\Event\DispatcherAwareInterface', false) ? $editor->getDispatcher() : $editor;
-                $instance = new $className($dispatcher, (array) $plugin);
-            }
-
-            // check that the button is valid
-            if (!$instance || !method_exists($instance, 'onDisplay')) {
-                continue;
-            }
-
-            $button = $instance->onDisplay('__jce__', null, null);
-
-            if (empty($button) || !is_object($button)) {
-                continue;
-            }
-
-            // should be a CMSObject
-            if (!($button instanceof CMSObject)) {
+            if (in_array($button->name, $excluded)) {
                 continue;
             }
 
