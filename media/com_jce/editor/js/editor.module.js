@@ -67,3 +67,6 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
     const JceEditor = new JceDecorator(editor, 'jce', elm.id);
     JoomlaEditor.register(JceEditor);
 });
+
+// expose for detection
+window.JceDecorator = JceDecorator;

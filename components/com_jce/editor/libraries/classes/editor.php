@@ -505,7 +505,7 @@ class WFEditor
             $this->addScript($this->getURL(true) . '/tinymce/tinymce.js');
 
             if (version_compare(JVERSION, '5', 'ge')) {
-                $this->addScript($this->getURL(true) . '/js/editor.es6.js', 'module');
+                $this->addScript($this->getURL(true) . '/js/editor.module.js', 'module');
             }
             
             // Editor
@@ -564,7 +564,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
 
         $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
