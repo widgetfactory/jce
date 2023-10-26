@@ -87,8 +87,8 @@ class plgEditorJCE extends CMSPlugin
         $editor = $this->getEditorInstance();
         $editor->init();
 
-        foreach ($editor->getScripts() as $script) {
-            $document->addScript($script);
+        foreach ($editor->getScripts() as $script => $type) {
+            $document->addScript($script, array(), array('type' => $type));
         }
 
         foreach ($editor->getStyleSheets() as $style) {
