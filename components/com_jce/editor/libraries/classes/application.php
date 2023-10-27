@@ -161,6 +161,11 @@ class WFApplication extends CMSObject
     {
         $plugins = JcePluginsHelper::getPlugins();
 
+        // installed plugins will have a name prefixed with "editor-", so remove to validate
+        if (preg_match('/^editor[-_]/', $name)) {
+            $name = preg_replace('/^editor[-_]/', '', $name);
+        }
+
         if (!isset($plugins[$name])) {
             return false;
         }
