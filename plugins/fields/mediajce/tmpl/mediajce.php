@@ -19,7 +19,20 @@ use Joomla\CMS\Layout\LayoutHelper;
 // load helper
 require_once JPATH_PLUGINS . '/fields/mediajce/helper/mediahelper.php';
 
-if (empty($field->value) || empty($field->value['media_src'])) {
+if (empty($field->value)) {
+    return;
+}
+
+// single value, may be subform
+if (is_string($field->value)) {
+    $field->value = array(
+        'media_src' => $field->value,
+        'media_type' => WfMediaHelper::isImage($field->value) ? 'embed' : 'link'
+    );
+}
+
+// no src value set
+if (empty($field->value['media_src'])) {
     return;
 }
 

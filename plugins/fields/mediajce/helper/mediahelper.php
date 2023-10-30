@@ -71,4 +71,15 @@ final class WfMediaHelper {
 
         return $layout;
     }
+
+    /**
+     * Determine whether the value is an image
+     *
+     * @param [string] $value
+     * @return boolean
+     */
+    public static function isImage($value) {
+        $extension = pathinfo($value, PATHINFO_EXTENSION);
+        return in_array($extension, explode(',', self::$allowable['image']));
+    }
 }

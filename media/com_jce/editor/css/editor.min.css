@@ -345,3 +345,6 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
 .com_k2 .k2ItemFormEditor .wf-editor-container .wf-editor-header {
   padding-top: 0.25em;
 }
+.wf-media-wrapper td input[type="text"]:not(.field-media-input) {
+  width: 100%;
+}
