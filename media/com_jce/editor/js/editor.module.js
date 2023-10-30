@@ -10,7 +10,7 @@ class JceDecorator extends JoomlaEditorDecorator {
      * @returns {string}
      */
     getValue() {
-        return this.instance.getContent();
+        return WfEditor.getContent(this.instance.id);
     }
 
     /**
@@ -18,7 +18,7 @@ class JceDecorator extends JoomlaEditorDecorator {
      * @returns {JceDecorator}
      */
     setValue(value) {
-        this.instance.setContent(value);
+        WfEditor.setContent(this.instance.id, value);
         return this;
     }
 
@@ -26,13 +26,11 @@ class JceDecorator extends JoomlaEditorDecorator {
      * @returns {string}
      */
     getSelection() {
-        return this.instance.selection.getContent({
-            format: 'text'
-        });
+        return WfEditor.getSelection(this.instance.id, { format: 'text' });
     }
 
     replaceSelection(value) {
-        this.instance.execCommand('mceInsertContent', false, value);
+        WfEditor.insert(this.instance.id, value);
         return this;
     }
 
