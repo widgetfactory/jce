@@ -102,6 +102,7 @@
 	font-size: 0;
 	max-width: 114px;
 	margin: 0;
+	border: 1px solid #ccc;
 }
 
 .mceEditor .mceToolbarItem .mceListBox:before {
@@ -135,6 +136,10 @@
 
 .mceDefaultSkin .mceStatusbar {
 	line-height: 1;
+}
+
+.mceDefaultSkin .mceToolbarItem .mceIcon img {
+	width: 16px;
 }
 
 .mceDefaultSkinTouch .mceToolBarItem .mceListBox,
