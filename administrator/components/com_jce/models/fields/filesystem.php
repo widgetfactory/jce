@@ -93,7 +93,7 @@ class JFormFieldFilesystem extends ListField
                 // bind data to form
                 $form->bind($data);
 
-                $html .= '<div class="well well-small p-2 bg-light" data-toggle-target="filesystem-options-' . $plugin->name . '">';
+                $html .= '<div class="well well-small p-3 card" data-toggle-target="filesystem-options-' . $plugin->name . '">';
 
                 $fields = $form->getFieldset('filesystem.' . $plugin->name);
 

@@ -101,9 +101,11 @@ class JFormFieldKeyValue extends FormField
         // And finaly build a main container
         $str = array();
 
+        $str[] = '<div class="form-field-repeatable">';
+
         foreach ($values as $value) {
             $str[] = '<div class="form-field-repeatable-item wf-keyvalue">';
-            $str[] = '  <div class="form-field-repeatable-item-group well well-small p-4 bg-light">';
+            $str[] = '  <div class="form-field-repeatable-item-group well p-4 card">';
 
             $n = 0;
 
@@ -145,6 +147,8 @@ class JFormFieldKeyValue extends FormField
         }
 
         $str[] = '<input type="hidden" name="' . $this->name . '" value="' . $this->value . '" />';
+
+        $str[] = '</div>';
 
         return implode("", $str);
     }

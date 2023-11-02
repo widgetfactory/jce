@@ -563,7 +563,7 @@
         });
 
         // show first tab pane
-        $tabs.not('.hide').first().addClass('active').trigger('click');
+        $tabs.not('.hide').first().addClass('active show').trigger('click');
     }
 
     $(document).ready(function () {

@@ -1,0 +1,94 @@
+.ui-jce {
+  .blockformats {
+    position: relative;
+
+    .blockformat-item {
+      padding: 5px;
+      min-width: 200px;
+      max-width: 300px;
+      position: relative;
+      box-sizing: border-box;
+      cursor: move;
+      line-height: 30px;
+
+      i {
+        margin: 10px 0;
+      }
+
+      label {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      input {
+        margin: 8px 10px;
+      }
+
+      // Styles for different block formats
+      .blockformat-code,
+      .blockformat-samp {
+        font-family: monospace;
+      }
+
+      .blockformat-strong {
+        font-weight: bolder;
+      }
+
+      .blockformat-em {
+        font-style: italic;
+      }
+
+      .blockformat-sub {
+        vertical-align: sub;
+      }
+
+      .blockformat-sup {
+        vertical-align: super;
+      }
+
+      .blockformat-h1 {
+        font-size: 2em;
+      }
+
+      .blockformat-h2 {
+        font-size: 1.5em;
+      }
+
+      .blockformat-h3 {
+        font-size: 1.17em;
+      }
+
+      .blockformat-h4 {
+        // No additional styles
+      }
+
+      .blockformat-h5 {
+        font-size: .83em;
+      }
+
+      .blockformat-h6 {
+        font-size: .75em;
+      }
+
+      .blockformat-span {
+        float: none;
+        margin: 0;
+        display: inline;
+      }
+    }
+
+    >div:after {
+      content: "::";
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      line-height: 20px;
+      width: 20px;
+      margin-top: -10px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+  }
+}

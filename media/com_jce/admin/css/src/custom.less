@@ -1,0 +1,86 @@
+.ui-jce {
+    .checkboxes {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+
+        &.inline {
+            flex-direction: row;
+        }
+
+        .checkbox input {
+            margin: 3px 0.3125rem 0 0;
+        }
+
+        &.sortable {
+
+            .checkbox,
+            .form-check {
+                display: block;
+                padding: 0.5rem;
+                cursor: move;
+                max-width: 300px;
+                box-sizing: border-box;
+                margin: 0;
+            }
+        }
+    }
+
+    .input-group-append {
+        display: inline-block;
+        vertical-align: middle;
+
+        .btn {
+            margin-left: -1px
+        }
+    }
+
+    .input-append .form-text {
+        font-size: 11px;
+        line-height: 28px;
+    }
+
+    .tabs-left {
+        .nav.nav-tabs {
+            margin-right: -4px;
+            box-shadow: initial;
+            border-bottom: transparent;
+        }
+
+        >.nav-tabs>li>a {
+            margin-right: -1px;
+            box-shadow: initial;
+            color: inherit;
+            text-align: left;
+        }
+
+        >.nav-tabs .active {
+
+            >a,
+            >a:hover,
+            >a:focus {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+
+                border-color: var(--border-color-translucent);
+                border-right-color: transparent;
+            }
+        }
+
+        .tab-content {
+            border-radius: 0 0 0.25rem 0;
+            border: 0;
+            padding: 0 15px;
+        }
+        
+    }
+
+    .nav.nav-tabs .nav-item:last-of-type .nav-link {
+        box-shadow: initial;
+    }
+
+    /* fix for profiles list checkbox */
+    table td.order+td label {
+        min-width: inherit;
+    }
+}

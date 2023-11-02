@@ -56,7 +56,7 @@ $format = '<input type="checkbox" id="%1$s" name="%2$s" value="%3$s" %4$s />';
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 ?>
 
-<fieldset id="<?php echo $id; ?>" class="<?php echo trim($class . ' checkboxes'); ?>"
+<fieldset id="<?php echo $id; ?>" class="<?php echo trim($class . ' checkboxes list-group'); ?>"
 	<?php echo $required ? 'required aria-required="true"' : ''; ?>
 	<?php echo $autofocus ? 'autofocus' : ''; ?>>
 
@@ -79,7 +79,7 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 		$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
 		?>
 
-		<div class="form-check form-check-inline">
+		<div class="form-check form-check-inline list-group-item">
         <?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
             <label for="<?php echo $oid; ?>" class="checkbox form-check-label">
                 <?php echo $option->text; ?>

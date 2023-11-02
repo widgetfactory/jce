@@ -132,7 +132,7 @@ class JFormFieldFiletype extends TextField
         foreach ($data as $group => $items) {
             $custom = array();
 
-            $html[] = '<dl class="filetype-list">';
+            $html[] = '<dl class="filetype-list list-group">';
 
             if (is_string($group)) {
                 $checked = '';
@@ -154,7 +154,7 @@ class JFormFieldFiletype extends TextField
                     $groupName = ucfirst($group);
                 }
 
-                $html[] = '<dt class="filetype-group" data-filetype-group="' . $group . '"><label><input type="checkbox" value="' . $group . '"' . $checked . ' />' . $groupName . '</label></dt>';
+                $html[] = '<dt class="filetype-group list-group-item" data-filetype-group="' . $group . '"><label><input type="checkbox" value="' . $group . '"' . $checked . ' />' . $groupName . '</label></dt>';
             }
 
             foreach ($items as $item) {
@@ -171,7 +171,7 @@ class JFormFieldFiletype extends TextField
                     $checked = ' checked="checked"';
                 }
 
-                $html[] = '<dd class="filetype-item"><label><input type="checkbox" value="' . $mod . '"' . $checked . ' /><span class="file ' . $mod . '"></span>&nbsp;' . $mod . '</label>';
+                $html[] = '<dd class="filetype-item list-group-item"><label><input type="checkbox" value="' . $mod . '"' . $checked . ' /><span class="file ' . $mod . '"></span>&nbsp;' . $mod . '</label>';
 
                 if (!$is_default) {
                     $html[] = '<button class="btn btn-link filetype-remove"><span class="icon-trash"></span></button>';
@@ -180,7 +180,7 @@ class JFormFieldFiletype extends TextField
                 $html[] = '</dd>';
             }
 
-            $html[] = '<dd class="filetype-item filetype-custom row form-row"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="" placeholder="' . Text::_('WF_EXTENSION_MAPPER_TYPE_NEW') . '" /><button class="pull-right float-right btn btn-link filetype-add"><span class="icon-plus"></span></button><button class="pull-right float-right btn btn-link filetype-remove"><span class="icon-trash"></span></button></dd>';
+            $html[] = '<dd class="filetype-item filetype-custom row form-row list-group-item"><div class="file"></div><input type="text" class="span8 col-md-8 form-control" value="" placeholder="' . Text::_('WF_EXTENSION_MAPPER_TYPE_NEW') . '" /><button class="pull-right float-right btn btn-link filetype-add"><span class="icon-plus"></span></button><button class="pull-right float-right btn btn-link filetype-remove"><span class="icon-trash"></span></button></dd>';
 
             $html[] = '</dl>';
         }

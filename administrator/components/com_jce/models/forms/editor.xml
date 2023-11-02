@@ -176,7 +176,7 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field type="container" class="alert alert-warning p-4 bg-light" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING">
+            <field type="container" class="alert alert-warning p-4" label="WF_PARAM_CODE_BLOCKS" description="WF_PARAM_CODE_BLOCKS_DESC_WARNING">
 
                 <field name="code_blocks" type="yesno" default="1" label="WF_PARAM_CODE_BLOCKS_ENABLE" description="WF_PARAM_CODE_BLOCKS_ENABLE_DESC">
                     <option value="1">JYES</option>

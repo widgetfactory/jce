@@ -86,7 +86,7 @@ class JFormFieldContainer extends FormField
         $str = array();
 
         if ($this->class == 'inset') {
-            $this->class .= ' well well-small well-light p-4 bg-light';
+            $this->class .= ' well well-small well-light p-4 card';
         }
 
         $str[] = '<div class="form-field-container ' . $this->class . '">';
@@ -117,8 +117,8 @@ class JFormFieldContainer extends FormField
         for ($i = 0; $i < $count; $i++) {
 
             if ($repeatable) {
-                $str[] = '<div class="form-field-repeatable-item well well-small p-3 bg-light my-2">';
-                $str[] = '  <div class="form-field-repeatable-item-group row">';
+                $str[] = '<div class="form-field-repeatable-item well p-3 card my-2">';
+                $str[] = '  <div class="form-field-repeatable-item-group">';
             }
 
             $subForm = new Form('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
@@ -185,8 +185,8 @@ class JFormFieldContainer extends FormField
                 $str[] = '</div>';
 
                 $str[] = '<div class="form-field-repeatable-item-control">';
-                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus"></i></button>';
+                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash"></i></button>';
                 $str[] = '</div>';
 
                 $str[] = '</div>';

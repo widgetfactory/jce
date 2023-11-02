@@ -1,0 +1,87 @@
+.wf-repeatable-item {
+  position: relative;
+
+  &:first-of-type {
+    .wf-repeatable-remove {
+      display: none;
+    }
+  }
+}
+
+.wf-repeatable {
+  .close {
+    font-size: 16px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+  }
+
+  .wf-repeatable-remove {
+    top: inherit;
+    bottom: 10px;
+  }
+}
+
+.form-field-repeatable {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .form-field-repeatable-item {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    >button {
+      max-height: 28px;
+    }
+
+    .control-group {
+      margin: 5px 0 0 0;
+
+      &:first-child {
+        margin: 0;
+      }
+    }
+
+    .form-field-repeatable-add {
+      display: none;
+    }
+
+    .form-field-repeatable-remove {
+      display: inline-block;
+    }
+
+    &:first-child {
+      .form-field-repeatable-add {
+        display: inline-block;
+      }
+
+      .form-field-repeatable-remove {
+        display: none;
+      }
+    }
+  }
+}
+
+.form-horizontal {
+  .form-field-repeatable-item {
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .control-group {
+      margin: 5px 0 0 0;
+
+      &:first-child {
+        margin: 0;
+      }
+
+      .controls:first-child,
+      .sr-only+.controls {
+        margin: 0;
+      }
+    }
+  }
+}

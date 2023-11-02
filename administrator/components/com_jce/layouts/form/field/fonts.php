@@ -53,7 +53,7 @@ extract($displayData);
  *     %4 = any other attributes
  */
 $standard = '<input type="checkbox" id="%1$s" value="%3$s=%2$s" %4$s /><label for="%1$s" class="checkbox" style="font-family:%2$s">%3$s</label>';
-$custom = '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . Text::_('WF_LABEL_NAME') . '" /></div><div class="span6 col-md-6"><input type="text" class="form-control span12" value="%2$s" placeholder="' . Text::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class="span2 col-md-2"><a href="#" class="font-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></a></div>';
+$custom = '<div class="span4 col-md-4"><input type="text" class="form-control span12" value="%3$s" placeholder="' . Text::_('WF_LABEL_NAME') . '" /></div><div class="span7 col-md-7"><input type="text" class="form-control span12" value="%2$s" placeholder="' . Text::_('WF_LABEL_FONTS') . ', eg: arial,helvetica,sans-serif" /></div><div class=""><a href="#" class="font-item-trash btn btn-link"><i class="icon icon-trash"></i></a></div>';
 
 // The alt option for JText::alt
 $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
@@ -78,20 +78,22 @@ if ($option->custom) {
     $format = $custom;
 }
 ?>
-        <div class="font-item row form-row" title="<?php echo $option->text; ?>">
+        <div class="font-item row form-row  border bg-light-subtle" title="<?php echo $option->text; ?>">
             <?php echo sprintf($format, $oid, $value, $option->text, implode(' ', $attributes)); ?>
         </div>
 	<?php endforeach;?>
 
-	<div class="font-item row form-row controls controls-row">
+	<div class="font-item row form-row controls controls-row  border bg-light-subtle">
         <?php echo sprintf($custom, '', '', '', ''); ?>
 	</div>
 
-	<div class="font-item row form-row" hidden>
+	<div class="font-item row form-row  border bg-light-subtle" hidden>
         <?php echo sprintf($custom, '', '', '', ''); ?>
 	</div>
 
-	<a href="#" class="btn btn-link font-item-plus"><span class="span10 col-md-10 text-left"><?php echo Text::_('WF_PARAM_FONTS_NEW'); ?></span><i class="icon icon-plus pull-right float-right"></i></a>
+	<a href="#" class="btn btn-link font-item-plus border">
+		<span class="text-left"><?php echo Text::_('WF_PARAM_FONTS_NEW'); ?></span><i class="icon icon-plus"></i>
+	</a>
 
 	<input type="hidden" name="<?php echo $name; ?>" value="" />
 

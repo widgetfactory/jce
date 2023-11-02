@@ -63,7 +63,7 @@ class JFormFieldRepeatable extends FormField
 
             // highlight grouped fields
             if (count($fields) > 1) {
-                $class = ' well well-small p-3 bg-light my-2';
+                $class = ' well p-3 card my-2';
             }
 
             $str[] = '<div class="form-field-repeatable-item">';
@@ -101,8 +101,8 @@ class JFormFieldRepeatable extends FormField
             $str[] = '  </div>';
 
             $str[] = '  <div class="form-field-repeatable-item-control">';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus pull-right float-right"></i></button>';
-            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash pull-right float-right"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus"></i></button>';
+            $str[] = '      <button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash"></i></button>';
             $str[] = '  </div>';
 
             $str[] = '</div>';

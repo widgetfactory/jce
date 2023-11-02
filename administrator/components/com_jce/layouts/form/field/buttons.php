@@ -71,7 +71,7 @@ $oid = $id . $i;
 $value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
 $attributes = array_filter(array($checked, $optionDisabled));
 ?>
-        <div class="mce-widget mce-btn mceButton p-2" title="<?php echo $option->text; ?>">
+        <div class="mce-widget mce-btn mceButton p-2 border bg-light-subtle" title="<?php echo $option->text; ?>">
             <?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
             <span class="mce-ico mce-i-<?php echo $option->value; ?> mceIcon mce_<?php echo $option->value; ?>"></span>
 		    <label for="<?php echo $oid; ?>" class="checkbox"><?php echo $option->text; ?></label>

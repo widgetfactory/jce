@@ -1,0 +1,23 @@
+.ui-jce {
+    .users-select {
+      position: relative;
+      margin: 10px 0;
+  
+      joomla-field-user + & {
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: 0;
+        width: calc(100% - 48px);
+  
+        joomla-field-fancy-select {
+          width: 100%;
+  
+          .choices__inner {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+          }
+        }
+      }
+    }
+  }  

@@ -1,0 +1,138 @@
+// out: ../compat.min.css, sourcemap: false, compress: false
+
+@border: 1px solid #ccc;
+@background-color: #fff;
+@background-color-muted: #eee;
+
+.ui-jce {
+    .checkboxes {
+        &.sortable {
+
+            .checkbox,
+            .form-check {
+                border: @border;
+                background-color: @background-color
+            }
+
+            .sortable-placeholder {
+                border-color:#ccc;
+            }
+        }
+    }
+
+    .blockformats {
+        .blockformat-item {
+            border: @border;
+            background-color: @background-color;
+
+            &.sortable-placeholder {
+                border-color:#ccc;
+            }
+        }
+    }
+
+    .filetype {
+        .filetype-list {
+            .filetype-item {
+                border: @border;
+                background-color: @background-color
+            }
+        }
+
+        .filetype-group {
+            background-color: @background-color-muted;
+        }
+    }
+
+    .fontlist {
+
+        .font-item,
+        .font-item-plus {
+            border: @border;
+            background-color: @background-color;
+            
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        .font-item[hidden] {
+            display: none;
+        }
+
+        .sortable-placeholder {
+            border-color:#ccc;
+        }
+    }
+
+    .styleformat-list {
+        .styleformat-item-title {
+            background-color: @background-color-muted;
+        }
+
+        .styleformat,
+        .styleformat-highlight {
+            border: @border;
+            background-color: @background-color;
+        }
+
+        .styleformat-item-plus {
+            border: @border;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        .sortable-placeholder {
+            border-color:#ccc;
+        }
+    }
+
+    .widthMarker {
+        border: 1px dashed #999;
+
+        span {
+            outline: 2px solid #fff;
+            border-radius: 2px;
+        }
+    }
+
+    .form-field-repeatable {
+        .form-field-repeatable-item {
+            &.well {
+                padding: 20px;
+
+                .form-field-repeatable-item-control {
+                    margin: -12px -20px 0 0;
+                }
+            }
+        }
+
+        .sortable-placeholder {
+            border-color:#ccc;
+        }
+    }
+
+    .mceDefaultSkin.checkboxes {
+        .mceButton {
+            border: 1px solid #ddd;
+
+            &:hover {
+                border: 1px solid #ccc;
+            }
+        }
+    }
+
+    .tabs-left {
+        >.nav-tabs .active {
+
+            >a,
+            >a:hover,
+            >a:focus {
+                border-color: #ddd transparent #ddd #ddd;
+                border-right-color: #fff;
+            }
+        }
+    }
+}

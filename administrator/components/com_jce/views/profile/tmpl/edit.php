@@ -24,6 +24,7 @@ Text::script('ERROR');
 Text::script('WARNING');
 Text::script('NOTICE');
 Text::script('MESSAGE');
+
 ?>
 <div class="ui-jce loading">
 	<div class="donut"></div>

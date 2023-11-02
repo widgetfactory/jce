@@ -71,7 +71,7 @@ $oid = $id . $i;
 $value = htmlspecialchars($option->value, ENT_COMPAT, 'UTF-8');
 $attributes = array_filter(array($checked, $optionDisabled));
 ?>
-        <div class="blockformat-item" title="<?php echo $option->text; ?>">
+        <div class="blockformat-item border bg-light-subtle" title="<?php echo $option->text; ?>">
             <?php echo sprintf($format, $oid, $name, $value, $option->text, implode(' ', $attributes)); ?>
         </div>
 	<?php endforeach;?>

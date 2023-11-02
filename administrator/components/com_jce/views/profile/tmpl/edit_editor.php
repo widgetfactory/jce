@@ -16,7 +16,7 @@ use Joomla\CMS\Language\Text;
 <div class="tabbable tabs-left flex-column">
     <?php //echo HTMLHelper::_('bootstrap.startTabSet', 'profile-editor', array('active' => 'profile-editor-setup')); ?>
 
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs py-1">
         <?php foreach (array('setup', 'typography', 'filesystem', 'advanced') as $key => $item): ?>
             <li class="nav-item<?php echo $key === 0 ? ' active show' : ''; ?>"><a href="#" class="nav-link"><?php echo Text::_('WF_PROFILES_EDITOR_' . strtoupper($item), true); ?></a></li>
         <?php endforeach;?>

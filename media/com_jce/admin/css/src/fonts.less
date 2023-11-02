@@ -1,0 +1,80 @@
+.ui-jce {
+    .fontlist {
+      position: relative;
+      list-style: none outside none;
+      margin: 0 !important;
+      min-width: 200px;
+      padding: 0;
+  
+      input[type="checkbox"] {
+        margin: 5px 10px;
+        width: auto;
+      }
+  
+      .font-item,
+      .font-item-plus {
+        padding: 5px 10px;
+        max-width: 480px;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        display: flex;
+        flex-wrap: nowrap;
+  
+        > div {
+          padding: 0 5px 0 0;
+        }
+      }
+  
+      .font-item-highlight.sortable-placeholder {
+        max-width: 480px;
+        padding: 5px 10px;
+      }
+  
+      .font-item-plus {
+        border-style: dashed;
+  
+        span {
+          display: inline-block;
+          font-size: 1.2rem;
+          vertical-align: middle;
+          line-height: 2rem;
+          text-align: left;
+          width: 100%;
+        }
+  
+        .icon {
+          line-height: 2rem;
+          width: 2rem;
+          height: 2rem;
+        }
+      }
+  
+      > div,
+      label {
+        cursor: move;
+      }
+  
+      .font-item {
+        input[type="text"] {
+          margin: 0;
+          float: none;
+        }
+  
+        &[title="Webdings"],
+        &[title="Wingdings"] {
+          label {
+            font-family: inherit !important;
+          }
+        }
+      }
+    }
+  
+    [dir="rtl"] & {
+      .fontlist .font-item-plus span {
+        text-align: right;
+      }
+    }
+  }
+  

@@ -1,0 +1,164 @@
+.ui-jce {
+    .tooltip {
+      position: absolute;
+      z-index: 1030;
+      display: block;
+      font-size: 11px;
+      line-height: 1.4;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      visibility: visible;
+      text-align: left;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      min-width: 200px;
+  
+      &.in {
+        opacity: 0.8;
+        filter: alpha(opacity=80);
+      }
+  
+      &.top, &.right, &.bottom, &.left {
+        .tooltip-arrow;
+      }
+  
+      &.top {
+        padding: 5px 0;
+        margin-top: -3px;
+  
+        .tooltip-arrow {
+          bottom: 0;
+          left: 50%;
+          margin-left: -5px;
+          border-top-color: #000000;
+          border-width: 5px 5px 0;
+        }
+      }
+  
+      &.right {
+        padding: 0 5px;
+        margin-left: 3px;
+  
+        .tooltip-arrow {
+          top: 50%;
+          left: 0;
+          margin-top: -5px;
+          border-right-color: #000000;
+          border-width: 5px 5px 5px 0;
+        }
+      }
+  
+      &.bottom {
+        padding: 5px 0;
+        margin-top: 3px;
+  
+        .tooltip-arrow {
+          top: 0;
+          left: 50%;
+          margin-left: -5px;
+          border-bottom-color: #000000;
+          border-width: 0 5px 5px;
+        }
+      }
+  
+      &.left {
+        padding: 0 5px;
+        margin-left: -3px;
+  
+        .tooltip-arrow {
+          top: 50%;
+          right: 0;
+          margin-top: -5px;
+          border-left-color: #000000;
+          border-width: 5px 0 5px 5px;
+        }
+      }
+  
+      .tooltip-inner {
+        max-width: inherit;
+        padding: 8px;
+        color: #ffffff;
+        text-align: left;
+        text-decoration: none;
+        background-color: #000000;
+        border-radius: 4px;
+      }
+  
+      .tooltip-arrow {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+      }
+  
+      .close {
+        opacity: 1;
+        color: #fff;
+        padding: 0 5px;
+        text-shadow: inherit;
+        float: inherit;
+        position: absolute;
+        right: 0;
+        top: 5px;
+  
+        &:hover,
+        &:focus {
+          color: #fff;
+          opacity: 1;
+        }
+      }
+  
+      p {
+        margin: 0;
+      }
+  
+      .tooltip-inner h4 {
+        margin: 5px 0px;
+        font-size: 12px;
+      }
+    }
+  
+    .popover[role="tooltip"] {
+      background-color: #fff;
+      padding: 0.25em;
+      
+      &.center {
+        text-align: initial;
+      }
+  
+      .close {
+        padding: 5px 10px;
+        font-size: 24px;
+        float: right;
+        line-height: 18px;
+        font-weight: bold;
+        color: #000;
+        opacity: 0.2;
+        cursor: pointer;
+  
+        &::after {
+          content: "\00d7";
+        }
+      }
+  
+      .popover-header {
+        margin: 0;
+        padding: 8px 14px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 18px;
+        background-color: inherit;
+        border-bottom: 1px solid #ebebeb;
+        border-radius: 5px 5px 0 0;
+      }
+  
+      .popover-content {
+        min-height: 1em;
+        padding: 0.5rem;
+      }
+  
+      .popover-arrow {
+        left: calc(50% - 0.5em);
+      }
+    }
+  }  

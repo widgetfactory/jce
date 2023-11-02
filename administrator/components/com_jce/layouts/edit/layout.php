@@ -33,8 +33,8 @@ if (is_numeric($height) && strpos('%', $height) === false) {
             <!-- Editor Toggle -->
             <span id="editor_toggle"><?php echo $data->get('toggle_label', '[Toggle Editor]'); ?></span>
             <!-- Width Marker -->
-            <div class="widthMarker" style="width:<?php echo $width; ?>;">
-                <span><?php echo $width; ?></span>
+            <div class="widthMarker border border border-dark-subtle border-bottom-0" style="width:<?php echo $width; ?>;">
+                <span class="badge bg-secondary"><?php echo $width; ?></span>
             </div>
             <!-- Toolbar -->
             <div class="mce-tinymce mce-container mce-panel mceEditor mceLayout mceDefaultSkin" role="application">

@@ -78,7 +78,7 @@ class JFormFieldStyleFormat extends FormField
         $x = 0;
 
         foreach ($items as $item) {
-            $elements = array('<div class="styleformat">');
+            $elements = array('<div class="styleformat border bg-light-subtle">');
 
             foreach ($fields as $field) {
                 $key = (string) $field->element['name'];
@@ -102,7 +102,7 @@ class JFormFieldStyleFormat extends FormField
             // handle
             $elements[] = '<span class="styleformat-item-handle"></span>';
             // delete button
-            $elements[] = '<button class="styleformat-item-trash btn btn-link pull-right float-right"><i class="icon icon-trash"></i></button>';
+            $elements[] = '<button class="styleformat-item-trash btn btn-link"><i class="icon icon-trash"></i></button>';
             // collapse
             $elements[] = '<button class="close collapse btn btn-link"><i class="icon icon-chevron-up"></i><i class="icon icon-chevron-down"></i></button>';
 
@@ -115,7 +115,7 @@ class JFormFieldStyleFormat extends FormField
             $x++;
         }
 
-        $output[] = '<button class="btn btn-link styleformat-item-plus"><span class="span10 col-md-10 text-left">' . Text::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus pull-right float-right"></i></button>';
+        $output[] = '<button class="btn btn-link styleformat-item-plus border"><span class="text-left">' . Text::_('WF_STYLEFORMAT_NEW') . '</span><i class="icon icon-plus"></i></button>';
 
         // hidden field
         $output[] = '<input type="hidden" name="' . $this->name . '" value="" />';
