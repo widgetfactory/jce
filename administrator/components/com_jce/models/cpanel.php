@@ -57,7 +57,7 @@ class JceModelCpanel extends BaseDatabaseModel
                 $title = Text::_('WF_' . strtoupper($name) . '_TITLE');
             }
 
-            $icons[] = '<li class="quickicon mb-3"><a title="' . Text::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '" class="btn btn-default" role="button"><div class="quickicon-icon d-flex align-items-end" role="presentation"><span class="icon-' . $icon . '" aria-hidden="true" role="presentation"></span></div><div class="quickicon-text d-flex align-items-center"><span class="j-links-link">' . $title . '</span></div></a></li>';
+            $icons[] = '<li class="quickicon mb-3"><a title="' . Text::_('WF_' . strtoupper($name) . '_DESC') . '" href="' . $link . '" class="card btn btn-default" role="button"><div class="quickicon-icon d-flex align-items-end" role="presentation"><span class="icon-' . $icon . '" aria-hidden="true" role="presentation"></span></div><div class="quickicon-text d-flex align-items-center"><span class="j-links-link">' . $title . '</span></div></a></li>';
         }
 
         return $icons;

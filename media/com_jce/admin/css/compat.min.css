@@ -1,3 +1,11 @@
+.ui-jce nav .quickicon {
+  margin-right: 1rem;
+}
+.ui-jce nav .quickicon .btn {
+  background-color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+}
 .ui-jce .checkboxes.sortable .checkbox,
 .ui-jce .checkboxes.sortable .form-check {
   border: 1px solid #ccc;
