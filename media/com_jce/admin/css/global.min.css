@@ -325,6 +325,7 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  gap: 0.5em;
 }
 .form-field-repeatable .form-field-repeatable-item {
   display: flex;
