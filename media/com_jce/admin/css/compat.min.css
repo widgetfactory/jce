@@ -1,3 +1,6 @@
+.ui-jce .row {
+  margin-left: -10px;
+}
 .ui-jce nav .quickicon {
   margin-right: 1rem;
 }

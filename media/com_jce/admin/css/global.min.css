@@ -1,9 +1,6 @@
 /*.ui-jce {
     position: relative;
 }*/
-.ui-jce.row {
-  margin-left: -20px;
-}
 .ui-jce .control-label label {
   width: 12rem;
   min-width: 6rem;
