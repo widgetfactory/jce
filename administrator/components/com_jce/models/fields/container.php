@@ -86,7 +86,7 @@ class JFormFieldContainer extends FormField
         $str = array();
 
         if ($this->class == 'inset') {
-            $this->class .= ' well well-small well-light p-4 card';
+            $this->class .= ' well well-light p-4 card';
         }
 
         $str[] = '<div class="form-field-container ' . $this->class . '">';
@@ -103,7 +103,9 @@ class JFormFieldContainer extends FormField
             $text = $this->element['description'];
             $text = $this->translateLabel ? Text::_($text) : $text;
 
-            $str[] = '<small class="description">' . $text . '</small>';
+            $descriptionClass = isset($this->element['descriptionclass']) ? 'description ' . $this->element['descriptionclass'] : 'description';
+
+            $str[] = '<small class="' . $descriptionClass . '">' . $text . '</small>';
 
             // reset description
             $this->description = '';
