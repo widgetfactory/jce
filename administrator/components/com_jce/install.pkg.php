@@ -85,9 +85,9 @@ class pkg_jceInstallerScript
 
         // override existing message
         $message = '';
-        $message .= '<div id="jce" class="mt-4 mb-4 p-4 card border-dark well" style="text-align:left;">';
-        $message .= '   <div class="card-header"><h1>' . Text::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1></div>';
-        $message .= '   <div class="card-body">';
+        $message .= '<div id="jce" class="mt-4 mb-4 p-4 border-dark well text-start" role="alert">';
+        $message .= '   <h1>' . Text::_('COM_JCE') . ' ' . $parent->manifest->version . '</h1>';
+        $message .= '   <div>';
 
         // variant messates
         if ((string) $parent->manifest->variant != 'pro') {
