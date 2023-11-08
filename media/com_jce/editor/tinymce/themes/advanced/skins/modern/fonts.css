@@ -922,7 +922,6 @@
 }
 
 .mceModernSkin span[class*="mce_columns_layout_"]:before {
-    background: #fff;
     padding: 2px;
     line-height: 1.25;
 }
