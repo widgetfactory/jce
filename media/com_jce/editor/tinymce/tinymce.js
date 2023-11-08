@@ -16900,7 +16900,7 @@
 
   /**
    * @package   	JCE
-   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
+   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
    * @copyright   Copyright (c) 1999-2017 Ephox Corp. All rights reserved
    * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
@@ -27565,8 +27565,10 @@
         var self = this,
           menu;
 
+          var cls = this.classPrefix + 'Menu' + (this.settings.menu_class ? ' ' + this.settings.menu_class : '');
+
         menu = this.settings.control_manager.createDropMenu(this.id + '_menu', {
-          class: this.classPrefix + 'Menu',
+          class: cls,
           max_width: this.settings.max_width || 250,
           max_height: this.settings.max_height || '',
           filter: !!this.settings.filter,
@@ -31029,8 +31031,7 @@
       init: function (settings) {
         /*eslint no-unused-vars:0*/
 
-        var self = this;
-
+        var self = this;
 
         function createId(elm) {
           var id = elm.id;
@@ -36949,6 +36950,7 @@
 
   (function (tinymce) {
     // Shorten names
+    tinymce.DOM;
     var Event = tinymce.dom.Event,
       each = tinymce.each,
       extend = tinymce.extend,
@@ -37245,7 +37247,8 @@
           max_height: 384,
           combobox: true,
           multiple: true,
-          seperator: ' '
+          seperator: ' ',
+          menu_class: 'mceStylesBoxMenu'
         }, s || {});
 
         function loadClasses(ctrl) {
@@ -43496,8 +43499,8 @@
   })(tinymce);
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -43838,8 +43841,8 @@
   })();
 
   /**
-   * @package    JCCopyright (c) 2009-2023 Ryan Demmer.
-   * @copyright    Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package    JCE
+   * @copyright    Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -44115,8 +44118,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -44666,8 +44669,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -45727,8 +45730,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -45914,8 +45917,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -46270,8 +46273,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -46551,7 +46554,7 @@
           '#e3f2fd'
         ];
 
-        var guidelines = '#787878', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+        var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
         if (!bodybg) {
           return;
@@ -46586,6 +46589,7 @@
 
           if (guidelines) {
             css += '--mce-guidelines: ' + guidelines + ';';
+            css += '--mce-visualchars: ' + visualchars + ';';
           }
 
           {
@@ -46829,8 +46833,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -46864,8 +46868,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -47570,8 +47574,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
@@ -48006,8 +48010,8 @@
   })();
 
   /**
-   * @package   	Copyright (c) 2009-2023 Ryan Demmer.
-   * @copyright 	Copyright (c) 2009-2022 Ryan Demmer. All rights reserved.
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
