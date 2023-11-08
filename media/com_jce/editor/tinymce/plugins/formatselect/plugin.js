@@ -104,12 +104,13 @@
                 ctrl, PreviewCss = tinymce.util.PreviewCss;
 
                 ctrl = ed.controlManager.createListBox('formatselect', {
-                title: 'advanced.block',
-                max_height: 384,
-                onselect: function (v) {
-                    ed.execCommand('FormatBlock', false, v);
-                }
-            });
+                    title: 'advanced.block',
+                    max_height: 384,
+                    onselect: function (v) {
+                        ed.execCommand('FormatBlock', false, v);
+                    },
+                    menu_class: 'mceFormatListMenu'
+                });
 
             var preview_styles = ed.getParam('formatselect_preview_styles', true);
 

@@ -206,6 +206,7 @@
                 max_height: 384,
                 filter: true,
                 keepopen: true,
+                menu_class: 'mceStylesListMenu',
                 onselect: function (name) {
                     var matches = [], fmt,
                         removedFormat, selection = ed.selection,
