@@ -933,7 +933,6 @@ textarea::placeholder {
 .mceListBoxMenu .mceMenuItems .mceSelected:before {
     content: "\2713";
     position: absolute;
-    top: 0.5em;
     left: 0.25em;
     font-size: 1em;
     color: #444;
