@@ -114,6 +114,16 @@
 section[role="tabpanel"] .wf-editor-container {
   margin-top: 1rem;
 }
+.joomla3 {
+  --nav-tabs-border-width: 1px;
+  --nav-tabs-border-color: #ddd;
+  --nav-tabs-border-radius: 2px;
+  --nav-link-color: #666;
+  --nav-tabs-link-hover-border-color: #ddd;
+  --nav-tabs-link-active-bg: #fff;
+  --nav-tabs-link-active-border-color: #ddd;
+  --nav-tabs-link-active-color: #555;
+}
 .wf-editor-header {
   min-height: 2.5rem;
   display: flex;
@@ -128,7 +138,6 @@ section[role="tabpanel"] .wf-editor-container {
   justify-content: flex-end;
   margin: 0 0 0.25rem 0;
   list-style: none;
-  border-bottom: 1px solid #ddd;
   border-bottom: var(--nav-tabs-border-width) solid var(--nav-tabs-border-color);
 }
 .wf-editor-header .wf-editor-tabs:before,
@@ -147,8 +156,8 @@ section[role="tabpanel"] .wf-editor-container {
   margin-right: 2px;
   line-height: 1.5em;
   border: 1px solid transparent;
-  border-radius: 2px 2px 0 0;
   background-color: inherit;
+  border-radius: 0;
   display: block;
   cursor: pointer;
   border: var(--nav-tabs-border-width) solid transparent;
@@ -158,23 +167,16 @@ section[role="tabpanel"] .wf-editor-container {
   color: var(--nav-link-color);
 }
 .wf-editor-header .wf-editor-tabs > button:hover {
-  /*background-color: rgba(0, 0, 0, 0.05);*/
   border-color: var(--nav-tabs-link-hover-border-color);
   isolation: isolate;
 }
 .wf-editor-header .wf-editor-tabs > button.active {
-  color: #555;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
   cursor: default;
   margin-bottom: -1px;
   background-color: var(--nav-tabs-link-active-bg);
   border-color: var(--nav-tabs-link-active-border-color);
+  border-bottom-color: transparent;
   color: var(--nav-tabs-link-active-color);
-}
-.wf-editor-header .wf-editor-tabs > button.active:hover {
-  /*background-color: #fff;*/
 }
 .wf-editor-header .wf-editor-toggle {
   display: block;
@@ -198,13 +200,13 @@ section[role="tabpanel"] .wf-editor-container {
 .wf-editor-header .wf-editor-toggle > svg {
   display: inline-block;
   margin: auto;
-  fill: #666;
+  fill: var(--nav-link-color);
   width: 16px;
   height: 16px;
   vertical-align: middle;
 }
 .wf-editor-header .wf-editor-toggle:hover > svg {
-  fill: #888;
+  fill: var(--nav-tabs-link-active-color);
 }
 /* Joomla 4 overrides */
 joomla-tab .wf-editor-tabs button[role="tab"] {
@@ -214,8 +216,7 @@ joomla-tab .wf-editor-tabs button[role="tab"] {
   padding: 0.75em 1.25em;
 }
 joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"] {
-  background: none;
-  background-color: #fff;
+  background: transparent none;
   box-shadow: inherit;
 }
 joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
