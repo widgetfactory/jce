@@ -175,10 +175,10 @@ class plgEditorJCE extends CMSPlugin
         $textarea->height = $height;
         $textarea->content = $content;
 
-        $classes = version_compare(JVERSION, '4', 'ge') ? ' mb-2 joomla4' : '';
+        $classes = version_compare(JVERSION, '4', 'lt') ? 'joomla3' : 'mb-2';
 
         // Render Editor markup
-        $html = '<div class="editor wf-editor-container' . $classes . '">';
+        $html = '<div class="editor wf-editor-container ' . $classes . '">';
         $html .= '<div class="wf-editor-header"></div>';
         $html .= LayoutHelper::render('editor.textarea', $textarea, __DIR__ . '/layouts');
         $html .= '</div>';
