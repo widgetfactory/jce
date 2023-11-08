@@ -233,7 +233,7 @@ class plgEditorJCE extends CMSPlugin
         }
 
         // easiest way to get buttons across versions
-        $buttons = Editor::getInstance('jce')->getButtons($name);
+        $buttons = Editor::getInstance('jce')->getButtons($name, $buttons);
 
         if (!empty($buttons)) {
             foreach ($buttons as $i => $button) {
@@ -272,7 +272,7 @@ class plgEditorJCE extends CMSPlugin
     private function displayButtons($name, $buttons, $asset, $author)
     {
         // easiest way to get buttons across versions
-        $buttons = Editor::getInstance('jce')->getButtons($name);
+        $buttons = Editor::getInstance('jce')->getButtons($name, $buttons);
 
         if (!empty($buttons)) {
             // fix some legacy buttons
