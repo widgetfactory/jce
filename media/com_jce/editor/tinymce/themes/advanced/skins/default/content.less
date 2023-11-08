@@ -243,23 +243,18 @@ h6 {
 
 span.mce-item-nbsp,
 span.mce-item-shy {
-    min-width: 0.25em;
-    height: 1em;
+    /* use a linear gradient to avoid a background-color style being applied by Chrome when all nbsp characters have been deleted */
+    background: linear-gradient(to bottom, var(--mce-visualchars), var(--mce-visualchars));
 }
 
-span.mce-item-nbsp:after,
-span.mce-item-shy:after {
-    content: "●";
-    line-height: 1;
-    color: var(--mce-guidelines);
+span.mce-item-shy {
+    &:after {
+        content: "▪︎";
+        color: var(--mce-guidelines);
+    }
 }
 
-span.mce-item-shy:after {
-    content: "▪︎";
-    font-weight: bolder;
-}
-
-img {
+span.mce-item-shy img {
     border: 0;
 }
 

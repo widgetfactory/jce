@@ -280,7 +280,7 @@
         '#e3f2fd'
       ];
 
-      var guidelines = '#787878', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
+      var guidelines = '#787878', visualchars = '#a8a8a8', control = '#1e88e5', controlbg = '#b4d7ff', placeholder = '#efefef', bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
       if (!bodybg) {
         return;
@@ -315,6 +315,7 @@
 
         if (guidelines) {
           css += '--mce-guidelines: ' + guidelines + ';';
+          css += '--mce-visualchars: ' + visualchars + ';';
         }
 
         if (placeholder) {
