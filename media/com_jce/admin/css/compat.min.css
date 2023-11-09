@@ -85,6 +85,10 @@
 .ui-jce .mceDefaultSkin.checkboxes .mceButton:hover {
   border: 1px solid #ccc;
 }
+.ui-jce .tabs-left {
+  --border-width: 1px;
+  --border-color: #ddd;
+}
 .ui-jce .tabs-left > .nav-tabs .active > a,
 .ui-jce .tabs-left > .nav-tabs .active > a:hover,
 .ui-jce .tabs-left > .nav-tabs .active > a:focus {
