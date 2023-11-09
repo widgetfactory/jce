@@ -37,6 +37,11 @@ if ($vName == 'editor' && $app->input->get('layout') == 'plugin') {
 // constants and autoload
 require_once __DIR__ . '/includes/base.php';
 
+// only for Joomla 3.x
+if (version_compare(JVERSION, '4', 'lt')) {      
+    require_once __DIR__ . '/includes/classmap.php';
+}
+
 $controller = BaseController::getInstance('Jce', array('base_path' => __DIR__));
 
 $controller->execute($app->input->get('task'));
