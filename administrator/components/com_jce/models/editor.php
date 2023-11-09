@@ -50,8 +50,8 @@ class WFModelEditor
 
         $document = Factory::getDocument();
 
-        foreach (self::$editor->getScripts() as $script) {
-            $document->addScript($script, array('version' => 'auto'), array('defer' => 'defer'));
+        foreach (self::$editor->getScripts() as $script => $type) {
+            $document->addScript($script, array('version' => 'auto'), array('type' => $type, 'defer' => 'defer'));
         }
 
         foreach (self::$editor->getStyleSheets() as $style) {
