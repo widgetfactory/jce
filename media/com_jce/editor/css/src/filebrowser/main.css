@@ -6,7 +6,6 @@
 }
 
 #browser {
-  background-color: #fff;
   width: 100%;
   height: 100%;
   /* Allow for modal footer */
@@ -392,7 +391,6 @@ div#browser-message span {
 
 #info-body,
 #tree-body {
-  background-color: #ffffff;
   vertical-align: middle;
   overflow: auto;
 }
