@@ -20,5 +20,10 @@ class JceControllerConfig extends FormController
 
         // return to control panel on cancel/close
         $this->view_list = 'cpanel';
+
+        // only for Joomla 3.x
+        if (version_compare(JVERSION, '4', 'lt')) {      
+            require_once JPATH_COMPONENT_ADMINISTRATOR . '/includes/classmap.php';
+        }
     }
 }

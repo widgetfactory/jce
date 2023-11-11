@@ -125,6 +125,8 @@ class JceController extends BaseController
 
             // only for Joomla 3.x
             if (version_compare(JVERSION, '4', 'lt')) {
+                require_once __DIR__ . '/includes/classmap.php';
+                
                 JceHelperAdmin::addSubmenu($vName);
 
                 $document->addStyleSheet(Uri::root(true) . '/media/com_jce/admin/css/compat.min.css?' . md5(WF_VERSION));
