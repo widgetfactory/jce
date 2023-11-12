@@ -278,7 +278,7 @@
                 last, currentIndex = -1;
 
             function notFoundAlert() {
-                editor.windowManager.alert(editor.getLang('searchreplace_dlg.notfound', 'The search has been completed. The search string could not be found.'));
+                editor.windowManager.alert(editor.getLang('searchreplace.notfound', 'The search has been completed. The search string could not be found.'));
             }
 
             editor.updateSearchButtonStates = new tinymce.util.Dispatcher(this);
