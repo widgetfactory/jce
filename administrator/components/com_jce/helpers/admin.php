@@ -11,10 +11,10 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
-;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\HTML\Helpers\Sidebar;
 
 /**
  * Admin helper.
@@ -37,7 +37,7 @@ class JceHelperAdmin
 
         $user = Factory::getUser();
 
-        JHtmlSidebar::addEntry(
+        Sidebar::addEntry(
             Text::_('WF_CPANEL'),
             'index.php?option=com_jce&view=cpanel',
             $vName == 'cpanel'
@@ -57,7 +57,7 @@ class JceHelperAdmin
             }
 
             if ($user->authorise('jce.' . $key, 'com_jce')) {
-                JHtmlSidebar::addEntry(
+                Sidebar::addEntry(
                     Text::_($label),
                     'index.php?option=com_jce&view=' . $key,
                     $vName == $key
