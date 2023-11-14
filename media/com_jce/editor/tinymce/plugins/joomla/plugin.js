@@ -78,20 +78,27 @@
                                         }
                                     });
                                 }
+                                
+                                // bootstrap modal in Joomla 4+
+                                var modal = tinymce.DOM.get(plg.id + '_modal');
 
-                                ed.windowManager.open({
-                                    file: href,
-                                    title: plg.title,
-                                    width: Math.max(vp.w - 40, 896),
-                                    height: Math.max(vp.h - 40, 707),
-                                    size: 'mce-modal-landscape-full',
-                                    addver: false,
-                                    buttons: buttons
-                                });
-
-                                // pass the windowManager object as the current Joomla Modal window
-                                if (window.Joomla && window.Joomla.Modal) {
-                                    window.Joomla.Modal.setCurrent(ed.windowManager);
+                                if (modal) {
+                                    modal.open();
+                                } else {
+                                    ed.windowManager.open({
+                                        file: href,
+                                        title: plg.title,
+                                        width: Math.max(vp.w - 40, 896),
+                                        height: Math.max(vp.h - 40, 707),
+                                        size: 'mce-modal-landscape-full',
+                                        addver: false,
+                                        buttons: buttons
+                                    });
+    
+                                    // pass the windowManager object as the current Joomla Modal window
+                                    if (window.Joomla && window.Joomla.Modal) {
+                                        window.Joomla.Modal.setCurrent(ed.windowManager);
+                                    }
                                 }
                             }
 

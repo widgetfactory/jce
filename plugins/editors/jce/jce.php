@@ -224,7 +224,7 @@ class plgEditorJCE extends CMSPlugin
     {
         $list = array();
 
-        $excluded = array('readmore', 'pagebreak', 'image');
+        $excluded = array('readmore', 'pagebreak');
 
         if (!is_array($buttons)) {
             $buttons = !$buttons ? false : $excluded;
@@ -238,6 +238,14 @@ class plgEditorJCE extends CMSPlugin
         if (!empty($buttons)) {
             foreach ($buttons as $i => $button) {
                 if ($button->get('name')) {
+
+                    $id = $name . '_' . $button->get('name');
+
+                    if (version_compare(JVERSION, '4', 'ge')) {
+                        $button->id = $id . '_modal';
+                        echo LayoutHelper::render('joomla.editors.buttons.modal', $button);
+                    }
+
                     // Set some vars
                     $icon = 'none icon-' . $button->get('icon', $button->get('name'));
 
@@ -251,10 +259,9 @@ class plgEditorJCE extends CMSPlugin
                         $href = '';
                     }
 
-                    $id = $button->get('name');
-
                     $list[$id] = array(
                         'name' => $name,
+                        'id' => $id,
                         'title' => $title,
                         'icon' => $icon,
                         'href' => $href,
