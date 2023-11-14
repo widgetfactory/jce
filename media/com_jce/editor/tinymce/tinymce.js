@@ -13755,12 +13755,14 @@
               return;
           }
 
+          var startNode = selection.getStart();
+
           // skip in pre
-          if (selection.getStart().nodeName === 'PRE') {
+          if (startNode.nodeName === 'PRE') {
               return;
           }
 
-          textBlockElm = dom.getParent(selection.getStart(), 'p');
+          textBlockElm = dom.getParent(startNode, 'p,div');
 
           if (textBlockElm) {
               walker = new tinymce.dom.TreeWalker(textBlockElm, textBlockElm);
