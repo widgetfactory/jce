@@ -219,6 +219,7 @@ select.mceNativeListBox {
     position: relative;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     height: 2em;
     min-width: 5em;
     min-height: inherit;

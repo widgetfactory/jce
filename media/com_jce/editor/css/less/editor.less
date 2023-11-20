@@ -175,7 +175,7 @@ section[role="tabpanel"] .wf-editor-container {
         >button {
             appearance: none;
             background: transparent none;
-            
+
             padding: 0.75em 1.25em;
             margin-right: 2px;
             line-height: 1.5em;
@@ -427,10 +427,17 @@ joomla-tab {
     }
 }
 
-.wf-media-wrapper  {
+.wf-media-wrapper {
     td {
         input[type="text"]:not(.field-media-input) {
             width: 100%;
         }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .wf-editor-source,
+    .wf-editor-preview {
+        border-color: rgba(0, 0, 0, 0.15);
     }
 }

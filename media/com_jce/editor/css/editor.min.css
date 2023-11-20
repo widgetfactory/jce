@@ -360,3 +360,9 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
 .wf-media-wrapper td input[type="text"]:not(.field-media-input) {
   width: 100%;
 }
+@media (prefers-color-scheme: dark) {
+  .wf-editor-source,
+  .wf-editor-preview {
+    border-color: rgba(0, 0, 0, 0.15);
+  }
+}

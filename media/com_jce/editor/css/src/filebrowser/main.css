@@ -32,7 +32,7 @@
 
 .uk-navbar-content {
   height: 32px;
-  margin: 0 0 0 -1px;
+  margin: 0;
 }
 
 .uk-navbar-content input[type="checkbox"] {
@@ -203,6 +203,7 @@ main>div+div+div {
   position: relative;
   border-top-width: 1px;
   width: 100%;
+  border-bottom-width: 0;
 }
 
 /* IE11 */
@@ -515,6 +516,7 @@ div#info-comment {
 
 #browser-details-nav {
   border-top-width: 1px;
+  border-bottom-width: 0;
   width: 100%;
 }
 
