@@ -1,0 +1,205 @@
+// out: ui.css, sourcemap: false, compress: false
+@import (css) url('fonts.css?@@etag@@');
+
+.mceModernSkin {
+    .mceToolbar {
+        background: #fafafa;
+    }
+
+    .mceToolbarRow .mceToolbarItem {
+        background-color: transparent;
+        margin: 2px;
+    }
+
+    .mceButton,
+    .mceSplitButton .mceText,
+    .mceSplitButton .mceOpen,
+    .mceListBox .mceText,
+    .mceListBox .mceOpen {
+        border-color: transparent;
+        color: rgba(0, 0, 0, 0.87);
+
+        background-color: transparent;
+    }
+
+    .mceButton .mceIcon,
+    .mceMenuItem .mceIcon,
+    .mceSplitButton .mceAction {
+        color: rgba(0, 0, 0, 0.87);
+        height: 1em;
+        line-height: 1;
+        text-align: center;
+        min-width: 1em;
+        max-width: inherit;
+        background: none;
+    }
+
+    .mceButtonPrimary {
+        color: #fff;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+
+        .mceIcon {
+            opacity: 0.38;
+        }
+    }
+
+    .mceButton:hover,
+    .mceButton:focus {
+        border: 1px solid #ddd;
+        background-color: #e6e6e6;
+    }
+
+    .mceButtonPrimary:hover,
+    .mceButtonPrimary:focus {
+        background-color: #286090;
+        color: #fff;
+        border-color: rgba(0, 0, 0, .21);
+    }
+
+    .mceSplitButton:hover .mceText,
+    .mceSplitButton:hover .mceOpen,
+    .mceSplitButton:focus .mceText,
+    .mceSplitButton:focus .mceOpen,
+    .mceSplitButtonActive .mceText,
+    .mceSplitButtonActive .mceOpen {
+        border-color: #ccc;
+        background-color: #e6e6e6;
+    }
+
+    .mceSplitButtonActive .mceOpen {
+        border-left: 1px solid #ccc;
+    }
+
+    .mceListBox .mceText {
+        border-top-color: #ddd;
+        border-bottom-color: #ddd;
+        border-left-color: #ddd;
+    }
+
+    .mceListBox .mceOpen {
+        background-color: #fff;
+
+        border-top-color: #ddd;
+        border-bottom-color: #ddd;
+        border-right-color: #ddd;
+
+        &:after {
+            color: transparent;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2224%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2016%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%201%209%206%2015%206%22%20%2F%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23666%22%20points%3D%2212%2013%209%208%2015%208%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    }
+
+    .mceButtonActive,
+    .mceButtonSelected,
+    .mcePanelButtonActive {
+        background-color: #e6e6e6;
+        border-color: #ddd;
+    }
+
+    .mceButtonDialog::before {
+        top: -6px;
+    }
+
+    .mceColorPreview {
+        outline: 1px solid #e6e6e6;
+    }
+
+    .mceListBox .mceMenuItems .mceIcon {
+        top: 0;
+        width: 32px;
+        left: 0;
+        height: 32px;
+        line-height: 2;
+    }
+
+    .mceSplitButtonMenu {
+        position: relative;
+    }
+
+    .mcePanelButtonSelected,
+    .mcePanelButtonSelected:hover {
+        border-color: #ddd;
+        background: #fff;
+
+        .mceText {
+            background: #fff;
+            border-color: #ddd;
+            border-right-color: transparent;
+            border-radius: 2px 0 0 0;
+        }
+
+        .mceOpen {
+            background: #fff;
+            border-color: #ddd;
+            border-left-color: transparent;
+            border-radius: 0 2px 0 0;
+        }
+    }
+
+    .mceSplitButtonSelected .mceText,
+    .mceSplitButtonSelected:hover .mceText {
+        background: #fff;
+        border-color: #ccc;
+        border-radius: 2px 0 0 0;
+    }
+
+    .mceSplitButtonSelected .mceOpen,
+    .mceSplitButtonSelected:hover .mceOpen {
+        background: #fff;
+        border-color: #ccc;
+        border-left-color: transparent;
+        border-radius: 0 2px 0 0;
+    }
+
+    .mceColorSplitMenu {
+        padding: 2px;
+        background: #fff;
+    }
+
+    .mcePanel::before {
+        background-color: #fff;
+    }
+
+    .mceListBoxMenu {
+        overflow: hidden;
+    }
+
+    .mceListBoxSelected .mceText,
+    .mceListBoxSelected:hover .mceText {
+        background: #fff;
+        border-color: #ccc;
+        border-radius: 2px 0 0 0;
+    }
+
+    .mceListBoxSelected .mceOpen,
+    .mceDefaultSkin .mceListBoxSelected:hover .mceOpen {
+        background: #fff;
+        border-color: #ccc;
+        border-left-color: transparent;
+        border-radius: 0 2px 0 0;
+    }
+
+    .mceStatusbar .mceResize span {
+        color: rgba(0, 0, 0, 0.87);
+        text-align: right;
+        display: inline-block;
+        background: none;
+        width: 1em;
+        height: 1em;
+    }
+
+    .mceModalContent .mceButtonUpload .mceIcon {
+        font-size: 0.75em;
+        display: block;
+        line-height: 2.25;
+        height: 100%;
+        margin: auto;
+    }
+}
+
+@import "dark.less";
