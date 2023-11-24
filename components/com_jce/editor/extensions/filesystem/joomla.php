@@ -66,6 +66,11 @@ class WFJoomlaFileSystem extends WFFileSystem
         return WFUtility::makePath(Uri::root(true), $this->getRootDir());
     }
 
+    protected function getBaseRoot()
+    {
+        return parent::getRootDir();
+    }
+
     /**
      * Return the full user directory path. Create if required.
      *
@@ -78,7 +83,7 @@ class WFJoomlaFileSystem extends WFFileSystem
         static $root;
 
         if (!isset($root)) {
-            $root = parent::getRootDir();
+            $root = $this->getBaseRoot();
             $wf = WFEditorPlugin::getInstance();
 
             // list of restricted directories
