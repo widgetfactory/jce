@@ -114,12 +114,13 @@ class WFEditorPlugin extends CMSObject
         static $view;
 
         if (!is_object($view)) {
+
             // create plugin view
             $view = new WFView(array(
                 'view_path' => $this->get('base_path'),
                 'template_path' => $this->get('template_path'),
                 'name' => $this->get('name'),
-                'layout' => $this->get('layout'),
+                'layout' => $this->get('layout')
             ));
         }
 
@@ -182,6 +183,17 @@ class WFEditorPlugin extends CMSObject
             $version .= $plugin_version;
         }
 
+        // default ui theme
+        $theme = 'light';
+
+        // get editor theme
+        $editor_theme = $wf->getParam('editor.toolbar_theme', 'modern');
+
+        // set ui theme variant
+        if ($editor_theme == 'modern.dark') {
+            $theme = 'dark';
+        }
+
         // create the document
         $document = WFDocument::getInstance(array(
             'version' => $version,
@@ -191,6 +203,7 @@ class WFEditorPlugin extends CMSObject
             'direction' => $this->isRtl() ? 'rtl' : 'ltr',
             'compress_javascript' => $this->getParam('editor.compress_javascript', 0),
             'compress_css' => $this->getParam('editor.compress_css', 0),
+            'theme' => 'uk-jce-theme-' . $theme
         ));
 
         // set standalone mode

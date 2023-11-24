@@ -3115,14 +3115,14 @@ div#previewblock {
 }
 @media (prefers-color-scheme: dark) {
   .uk-jce {
-    --wfe-bg: #0f1824;
+    --wfe-bg: #2B3035;
     --wfe-bg-active: rgba(255, 255, 255, 0.2);
     --wfe-bg-hover: rgba(255, 255, 255, 0.1);
     --wfe-border-color: rgba(255, 255, 255, 0.15);
-    --wfe-color: #fafafa;
+    --wfe-color: #dee2e6;
     --wfe-modal-bg: #212529;
     --wfe-modal-border-color: rgba(255, 255, 255, 0.15);
-    --wfe-modal-input-focus: #39f;
+    --wfe-modal-input-focus: #86b7fe;
     background-color: var(--wfe-modal-bg);
     color: var(--wfe-color);
     /* File Browser */

@@ -1,81 +1,313 @@
+@media (prefers-color-scheme: dark) {
+  body.admin .mceModernSkin {
+    --wfe-bg: var(--template-bg-dark-90, #2B3035);
+    --wfe-color: var(--body-color, #dee2e6);
+    --wfe-modal-bg: var(--body-bg, #212529);
+  }
+}
+.mceModernSkin {
+  --wfe-bg: #2B3035;
+  --wfe-bg-active: rgba(255, 255, 255, 0.2);
+  --wfe-bg-hover: rgba(255, 255, 255, 0.1);
+  --wfe-border-color: #444;
+  --wfe-color: #dee2e6;
+  --wfe-color-light: #fff;
+  --wfe-modal-bg: #212529;
+  --wfe-modal-border-color: rgba(255, 255, 255, 0.15);
+  --wfe-modal-input-focus: #86b7fe;
+}
+.mceModernSkin.mceModal .mceLoading .mceModalContent:before {
+  background-color: var(--wfe-modal-bg);
+}
+.mceModernSkin .mce_spinner:before {
+  border-color: var(--wfe-color);
+}
+.mceModernSkin .mceLayout {
+  border-color: var(--wfe-border-color);
+}
 .mceModernSkin .mceToolbar {
-    background: #222f3e;
+  background: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
 }
-
-.mceModernSkin .mceButton .mceIcon,
-.mceModernSkin .mceMenuItem .mceIcon,
-.mceModernSkin .mceSplitButton .mceAction {
-    color: #fff;
+.mceModernSkin .mceStatusbar {
+  background: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
 }
-
-.mceModernSkin .mceButton,
-.mceModernSkin .mceSplitButton .mceText,
-.mceModernSkin .mceSplitButton .mceOpen,
-.mceModernSkin .mceListBox .mceText,
-.mceModernSkin .mceListBox .mceOpen {
-    color: #fff;
+.mceModernSkin .mceStatusbar .mcePathLabel {
+  color: var(--wfe-color);
 }
-
-.mceModernSkin .mceSplitButton .mceOpen::after {
-    color: rgba(255, 255, 255, .5);
+.mceModernSkin .mceStatusbar .mcePathPath a:after {
+  color: var(--wfe-color);
 }
-
+.mceModernSkin .mceStatusbar .mcePathPath .mceText {
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceStatusbar .mceResize span {
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceStatusbar .mceWordCount .mceText {
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceButton .mceIcon {
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceButton:focus,
+.mceModernSkin .mceButton:hover {
+  border-color: transparent;
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceButton span.mce_style:after {
+  color: rgba(255, 255, 255, 0.3);
+}
 .mceModernSkin .mceButtonActive,
 .mceModernSkin .mceButtonSelected,
 .mceModernSkin .mcePanelButtonActive {
-    background-color: #757d87;
-    border-color: transparent;
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-active);
 }
-
-.mceModernSkin .mceButton:hover,
-.mceModernSkin .mceButton:focus {
-    background-color: #757d87;
-    border-color: transparent;
+.mceModernSkin .mceSplitButton .mceAction {
+  color: var(--wfe-color);
 }
-
-.mceModernSkin .mceListBox .mceText,
-.mceModernSkin .mceSplitButton .mceText {
-    /* border-top-color: #4a5562;*/
-    border-color: transparent;
+.mceModernSkin .mceSplitButton .mceAction.mce_backcolor {
+  color: var(--wfe-color-light);
+  /* improve visibility */
+  background-color: var(--wfe-bg-active);
 }
-
-.mceModernSkin .mceListBox .mceOpen,
 .mceModernSkin .mceSplitButton .mceOpen {
-    /*background-color: #757d87;*/
-    border-color: transparent;
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
 }
-
-.mceModernSkin .mceSplitButton:hover .mceText,
-.mceModernSkin .mceSplitButton:focus .mceText {
-    border-color: #4a5562;
-    background-color: #4a5562;
+.mceModernSkin .mceSplitButton .mceOpen:after {
+  color: var(--wfe-color);
 }
-
-.mceModernSkin .mceSplitButtonActive .mceText,
-.mceModernSkin .mceSplitButtonActive .mceOpen {
-    border-color: #4a5562;
-    background-color: #4a5562;
-}
-
+.mceModernSkin .mceSplitButton:focus .mceOpen,
 .mceModernSkin .mceSplitButton:hover .mceOpen,
-.mceModernSkin .mceSplitButton:focus .mceOpen {
-    border-color: #4a5562;
-    background-color: #4a5562;
+.mceModernSkin .mceSplitButton:focus .mceText,
+.mceModernSkin .mceSplitButton:hover .mceText {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-hover);
 }
-
+.mceModernSkin .mceListBox .mceComboBox .mceButton,
+.mceModernSkin.mceListBoxMenu .mceMenuFilter .mceButton {
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceListBox .mceComboBox .mceButton label,
+.mceModernSkin.mceListBoxMenu .mceMenuFilter .mceButton label,
+.mceModernSkin .mceListBox .mceComboBox .mceButton:after,
+.mceModernSkin.mceListBoxMenu .mceMenuFilter .mceButton:after {
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceTextBox {
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+  background-color: var(--wfe-bg);
+}
+.mceModernSkin .mceTextBox:focus {
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
+  border-color: var(--wfe-modal-input-focus);
+}
 .mceModernSkin .mceListBox .mceText,
+.mceModernSkin .mceListBox .mceButton {
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+  background-color: var(--wfe-bg);
+}
 .mceModernSkin .mceListBox .mceOpen {
-    background-color: transparent;
-    color: #fff;
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
 }
-
-.mceMenu {
-    background-color: #2b3b4e;
-    border: 1px solid #000;
-    box-shadow: 0 4px 8px 0 rgba(42, 55, 70, .1);
+.mceModernSkin .mceListBox .mceOpen:after {
+  color: var(--wfe-color);
+  background-image: none;
 }
-
-.mceModernSkin .mceSplitButtonSelected::after {
-    background-color: #2b3b4e;
-    border-color: #000;
+.mceModernSkin .mceListBox:focus .mceOpen,
+.mceModernSkin .mceListBox:hover .mceOpen,
+.mceModernSkin .mceListBox:focus .mceText,
+.mceModernSkin .mceListBox:hover .mceText {
+  border-color: transparent;
+  background-color: var(--wfe-bg-hover);
+}
+.mceModernSkin.mceListBoxMenu {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceListBoxMenu .mceMenuItems .mceMenuItem .mceIcon,
+.mceModernSkin.mceListBoxMenu .mceMenuItems .mceMenuItem .mceText,
+.mceModernSkin.mceListBoxMenu .mceMenuItems .mceMenuItem:before {
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceListBoxMenu .mceMenuItems .mceMenuItem:hover {
+  background-color: var(--wfe-bg-hover);
+}
+.mceModernSkin.mceListBoxMenu .mceMenuItems .mceMenuItem.mceMenuItemActive {
+  background-color: var(--wfe-bg-active);
+}
+.mceModernSkin.mceListBoxMenu .mceMenuFilter {
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin.mceListBoxMenu .mceMenuFilter input {
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceListBoxMenu.mceFormatListMenu,
+.mceModernSkin.mceListBoxMenu.mceStylesListMenu,
+.mceModernSkin.mceListBoxMenu.mceStylesBoxMenu {
+  /* keep these as original colors */
+}
+.mceModernSkin.mceListBoxMenu.mceFormatListMenu .mceMenuItems,
+.mceModernSkin.mceListBoxMenu.mceStylesListMenu .mceMenuItems,
+.mceModernSkin.mceListBoxMenu.mceStylesBoxMenu .mceMenuItems {
+  background-color: #fff;
+}
+.mceModernSkin.mceListBoxMenu.mceFormatListMenu .mceMenuItems .mceMenuItem:hover,
+.mceModernSkin.mceListBoxMenu.mceStylesListMenu .mceMenuItems .mceMenuItem:hover,
+.mceModernSkin.mceListBoxMenu.mceStylesBoxMenu .mceMenuItems .mceMenuItem:hover {
+  background-color: #eee;
+}
+.mceModernSkin.mceSplitButtonMenu {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceSplitButtonMenu .mceMenuItems .mceSelected {
+  background-color: var(--wfe-bg-active);
+}
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuHtml input[type=text],
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuHtml select,
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuHtml textarea {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuHtml:hover {
+  background-color: transparent;
+}
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuItem .mceIcon,
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuItem .mceText {
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceMenu .mceMenuItems .mceMenuItemEnabled:hover {
+  background-color: var(--wfe-bg-hover);
+}
+.mceModernSkin .mceListBoxSelected::after {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceSplitButtonSelected:hover .mceText,
+.mceModernSkin .mceSplitButtonSelected .mceText {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceSplitButtonSelected .mceOpen {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceSplitButtonSelected:after {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin span.mce_visualblocks:before {
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceTableSplitMenu {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceTableSplitMenu td {
+  background-color: var(--wfe-bg);
+}
+.mceModernSkin .mceTableSplitMenu td a {
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceTableSplitMenu td.selected a {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-active);
+}
+.mceModernSkin .mceTableSplitMenu .mceTableGridCount {
+  background-color: var(--wfe-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalHeader,
+.mceModernSkin.mceModal .mceModalBody .mceModalContent,
+.mceModernSkin.mceModal .mceModalBody .mceModalFooter {
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalHeader *,
+.mceModernSkin.mceModal .mceModalBody .mceModalContent *,
+.mceModernSkin.mceModal .mceModalBody .mceModalFooter * {
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalContent input[type],
+.mceModernSkin.mceModal .mceModalBody .mceModalContent select,
+.mceModernSkin.mceModal .mceModalBody .mceModalContent textarea {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalClose {
+  background-color: var(--wfe-modal-bg);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalClose:after {
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceModalFooter .mceButton:not(.mceButtonPrimary):focus,
+.mceModernSkin.mceModal .mceModalBody .mceModalFooter .mceButton:not(.mceButtonPrimary):hover {
+  border-color: transparent;
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalBody .mceButton:disabled,
+.mceModernSkin.mceModal .mceModalBody .mceButton:focus:disabled,
+.mceModernSkin.mceModal .mceModalBody .mceButton:hover:disabled {
+  border-color: transparent;
+  background-color: var(--wfe-bg-hover);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceModalContent .mceCharacterMap button {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceListBox .mceText {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceListBox .mceOpen {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-modal-bg);
+  color: var(--wfe-color);
+}
+.mceModernSkin.mceModal .mceListBox:focus .mceOpen,
+.mceModernSkin.mceModal .mceListBox:hover .mceOpen,
+.mceModernSkin.mceModal .mceListBox:focus .mceText,
+.mceModernSkin.mceModal .mceListBox:hover .mceText {
+  border-color: var(--wfe-border-color);
+  background-color: var(--wfe-bg-hover);
+}
+.mceModernSkin.mceModal .mceListBox .mceComboBox {
+  border-color: var(--wfe-border-color);
+}
+.mceModernSkin .mceColorSplitMenu {
+  background-color: var(--wfe-bg);
+}
+.mceModernSkin .mceColorSplitMenu button {
+  background-color: var(--wfe-bg);
+  border-color: var(--wfe-border-color);
+  color: var(--wfe-color);
+}
+.mceModernSkin .mceColorSplitMenu button.mceMoreColors {
+  background-color: var(--wfe-bg);
+}
+.mceModernSkin .mceColorSplitMenu button.mceMoreColors:hover {
+  background-color: var(--wfe-bg-hover);
+  border-color: var(--wfe-border-color);
 }
