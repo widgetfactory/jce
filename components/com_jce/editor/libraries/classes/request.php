@@ -156,9 +156,6 @@ final class WFRequest extends CMSObject
 
         // get and encode json data
         if ($json) {
-            // remove slashes
-            $json = stripslashes($json);
-
             // convert to JSON object
             $json = json_decode($json);
         }
