@@ -18,7 +18,7 @@
 
             // get state from cookie
             if (ed.getParam('use_state_cookies', true)) {
-                state = Storage.get('wf_toggletoolbars_state', false);
+                state = Storage.get('wf_toggletoolbars_state_' + ed.id, false);
             }
 
             function toggle() {
@@ -48,7 +48,7 @@
                 }
 
                 if (ed.getParam('use_state_cookies', true)) {
-                    Storage.set('wf_toggletoolbars_state', state);
+                    Storage.set('wf_toggletoolbars_state_' + ed.id, state);
                 }
 
                 ed.controlManager.setActive('kitchensink', state);
