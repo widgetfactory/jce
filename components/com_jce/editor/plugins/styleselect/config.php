@@ -10,6 +10,7 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
 
 class WFStyleselectPluginConfig
 {
@@ -197,7 +198,7 @@ class WFStyleselectPluginConfig
 
                     // explode to array
                     $content_css = explode(',', $settings['content_css']);
-                    $content_css[] = JURI::root(true) . '/' . $stylesheet . $etag;
+                    $content_css[] = Uri::root(true) . '/' . $stylesheet . $etag;
 
                     // remove duplicates and empty values
                     $content_css = array_unique(array_filter($content_css));

@@ -14,6 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Uri\Uri;
 
 class JoomlalinksMenu extends CMSObject
 {
@@ -174,7 +175,7 @@ class JoomlalinksMenu extends CMSObject
     private static function toSSL($link)
     {
         if (strcasecmp(substr($link, 0, 4), 'http') && (strpos($link, 'index.php?') !== false)) {
-            $uri = JURI::getInstance();
+            $uri = Uri::getInstance();
 
             // Get prefix
             $prefix = $uri->toString(array('host', 'port'));

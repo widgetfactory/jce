@@ -56,7 +56,7 @@ class JceViewPopup extends AbstractView
         // img src must be passed
         if ($img) {
             $features = array(
-                'img' => str_replace(JURI::root(), '', $img),
+                'img' => str_replace(Uri::root(), '', $img),
                 'title' => $title,
                 'alt' => $title,
                 'mode' => $mode,

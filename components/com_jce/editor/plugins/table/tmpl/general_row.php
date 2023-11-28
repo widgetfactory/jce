@@ -9,42 +9,45 @@
  * other free or open source software licenses
  */
 defined('JPATH_PLATFORM') or die;
+
+use Joomla\CMS\Language\Text;
+
 ?>
 <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="rowtype">
-        <?php echo JText::_('WF_TABLE_ROWTYPE'); ?></label>
+        <?php echo Text::_('WF_TABLE_ROWTYPE'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
         <select id="rowtype">
-            <option value="thead"><?php echo JText::_('WF_TABLE_THEAD'); ?></option>
-            <option value="tbody"><?php echo JText::_('WF_TABLE_TBODY'); ?></option>
-            <option value="tfoot"><?php echo JText::_('WF_TABLE_TFOOT'); ?></option>
+            <option value="thead"><?php echo Text::_('WF_TABLE_THEAD'); ?></option>
+            <option value="tbody"><?php echo Text::_('WF_TABLE_TBODY'); ?></option>
+            <option value="tfoot"><?php echo Text::_('WF_TABLE_TFOOT'); ?></option>
         </select></div>
 </div>
 <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="align">
-        <?php echo JText::_('WF_TABLE_ALIGN'); ?></label>
+        <?php echo Text::_('WF_TABLE_ALIGN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
         <select id="align">
-            <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
-            <option value="center"><?php echo JText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
-            <option value="left"><?php echo JText::_('WF_TABLE_ALIGN_LEFT'); ?></option>
-            <option value="right"><?php echo JText::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
+            <option value=""><?php echo Text::_('WF_OPTION_NOT_SET'); ?></option>
+            <option value="center"><?php echo Text::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
+            <option value="left"><?php echo Text::_('WF_TABLE_ALIGN_LEFT'); ?></option>
+            <option value="right"><?php echo Text::_('WF_TABLE_ALIGN_RIGHT'); ?></option>
         </select></div>
 </div>
 <!--div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="valign">
-        <?php echo JText::_('WF_TABLE_VALIGN'); ?></label>
+        <?php echo Text::_('WF_TABLE_VALIGN'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
         <select id="valign">
-            <option value=""><?php echo JText::_('WF_OPTION_NOT_SET'); ?></option>
-            <option value="top"><?php echo JText::_('WF_TABLE_ALIGN_TOP'); ?></option>
-            <option value="middle"><?php echo JText::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
-            <option value="bottom"><?php echo JText::_('WF_TABLE_ALIGN_BOTTOM'); ?></option>
+            <option value=""><?php echo Text::_('WF_OPTION_NOT_SET'); ?></option>
+            <option value="top"><?php echo Text::_('WF_TABLE_ALIGN_TOP'); ?></option>
+            <option value="middle"><?php echo Text::_('WF_TABLE_ALIGN_MIDDLE'); ?></option>
+            <option value="bottom"><?php echo Text::_('WF_TABLE_ALIGN_BOTTOM'); ?></option>
         </select></div>
 </div-->
 <div class="uk-form-row uk-grid uk-grid-small">
     <label class="uk-form-label uk-width-3-10" for="height">
-        <?php echo JText::_('WF_TABLE_HEIGHT'); ?></label>
+        <?php echo Text::_('WF_TABLE_HEIGHT'); ?></label>
     <div class="uk-form-controls uk-width-7-10">
         <input type="text" id="height" value="" />
     </div>
