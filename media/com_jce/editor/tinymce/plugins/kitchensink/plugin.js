@@ -18,15 +18,7 @@
 
             // get state from cookie
             if (ed.getParam('use_state_cookies', true)) {
-                state = Storage.get('wf_toggletoolbars_state');
-            }
-
-            if (tinymce.is(state, "string")) {
-                if (state === "null" || state === "false") {
-                    state = false;
-                }
-    
-                state = !!state;
+                state = Storage.get('wf_toggletoolbars_state', false);
             }
 
             function toggle() {
