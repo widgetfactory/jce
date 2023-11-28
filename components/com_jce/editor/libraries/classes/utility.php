@@ -404,15 +404,49 @@ abstract class WFUtility
     }
 
     /**
+     * Convert strftime format to DateTime format.
+     *
+     * @param string $format The strftime format string.
+     *
+     * @return string The DateTime format string.
+     */
+    private static function convertStrftimeToDateTimeFormat($format)
+    {
+        $replacements = [
+            '%d' => 'd', // Day of the month, 2 digits with leading zeros
+            '%m' => 'm', // Numeric representation of a month, with leading zeros
+            '%Y' => 'Y', // A full numeric representation of a year, 4 digits
+            '%y' => 'y', // A two digit representation of a year
+            '%H' => 'H', // 24-hour format of an hour with leading zeros
+            '%I' => 'h', // 12-hour format of an hour with leading zeros
+            '%M' => 'i', // Minutes with leading zeros
+            '%S' => 's', // Seconds, with leading zeros
+            '%p' => 'A', // UPPER-CASE 'AM' or 'PM' based on the given time
+            '%P' => 'a', // lower-case 'am' or 'pm' based on the given time
+        ];
+
+        return strtr($format, $replacements);
+    }
+
+    /**
      * Format the date.
      *
-     * @param int $date the unix datestamp
+     * @param int $timestamp the unix timestamp
+     * @param string $format the format of the date (default: 'd/m/Y, H:i')
      *
-     * @return string formated date
+     * @return string formatted date
      */
-    public static function formatDate($date, $format = '%d/%m/%Y, %H:%M')
+    public static function formatDate($timestamp = null, $format = 'd/m/Y, H:i')
     {
-        return strftime($format, $date);
+        $formatDateTime = self::convertStrftimeToDateTimeFormat($format);
+
+        $dateTime = new DateTime();
+
+        if ($timestamp !== null) {
+            $dateTime->setTimestamp($timestamp);
+        }
+
+        return $dateTime->format($formatDateTime);
     }
 
     /**
