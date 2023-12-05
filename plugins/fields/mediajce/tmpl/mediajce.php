@@ -79,6 +79,11 @@ $extension = strtolower($extension);
 // get layout from extension
 $layout = WfMediaHelper::getLayoutFromExtension($extension);
 
+// reset to link if not extended media
+if ((int) $fieldParams->get('extendedmedia') == 0 && $layout !== 'image') {
+    $layout = 'link';
+}
+
 // reset layout as link
 if (!in_array($layout, $data->media_supported) || $data->media_type == 'link') {
     $layout = 'link';

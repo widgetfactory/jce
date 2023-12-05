@@ -96,8 +96,14 @@ class ExtendedMediaField extends FormField
     {
         $xml = file_get_contents(__DIR__ . '/mediajce.xml');
 
+        $fieldset = 'media'; 
+        
+        if ((int) $this->element['data-extendedmedia'] == 1) {
+            $fieldset = 'extendedmedia'; 
+        }
+
         $formname   = 'subform.' . str_replace(array('jform[', '[', ']'), array('', '.', ''), $this->name);
-        $subForm     = Form::getInstance($formname, $xml, array('control' => $this->name));
+        $subForm     = Form::getInstance($formname, $xml, array('control' => $this->name), true, '//fieldset[@name="' . $fieldset . '"]');
 
         if (is_string($this->value)) {
             $this->value = json_decode($this->value);

@@ -48,11 +48,10 @@ class PlgFieldsMediaJce extends FieldsPlugin
 		$fieldParams = clone $this->params;
         $fieldParams->merge($field->fieldparams);
 
-		// reset from parent
-		$fieldNode->setAttribute('type', 'mediajce');
+		$fieldNode->setAttribute('type', 'extendedmedia');
 
 		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
-			$fieldNode->setAttribute('type', 'extendedmedia');
+			$fieldNode->setAttribute('data-extendedmedia', '1');
 		}
 
 		return $fieldNode;
@@ -86,6 +85,7 @@ class PlgFieldsMediaJce extends FieldsPlugin
 		// if extendedmedia is disabled, use restricted media support
 		if ((int) $fieldParams->get('extendedmedia', 0) == 0) {
 			$field->value['media_supported'] = array('img', 'a');
+			$field->value['media_type'] = 'link';
 		}
 	}
 
