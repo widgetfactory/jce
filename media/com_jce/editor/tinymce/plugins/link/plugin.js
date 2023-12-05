@@ -124,7 +124,9 @@
         }
 
         var args = {
-            'href': data.url
+            'href': data.url,
+            'title': data.title || '',
+            'target': data.target || ''
         };
 
         args = tinymce.extend(args, params.attributes || {});
@@ -252,7 +254,8 @@
                 if (params.target_ctrl !== false) {
                     targetCtrl = cm.createListBox('link_target', {
                         label: ed.getLang('link.target', 'Taget'),
-                        name: 'target'
+                        name: 'target',
+                        onselect: function (v) { }
                     });
 
                     var targetValues = {
