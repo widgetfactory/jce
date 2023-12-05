@@ -203,6 +203,11 @@ class WFApplication extends CMSObject
         // get the profile variables for the current context
         $options = $this->getProfileVars();
 
+        // installed plugins will have a name prefixed with "editor-", so remove to validate
+        if (preg_match('/^editor[-_]/', $plugin)) {
+            $plugin = preg_replace('/^editor[-_]/', '', $plugin);
+        }
+
         // add plugin to options array
         $options['plugin'] = $plugin;
 
