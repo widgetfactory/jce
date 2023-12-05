@@ -8,7 +8,7 @@
  * other free or open source software licenses.
  */
 (function () {
-    var DOM = tinymce.DOM, Event = tinymce.dom.Event;
+    var DOM = tinymce.DOM, Event = tinymce.dom.Event, each = tinymce.each, extend = tinymce.extend;
 
     // A selection of useful utilities borrowed from https://github.com/tinymce/tinymce/blob/develop/modules/tinymce/src/plugins/link/main/ts/core/Utils.ts
     var isAnchor = function (elm) {
@@ -88,7 +88,7 @@
         return trimCaretContainers(text);
     };
 
-    var updateTextContent = function (elm, text) {        
+    var updateTextContent = function (elm, text) {
         tinymce.each(elm.childNodes, function (node) {
             // If it's a text node and has non-whitespace content
             if (node.nodeType == 3 && node.nodeValue.trim() !== "") {
@@ -168,10 +168,14 @@
 
             ed.addShortcut('meta+k', 'link.desc', 'mceLink');
 
-            var urlCtrl, textCtrl;
+            var urlCtrl, textCtrl, titleCtrl, targetCtrl;
 
             ed.onPreInit.add(function () {
                 var params = ed.getParam('link', {});
+
+                params = extend({
+                    attributes: {}
+                }, params);
 
                 if (params.basic_dialog !== true) {
                     return;
@@ -233,6 +237,40 @@
 
                 form.add(textCtrl);
 
+                if (params.title_ctrl !== false) {
+
+                    titleCtrl = cm.createTextBox('link_title', {
+                        label: ed.getLang('link.title', 'Title'),
+                        name: 'title',
+                        clear: true
+                    });
+
+                    form.add(titleCtrl);
+
+                }
+
+                if (params.target_ctrl !== false) {
+                    targetCtrl = cm.createListBox('link_target', {
+                        label: ed.getLang('link.target', 'Taget'),
+                        name: 'target'
+                    });
+
+                    var targetValues = {
+                        '': '--',
+                        '_blank': ed.getLang('link.target_blank', 'Open in new window'),
+                        '_self': ed.getLang('link.target_self', 'Open in same window'),
+                        '_parent': ed.getLang('link.target_parent', 'Open in parent window'),
+                        '_top': ed.getLang('link.target_top', 'Open in top window')
+                    };
+
+                    each(targetValues, function (name, value) {
+                        targetCtrl.add(name, value);
+                    });
+
+                    form.add(targetCtrl);
+                }
+
+
                 // Register commands
                 ed.addCommand('mceLink', function () {
                     ed.windowManager.open({
@@ -240,7 +278,7 @@
                         items: [form],
                         size: 'mce-modal-landscape-small',
                         open: function () {
-                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '';
+                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', title = '', target = params.attributes.target || '';
                             var state = isOnlyTextSelected(ed);
 
                             node = ed.dom.getParent(node, 'a[href]');
@@ -268,6 +306,9 @@
                                 if (hasFileSpan(node)) {
                                     state = true;
                                 }
+
+                                title = ed.dom.getAttrib(node, 'title');
+                                target = ed.dom.getAttrib(node, 'target');
                             }
 
                             // get anchor or selected element text
@@ -277,6 +318,15 @@
 
                             textCtrl.value(text);
                             textCtrl.setDisabled(!state);
+
+                            // update title and target
+                            if (titleCtrl) {
+                                titleCtrl.value(title);
+                            }
+
+                            if (targetCtrl) {
+                                targetCtrl.value(target);
+                            }
 
                             window.setTimeout(function () {
                                 urlCtrl.focus();
