@@ -308,17 +308,22 @@
     _clearBlocks: function (ed, e) {
       var p, n = ed.selection.getNode();
 
+      // set defualt content and get the element to use
+      var tag = ed.getParam('forced_root_block', 'p');
+
+      if (!tag) {
+        tag = ed.getParam('force_block_newlines') ? 'p' : 'br';
+      }
+
       // Find parent element just before the document body
       p = ed.dom.getParents(n, blocks.join(','));
 
+      // inside a table
+      if (ed.dom.getParent(n, 'td,th')) {
+        p = ed.dom.getParents(n, 'td,th,tr,tfoot,thead,table');
+      }
+
       if (p && p.length > 1) {
-        // set defualt content and get the element to use
-        var tag = ed.getParam('forced_root_block', 'p');
-
-        if (!tag) {
-          tag = ed.getParam('force_block_newlines') ? 'p' : 'br';
-        }
-
         // prevent default action
         e.preventDefault();
 
