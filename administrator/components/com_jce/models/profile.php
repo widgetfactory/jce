@@ -526,17 +526,20 @@ class JceModelProfile extends AdminModel
      */
     protected function prepareTable($table)
     {
-        $date = Factory::getDate();
-        $user = Factory::getUser();
+        $filter = InputFilter::getInstance();
 
         foreach ($table->getProperties() as $key => $value) {
             switch ($key) {
                 case 'name':
                 case 'description':
-                    $value = filter_var($value, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+                    $value = $filter->clean($value, 'STRING');
                     break;
                 case 'device':
-                    $value = implode(',', filter_var_array($value, FILTER_SANITIZE_STRING));
+                    $value = $filter->clean($value, 'STRING');
+
+                    if (is_array($value)) {
+                        $value = implode(',', $value);
+                    }
                     break;
                 case 'area':
                     if (is_array($value)) {
@@ -555,26 +558,25 @@ class JceModelProfile extends AdminModel
 
                     break;
                 case 'components':
+                    $value = $filter->clean($value, 'STRING');
 
                     if (is_array($value)) {
-                        $value = implode(',', filter_var_array($value, FILTER_SANITIZE_STRING));
+                        $value = implode(',', $value);
                     }
 
                     break;
                 case 'types':
                 case 'users':
 
-                    if (is_string($value)) {
-                        $value = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
-                    }
+                    $value = $filter->clean($value, 'INT');
 
                     if (is_array($value)) {
-                        $value = implode(',', filter_var_array($value, FILTER_SANITIZE_NUMBER_INT));
+                        $value = implode(',', $value);
                     }
 
                     break;
                 case 'plugins':
-                    $value = preg_replace('#[^\w,]+#', '', $value);
+                    $value = preg_replace('#[^\w_,]+#', '', $value);
                     break;
                 case 'rows':
                     $value = preg_replace('#[^\w,;]+#', '', $value);
