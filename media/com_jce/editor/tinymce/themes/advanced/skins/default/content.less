@@ -47,6 +47,7 @@ body {
     }
 
     .mceSelected,
+    .mce-item-selected,
     td[data-mce-selected],
     tr[data-mce-selected] {
         background: #b4d7ff;
@@ -408,4 +409,8 @@ figure {
 .mce-item-hidden-del {
     color: red;
     text-decoration: line-through
+}
+/* Webkit fix for near invisible cursor adjacent to images */
+.mceContentBody img:not([data-mce-selected]) {
+    padding-right: 1pt;
 }

@@ -38,6 +38,7 @@ body {
   outline: 3px solid var(--mce-control-selection);
 }
 .mceContentBody .mceSelected,
+.mceContentBody .mce-item-selected,
 .mceContentBody td[data-mce-selected],
 .mceContentBody tr[data-mce-selected] {
   background: #b4d7ff;
@@ -329,4 +330,8 @@ figure figcaption:empty[data-mce-empty]::after {
 .mce-item-hidden-del {
   color: red;
   text-decoration: line-through;
+}
+/* Webkit fix for near invisible cursor adjacent to images */
+.mceContentBody img:not([data-mce-selected]) {
+  padding-right: 1pt;
 }
