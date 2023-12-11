@@ -48,7 +48,7 @@ $plugins = array_values(array_filter($this->plugins, function($plugin) {
             $key++;
 
             if ($key === 1) {
-                $plugin->state = "active";
+                $plugin->state = "active show";
             }
         }
 
