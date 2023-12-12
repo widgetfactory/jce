@@ -80,7 +80,7 @@
     }
 
     .mceListBox .mceOpen {
-        background-color: #fff;
+        background-color: transparent;
 
         border-top-color: #ddd;
         border-bottom-color: #ddd;
@@ -169,6 +169,7 @@
         overflow: hidden;
     }
 
+    .mceListBox:hover .mceText,
     .mceListBoxSelected .mceText,
     .mceListBoxSelected:hover .mceText {
         background: #fff;
@@ -176,6 +177,7 @@
         border-radius: 2px 0 0 0;
     }
 
+    .mceListBox:hover .mceOpen,
     .mceListBoxSelected .mceOpen,
     .mceDefaultSkin .mceListBoxSelected:hover .mceOpen {
         background: #fff;

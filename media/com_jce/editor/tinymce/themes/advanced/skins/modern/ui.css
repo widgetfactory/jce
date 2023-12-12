@@ -64,7 +64,7 @@
   border-left-color: #ddd;
 }
 .mceModernSkin .mceListBox .mceOpen {
-  background-color: #fff;
+  background-color: transparent;
   border-top-color: #ddd;
   border-bottom-color: #ddd;
   border-right-color: #ddd;
@@ -139,12 +139,14 @@
 .mceModernSkin .mceListBoxMenu {
   overflow: hidden;
 }
+.mceModernSkin .mceListBox:hover .mceText,
 .mceModernSkin .mceListBoxSelected .mceText,
 .mceModernSkin .mceListBoxSelected:hover .mceText {
   background: #fff;
   border-color: #ccc;
   border-radius: 2px 0 0 0;
 }
+.mceModernSkin .mceListBox:hover .mceOpen,
 .mceModernSkin .mceListBoxSelected .mceOpen,
 .mceModernSkin .mceDefaultSkin .mceListBoxSelected:hover .mceOpen {
   background: #fff;
