@@ -9,10 +9,8 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Editor\Editor;
-use Joomla\CMS\Object\CMSObject;
-use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Uri\Uri;
 
 class WFJoomlaPluginConfig
@@ -29,7 +27,10 @@ class WFJoomlaPluginConfig
             return;
         }
 
-        $list = array();
+        $list = array(
+            '__jce__' => array()
+        );
+
         $editor = Editor::getInstance('jce');
 
         $excluded = array('readmore', 'pagebreak', 'image');
@@ -38,19 +39,16 @@ class WFJoomlaPluginConfig
 
         $buttons = $editor->getButtons('__jce__');
 
-        foreach($buttons as $button) {
+        foreach ($buttons as $button) {
             // skip buttons better implemented by editor
             if (in_array($button->name, $excluded)) {
                 continue;
             }
 
-            // Set some vars
-            $icon = 'icon-' . $button->get('icon', $button->get('name'));
+            // create icon class
+            $icon = 'none icon-' . $button->get('icon', $button->get('name'));
 
-            $name = 'button-' . $i . '-' . str_replace(' ', '-', $button->get('text'));
-            $title = $button->get('text');
-            $onclick = $button->get('onclick', '');
-
+            // set href value
             if ($button->get('link') !== '#') {
                 $href = Uri::base() . $button->get('link');
             } else {
@@ -59,19 +57,19 @@ class WFJoomlaPluginConfig
 
             $id = $button->get('name');
 
-            $list[$id] = array(
-                'name' => $name,
-                'title' => $title,
+            $options = array(
+                'name' => $button->get('text'),
+                'id' => $id,
+                'title' => $button->get('text'),
                 'icon' => $icon,
                 'href' => $href,
-                'onclick' => $onclick,
+                'onclick' => $button->get('onclick', ''),
                 'svg' => $button->get('iconSVG'),
                 'options' => $button->get('options', array()),
             );
 
-            $i++;
+            $list['__jce__'][] = $options;
         }
-
-        $settings['joomla_xtd_buttons'] = json_encode(array_values($list));
+        $settings['joomla_xtd_buttons'] = json_encode($list);
     }
 }

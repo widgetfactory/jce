@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
@@ -23,7 +24,14 @@
                 return null;
             }
 
-            var plugins = ed.settings.joomla_xtd_buttons || [];
+            var instances = ed.settings.joomla_xtd_buttons || {};
+
+            // not specified for this editor
+            if (!instances[ed.id] && !instances['__jce__']) {
+                return null;
+            }
+
+            var plugins = instances[ed.id] || instances['__jce__'] || [];
 
             if (!plugins.length) {
                 return null;
