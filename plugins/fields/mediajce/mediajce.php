@@ -85,7 +85,6 @@ class PlgFieldsMediaJce extends FieldsPlugin
 		// if extendedmedia is disabled, use restricted media support
 		if ((int) $fieldParams->get('extendedmedia', 0) == 0) {
 			$field->value['media_supported'] = array('img', 'a');
-			$field->value['media_type'] = 'link';
 		}
 	}
 
