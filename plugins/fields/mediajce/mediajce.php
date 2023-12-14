@@ -83,7 +83,7 @@ class PlgFieldsMediaJce extends FieldsPlugin
         $fieldParams->merge($field->fieldparams);
 
 		// if extendedmedia is disabled, use restricted media support
-		if ((int) $fieldParams->get('extendedmedia', 0) == 0) {
+		if ((int) $fieldParams->get('extendedmedia', 0) == 0 && is_array($field->value)) {
 			$field->value['media_supported'] = array('img', 'a');
 		}
 	}

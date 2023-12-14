@@ -77,8 +77,10 @@ class JFormFieldMediaJce extends MediaField
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
-            if (isset($this->types) && (bool) $this->element['converted'] === false) {
-                $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
+            if (isset($this->types) && (bool) $this->element['converted'] === false) {                
+                if (is_string($this->value)) {
+                    $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
+                }
             }
         }
 
