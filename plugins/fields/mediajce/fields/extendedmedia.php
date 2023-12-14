@@ -150,7 +150,22 @@ class ExtendedMediaField extends FormField
     public function postProcess($value, $group = null, Registry $input = null)
     {        
         $media = array('img', 'video', 'audio', 'iframe', 'a', 'object');
+
+        // must be an object, othewise return string
+        if (is_string($value)) {
+            return $value;
+        }
+
+        $value = (object) $value;
+
+        // simplify saving of value if no others are set (legacy value layout override support)
+        if (count(get_object_vars($value)) == 2) {
+            if ($value->media_src && !$value->media_text) {
+                return $value->media_src;
+            }
+        }
         
+        // check that supported media are valid for this usergroup or content
         $value->media_supported = array_filter($media, function ($tag) {
 			$html = '<' . $tag . '></' . $tag . '>';
             
