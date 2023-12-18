@@ -50,6 +50,12 @@ class PlgFieldsMediaJce extends FieldsPlugin
 
 		$fieldNode->setAttribute('type', 'extendedmedia');
 
+		// enable legacy media support
+		if (version_compare(JVERSION, 4, '<') || ((int) $this->params->get('legacymedia', 0) == 1 && (int) $fieldParams->get('extendedmedia', 0) == 0)) {
+			$fieldNode->setAttribute('type', 'mediajce');
+		}
+
+		// set extendedmedia flag
 		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
 			$fieldNode->setAttribute('data-extendedmedia', '1');
 		}
