@@ -161,8 +161,11 @@ class JFormFieldContainer extends FormField
 
                 // escape values
                 if (is_array($value)) {
-                    array_walk($value, function(&$item) {
-                        $item = htmlspecialchars($item, ENT_COMPAT, 'UTF-8');
+                    // handle nested arrays
+                    array_walk_recursive($value, function(&$item) {
+                        if (is_string($item)) {
+                            $item = htmlspecialchars($item, ENT_COMPAT, 'UTF-8');
+                        }
                     });
                 } else {
                     $value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
