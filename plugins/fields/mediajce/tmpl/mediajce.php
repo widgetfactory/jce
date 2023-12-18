@@ -109,13 +109,21 @@ if ($layout == 'link') {
 
 // images
 if ($layout == 'image') {
-    $attribs['width'] = isset($data->media_width) ? $data->media_width : '';
-    $attribs['height'] = isset($data->media_height) ? $data->media_height : '';
-    $attribs['loading'] = 'lazy';
-
-    if ($text) {
-        $attribs['alt'] = $text;
+    if (isset($data->media_width)) {
+        $attribs['width'] = $data->media_width;
     }
+
+    if (isset($data->media_height)) {
+        $attribs['height'] = $data->media_height;
+    }
+
+    // set lazy loading only if dimensions are set
+    if (!empty($data->media_width) && !empty($data->media_height)) {
+        $attribs['loading'] = 'lazy';
+    }
+
+    // set alt text or emty value
+    $attribs['alt'] = $text;
 }
 
 // audio
@@ -164,7 +172,11 @@ if ($layout == 'iframe') {
     $attribs['frameborder'] = 0;
     $attribs['width'] = isset($data->media_width) ? $data->media_width : '100%';
     $attribs['height'] = isset($data->media_height) ? $data->media_height : '100%';
-    $attribs['loading'] = 'lazy';
+    
+    // set lazy loading only if dimensions are set
+    if (!empty($data->media_width) && !empty($data->media_height)) {
+        $attribs['loading'] = 'lazy';
+    }
 
     if ($text) {
         $attribs['title'] = $text;
