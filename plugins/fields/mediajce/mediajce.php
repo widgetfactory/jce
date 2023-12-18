@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormHelper;
 use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
 
 if (version_compare(JVERSION, 4, '<') && !class_exists('\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin', false)) {
@@ -50,14 +51,17 @@ class PlgFieldsMediaJce extends FieldsPlugin
 
 		$fieldNode->setAttribute('type', 'extendedmedia');
 
-		// enable legacy media support
-		if (version_compare(JVERSION, 4, '<') || ((int) $this->params->get('legacymedia', 0) == 1 && (int) $fieldParams->get('extendedmedia', 0) == 0)) {
-			$fieldNode->setAttribute('type', 'mediajce');
-		}
+		// Joomla 3 requires the fieldtype to be loaded
+		FormHelper::loadFieldType('extendedmedia', false);
 
 		// set extendedmedia flag
 		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
 			$fieldNode->setAttribute('data-extendedmedia', '1');
+		} else {
+			// allow for legacy media support
+			if ((int) $this->params->get('legacymedia', 0) == 1) {
+				$fieldNode->setAttribute('type', 'mediajce');
+			}
 		}
 
 		return $fieldNode;
