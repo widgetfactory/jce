@@ -111,7 +111,7 @@
                 <option value="overwrite">WF_PARAM_UPLOAD_EXISTS_OVERWRITE</option>
             </field>
 
-            <field name="upload_suffix" placeholder="_copy" max="" type="text" default="" label="WF_PARAM_UPLOAD_SUFFIX" description="WF_PARAM_UPLOAD_SUFFIX_DESC" showon="upload_conflict:unique" />
+            <field name="upload_suffix" placeholder="_copy" type="text" default="" label="WF_PARAM_UPLOAD_SUFFIX" description="WF_PARAM_UPLOAD_SUFFIX_DESC" />
 
             <field name="browser_position" type="list" default="bottom" label="WF_PARAM_BROWSER_POSITION" description="WF_PARAM_BROWSER_POSITION_DESC">
                 <option value="top">WF_LABEL_TOP</option>

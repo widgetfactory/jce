@@ -1048,7 +1048,7 @@
         /**
          * Reset the Manager
          */
-        _reset: function () {            
+        _reset: function () {
             // Clear selects
             this._deselectItems();
             // Clear returns
@@ -1863,26 +1863,61 @@
                         Wf.JSON.request(fn, [item, dir], function (o) {
                             if (o) {
                                 if (o.confirm) {
-                                    Wf.Modal.confirm(self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'), function (state) {
-                                        if (state) {
-                                            Wf.JSON.request(fn, [item, dir, true], function (o) {
-                                                if (o && !o.error) {
-                                                    callback(o, dir);
+                                    var confirmCallback = function (state) {
+                                        Wf.JSON.request(fn, [item, dir, state], function (o) {
+                                            if (o && !o.error) {
+                                                callback(o, dir);
+                                            }
+                                        });
+                                    };
+                                    
+                                    Wf.Modal.confirm(
+                                        self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'),
+                                        confirmCallback,
+                                        {
+                                            header: false,
+                                            close: function () {
+                                                if (complete) {
+                                                    self._clearPaste();
+                                                    self.refresh();
                                                 }
-                                            });
+                                            },
+                                            buttons: [
+                                                {
+                                                    text: self._translate('cancel', 'Cancel'),
+                                                    icon: 'uk-icon-close',
+                                                    attributes: {
+                                                        "class": "uk-modal-close"
+                                                    }
+                                                },
+                                                {
+                                                    text: self._translate('paste_keep_both', 'Keep Both'),
+                                                    icon: 'uk-icon-copy',
+                                                    click: function (e) {
+                                                        // execute callback
+                                                        confirmCallback.call(this, 'copy');
+                                                    },
+                                                    attributes: {
+                                                        "type": "submit",
+                                                        "class": "uk-button-success uk-modal-close"
+                                                    }
+                                                },
+                                                {
+                                                    text: self._translate('paste_replace', 'Replace'),
+                                                    icon: 'uk-icon-check',
+                                                    click: function (e) {
+                                                        // execute callback
+                                                        confirmCallback.call(this, 'replace');
+                                                    },
+                                                    attributes: {
+                                                        "type": "submit",
+                                                        "class": "uk-button-primary uk-modal-close",
+                                                        "autofocus": true
+                                                    }
+                                                }
+                                            ]
                                         }
-
-                                        if (complete) {
-                                            self._clearPaste();
-                                            self.refresh();
-                                        }
-                                    }, {
-                                        label: {
-                                            'confirm': self._translate('replace', 'Replace'),
-                                            'cancel': self._translate('cancel', 'Cancel')
-                                        },
-                                        header: false
-                                    });
+                                    );
                                 } else {
                                     callback(o, dir);
 
@@ -2992,7 +3027,7 @@
                     mime = getMimeType(ext);
 
                     // only process mime-types that can have dimensions or duration
-                    if (mime && /^(image|video|audio)$/.test(mime)) {                        
+                    if (mime && /^(image|video|audio)$/.test(mime)) {
                         // check if image has dimensions
                         if (mime === "image") {
                             if (data.width && data.height) {

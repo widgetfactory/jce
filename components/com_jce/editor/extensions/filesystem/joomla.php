@@ -667,7 +667,7 @@ class WFJoomlaFileSystem extends WFFileSystem
      *
      * @return string $error on failure
      */
-    public function copy($file, $destination)
+    public function copy($file, $destination, $conflict = 'replace')
     {
         $result = new WFFileSystemResult();
 
@@ -687,6 +687,12 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         // src is a file
         if (is_file($src)) {
+            // resolve filename conflict by creating a copy if required
+            if ($conflict == 'copy') {
+                $name = WFUtility::mb_basename($file);
+                $dest = $this->resolveFilenameConflict($dest, $name, true);
+            }
+
             $result->type = 'files';
             $result->state = File::copy($src, $dest);
             $result->path = $dest;
@@ -836,6 +842,41 @@ class WFJoomlaFileSystem extends WFFileSystem
         return $data;
     }
 
+    protected function resolveFilenameConflict($destination, $name, $createCopy = false) {
+        // get overwrite state
+        $conflict = $this->get('upload_conflict', 'overwrite');
+
+        // get suffix
+        $suffix = $this->get('upload_suffix', '_copy');
+
+        $path = WFUtility::mb_dirname($destination);
+
+        if ($conflict == 'unique' || $createCopy) {
+            // get extension
+            $extension = WFUtility::getExtension($name);
+            // get name without extension
+            $name = WFUtility::stripExtension($name);
+            // create tmp copy
+            $tmpname = $name;
+
+            $x = 1;
+
+            while (File::exists($destination)) {
+                if (strpos($suffix, '$') !== false) {
+                    $tmpname = $name . str_replace('$', $x, $suffix);
+                } else {
+                    $tmpname .= $suffix;
+                }
+
+                $destination = WFUtility::makePath($path, $tmpname . '.' . $extension);
+
+                ++$x;
+            }
+        }
+
+        return $destination;
+    }
+
     public function upload($method, $src, $dir, $name, $chunks = 1, $chunk = 0)
     {
         $app = Factory::getApplication();
@@ -859,33 +900,8 @@ class WFJoomlaFileSystem extends WFFileSystem
 
         $result = new WFFileSystemResult();
 
-        // get overwrite state
-        $conflict = $this->get('upload_conflict', 'overwrite');
-        // get suffix
-        $suffix = $this->get('upload_suffix', '_copy');
-
-        if ($conflict == 'unique') {
-            // get extension
-            $extension = WFUtility::getExtension($name);
-            // get name without extension
-            $name = WFUtility::stripExtension($name);
-            // create tmp copy
-            $tmpname = $name;
-
-            $x = 1;
-
-            while (File::exists($dest)) {
-                if (strpos($suffix, '$') !== false) {
-                    $tmpname = $name . str_replace('$', $x, $suffix);
-                } else {
-                    $tmpname .= $suffix;
-                }
-
-                $dest = WFUtility::makePath($path, $tmpname . '.' . $extension);
-
-                ++$x;
-            }
-        }
+        // resolve filename conflict by creating a copy if required
+        $dest = $this->resolveFilenameConflict($dest, $name);
 
         $app->triggerEvent('onWfFileSystemBeforeUpload', array(&$src, &$dest));
 

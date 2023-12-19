@@ -1489,10 +1489,11 @@ class WFFileBrowser extends CMSObject
      *
      * @param string $files The relative file or comma seperated list of files
      * @param string $dest  The relative path of the destination dir
+     * @param string $conflict The conflict action copy|replace or blank to confirm
      *
      * @return string $error on failure
      */
-    public function copyItem($items, $destination, $overwrite = false)
+    public function copyItem($items, $destination, $conflict = '')
     {
         // check for feature access
         if (!$this->checkFeature('move', 'folder') && !$this->checkFeature('move', 'file')) {
@@ -1544,10 +1545,20 @@ class WFFileBrowser extends CMSObject
                 $path = $item;
             }
 
-            if ($filesystem->is_file(WFUtility::makePath($destination, WFUtility::mb_basename($item))) && $overwrite === false) {
-                $this->setResult($item, 'confirm');
+            $target = WFUtility::makePath($destination, WFUtility::mb_basename($item));
 
-                return $this->getResult();
+            if ($filesystem->is_file($target)) {                
+                // target is the same as the source so paste as copy
+                if ($target === $item) {
+                    $conflict = 'copy';
+                // file exists and is being copied into a new folder
+                } else {
+                    // conflict action not set so confirm
+                    if (!$conflict) {
+                        $this->setResult($item, 'confirm');
+                        return $this->getResult();
+                    }
+                }
             }
 
             // check access
@@ -1555,7 +1566,7 @@ class WFFileBrowser extends CMSObject
                 throw new InvalidArgumentException('Copy Failed: Access to the target directory is restricted');
             }
 
-            $result = $filesystem->copy($item, $destination);
+            $result = $filesystem->copy($item, $destination, $conflict);
 
             if ($result instanceof WFFileSystemResult) {
                 if (!$result->state) {
