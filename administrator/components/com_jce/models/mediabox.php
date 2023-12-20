@@ -48,8 +48,8 @@ class JceModelMediabox extends FormModel
     {
         JForm::addFormPath(JPATH_PLUGINS . '/system/jcemediabox');
 
-        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
         Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_PLUGINS . '/system/jcemediabox');
+        Factory::getLanguage()->load('plg_system_jcemediabox', JPATH_ADMINISTRATOR);
 
         // Get the form.
         $form = $this->loadForm('com_jce.mediabox', 'jcemediabox', array('control' => 'jform', 'load_data' => $loadData), true, '//config');
