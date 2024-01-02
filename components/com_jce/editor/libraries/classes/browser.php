@@ -346,16 +346,21 @@ class WFFileBrowser extends CMSObject
     }
 
     public function checkPathAccess($path)
-    {
+    {        
+        // remove leading and trailing slash
+        $path = trim($path, '/');
+
+        // return if path is empty
+        if (empty($path)) {
+            return true;
+        }
+        
         $filters = $this->get('filter');
 
         $return = true;
 
         if (!empty($filters)) {
             $filesystem = $this->getFileSystem();
-
-            // remove slashes
-            $path = trim($path, '/');
 
             foreach ($filters as $filter) {
                 // remove whitespace
@@ -445,13 +450,15 @@ class WFFileBrowser extends CMSObject
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
-        $list = array_filter($list, function ($item) {
+        $list = array_filter($list, function ($item) {            
             // must have an id set
             if (empty($item['id'])) {
                 return true;
             }
 
-            return $this->checkPathAccess(dirname($item['id']));
+            $path = dirname($item['id']);
+
+            return $this->checkPathAccess($path);
         });
 
         return $list;
