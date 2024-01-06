@@ -346,88 +346,100 @@ class WFFileBrowser extends CMSObject
     }
 
     public function checkPathAccess($path)
-    {        
-        // remove leading and trailing slash
+    {
         $path = trim($path, '/');
 
-        // return if path is empty
         if (empty($path)) {
             return true;
         }
-        
+
         $filters = $this->get('filter');
 
-        $return = true;
+        if (empty($filters)) {
+            return false; // Default to deny if no filters are set
+        }
 
-        if (!empty($filters)) {
-            $filesystem = $this->getFileSystem();
+        $filesystem = $this->getFileSystem();
 
-            foreach ($filters as $filter) {
-                // remove whitespace
-                $filter = trim($filter);
+        // reolsve to root path
+        $path = WFUtility::makePath($filesystem->getRootDir(), $path);
 
-                // remove slashes
-                $filter = trim($filter, '/');
+        // remove leading and trailing slash
+        $path = trim($path, '/');
 
-                // show this folder
-                if ($filter[0] === "+") {
-                    $path_parts = explode('/', $path);
+        $allowFilters = [];
+        $denyFilters = [];
 
-                    // remove "+" from filter
-                    $filter = substr($filter, 1);
+        // Categorize filters into allow and deny lists
+        foreach ($filters as $filter) {
+            // remove leading and trailing slash    
+            $filter = trim($filter, '/');
 
-                    // process path for variables, text case etc.
-                    $filesystem->processPath($filter);
+            if (strpos($filter, '+') === 0) {
+                $allowFilters[] = substr($filter, 1);
+            } else if (strpos($filter, '-') === 0) {
+                $filter = ltrim($filter, '-');
+                
+                $denyFilters[] = $filter;
+            } else {
+                $denyFilters[] = $filter;
+            }
+        }
 
-                    // explode to array
-                    $filter_parts = explode('/', $filter);
+        $access = true; // Default deny policy
 
-                    // filter match
-                    if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
-                        return true;
-                    }
+        // explode path to array
+        $path_parts = explode('/', $path);
 
-                    $return = false;
+        // Check allow filters
+        foreach ($allowFilters as $filter) {
+            $access = false;
 
-                    // hide this folder
-                } else {
-                    $return = true;
+            // process path for variables, text case etc.
+            $filesystem->processPath($filter);
 
-                    if ($filter[0] === "*") {
-                        // remove "-" from filter
-                        $filter = substr($filter, 1);
+            // explode to array
+            $filter_parts = explode('/', $filter);
 
-                        // process path for variables, text case etc.
-                        $filesystem->processPath($filter);
+            // filter match
+            if (false === empty(array_intersect_assoc($filter_parts, $path_parts))) {
+                $access = true;
+                break;
+            }
+        }
 
-                        // explode to array
-                        $path_parts = explode('/', $path);
+        if ($access === false) {
+            return false;
+        }
 
-                        // explode to array
-                        $filter_parts = explode('/', $filter);
+        // Check deny filters
+        foreach ($denyFilters as $filter) {            
+            if (strpos($filter, '*') === 0) {
+                $filter = substr($filter, 1);
 
-                        // filter match
-                        if (false === empty(array_intersect($filter_parts, $path_parts))) {
-                            return false;
-                        }
-                    }
+                // process path for variables, text case etc.
+                $filesystem->processPath($filter);
 
-                    if ($filter[0] === "-") {
-                        // remove "-" from filter
-                        $filter = substr($filter, 1);
-                    }
+                // explode to array
+                $filterParts = explode('/', $filter);
 
-                    // process path for variables, text case etc.
-                    $filesystem->processPath($filter);
-
-                    if ($filter === $path) {
-                        return false;
-                    }
+                // filter match
+                if (false === empty(array_intersect($filter_parts, $path_parts))) {
+                    $access = false;
+                    break;
+                }
+            } else {                                                
+                // process path for variables, text case etc.
+                $filesystem->processPath($filter);
+                
+                if ($path === $filter) {
+                    $access = false;
+                    break;
                 }
             }
         }
 
-        return $return;
+        return $access;
     }
 
     public function getBaseDir()
@@ -450,7 +462,7 @@ class WFFileBrowser extends CMSObject
         $filesystem = $this->getFileSystem();
         $list = $filesystem->getFiles($relative, $filter, $sort, $limit, $start);
 
-        $list = array_filter($list, function ($item) {            
+        $list = array_filter($list, function ($item) {
             // must have an id set
             if (empty($item['id'])) {
                 return true;
@@ -1554,11 +1566,11 @@ class WFFileBrowser extends CMSObject
 
             $target = WFUtility::makePath($destination, WFUtility::mb_basename($item));
 
-            if ($filesystem->is_file($target)) {                
+            if ($filesystem->is_file($target)) {
                 // target is the same as the source so paste as copy
                 if ($target === $item) {
                     $conflict = 'copy';
-                // file exists and is being copied into a new folder
+                    // file exists and is being copied into a new folder
                 } else {
                     // conflict action not set so confirm
                     if (!$conflict) {
