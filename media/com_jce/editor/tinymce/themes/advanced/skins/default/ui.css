@@ -2531,8 +2531,8 @@ select.mceNativeListBox {
 .mceModal .mceLoading .mceModalContent:after {
     content: "";
     display: block;
-    border: 0.25rem solid rgba(0, 0, 0, 0.1);
-    border-left-color: #888;
+    border: 0.25rem solid rgba(0, 0, 0, 0.3);
+    border-left-color: #444;
     border-radius: 50%;
     width: 2.5rem;
     height: 2.5rem;
