@@ -9,7 +9,46 @@
  * other free or open source software licenses.
  */
 (function () {
-    var each = tinymce.each;
+    var Joomla = window.Joomla || null, each = tinymce.each, DOM = tinymce.DOM;
+
+    function ckPageBuilderFix(ed) {
+        var ckModal = DOM.select('.modal[id^="ckeditor_"][id$="_modal"]');
+
+        each(ckModal, function (modal) {
+            var newModal = modal.cloneNode(true);
+
+            var id = newModal.id;
+            var url = newModal.getAttribute('data-url');
+            var ifr = newModal.getAttribute('data-iframe');
+
+            if (url && id) {
+                id = id.replace('ckeditor_', `${ed.id}_`);
+                // replace ckeditor param with editor id, eg: &editor=ckeditor
+                url = url.replace(/=ckeditor\b/g, `=${ed.id}`);
+            }
+
+            var tmp = DOM.create('div', {}, DOM.decode(ifr));
+            var iframe = tmp.firstChild;
+
+            if (iframe) {
+                iframe.setAttribute('src', url);
+            }
+
+            newModal.setAttribute('id', id);
+            newModal.setAttribute('data-url', url);
+            newModal.setAttribute('data-iframe', tmp.innerHTML);
+
+            // update instances of ckeditor with editor id, eg: instance.setText('ckeditor')
+            newModal.innerHTML = newModal.innerHTML.replace(/'ckeditor'/g, `'${ed.id}'`);
+
+            // replace modal
+            document.body.appendChild(newModal);
+            // re-initialise modal
+            Joomla.initialiseModal(newModal);
+
+            DOM.remove(modal);
+        });
+    }
 
     tinymce.create('tinymce.plugins.JoomlaPlugin', {
         init: function (ed, url) {
@@ -27,11 +66,11 @@
             var instances = ed.settings.joomla_xtd_buttons || {};
 
             // not specified for this editor
-            if (!instances[ed.id] && !instances['__jce__']) {
+            if (!instances[ed.id] && !instances['__jce__'] && !instances['ckeditor']) {
                 return null;
             }
 
-            var plugins = instances[ed.id] || instances['__jce__'] || [];
+            var plugins = instances[ed.id] || instances['__jce__'] || instances['ckeditor'] || [];
 
             if (!plugins.length) {
                 return null;
@@ -42,21 +81,25 @@
                 icon: 'joomla'
             });
 
+            ckPageBuilderFix(ed);
+
             ctrl.onRenderMenu.add(function (ctrl, menu) {
                 var ed = ctrl.editor, vp = ed.dom.getViewPort();
 
-                each(plugins, function (plg) {
+                each(plugins, function (plg, name) {
                     var href = plg.href || '';
 
                     if (href) {
                         href = ed.dom.decode(href);
 
                         // replace variable with editor id
-                        href = href.replace(/(__jce__)/gi, ed.id);
+                        href = href.replace(/(__jce__|ckeditor)/gi, ed.id);
 
                         // try direct replacement
                         href = href.replace(/(e_name|editor)=([\w_]+)/gi, '$1=' + ed.id);
                     }
+
+                    plg.id = plg.id.replace(/(__jce__|ckeditor)/gi, ed.id);
 
                     var item = menu.add({
                         id: ed.dom.uniqueId(),
@@ -86,9 +129,9 @@
                                         }
                                     });
                                 }
-                                
+
                                 // bootstrap modal in Joomla 4+
-                                var modal = tinymce.DOM.get(plg.id + '_modal');
+                                var modal = DOM.get(plg.id + '_modal');
 
                                 if (modal) {
                                     modal.open();
@@ -102,10 +145,10 @@
                                         addver: false,
                                         buttons: buttons
                                     });
-    
+
                                     // pass the windowManager object as the current Joomla Modal window
-                                    if (window.Joomla && window.Joomla.Modal) {
-                                        window.Joomla.Modal.setCurrent(ed.windowManager);
+                                    if (Joomla && Joomla.Modal) {
+                                        Joomla.Modal.setCurrent(ed.windowManager);
                                     }
                                 }
                             }
