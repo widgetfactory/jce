@@ -20,6 +20,8 @@
 
     var htmlSchema = new tinymce.html.Schema({ schema: 'mixed' });
 
+    var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
     function isNonEditable(node) {
         var nonEditClass = tinymce.settings.noneditable_noneditable_class || 'mceNonEditable';
 
@@ -732,7 +734,7 @@
         retainAttributesAndInnerHtml(editor, node, placeHolder);
 
         placeHolder.attr({
-            src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+            src: transparentSrc,
             "data-mce-object": node.name
         });
 
@@ -1340,6 +1342,8 @@
             var i = nodes.length;
             var node;
 
+            var media_live_embed = editor.settings.media_live_embed;
+
             while (i--) {
                 node = nodes[i];
 
@@ -1352,9 +1356,14 @@
                 }
 
                 // mark iframe for removal if invalid
-                if (node.name === 'iframe' && validateIframe(editor, node) === false) {
-                    node.remove();
-                    continue;
+                if (node.name === 'iframe') {
+                    // click to play embed remove the src attribute
+                    if (!node.attr('src')) {
+                        media_live_embed = false;
+                    } else if (validateIframe(editor, node) === false) {
+                        node.remove();
+                        continue;
+                    }
                 }
 
                 // if valid node (validate == false)
@@ -1372,9 +1381,13 @@
                         node.remove();
                         continue;
                     }
+
+                    if (!src) {
+                        media_live_embed = false;
+                    }
                 }
 
-                if (editor.settings.media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(node)) {
+                if (media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(node)) {
                     if (!isWithinEmbed(node)) {
                         node.replace(createPreviewNode(editor, node));
                     }
@@ -1487,6 +1500,11 @@
 
         // convert url
         data.src = ed.convertURL(data.src);
+
+        // reset data.src if "empty"
+        if (data.src == transparentSrc) {
+            data.src = '';
+        }
 
         var i, attribs = node.attributes;
 
