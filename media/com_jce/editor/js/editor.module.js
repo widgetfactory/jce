@@ -61,6 +61,11 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
         return;
     }
 
+    // Relocate BS modals so they are opened correctly from modal buttons in custom editor fields
+    document.querySelectorAll('.joomla-modal.modal').forEach(function (modal) {
+        document.body.appendChild(modal);
+    });
+
     // Create a decorator
     const JceEditor = new JceDecorator(editor, 'jce', elm.id);
     JoomlaEditor.register(JceEditor);
