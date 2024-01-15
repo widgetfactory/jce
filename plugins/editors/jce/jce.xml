@@ -9,9 +9,14 @@
     <copyright>@@copyright@@</copyright>
     <license>@@licence@@</license>
     <description>WF_EDITOR_PLUGIN_DESC</description>
+
+    <namespace path="src">Joomla\Plugin\Editors\Jce</namespace>
+
     <files folder="plugins/editors/jce">
         <file plugin="jce">jce.php</file>
         <folder>layouts</folder>
+        <folder>services</folder>
+        <folder>src</folder>
     </files>
 
     <!-- Media -->
