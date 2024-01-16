@@ -31037,7 +31037,8 @@
       init: function (settings) {
         /*eslint no-unused-vars:0*/
 
-        var self = this;
+        var self = this;
+
 
         function createId(elm) {
           var id = elm.id;
@@ -43505,7 +43506,7 @@
   })(tinymce);
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -43847,7 +43848,7 @@
   })();
 
   /**
-   * @package    JCE
+   * @package    JCCopyright (c) 2009-2024 Ryan Demmer.
    * @copyright    Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license    GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -44124,7 +44125,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -44675,7 +44676,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
@@ -45736,7 +45737,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -45923,7 +45924,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -46284,7 +46285,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -46844,7 +46845,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -46879,7 +46880,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -47585,7 +47586,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
@@ -48021,7 +48022,7 @@
   })();
 
   /**
-   * @package   	JCE
+   * @package   	Copyright (c) 2009-2024 Ryan Demmer.
    * @copyright 	Copyright (c) 2009-2023 Ryan Demmer. All rights reserved.
    * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
    * JCE is free software. This version may have been modified pursuant
