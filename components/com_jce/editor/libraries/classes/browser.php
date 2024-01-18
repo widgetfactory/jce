@@ -349,23 +349,19 @@ class WFFileBrowser extends CMSObject
     {
         $path = trim($path, '/');
 
+        // path is empty so no filters applied
         if (empty($path)) {
             return true;
         }
 
         $filters = $this->get('filter');
 
+        // no filters set, allow all
         if (empty($filters)) {
-            return false; // Default to deny if no filters are set
+            return true;
         }
 
         $filesystem = $this->getFileSystem();
-
-        // reolsve to root path
-        $path = WFUtility::makePath($filesystem->getRootDir(), $path);
-
-        // remove leading and trailing slash
-        $path = trim($path, '/');
 
         $allowFilters = [];
         $denyFilters = [];
