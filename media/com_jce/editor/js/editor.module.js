@@ -55,20 +55,37 @@ class JceDecorator extends JoomlaEditorDecorator {
 }
 
 tinyMCE.onAddEditor.add(function (mgr, editor) {
-    const elm = editor.getElement();
+    const elm = editor.getElement(), container = elm.parentNode;
 
     if (editor.settings.theme !== "advanced") {
         return;
     }
 
-    // Relocate BS modals so they are opened correctly from modal buttons in custom editor fields
-    document.querySelectorAll('.joomla-modal.modal').forEach(function (modal) {
-        document.body.appendChild(modal);
-    });
-
     // Create a decorator
     const JceEditor = new JceDecorator(editor, 'jce', elm.id);
     JoomlaEditor.register(JceEditor);
+
+    // set first editor as active
+    if (mgr.editors[0] === editor) {
+        JoomlaEditor.setActive(JceEditor);
+    }
+
+    const editorButtons = container.parentNode.querySelector('.editor-xtd-buttons');
+
+    if (editorButtons) {
+        // set editor as active when editor-xtd button is clicked
+        editorButtons.addEventListener('click', function (e) {
+            if (e.target.matches('button') && e.target.parentNode === editorButtons) {
+                mgr.setActive(editor);
+                JoomlaEditor.setActive(JceEditor);
+            }
+        });
+
+        // move bootstrap modals to body
+        editorButtons.querySelectorAll('.modal').forEach(function (modal) {
+            document.body.appendChild(modal);
+        });
+    }
 });
 
 // expose for detection
