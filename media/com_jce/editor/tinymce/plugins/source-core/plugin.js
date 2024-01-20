@@ -340,7 +340,7 @@
         },
 
         getSelection: function () {
-            return document.getSelection();
+            return document.getSelection().toString();
         },
 
         getCursorPos: function () {
