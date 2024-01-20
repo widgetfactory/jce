@@ -28,6 +28,13 @@ class plgEditorJCE extends CMSPlugin
     use XTDButtonsTrait;
 
     /**
+     * Affects constructor behavior. If true, language files will be loaded automatically.
+     *
+     * @var    boolean
+     */
+    protected $autoloadLanguage = true;
+
+    /**
      * Constructor.
      *
      * @param object $subject The object to observe
