@@ -535,6 +535,15 @@ class pkg_jceInstallerScript
             $media . '/js'
         );
 
+        // clean up editor folder
+        $folders['2.9.60'] = array(
+            JPATH_PLUGINS . '/editors/jce/src/Provider'
+        );
+        // remove old layout file
+        $files['2.9.60'] = array(
+            JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php'
+        );
+
         $files['2.6.38'] = array(
             $admin . '/install.php',
             $admin . '/install.script.php',
@@ -590,7 +599,7 @@ class pkg_jceInstallerScript
 
         foreach ($folders as $version => $list) {
             // version check
-            if (version_compare($version, $current_version, 'lt')) {
+            if (version_compare($version, $current_version, 'gt')) {
                 continue;
             }
 
