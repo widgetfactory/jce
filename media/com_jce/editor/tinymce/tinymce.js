@@ -123,22 +123,22 @@
         self.isMac = ua.indexOf('Mac') != -1;
 
         /**
-  			 * Constant that is true if the runtime is Adobe Air.
-  			 *
-  			 * @property isAir
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isAir = /adobeair/i.test(ua);
-
-        /**
-  			 * Constant that tells if the current browser is an iPhone or iPad.
+  			 * Constant that tells if the current device is an iPhone or iPad.
   			 *
   			 * @property isIDevice
   			 * @type Boolean
   			 * @final
   			 */
         self.isIDevice = /(iPad|iPhone)/.test(ua);
+
+        /**
+  			 * Constant that tells if the current os is Android.
+  			 *
+  			 * @property isAndroid
+  			 * @type Boolean
+  			 * @final
+  			 */
+        self.isAndroid = /Android/.test(ua);
 
         /**
   			 * Constant that is true if the os is iOS.
@@ -324,6 +324,7 @@
         } else {
           // Hashtables
           for (n in o) {
+            // eslint-disable-next-line no-prototype-builtins
             if (o.hasOwnProperty(n)) {
               if (cb.call(s, o[n], n, o) === false) {
                 return 0;
@@ -443,6 +444,7 @@
         for (i = 1, l = args.length; i < l; i++) {
           ext = args[i];
           for (name in ext) {
+            // eslint-disable-next-line no-prototype-builtins
             if (ext.hasOwnProperty(name)) {
               value = ext[name];
 
@@ -10745,6 +10747,7 @@
         o += '<' + n;
 
         for (k in a) {
+          // eslint-disable-next-line no-prototype-builtins
           if (a.hasOwnProperty(k) && a[k] != '') {
             o += ' ' + k + '="' + self.encode(a[k]) + '"';
           }
@@ -14013,17 +14016,22 @@
       };
   };
 
+  var isTableSelection = function (editor) {
+      return !!editor.dom.getParent(editor.selection.getStart(), 'td.mceSelected,th.mceSelected', editor.getBody());
+  };
+
+  var hasSelectedContent = function (editor) {
+      return !editor.selection.isCollapsed() || isTableSelection(editor);
+  };
+
   var cut = function (editor, evt) {
-      
-      if (evt.isDefaultPrevented()) {
-          return;
-      }
-      
-      if (editor.selection.isCollapsed() === false) {
+      if (!evt.isDefaultPrevented() && hasSelectedContent(editor)) {
           setClipboardData(evt, getData(editor), fallback(editor), function () {
+              var rng = editor.selection.getRng();
               // Chrome fails to execCommand from another execCommand with this message:
               // "We don't execute document.execCommand() this time, because it is called recursively.""
               setTimeout(function () { // detach
+                  editor.selection.setRng(rng);
                   editor.execCommand('Delete');
               }, 0);
           });
@@ -14031,11 +14039,7 @@
   };
 
   var copy = function (editor, evt) {
-      if (evt.isDefaultPrevented()) {
-          return;
-      }
-      
-      if (editor.selection.isCollapsed() === false) {
+      if (!evt.isDefaultPrevented() && hasSelectedContent(editor)) {
           setClipboardData(evt, getData(editor), fallback(editor), noop);
       }
   };
@@ -31195,6 +31199,7 @@
           return this.editors;
         }
 
+        // eslint-disable-next-line no-prototype-builtins
         if (!this.editors.hasOwnProperty(id)) {
           return undef;
         }
