@@ -60,6 +60,11 @@
              */
             self.onContextMenu = new tinymce.util.Dispatcher(this);
 
+            // disable on Android and iOS as it prevents selection
+            if (tinymce.isAndroid || tinymce.isIOS) {
+                return false;
+            }
+
             hideMenu = function (e) {
                 hide(ed, e);
             };
@@ -78,7 +83,7 @@
                  * the context menu we also need to override this expanding so the behavior becomes
                  * normalized. Firefox on os x doesn't expand to the word when using the context menu.
                  */
-                if (isMacWebKit() && e.button === 2 && !isNativeOverrideKeyEvent(e) && ed.selection.isCollapsed()) {                    
+                if (isMacWebKit() && e.button === 2 && !isNativeOverrideKeyEvent(e) && ed.selection.isCollapsed()) {
                     if (!isImage(e.target)) {
                         ed.selection.placeCaretAt(e.clientX, e.clientY);
                     }
@@ -137,11 +142,11 @@
                 col = se.isCollapsed(),
                 am, p;
 
-                var el = e.target;
+            var el = e.target;
 
-                if (!el || el.nodeName === "BODY") {
-                    el = se.getNode() || ed.getBody();
-                }
+            if (!el || el.nodeName === "BODY") {
+                el = se.getNode() || ed.getBody();
+            }
 
             if (m) {
                 m.removeAll();
