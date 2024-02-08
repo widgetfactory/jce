@@ -926,10 +926,6 @@
     line-height: 1.25;
 }
 
-.mceModernSkin span.mce_codesample:before {
-    content: "\e9bb";
-}
-
 .mceModernSkin span.mce_joomla:before {
     content: "\eab5";
 }
