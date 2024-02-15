@@ -241,6 +241,22 @@
                     return true;
                 }
             }).on('dblclick.item-list', function (e) {
+                var n = e.target;
+
+                // move to parent if target is span or i (size, date, thumbnail)
+                n = $(n).parents('li').get(0);
+
+                if ($(n).hasClass('folder')) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // get serialized object
+                self.serializeItemData(n).then(function (data) {
+                    // trigger event
+                    self._trigger('onFileInsert', [n, data]);
+                });
+
                 e.preventDefault();
                 return false;
             }).on('keydown.item-list', function (e) {
