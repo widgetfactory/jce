@@ -204,6 +204,8 @@
                     self.selectFile(file, data);
                 }).on('filebrowser:onfileinsert', function (e, file, data) {
                     self.selectFile(file, data);
+                }).on('filebrowser:onfileinsert', function (e, file, data) {
+                    self.insert();
                 });
             }
 

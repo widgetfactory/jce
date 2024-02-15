@@ -42,6 +42,8 @@
 
         $('[data-filebrowser]').val(src).filebrowser().on('filebrowser:onfileclick', function (e, file, data) {
             selectFile(data);
+        }).on('filebrowser:onfileinsert', function (e, file, data) {
+            insert();
         });
     }
 
