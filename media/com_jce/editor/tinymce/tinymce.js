@@ -33,130 +33,28 @@
     var slice = [].slice;
 
     /**
-  	 * Core namespace with core functionality for the TinyMCE API all sub classes will be added to this namespace/object.
-  	 *
-  	 * @static
-  	 * @class tinymce
-  	 * @example
-  	 * // Using each method
-  	 * tinymce.each([1, 2, 3], function(v, i) {
-  	 *   console.log(i + '=' + v);
-  	 * });
-  	 *
-  	 * // Checking for a specific browser
-  	 * if (tinymce.isIE)
-  	 *   console.log("IE");
-  	 */
+     * Core namespace with core functionality for the TinyMCE API all sub classes will be added to this namespace/object.
+     *
+     * @static
+     * @class tinymce
+     * @example
+     * // Using each method
+     * tinymce.each([1, 2, 3], function(v, i) {
+     *   console.log(i + '=' + v);
+     * });
+     *
+     * // Checking for a specific browser
+     * if (tinymce.isIE)
+     *   console.log("IE");
+     */
     var tinymce = {
       /**
-  		 * Initializes the TinyMCE global namespace this will setup browser detection and figure out where TinyMCE is running from.
-  		 */
+       * Initializes the TinyMCE global namespace this will setup browser detection and figure out where TinyMCE is running from.
+       */
       _init: function () {
         var self = this,
           doc = document,
-          na = navigator,
-          ua = na.userAgent,
           i, nl, n, base, p, v;
-
-        /**
-  			 * Constant that is true if the browser is Opera.
-  			 *
-  			 * @property isOpera
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isOpera = (win.opera && win.opera.buildNumber) || false;
-
-        /**
-  			 * Constant that is true if the browser is WebKit (Safari/Chrome).
-  			 *
-  			 * @property isWebKit
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isWebKit = /WebKit/.test(ua);
-
-        /**
-  			 * Constant that is true if the browser is IE.
-  			 *
-  			 * @property isIE
-  			 * @type Boolean
-  			 * @final
-  			 */
-
-        // IE
-        var isIE = !self.isWebKit && !self.isOpera && (/MSIE/gi).test(ua) && (/Explorer/gi).test(na.appName);
-
-        // IE version number
-        isIE = isIE && /MSIE (\w+)\./.exec(ua)[1];
-
-        // IE 11
-        self.isIE11 = ua.indexOf('Trident/') != -1 && (ua.indexOf('rv:') != -1 || na.appName.indexOf('Netscape') != -1) ? 11 : false;
-
-        // IE
-        self.isIE = isIE || self.isIE11;
-
-        // IE 12 / Edge
-        self.isIE12 = (ua.indexOf('Edge/') != -1 && !self.isIE) ? 12 : false;
-
-        // Remove webkit flag
-        if (self.isIE12) {
-          self.isWebKit = false;
-        }
-
-        /**
-  			 * Constant that is true if the browser is Gecko.
-  			 *
-  			 * @property isGecko
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isGecko = !self.isWebKit && !self.isIE11 && /Gecko/.test(ua);
-
-        /**
-  			 * Constant that is true if the os is Mac OS.
-  			 *
-  			 * @property isMac
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isMac = ua.indexOf('Mac') != -1;
-
-        /**
-  			 * Constant that tells if the current device is an iPhone or iPad.
-  			 *
-  			 * @property isIDevice
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isIDevice = /(iPad|iPhone)/.test(ua);
-
-        /**
-  			 * Constant that tells if the current os is Android.
-  			 *
-  			 * @property isAndroid
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isAndroid = /Android/.test(ua);
-
-        /**
-  			 * Constant that is true if the os is iOS.
-  			 *
-  			 * @property iOS
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isIOS = self.isIDevice;
-
-        /**
-  			 * Constant that is true if the current browser is running on iOS 5 or greater.
-  			 *
-  			 * @property isIOS5
-  			 * @type Boolean
-  			 * @final
-  			 */
-        self.isIOS5 = self.isIDevice && ua.match(/AppleWebKit\/(\d*)/)[1] >= 534;
 
         // Get suffix and base
         self.suffix = '';
@@ -226,13 +124,13 @@
       },
 
       /**
-  		 * Checks if a object is of a specific type for example an array.
-  		 *
-  		 * @method is
-  		 * @param {Object} o Object to check type of.
-  		 * @param {string} t Optional type to check for.
-  		 * @return {Boolean} true/false if the object is of the specified type.
-  		 */
+       * Checks if a object is of a specific type for example an array.
+       *
+       * @method is
+       * @param {Object} o Object to check type of.
+       * @param {string} t Optional type to check for.
+       * @return {Boolean} true/false if the object is of the specified type.
+       */
       is: function (o, t) {
         if (!t) {
           return o !== undef;
@@ -245,25 +143,25 @@
       },
 
       /**
-  		 * Returns true/false if the object is an array or not.
-  		 *
-  		 * @method isArray
-  		 * @param {Object} obj Object to check.
-  		 * @return {boolean} true/false state if the object is an array or not.
-  		 */
+       * Returns true/false if the object is an array or not.
+       *
+       * @method isArray
+       * @param {Object} obj Object to check.
+       * @return {boolean} true/false state if the object is an array or not.
+       */
       isArray: Array.isArray || function (obj) {
         return Object.prototype.toString.call(obj) === "[object Array]";
       },
 
       /**
-  		 * Makes a name/object map out of an array with names.
-  		 *
-  		 * @method makeMap
-  		 * @param {Array/String} items Items to make map out of.
-  		 * @param {String} delim Optional delimiter to split string by.
-  		 * @param {Object} map Optional map to add items to.
-  		 * @return {Object} Name/value map of items.
-  		 */
+       * Makes a name/object map out of an array with names.
+       *
+       * @method makeMap
+       * @param {Array/String} items Items to make map out of.
+       * @param {String} delim Optional delimiter to split string by.
+       * @param {Object} map Optional map to add items to.
+       * @return {Object} Name/value map of items.
+       */
       makeMap: function (items, delim, map) {
         var i;
 
@@ -286,25 +184,25 @@
       },
 
       /**
-  		 * Performs an iteration of all items in a collection such as an object or array. This method will execure the
-  		 * callback function for each item in the collection, if the callback returns false the iteration will terminate.
-  		 * The callback has the following format: cb(value, key_or_index).
-  		 *
-  		 * @method each
-  		 * @param {Object} o Collection to iterate.
-  		 * @param {function} cb Callback function to execute for each item.
-  		 * @param {Object} s Optional scope to execute the callback in.
-  		 * @example
-  		 * // Iterate an array
-  		 * tinymce.each([1,2,3], function(v, i) {
-  		 *     console.debug("Value: " + v + ", Index: " + i);
-  		 * });
-  		 *
-  		 * // Iterate an object
-  		 * tinymce.each({a : 1, b : 2, c: 3], function(v, k) {
-  		 *     console.debug("Value: " + v + ", Key: " + k);
-  		 * });
-  		 */
+       * Performs an iteration of all items in a collection such as an object or array. This method will execure the
+       * callback function for each item in the collection, if the callback returns false the iteration will terminate.
+       * The callback has the following format: cb(value, key_or_index).
+       *
+       * @method each
+       * @param {Object} o Collection to iterate.
+       * @param {function} cb Callback function to execute for each item.
+       * @param {Object} s Optional scope to execute the callback in.
+       * @example
+       * // Iterate an array
+       * tinymce.each([1,2,3], function(v, i) {
+       *     console.debug("Value: " + v + ", Index: " + i);
+       * });
+       *
+       * // Iterate an object
+       * tinymce.each({a : 1, b : 2, c: 3], function(v, k) {
+       *     console.debug("Value: " + v + ", Key: " + k);
+       * });
+       */
       each: function (o, cb, s) {
         var n, l;
 
@@ -339,14 +237,14 @@
       // #ifndef jquery
 
       /**
-  		 * Creates a new array by the return value of each iteration function call. This enables you to convert
-  		 * one array list into another.
-  		 *
-  		 * @method map
-  		 * @param {Array} a Array of items to iterate.
-  		 * @param {function} f Function to call for each item. It's return value will be the new value.
-  		 * @return {Array} Array with new values based on function return values.
-  		 */
+       * Creates a new array by the return value of each iteration function call. This enables you to convert
+       * one array list into another.
+       *
+       * @method map
+       * @param {Array} a Array of items to iterate.
+       * @param {function} f Function to call for each item. It's return value will be the new value.
+       * @return {Array} Array with new values based on function return values.
+       */
       map: function (a, f) {
         var o = [];
 
@@ -358,17 +256,17 @@
       },
 
       /**
-  		 * Filters out items from the input array by calling the specified function for each item.
-  		 * If the function returns false the item will be excluded if it returns true it will be included.
-  		 *
-  		 * @method grep
-  		 * @param {Array} a Array of items to loop though.
-  		 * @param {function} f Function to call for each item. Include/exclude depends on it's return value.
-  		 * @return {Array} New array with values imported and filtered based in input.
-  		 * @example
-  		 * // Filter out some items, this will return an array with 4 and 5
-  		 * var items = tinymce.grep([1,2,3,4,5], function(v) {return v > 3;});
-  		 */
+       * Filters out items from the input array by calling the specified function for each item.
+       * If the function returns false the item will be excluded if it returns true it will be included.
+       *
+       * @method grep
+       * @param {Array} a Array of items to loop though.
+       * @param {function} f Function to call for each item. Include/exclude depends on it's return value.
+       * @return {Array} New array with values imported and filtered based in input.
+       * @example
+       * // Filter out some items, this will return an array with 4 and 5
+       * var items = tinymce.grep([1,2,3,4,5], function(v) {return v > 3;});
+       */
       grep: function (a, f) {
         var o = [];
 
@@ -382,16 +280,16 @@
       },
 
       /**
-  		 * Returns the index of a value in an array, this method will return -1 if the item wasn't found.
-  		 *
-  		 * @method inArray
-  		 * @param {Array} a Array/Object to search for value in.
-  		 * @param {Object} v Value to check for inside the array.
-  		 * @return {Number/String} Index of item inside the array inside an object. Or -1 if it wasn't found.
-  		 * @example
-  		 * // Get index of value in array this will alert 1 since 2 is at that index
-  		 * alert(tinymce.inArray([1,2,3], 2));
-  		 */
+       * Returns the index of a value in an array, this method will return -1 if the item wasn't found.
+       *
+       * @method inArray
+       * @param {Array} a Array/Object to search for value in.
+       * @param {Object} v Value to check for inside the array.
+       * @return {Number/String} Index of item inside the array inside an object. Or -1 if it wasn't found.
+       * @example
+       * // Get index of value in array this will alert 1 since 2 is at that index
+       * alert(tinymce.inArray([1,2,3], 2));
+       */
       inArray: function (a, v) {
         var i, l;
 
@@ -421,22 +319,22 @@
       },
 
       /**
-  		 * Extends an object with the specified other object(s).
-  		 *
-  		 * @method extend
-  		 * @param {Object} obj Object to extend with new items.
-  		 * @param {Object} ext..n Object(s) to extend the specified object with.
-  		 * @return {Object} o New extended object, same reference as the input object.
-  		 * @example
-  		 * // Extends obj1 with two new fields
-  		 * var obj = tinymce.extend(obj1, {
-  		 *     somefield1 : 'a',
-  		 *     somefield2 : 'a'
-  		 * });
-  		 *
-  		 * // Extends obj with obj2 and obj3
-  		 * tinymce.extend(obj, obj2, obj3);
-  		 */
+       * Extends an object with the specified other object(s).
+       *
+       * @method extend
+       * @param {Object} obj Object to extend with new items.
+       * @param {Object} ext..n Object(s) to extend the specified object with.
+       * @return {Object} o New extended object, same reference as the input object.
+       * @example
+       * // Extends obj1 with two new fields
+       * var obj = tinymce.extend(obj1, {
+       *     somefield1 : 'a',
+       *     somefield2 : 'a'
+       * });
+       *
+       * // Extends obj with obj2 and obj3
+       * tinymce.extend(obj, obj2, obj3);
+       */
       extend: function (obj, ext) {
         var i, l, name, args = arguments,
           value;
@@ -461,62 +359,62 @@
       // #endif
 
       /**
-  		 * Removes whitespace from the beginning and end of a string.
-  		 *
-  		 * @method trim
-  		 * @param {String} s String to remove whitespace from.
-  		 * @return {String} New string with removed whitespace.
-  		 */
+       * Removes whitespace from the beginning and end of a string.
+       *
+       * @method trim
+       * @param {String} s String to remove whitespace from.
+       * @return {String} New string with removed whitespace.
+       */
       trim: function (s) {
         return (s ? '' + s : '').replace(whiteSpaceRe, '');
       },
 
       /**
-  		 * Creates a class, subclass or static singleton.
-  		 * More details on this method can be found in the Wiki.
-  		 *
-  		 * @method create
-  		 * @param {String} s Class name, inheritage and prefix.
-  		 * @param {Object} p Collection of methods to add to the class.
-  		 * @param {Object} root Optional root object defaults to the global window object.
-  		 * @example
-  		 * // Creates a basic class
-  		 * tinymce.create('tinymce.somepackage.SomeClass', {
-  		 *     SomeClass : function() {
-  		 *         // Class constructor
-  		 *     },
-  		 *
-  		 *     method : function() {
-  		 *         // Some method
-  		 *     }
-  		 * });
-  		 *
-  		 * // Creates a basic subclass class
-  		 * tinymce.create('tinymce.somepackage.SomeSubClass:tinymce.somepackage.SomeClass', {
-  		 *     SomeSubClass: function() {
-  		 *         // Class constructor
-  		 *         this._super(); // Call parent constructor
-  		 *     },
-  		 *
-  		 *     method : function() {
-  		 *         // Some method
-  		 *         this._super(); // Call parent method
-  		 *     },
-  		 *
-  		 *     'static' : {
-  		 *         staticMethod : function() {
-  		 *             // Static method
-  		 *         }
-  		 *     }
-  		 * });
-  		 *
-  		 * // Creates a singleton/static class
-  		 * tinymce.create('static tinymce.somepackage.SomeSingletonClass', {
-  		 *     method : function() {
-  		 *         // Some method
-  		 *     }
-  		 * });
-  		 */
+       * Creates a class, subclass or static singleton.
+       * More details on this method can be found in the Wiki.
+       *
+       * @method create
+       * @param {String} s Class name, inheritage and prefix.
+       * @param {Object} p Collection of methods to add to the class.
+       * @param {Object} root Optional root object defaults to the global window object.
+       * @example
+       * // Creates a basic class
+       * tinymce.create('tinymce.somepackage.SomeClass', {
+       *     SomeClass : function() {
+       *         // Class constructor
+       *     },
+       *
+       *     method : function() {
+       *         // Some method
+       *     }
+       * });
+       *
+       * // Creates a basic subclass class
+       * tinymce.create('tinymce.somepackage.SomeSubClass:tinymce.somepackage.SomeClass', {
+       *     SomeSubClass: function() {
+       *         // Class constructor
+       *         this._super(); // Call parent constructor
+       *     },
+       *
+       *     method : function() {
+       *         // Some method
+       *         this._super(); // Call parent method
+       *     },
+       *
+       *     'static' : {
+       *         staticMethod : function() {
+       *             // Static method
+       *         }
+       *     }
+       * });
+       *
+       * // Creates a singleton/static class
+       * tinymce.create('static tinymce.somepackage.SomeSingletonClass', {
+       *     method : function() {
+       *         // Some method
+       *     }
+       * });
+       */
       create: function (s, p, root) {
         var self = this,
           sp, ns, cn, scn, c, de = 0;
@@ -605,14 +503,14 @@
       },
 
       /**
-  		 * Executed the specified function for each item in a object tree.
-  		 *
-  		 * @method walk
-  		 * @param {Object} o Object tree to walk though.
-  		 * @param {function} f Function to call for each item.
-  		 * @param {String} n Optional name of collection inside the objects to walk for example childNodes.
-  		 * @param {String} s Optional scope to execute the function in.
-  		 */
+       * Executed the specified function for each item in a object tree.
+       *
+       * @method walk
+       * @param {Object} o Object tree to walk though.
+       * @param {function} f Function to call for each item.
+       * @param {String} n Optional name of collection inside the objects to walk for example childNodes.
+       * @param {String} s Optional scope to execute the function in.
+       */
       walk: function (o, f, n, s) {
         s = s || this;
 
@@ -632,23 +530,23 @@
       },
 
       /**
-  		 * Creates a namespace on a specific object.
-  		 *
-  		 * @method createNS
-  		 * @param {String} n Namespace to create for example a.b.c.doc.
-  		 * @param {Object} o Optional object to add namespace to, defaults to window.
-  		 * @return {Object} New namespace object the last item in path.
-  		 * @example
-  		 * // Create some namespace
-  		 * tinymce.createNS('tinymce.somepackage.subpackage');
-  		 *
-  		 * // Add a singleton
-  		 * var tinymce.somepackage.subpackage.SomeSingleton = {
-  		 *     method : function() {
-  		 *         // Some method
-  		 *     }
-  		 * };
-  		 */
+       * Creates a namespace on a specific object.
+       *
+       * @method createNS
+       * @param {String} n Namespace to create for example a.b.c.doc.
+       * @param {Object} o Optional object to add namespace to, defaults to window.
+       * @return {Object} New namespace object the last item in path.
+       * @example
+       * // Create some namespace
+       * tinymce.createNS('tinymce.somepackage.subpackage');
+       *
+       * // Add a singleton
+       * var tinymce.somepackage.subpackage.SomeSingleton = {
+       *     method : function() {
+       *         // Some method
+       *     }
+       * };
+       */
       createNS: function (n, o) {
         var i, v;
 
@@ -670,16 +568,16 @@
       },
 
       /**
-  		 * Resolves a string and returns the object from a specific structure.
-  		 *
-  		 * @method resolve
-  		 * @param {String} n Path to resolve for example a.b.c.doc.
-  		 * @param {Object} o Optional object to search though, defaults to window.
-  		 * @return {Object} Last object in path or null if it couldn't be resolved.
-  		 * @example
-  		 * // Resolve a path into an object reference
-  		 * var obj = tinymce.resolve('a.b.c.d');
-  		 */
+       * Resolves a string and returns the object from a specific structure.
+       *
+       * @method resolve
+       * @param {String} n Path to resolve for example a.b.c.doc.
+       * @param {Object} o Optional object to search though, defaults to window.
+       * @return {Object} Last object in path or null if it couldn't be resolved.
+       * @example
+       * // Resolve a path into an object reference
+       * var obj = tinymce.resolve('a.b.c.d');
+       */
       resolve: function (n, o) {
         var i, l;
 
@@ -698,20 +596,20 @@
       },
 
       /**
-  		 * Adds an unload handler to the document. This handler will be executed when the document gets unloaded.
-  		 * This method is useful for dealing with browser memory leaks where it might be vital to remove DOM references etc.
-  		 *
-  		 * @method addUnload
-  		 * @param {function} f Function to execute before the document gets unloaded.
-  		 * @param {Object} s Optional scope to execute the function in.
-  		 * @return {function} Returns the specified unload handler function.
-  		 * @example
-  		 * // Fixes a leak with a DOM element that was palces in the someObject
-  		 * tinymce.addUnload(function() {
-  		 *     // Null DOM element to reduce IE memory leak
-  		 *     someObject.someElement = null;
-  		 * });
-  		 */
+       * Adds an unload handler to the document. This handler will be executed when the document gets unloaded.
+       * This method is useful for dealing with browser memory leaks where it might be vital to remove DOM references etc.
+       *
+       * @method addUnload
+       * @param {function} f Function to execute before the document gets unloaded.
+       * @param {Object} s Optional scope to execute the function in.
+       * @return {function} Returns the specified unload handler function.
+       * @example
+       * // Fixes a leak with a DOM element that was palces in the someObject
+       * tinymce.addUnload(function() {
+       *     // Null DOM element to reduce IE memory leak
+       *     someObject.someElement = null;
+       * });
+       */
       addUnload: function (f, s) {
         var unload;
 
@@ -804,12 +702,12 @@
       },
 
       /**
-  		 * Removes the specified function form the unload handler list.
-  		 *
-  		 * @method removeUnload
-  		 * @param {function} f Function to remove from unload handler list.
-  		 * @return {function} Removed function name or null if it wasn't found.
-  		 */
+       * Removes the specified function form the unload handler list.
+       *
+       * @method removeUnload
+       * @param {function} f Function to remove from unload handler list.
+       * @return {function} Removed function name or null if it wasn't found.
+       */
       removeUnload: function (f) {
         var u = this.unloads,
           r = null;
@@ -826,15 +724,15 @@
       },
 
       /**
-  		 * Splits a string but removes the whitespace before and after each value.
-  		 *
-  		 * @method explode
-  		 * @param {string} s String to split.
-  		 * @param {string} d Delimiter to split by.
-  		 * @example
-  		 * // Split a string into an array with a,b,c
-  		 * var arr = tinymce.explode('a, b,   c');
-  		 */
+       * Splits a string but removes the whitespace before and after each value.
+       *
+       * @method explode
+       * @param {string} s String to split.
+       * @param {string} d Delimiter to split by.
+       * @example
+       * // Split a string into an array with a,b,c
+       * var arr = tinymce.explode('a, b,   c');
+       */
       explode: function (s, d) {
         if (!s || tinymce.is(s, 'array')) {
           return s;
@@ -884,81 +782,354 @@
     // Describe the different namespaces
 
     /**
-  	 * Root level namespace this contains classes directly releated to the TinyMCE editor.
-  	 *
-  	 * @namespace tinymce
-  	 */
+     * Root level namespace this contains classes directly releated to the TinyMCE editor.
+     *
+     * @namespace tinymce
+     */
 
     /**
-  	 * Contains classes for handling the browsers DOM.
-  	 *
-  	 * @namespace tinymce.dom
-  	 */
+     * Contains classes for handling the browsers DOM.
+     *
+     * @namespace tinymce.dom
+     */
 
     tinymce.dom = {};
 
     /**
-  	 * Contains various tools for rect/position calculation.
-  	 *
-  	 * @namespace tinymce.geom
-  	 */
+     * Contains various tools for rect/position calculation.
+     *
+     * @namespace tinymce.geom
+     */
 
     tinymce.geom = {};
 
     /**
-  	 * Contains various tools for characters and zero width space.
-  	 *
-  	 * @namespace tinymce.text
-  	 */
+     * Contains various tools for characters and zero width space.
+     *
+     * @namespace tinymce.text
+     */
 
     tinymce.text = {};
 
     /**
-  	 * Contains various tools for carets.
-  	 *
-  	 * @namespace tinymce.caret
-  	 */
+     * Contains various tools for carets.
+     *
+     * @namespace tinymce.caret
+     */
 
     tinymce.caret = {};
 
     /**
-  	 * Contains html parser and serializer logic.
-  	 *
-  	 * @namespace tinymce.html
-  	 */
+     * Contains html parser and serializer logic.
+     *
+     * @namespace tinymce.html
+     */
 
     tinymce.html = {};
 
     /**
-  	 * Contains the different UI types such as buttons, listboxes etc.
-  	 *
-  	 * @namespace tinymce.ui
-  	 */
+     * Contains the different UI types such as buttons, listboxes etc.
+     *
+     * @namespace tinymce.ui
+     */
 
     tinymce.ui = {};
 
     /**
-  	 * Contains various utility classes such as json parser, cookies etc.
-  	 *
-  	 * @namespace tinymce.util
-  	 */
+     * Contains various utility classes such as json parser, cookies etc.
+     *
+     * @namespace tinymce.util
+     */
 
     tinymce.util = {};
 
     /**
-  	 * Contains various file classes.
-  	 *
-  	 * @namespace tinymce.file
-  	 */
+     * Contains various file classes.
+     *
+     * @namespace tinymce.file
+     */
 
-     tinymce.file = {};
+    tinymce.file = {};
 
     /**
-  	 * Contains plugin classes.
-  	 *
-  	 * @namespace tinymce.plugins
-  	 */
+     * Contains plugin classes.
+     *
+     * @namespace tinymce.plugins
+     */
   })(window);
+
+  /**
+   * Env.js
+   *
+   * Released under LGPL License.
+   * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   *
+   * License: http://www.tinymce.com/license
+   * Contributing: http://www.tinymce.com/contributing
+   */
+
+  /**
+   * This class contains various environment constants like browser versions etc.
+   * Normally you don't want to sniff specific browser versions but sometimes you have
+   * to when it's impossible to feature detect. So use this with care.
+   *
+   * @class tinymce.Env
+   * @static
+   */
+
+  var nav = navigator,
+    userAgent = nav.userAgent;
+  var opera, webkit, ie, gecko, mac, iDevice, android, fileApi, phone, tablet, windowsPhone;
+
+  function matchMediaQuery(query) {
+    return "matchMedia" in window ? matchMedia(query).matches : false;
+  }
+
+  function isIpad() {
+    // Check for iOS 13+ iPad
+    var isIOS = /iPad/.test(userAgent);
+    // Additional checks for distinguishing iPads from Macs
+    var isTouchEnabled = navigator.maxTouchPoints > 1;
+    var hasMacLikeUserAgent = /Macintosh/.test(userAgent);
+    // Combining checks to improve accuracy
+    return isIOS || (isTouchEnabled && hasMacLikeUserAgent);
+  }
+
+  opera = window.opera && window.opera.buildNumber;
+  android = /Android/.test(userAgent);
+  webkit = /WebKit/.test(userAgent);
+  ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
+  ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
+  ie = ie && !webkit;
+  gecko = !webkit && !ie && /Gecko/.test(userAgent);
+  mac = userAgent.indexOf('Mac') != -1;
+  iDevice = /(iPad|iPhone)/.test(userAgent) || isIpad();
+  fileApi = "FormData" in window && "FileReader" in window && "URL" in window && !!URL.createObjectURL;
+  phone = matchMediaQuery("only screen and (max-device-width: 480px)") && (android || iDevice);
+  tablet = matchMediaQuery("only screen and (min-width: 800px)") && (android || iDevice);
+  windowsPhone = userAgent.indexOf('Windows Phone') != -1;
+
+  // Is a iPad/iPhone and not on iOS5 sniff the WebKit version since older iOS WebKit versions
+  // says it has contentEditable support but there is no visible caret.
+  var contentEditable = !iDevice || fileApi || userAgent.match(/AppleWebKit\/(\d*)/)[1] >= 534;
+
+  tinymce.util.Env = {
+    /**
+     * Constant that is true if the browser is Opera.
+     *
+     * @property opera
+     * @type Boolean
+     * @final
+     */
+    opera: opera,
+
+    /**
+     * Constant that is true if the browser is WebKit (Safari/Chrome).
+     *
+     * @property webKit
+     * @type Boolean
+     * @final
+     */
+    webkit: webkit,
+
+    /**
+     * Constant that is more than zero if the browser is IE.
+     *
+     * @property ie
+     * @type Boolean
+     * @final
+     */
+    ie: ie,
+
+    /**
+     * Constant that is true if the browser is Gecko.
+     *
+     * @property gecko
+     * @type Boolean
+     * @final
+     */
+    gecko: gecko,
+
+    /**
+     * Constant that is true if the os is Mac OS.
+     *
+     * @property mac
+     * @type Boolean
+     * @final
+     */
+    mac: mac,
+
+    /**
+     * Constant that is true if the os is iOS.
+     *
+     * @property iOS
+     * @type Boolean
+     * @final
+     */
+    ios: iDevice,
+
+    /**
+     * Constant that is true if the os is android.
+     *
+     * @property android
+     * @type Boolean
+     * @final
+     */
+    android: android,
+
+    /**
+     * Constant that is true if the browser supports editing.
+     *
+     * @property contentEditable
+     * @type Boolean
+     * @final
+     */
+    contentEditable: contentEditable,
+
+    /**
+     * Transparent image data url.
+     *
+     * @property transparentSrc
+     * @type Boolean
+     * @final
+     */
+    transparentSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+
+    /**
+     * Returns true/false if the browser can or can't place the caret after a inline block like an image.
+     *
+     * @property noCaretAfter
+     * @type Boolean
+     * @final
+     */
+    caretAfter: true,
+
+    /**
+     * Constant that is true if the browser supports native DOM Ranges. IE 9+.
+     *
+     * @property range
+     * @type Boolean
+     */
+    range: window.getSelection && "Range" in window,
+
+    /**
+     * Constant that is true if the browser has a modern file api.
+     *
+     * @property fileApi
+     * @type Boolean
+     */
+    fileApi: fileApi,
+
+    /**
+     * Constant that is true if the browser supports contentEditable=false regions.
+     *
+     * @property ceFalse
+     * @type Boolean
+     */
+    ceFalse: true,
+
+    /**
+     * Constant if CSP mode is possible or not. Meaning we can't use script urls for the iframe.
+     */
+    canHaveCSP: true,
+
+    desktop: !phone && !tablet,
+    windowsPhone: windowsPhone
+  };
+
+  /**
+    * Constant that is true if the browser is Opera.
+    *
+    * @property isOpera
+    * @type Boolean
+    * @final
+  */
+  tinymce.isOpera = opera;
+
+  /**
+   * Constant that is true if the browser is WebKit (Safari/Chrome).
+   *
+   * @property isWebKit
+   * @type Boolean
+   * @final
+   */
+  tinymce.isWebKit = webkit;
+
+  /**
+   * Constant that is true if the browser is IE.
+   *
+   * @property isIE
+   * @type Boolean
+   * @final
+   */
+
+  tinymce.isIE = ie;
+
+  // IE 11
+  tinymce.isIE11 = ie && /Trident\/7.0/.test(userAgent) && /rv:11.0/.test(userAgent);
+
+
+  // IE 12 / Edge
+  tinymce.isIE12 = (userAgent.indexOf('Edge/') != -1 && !ie) ? 12 : false;
+
+  // Remove webkit flag
+  if (tinymce.isIE12) {
+    tinymce.isWebKit = false;
+  }
+
+  /**
+   * Constant that is true if the browser is Gecko.
+   *
+   * @property isGecko
+   * @type Boolean
+   * @final
+   */
+  tinymce.isGecko = gecko;
+
+  /**
+   * Constant that is true if the os is Mac OS.
+   *
+   * @property isMac
+   * @type Boolean
+   * @final
+   */
+  tinymce.isMac = mac;
+
+  /**
+   * Constant that tells if the current device is an iPhone or iPad.
+   *
+   * @property isIDevice
+   * @type Boolean
+   * @final
+   */
+  tinymce.isIDevice = iDevice;
+
+  /**
+   * Constant that tells if the current os is Android.
+   *
+   * @property isAndroid
+   * @type Boolean
+   * @final
+   */
+  tinymce.isAndroid = android;
+
+  /**
+   * Constant that is true if the os is iOS.
+   *
+   * @property iOS
+   * @type Boolean
+   * @final
+   */
+  tinymce.isIOS = iDevice;
+
+  /**
+   * Constant that is true if the current browser is running on iOS 5 or greater.
+   *
+   * @property isIOS5
+   * @type Boolean
+   * @final
+   */
+  tinymce.isIOS5 = iDevice && userAgent.match(/AppleWebKit\/(\d*)/)[1] >= 534;
 
   /**
    * Uuid.js
