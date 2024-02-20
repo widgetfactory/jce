@@ -879,17 +879,18 @@
 
   var nav = navigator,
     userAgent = nav.userAgent;
-  var opera, webkit, ie, gecko, mac, iDevice, android, fileApi, phone, tablet, windowsPhone;
+  var opera, webkit, ie, gecko, mac, iDevice, android, fileApi, phone, tablet, windowsPhone, isTouchEnabled;
 
   function matchMediaQuery(query) {
     return "matchMedia" in window ? matchMedia(query).matches : false;
   }
 
+  isTouchEnabled = navigator.maxTouchPoints > 1;
+
   function isIpad() {
     // Check for iOS 13+ iPad
     var isIOS = /iPad/.test(userAgent);
     // Additional checks for distinguishing iPads from Macs
-    var isTouchEnabled = navigator.maxTouchPoints > 1;
     var hasMacLikeUserAgent = /Macintosh/.test(userAgent);
     // Combining checks to improve accuracy
     return isIOS || (isTouchEnabled && hasMacLikeUserAgent);
@@ -1034,7 +1035,12 @@
     canHaveCSP: true,
 
     desktop: !phone && !tablet,
-    windowsPhone: windowsPhone
+    windowsPhone: windowsPhone,
+
+    /**
+     * Constant that is true if the browser has touch support.
+     */
+    touchEnabled: isTouchEnabled
   };
 
   /**
@@ -1130,6 +1136,14 @@
    * @final
    */
   tinymce.isIOS5 = iDevice && userAgent.match(/AppleWebKit\/(\d*)/)[1] >= 534;
+
+  /**
+   * Constant that is true if the current browser has touch support.
+   * @property touchEnabled
+   * @type Boolean
+   * @final
+   */
+  tinymce.touchEnabled = isTouchEnabled;
 
   /**
    * Uuid.js
