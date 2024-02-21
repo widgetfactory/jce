@@ -41905,13 +41905,13 @@
             block = dom.create(name || newBlockName);
             setForcedBlockAttrs(block);
           } else {
-            block = settings.keep_attributes ? parentBlock.cloneNode(false) : dom.create(parentBlock.nodeName);
+            block = settings.enterkey_keep_attributes ? parentBlock.cloneNode(false) : dom.create(parentBlock.nodeName);
           }
 
           caretNode = block;
 
           // Clone any parent styles
-          if (settings.keep_styles !== false) {
+          if (settings.enterkey_keep_styles === true) {
             do {
               if (textInlineElements[node.nodeName]) {
                 // Never clone a caret containers
@@ -41930,7 +41930,7 @@
                   block.appendChild(clonedNode);
                 }
               }
-            } while ((node = node.parentNode));
+            } while ((node = node.parentNode) && node != editableRoot);
           }
 
           // BR is needed in empty blocks on non IE browsers
