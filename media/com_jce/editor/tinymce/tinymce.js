@@ -5859,6 +5859,8 @@
       add("menu", "type label", flowContent, "li");
       add("noscript", "", flowContent);
 
+      add("code", "", phrasingContent);
+
       // Extend with HTML5 elements
       if (type != "html4") {
         add("wbr");
@@ -43639,7 +43641,8 @@
 
         range = dom.createRng();
 
-        dom.empty($realSelectionContainer);
+        //dom.empty($realSelectionContainer);
+        $realSelectionContainer.innerHTML = '';
 
         $realSelectionContainer.appendChild(document.createTextNode('\u00a0'));
         $realSelectionContainer.appendChild(targetClone);
