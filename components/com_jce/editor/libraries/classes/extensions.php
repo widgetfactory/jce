@@ -79,12 +79,13 @@ class WFExtension extends CMSObject
         $installed = PluginHelper::getPlugin('jce');
 
         if (!empty($installed)) {
-            foreach ($installed as $p) {
-
+            foreach ($installed as $item) {
                 // check for delimiter, only load "extensions"
-                if (!preg_match('/[-_]/', $p->name) || preg_match('/^editor[-_]/', $p->name)) {
+                if (!preg_match('/[-_]/', $item->name) || preg_match('/^editor[-_]/', $item->name)) {
                     continue;
                 }
+
+                $p = clone $item;
 
                 // set path
                 $p->path = JPATH_PLUGINS . '/jce/' . $p->name;
