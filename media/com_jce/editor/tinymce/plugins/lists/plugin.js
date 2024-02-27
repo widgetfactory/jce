@@ -833,7 +833,7 @@
 
     bookmark = Bookmark.createBookmark(rng);
 
-    tinymce.each(getSelectedTextBlocks(editor, rng), function (block) {
+    tinymce.each(getSelectedTextBlocks(editor, rng), function (block, idx) {
       var listBlock, sibling;
 
       var hasCompatibleStyle = function (sib) {
@@ -846,6 +846,12 @@
       };
 
       sibling = block.previousSibling;
+
+      // if a definition list, the first item should be a definition term, with the rest being definition descriptions
+      if (listName === 'DL' && idx > 0) {
+        listItemName = 'DD';
+      }
+
       if (sibling && NodeType.isListNode(sibling) && sibling.nodeName === listName && hasCompatibleStyle(sibling)) {
         listBlock = sibling;
         block = dom.rename(block, listItemName);
