@@ -55,8 +55,9 @@ class JFormFieldBlockformats extends CheckboxesField
         'footer' => 'Footer',
         'nav' => 'Nav',
         'figure' => 'Figure',
+        'dl' => 'Definition List',
         'dt' => 'Definition Term',
-        'dd' => 'Definition List',
+        'dd' => 'Definition Description'
     );
 
     /**

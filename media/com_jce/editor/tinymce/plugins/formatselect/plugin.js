@@ -33,6 +33,7 @@
         'footer' : 'advanced.footer',
         'nav' : 'advanced.nav',
         'figure': 'advanced.figure',
+        'dl': 'advanced.dl',
         'dt': 'advanced.dt',
         'dd': 'advanced.dd'
     };

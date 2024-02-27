@@ -258,16 +258,26 @@
                 cm.select(p);
               }
             }
+
             // Definition List
+            if (v === 'dl') {
+              ed.execCommand('InsertDefinitionList');
+              o.terminate = true;
+            }
+            
+            // Definition List - DT or DD
             if (v === 'dt' || v === 'dd') {
+              // not yet in a Definition List
               if (n && !ed.dom.getParent(n, 'dl')) {
                 ed.execCommand('InsertDefinitionList');
               }
 
+              // rename DT to DD
               if (v === 'dt' && n.nodeName === 'DD') {
                 ed.dom.rename(n, 'DT');
               }
 
+              // rename DD to DT
               if (v === 'dd' && n.nodeName === 'DT') {
                 ed.dom.rename(n, 'DD');
               }
