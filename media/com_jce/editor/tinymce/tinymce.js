@@ -37148,7 +37148,6 @@
 
   (function (tinymce) {
     // Shorten names
-    tinymce.DOM;
     var Event = tinymce.dom.Event,
       each = tinymce.each,
       extend = tinymce.extend,
@@ -37610,6 +37609,12 @@
         ed.onMouseDown.add(c.hideMenu, c);
 
         c.onRenderMenu.add(function (e, m) {
+          if (Array.isArray(s.items)) {
+            each(s.items, function (item) {
+              m.add(item);
+            });
+          }
+
           m.onHideMenu.add(function () {
             ed.nodeChanged();
             ed.focus();
