@@ -25,7 +25,7 @@
     border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
-
+    text-transform: none;
     min-height: auto;
 }
 
@@ -1805,6 +1805,10 @@ select.mceNativeListBox {
     background-position: -560px -40px;
 }
 
+.mceDefaultSkin span.mce_columns_add_before {
+    background-position: -660px -40px;
+}
+
 .mceDefaultSkin span.mce_columns_delete {
     background-position: -580px -40px;
 }
@@ -1819,10 +1823,6 @@ select.mceNativeListBox {
 
 .mceDefaultSkin span.mce_langcode {
     background-position: -640px -40px;
-}
-
-.mceDefaultSkin span.mce_codesample {
-    background-position: -260px 0;
 }
 
 /*.mceDefaultSkin span.mce_pagebreak {background-position:0 -40px}*/

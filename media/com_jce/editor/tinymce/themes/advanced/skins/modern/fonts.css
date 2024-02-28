@@ -857,6 +857,10 @@
     content: "\e907";
 }
 
+.mceModernSkin span.mce_columns_add_before:before {
+    content: "\e91c";
+}
+
 .mceModernSkin span.mce_columns_layout_1_2:before {
     content: "\e909";
 }

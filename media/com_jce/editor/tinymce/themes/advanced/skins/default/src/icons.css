@@ -427,6 +427,10 @@
     background-position: -560px -40px;
 }
 
+.mceDefaultSkin span.mce_columns_add_before {
+    background-position: -660px -40px;
+}
+
 .mceDefaultSkin span.mce_columns_delete {
     background-position: -580px -40px;
 }
