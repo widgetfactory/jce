@@ -327,7 +327,6 @@ joomla-tab .wf-editor-tabs button[role="tab"][aria-expanded="true"]:after {
   display: none;
   overflow: hidden;
   position: absolute;
-  width: 6em;
   text-align: center;
 }
 #wf_upload_button:hover {

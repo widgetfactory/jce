@@ -16,7 +16,8 @@
   var each = tinymce.each,
     JSON = tinymce.util.JSON,
     RangeUtils = tinymce.dom.RangeUtils,
-    Uuid = tinymce.util.Uuid;
+    Uuid = tinymce.util.Uuid,
+    Env = tinymce.util.Env;
 
   // Register plugin
   tinymce.PluginManager.add('upload', function (ed, url) {
@@ -144,6 +145,8 @@
             node.shortEnded = false;
             // remove alt if set
             node.attr('alt', null);
+            // remove maarker attribute
+            node.attr('data-mce-upload-marker', null);
           }
         }
       });
@@ -440,7 +443,7 @@
 
       // set attribs
       node.attr({
-        'src': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+        'src': Env.transparentSrc,
         'class': tinymce.trim(cls.join(' '))
       });
 
