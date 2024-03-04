@@ -37461,6 +37461,14 @@
           });
         }
 
+        if (Array.isArray(s.items)) {
+          c.onRenderMenu.add(function (c, m) {
+            each(s.items, function (item) {
+              m.add(item);
+            });
+          });
+        }
+
         if (c.hideMenu) {
           ed.onMouseDown.add(c.hideMenu, c);
         }
