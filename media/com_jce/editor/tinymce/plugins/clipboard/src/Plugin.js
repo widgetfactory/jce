@@ -18,6 +18,8 @@ tinymce.create('tinymce.plugins.ClipboardPlugin', {
         var pasteText = ed.getParam('clipboard_paste_text', 1);
         var pasteHtml = ed.getParam('clipboard_paste_html', 1);
 
+        this.url = url;
+
         ed.onInit.add(function () {
             if (ed.plugins.contextmenu) {
                 ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {

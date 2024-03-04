@@ -3,7 +3,7 @@
 
     /* eslint-disable */
 
-    var DOM = tinymce.DOM;
+    var DOM = tinymce.DOM, each$1 = tinymce.each;
 
     function openWin(ed, cmd) {
         var title = '', ctrl;
@@ -43,6 +43,8 @@
                 content_css: ed.settings.content_css,
                 allow_event_attributes: ed.settings.allow_event_attributes,
                 object_resizing: false,
+                paste_upload_data_images: true,
+                paste_data_images: false,
                 schema: 'mixed',
                 theme: function () {
                     var parent = DOM.create('div', {
@@ -64,6 +66,10 @@
             pasteEd.contentCSS = ed.contentCSS;
 
             pasteEd.onPreInit.add(function () {
+                var dom = pasteEd.dom;
+
+                dom.loadCSS(ed.plugins.clipboard.url + "/css/content.css");
+                
                 // remove fragment attribute (from InsertContent)
                 this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {
                     var i = nodes.length;
@@ -71,6 +77,33 @@
                     while (i--) {
                         nodes[i].attr('data-mce-fragment', null);
                     }
+                });
+
+                pasteEd.onPastePostProcess.add(function (ed, o) {
+                    each$1(dom.select('img[data-mce-upload-marker]', o.node), function (img) {
+                        dom.setAttrib(img, 'src', tinymce.util.Env.transparentSrc);
+                        dom.addClass(img, 'mce-object mce-object-img');
+                        dom.setStyles(img, {
+                            width: img.width || '',
+                            height: img.height || ''
+                        });
+                    });
+                });
+
+                pasteEd.onGetContent.add(function (ed, o) {                
+                    var node = dom.create('div', {}, o.content);
+                    
+                    each$1(dom.select('img[data-mce-upload-marker]', node), function (img) {
+                        dom.setAttrib(img, 'src', tinymce.util.Env.transparentSrc);
+                        dom.removeClass(img, 'mce-object mce-object-img');
+
+                        dom.setStyles(img, {
+                            width: '',
+                            height: ''
+                        });
+                    });
+
+                    o.content = node.innerHTML;
                 });
             });
 
@@ -163,6 +196,8 @@
         init: function (ed, url) {
             var pasteText = ed.getParam('clipboard_paste_text', 1);
             var pasteHtml = ed.getParam('clipboard_paste_html', 1);
+
+            this.url = url;
 
             ed.onInit.add(function () {
                 if (ed.plugins.contextmenu) {
