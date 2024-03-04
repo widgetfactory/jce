@@ -70,6 +70,11 @@
             };
 
             showMenu = ed.onContextMenu.add(function (ed, e) {
+                // Grammarly crashes Chrome and Edge when the context menu is shown
+                if (ed.getBody().hasAttribute('data-gr-ext-installed')) {
+                    return false;
+                }
+
                 // Block TinyMCE menu on ctrlKey and work around Safari issue
                 if ((realCtrlKey !== 0 ? realCtrlKey : e.ctrlKey) && !contextmenuNeverUseNative) {
                     return;
@@ -94,7 +99,7 @@
                     ed.selection.select(e.target);
                 }
 
-                self._getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
+                self.getMenu(ed, e).showMenu(e.clientX || e.pageX, e.clientY || e.pageY);
 
                 Event.add(ed.getDoc(), 'click', hideMenu);
 
@@ -135,7 +140,7 @@
             });
         },
 
-        _getMenu: function (ed, e) {
+        getMenu: function (ed, e) {
             var self = this,
                 m = self._menu,
                 se = ed.selection,
