@@ -6090,6 +6090,31 @@
         return new RegExp('^' + str.replace(/([?+*])/g, '.$1') + '$');
       }
 
+      /*
+      * The `valid_elements` option specifies which HTML elements are preserved during the editor's save process, allowing for the restriction of HTML to a specified subset.
+      * This option utilizes a comma-separated list of "element conversion chunks" to detail the treatment of specific elements and their attributes. The default rules are based on either a combination of the full HTML5 and HTML4 specifications or solely one of these, depending on the schema configuration.
+      * To modify or extend behavior for particular elements, the `extended_valid_elements` option should be used.
+      * 
+      * Control Characters:
+      * @ : Applies the following rules to all subsequent elements, enabling specified attributes globally unless scoped to specific elements in the `extended_valid_elements`.
+      * , : Delimits individual element definition chunks.
+      * / : Distinguishes element synonyms, with the first named element being the output.
+      * | : Separates attributes within an element's definition.
+      * [ : Begins an attribute list for an element.
+      * ] : Closes an attribute list for an element.
+      * ! : Marks attributes as required, removing the element if these attributes are absent.
+      * = : Assigns a default value to an attribute.
+      * : : Forces an attribute to take a specified value.
+      * < : Restricts attribute values to a specified list.
+      * ? : Separates possible values within attribute value verification.
+      * + : Opens an element if it has no child nodes.
+      * - : Allows for the removal of empty elements.
+      * # : Pads empty elements with a non-breaking space if they are empty.
+      * ! (second usage): Removes elements that lack attributes but may contain content.
+      * 
+      * Wildcards such as *, +, and ? are permissible for matching element or attribute names.
+      */
+
       // Parses the specified valid_elements string and adds to the current rules
       // This function is a bit hard to read since it's heavily optimized for speed
       function addValidElements(validElements) {
