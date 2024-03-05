@@ -69,14 +69,8 @@
                 hide(ed, e);
             };
 
-            showMenu = ed.onContextMenu.add(function (ed, e) {
-                // Grammarly crashes Chrome and Edge when the context menu is shown
-                if (ed.getBody().hasAttribute('data-gr-ext-installed')) {
-                    return false;
-                }
-
-                // Block TinyMCE menu on ctrlKey and work around Safari issue
-                if ((realCtrlKey !== 0 ? realCtrlKey : e.ctrlKey) && !contextmenuNeverUseNative) {
+            showMenu = ed.onContextMenu.add(function (ed, e) {                
+                if (isNativeOverrideKeyEvent(e)) {
                     return;
                 }
 
