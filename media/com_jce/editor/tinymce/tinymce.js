@@ -37344,7 +37344,7 @@
       createDropMenu: function (id, s, cc) {
         var self = this,
           ed = self.editor,
-          c, bm, cls;
+          c, cls;
 
         s = extend({
           'class': 'mceDropDown',
@@ -37373,22 +37373,6 @@
             };
           }
         });
-
-        // Fix for bug #1897785, #1898007
-        if (tinymce.isIE) {
-          c.onShowMenu.add(function () {
-            // IE 8 needs focus in order to store away a range with the current collapsed caret location
-            ed.focus();
-            bm = ed.selection.getBookmark(1);
-          });
-
-          c.onHideMenu.add(function () {
-            if (bm) {
-              ed.selection.moveToBookmark(bm);
-              bm = 0;
-            }
-          });
-        }
 
         ed.onRemove.add(function () {
           c.destroy();
@@ -46356,7 +46340,7 @@
         }];
 
         ed.onKeyDown.add(function (ed, e) {
-          
+
           // select parent element with SHIFT + UP
           /*if (e.keyCode == VK.UP && e.shiftKey) {
             var p, n = ed.selection.getNode();
@@ -46376,8 +46360,8 @@
 
             ed.selection.select(block);
           }*/
-          
-          if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {  
+
+          if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
             // clear blocks
             self._clearBlocks(ed, e);
           }
@@ -46436,7 +46420,7 @@
                 ed.execCommand('InsertDefinitionList');
                 o.terminate = true;
               }
-              
+
               // Definition List - DT or DD
               if (v === 'dt' || v === 'dd') {
                 // not yet in a Definition List
