@@ -6955,6 +6955,11 @@
           return name.indexOf('-') > 0;
         }
 
+        // an aria attribute is any attribute that starts with aria-
+        function isAriaAttribute(name) {
+          return name.indexOf('aria-') === 0;
+        }
+
         function isEventAttribute(name) {
           return name.indexOf('on') == 0;
         }
@@ -7046,7 +7051,7 @@
           value = name in fillAttrsMap ? name : decode(value || val2 || val3 || ''); // Handle boolean attribute than value attribute
 
           // Validate name and value pass through all data- attributes
-          if (validate && !isInternalElement && !isDataAttribute(name)) {
+          if (validate && !isInternalElement && !isDataAttribute(name) && !isAriaAttribute(name)) {
 
             // block event attributes, eg: onload
             if (!settings.allow_event_attributes && isEventAttribute(name)) {
