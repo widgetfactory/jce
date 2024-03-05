@@ -933,7 +933,7 @@
             }
 
             // skip preview span attributes
-            if (node.attr('data-mce-object') && key.indexOf('aria-') == 0) {
+            if (node.name == 'span' && node.attr('data-mce-object')) {
                 continue;
             }
 
