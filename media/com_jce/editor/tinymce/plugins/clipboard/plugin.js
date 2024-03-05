@@ -201,9 +201,7 @@
 
             ed.onInit.add(function () {
                 if (ed.plugins.contextmenu) {
-                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
-                        var c = ed.selection.isCollapsed();
-
+                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e, c) {
                         if (ed.getParam('clipboard_cut', 1)) {
                             m.add({
                                 title: 'advanced.cut_desc',
