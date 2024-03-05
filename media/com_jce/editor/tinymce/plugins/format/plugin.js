@@ -184,7 +184,7 @@
       }];
 
       ed.onKeyDown.add(function (ed, e) {
-        
+
         // select parent element with SHIFT + UP
         /*if (e.keyCode == VK.UP && e.shiftKey) {
           var p, n = ed.selection.getNode();
@@ -204,8 +204,8 @@
 
           ed.selection.select(block);
         }*/
-        
-        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {  
+
+        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
           // clear blocks
           self._clearBlocks(ed, e);
         }
@@ -264,7 +264,7 @@
               ed.execCommand('InsertDefinitionList');
               o.terminate = true;
             }
-            
+
             // Definition List - DT or DD
             if (v === 'dt' || v === 'dd') {
               // not yet in a Definition List
