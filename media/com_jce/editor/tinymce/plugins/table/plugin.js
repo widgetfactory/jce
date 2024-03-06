@@ -27,7 +27,9 @@
         var grid, startPos, endPos, selectedCell, gridWidth;
 
         buildGrid();
+
         selectedCell = dom.getParent(selection.getStart(), 'th,td');
+
         if (selectedCell) {
             startPos = getPos(selectedCell);
             endPos = findEndPos();
@@ -861,6 +863,56 @@
         });
     }
 
+    function mergeTableCells(ed, startCell, table) {
+        var dom = ed.dom;
+        var existingTable = dom.getParent(startCell, 'table');
+
+        var startRowIndex = startCell.parentNode.rowIndex;
+        var startColIndex = Array.prototype.indexOf.call(startCell.parentNode.cells, startCell);
+
+        var maxCellsInNewContent = 0;
+        
+        for (var i = 0; i < table.rows.length; i++) {
+            maxCellsInNewContent = Math.max(maxCellsInNewContent, table.rows[i].cells.length);
+        }
+
+        // Expand existing rows up to the insertion point to ensure they have enough cells
+        for (var i = 0; i <= startRowIndex; i++) {
+            var currentRow = existingTable.rows[i];
+            var requiredCellCount = startColIndex + maxCellsInNewContent;
+
+            while (currentRow.cells.length < requiredCellCount) {
+                currentRow.insertCell(-1); // Add cells to the end of the row as needed
+            }
+        }
+
+        // Now proceed with merging the tables, knowing all rows up to the insertion point can accommodate the new content
+        for (var i = 0; i < table.rows.length; i++) {
+            var currentRow = existingTable.rows[startRowIndex + i] || existingTable.insertRow(startRowIndex + i);
+
+            for (var j = 0; j < table.rows[i].cells.length; j++) {
+                var targetCellIndex = startColIndex + j;
+
+                // Ensure targetCellIndex is within the currentRow's cell length
+                while (currentRow.cells.length <= targetCellIndex) {
+                    currentRow.insertCell(-1); // This might not be necessary if the previous loop has already adjusted the row length
+                }
+
+                // Ensure the cell has content
+                var cell = table.rows[i].cells[j];
+
+                if (cell.innerHTML.trim() === '') {
+                    cell.innerHTML = '<br data-mce-bogus="1" />';
+                }
+
+                var currentCell = currentRow.cells[targetCellIndex];
+                currentCell.innerHTML = cell.innerHTML;
+            }
+        }
+
+        return true;
+    }
+
     tinymce.create('tinymce.plugins.TablePlugin', {
         init: function (ed, url) {
             var winMan, clipboardRows, hasCellSelection = true; // Might be selected cells on reload
@@ -922,16 +974,45 @@
 
                 ed.onPastePostProcess.add(function (ed, args) {
                     var dom = ed.dom;
-    
+
                     // ensure internal table class is set
                     dom.addClass(dom.select('table', args.node), 'mce-item-table');
-    
+
                     each(dom.select('td[valign]', args.node), function (elm) {
                         // fix valign
                         dom.setStyle(elm, 'vertical-align', elm.getAttribute('valign'));
                         elm.removeAttribute('valign');
                     });
                 });
+
+                if (ed.settings.table_merge_content_on_paste !== false) {
+                    ed.onPasteBeforeInsert.add(function (ed, o) {
+                        var dom = ed.dom, elm = o.node;
+
+                        if (!elm) {
+                            return;
+                        }
+
+                        // Assuming this is the container of the pasted content
+                        var table = elm.firstChild;
+
+                        if (table && table.nodeName === 'TABLE') {
+                            if (elm.childNodes.length === 1) {
+                                var node = ed.selection.getNode(), targetCell = dom.getParent(node, 'td,th');
+
+                                // Ensure an existing table and target cell are found
+                                if (!targetCell) {
+                                    return;
+                                }
+
+                                if (mergeTableCells(ed, targetCell, table)) {
+                                    o.terminate = true;
+                                    ed.undoManager.add();
+                                }
+                            }
+                        }
+                    });
+                }
             });
 
             ed.onPreProcess.add(function (ed, args) {
@@ -2145,7 +2226,7 @@
 
                     for (var x = 0; x < cols; x++) {
                         var fill = ed.settings.validate ? '<br data-mce-bogus="1"/>' : '&nbsp;';
-                        
+
                         html += '<td>' + fill + '</td>';
                     }
 
