@@ -8,11 +8,11 @@ function openWin(ed, cmd) {
 
     if (cmd === "mcePaste") {
         title = ed.getLang('clipboard.paste_desc');
-        ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7"></textarea>';
+        ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="14"></textarea>';
 
     } else {
         title = ed.getLang('clipboard.paste_text_desc');
-        ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="7"></textarea>';
+        ctrl = '<textarea id="' + ed.id + '_paste_content" dir="ltr" wrap="soft" rows="14"></textarea>';
     }
 
     var html = '' +
@@ -121,7 +121,7 @@ function openWin(ed, cmd) {
     ed.windowManager.open({
         title: title,
         content: html,
-        size: 'mce-modal-landscape-medium',
+        size: 'mce-modal-portrait-xlarge',
         open: function () {
             var inp = DOM.get(ed.id + '_paste_content');
 
@@ -133,8 +133,6 @@ function openWin(ed, cmd) {
             window.setTimeout(function () {
                 inp.focus();
             }, 0);
-
-            
         },
         close: function () {
             if (pasteEd) {
