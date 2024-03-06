@@ -16493,6 +16493,10 @@
 
       editor.onPasteBeforeInsert.dispatch(editor, o);
 
+      if (o.terminate) {
+          return;
+      }
+
       insertData(editor, o.content);
   }
 
@@ -25605,7 +25609,7 @@
         var element = DOM.get(this.id + '_aria') || DOM.get(this.id);
 
         if (element) {
-          DOM.setAttrib(element, 'aria-' + property, !!value);
+          element.setAttribute('aria-' + property, '' + !!value);
         }
       },
 
@@ -25653,7 +25657,7 @@
         if (s != this.active) {
           this.setState('Active', s);
           this.active = s;
-          this.setAriaProperty('pressed', s);
+          this.setAriaProperty('current', s);
         }
       },
 
@@ -25740,8 +25744,6 @@
           this.active = -1;
           this.setActive(state);
         }
-
-        this._elm = DOM.get(this.id);
 
         this.onRender.dispatch();
       },
@@ -26073,7 +26075,7 @@
   		 */
   		setSelected: function (state) {
   			this.setState('Selected', state);
-  			this.setAriaProperty('checked', !!state);
+  			this.setAriaProperty('selected', !!state);
   			this.selected = state;
   		},
 
@@ -26095,6 +26097,21 @@
   		 */
   		postRender: function () {
   			this._super();
+
+  			var state;
+
+  			// Set pending states
+  			if (tinymce.is(this.disabled)) {
+  				state = this.disabled;
+  				this.disabled = -1;
+  				this.setDisabled(state);
+  			}
+
+  			if (tinymce.is(this.active)) {
+  				state = this.active;
+  				this.active = -1;
+  				this.setActive(state);
+  			}
 
   			// Set pending state
   			if (tinymce.is(this.selected)) {
@@ -37349,7 +37366,7 @@
       createDropMenu: function (id, s, cc) {
         var self = this,
           ed = self.editor,
-          c, cls;
+          c, bm, cls;
 
         s = extend({
           'class': 'mceDropDown',
@@ -37378,6 +37395,22 @@
             };
           }
         });
+
+        // Fix for bug #1897785, #1898007
+        if (tinymce.isIE) {
+          c.onShowMenu.add(function () {
+            // IE 8 needs focus in order to store away a range with the current collapsed caret location
+            ed.focus();
+            bm = ed.selection.getBookmark(1);
+          });
+
+          c.onHideMenu.add(function () {
+            if (bm) {
+              ed.selection.moveToBookmark(bm);
+              bm = 0;
+            }
+          });
+        }
 
         ed.onRemove.add(function () {
           c.destroy();
