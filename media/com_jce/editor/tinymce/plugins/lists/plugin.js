@@ -759,8 +759,6 @@
       container = container.parentNode;
     }
 
-    console.log(container);
-
     return container;
   };
 

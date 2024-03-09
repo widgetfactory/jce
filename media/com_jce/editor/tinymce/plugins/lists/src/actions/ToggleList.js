@@ -67,8 +67,6 @@ var getEndPointNode = function (editor, rng, start) {
     container = container.parentNode;
   }
 
-  console.log(container);
-
   return container;
 };
 
