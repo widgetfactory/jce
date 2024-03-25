@@ -7,6 +7,7 @@ CREATE TABLE [#__wf_profiles](
 	[users] [text] NOT NULL,
 	[types] [text] NOT NULL,
 	[components] [nvarchar](max) NOT NULL,
+	[custom] [nvarchar](max) NOT NULL,
 	[area] [smallint] NOT NULL,
     [device] [nvarchar](250) NOT NULL,
 	[rows] [nvarchar](max) NOT NULL,

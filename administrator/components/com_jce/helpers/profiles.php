@@ -342,6 +342,8 @@ abstract class JceProfilesHelper
                             break;
                         case 'components':
                             break;
+                        case 'custom':
+                            break;
                         case 'params':
                             if (!empty($value)) {
                                 $data = json_decode($value, true);
@@ -378,6 +380,11 @@ abstract class JceProfilesHelper
 
                 // set new id
                 $table->id = 0;
+
+                // update with new custom field
+                if (!isset($table->custom)) {
+                    $table->custom = '';
+                }
 
                 // set checked_out
                 $table->checked_out = $user->get('id');

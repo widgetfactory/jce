@@ -104,6 +104,31 @@ class WFApplication extends CMSObject
         return $component->id;
     }
 
+    protected function getCustomQueryVars($option)
+    {
+        $app = Factory::getApplication();
+        $query = $app->input->getArray();
+
+        $vars = array();
+        $exclude = array('option');
+
+        $custom = array();
+
+        if ($option == 'com_jce') {
+            $query = $app->input->get('profile_custom', array());
+        }
+
+        foreach ($query as $key => $value) {
+            if (in_array($key, $exclude)) {
+                continue;
+            }
+
+            $vars[$key] = $value;
+        }
+
+        return $vars;
+    }
+
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -112,6 +137,7 @@ class WFApplication extends CMSObject
 
         $settings = array(
             'option' => $option,
+            'custom' => array(),
             'area' => 2,
             'device' => 'desktop',
             'groups' => array(),
@@ -137,6 +163,8 @@ class WFApplication extends CMSObject
                 $settings['profile_id'] = $profile_id;
             }
         }
+
+        $settings['custom'] = $this->getCustomQueryVars($option);
 
         // get the Joomla! area, default to "site"
         $settings['area'] = $app->getClientId() === 0 ? 1 : 2;
@@ -169,7 +197,7 @@ class WFApplication extends CMSObject
         if (!isset($plugins[$name])) {
             return false;
         }
-        
+
         $plugin = $plugins[$name];
 
         if (isset($plugin->checksum) && strlen($plugin->checksum) == 64) {
@@ -179,7 +207,7 @@ class WFApplication extends CMSObject
                 return false;
             }
 
-            return  $plugin->checksum === hash_file('sha256', $path);
+            return $plugin->checksum === hash_file('sha256', $path);
         }
 
         return true;
@@ -273,6 +301,46 @@ class WFApplication extends CMSObject
                     $components = array_unique($components);
 
                     if (in_array($options['option'], $components) === false) {
+                        continue;
+                    }
+                }
+
+                // check custom query variables
+                if (!empty($item->custom)) {
+                    $item->custom = json_decode($item->custom, true);
+
+                    // invalid custom query variables
+                    if (empty($item->custom)) {
+                        // rewrite as empty array
+                        $item->custom = array();
+
+                        continue;
+                    }
+
+                    $vars = array();
+
+                    // re-map name|value pairs to associative array
+                    foreach($item->custom as $customQuery) {
+                        if (array_key_exists('name', $customQuery) && array_key_exists('value', $customQuery)) {
+                            if ($customQuery['value']) {
+                                $vars[$customQuery['name']] = $customQuery['value'];
+                            }
+                        }
+                    }
+
+                    // rewrite the custom query variables
+                    $item->custom = $vars;
+              
+                    // no valid custom query variables
+                    if (empty($item->custom)) {
+                        continue;
+                    }
+
+                    // check for intersection
+                    $intersection = array_intersect_assoc($item->custom, $options['custom']);
+
+                    // no match
+                    if (count($intersection) !== count($vars)) {
                         continue;
                     }
                 }

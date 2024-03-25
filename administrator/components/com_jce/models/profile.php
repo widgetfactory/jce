@@ -19,8 +19,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Table\Table;
-use Joomla\String\StringHelper;
 use Joomla\Registry\Registry;
+use Joomla\String\StringHelper;
 
 require JPATH_SITE . '/components/com_jce/editor/libraries/classes/editor.php';
 
@@ -291,7 +291,7 @@ class JceModelProfile extends AdminModel
 
             ++$i;
         }
-        
+
         // allow for empty toolbar row when creating a new profile
         if (empty($array)) {
             $array[$i] = array();
@@ -565,6 +565,8 @@ class JceModelProfile extends AdminModel
                     }
 
                     break;
+                case 'params':
+                    break;
                 case 'types':
                 case 'users':
 
@@ -632,6 +634,10 @@ class JceModelProfile extends AdminModel
 
         if (empty($data['types'])) {
             $data['types'] = '';
+        }
+
+        if (empty($data['custom'])) {
+            $data['custom'] = '';
         }
 
         return $data;
@@ -797,7 +803,7 @@ class JceModelProfile extends AdminModel
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
 
-        $validFields = array('name', 'description', 'users', 'types', 'components', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
+        $validFields = array('name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
 
         foreach ($ids as $id) {
             $table = $this->getTable();

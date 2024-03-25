@@ -449,15 +449,33 @@ class pkg_jceInstallerScript
                 $db->execute();
             }
 
-            /*try {
-            $query = "SELECT DEFAULT (" . $db->qn('checked_out_time') . ") FROM #__wf_profiles";
-            $db->setQuery($query);
-            $db->execute();
-            } catch (Exception $e) {
+            // only for mysql / mysqli
+            if (strpos($db->getName(), 'mysql') !== false) {
+                $query = "DESCRIBE #__wf_profiles";
+                $db->setQuery($query);
+                $items = $db->loadObjectList();
 
-            }*/
+                $customexists = false;
 
-            self::cleanupInstall($installer);
+                foreach ($items as $item) {
+                    // Check if the 'Field' property matches your field name
+                    if ($item->Field == 'custom') {
+                        // Set the flag to true and break the loop as we found the field
+                        $customexists = true;
+                        break;
+                    }
+                }
+
+                // If the "custom" column does not exist, add it
+                if (!$customexists) {
+                    $alterQuery = 'ALTER TABLE ' . $db->quoteName('#__wf_profiles') . 
+                    ' ADD COLUMN ' . $db->quoteName('custom') . 
+                    ' TEXT NOT NULL' .
+                    ' AFTER ' . $db->quoteName('components');
+                    $db->setQuery($alterQuery);
+                    $db->execute();
+                }
+            }
         }
     }
 

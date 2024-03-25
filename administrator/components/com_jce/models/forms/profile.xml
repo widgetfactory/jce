@@ -33,6 +33,11 @@
             </field>
 
             <field name="components" type="components" multiple="multiple" label="" layout="joomla.form.field.list-fancy-select" />
+            
+            <field name="custom" type="keyvalue" default="" label="WF_PROFILES_CUSTOM" description="WF_PROFILES_CUSTOM_DESC">
+                <field type="text" name="name" label="WF_PROFILES_CUSTOM_KEY" />
+                <field type="text" name="value" label="WF_PROFILES_CUSTOM_VALUE" />
+            </field>
  
             <field name="types" type="usergrouplist" multiple="multiple" label="WF_PROFILES_GROUPS" description="WF_PROFILES_GROUPS_DESC" layout="joomla.form.field.list-fancy-select" />
             <field name="users" type="users" multiple="multiple" label="WF_PROFILES_USERS" description="WF_PROFILES_USERS_DESC" />
