@@ -67,8 +67,14 @@
         $('.controls').on('click', '.form-field-repeatable-remove', function (e) {            
             e.preventDefault();
             var $repeatable = $(this).parents('.form-field-repeatable-item'), $parent = $repeatable.parent();
-            // remove
-            $repeatable.remove();
+
+            // clear or remove
+            if ($parent.children('.form-field-repeatable-item').length === 1) {
+                $repeatable.find(':input').val('');
+            } else {
+                $repeatable.remove();
+            }
+
             // update
             $parent.find(':input').trigger('change');
         });
