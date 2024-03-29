@@ -4057,7 +4057,7 @@
           return;
         }
 
-        node = dom.getParent(node, 'a');
+        node = dom.getParent(node, 'a,span[data-mce-item="font"]');
 
         if (!node) {
           return;
