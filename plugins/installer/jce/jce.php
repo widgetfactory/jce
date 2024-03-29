@@ -80,7 +80,7 @@ class plgInstallerJce extends CMSPlugin
         } catch (RuntimeException $exception) {}
 
         // invalid key, display a notice message
-        if (403 == $response->code) {
+        if (403 == $response->code || 401 == $response->code) {
             $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
