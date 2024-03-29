@@ -129,6 +129,39 @@ class WFApplication extends CMSObject
         return $vars;
     }
 
+    /**
+     * Checks if the provided query array matches all custom conditions.
+     *
+     * @param array $query The array of query parameters, typically $_REQUEST or similar.
+     * @param array $custom The custom conditions array with keys and expected values.
+     * @return bool Returns true if all conditions in the custom array are met by the query array, false otherwise.
+     */
+    private function checkCustomQueryVars($query, $custom)
+    {
+        foreach ($custom as $key => $expected) {
+            // Check if the query array has the key.
+            if (!array_key_exists($key, $query)) {
+                return false;
+            }
+
+            $actual = $query[$key];
+
+            if (is_array($expected)) {
+                // If expected is an array, check if actual value is one of the expected values.
+                if (!in_array($actual, $expected, true)) {
+                    return false;
+                }
+            } else {
+                // scalar values with strict comparison
+                if ($actual !== $expected) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private function getProfileVars()
     {
         $app = Factory::getApplication();
@@ -320,27 +353,28 @@ class WFApplication extends CMSObject
                     $vars = array();
 
                     // re-map name|value pairs to associative array
-                    foreach($item->custom as $customQuery) {
+                    foreach ($item->custom as $customQuery) {
                         if (array_key_exists('name', $customQuery) && array_key_exists('value', $customQuery)) {
-                            if ($customQuery['value']) {
-                                $vars[$customQuery['name']] = $customQuery['value'];
+                            // Initialize the array for this name if not already set
+                            if (!isset($vars[$customQuery['name']])) {
+                                $vars[$customQuery['name']] = [];
+                            }
+                            // Append the value, ensuring unique values only
+                            if (!in_array($customQuery['value'], $vars[$customQuery['name']])) {
+                                $vars[$customQuery['name']][] = $customQuery['value'];
                             }
                         }
                     }
 
                     // rewrite the custom query variables
                     $item->custom = $vars;
-              
+
                     // no valid custom query variables
                     if (empty($item->custom)) {
                         continue;
                     }
 
-                    // check for intersection
-                    $intersection = array_intersect_assoc($item->custom, $options['custom']);
-
-                    // no match
-                    if (count($intersection) !== count($vars)) {
+                    if ($this->checkCustomQueryVars($options['custom'], $item->custom) === false) {
                         continue;
                     }
                 }
