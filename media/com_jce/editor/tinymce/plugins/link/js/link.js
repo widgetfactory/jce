@@ -356,6 +356,12 @@
             // get anchor or selected element text
             var txt = api.getAnchorText(se, api.isAnchor(anchorElm) ? anchorElm : null) || '';
 
+            // workaround for icon fonts
+            if (currNode && currNode.hasAttribute('data-mce-item')) {
+                state = false;
+                ed.selection.select(currNode);
+            }
+
             // set text value and state
             setText(state, txt);
 

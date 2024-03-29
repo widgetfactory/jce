@@ -115,6 +115,12 @@
 
         var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
 
+        // workaround for font items
+        if (node && node.hasAttribute('data-mce-item')) {
+            text = '';
+            ed.selection.select(node);
+        }
+
         // use passed in text value or node text or url
         data.text = data.text || text || data.url;
 
@@ -284,12 +290,12 @@
                             var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', title = '', target = params.attributes.target || '';
                             var state = isOnlyTextSelected(ed);
 
-                            node = ed.dom.getParent(node, 'a[href]');
+                            var anchorNode = ed.dom.getParent(node, 'a[href]');
 
-                            if (node) {
-                                ed.selection.select(node);
+                            if (anchorNode) {
+                                ed.selection.select(anchorNode);
 
-                                src = ed.dom.getAttrib(node, 'href');
+                                src = ed.dom.getAttrib(anchorNode, 'href');
 
                                 if (src) {
                                     label = ed.getLang('update', 'Update');
@@ -301,21 +307,26 @@
                                         end = ed.selection.getEnd();
 
                                     if (start === end && start.nodeName === "A") {
-                                        node = start;
+                                        anchorNode = start;
                                     }
                                 }
 
                                 // allow editing of File Manager text
-                                if (hasFileSpan(node)) {
+                                if (hasFileSpan(anchorNode)) {
                                     state = true;
                                 }
 
-                                title = ed.dom.getAttrib(node, 'title');
-                                target = ed.dom.getAttrib(node, 'target');
+                                title = ed.dom.getAttrib(anchorNode, 'title');
+                                target = ed.dom.getAttrib(anchorNode, 'target');
                             }
 
                             // get anchor or selected element text
                             var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
+
+                            // workaround for font items
+                            if (node && node.hasAttribute('data-mce-item')) {
+                                state = false;
+                            }
 
                             urlCtrl.value(src);
 
