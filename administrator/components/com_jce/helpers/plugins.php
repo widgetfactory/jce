@@ -221,9 +221,6 @@ abstract class JcePluginsHelper
      */
     public static function getExtensions($type = '')
     {
-        jimport('joomla.filesystem.folder');
-        jimport('joomla.filesystem.file');
-
         $language = Factory::getLanguage();
 
         static $extensions;
