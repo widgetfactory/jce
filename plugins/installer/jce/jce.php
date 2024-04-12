@@ -72,16 +72,22 @@ class plgInstallerJce extends CMSPlugin
         try
         {
             $tmpUri = clone $uri;
-
             $tmpUri->setVar('task', 'update.validate');
-            $tmpUri->delVar('file');
+
             $tmpUrl = $tmpUri->toString();
             $response = HttpFactory::getHttp()->get($tmpUrl, array());
         } catch (RuntimeException $exception) {}
 
         // invalid key, display a notice message
         if (403 == $response->code || 401 == $response->code) {
-            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
+            $message = isset($response->body) ? $response->body : Text::_('PLG_INSTALLER_JCE_KEY_INVALID');
+            $app->enqueueMessage($message, 'notice');
+        }
+
+        // update limit exceeded
+        if (429 == $response->code || 499 === $response->code) {
+            $message = isset($response->body) ? $response->body : Text::_('PLG_INSTALLER_JCE_UPDATE_LIMIT_REACHED');
+            $app->enqueueMessage($message, 'notice');
         }
 
         return true;
