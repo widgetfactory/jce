@@ -38170,7 +38170,8 @@
         var html = '' +
           '<div class="mceModalBody" id="' + id + '" dir="' + ed.settings.skin_directionality + '">' +
           '   <div class="mceModalContainer">' +
-          '       <div class="mceModalHeader" id="' + id + '_header">' +
+          '       <div class="mceModalHeader" id="' + id + '_header">' + 
+          //'            <div class="mceModalLogo">' + (ed.settings.logo || '') + '</div>' +
           '           <h5 class="mceModalTitle" id="' + id + '_title">' + (f.title || "") + '</h5>' +
           '           <button class="mceModalClose" type="button" title="' + ed.getLang('close', 'Close') + '"></button>' +
           '       </div>' +
@@ -38586,11 +38587,19 @@
        *       tinyMCE.activeEditor.windowManager.alert("Cancel");
        * });
        */
-      confirm: function (txt, cb, s) {
+      confirm: function (options, cb, s) {
         var self = this;
 
+        if (tinymce.is(options, 'string')) {
+          options = { text: options };
+        }
+
+        options = tinymce.extend({
+          title: ''
+        }, options);
+
         self.open({
-          title: '',
+          title: self.editor.getLang(options.title, options.title),
           type: 'confirm',
           buttons: [
             {
@@ -38609,7 +38618,7 @@
               }
             }
           ],
-          content: '<p>' + DOM.encode(self.editor.getLang(txt, txt)) + '</p>'
+          content: '<p>' + DOM.encode(self.editor.getLang(options.text, options.text)) + '</p>'
         });
       },
 
@@ -38617,18 +38626,26 @@
        * Creates a alert dialog
        *
        * @method alert
-       * @param {String} t Title for the new alert dialog.
+       * @param {String} options Text of options object.
        * @param {function} cb Callback function to be executed after the user has selected ok.
        * @param {Object} s Optional scope to execute the callback in.
        * @example
        * // Displays an alert box using the active editors window manager instance
        * tinyMCE.activeEditor.windowManager.alert('Hello world!');
        */
-      alert: function (txt, cb, s) {
+      alert: function (options, cb, s) {
         var self = this;
 
+        if (tinymce.is(options, 'string')) {
+          options = { text: options };
+        }
+
+        options = tinymce.extend({
+          title: ''
+        }, options);
+
         self.open({
-          title: '',
+          title: self.editor.getLang(options.title, options.title),
           type: 'alert',
           buttons: [
             {
@@ -38647,12 +38664,20 @@
               }
             }
           ],
-          content: '<p>' + DOM.encode(self.editor.getLang(txt, txt)) + '</p>'
+          content: '<p>' + DOM.encode(self.editor.getLang(options.text, options.text)) + '</p>'
         });
       },
 
-      prompt: function (txt, cb, s) {
+      prompt: function (options, cb, s) {
         var self = this;
+
+        if (tinymce.is(options, 'string')) {
+          options = { text: options };
+        }
+
+        options = tinymce.extend({
+          title: ''
+        }, options);
 
         var html = '<div class="mceModalRow">' +
           '   <div class="mceModalControl">' +
@@ -38661,7 +38686,7 @@
           '</div>';
 
         self.open({
-          title: '',
+          title: self.editor.getLang(options.title, options.title),
           type: 'prompt',
           buttons: [
             {
@@ -47470,7 +47495,12 @@
       function addFile(file) {
         // check for extension in file name, eg. image.php.jpg
         if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
-          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+          ed.windowManager.alert({
+            text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+            title: ed.getLang('upload.error', 'Upload Error')
+          });
+
           return false;
         }
 
@@ -47499,7 +47529,12 @@
             file.filename = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
 
             if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
-              ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+              ed.windowManager.alert({
+                text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+                title: ed.getLang('upload.error', 'Upload Error')
+              });
+
               return false;
             }
 
@@ -47507,7 +47542,12 @@
               var max = parseInt(config.max_size, 10) || 1024;
 
               if (file.size > max * 1024) {
-                ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
+
+                ed.windowManager.alert({
+                  text: ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'),
+                  title: ed.getLang('upload.error', 'Upload Error')
+                });
+
                 return false;
               }
             }
@@ -47549,7 +47589,12 @@
 
           return true;
         } else {
-          ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+          ed.windowManager.alert({
+            text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+            title: ed.getLang('upload.error', 'Upload Error')
+          });
+
           return false;
         }
       }
@@ -47844,7 +47889,11 @@
           ed.setProgressState(false);
 
         }, function (message) {
-          ed.windowManager.alert(message);
+
+          ed.windowManager.alert({
+            text: message,
+            title: ed.getLang('upload.error', 'Upload Error')
+          });
 
           removeFile(file);
 
@@ -48654,7 +48703,10 @@
 
                                   // check for extension in file name, eg. image.php.jpg
                                   if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
-                                      ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                                      ed.windowManager.alert({
+                                          text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+                                          title: ed.getLang('upload.error', 'Upload Error')
+                                      });
 
                                       removeMarker(marker);
                                       return resolve();
@@ -48719,7 +48771,12 @@
                                       return resolve();
 
                                   }, function (error) {
-                                      ed.windowManager.alert(error);
+
+                                      ed.windowManager.alert({
+                                          text: error,
+                                          title: ed.getLang('upload.error', 'Upload Error')
+                                      });
+
                                       ed.setProgressState(false);
 
                                       return resolve();
