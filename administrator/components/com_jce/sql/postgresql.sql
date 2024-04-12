@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS "#__wf_profiles" (
     "users" text NOT NULL,
     "types" text NOT NULL,
     "components" text NOT NULL,
-    "custom" text NOT NULL,
     "area" smallint NOT NULL,
     "device" character varying(255) NOT NULL,
     "rows" text NOT NULL,

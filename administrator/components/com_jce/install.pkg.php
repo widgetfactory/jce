@@ -71,6 +71,7 @@ class pkg_jceInstallerScript
             'installer' => 'jce',
             'quickicon' => 'jce',
             'system' => 'jce',
+            'system' => 'jcepro',
             'fields' => 'mediajce',
         );
 
@@ -447,34 +448,6 @@ class pkg_jceInstallerScript
                 $query = "ALTER TABLE #__wf_profiles CHANGE COLUMN " . $db->qn('checked_out_time') . " " . $db->qn('checked_out_time') . " DATETIME NULL DEFAULT NULL";
                 $db->setQuery($query);
                 $db->execute();
-            }
-
-            // only for mysql / mysqli
-            if (strpos($db->getName(), 'mysql') !== false) {
-                $query = "DESCRIBE #__wf_profiles";
-                $db->setQuery($query);
-                $items = $db->loadObjectList();
-
-                $customexists = false;
-
-                foreach ($items as $item) {
-                    // Check if the 'Field' property matches your field name
-                    if ($item->Field == 'custom') {
-                        // Set the flag to true and break the loop as we found the field
-                        $customexists = true;
-                        break;
-                    }
-                }
-
-                // If the "custom" column does not exist, add it
-                if (!$customexists) {
-                    $alterQuery = 'ALTER TABLE ' . $db->quoteName('#__wf_profiles') . 
-                    ' ADD COLUMN ' . $db->quoteName('custom') . 
-                    ' TEXT NOT NULL' .
-                    ' AFTER ' . $db->quoteName('components');
-                    $db->setQuery($alterQuery);
-                    $db->execute();
-                }
             }
         }
     }
