@@ -99,33 +99,6 @@ abstract class WfBrowserHelper
             $options[$token] = 1;
             $options['client'] = $app->getClientId();
 
-            // assign custom query values
-            if (!empty($profile->custom)) {
-                $options['profile_custom'] = $app->input->get('profile_custom', array(), 'ARRAY');
-
-                foreach ($profile->custom as $key => $expectedValue) {
-                    $requestValue = $app->input->get($key, null);
-
-                    if ($requestValue === null) {
-                        continue;
-                    }
-                    
-                    // If the expected value is an array, we check if the requestValue is one of the expected values
-                    if (is_array($expectedValue)) {
-                        if (in_array($requestValue, $expectedValue, true)) {
-                            // If a match is found, store it
-                            $options['profile_custom'][$key] = $requestValue;
-                        }
-                    } else {
-                        // If it's not an array, a direct comparison is made
-                        if ($requestValue === $expectedValue) {
-                            // Store the value if it matches
-                            $options['profile_custom'][$key] = $requestValue;
-                        }
-                    }
-                }
-            }
-
             // filter options values
             $options = array_filter($options, function ($value) {
                 if (is_array($value)) {
@@ -149,7 +122,7 @@ abstract class WfBrowserHelper
             $data['accept'] = implode(',', array_filter($data['accept']));
             $data['upload'] = (bool) $wf->getParam('browser.mediafield_upload', 1);
 
-            $app->triggerEvent('onWfMediaFieldGetOptions', array(&$data));
+            $app->triggerEvent('onWfMediaFieldGetOptions', array($data, $profile));
         }
 
         return $data;

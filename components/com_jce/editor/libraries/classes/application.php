@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -104,73 +105,14 @@ class WFApplication extends CMSObject
         return $component->id;
     }
 
-    protected function getCustomQueryVars($option)
-    {
-        $app = Factory::getApplication();
-        $query = $app->input->getArray();
-
-        $vars = array();
-        $exclude = array('option');
-
-        $custom = array();
-
-        if ($option == 'com_jce') {
-            $query = $app->input->get('profile_custom', array());
-        }
-
-        foreach ($query as $key => $value) {
-            if (in_array($key, $exclude)) {
-                continue;
-            }
-
-            $vars[$key] = $value;
-        }
-
-        return $vars;
-    }
-
-    /**
-     * Checks if the provided query array matches all custom conditions.
-     *
-     * @param array $query The array of query parameters, typically $_REQUEST or similar.
-     * @param array $custom The custom conditions array with keys and expected values.
-     * @return bool Returns true if all conditions in the custom array are met by the query array, false otherwise.
-     */
-    private function checkCustomQueryVars($query, $custom)
-    {
-        foreach ($custom as $key => $expected) {
-            // Check if the query array has the key.
-            if (!array_key_exists($key, $query)) {
-                return false;
-            }
-
-            $actual = $query[$key];
-
-            if (is_array($expected)) {
-                // If expected is an array, check if actual value is one of the expected values.
-                if (!in_array($actual, $expected, true)) {
-                    return false;
-                }
-            } else {
-                // scalar values with strict comparison
-                if ($actual !== $expected) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
     private function getProfileVars()
     {
         $app = Factory::getApplication();
         $user = Factory::getUser();
-        $option = $this->getComponentOption();
+        $option = $app->input->getCmd('option', '');
 
         $settings = array(
             'option' => $option,
-            'custom' => array(),
             'area' => 2,
             'device' => 'desktop',
             'groups' => array(),
@@ -196,8 +138,6 @@ class WFApplication extends CMSObject
                 $settings['profile_id'] = $profile_id;
             }
         }
-
-        $settings['custom'] = $this->getCustomQueryVars($option);
 
         // get the Joomla! area, default to "site"
         $settings['area'] = $app->getClientId() === 0 ? 1 : 2;
@@ -277,38 +217,48 @@ class WFApplication extends CMSObject
             $id = (int) $options['profile_id'];
         }
 
-        // create a signature to store
+        $db = Factory::getDBO();
+        $user = Factory::getUser();
+        $app = Factory::getApplication();
+
+        $query = $db->getQuery(true);
+        $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
+
+        if ($id) {
+            $query->where('id = ' . (int) $id);
+        }
+
+        $db->setQuery($query);
+        $profiles = $db->loadObjectList();
+
+        // nothing found...
+        if (empty($profiles)) {
+            return null;
+        }
+
+        // select and return a specific profile by id
+        if ($id) {
+            // return
+            return (object) $profiles[0];
+        }
+
+        $app->triggerEvent('onWfEditorProfileOptions', array(&$options));
+
+        // create a unique signature to store
         $signature = md5(serialize($options));
 
         if (!isset(self::$profile[$signature])) {
-            $db = Factory::getDBO();
-            $user = Factory::getUser();
-            $app = Factory::getApplication();
-
-            $query = $db->getQuery(true);
-            $query->select('*')->from('#__wf_profiles')->where('published = 1')->order('ordering ASC');
-
-            if ($id) {
-                $query->where('id = ' . (int) $id);
-            }
-
-            $db->setQuery($query);
-            $profiles = $db->loadObjectList();
-
-            // nothing found...
-            if (empty($profiles)) {
-                return null;
-            }
-
-            // select and return a specific profile by id
-            if ($id) {
-                // return
-                return (object) $profiles[0];
-            }
 
             foreach ($profiles as $item) {
                 // at least one user group or user must be set
                 if (empty($item->types) && empty($item->users)) {
+                    continue;
+                }
+
+                $app->triggerEvent('onWfBeforeEditorProfileItem', array(&$item));
+
+                // event can "cancel" this profile item
+                if ($item === false) {
                     continue;
                 }
 
@@ -338,47 +288,6 @@ class WFApplication extends CMSObject
                     }
                 }
 
-                // check custom query variables
-                if (!empty($item->custom)) {
-                    $item->custom = json_decode($item->custom, true);
-
-                    // invalid custom query variables
-                    if (empty($item->custom)) {
-                        // rewrite as empty array
-                        $item->custom = array();
-
-                        continue;
-                    }
-
-                    $vars = array();
-
-                    // re-map name|value pairs to associative array
-                    foreach ($item->custom as $customQuery) {
-                        if (array_key_exists('name', $customQuery) && array_key_exists('value', $customQuery)) {
-                            // Initialize the array for this name if not already set
-                            if (!isset($vars[$customQuery['name']])) {
-                                $vars[$customQuery['name']] = [];
-                            }
-                            // Append the value, ensuring unique values only
-                            if (!in_array($customQuery['value'], $vars[$customQuery['name']])) {
-                                $vars[$customQuery['name']][] = $customQuery['value'];
-                            }
-                        }
-                    }
-
-                    // rewrite the custom query variables
-                    $item->custom = $vars;
-
-                    // no valid custom query variables
-                    if (empty($item->custom)) {
-                        continue;
-                    }
-
-                    if ($this->checkCustomQueryVars($options['custom'], $item->custom) === false) {
-                        continue;
-                    }
-                }
-
                 // set device default as 'desktop,tablet,mobile'
                 if (empty($item->device)) {
                     $item->device = 'desktop,tablet,phone';
@@ -404,6 +313,13 @@ class WFApplication extends CMSObject
                     $item->params = JceEncryptHelper::decrypt($item->params);
                 }
 
+                $app->triggerEvent('onWfAfterEditorProfileItem', array(&$item));
+
+                // event can "cancel" this profile item
+                if ($item === false) {
+                    continue;
+                }
+
                 // assign item to profile
                 self::$profile[$signature] = (object) $item;
 
@@ -415,34 +331,6 @@ class WFApplication extends CMSObject
         }
 
         return self::$profile[$signature];
-    }
-
-    /**
-     * Get the component option.
-     *
-     * @return string
-     */
-    public function getComponentOption()
-    {
-        $app = Factory::getApplication();
-
-        $option = $app->input->getCmd('option', '');
-
-        switch ($option) {
-            case 'com_section':
-                $option = 'com_content';
-                break;
-            case 'com_categories':
-                $section = $app->input->getCmd('section');
-
-                if ($section) {
-                    $option = $section;
-                }
-
-                break;
-        }
-
-        return $option;
     }
 
     /**
