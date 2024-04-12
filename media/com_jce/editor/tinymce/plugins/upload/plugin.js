@@ -309,7 +309,12 @@
     function addFile(file) {
       // check for extension in file name, eg. image.php.jpg
       if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\./i.test(file.name)) {
-        ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+        ed.windowManager.alert({
+          text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+          title: ed.getLang('upload.error', 'Upload Error')
+        });
+
         return false;
       }
 
@@ -338,7 +343,12 @@
           file.filename = name.replace(/[\+\\\/\?\#%&<>"\'=\[\]\{\},;@\^\(\)£€$~]/g, '');
 
           if (!new RegExp('\.(' + config.filetypes.join('|') + ')$', 'i').test(file.name)) {
-            ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+            ed.windowManager.alert({
+              text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+              title: ed.getLang('upload.error', 'Upload Error')
+            });
+
             return false;
           }
 
@@ -346,7 +356,12 @@
             var max = parseInt(config.max_size, 10) || 1024;
 
             if (file.size > max * 1024) {
-              ed.windowManager.alert(ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'));
+
+              ed.windowManager.alert({
+                text: ed.getLang('upload.file_size_error', 'File size exceeds maximum allowed size'),
+                title: ed.getLang('upload.error', 'Upload Error')
+              });
+
               return false;
             }
           }
@@ -388,7 +403,12 @@
 
         return true;
       } else {
-        ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+
+        ed.windowManager.alert({
+          text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+          title: ed.getLang('upload.error', 'Upload Error')
+        });
+
         return false;
       }
     }
@@ -683,7 +703,11 @@
         ed.setProgressState(false);
 
       }, function (message) {
-        ed.windowManager.alert(message);
+
+        ed.windowManager.alert({
+          text: message,
+          title: ed.getLang('upload.error', 'Upload Error')
+        });
 
         removeFile(file);
 

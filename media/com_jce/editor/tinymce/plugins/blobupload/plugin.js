@@ -348,7 +348,10 @@
 
                                 // check for extension in file name, eg. image.php.jpg
                                 if (/\.(php([0-9]*)|phtml|pl|py|jsp|asp|htm|html|shtml|sh|cgi)\b/i.test(filename)) {
-                                    ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                                    ed.windowManager.alert({
+                                        text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+                                        title: ed.getLang('upload.error', 'Upload Error')
+                                    });
 
                                     removeMarker(marker);
                                     return resolve();
@@ -413,7 +416,12 @@
                                     return resolve();
 
                                 }, function (error) {
-                                    ed.windowManager.alert(error);
+
+                                    ed.windowManager.alert({
+                                        text: error,
+                                        title: ed.getLang('upload.error', 'Upload Error')
+                                    });
+
                                     ed.setProgressState(false);
 
                                     return resolve();

@@ -7,7 +7,9 @@
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-var WFLinkSearch = WFExtensions.add('LinkSearch', {
+/* global Wf, $, WFExtensions */
+
+WFExtensions.add('LinkSearch', {
 
     options: {
         element: '#search-input',
@@ -63,7 +65,7 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
     },
 
     search: function () {
-        var self = this, s = this.options, el = s.element, btn = s.button, $p = $('#search-result').parent();
+        var self = this, s = this.options, el = s.element, $p = $('#search-result').parent();
 
         var query = $(el).val();
 
@@ -79,11 +81,11 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
         Wf.JSON.request('doSearch', {
             'json': [query]
         }, function (results) {
-            
-            if (results) {                
-                
+
+            if (results) {
+
                 if (results.error) {
-                    Wf.Dialog.alert(results.error);
+                    Wf.Dialog.alert(results.error, { title: Wf.translate('link.search_error', 'Search Error') });
                     return;
                 }
 
@@ -91,22 +93,20 @@ var WFLinkSearch = WFExtensions.add('LinkSearch', {
 
                 if (results.length) {
                     $.each(results, function (i, values) {
-                        console.log(values);
-                        
                         $.each(values, function (name, items) {
                             $('<h3>' + name + '</h3>').appendTo('#search-result');
-                            
-                            $.each(items, function(i, item) {
+
+                            $.each(items, function (i, item) {
                                 var $dl = $('<dl class="uk-margin-small" />').appendTo('#search-result');
-        
+
                                 $('<dt class="link uk-margin-small" />').text(item.title).on('click', function () {
                                     if ($.isFunction(self.options.onClick)) {
                                         self.options.onClick.call(this, Wf.String.decode(item.link));
                                     }
                                 }).prepend('<i class="uk-icon uk-icon-file-text-o uk-margin-small-right" />').appendTo($dl);
-        
+
                                 $('<dd class="text">' + item.text + '</dd>').appendTo($dl);
-        
+
                                 if (item.anchors) {
                                     $.each(item.anchors, function (i, a) {
                                         $('<dd class="anchor"><i role="presentation" class="uk-icon uk-icon-anchor uk-margin-small-right"></i>#' + a + '</dd>').on('click', function () {

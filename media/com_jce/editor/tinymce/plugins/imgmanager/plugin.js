@@ -172,7 +172,7 @@
                                     }
                                 },
                                 filter: params.filetypes || 'images',
-                                value : urlCtrl.value()
+                                value: urlCtrl.value()
                             });
                         }
                     });
@@ -187,7 +187,10 @@
                                 var url = self.getUploadURL(file);
 
                                 if (!url) {
-                                    ed.windowManager.alert(ed.getLang('upload.file_extension_error', 'File type not supported'));
+                                    ed.windowManager.alert({
+                                        text: ed.getLang('upload.file_extension_error', 'File type not supported'),
+                                        title: ed.getLang('upload.error', 'Upload Error')
+                                    });
                                     return false;
                                 }
 
@@ -209,10 +212,16 @@
                                         return true;
                                     }
 
-                                    ed.windowManager.alert('Unable to upload file!');
+                                    ed.windowManager.alert({
+                                        text: 'Unable to upload file!',
+                                        title: ed.getLang('upload.error', 'Upload Error')
+                                    });
 
                                 }, function (message) {
-                                    ed.windowManager.alert(message);
+                                    ed.windowManager.alert({
+                                        text: message,
+                                        title: ed.getLang('upload.error', 'Upload Error')
+                                    });
                                     urlCtrl.setLoading(false);
                                 });
                             }

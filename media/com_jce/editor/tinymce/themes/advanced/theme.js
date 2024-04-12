@@ -716,7 +716,10 @@
         _mceNewDocument: function () {
             var ed = this.editor;
 
-            ed.windowManager.confirm('advanced.newdocument', function (s) {
+            ed.windowManager.confirm({
+                title: 'advanced.newdocument_desc',
+                text: 'advanced.newdocument'
+            }, function (s) {
                 if (s) {
                     ed.execCommand('mceSetContent', false, '');
                 }

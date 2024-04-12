@@ -291,7 +291,7 @@
                 }]
             }, options || {});
 
-            return this.open(Wf.translate('alert', 'Alert'), options, html);
+            return this.open(options.title || Wf.translate('alert', 'Alert'), options, html);
         },
         /**
          * Prompt Dialog
