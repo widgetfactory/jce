@@ -247,7 +247,7 @@ class WFDocument extends CMSObject
                     $pre = $base . '/' . $type;
                     break;
                 case 'pro':
-                    $pre = $base . 'pro/' . $type;
+                    $pre = Uri::root(true) . '/media/plg_system_jcepro/editor/';
                     break;
                 case 'jquery':
                     $pre = $base . 'vendor/jquery/' . $type;
