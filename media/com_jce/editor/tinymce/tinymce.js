@@ -9001,6 +9001,7 @@
       self.schema = schema = schema || new tinymce.html.Schema();
       self.writer = writer;
 
+      var boolAttrMap = schema.getBoolAttrs();
       /**
   		 * Serializes the specified node into a string.
   		 *
@@ -9079,9 +9080,11 @@
                 if (attrName in attrs.map) {
                   attrValue = attrs.map[attrName];
                   sortedAttrs.map[attrName] = attrValue;
+
                   sortedAttrs.push({
                     name: attrName,
-                    value: attrValue
+                    value: attrValue,
+                    "boolean": boolAttrMap[attrName] ? true : false
                   });
                 }
               }
@@ -9092,9 +9095,11 @@
                 if (!(attrName in sortedAttrs.map)) {
                   attrValue = attrs.map[attrName];
                   sortedAttrs.map[attrName] = attrValue;
+
                   sortedAttrs.push({
                     name: attrName,
-                    value: attrValue
+                    value: attrValue,
+                    "boolean": boolAttrMap[attrName] ? true : false
                   });
                 }
               }
@@ -14422,6 +14427,7 @@
       if (dataTransfer.types) {
         for (var i = 0; i < dataTransfer.types.length; i++) {
           var contentType = dataTransfer.types[i];
+
           try { // IE11 throws exception when contentType is Files (type is present but data cannot be retrieved via getData())
             items[contentType] = dataTransfer.getData(contentType);
           } catch (ex) {
@@ -32336,8 +32342,10 @@
           });
 
           each(s.external_plugins, function (url, name) {
-            PluginManager.load(name, url);
-            s.plugins += ',' + name;
+            if (url) {
+              PluginManager.load(name, url);
+              s.plugins += ',' + name;
+            }
           });
 
           // Init when que is loaded
@@ -45479,10 +45487,6 @@
         });
 
         ed.onPreInit.add(function () {
-          if (ed.settings.content_css !== false) {
-            ed.dom.loadCSS(url + "/css/content.css");
-          }
-
           function isCodePlaceholder(node) {
             return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
           }
@@ -47254,10 +47258,6 @@
         });
 
         ed.schema.addValidElements('+media[type|width|height|class|style|title|*]');
-
-        if (!ed.settings.compress.css) {
-          ed.dom.loadCSS(url + "/css/content.css");
-        }
 
         // Remove bogus elements
         ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
