@@ -1456,6 +1456,8 @@
         var data = {}, mediatype;
         var node = ed.dom.getParent(ed.selection.getNode(), '[data-mce-object]');
 
+        var boolAttrs = ed.schema.getBoolAttrs();
+
         // validate node
         if (!node || node.nodeType != 1) {
             return data;
@@ -1543,6 +1545,11 @@
             // skip internal attributes
             if (name.indexOf('data-mce-') !== -1) {
                 continue;
+            }
+
+            // set the value true for boolean attributes for easier processing
+            if (boolAttrs[name]) {
+                value = true;
             }
 
             data[name] = value;
