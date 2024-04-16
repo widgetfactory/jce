@@ -241,6 +241,14 @@
 
                 form.add(descriptionCtrl);
 
+                var stylesListCtrl = cm.createStylesBox('image_class', {
+                    label: ed.getLang('image.class', 'Classes'),
+                    onselect: function () { },
+                    name: 'classes'
+                });
+
+                form.add(stylesListCtrl);
+
                 /*captionCtrl = cm.createCheckBox('image_caption', {
                     label: ed.getLang('image.caption', 'Caption'),
                     name: 'caption'
@@ -277,6 +285,10 @@
                                 if (figcaption) {
                                     caption = true;
                                 }
+
+                                var classes = ed.dom.getAttrib(node, 'class');
+
+                                stylesListCtrl.value(classes);
                             }
 
                             urlCtrl.value(src);
@@ -316,7 +328,8 @@
 
                                     var args = {
                                         src: data.url,
-                                        alt: data.alt
+                                        alt: data.alt,
+                                        'class': data.classes
                                     };
 
                                     args = extend(args, self.getAttributes(params));

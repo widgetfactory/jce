@@ -149,10 +149,6 @@
             });
 
             ed.onPreInit.add(function () {
-                if (!ed.settings.compress.css) {
-                    ed.dom.loadCSS(url + "/css/content.css");
-                }
-
                 ed.selection.onBeforeSetContent.addToTop(function (ed, o) {
                     o.content = o.content.replace(/<hr(.*?) alt="([^"]+)"([^>]*?)>/gi, '<hr$1 data-alt="$2"$3>');
                 });

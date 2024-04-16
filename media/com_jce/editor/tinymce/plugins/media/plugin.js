@@ -1839,10 +1839,6 @@
                 }
             });
 
-            if (!ed.settings.compress.css) {
-                ed.dom.loadCSS(url + "/css/content.css");
-            }
-
             ed.onObjectResized.add(function (ed, elm, width, height) {
                 if (!isMediaNode(elm)) {
                     return;

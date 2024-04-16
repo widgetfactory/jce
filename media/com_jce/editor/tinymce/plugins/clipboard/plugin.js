@@ -67,8 +67,6 @@
 
             pasteEd.onPreInit.add(function () {
                 var dom = pasteEd.dom;
-
-                dom.loadCSS(ed.plugins.clipboard.url + "/css/content.css");
                 
                 // remove fragment attribute (from InsertContent)
                 this.serializer.addAttributeFilter('data-mce-fragment', function (nodes, name) {

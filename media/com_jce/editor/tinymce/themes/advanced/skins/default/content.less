@@ -50,8 +50,8 @@ body {
     .mce-item-selected,
     td[data-mce-selected],
     tr[data-mce-selected] {
-        background: #b4d7ff;
-        background: var(--mce-control-selection-bg);
+        background-color: #b4d7ff;
+        background-color: var(--mce-control-selection-bg);
     }
 
     .mce-resizehandle {
@@ -93,8 +93,8 @@ body {
     }
 
     .mce-resize-helper {
-        background: #555;
-        background: rgba(0, 0, 0, 0.75);
+        background-color: #555;
+        background-color: rgba(0, 0, 0, 0.75);
         border-radius: 3px;
         border: 1px;
         color: white;
@@ -245,7 +245,7 @@ h6 {
 span.mce-item-nbsp,
 span.mce-item-shy {
     /* use a linear gradient to avoid a background-color style being applied by Chrome when all nbsp characters have been deleted */
-    background: linear-gradient(to bottom, var(--mce-visualchars), var(--mce-visualchars));
+    background-color: linear-gradient(to bottom, var(--mce-visualchars), var(--mce-visualchars));
 }
 
 span.mce-item-shy {
@@ -336,13 +336,13 @@ pre.mcePreformatted {
 }
 
 .mce-match-marker {
-    background: #aaa;
+    background-color: #aaa;
     color: #fff
 }
 
 .mce-match-marker-selected {
-    background: #1e88e5;
-    background: var(--mce-control-selection);
+    background-color: #1e88e5;
+    background-color: var(--mce-control-selection);
     color: #fff
 }
 
@@ -414,3 +414,20 @@ figure {
 .mceContentBody img:not([data-mce-selected]) {
     padding-right: 1pt;
 }
+
+/* Anchor */
+@import url("../../../../plugins/anchor/less/content.less");
+/* Article */
+@import url("../../../../plugins/article/less/content.less");
+/* Clipboard */
+@import url("../../../../plugins/clipboard/less/content.less");
+/* Code */
+@import url("../../../../plugins/code/less/content.less");
+/* Media */
+@import url("../../../../plugins/media/less/content.less");
+/* Spellcheck */
+@import url("../../../../plugins/spellchecker/less/content.less");
+/* Upload */
+@import url("../../../../plugins/upload/less/content.less");
+/* Visualblocks */
+@import url("../../../../plugins/visualblocks/less/content.less");

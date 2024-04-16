@@ -97,12 +97,6 @@
                     ed.onContextMenu.add(self._showMenu, self);
                 }
 
-                ed.onPreInit.add(function () {
-                    if (ed.settings.content_css !== false) {
-                        ed.dom.loadCSS(url + "/css/content.css");
-                    }
-                });
-
                 ed.onBeforeGetContent.add(function () {
                     if (self.active) {
                         self._removeWords();

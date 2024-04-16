@@ -69,10 +69,6 @@
 
       ed.schema.addValidElements('+media[type|width|height|class|style|title|*]');
 
-      if (!ed.settings.compress.css) {
-        ed.dom.loadCSS(url + "/css/content.css");
-      }
-
       // Remove bogus elements
       ed.serializer.addAttributeFilter('data-mce-marker', function (nodes, name, args) {
         var i = nodes.length;

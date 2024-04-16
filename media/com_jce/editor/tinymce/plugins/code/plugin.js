@@ -507,10 +507,6 @@
       });
 
       ed.onPreInit.add(function () {
-        if (ed.settings.content_css !== false) {
-          ed.dom.loadCSS(url + "/css/content.css");
-        }
-
         function isCodePlaceholder(node) {
           return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
         }

@@ -110,10 +110,6 @@
 
             // Pre-init
             ed.onPreInit.add(function () {
-                if (!ed.settings.compress.css) {
-                    ed.dom.loadCSS(url + "/css/content.css");
-                }
-
                 function isAnchorLink(node) {
                     var href = node.attr('href'),
                         name = node.attr('name') || node.attr('id');
