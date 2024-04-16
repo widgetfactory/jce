@@ -42,8 +42,6 @@ define('WF_EDITOR_EXTENSIONS', WF_EDITOR . '/extensions');
 
 define('WF_EDITOR_URI', Uri::root(true) . '/components/com_jce/editor');
 
-define('WF_EDITOR_PRO', '@@is_pro@@');
-
 // required for some legacy plugins
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 

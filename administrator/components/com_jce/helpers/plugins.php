@@ -45,8 +45,14 @@ abstract class JcePluginsHelper
         return isset($plugins[$name]);
     }
 
+    /**
+     * Get a list of all code, pro and installed plugins.
+     *
+     * @return array $plugins
+     */
     public static function getPlugins()
     {
+        $app = Factory::getApplication();
         $language = Factory::getLanguage();
 
         static $plugins;
@@ -84,38 +90,9 @@ abstract class JcePluginsHelper
                     $plugins[$name] = $attribs;
                 }
             }
-            // get pro json
-            if (is_file(__DIR__ . '/pro.json')) {
-                $pro = @file_get_contents(__DIR__ . '/pro.json');
-                // decode to object
-                if ($pro) {
-                    $data = json_decode($pro);
 
-                    if ($data) {
-                        foreach ($data as $name => $attribs) {
-                            // skip if the plugin file is missing
-                            if (!is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $name . '/plugin.js')) {
-                                continue;
-                            }
-                            // update attributes
-                            $attribs->type = 'plugin';
-                            $attribs->path = WF_EDITOR_PLUGINS . '/' . $name;
-                            $attribs->manifest = WF_EDITOR_PLUGINS . '/' . $name . '/' . $name . '.xml';
-
-                            $attribs->image = '';
-
-                            if (!isset($attribs->class)) {
-                                $attribs->class = '';
-                            }
-
-                            // compatability
-                            $attribs->name = $name;
-                            // pass to array
-                            $plugins[$name] = $attribs;
-                        }
-                    }
-                }
-            }
+            // get plugins external sources via event, eg: JCE Pro System Plugin
+            $app->triggerEvent('onWfPluginsHelperGetPlugins', array(&$plugins));
 
             // get all installed plugins
             $installed = PluginHelper::getPlugin('jce');

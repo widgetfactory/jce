@@ -16,6 +16,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Filesystem\Path;
 
 class JceControllerPlugin extends BaseController
 {
@@ -44,6 +45,8 @@ class JceControllerPlugin extends BaseController
         Session::checkToken('request') or jexit(Text::_('JINVALID_TOKEN'));
         
         $wf = WFApplication::getInstance();
+
+        $app = Factory::getApplication();
         $language = Factory::getLanguage();
 
         $plugin = $this->input->get('plugin');
@@ -73,16 +76,13 @@ class JceControllerPlugin extends BaseController
 
         // load language files
         $language->load('com_jce', JPATH_ADMINISTRATOR);
-        $language->load('com_jce_pro', JPATH_SITE);
 
-        // create classname
-        $className = $this->createClassName($plugin);
-
-        // package plugins
-        $path = WF_EDITOR_PLUGINS . '/' . $plugin;
-
-        // fullpath
-        $filepath = $path . '/' . $plugin . '.php';
+        $filepath = Path::find(
+            array(
+                WF_EDITOR_PLUGINS . '/' . $plugin
+            ),
+            $plugin . '.php'
+        );
 
         // installed plugins
         if (preg_match('/^editor[-_]/', $plugin)) {
@@ -99,19 +99,33 @@ class JceControllerPlugin extends BaseController
                 // reset filepath
                 $filepath = $path . '/src/' . $name . '.php';
             }
+
+            if (!file_exists($filepath)) {
+                $filepath = false;
+            }
         }
 
-        if (!file_exists($filepath)) {
+        $app->triggerEvent('onWfPluginExecute', array($plugin, &$filepath));
+
+        if (false === $filepath) {
             jexit('Invalid Plugin');
         }
 
         include_once $filepath;
 
+        // create classname
+        $className = $this->createClassName($plugin);
+
         if (class_exists($className)) {            
             // load language file if any
-            $language->load('plg_jce_' . $plugin, $path);
+            $language->load('plg_jce_' . $plugin, dirname($filepath));
 
-            $instance = new $className();
+            $instance = new $className(
+                array(
+                    'base_path' => dirname($filepath)
+                )
+            );
+
             $instance->execute($task);
         }
 

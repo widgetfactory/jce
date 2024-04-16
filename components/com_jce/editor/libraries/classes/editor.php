@@ -442,13 +442,6 @@ class WFEditor
             // set stylesheets as string
             $settings['content_css'] = implode(',', $stylesheets);
 
-            if (WF_EDITOR_PRO) {
-                // Editor Toggle
-                $settings['toggle'] = $wf->getParam('editor.toggle', 0, 0);
-                $settings['toggle_label'] = htmlspecialchars($wf->getParam('editor.toggle_label', ''));
-                $settings['toggle_state'] = $wf->getParam('editor.toggle_state', 1, 1);
-            }
-
             // use cookies to store state
             $settings['use_state_cookies'] = (bool) $wf->getParam('editor.use_cookies', 1);
 
@@ -564,7 +557,7 @@ class WFEditor
         $wf = WFApplication::getInstance();
 
         // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
+        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
 
         $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
 
@@ -784,61 +777,6 @@ class WFEditor
     }
 
     /**
-     * Get dependencies for each plugin from its config.php file.
-     *
-     * @param string $plugin Plugin name
-     * @param string $path   Optional pah to plugin folder
-     *
-     * @return mixed Array of dependencies or false
-     */
-    protected static function getDependencies($plugin, $path)
-    {
-        $file = $path . '/' . $plugin . '/config.php';
-
-        // check if plugin has a config file
-        if (is_file($file)) {
-            include_once $file;
-            // create className
-            $classname = 'WF' . ucwords($plugin, '_') . 'PluginConfig';
-
-            if (method_exists($classname, 'getDependencies')) {
-                return (array) $classname::getDependencies();
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Add dependencies for each plugin to the main plugins array.
-     *
-     * @param array  $items Array of plugin names
-     * @param string $path  Optional path to check, defaults to TinyMCE plugin path
-     */
-    protected static function addDependencies(&$items, $path = '')
-    {
-        // set default path
-        if (empty($path)) {
-            $path = WF_EDITOR_PLUGINS;
-        }
-
-        $x = count($items);
-
-        // loop backwards through items
-        while ($x--) {
-            // get dependencies for each item
-            $dependencies = self::getDependencies($items[$x], $path);
-
-            if (!empty($dependencies)) {
-                foreach ($dependencies as $dependency) {
-                    // add to beginning of items
-                    array_unshift($items, $dependency);
-                }
-            }
-        }
-    }
-
-    /**
      * Determine whether the editor has a profile assigned
      *
      * @return boolean
@@ -910,9 +848,6 @@ class WFEditor
                 // reset index
                 $items = array_values($items);
 
-                // add plugin dependencies
-                self::addDependencies($items);
-
                 // add core plugins
                 $items = array_merge(self::$plugins, $items);
 
@@ -953,10 +888,6 @@ class WFEditor
 
                 // remove missing plugins
                 $items = array_filter($items, function ($item) {
-                    if (WF_EDITOR_PRO && $item == 'branding') {
-                        return false;
-                    }
-
                     return is_file(WF_EDITOR_MEDIA . '/tinymce/plugins/' . $item . '/plugin.js');
                 });
 
@@ -975,6 +906,8 @@ class WFEditor
      */
     private function getPluginConfig(&$settings)
     {
+        $app = Factory::getApplication();
+        
         $core = (array) $settings['plugins'];
         $items = array();
 
@@ -983,9 +916,8 @@ class WFEditor
             $file = WF_EDITOR_PLUGINS . '/' . $plugin . '/config.php';
 
             if (is_file($file)) {
-                require_once $file;
                 // add plugin name to array
-                $items[] = $plugin;
+                $items[$plugin] = $file;
             }
         }
 
@@ -993,28 +925,29 @@ class WFEditor
         if (array_key_exists('external_plugins', $settings)) {
             $installed = (array) $settings['external_plugins'];
 
-            foreach ($installed as $plugin => $path) {
+            foreach ($installed as $plugin => $path) {                
                 $file = Path::find(array(
                     // new path
                     JPATH_PLUGINS . '/jce/editor_' . $plugin,
                     // old path
                     JPATH_PLUGINS . '/jce/editor-' . $plugin,
                     // legacy path
-                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes',
+                    JPATH_PLUGINS . '/jce/editor-' . $plugin . '/classes'
                 ), 'config.php');
 
                 if ($file) {
-                    require_once $file;
                     // add plugin name to array
-                    $items[] = $plugin;
+                    $items[$plugin] = $file;
                 }
             }
         }
 
+        $app->triggerEvent('onBeforeWfEditorPluginConfig', array($settings, &$items));
+
         $delim = array('-', '_');
 
         // loop through list and create/call method
-        foreach ($items as $plugin) {
+        foreach ($items as $plugin => $file) {
             $name = str_replace($delim, ' ', $plugin);
 
             // Create class name
@@ -1022,6 +955,8 @@ class WFEditor
 
             // remove space
             $classname = str_replace(' ', '', $classname);
+
+            require_once $file;
 
             // Check class and method are callable, and call
             if (class_exists($classname) && method_exists($classname, 'getConfig')) {
