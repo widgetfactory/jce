@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<extension version="3.4" type="plugin" group="jce" method="upgrade">
+<extension type="plugin" group="jce" method="upgrade">
     <name>WF_STYLESELECT_TITLE</name>
     <version>@@version@@</version>
     <creationDate>@@date@@</creationDate>
@@ -12,13 +12,6 @@
     <icon>styleselect</icon>
     <fields name="styleselect">
         <fieldset name="config">
-            <field name="styles" type="checkboxes" default="stylesheet,custom" label="WF_STYLESELECT_STYLES" description="WF_STYLESELECT_STYLES_DESC">
-                <option value="stylesheet">WF_STYLESELECT_STYLESHEET</option>
-                <option value="custom">WF_STYLESELECT_CUSTOM</option>
-            </field>
-
-            <field name="stylesheet" hint="eg: templates/$template/css/content.css" type="text" size="100" default="" label="WF_STYLESELECT_STYLESHEET_CUSTOM" description="WF_STYLESELECT_STYLESHEET_CUSTOM_DESC" parent="styles[stylesheet]" />
-
             <field name="sort" type="yesno" default="1" label="WF_STYLESELECT_STYLES_SORT" description="WF_STYLESELECT_STYLES_SORT_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
@@ -28,9 +21,6 @@
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
             </field>
-
-            <field name="custom_classes" type="text" default="" placeholder="eg: class1,class2,class3" label="WF_STYLESELECT_CUSTOM_CLASSES" description="WF_STYLESELECT_CUSTOM_CLASSES_DESC" parent="styles[custom]" />
-            <field name="custom_styles" type="styleformat" default="" label="WF_STYLESELECT_CUSTOM" description="WF_STYLESELECT_CUSTOM_DESC" parent="styles[custom]" />
         </fieldset>
     </fields>
     <help></help>
