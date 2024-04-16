@@ -66,24 +66,22 @@ class pkg_jceInstallerScript
         $plugin = Table::getInstance('extension');
 
         $plugins = array(
-            'content' => 'jce',
-            'extension' => 'jce',
-            'installer' => 'jce',
-            'quickicon' => 'jce',
-            'system' => 'jce',
-            'system' => 'jcepro',
-            'fields' => 'mediajce',
+            'jce' => array('content', 'system', 'quickicon', 'extension', 'installer'),
+            'jcepro' => array('system'),
+            'mediajce' => array('fields')
         );
 
         $parent = $installer->getParent();
 
-        foreach ($plugins as $folder => $element) {
-            $id = $plugin->find(array('type' => 'plugin', 'folder' => $folder, 'element' => $element));
+        foreach ($plugins as $element => $folders) {
+            foreach ($folders as $folder) {
+                $id = $plugin->find(array('type' => 'plugin', 'folder' => $folder, 'element' => $element));
 
-            if ($id) {
-                $plugin->load($id);
-                $plugin->enabled = 1;
-                $plugin->store();
+                if ($id) {
+                    $plugin->load($id);
+                    $plugin->enabled = 1;
+                    $plugin->store();
+                }
             }
         }
 
