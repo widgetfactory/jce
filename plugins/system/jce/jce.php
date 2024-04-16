@@ -130,20 +130,9 @@ class PlgSystemJce extends CMSPlugin
             return true;
         }
 
-        // only if enabled
-        if ((int) $this->params->get('column_styles', 1)) {
-            $hash = md5_file(JPATH_SITE . '/media/com_jce/site/css/content.min.css');
-            $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/content.min.css?' . $hash);
-        }
-
         $this->bootEditorPlugins();
 
         $app->triggerEvent('onWfPluginAfterDispatch');
-    }
-
-    public function onWfContentPreview($context, &$article, &$params, $page)
-    {
-        $article->text = '<style type="text/css">@import url("' . Uri::root(true) . '/media/com_jce/site/css/content.min.css");</style>' . $article->text;
     }
 
     private function loadMediaFiles($form, $replace_media_manager = true)
