@@ -12,73 +12,11 @@
     <icon>cut,copy,paste,pastetext</icon>
     <fields name="clipboard">
         <fieldset name="config">
-            <!--field name="paste_use_dialog" type="yesno" default="0" label="WF_PASTE_PARAM_DIALOG" description="WF_PASTE_PARAM_DIALOG_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
+            <field name="paste_cleanup_mode" type="list" default="0" label="WF_PASTE_CLEANUP_MODE" description="WF_PASTE_CLEANUP_MODE_DESC">
+                <option value="0">WF_PASTE_CLEANUP_MODE_CLEAN_HTML</option>
+                <option value="1">WF_PASTE_CLEANUP_MODE_KEEP_CLASSES</option>
+                <option value="2">WF_PASTE_CLEANUP_MODE_KEEP_STYLES</option>
             </field>
-            <field name="paste_dialog_width" type="number" class="input-small" size="5" default="450" label="WF_PASTE_PARAM_WIDTH" description="WF_PASTE_PARAM_WIDTH_DESC" />
-            <field name="paste_dialog_height" type="number" class="input-small" size="5" default="400" label="WF_PASTE_PARAM_HEIGHT" description="WF_PASTE_PARAM_HEIGHT_DESC" /-->
-            <field name="paste_force_cleanup" type="list" default="0" label="WF_PASTE_FORCE_CLEANUP" description="WF_PASTE_FORCE_CLEANUP_DESC">
-                <option value="0">WF_PASTE_FORCE_CLEANUP_DETECT</option>
-                <option value="1">WF_PASTE_FORCE_CLEANUP_ALWAYS</option>
-            </field>
-
-            <field name="paste_strip_class_attributes" type="list" default="2" label="WF_PASTE_PARAM_CLASSES" description="WF_PASTE_PARAM_CLASSES_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-                <option value="2">WF_OPTION_PASTE_CLASSES_WORD_ONLY</option>
-            </field>
-
-            <field name="paste_remove_spans" type="yesno" default="0" label="WF_PASTE_PARAM_SPANS" description="WF_PASTE_PARAM_SPANS_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_remove_styles" type="yesno" default="1" label="WF_PASTE_PARAM_STYLES" description="WF_PASTE_PARAM_STYLES_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_retain_style_properties" placeholder="eg: font-weight,text-decoration" class="input-xlarge" size="50" type="text" default="" label="WF_PASTE_PARAM_RETAIN_STYLES" description="WF_PASTE_PARAM_RETAIN_STYLES_DESC" showon="paste_remove_styles:1" />
-            <field name="paste_remove_style_properties" placeholder="eg: font-size,font-family,color" class="input-xlarge" size="50" type="text" default="" label="WF_PASTE_PARAM_REMOVE_STYLES" description="WF_PASTE_PARAM_REMOVE_STYLES_DESC" showon="paste_remove_styles:0" />
-
-            <field name="paste_remove_tags" type="text" size="50" class="input-xlarge" placeholder="eg: img,object,iframe" default="" label="WF_PASTE_PARAM_REMOVE_TAGS" description="WF_PASTE_PARAM_REMOVE_TAGS_DESC" />
-            <field name="paste_keep_tags" type="text" size="50" class="input-xlarge" placeholder="eg: img,p,em,strong" default="" label="WF_PASTE_PARAM_KEEP_TAGS" description="WF_PASTE_PARAM_KEEP_TAGS_DESC" />
-            <field name="paste_remove_attributes" type="text" size="50" class="input-xlarge" placeholder="eg: lang,align" default="" label="WF_PASTE_PARAM_ATTRIBUTES" description="WF_PASTE_PARAM_ATTRIBUTES_DESC" />
-            
-            <field name="paste_allow_event_attributes" type="yesno" default="0" label="WF_PASTE_PARAM_ALLOW_EVENT_ATTRIBUTES" description="WF_PASTE_PARAM_ALLOW_EVENT_ATTRIBUTES_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_remove_empty_paragraphs" type="yesno" default="1" label="WF_PASTE_PARAM_REMOVE_PARAGRAPHS" description="WF_PASTE_PARAM_REMOVE_PARAGRAPHS_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_remove_styles_if_webkit" type="yesno" default="0" label="WF_PASTE_PARAM_REMOVE_STYLES_WEBKIT" description="WF_PASTE_PARAM_REMOVE_STYLES_WEBKIT_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_process_footnotes" type="list" default="convert" label="WF_PASTE_PARAM_PROCESS_FOOTNOTES" description="WF_PASTE_PARAM_PROCESS_FOOTNOTES_DESC">
-                <option value="convert">WF_PASTE_PARAM_PROCESS_FOOTNOTES_CONVERT</option>
-                <option value="unlink">WF_PASTE_PARAM_PROCESS_FOOTNOTES_UNLINK</option>
-                <option value="remove">WF_PASTE_PARAM_PROCESS_FOOTNOTES_REMOVE</option>
-            </field>
-
-            <!--field name="paste_process_stylesheets" type="list" default="0" label="WF_PASTE_PARAM_PROCESS_STYLESHEETS" description="WF_PASTE_PARAM_PROCESS_STYLESHEETS_DESC">
-                <option value="0">JNO</option>
-                <option value="inline">WF_PASTE_PARAM_PROCESS_STYLESHEETS_INLINE</option>
-                <option value="embed">WF_PASTE_PARAM_PROCESS_STYLESHEETS_EMBED</option>
-            </field-->
-
-            <field name="paste_upload_images" type="yesno" default="0" label="WF_PASTE_PARAM_UPLOAD_IMAGES" description="WF_PASTE_PARAM_UPLOAD_IMAGES_DESC">
-                <option value="1">JYES</option>
-                <option value="0">JNO</option>
-            </field>
-
-            <field name="paste_filter" type="text" size="50" class="input-xlarge" default="" label="WF_PASTE_PARAM_FILTER" description="WF_PASTE_PARAM_FILTER_DESC" />
 
             <field name="paste_html" type="yesno" default="1" label="WF_PASTE_PARAM_PASTE_HTML" description="WF_PASTE_PARAM_PASTE_HTML_DESC">
                 <option value="1">JYES</option>
