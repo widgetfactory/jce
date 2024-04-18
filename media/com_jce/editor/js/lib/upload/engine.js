@@ -40,25 +40,6 @@
         return 'wf_' + guid + (counter++).toString(32);
     }
 
-    // browser sniffer
-    var Env = (function () {
-        var nav = navigator,
-            ua = nav.userAgent,
-            o = {};
-
-        // old opera (not webkit)
-        o.opera = !!(window.opera && window.opera.buildNumber);
-        o.webkit = /WebKit/.test(ua);
-        o.ie11 = !!window.MSInputMethodContext;
-        o.gecko = !o.webkit && !o.ie11 && /Gecko/.test(ua);
-
-        return o;
-    })();
-
-    $.support.xhr2 = !!(window.ProgressEvent && window.FileReader && window.FormData);
-    // if it supports xhr2, it supports drag&drop
-    $.support.dragdrop = $.support.xhr2 && !Env.opera;
-
     // cancel Events
     function cancel(e) {
         e.preventDefault();
@@ -79,16 +60,9 @@
             // store current file
             this.file = file;
 
-            if ($.support.xhr2) {
-                this.transport = new XMLHttpRequest;
-                // upload using xhr2
-                this.xhr();
-
-            } else {
-                this.transport = document.createElement('iframe');
-                // upload using iframe
-                this.iframe();
-            }
+            this.transport = new XMLHttpRequest;
+            // upload using xhr2
+            this.xhr();
         },
         error: function (status, text) {
             var callback = this.options.callback;
@@ -112,8 +86,7 @@
                 } catch (e) {
                     // malformed JSON
                     if (data.indexOf('{') !== -1) {
-                        //data = 'The server returned an invalid JSON response.';
-                        data = $('<textarea />').html(data).text();
+                        data = 'The server returned an invalid JSON response.';
                     }
 
                     this.error(500, data);
@@ -233,127 +206,13 @@
 
             return false;
         },
-        iframe: function () {
-            var self = this,
-                ifr = this.transport,
-                o = this.options,
-                callback = o.callback,
-                form = o.form,
-                _uid = uid();
 
-            // get file object and element
-            var file = this.file,
-                input = file.input;
-
-            // add input name and create form
-            $(input).wrap('<form method="post" encoding="multipart/form-data" enctype="multipart/form-data"></form>');
-
-            var form = input.parentNode;
-            input.setAttribute('name', o.data_name);
-
-            // add other input data
-            $.each(o.multipart, function (name, value) {
-                if (name === o.data_name) {
-                    return;
-                }
-                var k, v;
-
-                if ($.type(value) === "object") {
-                    k = value.name, v = value.value;
-                } else {
-                    k = name, v = value;
-                }
-
-                $(form).prepend($('<input type="hidden" name="' + k + '" value="' + v + '" />'));
-            });
-
-            // add method
-            $(form).prepend($('<input type="hidden" name="method" value="upload" />'));
-            // add rpc id
-            $(form).prepend($('<input type="hidden" name="id" value="' + _uid + '" />'));
-
-            var tmp = document.createElement('div');
-            tmp.innerHTML = '<iframe id="' + _uid + '_iframe" name="' + _uid + '_iframe" src="javascript:&quot;&quot;" style="display:none"></iframe>';
-            ifr = tmp.firstChild;
-
-            $(ifr).on('load', function (e) {
-                var el;
-
-                try {
-                    el = ifr.contentWindow.document || ifr.contentDocument || window.frames[ifr.id].document;
-                } catch (ex) {
-                    self.error(500, 'Invalid Document');
-                    self.cleanup();
-                }
-
-                // Return on first load
-                if (el.location.href === 'javascript:""') {
-                    return false;
-                }
-
-                // Get result
-                var result = el.body.innerHTML;
-
-                // trim result
-                result = $.trim(result);
-
-                // set progress to complete
-                file.loaded = 100;
-
-                // fire progress callback
-                callback('progress', file);
-
-                // Assume no error
-                if (result === "") {
-                    self.error(500, 'Invalid Document');
-                    self.cleanup();
-
-                    return false;
-                }
-
-                // remove iframe etc.
-                self.cleanup();
-                // trigger response
-                self.response(result);
-            });
-
-            $(form).append(ifr);
-
-            form.setAttribute('target', _uid + '_iframe');
-
-            this.transport = ifr;
-
-            form.setAttribute("action", o.url);
-            form.submit();
-        },
         abort: function () {
-            if (this.transport instanceof XMLHttpRequest) {
-                this.transport.abort();
+            this.transport.abort();
 
-                this.transport.onreadystatechange = $.noop;
-                this.transport = null;
-                this.cleanup();
-
-            } else {
-                var ifr = this.transport;
-
-                try {
-                    if (ifr && ifr.contentWindow) {
-                        if (ifr.contentWindow.stop) { // FireFox/Safari/Chrome
-                            ifr.contentWindow.stop();
-                        } else if (ifr.contentWindow.document.execCommand) { // IE
-                            ifr.contentWindow.document.execCommand('Stop');
-                        } else {
-                            ifr.src = "about:blank";
-                        }
-                    }
-                } catch (ex) {
-                    // error
-                }
-
-                this.transport = null;
-                this.cleanup();
-            }
+            this.transport.onreadystatechange = $.noop;
+            this.transport = null;
+            this.cleanup();
         }
     };
 
@@ -477,11 +336,6 @@
                     // if no upload button is set, begin upload
                     if (!o.upload_button && self.files.length) {
                         self.start();
-                    }
-
-                    // stop Firefox opening the image in a new window if the drop target is itself (drag cancelled)
-                    if (Env.gecko && e.target.nodeName === 'IMG') {
-                        cancel(e);
                     }
 
                     cancel(e);
@@ -645,7 +499,7 @@
             return this.updateFile(file, { 'filename': name });
         },
 
-        upload: function (file) {
+        upload: function (file, success, error) {
             var self = this,
                 o = this.options,
                 data;
@@ -669,16 +523,15 @@
 
                     // adjust queue
                     if (ev === "uploadcomplete" || ev === "error") {
-                        // remove from list
-                        self.removeFile(file);
-
                         // destroy transport
                         self.transport = null;
-                    }
 
-                    // upload complete
-                    if (self.files.length === 0) {
-                        self.fire("allcomplete");
+                        // fire complete event
+                        if (ev === "uploadcomplete") {
+                            success(args);
+                        } else {
+                            error(args);
+                        }
                     }
                 }
             };
@@ -688,15 +541,54 @@
 
             return this;
         },
-        start: function () {
+
+        uploadFilesInBlocks: function (files, blockSize) {
             var self = this;
 
-            $.each(this.files, function (i, file) {
-                // begin upload
-                self.fire('uploadstart', file);
+            function uploadFile(file) {
+                return new Promise((resolve, reject) => {
+                    self.fire('uploadstart', file);
 
-                self.upload(file);
-            });
+                    self.upload(file, function successCallback(response) {
+                        resolve(response);
+
+                        self.removeFile(file);
+                    }, function errorCallback(error) {
+                        reject(error);
+                    });
+                });
+            }
+
+            function uploadNextBlock() {
+                // If there are no files left, return to stop the process
+                if (files.length === 0) {
+                    self.fire("allcomplete");
+                    return;
+                }
+
+                // Calculate the current block size
+                var currentBlockSize = Math.min(blockSize, files.length);
+
+                // Get the current block of files
+                var block = files.slice(0, currentBlockSize);// Always take from the start of the array
+                var uploadPromises = block.map(uploadFile);
+
+                Promise.all(uploadPromises).then(() => {
+                    // Recursively call to upload the next block
+                    setTimeout(uploadNextBlock, 500);
+                    // eslint-disable-next-line dot-notation
+                }).catch((error) => {
+                    console.error('An error occurred while uploading:', error);
+                });
+            }
+
+            // Start uploading the first block
+            uploadNextBlock();
+        },
+ 
+        start: function () {
+            // Upload files in blocks of 5
+            this.uploadFilesInBlocks(this.files, 5);
 
             return this;
         },
@@ -723,6 +615,7 @@
 
                 this.transport = null;
             }
+
             this.clear();
 
             this.fire('destroy');
