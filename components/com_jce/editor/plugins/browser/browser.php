@@ -14,8 +14,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Session\Session;
 use Joomla\CMS\Uri\Uri;
 
-require_once WF_EDITOR_LIBRARIES . '/classes/manager.php';
-
 class WFBrowserPlugin extends WFMediaManager
 {
     /*
