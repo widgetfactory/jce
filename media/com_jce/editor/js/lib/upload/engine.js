@@ -299,7 +299,7 @@
                 o = this.options;
 
             // if a drop target is specified, add drop events
-            if (o.drop_target && $.support.dragdrop) {
+            if (o.drop_target) {
 
                 // Block browser default dragover dragenter, but fire event
                 $(o.drop_target).on('dragover', function (e) {
@@ -350,7 +350,7 @@
 
                 // add change event to input
                 $(this.input).on('change', function () {
-                    if (this.files && $.support.xhr2) {
+                    if (this.files) {
                         $.each(this.files, function (i, file) {
                             self.addFile(file);
                         });
