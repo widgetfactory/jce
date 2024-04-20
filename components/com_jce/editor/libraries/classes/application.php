@@ -49,6 +49,8 @@ class WFApplication extends CMSObject
 
         // store a reference to the Joomla Application input
         $this->input = Factory::getApplication()->input;
+
+        Factory::getApplication()->triggerEvent('onWfApplicationInit', array($this));
     }
 
     /**

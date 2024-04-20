@@ -77,14 +77,10 @@ class JceControllerPlugin extends BaseController
         // load language files
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
-        $filepath = Path::find(
-            array(
-                WF_EDITOR_PLUGINS . '/' . $plugin
-            ),
-            $plugin . '.php'
-        );
+        // assume the file does not exist
+        $filepath = false;
 
-        // installed plugins
+        // check installed plugins first
         if (preg_match('/^editor[-_]/', $plugin)) {
             $path = JPATH_PLUGINS . '/jce/' . $plugin;
             
@@ -105,7 +101,18 @@ class JceControllerPlugin extends BaseController
             }
         }
 
+        // check custom and pro plugins
         $app->triggerEvent('onWfPluginExecute', array($plugin, &$filepath));
+
+        // check core plugins
+        if (false === $filepath) {
+            $filepath = Path::find(
+                array(
+                    WF_EDITOR_PLUGINS . '/' . $plugin
+                ),
+                $plugin . '.php'
+            );
+        }
 
         if (false === $filepath) {
             jexit('Invalid Plugin');
