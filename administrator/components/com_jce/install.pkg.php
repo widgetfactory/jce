@@ -447,11 +447,15 @@ class pkg_jceInstallerScript
                 $db->setQuery($query);
                 $db->execute();
             }
+
+            $this->cleanupInstall($installer);
         }
     }
 
     protected static function cleanupInstall($installer)
     {
+        $app = Factory::getApplication();
+        
         $parent = $installer->getParent();
         $current_version = self::$current_version; //$parent->get('current_version');
 
@@ -478,12 +482,12 @@ class pkg_jceInstallerScript
 
         // remove flexicontent
         if (!ComponentHelper::isInstalled('com_flexicontent')) {
-            $files['2.7'] = array(
+            $files['2.7.0'] = array(
                 $site . '/editor/extensions/links/flexicontentlinks.php',
                 $site . '/editor/extensions/links/flexicontentlinks.xml',
             );
 
-            $folders['2.7'] = array(
+            $folders['2.7.0'] = array(
                 $site . '/editor/extensions/links/flexicontentlinks',
             );
         }
@@ -528,9 +532,29 @@ class pkg_jceInstallerScript
         $folders['2.9.60'] = array(
             JPATH_PLUGINS . '/editors/jce/src/Provider'
         );
+
         // remove old layout file
         $files['2.9.60'] = array(
             JPATH_PLUGINS . '/editors/jce/layouts/editor/textarea.php'
+        );
+
+        // remove pro plugins
+        $folders['2.9.70'] = array(
+            $site . '/editor/plugins/caption',
+            $site . '/editor/plugins/columns',
+            $site . '/editor/plugins/iframe',
+            $site . '/editor/plugins/imgmanager_ext',
+            $site . '/editor/plugins/mediamanager',
+            $site . '/editor/plugins/microdata',
+            $site . '/editor/plugins/source/tmpl',
+            $site . '/editor/plugins/templatemanager',
+            $site . '/editor/plugins/textpattern'
+        );
+
+        // remove pro source plugin
+        $files['2.9.70'] = array(
+            $site . '/editor/plugins/source/config.php',
+            $site . '/editor/plugins/source/source.php'
         );
 
         $files['2.6.38'] = array(
@@ -588,7 +612,7 @@ class pkg_jceInstallerScript
 
         foreach ($folders as $version => $list) {
             // version check
-            if (version_compare($version, $current_version, 'gt')) {
+            if (version_compare($version, $current_version, 'lt')) {
                 continue;
             }
 
@@ -627,7 +651,7 @@ class pkg_jceInstallerScript
 
         foreach ($files as $version => $list) {
             // version check
-            if (version_compare($version, $current_version, 'gt')) {
+            if (version_compare($version, $current_version, 'lt')) {
                 continue;
             }
 
