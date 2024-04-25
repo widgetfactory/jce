@@ -114,7 +114,8 @@
                 'height': 315,
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
-                'allow': "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                'allow': "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+                'sandbox': false
             },
             'vimeo': {
                 'src': value,
@@ -122,7 +123,8 @@
                 'height': 315,
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
-                'allow': "autoplay; fullscreen"
+                'allow': "autoplay; fullscreen",
+                'sandbox': false
             },
             'dailymotion': {
                 'src': value,
@@ -130,7 +132,8 @@
                 'height': 360,
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
-                'allow': "autoplay; fullscreen"
+                'allow': "autoplay; fullscreen",
+                'sandbox': false
             },
             'video': {
                 'src': value,
@@ -145,13 +148,17 @@
                 'height': 356,
                 'frameborder': 0,
                 'allowfullscreen': "allowfullscreen",
-                'allow': "fullscreen"
+                'allow': "fullscreen",
+                'sandbox': false
             },
             'soundcloud': {
                 'src': '',
                 'width': '100%',
                 'height': 400,
-                'frameborder': 0
+                'frameborder': 0,
+                'scrolling': 'no',
+                'allow': "autoplay; fullscreen",
+                'sandbox': false
             },
             'spotify': {
                 'src': value,
@@ -159,21 +166,26 @@
                 'height': 380,
                 'frameborder': 0,
                 'allowtransparency': true,
-                'allow': "encrypted-media"
+                'allow': "encrypted-media",
+                'sandbox': false
             },
             'ted': {
                 'src': '',
                 'width': 560,
                 'height': 316,
                 'frameborder': 0,
-                'allowfullscreen': "allowfullscreen"
+                'allowfullscreen': "allowfullscreen",
+                'allow': "fullscreen",
+                'sandbox': false
             },
             'twitch': {
                 'src': '',
                 'width': 500,
                 'height': 281,
                 'frameborder': 0,
-                'allowfullscreen': "allowfullscreen"
+                'allowfullscreen': "allowfullscreen",
+                'allow': "autoplay; fullscreen",
+                'sandbox': false
             }
         };
 
@@ -288,7 +300,7 @@
         if (!isValidElement(editor, 'iframe')) {
             return false;
         }
-        
+
         if (!url) {
             return false;
         }
@@ -299,7 +311,7 @@
         }
 
         var value = isSupportedProvider(editor, url);
-        
+
         // allow local an support
         if (editor.settings.media_iframes_allow_supported) {
             if (isLocalUrl(editor, url)) {
@@ -323,8 +335,8 @@
         return elements[value] || false;
     }
 
-    function isSupportedUrl(editor, tag, url) {        
-        if (editor.settings['media_' + tag + '_allow_local']) {            
+    function isSupportedUrl(editor, tag, url) {
+        if (editor.settings['media_' + tag + '_allow_local']) {
             return isLocalUrl(editor, url);
         }
 
@@ -332,15 +344,9 @@
     }
 
     function isSupportedMedia(editor, url) {
-        var value = isSupportedIframe(editor, url);
-
-        if (value) {
-            return typeof value == 'string' ? value : 'iframe';
-        }
-
         // Video
         if (/\.(mp4|ogv|ogg|webm)$/.test(url) && isValidElement(editor, 'video')) {
-            
+
             // check for valid url
             if (isSupportedUrl(editor, 'video', url)) {
                 return 'video';
@@ -356,10 +362,18 @@
         }
 
         // Quicktime
-        if (/\.(mov|qt|mpg|mpeg|m4a|aiff)$/.test(url) && isValidElement(editor, 'object')) {
+        if (/\.(mov|qt|mpg|mpeg)$/.test(url) && isValidElement(editor, 'video')) {
             // check for valid url
-            if (isSupportedUrl(editor, 'object', url)) {
-                return 'quicktime';
+            if (isSupportedUrl(editor, 'video', url)) {
+                return 'video';
+            }
+        }
+
+        // DivX
+        if (/\.(divx)$/.test(url) && isValidElement(editor, 'video')) {
+            // check for valid url
+            if (isSupportedUrl(editor, 'video', url)) {
+                return 'video';
             }
         }
 
@@ -367,22 +381,21 @@
         if (/\.swf$/.test(url) && isValidElement(editor, 'object')) {
             // check for valid url
             if (isSupportedUrl(editor, 'object', url)) {
-                return 'flash';
+                return 'object';
             }
         }
 
-        // windowsmedia
-        if (/\.(avi|wmv|wm|asf|asx|wmx|wvx)$/.test(url) && isValidElement(editor, 'object')) {
-            // check for valid url
-            if (isSupportedUrl(editor, 'object', url)) {
-                return 'windowsmedia';
-            }
+        // check for provider (youtube, Vimeo etc.) or iframe support
+        var value = isSupportedIframe(editor, url);
+
+        if (value) {
+            return typeof value == 'string' ? value : 'iframe';
         }
 
         return false;
     }
 
-    var isAbsoluteUrl = function (url) {        
+    var isAbsoluteUrl = function (url) {
         if (!url) {
             return false;
         }
@@ -394,7 +407,7 @@
         return url.indexOf('://') > 0;
     };
 
-    var isLocalUrl = function (editor, url) {        
+    var isLocalUrl = function (editor, url) {
         if (isAbsoluteUrl(url)) {
             // try and convert to relative
             var relative = editor.documentBaseURI.toRelative(url);
@@ -594,10 +607,14 @@
                 if (name == 'class') {
                     val = val.replace(/mce-(\S+)/g, '').replace(/\s+/g, ' ').trim();
                 }
-                
+
                 attribs[name] = val;
             }
         });
+
+        if (nodeName == 'iframe' && !attribs.sandbox) {
+            attribs.sandbox = '';
+        }
 
         html = ed.dom.createHTML(nodeName, attribs, innerHTML);
 
@@ -620,42 +637,13 @@
     var mediaTypes = {
         // Type, clsid, mime types, codebase
         "flash": {
-            classid: "CLSID:D27CDB6E-AE6D-11CF-96B8-444553540000",
-            type: "application/x-shockwave-flash",
-            codebase: "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,1,53,64"
-        },
-        "shockwave": {
-            classid: "CLSID:166B1BCA-3F9C-11CF-8075-444553540000",
-            type: "application/x-director",
-            codebase: "http://download.macromedia.com/pub/shockwave/cabs/director/sw.cab#version=10,2,0,023"
-        },
-        "windowsmedia": {
-            classid: "CLSID:6BF52A52-394A-11D3-B153-00C04F79FAA6",
-            type: "application/x-mplayer2",
-            codebase: "http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=10,00,00,3646"
+            type: "application/x-shockwave-flash"
         },
         "quicktime": {
-            classid: "CLSID:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B",
-            type: "video/quicktime",
-            codebase: "http://www.apple.com/qtactivex/qtplugin.cab#version=7,3,0,0"
+            type: "video/quicktime"
         },
         "divx": {
-            classid: "CLSID:67DABFBF-D0AB-41FA-9C46-CC0F21721616",
-            type: "video/divx",
-            codebase: "http://go.divx.com/plugin/DivXBrowserPlugin.cab"
-        },
-        "realmedia": {
-            classid: "CLSID:CFCDAA03-8BE4-11CF-B84B-0020AFBBCCFA",
-            type: "audio/x-pn-realaudio-plugin"
-        },
-        "java": {
-            classid: "CLSID:8AD9C840-044E-11D1-B3E9-00805F499D93",
-            type: "application/x-java-applet",
-            codebase: "http://java.sun.com/products/plugin/autodl/jinstall-1_5_0-windows-i586.cab#Version=1,5,0,0"
-        },
-        "silverlight": {
-            classid: "CLSID:DFEAF541-F3E1-4C24-ACAC-99C30715084A",
-            type: "application/x-silverlight-2"
+            type: "video/divx"
         },
         "video": {
             type: 'video/mpeg'
@@ -682,7 +670,6 @@
             }
         }
     })(
-        "application/x-director,dcr," +
         "video/divx,divx," +
         "application/pdf,pdf," +
         "application/x-shockwave-flash,swf swfl," +
@@ -695,7 +682,6 @@
         "video/webm,webm," +
         "video/quicktime,qt mov," +
         "video/x-flv,flv," +
-        "video/vnd.rn-realvideo,rv," +
         "video/3gpp,3gp," +
         "video/x-matroska,mkv"
     );
@@ -951,8 +937,6 @@
                     if (!node.attr('style')) {
                         node.attr('style', editor.dom.serializeStyle(styles));
                     }
-
-                    console.log(styles);
                 }
 
                 value = cleanClassValue(value);
@@ -1058,7 +1042,7 @@
                     inner.raw = true;
                     inner.value = sanitize(editor, child.value);
                     elm.append(inner);
-                } else {                    
+                } else {
                     var inner = new Node(child.name, 1);
 
                     // short ended for <embed />, <param /> and <source />
@@ -1099,6 +1083,16 @@
             });
 
             elm.append(embed);
+        }
+
+        if (tag === 'iframe' && !elm.attr('sandbox')) {
+            var provider = isSupportedMedia(editor, elm.attr('src')), defaultAttributes = getMediaProps(editor, { src: elm.attr('src') }, provider);
+
+            if (defaultAttributes.sandbox === false) {
+                elm.attr('sandbox', null);
+            } else {
+                elm.attr('sandbox', defaultAttributes.sandbox || '');
+            }
         }
 
         return elm;
@@ -1145,6 +1139,11 @@
                     sourceNode.attr(name, val);
                 }
             });
+
+            // remove sandbox if false
+            if (defaultAttributes.sandbox === false) {
+                sourceNode.attr('sandbox', null);
+            }
         }
 
         var style = editor.dom.parseStyle(sourceNode.attr('style'));
@@ -1238,7 +1237,12 @@
             }
 
             // remove "false" boolean attributes
-            if (tinymce.is(boolAttrs[attrName]) && !boolAttrs[attrName]) {
+            if (tinymce.is(boolAttrs[attrName]) && attrValue == "false") {
+                targetNode.attr(attrName, null);
+            }
+
+            // remove sandbox attribute if false
+            if (attrName == 'sandbox' && attrValue === false) {
                 targetNode.attr(attrName, null);
             }
         }
@@ -1371,7 +1375,7 @@
                     node.remove();
                     continue;
                 }
-                
+
                 // validate non-iframe node
                 if (node.name !== 'iframe') {
                     var src = node.attr('src') || node.attr('data') || '';
@@ -1384,6 +1388,17 @@
 
                     if (!src) {
                         media_live_embed = false;
+                    }
+
+                    if (editor.settings.strict_media_embeds !== false) {
+                        node.name = isSupportedMedia(editor, src);
+
+                        if (!node.name) {
+                            node.remove();
+                            continue;
+                        }
+
+                        node.attr('src', src);
                     }
                 }
 
@@ -1409,7 +1424,7 @@
 
     function htmlToData(ed, mediatype, html) {
         var data = {
-            innerHTML : ''
+            innerHTML: ''
         };
 
         try {
@@ -1431,7 +1446,7 @@
 
                 data.source.push(val);
             }
-            
+
             if (node.name == "param") {
                 if (isUrlValue(node.value.name)) {
                     node.value.value = ed.convertURL(node.value.value);
@@ -1439,7 +1454,7 @@
 
                 data[node.value.name] = node.value.value;
             }
-            
+
             if (node.name == "track") {
                 data.innerHTML += ed.dom.createHTML(node.name, node.value);
             }
@@ -1588,7 +1603,7 @@
             preview.removeAttribute('style');
         }
 
-        each(data, function (value, name) {            
+        each(data, function (value, name) {
             if (name === 'innerHTML' && value) {
                 attribs['data-mce-html'] = escape(value);
                 return true;
@@ -1691,7 +1706,9 @@
 
                 if (e.type === 'mousedown' && e.altKey) {
                     // update the event target with the new node
-                    e.target = previewToPlaceholder(ed, node);
+                    if (node.nodeName !== 'IMG') {
+                        e.target = previewToPlaceholder(ed, node);
+                    }
                 }
 
                 // prevent bubbling up to DragDropOverrides
