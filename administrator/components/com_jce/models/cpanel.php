@@ -124,8 +124,10 @@ class JceModelCpanel extends BaseDatabaseModel
             $licence = (string) $xml->license;
             $version = (string) $xml->version;
 
-            if (WF_EDITOR_PRO) {
+            if (PluginHelper::isEnabled('system', 'jcepro')) {
                 $version = '<span class="badge badge-info badge-primary bg-primary">Pro</span>&nbsp;' . $version;
+
+                $this->setState('pro', 1);
             }
         }
 
