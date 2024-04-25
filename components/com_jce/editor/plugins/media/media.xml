@@ -51,13 +51,13 @@
                 <option value="2">WF_MEDIA_PARAM_LOCAL_ONLY</option>
             </field>
 
-            <field name="object" type="list" default="1" label="WF_MEDIA_PARAM_OBJECT" description="WF_MEDIA_PARAM_OBJECT_DESC">
+            <field name="object" type="list" default="0" label="WF_MEDIA_PARAM_OBJECT" description="WF_MEDIA_PARAM_OBJECT_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
                 <option value="2">WF_MEDIA_PARAM_LOCAL_ONLY</option>
             </field>
 
-            <field name="embed" type="list" default="1" label="WF_MEDIA_PARAM_EMBED" description="WF_MEDIA_PARAM_EMBED_DESC">
+            <field name="embed" type="list" default="0" label="WF_MEDIA_PARAM_EMBED" description="WF_MEDIA_PARAM_EMBED_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>
                 <option value="2">WF_MEDIA_PARAM_LOCAL_ONLY</option>

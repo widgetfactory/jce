@@ -56,7 +56,13 @@ class WFMediaPluginConfig
         }
 
         foreach ($elements as $name => $items) {
-            $allowed = (int) $wf->getParam('media.' . $name, 1);
+            $default = 1;
+
+            if ($name == 'object' || $name == 'embed') {
+                $default = 0;
+            }
+            
+            $allowed = (int) $wf->getParam('media.' . $name, $default);
 
             if ($allowed) {
                 $tags = array_merge($tags, $items);
