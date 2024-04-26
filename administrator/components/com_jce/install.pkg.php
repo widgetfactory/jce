@@ -554,7 +554,10 @@ class pkg_jceInstallerScript
         // remove pro source plugin
         $files['2.9.70'] = array(
             $site . '/editor/plugins/source/config.php',
-            $site . '/editor/plugins/source/source.php'
+            $site . '/editor/plugins/source/source.php',
+            // mediafield files
+            $media . '/site/css/media.min.css',
+            $media . '/site/js/media.min.js'
         );
 
         $files['2.6.38'] = array(
