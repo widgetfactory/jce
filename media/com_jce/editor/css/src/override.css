@@ -20,11 +20,6 @@ html {
     margin: 0;
 }
 
-.uk-form-horizontal .uk-form-row,
-.uk-form-horizontal .uk-form-controls {
-    align-items: center;
-}
-
 .uk-form-horizontal .uk-grid>.uk-form-label {
     line-height: 1.25;
 }
