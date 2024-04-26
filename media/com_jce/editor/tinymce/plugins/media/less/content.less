@@ -1,0 +1,206 @@
+img.mce-object {
+    outline: 1.5px dashed #ccc;
+    border-color: var(--mce-guidelines);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #fafafa;
+    background-color: var(--mce-placeholder);
+
+    background-size: 256px;
+
+    &.mce-object-generic {
+        min-width: 50px;
+        min-height: 50px;
+    }
+
+    &.mce-object-generic,
+    &.mce-object-embed,
+    &.mce-object-object {
+        background-image: url(img/media/generic.svg);
+        background-size: 16px;
+    }
+
+    &.mce-object-shockwave {
+        background-image: url(img/media/shockwave.svg);
+    }
+
+    &.mce-object-flash {
+        background-image: url(img/media/swf.svg);
+    }
+
+    &.mce-object-quicktime {
+        background-image: url(img/media/quicktime.svg);
+    }
+
+    &.mce-object-divx {
+        background-image: url(img/media/video.svg);
+    }
+
+    &.mce-object-silverlight {
+        background-image: url(img/media/video.svg);
+    }
+
+    &.mce-object-pdf,
+    &[data-mce-p-type="application/pdf"] {
+        background-image: url(img/media/pdf.svg);
+    }
+
+    &[data-mce-p-data$=".doc"],
+    &[data-mce-p-data$=".docx"] {
+        background-image: url(img/media/word.svg);
+    }
+
+    &[data-mce-p-data$=".xls"],
+    &[data-mce-p-data$=".xlsx"] {
+        background-image: url(img/media/excel.svg);
+    }
+
+    &.mce-object-iframe {
+        background-image: url(img/media/iframe.svg);
+    }
+
+    &.mce-object-audio {
+        background-image: url(img/media/audio.svg);
+        background-size: 128px;
+
+        /* default for Chrome */
+        min-width: 300px;
+        height: 54px;
+
+        &.mce-object-agent-gecko {
+            min-width: 270px;
+            height: 40px;
+        }
+
+        &.mce-object-agent-safari {
+            min-width: 250px;
+            height: 31px;
+        }
+    }
+
+    &.mce-object-video {
+        background-image: url(img/media/video.svg);
+        background-size: 128px;
+    }
+}
+
+.mce-object-preview {
+    background-color: #fafafa;
+    background-color: var(--mce-placeholder);
+    box-sizing: content-box;
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    line-height: 0;
+    cursor: not-allowed;
+    outline: initial !important;
+    margin: 0 2px;
+    border: 1px solid #ccc;
+    border-color: var(--mce-guidelines);
+    /*overflow: hidden;*/
+
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 12px;
+
+    &.mce-object-preview-center {
+        display: block;
+        margin: 0 auto;
+    }
+
+    &.mce-object-preview-left {
+        float: left;
+    }
+
+    &.mce-object-preview-right {
+        float: right;
+    }
+
+    &[data-mce-selected] {
+        border: 2px solid #3399ff;
+        border-color: var(--mce-control-selection);
+        background-color: #fafafa;
+        background-color: var(--mce-placeholder);
+        outline: none !important;
+
+        &::after {
+            display: none;
+        }
+    }
+
+    iframe,
+    video,
+    audio {
+        z-index: 5;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    &::after {
+        content: attr(aria-details);
+        left: 1px;
+        top: calc(50% - 2em);
+        position: absolute;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.3);
+        height: 4em;
+        width: calc(100% - 2px);
+        line-height: 4;
+        text-align: center;
+        z-index: 1;
+        box-sizing: border-box;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    audio {
+        &.mce-object-audio {
+            /* default for Chrome */
+            min-width: 300px;
+            height: 54px;
+        }
+
+        &.mce-object-agent-gecko {
+            min-width: 270px;
+            height: 40px;
+        }
+
+        &.mce-object-agent-safari {
+            min-width: 250px;
+            height: 31px;
+        }
+    }
+
+    &.mce-object-audio::after {
+        font-size: 0.75em;
+        line-height: 1;
+    }
+}
+
+.mce-object-shim {
+    background: rgba(0, 0, 0, 0.5) url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7") repeat scroll 0 0;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    display: block;
+}
+
+[data-mce-object] {
+    display: inline-block;
+}
+
+[data-mce-selected].mce-object-preview {
+
+    &:not(.mce-resizing) {
+        .mce-object-shim {
+            display: none;
+        }
+    }
+
+}
