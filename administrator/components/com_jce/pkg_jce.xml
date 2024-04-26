@@ -21,10 +21,10 @@
         <file type="plugin" id="jce" group="editors">plg_editors_jce.zip</file>
         <file type="plugin" id="jce" group="content">plg_content_jce.zip</file>
         <file type="plugin" id="jce" group="extension">plg_extension_jce.zip</file>
-        <file type="plugin" id="mediajce" group="fields">plg_fields_mediajce.zip</file>
         <file type="plugin" id="jce" group="installer">plg_installer_jce.zip</file>
         <file type="plugin" id="jce" group="quickicon">plg_quickicon_jce.zip</file>
         <file type="plugin" id="jce" group="system">plg_system_jce.zip</file>
+        @@package_pro_mediafield@@
         @@package_pro_system@@
     </files>
     
