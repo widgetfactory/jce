@@ -589,12 +589,6 @@ img.mce-object.mce-object-flash {
 img.mce-object.mce-object-quicktime {
   background-image: url(img/media/quicktime.svg);
 }
-img.mce-object.mce-object-windowsmedia {
-  background-image: url(img/media/windowsmedia.svg);
-}
-img.mce-object.mce-object-realmedia {
-  background-image: url(img/media/real.svg);
-}
 img.mce-object.mce-object-divx {
   background-image: url(img/media/video.svg);
 }
