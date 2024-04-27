@@ -110,10 +110,11 @@
             DOM.show(preview);
 
             var query = '',
-                args = {};
+                args = {},
+                content = ed.getContent();
 
             tinymce.extend(args, {
-                'data': ed.getContent(),
+                'data': content,
                 'id': uid()
             });
 
@@ -124,12 +125,6 @@
 
             function update(text) {
                 var doc = iframe.contentWindow.document, css = [];
-
-                // find scripts in content
-                var scripts = /<script[^>]+>[\s\S]*<\/script>/.exec(text);
-
-                // remove script tags
-                text = text.replace(/<script[^>]+>[\s\S]*<\/script>/gi, '');
 
                 var html = '<!DOCTYPE html>';
                 html += '<head xmlns="http://www.w3.org/1999/xhtml">';
@@ -146,13 +141,6 @@
                 tinymce.each(css, function (url) {
                     html += '<link href="' + url + '" rel="stylesheet" type="text/css" />';
                 });
-
-                // append found scripts to body
-                if (scripts) {
-                    tinymce.each(scripts, function (script) {
-                        html += '' + script + '';
-                    });
-                }
 
                 html += '</head><body style="margin:5px;">';
                 html += '' + text + '';
@@ -185,13 +173,13 @@
 
                     // revert to unprocessed content on error
                     if (!x || o.error) {
-                        r = ed.getContent();
+                        r = content;
                     }
 
                     update(r);
                 },
                 error: function (e, x) {
-                    update(ed.getContent());
+                    update(content);
                 }
             });
         }
