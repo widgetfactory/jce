@@ -9,6 +9,7 @@
 defined('JPATH_BASE') or die;
 
 JLoader::registerNamespace('Joomla\\Plugin\\Editors\\Jce', JPATH_PLUGINS . '/editors/jce/src', false, false, 'psr4');
+JLoader::register('WfBrowserHelper', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;

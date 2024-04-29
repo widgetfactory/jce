@@ -556,8 +556,7 @@ class pkg_jceInstallerScript
             $site . '/editor/plugins/source/config.php',
             $site . '/editor/plugins/source/source.php',
             // mediafield files
-            $media . '/site/css/media.min.css',
-            $media . '/site/js/media.min.js'
+            JPATH_PLUGINS . '/fields/mediajce/fields/extendedmedia.php'
         );
 
         $files['2.6.38'] = array(

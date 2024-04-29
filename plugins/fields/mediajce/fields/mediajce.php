@@ -10,11 +10,12 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Form\Form;
-use Joomla\CMS\Form\Field\MediaField;
-use Joomla\CMS\Helper\MediaHelper;
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\Registry\Registry;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Field\MediaField;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Provides a modal media selector field for the JCE File Browser
@@ -38,7 +39,7 @@ class JFormFieldMediaJce extends MediaField
      */
     protected $layout = 'joomla.form.field.media';
 
-     /**
+    /**
      * The mediatype for the form field.
      *
      * @var    string
@@ -60,7 +61,7 @@ class JFormFieldMediaJce extends MediaField
      * @see     JFormField::setup()
      */
     public function setup(SimpleXMLElement $element, $value, $group = null)
-    {                                
+    {
         // decode value if it is a string
         if (is_string($value)) {
             $json = json_decode($value, true);
@@ -72,19 +73,18 @@ class JFormFieldMediaJce extends MediaField
             $value = (array) $value;
             $value = isset($value['media_src']) ? $value['media_src'] : '';
         }
-        
+
         $result = parent::setup($element, $value, $group);
 
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
-
-            if (isset($this->types) && (bool) $this->element['converted'] === false) {                
-                if (is_string($this->value)) {
-                    $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
-                }
-            }
         }
-        
+
+        HTMLHelper::_('jquery.framework');
+
+        $document = Factory::getDocument();
+        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
 
         return $result;
     }
@@ -100,16 +100,14 @@ class JFormFieldMediaJce extends MediaField
         if (!ComponentHelper::isEnabled('com_jce')) {
             return parent::getLayoutData();
         }
-        
-        require_once JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php';
 
         $config = array(
             'element' => $this->id,
-            'mediatype' => strtolower($this->mediatype),
-            'converted' => (int) $this->element['converted'] ? true : false
+            'mediatype' => 'images',
+            'converted' => false,
         );
 
-        $options = WFBrowserHelper::getMediaFieldOptions($config);
+        $options = WfBrowserHelper::getMediaFieldOptions($config);
 
         $this->link = $options['url'];
 
@@ -121,136 +119,43 @@ class JFormFieldMediaJce extends MediaField
             return $data;
         }
 
-        if ($this->element['media_folder']) {
-            $this->link .= '&mediafolder=' . rawurlencode($this->element['media_folder']);
-        }
-
         $extraData = array(
-            'link'      => $this->link,
-            'class'     => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active'
+            'link' => $this->link,
+            'class' => $this->element['class'] . ' input-medium wf-media-input wf-media-input-active',
         );
-        
+
         if ($options['upload']) {
             $extraData['class'] .= ' wf-media-input-upload';
         }
 
-        if ($config['converted']) {
-            $extraData['class'] .= ' wf-media-input-converted';
-        } else {
-            $extraData['class'] .= ' wf-media-input-core';
-        }
+        $extraData['class'] .= ' wf-media-input-core';
+
+        $this->mediatype = 'images';
 
         // Joomla 4
-        if (isset($this->types)) {            
+        if (isset($this->types)) {
             $mediaData = array(
-                'imagesAllowedExt'    => '',
-                'audiosAllowedExt'    => '',
-                'videosAllowedExt'    => '',
-                'documentsAllowedExt' => ''
+                'imagesAllowedExt' => '',
+                'audiosAllowedExt' => '',
+                'videosAllowedExt' => '',
+                'documentsAllowedExt' => '',
             );
 
-            $allowable = array('jpg,jpeg,png,apng,gif,webp', 'mp3,m4a,mp4a,ogg', 'mp4,mp4v,mpeg,mov,webm', 'doc,docx,odg,odp,ods,odt,pdf,ppt,pptx,txt,xcf,xls,xlsx,csv', 'zip,tar,gz');
+            $allowable = array('jpg', 'jpeg', 'png', 'apng', 'gif', 'webp');
 
             if (!empty($options['accept'])) {
-                $accept = explode(',', $options['accept']);
-
-                array_walk($allowable, function (&$item) use ($accept) {
-                    $items = explode(',', $item);
-
-                    $values = array_intersect($items, $accept);
-                    $item   = empty($values) ? '' : implode(',', $values);
-                });
+                // Explode on comma, trim whitespace, and convert to lowercase for each item
+                $accept = array_map('strtolower', array_map('trim', explode(',', $options['accept'])));
+                $allowable = array_intersect($allowable, $accept);
+                $allowable = array_values($allowable);
             }
 
-            $mediaMap = array('images', 'audio', 'video', 'documents', 'media', 'files');
-
-            // find mediatype value if passed in values is an extension list, eg: pdf,docx
-            if (!in_array($this->mediatype, $mediaMap)) {
-                $accept = explode(',', $this->mediatype);
-
-                $mediatypes = array();
-
-                array_walk($allowable, function (&$item, $key) use ($accept, $mediaMap, &$mediatypes) {
-                    $items  = explode(',', $item);
-                    $values = array_intersect($items, $accept);
-
-                    if (!empty($values)) {
-                        $mediatypes[] = $mediaMap[$key];
-                        $item = implode(',', $values);
-                    }
-                });
-
-                if (count($mediatypes) == 2 && $mediatypes[0] == 'audio' && $mediatypes[1] == 'video') {
-                    $this->mediatype = 'media';
-                } else if (count($mediatypes) > 1) {
-                    $this->mediatype = 'files';
-                }
-            }
-
-            $mediaType = [0, 1, 2, 3];
-
-            switch ($this->mediatype) {
-                case 'images':
-                    $mediaType = [0];
-                    $mediaData['imagesAllowedExt'] = $allowable[0];
-                    break;
-                case 'audio':
-                    $mediaType = [1];
-                    $mediaData['audiosAllowedExt'] = $allowable[1];
-                    break;
-                case 'video':
-                    $mediaType = [2];
-                    $mediaData['videosAllowedExt'] = $allowable[2];
-                    break;
-                case 'media':
-                    $mediaType = [1, 2];
-                    $mediaData['audiosAllowedExt'] = $allowable[1];
-                    $mediaData['videosAllowedExt'] = $allowable[2];
-                    break;
-                case 'documents':
-                    $mediaType = [3];
-                    $mediaData['documentsAllowedExt'] = $allowable[3];
-                    break;
-                case 'files':
-                    $mediaType = [0, 1, 2, 3];
-
-                    $mediaData = array(
-                        'imagesAllowedExt'    => $allowable[0],
-                        'audiosAllowedExt'    => $allowable[1],
-                        'videosAllowedExt'    => $allowable[2],
-                        'documentsAllowedExt' => $allowable[3]
-                    );
-
-                    break;
-            }
-
-            $mediaData['mediaTypes'] = implode(',', $mediaType);
+            $mediaData['imagesAllowedExt'] = $allowable;
+            $mediaData['mediaTypes'] = 0;
 
             $extraData = array_merge($extraData, $mediaData);
         }
 
         return array_merge($data, $extraData);
-    }
-
-    /**
-     * Method to post-process a field value.
-     * Remove Joomla 4.2 Media Field parameters
-     *
-     * @param   mixed     $value  The optional value to use as the default for the field.
-     * @param   string    $group  The optional dot-separated form group path on which to find the field.
-     * @param   Registry  $input  An optional Registry object with the entire data set to filter
-     *                            against the entire form.
-     *
-     * @return  mixed   The processed value.
-     *
-     * @since   2.9.31
-     */
-    public function postProcess($value, $group = null, Registry $input = null)
-    {        
-        if ((bool) $this->element['converted'] === false) {
-            $value = MediaHelper::getCleanMediaFieldValue($value);
-        }
-
-        return $value;
     }
 }

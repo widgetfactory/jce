@@ -26,47 +26,6 @@ if (version_compare(JVERSION, 4, '<') && !class_exists('\\Joomla\\Component\\Fie
  */
 class PlgFieldsMediaJce extends FieldsPlugin
 {    
-    /**
-	 * Transforms the field into a DOM XML element and appends it as a child on the given parent.
-	 *
-	 * @param   stdClass    $field   The field.
-	 * @param   DOMElement  $parent  The field node parent.
-	 * @param   Form        $form    The form.
-	 *
-	 * @return  DOMElement
-	 *
-	 * @since   3.7.0
-	 */
-	public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form)
-	{
-		$fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
-
-		if (!$fieldNode)
-		{
-			return $fieldNode;
-		}
-
-		$fieldParams = clone $this->params;
-        $fieldParams->merge($field->fieldparams);
-
-		$fieldNode->setAttribute('type', 'extendedmedia');
-
-		// Joomla 3 requires the fieldtype to be loaded
-		FormHelper::loadFieldType('extendedmedia', false);
-
-		// set extendedmedia flag
-		if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
-			$fieldNode->setAttribute('data-extendedmedia', '1');
-		} else {
-			// allow for legacy media support
-			if ((int) $this->params->get('legacymedia', 0) == 1) {
-				$fieldNode->setAttribute('type', 'mediajce');
-			}
-		}
-
-		return $fieldNode;
-	}
-
 	/**
 	 * Before prepares the field value.
 	 *
@@ -89,11 +48,8 @@ class PlgFieldsMediaJce extends FieldsPlugin
 		// Check if the field value is an old (string) value
 		$field->value = $this->checkValue($field->value);
 
-		$fieldParams = clone $this->params;
-        $fieldParams->merge($field->fieldparams);
-
-		// if extendedmedia is disabled, use restricted media support
-		if ((int) $fieldParams->get('extendedmedia', 0) == 0 && is_array($field->value)) {
+		// use restricted media support
+		if (is_array($field->value)) {
 			$field->value['media_supported'] = array('img', 'a');
 		}
 	}
