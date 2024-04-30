@@ -122,7 +122,7 @@ abstract class WfBrowserHelper
             $data['accept'] = implode(',', array_filter($data['accept']));
             $data['upload'] = (bool) $wf->getParam('browser.mediafield_upload', 1);
 
-            $app->triggerEvent('onWfMediaFieldGetOptions', array($data, $profile));
+            $app->triggerEvent('onWfMediaFieldGetOptions', array(&$data, $profile));
         }
 
         return $data;
