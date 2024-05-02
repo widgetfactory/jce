@@ -46,7 +46,9 @@ class PlgFieldsMediaJce extends FieldsPlugin
 		}
 
 		// Check if the field value is an old (string) value
-		$field->value = $this->checkValue($field->value);
+		if (is_string($field->value)) {
+			$field->value = $this->checkValue($field->value);
+		}
 
 		// use restricted media support
 		if (is_array($field->value)) {
