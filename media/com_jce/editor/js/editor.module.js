@@ -1,4 +1,4 @@
-import { JoomlaEditor, JoomlaEditorDecorator } from 'editor-api';
+import { JoomlaEditor, JoomlaEditorDecorator, JoomlaEditorButton } from 'editor-api';
 
 /* global tinyMCE, WfEditor */
 
@@ -52,6 +52,10 @@ class JceDecorator extends JoomlaEditorDecorator {
         WfEditor.toggleEditor(this.instance.getElement());
         return visible;
     }
+
+    editorButton(button) {
+        JoomlaEditorButton.runAction(button.action, button.options || {});
+    }
 }
 
 tinyMCE.onAddEditor.add(function (mgr, editor) {
@@ -86,6 +90,10 @@ tinyMCE.onAddEditor.add(function (mgr, editor) {
             document.body.appendChild(modal);
         });
     }
+
+    editor.editorXtdButtons = function (button) {
+        JceEditor.editorButton(button);
+    };
 });
 
 // expose for detection

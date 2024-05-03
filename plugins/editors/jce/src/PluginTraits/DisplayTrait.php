@@ -143,9 +143,8 @@ trait DisplayTrait
     
                     Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
                 }
-    
-                // render empty container for dynamic buttons
-                $buttonsStr = LayoutHelper::render('joomla.editors.buttons', array());
+
+                $buttonsStr = $this->displayXtdButtons($id, $buttons, $asset, $author, true);
             }
         }
 

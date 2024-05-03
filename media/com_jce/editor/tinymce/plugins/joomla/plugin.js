@@ -135,6 +135,14 @@
 
                                 if (modal) {
                                     modal.open();
+                                // Joomla 5+ modal
+                                } else if (plg.action) {
+                                    try {
+                                        ed.editorXtdButtons(plg);
+                                    } catch (e) {
+                                        console.log('This option is not supported');
+                                    }
+                                // legacy modal, eg: Joomla 3.x
                                 } else {
                                     ed.windowManager.open({
                                         file: href,

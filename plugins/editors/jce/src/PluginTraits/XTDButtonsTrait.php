@@ -12,7 +12,9 @@ namespace Joomla\Plugin\Editors\Jce\PluginTraits;
 
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Event\Event;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -22,6 +24,8 @@ trait XTDButtonsTrait
 {
     private function getXtdButtonsList($name, $buttons, $asset, $author)
     {
+        $app = $this->getApplication();
+        
         $list = array(
             $name => array(),
         );
@@ -50,25 +54,36 @@ trait XTDButtonsTrait
                     // create icon class
                     $icon = 'none icon-' . $button->get('icon', $button->get('name'));
 
+                    $options = (array) $button->get('options', array());
+
                     // set href value
-                    if ($button->get('link') !== '#') {
-                        $href = Uri::base() . $button->get('link');
+                    if ($button->get('link', '#') == '#') {
+                        $link = isset($options['src']) ? $options['src'] : '';
                     } else {
-                        $href = '';
+                        $link = Uri::base() . $button->get('link');
                     }
 
-                    $options = array(
+                    // Joomla 5 modal requirements
+                    if ($button->get('action', '')) {
+                        $options['src']         = $link;
+                        $options['textHeader']  = $button->get('text');
+                        $options['iconHeader']  = 'icon-' . $icon;
+                        $options['popupType']   = $options['popupType'] ?? 'iframe';
+                    }
+
+                    $args = array(
                         'name' => $button->get('text'),
                         'id' => $id,
                         'title' => $button->get('text'),
                         'icon' => $icon,
-                        'href' => $href,
+                        'href' => $link,
                         'onclick' => $button->get('onclick', ''),
                         'svg' => $button->get('iconSVG'),
-                        'options' => $button->get('options', array()),
+                        'options' => $options,
+                        'action' => $button->get('action', '')
                     );
 
-                    $list[$name][] = $options;
+                    $list[$name][] = $args;
                 }
             }
         }
@@ -76,7 +91,7 @@ trait XTDButtonsTrait
         return $list;
     }
 
-    protected function displayXtdButtons($name, $buttons, $asset, $author)
+    protected function displayXtdButtons($name, $buttons, $asset, $author, $hidden = false)
     {
         // easiest way to get buttons across versions
         $buttons = Editor::getInstance('jce')->getButtons($name, $buttons);
@@ -93,6 +108,11 @@ trait XTDButtonsTrait
                 
                 // set the editor name (Joomla 5) so each modal is unique
                 $button->set('editor', $name);
+
+                // hide buttons if required
+                if ($hidden) {
+                    $button->set('class', 'd-none hidden');
+                }
             }
 
             return LayoutHelper::render('joomla.editors.buttons', $buttons);
