@@ -10,6 +10,7 @@
 
 namespace Joomla\Plugin\Editors\Jce\PluginTraits;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -24,7 +25,7 @@ trait XTDButtonsTrait
 {
     private function getXtdButtonsList($name, $buttons, $asset, $author)
     {
-        $app = $this->getApplication();
+        $app = Factory::getApplication();
         
         $list = array(
             $name => array(),
