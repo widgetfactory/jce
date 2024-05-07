@@ -103,7 +103,7 @@ class JFormFieldMediaJce extends MediaField
 
         $config = array(
             'element' => $this->id,
-            'mediatype' => 'images',
+            'mediatype' => strtolower($this->mediatype),
             'converted' => false,
         );
 
@@ -129,32 +129,6 @@ class JFormFieldMediaJce extends MediaField
         }
 
         $extraData['class'] .= ' wf-media-input-core';
-
-        $this->mediatype = 'images';
-
-        // Joomla 4
-        if (isset($this->types)) {
-            $mediaData = array(
-                'imagesAllowedExt' => '',
-                'audiosAllowedExt' => '',
-                'videosAllowedExt' => '',
-                'documentsAllowedExt' => '',
-            );
-
-            $allowable = array('jpg', 'jpeg', 'png', 'apng', 'gif', 'webp');
-
-            if (!empty($options['accept'])) {
-                // Explode on comma, trim whitespace, and convert to lowercase for each item
-                $accept = array_map('strtolower', array_map('trim', explode(',', $options['accept'])));
-                $allowable = array_intersect($allowable, $accept);
-                $allowable = array_values($allowable);
-            }
-
-            $mediaData['imagesAllowedExt'] = $allowable;
-            $mediaData['mediaTypes'] = 0;
-
-            $extraData = array_merge($extraData, $mediaData);
-        }
 
         return array_merge($data, $extraData);
     }
