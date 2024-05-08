@@ -24,13 +24,16 @@ class WFClipboardPluginConfig
         $settings['paste_remove_styles_if_webkit'] = true;
         $settings['paste_remove_empty_paragraphs'] = true;
 
-        if ($mode == 1) {
+        // any cleanup mode will keep the following
+        if ($mode) {
             $settings['paste_force_cleanup'] = false; // set to detect so only Word classes are removed
             $settings['paste_strip_class_attributes'] = 2; // Only remove Word classes
         }
 
+        // mode 2 = keep styles (only in Word content)
         if ($mode == 2) {
             $settings['paste_remove_styles'] = false;
+            $settings['paste_remove_spans'] = false; // styles are usually applied to spans
         }
 
         $settings['clipboard_paste_text'] = $wf->getParam('clipboard.paste_text', 1, 1, 'boolean');
