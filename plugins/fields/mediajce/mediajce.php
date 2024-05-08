@@ -12,11 +12,12 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
 
 if (version_compare(JVERSION, 4, '<') && !class_exists('\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin', false)) {
-	JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
-	class_alias('FieldsPlugin', '\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin');
+    JLoader::import('components.com_fields.libraries.fieldsplugin', JPATH_ADMINISTRATOR);
+    class_alias('FieldsPlugin', '\\Joomla\\Component\\Fields\\Administrator\\Plugin\\FieldsPlugin');
 }
 
 /**
@@ -25,55 +26,101 @@ if (version_compare(JVERSION, 4, '<') && !class_exists('\\Joomla\\Component\\Fie
  * @since  2.6.27
  */
 class PlgFieldsMediaJce extends FieldsPlugin
-{    
-	/**
-	 * Before prepares the field value.
-	 *
-	 * @param   string     $context  The context.
-	 * @param   \stdclass  $item     The item.
-	 * @param   \stdclass  $field    The field.
-	 *
-	 * @return  void
-	 *
-	 * @since   3.7.0
-	 */
-	public function onCustomFieldsBeforePrepareField($context, $item, $field)
-	{
-		// Check if the field should be processed by us
-		if (!$this->isTypeSupported($field->type))
-		{
-			return;
+{
+    /**
+     * Transforms the field into a DOM XML element and appends it as a child on the given parent.
+     *
+     * @param   stdClass    $field   The field.
+     * @param   DOMElement  $parent  The field node parent.
+     * @param   Form        $form    The form.
+     *
+     * @return  DOMElement
+     *
+     * @since   3.7.0
+     */
+    public function onCustomFieldsPrepareDom($field, DOMElement $parent, Form $form)
+    {
+        $fieldNode = parent::onCustomFieldsPrepareDom($field, $parent, $form);
+
+        if (!$fieldNode) {
+            return $fieldNode;
+        }
+
+        $fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
+
+        // find a better way to do this....
+		if (PluginHelper::isEnabled('system', 'jcepro')) {
+			
+            $form->addFieldPath(JPATH_PLUGINS . '/system/jcepro/fields');
+			// Joomla 3 requires the fieldtype to be loaded
+			FormHelper::loadFieldType('extendedmedia', false);
+				
+			$fieldNode->setAttribute('type', 'extendedmedia');
+
+            // set extendedmedia flag
+            if ((int) $fieldParams->get('extendedmedia', 0) == 1) {
+                $fieldNode->setAttribute('data-extendedmedia', '1');
+            }
+
+            // allow for legacy media support
+            if ((int) $this->params->get('legacymedia', 0) == 1) {
+                $fieldNode->setAttribute('type', 'mediajce');
+            }
 		}
 
-		// Check if the field value is an old (string) value
-		if (is_string($field->value)) {
-			$field->value = $this->checkValue($field->value);
-		}
+        return $fieldNode;
+    }
 
-		// use restricted media support
-		if (is_array($field->value)) {
-			$field->value['media_supported'] = array('img', 'a');
-		}
-	}
+    /**
+     * Before prepares the field value.
+     *
+     * @param   string     $context  The context.
+     * @param   \stdclass  $item     The item.
+     * @param   \stdclass  $field    The field.
+     *
+     * @return  void
+     *
+     * @since   3.7.0
+     */
+    public function onCustomFieldsBeforePrepareField($context, $item, $field)
+    {
+        // Check if the field should be processed by us
+        if ($field->type !== 'mediajce') {
+            return;
+        }
 
-	/**
-	 * Before prepares the field value.
-	 *
-	 * @param   string  $value  The value to check.
-	 *
-	 * @return  array  The checked value
-	 *
-	 * @since   4.0.0
-	 */
-	private function checkValue($value)
-	{
-		json_decode($value);
+        // Check if the field value is an old (string) value
+        if (is_string($field->value)) {
+            $field->value = $this->checkValue($field->value);
+        }
 
-		if (json_last_error() === JSON_ERROR_NONE)
-		{
-			return (array) json_decode($value, true);
-		}
+        $fieldParams = clone $this->params;
+        $fieldParams->merge($field->fieldparams);
 
-		return array('media_src' => $value, 'media_text' => '');
-	}
+        // if extendedmedia is disabled, use restricted media support
+        if ((int) $fieldParams->get('extendedmedia', 0) == 0 && is_array($field->value)) {
+            $field->value['media_supported'] = array('img', 'a');
+        }
+    }
+
+    /**
+     * Before prepares the field value.
+     * 
+     * @param   string  $value  The value to check.
+     *
+     * @return  array  The checked value
+     *
+     * @since   4.0.0
+     */
+    private function checkValue($value)
+    {
+        json_decode($value);
+
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return (array) json_decode($value, true);
+        }
+
+        return array('media_src' => $value, 'media_text' => '');
+    }
 }

@@ -13,6 +13,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\MediaField;
+use Joomla\CMS\Helper\MediaHelper;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Uri\Uri;
@@ -78,6 +79,12 @@ class JFormFieldMediaJce extends MediaField
 
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
+
+            if (isset($this->types) && (bool) $this->element['converted'] === false) {                
+                if (is_string($this->value)) {
+                    $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
+                }
+            }
         }
 
         HTMLHelper::_('jquery.framework');
