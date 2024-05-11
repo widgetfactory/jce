@@ -864,8 +864,13 @@ html {
 .uk-form-horizontal .uk-form-label {
     font-weight: inherit;
     line-height: 32px;
-    display: inline-block;
+    display: flex;
+    align-items: center;
     margin: 0;
+}
+
+.uk-form-horizontal .uk-form-label.uk-text-center {
+    justify-content: center;
 }
 
 .uk-form-horizontal .uk-grid>.uk-form-label {
