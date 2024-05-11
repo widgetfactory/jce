@@ -19,4 +19,4 @@ foreach ($displayData as $key => $value) {
 
 $text = isset($attribs['title']) ? $attribs['title'] : basename($attribs['href']);
 
-echo '<a ' . ArrayHelper::toString($attribs) . '>' . htmlspecialchars($text, ENT_QUOTES, 'UTF-8') . '</a>';
+echo '<a ' . ArrayHelper::toString($attribs) . '>' . $text . '</a>';

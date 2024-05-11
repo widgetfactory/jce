@@ -99,7 +99,7 @@ if ($data->media_class) {
 $text = '';
 
 if ($data->media_text) {
-    $text = htmlentities($data->media_text, ENT_COMPAT, 'UTF-8', true);
+    $text = $data->media_text; // htmlspecialchars encoded in layout
 }
 
 // links
