@@ -1,3 +1,4 @@
+/* global Wf, tinymce, jQuery, tinyMCEPopup, */
 (function (tinymce, tinyMCEPopup, $) {
 
     function selectByValue(field_name, value, add_custom, ignore_case) {
@@ -98,6 +99,7 @@
                 if (style !== '') {
                     var parsedStyles = tinyMCEPopup.editor.dom.parseStyle(style);
                     for (var name in parsedStyles) {
+                        // eslint-disable-next-line no-prototype-builtins
                         if (parsedStyles.hasOwnProperty(name)) {
                             if (mergedStyles[name] === undefined) {
                                 mergedStyles[name] = parsedStyles[name];
@@ -116,8 +118,7 @@
         init: function () {
             var self = this,
                 ed = tinyMCEPopup.editor,
-                ce = document.getElementById('container'),
-                h;
+                ce = document.getElementById('container');
 
             if (!this.settings.file_browser) {
                 $('.browser').removeClass('browser');
@@ -233,7 +234,7 @@
         setupFormData: function () {
             var ed = tinyMCEPopup.editor,
                 ce = document.getElementById('container'),
-                s, b, i;
+                s;
 
             // Setup text fields
 
@@ -359,9 +360,9 @@
             return s.replace(/^([0-9.]+)(.*)$/, "$2");
         },
         getNum: function (s) {
-            if (new RegExp('^(?:[0-9.]+)(?:[a-z%]+)$', 'gi').test(s))
+            if (new RegExp('^(?:[0-9.]+)(?:[a-z%]+)$', 'gi').test(s)) {
                 return s.replace(/[^0-9.]/g, '');
-
+            }
             return s;
         },
         inStr: function (s, n) {
@@ -370,8 +371,9 @@
         getVal: function (s, i) {
             var a = s.split(' ');
 
-            if (a.length > 1)
+            if (a.length > 1) {
                 return a[i];
+            }
 
             return "";
         },
@@ -389,8 +391,9 @@
             $(el).prop(p, v);
         },
         setupBox: function (ce, fp, pr, sf, b) {
-            if (typeof (b) == "undefined")
+            if (typeof (b) == "undefined") {
                 b = ['Top', 'Right', 'Bottom', 'Left'];
+            }
 
             if (this.isSame(ce, pr, sf, b)) {
                 this.setProp(fp + "_same", "checked", true);
@@ -442,11 +445,13 @@
             var a = [],
                 i, x;
 
-            if (typeof (b) == "undefined")
+            if (typeof (b) == "undefined") {
                 b = ['Top', 'Right', 'Bottom', 'Left'];
+            }
 
-            if (typeof (sf) == "undefined" || sf == null)
+            if (typeof (sf) == "undefined" || sf == null) {
                 sf = "";
+            }
 
             a[0] = e.style[pr + b[0] + sf];
             a[1] = e.style[pr + b[1] + sf];
@@ -454,12 +459,14 @@
             a[3] = e.style[pr + b[3] + sf];
 
             for (i = 0; i < a.length; i++) {
-                if (a[i] == null)
+                if (a[i] == null) {
                     return false;
+                }
 
                 for (x = 0; x < a.length; x++) {
-                    if (a[x] != a[i])
+                    if (a[x] != a[i]) {
                         return false;
+                    }
                 }
             }
 
@@ -469,12 +476,14 @@
             var i, x;
 
             for (i = 0; i < a.length; i++) {
-                if (a[i] == null)
+                if (a[i] == null) {
                     return false;
+                }
 
                 for (x = 0; x < a.length; x++) {
-                    if (a[x] != a[i])
+                    if (a[x] != a[i]) {
                         return false;
+                    }
                 }
             }
 
@@ -536,7 +545,7 @@
 
         generateCSS: function () {
             var ce = document.getElementById('container'),
-                num = new RegExp('[0-9]+', 'g'),
+
                 s, t;
 
             ce.style.cssText = "";
@@ -691,8 +700,9 @@
                 s += (this.isNum($('#positioning_clip_left').val()) ? $('#positioning_clip_left').val() + $('#positioning_clip_left_measurement').val() : "auto");
                 s += ")";
 
-                if (s != "rect(auto auto auto auto)")
+                if (s != "rect(auto auto auto auto)") {
                     ce.style.clip = s;
+                }
             } else {
                 s = "rect(";
                 t = this.isNum($('#positioning_clip_top').val()) ? $('#positioning_clip_top').val() + $('#positioning_clip_top_measurement').val() : "auto";
@@ -701,11 +711,10 @@
                 s += t + " ";
                 s += t + ")";
 
-                if (s != "rect(auto auto auto auto)")
+                if (s != "rect(auto auto auto auto)") {
                     ce.style.clip = s;
+                }
             }
-
-            ce.style.cssText = ce.style.cssText;
         },
 
         isNum: function (s) {
@@ -757,7 +766,7 @@
             $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s);
         },
         synch: function (fr, to) {
-            $('#' + to).val($('#' + fr).val())
+            $('#' + to).val($('#' + fr).val());
 
             if (document.getElementById[fr + "_measurement"]) {
                 selectByValue(to + "_measurement", $('#' + fr + "_measurement").val());
