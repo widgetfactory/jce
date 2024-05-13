@@ -79,7 +79,7 @@ $alt = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
 		$attributes = array_filter(array($checked, $optionClass, $optionDisabled, $onchange, $onclick));
 		?>
 
-		<div class="form-check form-check-inline list-group-item">
+		<div class="form-check form-check-inline">
         <?php echo sprintf($format, $oid, $name, $value, implode(' ', $attributes)); ?>
             <label for="<?php echo $oid; ?>" class="checkbox form-check-label">
                 <?php echo $option->text; ?>
