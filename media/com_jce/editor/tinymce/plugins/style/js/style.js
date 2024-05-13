@@ -763,7 +763,7 @@
             var s = ce.checked;
 
             $('#' + pre + '_right, #' + pre + '_bottom, #' + pre + '_left').attr('disabled', s).toggleClass('disabled', s).trigger('change');
-            $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s);
+            $('#' + pre + '_right_measurement, #' + pre + '_bottom_measurement, #' + pre + '_left_measurement').attr('disabled', s).toggleClass('disabled', s).trigger('change');
         },
         synch: function (fr, to) {
             $('#' + to).val($('#' + fr).val());
