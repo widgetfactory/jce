@@ -181,6 +181,45 @@
 				'<p><audio></audio></p>'
 			);
 		});
+
+		test("Generic iframe with an absolute URL should have a sandbox attribute", function () {
+			editor.setContent('<iframe src="http://example.com"></iframe>');
+
+			equal(getEditorContent(),
+				'<p><iframe src="http://example.com" sandbox></iframe></p>',
+				"Sandbox attribute should be added for generic iframes with absolute URLs"
+			);
+		});
+
+		test("Iframe from a media provider (e.g., YouTube) should not have a sandbox", function () {
+			editor.setContent('<iframe src="https://www.youtube.com/embed/1234"></iframe>');
+
+			equal(getEditorContent(),
+				'<p><iframe src="https://www.youtube.com/embed/videoID"></iframe></p>',
+				"Sandbox attribute should not be added for iframes from media providers"
+			);
+		});
+
+		test("Iframe with an existing sandbox should retain its sandbox attribute", function () {
+			editor.setContent('<iframe src="http://example.com" sandbox="allow-scripts allow-same-origin"></iframe>');
+
+			equal(getEditorContent(),
+				'<p><iframe src="http://example.com" sandbox="allow-scripts allow-same-origin"></iframe></p>',
+				"Existing sandbox attribute should be retained"
+			);
+		});
+
+		test("Iframe with a relative URL should not have a sandbox", function () {			
+			console.log(editor);
+			
+			editor.setContent('<iframe src="/relative/path"></iframe>');
+
+			equal(getEditorContent(),
+				'<p><iframe src="/relative/path"></iframe></p>',
+				"Sandbox attribute should not be added for iframes with relative URLs"
+			);
+		});
+
 		tinymce.init({
 			mode: "exact",
 			elements: "elm1",

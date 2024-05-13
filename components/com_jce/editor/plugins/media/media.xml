@@ -39,6 +39,15 @@
 
             </field>
 
+            <field name="iframes_sandbox" type="list" default="1" label="WF_MEDIA_IFRAMES_SANDBOX" description="WF_MEDIA_IFRAMES_SANDBOX_DESC" showon="iframes:1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field type="repeatable" name="iframes_sandbox_exclusions" default="" label="WF_MEDIA_IFRAMES_SANDBOX_EXCLUSIONS" description="WF_MEDIA_IFRAMES_SANDBOX_EXCLUSIONS_DESC" showon="iframes:1[AND]iframes_sandbox:1">
+                <field type="text" hiddenLabel="true" size="100" />
+            </field>
+
             <field name="audio" type="list" default="1" label="WF_MEDIA_PARAM_AUDIO" description="WF_MEDIA_PARAM_AUDIO_DESC">
                 <option value="1">JYES</option>
                 <option value="0">JNO</option>

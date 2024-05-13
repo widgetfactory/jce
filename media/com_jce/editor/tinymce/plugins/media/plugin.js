@@ -263,6 +263,50 @@
     }
 
     /**
+     * Update the sandbox attribute on an iframe node based on the media provider, url and editor settings
+     * @param {Editor} editor 
+     * @param {Node} node 
+     * @returns 
+     */
+    function updateSandbox(editor, node) {
+        var src = node.attr('src');
+
+        // leave existing sandbox attribute values
+        if (node.attr('sandbox')) {
+            return;
+        }
+
+        var provider = isSupportedMedia(editor, src), defaultAttributes = getMediaProps(editor, { src: src }, provider);
+
+        // set default sandbox attribute value from providers or remove it
+        if (defaultAttributes.sandbox === false) {
+            node.attr('sandbox', null);
+        } else {
+            node.attr('sandbox', defaultAttributes.sandbox || '');
+        }
+
+        // remove sandbox on local urls
+        if (isLocalUrl(editor, src)) {
+            node.attr('sandbox', null);
+        }
+
+        // get exclusions
+        var sandbox_iframes_exclusions = editor.getParam('media_iframes_sandbox_exclusions', []);
+
+        // remove sandbox on exclusions
+        each(sandbox_iframes_exclusions, function (value) {
+            if (src.indexOf(value) !== -1) {
+                node.attr('sandbox', null);
+            }
+        });
+
+        // remove sandbox on all iframes
+        if (editor.getParam('media_iframes_sandbox', true) === false) {
+            node.attr('sandbox', null);
+        }
+    }
+
+    /**
      * Validate a url against a list default or custom providers urls, eg: Youtube, Vimeo etc.
      * @param {Object} editor 
      * @param {String} url 
@@ -1085,14 +1129,8 @@
             elm.append(embed);
         }
 
-        if (tag === 'iframe' && !elm.attr('sandbox')) {
-            var provider = isSupportedMedia(editor, elm.attr('src')), defaultAttributes = getMediaProps(editor, { src: elm.attr('src') }, provider);
-
-            if (defaultAttributes.sandbox === false) {
-                elm.attr('sandbox', null);
-            } else {
-                elm.attr('sandbox', defaultAttributes.sandbox || '');
-            }
+        if (tag === 'iframe') {
+            updateSandbox(editor, elm);
         }
 
         return elm;
@@ -1140,10 +1178,7 @@
                 }
             });
 
-            // remove sandbox if false
-            if (defaultAttributes.sandbox === false) {
-                sourceNode.attr('sandbox', null);
-            }
+            updateSandbox(editor, sourceNode);
         }
 
         var style = editor.dom.parseStyle(sourceNode.attr('style'));

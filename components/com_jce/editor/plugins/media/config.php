@@ -26,6 +26,8 @@ class WFMediaPluginConfig
 
         $allow_iframes = (int) $wf->getParam('media.iframes', 0);
 
+        $iframes_supported_media_custom = array();
+
         if ($allow_iframes) {
             $tags[] = 'iframe';
 
@@ -77,6 +79,23 @@ class WFMediaPluginConfig
 
         $settings['media_valid_elements'] = array_values($tags);
         $settings['media_live_embed'] = $wf->getParam('media.live_embed', 1);
+
+        $sandbox = (bool) $wf->getParam('media.iframes_sandbox', 1);
+
+        if ($sandbox == false) {
+            $settings['media_iframes_sandbox'] = false;
+        } else {
+            $sandbox_exclusions = $wf->getParam('media.iframes_sandbox_exclusions', []);
+
+            // add custom urls to sandbox exclusions
+            if (!empty($iframes_supported_media_custom)) {
+                $sandbox_exclusions = array_merge($sandbox_exclusions, $iframes_supported_media_custom);
+            }
+
+            if (!empty($sandbox_exclusions)) {
+                $settings['media_iframes_sandbox_exclusions'] = $sandbox_exclusions;
+            }
+        }
 
         // allow all elements
         $settings['invalid_elements'] = array_diff($settings['invalid_elements'], array('audio', 'video', 'source', 'embed', 'object', 'param', 'iframe'));
