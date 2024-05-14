@@ -27,6 +27,44 @@ class JFormFieldStyleFormat extends FormField
      */
     protected $type = 'StyleFormat';
 
+    private function loadSubForm()
+    {
+        $subForm = new Form($this->name);
+        
+        // editor manifest
+        $manifest = JPATH_ADMINISTRATOR . '/components/com_jce/models/forms/styleformat.xml';
+        $xml = simplexml_load_file($manifest);
+        $subForm->load($xml);
+
+        return $subForm;
+    }
+
+    private function renderFields($form, $item)
+    {
+        $fields = $form->getFieldset();
+        
+        $data = array();
+
+        foreach ($fields as $field) {
+            $key = (string) $field->element['name'];
+
+            // default value
+            $field->value = "";
+
+            if (array_key_exists($key, $item)) {
+                $field->value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
+            }
+
+            $field->setup($field->element, $field->value, $this->group);
+            $field->id = '';
+            $field->name = '';
+
+            $data[] = '<div class="styleformat-item-' . $key . '" data-key="' . $key . '">' . $field->renderField(array('description' => $field->description)) . '</div>';
+        }
+
+        return implode('', $data);
+    }
+
     protected function getInput()
     {
         $wf = WFApplication::getInstance();
@@ -64,38 +102,16 @@ class JFormFieldStyleFormat extends FormField
             $items = array($default);
         }
 
-        $subForm = new Form($this->name);
-
-        // editor manifest
-        $manifest = JPATH_ADMINISTRATOR . '/components/com_jce/models/forms/styleformat.xml';
-        $xml = simplexml_load_file($manifest);
-        $subForm->load($xml);
-
-        $fields = $subForm->getFieldset();
-
         $output[] = '<div class="styleformat-list">';
 
         $x = 0;
 
+        $subForm = $this->loadSubForm();
+
         foreach ($items as $item) {
             $elements = array('<div class="styleformat border bg-light-subtle">');
 
-            foreach ($fields as $field) {
-                $key = (string) $field->element['name'];
-
-                // default value
-                $field->value = "";
-
-                if (array_key_exists($key, $item)) {
-                    $field->value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
-                }
-
-                $field->setup($field->element, $field->value, $this->group);
-                $field->id = '';
-                $field->name = '';
-
-                $elements[] = '<div class="styleformat-item-' . $key . '" data-key="' . $key . '">' . $field->renderField(array('description' => $field->description)) . '</div>';
-            }
+            $elements[] = $this->renderFields($subForm, $item);
 
             $elements[] = '<div class="styleformat-header">';
 
