@@ -98,6 +98,20 @@
         'twitch': /twitch\.tv\/(.+)/
     };
 
+    function objectRquiresEmbed(type) {
+        // flash
+        if (type == 'application/x-shockwave-flash') {
+            return false;
+        }
+
+        // pdf
+        if (type == 'application/pdf') {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
     * Get a default set of media properties based on the url
     * @param {string} data 
@@ -423,6 +437,14 @@
 
         // Flash
         if (/\.swf$/.test(url) && isValidElement(editor, 'object')) {
+            // check for valid url
+            if (isSupportedUrl(editor, 'object', url)) {
+                return 'object';
+            }
+        }
+
+        // Pdf
+        if (/\.pdf$/.test(url) && isValidElement(editor, 'object')) {
             // check for valid url
             if (isSupportedUrl(editor, 'object', url)) {
                 return 'object';
@@ -1111,7 +1133,7 @@
         elm.attr('data-mce-html', null);
 
         // add embed for some object media
-        if (tag === 'object' && elm.getAll('embed').length === 0 && elm.attr('type') !== 'application/x-shockwave-flash') {
+        if (tag === 'object' && elm.getAll('embed').length === 0 && objectRquiresEmbed(elm.attr('type'))) {
             var embed = new Node('embed', 1);
 
             embed.shortEnded = true;
