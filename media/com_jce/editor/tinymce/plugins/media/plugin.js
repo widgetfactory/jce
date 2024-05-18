@@ -1437,6 +1437,15 @@
                 if (node.name !== 'iframe') {
                     var src = node.attr('src') || node.attr('data') || '';
 
+                    //get the source from the first source tag
+                    if (!src && (node.name === 'video' || node.name === 'audio')) {
+                        var sources = node.getAll('source');
+
+                        if (sources.length) {
+                            src = sources[0].attr('src');
+                        }
+                    }
+
                     // validate 
                     if (src && !isSupportedUrl(editor, node.name, src)) {
                         node.remove();
