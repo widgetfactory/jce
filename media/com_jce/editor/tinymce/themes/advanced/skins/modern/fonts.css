@@ -167,7 +167,7 @@
 .mceModernSkin span.mce_source_search_regex:before {
     content: ".*";
     font-family: Tahoma, Arial, sans-serif;
-    font-size: 1em;
+    font-size: 14px;
     font-weight: bold;
     line-height: 1;
 }
@@ -175,14 +175,14 @@
 .mceModernSkin span.mce_source_search_matchcase:before {
     content: "Aa";
     font-family: Tahoma, Arial, sans-serif;
-    font-size: 1em;
+    font-size: 14px;
     line-height: 1;
 }
 
 .mceModernSkin span.mce_source_search_wholeword:before {
     content: "ab";
     font-family: Tahoma, Arial, sans-serif;
-    font-size: 1em;
+    font-size: 14px;
     line-height: 1;
     text-decoration: underline;
 }

@@ -778,7 +778,7 @@
 .uk-icon-code-search-regex:before {
   content: ".*";
   font-family: Tahoma, Arial, sans-serif;
-  font-size: 1em;
+  font-size: 14px;
   font-weight: bold;
   line-height: 1;
 }
@@ -786,14 +786,14 @@
 .uk-icon-code-search-matchcase:before {
   content: "Aa";
   font-family: Tahoma, Arial, sans-serif;
-  font-size: 1em;
+  font-size: 14px;
   line-height: 1;
 }
 
 .uk-icon-code-search-wholeword:before {
   content: "ab";
   font-family: Tahoma, Arial, sans-serif;
-  font-size: 1em;
+  font-size: 14px;
   line-height: 1;
   text-decoration: underline;
 }
