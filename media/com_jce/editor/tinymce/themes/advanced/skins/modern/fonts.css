@@ -172,6 +172,21 @@
     line-height: 1;
 }
 
+.mceModernSkin span.mce_source_search_matchcase:before {
+    content: "Aa";
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 1em;
+    line-height: 1;
+}
+
+.mceModernSkin span.mce_source_search_wholeword:before {
+    content: "ab";
+    font-family: Tahoma, Arial, sans-serif;
+    font-size: 1em;
+    line-height: 1;
+    text-decoration: underline;
+}
+
 .mceModernSkin span.mce_cite:before {
     content: "\201C...\201D";
     font-family: 'Times New Roman', Times, serif;

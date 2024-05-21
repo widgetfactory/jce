@@ -435,6 +435,14 @@
     background-position: -580px -40px;
 }
 
+.mceDefaultSkin span.mce_source_search_wholeword {
+    background-position: -680px -40px;
+}
+
+.mceDefaultSkin span.mce_source_search_matchcase {
+    background-position: -700px -40px;
+}
+
 .mceDefaultSkin span.mce_joomla {
     background-position: -600px -40px;
 }

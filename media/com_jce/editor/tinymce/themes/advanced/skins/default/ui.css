@@ -1813,6 +1813,14 @@ select.mceNativeListBox {
     background-position: -580px -40px;
 }
 
+.mceDefaultSkin span.mce_source_search_wholeword {
+    background-position: -680px -40px;
+}
+
+.mceDefaultSkin span.mce_source_search_matchcase {
+    background-position: -700px -40px;
+}
+
 .mceDefaultSkin span.mce_joomla {
     background-position: -600px -40px;
 }
@@ -2557,6 +2565,10 @@ select.mceNativeListBox {
     width: 1.25em;
     height: 1.25em;
     margin: 0 0.5em 0 0;
+}
+
+.mceModal .mceModalHeader .mceModalLogo:empty {
+    display: none;
 }
 
 .mceModal .mceModalHeader .mceModalLogo svg {

@@ -783,6 +783,21 @@
   line-height: 1;
 }
 
+.uk-icon-code-search-matchcase:before {
+  content: "Aa";
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.uk-icon-code-search-wholeword:before {
+  content: "ab";
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 1em;
+  line-height: 1;
+  text-decoration: underline;
+}
+
 /*.uk-icon-spinner:before {
     content: "";
     background: url('../img/load.gif') no-repeat center;
