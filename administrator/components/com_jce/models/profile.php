@@ -154,13 +154,15 @@ class JceModelProfile extends AdminModel
             }
         }
 
-        // editor manifest
-        $manifest = __DIR__ . '/forms/editor.xml';
+        if ($form->getName() == 'com_jce.profile') {
+            // editor manifest
+            $manifest = __DIR__ . '/forms/editor.xml';
 
-        // load editor manifest
-        if (is_file($manifest)) {
-            if ($editor_xml = simplexml_load_file($manifest)) {
-                $form->setField($editor_xml, 'config');
+            // load editor manifest
+            if (is_file($manifest)) {
+                if ($editor_xml = simplexml_load_file($manifest)) {
+                    $form->setField($editor_xml, 'config');
+                }
             }
         }
 
@@ -173,7 +175,7 @@ class JceModelProfile extends AdminModel
     }
 
     public function getForm($data = array(), $loadData = true)
-    {
+    {        
         FormHelper::addFieldPath('JPATH_ADMINISTRATOR/components/com_jce/models/fields');
 
         // Get the setup form.
