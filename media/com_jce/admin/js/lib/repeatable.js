@@ -48,8 +48,8 @@
             // append
             $parent.append($item);
 
-            // reset id values of all form items and trigger change
-            $parent.find(':input[name]').not('input[type="hidden"]').each(function () {
+            // reset id values of cloned form items and trigger change
+            $item.find(':input[name]').not('input[type="hidden"]').each(function () {
                 var elm = this, $p = $(this).parents('.form-field-repeatable-item'), idx = $p.index(), x = 0;
 
                 $p.find(':input[name]').each(function (i) {
@@ -81,27 +81,29 @@
             $item.find('select[name]').find('option:first').prop('selected', true).parent().trigger('change').removeClass('isdirty');
 
             // fix media fields
-            $item.add($repeatable).find('.field-media-wrapper').each(function () {
-                $(this).find('.wf-media-input').removeClass('wf-media-input-converted');
-                
-                // store input value
-                var value = $(this).find('.wf-media-input').val();
+            $item.find('.field-media-wrapper').each(function () {
+                if (this.inputElement) {
+                    this.updatePreview();
+                } else {
+                    // store input value
+                    var value = $(this).find('.wf-media-input').val();
 
-                // clear events
-                var html = $(this).html();
-                $(this).html(html);
+                    // clear events
+                    var html = $(this).html();
+                    $(this).html(html);
 
-                // restore input value
-                $(this).find('.wf-media-input').val(value);
+                    // restore input value
+                    $(this).find('.wf-media-input').val(value);
 
-                // re-initlialize
-                if ($.fn.fieldMedia) {
-                    $(this).fieldMedia();
+                    // re-initlialize
+                    if ($(this).data('fieldMedia')) {
+                        $(this).data('fieldMedia', null).fieldMedia();
+                    }
+
+                    createElementMedia(this);
                 }
 
                 $(document).trigger('subform-row-add', [this]);
-
-                createElementMedia(this);
             });
 
             // reset radio items
