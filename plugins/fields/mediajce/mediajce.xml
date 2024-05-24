@@ -9,18 +9,25 @@
   	<copyright>@@copyright@@</copyright>
   	<license>@@licence@@</license>
 	<description>PLG_FIELDS_MEDIAJCE_XML_DESCRIPTION</description>
+
+	<namespace path="src">Joomla\Plugin\Fields\MediaJce</namespace>
+
 	<files folder="plugins/fields/mediajce">
 		<filename plugin="mediajce">mediajce.php</filename>
 		<folder>fields</folder>
 		<folder>helper</folder>
 		<folder>layouts</folder>
 		<folder>params</folder>
+		<folder>services</folder>
+		<folder>src</folder>
 		<folder>tmpl</folder>
 	</files>
+
 	<languages folder="administrator/language/en-GB">
 		<language tag="en-GB">en-GB.plg_fields_mediajce.ini</language>
 		<language tag="en-GB">en-GB.plg_fields_mediajce.sys.ini</language>
 	</languages>
+
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
