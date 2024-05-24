@@ -10,6 +10,8 @@
 
 defined('_JEXEC') or die;
 
+JLoader::registerNamespace('Joomla\\Plugin\\Fields\\MediaJce', JPATH_PLUGINS . '/fields/mediajce/src', false, false, 'psr4');
+
 use Joomla\Component\Fields\Administrator\Plugin\FieldsPlugin;
 use Joomla\Plugin\Fields\MediaJce\PluginTraits\FormTrait;
 
