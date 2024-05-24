@@ -62,9 +62,8 @@ class JFormFieldMediaJce extends MediaField
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
-            // Joomla 4 custom layout
-            if (isset($this->types)) {
-                $this->layout = 'joomla.form.field.mediacustom';
+            if (!isset($this->element['converted'])) {
+                $this->element['converted'] = 0;
             }
         }
 
