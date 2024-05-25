@@ -206,6 +206,16 @@ if ($path) {
         }
     }
 
+    if (!isset($attribs['class'])) {
+        $attribs['class'] = '';
+    }
+
+    // add media type class
+    $attribs['class'] .= ' mediajce-' . $layout;
+
+    // trim class
+    $attribs['class'] = trim($attribs['class']);
+
     // check for valid path after clean
     if (is_file(JPATH_SITE . '/' . $path)) {
         $attribs['src'] = $path;
@@ -214,6 +224,7 @@ if ($path) {
 
         $buffer = LayoutHelper::render('plugins.fields.mediajce.' . $layout, $attribs);
 
+        // render with figure and figcaption
         if ($data->media_type == 'embed' && $data->media_caption) {
             
             $figure = array();
@@ -227,7 +238,7 @@ if ($path) {
             $figure['caption'] = $data->media_caption;
             $figure['html'] = $buffer;
 
-            $buffer = LayoutHelper::render('plugins.fields.mediajce.', $figure);
+            $buffer = LayoutHelper::render('plugins.fields.mediajce.figure', $figure);
         }
     }
 }
