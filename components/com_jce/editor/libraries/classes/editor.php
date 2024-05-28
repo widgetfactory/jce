@@ -493,6 +493,10 @@ class WFEditor
         // set javascript compression script
         if ($settings['compress']['javascript']) {
             $this->addScript(Uri::base(true) . '/index.php?option=com_jce&task=editor.pack&' . http_build_query((array) $settings['query']));
+
+            if (version_compare(JVERSION, '5', 'ge')) {
+                $this->addScript($this->getURL(true) . '/js/editor.module.js', 'module');
+            }
         } else {
             // Tinymce
             $this->addScript($this->getURL(true) . '/tinymce/tinymce.js');
@@ -1385,9 +1389,24 @@ class WFEditor
                     $files[] = WF_EDITOR_MEDIA . '/tinymce/plugins/' . $plugin . '/plugin' . $suffix . '.js';
                 }
 
-                // add external plugins
+                // add external and pro plugins
                 foreach ($plugins['external'] as $plugin => $path) {
-                    $files[] = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/editor_plugin' . $suffix . '.js';
+                    // get base path from plugin path
+                    $basepath = dirname($path);
+                        
+                    // trim slashes
+                    $basepath = trim($basepath, '/');
+                    
+                    $file = Path::find(
+                        array(
+                            JPATH_SITE . '/' . $basepath
+                        ),
+                        'plugin' . $suffix . '.js'
+                    );
+
+                    if ($file) {
+                        $files[] = $file;
+                    }
                 }
 
                 // add Editor file
@@ -1420,11 +1439,22 @@ class WFEditor
                         }
                     }
 
-                    // add external plugins
+                    // add external and pro plugins
                     foreach ($plugins['external'] as $plugin => $path) {
-                        $content = JPATH_SITE . '/plugins/jce/editor-' . $plugin . '/css/content.css';
+                        // get base path from plugin path
+                        $basepath = dirname($path);
 
-                        if (File::exists($content)) {
+                        // trim slashes
+                        $basepath = trim($basepath, '/');
+                        
+                        $content = Path::find(
+                            array(
+                                JPATH_SITE . '/' . $basepath . '/css'
+                            ),
+                            'content.css'
+                        );
+
+                        if ($content) {
                             $files[] = $content;
                         }
                     }
