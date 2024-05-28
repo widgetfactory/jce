@@ -44,6 +44,34 @@ class JFormFieldContainer extends FormField
         return '';
     }
 
+    // Function to check if two arrays are equal
+    private function arraysEqual($arr1, $arr2)
+    {
+        if (count($arr1) !== count($arr2)) {
+            return false;
+        }
+
+        for ($i = 0; $i < count($arr1); $i++) {
+            if ($arr1[$i] !== $arr2[$i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Function to check if an array exists within another array of arrays
+    private function arrayExistsInContainer($container, $array)
+    {
+        foreach ($container as $containedArray) {
+            if ($this->arraysEqual($containedArray, $array)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Method to get the field input markup.
      *
@@ -113,14 +141,18 @@ class JFormFieldContainer extends FormField
 
         // repeatable
         if ($repeatable) {
+            // collapse
             $str[] = '<div class="form-field-repeatable">';
         }
 
+        $containerValues = array();
+
         for ($i = 0; $i < $count; $i++) {
+            $item = array();
 
             if ($repeatable) {
-                $str[] = '<div class="form-field-repeatable-item well p-3 card my-2">';
-                $str[] = '  <div class="form-field-repeatable-item-group">';
+                $item[] = '<div class="form-field-repeatable-item well p-3 card my-2">';
+                $item[] = '  <div class="form-field-repeatable-item-group">';
             }
 
             $subForm = new Form('', array('control' => $this->formControl . '[' . str_replace('.', '][', $group) . ']'));
@@ -133,9 +165,14 @@ class JFormFieldContainer extends FormField
             $subForm->bind($data);
             $fields = $subForm->getFieldset();
 
+            $defaultValues = array();
+            $fieldValues = array();
+
             foreach ($fields as $field) {
                 $name = (string) $field->element['name'];
                 $value = (string) $field->element['default'];
+
+                $defaultValues[] = $value;
 
                 if (empty($name)) {
                     continue;
@@ -162,7 +199,7 @@ class JFormFieldContainer extends FormField
                 // escape values
                 if (is_array($value)) {
                     // handle nested arrays
-                    array_walk_recursive($value, function(&$item) {
+                    array_walk_recursive($value, function (&$item) {
                         if (is_string($item)) {
                             $item = htmlspecialchars($item, ENT_COMPAT, 'UTF-8');
                         }
@@ -170,6 +207,9 @@ class JFormFieldContainer extends FormField
                 } else {
                     $value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
                 }
+
+                // store value for repeatable check
+                $fieldValues[] = $value;
 
                 $field->value = $value;
                 $field->setup($field->element, $field->value);
@@ -183,19 +223,31 @@ class JFormFieldContainer extends FormField
                     }
                 }
 
-                $str[] = $field->renderField(array('description' => $field->description));
+                $item[] = $field->renderField(array('description' => $field->description));
             }
 
             if ($repeatable) {
-                $str[] = '</div>';
+                $item[] = '</div>';
 
-                $str[] = '<div class="form-field-repeatable-item-control">';
-                $str[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus"></i></button>';
-                $str[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash"></i></button>';
-                $str[] = '</div>';
+                $item[] = '<div class="form-field-repeatable-item-control">';
+                $item[] = '<button class="btn btn-link form-field-repeatable-add" aria-label="' . Text::_('JGLOBAL_FIELD_ADD') . '"><i class="icon icon-plus"></i></button>';
+                $item[] = '<button class="btn btn-link form-field-repeatable-remove" aria-label="' . Text::_('JGLOBAL_FIELD_REMOVE') . '"><i class="icon icon-trash"></i></button>';
+                $item[] = '</div>';
 
-                $str[] = '</div>';
+                $item[] = '</div>';
             }
+
+            if ($this->arraysEqual($defaultValues, $fieldValues)) {
+                continue;
+            }
+
+            // only add if unique
+            if ($this->arrayExistsInContainer($containerValues, $fieldValues)) {
+                continue;
+            }
+
+            $str[] = implode('', $item);
+            $containerValues[] = $fieldValues;
         }
 
         // repeatable
