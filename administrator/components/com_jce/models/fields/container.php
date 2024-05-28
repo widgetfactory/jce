@@ -237,7 +237,8 @@ class JFormFieldContainer extends FormField
                 $item[] = '</div>';
             }
 
-            if ($this->arraysEqual($defaultValues, $fieldValues)) {
+            // remove empty fields with default values
+            if ($count > 1 && $this->arraysEqual($defaultValues, $fieldValues)) {
                 continue;
             }
 
