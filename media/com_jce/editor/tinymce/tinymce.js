@@ -10185,6 +10185,8 @@
           target = target.parentNode || target.ownerDocument || target.defaultView || target.parentWindow;
         } while (target && !args.isPropagationStopped());
 
+        self.args = args;
+
         return self;
       };
 
@@ -10305,6 +10307,16 @@
         }
 
         return self.clean(target);
+      };
+
+      self.preventDefault = function (e) {
+        if (e) {
+          e.preventDefault();
+        }
+      };
+
+      self.isDefaultPrevented = function (e) {
+        return e.isDefaultPrevented();
       };
     }
 
@@ -13597,7 +13609,7 @@
         return calculatePosition(getBodyPosition(editor), getScrollPosition(editor), getMousePosition(editor, event));
       };
 
-      return {
+      tinymce.dom.MousePosition = {
         calc: calc
       };
   })(tinymce);
@@ -33786,6 +33798,10 @@
         return args.content;
       },
 
+      insertContent: function (value) {
+        this.execCommand('mceInsertContent', false, value);
+      },
+
       getSelection: function () {
         return this.selection.getContent();
       },
@@ -35785,7 +35801,7 @@
     var processValue = function (value) {
       var details;
 
-      if (typeof value !== 'string') {
+      if (value && typeof value !== 'string') {      
         details = tinymce.extend({
           paste: value.paste,
           data: {
@@ -42667,7 +42683,8 @@
 
         if (hasDraggableElement(state) && !state.dragging && movement > 10) {
           var args = editor.dom.fire(editor.getBody(), 'dragstart', { target: state.element });
-          if (args.isDefaultPrevented()) {
+
+          if (args.preventDefault(e)) {
             return;
           }
 
@@ -42675,7 +42692,7 @@
           editor.focus();
         }
 
-        if (state.dragging) {
+        if (state.dragging) {        
           var targetPos = applyRelPos(state, MousePosition.calc(editor, e));
 
           appendGhostToBody(state.ghost, editor.getBody());
@@ -42699,20 +42716,20 @@
           if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
             var targetClone = cloneElement(state.element);
 
-            var args = editor.dom.fire(editor.getBody(), 'drop', {
+            var evt = editor.dom.fire(editor.getBody(), 'drop', {
               targetClone: targetClone,
               clientX: e.clientX,
               clientY: e.clientY
             });
 
-            if (!args.isDefaultPrevented()) {
-              targetClone = args.targetClone;
+            if (!evt.isDefaultPrevented(e)) {
+              targetClone = evt.args.targetClone;
 
-              editor.undoManager.transact(function () {
-                removeElement(state.element);
-                editor.insertContent(editor.dom.getOuterHTML(targetClone));
-                editor._selectionOverrides.hideFakeCaret();
-              });
+              editor.undoManager.add();
+
+              removeElement(state.element);
+              editor.insertContent(editor.dom.getOuterHTML(targetClone));
+              editor._selectionOverrides.hideFakeCaret();
             }
           }
         }
@@ -43461,8 +43478,6 @@
             if (isContentEditableFalse(contentEditableRoot)) {
               e.preventDefault();
               setContentEditableSelection(selectNode(contentEditableRoot));
-
-
             } else {
               /*if (!isXYWithinRange(e.clientX, e.clientY, editor.selection.getRng())) {
                 editor.selection.placeCaretAt(e.clientX, e.clientY);
