@@ -12,11 +12,20 @@ namespace Joomla\Plugin\Installer\Jce\Extension;
 
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseAwareTrait;
 use Joomla\Plugin\Installer\Jce\PluginTraits\EventsTrait;
 
 class Jce extends CMSPlugin
 {
     use EventsTrait;
+    use DatabaseAwareTrait;
+
+    /**
+     * Affects constructor behavior. If true, language files will be loaded automatically.
+     *
+     * @var    boolean
+     */
+    protected $autoloadLanguage = true;
 
     private function getDownloadKeyFromUpdateSites()
     {
@@ -67,11 +76,8 @@ class Jce extends CMSPlugin
     {
         $component = ComponentHelper::getComponent('com_jce');
 
-        // check if the key has already been set via the dlid field
-        $dlid = $uri->getVar('key', '');
-
-        // check the component params, fallback to the dlid
-        $key = $component->params->get('updates_key', $dlid);
+        // check the component params for the key
+        $key = $component->params->get('updates_key', '');
 
         // try get the key directly from the update sites table, eg: when updating a plugin
         if (empty($key)) {

@@ -2,7 +2,7 @@
 /**
  * @package     JCE
  * @subpackage  Installer.Jce
- * 
+ *
  * @copyright   Copyright (C) 2005 - 2023 Open Source Matters, Inc. All rights reserved
  * @copyright   Copyright (C) 2023 - 2024 Ryan Demmer. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -12,20 +12,50 @@ namespace Joomla\Plugin\Installer\Jce\PluginTraits;
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Uri\Uri;
 
 /**
- * Fields MediaJce FormTrait
+ * JCE Installer Events Trait
  *
  * @since  2.9.73
  */
 trait EventsTrait
 {
+    private function checkIfKeyRequired($query)
+    {
+        // get the file name from the url without the xml extension
+        $file = isset($query['file']) ? $query['file'] : '';
+
+        if (empty($file)) {
+            return false;
+        }
+        
+        // jce pro requires a key
+        if (strpos($file, 'pkg_jce_pro_') !== false) {
+            return true;
+        }
+
+        // jce core does not require a key
+        if (strpos($file, 'pkg_jce_') !== false) {
+            return true;
+        }
+
+        // jce plugins require a key
+        if (strpos($file, 'plg_jce_') !== false) {
+            return true;
+        }
+
+        // mediabox does not require a key
+        if (strpos($file, 'plg_system_jcemediabox') !== false) {
+            return false;
+        }
+
+        return false;
+    }
+    
     /**
      * Handle adding credentials to package download request.
      *
@@ -47,21 +77,24 @@ trait EventsTrait
             return true;
         }
 
-        $component = ComponentHelper::getComponent('com_jce');
+        // check if the key has already been set via the dlid field. This will only be available in Joomla 4.x and later
+        $key = $uri->getVar('key', '');
 
-        // load plugin language for warning messages
-        Factory::getLanguage()->load('plg_installer_jce', JPATH_ADMINISTRATOR);
-
-        $key = $this->getDownloadKey();
+        // get the key from the component params or Update Sites (in the case of plugin updates)
+        if (empty($key)) {
+            $key = $this->getDownloadKey();
+        }
 
         // if no key is set...
         if (empty($key)) {
-            // if we are attempting to update JCE Pro, display a notice message
-            if (strpos($url, 'pkg_jce_pro') !== false) {
+            $query = $uri->getQuery(true);
+            
+            // if we are attempting to update JCE Pro or JCE Plugins, display a notice message
+            if ($this->checkIfKeyRequired($query)) {
                 $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
-            }
 
-            return true;
+                return true;
+            }
         }
 
         // Append the subscription key to the download URL
@@ -77,19 +110,19 @@ trait EventsTrait
 
             $tmpUrl = $tmpUri->toString();
             $response = HttpFactory::getHttp()->get($tmpUrl, array());
-        } catch (RuntimeException $exception) {
+        } catch (\RuntimeException $exception) {
+            $app->enqueueMessage($exception->getMessage(), 'notice');
+            return true;
         }
 
         // invalid key, display a notice message
         if (403 == $response->code || 401 == $response->code) {
-            $message = isset($response->body) ? $response->body : Text::_('PLG_INSTALLER_JCE_KEY_INVALID');
-            $app->enqueueMessage($message, 'notice');
+            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
         // update limit exceeded
         if (429 == $response->code || 499 === $response->code) {
-            $message = isset($response->body) ? $response->body : Text::_('PLG_INSTALLER_JCE_UPDATE_LIMIT_REACHED');
-            $app->enqueueMessage($message, 'notice');
+            $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_INVALID'), 'notice');
         }
 
         return true;

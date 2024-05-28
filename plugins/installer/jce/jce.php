@@ -26,6 +26,13 @@ class plgInstallerJce extends CMSPlugin
     use EventsTrait;
 
     /**
+     * Affects constructor behavior. If true, language files will be loaded automatically.
+     *
+     * @var    boolean
+     */
+    protected $autoloadLanguage = true;
+
+    /**
      * Get the download key from the component params or the dlid field.
      *
      * @return string The download key
@@ -34,11 +41,8 @@ class plgInstallerJce extends CMSPlugin
     {
         $component = ComponentHelper::getComponent('com_jce');
 
-        // check if the key has already been set via the dlid field
-        $dlid = $uri->getVar('key', '');
-
-        // check the component params, fallback to the dlid
-        $key = $component->params->get('updates_key', $dlid);
+        // get key from component params in Joomla 3.x
+        $key = $component->params->get('updates_key', '');
 
         return $key;
     }
