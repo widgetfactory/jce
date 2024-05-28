@@ -155,28 +155,34 @@ class WFFileSystem extends WFExtension
             );
 
             $path_replacement = array(
-                $user->id,
-                $user->username,
-                $user->name,
-                $usertype,
-                $profile->name,
-                $contextName,
-                date('H'),
-                date('d'),
-                date('m'),
-                date('Y'),
+                'id' => $user->id,
+                'username' => $user->username,
+                'name' => $user->name,
+                'usertype' => $usertype,
+                'profile' => $profile->name,
+                'context' => $contextName,
+                'hour' => date('H'),
+                'day' => date('d'),
+                'month' => date('m'),
+                'year' => date('Y')
             );
 
+            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$path_replacement));
+
+            // convert to array values
+            $path_replacement = array_values($path_replacement);
+
+            // get websafe options
             $websafe_textcase = $wf->getParam('editor.websafe_textcase', '');
+            $websafe_mode = $wf->getParam('editor.websafe_mode', 'utf-8');
+            $websafe_allow_spaces = $wf->getParam('editor.websafe_allow_spaces', '_');
 
             // implode textcase array to create string
             if (is_array($websafe_textcase)) {
                 $websafe_textcase = implode(',', $websafe_textcase);
             }
-
-            $websafe_mode = $wf->getParam('editor.websafe_mode', 'utf-8');
-            $websafe_allow_spaces = $wf->getParam('editor.websafe_allow_spaces', '_');
-
+            
+            // expose variables
             $variables = compact('path_pattern', 'path_replacement', 'websafe_textcase', 'websafe_mode', 'websafe_allow_spaces');
         }
 
