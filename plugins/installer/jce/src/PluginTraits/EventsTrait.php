@@ -90,15 +90,17 @@ trait EventsTrait
             $query = $uri->getQuery(true);
             
             // if we are attempting to update JCE Pro or JCE Plugins, display a notice message
-            if ($this->checkIfKeyRequired($query)) {
+            if ($this->checkIfKeyRequired($query) === true) {
                 $app->enqueueMessage(Text::_('PLG_INSTALLER_JCE_KEY_WARNING'), 'notice');
 
                 return true;
             }
         }
 
-        // Append the subscription key to the download URL
-        $uri->setVar('key', $key);
+        // Append the subscription key to the download URL if it exists
+        if (!empty($key)) {
+            $uri->setVar('key', $key);
+        }
 
         // create the url string
         $url = $uri->toString();
