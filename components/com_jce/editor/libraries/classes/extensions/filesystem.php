@@ -167,7 +167,7 @@ class WFFileSystem extends WFExtension
                 'year' => date('Y')
             );
 
-            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$path_replacement));
+            Factory::getApplication()->triggerEvent('onWfFileSystemBeforeGetPathVariables', array(&$path_replacement, &$path_pattern));
 
             // convert to array values
             $path_replacement = array_values($path_replacement);
