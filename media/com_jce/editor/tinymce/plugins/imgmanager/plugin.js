@@ -27,7 +27,7 @@
             function openDialog() {
                 var node = ed.selection.getNode();
 
-                if (isMediaObject(node)) {
+                if (node.nodeName == 'IMG' && isMediaObject(node)) {
                     return;
                 }
 
@@ -260,7 +260,7 @@
                 ed.addCommand('mceImage', function () {
                     var node = ed.selection.getNode();
 
-                    if (isMediaObject(node)) {
+                    if (node.nodeName == 'IMG' && isMediaObject(node)) {
                         return;
                     }
 
