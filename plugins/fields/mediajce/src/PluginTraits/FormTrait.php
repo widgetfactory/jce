@@ -41,6 +41,10 @@ trait FormTrait
         if (!$fieldNode) {
             return $fieldNode;
         }
+        
+        if ($field->type !== 'mediajce') {
+            return $fieldNode;
+        }
 
         $fieldParams = clone $this->params;
         $fieldParams->merge($field->fieldparams);
