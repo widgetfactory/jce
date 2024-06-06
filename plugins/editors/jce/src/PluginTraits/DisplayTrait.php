@@ -28,13 +28,13 @@ use Joomla\CMS\Layout\LayoutHelper;
 trait DisplayTrait
 {
     protected static $instances = array();
-    
+
     protected function getEditorInstance()
-    {        
+    {
         // pass config to WFEditor
         $config = array(
             'profile_id' => $this->params->get('profile_id', 0),
-            'plugin' => $this->params->get('plugin', '')
+            'plugin' => $this->params->get('plugin', ''),
         );
 
         $signature = md5(serialize($config));
@@ -72,7 +72,9 @@ trait DisplayTrait
         $language->load('com_jce', JPATH_ADMINISTRATOR);
 
         $editor = $this->getEditorInstance();
-        $editor->init();
+
+        // setup editor without initializing
+        $editor->setup(false);
 
         foreach ($editor->getScripts() as $script => $type) {
             $document->addScript($script, array(), array('type' => $type));
@@ -82,9 +84,13 @@ trait DisplayTrait
             $document->addStylesheet($style);
         }
 
-        $document->addScriptDeclaration(implode("\n", $editor->getScriptDeclaration()));
+        $document->addScriptOptions('plg_editor_jce',
+            array(
+                'editor' => $editor->getScriptOptions(),
+            )
+        );
     }
-    
+
     /**
      * JCE WYSIWYG Editor - Display the editor area.
      *
@@ -135,12 +141,12 @@ trait DisplayTrait
                 }
             } else {
                 $list = $this->getXtdButtonsList($id, $buttons, $asset, $author);
-    
+
                 if (!empty($list)) {
                     $options = array(
                         'joomla_xtd_buttons' => $list,
                     );
-    
+
                     Factory::getDocument()->addScriptOptions('plg_editor_jce', $options, true);
                 }
 
@@ -149,13 +155,13 @@ trait DisplayTrait
         }
 
         $displayData = [
-            'name'    => $name,
-            'id'      => $id,
-            'class'   => 'mce_editable wf-editor',
-            'cols'    => $col,
-            'rows'    => $row,
-            'width'   => $width,
-            'height'  => $height,
+            'name' => $name,
+            'id' => $id,
+            'class' => 'mce_editable wf-editor',
+            'cols' => $col,
+            'rows' => $row,
+            'width' => $width,
+            'height' => $height,
             'content' => $content,
             'buttons' => $buttonsStr,
         ];

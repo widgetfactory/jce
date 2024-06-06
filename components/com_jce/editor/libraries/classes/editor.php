@@ -68,6 +68,13 @@ class WFEditor
     private $javascript = array();
 
     /**
+     * Array of script options.
+     *
+     * @var array
+     */
+    private $scriptOptions = array();
+
+    /**
      * Array of core plugins
      *
      * @var array
@@ -98,6 +105,11 @@ class WFEditor
         $this->javascript[] = $text;
     }
 
+    private function addScriptOptions($text)
+    {
+        $this->scriptOptions[] = $text;
+    }
+
     private function addStyleDeclaration($text)
     {
         $this->styles[] = $text;
@@ -116,6 +128,11 @@ class WFEditor
     public function getScriptDeclaration()
     {
         return $this->javascript;
+    }
+
+    public function getScriptOptions()
+    {
+        return $this->scriptOptions;
     }
 
     public function __construct($config = array())
@@ -173,7 +190,14 @@ class WFEditor
         return $url;
     }
 
-    public function init()
+    /**
+     * Setup the editor
+     * This will create the settings array and render the editor
+     *
+     * @param boolean $autoInit Automatically initialize the editor
+     * @return WFEditor
+     */
+    public function setup($autoInit = true)
     {
         if ($this->initialized) {
             return $this;
@@ -185,7 +209,7 @@ class WFEditor
 
         Factory::getApplication()->triggerEvent('onBeforeWfEditorRender', array(&$settings));
 
-        $this->render($settings);
+        $this->render($settings, $autoInit);
 
         return $this;
     }
@@ -197,7 +221,7 @@ class WFEditor
      */
     public function buildEditor()
     {
-        $this->init()->getOutput();
+        $this->setup()->getOutput();
     }
 
     /**
@@ -555,15 +579,19 @@ class WFEditor
         return $settings;
     }
 
-    public function render($settings)
+    public function render($settings, $autoInit = true)
     {
         // get an editor instance
         $wf = WFApplication::getInstance();
 
-        // encode as json string
-        $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-
-        $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
+        if ($autoInit) {
+            // encode as json string
+            $tinymce = json_encode($settings, JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            
+            $this->addScriptDeclaration("try{WfEditor.init(" . $tinymce . ");}catch(e){console.debug(e);}");
+        } else {
+            $this->addScriptOptions($settings);
+        }
 
         if (is_object($this->profile)) {
             if ($wf->getParam('editor.callback_file')) {
