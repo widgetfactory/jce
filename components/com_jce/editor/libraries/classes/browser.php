@@ -349,11 +349,6 @@ class WFFileBrowser extends CMSObject
     {
         $path = trim($path, '/');
 
-        // path is empty so no filters applied
-        if (empty($path)) {
-            return true;
-        }
-
         $filters = $this->get('filter');
 
         // no filters set, allow all
@@ -406,6 +401,11 @@ class WFFileBrowser extends CMSObject
 
         if ($access === false) {
             return false;
+        }
+
+        // path is empty so no deny filters applied
+        if (empty($path)) {
+            return true;
         }
 
         // Check deny filters
