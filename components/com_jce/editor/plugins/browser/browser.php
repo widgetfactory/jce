@@ -24,7 +24,7 @@ class WFBrowserPlugin extends WFMediaManager
     private function isMediaField()
     {
         $app = Factory::getApplication();
-        return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid');
+        return $app->input->getInt('standalone') && $app->input->getString('mediatype') && $app->input->getCmd('fieldid', $app->input->getCmd('element', ''));    
     }
 
     /**

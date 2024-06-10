@@ -57,6 +57,10 @@ abstract class WfBrowserHelper
             $options['converted'] = false;
         }
 
+        if (!isset($options['mediafolder'])) {
+            $options['mediafolder'] = '';
+        }
+
         // set $url as empty string
         $data = array(
             'url' => '',

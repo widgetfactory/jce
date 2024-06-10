@@ -112,6 +112,7 @@ class JFormFieldMediaJce extends MediaField
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
             'converted' => false,
+            'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : ''
         );
 
         $options = WfBrowserHelper::getMediaFieldOptions($config);
