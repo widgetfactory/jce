@@ -5868,9 +5868,9 @@
         add("figcaption", "", flowContent);
         add("mark rt rp summary bdi", "", phrasingContent);
         add("canvas", "width height", flowContent);
-        add("video", "src crossorigin poster preload autoplay mediagroup loop " +
-          "muted controls width height buffered controlslist playsinline", flowContent, "track source");
-        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", flowContent, "track source");
+        add("video", "src crossorigin poster preload mediagroup width height" +
+          "buffered controlslist playsinline autoplay loop muted controls", flowContent, "track source");
+        add("audio", "src crossorigin preload mediagroup buffered volume controlslist autoplay loop muted controls", flowContent, "track source");
         add("picture", "", "img source");
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
@@ -9203,15 +9203,19 @@
         html.push('<', name);
 
         if (attrs) {
+          var bool = [];
+          
           for (i = 0, l = attrs.length; i < l; i++) {
             attr = attrs[i];
 
             if (attr["boolean"]) {
-              html.push(' ', attr.name);
+              bool.push(' ', attr.name);
             } else {
               html.push(' ', attr.name, '="', encode('' + attr.value, true), '"');
             }
           }
+          // add boolean attributes at the end. This is primarily for readability and because the Joomla Text Filter will remove boolean attributes if they are not at the end of the tag.
+          html = html.concat(bool);
         }
 
         if (!empty || htmlOutput) {
