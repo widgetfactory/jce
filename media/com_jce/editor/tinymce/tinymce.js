@@ -5868,9 +5868,9 @@
         add("figcaption", "", flowContent);
         add("mark rt rp summary bdi", "", phrasingContent);
         add("canvas", "width height", flowContent);
-        add("video", "src crossorigin poster preload mediagroup width height" +
-          "buffered controlslist playsinline autoplay loop muted controls", flowContent, "track source");
-        add("audio", "src crossorigin preload mediagroup buffered volume controlslist autoplay loop muted controls", flowContent, "track source");
+        add("video", "src crossorigin poster preload autoplay mediagroup loop " +
+          "muted controls width height buffered controlslist playsinline", flowContent, "track source");
+        add("audio", "src crossorigin preload autoplay mediagroup loop muted controls buffered volume controlslist", flowContent, "track source");
         add("picture", "", "img source");
         add("source", "src srcset type media sizes");
         add("track", "kind src srclang label default");
