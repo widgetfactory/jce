@@ -1,5 +1,5 @@
 <div class="alert alert-info" role="alert">
-    <h4><i class="icon-star"></i> Go Pro and get more from JCE <a href="https://www.joomlacontenteditor.net/subscribe" class="btn btn-primary" target="_blank" title="Get JCE Editor Pro"><strong>Get JCE Editor Pro</strong></a></h4>
+    <h4><i class="icon-star"></i> Go Pro and get more from JCE <a href="https://www.joomlacontenteditor.net/buy" class="btn btn-primary" target="_blank" title="Get JCE Editor Pro"><strong>Get JCE Editor Pro</strong></a></h4>
     <ul>
         <li>Resize, Thumbnail and Edit images</li>
         <li>Manage Audio and Video</li>
