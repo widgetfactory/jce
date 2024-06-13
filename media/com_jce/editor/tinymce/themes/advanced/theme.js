@@ -127,7 +127,11 @@
                 // Resize iframe and container
                 if (width) {
                     DOM.setStyle(e.parentNode, 'max-width', width);
-                    DOM.setStyle(ifr, 'max-width', width);
+                    
+                    // only apply max-width if it's a pixel value
+                    if (!/%/.test(width)) {
+                        DOM.setStyle(ifr, 'max-width', width);
+                    }
                 }
             });
 
