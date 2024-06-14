@@ -615,10 +615,6 @@ class JceModelProfile extends AdminModel
             $data['types'] = '';
         }
 
-        if (empty($data['custom'])) {
-            $data['custom'] = '';
-        }
-
         return $data;
     }
 
@@ -785,7 +781,7 @@ class JceModelProfile extends AdminModel
         $buffer .= "\n" . '<export type="profiles">';
         $buffer .= "\n\t" . '<profiles>';
 
-        $validFields = array('name', 'description', 'users', 'types', 'components', 'custom', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
+        $validFields = array('name', 'description', 'users', 'types', 'components', 'area', 'device', 'rows', 'plugins', 'published', 'ordering', 'params');
 
         foreach ($ids as $id) {
             $table = $this->getTable();

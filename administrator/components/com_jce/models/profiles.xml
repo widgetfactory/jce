@@ -25,7 +25,6 @@
             <users></users>
             <types></types>
             <components></components>
-            <custom></custom>
             <area>0</area>
             <device>desktop,tablet,phone</device>
             <rows>help,newdocument,undo,redo,spacer,bold,italic,underline,strikethrough,justifyfull,justifycenter,justifyleft,justifyright,spacer,blockquote,formatselect,styleselect,removeformat,cleanup;fontselect,fontsizeselect,fontcolor,spacer,clipboard,indent,outdent,lists,sub,sup,textcase,charmap,hr;directionality,fullscreen,print,searchreplace,spacer,table,style,attributes;visualaid,visualchars,visualblocks,nonbreaking,anchor,unlink,link,imgmanager@@pro_plugins@@,spellchecker,article</rows>
@@ -40,7 +39,6 @@
             <users></users>
             <types></types>
             <components></components>
-            <custom></custom>
             <area>1</area>
             <device>desktop,tablet,phone</device>
             <rows>help,newdocument,undo,redo,spacer,bold,italic,underline,strikethrough,justifyfull,justifycenter,justifyleft,justifyright,spacer,formatselect,styleselect;clipboard,searchreplace,indent,outdent,lists,cleanup,charmap,removeformat,hr,sub,sup,textcase,nonbreaking,visualchars,visualblocks;fullscreen,print,visualaid,style,attributes,anchor,unlink,link,imgmanager,spellchecker,article</rows>
@@ -55,7 +53,6 @@
             <users></users>
             <types></types>
             <components></components>
-            <custom></custom>
             <area>0</area>
             <device>desktop,tablet,phone</device>
             <rows>bold,italic,strikethrough,lists,blockquote,spacer,justifyleft,justifycenter,justifyright,spacer,link,unlink,imgmanager,article,spellchecker,fullscreen,kitchensink;formatselect,styleselect,underline,justifyfull,clipboard,removeformat,charmap,indent,outdent,undo,redo,help</rows>
@@ -70,7 +67,6 @@
             <users></users>
             <types></types>
             <components></components>
-            <custom></custom>
             <area>0</area>
             <device>tablet,phone</device>
             <rows>undo,redo,spacer,bold,italic,underline,formatselect,spacer,justifyleft,justifycenter,justifyfull,justifyright,spacer,fullscreen,kitchensink;styleselect,lists,spellchecker,article,link,unlink</rows>
@@ -85,7 +81,6 @@
             <users></users>
             <types>6,7,3,4,5,8</types>
             <components></components>
-            <custom></custom>
             <area>0</area>
             <device>desktop,tablet,phone</device>
             <rows>fullscreen,justifyleft,justifycenter,justifyfull,justifyright,link,unlink,imgmanager,styleselect</rows>
