@@ -1077,7 +1077,7 @@ select.mceNativeListBox {
 }.mceDefaultSkin .mceTextBox {
     height: 32px;
     line-height: 2;
-    width: 100%;
+    max-width: 100%;
     padding: 2px;
     border: 1px solid #ddd;
     background: #fff;
@@ -1086,6 +1086,7 @@ select.mceNativeListBox {
     box-shadow: inherit;
     box-sizing: border-box;
     cursor: text;
+    width: auto;
 }
 
 .mceDefaultSkin .mceTextBox:focus {
