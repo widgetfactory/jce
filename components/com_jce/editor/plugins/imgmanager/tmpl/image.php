@@ -38,19 +38,19 @@ use Joomla\CMS\Language\Text;
             <div class="uk-form-control uk-width-1-1 uk-width-small-4-5 uk-form-constrain uk-flex">
 
                 <div class="uk-form-controls">
-                    <input type="text" id="width" value="" class="uk-text-muted" />
+                    <input type="text" id="width" value="" class="uk-text-muted" aria-label="<?php echo Text::_('WF_LABEL_WIDTH'); ?>" />
                 </div>
 
                 <div class="uk-form-controls">
-                    <strong class="uk-form-label uk-text-center uk-vertical-align-middle">&times;</strong>
+                    <strong class="uk-form-label uk-text-center uk-vertical-align-middle" role="presentation">&times;</strong>
                 </div>
 
                 <div class="uk-form-controls">
-                    <input type="text" id="height" value="" class="uk-text-muted" />
+                    <input type="text" id="height" value="" class="uk-text-muted" aria-label="<?php echo Text::_('WF_LABEL_HEIGHT'); ?>" />
                 </div>
 
                 <label class="uk-form-label">
-                    <input class="uk-constrain-checkbox" type="checkbox" checked />
+                    <input class="uk-constrain-checkbox" type="checkbox" checked aria-label="<?php echo Text::_('WF_LABEL_PROPORTIONAL'); ?>" />
                     <?php echo Text::_('WF_LABEL_PROPORTIONAL'); ?>
                 </label>
             </div>
@@ -79,7 +79,7 @@ use Joomla\CMS\Language\Text;
                     </div>
                 </div>
                 <div class="uk-width-1-2 uk-hidden-mini">
-                    <label for="clear" class="hastip uk-form-label uk-width-3-10" title="<?php echo Text::_('WF_LABEL_CLEAR_DESC'); ?>">
+                    <label for="clear" class="hastip uk-form-label uk-width-3-10" title="<?php echo Text::_('WF_LABEL_CLEAR_DESC'); ?>" aria-label="<?php echo Text::_('WF_LABEL_CLEAR_DESC'); ?>">
                         <?php echo Text::_('WF_LABEL_CLEAR'); ?>
                     </label>
                     <div class="uk-form-controls uk-width-7-10">
@@ -129,7 +129,7 @@ use Joomla\CMS\Language\Text;
                     <input type="text" id="margin_left" value="" />
                 </div>
                 <label class="uk-form-label">
-                    <input type="checkbox" class="uk-equalize-checkbox" />
+                    <input type="checkbox" class="uk-equalize-checkbox" aria-label="<?php echo Text::_('WF_LABEL_EQUAL'); ?>" />
                     <?php echo Text::_('WF_LABEL_EQUAL'); ?>
                 </label>
             </div>
@@ -142,7 +142,7 @@ use Joomla\CMS\Language\Text;
 
             <div class="uk-form-controls uk-grid uk-grid-small uk-width-4-5">
                 <div class="uk-form-controls uk-width-0-3">
-                    <input type="checkbox" id="border" />
+                    <input type="checkbox" id="border" aria-label="<?php echo Text::_('WF_LABEL_BORDER_ENABLE'); ?>" />
                 </div>
 
                 <label for="border_width" class="hastip uk-form-label uk-width-1-10 uk-margin-small-left" title="<?php echo Text::_('WF_LABEL_BORDER_WIDTH_DESC'); ?>"><?php echo Text::_('WF_LABEL_WIDTH'); ?></label>

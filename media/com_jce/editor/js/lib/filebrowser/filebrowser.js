@@ -90,6 +90,8 @@
         base: '',
         // base dir
         dir: 'images',
+        // source folder
+        source: '',
         actions: null,
         buttons: null,
         folder_tree: true,
@@ -783,7 +785,7 @@
             var self = this, dir = '';
 
             // get the file src from the widget element
-            var src = $(this.element).val();
+            var src = this.options.source || $(this.element).val();
 
             var base = this.options.base;
 
