@@ -155,12 +155,15 @@ class WFBrowserPlugin extends WFMediaManager
             if ($folder) {
                 $filesystem = $browser->getFileSystem();
 
-                // process any variables in the path
-                $path = $filesystem->toRelative($folder, false);
+                // check path exists
+                if ($filesystem->is_dir($folder)) {
+                    // process any variables in the path
+                    $path = $filesystem->toRelative($folder, false);
 
-                if ($browser->checkPathAccess($path)) {
-                    // set new path for browser
-                    $browser->set('source', $folder);
+                    if ($browser->checkPathAccess($path)) {
+                        // set new path for browser
+                        $browser->set('source', $folder);
+                    }
                 }
             }
         }
