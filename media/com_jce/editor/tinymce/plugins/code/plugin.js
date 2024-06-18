@@ -444,8 +444,9 @@
 
         if (e.keyCode == VK.ENTER) {
           node = ed.selection.getNode();
-          /* Handled by EnterKey perhaps?
-          if (node.nodeName === 'PRE') {
+
+          // Handled by EnterKey perhaps?
+          /*if (node.nodeName === 'PRE') {
             var type = node.getAttribute('data-mce-code') || '';
 
             if (type) {

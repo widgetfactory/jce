@@ -20,10 +20,10 @@ function init(editor) {
 }
 
 /**
-       * Detect and process shortcode in an html string
-       * @param {String} html
-       * @param {String} tagName
-       */
+ * Detect and process shortcode in an html string
+ * @param {String} html
+ * @param {String} tagName
+ */
 function processShortcode(editor, html, tagName) {
     // quick check to see if we should proceed
     if (html.indexOf('{') === -1) {
