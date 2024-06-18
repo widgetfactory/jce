@@ -1267,6 +1267,11 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($dir);
 
+        // check path exists
+        if (!$filesystem->is_dir($dir)) {
+            throw new InvalidArgumentException('Upload Failed: The target directory does not exist');
+        }
+
         // check access
         if (!$this->checkPathAccess($dir)) {
             throw new InvalidArgumentException('Upload Failed: Access to the target directory is restricted');
@@ -1529,6 +1534,11 @@ class WFFileBrowser extends CMSObject
         // check destination path
         WFUtility::checkPath($destination);
 
+        // check path exists
+        if (!$filesystem->is_dir($destination)) {
+            throw new InvalidArgumentException('Copy Failed: The target directory does not exist');
+        }
+
         // check access
         if (!$this->checkPathAccess($destination)) {
             throw new InvalidArgumentException('Copy Failed: Access to the target directory is restricted');
@@ -1636,6 +1646,11 @@ class WFFileBrowser extends CMSObject
 
         // check destination path
         WFUtility::checkPath($destination);
+
+        // check path exists
+        if (!$filesystem->is_dir($destination)) {
+            throw new InvalidArgumentException('Move Failed: The target directory does not exist');
+        }
 
         // check access
         if (!$this->checkPathAccess($destination)) {
