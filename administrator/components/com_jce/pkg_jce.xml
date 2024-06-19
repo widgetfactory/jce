@@ -19,7 +19,6 @@
     <files folder="packages">
         <file type="component" id="com_jce">com_jce.zip</file>
         <file type="plugin" id="jce" group="editors">plg_editors_jce.zip</file>
-        <file type="plugin" id="jce" group="content">plg_content_jce.zip</file>
         <file type="plugin" id="jce" group="extension">plg_extension_jce.zip</file>
         <file type="plugin" id="jce" group="installer">plg_installer_jce.zip</file>
         <file type="plugin" id="jce" group="quickicon">plg_quickicon_jce.zip</file>

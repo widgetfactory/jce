@@ -66,7 +66,7 @@ class pkg_jceInstallerScript
         $plugin = Table::getInstance('extension');
 
         $plugins = array(
-            'jce' => array('content', 'system', 'quickicon', 'extension', 'installer'),
+            'jce' => array('system', 'quickicon', 'extension', 'installer'),
             'jcepro' => array('system'),
             'mediajce' => array('fields')
         );
@@ -240,7 +240,7 @@ class pkg_jceInstallerScript
         $extension = Table::getInstance('extension');
 
         // disable content, system and quickicon plugins. This is to prevent errors if the install fails and some core files are missing
-        foreach (array('content', 'system', 'quickicon') as $folder) {
+        foreach (array('system', 'quickicon') as $folder) {
             $plugin = $extension->find(array(
                 'type' => 'plugin',
                 'element' => 'jce',
@@ -318,16 +318,23 @@ class pkg_jceInstallerScript
 
         Table::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_jce/tables');
 
-        // remove legacy jcefilebrowser quickicon
-        $plugin = PluginHelper::getPlugin('quickicon', 'jcefilebrowser');
+        // remove legacy jcefilebrowser quickicon and jce content plugins
+        $plugins = [
+            'jcefilebrowser' => 'quickicon',
+            'jce' => 'content'
+        ];
 
-        if ($plugin) {
-            $inst = new Installer();
-            // try uninstall
-            if (!$inst->uninstall('plugin', $plugin->id)) {
+        foreach ($plugins as $element => $folder) {
+            $plugin = PluginHelper::getPlugin($folder, $element);
 
-                if ($extension->load($plugin->id)) {
-                    $extension->publish(null, 0);
+            if ($plugin) {
+                $inst = new Installer();
+
+                // try uninstall
+                if (!$inst->uninstall('plugin', $plugin->id)) {
+                    if ($extension->load($plugin->id)) {
+                        $extension->publish(null, 0);
+                    }
                 }
             }
         }
