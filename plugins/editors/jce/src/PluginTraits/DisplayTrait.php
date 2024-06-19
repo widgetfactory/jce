@@ -86,7 +86,7 @@ trait DisplayTrait
 
         $document->addScriptOptions('plg_editor_jce',
             array(
-                'editor' => $editor->getScriptOptions(),
+                'editor' => $editor->getScriptOptions()
             )
         );
     }
