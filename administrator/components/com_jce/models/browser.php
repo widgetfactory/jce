@@ -29,9 +29,16 @@ class JceModelBrowser extends BaseDatabaseModel
     {
         $app = Factory::getApplication();
 
-        $filter = $app->input->getCmd('filter', '');
+        $mediatype  = $app->input->getCmd('mediatype', '');
+        $folder     = $app->input->getPath('folder', '');
 
-        $url = WfBrowserHelper::getBrowserLink(null, $filter);
+        $options = array();
+
+        if ($folder) {
+            $options['folder'] = $folder;
+        }
+
+        $url = WfBrowserHelper::getBrowserLink(null, $mediatype, '', $options);
 
         if (empty($url)) {
             $app->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'error');

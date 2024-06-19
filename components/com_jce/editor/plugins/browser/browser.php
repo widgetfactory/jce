@@ -145,12 +145,22 @@ class WFBrowserPlugin extends WFMediaManager
             $this->setFileTypes($filetypes);
         }
 
-        $folder = $app->input->getString('folder', '');
+        $folder = $app->input->getPath('folder', '');
 
         if ($folder) {
             // clean
-            $folder = WFUtility::makeSafe($folder);
+            $folder = WFUtility::cleanPath($folder);
 
+            // split by / and each part "safe"
+            $parts = explode('/', $folder);
+
+            foreach ($parts as $key => $part) {
+                $parts[$key] = WFUtility::makeSafe($part);
+            }
+
+            // rejoin parts
+            $folder = implode('/', $parts);
+            
             // still intact after clean?
             if ($folder) {
                 $filesystem = $browser->getFileSystem();

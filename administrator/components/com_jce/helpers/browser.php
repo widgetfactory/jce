@@ -14,15 +14,17 @@ use Joomla\CMS\Factory;
 
 abstract class WfBrowserHelper
 {
-    public static function getBrowserLink($element = null, $mediatype = '', $callback = '')
+    public static function getBrowserLink($element = null, $mediatype = '', $callback = '', $options = array())
     {
-        $options = self::getMediaFieldOptions(array(
-            'element' => $element,
+        $options = array_merge($options, array(
+            'element'   => $element,
             'mediatype' => $mediatype,
-            'callback' => $callback,
+            'callback'  => $callback,
         ));
+        
+        $values = self::getMediaFieldOptions($options);
 
-        return $options['url'];
+        return $values['url'];
     }
 
     public static function getMediaFieldLink($element = null, $mediatype = 'images', $callback = '')
