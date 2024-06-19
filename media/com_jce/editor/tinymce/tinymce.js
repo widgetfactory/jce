@@ -38200,7 +38200,7 @@
           '       <div class="mceModalHeader" id="' + id + '_header">' + 
           //'            <div class="mceModalLogo">' + (ed.settings.logo || '') + '</div>' +
           '           <h5 class="mceModalTitle" id="' + id + '_title">' + (f.title || "") + '</h5>' +
-          '           <button class="mceModalClose" type="button" title="' + ed.getLang('close', 'Close') + '"></button>' +
+          '           <button class="mceModalClose" type="button" title="' + ed.getLang('close', 'Close') + '" aria-label="' + ed.getLang('close', 'Close') + '"></button>' +
           '       </div>' +
           '       <div class="mceModalContent" id="' + id + '_content"></div>' +
           '   </div>' +
@@ -42161,7 +42161,8 @@
 
             // Find parent that is the first child of parentBlock
             node = container;
-            while (node.parentNode != parentBlock) {
+
+            while (node && node.parentNode != parentBlock) {
               node = node.parentNode;
             }
 
@@ -45453,8 +45454,9 @@
 
           if (e.keyCode == VK.ENTER) {
             node = ed.selection.getNode();
-            /* Handled by EnterKey perhaps?
-            if (node.nodeName === 'PRE') {
+
+            // Handled by EnterKey perhaps?
+            /*if (node.nodeName === 'PRE') {
               var type = node.getAttribute('data-mce-code') || '';
 
               if (type) {
