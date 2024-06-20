@@ -39,7 +39,7 @@ if (empty($field->value['media_src'])) {
 $data = array(
     'media_src' => '',
     'media_text' => (string) $fieldParams->get('media_description', ''),
-    'media_type' => (string) $fieldParams->get('mediatype', 'embed'),
+    'media_type' => (string) $fieldParams->get('display_type', 'embed'),
     'media_target' => (string) $fieldParams->get('media_target', '_blank'),
     'media_class' => (string) $fieldParams->get('media_class', ''),
     'media_caption' => '',
