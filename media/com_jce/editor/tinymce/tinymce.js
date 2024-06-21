@@ -30846,11 +30846,11 @@
   		 * @param {String} n Short name of the add-on.
   		 */
       requireLangPack: function (n) {
-        var s = tinymce.settings;
+        /*var s = tinymce.settings;
 
         if (s && s.language && s.language_load !== false) {
           tinymce.ScriptLoader.add(this.urls[n] + '/langs/' + s.language + '.js');
-        }
+        }*/
       },
 
       /**
@@ -32324,10 +32324,6 @@
 
         // Load scripts
         function loadScripts() {
-          if (s.language && s.language_load !== false) {
-            sl.add(tinymce.baseURL + '/langs/' + s.language + '.js');
-          }
-
           if (s.theme && typeof s.theme != "function" && s.theme.charAt(0) != '-' && !ThemeManager.urls[s.theme]) {
             ThemeManager.load(s.theme, 'themes/' + s.theme + '/theme' + tinymce.suffix + '.js');
           }
