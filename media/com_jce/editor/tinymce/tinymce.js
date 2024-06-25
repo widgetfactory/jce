@@ -856,6 +856,8 @@
      *
      * @namespace tinymce.plugins
      */
+
+    tinymce.plugins = {};
   })(window);
 
   /**
@@ -1402,23 +1404,16 @@
    * // Dispatch/fire the event
    * this.onSomething.dispatch('some string');
    */
-  tinymce.create('tinymce.util.Dispatcher', {
-    scope: null,
-    listeners: null,
-    inDispatch: false,
 
-    /**
-       * Constructs a new event dispatcher object.
-       *
-       * @constructor
-       * @method Dispatcher
-       * @param {Object} scope Optional default execution scope for all observer functions.
-       */
-    Dispatcher: function (scope) {
-      this.scope = scope || this;
-      this.listeners = [];
-    },
+  tinymce.util.Dispatcher = function (scope) {
+    var self = this;
 
+    self.scope = scope || self;
+    self.listeners = [];
+    self.inDispatch = false;
+  };
+
+  tinymce.util.Dispatcher.prototype = {
     /**
        * Add an observer function to be executed when a dispatch call is done.
        *
@@ -1513,9 +1508,7 @@
 
       return returnValue;
     }
-
-    /**#@-*/
-  });
+  };
 
   /**
    * URI.js
@@ -1551,17 +1544,8 @@
      * This class handles parsing, modification and serialization of URI/URL strings.
      * @class tinymce.util.URI
      */
-    tinymce.create('tinymce.util.URI', {
-      /**
-       * Constucts a new URI instance.
-       *
-       * @constructor
-       * @method URI
-       * @param {String} u URI string to parse.
-       * @param {Object} s Optional settings object.
-       */
-      URI: function (url, settings) {
-        var self = this,
+    tinymce.util.URI = function (url, settings) {
+      var self = this,
           baseUri, base_url;
 
         url = trim(url);
@@ -1634,8 +1618,9 @@
         if (isProtocolRelative) {
           self.protocol = '';
         }
-      },
+    };
 
+    tinymce.util.URI.prototype = {
       /**
        * Sets the internal path part of the URI.
        *
@@ -1925,7 +1910,7 @@
 
         return self.source;
       }
-    });
+    };
 
     var blockSvgDataUris = function (allowSvgDataUrls, tagName) {
       if (isNonNullable(allowSvgDataUrls)) {
@@ -2046,7 +2031,7 @@
        * // Sets a hash table cookie to the browser
        * tinymce.util.Storage.setHash({x : '1', y : '2'});
        */
-    tinymce.create('static tinymce.util.Storage', {
+    tinymce.util.Storage = {
       /**
         * Parses the specified query string into an name/value object.
         *
@@ -2129,9 +2114,9 @@
 
         sessionStorage.setItem(n, v);
       }
-    });
+    };
 
-    tinymce.create('static tinymce.util.Cookie', {
+    tinymce.util.Cookie = {
       getHash: function (n) {
         return tinymce.util.Storage.getHash(n);
       },
@@ -2147,7 +2132,7 @@
       set: function (n, v) {
         return tinymce.util.Storage.set(n, v);
       }
-    });
+    };
   })(tinymce);
 
   /**
@@ -2220,10 +2205,9 @@
    * Contributing: http://www.tinymce.com/contributing - Inactive
    */
 
-  tinymce.create('static tinymce.util.JSONP', {
+  tinymce.util.JSOP = {
     callbacks: {},
     count: 0,
-
     send: function (o) {
       var self = this,
         dom = tinymce.DOM,
@@ -2244,7 +2228,7 @@
 
       this.count++;
     }
-  });
+  };
 
   /**
    * XHR.js
@@ -2270,7 +2254,7 @@
    *    }
    * });
    */
-  tinymce.create('static tinymce.util.XHR', {
+  tinymce.util.XHR = {
     /**
        * Sends a XMLHTTPRequest.
        * Consult the Wiki for details on what settings this method takes.
@@ -2327,7 +2311,7 @@
         window.setTimeout(ready, 10);
       }
     }
-  });
+  };
 
   /**
    * JSONRequest.js
@@ -2346,51 +2330,44 @@
       XHR = tinymce.util.XHR;
 
     /**
-  	 * This class enables you to use JSON-RPC to call backend methods.
-  	 *
-  	 * @class tinymce.util.JSONRequest
-  	 * @example
-  	 * var json = new tinymce.util.JSONRequest({
-  	 * 		url : 'somebackend.php'
-  	 * });
-  	 *
-  	 * // Send RPC call 1
-  	 * json.send({
-  	 *     method : 'someMethod1',
-  	 *     params : ['a', 'b'],
-  	 *     success : function(result) {
-  	 *         console.dir(result);
-  	 * 	   }
-  	 * });
-  	 *
-  	 * // Send RPC call 2
-  	 * json.send({
-  	 *     method : 'someMethod2',
-  	 *     params : ['a', 'b'],
-  	 *     success : function(result) {
-  	 *         console.dir(result);
-  	 *     }
-  	 * });
-  	 */
-    tinymce.create('tinymce.util.JSONRequest', {
-      /**
-  		 * Constructs a new JSONRequest instance.
-  		 *
-  		 * @constructor
-  		 * @method JSONRequest
-  		 * @param {Object} s Optional settings object.
-  		 */
-      JSONRequest: function (s) {
-        this.settings = extend({}, s);
-        this.count = 0;
-      },
+     * This class enables you to use JSON-RPC to call backend methods.
+     *
+     * @class tinymce.util.JSONRequest
+     * @example
+     * var json = new tinymce.util.JSONRequest({
+     * 		url : 'somebackend.php'
+     * });
+     *
+     * // Send RPC call 1
+     * json.send({
+     *     method : 'someMethod1',
+     *     params : ['a', 'b'],
+     *     success : function(result) {
+     *         console.dir(result);
+     * 	   }
+     * });
+     *
+     * // Send RPC call 2
+     * json.send({
+     *     method : 'someMethod2',
+     *     params : ['a', 'b'],
+     *     success : function(result) {
+     *         console.dir(result);
+     *     }
+     * });
+     */
+    tinymce.util.JSONRequest = function (settings) {
+      this.settings = extend({}, settings);
+      this.count = 0;
+    };
 
+    tinymce.util.JSONRequest.prototype = {
       /**
-  		 * Sends a JSON-RPC call. Consult the Wiki API documentation for more details on what you can pass to this function.
-  		 *
-  		 * @method send
-  		 * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
-  		 */
+       * Sends a JSON-RPC call. Consult the Wiki API documentation for more details on what you can pass to this function.
+       *
+       * @method send
+       * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
+       */
       send: function (o) {
         var ecb = o.error,
           scb = o.success;
@@ -2429,22 +2406,21 @@
         o.content_type = 'application/json';
 
         XHR.send(o);
-      },
-
-      'static': {
-        /**
-  			 * Simple helper function to send a JSON-RPC request without the need to initialize an object.
-  			 * Consult the Wiki API documentation for more details on what you can pass to this function.
-  			 *
-  			 * @method sendRPC
-  			 * @static
-  			 * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
-  			 */
-        sendRPC: function (o) {
-          return new tinymce.util.JSONRequest().send(o);
-        }
       }
-    });
+    };
+
+    /**
+         * Simple helper function to send a JSON-RPC request without the need to initialize an object.
+         * Consult the Wiki API documentation for more details on what you can pass to this function.
+         *
+         * @method sendRPC
+         * @static
+         * @param {Object} o Call object where there are three field id, method and params this object should also contain callbacks etc.
+         */
+    tinymce.util.JSONRequest.sendRPC = function (o) {
+      return new tinymce.util.JSONRequest().send(o);
+    };
+
   })(tinymce);
 
   /**
@@ -31313,7 +31289,7 @@
       init: function (settings) {
         /*eslint no-unused-vars:0*/
 
-        var self = this;
+        var self = this;
 
         function createId(elm) {
           var id = elm.id;
@@ -32426,8 +32402,9 @@
 
             if (po.init) {
               po.init(self, u);
-              initializedPlugins.push(p);
             }
+
+            initializedPlugins.push(p);
           }
         }
 
@@ -44189,39 +44166,33 @@
   /*global tinymce:true */
 
   (function () {
-
-    tinymce.create('tinymce.plugins.HelpPlugin', {
-      init: function (ed, url) {
-        this.editor = ed;
-
-        ed.addCommand('mceHelp', function () {
-          ed.windowManager.open({
-            title: ed.getLang('dlg.help', 'Help'),
-            url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-            size: 'mce-modal-landscape-full'
-          });
+    tinymce.PluginManager.add('help', function (ed, url) {
+      ed.addCommand('mceHelp', function () {
+        ed.windowManager.open({
+          title: ed.getLang('dlg.help', 'Help'),
+          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
+          size: 'mce-modal-landscape-full'
         });
+      });
 
-        // Register buttons
-        ed.addButton('help', {
-          title: 'dlg.help',
-          cmd: 'mceHelp'
-        });
-      }
+      // Register buttons
+      ed.addButton('help', {
+        title: 'dlg.help',
+        cmd: 'mceHelp'
+      });
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('help', tinymce.plugins.HelpPlugin);
   })();
 
   /**
-   * editor_plugin_src.js
-   *
-   * Copyright 2011, Moxiecode Systems AB
-   * Released under LGPL License.
-   *
-   * License: http://www.tinymce.com/license
-   * Contributing: http://tinymce.moxiecode.com/contributing
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @copyright   Copyright 2009, Moxiecode Systems AB
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
    */
 
   /*global tinymce:true */
@@ -44229,68 +44200,55 @@
   (function () {
     var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 
-    tinymce.create('tinymce.plugins.AutolinkPlugin', {
-      /**
-  		 * Initializes the plugin, this will be executed after the plugin has been created.
-  		 * This call is done before the editor instance has finished it's initialization so use the onInit event
-  		 * of the editor instance to intercept that event.
-  		 *
-  		 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
-  		 * @param {string} url Absolute URL to where the plugin is located.
-  		 */
+    tinymce.PluginManager.add('autolink', function (ed, url) {
+      if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
+        return;
+      }
 
-      init: function (ed, url) {
-        var self = this;
+      if (ed.settings.autolink_pattern) {
+        AutoLinkPattern = ed.settings.autolink_pattern;
+      }
 
-        if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
-          return;
+      ed.onAutoLink = new tinymce.util.Dispatcher(this);
+
+      // Add a key down handler
+      ed.onKeyDown.addToTop(function (ed, e) {
+        if (e.keyCode == 13) {
+          return handleEnter(ed);
         }
+      });
 
-        if (ed.settings.autolink_pattern) {
-          AutoLinkPattern = ed.settings.autolink_pattern;
+      // Internet Explorer has built-in automatic linking for most cases
+      if (tinymce.isIE) {
+        return;
+      }
+
+      ed.onKeyPress.add(function (ed, e) {
+        if (e.which == 41) {
+          return handleEclipse(ed);
         }
+      });
 
-        ed.onAutoLink = new tinymce.util.Dispatcher(this);
-
-        // Add a key down handler
-        ed.onKeyDown.addToTop(function (ed, e) {
-          if (e.keyCode == 13) {
-            return self.handleEnter(ed);
-          }
-        });
-
-        // Internet Explorer has built-in automatic linking for most cases
-        if (tinymce.isIE) {
-          return;
+      // Add a key up handler
+      ed.onKeyUp.add(function (ed, e) {
+        if (e.keyCode == 32) {
+          return handleSpacebar(ed);
         }
+      });
 
-        ed.onKeyPress.add(function (ed, e) {
-          if (e.which == 41) {
-            return self.handleEclipse(ed);
-          }
-        });
+      function handleEclipse(ed) {
+        parseCurrentLine(ed, -1, '(');
+      }
 
-        // Add a key up handler
-        ed.onKeyUp.add(function (ed, e) {
-          if (e.keyCode == 32) {
-            return self.handleSpacebar(ed);
-          }
-        });
-      },
+      function handleSpacebar(ed) {
+        parseCurrentLine(ed, 0, '');
+      }
 
-      handleEclipse: function (ed) {
-        this.parseCurrentLine(ed, -1, '(', true);
-      },
+      function handleEnter(ed) {
+        parseCurrentLine(ed, -1, '');
+      }
 
-      handleSpacebar: function (ed) {
-        this.parseCurrentLine(ed, 0, '', true);
-      },
-
-      handleEnter: function (ed) {
-        this.parseCurrentLine(ed, -1, '', false);
-      },
-
-      parseCurrentLine: function (editor, endOffset, delimiter) {
+      function parseCurrentLine(editor, endOffset, delimiter) {
         var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
 
         function scopeIndex(container, index) {
@@ -44448,9 +44406,6 @@
         }
       }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('autolink', tinymce.plugins.AutolinkPlugin);
   })();
 
   /**
@@ -44481,500 +44436,495 @@
     var fontIconRe = /<([a-z0-9]+)([^>]+)class="([^"]*)(glyph|uk-)?(fa|icon)-([\w-]+)([^"]*)"([^>]*)><\/\1>/gi;
     var paddedRx = /<(p|h1|h2|h3|h4|h5|h6|pre|div|address|caption)\b([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi;
 
-    tinymce.create('tinymce.plugins.CleanupPlugin', {
-      init: function (ed, url) {
-        var self = this;
-        this.editor = ed;
+    tinymce.PluginManager.add('cleanup', function (ed, url) {
+      // set validate value to verify_html value
+      if (ed.settings.verify_html === false) {
+        ed.settings.validate = false;
+      }
 
-        // set validate value to verify_html value
-        if (ed.settings.verify_html === false) {
-          ed.settings.validate = false;
-        }
+      ed.onPreInit.add(function () {
+        // Remove bogus elements
+        ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
+          var i = nodes.length;
 
-        ed.onPreInit.add(function () {
+          while (i--) {
+            nodes[i].remove();
+          }
+        });
+
+        // cleanup data-mce-bogus tags
+        if (ed.settings.remove_trailing_brs === false) {
           // Remove bogus elements
-          ed.serializer.addAttributeFilter('data-mce-caret', function (nodes, name, args) {
-            var i = nodes.length;
-
-            while (i--) {
-              nodes[i].remove();
-            }
-          });
-
-          // cleanup data-mce-bogus tags
-          if (ed.settings.remove_trailing_brs === false) {
-            // Remove bogus elements
-            ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes, name, args) {
-              var i = nodes.length, node, textNode;
-
-              while (i--) {
-                node = nodes[i];
-
-                if (node.name !== 'br') {
-                  continue;
-                }
-
-                if (!node.prev && !node.next) {
-                  textNode = new Node('#text', 3);
-                  textNode.value = '\u00a0';
-                  node.replace(textNode);
-                } else {
-                  node.remove();
-                }
-              }
-            });
-          }
-
-          // cleanup tmp attributes
-          ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
-            var i = nodes.length,
-              node;
+          ed.serializer.addAttributeFilter('data-mce-bogus', function (nodes, name, args) {
+            var i = nodes.length, node, textNode;
 
             while (i--) {
               node = nodes[i];
-              node.attr('data-mce-tmp', null);
-            }
-          });
 
-          // cleanup tmp attributes
-          ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-              node.attr('data-mce-tmp', null);
-            }
-          });
-
-          function removeEventAttributes() {
-            // remove all event attributes
-            each(ed.schema.elements, function (elm) {
-              // no attributes on this element
-              if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
-                return true;
+              if (node.name !== 'br') {
+                continue;
               }
 
-              each(elm.attributes, function (obj, name) {
-                if (name.indexOf('on') === 0) {
-                  delete elm.attributes[name];
-                  elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
-                }
-              });
-            });
-          }
-
-          if (ed.settings.verify_html !== false) {
-            if (!ed.settings.allow_event_attributes) {
-              removeEventAttributes();
-            }
-
-            // add support for "bootstrap" icons
-            var elements = ed.schema.elements;
-
-            // allow empty elements. There really is no need to remove them...
-            each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
-              if (elements[name]) {
-                elements[name].removeEmpty = false;
-              }
-            });
-
-            if (!ed.getParam('pad_empty_tags', true)) {
-              each(elements, function (v, k) {
-                if (v.paddEmpty) {
-                  v.paddEmpty = false;
-                }
-              });
-            }
-
-            if (!ed.getParam('table_pad_empty_cells', true)) {
-              elements.th.paddEmpty = false;
-              elements.td.paddEmpty = false;
-            }
-
-            each(elements, function (v, k) {
-              // skip internal elements
-              if (k.indexOf('mce:') == 0) {
-                return true;
-              }
-
-              // custom element
-              if (tinymce.inArray(tags, k) === -1) {
-                ed.schema.addCustomElements(k);
-              }
-            });
-          }
-
-          // only if "Cleanup HTML" enabled
-          if (ed.settings.verify_html !== false) {
-            // Invalid Attribute Values cleanup
-            var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
-
-            if (invalidAttribValue) {
-              /**
-                           * adapted from https://github.com/tinymce/tinymce/blob/master/src/core/src/main/js/ui/Selector.js
-                           * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
-                           */
-              function attrFilter(value, expr, check) {
-                return !expr ? !!check :
-                  expr === "=" ? value === check :
-                    expr === "*=" ? value.indexOf(check) >= 0 :
-                      expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
-                        expr === "!=" ? value != check :
-                          expr === "^=" ? value.indexOf(check) === 0 :
-                            expr === "$=" ? value.substr(value.length - check.length) === check :
-                              false;
-              }
-
-              function replaceAttributeValue(nodes, name, expr, check) {
-                var i = nodes.length,
-                  node;
-
-                while (i--) {
-                  node = nodes[i];
-
-                  var value = node.attr(name);
-
-                  if (!value) {
-                    continue;
-                  }
-
-                  // remove attribute if it matches expression
-                  if (!expr || attrFilter(value, expr, check)) {
-                    node.attr(name, null);
-                    // remove temp attribute
-                    if (name === 'src' || name === 'href' || name === 'style') {
-                      node.attr('data-mce-' + name, null);
-                    }
-
-                    // remove <a> nodes without attributes
-                    if (node.name === "a" && !node.attributes.length) {
-                      node.unwrap();
-                    }
-                  }
-                }
-              }
-
-              each(tinymce.explode(invalidAttribValue), function (item) {
-                var matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
-
-                if (matches && matches.length == 5) {
-                  var tag = matches[1],
-                    attrib = matches[2],
-                    expr = matches[3],
-                    value = matches[4];
-
-                  // remove the entire attribute
-                  if (attrib && !expr && !value) {
-                    expr = '';
-                  }
-
-                  if (typeof expr !== "undefined") {
-                    // all tags
-                    if (tag == '*') {
-                      ed.parser.addAttributeFilter(attrib, function (nodes, name) {
-                        replaceAttributeValue(nodes, name, expr, value);
-                      });
-                      ed.serializer.addAttributeFilter(attrib, function (nodes, name) {
-                        replaceAttributeValue(nodes, name, expr, value);
-                      });
-                      // specific tag
-                    } else {
-                      ed.parser.addNodeFilter(tag, function (nodes, name) {
-                        replaceAttributeValue(nodes, attrib, expr, value);
-                      });
-                      ed.serializer.addNodeFilter(tag, function (nodes, name) {
-                        replaceAttributeValue(nodes, attrib, expr, value);
-                      });
-                    }
-                  }
-                }
-              });
-            }
-          }
-
-          ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            if (ed.schema.isValidChild('body', name)) {
-              while (i--) {
-                node = nodes[i];
+              if (!node.prev && !node.next) {
+                textNode = new Node('#text', 3);
+                textNode.value = '\u00a0';
+                node.replace(textNode);
+              } else {
                 node.remove();
               }
             }
           });
+        }
 
-          ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
-            var i = nodes.length,
-              node;
+        // cleanup tmp attributes
+        ed.serializer.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+          var i = nodes.length,
+            node;
 
-            if (ed.schema.isValidChild('body', name)) {
-              while (i--) {
-                node = nodes[i];
-
-                // don't remove system spans
-                if (name === 'span' && node.attr('data-mce-type')) {
-                  continue;
-                }
-
-                node.unwrap();
-              }
-            }
-          });
-
-          // try and keep empty a tags that are not anchors, process bootstrap icons
-          ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
-            var i = nodes.length,
-              node, cls;
-
-            while (i--) {
-              node = nodes[i], cls = (node.attr('class') || name === "li");
-              // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
-              if (cls && !node.firstChild) {
-                node.attr('data-mce-empty', '1');
-                node.append(new Node('#text', '3')).value = '\u00a0';
-              }
-            }
-          });
-
-          // cleanup padded "bootstrap" tags
-          ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
-            var i = nodes.length,
-              node, fc;
-
-            while (i--) {
-              node = nodes[i], fc = node.firstChild;
-              node.attr('data-mce-empty', null);
-
-              if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
-                fc.remove();
-              }
-            }
-          });
-
-          // disable onclick etc.
-          ed.parser.addAttributeFilter('onclick,ondblclick,onmousedown,onmouseup', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-
-              node.attr('data-mce-' + name, node.attr(name));
-              node.attr(name, 'return false;');
-            }
-          });
-
-          ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick,data-mce-onmousedown,data-mce-onmouseup', function (nodes, name) {
-            var i = nodes.length,
-              node, k;
-
-            while (i--) {
-              node = nodes[i], k = name.replace('data-mce-', '');
-
-              node.attr(k, node.attr(name));
-              node.attr(name, null);
-            }
-          });
-
-          ed.serializer.addNodeFilter('br', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            if (i) {
-              while (i--) {
-                node = nodes[i];
-
-                // parent node is body
-                if (node.parent && node.parent.name === "body" && !node.prev) {
-                  node.remove();
-                }
-              }
-            }
-          });
-
-          // remove br in Gecko
-          ed.parser.addNodeFilter('br', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            if (i) {
-              while (i--) {
-                node = nodes[i];
-
-                // parent node is body
-                if (node.parent && node.parent.name === "body" && !node.prev) {
-                  node.remove();
-                }
-              }
-            }
-          });
+          while (i--) {
+            node = nodes[i];
+            node.attr('data-mce-tmp', null);
+          }
         });
 
-        // run cleanup with default settings
-        if (ed.settings.verify_html === false) {
-          ed.addCommand('mceCleanup', function () {
-            var s = ed.settings,
-              se = ed.selection,
-              bm;
-            bm = se.getBookmark();
+        // cleanup tmp attributes
+        ed.parser.addAttributeFilter('data-mce-tmp', function (nodes, name) {
+          var i = nodes.length,
+            node;
 
-            var content = ed.getContent({
-              cleanup: true
+          while (i--) {
+            node = nodes[i];
+            node.attr('data-mce-tmp', null);
+          }
+        });
+
+        function removeEventAttributes() {
+          // remove all event attributes
+          each(ed.schema.elements, function (elm) {
+            // no attributes on this element
+            if (!elm.attributesOrder || elm.attributesOrder.length === 0) {
+              return true;
+            }
+
+            each(elm.attributes, function (obj, name) {
+              if (name.indexOf('on') === 0) {
+                delete elm.attributes[name];
+                elm.attributesOrder.splice(tinymce.inArray(elm, elm.attributesOrder, name), 1);
+              }
             });
-
-            // set verify to true
-            s.verify_html = true;
-
-            // create new schema
-            var schema = new tinymce.html.Schema(s);
-
-            // clean content
-            content = new tinymce.html.Serializer({
-              validate: true
-            }, schema).serialize(new tinymce.html.DomParser({
-              validate: true,
-              allow_event_attributes: !!ed.settings.allow_event_attributes
-            }, schema).parse(content));
-
-            ed.setContent(content, {
-              cleanup: true
-            });
-
-            se.moveToBookmark(bm);
           });
         }
 
-        // Cleanup callback
-        ed.onBeforeSetContent.add(function (ed, o) {
-          // remove br tag added by Firefox
-          o.content = o.content.replace(/^<br>/, '');
+        if (ed.settings.verify_html !== false) {
+          if (!ed.settings.allow_event_attributes) {
+            removeEventAttributes();
+          }
 
-          // Geshi
-          o.content = self.convertFromGeshi(o.content);
+          // add support for "bootstrap" icons
+          var elements = ed.schema.elements;
 
-          // only if "Cleanup HTML" enabled
-          if (ed.settings.validate) {
-            // remove attributes
-            if (ed.getParam('invalid_attributes')) {
-              var s = ed.getParam('invalid_attributes', '');
-
-              o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function () {
-                // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
-                var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
-                return '<' + tag + attribs + '>';
-              });
+          // allow empty elements. There really is no need to remove them...
+          each(split('ol ul sub sup blockquote font table tbody tr strong b'), function (name) {
+            if (elements[name]) {
+              elements[name].removeEmpty = false;
             }
+          });
+
+          if (!ed.getParam('pad_empty_tags', true)) {
+            each(elements, function (v, k) {
+              if (v.paddEmpty) {
+                v.paddEmpty = false;
+              }
+            });
           }
 
-          // pad bootstrap icons
-          o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
-
-          // padd some empty tags
-          o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
-
-          // padd list elements
-          o.content = o.content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
-        });
-
-        // Cleanup callback
-        ed.onPostProcess.add(function (ed, o) {
-          if (o.set) {
-            // Geshi
-            o.content = self.convertFromGeshi(o.content);
+          if (!ed.getParam('table_pad_empty_cells', true)) {
+            elements.th.paddEmpty = false;
+            elements.td.paddEmpty = false;
           }
-          if (o.get) {
-            // Geshi
-            o.content = self.convertToGeshi(o.content);
 
-            // Remove empty jcemediabox / jceutilities anchors
-            o.content = o.content.replace(/<a([^>]*)class="jce(box|popup|lightbox|tooltip|_tooltip)"([^>]*)><\/a>/gi, '');
-            // Remove span elements with jcemediabox / jceutilities classes
-            o.content = o.content.replace(/<span class="jce(box|popup|lightbox|tooltip|_tooltip)">(.*?)<\/span>/gi, '$2');
-            // legacy mce stuff
-            o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
+          each(elements, function (v, k) {
+            // skip internal elements
+            if (k.indexOf('mce:') == 0) {
+              return true;
+            }
 
-            if (ed.settings.validate === false) {
-              // fix body content
-              o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
+            // custom element
+            if (tinymce.inArray(tags, k) === -1) {
+              ed.schema.addCustomElements(k);
+            }
+          });
+        }
 
-              if (!ed.getParam('remove_tag_padding')) {
-                // pad empty elements
-                o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+        // only if "Cleanup HTML" enabled
+        if (ed.settings.verify_html !== false) {
+          // Invalid Attribute Values cleanup
+          var invalidAttribValue = ed.getParam('invalid_attribute_values', '');
+
+          if (invalidAttribValue) {
+            /**
+                         * adapted from https://github.com/tinymce/tinymce/blob/master/src/core/src/main/js/ui/Selector.js
+                         * Copyright (c) 1999-2017 Ephox Corp. All rights reserved
+                         */
+            function attrFilter(value, expr, check) {
+              return !expr ? !!check :
+                expr === "=" ? value === check :
+                  expr === "*=" ? value.indexOf(check) >= 0 :
+                    expr === "~=" ? (" " + value + " ").indexOf(" " + check + " ") >= 0 :
+                      expr === "!=" ? value != check :
+                        expr === "^=" ? value.indexOf(check) === 0 :
+                          expr === "$=" ? value.substr(value.length - check.length) === check :
+                            false;
+            }
+
+            function replaceAttributeValue(nodes, name, expr, check) {
+              var i = nodes.length,
+                node;
+
+              while (i--) {
+                node = nodes[i];
+
+                var value = node.attr(name);
+
+                if (!value) {
+                  continue;
+                }
+
+                // remove attribute if it matches expression
+                if (!expr || attrFilter(value, expr, check)) {
+                  node.attr(name, null);
+                  // remove temp attribute
+                  if (name === 'src' || name === 'href' || name === 'style') {
+                    node.attr('data-mce-' + name, null);
+                  }
+
+                  // remove <a> nodes without attributes
+                  if (node.name === "a" && !node.attributes.length) {
+                    node.unwrap();
+                  }
+                }
               }
             }
 
-            if (!ed.getParam('table_pad_empty_cells', true)) {
-              o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
-            }
+            each(tinymce.explode(invalidAttribValue), function (item) {
+              var matches = /([a-z0-9\*]+)\[([a-z0-9-]+)([\^\$\!~\*]?=)?["']?([^"']+)?["']?\]/i.exec(item);
 
-            // clean empty tags
-            o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
-              // remove data-mce-empty attribute
-              attribs = attribs.replace('data-mce-empty="1"', '');
-              // return empty tag
-              return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+              if (matches && matches.length == 5) {
+                var tag = matches[1],
+                  attrib = matches[2],
+                  expr = matches[3],
+                  value = matches[4];
+
+                // remove the entire attribute
+                if (attrib && !expr && !value) {
+                  expr = '';
+                }
+
+                if (typeof expr !== "undefined") {
+                  // all tags
+                  if (tag == '*') {
+                    ed.parser.addAttributeFilter(attrib, function (nodes, name) {
+                      replaceAttributeValue(nodes, name, expr, value);
+                    });
+                    ed.serializer.addAttributeFilter(attrib, function (nodes, name) {
+                      replaceAttributeValue(nodes, name, expr, value);
+                    });
+                    // specific tag
+                  } else {
+                    ed.parser.addNodeFilter(tag, function (nodes, name) {
+                      replaceAttributeValue(nodes, attrib, expr, value);
+                    });
+                    ed.serializer.addNodeFilter(tag, function (nodes, name) {
+                      replaceAttributeValue(nodes, attrib, expr, value);
+                    });
+                  }
+                }
+              }
             });
+          }
+        }
 
-            // clean empty list tags
-            o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
+        ed.serializer.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+          var i = nodes.length,
+            node;
 
-            // remove padding on div (legacy)
-            if (ed.getParam('remove_div_padding')) {
-              o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
+          if (ed.schema.isValidChild('body', name)) {
+            while (i--) {
+              node = nodes[i];
+              node.remove();
             }
-
-            // remove padding on everything
-            if (ed.getParam('pad_empty_tags', true) === false) {
-              o.content = o.content.replace(paddedRx, '<$1$2></$1>');
-            }
-
-            // convert multiple consecutive non-breaking spaces
-            if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
-              o.content = o.content.replace(/\u00a0/g, '&nbsp;');
-            }
-
-            // fix boolean custom attributes
-            o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
-
-            // Remove empty contents
-            if (ed.settings.padd_empty_editor) {
-              o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
-            }
-
-            // fix self-closing hr tags for pagebreak
-            o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
-            // fix self-closing hr tags for readmore
-            o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
           }
         });
 
-        ed.onSaveContent.add(function (ed, o) {
-          // Convert entities to characters
-          if (ed.getParam('cleanup_pluginmode')) {
+        ed.parser.addNodeFilter(ed.settings.invalid_elements, function (nodes, name) {
+          var i = nodes.length,
+            node;
 
-            var entities = {
-              '&#39;': "'",
-              '&amp;': '&',
-              '&quot;': '"',
-              '&apos;': "'"
-            };
+          if (ed.schema.isValidChild('body', name)) {
+            while (i--) {
+              node = nodes[i];
 
-            o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
-              return entities[a];
-            });
+              // don't remove system spans
+              if (name === 'span' && node.attr('data-mce-type')) {
+                continue;
+              }
+
+              node.unwrap();
+            }
           }
         });
 
-        // Register buttons
-        ed.addButton('cleanup', {
-          title: 'advanced.cleanup_desc',
-          cmd: 'mceCleanup'
-        });
-      },
+        // try and keep empty a tags that are not anchors, process bootstrap icons
+        ed.parser.addNodeFilter('a,i,span,li', function (nodes, name) {
+          var i = nodes.length,
+            node, cls;
 
-      convertFromGeshi: function (h) {
+          while (i--) {
+            node = nodes[i], cls = (node.attr('class') || name === "li");
+            // padd it with a space if its empty and has a class, eg: <i class="icon-ok"></i>
+            if (cls && !node.firstChild) {
+              node.attr('data-mce-empty', '1');
+              node.append(new Node('#text', '3')).value = '\u00a0';
+            }
+          }
+        });
+
+        // cleanup padded "bootstrap" tags
+        ed.serializer.addAttributeFilter('data-mce-empty', function (nodes, name) {
+          var i = nodes.length,
+            node, fc;
+
+          while (i--) {
+            node = nodes[i], fc = node.firstChild;
+            node.attr('data-mce-empty', null);
+
+            if (fc && (fc.value === '\u00a0' || fc.value === '&nbsp;')) {
+              fc.remove();
+            }
+          }
+        });
+
+        // disable onclick etc.
+        ed.parser.addAttributeFilter('onclick,ondblclick,onmousedown,onmouseup', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            node = nodes[i];
+
+            node.attr('data-mce-' + name, node.attr(name));
+            node.attr(name, 'return false;');
+          }
+        });
+
+        ed.serializer.addAttributeFilter('data-mce-onclick,data-mce-ondblclick,data-mce-onmousedown,data-mce-onmouseup', function (nodes, name) {
+          var i = nodes.length,
+            node, k;
+
+          while (i--) {
+            node = nodes[i], k = name.replace('data-mce-', '');
+
+            node.attr(k, node.attr(name));
+            node.attr(name, null);
+          }
+        });
+
+        ed.serializer.addNodeFilter('br', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          if (i) {
+            while (i--) {
+              node = nodes[i];
+
+              // parent node is body
+              if (node.parent && node.parent.name === "body" && !node.prev) {
+                node.remove();
+              }
+            }
+          }
+        });
+
+        // remove br in Gecko
+        ed.parser.addNodeFilter('br', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          if (i) {
+            while (i--) {
+              node = nodes[i];
+
+              // parent node is body
+              if (node.parent && node.parent.name === "body" && !node.prev) {
+                node.remove();
+              }
+            }
+          }
+        });
+      });
+
+      // run cleanup with default settings
+      if (ed.settings.verify_html === false) {
+        ed.addCommand('mceCleanup', function () {
+          var s = ed.settings,
+            se = ed.selection,
+            bm;
+          bm = se.getBookmark();
+
+          var content = ed.getContent({
+            cleanup: true
+          });
+
+          // set verify to true
+          s.verify_html = true;
+
+          // create new schema
+          var schema = new tinymce.html.Schema(s);
+
+          // clean content
+          content = new tinymce.html.Serializer({
+            validate: true
+          }, schema).serialize(new tinymce.html.DomParser({
+            validate: true,
+            allow_event_attributes: !!ed.settings.allow_event_attributes
+          }, schema).parse(content));
+
+          ed.setContent(content, {
+            cleanup: true
+          });
+
+          se.moveToBookmark(bm);
+        });
+      }
+
+      // Cleanup callback
+      ed.onBeforeSetContent.add(function (ed, o) {
+        // remove br tag added by Firefox
+        o.content = o.content.replace(/^<br>/, '');
+
+        // Geshi
+        o.content = convertFromGeshi(o.content);
+
+        // only if "Cleanup HTML" enabled
+        if (ed.settings.validate) {
+          // remove attributes
+          if (ed.getParam('invalid_attributes')) {
+            var s = ed.getParam('invalid_attributes', '');
+
+            o.content = o.content.replace(new RegExp('<([^>]+)(' + s.replace(/,/g, '|') + ')="([^"]+)"([^>]*)>', 'gi'), function () {
+              // get tag an attributes (if any) from arguments array, eg: match, p1,p2...pn, offset, string
+              var args = arguments, tag = args[1], attribs = args[args.length - 3] || '';
+              return '<' + tag + attribs + '>';
+            });
+          }
+        }
+
+        // pad bootstrap icons
+        o.content = o.content.replace(fontIconRe, '<$1$2class="$3$4$5-$6$7"$8 data-mce-empty="1">&nbsp;</$1>');
+
+        // padd some empty tags
+        o.content = o.content.replace(/<(a|i|span)\b([^>]+)><\/\1>/gi, '<$1$2 data-mce-empty="1">&nbsp;</$1>');
+
+        // padd list elements
+        o.content = o.content.replace(/<li><\/li>/, '<li data-mce-empty="1">&nbsp;</li>');
+      });
+
+      // Cleanup callback
+      ed.onPostProcess.add(function (ed, o) {
+        if (o.set) {
+          // Geshi
+          o.content = convertFromGeshi(o.content);
+        }
+        if (o.get) {
+          // Geshi
+          o.content = convertToGeshi(o.content);
+
+          // Remove empty jcemediabox / jceutilities anchors
+          o.content = o.content.replace(/<a([^>]*)class="jce(box|popup|lightbox|tooltip|_tooltip)"([^>]*)><\/a>/gi, '');
+          // Remove span elements with jcemediabox / jceutilities classes
+          o.content = o.content.replace(/<span class="jce(box|popup|lightbox|tooltip|_tooltip)">(.*?)<\/span>/gi, '$2');
+          // legacy mce stuff
+          o.content = o.content.replace(/_mce_(src|href|style|coords|shape)="([^"]+)"\s*?/gi, '');
+
+          if (ed.settings.validate === false) {
+            // fix body content
+            o.content = o.content.replace(/<body([^>]*)>([\s\S]*)<\/body>/, '$2');
+
+            if (!ed.getParam('remove_tag_padding')) {
+              // pad empty elements
+              o.content = o.content.replace(/<(p|h1|h2|h3|h4|h5|h6|th|td|pre|div|address|caption)\b([^>]*)><\/\1>/gi, '<$1$2>&nbsp;</$1>');
+            }
+          }
+
+          if (!ed.getParam('table_pad_empty_cells', true)) {
+            o.content = o.content.replace(/<(th|td)([^>]*)>(&nbsp;|\u00a0)<\/\1>/gi, '<$1$2></$1>');
+          }
+
+          // clean empty tags
+          o.content = o.content.replace(/<(a|i|span)([^>]+)>(&nbsp;|\u00a0)<\/\1>/gi, function (match, tag, attribs) {
+            // remove data-mce-empty attribute
+            attribs = attribs.replace('data-mce-empty="1"', '');
+            // return empty tag
+            return '<' + tag + ' ' + tinymce.trim(attribs) + '></' + tag + '>';
+          });
+
+          // clean empty list tags
+          o.content = o.content.replace(/<li data-mce-empty="1">(&nbsp;|\u00a0)<\/li>/gi, '<li></li>');
+
+          // remove padding on div (legacy)
+          if (ed.getParam('remove_div_padding')) {
+            o.content = o.content.replace(/<div([^>]*)>(&nbsp;|\u00a0)<\/div>/g, '<div$1></div>');
+          }
+
+          // remove padding on everything
+          if (ed.getParam('pad_empty_tags', true) === false) {
+            o.content = o.content.replace(paddedRx, '<$1$2></$1>');
+          }
+
+          // convert multiple consecutive non-breaking spaces
+          if (ed.getParam('keep_nbsp', true) && ed.settings.entity_encoding === "raw") {
+            o.content = o.content.replace(/\u00a0/g, '&nbsp;');
+          }
+
+          // fix boolean custom attributes
+          o.content = o.content.replace(/(uk|v|ng|data)-([\w-]+)=""(\s|>)/gi, '$1-$2$3');
+
+          // Remove empty contents
+          if (ed.settings.padd_empty_editor) {
+            o.content = o.content.replace(/^(<div>(&nbsp;|&#160;|\s|\u00a0|)<\/div>[\r\n]*|<br(\s*\/)?>[\r\n]*)$/, '');
+          }
+
+          // fix self-closing hr tags for pagebreak
+          o.content = o.content.replace(/<hr(.*)class="system-pagebreak"(.*?)\/?>/gi, '<hr$1class="system-pagebreak"$2/>');
+          // fix self-closing hr tags for readmore
+          o.content = o.content.replace(/<hr id="system-readmore"(.*?)>/gi, '<hr id="system-readmore" />');
+        }
+      });
+
+      ed.onSaveContent.add(function (ed, o) {
+        // Convert entities to characters
+        if (ed.getParam('cleanup_pluginmode')) {
+
+          var entities = {
+            '&#39;': "'",
+            '&amp;': '&',
+            '&quot;': '"',
+            '&apos;': "'"
+          };
+
+          o.content = o.content.replace(/&(#39|apos|amp|quot);/gi, function (a) {
+            return entities[a];
+          });
+        }
+      });
+
+      // Register buttons
+      ed.addButton('cleanup', {
+        title: 'advanced.cleanup_desc',
+        cmd: 'mceCleanup'
+      });
+
+      function convertFromGeshi(h) {
         h = h.replace(/<pre xml:lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d) {
           var attr = '';
 
@@ -44986,9 +44936,9 @@
         });
 
         return h;
-      },
-      
-      convertToGeshi: function (h) {
+      }
+
+      function convertToGeshi(h) {
         h = h.replace(/<pre([^>]+)data-geshi-lang="([^"]+)"([^>]*)>(.*?)<\/pre>/g, function (a, b, c, d, e) {
           var s = b + d;
           s = s.replace(/data-geshi-/gi, '').replace(/\s+/g, ' ').replace(/\s$/, '');
@@ -44999,9 +44949,6 @@
         return h;
       }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('cleanup', tinymce.plugins.CleanupPlugin);
   })();
 
   /**
@@ -45067,999 +45014,993 @@
       return count === 0;
     }
 
-    tinymce.create('tinymce.plugins.CodePlugin', {
-      init: function (ed, url) {
-        this.editor = ed;
-        this.url = url;
+    tinymce.PluginManager.add('code', function (ed, url) {
 
-        var blockElements = [],
-          htmlSchema = new tinymce.html.Schema({
-            schema: 'mixed',
-            invalid_elements: ed.settings.invalid_elements
-          }),
-          xmlSchema = new tinymce.html.Schema({
-            verify_html: false
-          });
-
-        // should code blocks be used?
-        var code_blocks = ed.settings.code_use_blocks !== false;
-
-        // allow script URLS, eg: href="javascript:;"
-        if (ed.settings.code_allow_script) {
-          ed.settings.allow_script_urls = true;
-        }
-
-        ed.addCommand('InsertShortCode', function (ui, html) {
-          if (ed.settings.code_protect_shortcode) {
-            html = processShortcode(html, 'pre');
-
-            if (tinymce.is(html)) {
-              ed.execCommand('mceReplaceContent', false, html);
-            }
-          }
-
-          return false;
+      var blockElements = [],
+        htmlSchema = new tinymce.html.Schema({
+          schema: 'mixed',
+          invalid_elements: ed.settings.invalid_elements
+        }),
+        xmlSchema = new tinymce.html.Schema({
+          verify_html: false
         });
 
-        function processOnInsert(value, node) {
-          if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
-            var tagName;
+      // should code blocks be used?
+      var code_blocks = ed.settings.code_use_blocks !== false;
 
-            // an empty block container, so insert as <pre>
-            /*if (node && ed.dom.isEmpty(node)) {
-              tagName = 'pre';
-            }*/
+      // allow script URLS, eg: href="javascript:;"
+      if (ed.settings.code_allow_script) {
+        ed.settings.allow_script_urls = true;
+      }
 
-            value = processShortcode(value, tagName);
+      ed.addCommand('InsertShortCode', function (ui, html) {
+        if (ed.settings.code_protect_shortcode) {
+          html = processShortcode(html, 'pre');
+
+          if (tinymce.is(html)) {
+            ed.execCommand('mceReplaceContent', false, html);
           }
-
-          if (ed.settings.code_allow_custom_xml) {
-            value = processXML(value);
-          }
-
-          // script / style
-          if (/<(\?|script|style)/.test(value)) {
-            // process script and style tags
-            value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
-              if (!ed.getParam('code_allow_' + type)) {
-                return '';
-              }
-
-              match = match.replace(/<br[^>]*?>/gi, '\n');
-
-              return createCodePre(match, type);
-            });
-
-            value = processPhp(value);
-          }
-
-          return value;
         }
 
-        /**
-         * Detect and process shortcode in an html string
-         * @param {String} html
-         * @param {String} tagName
-         */
-        function processShortcode(html, tagName) {
-          // quick check to see if we should proceed
-          if (html.indexOf('{') === -1) {
-            return html;
-          }
+        return false;
+      });
 
-          // skip stuff like {1} etc.
-          if (html.charAt(0) == '{' && html.length < 3) {
-            return html;
-          }
+      function processOnInsert(value, node) {
+        if (/\{.+\}/gi.test(value) && ed.settings.code_protect_shortcode) {
+          var tagName;
 
-          // process as sourcerer
-          if (html.indexOf('{/source}') != -1) {
-            html = processSourcerer(html);
-          }
+          // an empty block container, so insert as <pre>
+          /*if (node && ed.dom.isEmpty(node)) {
+            tagName = 'pre';
+          }*/
 
-          // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
-          tagName = tagName || 'span';
+          value = processShortcode(value, tagName);
+        }
 
-          // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
-          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
-            // already wrapped in a tag
-            if (match.charAt(0) === '<') {
-              return match;
+        if (ed.settings.code_allow_custom_xml) {
+          value = processXML(value);
+        }
+
+        // script / style
+        if (/<(\?|script|style)/.test(value)) {
+          // process script and style tags
+          value = value.replace(/<(script|style)([^>]*?)>([\s\S]*?)<\/\1>/gi, function (match, type) {
+            if (!ed.getParam('code_allow_' + type)) {
+              return '';
             }
 
-            return createShortcodePre(match, tagName);
+            match = match.replace(/<br[^>]*?>/gi, '\n');
+
+            return createCodePre(match, type);
           });
+
+          value = processPhp(value);
         }
 
-        function processSourcerer(html) {
-          // quick check to see if we should proceed
-          if (html.indexOf('{/source}') === -1) {
-            return html;
-          }
+        return value;
+      }
 
-          // shortcode blocks eg: {source}html{/source}
-          return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
-            // already wrapped in a tag
-            if (match.charAt(0) === '<' || match.charAt(0) === '"') {
-              return match;
-            }
-
-            match = ed.dom.decode(match);
-
-            return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + ed.dom.encode(match) + '</pre>';
-          });
+      /**
+       * Detect and process shortcode in an html string
+       * @param {String} html
+       * @param {String} tagName
+       */
+      function processShortcode(html, tagName) {
+        // quick check to see if we should proceed
+        if (html.indexOf('{') === -1) {
+          return html;
         }
 
-        function processPhp(content) {
-          // Remove PHP if not enabled
-          if (!ed.settings.code_allow_php) {
-            return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
+        // skip stuff like {1} etc.
+        if (html.charAt(0) == '{' && html.length < 3) {
+          return html;
+        }
+
+        // process as sourcerer
+        if (html.indexOf('{/source}') != -1) {
+          html = processSourcerer(html);
+        }
+
+        // default to inline span if the tagName is not set. This will be converted to pre by the DomParser if required
+        tagName = tagName || 'span';
+
+        // shortcode blocks eg: {article}\nhtml{/article} or inline or single line shortcode, eg: {youtube}https://www.youtube.com/watch?v=xxDv_RTdLQo{/youtube}
+        return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>)?)(?:\{)([\w-]+)(.*?)(?:\/?\})(?:([\s\S]+?)\{\/\4\})?/g, function (match) {
+          // already wrapped in a tag
+          if (match.charAt(0) === '<') {
+            return match;
           }
 
-          // PHP code within an attribute
-          content = content.replace(/\="([^"]+?)"/g, function (a, b) {
-            b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+          return createShortcodePre(match, tagName);
+        });
+      }
+
+      function processSourcerer(html) {
+        // quick check to see if we should proceed
+        if (html.indexOf('{/source}') === -1) {
+          return html;
+        }
+
+        // shortcode blocks eg: {source}html{/source}
+        return html.replace(/(?:(<(code|pre|samp|span)[^>]*(data-mce-type="code")?>|")?)\{source(.*?)\}([\s\S]+?)\{\/source\}/g, function (match) {
+          // already wrapped in a tag
+          if (match.charAt(0) === '<' || match.charAt(0) === '"') {
+            return match;
+          }
+
+          match = ed.dom.decode(match);
+
+          return '<pre data-mce-code="shortcode" data-mce-label="sourcerer">' + ed.dom.encode(match) + '</pre>';
+        });
+      }
+
+      function processPhp(content) {
+        // Remove PHP if not enabled
+        if (!ed.settings.code_allow_php) {
+          return content.replace(/<\?(php)?([\s\S]*?)\?>/gi, '');
+        }
+
+        // PHP code within an attribute
+        content = content.replace(/\="([^"]+?)"/g, function (a, b) {
+          b = b.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
+            return '[php:start]' + ed.dom.encode(z) + '[php:end]';
+          });
+
+          return '="' + b + '"';
+        });
+
+        // PHP code within a textarea
+        if (/<textarea/.test(content)) {
+          content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+            c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
               return '[php:start]' + ed.dom.encode(z) + '[php:end]';
             });
-
-            return '="' + b + '"';
-          });
-
-          // PHP code within a textarea
-          if (/<textarea/.test(content)) {
-            content = content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-              c = c.replace(/<\?(php)?(.+?)\?>/gi, function (x, y, z) {
-                return '[php:start]' + ed.dom.encode(z) + '[php:end]';
-              });
-              return '<textarea' + b + '>' + c + '</textarea>';
-            });
-          }
-
-          // PHP code within an element
-          content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
-            if (b.charAt(b.length) !== ' ') {
-              b += ' ';
-            }
-            return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
-          });
-
-          // PHP code other
-          content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
-            // replace newlines with <br /> so they are preserved inside the span
-            match = match.replace(/\n/g, '<br />');
-
-            // create code span
-            return createCodePre(match, 'php', 'span');
-          });
-
-          return content;
-        }
-
-        /**
-         * Check whether a tag is a defined invalid element
-         * @param {String} name
-         */
-        function isInvalidElement(name) {
-          var invalid_elements = ed.settings.invalid_elements.split(',');
-          return tinymce.inArray(invalid_elements, name) !== -1;
-        }
-
-        /**
-         * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
-         * @param {String} name
-         */
-        function isXmlElement(name) {
-          return !htmlSchema.isValid(name) && !isInvalidElement(name);
-        }
-
-        /**
-         * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
-         * @param {String} xml
-         */
-        function validateXml(xml) {
-          var html = [];
-
-          // check that the element or attribute is not invalid
-          function isValid(tag, attr) {
-            // is an xml tag and is not an invalid_element
-            if (isXmlElement(tag)) {
-              return true;
-            }
-
-            return ed.schema.isValid(tag, attr);
-          }
-
-          new SaxParser({
-            start: function (name, attrs, empty) {
-              if (!isValid(name)) {
-                return;
-              }
-
-              html.push('<', name);
-
-              var attr;
-
-              if (attrs) {
-                for (var i = 0, len = attrs.length; i < len; i++) {
-                  attr = attrs[i];
-
-                  if (!isValid(name, attr.name)) {
-                    continue;
-                  }
-
-                  // skip event attributes
-                  if (ed.settings.allow_event_attributes !== true) {
-                    if (attr.name.indexOf('on') === 0) {
-                      continue;
-                    }
-                  }
-
-                  html.push(' ', attr.name, '="', ed.dom.encode('' + attr.value, true), '"');
-                }
-              }
-
-              if (!empty) {
-                html[html.length] = '>';
-              } else {
-                html[html.length] = ' />';
-              }
-            },
-
-            text: function (value) {
-              if (value.length > 0) {
-                html[html.length] = value;
-              }
-            },
-
-            end: function (name) {
-              if (!isValid(name)) {
-                return;
-              }
-
-              html.push('</', name, '>');
-            },
-
-            cdata: function (text) {
-              html.push('<![CDATA[', text, ']]>');
-            },
-
-            comment: function (text) {
-              html.push('<!--', text, '-->');
-            }
-          }, xmlSchema).parse(xml);
-
-          return html.join('');
-        }
-
-        /**
-         * Detect and process xml tags
-         * @param {String} content
-         */
-        function processXML(content) {
-          return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
-            // check if svg is allowed
-            if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
-              return match;
-            }
-
-            // check if mathml is allowed
-            if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
-              return match;
-            }
-
-            // check if the tags is part of the generic HTML schema, return if true
-            if (!isXmlElement(tag)) {
-              return match;
-            }
-
-            // validate xml by default to remove event attributes and invalid nested html
-            if (ed.settings.code_validate_xml !== false) {
-              match = validateXml(match);
-            }
-
-            return createCodePre(match, 'xml');
+            return '<textarea' + b + '>' + c + '</textarea>';
           });
         }
 
-        /**
-         * Create a shortcode pre. This differs from the code pre as it is still contenteditable
-         * @param {String} data
-         * @param {String} tag
-         */
-        function createShortcodePre(data, tag) {
-          // decode data before re-encoding
-          data = ed.dom.decode(data);
-
-          // replace newlines with linebreaks
-          data = data.replace(/[\n\r]/gi, '<br />');
-
-          return ed.dom.createHTML(tag || 'pre', {
-            'data-mce-code': 'shortcode',
-            'data-mce-type': 'code'
-          }, ed.dom.encode(data));
-        }
-
-        /**
-         * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
-         * @param {String} data
-         * @param {String} type
-         * @param {String} tag
-         */
-        function createCodePre(data, type, tag) {
-          // "protect" code if we are not using code blocks
-          if (code_blocks === false) {
-            // convert linebreaks to newlines
-            data = data.replace(/<br[^>]*?>/gi, '\n');
-
-            // create placeholder span
-            return ed.dom.createHTML('img', {
-              src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-              'data-mce-resize': 'false',
-              'data-mce-code': type || 'script',
-              'data-mce-type': 'placeholder',
-              'data-mce-value': escape(data)
-            });
+        // PHP code within an element
+        content = content.replace(/<([^>]+)<\?(php)?(.+?)\?>([^>]*?)>/gi, function (a, b, c, d, e) {
+          if (b.charAt(b.length) !== ' ') {
+            b += ' ';
           }
-
-          return ed.dom.createHTML(tag || 'pre', {
-            'data-mce-code': type || 'script',
-            'data-mce-type': 'code'
-          }, ed.dom.encode(data));
-        }
-
-        function handleEnterInPre(ed, node, before) {
-          var parents = ed.dom.getParents(node, blockElements.join(','));
-
-          // set defualt content and get the element to use
-          var newBlockName = ed.settings.forced_root_block || 'p';
-
-          // reset if force_block_newlines is false (linebreak on enter)
-          if (ed.settings.force_block_newlines === false) {
-            newBlockName = 'br';
-          }
-
-          // get the first block in the collection
-          var block = parents.shift();
-
-          // skip if it is the body
-          if (block === ed.getBody()) {
-            return;
-          }
-
-          // create element
-          var elm = ed.dom.create(newBlockName, {}, '\u00a0');
-
-          // insert after parent element
-          if (before) {
-            block.parentNode.insertBefore(elm, block);
-          } else {
-            ed.dom.insertAfter(elm, block);
-          }
-
-          var rng = ed.selection.getRng();
-
-          rng.setStart(elm, 0);
-          rng.setEnd(elm, 0);
-
-          ed.selection.setRng(rng);
-          ed.selection.scrollIntoView(elm);
-        }
-
-        ed.onKeyDown.add(function (ed, e) {
-          var node;
-
-          if (e.keyCode == VK.ENTER) {
-            node = ed.selection.getNode();
-
-            // Handled by EnterKey perhaps?
-            /*if (node.nodeName === 'PRE') {
-              var type = node.getAttribute('data-mce-code') || '';
-
-              if (type) {
-                if (type == 'shortcode') {
-                  if (e.shiftKey) {
-                    ed.execCommand("InsertLineBreak", false, e);
-                  } else {
-                    handleEnterInPre(ed, node);
-                  }
-
-                  e.preventDefault();
-                  return;
-                }
-
-                if (e.altKey || e.shiftKey) {
-                  handleEnterInPre(ed, node);
-                  e.preventDefault();
-                }
-              }
-            }*/
-
-            if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
-              handleEnterInPre(ed, node);
-              e.preventDefault();
-            }
-          }
-
-          if (e.keyCode == VK.UP && e.altKey) {
-            node = ed.selection.getNode();
-
-            if (node.nodeName == 'PRE') {
-              handleEnterInPre(ed, node, true);
-              e.preventDefault();
-            }
-          }
-
-          // Check for tab but not ctrl/cmd+tab since it switches browser tabs
-          if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
-            node = ed.selection.getNode();
-
-            if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
-              ed.selection.setContent('\t', {
-                no_events: true
-              });
-              e.preventDefault();
-            }
-          }
-
-          if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
-            node = ed.selection.getNode();
-
-            if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
-              ed.undoManager.add();
-
-              ed.dom.remove(node);
-              e.preventDefault();
-            }
-          }
+          return '<' + b + 'data-mce-php="' + d + '" ' + e + '>';
         });
 
-        ed.onPreInit.add(function () {
-          function isCodePlaceholder(node) {
-            return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
+        // PHP code other
+        content = content.replace(/<\?(php)?([\s\S]+?)\?>/gi, function (match) {
+          // replace newlines with <br /> so they are preserved inside the span
+          match = match.replace(/\n/g, '<br />');
+
+          // create code span
+          return createCodePre(match, 'php', 'span');
+        });
+
+        return content;
+      }
+
+      /**
+       * Check whether a tag is a defined invalid element
+       * @param {String} name
+       */
+      function isInvalidElement(name) {
+        var invalid_elements = ed.settings.invalid_elements.split(',');
+        return tinymce.inArray(invalid_elements, name) !== -1;
+      }
+
+      /**
+       * Check if a tag is an XML element - not part of the HMTL Schema, but is also not a defined invalid element
+       * @param {String} name
+       */
+      function isXmlElement(name) {
+        return !htmlSchema.isValid(name) && !isInvalidElement(name);
+      }
+
+      /**
+       * Validate xml code using a custom SaxParser. This will remove event attributes ir required, and validate nested html using the editor schema.
+       * @param {String} xml
+       */
+      function validateXml(xml) {
+        var html = [];
+
+        // check that the element or attribute is not invalid
+        function isValid(tag, attr) {
+          // is an xml tag and is not an invalid_element
+          if (isXmlElement(tag)) {
+            return true;
           }
 
-          ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
-            var node = e.target,
-              sel = ed.selection.getNode();
+          return ed.schema.isValid(tag, attr);
+        }
 
-            ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
-
-            // edge case where forced_root_block:false
-            if (node === ed.getBody() && isCodePlaceholder(sel)) {
-              if (sel.parentNode === node && !sel.nextSibling) {
-                ed.dom.insertAfter(ed.dom.create('br', {
-                  'data-mce-bogus': 1
-                }), sel);
-              }
-
+        new SaxParser({
+          start: function (name, attrs, empty) {
+            if (!isValid(name)) {
               return;
             }
 
-            if (isCodePlaceholder(node)) {
-              e.preventDefault();
-              e.stopImmediatePropagation();
+            html.push('<', name);
 
-              ed.selection.select(node);
+            var attr;
 
-              // add a slight delay before adding selected class to avoid it being removed by the keyup event
-              window.setTimeout(function () {
-                ed.dom.addClass(node, 'mce-item-selected');
-              }, 10);
+            if (attrs) {
+              for (var i = 0, len = attrs.length; i < len; i++) {
+                attr = attrs[i];
 
-              e.preventDefault();
+                if (!isValid(name, attr.name)) {
+                  continue;
+                }
+
+                // skip event attributes
+                if (ed.settings.allow_event_attributes !== true) {
+                  if (attr.name.indexOf('on') === 0) {
+                    continue;
+                  }
+                }
+
+                html.push(' ', attr.name, '="', ed.dom.encode('' + attr.value, true), '"');
+              }
+            }
+
+            if (!empty) {
+              html[html.length] = '>';
+            } else {
+              html[html.length] = ' />';
+            }
+          },
+
+          text: function (value) {
+            if (value.length > 0) {
+              html[html.length] = value;
+            }
+          },
+
+          end: function (name) {
+            if (!isValid(name)) {
+              return;
+            }
+
+            html.push('</', name, '>');
+          },
+
+          cdata: function (text) {
+            html.push('<![CDATA[', text, ']]>');
+          },
+
+          comment: function (text) {
+            html.push('<!--', text, '-->');
+          }
+        }, xmlSchema).parse(xml);
+
+        return html.join('');
+      }
+
+      /**
+       * Detect and process xml tags
+       * @param {String} content
+       */
+      function processXML(content) {
+        return content.replace(/<([a-z0-9\-_\:\.]+)(?:[^>]*?)\/?>((?:[\s\S]*?)<\/\1>)?/gi, function (match, tag) {
+          // check if svg is allowed
+          if (tag === 'svg' && ed.settings.code_allow_svg_in_xml === false) {
+            return match;
+          }
+
+          // check if mathml is allowed
+          if (tag === 'math' && ed.settings.code_allow_mathml_in_xml === false) {
+            return match;
+          }
+
+          // check if the tags is part of the generic HTML schema, return if true
+          if (!isXmlElement(tag)) {
+            return match;
+          }
+
+          // validate xml by default to remove event attributes and invalid nested html
+          if (ed.settings.code_validate_xml !== false) {
+            match = validateXml(match);
+          }
+
+          return createCodePre(match, 'xml');
+        });
+      }
+
+      /**
+       * Create a shortcode pre. This differs from the code pre as it is still contenteditable
+       * @param {String} data
+       * @param {String} tag
+       */
+      function createShortcodePre(data, tag) {
+        // decode data before re-encoding
+        data = ed.dom.decode(data);
+
+        // replace newlines with linebreaks
+        data = data.replace(/[\n\r]/gi, '<br />');
+
+        return ed.dom.createHTML(tag || 'pre', {
+          'data-mce-code': 'shortcode',
+          'data-mce-type': 'code'
+        }, ed.dom.encode(data));
+      }
+
+      /**
+       * Create a code pre. This pre is not contenteditable by the editor, and plaintext-only
+       * @param {String} data
+       * @param {String} type
+       * @param {String} tag
+       */
+      function createCodePre(data, type, tag) {
+        // "protect" code if we are not using code blocks
+        if (code_blocks === false) {
+          // convert linebreaks to newlines
+          data = data.replace(/<br[^>]*?>/gi, '\n');
+
+          // create placeholder span
+          return ed.dom.createHTML('img', {
+            src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+            'data-mce-resize': 'false',
+            'data-mce-code': type || 'script',
+            'data-mce-type': 'placeholder',
+            'data-mce-value': escape(data)
+          });
+        }
+
+        return ed.dom.createHTML(tag || 'pre', {
+          'data-mce-code': type || 'script',
+          'data-mce-type': 'code'
+        }, ed.dom.encode(data));
+      }
+
+      function handleEnterInPre(ed, node, before) {
+        var parents = ed.dom.getParents(node, blockElements.join(','));
+
+        // set defualt content and get the element to use
+        var newBlockName = ed.settings.forced_root_block || 'p';
+
+        // reset if force_block_newlines is false (linebreak on enter)
+        if (ed.settings.force_block_newlines === false) {
+          newBlockName = 'br';
+        }
+
+        // get the first block in the collection
+        var block = parents.shift();
+
+        // skip if it is the body
+        if (block === ed.getBody()) {
+          return;
+        }
+
+        // create element
+        var elm = ed.dom.create(newBlockName, {}, '\u00a0');
+
+        // insert after parent element
+        if (before) {
+          block.parentNode.insertBefore(elm, block);
+        } else {
+          ed.dom.insertAfter(elm, block);
+        }
+
+        var rng = ed.selection.getRng();
+
+        rng.setStart(elm, 0);
+        rng.setEnd(elm, 0);
+
+        ed.selection.setRng(rng);
+        ed.selection.scrollIntoView(elm);
+      }
+
+      ed.onKeyDown.add(function (ed, e) {
+        var node;
+
+        if (e.keyCode == VK.ENTER) {
+          node = ed.selection.getNode();
+
+          // Handled by EnterKey perhaps?
+          /*if (node.nodeName === 'PRE') {
+            var type = node.getAttribute('data-mce-code') || '';
+
+            if (type) {
+              if (type == 'shortcode') {
+                if (e.shiftKey) {
+                  ed.execCommand("InsertLineBreak", false, e);
+                } else {
+                  handleEnterInPre(ed, node);
+                }
+
+                e.preventDefault();
+                return;
+              }
+
+              if (e.altKey || e.shiftKey) {
+                handleEnterInPre(ed, node);
+                e.preventDefault();
+              }
+            }
+          }*/
+
+          if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code')) {
+            handleEnterInPre(ed, node);
+            e.preventDefault();
+          }
+        }
+
+        if (e.keyCode == VK.UP && e.altKey) {
+          node = ed.selection.getNode();
+
+          if (node.nodeName == 'PRE') {
+            handleEnterInPre(ed, node, true);
+            e.preventDefault();
+          }
+        }
+
+        // Check for tab but not ctrl/cmd+tab since it switches browser tabs
+        if (e.keyCode == 9 && !VK.metaKeyPressed(e)) {
+          node = ed.selection.getNode();
+
+          if (node.nodeName === 'PRE' && node.getAttribute('data-mce-code')) {
+            ed.selection.setContent('\t', {
+              no_events: true
+            });
+            e.preventDefault();
+          }
+        }
+
+        if (e.keyCode === VK.BACKSPACE || e.keyCode === VK.DELETE) {
+          node = ed.selection.getNode();
+
+          if (node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') === 'placeholder') {
+            ed.undoManager.add();
+
+            ed.dom.remove(node);
+            e.preventDefault();
+          }
+        }
+      });
+
+      ed.onPreInit.add(function () {
+        function isCodePlaceholder(node) {
+          return node.nodeName === 'SPAN' && node.getAttribute('data-mce-code') && node.getAttribute('data-mce-type') == 'placeholder';
+        }
+
+        ed.dom.bind(ed.getDoc(), 'keyup click', function (e) {
+          var node = e.target,
+            sel = ed.selection.getNode();
+
+          ed.dom.removeClass(ed.dom.select('.mce-item-selected'), 'mce-item-selected');
+
+          // edge case where forced_root_block:false
+          if (node === ed.getBody() && isCodePlaceholder(sel)) {
+            if (sel.parentNode === node && !sel.nextSibling) {
+              ed.dom.insertAfter(ed.dom.create('br', {
+                'data-mce-bogus': 1
+              }), sel);
+            }
+
+            return;
+          }
+
+          if (isCodePlaceholder(node)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            ed.selection.select(node);
+
+            // add a slight delay before adding selected class to avoid it being removed by the keyup event
+            window.setTimeout(function () {
+              ed.dom.addClass(node, 'mce-item-selected');
+            }, 10);
+
+            e.preventDefault();
+          }
+        });
+
+        var ctrl = ed.controlManager.get('formatselect');
+
+        if (ctrl) {
+          each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
+            // control element title
+            var title = ed.getLang('code.' + key, key);
+
+            if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
+              ctrl.add(title, key, {
+                class: 'mce-code-' + key
+              });
+
+              ed.formatter.register('shortcode', {
+                block: 'pre',
+                attributes: {
+                  'data-mce-code': 'shortcode'
+                }
+              });
+
+              return true;
+            }
+
+            // map settings value to simplified key
+            if (key === 'xml') {
+              ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
+            }
+
+            if (ed.getParam('code_allow_' + key) && code_blocks) {
+              ctrl.add(title, key, {
+                class: 'mce-code-' + key
+              });
+
+              ed.formatter.register(key, {
+                block: 'pre',
+                attributes: {
+                  'data-mce-code': key
+                },
+                onformat: function (elm, fmt, vars) {
+                  // replace linebreaks with newlines
+                  each(ed.dom.select('br', elm), function (br) {
+                    ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
+                  });
+                }
+              });
             }
           });
+        }
 
-          var ctrl = ed.controlManager.get('formatselect');
+        // store block elements from schema map
+        each(ed.schema.getBlockElements(), function (block, blockName) {
+          blockElements.push(blockName);
+        });
 
-          if (ctrl) {
-            each(['script', 'style', 'php', 'shortcode', 'xml'], function (key) {
-              // control element title
-              var title = ed.getLang('code.' + key, key);
+        if (ed.settings.code_protect_shortcode) {
+          ed.textpattern.addPattern({
+            start: '{',
+            end: '}',
+            cmd: 'InsertShortCode',
+            remove: true
+          });
 
-              if (key === 'shortcode' && ed.settings.code_protect_shortcode) {
-                ctrl.add(title, key, {
-                  class: 'mce-code-' + key
-                });
+          ed.textpattern.addPattern({
+            start: ' {',
+            end: '}',
+            format: 'inline-shortcode',
+            remove: false
+          });
+        }
 
-                ed.formatter.register('shortcode', {
-                  block: 'pre',
-                  attributes: {
-                    'data-mce-code': 'shortcode'
+        ed.formatter.register('inline-shortcode', {
+          inline: 'span',
+          attributes: {
+            'data-mce-code': 'shortcode'
+          }
+        });
+
+        // remove paragraph parent of a pre block
+        ed.selection.onSetContent.add(function (sel, o) {
+          each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
+            var p = ed.dom.getParent(elm, 'p');
+
+            if (p && p.childNodes.length === 1) {
+              ed.dom.remove(p, 1);
+            }
+          });
+        });
+
+        // Convert script elements to span placeholder
+        ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            var node = nodes[i];
+
+            // remove any code spans that are added to json-like syntax in code blocks
+            if (node.firstChild) {
+              node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
+                if (attr.indexOf('data-mce-code') === -1) {
+                  return match;
+                }
+
+                return ed.dom.decode(content);
+              });
+            }
+
+            if (!code_blocks) {
+              var value = '';
+
+              if (node.firstChild) {
+                value = tinymce.trim(node.firstChild.value);
+              }
+
+              var placeholder = Node.create('img', {
+                src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                'data-mce-code': node.name,
+                'data-mce-type': 'placeholder',
+                'data-mce-resize': 'false',
+                title: ed.dom.encode(value)
+              });
+
+              // eslint-disable-next-line no-loop-func
+              each(node.attributes, function (attr) {
+                placeholder.attr('data-mce-p-' + attr.name, attr.value);
+              });
+
+              if (value) {
+                placeholder.attr('data-mce-value', escape(value));
+
+                //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
+                //placeholder.append(text);
+              }
+
+              node.replace(placeholder);
+
+              continue;
+            }
+
+            // serialize to string
+            value = new Serializer({
+              validate: false
+            }).serialize(node);
+
+            // trim
+            value = tinymce.trim(value);
+
+            var pre = new Node('pre', 1);
+            pre.attr({
+              'data-mce-code': node.name
+            });
+
+            var text = createTextNode(value, false);
+            pre.append(text);
+
+            node.replace(pre);
+          }
+        });
+
+        ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
+          var i = nodes.length,
+            node, parent;
+
+          function isBody(parent) {
+            return parent.name === 'body';
+          }
+
+          function isValidCode(type) {
+            return type === 'shortcode' || type === 'php';
+          }
+
+          function isBlockNode(node) {
+            return tinymce.inArray(blockElements, node.name) != -1;
+          }
+
+          function isInlineNode(node) {
+            if (node.name != 'span') {
+              return false;
+            }
+
+            if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
+              return true;
+            }
+
+            if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
+              return true;
+            }
+
+            return false;
+          }
+
+          while (i--) {
+            node = nodes[i], parent = node.parent;
+
+            // don't process placeholders
+            if (node.attr('data-mce-type') == 'placeholder') {
+              continue;
+            }
+
+            if (!isValidCode(node.attr(name))) {
+              continue;
+            }
+
+            var value = node.firstChild.value;
+
+            // replace linebreaks with newlines
+            if (value) {
+              node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
+            }
+
+            if (parent) {
+              // don't process shortcode in code blocks
+              if (parent.attr(name)) {
+                node.unwrap();
+                continue;
+              }
+
+              // rename shortcode blocks to <pre>
+              if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
+                node.name = 'pre';
+              } else {
+                // add whitespace after the span so a cursor can be set
+                if (node.name == 'span' && node === parent.lastChild) {
+                  var nbsp = createTextNode('\u00a0');
+                  parent.append(nbsp);
+                }
+              }
+            }
+          }
+        });
+
+        ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
+          var i = nodes.length,
+            node, child;
+
+          function isXmlNode(node) {
+            return !/(shortcode|php)/.test(node.attr('data-mce-code'));
+          }
+
+          while (i--) {
+            var root_block = false;
+
+            node = nodes[i];
+
+            // get the code block type, eg: script, shortcode, style, php
+            var type = node.attr(name);
+
+            if (node.name === 'img') {
+              var elm = new Node(type, 1);
+
+              for (var key in node.attributes.map) {
+                var val = node.attributes.map[key];
+
+                if (key.indexOf('data-mce-p-') !== -1) {
+                  key = key.substr(11);
+                } else {
+                  val = null;
+                }
+
+                elm.attr(key, val);
+              }
+
+              var value = node.attr('data-mce-value');
+
+              if (value) {
+                var text = createTextNode(unescape(value));
+
+                // only use text node if shortcode or php
+                if (type == 'php' || type == 'shortcode') {
+                  elm = text;
+                } else {
+                  elm.append(text);
+                }
+              }
+
+              node.replace(elm);
+
+              continue;
+            }
+
+            // pre node is empty, remove
+            if (node.isEmpty()) {
+              node.remove();
+            }
+
+            // skip xml
+            if (type === 'xml') {
+              continue;
+            }
+
+            // set the root block type for script and style tags so the parser does the work wrapping free text
+            if (type === 'script' || type === 'style') {
+              root_block = type;
+            }
+
+            var child = node.firstChild,
+              newNode = node.clone(true),
+              text = '';
+
+            if (child) {
+              do {
+                if (isXmlNode(node)) {
+                  var value = child.name == 'br' ? '\n' : child.value;
+
+                  if (value) {
+                    text += value;
                   }
-                });
+                }
+              } while ((child = child.next));
+            }
 
-                return true;
-              }
+            if (text) {
+              newNode.empty();
 
-              // map settings value to simplified key
-              if (key === 'xml') {
-                ed.settings.code_allow_xml = !!ed.settings.code_allow_custom_xml;
-              }
+              var parser = new DomParser({
+                validate: false
+              });
 
-              if (ed.getParam('code_allow_' + key) && code_blocks) {
-                ctrl.add(title, key, {
-                  class: 'mce-code-' + key
-                });
+              // validate attributes of script and style tags
+              if (type === 'script' || type === 'style') {
+                parser.addNodeFilter(type, function (items, name) {
+                  var n = items.length;
 
-                ed.formatter.register(key, {
-                  block: 'pre',
-                  attributes: {
-                    'data-mce-code': key
-                  },
-                  onformat: function (elm, fmt, vars) {
-                    // replace linebreaks with newlines
-                    each(ed.dom.select('br', elm), function (br) {
-                      ed.dom.replace(ed.dom.doc.createTextNode('\n'), br);
+                  while (n--) {
+                    var item = items[n];
+
+                    // eslint-disable-next-line no-loop-func
+                    each(item.attributes, function (attr) {
+                      if (!attr) {
+                        return true;
+                      }
+
+                      if (ed.schema.isValid(name, attr.name) === false) {
+                        item.attr(attr.name, null);
+                      }
                     });
                   }
                 });
               }
-            });
-          }
 
-          // store block elements from schema map
-          each(ed.schema.getBlockElements(), function (block, blockName) {
-            blockElements.push(blockName);
-          });
-
-          if (ed.settings.code_protect_shortcode) {
-            ed.textpattern.addPattern({
-              start: '{',
-              end: '}',
-              cmd: 'InsertShortCode',
-              remove: true
-            });
-
-            ed.textpattern.addPattern({
-              start: ' {',
-              end: '}',
-              format: 'inline-shortcode',
-              remove: false
-            });
-          }
-
-          ed.formatter.register('inline-shortcode', {
-            inline: 'span',
-            attributes: {
-              'data-mce-code': 'shortcode'
-            }
-          });
-
-          // remove paragraph parent of a pre block
-          ed.selection.onSetContent.add(function (sel, o) {
-            each(ed.dom.select('pre[data-mce-code]', ed.getBody()), function (elm) {
-              var p = ed.dom.getParent(elm, 'p');
-
-              if (p && p.childNodes.length === 1) {
-                ed.dom.remove(p, 1);
-              }
-            });
-          });
-
-          // Convert script elements to span placeholder
-          ed.parser.addNodeFilter('script,style,noscript', function (nodes) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              var node = nodes[i];
-
-              // remove any code spans that are added to json-like syntax in code blocks
-              if (node.firstChild) {
-                node.firstChild.value = node.firstChild.value.replace(/<span([^>]+)>([\s\S]+?)<\/span>/gi, function (match, attr, content) {
-                  if (attr.indexOf('data-mce-code') === -1) {
-                    return match;
-                  }
-
-                  return ed.dom.decode(content);
-                });
-              }
-
-              if (!code_blocks) {
-                var value = '';
-
-                if (node.firstChild) {
-                  value = tinymce.trim(node.firstChild.value);
-                }
-
-                var placeholder = Node.create('img', {
-                  src: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                  'data-mce-code': node.name,
-                  'data-mce-type': 'placeholder',
-                  'data-mce-resize': 'false',
-                  title: ed.dom.encode(value)
-                });
-
-                // eslint-disable-next-line no-loop-func
-                each(node.attributes, function (attr) {
-                  placeholder.attr('data-mce-p-' + attr.name, attr.value);
-                });
-
-                if (value) {
-                  placeholder.attr('data-mce-value', escape(value));
-
-                  //var text = createTextNode('<!--mce:protected ' + escape(value) + '-->')
-                  //placeholder.append(text);
-                }
-
-                node.replace(placeholder);
-
-                continue;
-              }
-
-              // serialize to string
-              value = new Serializer({
-                validate: false
-              }).serialize(node);
-
-              // trim
-              value = tinymce.trim(value);
-
-              var pre = new Node('pre', 1);
-              pre.attr({
-                'data-mce-code': node.name
+              // parse text and process
+              var fragment = parser.parse(text, {
+                forced_root_block: root_block
               });
-
-              var text = createTextNode(value, false);
-              pre.append(text);
-
-              node.replace(pre);
-            }
-          });
-
-          ed.parser.addAttributeFilter('data-mce-code', function (nodes, name) {
-            var i = nodes.length,
-              node, parent;
-
-            function isBody(parent) {
-              return parent.name === 'body';
+              // append fragment to <pre> clone
+              newNode.append(fragment);
             }
 
-            function isValidCode(type) {
-              return type === 'shortcode' || type === 'php';
+            node.replace(newNode);
+
+            if (type === 'shortcode' && newNode.name === 'pre') {
+              // append newline to the end of shortcode blocks
+              var newline = createTextNode('\n');
+              newNode.append(newline);
+
+              // unwrap to text as further processing is not needed
+              newNode.unwrap();
             }
-
-            function isBlockNode(node) {
-              return tinymce.inArray(blockElements, node.name) != -1;
-            }
-
-            function isInlineNode(node) {
-              if (node.name != 'span') {
-                return false;
-              }
-
-              if (node.next && (node.next.type == '#text' || !isBlockNode(node.next))) {
-                return true;
-              }
-
-              if (node.prev && (node.prev.type == '#text' || !isBlockNode(node.prev))) {
-                return true;
-              }
-
-              return false;
-            }
-
-            while (i--) {
-              node = nodes[i], parent = node.parent;
-
-              // don't process placeholders
-              if (node.attr('data-mce-type') == 'placeholder') {
-                continue;
-              }
-
-              if (!isValidCode(node.attr(name))) {
-                continue;
-              }
-
-              var value = node.firstChild.value;
-
-              // replace linebreaks with newlines
-              if (value) {
-                node.firstChild.value = value.replace(/<br[\s\/]*>/g, '\n');
-              }
-
-              if (parent) {
-                // don't process shortcode in code blocks
-                if (parent.attr(name)) {
-                  node.unwrap();
-                  continue;
-                }
-
-                // rename shortcode blocks to <pre>
-                if (isBody(parent) || isOnlyChild(node) || !isInlineNode(node)) {
-                  node.name = 'pre';
-                } else {
-                  // add whitespace after the span so a cursor can be set
-                  if (node.name == 'span' && node === parent.lastChild) {
-                    var nbsp = createTextNode('\u00a0');
-                    parent.append(nbsp);
-                  }
-                }
-              }
-            }
-          });
-
-          ed.serializer.addAttributeFilter('data-mce-code', function (nodes, name) {
-            var i = nodes.length,
-              node, child;
-
-            function isXmlNode(node) {
-              return !/(shortcode|php)/.test(node.attr('data-mce-code'));
-            }
-
-            while (i--) {
-              var root_block = false;
-
-              node = nodes[i];
-
-              // get the code block type, eg: script, shortcode, style, php
-              var type = node.attr(name);
-
-              if (node.name === 'img') {
-                var elm = new Node(type, 1);
-
-                for (var key in node.attributes.map) {
-                  var val = node.attributes.map[key];
-
-                  if (key.indexOf('data-mce-p-') !== -1) {
-                    key = key.substr(11);
-                  } else {
-                    val = null;
-                  }
-
-                  elm.attr(key, val);
-                }
-
-                var value = node.attr('data-mce-value');
-
-                if (value) {
-                  var text = createTextNode(unescape(value));
-
-                  // only use text node if shortcode or php
-                  if (type == 'php' || type == 'shortcode') {
-                    elm = text;
-                  } else {
-                    elm.append(text);
-                  }
-                }
-
-                node.replace(elm);
-
-                continue;
-              }
-
-              // pre node is empty, remove
-              if (node.isEmpty()) {
-                node.remove();
-              }
-
-              // skip xml
-              if (type === 'xml') {
-                continue;
-              }
-
-              // set the root block type for script and style tags so the parser does the work wrapping free text
-              if (type === 'script' || type === 'style') {
-                root_block = type;
-              }
-
-              var child = node.firstChild,
-                newNode = node.clone(true),
-                text = '';
-
-              if (child) {
-                do {
-                  if (isXmlNode(node)) {
-                    var value = child.name == 'br' ? '\n' : child.value;
-
-                    if (value) {
-                      text += value;
-                    }
-                  }
-                } while ((child = child.next));
-              }
-
-              if (text) {
-                newNode.empty();
-
-                var parser = new DomParser({
-                  validate: false
-                });
-
-                // validate attributes of script and style tags
-                if (type === 'script' || type === 'style') {
-                  parser.addNodeFilter(type, function (items, name) {
-                    var n = items.length;
-
-                    while (n--) {
-                      var item = items[n];
-
-                      // eslint-disable-next-line no-loop-func
-                      each(item.attributes, function (attr) {
-                        if (!attr) {
-                          return true;
-                        }
-
-                        if (ed.schema.isValid(name, attr.name) === false) {
-                          item.attr(attr.name, null);
-                        }
-                      });
-                    }
-                  });
-                }
-
-                // parse text and process
-                var fragment = parser.parse(text, {
-                  forced_root_block: root_block
-                });
-                // append fragment to <pre> clone
-                newNode.append(fragment);
-              }
-
-              node.replace(newNode);
-
-              if (type === 'shortcode' && newNode.name === 'pre') {
-                // append newline to the end of shortcode blocks
-                var newline = createTextNode('\n');
-                newNode.append(newline);
-
-                // unwrap to text as further processing is not needed
-                newNode.unwrap();
-              }
-            }
-          });
-
-          ed.onGetClipboardContent.add(function (ed, content) {
-            var text = content['text/plain'] || '',
-              value;
-
-            // trim text
-            text = tinymce.trim(text);
-
-            if (text) {
-              var node = ed.selection.getNode();
-
-              // don't process into PRE tags
-              if (node && node.nodeName === 'PRE') {
-                return;
-              }
-
-              value = processOnInsert(text);
-
-              // update with processed text
-              if (value !== text) {
-                content['text/plain'] = '';
-                content['text/html'] = content['x-tinymce/html'] = value;
-              }
-            }
-          });
-        });
-
-        ed.onInit.add(function () {
-          // Display "script" instead of "pre" in element path
-          if (ed.theme && ed.theme.onResolveName) {
-            ed.theme.onResolveName.add(function (theme, o) {
-              var node = o.node;
-
-              if (node.getAttribute('data-mce-code')) {
-                o.name = node.getAttribute('data-mce-code');
-              }
-            });
           }
         });
 
-        ed.onBeforeSetContent.addToTop(function (ed, o) {
+        ed.onGetClipboardContent.add(function (ed, content) {
+          var text = content['text/plain'] || '',
+            value;
+
+          // trim text
+          text = tinymce.trim(text);
+
+          if (text) {
+            var node = ed.selection.getNode();
+
+            // don't process into PRE tags
+            if (node && node.nodeName === 'PRE') {
+              return;
+            }
+
+            value = processOnInsert(text);
+
+            // update with processed text
+            if (value !== text) {
+              content['text/plain'] = '';
+              content['text/html'] = content['x-tinymce/html'] = value;
+            }
+          }
+        });
+      });
+
+      ed.onInit.add(function () {
+        // Display "script" instead of "pre" in element path
+        if (ed.theme && ed.theme.onResolveName) {
+          ed.theme.onResolveName.add(function (theme, o) {
+            var node = o.node;
+
+            if (node.getAttribute('data-mce-code')) {
+              o.name = node.getAttribute('data-mce-code');
+            }
+          });
+        }
+      });
+
+      ed.onBeforeSetContent.addToTop(function (ed, o) {
+        if (ed.settings.code_protect_shortcode) {
+
+          if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
+            o.content = processShortcode(o.content);
+          }
+        }
+
+        if (ed.settings.code_allow_custom_xml) {
+          // only process content on "load"
+          if (o.content && o.load) {
+            o.content = processXML(o.content);
+          }
+        }
+
+        // test for PHP, Script or Style
+        if (/<(\?|script|style)/.test(o.content)) {
+          // Remove javascript if not enabled
+          if (!ed.settings.code_allow_script) {
+            o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
+          }
+
+          if (!ed.settings.code_allow_style) {
+            o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
+          }
+
+          o.content = processPhp(o.content);
+        }
+      });
+
+      ed.onPostProcess.add(function (ed, o) {
+        if (o.get) {
+          // Process converted php
+          if (/(data-mce-php|\[php:start\])/.test(o.content)) {
+            // attribute value
+            o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
+              return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
+            });
+
+            // textarea
+            o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
+              if (/&lt;\?php/.test(c)) {
+                c = ed.dom.decode(c);
+              }
+              return '<textarea' + b + '>' + c + '</textarea>';
+            });
+
+            // as attribute
+            o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
+              return '<?php' + ed.dom.decode(b) + '?>';
+            });
+          }
+
+          // shortcode content will be encoded as text, so decode
           if (ed.settings.code_protect_shortcode) {
 
-            if (o.content.indexOf('data-mce-code="shortcode"') === -1) {
-              o.content = processShortcode(o.content);
-            }
-          }
-
-          if (ed.settings.code_allow_custom_xml) {
-            // only process content on "load"
-            if (o.content && o.load) {
-              o.content = processXML(o.content);
-            }
-          }
-
-          // test for PHP, Script or Style
-          if (/<(\?|script|style)/.test(o.content)) {
-            // Remove javascript if not enabled
-            if (!ed.settings.code_allow_script) {
-              o.content = o.content.replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '');
-            }
-
-            if (!ed.settings.code_allow_style) {
-              o.content = o.content.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, '');
-            }
-
-            o.content = processPhp(o.content);
-          }
-        });
-
-        ed.onPostProcess.add(function (ed, o) {
-          if (o.get) {
-            // Process converted php
-            if (/(data-mce-php|\[php:start\])/.test(o.content)) {
-              // attribute value
-              o.content = o.content.replace(/({source})?\[php:\s?start\](.*?)\[php:\s?end\]/g, function (match, pre, code) {
-                return (pre || '') + '<?php' + ed.dom.decode(code) + '?>';
-              });
-
-              // textarea
-              o.content = o.content.replace(/<textarea([^>]*)>([\s\S]*?)<\/textarea>/gi, function (a, b, c) {
-                if (/&lt;\?php/.test(c)) {
-                  c = ed.dom.decode(c);
-                }
-                return '<textarea' + b + '>' + c + '</textarea>';
-              });
-
-              // as attribute
-              o.content = o.content.replace(/data-mce-php="([^"]+?)"/g, function (a, b) {
-                return '<?php' + ed.dom.decode(b) + '?>';
-              });
-            }
-
-            // shortcode content will be encoded as text, so decode
-            if (ed.settings.code_protect_shortcode) {
-
-              o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
-                return '{' + ed.dom.decode(content) + '}';
-              });
-
-              // sourcerer with encoded content
-              o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
-                return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
-              });
-
-              // other shotcode tags
-              o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
-                return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
-              });
-            }
-
-            // decode code snippets
-            o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
-              // not the droids etc.
-              if (attr.indexOf('data-mce-code') === -1) {
-                return match;
-              }
-
-              // trim content
-              content = tinymce.trim(content);
-
-              // decode content
-              content = ed.dom.decode(content);
-
-              // get element from match
-              var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
-
-              // replace linebreaks with newline in some blocks
-              if (type != 'script') {
-                content = content.replace(/<br[^>]*?>/gi, '\n');
-              }
-
-              // remove and replace <?php?> tags
-              if (type == 'php') {
-                content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
-                content = '<?php\n' + tinymce.trim(content) + '\n?>';
-              }
-
-              return content;
+            o.content = o.content.replace(/\{([\s\S]+?)\}/gi, function (match, content) {
+              return '{' + ed.dom.decode(content) + '}';
             });
 
-            // decode protected code
-            o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
-              return unescape(content);
+            // sourcerer with encoded content
+            o.content = o.content.replace(/\{source([^\}]*?)\}([\s\S]+?)\{\/source\}/gi, function (match, start, content) {
+              return '{source' + start + '}' + ed.dom.decode(content) + '{/source}';
+            });
+
+            // other shotcode tags
+            o.content = o.content.replace(/\{([\w-]+)(.*?)\}([\s\S]+)\{\/\1\}/gi, function (match, start, attr, content) {
+              return '{' + start + attr + '}' + ed.dom.decode(content) + '{/' + start + '}';
             });
           }
-        });
-      }
+
+          // decode code snippets
+          o.content = o.content.replace(/<(pre|span)([^>]+?)>([\s\S]*?)<\/\1>/gi, function (match, tag, attr, content) {
+            // not the droids etc.
+            if (attr.indexOf('data-mce-code') === -1) {
+              return match;
+            }
+
+            // trim content
+            content = tinymce.trim(content);
+
+            // decode content
+            content = ed.dom.decode(content);
+
+            // get element from match
+            var node = ed.dom.create('div', {}, match), elm = node.firstChild, type = elm.getAttribute('data-mce-code');
+
+            // replace linebreaks with newline in some blocks
+            if (type != 'script') {
+              content = content.replace(/<br[^>]*?>/gi, '\n');
+            }
+
+            // remove and replace <?php?> tags
+            if (type == 'php') {
+              content = content.replace(/<\?(php)?/gi, '').replace(/\?>/g, '');
+              content = '<?php\n' + tinymce.trim(content) + '\n?>';
+            }
+
+            return content;
+          });
+
+          // decode protected code
+          o.content = o.content.replace(/<!--mce:protected ([\s\S]+?)-->/gi, function (match, content) {
+            return unescape(content);
+          });
+        }
+      });
     });
-    // Register plugin
-    tinymce.PluginManager.add('code', tinymce.plugins.CodePlugin);
   })();
 
   /**
@@ -46266,307 +46207,304 @@
       each = tinymce.each;
     var blocks = [];
 
-    tinymce.create('tinymce.plugins.FormatPlugin', {
-      init: function (ed, url) {
-        var self = this;
-        this.editor = ed;
+    tinymce.PluginManager.add('format', function (ed, url) {
 
-        // Register buttons
-        ed.addButton('italic', {
-          title: 'advanced.italic_desc',
-          onclick: function (e) {
-            e.preventDefault();
+      // Register buttons
+      ed.addButton('italic', {
+        title: 'advanced.italic_desc',
+        onclick: function (e) {
+          e.preventDefault();
 
-            // restore focus
-            ed.focus();
+          // restore focus
+          ed.focus();
 
-            e.shiftKey ? ed.formatter.toggle('italic-i') : ed.formatter.toggle('italic');
+          e.shiftKey ? ed.formatter.toggle('italic-i') : ed.formatter.toggle('italic');
 
-            ed.undoManager.add();
-          }
+          ed.undoManager.add();
+        }
+      });
+
+      ed.addShortcut('meta+shift+i', 'italic.desc', function () {
+        ed.formatter.apply('italic-i');
+      });
+
+      function addSoftHyphenShortcut() {
+        ed.addCommand('mceSoftHyphen', function () {
+          ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
         });
 
-        ed.addShortcut('meta+shift+i', 'italic.desc', function () {
-          ed.formatter.apply('italic-i');
-        });
+        var keyCode = 189;
 
-        function addSoftHyphenShortcut() {
-          ed.addCommand('mceSoftHyphen', function () {
-            ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
-          });
-
-          var keyCode = 189;
-
-          // Firefox seems to use a different keyCode, - instead of _
-          if (tinymce.isGecko) {
-            keyCode = 173;
-          }
-
-          ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
-
+        // Firefox seems to use a different keyCode, - instead of _
+        if (tinymce.isGecko) {
+          keyCode = 173;
         }
 
-        // add shoft hyphen keyboard shortcut
-        addSoftHyphenShortcut();
+        ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
 
-        ed.onPreInit.add(function (ed) {
-          each(ed.schema.getBlockElements(), function (v, k) {
-            if (/\W/.test(k)) {
-              return true;
-            }
+      }
 
-            blocks.push(k.toLowerCase());
-          });
+      // add shoft hyphen keyboard shortcut
+      addSoftHyphenShortcut();
 
-          // Register default block formats
-          ed.formatter.register('aside', {
-            block: 'aside',
-            remove: 'all',
-            wrapper: true
-          });
+      ed.onPreInit.add(function (ed) {
+        each(ed.schema.getBlockElements(), function (v, k) {
+          if (/\W/.test(k)) {
+            return true;
+          }
 
-          // paragraph
-          ed.formatter.register('p', {
-            block: 'p',
-            remove: 'all'
-          });
-
-          // div
-          ed.formatter.register('div', {
-            block: 'div',
-            onmatch: ed.settings.forced_root_block ? function () {
-              return false;
-            } : false
-          });
-
-          // div container
-          ed.formatter.register('div_container', {
-            block: 'div',
-            wrapper: true,
-            onmatch: ed.settings.forced_root_block ? function () {
-              return false;
-            } : false
-          });
-
-          // span
-          ed.formatter.register('span', {
-            inline: 'span',
-            remove: 'all',
-            onmatch: function () {
-              return false;
-            }
-          });
-
-          // section
-          ed.formatter.register('section', {
-            block: 'section',
-            remove: 'all',
-            wrapper: true,
-            merge_siblings: false
-          });
-
-          // article
-          ed.formatter.register('article', {
-            block: 'article',
-            remove: 'all',
-            wrapper: true,
-            merge_siblings: false
-          });
-
-          // footer
-          ed.formatter.register('footer', {
-            block: 'footer',
-            remove: 'all',
-            wrapper: true,
-            merge_siblings: false
-          });
-
-          // header
-          ed.formatter.register('header', {
-            block: 'header',
-            remove: 'all',
-            wrapper: true,
-            merge_siblings: false
-          });
-
-          // nav
-          ed.formatter.register('nav', {
-            block: 'nav',
-            remove: 'all',
-            wrapper: true,
-            merge_siblings: false
-          });
-
-          // code
-          ed.formatter.register('code', {
-            inline: 'code',
-            remove: 'all'
-          });
-
-          // samp
-          ed.formatter.register('samp', {
-            inline: 'samp',
-            remove: 'all'
-          });
-
-          // blockquote - remove wrapper?
-          ed.formatter.register('blockquote', {
-            block: 'blockquote',
-            wrapper: 1,
-            remove: 'all',
-            merge_siblings: false
-          });
-
-          // Italic - <i>
-          ed.formatter.register('italic-i', {
-            inline: 'i',
-            remove: 'all'
-          });
+          blocks.push(k.toLowerCase());
         });
 
-        // update with HMTL5 tags
-        ed.settings.removeformat = [{
-          selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
+        // Register default block formats
+        ed.formatter.register('aside', {
+          block: 'aside',
           remove: 'all',
-          split: true,
-          expand: false,
-          block_expand: true,
-          deep: true
-        }];
+          wrapper: true
+        });
 
-        ed.onKeyDown.add(function (ed, e) {
+        // paragraph
+        ed.formatter.register('p', {
+          block: 'p',
+          remove: 'all'
+        });
 
-          // select parent element with SHIFT + UP
-          /*if (e.keyCode == VK.UP && e.shiftKey) {
-            var p, n = ed.selection.getNode();
+        // div
+        ed.formatter.register('div', {
+          block: 'div',
+          onmatch: ed.settings.forced_root_block ? function () {
+            return false;
+          } : false
+        });
 
-            // Find parent element just before the document body
-            p = ed.dom.getParents(n, blocks.join(','));
+        // div container
+        ed.formatter.register('div_container', {
+          block: 'div',
+          wrapper: true,
+          onmatch: ed.settings.forced_root_block ? function () {
+            return false;
+          } : false
+        });
 
-            // get the first block in the collection
-            var block = p[p.length - 1];
-
-            if (block === ed.getBody() || block === n) {
-              return;
-            }
-
-            // prevent default action
-            e.preventDefault();
-
-            ed.selection.select(block);
-          }*/
-
-          if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
-            // clear blocks
-            self._clearBlocks(ed, e);
+        // span
+        ed.formatter.register('span', {
+          inline: 'span',
+          remove: 'all',
+          onmatch: function () {
+            return false;
           }
         });
 
-        ed.onKeyUp.addToTop(function (ed, e) {
-          if (e.keyCode === VK.ENTER) {
-            var n = ed.selection.getNode();
-            if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
-              // remove all attributes
-              if (ed.settings.keep_styles === false) {
-                ed.dom.removeAllAttribs(n);
-              }
-              ed.formatter.apply('p');
-            }
-          }
+        // section
+        ed.formatter.register('section', {
+          block: 'section',
+          remove: 'all',
+          wrapper: true,
+          merge_siblings: false
         });
 
-        // Format Block fix
-        ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
-          var se = ed.selection,
-            n = se.getNode(),
-            p;
+        // article
+        ed.formatter.register('article', {
+          block: 'article',
+          remove: 'all',
+          wrapper: true,
+          merge_siblings: false
+        });
 
-          switch (cmd) {
-            case 'FormatBlock':
-              // remove format
-              if (!v) {
-                o.terminate = true;
+        // footer
+        ed.formatter.register('footer', {
+          block: 'footer',
+          remove: 'all',
+          wrapper: true,
+          merge_siblings: false
+        });
 
-                if (n === ed.getBody()) {
-                  return;
-                }
+        // header
+        ed.formatter.register('header', {
+          block: 'header',
+          remove: 'all',
+          wrapper: true,
+          merge_siblings: false
+        });
 
-                ed.undoManager.add();
+        // nav
+        ed.formatter.register('nav', {
+          block: 'nav',
+          remove: 'all',
+          wrapper: true,
+          merge_siblings: false
+        });
 
-                p = ed.dom.getParent(n, blocks.join(',')) || '';
+        // code
+        ed.formatter.register('code', {
+          inline: 'code',
+          remove: 'all'
+        });
 
-                if (p) {
-                  var name = p.nodeName.toLowerCase();
+        // samp
+        ed.formatter.register('samp', {
+          inline: 'samp',
+          remove: 'all'
+        });
 
-                  if (ed.formatter.get(name)) {
-                    ed.formatter.remove(name);
-                  }
-                }
+        // blockquote - remove wrapper?
+        ed.formatter.register('blockquote', {
+          block: 'blockquote',
+          wrapper: 1,
+          remove: 'all',
+          merge_siblings: false
+        });
 
-                var cm = ed.controlManager.get('formatselect');
+        // Italic - <i>
+        ed.formatter.register('italic-i', {
+          inline: 'i',
+          remove: 'all'
+        });
+      });
 
-                if (cm) {
-                  cm.select(p);
+      // update with HMTL5 tags
+      ed.settings.removeformat = [{
+        selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
+        remove: 'all',
+        split: true,
+        expand: false,
+        block_expand: true,
+        deep: true
+      }];
+
+      ed.onKeyDown.add(function (ed, e) {
+
+        // select parent element with SHIFT + UP
+        /*if (e.keyCode == VK.UP && e.shiftKey) {
+          var p, n = ed.selection.getNode();
+
+          // Find parent element just before the document body
+          p = ed.dom.getParents(n, blocks.join(','));
+
+          // get the first block in the collection
+          var block = p[p.length - 1];
+
+          if (block === ed.getBody() || block === n) {
+            return;
+          }
+
+          // prevent default action
+          e.preventDefault();
+
+          ed.selection.select(block);
+        }*/
+
+        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
+          // clear blocks
+          clearBlocks(e);
+        }
+      });
+
+      ed.onKeyUp.addToTop(function (ed, e) {
+        if (e.keyCode === VK.ENTER) {
+          var n = ed.selection.getNode();
+          if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
+            // remove all attributes
+            if (ed.settings.keep_styles === false) {
+              ed.dom.removeAllAttribs(n);
+            }
+            ed.formatter.apply('p');
+          }
+        }
+      });
+
+      // Format Block fix
+      ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+        var se = ed.selection,
+          n = se.getNode(),
+          p;
+
+        switch (cmd) {
+          case 'FormatBlock':
+            // remove format
+            if (!v) {
+              o.terminate = true;
+
+              if (n === ed.getBody()) {
+                return;
+              }
+
+              ed.undoManager.add();
+
+              p = ed.dom.getParent(n, blocks.join(',')) || '';
+
+              if (p) {
+                var name = p.nodeName.toLowerCase();
+
+                if (ed.formatter.get(name)) {
+                  ed.formatter.remove(name);
                 }
               }
 
-              // Definition List
-              if (v === 'dl') {
+              var cm = ed.controlManager.get('formatselect');
+
+              if (cm) {
+                cm.select(p);
+              }
+            }
+
+            // Definition List
+            if (v === 'dl') {
+              ed.execCommand('InsertDefinitionList');
+              o.terminate = true;
+            }
+
+            // Definition List - DT or DD
+            if (v === 'dt' || v === 'dd') {
+              // not yet in a Definition List
+              if (n && !ed.dom.getParent(n, 'dl')) {
                 ed.execCommand('InsertDefinitionList');
-                o.terminate = true;
               }
 
-              // Definition List - DT or DD
-              if (v === 'dt' || v === 'dd') {
-                // not yet in a Definition List
-                if (n && !ed.dom.getParent(n, 'dl')) {
-                  ed.execCommand('InsertDefinitionList');
-                }
-
-                // rename DT to DD
-                if (v === 'dt' && n.nodeName === 'DD') {
-                  ed.dom.rename(n, 'DT');
-                }
-
-                // rename DD to DT
-                if (v === 'dd' && n.nodeName === 'DT') {
-                  ed.dom.rename(n, 'DD');
-                }
-
-                o.terminate = true;
+              // rename DT to DD
+              if (v === 'dt' && n.nodeName === 'DD') {
+                ed.dom.rename(n, 'DT');
               }
 
-              break;
-            case 'RemoveFormat':
-              if (!v && !ed.dom.isBlock(n)) {
-                cm = ed.controlManager.get('styleselect');
-                // get select Styles value if any
-                if (cm && cm.selectedValue) {
-                  // remove style
-                  ed.execCommand('mceToggleFormat', false, cm.selectedValue);
-                }
+              // rename DD to DT
+              if (v === 'dd' && n.nodeName === 'DT') {
+                ed.dom.rename(n, 'DD');
               }
 
-              break;
-          }
-        });
+              o.terminate = true;
+            }
 
-        ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
-          var se = ed.selection,
-            n = se.getNode();
-          // remove empty Definition List
-          switch (cmd) {
-            case 'mceToggleFormat':
-              if (v === "dt" || v === "dd") {
-                if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
-                  ed.formatter.remove('dl');
-                }
+            break;
+          case 'RemoveFormat':
+            if (!v && !ed.dom.isBlock(n)) {
+              cm = ed.controlManager.get('styleselect');
+              // get select Styles value if any
+              if (cm && cm.selectedValue) {
+                // remove style
+                ed.execCommand('mceToggleFormat', false, cm.selectedValue);
               }
-              break;
-          }
-        });
-      },
-      _clearBlocks: function (ed, e) {
+            }
+
+            break;
+        }
+      });
+
+      ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+        var se = ed.selection,
+          n = se.getNode();
+        // remove empty Definition List
+        switch (cmd) {
+          case 'mceToggleFormat':
+            if (v === "dt" || v === "dd") {
+              if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
+                ed.formatter.remove('dl');
+              }
+            }
+            break;
+        }
+      });
+
+      function clearBlocks(e) {
         var p, n = ed.selection.getNode();
 
         // set defualt content and get the element to use
@@ -46616,20 +46554,19 @@
       }
     });
 
-    // Register plugin
-    tinymce.PluginManager.add('format', tinymce.plugins.FormatPlugin);
   })();
 
   /**
    * @package   	JCE
    * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @copyright   Copyright 2009, Moxiecode Systems AB
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
    */
-
   /*global tinymce:true */
 
   (function () {
@@ -46786,45 +46723,42 @@
       return lvl >= parseFloat(wcag2) && lvl < parseFloat(limit); // AA
     }
 
-    tinymce.create('tinymce.plugins.ImportCSS', {
-      init: function (ed, url) {
-        this.editor = ed;
-        var self = this;
+    tinymce.PluginManager.add('importcss', function (ed, url) {
+      var self = this;
 
-        // create an event to use externally
-        ed.onImportCSS = new tinymce.util.Dispatcher();
+      // create an event to use externally
+      ed.onImportCSS = new tinymce.util.Dispatcher();
 
-        ed.onImportCSS.add(function () {
-          if (tinymce.is(ed.settings.importcss_classes)) {
-            return;
-          }
+      ed.onImportCSS.add(function () {
+        if (tinymce.is(ed.settings.importcss_classes)) {
+          return;
+        }
 
-          self.get();
-        });
+        self.get();
+      });
 
-        // attempt to import when the editor is initialised
-        ed.onInit.add(function () {
-          ed.onImportCSS.dispatch();
+      // attempt to import when the editor is initialised
+      ed.onInit.add(function () {
+        ed.onImportCSS.dispatch();
 
-          // check for high contrast if not already set in a parameter
-          if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
-            self._setHighContrastMode();
-          }
+        // check for high contrast if not already set in a parameter
+        if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
+          setHighContrastMode();
+        }
 
-          self._setGuideLinesColor();
-        });
+        setGuideLinesColor();
+      });
 
-        ed.onFocus.add(function (ed) {
-          if (ed._hasGuidelines) {
-            return;
-          }
+      ed.onFocus.add(function (ed) {
+        if (ed._hasGuidelines) {
+          return;
+        }
 
-          self._setGuideLinesColor();
-        });
-      },
+        setGuideLinesColor();
+      });
 
-      _setHighContrastMode: function () {
-        var ed = this.editor;
+
+      function setHighContrastMode() {
 
         var bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
@@ -46842,10 +46776,9 @@
         if (!isReadable(color, bodybg, 3.0)) {
           ed.dom.addClass(ed.getBody(), 'mceContentReset');
         }
-      },
+      }
 
-      _setGuideLinesColor: function () {
-        var ed = this.editor;
+      function setGuideLinesColor() {
 
         var gray = [
           '#000000',
@@ -46953,11 +46886,10 @@
 
           ed.dom.addStyle(css);
         }
-      },
+      }
 
-      get: function () {
+      this.get = function () {
         var self = this,
-          ed = this.editor,
           doc = ed.getDoc(), href = '',
           rules = [],
           fonts = false;
@@ -46986,7 +46918,7 @@
           if (!bodyRx) {
             return false;
           }
-          
+
           return bodyRx.test(value);
         }
 
@@ -47040,8 +46972,8 @@
                   return true;
                 }
 
-                if (r.selectorText) {                
-                  each(r.selectorText.split(','), function (v) {                  
+                if (r.selectorText) {
+                  each(r.selectorText.split(','), function (v) {
                     v = v.trim();
 
                     // internal styles
@@ -47151,10 +47083,10 @@
         }
 
         // sort and expose if classes have been set
-        if (classes.length) {        
+        if (classes.length) {
           // remove duplicates
           classes = classes.filter(function (val, ind, arr) {
-              return arr.indexOf(val) === ind;
+            return arr.indexOf(val) === ind;
           });
 
           // sort alphabetically
@@ -47174,10 +47106,8 @@
 
           return ed.settings.importcss_classes;
         }
-      }
+      };
     });
-    // Register plugin
-    tinymce.PluginManager.add('importcss', tinymce.plugins.ImportCSS);
   })();
 
   /**
@@ -47193,38 +47123,32 @@
   /*global tinymce:true */
 
   (function () {
-    tinymce.create('tinymce.plugins.ColorPicker', {
-      init : function (ed, url) {
-        this.editor = ed;
-
-        // Register commands
-        ed.addCommand('mceColorPicker', function (ui, v) {
-          ed.windowManager.open({
-            url     : ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=colorpicker',
-            width   : 365,
-            height  : 320,
-            close_previous : false
-          }, {
-            input_color : v.color,
-            func        : v.func
-          });
+    tinymce.PluginManager.add('colorpicker', function (ed, url) {
+      // Register commands
+      ed.addCommand('mceColorPicker', function (ui, v) {
+        ed.windowManager.open({
+          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=colorpicker',
+          width: 365,
+          height: 320,
+          close_previous: false
+        }, {
+          input_color: v.color,
+          func: v.func
         });
-      }
+      });
     });
-    // Register plugin
-    tinymce.PluginManager.add('colorpicker', tinymce.plugins.ColorPicker);
   })();
 
   /**
    * @package   	JCE
    * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
    * @copyright   Copyright 2009, Moxiecode Systems AB
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
    * other free or open source software licenses.
-   *
    */
 
   /*global tinymce:true */
@@ -47962,228 +47886,212 @@
       each = tinymce.each;
     var blocks = [];
 
-    tinymce.create('tinymce.plugins.Figure', {
-      init: function (ed, url) {
-        this.editor = ed;
+    tinymce.PluginManager.add('figure', function (ed, url) {
+      ed.onPreInit.add(function (ed) {
+        ed.parser.addNodeFilter('figure', function (nodes, name) {
+          var i = nodes.length,
+            node;
 
-        ed.onPreInit.add(function (ed) {
-          ed.parser.addNodeFilter('figure', function (nodes, name) {
-            var i = nodes.length,
-              node;
+          while (i--) {
+            node = nodes[i];
 
-            while (i--) {
-              node = nodes[i];
+            if (node.getAll('figcaption').length === 0) {
+              var figcaption = new Node('figcaption', 1);
+              figcaption.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
+              figcaption.attr('contenteditable', true);
 
-              if (node.getAll('figcaption').length === 0) {
-                var figcaption = new Node('figcaption', 1);
-                figcaption.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
-                figcaption.attr('contenteditable', true);
+              node.append(figcaption);
+            }
 
-                node.append(figcaption);
-              }
+            node.attr('data-mce-image', '1');
+            node.attr('contenteditable', 'false');
 
-              node.attr('data-mce-image', '1');
-              node.attr('contenteditable', 'false');
+            each(node.getAll('img'), function (img) {
+              img.attr('data-mce-contenteditable', 'true');
+            });
 
-              each(node.getAll('img'), function (img) {
-                img.attr('data-mce-contenteditable', 'true');
+            if (ed.settings.figure_data_attribute !== false) {
+              node.attr('data-wf-figure', '1');
+            }
+          }
+        });
+
+        ed.parser.addNodeFilter('figcaption', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            node = nodes[i];
+            // Add identifying attribute to create dummy text
+            if (!node.firstChild) {
+              node.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
+            }
+            // make editable
+            node.attr('contenteditable', 'true');
+          }
+        });
+
+        ed.serializer.addNodeFilter('figure', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            node = nodes[i];
+            node.attr('contenteditable', null);
+
+            each(node.getAll('img'), function (img) {
+              img.attr('data-mce-contenteditable', null);
+            });
+          }
+        });
+
+        ed.serializer.addNodeFilter('figcaption', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            node = nodes[i];
+            // remove empty figcaption
+            if (!node.firstChild) {
+              node.remove();
+            } else {
+              node.attr('contenteditable', null);
+            }
+          }
+        });
+
+        ed.serializer.addAttributeFilter('data-mce-image', function (nodes, name) {
+          var i = nodes.length,
+            node;
+
+          while (i--) {
+            node = nodes[i];
+            node.attr(name, null);
+          }
+        });
+
+        each(ed.schema.getBlockElements(), function (v, k) {
+          if (/\W/.test(k)) {
+            return true;
+          }
+
+          blocks.push(k.toLowerCase());
+        });
+
+        ed.formatter.register('figure', {
+          block: 'figure',
+          remove: 'all',
+          ceFalseOverride: true,
+          deep: false,
+          onformat: function (elm, fmt, vars, node) {
+            vars = vars || {};
+
+            if (ed.dom.select('img,video,iframe', elm)) {
+              ed.dom.setAttribs(elm, {
+                'data-mce-image': 1,
+                'contenteditable': false
               });
+
+              // set fake contenteditable for img element
+              ed.dom.setAttrib(ed.dom.select('img', elm), 'data-mce-contenteditable', 'true');
+
+              ed.dom.add(elm, 'figcaption', {
+                'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
+                'contenteditable': true
+              }, vars.caption || '');
 
               if (ed.settings.figure_data_attribute !== false) {
-                node.attr('data-wf-figure', '1');
-              }
-            }
-          });
-
-          ed.parser.addNodeFilter('figcaption', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-              // Add identifying attribute to create dummy text
-              if (!node.firstChild) {
-                node.attr('data-mce-empty', ed.getLang('figcaption.default', 'Write a caption...'));
-              }
-              // make editable
-              node.attr('contenteditable', 'true');
-            }
-          });
-
-          ed.serializer.addNodeFilter('figure', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-              node.attr('contenteditable', null);
-
-              each(node.getAll('img'), function (img) {
-                img.attr('data-mce-contenteditable', null);
-              });
-            }
-          });
-
-          ed.serializer.addNodeFilter('figcaption', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-              // remove empty figcaption
-              if (!node.firstChild) {
-                node.remove();
-              } else {
-                node.attr('contenteditable', null);
-              }
-            }
-          });
-
-          ed.serializer.addAttributeFilter('data-mce-image', function (nodes, name) {
-            var i = nodes.length,
-              node;
-
-            while (i--) {
-              node = nodes[i];
-              node.attr(name, null);
-            }
-          });
-
-          each(ed.schema.getBlockElements(), function (v, k) {
-            if (/\W/.test(k)) {
-              return true;
-            }
-
-            blocks.push(k.toLowerCase());
-          });
-
-          ed.formatter.register('figure', {
-            block: 'figure',
-            remove: 'all',
-            ceFalseOverride: true,
-            deep: false,
-            onformat: function (elm, fmt, vars, node) {
-              vars = vars || {};
-
-              if (ed.dom.select('img,video,iframe', elm)) {
                 ed.dom.setAttribs(elm, {
-                  'data-mce-image': 1,
-                  'contenteditable': false
+                  'data-wf-figure': '1'
                 });
-
-                // set fake contenteditable for img element
-                ed.dom.setAttrib(ed.dom.select('img', elm), 'data-mce-contenteditable', 'true');
-
-                ed.dom.add(elm, 'figcaption', {
-                  'data-mce-empty': ed.getLang('figcaption.default', 'Write a caption...'),
-                  'contenteditable': true
-                }, vars.caption || '');
-
-                if (ed.settings.figure_data_attribute !== false) {
-                  ed.dom.setAttribs(elm, {
-                    'data-wf-figure' : '1'
-                  });
-                }
-              }
-            },
-            onremove: function (node) {
-              ed.dom.remove(ed.dom.select('figcaption', node));
-              ed.dom.remove(ed.dom.getParent('figure', node), 1);
-            }
-          });
-
-          ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
-            var se = ed.selection,
-              n = se.getNode();
-
-            switch (cmd) {
-              case 'JustifyRight':
-              case 'JustifyLeft':
-              case 'JustifyCenter':
-                if (n && ed.dom.is(n, 'img,span[data-mce-object]')) {
-                  var parent = ed.dom.getParent(n, 'FIGURE');
-
-                  if (parent) {
-                    se.select(parent);
-                    ed.execCommand(cmd, false);
-                    o.terminate = true;
-                  }
-                }
-                break;
-            }
-          });
-
-          ed.onKeyDown.add(function (ed, e) {
-            var isDelete, rng, container, offset, collapsed;
-
-            isDelete = e.keyCode == VK.DELETE;
-
-            if (!e.isDefaultPrevented() && (isDelete || e.keyCode == VK.BACKSPACE) && !VK.modifierPressed(e)) {
-              rng = ed.selection.getRng();
-              container = rng.startContainer;
-              offset = rng.startOffset;
-              collapsed = rng.collapsed;
-
-              container = ed.dom.getParent(container, 'FIGURE');
-
-              // remove figure and children if the img is selected
-              if (container) {
-                var node = ed.selection.getNode();
-
-                if (node.nodeName === 'IMG') {
-                  ed.dom.remove(container);
-                  ed.nodeChanged();
-                  e.preventDefault();
-                  return;
-                }
-
-                // override delete only if the figcaption is empty, so it is not itself removed
-                if (node.nodeName == 'FIGCAPTION' && (!node.nodeValue || node.nodeValue.length === 0) && node.childNodes.length === 0) {
-                  e.preventDefault();
-                }
-
-                if (node.nodeType === 3 && (!collapsed && !offset)) {
-                  var figcaption = ed.dom.getParent(node, 'FIGCAPTION');
-
-                  if (figcaption) {
-                    while (figcaption.firstChild) {
-                      figcaption.removeChild(figcaption.firstChild);
-                    }
-
-                    e.preventDefault();
-                  }
-                }
               }
             }
-          });
+          },
+          onremove: function (node) {
+            ed.dom.remove(ed.dom.select('figcaption', node));
+            ed.dom.remove(ed.dom.getParent('figure', node), 1);
+          }
         });
-      }
+
+        ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+          var se = ed.selection,
+            n = se.getNode();
+
+          switch (cmd) {
+            case 'JustifyRight':
+            case 'JustifyLeft':
+            case 'JustifyCenter':
+              if (n && ed.dom.is(n, 'img,span[data-mce-object]')) {
+                var parent = ed.dom.getParent(n, 'FIGURE');
+
+                if (parent) {
+                  se.select(parent);
+                  ed.execCommand(cmd, false);
+                  o.terminate = true;
+                }
+              }
+              break;
+          }
+        });
+
+        ed.onKeyDown.add(function (ed, e) {
+          var isDelete, rng, container, offset, collapsed;
+
+          isDelete = e.keyCode == VK.DELETE;
+
+          if (!e.isDefaultPrevented() && (isDelete || e.keyCode == VK.BACKSPACE) && !VK.modifierPressed(e)) {
+            rng = ed.selection.getRng();
+            container = rng.startContainer;
+            offset = rng.startOffset;
+            collapsed = rng.collapsed;
+
+            container = ed.dom.getParent(container, 'FIGURE');
+
+            // remove figure and children if the img is selected
+            if (container) {
+              var node = ed.selection.getNode();
+
+              if (node.nodeName === 'IMG') {
+                ed.dom.remove(container);
+                ed.nodeChanged();
+                e.preventDefault();
+                return;
+              }
+
+              // override delete only if the figcaption is empty, so it is not itself removed
+              if (node.nodeName == 'FIGCAPTION' && (!node.nodeValue || node.nodeValue.length === 0) && node.childNodes.length === 0) {
+                e.preventDefault();
+              }
+
+              if (node.nodeType === 3 && (!collapsed && !offset)) {
+                var figcaption = ed.dom.getParent(node, 'FIGCAPTION');
+
+                if (figcaption) {
+                  while (figcaption.firstChild) {
+                    figcaption.removeChild(figcaption.firstChild);
+                  }
+
+                  e.preventDefault();
+                }
+              }
+            }
+          }
+        });
+      });
 
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('figure', tinymce.plugins.Figure);
-  })();
-
-  /*global tinymce:true */
-
-  (function () {
-    tinymce.create('tinymce.plugins.UiPlugin', {
-      init: function (ed, url) {}
-    });
-
-    // Register plugin
-    tinymce.PluginManager.add('ui', tinymce.plugins.UiPlugin);
   })();
 
   /**
-   * editor_plugin_src.js
-   *
-   * Copyright 2009, Moxiecode Systems AB
-   * Released under LGPL License.
-   *
-   * License: http://tinymce.moxiecode.com/license
-   * Contributing: http://tinymce.moxiecode.com/contributing
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @copyright   Copyright 2009, Moxiecode Systems AB
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
    */
 
   /*global tinymce:true */
@@ -48342,48 +48250,52 @@
   })();
 
   /*global tinymce:true */
-
+  /**
+   * @package   	JCE
+   * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+   * JCE is free software. This version may have been modified pursuant
+   * to the GNU General Public License, and as distributed it includes or
+   * is derivative of works licensed under the GNU General Public License or
+   * other free or open source software licenses.
+   */
   (function () {
     var DOM = tinymce.DOM;
 
-    tinymce.create('tinymce.plugins.BrandingPlugin', {
+    tinymce.PluginManager.add('branding', function (ed, url) {
 
-      init: function (ed, url) {
+      // turn off branding
+      if (ed.settings.branding === false) {
+        return;
+      }
 
-        // turn off branding
-        if (ed.settings.branding === false) {
-          return;
+      ed.onPostRender.add(function () {
+        var container = ed.getContentAreaContainer();
+        DOM.insertAfter(DOM.create('div', { 'class': 'mceBranding' }, 'Powered by JCE Core. <span id="mceBrandingMessage"></span><a href="https://www.joomlacontenteditor.net/buy" target="_blank" title="Get JCE Pro">JCE Pro</a>'), container);
+      });
+
+      ed.onNodeChange.add(function (ed, cm, n, co) {
+        var container = ed.getContentAreaContainer(), msg = 'Get more features with ';
+
+        if (n.nodeName === "IMG") {
+          msg = 'Image resizing, thumbnails and editing in ';
         }
 
-        ed.onPostRender.add(function () {
-          var container = ed.getContentAreaContainer();
-          DOM.insertAfter(DOM.create('div', { 'class' : 'mceBranding' }, 'Powered by JCE Core. <span id="mceBrandingMessage"></span><a href="https://www.joomlacontenteditor.net/purchase" target="_blank" title="Get JCE Pro">JCE Pro</a>'), container);
-        });
+        if (ed.dom.is(n, '.mce-item-media')) {
+          msg = 'Upload and manage audio and video with ';
+        }
 
-        ed.onNodeChange.add(function (ed, cm, n, co) {
-          var container = ed.getContentAreaContainer(), msg = 'Get more features with ';
-
-          if (n.nodeName === "IMG") {
-            msg = 'Image resizing, thumbnails and editing in ';
-          }
-
-          if (ed.dom.is(n, '.mce-item-media')) {
-            msg = 'Upload and manage audio and video with ';
-          }
-
-          DOM.setHTML(DOM.get('mceBrandingMessage', container), msg);
-        });
-      }
+        DOM.setHTML(DOM.get('mceBrandingMessage', container), msg);
+      });
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('branding', tinymce.plugins.BrandingPlugin);
   })();
 
   /**
    * @package   	JCE
    * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
-   * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+   * @copyright   Copyright 2009, Moxiecode Systems AB
+   * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+   * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
    * JCE is free software. This version may have been modified pursuant
    * to the GNU General Public License, and as distributed it includes or
    * is derivative of works licensed under the GNU General Public License or
