@@ -12,7 +12,6 @@ import './plugins/importcss/plugin.js';
 import './plugins/colorpicker/plugin.js';
 import './plugins/upload/plugin.js';
 import './plugins/figure/plugin.js';
-import './plugins/ui/plugin.js';
 import './plugins/noneditable/plugin.js';
 import './plugins/branding/plugin.js';
 import './plugins/blobupload/plugin.js';
