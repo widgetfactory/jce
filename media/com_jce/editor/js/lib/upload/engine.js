@@ -407,8 +407,6 @@
                     }
                 }
 
-                file.size = file.size || "";
-
                 // check file size
                 if (file.size && parseInt(file.size, 10) > parseInt(this.options.max_size, 10) * 1024) {
                     this.fire('error', { "code": 600, "message": 'FILE_SIZE_ERROR', "file": file });
