@@ -15,6 +15,7 @@ use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Plugin\PluginHelper;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -51,19 +52,67 @@ trait DisplayTrait
     }
 
     /**
+     * Check that the editor is enabled and has a valid profile
+     *
+     * @return boolean
+     */
+    private function isEditorEnabled()
+    {
+        if (!ComponentHelper::isEnabled('com_jce')) {
+            return false;
+        }
+
+        $instance = $this->getEditorInstance();
+
+        if ($instance->hasProfile()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Find an alternate editor to load based on the Editor Global Configuration settings.
+     * The alternate editor must be enabled.
+     * If no editor is available or set, default to "read only" JCE.
+     *
+     * @return mixed Joomla\CMS\Editor\Editor or boolean false
+     */
+    private function getAlternateEditor()
+    {
+        $name = $this->params->get('editor_fallback', '');
+
+        if ($name == '' || $name == 'jce') {
+            return false;
+        }
+
+        if (!PluginHelper::isEnabled('editors', $name)) {
+            return false;
+        }
+
+        $ed = Editor::getInstance($name);
+
+        return $ed;
+    }
+
+    /**
      * Method to handle the onInit event.
      *  - Initializes the JCE WYSIWYG Editor.
-     *
-     * @param   $toString Return javascript and css as a string
-     *
-     * @return string JavaScript Initialization string
+
+     * @return void
      *
      * @since   1.5
      */
     public function onInit()
     {
-        if (!ComponentHelper::isEnabled('com_jce')) {
-            return false;
+        if ($this->isEditorEnabled() === false) {
+
+            $ed = $this->getAlternateEditor();
+
+            if ($ed !== false) {
+                $ed->initialise();
+                return;
+            }
         }
 
         $language = Factory::getLanguage();
@@ -86,7 +135,7 @@ trait DisplayTrait
 
         $document->addScriptOptions('plg_editor_jce',
             array(
-                'editor' => $editor->getScriptOptions()
+                'editor' => $editor->getScriptOptions(),
             )
         );
     }
@@ -110,6 +159,15 @@ trait DisplayTrait
      */
     public function onDisplay($name, $content, $width, $height, $col, $row, $buttons = true, $id = null, $asset = null, $author = null, $params = array())
     {
+        if ($this->isEditorEnabled() === false) {
+
+            $ed = $this->getAlternateEditor();
+
+            if ($ed !== false) {
+                return $ed->display($name, $content, $width, $height, $col, $row, $buttons, $id, $asset, $author, $params);
+            }
+        }
+
         if (empty($id)) {
             $id = $name;
         }
