@@ -1,3 +1,12 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
 (function () {
     var DOM = tinymce.DOM,
         Event = tinymce.dom.Event;
@@ -46,63 +55,59 @@
         return false;
     }
 
-    tinymce.create('tinymce.plugins.SourcePlugin', {
-        init: function (ed, url) {
-            var self = this;
-            self.editor = ed;
+    tinymce.PluginManager.add('source', function (ed, url) {
+        var self = this;
 
-            ed.onSetContent.add(function (ed, o) {
-                self.setContent(ed.getContent(), true);
-            });
+        ed.onSetContent.add(function (ed, o) {
+            self.setContent(ed.getContent(), true);
+        });
 
-            function isEditorActive() {
-                return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+        function isEditorActive() {
+            return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+        }
+
+        ed.onInit.add(function (ed) {
+            if (isEditorActive() == false) {
+                return;
             }
 
-            ed.onInit.add(function (ed) {
-                if (isEditorActive() == false) {
-                    return;
-                }
+            // get the stored active tab
+            var activeTab = ed.settings.active_tab || "";
 
-                // get the stored active tab
-                var activeTab = ed.settings.active_tab || "";
+            if (activeTab === "wf-editor-source") {
+                // hide editor
+                DOM.hide(ed.getContainer());
 
-                if (activeTab === "wf-editor-source") {
-                    // hide editor
-                    DOM.hide(ed.getContainer());
+                // hide textarea
+                DOM.hide(ed.getElement());
 
-                    // hide textarea
-                    DOM.hide(ed.getElement());
+                // toggle source with delay (this seems to be necessary in SP Page Builder to prevent text block cloning...?)
+                window.setTimeout(function () {
+                    self.toggle();
+                }, 10);
+            }
+        });
 
-                    // toggle source with delay (this seems to be necessary in SP Page Builder to prevent text block cloning...?)
-                    window.setTimeout(function () {
-                        self.toggle();
-                    }, 10);
-                }
-            });
+        this.ControlManager = new tinymce.ControlManager(ed);
 
-            this.ControlManager = new tinymce.ControlManager(ed);
-        },
-
-        getSourceEditor: function () {
-            var ed = this.editor;
+        function getSourceEditor() {
             var textarea = DOM.get(ed.id + '_editor_source_textarea');
 
             return textarea || null;
-        },
+        }
 
-        setContent: function (v) {
-            var editor = this.getSourceEditor();
+        this.setContent = function (v) {
+            var editor = getSourceEditor();
 
             if (editor) {
                 return editor.value = v;
             }
 
             return false;
-        },
+        };
 
-        insertContent: function (v) {
-            var editor = this.getSourceEditor();
+        this.insertContent = function (v) {
+            var editor = getSourceEditor();
 
             if (editor) {
                 editor.focus();
@@ -118,10 +123,10 @@
             }
 
             return false;
-        },
+        };
 
-        getContent: function () {
-            var editor = this.getSourceEditor();
+        this.getContent = function () {
+            var editor = getSourceEditor();
 
             // iframe has been created and source editor is visible
             if (editor) {
@@ -129,14 +134,14 @@
             }
 
             return null;
-        },
+        };
 
-        hide: function () {
+        this.hide = function () {
             var ed = this.editor;
             DOM.hide(ed.id + '_editor_source');
-        },
+        };
 
-        save: function (content, debounced) {
+        this.save = function (content, debounced) {
             var ed = this.editor,
                 el = ed.getElement();
 
@@ -169,9 +174,9 @@
             }
 
             return args.content;
-        },
+        };
 
-        toggle: function () {
+        this.toggle = function () {
             var ed = this.editor;
             var self = this,
                 s = ed.settings;
@@ -336,18 +341,15 @@
                 height = vp.h - header.offsetHeight - statusbar.offsetHeight - 4;
             }
 
-            DOM.setStyles(textarea, { height : height });
-        },
+            DOM.setStyles(textarea, { height: height });
+        };
 
-        getSelection: function () {
+        this.getSelection = function () {
             return document.getSelection().toString();
-        },
+        };
 
-        getCursorPos: function () {
+        this.getCursorPos = function () {
             return 0;
-        }
+        };
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('source', tinymce.plugins.SourcePlugin);
 })();

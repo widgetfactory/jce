@@ -1,12 +1,15 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+
 (function () {
     var each = tinymce.each,
         PreviewCss = tinymce.util.PreviewCss,
@@ -45,27 +48,21 @@
         return filter;
     }
 
-    tinymce.create('tinymce.plugins.StyleSelectPlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
-        },
+    tinymce.PluginManager.add('styleselect', function (ed, url) {
+        this.createControl = function (n, cf) {
 
-        createControl: function (n, cf) {
-            var ed = this.editor;
-
-            switch (n) {
-                case "styleselect":
-                    // only create the control if we are using it!
-                    if (ed.getParam('styleselect_stylesheets') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
-                        return this._createStyleSelect();
-                    }
-
-                    break;
+            if (n !== 'styleselect') {
+                return null;
             }
-        },
 
-        convertSelectorToFormat: function (selectorText) {
-            var format, ed = this.editor;
+            // only create the control if we are using it!
+            if (ed.getParam('styleselect_stylesheets') !== false || ed.getParam('style_formats') || ed.getParam('styleselect_custom_classes')) {
+                return createStyleSelect();
+            }
+        };
+
+        function convertSelectorToFormat(selectorText) {
+            var format;
 
             // empty value
             if (!selectorText) {
@@ -138,12 +135,10 @@
             format.ceFalseOverride = true;
 
             return format;
-        },
+        }
 
-        _createStyleSelect: function (n) {
-            var self = this,
-                ed = this.editor,
-                ctrl;
+        function createStyleSelect(n) {
+            var ctrl;
 
             function removeFilterTags() {
                 var filter = DOM.get('menu_' + ctrl.id + '_menu_filter');
@@ -452,7 +447,7 @@
                         };
                     }
 
-                    var fmt = self.convertSelectorToFormat(item.selector);
+                    var fmt = convertSelectorToFormat(item.selector);
 
                     if (fmt) {
                         ed.formatter.register(name, fmt);
@@ -637,7 +632,4 @@
             return ctrl;
         }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('styleselect', tinymce.plugins.StyleSelectPlugin);
 })();

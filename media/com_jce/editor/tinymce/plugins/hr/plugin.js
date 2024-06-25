@@ -13,110 +13,104 @@
         BACKSPACE = VK.BACKSPACE,
         DELETE = VK.DELETE;
 
-    tinymce.create('tinymce.plugins.HorizontalRulePlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
+    tinymce.PluginManager.add('hr', function (ed, url) {
 
-            ed.addCommand('InsertHorizontalRule', function (ui, v) {
-                var se = ed.selection,
-                    n = se.getNode();
+        ed.addCommand('InsertHorizontalRule', function (ui, v) {
+            var se = ed.selection,
+                n = se.getNode();
 
-                // split pragraphs and headings
-                if (/^(H[1-6]|P)$/.test(n.nodeName)) {
-
-                    ed.undoManager.add();
-
-                    // create hr marker
-                    ed.execCommand('mceInsertContent', false, '<span id="mce_hr_marker" data-mce-type="bookmark">\uFEFF</span>', {
-                        skip_undo: 1
-                    });
-
-                    var marker = ed.dom.get('mce_hr_marker'),
-                        hr = ed.dom.create('hr');
-
-                    // get the marker parent
-                    var p = ed.dom.getParent(marker, blocks, 'BODY');
-
-                    // split
-                    ed.dom.split(p, marker);
-
-                    var ns = marker.nextSibling;
-
-                    if (!ns) {
-                        var el = ed.getParam('forced_root_block') || 'br';
-                        ns = ed.dom.create(el);
-
-                        if (el != 'br') {
-                            ns.innerHTML = '\u00a0';
-                        }
-
-                        ed.dom.insertAfter(ns, marker);
-                    }
-
-                    if (ns) {
-                        // move cursor to the end of block element
-                        ed.selection.setCursorLocation(ns, ns.childNodes.length);
-                    }
-
-                    ed.dom.replace(hr, marker);
-                } else {
-                    ed.execCommand('mceInsertContent', false, '<hr />');
-                }
+            // split pragraphs and headings
+            if (/^(H[1-6]|P)$/.test(n.nodeName)) {
 
                 ed.undoManager.add();
-            });
 
-            // Register buttons
-            ed.addButton('hr', {
-                title: 'advanced.hr_desc',
-                cmd: 'InsertHorizontalRule'
-            });
+                // create hr marker
+                ed.execCommand('mceInsertContent', false, '<span id="mce_hr_marker" data-mce-type="bookmark">\uFEFF</span>', {
+                    skip_undo: 1
+                });
 
-            function isHR(n) {
-                return n.nodeName === "HR" && /mce-item-(pagebreak|readmore)/.test(n.className) === false;
+                var marker = ed.dom.get('mce_hr_marker'),
+                    hr = ed.dom.create('hr');
+
+                // get the marker parent
+                var p = ed.dom.getParent(marker, blocks, 'BODY');
+
+                // split
+                ed.dom.split(p, marker);
+
+                var ns = marker.nextSibling;
+
+                if (!ns) {
+                    var el = ed.getParam('forced_root_block') || 'br';
+                    ns = ed.dom.create(el);
+
+                    if (el != 'br') {
+                        ns.innerHTML = '\u00a0';
+                    }
+
+                    ed.dom.insertAfter(ns, marker);
+                }
+
+                if (ns) {
+                    // move cursor to the end of block element
+                    ed.selection.setCursorLocation(ns, ns.childNodes.length);
+                }
+
+                ed.dom.replace(hr, marker);
+            } else {
+                ed.execCommand('mceInsertContent', false, '<hr />');
             }
 
-            ed.onNodeChange.add(function (ed, cm, n) {
-                var s = isHR(n);
+            ed.undoManager.add();
+        });
 
-                cm.setActive('hr', s);
+        // Register buttons
+        ed.addButton('hr', {
+            title: 'advanced.hr_desc',
+            cmd: 'InsertHorizontalRule'
+        });
 
-                ed.dom.removeClass(ed.dom.select('hr.mce-item-selected:not(.mce-item-pagebreak,.mce-item-readmore)'), 'mce-item-selected');
+        function isHR(n) {
+            return n.nodeName === "HR" && /mce-item-(pagebreak|readmore)/.test(n.className) === false;
+        }
 
-                if (s) {
-                    ed.dom.addClass(n, 'mce-item-selected');
-                }
-            });
+        ed.onNodeChange.add(function (ed, cm, n) {
+            var s = isHR(n);
 
-            ed.onKeyDown.add(function (ed, e) {
-                if (e.keyCode == BACKSPACE || e.keyCode == DELETE) {
-                    var s = ed.selection,
-                        n = s.getNode();
+            cm.setActive('hr', s);
 
-                    if (isHR(n)) {
-                        var sib = n.previousSibling;
+            ed.dom.removeClass(ed.dom.select('hr.mce-item-selected:not(.mce-item-pagebreak,.mce-item-readmore)'), 'mce-item-selected');
 
-                        ed.dom.remove(n);
-                        e.preventDefault();
+            if (s) {
+                ed.dom.addClass(n, 'mce-item-selected');
+            }
+        });
+
+        ed.onKeyDown.add(function (ed, e) {
+            if (e.keyCode == BACKSPACE || e.keyCode == DELETE) {
+                var s = ed.selection,
+                    n = s.getNode();
+
+                if (isHR(n)) {
+                    var sib = n.previousSibling;
+
+                    ed.dom.remove(n);
+                    e.preventDefault();
+
+                    if (!ed.dom.isBlock(sib)) {
+                        sib = n.nextSibling;
 
                         if (!ed.dom.isBlock(sib)) {
-                            sib = n.nextSibling;
-
-                            if (!ed.dom.isBlock(sib)) {
-                                sib = null;
-                            }
-                        }
-
-                        if (sib) {
-                            // reset the cursor
-                            ed.selection.setCursorLocation(sib, sib.childNodes.length);
+                            sib = null;
                         }
                     }
-                }
-            });
-        }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('hr', tinymce.plugins.HorizontalRulePlugin);
+                    if (sib) {
+                        // reset the cursor
+                        ed.selection.setCursorLocation(sib, sib.childNodes.length);
+                    }
+                }
+            }
+        });
+    });
 })();

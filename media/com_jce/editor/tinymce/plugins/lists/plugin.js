@@ -1331,42 +1331,34 @@
     });
   };
 
-  tinymce.create('tinymce.plugins.Lists', {
-    init: function (editor) {
-      Delete.setup(editor);
+  tinymce.PluginManager.add("lists", function (editor) {
+    Delete.setup(editor);
 
-      editor.onInit.add(function () {
-        setupCommands(editor);
-        setupStateHandlers(editor);
-        if (editor.getParam('lists_indent_on_tab', true)) {
-          setupTabKey(editor);
-        }
+    editor.onInit.add(function () {
+      setupCommands(editor);
+      setupStateHandlers(editor);
+      if (editor.getParam('lists_indent_on_tab', true)) {
+        setupTabKey(editor);
+      }
+    });
+
+    var iconMap = {
+      'numlist': 'OL',
+      'bullist': 'UL'
+    };
+
+    editor.onNodeChange.add(function (ed, cm, n, collapsed, args) {
+      var lists = tinymce.grep(args.parents, NodeType.isListNode);
+
+      tinymce.each(iconMap, function (listName, btnName) {
+        cm.setActive(btnName, lists.length > 0 && lists[0].nodeName === listName);
       });
+    });
 
-      var iconMap = {
-        'numlist': 'OL',
-        'bullist': 'UL'
-      };
-
-      editor.onNodeChange.add(function (ed, cm, n, collapsed, args) {
-        var lists = tinymce.grep(args.parents, NodeType.isListNode);
-
-        tinymce.each(iconMap, function (listName, btnName) {
-          cm.setActive(btnName, lists.length > 0 && lists[0].nodeName === listName);
-        });
-      });
-
-      this.backspaceDelete = function (isForward) {
-        return Delete.backspaceDelete(editor, isForward);
-      };
-    },
-
-    backspaceDelete: function (isForward) {
-      return this.backspaceDelete(isForward);
-    }
+    this.backspaceDelete = function (isForward) {
+      return Delete.backspaceDelete(editor, isForward);
+    };
   });
-
-  tinymce.PluginManager.add("lists", tinymce.plugins.Lists);
 
   function Plugin () { }
 

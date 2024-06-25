@@ -15,307 +15,304 @@
     each = tinymce.each;
   var blocks = [];
 
-  tinymce.create('tinymce.plugins.FormatPlugin', {
-    init: function (ed, url) {
-      var self = this;
-      this.editor = ed;
+  tinymce.PluginManager.add('format', function (ed, url) {
 
-      // Register buttons
-      ed.addButton('italic', {
-        title: 'advanced.italic_desc',
-        onclick: function (e) {
-          e.preventDefault();
+    // Register buttons
+    ed.addButton('italic', {
+      title: 'advanced.italic_desc',
+      onclick: function (e) {
+        e.preventDefault();
 
-          // restore focus
-          ed.focus();
+        // restore focus
+        ed.focus();
 
-          e.shiftKey ? ed.formatter.toggle('italic-i') : ed.formatter.toggle('italic');
+        e.shiftKey ? ed.formatter.toggle('italic-i') : ed.formatter.toggle('italic');
 
-          ed.undoManager.add();
-        }
+        ed.undoManager.add();
+      }
+    });
+
+    ed.addShortcut('meta+shift+i', 'italic.desc', function () {
+      ed.formatter.apply('italic-i');
+    });
+
+    function addSoftHyphenShortcut() {
+      ed.addCommand('mceSoftHyphen', function () {
+        ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
       });
 
-      ed.addShortcut('meta+shift+i', 'italic.desc', function () {
-        ed.formatter.apply('italic-i');
-      });
+      var keyCode = 189;
 
-      function addSoftHyphenShortcut() {
-        ed.addCommand('mceSoftHyphen', function () {
-          ed.execCommand('mceInsertContent', false, (ed.plugins.visualchars && ed.plugins.visualchars.state) ? '<span data-mce-bogus="1" class="mce-item-hidden mce-item-shy">&shy;</span>' : '&shy;');
-        });
-
-        var keyCode = 189;
-
-        // Firefox seems to use a different keyCode, - instead of _
-        if (tinymce.isGecko) {
-          keyCode = 173;
-        }
-
-        ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
-
+      // Firefox seems to use a different keyCode, - instead of _
+      if (tinymce.isGecko) {
+        keyCode = 173;
       }
 
-      // add shoft hyphen keyboard shortcut
-      addSoftHyphenShortcut();
+      ed.addShortcut('ctrl+shift+' + keyCode, 'softhyphen.desc', 'mceSoftHyphen');
 
-      ed.onPreInit.add(function (ed) {
-        each(ed.schema.getBlockElements(), function (v, k) {
-          if (/\W/.test(k)) {
-            return true;
-          }
+    }
 
-          blocks.push(k.toLowerCase());
-        });
+    // add shoft hyphen keyboard shortcut
+    addSoftHyphenShortcut();
 
-        // Register default block formats
-        ed.formatter.register('aside', {
-          block: 'aside',
-          remove: 'all',
-          wrapper: true
-        });
+    ed.onPreInit.add(function (ed) {
+      each(ed.schema.getBlockElements(), function (v, k) {
+        if (/\W/.test(k)) {
+          return true;
+        }
 
-        // paragraph
-        ed.formatter.register('p', {
-          block: 'p',
-          remove: 'all'
-        });
-
-        // div
-        ed.formatter.register('div', {
-          block: 'div',
-          onmatch: ed.settings.forced_root_block ? function () {
-            return false;
-          } : false
-        });
-
-        // div container
-        ed.formatter.register('div_container', {
-          block: 'div',
-          wrapper: true,
-          onmatch: ed.settings.forced_root_block ? function () {
-            return false;
-          } : false
-        });
-
-        // span
-        ed.formatter.register('span', {
-          inline: 'span',
-          remove: 'all',
-          onmatch: function () {
-            return false;
-          }
-        });
-
-        // section
-        ed.formatter.register('section', {
-          block: 'section',
-          remove: 'all',
-          wrapper: true,
-          merge_siblings: false
-        });
-
-        // article
-        ed.formatter.register('article', {
-          block: 'article',
-          remove: 'all',
-          wrapper: true,
-          merge_siblings: false
-        });
-
-        // footer
-        ed.formatter.register('footer', {
-          block: 'footer',
-          remove: 'all',
-          wrapper: true,
-          merge_siblings: false
-        });
-
-        // header
-        ed.formatter.register('header', {
-          block: 'header',
-          remove: 'all',
-          wrapper: true,
-          merge_siblings: false
-        });
-
-        // nav
-        ed.formatter.register('nav', {
-          block: 'nav',
-          remove: 'all',
-          wrapper: true,
-          merge_siblings: false
-        });
-
-        // code
-        ed.formatter.register('code', {
-          inline: 'code',
-          remove: 'all'
-        });
-
-        // samp
-        ed.formatter.register('samp', {
-          inline: 'samp',
-          remove: 'all'
-        });
-
-        // blockquote - remove wrapper?
-        ed.formatter.register('blockquote', {
-          block: 'blockquote',
-          wrapper: 1,
-          remove: 'all',
-          merge_siblings: false
-        });
-
-        // Italic - <i>
-        ed.formatter.register('italic-i', {
-          inline: 'i',
-          remove: 'all'
-        });
+        blocks.push(k.toLowerCase());
       });
 
-      // update with HMTL5 tags
-      ed.settings.removeformat = [{
-        selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
+      // Register default block formats
+      ed.formatter.register('aside', {
+        block: 'aside',
         remove: 'all',
-        split: true,
-        expand: false,
-        block_expand: true,
-        deep: true
-      }];
+        wrapper: true
+      });
 
-      ed.onKeyDown.add(function (ed, e) {
+      // paragraph
+      ed.formatter.register('p', {
+        block: 'p',
+        remove: 'all'
+      });
 
-        // select parent element with SHIFT + UP
-        /*if (e.keyCode == VK.UP && e.shiftKey) {
-          var p, n = ed.selection.getNode();
+      // div
+      ed.formatter.register('div', {
+        block: 'div',
+        onmatch: ed.settings.forced_root_block ? function () {
+          return false;
+        } : false
+      });
 
-          // Find parent element just before the document body
-          p = ed.dom.getParents(n, blocks.join(','));
+      // div container
+      ed.formatter.register('div_container', {
+        block: 'div',
+        wrapper: true,
+        onmatch: ed.settings.forced_root_block ? function () {
+          return false;
+        } : false
+      });
 
-          // get the first block in the collection
-          var block = p[p.length - 1];
-
-          if (block === ed.getBody() || block === n) {
-            return;
-          }
-
-          // prevent default action
-          e.preventDefault();
-
-          ed.selection.select(block);
-        }*/
-
-        if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
-          // clear blocks
-          self._clearBlocks(ed, e);
+      // span
+      ed.formatter.register('span', {
+        inline: 'span',
+        remove: 'all',
+        onmatch: function () {
+          return false;
         }
       });
 
-      ed.onKeyUp.addToTop(function (ed, e) {
-        if (e.keyCode === VK.ENTER) {
-          var n = ed.selection.getNode();
-          if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
-            // remove all attributes
-            if (ed.settings.keep_styles === false) {
-              ed.dom.removeAllAttribs(n);
-            }
-            ed.formatter.apply('p');
-          }
-        }
+      // section
+      ed.formatter.register('section', {
+        block: 'section',
+        remove: 'all',
+        wrapper: true,
+        merge_siblings: false
       });
 
-      // Format Block fix
-      ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
-        var se = ed.selection,
-          n = se.getNode(),
-          p;
+      // article
+      ed.formatter.register('article', {
+        block: 'article',
+        remove: 'all',
+        wrapper: true,
+        merge_siblings: false
+      });
 
-        switch (cmd) {
-          case 'FormatBlock':
-            // remove format
-            if (!v) {
-              o.terminate = true;
+      // footer
+      ed.formatter.register('footer', {
+        block: 'footer',
+        remove: 'all',
+        wrapper: true,
+        merge_siblings: false
+      });
 
-              if (n === ed.getBody()) {
-                return;
-              }
+      // header
+      ed.formatter.register('header', {
+        block: 'header',
+        remove: 'all',
+        wrapper: true,
+        merge_siblings: false
+      });
 
-              ed.undoManager.add();
+      // nav
+      ed.formatter.register('nav', {
+        block: 'nav',
+        remove: 'all',
+        wrapper: true,
+        merge_siblings: false
+      });
 
-              p = ed.dom.getParent(n, blocks.join(',')) || '';
+      // code
+      ed.formatter.register('code', {
+        inline: 'code',
+        remove: 'all'
+      });
 
-              if (p) {
-                var name = p.nodeName.toLowerCase();
+      // samp
+      ed.formatter.register('samp', {
+        inline: 'samp',
+        remove: 'all'
+      });
 
-                if (ed.formatter.get(name)) {
-                  ed.formatter.remove(name);
-                }
-              }
+      // blockquote - remove wrapper?
+      ed.formatter.register('blockquote', {
+        block: 'blockquote',
+        wrapper: 1,
+        remove: 'all',
+        merge_siblings: false
+      });
 
-              var cm = ed.controlManager.get('formatselect');
+      // Italic - <i>
+      ed.formatter.register('italic-i', {
+        inline: 'i',
+        remove: 'all'
+      });
+    });
 
-              if (cm) {
-                cm.select(p);
+    // update with HMTL5 tags
+    ed.settings.removeformat = [{
+      selector: 'b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,footer',
+      remove: 'all',
+      split: true,
+      expand: false,
+      block_expand: true,
+      deep: true
+    }];
+
+    ed.onKeyDown.add(function (ed, e) {
+
+      // select parent element with SHIFT + UP
+      /*if (e.keyCode == VK.UP && e.shiftKey) {
+        var p, n = ed.selection.getNode();
+
+        // Find parent element just before the document body
+        p = ed.dom.getParents(n, blocks.join(','));
+
+        // get the first block in the collection
+        var block = p[p.length - 1];
+
+        if (block === ed.getBody() || block === n) {
+          return;
+        }
+
+        // prevent default action
+        e.preventDefault();
+
+        ed.selection.select(block);
+      }*/
+
+      if ((e.keyCode === VK.ENTER || e.keyCode === VK.UP || e.keyCode === VK.DOWN) && e.altKey) {
+        // clear blocks
+        clearBlocks(e);
+      }
+    });
+
+    ed.onKeyUp.addToTop(function (ed, e) {
+      if (e.keyCode === VK.ENTER) {
+        var n = ed.selection.getNode();
+        if (n.nodeName === 'DIV' && ed.settings.force_block_newlines) {
+          // remove all attributes
+          if (ed.settings.keep_styles === false) {
+            ed.dom.removeAllAttribs(n);
+          }
+          ed.formatter.apply('p');
+        }
+      }
+    });
+
+    // Format Block fix
+    ed.onBeforeExecCommand.add(function (ed, cmd, ui, v, o) {
+      var se = ed.selection,
+        n = se.getNode(),
+        p;
+
+      switch (cmd) {
+        case 'FormatBlock':
+          // remove format
+          if (!v) {
+            o.terminate = true;
+
+            if (n === ed.getBody()) {
+              return;
+            }
+
+            ed.undoManager.add();
+
+            p = ed.dom.getParent(n, blocks.join(',')) || '';
+
+            if (p) {
+              var name = p.nodeName.toLowerCase();
+
+              if (ed.formatter.get(name)) {
+                ed.formatter.remove(name);
               }
             }
 
-            // Definition List
-            if (v === 'dl') {
+            var cm = ed.controlManager.get('formatselect');
+
+            if (cm) {
+              cm.select(p);
+            }
+          }
+
+          // Definition List
+          if (v === 'dl') {
+            ed.execCommand('InsertDefinitionList');
+            o.terminate = true;
+          }
+
+          // Definition List - DT or DD
+          if (v === 'dt' || v === 'dd') {
+            // not yet in a Definition List
+            if (n && !ed.dom.getParent(n, 'dl')) {
               ed.execCommand('InsertDefinitionList');
-              o.terminate = true;
             }
 
-            // Definition List - DT or DD
-            if (v === 'dt' || v === 'dd') {
-              // not yet in a Definition List
-              if (n && !ed.dom.getParent(n, 'dl')) {
-                ed.execCommand('InsertDefinitionList');
-              }
-
-              // rename DT to DD
-              if (v === 'dt' && n.nodeName === 'DD') {
-                ed.dom.rename(n, 'DT');
-              }
-
-              // rename DD to DT
-              if (v === 'dd' && n.nodeName === 'DT') {
-                ed.dom.rename(n, 'DD');
-              }
-
-              o.terminate = true;
+            // rename DT to DD
+            if (v === 'dt' && n.nodeName === 'DD') {
+              ed.dom.rename(n, 'DT');
             }
 
-            break;
-          case 'RemoveFormat':
-            if (!v && !ed.dom.isBlock(n)) {
-              cm = ed.controlManager.get('styleselect');
-              // get select Styles value if any
-              if (cm && cm.selectedValue) {
-                // remove style
-                ed.execCommand('mceToggleFormat', false, cm.selectedValue);
-              }
+            // rename DD to DT
+            if (v === 'dd' && n.nodeName === 'DT') {
+              ed.dom.rename(n, 'DD');
             }
 
-            break;
-        }
-      });
+            o.terminate = true;
+          }
 
-      ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
-        var se = ed.selection,
-          n = se.getNode();
-        // remove empty Definition List
-        switch (cmd) {
-          case 'mceToggleFormat':
-            if (v === "dt" || v === "dd") {
-              if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
-                ed.formatter.remove('dl');
-              }
+          break;
+        case 'RemoveFormat':
+          if (!v && !ed.dom.isBlock(n)) {
+            cm = ed.controlManager.get('styleselect');
+            // get select Styles value if any
+            if (cm && cm.selectedValue) {
+              // remove style
+              ed.execCommand('mceToggleFormat', false, cm.selectedValue);
             }
-            break;
-        }
-      });
-    },
-    _clearBlocks: function (ed, e) {
+          }
+
+          break;
+      }
+    });
+
+    ed.onExecCommand.add(function (ed, cmd, ui, v, o) {
+      var se = ed.selection,
+        n = se.getNode();
+      // remove empty Definition List
+      switch (cmd) {
+        case 'mceToggleFormat':
+          if (v === "dt" || v === "dd") {
+            if (n.nodeName === "DL" && ed.dom.select('dt,dd', n).length === 0) {
+              ed.formatter.remove('dl');
+            }
+          }
+          break;
+      }
+    });
+
+    function clearBlocks(e) {
       var p, n = ed.selection.getNode();
 
       // set defualt content and get the element to use
@@ -365,6 +362,4 @@
     }
   });
 
-  // Register plugin
-  tinymce.PluginManager.add('format', tinymce.plugins.FormatPlugin);
 })();

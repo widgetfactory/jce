@@ -1,11 +1,13 @@
 /**
- * editor_plugin_src.js
- *
- * Copyright 2011, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
 
 /*global tinymce:true */
@@ -13,68 +15,55 @@
 (function () {
   var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
 
-  tinymce.create('tinymce.plugins.AutolinkPlugin', {
-    /**
-		 * Initializes the plugin, this will be executed after the plugin has been created.
-		 * This call is done before the editor instance has finished it's initialization so use the onInit event
-		 * of the editor instance to intercept that event.
-		 *
-		 * @param {tinymce.Editor} ed Editor instance that the plugin is initialized in.
-		 * @param {string} url Absolute URL to where the plugin is located.
-		 */
+  tinymce.PluginManager.add('autolink', function (ed, url) {
+    if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
+      return;
+    }
 
-    init: function (ed, url) {
-      var self = this;
+    if (ed.settings.autolink_pattern) {
+      AutoLinkPattern = ed.settings.autolink_pattern;
+    }
 
-      if (!ed.getParam('autolink_url', true) && !ed.getParam('autolink_email', true)) {
-        return;
+    ed.onAutoLink = new tinymce.util.Dispatcher(this);
+
+    // Add a key down handler
+    ed.onKeyDown.addToTop(function (ed, e) {
+      if (e.keyCode == 13) {
+        return handleEnter(ed);
       }
+    });
 
-      if (ed.settings.autolink_pattern) {
-        AutoLinkPattern = ed.settings.autolink_pattern;
+    // Internet Explorer has built-in automatic linking for most cases
+    if (tinymce.isIE) {
+      return;
+    }
+
+    ed.onKeyPress.add(function (ed, e) {
+      if (e.which == 41) {
+        return handleEclipse(ed);
       }
+    });
 
-      ed.onAutoLink = new tinymce.util.Dispatcher(this);
-
-      // Add a key down handler
-      ed.onKeyDown.addToTop(function (ed, e) {
-        if (e.keyCode == 13) {
-          return self.handleEnter(ed);
-        }
-      });
-
-      // Internet Explorer has built-in automatic linking for most cases
-      if (tinymce.isIE) {
-        return;
+    // Add a key up handler
+    ed.onKeyUp.add(function (ed, e) {
+      if (e.keyCode == 32) {
+        return handleSpacebar(ed);
       }
+    });
 
-      ed.onKeyPress.add(function (ed, e) {
-        if (e.which == 41) {
-          return self.handleEclipse(ed);
-        }
-      });
+    function handleEclipse(ed) {
+      parseCurrentLine(ed, -1, '(', true);
+    }
 
-      // Add a key up handler
-      ed.onKeyUp.add(function (ed, e) {
-        if (e.keyCode == 32) {
-          return self.handleSpacebar(ed);
-        }
-      });
-    },
+    function handleSpacebar(ed) {
+      parseCurrentLine(ed, 0, '', true);
+    }
 
-    handleEclipse: function (ed) {
-      this.parseCurrentLine(ed, -1, '(', true);
-    },
+    function handleEnter(ed) {
+      parseCurrentLine(ed, -1, '', false);
+    }
 
-    handleSpacebar: function (ed) {
-      this.parseCurrentLine(ed, 0, '', true);
-    },
-
-    handleEnter: function (ed) {
-      this.parseCurrentLine(ed, -1, '', false);
-    },
-
-    parseCurrentLine: function (editor, endOffset, delimiter) {
+    function parseCurrentLine(editor, endOffset, delimiter) {
       var rng, end, start, endContainer, bookmark, text, matches, prev, len, rngText;
 
       function scopeIndex(container, index) {
@@ -232,7 +221,4 @@
       }
     }
   });
-
-  // Register plugin
-  tinymce.PluginManager.add('autolink', tinymce.plugins.AutolinkPlugin);
 })();

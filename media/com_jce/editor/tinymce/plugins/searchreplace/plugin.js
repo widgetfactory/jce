@@ -1,13 +1,13 @@
 /**
- * plugin.js
- *
- * Copyright 2009, Moxiecode Systems AB
- * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
-
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
 
 /*eslint no-labels:0, no-constant-condition: 0 */
@@ -272,479 +272,474 @@
         return count;
     }
 
-    tinymce.create('tinymce.plugins.SearchReplacePlugin', {
-        init: function (editor, url) {
-            var self = this,
-                last, currentIndex = -1;
+    tinymce.PluginManager.add('searchreplace', function (editor, url) {
+        var self = this,
+            last, currentIndex = -1;
 
-            function notFoundAlert() {
-                editor.windowManager.alert(editor.getLang('searchreplace.notfound', 'The search has been completed. The search string could not be found.'));
-            }
+        function notFoundAlert() {
+            editor.windowManager.alert(editor.getLang('searchreplace.notfound', 'The search has been completed. The search string could not be found.'));
+        }
 
-            editor.updateSearchButtonStates = new tinymce.util.Dispatcher(this);
+        editor.updateSearchButtonStates = new tinymce.util.Dispatcher(this);
 
-            editor.addCommand('mceSearchReplace', function () {
-                last = {};
+        editor.addCommand('mceSearchReplace', function () {
+            last = {};
 
-                var html = '' +
-                    '<div class="mceForm">' +
-                    '<div class="mceModalRow">' +
-                    '   <label for="' + editor.id + '_search_string">' + editor.getLang('searchreplace.findwhat', 'Search') + '</label>' +
-                    '   <div class="mceModalControl">' +
-                    '       <input type="text" id="' + editor.id + '_search_string" />' +
-                    '   </div>' +
-                    '   <div class="mceModalControl mceModalFlexNone">' +
-                    '       <button class="mceButton" id="' + editor.id + '_search_prev" title="' + editor.getLang('searchreplace.prev', 'Previous') + '" disabled><i class="mceIcon mce_arrow-up"></i></button>' +
-                    '       <button class="mceButton" id="' + editor.id + '_search_next" title="' + editor.getLang('searchreplace.next', 'Next') + '" disabled><i class="mceIcon mce_arrow-down"></i></button>' +
-                    '   </div>' +
-                    '</div>' +
-                    '<div class="mceModalRow">' +
-                    '   <label for="' + editor.id + '_replace_string">' + editor.getLang('searchreplace.replacewith', 'Replace') + '</label>' +
-                    '   <div class="mceModalControl">' +
-                    '       <input type="text" id="' + editor.id + '_replace_string" />' +
-                    '   </div>' +
-                    '</div>' +
-                    '<div class="mceModalRow">' +
-                    '   <div class="mceModalControl">' +
-                    '       <input id="' + editor.id + '_matchcase" type="checkbox" />' +
-                    '       <label for="' + editor.id + '_matchcase">' + editor.getLang('searchreplace.mcase', 'Match Case') + '</label>' +
-                    '   </div>' +
-                    '   <div class="mceModalControl">' +
-                    '       <input id="' + editor.id + '_wholewords" type="checkbox" />' +
-                    '       <label for="' + editor.id + '_wholewords">' + editor.getLang('searchreplace.wholewords', 'Whole Words') + '</label>' +
-                    '   </div>' +
-                    '</div>' +
-                    '</div>';
+            var html = '' +
+                '<div class="mceForm">' +
+                '<div class="mceModalRow">' +
+                '   <label for="' + editor.id + '_search_string">' + editor.getLang('searchreplace.findwhat', 'Search') + '</label>' +
+                '   <div class="mceModalControl">' +
+                '       <input type="text" id="' + editor.id + '_search_string" />' +
+                '   </div>' +
+                '   <div class="mceModalControl mceModalFlexNone">' +
+                '       <button class="mceButton" id="' + editor.id + '_search_prev" title="' + editor.getLang('searchreplace.prev', 'Previous') + '" disabled><i class="mceIcon mce_arrow-up"></i></button>' +
+                '       <button class="mceButton" id="' + editor.id + '_search_next" title="' + editor.getLang('searchreplace.next', 'Next') + '" disabled><i class="mceIcon mce_arrow-down"></i></button>' +
+                '   </div>' +
+                '</div>' +
+                '<div class="mceModalRow">' +
+                '   <label for="' + editor.id + '_replace_string">' + editor.getLang('searchreplace.replacewith', 'Replace') + '</label>' +
+                '   <div class="mceModalControl">' +
+                '       <input type="text" id="' + editor.id + '_replace_string" />' +
+                '   </div>' +
+                '</div>' +
+                '<div class="mceModalRow">' +
+                '   <div class="mceModalControl">' +
+                '       <input id="' + editor.id + '_matchcase" type="checkbox" />' +
+                '       <label for="' + editor.id + '_matchcase">' + editor.getLang('searchreplace.mcase', 'Match Case') + '</label>' +
+                '   </div>' +
+                '   <div class="mceModalControl">' +
+                '       <input id="' + editor.id + '_wholewords" type="checkbox" />' +
+                '       <label for="' + editor.id + '_wholewords">' + editor.getLang('searchreplace.wholewords', 'Whole Words') + '</label>' +
+                '   </div>' +
+                '</div>' +
+                '</div>';
 
-                editor.windowManager.open({
-                    title: editor.getLang('searchreplace.search_desc', 'Search and Replace'),
-                    content: html,
-                    size: 'mce-modal-landscape-small',
-                    overlay: false,
-                    open: function () {
-                        var id = this.id;
+            editor.windowManager.open({
+                title: editor.getLang('searchreplace.search_desc', 'Search and Replace'),
+                content: html,
+                size: 'mce-modal-landscape-small',
+                overlay: false,
+                open: function () {
+                    var id = this.id;
 
-                        var search = DOM.get(editor.id + '_search_string');
+                    var search = DOM.get(editor.id + '_search_string');
 
-                        search.value = editor.selection.getContent({
-                            format: 'text'
+                    search.value = editor.selection.getContent({
+                        format: 'text'
+                    });
+
+                    DOM.bind(editor.id + '_search_next', 'click', function (e) {
+                        e.preventDefault();
+
+                        editor.execCommand('mceSearchNext', false);
+                    });
+
+                    DOM.bind(editor.id + '_search_prev', 'click', function (e) {
+                        e.preventDefault();
+
+                        editor.execCommand('mceSearchPrev', false);
+                    });
+
+                    window.setTimeout(function () {
+                        search.focus();
+                    }, 10);
+
+                    editor.updateSearchButtonStates.add(function (obj) {
+                        tinymce.each(obj, function (val, key) {
+                            var elm = DOM.get(editor.id + '_search_' + key) || DOM.get(id + '_search_' + key);
+
+                            if (!elm) {
+                                return;
+                            }
+
+                            elm.disabled = !!val;
                         });
+                    });
+                },
+                close: function () {
+                    DOM.unbind(editor.id + '_search_next', 'click');
+                    DOM.unbind(editor.id + '_search_prev', 'click');
 
-                        DOM.bind(editor.id + '_search_next', 'click', function (e) {
+                    editor.execCommand('mceSearchDone', false);
+                },
+                buttons: [
+                    {
+                        title: editor.getLang('searchreplace.find', 'Find'),
+                        id: 'find',
+                        onclick: function (e) {
                             e.preventDefault();
 
-                            editor.execCommand('mceSearchNext', false);
-                        });
+                            var matchcase = DOM.get(editor.id + '_matchcase');
+                            var wholeword = DOM.get(editor.id + '_wholewords');
 
-                        DOM.bind(editor.id + '_search_prev', 'click', function (e) {
-                            e.preventDefault();
+                            var text = DOM.getValue(editor.id + '_search_string');
 
-                            editor.execCommand('mceSearchPrev', false);
-                        });
 
-                        window.setTimeout(function () {
-                            search.focus();
-                        }, 10);
-
-                        editor.updateSearchButtonStates.add(function (obj) {
-                            tinymce.each(obj, function (val, key) {
-                                var elm = DOM.get(editor.id + '_search_' + key) || DOM.get(id + '_search_' + key);
-
-                                if (!elm) {
-                                    return;
-                                }
-
-                                elm.disabled = !!val;
+                            editor.execCommand('mceSearch', false, {
+                                "textcase": !!matchcase.checked,
+                                "text": text,
+                                "wholeword": !!wholeword.checked
                             });
-                        });
-                    },
-                    close: function () {
-                        DOM.unbind(editor.id + '_search_next', 'click');
-                        DOM.unbind(editor.id + '_search_prev', 'click');
+                        },
+                        classes: 'primary'
+                    }, {
+                        title: editor.getLang('searchreplace.replace', 'Replace'),
+                        id: 'search_replace',
+                        onclick: function (e) {
+                            e.preventDefault();
 
-                        editor.execCommand('mceSearchDone', false);
-                    },
-                    buttons: [
-                        {
-                            title: editor.getLang('searchreplace.find', 'Find'),
-                            id: 'find',
-                            onclick: function (e) {
-                                e.preventDefault();
-
-                                var matchcase = DOM.get(editor.id + '_matchcase');
-                                var wholeword = DOM.get(editor.id + '_wholewords');
-
-                                var text = DOM.getValue(editor.id + '_search_string');
-
-
-                                editor.execCommand('mceSearch', false, {
-                                    "textcase": !!matchcase.checked,
-                                    "text": text,
-                                    "wholeword": !!wholeword.checked
-                                });
-                            },
-                            classes: 'primary'
-                        }, {
-                            title: editor.getLang('searchreplace.replace', 'Replace'),
-                            id: 'search_replace',
-                            onclick: function (e) {
-                                e.preventDefault();
-
-                                var value = DOM.getValue(editor.id + '_replace_string');
-                                editor.execCommand('mceReplace', false, value);
-                            }
-                        }, {
-                            title: editor.getLang('searchreplace.replaceall', 'Replace All'),
-                            id: 'search_replaceall',
-                            onclick: function (e) {
-                                e.preventDefault();
-
-                                var value = DOM.getValue(editor.id + '_replace_string');
-                                editor.execCommand('mceReplaceAll', false, value);
-                            }
+                            var value = DOM.getValue(editor.id + '_replace_string');
+                            editor.execCommand('mceReplace', false, value);
                         }
-                    ]
-                });
-            });
+                    }, {
+                        title: editor.getLang('searchreplace.replaceall', 'Replace All'),
+                        id: 'search_replaceall',
+                        onclick: function (e) {
+                            e.preventDefault();
 
-            function updateButtonStates() {
-                editor.updateSearchButtonStates.dispatch({
-                    "next": !findSpansByIndex(currentIndex + 1).length,
-                    "prev": !findSpansByIndex(currentIndex - 1).length
-                });
-            }
-
-            function resetButtonStates() {
-                editor.updateSearchButtonStates.dispatch({
-                    "replace": true,
-                    "replaceAll": true,
-                    "next": true,
-                    "prev": true
-                });
-            }
-
-            editor.addCommand('mceSearch', function (ui, e) {
-                var count, text = e.text,
-                    caseState = e.textcase,
-                    wholeWord = e.wholeword;
-
-                if (!text.length) {
-                    self.done(false);
-
-                    // disable all
-                    resetButtonStates();
-
-                    return;
-                }
-
-                if (last.text == text && last.caseState == caseState && last.wholeWord == wholeWord) {
-                    if (findSpansByIndex(currentIndex + 1).length === 0) {
-                        notFoundAlert();
-                        return;
+                            var value = DOM.getValue(editor.id + '_replace_string');
+                            editor.execCommand('mceReplaceAll', false, value);
+                        }
                     }
-
-                    self.next();
-
-                    updateButtonStates();
-
-                    return;
-                }
-
-                count = self.find(text, caseState, wholeWord);
-
-                if (!count) {
-                    notFoundAlert();
-                }
-
-                updateButtonStates();
-
-                editor.updateSearchButtonStates.dispatch({
-                    "replace": !count,
-                    "replaceAll": !count
-                });
-
-                last = {
-                    text: text,
-                    caseState: caseState,
-                    wholeWord: wholeWord
-                };
+                ]
             });
+        });
 
-            editor.addCommand('mceSearchNext', function () {
-                self.next();
-                updateButtonStates();
+        function updateButtonStates() {
+            editor.updateSearchButtonStates.dispatch({
+                "next": !findSpansByIndex(currentIndex + 1).length,
+                "prev": !findSpansByIndex(currentIndex - 1).length
             });
+        }
 
-            editor.addCommand('mceSearchPrev', function () {
-                self.prev();
-                updateButtonStates();
+        function resetButtonStates() {
+            editor.updateSearchButtonStates.dispatch({
+                "replace": true,
+                "replaceAll": true,
+                "next": true,
+                "prev": true
             });
+        }
 
-            editor.addCommand('mceReplace', function (ui, text) {
-                if (!self.replace(text)) {
-                    resetButtonStates();
+        editor.addCommand('mceSearch', function (ui, e) {
+            var count, text = e.text,
+                caseState = e.textcase,
+                wholeWord = e.wholeword;
 
-                    currentIndex = -1;
-                    last = {};
-                }
-            });
-
-            editor.addCommand('mceReplaceAll', function (ui, text) {
-                if (!self.replace(text, true, true)) {
-                    resetButtonStates();
-
-                    last = {};
-                }
-            });
-
-            editor.addCommand('mceSearchDone', function () {
-                self.done();
-            });
-
-            // Register buttons
-            editor.addButton('search', {
-                title: 'searchreplace.search_desc',
-                cmd: 'mceSearchReplace'
-            });
-
-            editor.addShortcut('meta+f', 'searchreplace.search_desc', function () {
-                return editor.execCommand('mceSearchReplace');
-            });
-
-            function getElmIndex(elm) {
-                var value = elm.getAttribute('data-mce-index');
-
-                if (typeof value == "number") {
-                    return "" + value;
-                }
-
-                return value;
-            }
-
-            function markAllMatches(regex) {
-                var node, marker;
-
-                marker = editor.dom.create('span', {
-                    "data-mce-bogus": 1
-                });
-
-                marker.className = 'mce-match-marker'; // IE 7 adds class="mce-match-marker" and class=mce-match-marker
-                node = editor.getBody();
-
+            if (!text.length) {
                 self.done(false);
 
-                return findAndReplaceDOMText(regex, node, marker, false, editor.schema);
+                // disable all
+                resetButtonStates();
+
+                return;
             }
 
-            function unwrap(node) {
-                var parentNode = node.parentNode;
-
-                if (node.firstChild) {
-                    parentNode.insertBefore(node.firstChild, node);
+            if (last.text == text && last.caseState == caseState && last.wholeWord == wholeWord) {
+                if (findSpansByIndex(currentIndex + 1).length === 0) {
+                    notFoundAlert();
+                    return;
                 }
 
-                node.parentNode.removeChild(node);
+                self.next();
+
+                updateButtonStates();
+
+                return;
             }
 
-            function findSpansByIndex(index) {
-                var nodes, spans = [];
+            count = self.find(text, caseState, wholeWord);
 
-                nodes = tinymce.toArray(editor.getBody().getElementsByTagName('span'));
-                if (nodes.length) {
-                    for (var i = 0; i < nodes.length; i++) {
-                        var nodeIndex = getElmIndex(nodes[i]);
-
-                        if (nodeIndex === null || !nodeIndex.length) {
-                            continue;
-                        }
-
-                        if (nodeIndex === index.toString()) {
-                            spans.push(nodes[i]);
-                        }
-                    }
-                }
-
-                return spans;
+            if (!count) {
+                notFoundAlert();
             }
 
-            function moveSelection(forward) {
-                var testIndex = currentIndex,
-                    dom = editor.dom;
+            updateButtonStates();
 
-                forward = forward !== false;
+            editor.updateSearchButtonStates.dispatch({
+                "replace": !count,
+                "replaceAll": !count
+            });
 
-                if (forward) {
-                    testIndex++;
-                } else {
-                    testIndex--;
-                }
-
-                dom.removeClass(findSpansByIndex(currentIndex), 'mce-match-marker-selected');
-
-                var spans = findSpansByIndex(testIndex);
-
-                if (spans.length) {
-                    dom.addClass(findSpansByIndex(testIndex), 'mce-match-marker-selected');
-                    editor.selection.scrollIntoView(spans[0]);
-                    return testIndex;
-                }
-
-                return -1;
-            }
-
-            function removeNode(node) {
-                var dom = editor.dom,
-                    parent = node.parentNode;
-
-                dom.remove(node);
-
-                if (dom.isEmpty(parent)) {
-                    dom.remove(parent);
-                }
-            }
-
-            function isMatchSpan(node) {
-                var matchIndex = getElmIndex(node);
-
-                return matchIndex !== null && matchIndex.length > 0;
-            }
-
-            self.find = function (text, matchCase, wholeWord) {
-                text = text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-                text = wholeWord ? '\\b' + text + '\\b' : text;
-
-                var count = markAllMatches(new RegExp(text, matchCase ? 'g' : 'gi'));
-
-                if (count) {
-                    currentIndex = -1;
-                    currentIndex = moveSelection(true);
-                }
-
-                return count;
+            last = {
+                text: text,
+                caseState: caseState,
+                wholeWord: wholeWord
             };
+        });
 
-            self.next = function () {
-                var index = moveSelection(true);
+        editor.addCommand('mceSearchNext', function () {
+            self.next();
+            updateButtonStates();
+        });
 
-                if (index !== -1) {
-                    currentIndex = index;
-                }
-            };
+        editor.addCommand('mceSearchPrev', function () {
+            self.prev();
+            updateButtonStates();
+        });
 
-            self.prev = function () {
-                var index = moveSelection(false);
+        editor.addCommand('mceReplace', function (ui, text) {
+            if (!self.replace(text)) {
+                resetButtonStates();
 
-                if (index !== -1) {
-                    currentIndex = index;
-                }
-            };
+                currentIndex = -1;
+                last = {};
+            }
+        });
 
-            function isMatchSpan(node) {
-                var matchIndex = getElmIndex(node);
+        editor.addCommand('mceReplaceAll', function (ui, text) {
+            if (!self.replace(text, true, true)) {
+                resetButtonStates();
 
-                return matchIndex !== null && matchIndex.length > 0;
+                last = {};
+            }
+        });
+
+        editor.addCommand('mceSearchDone', function () {
+            self.done();
+        });
+
+        // Register buttons
+        editor.addButton('search', {
+            title: 'searchreplace.search_desc',
+            cmd: 'mceSearchReplace'
+        });
+
+        editor.addShortcut('meta+f', 'searchreplace.search_desc', function () {
+            return editor.execCommand('mceSearchReplace');
+        });
+
+        function getElmIndex(elm) {
+            var value = elm.getAttribute('data-mce-index');
+
+            if (typeof value == "number") {
+                return "" + value;
             }
 
-            self.replace = function (text, forward, all) {
-                var i, nodes, node, matchIndex, currentMatchIndex, nextIndex = currentIndex,
-                    hasMore;
-
-                forward = forward !== false;
-
-                node = editor.getBody();
-                nodes = tinymce.grep(tinymce.toArray(node.getElementsByTagName('span')), isMatchSpan);
-
-                // filter nodes so that only those that are contenteditable or within a contenteditable parent can be replaced
-                nodes = tinymce.grep(nodes, function (node) {
-                    var parent = editor.dom.getParent(node, '[contenteditable]');
-
-                    if (parent && parent.contentEditable === 'false') {
-                        return false;
-                    }
-
-                    return node.contentEditable !== 'false';
-                });
-
-                for (i = 0; i < nodes.length; i++) {
-                    var nodeIndex = getElmIndex(nodes[i]);
-
-                    matchIndex = currentMatchIndex = parseInt(nodeIndex, 10);
-                    if (all || matchIndex === currentIndex) {
-                        if (text.length) {
-                            nodes[i].firstChild.nodeValue = text;
-                            unwrap(nodes[i]);
-                        } else {
-                            removeNode(nodes[i]);
-                        }
-
-                        while (nodes[++i]) {
-                            matchIndex = parseInt(getElmIndex(nodes[i]), 10);
-
-                            if (matchIndex === currentMatchIndex) {
-                                removeNode(nodes[i]);
-                            } else {
-                                i--;
-                                break;
-                            }
-                        }
-
-                        if (forward) {
-                            nextIndex--;
-                        }
-                    } else if (currentMatchIndex > currentIndex) {
-                        nodes[i].setAttribute('data-mce-index', currentMatchIndex - 1);
-                    }
-                }
-
-                editor.undoManager.add();
-                currentIndex = nextIndex;
-
-                if (forward) {
-                    hasMore = findSpansByIndex(nextIndex + 1).length > 0;
-                    self.next();
-                } else {
-                    hasMore = findSpansByIndex(nextIndex - 1).length > 0;
-                    self.prev();
-                }
-
-                return !all && hasMore;
-            };
-
-            self.done = function (keepEditorSelection) {
-                var i, nodes, startContainer, endContainer;
-
-                nodes = tinymce.toArray(editor.getBody().getElementsByTagName('span'));
-                for (i = 0; i < nodes.length; i++) {
-                    var nodeIndex = getElmIndex(nodes[i]);
-
-                    if (nodeIndex !== null && nodeIndex.length) {
-                        if (nodeIndex === currentIndex.toString()) {
-                            if (!startContainer) {
-                                startContainer = nodes[i].firstChild;
-                            }
-
-                            endContainer = nodes[i].firstChild;
-                        }
-
-                        unwrap(nodes[i]);
-                    }
-                }
-
-                if (startContainer && endContainer) {
-                    var rng = editor.dom.createRng();
-                    rng.setStart(startContainer, 0);
-                    rng.setEnd(endContainer, endContainer.data.length);
-
-                    if (keepEditorSelection !== false) {
-                        editor.selection.setRng(rng);
-                    }
-
-                    return rng;
-                }
-            };
+            return value;
         }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('searchreplace', tinymce.plugins.SearchReplacePlugin);
+        function markAllMatches(regex) {
+            var node, marker;
+
+            marker = editor.dom.create('span', {
+                "data-mce-bogus": 1
+            });
+
+            marker.className = 'mce-match-marker'; // IE 7 adds class="mce-match-marker" and class=mce-match-marker
+            node = editor.getBody();
+
+            self.done(false);
+
+            return findAndReplaceDOMText(regex, node, marker, false, editor.schema);
+        }
+
+        function unwrap(node) {
+            var parentNode = node.parentNode;
+
+            if (node.firstChild) {
+                parentNode.insertBefore(node.firstChild, node);
+            }
+
+            node.parentNode.removeChild(node);
+        }
+
+        function findSpansByIndex(index) {
+            var nodes, spans = [];
+
+            nodes = tinymce.toArray(editor.getBody().getElementsByTagName('span'));
+            if (nodes.length) {
+                for (var i = 0; i < nodes.length; i++) {
+                    var nodeIndex = getElmIndex(nodes[i]);
+
+                    if (nodeIndex === null || !nodeIndex.length) {
+                        continue;
+                    }
+
+                    if (nodeIndex === index.toString()) {
+                        spans.push(nodes[i]);
+                    }
+                }
+            }
+
+            return spans;
+        }
+
+        function moveSelection(forward) {
+            var testIndex = currentIndex,
+                dom = editor.dom;
+
+            forward = forward !== false;
+
+            if (forward) {
+                testIndex++;
+            } else {
+                testIndex--;
+            }
+
+            dom.removeClass(findSpansByIndex(currentIndex), 'mce-match-marker-selected');
+
+            var spans = findSpansByIndex(testIndex);
+
+            if (spans.length) {
+                dom.addClass(findSpansByIndex(testIndex), 'mce-match-marker-selected');
+                editor.selection.scrollIntoView(spans[0]);
+                return testIndex;
+            }
+
+            return -1;
+        }
+
+        function removeNode(node) {
+            var dom = editor.dom,
+                parent = node.parentNode;
+
+            dom.remove(node);
+
+            if (dom.isEmpty(parent)) {
+                dom.remove(parent);
+            }
+        }
+
+        function isMatchSpan(node) {
+            var matchIndex = getElmIndex(node);
+
+            return matchIndex !== null && matchIndex.length > 0;
+        }
+
+        self.find = function (text, matchCase, wholeWord) {
+            text = text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+            text = wholeWord ? '\\b' + text + '\\b' : text;
+
+            var count = markAllMatches(new RegExp(text, matchCase ? 'g' : 'gi'));
+
+            if (count) {
+                currentIndex = -1;
+                currentIndex = moveSelection(true);
+            }
+
+            return count;
+        };
+
+        self.next = function () {
+            var index = moveSelection(true);
+
+            if (index !== -1) {
+                currentIndex = index;
+            }
+        };
+
+        self.prev = function () {
+            var index = moveSelection(false);
+
+            if (index !== -1) {
+                currentIndex = index;
+            }
+        };
+
+        function isMatchSpan(node) {
+            var matchIndex = getElmIndex(node);
+
+            return matchIndex !== null && matchIndex.length > 0;
+        }
+
+        self.replace = function (text, forward, all) {
+            var i, nodes, node, matchIndex, currentMatchIndex, nextIndex = currentIndex,
+                hasMore;
+
+            forward = forward !== false;
+
+            node = editor.getBody();
+            nodes = tinymce.grep(tinymce.toArray(node.getElementsByTagName('span')), isMatchSpan);
+
+            // filter nodes so that only those that are contenteditable or within a contenteditable parent can be replaced
+            nodes = tinymce.grep(nodes, function (node) {
+                var parent = editor.dom.getParent(node, '[contenteditable]');
+
+                if (parent && parent.contentEditable === 'false') {
+                    return false;
+                }
+
+                return node.contentEditable !== 'false';
+            });
+
+            for (i = 0; i < nodes.length; i++) {
+                var nodeIndex = getElmIndex(nodes[i]);
+
+                matchIndex = currentMatchIndex = parseInt(nodeIndex, 10);
+                if (all || matchIndex === currentIndex) {
+                    if (text.length) {
+                        nodes[i].firstChild.nodeValue = text;
+                        unwrap(nodes[i]);
+                    } else {
+                        removeNode(nodes[i]);
+                    }
+
+                    while (nodes[++i]) {
+                        matchIndex = parseInt(getElmIndex(nodes[i]), 10);
+
+                        if (matchIndex === currentMatchIndex) {
+                            removeNode(nodes[i]);
+                        } else {
+                            i--;
+                            break;
+                        }
+                    }
+
+                    if (forward) {
+                        nextIndex--;
+                    }
+                } else if (currentMatchIndex > currentIndex) {
+                    nodes[i].setAttribute('data-mce-index', currentMatchIndex - 1);
+                }
+            }
+
+            editor.undoManager.add();
+            currentIndex = nextIndex;
+
+            if (forward) {
+                hasMore = findSpansByIndex(nextIndex + 1).length > 0;
+                self.next();
+            } else {
+                hasMore = findSpansByIndex(nextIndex - 1).length > 0;
+                self.prev();
+            }
+
+            return !all && hasMore;
+        };
+
+        self.done = function (keepEditorSelection) {
+            var i, nodes, startContainer, endContainer;
+
+            nodes = tinymce.toArray(editor.getBody().getElementsByTagName('span'));
+            for (i = 0; i < nodes.length; i++) {
+                var nodeIndex = getElmIndex(nodes[i]);
+
+                if (nodeIndex !== null && nodeIndex.length) {
+                    if (nodeIndex === currentIndex.toString()) {
+                        if (!startContainer) {
+                            startContainer = nodes[i].firstChild;
+                        }
+
+                        endContainer = nodes[i].firstChild;
+                    }
+
+                    unwrap(nodes[i]);
+                }
+            }
+
+            if (startContainer && endContainer) {
+                var rng = editor.dom.createRng();
+                rng.setStart(startContainer, 0);
+                rng.setEnd(endContainer, endContainer.data.length);
+
+                if (keepEditorSelection !== false) {
+                    editor.selection.setRng(rng);
+                }
+
+                return rng;
+            }
+        };
+    });
 })();

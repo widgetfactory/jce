@@ -11,27 +11,19 @@
 /*global tinymce:true */
 
 (function () {
-
-  tinymce.create('tinymce.plugins.HelpPlugin', {
-    init: function (ed, url) {
-      this.editor = ed;
-
-      ed.addCommand('mceHelp', function () {
-        ed.windowManager.open({
-          title: ed.getLang('dlg.help', 'Help'),
-          url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
-          size: 'mce-modal-landscape-full'
-        });
+  tinymce.PluginManager.add('help', function (ed, url) {
+    ed.addCommand('mceHelp', function () {
+      ed.windowManager.open({
+        title: ed.getLang('dlg.help', 'Help'),
+        url: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=help&lang=' + ed.getParam('language') + '&section=editor&category=editor&article=about',
+        size: 'mce-modal-landscape-full'
       });
+    });
 
-      // Register buttons
-      ed.addButton('help', {
-        title: 'dlg.help',
-        cmd: 'mceHelp'
-      });
-    }
+    // Register buttons
+    ed.addButton('help', {
+      title: 'dlg.help',
+      cmd: 'mceHelp'
+    });
   });
-
-  // Register plugin
-  tinymce.PluginManager.add('help', tinymce.plugins.HelpPlugin);
 })();

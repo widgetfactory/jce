@@ -1,7 +1,9 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -12,60 +14,57 @@
 
     var colors = '000000,993300,333300,003300,003366,000080,333399,333333,800000,FF6600,808000,008000,008080,0000FF,666699,808080,FF0000,FF9900,99CC00,339966,33CCCC,3366FF,800080,999999,FF00FF,FFCC00,FFFF00,00FF00,00FFFF,00CCFF,993366,FFFFFF,FF99CC,FFCC99,FFFF99,CCFFCC,CCFFFF,99CCFF,CC99FF';
 
-    tinymce.create('tinymce.plugins.FontColorPlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
+    tinymce.PluginManager.add('fontcolor', function (ed, url) {
 
-            ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
-                var c;
+        ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
+            var c;
 
-                function updateColor(controlId, color) {
-                    if ((c = cm.get(controlId))) {
-                        if (!color) {
-                            color = c.settings.default_color;
-                        }
-                        if (color !== c.value) {
-                            c.displayColor(color);
-                        }
+            function updateColor(controlId, color) {
+                if ((c = cm.get(controlId))) {
+                    if (!color) {
+                        color = c.settings.default_color;
+                    }
+                    if (color !== c.value) {
+                        c.displayColor(color);
                     }
                 }
+            }
 
-                var fc, bc;
+            var fc, bc;
 
-                each(o.parents, function (n) {
-                    if (n.style) {
+            each(o.parents, function (n) {
+                if (n.style) {
 
-                        if (n.style.color) {
-                            updateColor('forecolor', n.style.color);
-                            fc = true;
-                        }
-
-                        if (n.style.backgroundColor) {
-                            updateColor('backcolor', n.style.backgroundColor);
-                            bc = true;
-                        }
-
-                        // break when complete
-                        if (fc && bc) {
-                            return false;
-                        }
+                    if (n.style.color) {
+                        updateColor('forecolor', n.style.color);
+                        fc = true;
                     }
-                });
+
+                    if (n.style.backgroundColor) {
+                        updateColor('backcolor', n.style.backgroundColor);
+                        bc = true;
+                    }
+
+                    // break when complete
+                    if (fc && bc) {
+                        return false;
+                    }
+                }
             });
-        },
-        createControl: function (n) {
+        });
+
+        this.createControl = function (n) {
             if (n === "forecolor") {
-                return this._createForeColorMenu();
+                return createForeColorMenu();
             }
 
             if (n === "backcolor") {
-                return this._createBackColorMenu();
+                return createBackColorMenu();
             }
-        },
-        _createForeColorMenu: function () {
-            var c, self = this,
-                ed = self.editor,
-                s = ed.settings,
+        };
+
+        function createForeColorMenu() {
+            var c, s = ed.settings,
                 o = {},
                 v;
 
@@ -107,11 +106,10 @@
             c = ed.controlManager.createColorSplitButton('forecolor', o);
 
             return c;
-        },
-        _createBackColorMenu: function () {
-            var c, self = this,
-                ed = self.editor,
-                s = ed.settings,
+        }
+
+        function createBackColorMenu() {
+            var c, s = ed.settings,
                 o = {},
                 v;
 
@@ -153,7 +151,4 @@
             return c;
         }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('fontcolor', tinymce.plugins.FontColorPlugin);
 })();

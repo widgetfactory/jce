@@ -50,15 +50,8 @@
         });
     }
 
-    tinymce.create('tinymce.plugins.JoomlaPlugin', {
-        init: function (ed, url) {
-            var self = this;
-            self.editor = ed;
-        },
-
-        createControl: function (n, cm) {
-            var ed = this.editor;
-
+    tinymce.PluginManager.add('joomla', function (ed, url) {
+        this.createControl = function (n, cm) {
             if (n !== 'joomla') {
                 return null;
             }
@@ -135,14 +128,14 @@
 
                                 if (modal) {
                                     modal.open();
-                                // Joomla 5+ modal
+                                    // Joomla 5+ modal
                                 } else if (plg.action) {
                                     try {
                                         ed.editorXtdButtons(plg);
                                     } catch (e) {
                                         console.log('This option is not supported');
                                     }
-                                // legacy modal, eg: Joomla 3.x
+                                    // legacy modal, eg: Joomla 3.x
                                 } else {
                                     ed.windowManager.open({
                                         file: href,
@@ -219,8 +212,6 @@
             });
 
             return ctrl;
-        }
+        };
     });
-    // Register plugin
-    tinymce.PluginManager.add('joomla', tinymce.plugins.JoomlaPlugin);
 })();

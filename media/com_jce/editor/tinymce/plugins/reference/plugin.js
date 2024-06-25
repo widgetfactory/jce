@@ -1,11 +1,12 @@
 /**
- * editor_plugin_src.js
- *
- * Copyright 2009, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
 
 (function () {
@@ -38,183 +39,177 @@
         return value;
     }
 
-    tinymce.create('tinymce.plugins.ReferencePlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
+    tinymce.PluginManager.add('reference', function (ed, url) {
 
-            function openDialog(tag) {
-                var cm = ed.controlManager, form = cm.createForm('reference_form');
+        function openDialog(tag) {
+            var cm = ed.controlManager, form = cm.createForm('reference_form');
 
-                form.add(cm.createTextBox('attributes_title', {
-                    label: ed.getLang('attributes.label_title', 'Title'),
-                    name: 'title'
+            form.add(cm.createTextBox('attributes_title', {
+                label: ed.getLang('attributes.label_title', 'Title'),
+                name: 'title'
+            }));
+
+            if (tag == 'ins' || tag == 'del') {
+                form.add(cm.createTextBox('reference_cite', {
+                    label: ed.getLang('reference.label_cite', 'Cite'),
+                    name: 'cite'
                 }));
 
-                if (tag == 'ins' || tag == 'del') {
-                    form.add(cm.createTextBox('reference_cite', {
-                        label: ed.getLang('reference.label_cite', 'Cite'),
-                        name: 'cite'
-                    }));
-                    
-                    form.add(cm.createTextBox('reference_datetime', {
+                form.add(cm.createTextBox('reference_datetime', {
+                    label: ed.getLang('reference.label_datetime', 'Date/Time'),
+                    name: 'datetime',
+                    button: {
+                        icon: 'date',
                         label: ed.getLang('reference.label_datetime', 'Date/Time'),
-                        name: 'datetime',
-                        button: {
-                            icon: 'date',
-                            label: ed.getLang('reference.label_datetime', 'Date/Time'),
-                            click: function () {
-                                this.value(getDateTime(new Date(), ed.getParam('reference_datetime', '%Y-%m-%dT%H:%M:%S')));
-                            }
+                        click: function () {
+                            this.value(getDateTime(new Date(), ed.getParam('reference_datetime', '%Y-%m-%dT%H:%M:%S')));
                         }
-                    }));
-                }
-
-                ed.windowManager.open({
-                    title: ed.getLang('reference.' + tag + '_title', 'Reference'),
-                    items: [form],
-                    size: 'mce-modal-landscape-small',
-                    open: function () {
-                        var node = ed.selection.getNode(), attribs = {}, update;
-
-                        each(['title', 'datetime', 'cite'], function (name) {
-                            if (!node.hasAttribute(name)) {
-                                return true;
-                            }
-
-                            attribs[name] = ed.dom.getAttrib(node, name);
-
-                            update = true;
-                        });
-
-                        if (update) {
-                            DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
-                        }
-
-                        form.update(attribs);
-                    },
-                    buttons: [
-                        {
-                            title: ed.getLang('common.cancel', 'Cancel'),
-                            id: 'cancel'
-                        },
-                        {
-                            title: ed.getLang('common.remove', 'Remove'),
-                            onsubmit: function () {
-                                var node = ed.selection.getNode();
-
-                                if (node.nodeName.toLowerCase() == tag) {
-                                    ed.formatter.remove(tag);
-                                    ed.undoManager.add();
-                                }
-                            }
-                        },
-                        {
-                            title: ed.getLang('common.insert', 'Insert'),
-                            id: 'insert',
-                            onsubmit: function (e) {
-                                tinymce.dom.Event.cancel(e);
-
-                                var node = ed.selection.getNode(), data = form.submit();
-
-                                node = ed.dom.getParent(node, tag);
-
-                                ed.formatter.apply(tag, data, node);
-
-                                ed.undoManager.add();
-                            },
-                            classes: 'primary',
-                            autofocus: true
-                        }
-                    ]
-                });
-            }
-
-            // Register buttons
-            ed.addButton('cite', {
-                title: 'reference.cite_title',
-                onclick: function () {
-                    openDialog('cite');
-                }
-            });
-
-            // acronym is deprecated in HTML5
-            if (ed.settings.schema !== "html5-strict") {
-                ed.addButton('acronym', {
-                    title: 'reference.acronym_title',
-                    onclick: function () {
-                        openDialog('acronym');
                     }
-                });
+                }));
             }
 
-            ed.addButton('abbr', {
-                title: 'reference.abbr_title',
-                onclick: function () {
-                    openDialog('abbr');
-                }
-            });
+            ed.windowManager.open({
+                title: ed.getLang('reference.' + tag + '_title', 'Reference'),
+                items: [form],
+                size: 'mce-modal-landscape-small',
+                open: function () {
+                    var node = ed.selection.getNode(), attribs = {}, update;
 
-            ed.addButton('del', {
-                title: 'reference.del_title',
-                onclick: function () {
-                    openDialog('del');
-                }
-            });
-
-            ed.addButton('ins', {
-                title: 'reference.ins_title',
-                onclick: function () {
-                    openDialog('ins');
-                }
-            });
-
-            ed.onNodeChange.add(function (ed, cm, n, co) {
-                var p = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
-
-                cm.setDisabled('cite', co);
-                cm.setDisabled('acronym', co);
-                cm.setDisabled('abbr', co);
-                cm.setDisabled('del', co);
-                cm.setDisabled('ins', co);
-
-                cm.setActive('cite', 0);
-                cm.setActive('acronym', 0);
-                cm.setActive('abbr', 0);
-                cm.setActive('del', 0);
-                cm.setActive('ins', 0);
-
-                // Activate all
-                if (p) {
-                    do {
-                        cm.setDisabled(p.nodeName.toLowerCase(), 0);
-                        cm.setActive(p.nodeName.toLowerCase(), 1);
-                    } while ((p = p.parentNode));
-                }
-            });
-
-            ed.onPreInit.add(function () {
-                // Fixed IE issue where it can't handle these elements correctly
-                ed.dom.create('abbr');
-
-                var formats = {};
-
-                each(['cite', 'acronym', 'abbr', 'del', 'ins'], function (name) {
-                    formats[name] = {
-                        inline: name,
-                        remove: 'all',
-                        onformat: function (elm, fmt, vars) {
-                            each(vars, function (value, key) {
-                                ed.dom.setAttrib(elm, key, value);
-                            });
+                    each(['title', 'datetime', 'cite'], function (name) {
+                        if (!node.hasAttribute(name)) {
+                            return true;
                         }
-                    };
-                });
 
-                ed.formatter.register(formats);
+                        attribs[name] = ed.dom.getAttrib(node, name);
+
+                        update = true;
+                    });
+
+                    if (update) {
+                        DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
+                    }
+
+                    form.update(attribs);
+                },
+                buttons: [
+                    {
+                        title: ed.getLang('common.cancel', 'Cancel'),
+                        id: 'cancel'
+                    },
+                    {
+                        title: ed.getLang('common.remove', 'Remove'),
+                        onsubmit: function () {
+                            var node = ed.selection.getNode();
+
+                            if (node.nodeName.toLowerCase() == tag) {
+                                ed.formatter.remove(tag);
+                                ed.undoManager.add();
+                            }
+                        }
+                    },
+                    {
+                        title: ed.getLang('common.insert', 'Insert'),
+                        id: 'insert',
+                        onsubmit: function (e) {
+                            tinymce.dom.Event.cancel(e);
+
+                            var node = ed.selection.getNode(), data = form.submit();
+
+                            node = ed.dom.getParent(node, tag);
+
+                            ed.formatter.apply(tag, data, node);
+
+                            ed.undoManager.add();
+                        },
+                        classes: 'primary',
+                        autofocus: true
+                    }
+                ]
             });
         }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('reference', tinymce.plugins.ReferencePlugin);
+        // Register buttons
+        ed.addButton('cite', {
+            title: 'reference.cite_title',
+            onclick: function () {
+                openDialog('cite');
+            }
+        });
+
+        // acronym is deprecated in HTML5
+        if (ed.settings.schema !== "html5-strict") {
+            ed.addButton('acronym', {
+                title: 'reference.acronym_title',
+                onclick: function () {
+                    openDialog('acronym');
+                }
+            });
+        }
+
+        ed.addButton('abbr', {
+            title: 'reference.abbr_title',
+            onclick: function () {
+                openDialog('abbr');
+            }
+        });
+
+        ed.addButton('del', {
+            title: 'reference.del_title',
+            onclick: function () {
+                openDialog('del');
+            }
+        });
+
+        ed.addButton('ins', {
+            title: 'reference.ins_title',
+            onclick: function () {
+                openDialog('ins');
+            }
+        });
+
+        ed.onNodeChange.add(function (ed, cm, n, co) {
+            var p = ed.dom.getParent(n, 'CITE,ACRONYM,ABBR,DEL,INS');
+
+            cm.setDisabled('cite', co);
+            cm.setDisabled('acronym', co);
+            cm.setDisabled('abbr', co);
+            cm.setDisabled('del', co);
+            cm.setDisabled('ins', co);
+
+            cm.setActive('cite', 0);
+            cm.setActive('acronym', 0);
+            cm.setActive('abbr', 0);
+            cm.setActive('del', 0);
+            cm.setActive('ins', 0);
+
+            // Activate all
+            if (p) {
+                do {
+                    cm.setDisabled(p.nodeName.toLowerCase(), 0);
+                    cm.setActive(p.nodeName.toLowerCase(), 1);
+                } while ((p = p.parentNode));
+            }
+        });
+
+        ed.onPreInit.add(function () {
+            // Fixed IE issue where it can't handle these elements correctly
+            ed.dom.create('abbr');
+
+            var formats = {};
+
+            each(['cite', 'acronym', 'abbr', 'del', 'ins'], function (name) {
+                formats[name] = {
+                    inline: name,
+                    remove: 'all',
+                    onformat: function (elm, fmt, vars) {
+                        each(vars, function (value, key) {
+                            ed.dom.setAttrib(elm, key, value);
+                        });
+                    }
+                };
+            });
+
+            ed.formatter.register(formats);
+        });
+    });
 })();

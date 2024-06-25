@@ -153,256 +153,249 @@
         ed.nodeChanged();
     }
 
-    tinymce.create('tinymce.plugins.LinkPlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
-            this.url = url;
+    tinymce.PluginManager.add('link', function (ed, url) {
+        // Register commands
+        ed.addCommand('mceLink', function () {
+            var se = ed.selection, n = se.getNode();
+
+            if (n.nodeName == 'A' && !isAnchor(n)) {
+                se.select(n);
+            }
+
+            ed.windowManager.open({
+                file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=link',
+                size: 'mce-modal-square-xlarge'
+            }, {
+                plugin_url: url
+            });
+        });
+
+        ed.addShortcut('meta+k', 'link.desc', 'mceLink');
+
+        var urlCtrl, textCtrl, titleCtrl, targetCtrl;
+
+        ed.onPreInit.add(function () {
+            var params = ed.getParam('link', {});
+
+            params = extend({
+                attributes: {}
+            }, params);
+
+            if (params.basic_dialog !== true) {
+                return;
+            }
+
+            var cm = ed.controlManager, form = cm.createForm('link_form');
+
+            var args = {
+                label: ed.getLang('url', 'URL'),
+                name: 'url',
+                clear: true,
+                attributes: {
+                    required: true
+                }
+            };
+
+            if (params.file_browser) {
+                tinymce.extend(args, {
+                    picker: true,
+                    picker_label: 'browse',
+                    picker_icon: 'files',
+                    onpick: function (e) {
+                        ed.execCommand('mceFileBrowser', true, {
+                            caller: 'link',
+                            callback: function (selected, data) {
+                                if (data.length) {
+                                    var src = data[0].url, title = data[0].title;
+                                    urlCtrl.value(src);
+
+                                    // clean up title by removing extension
+                                    title = title.replace(/\.[^.]+$/i, '');
+
+                                    textCtrl.value(title);
+
+                                    window.setTimeout(function () {
+                                        urlCtrl.focus();
+                                    }, 10);
+                                }
+                            },
+                            filter: params.filetypes || 'files',
+                            value: urlCtrl.value()
+                        });
+                    }
+                });
+            }
+
+            urlCtrl = cm.createUrlBox('link_url', args);
+
+            form.add(urlCtrl);
+
+            textCtrl = cm.createTextBox('link_text', {
+                label: ed.getLang('link.text', 'Text'),
+                name: 'text',
+                clear: true,
+                attributes: {
+                    required: true
+                }
+            });
+
+            form.add(textCtrl);
+
+            if (params.title_ctrl !== false) {
+
+                titleCtrl = cm.createTextBox('link_title', {
+                    label: ed.getLang('link.title', 'Title'),
+                    name: 'title',
+                    clear: true
+                });
+
+                form.add(titleCtrl);
+
+            }
+
+            if (params.target_ctrl !== false) {
+                targetCtrl = cm.createListBox('link_target', {
+                    label: ed.getLang('link.target', 'Taget'),
+                    name: 'target',
+                    onselect: function (v) { }
+                });
+
+                var targetValues = {
+                    '': '--',
+                    '_blank': ed.getLang('link.target_blank', 'Open in new window'),
+                    '_self': ed.getLang('link.target_self', 'Open in same window'),
+                    '_parent': ed.getLang('link.target_parent', 'Open in parent window'),
+                    '_top': ed.getLang('link.target_top', 'Open in top window')
+                };
+
+                each(targetValues, function (name, value) {
+                    targetCtrl.add(name, value);
+                });
+
+                form.add(targetCtrl);
+            }
 
             // Register commands
             ed.addCommand('mceLink', function () {
-                var se = ed.selection, n = se.getNode();
-
-                if (n.nodeName == 'A' && !isAnchor(n)) {
-                    se.select(n);
-                }
-
                 ed.windowManager.open({
-                    file: ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=link',
-                    size: 'mce-modal-square-xlarge'
-                }, {
-                    plugin_url: url
-                });
-            });
+                    title: ed.getLang('link.desc', 'Link'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', title = '', target = params.attributes.target || '';
+                        var state = isOnlyTextSelected(ed);
 
-            ed.addShortcut('meta+k', 'link.desc', 'mceLink');
+                        var anchorNode = ed.dom.getParent(node, 'a[href]');
 
-            var urlCtrl, textCtrl, titleCtrl, targetCtrl;
+                        if (anchorNode) {
+                            ed.selection.select(anchorNode);
 
-            ed.onPreInit.add(function () {
-                var params = ed.getParam('link', {});
+                            src = ed.dom.getAttrib(anchorNode, 'href');
 
-                params = extend({
-                    attributes: {}
-                }, params);
+                            if (src) {
+                                label = ed.getLang('update', 'Update');
+                            }
 
-                if (params.basic_dialog !== true) {
-                    return;
-                }
+                            // reset node in IE if the link is the first element
+                            if (tinymce.isIE) {
+                                var start = ed.selection.getStart(),
+                                    end = ed.selection.getEnd();
 
-                var cm = ed.controlManager, form = cm.createForm('link_form');
+                                if (start === end && start.nodeName === "A") {
+                                    anchorNode = start;
+                                }
+                            }
 
-                var args = {
-                    label: ed.getLang('url', 'URL'),
-                    name: 'url',
-                    clear: true,
-                    attributes: {
-                        required: true
-                    }
-                };
+                            // allow editing of File Manager text
+                            if (hasFileSpan(anchorNode)) {
+                                state = true;
+                            }
 
-                if (params.file_browser) {
-                    tinymce.extend(args, {
-                        picker: true,
-                        picker_label: 'browse',
-                        picker_icon: 'files',
-                        onpick: function (e) {
-                            ed.execCommand('mceFileBrowser', true, {
-                                caller: 'link',
-                                callback: function (selected, data) {
-                                    if (data.length) {
-                                        var src = data[0].url, title = data[0].title;
-                                        urlCtrl.value(src);
-
-                                        // clean up title by removing extension
-                                        title = title.replace(/\.[^.]+$/i, '');
-
-                                        textCtrl.value(title);
-
-                                        window.setTimeout(function () {
-                                            urlCtrl.focus();
-                                        }, 10);
-                                    }
-                                },
-                                filter: params.filetypes || 'files',
-                                value: urlCtrl.value()
-                            });
+                            title = ed.dom.getAttrib(anchorNode, 'title');
+                            target = ed.dom.getAttrib(anchorNode, 'target');
                         }
-                    });
-                }
 
-                urlCtrl = cm.createUrlBox('link_url', args);
+                        // get anchor or selected element text
+                        var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
 
-                form.add(urlCtrl);
+                        // workaround for font items
+                        if (node && node.hasAttribute('data-mce-item')) {
+                            state = false;
+                        }
 
-                textCtrl = cm.createTextBox('link_text', {
-                    label: ed.getLang('link.text', 'Text'),
-                    name: 'text',
-                    clear: true,
-                    attributes: {
-                        required: true
-                    }
-                });
+                        urlCtrl.value(src);
 
-                form.add(textCtrl);
+                        textCtrl.value(text);
+                        textCtrl.setDisabled(!state);
 
-                if (params.title_ctrl !== false) {
+                        // update title and target
+                        if (titleCtrl) {
+                            titleCtrl.value(title);
+                        }
 
-                    titleCtrl = cm.createTextBox('link_title', {
-                        label: ed.getLang('link.title', 'Title'),
-                        name: 'title',
-                        clear: true
-                    });
+                        if (targetCtrl) {
+                            targetCtrl.value(target);
+                        }
 
-                    form.add(titleCtrl);
+                        window.setTimeout(function () {
+                            urlCtrl.focus();
+                        }, 10);
 
-                }
-
-                if (params.target_ctrl !== false) {
-                    targetCtrl = cm.createListBox('link_target', {
-                        label: ed.getLang('link.target', 'Taget'),
-                        name: 'target',
-                        onselect: function (v) { }
-                    });
-
-                    var targetValues = {
-                        '': '--',
-                        '_blank': ed.getLang('link.target_blank', 'Open in new window'),
-                        '_self': ed.getLang('link.target_self', 'Open in same window'),
-                        '_parent': ed.getLang('link.target_parent', 'Open in parent window'),
-                        '_top': ed.getLang('link.target_top', 'Open in top window')
-                    };
-
-                    each(targetValues, function (name, value) {
-                        targetCtrl.add(name, value);
-                    });
-
-                    form.add(targetCtrl);
-                }
-
-
-                // Register commands
-                ed.addCommand('mceLink', function () {
-                    ed.windowManager.open({
-                        title: ed.getLang('link.desc', 'Link'),
-                        items: [form],
-                        size: 'mce-modal-landscape-small',
-                        open: function () {
-                            var label = ed.getLang('insert', 'Insert'), node = ed.selection.getNode(), src = '', title = '', target = params.attributes.target || '';
-                            var state = isOnlyTextSelected(ed);
-
-                            var anchorNode = ed.dom.getParent(node, 'a[href]');
-
-                            if (anchorNode) {
-                                ed.selection.select(anchorNode);
-
-                                src = ed.dom.getAttrib(anchorNode, 'href');
-
-                                if (src) {
-                                    label = ed.getLang('update', 'Update');
-                                }
-
-                                // reset node in IE if the link is the first element
-                                if (tinymce.isIE) {
-                                    var start = ed.selection.getStart(),
-                                        end = ed.selection.getEnd();
-
-                                    if (start === end && start.nodeName === "A") {
-                                        anchorNode = start;
-                                    }
-                                }
-
-                                // allow editing of File Manager text
-                                if (hasFileSpan(anchorNode)) {
-                                    state = true;
-                                }
-
-                                title = ed.dom.getAttrib(anchorNode, 'title');
-                                target = ed.dom.getAttrib(anchorNode, 'target');
-                            }
-
-                            // get anchor or selected element text
-                            var text = getAnchorText(ed.selection, isAnchor(node) ? node : null) || '';
-
-                            // workaround for font items
-                            if (node && node.hasAttribute('data-mce-item')) {
-                                state = false;
-                            }
-
-                            urlCtrl.value(src);
-
-                            textCtrl.value(text);
-                            textCtrl.setDisabled(!state);
-
-                            // update title and target
-                            if (titleCtrl) {
-                                titleCtrl.value(title);
-                            }
-
-                            if (targetCtrl) {
-                                targetCtrl.value(target);
-                            }
-
-                            window.setTimeout(function () {
-                                urlCtrl.focus();
-                            }, 10);
-
-                            DOM.setHTML(this.id + '_insert', label);
+                        DOM.setHTML(this.id + '_insert', label);
+                    },
+                    buttons: [
+                        {
+                            title: ed.getLang('common.cancel', 'Cancel'),
+                            id: 'cancel'
                         },
-                        buttons: [
-                            {
-                                title: ed.getLang('common.cancel', 'Cancel'),
-                                id: 'cancel'
+                        {
+                            title: ed.getLang('insert', 'Insert'),
+                            id: 'insert',
+                            onsubmit: function (e) {
+                                var data = form.submit();
+
+                                Event.cancel(e);
+
+                                createLink(ed, data);
                             },
-                            {
-                                title: ed.getLang('insert', 'Insert'),
-                                id: 'insert',
-                                onsubmit: function (e) {
-                                    var data = form.submit();
-
-                                    Event.cancel(e);
-
-                                    createLink(ed, data);
-                                },
-                                classes: 'primary',
-                                scope: self
-                            }
-                        ]
-                    });
+                            classes: 'primary',
+                            scope: self
+                        }
+                    ]
                 });
             });
+        });
 
-            ed.onInit.add(function () {
-                if (ed && ed.plugins.contextmenu) {
-                    ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
-                        m.addSeparator();
-                        m.add({ title: 'link.desc', icon: 'link', cmd: 'mceLink', ui: true });
-                        if ((e.nodeName == 'A' && !ed.dom.getAttrib(e, 'name'))) {
-                            m.add({ title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink' });
-                        }
-                    });
-                }
-            });
+        ed.onInit.add(function () {
+            if (ed && ed.plugins.contextmenu) {
+                ed.plugins.contextmenu.onContextMenu.add(function (th, m, e) {
+                    m.addSeparator();
+                    m.add({ title: 'link.desc', icon: 'link', cmd: 'mceLink', ui: true });
+                    if ((e.nodeName == 'A' && !ed.dom.getAttrib(e, 'name'))) {
+                        m.add({ title: 'advanced.unlink_desc', icon: 'unlink', cmd: 'UnLink' });
+                    }
+                });
+            }
+        });
 
-            ed.onNodeChange.add(function (ed, cm, n, co) {
-                var link = ed.dom.getParent(n, 'a[href]'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
+        ed.onNodeChange.add(function (ed, cm, n, co) {
+            var link = ed.dom.getParent(n, 'a[href]'), anchor = link && ed.dom.hasClass(link, 'mce-item-anchor');
 
-                // remove existing selections
-                ed.dom.removeAttrib(ed.dom.select('a'), 'data-mce-selected');
+            // remove existing selections
+            ed.dom.removeAttrib(ed.dom.select('a'), 'data-mce-selected');
 
-                if (link) {
-                    ed.dom.setAttrib(link, 'data-mce-selected', 'inline-boundary');
-                }
+            if (link) {
+                ed.dom.setAttrib(link, 'data-mce-selected', 'inline-boundary');
+            }
 
-                // set active if link
-                cm.setActive('unlink', link);
-                cm.setActive('link', link);
-                // set disabled if anchor
-                cm.setDisabled('link', anchor);
-            });
-        },
-        createControl: function (n, cm) {
-            var ed = this.editor;
+            // set active if link
+            cm.setActive('unlink', link);
+            cm.setActive('link', link);
+            // set disabled if anchor
+            cm.setDisabled('link', anchor);
+        });
 
+        this.createControl = function (n, cm) {
             if (n !== 'link') {
                 return null;
             }
@@ -499,19 +492,14 @@
             });
 
             return ctrl;
-        },
+        };
 
-        isAnchor: isAnchor,
-
-        hasFileSpan: hasFileSpan,
-
-        isOnlyTextSelected: isOnlyTextSelected,
-
-        getAnchorText: getAnchorText,
-
-        updateTextContent: updateTextContent
+        extend(this, {
+            isAnchor: isAnchor,
+            hasFileSpan: hasFileSpan,
+            isOnlyTextSelected: isOnlyTextSelected,
+            getAnchorText: getAnchorText,
+            updateTextContent: updateTextContent
+        });
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('link', tinymce.plugins.LinkPlugin);
 })();

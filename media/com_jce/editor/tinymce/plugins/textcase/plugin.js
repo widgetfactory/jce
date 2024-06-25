@@ -11,40 +11,42 @@
 
 /* eslint-disable no-control-regex */
 (function () {
-	tinymce.create('tinymce.plugins.TextCase', {
-		init: function (ed, url) {
-			var self = this;
+	tinymce.PluginManager.add('textcase', function (ed, url) {
+		ed.addCommand('mceUpperCase', function () {
+			upperCase();
+		});
 
-			this.url = url;
-			this.editor = ed;
+		ed.addCommand('mceLowerCase', function () {
+			lowerCase();
+		});
 
-			ed.addCommand('mceUpperCase', function () {
-				self._upperCase();
+		ed.addCommand('mceTitleCase', function () {
+			titleCase();
+		});
+
+		ed.addCommand('mceSentenceCase', function () {
+			sentenceCase();
+		});
+
+		ed.onNodeChange.add(function (ed, cm, n, co) {
+			cm.setDisabled('textcase', co);
+		});
+
+		this.createControl = function (n, cm) {			
+			if (n !== "textcase") {
+				return null;
+			}
+
+			var c = cm.createSplitButton('textcase', {
+				title: 'textcase.uppercase',
+				icon: 'uppercase',
+				onclick: function () {
+					ed.execCommand('mceUpperCase');
+				}
 			});
 
-			ed.addCommand('mceLowerCase', function () {
-				self._lowerCase();
-			});
-
-			ed.addCommand('mceTitleCase', function () {
-				self._titleCase();
-			});
-
-			ed.addCommand('mceSentenceCase', function () {
-				self._sentenceCase();
-			});
-
-			ed.onNodeChange.add(function (ed, cm, n, co) {
-				cm.setDisabled('textcase', co);
-			});
-		},
-
-		createControl: function (n, cm) {
-			var self = this,
-				ed = self.editor;
-
-			if (n === "textcase") {
-				var c = cm.createSplitButton('textcase', {
+			c.onRenderMenu.add(function (c, m) {
+				m.add({
 					title: 'textcase.uppercase',
 					icon: 'uppercase',
 					onclick: function () {
@@ -52,49 +54,37 @@
 					}
 				});
 
-				c.onRenderMenu.add(function (c, m) {
-					m.add({
-						title: 'textcase.uppercase',
-						icon: 'uppercase',
-						onclick: function () {
-							ed.execCommand('mceUpperCase');
-						}
-					});
-
-					m.add({
-						title: 'textcase.lowercase',
-						icon: 'lowercase',
-						onclick: function () {
-							ed.execCommand('mceLowerCase');
-						}
-					});
-
-					m.add({
-						title: 'textcase.sentencecase',
-						icon: 'sentencecase',
-						onclick: function () {
-							ed.execCommand('mceSentenceCase');
-						}
-					});
-
-					m.add({
-						title: 'textcase.titlecase',
-						icon: 'titlecase',
-						onclick: function () {
-							ed.execCommand('mceTitleCase');
-						}
-					});
+				m.add({
+					title: 'textcase.lowercase',
+					icon: 'lowercase',
+					onclick: function () {
+						ed.execCommand('mceLowerCase');
+					}
 				});
-				// Return the new splitbutton instance
-				return c;
-			}
 
-			return null;
-		},
+				m.add({
+					title: 'textcase.sentencecase',
+					icon: 'sentencecase',
+					onclick: function () {
+						ed.execCommand('mceSentenceCase');
+					}
+				});
 
-		_sentenceCase: function () {
-			var ed = this.editor,
-				s = ed.selection;
+				m.add({
+					title: 'textcase.titlecase',
+					icon: 'titlecase',
+					onclick: function () {
+						ed.execCommand('mceTitleCase');
+					}
+				});
+			});
+
+			// Return the new splitbutton instance
+			return c;
+		};
+
+		function sentenceCase() {
+			var s = ed.selection;
 
 			var text = s.getContent();
 
@@ -105,11 +95,10 @@
 			});
 
 			s.setContent(text);
-		},
+		}
 
-		_titleCase: function () {
-			var ed = this.editor,
-				s = ed.selection;
+		function titleCase() {
+			var s = ed.selection;
 
 			var text = s.getContent();
 
@@ -121,25 +110,20 @@
 			});
 
 			s.setContent(text);
-		},
+		}
 
-		_lowerCase: function () {
-			var ed = this.editor,
-				s = ed.selection;
+		function lowerCase() {
+			var s = ed.selection;
 
 			var text = s.getContent();
 			s.setContent(text.toLowerCase());
-		},
+		}
 
-		_upperCase: function () {
-			var ed = this.editor,
-				s = ed.selection;
+		function upperCase() {
+			var s = ed.selection;
 
 			var text = s.getContent();
 			s.setContent(text.toUpperCase());
 		}
 	});
-
-	// Register plugin
-	tinymce.PluginManager.add('textcase', tinymce.plugins.TextCase);
 })();

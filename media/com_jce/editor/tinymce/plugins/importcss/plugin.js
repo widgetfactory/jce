@@ -1,13 +1,14 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
-
 /*global tinymce:true */
 
 (function () {
@@ -164,45 +165,42 @@
     return lvl >= parseFloat(wcag2) && lvl < parseFloat(limit); // AA
   }
 
-  tinymce.create('tinymce.plugins.ImportCSS', {
-    init: function (ed, url) {
-      this.editor = ed;
-      var self = this;
+  tinymce.PluginManager.add('importcss', function (ed, url) {
+    var self = this;
 
-      // create an event to use externally
-      ed.onImportCSS = new tinymce.util.Dispatcher();
+    // create an event to use externally
+    ed.onImportCSS = new tinymce.util.Dispatcher();
 
-      ed.onImportCSS.add(function () {
-        if (tinymce.is(ed.settings.importcss_classes)) {
-          return;
-        }
+    ed.onImportCSS.add(function () {
+      if (tinymce.is(ed.settings.importcss_classes)) {
+        return;
+      }
 
-        self.get();
-      });
+      self.get();
+    });
 
-      // attempt to import when the editor is initialised
-      ed.onInit.add(function () {
-        ed.onImportCSS.dispatch();
+    // attempt to import when the editor is initialised
+    ed.onInit.add(function () {
+      ed.onImportCSS.dispatch();
 
-        // check for high contrast if not already set in a parameter
-        if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
-          self._setHighContrastMode();
-        }
+      // check for high contrast if not already set in a parameter
+      if (ed.settings.content_style_reset === 'auto' && !ed.dom.hasClass(ed.getBody(), 'mceContentReset')) {
+        setHighContrastMode();
+      }
 
-        self._setGuideLinesColor();
-      });
+      setGuideLinesColor();
+    });
 
-      ed.onFocus.add(function (ed) {
-        if (ed._hasGuidelines) {
-          return;
-        }
+    ed.onFocus.add(function (ed) {
+      if (ed._hasGuidelines) {
+        return;
+      }
 
-        self._setGuideLinesColor();
-      });
-    },
+      setGuideLinesColor();
+    });
 
-    _setHighContrastMode: function () {
-      var ed = this.editor;
+
+    function setHighContrastMode() {
 
       var bodybg = ed.dom.getStyle(ed.getBody(), 'background-color', true), color = ed.dom.getStyle(ed.getBody(), 'color', true);
 
@@ -220,10 +218,9 @@
       if (!isReadable(color, bodybg, 3.0)) {
         ed.dom.addClass(ed.getBody(), 'mceContentReset');
       }
-    },
+    }
 
-    _setGuideLinesColor: function () {
-      var ed = this.editor;
+    function setGuideLinesColor() {
 
       var gray = [
         '#000000',
@@ -331,11 +328,10 @@
 
         ed.dom.addStyle(css);
       }
-    },
+    }
 
-    get: function () {
+    this.get = function () {
       var self = this,
-        ed = this.editor,
         doc = ed.getDoc(), href = '',
         rules = [],
         fonts = false;
@@ -364,7 +360,7 @@
         if (!bodyRx) {
           return false;
         }
-        
+
         return bodyRx.test(value);
       }
 
@@ -418,8 +414,8 @@
                 return true;
               }
 
-              if (r.selectorText) {                
-                each(r.selectorText.split(','), function (v) {                  
+              if (r.selectorText) {
+                each(r.selectorText.split(','), function (v) {
                   v = v.trim();
 
                   // internal styles
@@ -529,10 +525,10 @@
       }
 
       // sort and expose if classes have been set
-      if (classes.length) {        
+      if (classes.length) {
         // remove duplicates
         classes = classes.filter(function (val, ind, arr) {
-            return arr.indexOf(val) === ind;
+          return arr.indexOf(val) === ind;
         });
 
         // sort alphabetically
@@ -552,8 +548,6 @@
 
         return ed.settings.importcss_classes;
       }
-    }
+    };
   });
-  // Register plugin
-  tinymce.PluginManager.add('importcss', tinymce.plugins.ImportCSS);
 })();

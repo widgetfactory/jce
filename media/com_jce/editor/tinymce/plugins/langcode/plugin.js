@@ -138,107 +138,100 @@
 
     var DOM = tinymce.DOM;
 
-    tinymce.create('tinymce.plugins.LanguageCodePlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
-            this.url = url;
+    tinymce.PluginManager.add('langcode', function (ed, url) {
 
-            ed.onPreInit.add(function () {
-                ed.formatter.register({
-                    langcode: {
-                        inline: 'span',
-                        remove: 'all',
-                        attributes: {
-                            'lang': '%value'
-                        }
+        ed.onPreInit.add(function () {
+            ed.formatter.register({
+                langcode: {
+                    inline: 'span',
+                    remove: 'all',
+                    attributes: {
+                        'lang': '%value'
                     }
-                });
-            });
-
-            function isRootNode(node) {
-                return node == ed.dom.getRoot();
-            }
-
-            ed.addButton('langcode', {
-                title: 'langcode.desc',
-                onclick: function () {
-                    var cm = ed.controlManager;
-
-                    var form = cm.createForm('language_form');
-
-                    var langList = cm.createListBox('language_lang', {
-                        label: ed.getLang('langcode.label', 'Language'),
-                        onselect: function (v) { },
-                        name: 'language',
-                        filter: true
-                    });
-
-                    langList.add('--', '');
-
-                    tinymce.each(languageValues, function (value, name) {
-                        langList.add(name, value);
-                    });
-
-                    form.add(langList);
-
-                    ed.windowManager.open({
-                        title: ed.getLang('langcode.title', 'Language Code'),
-                        items: [form],
-                        size: 'mce-modal-landscape-small',
-                        open: function () {
-                            var node = ed.selection.getNode(), value = ed.settings.language;
-
-                            if (node.hasAttribute('lang')) {
-                                value = node.getAttribute('lang');
-
-                                DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
-                            }
-
-                            langList.value(value);
-                        },
-                        buttons: [{
-                            title: ed.getLang('common.cancel', 'Cancel'),
-                            id: 'cancel'
-                        },
-                        {
-                            title: ed.getLang('common.insert', 'Insert'),
-                            id: 'insert',
-                            onsubmit: function (e) {
-                                var node = ed.selection.getNode(), selection = ed.selection;
-                                var data = form.submit();
-
-                                var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
-
-                                if (isTextSelection) {
-                                    var blocks = selection.getSelectedBlocks();
-
-                                    if (blocks.length > 1) {
-                                        tinymce.each(blocks, function (elm) {
-                                            ed.dom.setAttrib(elm, 'lang', data.language);
-                                        });
-                                    } else {
-                                        if (!data.language) {
-                                            ed.formatter.remove('langcode');
-                                        } else {
-                                            ed.formatter.apply('langcode', { value: data.language });
-                                        }
-                                    }
-                                } else if (node && !isRootNode(node)) {
-                                    ed.dom.setAttrib(node, 'lang', data.language);
-                                }
-
-                                tinymce.dom.Event.cancel(e);
-                            },
-                            classes: 'primary',
-                            autofocus: true
-                        }
-                        ]
-                    });
                 }
             });
-        }
-    });
+        });
 
-    // Register plugin
-    tinymce.PluginManager.add('langcode', tinymce.plugins.LanguageCodePlugin);
+        function isRootNode(node) {
+            return node == ed.dom.getRoot();
+        }
+
+        ed.addButton('langcode', {
+            title: 'langcode.desc',
+            onclick: function () {
+                var cm = ed.controlManager;
+
+                var form = cm.createForm('language_form');
+
+                var langList = cm.createListBox('language_lang', {
+                    label: ed.getLang('langcode.label', 'Language'),
+                    onselect: function (v) { },
+                    name: 'language',
+                    filter: true
+                });
+
+                langList.add('--', '');
+
+                tinymce.each(languageValues, function (value, name) {
+                    langList.add(name, value);
+                });
+
+                form.add(langList);
+
+                ed.windowManager.open({
+                    title: ed.getLang('langcode.title', 'Language Code'),
+                    items: [form],
+                    size: 'mce-modal-landscape-small',
+                    open: function () {
+                        var node = ed.selection.getNode(), value = ed.settings.language;
+
+                        if (node.hasAttribute('lang')) {
+                            value = node.getAttribute('lang');
+
+                            DOM.setHTML(this.id + '_insert', ed.getLang('update', 'Update'));
+                        }
+
+                        langList.value(value);
+                    },
+                    buttons: [{
+                        title: ed.getLang('common.cancel', 'Cancel'),
+                        id: 'cancel'
+                    },
+                    {
+                        title: ed.getLang('common.insert', 'Insert'),
+                        id: 'insert',
+                        onsubmit: function (e) {
+                            var node = ed.selection.getNode(), selection = ed.selection;
+                            var data = form.submit();
+
+                            var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
+
+                            if (isTextSelection) {
+                                var blocks = selection.getSelectedBlocks();
+
+                                if (blocks.length > 1) {
+                                    tinymce.each(blocks, function (elm) {
+                                        ed.dom.setAttrib(elm, 'lang', data.language);
+                                    });
+                                } else {
+                                    if (!data.language) {
+                                        ed.formatter.remove('langcode');
+                                    } else {
+                                        ed.formatter.apply('langcode', { value: data.language });
+                                    }
+                                }
+                            } else if (node && !isRootNode(node)) {
+                                ed.dom.setAttrib(node, 'lang', data.language);
+                            }
+
+                            tinymce.dom.Event.cancel(e);
+                        },
+                        classes: 'primary',
+                        autofocus: true
+                    }
+                    ]
+                });
+            }
+        });
+    });
 })();

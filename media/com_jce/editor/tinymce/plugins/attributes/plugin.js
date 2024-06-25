@@ -162,206 +162,201 @@
         return attribs;
     }
 
-    tinymce.create('tinymce.plugins.AttributesPlugin', {
-        init: function (ed, url) {
+    tinymce.PluginManager.add('attributes', function (ed, url) {
 
-            function isRootNode(node) {
-                return node == ed.dom.getRoot();
+        function isRootNode(node) {
+            return node == ed.dom.getRoot();
+        }
+
+        ed.onPreInit.add(function () {
+            ed.formatter.register({
+                attributes: {
+                    inline: 'span',
+                    remove: 'all',
+                    onformat: function (elm, fmt, vars) {
+                        each(vars, function (value, key) {
+                            ed.dom.setAttrib(elm, key, value);
+                        });
+                    }
+                }
+            });
+        });
+
+        function openDialog() {
+            var cm = ed.controlManager, node = ed.selection.getNode(), mediaApi;
+
+            if (isRootNode(node)) {
+                node = null;
             }
 
-            ed.onPreInit.add(function () {
-                ed.formatter.register({
-                    attributes: {
-                        inline: 'span',
-                        remove: 'all',
-                        onformat: function (elm, fmt, vars) {
-                            each(vars, function (value, key) {
-                                ed.dom.setAttrib(elm, key, value);
-                            });
+            var nodeAttribs = getAttributes(node), attribsMap = { id: '', title: '', class: '', lang: '', dir: '' }, custom = [];
+
+            if (ed.plugins.media) {
+                mediaApi = ed.plugins.media;
+            }
+
+            // get attributes from media node
+            if (mediaApi && mediaApi.isMediaObject(node)) {
+                nodeAttribs = mediaApi.getMediaData();
+            }
+
+            each(nodeAttribs, function (value, name) {
+                if (name in attribsMap) {
+                    attribsMap[name] = value;
+                } else {
+                    var attr = {};
+
+                    if (value) {
+
+                        if (name.indexOf('on') == 0) {
+                            value = ed.dom.getAttrib(node, 'data-mce-' + name) || value;
                         }
+
+                        attr[name] = value;
+                        custom.push(attr);
                     }
-                });
+                }
             });
 
-            function openDialog() {
-                var cm = ed.controlManager, node = ed.selection.getNode(), mediaApi;
+            var form = cm.createForm('attributes_form');
 
-                if (isRootNode(node)) {
-                    node = null;
+            each(['title', 'id'], function (name) {
+                form.add(cm.createTextBox('attributes_' + name, {
+                    label: ed.getLang('attributes.label_' + name, name),
+                    name: name
+                }));
+            });
+
+            var stylesList = cm.createStylesBox('attributes_class', {
+                label: ed.getLang('attributes.label_class', 'Classes'),
+                onselect: function () { },
+                name: 'class'
+            });
+
+            form.add(stylesList);
+
+            var langList = cm.createListBox('attributes_lang', {
+                label: ed.getLang('attributes.label_lang', 'Language'),
+                onselect: function (v) { },
+                name: 'lang',
+                filter: true
+            });
+
+            langList.add('--', '');
+
+            each(languageValues, function (value, name) {
+                langList.add(name, value);
+            });
+
+            form.add(langList);
+
+            var dirList = cm.createListBox('attributes_dir', {
+                label: ed.getLang('attributes.label_dir', 'Text Direction'),
+                onselect: function (v) { },
+                name: 'dir'
+            });
+
+            dirList.add(ed.getLang('common.not_set', '-- Not set --'), '');
+
+            each(['ltr', 'rtl'], function (value) {
+                dirList.add(ed.getLang('attributes.label_dir_' + value, value), value);
+            });
+
+            form.add(dirList);
+
+            var repeatable = cm.createRepeatable('attributes_custom_repeatable', {
+                label: 'Other',
+                name: 'custom',
+                item: {
+                    type: 'CustomValue',
+                    id: 'attributes_custom',
+                    settings: {}
                 }
+            }
+            );
 
-                var nodeAttribs = getAttributes(node), attribsMap = { id: '', title: '', class: '', lang: '', dir: '' }, custom = [];
+            form.add(repeatable);
 
-                if (ed.plugins.media) {
-                    mediaApi = ed.plugins.media;
-                }
+            ed.windowManager.open({
+                title: ed.getLang('attributes.title', 'Attributes'),
+                items: [form],
+                size: 'mce-modal-landscape-large',
+                open: function () {
+                    form.update(attribsMap);
+                    repeatable.value(custom);
+                },
+                buttons: [{
+                    title: ed.getLang('common.cancel', 'Cancel'),
+                    id: 'cancel'
+                },
+                {
+                    title: ed.getLang('common.update', 'Update'),
+                    id: 'insert',
+                    onsubmit: function (e) {
+                        var node = ed.selection.getNode(), selection = ed.selection;
+                        var data = form.submit();
 
-                // get attributes from media node
-                if (mediaApi && mediaApi.isMediaObject(node)) {
-                    nodeAttribs = mediaApi.getMediaData();
-                }
+                        if (data.custom) {
+                            each(data.custom, function (item) {
+                                data = extend(data, item);
+                            });
 
-                each(nodeAttribs, function (value, name) {
-                    if (name in attribsMap) {
-                        attribsMap[name] = value;
-                    } else {
-                        var attr = {};
-
-                        if (value) {
-
-                            if (name.indexOf('on') == 0) {
-                                value = ed.dom.getAttrib(node, 'data-mce-' + name) || value;
-                            }
-
-                            attr[name] = value;
-                            custom.push(attr);
+                            delete data.custom;
                         }
-                    }
-                });
 
-                var form = cm.createForm('attributes_form');
+                        // manage onclick type events and update nodeAttribs map
+                        each(data, function (value, name) {
+                            if (name == 'onclick' || name == 'ondblclick') {
+                                // remove original value
+                                delete data[name];
+                                // add proxy value
+                                data['data-mce-' + name] = value;
 
-                each(['title', 'id'], function (name) {
-                    form.add(cm.createTextBox('attributes_' + name, {
-                        label: ed.getLang('attributes.label_' + name, name),
-                        name: name
-                    }));
-                });
-
-                var stylesList = cm.createStylesBox('attributes_class', {
-                    label: ed.getLang('attributes.label_class', 'Classes'),
-                    onselect: function () { },
-                    name: 'class'
-                });
-
-                form.add(stylesList);
-
-                var langList = cm.createListBox('attributes_lang', {
-                    label: ed.getLang('attributes.label_lang', 'Language'),
-                    onselect: function (v) { },
-                    name: 'lang',
-                    filter: true
-                });
-
-                langList.add('--', '');
-
-                each(languageValues, function (value, name) {
-                    langList.add(name, value);
-                });
-
-                form.add(langList);
-
-                var dirList = cm.createListBox('attributes_dir', {
-                    label: ed.getLang('attributes.label_dir', 'Text Direction'),
-                    onselect: function (v) { },
-                    name: 'dir'
-                });
-
-                dirList.add(ed.getLang('common.not_set', '-- Not set --'), '');
-
-                each(['ltr', 'rtl'], function (value) {
-                    dirList.add(ed.getLang('attributes.label_dir_' + value, value), value);
-                });
-
-                form.add(dirList);
-
-                var repeatable = cm.createRepeatable('attributes_custom_repeatable', {
-                    label: 'Other',
-                    name: 'custom',
-                    item: {
-                        type: 'CustomValue',
-                        id: 'attributes_custom',
-                        settings: {}
-                    }
-                }
-                );
-
-                form.add(repeatable);
-
-                ed.windowManager.open({
-                    title: ed.getLang('attributes.title', 'Attributes'),
-                    items: [form],
-                    size: 'mce-modal-landscape-large',
-                    open: function () {
-                        form.update(attribsMap);
-                        repeatable.value(custom);
-                    },
-                    buttons: [{
-                        title: ed.getLang('common.cancel', 'Cancel'),
-                        id: 'cancel'
-                    },
-                    {
-                        title: ed.getLang('common.update', 'Update'),
-                        id: 'insert',
-                        onsubmit: function (e) {
-                            var node = ed.selection.getNode(), selection = ed.selection;
-                            var data = form.submit();
-
-                            if (data.custom) {
-                                each(data.custom, function (item) {
-                                    data = extend(data, item);
-                                });
-
-                                delete data.custom;
+                                delete nodeAttribs['data-mce-' + name];
                             }
 
-                            // manage onclick type events and update nodeAttribs map
-                            each(data, function (value, name) {
+                            delete nodeAttribs[name];
+                        });
+
+                        var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
+
+                        // is a text selection
+                        if (isTextSelection) {
+                            ed.formatter.apply('attributes', data);
+                            // non-root element selection
+                        } else if (node && !isRootNode(node)) {
+                            // remove attributes that have been removed or nulled
+                            each(nodeAttribs, function (val, name) {
+                                data[name] = null;
+
                                 if (name == 'onclick' || name == 'ondblclick') {
-                                    // remove original value
-                                    delete data[name];
-                                    // add proxy value
-                                    data['data-mce-' + name] = value;
-
-                                    delete nodeAttribs['data-mce-' + name];
+                                    data['data-mce-' + name] = null;
                                 }
-
-                                delete nodeAttribs[name];
                             });
 
-                            var isTextSelection = !selection.isCollapsed() && selection.getContent() == selection.getContent({ format: 'text' });
-
-                            // is a text selection
-                            if (isTextSelection) {
-                                ed.formatter.apply('attributes', data);
-                                // non-root element selection
-                            } else if (node && !isRootNode(node)) {
-                                // remove attributes that have been removed or nulled
-                                each(nodeAttribs, function (val, name) {
-                                    data[name] = null;
-
-                                    if (name == 'onclick' || name == 'ondblclick') {
-                                        data['data-mce-' + name] = null;
-                                    }
-                                });
-
-                                if (mediaApi && mediaApi.isMediaObject(node)) {
-                                    mediaApi.updateMedia(data);
-                                } else {
-                                    ed.dom.setAttribs(node, data);
-                                }
+                            if (mediaApi && mediaApi.isMediaObject(node)) {
+                                mediaApi.updateMedia(data);
+                            } else {
+                                ed.dom.setAttribs(node, data);
                             }
+                        }
 
-                            tinymce.dom.Event.cancel(e);
-                        },
-                        classes: 'primary',
-                        autofocus: true
-                    }
-                    ]
-                });
-            }
-
-            ed.addButton('attribs', {
-                title: 'attributes.desc',
-                onclick: openDialog
-            });
-
-            ed.onNodeChange.add(function (ed, cm, n, co) {
-                cm.setDisabled('attributes', n && isRootNode(n) && co);
+                        tinymce.dom.Event.cancel(e);
+                    },
+                    classes: 'primary',
+                    autofocus: true
+                }
+                ]
             });
         }
-    });
 
-    // Register plugin
-    tinymce.PluginManager.add('attributes', tinymce.plugins.AttributesPlugin);
+        ed.addButton('attribs', {
+            title: 'attributes.desc',
+            onclick: openDialog
+        });
+
+        ed.onNodeChange.add(function (ed, cm, n, co) {
+            cm.setDisabled('attributes', n && isRootNode(n) && co);
+        });
+    });
 })();

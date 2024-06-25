@@ -1,7 +1,9 @@
 /**
- * @package   	JCE Emotions
+ * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -95,112 +97,106 @@
         { "🙏": "person_with_folded_hands" }
     ];
 
-    tinymce.create("tinymce.plugins.EmotionsPlugin", {
-        init: function (ed, url) {
-            var self = this;
+    tinymce.PluginManager.add("emotions", function (ed, url) {
+        var self = this;
 
-            this.editor = ed;
-            this.url = url;
+        ed.addButton("emotions", {
+            title: "emotions.desc",
+            cmd: "mceEmotion"
+        });
 
-            ed.addButton("emotions", {
-                title: "emotions.desc",
-                cmd: "mceEmotion"
-            });
+        self.content = "";
 
-            self.content = "";
+        function createEmojiContent(icons, path) {
+            var content = document.createElement('div');
 
-            function createEmojiContent(icons, path) {
-                var content = document.createElement('div');
+            // make absolute if required
+            if (path && path.indexOf('://') === -1) {
+                path = ed.documentBaseURI.toAbsolute(path, true);
+            }
 
-                // make absolute if required
-                if (path && path.indexOf('://') === -1) {
-                    path = ed.documentBaseURI.toAbsolute(path, true);
+            each(icons, function (data) {
+                if (typeof data === "string") {
+                    var label = "",
+                        src = data,
+                        item = {};
+
+                    if (path) {
+                        src = path + '/' + src;
+                    }
+
+                    // remove extension
+                    if (/\.(png|jpg|jpeg|gif)$/i.test(data)) {
+                        label = data.replace(/\.[^.]+$/i, '');
+                        data = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
+                    }
+
+                    item[data] = label;
+                    data = item;
                 }
 
-                each(icons, function (data) {
-                    if (typeof data === "string") {
-                        var label = "",
-                            src = data,
-                            item = {};
+                each(data, function (label, key) {
+                    // is it an image?
+                    if (/\.(png|jpg|jpeg|gif)$/i.test(key)) {
+                        var src = key;
 
                         if (path) {
                             src = path + '/' + src;
                         }
 
-                        // remove extension
-                        if (/\.(png|jpg|jpeg|gif)$/i.test(data)) {
-                            label = data.replace(/\.[^.]+$/i, '');
-                            data = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
-                        }
+                        src = ed.documentBaseURI.toAbsolute(src, true);
 
-                        item[data] = label;
-                        data = item;
+                        key = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
                     }
 
-                    each(data, function (label, key) {
-                        // is it an image?
-                        if (/\.(png|jpg|jpeg|gif)$/i.test(key)) {
-                            var src = key;
-
-                            if (path) {
-                                src = path + '/' + src;
-                            }
-
-                            src = ed.documentBaseURI.toAbsolute(src, true);
-
-                            key = '<img src="' + src + '" alt="' + ed.getLang('emotions.' + label, label) + '" />';
-                        }
-
-                        DOM.add(content, 'button', {
-                            "class": "mce_emotions_icon",
-                            "title": ed.getLang('emotions.' + label, label)
-                        }, key);
-                    });
+                    DOM.add(content, 'button', {
+                        "class": "mce_emotions_icon",
+                        "title": ed.getLang('emotions.' + label, label)
+                    }, key);
                 });
+            });
 
-                return content.innerHTML;
+            return content.innerHTML;
+        }
+
+        var path = ed.getParam('emotions_url', url + '/img');
+        var icons = ed.getParam('emotions_smilies', emoji, 'hash');
+
+        // create conten using default set
+        this.content = createEmojiContent(icons, path);
+
+        // set loaded flag to prevent duplicate xhr request
+        this.loaded = false;
+
+        // get emoji from json or text file
+        if (path && /\.(json|txt)$/.test(path) && !this.loaded) {
+
+            // resolve to local url if relative
+            if (path.indexOf('://') === -1) {
+                path = ed.documentBaseURI.toAbsolute(path, true);
             }
 
-            var path = ed.getParam('emotions_url', url + '/img');
-            var icons = ed.getParam('emotions_smilies', emoji, 'hash');
+            this.loaded = true;
 
-            // create conten using default set
-            this.content = createEmojiContent(icons, path);
+            tinymce.util.XHR.send({
+                url: path,
+                success: function (text) {
+                    try {
+                        icons = JSON.parse(text);
+                    } catch (e) {
+                        // json error
+                    }
 
-            // set loaded flag to prevent duplicate xhr request
-            this.loaded = false;
+                    // create path
+                    path = path.substring(0, path.lastIndexOf('/'));
 
-            // get emoji from json or text file
-            if (path && /\.(json|txt)$/.test(path) && !this.loaded) {
-
-                // resolve to local url if relative
-                if (path.indexOf('://') === -1) {
-                    path = ed.documentBaseURI.toAbsolute(path, true);
+                    self.content = createEmojiContent(icons, path);
                 }
+            });
+        }
 
-                this.loaded = true;
-
-                tinymce.util.XHR.send({
-                    url: path,
-                    success: function (text) {
-                        try {
-                            icons = JSON.parse(text);
-                        } catch (e) {
-                            // json error
-                        }
-
-                        // create path
-                        path = path.substring(0, path.lastIndexOf('/'));
-
-                        self.content = createEmojiContent(icons, path);
-                    }
-                });
-            }
-        },
-
-        createControl: function (n, cm) {
-            var self = this,
-                ed = this.editor;
+        this.createControl = function (n, cm) {
+            var self = this;
 
             if (n !== 'emotions') {
                 return null;
@@ -254,7 +250,6 @@
             });
 
             return ctrl;
-        }
+        };
     });
-    tinymce.PluginManager.add("emotions", tinymce.plugins.EmotionsPlugin);
 })();

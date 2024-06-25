@@ -1,7 +1,9 @@
 /**
  * @package   	JCE
  * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
- * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
@@ -10,44 +12,40 @@
 (function () {
     var each = tinymce.each;
 
-    tinymce.create('tinymce.plugins.FontSelectPlugin', {
+    var fonts = "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats";
 
-        fonts: "Andale Mono=andale mono,times;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Trebuchet MS=trebuchet ms,geneva;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats",
+    tinymce.PluginManager.add('fontselect', function (ed, url) {
 
-        init: function (ed, url) {
-            this.editor = ed;
+        ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
+            var c = cm.get('fontselect'), fv;
 
-            ed.onNodeChange.add(function (ed, cm, n, collapsed, o) {
-                var c = cm.get('fontselect'), fv;
+            if (c && n) {
+                each(o.parents, function (n) {
+                    if (n.style) {
+                        fv = n.style.fontFamily || ed.dom.getStyle(n, 'fontFamily');
 
-                if (c && n) {
-                    each(o.parents, function (n) {
-                        if (n.style) {
-                            fv = n.style.fontFamily || ed.dom.getStyle(n, 'fontFamily');
+                        fv = fv.replace(/[\"\']+/g, '').replace(/^([^,]+).*/, '$1').toLowerCase();
 
-                            fv = fv.replace(/[\"\']+/g, '').replace(/^([^,]+).*/, '$1').toLowerCase();
+                        c.select(function (v) {
+                            return v.replace(/^([^,]+).*/, '$1').toLowerCase() === fv;
+                        });
 
-                            c.select(function (v) {
-                                return v.replace(/^([^,]+).*/, '$1').toLowerCase() === fv;
-                            });
-
-                            if (fv) {
-                                return false;
-                            }
+                        if (fv) {
+                            return false;
                         }
-                    });
-                }
-            });
-        },
-
-        createControl: function (n, cf) {
-            if (n === "fontselect") {
-                return this._createFontSelect();
+                    }
+                });
             }
-        },
+        });
 
-        _createFontSelect: function () {
-            var ctrl, self = this, ed = self.editor;
+        this.createControl = function (n, cf) {
+            if (n === "fontselect") {
+                return createFontSelect();
+            }
+        };
+
+        function createFontSelect() {
+            var ctrl;
 
             ctrl = ed.controlManager.createListBox('fontselect', {
                 title: 'advanced.fontdefault',
@@ -73,7 +71,7 @@
                 }
             });
 
-            each(ed.getParam('fontselect_fonts', self.fonts, 'hash'), function (v, k) {
+            each(ed.getParam('fontselect_fonts', fonts, 'hash'), function (v, k) {
                 if (/\d/.test(v)) {
                     v = "'" + v + "'";
                 }
@@ -85,7 +83,4 @@
             return ctrl;
         }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('fontselect', tinymce.plugins.FontSelectPlugin);
 })();

@@ -321,151 +321,150 @@
 		return [];
 	}
 
-	tinymce.create('tinymce.plugins.CharacterMap', {
-		init: function (ed, url) {
-			this.editor = ed;
+	tinymce.PluginManager.add('charmap', function (ed, url) {
 
-			function extendCharMap(charmap) {
-				var settings = ed.settings;
+		function extendCharMap(charmap) {
+			var settings = ed.settings;
 
-				if (settings.charmap) {
-					charmap = getCharsFromSetting(settings.charmap);
-				}
-
-				if (settings.charmap_append) {
-					return [].concat(charmap).concat(getCharsFromSetting(settings.charmap_append));
-				}
-
-				return charmap;
+			if (settings.charmap) {
+				charmap = getCharsFromSetting(settings.charmap);
 			}
 
-			function getCharMap() {
-				return extendCharMap(getDefaultCharMap());
+			if (settings.charmap_append) {
+				return [].concat(charmap).concat(getCharsFromSetting(settings.charmap_append));
 			}
 
-			function renderCharMapHTML() {
-				var i;
+			return charmap;
+		}
 
-				var html = '';
+		function getCharMap() {
+			return extendCharMap(getDefaultCharMap());
+		}
 
-				var charmap = getCharMap();
+		function renderCharMapHTML() {
+			var i;
 
-				for (i = 0; i < charmap.length; i++) {
-					if (i < charmap.length) {
-						var chr = charmap[i], chrText = chr ? String.fromCharCode(parseInt(chr[0], 10)) : '&nbsp;';
-						var named = Entities.encodeNamed(chrText), named = named.substring(1);
+			var html = '';
 
-						html += (
-							'<button title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
-							chrText +
-							'</button>'
-						);
-					} else {
-						html += '';
-					}
-				}
+			var charmap = getCharMap();
 
-				html += '';
+			for (i = 0; i < charmap.length; i++) {
+				if (i < charmap.length) {
+					var chr = charmap[i], chrText = chr ? String.fromCharCode(parseInt(chr[0], 10)) : '&nbsp;';
+					var named = Entities.encodeNamed(chrText), named = named.substring(1);
 
-				return html;
-			}
-
-			function previewChar(codeA, codeB, codeN) {
-				var elmA = DOM.get(ed.id + '_charmapCodeA');
-				var elmB = DOM.get(ed.id + '_charmapCodeB');
-				var elmV = DOM.get(ed.id + '_charmapCodeV');
-				var elmN = DOM.get(ed.id + '_charmapCodeN');
-
-				if (codeA == '#160;') {
-					elmV.innerHTML = '__';
+					html += (
+						'<button title="' + chr[1] + '" data-numeric="' + chr[0] + '" data-named="' + named + '">' +
+						chrText +
+						'</button>'
+					);
 				} else {
-					elmV.innerHTML = '&' + codeA;
+					html += '';
 				}
-
-				elmB.innerHTML = '&amp;' + codeA;
-				elmA.innerHTML = '&amp;' + codeB;
-				elmN.innerHTML = codeN;
 			}
 
-			var html = '' +
-				'<div role="presentation" class="mceCharacterMap mceModalRow">' +
-				'	<div id="' + ed.id + '_charmapView" role="group"></div>' +
-				'	<div class="mceCharacterMapDescription">' +
-				'		<h1 id="' + ed.id + '_charmapCodeV"></h1>' +
-				'		<h4 id="' + ed.id + '_charmapCodeN"></h4>' +
-				'		<h3 id="' + ed.id + '_charmapCodeA"></h3>' +
-				'		<h3 id="' + ed.id + '_charmapCodeB"></h3>' +
-				'	</div>' +
-				'</div>';
+			html += '';
 
-			ed.addCommand('mceCharacterMap', function (v) {
-				ed.windowManager.open({
-					title: ed.getLang('advanced.charmap_desc'),
-					content: html,
-					size: 'mce-modal-landscape-xlarge',
-					open: function () {
-						var win = this, elm = DOM.get(ed.id + '_charmapView');
+			return html;
+		}
 
-						DOM.setHTML(elm, renderCharMapHTML());
+		function previewChar(codeA, codeB, codeN) {
+			var elmA = DOM.get(ed.id + '_charmapCodeA');
+			var elmB = DOM.get(ed.id + '_charmapCodeB');
+			var elmV = DOM.get(ed.id + '_charmapCodeV');
+			var elmN = DOM.get(ed.id + '_charmapCodeN');
 
-						DOM.bind(elm, 'mouseover', function (e) {
-							var node = e.target;
+			if (codeA == '#160;') {
+				elmV.innerHTML = '__';
+			} else {
+				elmV.innerHTML = '&' + codeA;
+			}
 
-							if (node.nodeName !== "BUTTON") {
-								return;
-							}
+			elmB.innerHTML = '&amp;' + codeA;
+			elmA.innerHTML = '&amp;' + codeB;
+			elmN.innerHTML = codeN;
+		}
 
-							var chr = node.getAttribute('data-numeric'), chrA = '#' + chr + ';', chrB = node.getAttribute('data-named'), chrN = node.getAttribute('title');
+		var html = '' +
+			'<div role="presentation" class="mceCharacterMap mceModalRow">' +
+			'	<div id="' + ed.id + '_charmapView" role="group"></div>' +
+			'	<div class="mceCharacterMapDescription">' +
+			'		<h1 id="' + ed.id + '_charmapCodeV"></h1>' +
+			'		<h4 id="' + ed.id + '_charmapCodeN"></h4>' +
+			'		<h3 id="' + ed.id + '_charmapCodeA"></h3>' +
+			'		<h3 id="' + ed.id + '_charmapCodeB"></h3>' +
+			'	</div>' +
+			'</div>';
 
-							previewChar(chrA, chrB, chrN);
-						});
+		ed.addCommand('mceCharacterMap', function (v) {
+			ed.windowManager.open({
+				title: ed.getLang('advanced.charmap_desc'),
+				content: html,
+				size: 'mce-modal-landscape-xlarge',
+				open: function () {
+					// eslint-disable-next-line consistent-this
+					var win = this, elm = DOM.get(ed.id + '_charmapView');
 
-						DOM.bind(elm, 'click', function (e) {
-							var node = e.target;
+					DOM.setHTML(elm, renderCharMapHTML());
 
-							e.preventDefault();
+					DOM.bind(elm, 'mouseover', function (e) {
+						var node = e.target;
 
-							if (node.nodeName !== "BUTTON") {
-								return;
-							}
+						if (node.nodeName !== "BUTTON") {
+							return;
+						}
 
-							var chr = node.getAttribute('data-numeric');
-							ed.execCommand('mceInsertContent', false, '&#' + chr + ';');
+						var chr = node.getAttribute('data-numeric'), chrA = '#' + chr + ';', chrB = node.getAttribute('data-named'), chrN = node.getAttribute('title');
 
-							win.close();
-						});
+						previewChar(chrA, chrB, chrN);
+					});
 
-						new tinymce.ui.KeyboardNavigation({
-							root: elm,
-							items: DOM.select('button', elm),
-							excludeFromTabOrder: false,
-							onCancel: function () {
-								ed.focus();
-							}
-						}, DOM);
-					}
-				});
+					DOM.bind(elm, 'click', function (e) {
+						var node = e.target;
+
+						e.preventDefault();
+
+						if (node.nodeName !== "BUTTON") {
+							return;
+						}
+
+						var chr = node.getAttribute('data-numeric');
+						ed.execCommand('mceInsertContent', false, '&#' + chr + ';');
+
+						win.close();
+					});
+
+					// eslint-disable-next-line no-unused-vars
+					var VK = new tinymce.ui.KeyboardNavigation({
+						root: elm,
+						items: DOM.select('button', elm),
+						excludeFromTabOrder: false,
+						onCancel: function () {
+							ed.focus();
+						}
+					}, DOM);
+				}
 			});
-		},
-		createControl: function (name, cm) {
-			var self = this,
-				btn, editor = self.editor;
+		});
 
+		this.createControl = function (name, cm) {
+			var btn;
+			
 			function insertChar(chr) {
-				editor.execCommand('mceInsertContent', false, '&' + chr + ';');
-				editor.focus();
+				ed.execCommand('mceInsertContent', false, '&' + chr + ';');
+				ed.focus();
 			}
 
 			if (name === 'charmap') {
-				if (editor.getParam('charmap_custom')) {
+				if (ed.getParam('charmap_custom')) {
 					btn = cm.createSplitButton(name, {
 						title: 'advanced.charmap_desc',
 						cmd: 'mceCharacterMap'
 					});
 
 					btn.onRenderMenu.add(function (btn, menu) {
-						each(editor.getParam('charmap_custom', '', 'hash'), function (v, k) {
-							var id = editor.dom.uniqueId();
+						each(ed.getParam('charmap_custom', '', 'hash'), function (v, k) {
+							var id = ed.dom.uniqueId();
 
 							v = v.replace(/[^a-z0-9]/gi, '');
 
@@ -487,8 +486,6 @@
 
 				return btn;
 			}
-		}
+		};
 	});
-	// Register plugin
-	tinymce.PluginManager.add('charmap', tinymce.plugins.CharacterMap);
 })();

@@ -1,16 +1,17 @@
 /**
- * editor_plugin_src.js
- *
- * Copyright 2009, Moxiecode Systems AB
- * Released under LGPL License.
- *
- * License: http://www.tinymce.com/license
- * Contributing: http://tinymce.moxiecode.com/contributing
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @copyright   Copyright 2009, Moxiecode Systems AB
+ * @copyright   Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
  */
 
 (function () {
-    tinymce.create('tinymce.plugins.StylePlugin', {
-        init: function (ed, url) {
+    tinymce.PluginManager.add('style', function (ed, url) {
             
             function isRootNode(node) {
                 return node == ed.dom.getRoot();
@@ -59,9 +60,5 @@
                 title: 'style.desc',
                 cmd: 'mceStyleProps'
             });
-        }
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('style', tinymce.plugins.StylePlugin);
 })();

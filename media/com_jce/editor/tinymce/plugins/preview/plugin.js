@@ -1,3 +1,12 @@
+/**
+ * @package   	JCE
+ * @copyright 	Copyright (c) 2009-2024 Ryan Demmer. All rights reserved.
+ * @license   	GNU/LGPL 2.1 or later - http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+ * JCE is free software. This version may have been modified pursuant
+ * to the GNU General Public License, and as distributed it includes or
+ * is derivative of works licensed under the GNU General Public License or
+ * other free or open source software licenses.
+ */
 (function () {
     var DOM = tinymce.DOM;
 
@@ -19,42 +28,36 @@
         return 'wf_' + guid + (counter++).toString(32);
     }
 
-    tinymce.create('tinymce.plugins.PreviewPlugin', {
-        init: function (ed, url) {
-            this.editor = ed;
+    tinymce.PluginManager.add('preview', function (ed, url) {
+        var self = this;
 
-            var self = this;
+        function isEditorActive() {
+            return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+        }
 
-            function isEditorActive() {
-                return DOM.hasClass(ed.getElement(), 'wf-no-editor') == false;
+        ed.onInit.add(function (ed) {
+            if (isEditorActive() == false) {
+                return;
             }
 
-            ed.onInit.add(function (ed) {
-                if (isEditorActive() == false) {
-                    return;
-                }
-                
-                // get the stored active tab
-                var activeTab = ed.settings.active_tab || '';
+            // get the stored active tab
+            var activeTab = ed.settings.active_tab || '';
 
-                if (activeTab === "wf-editor-preview") {
-                    // hide editor
-                    ed.hide();
-                    // hide textarea
-                    DOM.hide(ed.getElement());
+            if (activeTab === "wf-editor-preview") {
+                // hide editor
+                ed.hide();
+                // hide textarea
+                DOM.hide(ed.getElement());
 
-                    self.toggle();
-                }
-            });
-        },
+                self.toggle();
+            }
+        });
 
-        hide: function () {
-            DOM.hide(this.editor.id + '_editor_preview');
-        },
+        this.hide = function () {
+            DOM.hide(ed.id + '_editor_preview');
+        };
 
-        toggle: function () {
-            var ed = this.editor;
-
+        this.toggle = function () {
             var s = ed.settings;
 
             var element = ed.getElement();
@@ -182,9 +185,6 @@
                     update(content);
                 }
             });
-        }
+        };
     });
-
-    // Register plugin
-    tinymce.PluginManager.add('preview', tinymce.plugins.PreviewPlugin);
 })();
