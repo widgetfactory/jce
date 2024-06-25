@@ -3,7 +3,7 @@ import './plugin/tips.js';
 import './plugin/ui.js';
 import './plugin/datalist.js';
 import './plugin/colorpicker.js';
-import './plugin/wfe.popup.js';
+import './plugin/tinymce.popup.js';
 import './plugin/plugin.js';
 import './plugin/url.js';
 import './plugin/string.js';
