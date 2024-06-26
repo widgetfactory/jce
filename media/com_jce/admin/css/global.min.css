@@ -5,6 +5,12 @@
   width: 12rem;
   min-width: 6rem;
 }
+.ui-jce .control-group.field-spacer .control-label {
+  width: 100%;
+}
+.ui-jce .control-group.field-spacer .control-label hr {
+  width: 100%;
+}
 .ui-jce .radio label,
 .ui-jce .checkbox label,
 .ui-jce .radio,
