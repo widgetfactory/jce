@@ -110,24 +110,26 @@ class JFormFieldKeyValue extends FormField
             $n = 0;
 
             foreach ($fields as $field) {
-                $field->element['multiple'] = true;
+                $tmpField = clone $field;
+                
+                $tmpField->element['multiple'] = true;
 
-                $name = (string) $field->element['name'];
+                $name = (string) $tmpField->element['name'];
 
                 $val = is_array($value) && isset($value[$name]) ? $value[$name] : '';
 
                 // escape value
-                $field->value = htmlspecialchars_decode($val);
+                $tmpField->value = htmlspecialchars_decode($val);
 
-                $field->setup($field->element, $field->value, $this->group);
+                $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
 
                 // reset id
-                $field->id .= '_' . $n;
+                $tmpField->id .= '_' . $n;
 
                 // reset name
-                $field->name = $name;
+                $tmpField->name = $name;
 
-                $str[] = $field->renderField(array('description' => $field->description));
+                $str[] = $tmpField->renderField(array('description' => $tmpField->description));
 
                 $n++;
             }

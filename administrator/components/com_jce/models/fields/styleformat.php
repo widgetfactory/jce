@@ -46,20 +46,22 @@ class JFormFieldStyleFormat extends FormField
         $data = array();
 
         foreach ($fields as $field) {
-            $key = (string) $field->element['name'];
+            $tmpField = clone $field;
+            
+            $key = (string) $tmpField->element['name'];
 
             // default value
-            $field->value = "";
+            $tmpField->value = "";
 
             if (array_key_exists($key, $item)) {
-                $field->value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
+                $tmpField->value = htmlspecialchars_decode($item[$key], ENT_QUOTES);
             }
 
-            $field->setup($field->element, $field->value, $this->group);
-            $field->id = '';
-            $field->name = '';
+            $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
+            $tmpField->id = '';
+            $tmpField->name = '';
 
-            $data[] = '<div class="styleformat-item-' . $key . '" data-key="' . $key . '">' . $field->renderField(array('description' => $field->description)) . '</div>';
+            $data[] = '<div class="styleformat-item-' . $key . '" data-key="' . $key . '">' . $tmpField->renderField(array('description' => $tmpField->description)) . '</div>';
         }
 
         return implode('', $data);

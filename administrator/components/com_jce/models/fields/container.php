@@ -169,8 +169,10 @@ class JFormFieldContainer extends FormField
             $fieldValues = array();
 
             foreach ($fields as $field) {
-                $name = (string) $field->element['name'];
-                $value = (string) $field->element['default'];
+                $tmpField = clone $field;
+                
+                $name = (string) $tmpField->element['name'];
+                $value = (string) $tmpField->element['default'];
 
                 $defaultValues[] = $value;
 
@@ -182,7 +184,7 @@ class JFormFieldContainer extends FormField
                     $value = $data[$name];
                 }
 
-                $type = (string) $field->element['type'];
+                $type = (string) $tmpField->element['type'];
 
                 // convert checkboxes value to string
                 if ($type == 'checkboxes') {
@@ -211,19 +213,19 @@ class JFormFieldContainer extends FormField
                 // store value for repeatable check
                 $fieldValues[] = $value;
 
-                $field->value = $value;
-                $field->setup($field->element, $field->value);
+                $tmpField->value = $value;
+                $tmpField->setup($tmpField->element, $tmpField->value);
 
                 if ($repeatable) {
                     // reset id
-                    $field->id .= '_' . $i;
+                    $tmpField->id .= '_' . $i;
 
-                    if (strpos($field->name, '[]') === false) {
-                        $field->name .= '[]';
+                    if (strpos($tmpField->name, '[]') === false) {
+                        $tmpField->name .= '[]';
                     }
                 }
 
-                $item[] = $field->renderField(array('description' => $field->description));
+                $item[] = $tmpField->renderField(array('description' => $tmpField->description));
             }
 
             if ($repeatable) {

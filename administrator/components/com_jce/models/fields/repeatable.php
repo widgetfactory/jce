@@ -58,6 +58,8 @@ class JFormFieldRepeatable extends FormField
 
         $str[] = '<div class="form-field-repeatable">';
 
+        $key = 0;
+
         foreach ($values as $value) {
             $class = '';
 
@@ -72,28 +74,31 @@ class JFormFieldRepeatable extends FormField
             $n = 0;
 
             foreach ($fields as $field) {
-                $field->element['multiple'] = true;
+                $tmpField = clone $field;
+
+                $tmpField->element['multiple'] = true;
 
                 // substitute for repeatable element
-                $field->element['name'] = (string) $this->element['name'];
+                $tmpField->element['name'] = (string) $this->element['name'];
 
                 if (is_array($value)) {
                     $value = isset($value[$n]) ? $value[$n] : $value[0];
                 }
 
                 // escape value
-                $field->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+                $tmpField->value = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
 
-                $field->setup($field->element, $field->value, $this->group);
-
+                $tmpField->setup($tmpField->element, $tmpField->value, $this->group);
+                
                 // reset id
-                $field->id .= '_' . $n;
+                $tmpField->id = $field->id .= '_' . $key;
 
-                if (strpos($field->name, '[]') === false) {
-                    $field->name .= '[]';
+                // add as form array
+                if (strpos($tmpField->name, '[]') === false) {
+                    $tmpField->name .= '[]';
                 }
-
-                $str[] = $field->renderField(array('description' => $field->description));
+        
+                $str[] = $tmpField->renderField(array('description' => $field->description));
 
                 $n++;
             }
@@ -106,6 +111,8 @@ class JFormFieldRepeatable extends FormField
             $str[] = '  </div>';
 
             $str[] = '</div>';
+
+            $key++;
         }
 
         $str[] = '</div>';
