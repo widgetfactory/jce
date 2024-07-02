@@ -442,6 +442,11 @@
         this.getUploadURL = function (file) {
             var data = this.getUploadConfig();
 
+            // default to using Image Manager Extended if it is available
+            if (ed.plugins.imgmanager_ext) {
+                return false;
+            }
+
             if (data && data.filetypes) {
                 if (new RegExp('\.(' + data.filetypes.join('|') + ')$', 'i').test(file.name)) {
                     return ed.getParam('site_url') + 'index.php?option=com_jce&task=plugin.display&plugin=image';
