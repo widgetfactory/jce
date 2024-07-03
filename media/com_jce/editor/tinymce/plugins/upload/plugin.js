@@ -720,9 +720,7 @@
       });
     }
 
-    return {
-      plugins: plugins,
-      upload: uploadHandler
-    };
+    this.plugins = plugins;
+    this.upload = uploadHandler;
   });
 })();

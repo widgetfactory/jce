@@ -158,9 +158,7 @@
       });
     });*/
 
-    return {
-      isNonEditable: isNonEditable,
-      isEditable: isEditable
-    };
+    this.isEditable = isEditable;
+    this.isNonEditable = isNonEditable;
   });
 })();
