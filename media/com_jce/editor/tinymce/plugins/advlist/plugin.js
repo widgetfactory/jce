@@ -13,10 +13,8 @@
 (function () {
     var each = tinymce.each, DOM = tinymce.DOM, Event = tinymce.dom.Event;
 
-    tinymce.PluginManager.add('advlist', function (ed, url) {
+    tinymce.PluginManager.add('advlist', function (editor, url) {
         var self = this;
-
-        self.editor = ed;
 
         function buildFormats(str) {
             var formats = [];
@@ -40,20 +38,20 @@
         }
 
         // Setup number formats from config or default
-        var numlist = ed.getParam("advlist_number_styles", "default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
+        var numlist = editor.getParam("advlist_number_styles", "default,lower-alpha,lower-greek,lower-roman,upper-alpha,upper-roman");
 
         if (numlist) {
             self.numlist = buildFormats(numlist);
         }
 
-        var bullist = ed.getParam("advlist_bullet_styles", "default,circle,disc,square");
+        var bullist = editor.getParam("advlist_bullet_styles", "default,circle,disc,square");
 
         if (bullist) {
             self.bullist = buildFormats(bullist);
         }
 
         this.createControl = function (name, cm) {
-            var self = this, btn, format, editor = self.editor;
+            var self = this, btn, format;
 
             if (name == 'numlist' || name == 'bullist') {
 

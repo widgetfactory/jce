@@ -122,7 +122,7 @@
         }
 
         // Find selected language
-        self.languages = {};
+        var languages = {};
 
         each(ed.getParam('spellchecker_languages', '+English=en,Danish=da,Dutch=nl,Finnish=fi,French=fr,German=de,Italian=it,Polish=pl,Portuguese=pt,Spanish=es,Swedish=sv', 'hash'), function (v, k) {
             if (k.indexOf('+') === 0) {
@@ -130,7 +130,7 @@
                 self.selectedLang = v;
             }
 
-            self.languages[k] = v;
+            languages[k] = v;
         });
 
         // Turn spellchecker on if required
@@ -171,7 +171,7 @@
 
                     self.menuItems = {};
 
-                    each(self.languages, function (v, k) {
+                    each(languages, function (v, k) {
                         var o = {}, mi;
 
                         o.onclick = function () {
@@ -434,7 +434,7 @@
                     if (ed.getParam('show_ignore_words', true)) {
                         m.addSeparator();
 
-                        ignoreRpc = self.editor.getParam("spellchecker_enable_ignore_rpc", '');
+                        ignoreRpc = ed.getParam("spellchecker_enable_ignore_rpc", '');
                         m.add({
                             title: 'spellchecker.ignore_word',
                             onclick: function () {
@@ -472,7 +472,7 @@
                         });
                     }
 
-                    if (self.editor.getParam("spellchecker_enable_learn_rpc")) {
+                    if (ed.getParam("spellchecker_enable_learn_rpc")) {
                         m.add({
                             title: 'spellchecker.learn_word',
                             onclick: function () {
@@ -534,7 +534,7 @@
                 }
 
                 if (la) {
-                    self.editor.nodeChanged();
+                    ed.nodeChanged();
                 }
 
                 self.active = false;

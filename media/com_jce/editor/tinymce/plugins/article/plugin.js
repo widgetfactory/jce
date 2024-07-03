@@ -379,8 +379,7 @@
         }
 
         /*this.createControl = function (n, cm) {
-            var self = this,
-                ed = this.editor;
+            var self = this;
 
             if (n !== 'pagebreak') {
                 return null;

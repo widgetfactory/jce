@@ -137,13 +137,11 @@
         };
 
         this.hide = function () {
-            var ed = this.editor;
             DOM.hide(ed.id + '_editor_source');
         };
 
         this.save = function (content, debounced) {
-            var ed = this.editor,
-                el = ed.getElement();
+            var el = ed.getElement();
 
             if (!el) {
                 return content;
@@ -177,7 +175,6 @@
         };
 
         this.toggle = function () {
-            var ed = this.editor;
             var self = this,
                 s = ed.settings;
 
