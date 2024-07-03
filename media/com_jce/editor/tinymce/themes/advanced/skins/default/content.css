@@ -341,7 +341,7 @@ a.mce-item-anchor {
   height: 11px !important;
   background-image: url(img/anchor.svg);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: left center;
   background-size: 12px;
   padding-left: 14px;
   border: 1px dashed #B4D4FF;
