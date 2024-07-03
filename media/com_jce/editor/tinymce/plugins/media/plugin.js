@@ -303,21 +303,56 @@
         // remove sandbox on local urls
         if (isLocalUrl(editor, src)) {
             node.attr('sandbox', null);
+
+            return;
         }
-
-        // get exclusions
-        var sandbox_iframes_exclusions = editor.getParam('media_iframes_sandbox_exclusions', []);
-
-        // remove sandbox on exclusions
-        each(sandbox_iframes_exclusions, function (value) {
-            if (src.indexOf(value) !== -1) {
-                node.attr('sandbox', null);
-            }
-        });
 
         // remove sandbox on all iframes
         if (editor.getParam('media_iframes_sandbox', true) === false) {
             node.attr('sandbox', null);
+
+            return;
+        }
+
+        var default_sandbox_exclusions = [
+            'youtube.com',
+            'youtu.be',
+            'vimeo.com',
+            'player.vimeo.com',
+            'dailymotion.com',
+            'embed.music.apple.com',
+            'open.spotify.com',
+            'giphy.com',
+            'dai.ly',
+            'codepen.io',
+            'maps.google.com',
+            'google.com/maps'
+        ];
+
+        // get exclusions
+        var sandbox_iframes_exclusions = editor.getParam('media_iframes_sandbox_exclusions', []);
+
+        // combine default and custom exclusions
+        sandbox_iframes_exclusions = default_sandbox_exclusions.concat(sandbox_iframes_exclusions);
+
+        try {
+            // get the uri of the src
+            var url = new URL(src);
+
+            // create a "site" string from the host and path, eg: google.com/maps
+            var host = url.host.toLowerCase();
+            var path = url.pathname.toLowerCase();
+            var site = (host.startsWith('www.') ? host.slice(4) : host) + path;
+
+            // remove sandbox on exclusions
+            if (sandbox_iframes_exclusions.some(function (value) {
+                var exclusion = value.toLowerCase();
+                return site.indexOf(exclusion) === 0 || host.indexOf(exclusion) === 0;
+            })) {
+                node.attr('sandbox', null);
+            }
+        } catch (e) {
+            // ignore
         }
     }
 
