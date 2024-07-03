@@ -87,6 +87,21 @@
         return style.display == 'block' && style['margin-left'] == 'auto' && style['margin-right'] == 'auto';
     }
 
+    var sandbox_iframes_exclusions = [
+        'youtube.com',
+        'youtu.be',
+        'vimeo.com',
+        'player.vimeo.com',
+        'dailymotion.com',
+        'embed.music.apple.com',
+        'open.spotify.com',
+        'giphy.com',
+        'dai.ly',
+        'codepen.io',
+        'maps.google.com',
+        'google.com/maps'
+    ];
+
     var mediaProviders = {
         'youtube': /youtu(\.)?be(.+)?\/(.+)/,
         'vimeo': /vimeo(.+)?\/(.+)/,
@@ -313,27 +328,6 @@
 
             return;
         }
-
-        var default_sandbox_exclusions = [
-            'youtube.com',
-            'youtu.be',
-            'vimeo.com',
-            'player.vimeo.com',
-            'dailymotion.com',
-            'embed.music.apple.com',
-            'open.spotify.com',
-            'giphy.com',
-            'dai.ly',
-            'codepen.io',
-            'maps.google.com',
-            'google.com/maps'
-        ];
-
-        // get exclusions
-        var sandbox_iframes_exclusions = editor.getParam('media_iframes_sandbox_exclusions', []);
-
-        // combine default and custom exclusions
-        sandbox_iframes_exclusions = default_sandbox_exclusions.concat(sandbox_iframes_exclusions);
 
         try {
             // get the uri of the src
@@ -1782,6 +1776,12 @@
 
     // Register plugin
     tinymce.PluginManager.add('media', function (ed, url) {
+        // get custom sandbox exclusions
+        var custom_sandbox_iframes_exclusions = ed.getParam('media_iframes_sandbox_exclusions', []);
+
+        // combine with defined sandbox_iframes_exclusions
+        sandbox_iframes_exclusions = sandbox_iframes_exclusions.concat(custom_sandbox_iframes_exclusions);
+
         function isMediaObject(node) {
             node = node || ed.selection.getNode();
             return ed.dom.getParent(node, '[data-mce-object]');
