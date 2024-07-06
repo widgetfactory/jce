@@ -49,6 +49,8 @@ trait FormTrait
         $fieldParams = clone $this->params;
         $fieldParams->merge($field->fieldparams);
 
+        $form->addFieldPath(JPATH_PLUGINS . '/fields/mediajce/fields');
+
         // find a better way to do this....
         if (PluginHelper::isEnabled('system', 'jcepro')) {
 
