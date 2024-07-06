@@ -38,11 +38,6 @@
             <option value="0">WF_OPTION_NO</option>
         </field>
 
-        <field name="replace_media_manager" type="radio" default="1" label="WF_CPANEL_REPLACE_MEDIAMANAGER_LABEL" class="btn-group btn-group-yesno" description="WF_CPANEL_REPLACE_MEDIAMANAGER_DESCRIPTION">
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </field>
-
     </fieldset>
     <fieldset name="updates" label="WF_PREFERENCES_UPDATES">
         <field name="updates_key" type="password" size="50" default="" label="WF_UPDATES_KEY" description="WF_UPDATES_KEY_DESC" />
