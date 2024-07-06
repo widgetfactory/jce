@@ -479,10 +479,13 @@ class WFDocument extends CMSObject
         $query['slot'] = $app->input->getCmd('slot');
 
         // set standalone mode (for File Browser etc)
-        $query['standalone'] = $this->get('standalone');
+        $query['standalone'] = $this->get('standalone', 0);
 
         // set context id
-        $query['context'] = $app->input->getInt('context');
+        $query['context'] = $app->input->getInt('context', 0);
+
+        // get profile custom query variables
+        $query['profile_custom'] = $app->input->get('profile_custom', array(), 'array');
 
         // get token
         $token = Session::getFormToken();
@@ -490,15 +493,12 @@ class WFDocument extends CMSObject
         // set token
         $query[$token] = 1;
 
-        $output = array();
+        // filter out empty values from the $query array
+        $query = array_filter($query, function ($value) {
+            return !empty($value);
+        });
 
-        foreach ($query as $key => $value) {
-            if ($value) {
-                $output[] = $key . '=' . $value;
-            }
-        }
-
-        return implode('&', $output);
+       return http_build_query($query);
     }
 
     private function getHash($files)
