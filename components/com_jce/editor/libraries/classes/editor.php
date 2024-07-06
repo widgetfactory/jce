@@ -513,6 +513,8 @@ class WFEditor
         if ($this->isSkinRtl()) {
             $settings['skin_directionality'] = 'rtl';
         }
+        
+        $app->triggerEvent('onBeforeWfEditorSettings', array(&$settings));
 
         // set javascript compression script
         if ($settings['compress']['javascript']) {
