@@ -12,6 +12,8 @@ defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Factory;
 
+JLoader::register('WFApplication', JPATH_ADMINISTRATOR . '/components/com_jce/helpers/browser.php');
+
 abstract class WfBrowserHelper
 {
     public static function getBrowserLink($element = null, $mediatype = '', $callback = '', $options = array())
@@ -77,9 +79,9 @@ abstract class WfBrowserHelper
         $wf = WFApplication::getInstance();
 
         $profile = $wf->getProfile('browser');
-
+        
         // check the current user is in a profile
-        if ($profile) {
+        if ($profile) {            
             // is conversion enabled?
             if ($options['converted']) {
                 $data['converted'] = (bool) $wf->getParam('browser.mediafield_conversion', 1);
