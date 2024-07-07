@@ -252,7 +252,7 @@
                     e.preventDefault();
                     return false;
                 }
-                
+
                 // get serialized object
                 self.serializeItemData(n).then(function (data) {
                     // trigger event
@@ -1514,42 +1514,6 @@
 
             this._trigger('onListComplete');
         },
-        _getDialogOptions: function (dialog) {
-            var options = this.options[dialog];
-            var elements = '';
-
-            if (options && options.elements) {
-                if ($.isPlainObject(options.elements)) {
-                    $.each(options.elements, function (k, v) {
-                        if (v.options) {
-                            elements += '<div class="uk-form-row uk-placeholder uk-placeholder-small uk-flex">';
-                            elements += '<label class="uk-form-label uk-width-1-5" for="' + k + '">' + (v.label || k) + '</label>';
-                            elements += '<div class="uk-form-controls uk-width-4-5"><select id="' + k + '" name="' + k + '">';
-
-                            $.each(v.options, function (value, name) {
-                                var selected = "";
-
-                                if (v['default'] && value === v['default']) {
-                                    selected = " selected";
-                                }
-
-                                elements += '<option value="' + value + '"' + selected + '>' + name + '</option>';
-                            });
-
-                            elements += '</select></div>';
-                            elements += '</div>';
-                        } else {
-                            elements += '<div class="uk-form-row uk-placeholder uk-placeholder-small uk-flex"><label class="uk-form-label uk-width-1-5" for="' + k + '">' + v.label || k + '</label><div class="uk-form-controls uk-width-4-5"><input id="' + k + '" type="text" name="' + k + '" value="' + v.value || '' + '" /></div></div>';
-                        }
-                    });
-
-                } else {
-                    return options.elements;
-                }
-            }
-
-            return elements;
-        },
 
         /**
          * Execute a command
@@ -1557,7 +1521,7 @@
          * @param {String} The command type
          * @param {String} The event that triggered the action
          */
-        _execute: function (name, type, evt) {
+        _execute: function (name, type, evt, options) {
             var self = this;
             var dir = this._dir;
 
@@ -1567,6 +1531,12 @@
             var list = this._serializeSelectedItems();
 
             var site = Wf.getURI(true);
+
+            var elements = '';
+
+            if (this.options[name]) {
+                elements = this.options[name].elements || '';
+            }
 
             switch (name) {
                 case 'help':
@@ -1644,7 +1614,7 @@
                     break;
                 case 'upload':
                     var uploadModal = Wf.Modal.upload($.extend({
-                        elements: this._getDialogOptions('upload'),
+                        elements: elements,
                         open: function () {
                             /**
                              * Private internal function
@@ -1724,7 +1694,7 @@
                         },
                         upload: function () {
                             // get form data
-                            var serialized = $(':input[name]:enabled', '#upload-options').map(function () {
+                            var serialized = $(':input[name]:enabled', '#upload-body').map(function () {
                                 return { name: this.name, value: this.value };
                             });
 
@@ -1749,8 +1719,6 @@
                     }, self.options.upload.dialog));
                     break;
                 case 'folder_new':
-                    var elements = this._getDialogOptions('folder_new');
-
                     Wf.Modal.prompt(self._translate('folder_new', 'New Folder'), function (v, args) {
                         if (v) {
                             self._setLoader();
@@ -1888,7 +1856,7 @@
                                             }
                                         });
                                     };
-                                    
+
                                     Wf.Modal.confirm(
                                         self._translate('paste_item_confirm', 'An item with the same name already exists in this folder. Do you want to replace it with the one you’re pasting?'),
                                         confirmCallback,
@@ -2068,7 +2036,7 @@
                         label: {
                             'confirm': self._translate('rename', 'Rename')
                         },
-                        elements: this._getDialogOptions('rename'),
+                        elements: elements,
                         close_on_submit: false,
                         validate: function (value) {
                             if (!value) {
@@ -2078,6 +2046,20 @@
                             return Wf.String.safe(value, self.options.websafe_mode, self.options.websafe_spaces, self.options.websafe_textcase);
                         }
                     });
+                    break;
+                case 'custom':
+                    var dialog = options.dialog, action = options.action || null;
+
+                    Wf.Modal.custom(dialog.title, function (args) {
+                        args = [list].concat(args || []);
+                        
+                        Wf.JSON.request(action, args, function (o) {
+                            self.refresh();
+                        });
+                    }, {
+                        elements: dialog.elements
+                    });
+
                     break;
             }
         },
@@ -2285,6 +2267,10 @@
                         if ($('li.selected', '#item-list').length || self._pasteitems) {
                             if (o.sticky) {
                                 $(button).toggleClass('uk-active');
+                            }
+
+                            if (o.dialog) {
+                                return self._execute('custom', type, evt, o);
                             }
 
                             if ($.type(fn) == 'function') {
