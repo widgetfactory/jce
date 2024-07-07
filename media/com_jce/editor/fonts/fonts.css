@@ -775,6 +775,10 @@
   content: "\e902";
 }
 
+.uk-icon-key:before {
+  content: "\e98d";
+}
+
 .uk-icon-code-search-regex:before {
   content: ".*";
   font-family: Tahoma, Arial, sans-serif;
