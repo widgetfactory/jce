@@ -111,6 +111,17 @@ class WFFileBrowser extends CMSObject
      */
     public function display()
     {
+        $filesystem = $this->getFileSystem();
+        $buttons    = $filesystem->get('buttons', []);
+
+        if (!empty($buttons)) {
+            foreach($buttons as $type => $items) {
+                foreach($items as $name => $options) {
+                    $this->addButton($type, $name, $options);
+                }
+            }
+        }
+
         $this->setProperties(array(
             'actions' => $this->getActions(),
             'buttons' => $this->getButtons(),
