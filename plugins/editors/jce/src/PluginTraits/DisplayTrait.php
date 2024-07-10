@@ -72,13 +72,13 @@ trait DisplayTrait
     }
 
     /**
-     * Find an alternate editor to load based on the Editor Global Configuration settings.
-     * The alternate editor must be enabled.
+     * Find a fallback editor to load based on the Editor Global Configuration settings.
+     * The fallback editor must be enabled.
      * If no editor is available or set, default to "read only" JCE.
      *
      * @return mixed Joomla\CMS\Editor\Editor or boolean false
      */
-    private function getAlternateEditor()
+    private function getFallbackEditor()
     {
         $name = $this->params->get('editor_fallback', '');
 
@@ -107,7 +107,7 @@ trait DisplayTrait
     {
         if ($this->isEditorEnabled() === false) {
 
-            $ed = $this->getAlternateEditor();
+            $ed = $this->getFallbackEditor();
 
             if ($ed !== false) {
                 $ed->initialise();
@@ -161,7 +161,7 @@ trait DisplayTrait
     {
         if ($this->isEditorEnabled() === false) {
 
-            $ed = $this->getAlternateEditor();
+            $ed = $this->getFallbackEditor();
 
             if ($ed !== false) {
                 return $ed->display($name, $content, $width, $height, $col, $row, $buttons, $id, $asset, $author, $params);
