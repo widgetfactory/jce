@@ -99,7 +99,8 @@
         'dai.ly',
         'codepen.io',
         'maps.google.com',
-        'google.com/maps'
+        'google.com/maps',
+        'docs.google.com'
     ];
 
     var mediaProviders = {
