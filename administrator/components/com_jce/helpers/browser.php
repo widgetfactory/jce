@@ -78,7 +78,9 @@ abstract class WfBrowserHelper
         // get editor instance
         $wf = WFApplication::getInstance();
 
-        $profile = $wf->getProfile('browser');
+        $profile = $wf->getActiveProfile(
+            array('plugin' => 'browser')
+        );
         
         // check the current user is in a profile
         if ($profile) {            

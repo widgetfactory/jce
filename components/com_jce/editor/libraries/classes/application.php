@@ -32,7 +32,7 @@ class WFApplication extends CMSObject
     protected static $instance;
 
     // Editor Profile
-    protected static $profile = array();
+    protected static $profiles = array();
 
     // Editor Params
     protected static $params = array();
@@ -160,6 +160,11 @@ class WFApplication extends CMSObject
         return $settings;
     }
 
+    private function isCorePlugin($plugin)
+    {
+        return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
+    }
+
     public function isValidPlugin($name)
     {
         $plugins = JcePluginsHelper::getPlugins();
@@ -188,35 +193,74 @@ class WFApplication extends CMSObject
         return true;
     }
 
-    private function isCorePlugin($plugin)
+    public function checkProfile($plugin)
     {
-        return in_array($plugin, array('core', 'autolink', 'cleanup', 'code', 'format', 'importcss', 'colorpicker', 'upload', 'branding', 'inlinepopups', 'figure', 'ui', 'help'));
+        $profile = $this->getActiveProfile(array('plugin' => $plugin));
+        return $profile ? true : false;
+    }
+    /**
+     * Return the active profile based on certain conditions.
+     *
+     * @param array $options An array of options to pass to the getProfile method
+     * @return object The active profile
+     */
+    public function getActiveProfile($options = array())
+    {
+        $profiles = $this->getProfiles($options);
+
+        return $profiles['default'];
+    }
+    /**
+     * Get an array of editor profiles.
+     *
+     * @param array $options Array of options to pass to the getProfile method
+     * @return array Array of editor profiles by key, with "default" being the default profile
+     */
+    public function getProfiles($options = array())
+    {
+        $profiles = array();
+        $profiles['default'] = $this->getProfile($options);
+
+        return $profiles;
     }
 
     /**
      * Get an appropriate editor profile.
      */
-    public function getProfile($plugin = '', $id = 0)
+    protected function getProfile($options = array())
     {
+        static $cache = array();
+
+        if (!isset($options['plugin'])) {
+            $options['plugin'] = '';
+        }
+
+        if (!isset($options['id'])) {
+            $options['id'] = 0;
+        }
+
+        // get the passed in options as variables
+        extract ($options);
+        
         // reset the value if it is a core plugin
         if ($this->isCorePlugin($plugin)) {
             $plugin = '';
         }
 
         // get the profile variables for the current context
-        $options = $this->getProfileVars();
+        $vars = $this->getProfileVars();
 
         // installed plugins will have a name prefixed with "editor-", so remove to validate
         if (preg_match('/^editor[-_]/', $plugin)) {
             $plugin = preg_replace('/^editor[-_]/', '', $plugin);
         }
 
-        // add plugin to options array
-        $options['plugin'] = $plugin;
+        // add plugin to vars array
+        $vars['plugin'] = $plugin;
 
         // assign profile_id to simple variable
-        if (isset($options['profile_id'])) {
-            $id = (int) $options['profile_id'];
+        if (isset($vars['profile_id'])) {
+            $id = (int) $vars['profile_id'];
         }
 
         $db = Factory::getDBO();
@@ -244,12 +288,12 @@ class WFApplication extends CMSObject
             return (object) $profiles[0];
         }
 
-        $app->triggerEvent('onWfEditorProfileOptions', array(&$options));
+        $app->triggerEvent('onWfEditorProfileOptions', array(&$vars));
 
         // create a unique signature to store
-        $signature = md5(serialize($options));
+        $signature = md5(serialize($vars));
 
-        if (!isset(self::$profile[$signature])) {
+        if (!isset($cache[$signature])) {
 
             foreach ($profiles as $item) {
                 // at least one user group or user must be set
@@ -265,7 +309,7 @@ class WFApplication extends CMSObject
                 }
 
                 // check user groups - a value should always be set
-                $groups = array_intersect($options['groups'], explode(',', $item->types));
+                $groups = array_intersect($vars['groups'], explode(',', $item->types));
 
                 // user not in the current group...
                 if (empty($groups)) {
@@ -285,7 +329,7 @@ class WFApplication extends CMSObject
                     // ensure com_jce is included
                     $components = array_unique($components);
 
-                    if (in_array($options['option'], $components) === false) {
+                    if (in_array($vars['option'], $components) === false) {
                         continue;
                     }
                 }
@@ -296,12 +340,12 @@ class WFApplication extends CMSObject
                 }
 
                 // check device
-                if (in_array($options['device'], explode(',', $item->device)) === false) {
+                if (in_array($vars['device'], explode(',', $item->device)) === false) {
                     continue;
                 }
 
                 // check area
-                if (!empty($item->area) && (int) $item->area != $options['area']) {
+                if (!empty($item->area) && (int) $item->area != $vars['area']) {
                     continue;
                 }
 
@@ -323,16 +367,16 @@ class WFApplication extends CMSObject
                 }
 
                 // assign item to profile
-                self::$profile[$signature] = (object) $item;
+                $cache[$signature] = (object) $item;
 
                 // return
-                return self::$profile[$signature];
+                return $cache[$signature];
             }
 
             return null;
         }
 
-        return self::$profile[$signature];
+        return $cache[$signature];
     }
 
     /**
@@ -404,8 +448,8 @@ class WFApplication extends CMSObject
             // assign params to "editor" key
             $data1 = array('editor' => $data1);
 
-            // get params data for this profile
-            $profile = $this->getProfile($plugin);
+            // get params data for the active profile
+            $profile = $this->getActiveProfile(array('plugin' => $plugin));
 
             // create empty default if no profile or params are set
             $params = empty($profile->params) ? '{}' : $profile->params;

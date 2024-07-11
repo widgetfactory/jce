@@ -36,6 +36,12 @@ class WFFileSystem extends WFExtension
         $this->setProperties($vars);
     }
 
+    protected function getProfile()
+    {
+        $wf = WFApplication::getInstance();
+        return $wf->getActiveProfile();
+    }
+
     /**
      * Returns a reference to a plugin object.
      *
@@ -107,7 +113,7 @@ class WFFileSystem extends WFExtension
             $app = Factory::getApplication();
             $user = Factory::getUser();
             $wf = WFApplication::getInstance();
-            $profile = $wf->getProfile();
+            $profile = $this->getProfile();
 
             $groups = UserHelper::getUserGroups($user->id);
 

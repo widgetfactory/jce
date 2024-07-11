@@ -72,7 +72,7 @@ class JceControllerPlugin extends BaseController
         $wf->isValidPlugin($plugin) or jexit('Invalid Plugin');
 
         // check a valid profile exists
-        $wf->getProfile($plugin) or jexit('Invalid Profile');
+        $wf->checkProfile($plugin) or jexit('Invalid Profile');
 
         // load language files
         $language->load('com_jce', JPATH_ADMINISTRATOR);

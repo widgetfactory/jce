@@ -140,7 +140,12 @@ class WFEditorPlugin extends CMSObject
     {
         $wf = WFApplication::getInstance();
 
-        return $wf->getProfile($plugin);
+        $options = array(
+            'plugin' => $plugin
+        );
+
+        // get all profiles
+        return $wf->getActiveProfile($options);
     }
 
     protected function getPluginVersion()
