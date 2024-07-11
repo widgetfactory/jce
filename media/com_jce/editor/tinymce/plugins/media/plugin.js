@@ -23,8 +23,8 @@
 
     var transparentSrc = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-    function isNonEditable(node) {
-        var nonEditClass = tinymce.settings.noneditable_noneditable_class || 'mceNonEditable';
+    function isNonEditable(ed, node) {
+        var nonEditClass = ed.settings.noneditable_noneditable_class || 'mceNonEditable';
 
         if (node.attr) {
             return node.hasClass(nonEditClass);
@@ -520,7 +520,7 @@
         var src = node.attr('src');
 
         // keep nonEditable nodes
-        if (isNonEditable(node)) {
+        if (isNonEditable(editor, node)) {
             return true;
         }
 
@@ -821,7 +821,7 @@
             "data-mce-object": node.name
         });
 
-        if (isNonEditable(node)) {
+        if (isNonEditable(editor, node)) {
             placeHolder.attr('contenteditable', 'false');
             placeHolder.attr('data-mce-resize', 'false');
         }
@@ -1459,7 +1459,7 @@
                 }
 
                 // if valid node (validate == false)
-                if (!isValidElement(editor, node.name) && !isNonEditable(node)) {
+                if (!isValidElement(editor, node.name) && !isNonEditable(editor, node)) {
                     node.remove();
                     continue;
                 }
@@ -1499,7 +1499,7 @@
                     }
                 }
 
-                if (media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(node)) {
+                if (media_live_embed && !isObjectEmbed(node.name) && !isResponsiveMedia(node) && !isNonEditable(editor, node)) {
                     if (!isWithinEmbed(node)) {
                         node.replace(createPreviewNode(editor, node));
                     }
@@ -1800,7 +1800,7 @@
         function objectActivate(ed, e) {
             var node = isMediaObject(e.target);
 
-            if (node && !isNonEditable(node)) {
+            if (node && !isNonEditable(ed, node)) {
                 ed.selection.select(node);
 
                 if (ed.dom.getAttrib(node, 'data-mce-selected')) {
@@ -1826,7 +1826,7 @@
         ed.onKeyDown.add(objectActivate);
 
         ed.onNodeChange.addToTop(function (ed, cm, n, collapsed, o) {
-            if (isMediaNode(n) && !isNonEditable(n) && !o.contenteditable) {
+            if (isMediaNode(n) && !isNonEditable(ed, n) && !o.contenteditable) {
                 o.contenteditable = true;
             }
         });
@@ -2003,7 +2003,7 @@
 
                 if (node) {
                     if (node.nodeName === "IMG" && node.getAttribute('data-mce-object') !== 'object') {
-                        if (isNonEditable(node)) {
+                        if (isNonEditable(ed, node)) {
                             return;
                         }
 
@@ -2061,7 +2061,7 @@
                 // get selected node
                 var node = isMediaObject();
 
-                if (node && !isNonEditable(node)) {
+                if (node && !isNonEditable(ed, node)) {
                     ed.selection.select(node);
                     node.setAttribute('data-mce-selected', '1');
                 }
@@ -2081,7 +2081,7 @@
 
                     if (isMediaNode(node)) {
 
-                        if (isNonEditable(node)) {
+                        if (isNonEditable(ed, node)) {
                             e.preventDefault();
                             return;
                         }
@@ -2110,7 +2110,7 @@
             }
 
             // clear operation for non-editable
-            if (isNonEditable(node)) {
+            if (isNonEditable(ed, node)) {
                 clipboardData.clearData();
                 return;
             }
@@ -2158,7 +2158,7 @@
             each(DOM.select('audio,video,object,iframe,embed', body), function (tag) {
                 var name = tag.nodeName.toLowerCase();
 
-                if (!isValidElement(ed, name) && !isNonEditable(tag)) {
+                if (!isValidElement(ed, name) && !isNonEditable(ed, tag)) {
                     DOM.remove(tag);
                 }
             });
