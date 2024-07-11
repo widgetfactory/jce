@@ -31154,10 +31154,10 @@
     var each = tinymce.each,
       extend = tinymce.extend,
       DOM = tinymce.DOM,
-      Event = tinymce.dom.Event,
-      explode = tinymce.explode,
-      Dispatcher = tinymce.util.Dispatcher,
-      undef, instanceCounter = 0;
+      Event = tinymce.dom.Event;
+      tinymce.explode;
+      var Dispatcher = tinymce.util.Dispatcher,
+      undef;
 
     // Setup some URLs where the editor API is located and where the document is
     tinymce.documentBaseURL = window.location.href.replace(/[\?#].*$/, '').replace(/[\/\\][^\/]+$/, '');
@@ -31321,12 +31321,8 @@
           return callback.apply(self, Array.prototype.slice.call(arguments, 2));
         }
 
-        function hasClass(elm, className) {
-          return className.constructor === RegExp ? className.test(elm.className) : DOM.hasClass(elm, className);
-        }
-
         function findTargets(settings) {
-          var l, targets = [];
+          var targets = [];
 
           if (settings.types) {
             each(settings.types, function (type) {
@@ -31338,46 +31334,6 @@
             return DOM.select(settings.selector);
           } else if (settings.target) {
             return [settings.target];
-          }
-
-          // Fallback to old setting
-          switch (settings.mode) {
-            case "exact":
-              l = settings.elements || '';
-
-              if (l.length > 0) {
-                each(explode(l), function (id) {
-                  var elm;
-
-                  if ((elm = DOM.get(id))) {
-                    targets.push(elm);
-                  } else {
-                    each(document.forms, function (f) {
-                      each(f.elements, function (e) {
-                        if (e.name === id) {
-                          id = 'mce_editor_' + instanceCounter++;
-                          DOM.setAttrib(e, 'id', id);
-                          targets.push(e);
-                        }
-                      });
-                    });
-                  }
-                });
-              }
-              break;
-
-            case "textareas":
-            case "specific_textareas":
-              each(DOM.select('textarea'), function (elm) {
-                if (settings.editor_deselector && hasClass(elm, settings.editor_deselector)) {
-                  return;
-                }
-
-                if (!settings.editor_selector || hasClass(elm, settings.editor_selector)) {
-                  targets.push(elm);
-                }
-              });
-              break;
           }
 
           return targets;
@@ -47861,10 +47817,8 @@
         });
       }
 
-      return {
-        plugins: plugins,
-        upload: uploadHandler
-      };
+      this.plugins = plugins;
+      this.upload = uploadHandler;
     });
   })();
 
@@ -48242,10 +48196,8 @@
         });
       });*/
 
-      return {
-        isNonEditable: isNonEditable,
-        isEditable: isEditable
-      };
+      this.isEditable = isEditable;
+      this.isNonEditable = isNonEditable;
     });
   })();
 
