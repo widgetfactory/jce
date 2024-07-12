@@ -57,6 +57,10 @@
             DOM.hide(ed.id + '_editor_preview');
         };
 
+        this.isHidden = function () {
+            return DOM.isHidden(ed.id + '_editor_preview');
+        };
+
         this.toggle = function () {
             var s = ed.settings;
 

@@ -140,6 +140,10 @@
             DOM.hide(ed.id + '_editor_source');
         };
 
+        this.isHidden = function () {
+            return DOM.isHidden(ed.id + '_editor_source');
+        };
+
         this.save = function (content, debounced) {
             var el = ed.getElement();
 
