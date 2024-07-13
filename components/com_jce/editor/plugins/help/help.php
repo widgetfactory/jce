@@ -12,6 +12,7 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 
@@ -195,19 +196,24 @@ class WFHelpPlugin extends WFEditorPlugin
             case 'editor':
                 $file = WF_EDITOR_PLUGINS . '/' . $category . '/' . $category . '.xml';
 
-                // check for installed plugin
-                $plugin = PluginHelper::getPlugin('jce', 'editor-' . $category);
-
-                if ($plugin) {
-                    $file = JPATH_PLUGINS . '/jce/editor-' . $category . '/editor-' . $category . '.xml';
-                    $language->load('plg_jce_editor_' . $category, JPATH_ADMINISTRATOR);
-                }
+                $file = Path::find([
+                    WF_EDITOR_PLUGINS . '/' . $category,
+                    JPATH_PLUGINS . '/system/jcepro/editor/plugins/' . $category,
+                    JPATH_PLUGINS . '/jce/editor-' . $category,
+                    JPATH_PLUGINS . '/jce/editor_' . $category
+                ], $category . '.xml');
 
                 if (!is_file($file)) {
                     $file = WF_EDITOR_LIBRARIES . '/xml/help/editor.xml';
                 } else {
-                    $language->load('WF_' . $category, JPATH_SITE);
+                    $path = dirname($file);
+
+                    // installed plugin
+                    if (preg_match('/\/editor[_-]/', $path)) {
+                        $language->load('plg_jce_editor_' . $category,$path);
+                    }                    
                 }
+
                 break;
         }
 
