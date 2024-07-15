@@ -11,12 +11,9 @@
 defined('JPATH_PLATFORM') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Field\MediaField;
-use Joomla\CMS\Helper\MediaHelper;
 use Joomla\CMS\Form\Form;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Helper\MediaHelper;
 
 /**
  * Provides a modal media selector field for the JCE File Browser
@@ -80,18 +77,12 @@ class JFormFieldMediaJce extends MediaField
         if ($result === true) {
             $this->mediatype = isset($this->element['mediatype']) ? (string) $this->element['mediatype'] : 'images';
 
-            if (isset($this->types) && (bool) $this->element['converted'] === false) {                
+            if (isset($this->types) && (bool) $this->element['converted'] === false) {
                 if (is_string($this->value)) {
                     $this->value = MediaHelper::getCleanMediaFieldValue($this->value);
                 }
             }
         }
-
-        HTMLHelper::_('jquery.framework');
-
-        $document = Factory::getDocument();
-        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
-        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
 
         return $result;
     }
@@ -112,7 +103,7 @@ class JFormFieldMediaJce extends MediaField
             'element' => $this->id,
             'mediatype' => strtolower($this->mediatype),
             'converted' => false,
-            'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : ''
+            'mediafolder' => isset($this->element['media_folder']) ? (string) $this->element['media_folder'] : '',
         );
 
         $options = WfBrowserHelper::getMediaFieldOptions($config);

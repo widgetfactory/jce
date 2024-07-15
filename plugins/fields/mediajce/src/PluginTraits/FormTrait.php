@@ -12,9 +12,12 @@ namespace Joomla\Plugin\Fields\MediaJce\PluginTraits;
 
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormHelper;
+use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Fields MediaJce FormTrait
@@ -41,7 +44,7 @@ trait FormTrait
         if (!$fieldNode) {
             return $fieldNode;
         }
-        
+
         if ($field->type !== 'mediajce') {
             return $fieldNode;
         }
@@ -69,7 +72,16 @@ trait FormTrait
             if ((int) $this->params->get('legacymedia', 0) == 1) {
                 $fieldNode->setAttribute('type', 'mediajce');
             }
+
+            return $fieldNode;
         }
+
+        // load scripts and styles for media field
+        HTMLHelper::_('jquery.framework');
+
+        $document = Factory::getDocument();
+        $document->addScript(Uri::root(true) . '/media/com_jce/site/js/media.min.js', array('version' => 'auto'));
+        $document->addStyleSheet(Uri::root(true) . '/media/com_jce/site/css/media.min.css', array('version' => 'auto'));
 
         return $fieldNode;
     }
