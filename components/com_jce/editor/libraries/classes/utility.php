@@ -837,4 +837,74 @@ abstract class WFUtility
 
         return $merged;
     }
+
+    /**
+     * Return a list of allowed file extensions in a specific format.
+     *
+     * @param string $format The desired format of the output ('map', 'array', 'list', 'json').
+     * @param string $list String of file types to format.
+     * @return mixed Formatted extension list.
+     */
+    public static function formatFileTypesList($format = 'map', $list = '')
+    {
+        $data = array();
+
+        // Split the list into groups separated by ';'
+        foreach (explode(';', $list) as $group) {
+            // Exclude group if it starts with '-'
+            if (strpos($group, '=') !== false && strpos($group, '-') === 0) {
+                continue;
+            }
+
+            // Split the group into type and items parts
+            $parts = explode('=', $group);
+            // Get the extensions, e.g., "jpg,gif,png"
+            $items = array_pop($parts);
+            // Get the type if available, e.g., "images"
+            $type = array_pop($parts);
+
+            // Filter and map items, excluding any that start with '-'
+            $items = array_filter(explode(',', $items), function ($item) {
+                return substr(trim($item), 0, 1) !== '-';
+            });
+
+            // If no type is specified, handle as a flat list
+            if (empty($type)) {
+                $data = array_merge($data, $items);
+            } else {
+                // Create flattened array if format is 'array' or 'list'
+                if ($format === 'array' || $format === 'list') {
+                    $data = array_merge($data, array_map('strtolower', $items));
+                } else {
+                    // Create associative array, e.g., ["images" => ["jpg", "jpeg", "gif", "png"]]
+                    if (!isset($data[$type])) {
+                        $data[$type] = array();
+                    }
+                    $data[$type] = array_merge($data[$type], array_map('strtolower', $items));
+                }
+            }
+        }
+
+        // Return flattened list of extensions, e.g., "jpg,jpeg,png,gif"
+        if ($format === 'list') {
+            return implode(',', array_unique($data));
+        }
+
+        // Return JSON encoded list, e.g., {"images": ["jpg", "jpeg", "gif", "png"]}
+        if ($format === 'json') {
+            return json_encode($data);
+        }
+
+        // Return array, ensure uniqueness and maintain structure for 'map' format
+        if ($format === 'array') {
+            return array_unique($data);
+        }
+
+        // Default return associative array ('map' format)
+        foreach ($data as $key => $value) {
+            $data[$key] = array_unique($value);
+        }
+
+        return $data;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     JCE
  * @subpackage  Editor
@@ -115,8 +116,8 @@ class WFFileBrowser extends CMSObject
         $buttons    = $filesystem->get('buttons', []);
 
         if (!empty($buttons)) {
-            foreach($buttons as $type => $items) {
-                foreach($items as $name => $options) {
+            foreach ($buttons as $type => $items) {
+                foreach ($items as $name => $options) {
                     $this->addButton($type, $name, $options);
                 }
             }
@@ -222,64 +223,22 @@ class WFFileBrowser extends CMSObject
     }
 
     /**
-     * Return a list of allowed file extensions in specific format.
+     * Return a list of allowed file extensions in a specific format.
      *
-     * @return mixed formatted extension list
+     * @param string $format The desired format of the output ('map', 'array', 'list', 'json').
+     * @param string $list Optional string of file types to use instead of the default.
+     * @return mixed Formatted extension list.
      */
     public function getFileTypes($format = 'map', $list = '')
     {
+        // If $list is empty, use the default filetypes from the object's property
         if (empty($list)) {
             $list = $this->get('filetypes');
         }
 
-        $data = array();
-
-        foreach (explode(';', $list) as $group) {
-            // exclude group
-            if (strpos($group, '=') !== false && strpos($group, '-') === 0) {
-                continue;
-            }
-
-            $parts = explode('=', $group);
-            // get extensions, eg: "jpg,gif,png"
-            $items = array_pop($parts);
-            // get type if available, eg: "images"
-            $type = array_pop($parts);
-
-            // re-map without excluded items
-            $items = array_filter(explode(',', $items), function ($item) {
-                return substr(trim($item), 0, 1) !== '-';
-            });
-
-            // no type
-            if (empty($type)) {
-                $data = $items;
-            } else {
-                // create flattened array, eg: ["jpg", "jpeg", "gif", "png"]
-                if ($format === 'array' || $format === 'list') {
-                    $data = array_merge($data, array_map('strtolower', $items));
-                    // create associative array, eg:  or ["images" => ["jpg", "jpeg", "gif", "png"]]
-                } else {
-                    $data[$type] = $items;
-                }
-            }
-        }
-
-        // return flattended list of extensions, eg: "jpg,jpeg,png,gif"
-        if ($format === 'list') {
-            return implode(',', $data);
-        }
-
-        // return json encoded list, eg: {"images": ["jpg", "jpeg", "gif", "png"]}
-        if ($format === 'json') {
-            return json_encode($data);
-        }
-
-        // return array
-        $data = array_values($data);
-
-        return $data;
+        return WFUtility::formatFileTypesList($format, $list);
     }
+
 
     /**
      * Converts the extensions map to a list.
@@ -381,7 +340,7 @@ class WFFileBrowser extends CMSObject
                 $allowFilters[] = substr($filter, 1);
             } else if (strpos($filter, '-') === 0) {
                 $filter = ltrim($filter, '-');
-                
+
                 $denyFilters[] = $filter;
             } else {
                 $denyFilters[] = $filter;
@@ -420,7 +379,7 @@ class WFFileBrowser extends CMSObject
         }
 
         // Check deny filters
-        foreach ($denyFilters as $filter) {            
+        foreach ($denyFilters as $filter) {
             if (strpos($filter, '*') === 0) {
                 $filter = substr($filter, 1);
 
@@ -435,10 +394,10 @@ class WFFileBrowser extends CMSObject
                     $access = false;
                     break;
                 }
-            } else {                                                
+            } else {
                 // process path for variables, text case etc.
                 $filesystem->processPath($filter);
-                
+
                 if ($path === $filter) {
                     $access = false;
                     break;
@@ -813,13 +772,13 @@ class WFFileBrowser extends CMSObject
 
             if ($root) {
                 $result = '<ul>'
-                . '<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
-                . ' <div class="uk-tree-row">'
-                . '   <a href="#">'
-                . '     <span class="uk-tree-icon" role="presentation">'
-                . '       <i class="uk-icon uk-icon-home"></i>'
-                . '     </span>'
-                . '     <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>'
+                    . '<li data-id="/" class="uk-tree-open uk-tree-root uk-padding-remove">'
+                    . ' <div class="uk-tree-row">'
+                    . '   <a href="#">'
+                    . '     <span class="uk-tree-icon" role="presentation">'
+                    . '       <i class="uk-icon uk-icon-home"></i>'
+                    . '     </span>'
+                    . '     <span class="uk-tree-text">' . Text::_('WF_LABEL_HOME', 'Home') . '</span>'
                     . '   </a>'
                     . ' </div>';
 
@@ -1358,7 +1317,6 @@ class WFFileBrowser extends CMSObject
                 $data['name'] = $name;
 
                 $this->setResult($data, 'files');
-
             } else {
                 $this->setResult($result->message, 'error');
             }
