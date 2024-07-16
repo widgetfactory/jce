@@ -262,6 +262,18 @@ class pkg_jceInstallerScript
         if ($plugin) {
             $extension->publish(null, 0);
         }
+
+        // clean up fields in JCE Pro before install
+        $files = array(
+            JPATH_PLUGINS . '/system/jcepro/fields/ExtendedMedia.php',
+            JPATH_PLUGINS . '/system/jcepro/fields/EditorPlugins.php'
+        );
+
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+            }
+        }
     }
 
     private function checkTableUpdate()
