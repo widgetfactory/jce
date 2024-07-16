@@ -187,6 +187,9 @@ class WFMediaManagerBase extends WFEditorPlugin
         $filetypes = $this->getParam('extensions', $this->get('_filetypes'));
         $textcase = $this->getParam('editor.websafe_textcase', '');
 
+        // flatten filetypes
+        $filetypes = WFUtility::formatFileTypesList('list', $filetypes);
+
         // implode textcase array to create string
         if (is_array($textcase)) {
             $textcase = array_filter($textcase, 'strlen');
