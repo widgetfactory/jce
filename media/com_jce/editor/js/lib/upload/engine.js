@@ -383,7 +383,7 @@
          * @returns {void}
          */
         addFile: function (file) {
-            if (file && file.name) {
+            if (file && file.name) {                
                 // shortcut for file.name
                 var name = file.name;
                 // get file extension from name
@@ -420,9 +420,7 @@
                 file.extension = ext;
 
                 // set file type
-                if (!file.type) {
-                    file.type = /(jpg|jpeg|bmp|tiff|tif|gif|png|webp)/.test(ext) ? mime[ext] : 'text/plain';
-                }
+                file.mimetype = file.type || (/(jpg|jpeg|bmp|tiff|tif|gif|png|webp)/.test(ext) ? mime[ext] : 'text/plain');
 
                 // clean file path
                 name = name.replace(/\\/g, '/').replace(/\/+/g, '/');
