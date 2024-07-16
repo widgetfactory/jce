@@ -28399,7 +28399,7 @@
         attribs = tinymce.extend(attribs, s.attributes || {});
 
         if (s.multiline) {
-          html += DOM.createHTML('textarea', attribs);
+          html += DOM.createHTML('textarea', attribs, '');
         } else {
           html += DOM.createHTML('input', attribs);
         }
